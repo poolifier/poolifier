@@ -1,0 +1,37 @@
+{
+  "name": "node-pool.",
+  "version": "0.0.1",
+  "description": "A tool to share your open source project by email with github users matching a search .",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard",
+    "lint": "standard --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pioardi/node-pool.git"
+  },
+  "keywords": [
+    "node",
+    "thread-pool",
+    "worker-threads",
+    "performance",
+    "cpu",
+    "computing"
+  ],
+  "standard": {
+    "env": [
+      "mocha",
+      "node"
+    ]
+  },
+  "author": "pioardi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pioardi/node-pool/issues"
+  },
+  "homepage": "https://github.com/pioardi/node-pool#readme",
+  "devDependencies": {
+    "standard": "^14.3.1"
+  }
+}
