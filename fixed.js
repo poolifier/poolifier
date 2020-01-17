@@ -3,8 +3,6 @@ const {
   Worker, isMainThread, MessageChannel
 } = require('worker_threads')
 
-console.log('Fixed required')
-
 // FixedThreadPool , TrampolineThreadPool
 /**
  * A thread pool with a static number of threads , is possible to execute tasks in sync or async mode as you prefer
@@ -24,6 +22,7 @@ class FixedThreadPool {
     this.numThreads = numThreads
     this.workers = []
     this.task = task
+    this.nextWorker = 0
     for (let i = 1; i <= numThreads; i++) {
       const worker = new Worker(__filename)
       this.workers.push(worker)
@@ -40,8 +39,7 @@ class FixedThreadPool {
   execute (task, data) {
     // TODO select a worker
     // configure worker to handle message with the specified task
-    const idx = chooseWorker(0, this.numThreads - 1)
-    const worker = this.workers[idx]
+    const worker = this._chooseWorker()
     const id = generateID()
     const res = this._execute(worker, task, id)
     worker.emitter.emit(id, data)
@@ -61,12 +59,19 @@ class FixedThreadPool {
       })
     })
   }
-}
 
-function chooseWorker (min, max) {
-  min = Math.ceil(min)
-  max = Math.floor(max)
-  return Math.floor(Math.random() * (max - min + 1)) + min
+  _chooseWorker () {
+    console.log(this.workers.length -1)
+    console.log(this.nextWorker)
+    if ((this.workers.length - 1) === this.nextWorker) {
+      console.log('we are here')
+      this.nextWorker = 0
+      return this.workers[this.nextWorker]
+    } else {
+      this.nextWorker++
+      return this.workers[this.nextWorker]
+    }
+  }
 }
 
 /**
