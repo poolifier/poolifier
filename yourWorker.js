@@ -1,13 +1,17 @@
 'use strict'
-const ThreadWorker = require('./worker')
-const { isMainThread } = require('worker_threads')
+const { ThreadWorker, DynamicWorker } = require('./lib/workers')
 
-class MyWorker extends ThreadWorker {
+class MyWorker extends DynamicWorker {
   constructor () {
     super((data) => {
+      for (let i = 0; i <= 10000; i++) {
+        const o = {
+          a: i
+        }
+        JSON.stringify(o)
+      }
       // console.log('This is the main thread ' + isMainThread)
-      // this.parent.postMessage(JSON.stringify(data))
-      return JSON.stringify(data)
+      return data
     })
   }
 }
