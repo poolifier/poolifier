@@ -4,5 +4,4 @@ describe('Generate uuid', () => {
   it('Just a proof for CI', () => {
     expect(true).toBeTruthy()
   })
-
 })
