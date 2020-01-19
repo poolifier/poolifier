@@ -1,7 +1,7 @@
 'use strict'
-const { ThreadWorker, DynamicWorker } = require('./lib/workers')
+const { ThreadWorker } = require('./lib/workers')
 
-class MyWorker extends DynamicWorker {
+class MyWorker extends ThreadWorker {
   constructor () {
     super((data) => {
       for (let i = 0; i <= 10000; i++) {
