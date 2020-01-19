@@ -1,18 +1,18 @@
 'use strict'
-const { ThreadWorker } = require('./lib/workers')
+const { ThreadWorker } = require('../lib/workers')
+const { isMainThread } = require('worker_threads')
 
 class MyWorker extends ThreadWorker {
   constructor () {
     super((data) => {
-      for (let i = 0; i <= 10000; i++) {
+      for (let i = 0; i <= 100; i++) {
         const o = {
           a: i
         }
         JSON.stringify(o)
       }
-      // console.log('This is the main thread ' + isMainThread)
-      return { ok: 1 }
-    })
+      return isMainThread
+    }, { maxInactiveTime: 1000 })
   }
 }
 

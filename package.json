@@ -6,6 +6,7 @@
   "scripts": {
     "build": "npm install",
     "test": "standard && nyc mocha --exit --timeout 10000 **/*test.js ",
+    "demontest": "nodemon --exec \"npm test\"",
     "coverage": "nyc report --reporter=text-lcov --timeout 5000 **/*test.js | coveralls",
     "standard-verbose": "npx standard --verbose",
     "lint": "standard --fix"
