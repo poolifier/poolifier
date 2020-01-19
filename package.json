@@ -1,10 +1,13 @@
 {
   "name": "node-pool.",
   "version": "0.0.1",
-  "description": "A tool to share your open source project by email with github users matching a search .",
+  "description": "Library on top of node js worker threads that implement various worker pools type",
   "main": "index.js",
   "scripts": {
-    "test": "standard",
+    "build": "npm install",
+    "test": "standard && nyc mocha --exit --timeout 10000 **/*test.js ",
+    "coverage": "nyc report --reporter=text-lcov --timeout 5000 **/*test.js | coveralls",
+    "standard-verbose": "npx standard --verbose",
     "lint": "standard --fix"
   },
   "repository": {
@@ -17,7 +20,8 @@
     "worker-threads",
     "performance",
     "cpu",
-    "computing"
+    "computing",
+    "async-resource"
   ],
   "standard": {
     "env": [
@@ -31,10 +35,15 @@
     "url": "https://github.com/pioardi/node-pool/issues"
   },
   "homepage": "https://github.com/pioardi/node-pool#readme",
-  "devDependencies": {
-    "standard": "^14.3.1"
-  },
   "dependencies": {
     "uuid": "^3.4.0"
+  },
+  "devDependencies": {
+    "coveralls": "^3.0.9",
+    "expect": "^24.9.0",
+    "mocha": "^7.0.0",
+    "mocha-lcov-reporter": "^1.3.0",
+    "nyc": "^15.0.0",
+    "standard": "^14.3.1"
   }
 }
