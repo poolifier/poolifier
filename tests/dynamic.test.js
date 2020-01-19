@@ -1,7 +1,7 @@
 const expect = require('expect')
 const DynamicThreadPool = require('../lib/dynamic')
 const min = 1
-const max = 10
+const max = 3
 const pool = new DynamicThreadPool(min, max,
   './tests/testWorker.js',
   { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
@@ -18,7 +18,7 @@ describe('Dynamic thread pool test suite ', () => {
     let closedThreads = 0
     let fullPool = 0
     pool.emitter.on('FullPool', () => fullPool++)
-    for (let i = 0; i < (max * 3); i++) {
+    for (let i = 0; i < (max * 2); i++) {
       promises.push(pool.execute({ test: 'test' }))
     }
     expect(pool.workers.length).toBe(max)
@@ -28,7 +28,7 @@ describe('Dynamic thread pool test suite ', () => {
       })
     })
     expect(fullPool > 1).toBeTruthy()
-    await new Promise(resolve => setTimeout(resolve, 1000 * 2))
+    await new Promise(resolve => setTimeout(resolve, 2000))
     expect(closedThreads).toBe(max - min)
   })
 
@@ -40,7 +40,7 @@ describe('Dynamic thread pool test suite ', () => {
       })
     })
     pool.destroy()
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise(resolve => setTimeout(resolve, 2000))
     expect(closedThreads).toBe(min)
   })
 
