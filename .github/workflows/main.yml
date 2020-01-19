@@ -1,4 +1,4 @@
-name: CI
+name: Node CI
 
 on: [push]
 
@@ -7,11 +7,20 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+
     steps:
     - uses: actions/checkout@v1
-    - name: Run a one-line script
-      run: echo Hello, world!
-    - name: Run a multi-line script
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: npm install, build, and test
       run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
+        npm ci
+        npm run build --if-present
+        npm run test
+      env:
+        CI: true
