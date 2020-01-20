@@ -1,5 +1,5 @@
 {
-  "name": "node-pool.",
+  "name": "node-thread-pool",
   "version": "0.0.1",
   "description": "Library on top of node js worker threads that implement various worker pools type",
   "main": "index.js",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pioardi/node-pool.git"
+    "url": "git+https://github.com/pioardi/node-thread-pool.git"
   },
   "keywords": [
     "node",
@@ -33,9 +33,9 @@
   "author": "pioardi",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pioardi/node-pool/issues"
+    "url": "https://github.com/pioardi/node-thread-pool/issues"
   },
-  "homepage": "https://github.com/pioardi/node-pool#readme",
+  "homepage": "https://github.com/pioardi/node-thread-pool#readme",
   "dependencies": {
     "uuid": "^3.4.0"
   },
