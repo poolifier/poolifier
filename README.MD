@@ -56,7 +56,7 @@ pool.execute({}).then(res => {
 <strong> See examples folder for more details.</strong>
 
 ## Node versions
-You can use node version  10.x  with --experimental-worker flag, or you can use 12.x version <br>
+You can use node version  10.x  with --experimental-worker flag, or you can use an higher version (i.e 12.x) <br>
 
 ## API
 
