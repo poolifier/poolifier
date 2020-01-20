@@ -1,4 +1,4 @@
-const DynamicThreadPool = require('./lib/dynamic')
+const DynamicThreadPool = require('../lib/dynamic')
 let resolved = 0
 let maxReached = 0
 const pool = new DynamicThreadPool(100, 200, './yourWorker.js', { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })

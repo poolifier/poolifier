@@ -1,5 +1,5 @@
 'use strict'
-const { ThreadWorker } = require('./lib/workers')
+const { ThreadWorker } = require('../lib/workers')
 
 class MyWorker extends ThreadWorker {
   constructor () {

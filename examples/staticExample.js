@@ -1,4 +1,4 @@
-const FixedThreadPool = require('./lib/fixed')
+const FixedThreadPool = require('../lib/fixed')
 let resolved = 0
 const pool = new FixedThreadPool(15,
   './yourWorker.js',
