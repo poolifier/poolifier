@@ -5,14 +5,14 @@ const { isMainThread } = require('worker_threads')
 class MyWorker extends ThreadWorker {
   constructor () {
     super((data) => {
-      for (let i = 0; i <= 100; i++) {
+      for (let i = 0; i <= 50; i++) {
         const o = {
           a: i
         }
         JSON.stringify(o)
       }
       return isMainThread
-    }, { maxInactiveTime: 1000 })
+    }, { maxInactiveTime: 500 })
   }
 }
 
