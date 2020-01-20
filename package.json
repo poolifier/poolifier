@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/pioardi/node-pool#readme",
   "dependencies": {
+    "tape": "^4.13.0",
     "uuid": "^3.4.0"
   },
   "devDependencies": {
