@@ -26,7 +26,7 @@ You have to implement your worker extending the ThreadWorker class<br>
 <h2 id="installation">Installation</h2>
 
 ```
-npm install node-pool --save
+npm install node-thread-pool --save
 ```
 <h2 id="usage">Usage</h2>
 
