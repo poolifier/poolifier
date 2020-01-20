@@ -115,5 +115,5 @@ See guidelines [CONTRIBUTING](./.github/CONTRIBUTING.md)
 
 <h2 id="license">License</h2>
 
-[MIT](https://github.com/pioardi/node-pool/blob/master/LICENSE)
+[MIT](./LICENSE)
 
