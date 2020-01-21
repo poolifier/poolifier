@@ -1,7 +1,7 @@
 const DynamicThreadPool = require('../lib/dynamic')
 let resolved = 0
 let maxReached = 0
-const pool = new DynamicThreadPool(100, 200, './yourWorker.js', { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
+const pool = new DynamicThreadPool(10, 20, './yourWorker.js', { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
 pool.emitter.on('FullPool', () => maxReached++)
 
 const start = Date.now()

@@ -36,9 +36,6 @@
     "url": "https://github.com/pioardi/node-thread-pool/issues"
   },
   "homepage": "https://github.com/pioardi/node-thread-pool#readme",
-  "dependencies": {
-    "uuid": "^3.4.0"
-  },
   "devDependencies": {
     "benchmark": "^2.1.4",
     "coveralls": "^3.0.9",
