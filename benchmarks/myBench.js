@@ -7,7 +7,7 @@ const size = 10
 // pools
 const externalPool = new Pool({ max: size })
 const fixedPool = new FixedThreadPool(size, './yourWorker.js', { maxTasks: 10000 })
-const dynamicPool = new DynamicThreadPool(size, size * 2, './yourWorker.js', { maxTasks: 10000 })
+const dynamicPool = new DynamicThreadPool(size / 2, 50, './yourWorker.js', { maxTasks: 10000 })
 
 // data
 const workerData = { proof: 'ok' }
@@ -16,28 +16,30 @@ const workerData = { proof: 'ok' }
 async function fixedTest () {
   let executions = 0
   const time = Date.now()
-  for (let i = 0; i < tasks; i++) {
-    await fixedPool.execute(workerData)
-    executions++
+  for (let i = 0; i <= tasks; i++) {
+    fixedPool.execute(workerData).then(res => {
+      executions++
+      if (executions === tasks) console.log(`Fixed pool take ${Date.now() - time} to work on ${executions} tasks`)
+    })
   }
-  console.log(`Fixed pool take ${Date.now() - time} to work on ${executions} tasks`)
 }
 
 async function dynamicTest () {
   let executions = 0
   const time = Date.now()
-  for (let i = 0; i < tasks; i++) {
-    await dynamicPool.execute(workerData)
-    executions++
+  for (let i = 0; i <= tasks; i++) {
+    dynamicPool.execute(workerData).then(res => {
+      executions++
+      if (executions === tasks) console.log(`Dynamic pool take ${Date.now() - time} to work on ${executions} tasks`)
+    })
   }
-  console.log(`Dynamic pool take ${Date.now() - time} to work on ${executions} tasks`)
 }
 
 async function externalPoolTest () {
   let executions = 0
   const time = Date.now()
-  for (let i = 0; i < tasks; i++) {
-    await new Promise((resolve, reject) => {
+  for (let i = 0; i <= tasks; i++) {
+    new Promise((resolve, reject) => {
       externalPool.acquire('./externalWorker.js', { workerData: workerData }, (err, worker) => {
         if (err) {
           return reject(err)
@@ -48,15 +50,16 @@ async function externalPoolTest () {
           resolve(res)
         })
       })
+    }).then(res => {
+      if (tasks === executions) console.log(`External pool take ${Date.now() - time} to work  on ${executions} tasks`)
     })
   }
-  console.log(`External pool take ${Date.now() - time} to work  on ${executions} tasks`)
 }
 
 async function test () {
-  await fixedTest()
-  await dynamicTest()
-  await externalPoolTest()
+  fixedTest()
+  dynamicTest()
+  externalPoolTest()
 }
 
 test()
