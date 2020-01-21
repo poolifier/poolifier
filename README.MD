@@ -11,6 +11,8 @@
   <span> · </span>
   <a href="#api">API</a>
   <span> · </span>
+  <a href="#cyp">Choose a pool</a>
+  <span> · </span>
   <a href="#contribute">Contribute</a>
   <span> · </span>
   <a href="#nv">Compatibility</a>
@@ -107,6 +109,15 @@ This method will call the terminate method on each worker.
 `fn` (mandatory) The function that you want to execute on the worker thread <br>
 `opts` (optional) An object with these properties :
 - `maxInactiveTime` - Max time to wait tasks to work on ( in ms) , after this period the new worker threads will die.
+
+<h2 id="cyp">Choose your pool</h2>
+Performance is one of the main target of these thread pool implementation, we want to have a strong focus on this.<br>
+We already have a bench folder where you can find some comparisons.
+To choose your pool consider that with a FixedThreadPool or a DynamicThreadPool ( in this case is important the min parameter passed to the constructor) your application memory footprint will increase . <br>
+Increasing the memory footprint your application will be ready to accept more CPU bound tasks, but during idle time your application will consume more memory. <br>
+One good choose from my point of view is to profile your application using Fixed/Dynamic thread pool , and to see your application metrics when you increase/decrease the num of threads. <br>
+For example you could keep the memory footprint low choosing a DynamicThreadPool with 5 threads, and allow to create new threads until 50/100 when requests, this is the advantage to use the DynamicThreadPool. <br>
+But in general , <strong>always profile your application </strong>
 
 <h2 id="contribute">Contribute</h2>
 
