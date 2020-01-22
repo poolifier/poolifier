@@ -33,7 +33,7 @@ You have to implement your worker extending the ThreadWorker class<br>
 <h2 id="installation">Installation</h2>
 
 ```
-npm install node-thread-pool --save
+npm install @pioardi/node-thread-pool --save
 ```
 <h2 id="usage">Usage</h2>
 
@@ -41,7 +41,7 @@ You can implement a worker in a simple way , extending the class ThreadWorker :
 
 ```js
 'use strict'
-const { ThreadWorker } = require('node-pool')
+const { ThreadWorker } = require('@pioardi/node-thread-pool')
 
 function yourFunction (data) {
   // this will be executed in the worker thread,
@@ -61,7 +61,7 @@ Instantiate your pool based on your needed :
 
 ```js
 'use strict'
-const { FixedThreadPool, DynamicThreadPool } = require('node-pool')
+const { FixedThreadPool, DynamicThreadPool } = require('@pioardi/node-thread-pool')
 
 // a fixed thread pool
 const pool = new FixedThreadPool(15,
