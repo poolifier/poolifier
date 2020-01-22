@@ -137,4 +137,3 @@ See guidelines [CONTRIBUTING](./.github/CONTRIBUTING.md)
 <h2 id="license">License</h2>
 
 [MIT](./LICENSE)
-
