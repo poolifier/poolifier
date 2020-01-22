@@ -1,5 +1,5 @@
 {
-  "name": "node-thread-pool",
+  "name": "@pioardi/node-thread-pool",
   "version": "0.0.1",
   "description": "Library on top of node js worker threads that implement various worker pools type",
   "main": "index.js",
