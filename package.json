@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "build": "npm install",
-    "test": "standard && nyc mocha --experimental-worker --exit --timeout 10000 tests/*test.js ",
+    "test": "standard && nyc mocha --experimental-worker --exit --timeout 15000 tests/*test.js ",
+    "debug-test": "mocha --inspect-brk --experimental-worker --exit tests/*test.js ",
     "demontest": "nodemon --exec \"npm test\"",
-    "coverage": "nyc report --reporter=text-lcov --timeout 5000 **/*test.js | coveralls",
+    "coverage": "nyc report --reporter=text-lcov tests/*test.js | coveralls",
     "standard-verbose": "npx standard --verbose",
     "lint": "standard --fix"
   },

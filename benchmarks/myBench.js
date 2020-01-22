@@ -2,12 +2,12 @@ const FixedThreadPool = require('../lib/fixed')
 const DynamicThreadPool = require('../lib/dynamic')
 const Pool = require('worker-threads-pool')
 const tasks = 1000
-const size = 10
+const size = 16
 
 // pools
 const externalPool = new Pool({ max: size })
 const fixedPool = new FixedThreadPool(size, './yourWorker.js', { maxTasks: 10000 })
-const dynamicPool = new DynamicThreadPool(size / 2, 50, './yourWorker.js', { maxTasks: 10000 })
+const dynamicPool = new DynamicThreadPool(size / 2, size * 3, './yourWorker.js', { maxTasks: 10000 })
 
 // data
 const workerData = { proof: 'ok' }

@@ -3,52 +3,90 @@ const suite = new Benchmark.Suite()
 const FixedThreadPool = require('../lib/fixed')
 const DynamicThreadPool = require('../lib/dynamic')
 const Pool = require('worker-threads-pool')
-const size = 40
-const externalPool = new Pool({ max: size })
+const size = 30
+const tasks = 1
 
+// pools
+const externalPool = new Pool({ max: size })
 const fixedPool = new FixedThreadPool(size,
   './yourWorker.js', { maxTasks: 10000 })
-const dynamicPool = new DynamicThreadPool(size, size * 2, './yourWorker.js', { maxTasks: 10000 })
+const dynamicPool = new DynamicThreadPool(size / 2, size * 3, './yourWorker.js', { maxTasks: 10000 })
 const workerData = { proof: 'ok' }
-let executions = 0
-let executions1 = 0
 
 // wait some seconds before start, my pools need to load threads !!!
 setTimeout(async () => {
   test()
 }, 3000)
 
-async function test () {
-  // add tests
-  suite.add('PioardiStaticPool', async function () {
-    executions++
-    await fixedPool.execute(workerData)
+// fixed pool proof
+async function fixedTest () {
+  return new Promise((resolve, reject) => {
+    let executions = 0
+    for (let i = 0; i <= tasks; i++) {
+      fixedPool.execute(workerData).then(res => {
+        executions++
+        if (executions === tasks) {
+          resolve('FINISH')
+        }
+      })
+    }
   })
+}
 
-    .add('ExternalPool', async function () {
-      await new Promise((resolve, reject) => {
+async function dynamicTest () {
+  return new Promise((resolve, reject) => {
+    let executions = 0
+    for (let i = 0; i <= tasks; i++) {
+      dynamicPool.execute(workerData).then(res => {
+        executions++
+        if (executions === tasks) {
+          resolve('FINISH')
+        }
+      })
+    }
+  })
+}
+
+async function externalPoolTest () {
+  return new Promise((resolve, reject) => {
+    let executions = 0
+    for (let i = 0; i <= tasks; i++) {
+      new Promise((resolve, reject) => {
         externalPool.acquire('./externalWorker.js', { workerData: workerData }, (err, worker) => {
           if (err) {
             return reject(err)
           }
-          executions1++
           worker.on('error', reject)
           worker.on('message', res => {
+            executions++
             resolve(res)
           })
         })
+      }).then(res => {
+        if (tasks === executions) {
+          resolve('FINISH')
+        }
       })
-    })
+    }
+  })
+}
+
+async function test () {
+  // add tests
+  suite.add('PioardiStaticPool', async function () {
+    await fixedTest()
+  })
     .add('PioardiDynamicPool', async function () {
-      await dynamicPool.execute(workerData)
+      await dynamicTest()
+    })
+    .add('ExternalPool', async function () {
+      await externalPoolTest()
     })
   // add listeners
     .on('cycle', function (event) {
       console.log(String(event.target))
     })
     .on('complete', function () {
-      console.log(executions)
-      console.log(executions1)
       this.filter('fastest').map('name')
       console.log('Fastest is ' + this.filter('fastest').map('name'))
     })

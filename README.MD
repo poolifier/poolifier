@@ -3,7 +3,9 @@
 [![Dependabot](https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot)](https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot)
 [![Actions Status](https://github.com/pioardi/node-pool/workflows/NodeCI/badge.svg)](https://github.com/pioardi/node-pool/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
-
+[![NODEP](https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen
+)](https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen
+)
 
 <h2>Contents </h2>
 <h3 align="center">
@@ -25,7 +27,7 @@
 <h2> Overview </h2>
 Node pool contains two <a href="https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads">worker-threads </a> pool implementations , you don' t have to deal with worker-threads complexity. <br>
 The first implementation is a static thread pool , with a defined number of threads that are started at creation time and will be reused.<br>
-The second implementation is a dynamic thread pool with a number of threads started at creation time ( these threads will be always active and reused) and other threads created when the load will increase ( with an upper limit ), the new created threads will be stopped after a configurable period of inactivity. <br>
+The second implementation is a dynamic thread pool with a number of threads started at creation time ( these threads will be always active and reused) and other threads created when the load will increase ( with an upper limit, these threads will be reused when active ), the new created threads will be stopped after a configurable period of inactivity. <br>
 You have to implement your worker extending the ThreadWorker class<br>
 <h2 id="installation">Installation</h2>
 
@@ -40,13 +42,15 @@ You can implement a worker in a simple way , extending the class ThreadWorker :
 'use strict'
 const { ThreadWorker } = require('node-pool')
 
+function yourFunction (data) {
+  // this will be executed in the worker thread,
+  // the data will be received by using the execute method
+  return { ok: 1 }
+}
+
 class MyWorker extends ThreadWorker {
   constructor () {
-    super((data) => {
-      // this will be executed in the worker thread,
-      // the data will be received by using the execute method
-      return { ok: 1 }
-    }, { maxInactiveTime: 1000 * 60})
+    super(yourFunction, { maxInactiveTime: 1000 * 60})
   }
 }
 module.exports = new MyWorker()
@@ -60,11 +64,14 @@ const { FixedThreadPool, DynamicThreadPool } = require('node-pool')
 
 // a fixed thread pool
 const pool = new FixedThreadPool(15,
-  './yourWorker.js')
+  './yourWorker.js',
+  { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
 
 // or a dynamic thread pool
 const pool = new DynamicThreadPool(10, 100,
-  './yourWorker.js')
+  './yourWorker.js',
+  { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
+
 pool.emitter.on('FullPool', () => console.log('Pool is full'))
 
 // the execute method signature is the same for both implementations,
@@ -75,7 +82,7 @@ pool.execute({}).then(res => {
 
 ```
 
-<strong> See examples folder for more details.</strong>
+<strong> See examples folder for more details ( in particular if you want to use a pool for [multiple functions](./examples/multiFunctionExample.js) ).</strong>
 
 <h2 id="nv">Node versions</h2>
 
@@ -113,12 +120,12 @@ This method will call the terminate method on each worker.
 - `maxInactiveTime` - Max time to wait tasks to work on ( in ms) , after this period the new worker threads will die.
 
 <h2 id="cyp">Choose your pool</h2>
-Performance is one of the main target of these thread pool implementation, we want to have a strong focus on this.<br>
+Performance is one of the main target of these thread pool implementations, we want to have a strong focus on this.<br>
 We already have a bench folder where you can find some comparisons.
 To choose your pool consider that with a FixedThreadPool or a DynamicThreadPool ( in this case is important the min parameter passed to the constructor) your application memory footprint will increase . <br>
-Increasing the memory footprint your application will be ready to accept more CPU bound tasks, but during idle time your application will consume more memory. <br>
+Increasing the memory footprint, your application will be ready to accept more CPU bound tasks, but during idle time your application will consume more memory. <br>
 One good choose from my point of view is to profile your application using Fixed/Dynamic thread pool , and to see your application metrics when you increase/decrease the num of threads. <br>
-For example you could keep the memory footprint low choosing a DynamicThreadPool with 5 threads, and allow to create new threads until 50/100 when requests, this is the advantage to use the DynamicThreadPool. <br>
+For example you could keep the memory footprint low choosing a DynamicThreadPool with 5 threads, and allow to create new threads until 50/100 when needed, this is the advantage to use the DynamicThreadPool. <br>
 But in general , <strong>always profile your application </strong>
 
 <h2 id="contribute">Contribute</h2>
