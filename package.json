@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pioardi/node-thread-pool.git"
+    "url": "git+https://github.com/pioardi/poolifier.git"
   },
   "keywords": [
     "node",
@@ -34,9 +34,9 @@
   "author": "pioardi",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pioardi/node-thread-pool/issues"
+    "url": "https://github.com/pioardi/poolifier/issues"
   },
-  "homepage": "https://github.com/pioardi/node-thread-pool#readme",
+  "homepage": "https://github.com/pioardi/poolifier#readme",
   "devDependencies": {
     "benchmark": "^2.1.4",
     "coveralls": "^3.0.9",
