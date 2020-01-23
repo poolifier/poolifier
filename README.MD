@@ -131,10 +131,9 @@ But in general , <strong>always profile your application </strong>
 
 <h2 id="contribute">Contribute</h2>
 
-See guidelines [CONTRIBUTING](./.github/CONTRIBUTING.md)
+See guidelines [CONTRIBUTING](CONTRIBUTING.md)
 
 
 <h2 id="license">License</h2>
 
 [MIT](./LICENSE)
-
