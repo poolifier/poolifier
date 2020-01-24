@@ -2,12 +2,10 @@ const Benchmark = require('benchmark')
 const suite = new Benchmark.Suite()
 const FixedThreadPool = require('../lib/fixed')
 const DynamicThreadPool = require('../lib/dynamic')
-const Pool = require('worker-threads-pool')
 const size = 30
 const tasks = 1
 
 // pools
-const externalPool = new Pool({ max: size })
 const fixedPool = new FixedThreadPool(size,
   './yourWorker.js', { maxTasks: 10000 })
 const dynamicPool = new DynamicThreadPool(size / 2, size * 3, './yourWorker.js', { maxTasks: 10000 })
@@ -47,30 +45,6 @@ async function dynamicTest () {
   })
 }
 
-async function externalPoolTest () {
-  return new Promise((resolve, reject) => {
-    let executions = 0
-    for (let i = 0; i <= tasks; i++) {
-      new Promise((resolve, reject) => {
-        externalPool.acquire('./externalWorker.js', { workerData: workerData }, (err, worker) => {
-          if (err) {
-            return reject(err)
-          }
-          worker.on('error', reject)
-          worker.on('message', res => {
-            executions++
-            resolve(res)
-          })
-        })
-      }).then(res => {
-        if (tasks === executions) {
-          resolve('FINISH')
-        }
-      })
-    }
-  })
-}
-
 async function test () {
   // add tests
   suite.add('PioardiStaticPool', async function () {
@@ -78,9 +52,6 @@ async function test () {
   })
     .add('PioardiDynamicPool', async function () {
       await dynamicTest()
-    })
-    .add('ExternalPool', async function () {
-      await externalPoolTest()
     })
   // add listeners
     .on('cycle', function (event) {

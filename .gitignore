@@ -41,5 +41,6 @@ jspm_packages
 
 # Mac
 .DS_Store/
+.DS_Store
 
 .history/
