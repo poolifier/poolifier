@@ -12,9 +12,4 @@ function yourFunction (data) {
   return { ok: 1 }
 }
 
-class MyWorker extends ThreadWorker {
-  constructor () {
-    super(yourFunction)
-  }
-}
-module.exports = new MyWorker()
+module.exports = new ThreadWorker(yourFunction)

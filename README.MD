@@ -49,15 +49,10 @@ function yourFunction (data) {
   return { ok: 1 }
 }
 
-class MyWorker extends ThreadWorker {
-  constructor () {
-    super(yourFunction, { maxInactiveTime: 1000 * 60})
-  }
-}
-module.exports = new MyWorker()
+module.exports = new ThreadWorker(yourFunction, { maxInactiveTime: 60000 })
 ```
 
-Instantiate your pool based on your needed : 
+Instantiate your pool based on your needed :
 
 ```js
 'use strict'

@@ -11,9 +11,4 @@ function yourFunction (data) {
   }
 }
 
-class MyWorker extends ThreadWorker {
-  constructor () {
-    super(yourFunction)
-  }
-}
-module.exports = new MyWorker()
+module.exports = new ThreadWorker(yourFunction)

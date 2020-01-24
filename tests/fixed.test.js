@@ -61,8 +61,7 @@ describe('Fixed thread pool test suite ', () => {
         closedThreads++
       })
     })
-    pool.destroy()
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await pool.destroy()
     expect(closedThreads).toBe(numThreads)
   })
 

@@ -39,8 +39,7 @@ describe('Dynamic thread pool test suite ', () => {
         closedThreads++
       })
     })
-    pool.destroy()
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await pool.destroy()
     expect(closedThreads).toBe(min)
   })
 

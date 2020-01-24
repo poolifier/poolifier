@@ -5,10 +5,4 @@ function error (data) {
   throw new Error(data)
 }
 
-class MyWorker extends ThreadWorker {
-  constructor () {
-    super(error, { maxInactiveTime: 500 })
-  }
-}
-
-module.exports = new MyWorker()
+module.exports = new ThreadWorker(error, { maxInactiveTime: 500 })
