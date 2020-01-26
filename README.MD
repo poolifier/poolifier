@@ -9,7 +9,7 @@
 )
 
 <h2>Why Poolifier? </h2>
-Poolifier is used to perform heavy CPU bound tasks on nodejs servers, it implements a thread pool using <a href="https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads">worker-threads </a>.<br>
+Poolifier is used to perform heavy CPU bound tasks on nodejs servers, it implements thread pools ( yes, more thread pool implemenetations, so you can choose which one fit better for you ) using <a href="https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads">worker-threads </a>.<br>
 With poolifier you can improve your <strong>performance</strong> and resolve problems related to the event loop.<br>
 Moreover you can execute your CPU tasks using an API designed to improve the <strong>developer experience</strong>.
 
@@ -133,7 +133,8 @@ But in general , <strong>always profile your application </strong>
 
 <h2 id="contribute">Contribute</h2>
 
-See guidelines [CONTRIBUTING](CONTRIBUTING.md)
+See guidelines [CONTRIBUTING](CONTRIBUTING.md) <br>
+Choose your task here <a href="https://github.com/pioardi/poolifier/projects/1"> 2.0.0</a>, propose an idea, a fix, an improvement. <br>  
 
 
 <h2 id="license">License</h2>
