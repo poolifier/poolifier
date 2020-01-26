@@ -8,6 +8,12 @@
 )](https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen
 )
 
+<h2>Why Poolifier? </h2>
+Poolifier is used to perform heavy CPU bound tasks on nodejs servers, it implements a thread pool using <a href="https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads">worker-threads </a>.
+With poolifier you can improve your performance and resolve problems related to the event loop.<br>
+
+
+
 <h2>Contents </h2>
 <h3 align="center">
   <a href="#installation">Installation</a>
