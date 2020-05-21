@@ -7,6 +7,7 @@ const pool = new FixedThreadPool(numThreads,
 const emptyPool = new FixedThreadPool(1, './tests/workers/emptyWorker.js')
 const echoPool = new FixedThreadPool(1, './tests/workers/echoWorker.js')
 const errorPool = new FixedThreadPool(1, './tests/workers/errorWorker.js', { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
+const asyncPool = new FixedThreadPool(1, './tests/workers/asyncWorker.js')
 
 describe('Fixed thread pool test suite ', () => {
   it('Choose worker round robin test', async () => {
@@ -52,6 +53,16 @@ describe('Fixed thread pool test suite ', () => {
     expect(inError).toBeTruthy()
     expect(inError instanceof Error).toBeTruthy()
     expect(inError.message).toBeTruthy()
+  })
+
+  it('Verify that async function is working properly', async () => {
+    const data = { f: 10 }
+    const startTime = new Date().getTime()
+    const result = await asyncPool.execute(data)
+    const usedTime = new Date().getTime() - startTime
+    expect(result).toBeTruthy()
+    expect(result.f).toBe(data.f)
+    expect(usedTime).toBeGreaterThanOrEqual(2000)
   })
 
   it('Shutdown test', async () => {
