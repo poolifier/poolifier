@@ -62,7 +62,7 @@ describe('Fixed thread pool test suite ', () => {
     const usedTime = new Date().getTime() - startTime
     expect(result).toBeTruthy()
     expect(result.f).toBe(data.f)
-    expect(usedTime).toBeGreaterThan(2000)
+    expect(usedTime).toBeGreaterThanOrEqual(2000)
   })
 
   it('Shutdown test', async () => {
