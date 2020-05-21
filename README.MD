@@ -56,7 +56,7 @@ function yourFunction (data) {
   return { ok: 1 }
 }
 
-module.exports = new ThreadWorker(yourFunction, { maxInactiveTime: 60000 })
+module.exports = new ThreadWorker(yourFunction, { maxInactiveTime: 60000, async: false })
 ```
 
 Instantiate your pool based on your needed :
@@ -121,6 +121,7 @@ This method will call the terminate method on each worker.
 `fn` (mandatory) The function that you want to execute on the worker thread <br>
 `opts` (optional) An object with these properties :
 - `maxInactiveTime` - Max time to wait tasks to work on ( in ms) , after this period the new worker threads will die.
+- `async` - true/false , true if your function contains async pieces else false
 
 <h2 id="cyp">Choose your pool</h2>
 Performance is one of the main target of these thread pool implementations, we want to have a strong focus on this.<br>
