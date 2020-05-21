@@ -89,7 +89,7 @@ pool.execute({}).then(res => {
 
 <h2 id="nv">Node versions</h2>
 
-You can use node versions 12.x , 13.x  <br>
+You can use node versions 12.x , 13.x, 14.x <br>
 
 <h2 id="api">API</h2>
 
