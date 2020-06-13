@@ -1,6 +1,7 @@
 # Node Thread Pool :arrow_double_up: :on:
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![Dependabot](https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot)](https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot)
+[![npm w](https://img.shields.io/npm/dw/poolifier)](https://www.npmjs.com/package/poolifier)
 [![Actions Status](https://github.com/pioardi/node-pool/workflows/NodeCI/badge.svg)](https://github.com/pioardi/node-pool/actions)
 [![Coverage Status](https://coveralls.io/repos/github/pioardi/node-thread-pool/badge.svg?branch=master)](https://coveralls.io/github/pioardi/node-thread-pool?branch=master)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
