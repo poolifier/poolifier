@@ -85,7 +85,8 @@ pool.execute({}).then(res => {
 
 ```
 
-<strong> See examples folder for more details ( in particular if you want to use a pool for [multiple functions](./examples/multiFunctionExample.js) ).</strong>
+<strong> See examples folder for more details( in particular if you want to use a pool for [multiple functions](./examples/multiFunctionExample.js) ).</strong>
+<strong>Now type script is also supported, find how to use it into the example folder </strong>
 
 <h2 id="nv">Node versions</h2>
 
