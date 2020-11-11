@@ -32,6 +32,21 @@ describe('Dynamic thread pool test suite ', () => {
     expect(closedThreads).toBe(max - min)
   })
 
+  it('Verify scale thread up and down is working', async () => {
+    expect(pool.workers.length).toBe(min)
+    for (let i = 0; i < max * 10; i++) {
+      pool.execute({ test: 'test' })
+    }
+    expect(pool.workers.length).toBe(max)
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    expect(pool.workers.length).toBe(min)
+    for (let i = 0; i < max * 10; i++) {
+      pool.execute({ test: 'test' })
+    }
+    expect(pool.workers.length).toBe(max)
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    expect(pool.workers.length).toBe(min)
+  })
   it('Shutdown test', async () => {
     let closedThreads = 0
     pool.workers.forEach(w => {
