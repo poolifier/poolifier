@@ -1,27 +1,27 @@
-declare module "poolifier" {
-  import { AsyncResource } from "async_hooks";
-  import { EventEmitter } from "events";
-  import { Worker } from "worker_threads";
+declare module 'poolifier' {
+  import { AsyncResource } from 'async_hooks'
+  import { EventEmitter } from 'events'
+  import { Worker } from 'worker_threads'
 
   export interface FixedThreadPoolOptions {
     /**
      * A function that will listen for error event on each worker thread.
      */
-    errorHandler?: (this: Worker, e: Error) => void;
+    errorHandler?: (this: Worker, e: Error) => void
     /**
      * A function that will listen for online event on each worker thread.
      */
-    onlineHandler?: (this: Worker) => void;
+    onlineHandler?: (this: Worker) => void
     /**
      * A function that will listen for exit event on each worker thread.
      */
-    exitHandler?: (this: Worker, code: number) => void;
+    exitHandler?: (this: Worker, code: number) => void
     /**
      * This is just to avoid not useful warnings message, is used to set `maxListeners` on event emitters (workers are event emitters).
      *
      * @default 1000
      */
-    maxTasks?: number;
+    maxTasks?: number
   }
 
   /**
@@ -36,27 +36,27 @@ declare module "poolifier" {
     /**
      * Num of threads for this worker pool.
      */
-    numThreads: number;
-    workers: Worker[];
-    nextWorker: number;
-    opts: FixedThreadPoolOptions;
-    filePath: string;
-    tasks: Map<Worker, number>;
+    numThreads: number
+    workers: Worker[]
+    nextWorker: number
+    opts: FixedThreadPoolOptions
+    filePath: string
+    tasks: Map<Worker, number>
 
-    _id: number;
+    _id: number
 
     /**
      * @param numThreads Num of threads for this worker pool.
      * @param filePath A file path with implementation of `ThreadWorker` class, relative path is fine.
      * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
      */
-    constructor(
+    constructor (
       numThreads: number,
       filePath: string,
       opts?: FixedThreadPoolOptions
-    );
+    )
 
-    destroy(): Promise<void>;
+    destroy (): Promise<void>
 
     /**
      * Execute the task specified into the constructor with the data parameter.
@@ -64,14 +64,14 @@ declare module "poolifier" {
      * @param data The input for the task specified.
      * @returns Promise that is resolved when the task is done.
      */
-    execute(data: Data): Promise<Response>;
+    execute (data: Data): Promise<Response>
 
-    _execute(worker: Worker, id: number): Promise<unknown>;
-    _chooseWorker(): Worker;
-    _newWorker(): Worker;
+    _execute (worker: Worker, id: number): Promise<unknown>
+    _chooseWorker (): Worker
+    _newWorker (): Worker
   }
 
-  export type DynamicThreadPoolOptions = FixedThreadPoolOptions;
+  export type DynamicThreadPoolOptions = FixedThreadPoolOptions
 
   class MyEmitter extends EventEmitter {}
 
@@ -88,8 +88,8 @@ declare module "poolifier" {
     Data = any,
     Response = any
   > extends FixedThreadPool<Data, Response> {
-    max: number;
-    emitter: MyEmitter;
+    max: number
+    emitter: MyEmitter
 
     /**
      * @param min Min number of threads that will be always active
@@ -97,12 +97,12 @@ declare module "poolifier" {
      * @param filename A file path with implementation of `ThreadWorker` class, relative path is fine.
      * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
      */
-    constructor(
+    constructor (
       min: number,
       max: number,
       filename: string,
       opts?: DynamicThreadPoolOptions
-    );
+    )
   }
 
   export interface ThreadWorkerOptions {
@@ -111,13 +111,13 @@ declare module "poolifier" {
      *
      * @default 60.000 ms
      */
-    maxInactiveTime?: number;
+    maxInactiveTime?: number
     /**
      * `true` if your function contains async pieces, else `false`.
      *
      * @default false
      */
-    async?: boolean;
+    async?: boolean
   }
 
   /**
@@ -130,20 +130,20 @@ declare module "poolifier" {
    * @since 0.0.1
    */
   export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
-    opts: ThreadWorkerOptions;
-    maxInactiveTime: number;
-    async: boolean;
-    lastTask: number;
-    interval: number;
-    parent: Worker;
+    opts: ThreadWorkerOptions
+    maxInactiveTime: number
+    async: boolean
+    lastTask: number
+    interval: number
+    parent: Worker
 
-    constructor(fn: (data: Data) => Response, opts?: ThreadWorkerOptions);
+    constructor (fn: (data: Data) => Response, opts?: ThreadWorkerOptions)
 
-    _checkAlive(): boolean;
-    _run(fn: (data: Data) => Response, value: { data: Data }): void;
-    _runAsync(
+    _checkAlive (): boolean
+    _run (fn: (data: Data) => Response, value: { data: Data }): void
+    _runAsync (
       fn: (data: Data) => Promise<Response>,
       value: { data: Data }
-    ): void;
+    ): void
   }
 }

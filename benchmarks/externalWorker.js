@@ -1,7 +1,4 @@
-const {
-  isMainThread,
-  parentPort
-} = require('worker_threads')
+const { isMainThread, parentPort } = require('worker_threads')
 
 if (!isMainThread) {
   for (let i = 0; i <= 1000; i++) {
