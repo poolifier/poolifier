@@ -1,8 +1,9 @@
 const FixedThreadPool = require('../lib/fixed')
 let resolved = 0
-const pool = new FixedThreadPool(15,
-  './yourWorker.js',
-  { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
+const pool = new FixedThreadPool(15, './yourWorker.js', {
+  errorHandler: e => console.error(e),
+  onlineHandler: () => console.log('worker is online')
+})
 
 const start = Date.now()
 const iterations = 1000

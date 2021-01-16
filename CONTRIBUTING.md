@@ -15,12 +15,14 @@ Please ask your PR to be merged on <strong>master</strong> branch . <br>
   npm run test
 ```
 
-
 <strong> How to check if your new code is standard style </strong><br>
+
 ```bash
   npm run standard
 ```
+
 <strong>How to lint your code</strong><br>
+
 ```bash
   npm run lint
 ```

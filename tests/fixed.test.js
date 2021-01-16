@@ -1,12 +1,16 @@
 const expect = require('expect')
 const FixedThreadPool = require('../lib/fixed')
 const numThreads = 10
-const pool = new FixedThreadPool(numThreads,
-  './tests/workers/testWorker.js',
-  { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
+const pool = new FixedThreadPool(numThreads, './tests/workers/testWorker.js', {
+  errorHandler: e => console.error(e),
+  onlineHandler: () => console.log('worker is online')
+})
 const emptyPool = new FixedThreadPool(1, './tests/workers/emptyWorker.js')
 const echoPool = new FixedThreadPool(1, './tests/workers/echoWorker.js')
-const errorPool = new FixedThreadPool(1, './tests/workers/errorWorker.js', { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
+const errorPool = new FixedThreadPool(1, './tests/workers/errorWorker.js', {
+  errorHandler: e => console.error(e),
+  onlineHandler: () => console.log('worker is online')
+})
 const asyncPool = new FixedThreadPool(1, './tests/workers/asyncWorker.js')
 
 describe('Fixed thread pool test suite ', () => {
