@@ -21,7 +21,7 @@ Please ask your PR to be merged on <strong>master</strong> branch . <br>
   npm run standard
 ```
 
-<strong>How to lint your code</strong><br>
+<strong>How to lint and format (with prettier) your code</strong><br>
 
 ```bash
   npm run lint
