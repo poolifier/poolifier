@@ -1,9 +1,4 @@
-import {
-  isMainThread,
-  MessageChannel,
-  SHARE_ENV,
-  Worker
-} from 'worker_threads'
+import { MessageChannel, SHARE_ENV, Worker, isMainThread } from 'worker_threads'
 
 function empty () {}
 const _void = {}
@@ -63,10 +58,12 @@ export default class FixedThreadPool<Data = any, Response = any> {
     public readonly filePath: string,
     public readonly opts: FixedThreadPoolOptions = { maxTasks: 1000 }
   ) {
-    if (!isMainThread)
+    if (!isMainThread) {
       throw new Error('Cannot start a thread pool from a worker thread !!!')
-    if (!this.filePath)
+    }
+    if (!this.filePath) {
       throw new Error('Please specify a file with a worker implementation')
+    }
 
     for (let i = 1; i <= this.numThreads; i++) {
       this._newWorker()

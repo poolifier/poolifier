@@ -1,5 +1,5 @@
-import FixedThreadPool from './fixed'
 import DynamicThreadPool from './dynamic'
+import FixedThreadPool from './fixed'
 import { ThreadWorker } from './workers'
 
 export type {

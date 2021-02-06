@@ -1,4 +1,5 @@
 import { isMainThread, parentPort } from 'worker_threads'
+
 import { AsyncResource } from 'async_hooks'
 
 export interface ThreadWorkerOptions {
