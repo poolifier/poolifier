@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+
 import { isMainThread, parentPort } from 'worker_threads'
 
 import { AsyncResource } from 'async_hooks'
@@ -30,8 +32,8 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
   protected readonly maxInactiveTime: number
   protected readonly async: boolean
   protected lastTask: number
-  protected readonly interval: NodeJS.Timeout
-  protected parent: any
+  protected readonly interval?: NodeJS.Timeout
+  protected parent?: MessagePort
 
   public constructor (
     fn: (data: Data) => Response,
@@ -39,7 +41,7 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
   ) {
     super('worker-thread-pool:pioardi')
 
-    this.maxInactiveTime = this.opts.maxInactiveTime || 1000 * 60
+    this.maxInactiveTime = this.opts.maxInactiveTime ?? 1000 * 60
     this.async = !!this.opts.async
     this.lastTask = Date.now()
     if (!fn) throw new Error('Fn parameter is mandatory')
@@ -51,30 +53,38 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
       )
       this._checkAlive.bind(this)()
     }
-    parentPort.on('message', (value) => {
-      if (value && value.data && value._id) {
-        // here you will receive messages
-        // console.log('This is the main thread ' + isMainThread)
-        if (this.async) {
-          this.runInAsyncScope(this._runAsync.bind(this), this, fn, value)
-        } else {
-          this.runInAsyncScope(this._run.bind(this), this, fn, value)
+    parentPort?.on(
+      'message',
+      (value: {
+        data?: Response
+        _id?: number
+        parent?: MessagePort
+        kill?: number
+      }) => {
+        if (value?.data && value._id) {
+          // here you will receive messages
+          // console.log('This is the main thread ' + isMainThread)
+          if (this.async) {
+            this.runInAsyncScope(this._runAsync.bind(this), this, fn, value)
+          } else {
+            this.runInAsyncScope(this._run.bind(this), this, fn, value)
+          }
+        } else if (value.parent) {
+          // save the port to communicate with the main thread
+          // this will be received once
+          this.parent = value.parent
+        } else if (value.kill) {
+          // here is time to kill this thread, just clearing the interval
+          if (this.interval) clearInterval(this.interval)
+          this.emitDestroy()
         }
-      } else if (value.parent) {
-        // save the port to communicate with the main thread
-        // this will be received once
-        this.parent = value.parent
-      } else if (value.kill) {
-        // here is time to kill this thread, just clearing the interval
-        clearInterval(this.interval)
-        this.emitDestroy()
       }
-    })
+    )
   }
 
   protected _checkAlive (): void {
     if (Date.now() - this.lastTask > this.maxInactiveTime) {
-      this.parent.postMessage({ kill: 1 })
+      this.parent?.postMessage({ kill: 1 })
     }
   }
 
@@ -84,10 +94,10 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
   ): void {
     try {
       const res = fn(value.data)
-      this.parent.postMessage({ data: res, _id: value._id })
+      this.parent?.postMessage({ data: res, _id: value._id })
       this.lastTask = Date.now()
     } catch (e) {
-      this.parent.postMessage({ error: e, _id: value._id })
+      this.parent?.postMessage({ error: e, _id: value._id })
       this.lastTask = Date.now()
     }
   }
@@ -97,12 +107,12 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
     value: { readonly data: Data, readonly _id: number }
   ): void {
     fn(value.data)
-      .then((res) => {
-        this.parent.postMessage({ data: res, _id: value._id })
+      .then(res => {
+        this.parent?.postMessage({ data: res, _id: value._id })
         this.lastTask = Date.now()
       })
-      .catch((e) => {
-        this.parent.postMessage({ error: e, _id: value._id })
+      .catch(e => {
+        this.parent?.postMessage({ error: e, _id: value._id })
         this.lastTask = Date.now()
       })
   }
