@@ -64,6 +64,10 @@ export default class DynamicThreadPool<
         if (message.kill) {
           worker.postMessage({ kill: 1 })
           worker.terminate()
+          // clean workers from data structures
+          const workerIndex = this.workers.indexOf(worker)
+          this.workers.splice(workerIndex, 1)
+          this.tasks.delete(worker)
         }
       })
       return worker
