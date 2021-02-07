@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npm run build:clean && tsc",
     "build:clean": "rimraf lib",
-    "test": "npm run build && nyc mocha --exit --timeout 20000 tests/*test.js ",
+    "test": "standard && ts-standard && npm run build && nyc mocha --exit --timeout 20000 tests/*test.js ",
     "test:debug": "mocha --inspect-brk --exit tests/*test.js ",
     "test:nodemon": "nodemon --exec \"npm test\"",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
@@ -36,6 +36,7 @@
       "node"
     ],
     "ignore": [
+      "lib/",
       "src/",
       "examples/typescript/"
     ]
@@ -45,7 +46,11 @@
       "mocha",
       "node"
     ],
-    "extensions": ".ts"
+    "extensions": ".ts",
+    "ignore": [
+      "lib/",
+      "examples/typescript/"
+    ]
   },
   "author": "pioardi",
   "license": "MIT",
