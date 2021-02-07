@@ -7,6 +7,7 @@
 [![NODEP](https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen
 )](https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen
 )
+[![Gitter](https://badges.gitter.im/poolifier/community.svg)](https://gitter.im/poolifier/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 <h2>Why Poolifier? </h2>
 Poolifier is used to perform heavy CPU bound tasks on nodejs servers, it implements thread pools ( yes, more thread pool implementations, so you can choose which one fit better for you ) using <a href="https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads">worker-threads </a>.<br>
