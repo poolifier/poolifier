@@ -17,7 +17,7 @@ describe('Fixed thread pool test suite ', () => {
   it('Choose worker round robin test', async () => {
     const results = new Set()
     for (let i = 0; i < numThreads; i++) {
-      results.add(pool._chooseWorker().threadId)
+      results.add(pool.chooseWorker().threadId)
     }
     expect(results.size).toBe(numThreads)
   })
