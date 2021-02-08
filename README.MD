@@ -28,6 +28,8 @@ Moreover you can execute your CPU tasks using an API designed to improve the <st
   <span> · </span>
   <a href="#contribute">Contribute</a>
   <span> · </span>
+  <a href="#Team">Team</a>
+  <span> · </span>
   <a href="#nv">Compatibility</a>
   <span> · </span>
   <a href="#license">License</a>
@@ -139,6 +141,18 @@ But in general , <strong>always profile your application </strong>
 See guidelines [CONTRIBUTING](CONTRIBUTING.md) <br>
 Choose your task here <a href="https://github.com/pioardi/poolifier/projects/1"> 2.0.0</a>, propose an idea, a fix, an improvement. <br>  
 
+
+<h2 id="Team">Team</h2>
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+**Creator/Owner:**
+* [__Alessandro Pio Ardizio__](https://github.com/pioardi)
+
+***Contributors***
+* [__Shinigami92__](https://github.com/Shinigami92)
+* [__Jérôme Benoit__](https://github.com/jerome-benoit)
 
 <h2 id="license">License</h2>
 

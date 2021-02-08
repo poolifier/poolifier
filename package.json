@@ -27,6 +27,18 @@
     "async-resource"
   ],
   "author": "pioardi",
+  "contributors": [
+    {
+      "name": "Christopher Quadflieg",
+      "email": "chrissi92@hotmail.de",
+      "url": "https://github.com/Shinigami92"
+    },
+    {
+      "name": "Jérôme Benoit",
+      "email": "jerome.benoit@piment-noir.org",
+      "url": "https://github.com/jerome-benoit"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/pioardi/poolifier/issues"
