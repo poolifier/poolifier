@@ -35,7 +35,7 @@ export interface FixedThreadPoolOptions {
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
-export default class FixedThreadPool<Data = any, Response = any> {
+export class FixedThreadPool<Data = any, Response = any> {
   public readonly workers: WorkerWithMessageChannel[] = []
   public nextWorker: number = 0
 
@@ -158,5 +158,3 @@ export default class FixedThreadPool<Data = any, Response = any> {
     return worker
   }
 }
-
-module.exports = FixedThreadPool

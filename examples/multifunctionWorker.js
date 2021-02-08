@@ -1,5 +1,5 @@
 'use strict'
-const { ThreadWorker } = require('../lib/workers')
+const { ThreadWorker } = require('poolifier')
 
 function yourFunction (data) {
   if (data.fname === 'fn0') {
