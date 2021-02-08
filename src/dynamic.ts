@@ -1,4 +1,5 @@
-import FixedThreadPool, {
+import {
+  FixedThreadPool,
   FixedThreadPoolOptions,
   WorkerWithMessageChannel
 } from './fixed'
@@ -18,7 +19,7 @@ export type DynamicThreadPoolOptions = FixedThreadPoolOptions
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
-export default class DynamicThreadPool<
+export class DynamicThreadPool<
   Data = any,
   Response = any
 > extends FixedThreadPool<Data, Response> {
@@ -74,5 +75,3 @@ export default class DynamicThreadPool<
     }
   }
 }
-
-module.exports = DynamicThreadPool
