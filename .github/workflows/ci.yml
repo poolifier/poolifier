@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set node version to ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build --if-present
+
+      - name: Test
+        if: github.ref != 'refs/heads/master'
+        run: npm run test
+
+      - name: Test & Coverage
+        if: github.ref == 'refs/heads/master'
+        run: | 
+          npm run test
+          export COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }}
+          npm run coverage
+        env:
+          CI: true
