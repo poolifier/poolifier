@@ -161,5 +161,3 @@ export default class FixedThreadPool<Data = any, Response = any> {
     return worker
   }
 }
-
-module.exports = FixedThreadPool

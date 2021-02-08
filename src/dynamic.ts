@@ -77,5 +77,3 @@ export default class DynamicThreadPool<
     }
   }
 }
-
-module.exports = DynamicThreadPool

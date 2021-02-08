@@ -10,5 +10,3 @@ export {
 export { DynamicThreadPoolOptions } from './dynamic'
 export { ThreadWorkerOptions } from './workers'
 export { FixedThreadPool, DynamicThreadPool, ThreadWorker }
-
-module.exports = { FixedThreadPool, DynamicThreadPool, ThreadWorker }
