@@ -45,7 +45,6 @@ export default class FixedThreadPool<Data = any, Response = any> {
     WorkerWithMessageChannel,
     number
   >()
-  /* eslint-enable @typescript-eslint/indent */
 
   protected _id: number = 0
 
