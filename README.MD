@@ -151,7 +151,7 @@ Choose your task here <a href="https://github.com/pioardi/poolifier/projects/1">
 * [__Alessandro Pio Ardizio__](https://github.com/pioardi)
 
 ***Contributors***
-* [__shinigami92__](https://github.com/Shinigami92)
+* [__Shinigami92__](https://github.com/Shinigami92)
 * [__jerome-benoit__](https://github.com/jerome-benoit)
 
 
