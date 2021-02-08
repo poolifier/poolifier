@@ -1,5 +1,5 @@
-import DynamicThreadPool from './dynamic'
-import FixedThreadPool from './fixed'
+import { DynamicThreadPool } from './dynamic'
+import { FixedThreadPool } from './fixed'
 import { ThreadWorker } from './workers'
 
 export {
@@ -10,5 +10,3 @@ export {
 export { DynamicThreadPoolOptions } from './dynamic'
 export { ThreadWorkerOptions } from './workers'
 export { FixedThreadPool, DynamicThreadPool, ThreadWorker }
-
-module.exports = { FixedThreadPool, DynamicThreadPool, ThreadWorker }
