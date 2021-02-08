@@ -91,7 +91,12 @@ export default class FixedThreadPool<Data = any, Response = any> {
   public execute (data: Data): Promise<Response> {
     // configure worker to handle message with the specified task
     const worker = this._chooseWorker()
-    this.tasks.set(worker, (this.tasks.get(worker) ?? 0) + 1)
+    const previousWorkerIndex = this.tasks.get(worker)
+    if (previousWorkerIndex !== undefined) {
+      this.tasks.set(worker, previousWorkerIndex + 1)
+    } else {
+      throw Error('Worker could not be found in tasks map')
+    }
     const id = ++this._id
     const res = this._execute(worker, id)
     worker.postMessage({ data: data || _void, _id: id })
@@ -111,7 +116,12 @@ export default class FixedThreadPool<Data = any, Response = any> {
       }): void => {
         if (message._id === id) {
           worker.port2?.removeListener('message', listener)
-          this.tasks.set(worker, (this.tasks.get(worker) ?? 0) - 1)
+          const previousWorkerIndex = this.tasks.get(worker)
+          if (previousWorkerIndex !== undefined) {
+            this.tasks.set(worker, previousWorkerIndex + 1)
+          } else {
+            throw Error('Worker could not be found in tasks map')
+          }
           if (message.error) reject(message.error)
           else resolve(message.data)
         }
