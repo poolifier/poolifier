@@ -1,4 +1,4 @@
-const DynamicThreadPool = require('../lib/dynamic')
+const { DynamicThreadPool } = require('poolifier')
 let resolved = 0
 let maxReached = 0
 const pool = new DynamicThreadPool(10, 20, './yourWorker.js', {
