@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-
 import { MessageChannel, SHARE_ENV, Worker, isMainThread } from 'worker_threads'
 
 function empty (): void {}
@@ -43,7 +41,6 @@ export default class FixedThreadPool<Data = any, Response = any> {
   public nextWorker: number = 0
 
   // threadId as key and an integer value
-  /* eslint-disable @typescript-eslint/indent */
   public readonly tasks: Map<WorkerWithMessageChannel, number> = new Map<
     WorkerWithMessageChannel,
     number
@@ -87,7 +84,6 @@ export default class FixedThreadPool<Data = any, Response = any> {
    * @param data The input for the task specified.
    * @returns Promise that is resolved when the task is done.
    */
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
   public execute (data: Data): Promise<Response> {
     // configure worker to handle message with the specified task
     const worker = this._chooseWorker()
@@ -103,7 +99,6 @@ export default class FixedThreadPool<Data = any, Response = any> {
     return res
   }
 
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
   protected _execute (
     worker: WorkerWithMessageChannel,
     id: number

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-
 import { isMainThread, parentPort } from 'worker_threads'
 
 import { AsyncResource } from 'async_hooks'

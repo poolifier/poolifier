@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-
 import FixedThreadPool, {
   FixedThreadPoolOptions,
   WorkerWithMessageChannel
@@ -65,7 +63,6 @@ export default class DynamicThreadPool<
       worker.port2?.on('message', (message: { kill?: number }) => {
         if (message.kill) {
           worker.postMessage({ kill: 1 })
-          // eslint-disable-next-line no-void
           void worker.terminate()
           // clean workers from data structures
           const workerIndex = this.workers.indexOf(worker)
