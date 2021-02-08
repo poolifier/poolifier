@@ -6,15 +6,12 @@
   "scripts": {
     "build": "npm run build:clean && tsc",
     "build:clean": "rimraf lib",
-    "test": "standard && ts-standard && npm run build && nyc mocha --exit --timeout 20000 tests/*test.js ",
+    "test": "npm run build && nyc mocha --exit --timeout 20000 tests/*test.js ",
     "test:debug": "mocha --inspect-brk --exit tests/*test.js ",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "import-sort": "npx import-sort-cli --write 'src/**/*.ts{,x}'",
-    "standard:verbose": "npx standard --verbose",
-    "lint:standard": "prettier-standard --format | standard --fix",
-    "ts-standard:verbose": "npx ts-standard --verbose",
-    "lint:ts-standard": "ts-standard --fix",
-    "lint-and-format": "npm run lint:standard; npm run lint:ts-standard; npm run import-sort"
+    "format": "prettierx --write .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
@@ -29,28 +26,6 @@
     "computing",
     "async-resource"
   ],
-  "standard": {
-    "env": [
-      "mocha",
-      "node"
-    ],
-    "ignore": [
-      "lib/",
-      "src/",
-      "examples/typescript/"
-    ]
-  },
-  "ts-standard": {
-    "env": [
-      "mocha",
-      "node"
-    ],
-    "extensions": ".ts",
-    "ignore": [
-      "lib/",
-      "examples/typescript/"
-    ]
-  },
   "author": "pioardi",
   "license": "MIT",
   "bugs": {
@@ -58,20 +33,27 @@
   },
   "homepage": "https://github.com/pioardi/poolifier#readme",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.15.0",
+    "@typescript-eslint/parser": "^4.15.0",
     "benchmark": "^2.1.4",
     "coveralls": "^3.0.9",
+    "eslint": "^7.19.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettierx": "^0.17.0",
+    "eslint-plugin-promise": "^4.2.1",
     "expect": "^26.0.0",
     "mocha": "^8.0.1",
     "mocha-lcov-reporter": "^1.3.0",
     "nyc": "^15.0.0",
-    "prettier-standard": "^16.4.1",
+    "prettier-plugin-organize-imports": "^1.1.1",
+    "prettierx": "^0.17.0",
     "rimraf": "^3.0.2",
-    "standard": "^16.0.3",
-    "ts-standard": "^10.0.0",
     "typescript": "^4.1.3"
   },
   "engines": {
     "node": ">=12.0.0"
-  },
-  "dependencies": {}
+  }
 }
