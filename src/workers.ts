@@ -90,7 +90,7 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
 
   protected _run (
     fn: (data: Data) => Response,
-    value: { readonly data: Data, readonly _id: number }
+    value: { readonly data: Data; readonly _id: number }
   ): void {
     try {
       const res = fn(value.data)
@@ -104,7 +104,7 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
 
   protected _runAsync (
     fn: (data: Data) => Promise<Response>,
-    value: { readonly data: Data, readonly _id: number }
+    value: { readonly data: Data; readonly _id: number }
   ): void {
     fn(value.data)
       .then(res => {
