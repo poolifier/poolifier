@@ -14,7 +14,7 @@
     "lint:standard": "prettier-standard --format | standard --fix",
     "ts-standard:verbose": "npx ts-standard --verbose",
     "lint:ts-standard": "ts-standard --fix",
-    "lint-and-format": "npm run lint:standard && npm run lint:ts-standard && npm run import-sort"
+    "lint-and-format": "npm run lint:standard; npm run lint:ts-standard; npm run import-sort"
   },
   "repository": {
     "type": "git",
