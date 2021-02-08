@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+
 import { MessageChannel, SHARE_ENV, Worker, isMainThread } from 'worker_threads'
 
-function empty () {}
+function empty (): void {}
 const _void = {}
 
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
@@ -41,10 +43,12 @@ export default class FixedThreadPool<Data = any, Response = any> {
   public nextWorker: number = 0
 
   // threadId as key and an integer value
+  /* eslint-disable @typescript-eslint/indent */
   public readonly tasks: Map<WorkerWithMessageChannel, number> = new Map<
     WorkerWithMessageChannel,
     number
   >()
+  /* eslint-enable @typescript-eslint/indent */
 
   protected _id: number = 0
 
@@ -61,6 +65,7 @@ export default class FixedThreadPool<Data = any, Response = any> {
     if (!isMainThread) {
       throw new Error('Cannot start a thread pool from a worker thread !!!')
     }
+    // TODO christopher 2021-02-07: Improve this check e.g. with a pattern or blank check
     if (!this.filePath) {
       throw new Error('Please specify a file with a worker implementation')
     }
@@ -82,30 +87,46 @@ export default class FixedThreadPool<Data = any, Response = any> {
    * @param data The input for the task specified.
    * @returns Promise that is resolved when the task is done.
    */
-  public async execute (data: Data): Promise<Response> {
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  public execute (data: Data): Promise<Response> {
     // configure worker to handle message with the specified task
     const worker = this._chooseWorker()
-    this.tasks.set(worker, this.tasks.get(worker) + 1)
+    const previousWorkerIndex = this.tasks.get(worker)
+    if (previousWorkerIndex !== undefined) {
+      this.tasks.set(worker, previousWorkerIndex + 1)
+    } else {
+      throw Error('Worker could not be found in tasks map')
+    }
     const id = ++this._id
     const res = this._execute(worker, id)
     worker.postMessage({ data: data || _void, _id: id })
     return res
   }
 
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
   protected _execute (
     worker: WorkerWithMessageChannel,
     id: number
   ): Promise<Response> {
     return new Promise((resolve, reject) => {
-      const listener = (message) => {
+      const listener = (message: {
+        _id: number
+        error?: string
+        data: Response
+      }): void => {
         if (message._id === id) {
-          worker.port2.removeListener('message', listener)
-          this.tasks.set(worker, this.tasks.get(worker) - 1)
+          worker.port2?.removeListener('message', listener)
+          const previousWorkerIndex = this.tasks.get(worker)
+          if (previousWorkerIndex !== undefined) {
+            this.tasks.set(worker, previousWorkerIndex + 1)
+          } else {
+            throw Error('Worker could not be found in tasks map')
+          }
           if (message.error) reject(message.error)
           else resolve(message.data)
         }
       }
-      worker.port2.on('message', listener)
+      worker.port2?.on('message', listener)
     })
   }
 
@@ -123,10 +144,10 @@ export default class FixedThreadPool<Data = any, Response = any> {
     const worker: WorkerWithMessageChannel = new Worker(this.filePath, {
       env: SHARE_ENV
     })
-    worker.on('error', this.opts.errorHandler || empty)
-    worker.on('online', this.opts.onlineHandler || empty)
+    worker.on('error', this.opts.errorHandler ?? empty)
+    worker.on('online', this.opts.onlineHandler ?? empty)
     // TODO handle properly when a thread exit
-    worker.on('exit', this.opts.exitHandler || empty)
+    worker.on('exit', this.opts.exitHandler ?? empty)
     this.workers.push(worker)
     const { port1, port2 } = new MessageChannel()
     worker.postMessage({ parent: port1 }, [port1])
@@ -134,7 +155,7 @@ export default class FixedThreadPool<Data = any, Response = any> {
     worker.port2 = port2
     // we will attach a listener for every task,
     // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
-    worker.port2.setMaxListeners(this.opts.maxTasks || 1000)
+    worker.port2.setMaxListeners(this.opts.maxTasks ?? 1000)
     // init tasks map
     this.tasks.set(worker, 0)
     return worker

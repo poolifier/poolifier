@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+
 import FixedThreadPool, {
   FixedThreadPoolOptions,
   WorkerWithMessageChannel
@@ -42,7 +44,7 @@ export default class DynamicThreadPool<
   }
 
   protected _chooseWorker (): WorkerWithMessageChannel {
-    let worker: WorkerWithMessageChannel
+    let worker: WorkerWithMessageChannel | undefined
     for (const entry of this.tasks) {
       if (entry[1] === 0) {
         worker = entry[0]
@@ -60,10 +62,11 @@ export default class DynamicThreadPool<
       }
       // all workers are busy create a new worker
       const worker = this._newWorker()
-      worker.port2.on('message', (message) => {
+      worker.port2?.on('message', (message: { kill?: number }) => {
         if (message.kill) {
           worker.postMessage({ kill: 1 })
-          worker.terminate()
+          // eslint-disable-next-line no-void
+          void worker.terminate()
           // clean workers from data structures
           const workerIndex = this.workers.indexOf(worker)
           this.workers.splice(workerIndex, 1)
