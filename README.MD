@@ -142,7 +142,7 @@ See guidelines [CONTRIBUTING](CONTRIBUTING.md) <br>
 Choose your task here <a href="https://github.com/pioardi/poolifier/projects/1"> 2.0.0</a>, propose an idea, a fix, an improvement. <br>  
 
 
-<h2 id="contributors">Contributors</h2>
+<h2 id="Team">Team</h2>
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->

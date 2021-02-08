@@ -52,6 +52,18 @@
     ]
   },
   "author": "pioardi",
+  "contributors": [
+    {
+      "name": "Christopher Quadflieg",
+      "email": "chrissi92@hotmail.de",
+      "url": "https://github.com/Shinigami92"
+    },
+    {
+      "name": "N/A",
+      "email": "N/A",
+      "url": "https://github.com/jerome-benoit"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/pioardi/poolifier/issues"
