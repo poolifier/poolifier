@@ -31,7 +31,7 @@ export interface PoolOptions {
 }
 
 /**
- * An abstract pool, is possible to execute tasks in sync or async mode as you prefer.
+ * An abstract thread pool with a static number of threads, is possible to execute tasks in sync or async mode as you prefer.
  *
  * This pool will select the worker thread in a round robin fashion.
  *
