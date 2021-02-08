@@ -91,12 +91,7 @@ export default abstract class Pool<Data = any, Response = any> {
   protected execute (data: Data): Promise<Response> {
     // configure worker to handle message with the specified task
     const worker = this._chooseWorker()
-    const previousWorkerIndex = this.tasks.get(worker)
-    if (previousWorkerIndex !== undefined) {
-      this.tasks.set(worker, previousWorkerIndex + 1)
-    } else {
-      throw Error('Worker could not be found in tasks map')
-    }
+    this._addWorker(worker)
     const id = ++this._id
     const res = this._execute(worker, id)
     worker.postMessage({ data: data || _void, _id: id })
@@ -116,18 +111,22 @@ export default abstract class Pool<Data = any, Response = any> {
       }): void => {
         if (message._id === id) {
           worker.port2?.removeListener('message', listener)
-          const previousWorkerIndex = this.tasks.get(worker)
-          if (previousWorkerIndex !== undefined) {
-            this.tasks.set(worker, previousWorkerIndex + 1)
-          } else {
-            throw Error('Worker could not be found in tasks map')
-          }
+          this._addWorker(worker)
           if (message.error) reject(message.error)
           else resolve(message.data)
         }
       }
       worker.port2?.on('message', listener)
     })
+  }
+
+  protected _addWorker (worker: WorkerWithMessageChannel): void {
+    const previousWorkerIndex = this.tasks.get(worker)
+    if (previousWorkerIndex !== undefined) {
+      this.tasks.set(worker, previousWorkerIndex + 1)
+    } else {
+      throw Error('Worker could not be found in tasks map')
+    }
   }
 
   protected _newWorker (): WorkerWithMessageChannel {
