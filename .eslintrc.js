@@ -27,6 +27,11 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
 
     // We have some intentionally empty functions
-    '@typescript-eslint/no-empty-function': 'off'
+    '@typescript-eslint/no-empty-function': 'off',
+
+    '@typescript-eslint/no-inferrable-types': [
+      'error',
+      { ignoreProperties: true }
+    ]
   }
 }
