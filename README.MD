@@ -152,8 +152,7 @@ Choose your task here <a href="https://github.com/pioardi/poolifier/projects/1">
 
 ***Contributors***
 * [__Shinigami92__](https://github.com/Shinigami92)
-* [__jerome-benoit__](https://github.com/jerome-benoit)
-
+* [__Jérôme Benoit__](https://github.com/jerome-benoit)
 
 <h2 id="license">License</h2>
 
