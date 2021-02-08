@@ -17,5 +17,16 @@ module.exports = {
     'plugin:prettierx/standardx',
     'plugin:prettierx/@typescript-eslint'
   ],
-  rules: {}
+  rules: {
+    'no-void': 'off',
+
+    // Disabled because we intentionally have any for generics
+    '@typescript-eslint/no-explicit-any': 'off',
+
+    // Disabled because it reports these for js files
+    '@typescript-eslint/no-var-requires': 'off',
+
+    // We have some intentionally empty functions
+    '@typescript-eslint/no-empty-function': 'off'
+  }
 }
