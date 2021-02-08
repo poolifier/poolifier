@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 
-import Pool, { PoolOptions, WorkerWithMessageChannel } from './pool'
+import { Pool, PoolOptions, WorkerWithMessageChannel } from './pool'
 
 import { EventEmitter } from 'events'
 
@@ -17,7 +17,7 @@ export type DynamicThreadPoolOptions = PoolOptions
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
-export default class DynamicThreadPool<Data = any, Response = any> extends Pool<
+export class DynamicThreadPool<Data = any, Response = any> extends Pool<
 Data,
 Response
 > {
@@ -74,5 +74,3 @@ Response
     }
   }
 }
-
-module.exports = DynamicThreadPool

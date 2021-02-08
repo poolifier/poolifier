@@ -1,4 +1,4 @@
-const FixedThreadPool = require('../lib/fixed')
+const { FixedThreadPool } = require('poolifier')
 let resolved = 0
 const pool = new FixedThreadPool(15, './yourWorker.js', {
   errorHandler: e => console.error(e),

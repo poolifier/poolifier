@@ -38,7 +38,7 @@ export interface PoolOptions {
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
-export default abstract class Pool<Data = any, Response = any> {
+export abstract class Pool<Data = any, Response = any> {
   public readonly workers: WorkerWithMessageChannel[] = []
   public nextWorker: number = 0
 

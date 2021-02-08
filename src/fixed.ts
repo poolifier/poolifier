@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 
-import Pool, { PoolOptions } from './pool'
+import { Pool, PoolOptions } from './pool'
 
 export type FixedThreadPoolOptions = PoolOptions
 
@@ -12,9 +12,7 @@ export type FixedThreadPoolOptions = PoolOptions
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
-export default class FixedThreadPool<Data = any, Response = any> extends Pool<
+export class FixedThreadPool<Data = any, Response = any> extends Pool<
 Data,
 Response
 > {}
-
-module.exports = FixedThreadPool
