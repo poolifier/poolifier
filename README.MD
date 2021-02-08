@@ -1,20 +1,17 @@
 # Node Thread Pool :arrow_double_up: :on:
+
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![Dependabot](https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot)](https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot)
 [![npm w](https://img.shields.io/npm/dw/poolifier)](https://www.npmjs.com/package/poolifier)
 [![Actions Status](https://github.com/pioardi/node-pool/workflows/NodeCI/badge.svg)](https://github.com/pioardi/node-pool/actions)
 [![Coverage Status](https://coveralls.io/repos/github/pioardi/poolifier/badge.svg?branch=master)](https://coveralls.io/github/pioardi/poolifier?branch=master)[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
-[![NODEP](https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen
-)](https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen
-)
+[![NODEP](https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen)](https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen)
 [![Gitter](https://badges.gitter.im/poolifier/community.svg)](https://gitter.im/poolifier/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 <h2>Why Poolifier? </h2>
 Poolifier is used to perform heavy CPU bound tasks on nodejs servers, it implements thread pools ( yes, more thread pool implementations, so you can choose which one fit better for you ) using <a href="https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads">worker-threads </a>.<br>
 With poolifier you can improve your <strong>performance</strong> and resolve problems related to the event loop.<br>
 Moreover you can execute your CPU tasks using an API designed to improve the <strong>developer experience</strong>.
-
-
 
 <h2>Contents </h2>
 <h3 align="center">
@@ -43,9 +40,10 @@ You have to implement your worker extending the ThreadWorker class<br>
 ```
 npm install poolifier --save
 ```
+
 <h2 id="usage">Usage</h2>
 
-You can implement a worker in a simple way , extending the class ThreadWorker : 
+You can implement a worker in a simple way , extending the class ThreadWorker :
 
 ```js
 'use strict'
@@ -57,7 +55,10 @@ function yourFunction (data) {
   return { ok: 1 }
 }
 
-module.exports = new ThreadWorker(yourFunction, { maxInactiveTime: 60000, async: false })
+module.exports = new ThreadWorker(yourFunction, {
+  maxInactiveTime: 60000,
+  async: false
+})
 ```
 
 Instantiate your pool based on your needed :
@@ -82,7 +83,7 @@ pool.emitter.on('FullPool', () => console.log('Pool is full'))
 // so you can easy switch from one to another
 pool.execute({}).then(res => {
   console.log(res)
-}).catch .... 
+}).catch ....
 
 ```
 
@@ -96,32 +97,38 @@ You can use node versions 12.x , 13.x, 14.x <br>
 <h2 id="api">API</h2>
 
 ### `pool = new FixedThreadPool(numThreads, filePath, opts)`
+
 `numThreads` (mandatory) Num of threads for this worker pool <br>
 `filePath` (mandatory) Path to a file with a worker implementation <br>
 `opts` (optional) An object with these properties :
+
 - `errorHandler` - A function that will listen for error event on each worker thread
 - `onlineHandler` - A function that will listen for online event on each worker thread
 - `exitHandler` - A function that will listen for exit event on each worker thread
 - `maxTasks` - This is just to avoid not useful warnings message, is used to set <a href="https://nodejs.org/dist/latest-v12.x/docs/api/events.html#events_emitter_setmaxlisteners_n">maxListeners</a> on event emitters ( workers are event emitters)
 
 ### `pool = new DynamicThreadPool(min, max, filePath, opts)`
+
 `min` (mandatory) Same as FixedThreadPool numThreads , this number of threads will be always active <br>
 `max` (mandatory) Max number of workers that this pool can contain, the new created threads will die after a threshold ( default is 1 minute , you can override it in your worker implementation). <br>
-`filePath` (mandatory) Same as FixedThreadPool  <br>
+`filePath` (mandatory) Same as FixedThreadPool <br>
 `opts` (optional) Same as FixedThreadPool <br>
 
 ### `pool.execute(data)`
+
 Execute method is available on both pool implementations ( return type : Promise): <br>
 `data` (mandatory) An object that you want to pass to your worker implementation <br>
 
 ### `pool.destroy()`
+
 Destroy method is available on both pool implementations.<br>
 This method will call the terminate method on each worker.
 
-
 ### `class YourWorker extends ThreadWorker`
+
 `fn` (mandatory) The function that you want to execute on the worker thread <br>
 `opts` (optional) An object with these properties :
+
 - `maxInactiveTime` - Max time to wait tasks to work on ( in ms) , after this period the new worker threads will die.
 - `async` - true/false , true if your function contains async pieces else false
 
@@ -137,8 +144,7 @@ But in general , <strong>always profile your application </strong>
 <h2 id="contribute">Contribute</h2>
 
 See guidelines [CONTRIBUTING](CONTRIBUTING.md) <br>
-Choose your task here <a href="https://github.com/pioardi/poolifier/projects/1"> 2.0.0</a>, propose an idea, a fix, an improvement. <br>  
-
+Choose your task here <a href="https://github.com/pioardi/poolifier/projects/1"> 2.0.0</a>, propose an idea, a fix, an improvement. <br>
 
 <h2 id="license">License</h2>
 

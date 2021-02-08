@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 
-import FixedThreadPool, {
-  FixedThreadPoolOptions,
-  WorkerWithMessageChannel
-} from './fixed'
+import Pool, { PoolOptions, WorkerWithMessageChannel } from './pool'
 
 import { EventEmitter } from 'events'
 
 class MyEmitter extends EventEmitter {}
 
-export type DynamicThreadPoolOptions = FixedThreadPoolOptions
+export type DynamicThreadPoolOptions = PoolOptions
 
 /**
  * A thread pool with a min/max number of threads, is possible to execute tasks in sync or async mode as you prefer.
@@ -20,10 +17,10 @@ export type DynamicThreadPoolOptions = FixedThreadPoolOptions
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
-export default class DynamicThreadPool<
-  Data = any,
-  Response = any
-> extends FixedThreadPool<Data, Response> {
+export default class DynamicThreadPool<Data = any, Response = any> extends Pool<
+Data,
+Response
+> {
   public readonly emitter: MyEmitter
 
   /**
