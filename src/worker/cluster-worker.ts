@@ -1,20 +1,6 @@
 import { AsyncResource } from 'async_hooks';
 import * as cluster from 'cluster';
-
-export interface ClusterWorkerOptions {
-    /**
-     * Max time to wait tasks to work on (in ms), after this period the new worker threads will die.
-     *
-     * @default 60.000 ms
-     */
-    maxInactiveTime?: number;
-    /**
-     * `true` if your function contains async pieces, else `false`.
-     *
-     * @default false
-     */
-    async?: boolean;
-}
+import { WorkerOptions } from './worker-options';
 
 type MessageValue<Data> = { readonly data?: Data; readonly _id?: number; readonly kill?: number };
 
@@ -34,7 +20,7 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
     protected readonly interval: NodeJS.Timeout;
     // protected parent: MessagePort;
 
-    public constructor(fn: (data: Data) => Response, public readonly opts: ClusterWorkerOptions = {}) {
+    public constructor(fn: (data: Data) => Response, public readonly opts: WorkerOptions = {}) {
         super('worker-cluster-pool:pioardi');
 
         this.maxInactiveTime = this.opts.maxInactiveTime || 1000 * 60;
