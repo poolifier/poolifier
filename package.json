@@ -6,9 +6,10 @@
   "scripts": {
     "build": "npm run build:clean && tsc",
     "build:clean": "rimraf lib",
-    "test": "npm run build && nyc mocha --exit --timeout 20000 tests/*test.js ",
-    "test:debug": "mocha --inspect-brk --exit tests/*test.js ",
+    "test": "npm run build && nyc mocha --exit --timeout 20000 tests/**/*.test.js",
+    "test:debug": "mocha --inspect-brk --exit tests/**/*.test.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "coverage:html": "nyc --reporter=html mocha --exit --timeout 20000 tests/**/*.test.js",
     "format": "prettier --loglevel silent --write .; prettierx --write .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
