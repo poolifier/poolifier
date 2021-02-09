@@ -1,4 +1,5 @@
 import { AsyncResource } from 'async_hooks'
+import { MessageValue } from '../utility-types'
 import { WorkerOptions } from './worker-options'
 
 /**
@@ -36,33 +37,25 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
       )
       this.checkAlive.bind(this)()
     }
-    parentPort?.on(
-      'message',
-      (value: {
-        data?: Response
-        id?: number
-        parent?: MessagePort
-        kill?: number
-      }) => {
-        if (value?.data && value.id) {
-          // here you will receive messages
-          // console.log('This is the main thread ' + isMainThread)
-          if (this.async) {
-            this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
-          } else {
-            this.runInAsyncScope(this.run.bind(this), this, fn, value)
-          }
-        } else if (value.parent) {
-          // save the port to communicate with the main thread
-          // this will be received once
-          this.parent = value.parent
-        } else if (value.kill) {
-          // here is time to kill this thread, just clearing the interval
-          if (this.interval) clearInterval(this.interval)
-          this.emitDestroy()
+    parentPort?.on('message', (value: MessageValue<Data>) => {
+      if (value?.data && value.id) {
+        // here you will receive messages
+        // console.log('This is the main thread ' + isMainThread)
+        if (this.async) {
+          this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
+        } else {
+          this.runInAsyncScope(this.run.bind(this), this, fn, value)
         }
+      } else if (value.parent) {
+        // save the port to communicate with the main thread
+        // this will be received once
+        this.parent = value.parent
+      } else if (value.kill) {
+        // here is time to kill this thread, just clearing the interval
+        if (this.interval) clearInterval(this.interval)
+        this.emitDestroy()
       }
-    )
+    })
   }
 
   protected checkAlive (): void {
@@ -72,8 +65,8 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
   }
 
   protected run (
-    fn: (data: Data) => Response,
-    value: { readonly data: Data; readonly id: number }
+    fn: (data?: Data) => Response,
+    value: MessageValue<Data>
   ): void {
     try {
       const res = fn(value.data)

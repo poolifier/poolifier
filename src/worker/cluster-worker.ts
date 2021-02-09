@@ -43,7 +43,7 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
     }
     cluster.worker.on('message', (value: MessageValue<Data>) => {
       // console.log("cluster.on('message', value)", value)
-      if (value && value.data && value.id) {
+      if (value?.data && value.id) {
         // here you will receive messages
         // console.log('This is the main thread ' + isMainThread)
         if (this.async) {
@@ -73,6 +73,9 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
     fn: (data: Data) => Response,
     value: MessageValue<Data>
   ): void {
+    if (!value.data) {
+      throw new Error('No data provided')
+    }
     try {
       const res: Response = fn(value.data)
       cluster.worker.send({ data: res, id: value.id })
@@ -84,7 +87,7 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
   }
 
   protected runAsync (
-    fn: (data: Data) => Promise<Response>,
+    fn: (data?: Data) => Promise<Response>,
     value: MessageValue<Data>
   ): void {
     fn(value.data)
