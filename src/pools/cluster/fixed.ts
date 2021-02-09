@@ -2,9 +2,9 @@
 
 import * as cluster from 'cluster'
 
+import { MessageValue } from '../../utility-types'
 import { SendHandle } from 'child_process'
 import { Worker } from 'cluster'
-import { MessageValue } from '../../utility-types'
 
 export type WorkerWithMessageChannel = Worker // & Draft<MessageChannel>
 
@@ -114,7 +114,10 @@ export class FixedClusterPool<Data = any, Response = any> {
     id: number
   ): Promise<Response> {
     return new Promise((resolve, reject) => {
-      const listener: (message: MessageValue<Data>, handle: SendHandle) => void = message => {
+      const listener: (
+        message: MessageValue<Data>,
+        handle: SendHandle
+      ) => void = message => {
         // console.log('FixedClusterPool#internalExecute listener:', message)
         if (message.id === id) {
           worker.removeListener('message', listener)
