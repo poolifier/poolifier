@@ -15,15 +15,15 @@ We changed some internal structures, but you shouldn't be too affected by them a
 
 ```js
 // Before
-const DynamicThreadPool = require("poolifier/lib/dynamic");
+const DynamicThreadPool = require('poolifier/lib/dynamic')
 // After
-const { DynamicThreadPool } = require("poolifier/lib/dynamic");
+const { DynamicThreadPool } = require('poolifier/lib/dynamic')
 ```
 
 But you should always prefer just using
 
 ```js
-const { DynamicThreadPool } = require("poolifier");
+const { DynamicThreadPool } = require('poolifier')
 ```
 
 #### Internal (protected) methods has renamed
