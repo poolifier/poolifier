@@ -1,8 +1,7 @@
+import type { SendHandle } from 'child_process'
 import * as cluster from 'cluster'
-
-import { MessageValue } from '../../utility-types'
-import { SendHandle } from 'child_process'
 import { Worker } from 'cluster'
+import type { MessageValue } from '../../utility-types'
 
 export type WorkerWithMessageChannel = Worker // & Draft<MessageChannel>
 

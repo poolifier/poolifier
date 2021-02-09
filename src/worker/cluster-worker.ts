@@ -1,8 +1,7 @@
-import * as cluster from 'cluster'
-
 import { AsyncResource } from 'async_hooks'
-import { MessageValue } from '../utility-types'
-import { WorkerOptions } from './worker-options'
+import * as cluster from 'cluster'
+import type { MessageValue } from '../utility-types'
+import type { WorkerOptions } from './worker-options'
 
 /**
  * An example worker that will be always alive, you just need to **extend** this class if you want a static pool.
