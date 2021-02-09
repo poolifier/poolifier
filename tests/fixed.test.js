@@ -1,5 +1,5 @@
 const expect = require('expect')
-const { FixedThreadPool } = require('../lib/fixed')
+const { FixedThreadPool } = require('../lib/index')
 const numThreads = 10
 const pool = new FixedThreadPool(numThreads, './tests/workers/testWorker.js', {
   errorHandler: e => console.error(e),

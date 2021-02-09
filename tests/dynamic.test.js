@@ -1,5 +1,5 @@
 const expect = require('expect')
-const { DynamicThreadPool } = require('../lib/dynamic')
+const { DynamicThreadPool } = require('../lib/index')
 const min = 1
 const max = 3
 const pool = new DynamicThreadPool(min, max, './tests/workers/testWorker.js', {
