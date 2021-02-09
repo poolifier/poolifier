@@ -36,7 +36,7 @@ Moreover you can execute your CPU tasks using an API designed to improve the **d
 
 ## Overview
 
-Node pool contains two [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) pool implementations, you don' t have to deal with worker-threads complexity.  
+Node pool contains two [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) pool implementations, you don't have to deal with worker-threads complexity.  
 The first implementation is a static thread pool, with a defined number of threads that are started at creation time and will be reused.  
 The second implementation is a dynamic thread pool with a number of threads started at creation time (these threads will be always active and reused) and other threads created when the load will increase (with an upper limit, these threads will be reused when active), the new created threads will be stopped after a configurable period of inactivity.  
 You have to implement your worker extending the ThreadWorker class
