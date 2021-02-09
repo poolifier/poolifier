@@ -12,7 +12,7 @@ end_of_line = lf
 [*.{js,jsx,ts,tsx}]
 quote_type = single
 
-[*.md]
+[*.{md,MD}]
 max_line_length = off
 trim_trailing_whitespace = false
 
