@@ -38,7 +38,7 @@ module.exports = {
       'warn',
       {
         ignoreMemberSort: true,
-        memberSyntaxSortOrder: ['none', 'all', 'single', 'multiple']
+        ignoreDeclarationSort: true
       }
     ]
   },
