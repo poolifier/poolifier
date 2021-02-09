@@ -27,6 +27,7 @@ describe('Dynamic cluster pool test suite ', () => {
     for (let i = 0; i < max * 2; i++) {
       promises.push(pool.execute({ test: 'test' }))
     }
+    await new Promise(resolve => setTimeout(resolve, 100))
     expect(pool.workers.length).toBe(max)
     pool.workers.forEach(w => {
       w.on('exit', () => {
@@ -43,6 +44,7 @@ describe('Dynamic cluster pool test suite ', () => {
     for (let i = 0; i < max * 10; i++) {
       pool.execute({ test: 'test' })
     }
+    await new Promise(resolve => setTimeout(resolve, 100))
     expect(pool.workers.length).toBe(max)
     await new Promise(resolve => setTimeout(resolve, 1000))
     expect(pool.workers.length).toBe(min)
@@ -61,7 +63,7 @@ describe('Dynamic cluster pool test suite ', () => {
       })
     })
     pool.destroy()
-    await new Promise(resolve => setTimeout(resolve, 200))
+    await new Promise(resolve => setTimeout(resolve, 500))
     expect(closedWorkers).toBe(min)
   })
 
