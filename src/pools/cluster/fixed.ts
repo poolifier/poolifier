@@ -10,15 +10,15 @@ export type WorkerWithMessageChannel = Worker // & Draft<MessageChannel>
 
 export interface FixedClusterPoolOptions {
   /**
-   * A function that will listen for error event on each worker thread.
+   * A function that will listen for error event on each worker.
    */
   errorHandler?: (this: Worker, e: Error) => void
   /**
-   * A function that will listen for online event on each worker thread.
+   * A function that will listen for online event on each worker.
    */
   onlineHandler?: (this: Worker) => void
   /**
-   * A function that will listen for exit event on each worker thread.
+   * A function that will listen for exit event on each worker.
    */
   exitHandler?: (this: Worker, code: number) => void
   /**
@@ -30,18 +30,18 @@ export interface FixedClusterPoolOptions {
 }
 
 /**
- * A thread pool with a static number of threads, is possible to execute tasks in sync or async mode as you prefer.
+ * A cluster pool with a static number of workers, is possible to execute tasks in sync or async mode as you prefer.
  *
- * This pool will select the worker thread in a round robin fashion.
+ * This pool will select the worker in a round robin fashion.
  *
- * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
- * @since 0.0.1
+ * @author [Christopher Quadflieg](https://github.com/Shinigami92)
+ * @since 2.0.0
  */
 export class FixedClusterPool<Data = any, Response = any> {
   public readonly workers: WorkerWithMessageChannel[] = []
   public nextWorker: number = 0
 
-  // threadId as key and an integer value
+  // workerId as key and an integer value
   /* eslint-disable @typescript-eslint/indent */
   public readonly tasks: Map<WorkerWithMessageChannel, number> = new Map<
     WorkerWithMessageChannel,
@@ -52,12 +52,12 @@ export class FixedClusterPool<Data = any, Response = any> {
   protected id: number = 0
 
   /**
-   * @param numThreads Num of threads for this worker pool.
-   * @param filePath A file path with implementation of `ThreadWorker` class, relative path is fine.
+   * @param numWorkers Number of workers for this pool.
+   * @param filePath A file path with implementation of `ClusterWorker` class, relative path is fine.
    * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
-    public readonly numThreads: number,
+    public readonly numWorkers: number,
     public readonly filePath: string,
     public readonly opts: FixedClusterPoolOptions = { maxTasks: 1000 }
   ) {
@@ -73,7 +73,7 @@ export class FixedClusterPool<Data = any, Response = any> {
       exec: this.filePath
     })
 
-    for (let i: number = 1; i <= this.numThreads; i++) {
+    for (let i: number = 1; i <= this.numWorkers; i++) {
       this.newWorker()
     }
   }
@@ -149,7 +149,7 @@ export class FixedClusterPool<Data = any, Response = any> {
     const worker: WorkerWithMessageChannel = cluster.fork()
     worker.on('error', this.opts.errorHandler ?? (() => {}))
     worker.on('online', this.opts.onlineHandler ?? (() => {}))
-    // TODO handle properly when a thread exit
+    // TODO handle properly when a worker exit
     worker.on('exit', this.opts.exitHandler ?? (() => {}))
     this.workers.push(worker)
     // const { port1, port2 } = new MessageChannel()
