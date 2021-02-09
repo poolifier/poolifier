@@ -35,7 +35,7 @@ describe('Dynamic cluster pool test suite ', () => {
       })
     })
     expect(fullPool > 1).toBeTruthy()
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await new Promise(resolve => setTimeout(resolve, 4000))
     expect(closedWorkers).toBe(max - min)
   })
 
@@ -45,13 +45,13 @@ describe('Dynamic cluster pool test suite ', () => {
       pool.execute({ test: 'test' })
     }
     expect(pool.workers.length).toBeGreaterThan(min)
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise(resolve => setTimeout(resolve, 2000))
     expect(pool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
       pool.execute({ test: 'test' })
     }
     expect(pool.workers.length).toBeGreaterThan(min)
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise(resolve => setTimeout(resolve, 2000))
     expect(pool.workers.length).toBe(min)
   })
   it('Shutdown test', async () => {
