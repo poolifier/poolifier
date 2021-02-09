@@ -4,11 +4,11 @@ export interface WorkerOptions {
    *
    * @default 60.000 ms
    */
-  maxInactiveTime?: number;
+  maxInactiveTime?: number
   /**
    * `true` if your function contains async pieces, else `false`.
    *
    * @default false
    */
-  async?: boolean;
+  async?: boolean
 }

@@ -6,8 +6,6 @@ function empty(): void {
     // empty
 }
 
-export type Draft<T> = { -readonly [P in keyof T]?: T[P] };
-
 export type WorkerWithMessageChannel = Worker; // & Draft<MessageChannel>;
 
 export interface FixedClusterPoolOptions {
