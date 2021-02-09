@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 
+import { Draft, MessageValue } from '../../utility-types'
 import { MessageChannel, SHARE_ENV, Worker, isMainThread } from 'worker_threads'
-
-import { Draft } from '../../utility-types'
 
 export type WorkerWithMessageChannel = Worker & Draft<MessageChannel>
 
@@ -106,11 +105,7 @@ export class FixedThreadPool<Data = any, Response = any> {
     id: number
   ): Promise<Response> {
     return new Promise((resolve, reject) => {
-      const listener = (message: {
-        id: number
-        error?: string
-        data: Response
-      }): void => {
+      const listener: (message: MessageValue<Response>) => void = message => {
         if (message.id === id) {
           worker.port2?.removeListener('message', listener)
           const previousWorkerIndex = this.tasks.get(worker)
@@ -120,7 +115,7 @@ export class FixedThreadPool<Data = any, Response = any> {
             throw Error('Worker could not be found in tasks map')
           }
           if (message.error) reject(message.error)
-          else resolve(message.data)
+          else resolve(message.data as any)
         }
       }
       worker.port2?.on('message', listener)

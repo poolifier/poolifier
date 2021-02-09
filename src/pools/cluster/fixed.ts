@@ -115,7 +115,7 @@ export class FixedClusterPool<Data = any, Response = any> {
   ): Promise<Response> {
     return new Promise((resolve, reject) => {
       const listener: (
-        message: MessageValue<Data>,
+        message: MessageValue<Response>,
         handle: SendHandle
       ) => void = message => {
         // console.log('FixedClusterPool#internalExecute listener:', message)
@@ -128,7 +128,7 @@ export class FixedClusterPool<Data = any, Response = any> {
             throw Error('Worker could not be found in tasks map')
           }
           if (message.error) reject(message.error)
-          else resolve(message.data)
+          else resolve(message.data as any)
         }
       }
       worker.on('message', listener)

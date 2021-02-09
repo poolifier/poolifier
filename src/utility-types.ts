@@ -5,4 +5,5 @@ export interface MessageValue<Data> {
   readonly id?: number
   readonly kill?: number
   readonly error?: string
+  readonly parent?: MessagePort
 }
