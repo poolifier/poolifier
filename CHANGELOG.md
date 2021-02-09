@@ -28,6 +28,8 @@ const { DynamicThreadPool } = require("poolifier");
 
 #### Internal (protected) methods has renamed
 
+Those methods are not intended to be used from final users
+
 - `_chooseWorker` => `chooseWorker`
 - `_newWorker` => `newWorker`
 - `_execute` => `internalExecute`
