@@ -10,7 +10,7 @@
     "test:debug": "mocha --inspect-brk --exit tests/**/*.test.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "coverage:html": "nyc --reporter=html mocha --exit --timeout 20000 tests/**/*.test.js",
-    "format": "prettierx --write .",
+    "format": "prettier --loglevel silent --write .; prettierx --write .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -50,23 +50,24 @@
     "@typescript-eslint/parser": "^4.15.0",
     "benchmark": "^2.1.4",
     "coveralls": "^3.1.0",
+    "eslint": "^7.19.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettierx": "^0.17.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint": "^7.19.0",
     "expect": "^26.6.2",
-    "mocha-lcov-reporter": "^1.3.0",
     "mocha": "^8.2.1",
+    "mocha-lcov-reporter": "^1.3.0",
     "nyc": "^15.1.0",
+    "prettier": "^2.2.1",
     "prettier-plugin-organize-imports": "^1.1.1",
     "prettierx": "^0.17.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.1.3"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=12.11.0"
   }
 }
