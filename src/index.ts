@@ -1,6 +1,6 @@
 import { DynamicThreadPool } from './pools/thread/dynamic'
 import { FixedThreadPool } from './pools/thread/fixed'
-import { ThreadWorker } from './worker/workers'
+import { ThreadWorker } from './worker/thread-worker'
 
 export {
   Draft,
@@ -8,5 +8,5 @@ export {
   WorkerWithMessageChannel
 } from './pools/thread/fixed'
 export { DynamicThreadPoolOptions } from './pools/thread/dynamic'
-export { ThreadWorkerOptions } from './worker/workers'
+export { ThreadWorkerOptions } from './worker/thread-worker'
 export { FixedThreadPool, DynamicThreadPool, ThreadWorker }
