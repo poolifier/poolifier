@@ -121,6 +121,7 @@ export class FixedClusterPool<Data = any, Response = any> {
           } else {
             throw Error('Worker could not be found in tasks map')
           }
+          console.log(message.error)
           if (message.error) reject(message.error)
           else resolve(message.data as Response)
         }

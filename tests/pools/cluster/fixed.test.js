@@ -28,6 +28,7 @@ const asyncPool = new FixedClusterPool(
 )
 
 describe('Fixed cluster pool test suite ', () => {
+  /* 
   it('Choose worker round robin test', async () => {
     const results = new Set()
     for (let i = 0; i < numWorkers; i++) {
@@ -58,14 +59,15 @@ describe('Fixed cluster pool test suite ', () => {
     const result = await echoPool.execute(data)
     expect(result).toBeTruthy()
     expect(result.f).toBe(data.f)
-  })
+  })*/
 
   it('Verify that error handling is working properly', async () => {
-    const data = { f: 10 }
+    const data = { f: 'MY ERROR CASE' }
     let inError
     try {
       await errorPool.execute(data)
     } catch (e) {
+      console.log('I am getting the error, right?')
       inError = e
     }
     expect(inError).toBeDefined()

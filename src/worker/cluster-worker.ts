@@ -45,8 +45,10 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
         // here you will receive messages
         // console.log('This is the main thread ' + isMainThread)
         if (this.async) {
+          console.log('async run ' + value.data.f)
           this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
         } else {
+          console.log('sync run ' + value.data.f)
           this.runInAsyncScope(this.run.bind(this), this, fn, value)
         }
         // } else if (value.parent) {
@@ -76,7 +78,13 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
       cluster.worker.send({ data: res, id: value.id })
       this.lastTask = Date.now()
     } catch (e) {
-      cluster.worker.send({ error: e, id: value.id })
+      console.log('ok we have an error ')
+      const err = e instanceof Error ? e.message : e
+      console.log(e instanceof Error)
+      console.log(err instanceof Error)
+      console.log(e)
+      console.log(err)
+      cluster.worker.send({ error: err, id: value.id })
       this.lastTask = Date.now()
     }
   }
@@ -91,7 +99,9 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
         this.lastTask = Date.now()
       })
       .catch(e => {
-        cluster.worker.send({ error: e, id: value.id })
+        const err = e instanceof Error ? e.message : e
+        console.log(e instanceof Error)
+        cluster.worker.send({ error: err, id: value.id })
         this.lastTask = Date.now()
       })
   }
