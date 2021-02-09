@@ -1,9 +1,6 @@
 import { EventEmitter } from 'events'
-import {
-  FixedThreadPool,
-  FixedThreadPoolOptions,
-  WorkerWithMessageChannel
-} from './fixed'
+import type { FixedThreadPoolOptions, WorkerWithMessageChannel } from './fixed'
+import { FixedThreadPool } from './fixed'
 
 class MyEmitter extends EventEmitter {}
 

@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-
-import { Draft, MessageValue } from '../../utility-types'
-import { MessageChannel, SHARE_ENV, Worker, isMainThread } from 'worker_threads'
+import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
+import type { Draft, MessageValue } from '../../utility-types'
 
 export type WorkerWithMessageChannel = Worker & Draft<MessageChannel>
 
