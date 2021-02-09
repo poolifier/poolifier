@@ -15,7 +15,6 @@ export type DynamicClusterPoolOptions = FixedClusterPoolOptions
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
  */
-
 export class DynamicClusterPool<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Data = any,

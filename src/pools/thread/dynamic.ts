@@ -15,7 +15,6 @@ export type DynamicThreadPoolOptions = FixedThreadPoolOptions
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
-
 export class DynamicThreadPool<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Data = any,
