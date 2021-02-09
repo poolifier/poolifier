@@ -1,20 +1,5 @@
 import { AsyncResource } from 'async_hooks'
-import { isMainThread, parentPort } from 'worker_threads'
-
-export interface ThreadWorkerOptions {
-  /**
-   * Max time to wait tasks to work on (in ms), after this period the new worker threads will die.
-   *
-   * @default 60.000 ms
-   */
-  maxInactiveTime?: number
-  /**
-   * `true` if your function contains async pieces, else `false`.
-   *
-   * @default false
-   */
-  async?: boolean
-}
+import { WorkerOptions } from './worker-options'
 
 /**
  * An example worker that will be always alive, you just need to **extend** this class if you want a static pool.
@@ -35,7 +20,7 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
 
   public constructor (
     fn: (data: Data) => Response,
-    public readonly opts: ThreadWorkerOptions = {}
+    public readonly opts: WorkerOptions = {}
   ) {
     super('worker-thread-pool:pioardi')
 
