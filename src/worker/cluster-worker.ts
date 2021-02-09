@@ -1,5 +1,5 @@
 import { AsyncResource } from 'async_hooks'
-import * as cluster from 'cluster'
+import { isMaster, worker } from 'cluster'
 import type { MessageValue } from '../utility-types'
 import type { WorkerOptions } from './worker-options'
 
@@ -31,7 +31,7 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
     this.lastTask = Date.now()
     if (!fn) throw new Error('Fn parameter is mandatory')
     // keep the worker active
-    if (!cluster.isMaster) {
+    if (!isMaster) {
       // console.log('ClusterWorker#constructor', 'is not master')
       this.interval = setInterval(
         this.checkAlive.bind(this),
@@ -39,7 +39,7 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
       )
       this.checkAlive.bind(this)()
     }
-    cluster.worker.on('message', (value: MessageValue<Data>) => {
+    worker.on('message', (value: MessageValue<Data>) => {
       // console.log("cluster.on('message', value)", value)
       if (value?.data && value.id) {
         // here you will receive messages
@@ -63,7 +63,7 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
 
   protected checkAlive (): void {
     if (Date.now() - this.lastTask > this.maxInactiveTime) {
-      cluster.worker.send({ kill: 1 })
+      worker.send({ kill: 1 })
     }
   }
 
@@ -73,10 +73,10 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
   ): void {
     try {
       const res: Response = fn(value.data as Data)
-      cluster.worker.send({ data: res, id: value.id })
+      worker.send({ data: res, id: value.id })
       this.lastTask = Date.now()
     } catch (e) {
-      cluster.worker.send({ error: e, id: value.id })
+      worker.send({ error: e, id: value.id })
       this.lastTask = Date.now()
     }
   }
@@ -87,11 +87,11 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
   ): void {
     fn(value.data)
       .then(res => {
-        cluster.worker.send({ data: res, id: value.id })
+        worker.send({ data: res, id: value.id })
         this.lastTask = Date.now()
       })
       .catch(e => {
-        cluster.worker.send({ error: e, id: value.id })
+        worker.send({ error: e, id: value.id })
         this.lastTask = Date.now()
       })
   }
