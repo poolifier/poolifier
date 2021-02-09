@@ -30,7 +30,7 @@ export class DynamicClusterPool<
    * @param filename A file path with implementation of `ClusterWorker` class, relative path is fine.
    * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
    */
-  public constructor(
+  public constructor (
     public readonly min: number,
     public readonly max: number,
     public readonly filename: string,
@@ -41,7 +41,7 @@ export class DynamicClusterPool<
     this.emitter = new MyEmitter()
   }
 
-  protected chooseWorker(): WorkerWithMessageChannel {
+  protected chooseWorker (): WorkerWithMessageChannel {
     let worker: WorkerWithMessageChannel | undefined
     for (const entry of this.tasks) {
       if (entry[1] === 0) {
