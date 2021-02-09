@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-
 import * as cluster from 'cluster'
 
 import { MessageValue } from '../../utility-types'
@@ -37,17 +35,16 @@ export interface FixedClusterPoolOptions {
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class FixedClusterPool<Data = any, Response = any> {
   public readonly workers: WorkerWithMessageChannel[] = []
   public nextWorker: number = 0
 
   // workerId as key and an integer value
-  /* eslint-disable @typescript-eslint/indent */
   public readonly tasks: Map<WorkerWithMessageChannel, number> = new Map<
     WorkerWithMessageChannel,
     number
   >()
-  /* eslint-enable @typescript-eslint/indent */
 
   protected id: number = 0
 
@@ -73,7 +70,7 @@ export class FixedClusterPool<Data = any, Response = any> {
       exec: this.filePath
     })
 
-    for (let i: number = 1; i <= this.numWorkers; i++) {
+    for (let i = 1; i <= this.numWorkers; i++) {
       this.newWorker()
     }
   }
@@ -90,7 +87,6 @@ export class FixedClusterPool<Data = any, Response = any> {
    * @param data The input for the task specified.
    * @returns Promise that is resolved when the task is done.
    */
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
   public execute (data: Data): Promise<Response> {
     // configure worker to handle message with the specified task
     const worker: WorkerWithMessageChannel = this.chooseWorker()
@@ -108,7 +104,6 @@ export class FixedClusterPool<Data = any, Response = any> {
     return res
   }
 
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
   protected internalExecute (
     worker: WorkerWithMessageChannel,
     id: number
@@ -128,7 +123,7 @@ export class FixedClusterPool<Data = any, Response = any> {
             throw Error('Worker could not be found in tasks map')
           }
           if (message.error) reject(message.error)
-          else resolve(message.data as any)
+          else resolve(message.data as Response)
         }
       }
       worker.on('message', listener)
