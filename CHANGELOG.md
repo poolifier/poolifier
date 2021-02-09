@@ -26,7 +26,7 @@ But you should always prefer just using
 const { DynamicThreadPool } = require('poolifier')
 ```
 
-#### Internal (protected) methods has renamed
+#### Internal (protected) methods renaming
 
 Those methods are not intended to be used from final users
 

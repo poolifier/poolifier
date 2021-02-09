@@ -18,11 +18,11 @@ Please ask your PR to be merged on <strong>master</strong> branch . <br>
 <strong> How to check if your new code is standard style </strong><br>
 
 ```bash
-  npm run standard:verbose && npm run ts-standard:verbose
+  npm run lint
 ```
 
 <strong>How to lint and format (with prettier) your code</strong><br>
 
 ```bash
-  npm run lint-and-format
+  npm run lint:fix
 ```
