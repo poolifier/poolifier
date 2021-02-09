@@ -1,12 +1,12 @@
-import { DynamicThreadPool } from './dynamic'
-import { FixedThreadPool } from './fixed'
-import { ThreadWorker } from './workers'
+import { DynamicThreadPool } from './pools/thread/dynamic'
+import { FixedThreadPool } from './pools/thread/fixed'
+import { ThreadWorker } from './worker/workers'
 
 export {
   Draft,
   FixedThreadPoolOptions,
   WorkerWithMessageChannel
-} from './fixed'
-export { DynamicThreadPoolOptions } from './dynamic'
-export { ThreadWorkerOptions } from './workers'
+} from './pools/thread/fixed'
+export { DynamicThreadPoolOptions } from './pools/thread/dynamic'
+export { ThreadWorkerOptions } from './worker/workers'
 export { FixedThreadPool, DynamicThreadPool, ThreadWorker }
