@@ -68,9 +68,9 @@ describe('Fixed cluster pool test suite ', () => {
     } catch (e) {
       inError = e
     }
-    expect(inError).toBeTruthy()
-    expect(inError instanceof Error).toBeTruthy()
-    expect(inError.message).toBeTruthy()
+    expect(inError).toBeDefined()
+    expect(typeof inError === 'string').toBeTruthy()
+    expect(inError).toBe('Error Message from ClusterWorker')
   })
 
   it('Verify that async function is working properly', async () => {
