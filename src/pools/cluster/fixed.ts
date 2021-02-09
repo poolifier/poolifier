@@ -1,6 +1,5 @@
 import type { SendHandle } from 'child_process'
-import * as cluster from 'cluster'
-import { Worker } from 'cluster'
+import { fork, isMaster, setupMaster, Worker } from 'cluster'
 import type { MessageValue } from '../../utility-types'
 
 export type WorkerWithMessageChannel = Worker // & Draft<MessageChannel>
@@ -57,7 +56,7 @@ export class FixedClusterPool<Data = any, Response = any> {
     public readonly filePath: string,
     public readonly opts: FixedClusterPoolOptions = { maxTasks: 1000 }
   ) {
-    if (!cluster.isMaster) {
+    if (!isMaster) {
       throw new Error('Cannot start a cluster pool from a worker!')
     }
     // TODO christopher 2021-02-09: Improve this check e.g. with a pattern or blank check
@@ -65,7 +64,7 @@ export class FixedClusterPool<Data = any, Response = any> {
       throw new Error('Please specify a file with a worker implementation')
     }
 
-    cluster.setupMaster({
+    setupMaster({
       exec: this.filePath
     })
 
@@ -140,7 +139,7 @@ export class FixedClusterPool<Data = any, Response = any> {
   }
 
   protected newWorker (): WorkerWithMessageChannel {
-    const worker: WorkerWithMessageChannel = cluster.fork()
+    const worker: WorkerWithMessageChannel = fork()
     worker.on('error', this.opts.errorHandler ?? (() => {}))
     worker.on('online', this.opts.onlineHandler ?? (() => {}))
     // TODO handle properly when a worker exit
