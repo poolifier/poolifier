@@ -47,7 +47,7 @@ npm install poolifier --save
 ```
 <h2 id="usage">Usage</h2>
 
-You can implement a worker in a simple way , extending the class ThreadWorker : 
+You can implement a worker in a simple way , extending the class ThreadWorker :
 
 ```js
 'use strict'
@@ -84,7 +84,7 @@ pool.emitter.on('FullPool', () => console.log('Pool is full'))
 // so you can easy switch from one to another
 pool.execute({}).then(res => {
   console.log(res)
-}).catch .... 
+}).catch ....
 
 ```
 
@@ -139,7 +139,7 @@ But in general , <strong>always profile your application </strong>
 <h2 id="contribute">Contribute</h2>
 
 See guidelines [CONTRIBUTING](CONTRIBUTING.md) <br>
-Choose your task here <a href="https://github.com/pioardi/poolifier/projects/1"> 2.0.0</a>, propose an idea, a fix, an improvement. <br>  
+Choose your task here <a href="https://github.com/pioardi/poolifier/projects/1"> 2.0.0</a>, propose an idea, a fix, an improvement. <br>
 
 
 <h2 id="Team">Team</h2>

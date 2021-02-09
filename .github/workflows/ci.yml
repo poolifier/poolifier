@@ -29,13 +29,16 @@ jobs:
       - name: Build
         run: npm run build --if-present
 
+      - name: Lint
+        run: npm run lint
+
       - name: Test
         if: github.ref != 'refs/heads/master'
         run: npm run test
 
       - name: Test & Coverage
         if: github.ref == 'refs/heads/master'
-        run: | 
+        run: |
           npm run test
           export COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }}
           npm run coverage
