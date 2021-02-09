@@ -71,11 +71,8 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
     fn: (data: Data) => Response,
     value: MessageValue<Data>
   ): void {
-    if (!value.data) {
-      throw new Error('No data provided')
-    }
     try {
-      const res: Response = fn(value.data)
+      const res: Response = fn(value.data as Data)
       cluster.worker.send({ data: res, id: value.id })
       this.lastTask = Date.now()
     } catch (e) {
