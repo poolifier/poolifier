@@ -26,6 +26,7 @@ export interface ThreadWorkerOptions {
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
   protected readonly maxInactiveTime: number
   protected readonly async: boolean

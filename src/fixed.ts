@@ -33,6 +33,7 @@ export interface FixedThreadPoolOptions {
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class FixedThreadPool<Data = any, Response = any> {
   public readonly workers: WorkerWithMessageChannel[] = []
   public nextWorker: number = 0

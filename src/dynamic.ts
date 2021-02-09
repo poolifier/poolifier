@@ -19,10 +19,12 @@ export type DynamicThreadPoolOptions = FixedThreadPoolOptions
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export class DynamicThreadPool<
   Data = any,
   Response = any
 > extends FixedThreadPool<Data, Response> {
+  /* eslint-enable @typescript-eslint/no-explicit-any */
   public readonly emitter: MyEmitter
 
   /**
