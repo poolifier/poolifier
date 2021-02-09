@@ -1,13 +1,12 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+
 import * as cluster from 'cluster'
 
 import { SendHandle } from 'child_process'
 import { Worker } from 'cluster'
+import { MessageValue } from '../../utility-types'
 
-function empty (): void {
-  // empty
-}
-
-export type WorkerWithMessageChannel = Worker // & Draft<MessageChannel>;
+export type WorkerWithMessageChannel = Worker // & Draft<MessageChannel>
 
 export interface FixedClusterPoolOptions {
   /**
@@ -43,12 +42,14 @@ export class FixedClusterPool<Data = any, Response = any> {
   public nextWorker: number = 0
 
   // threadId as key and an integer value
+  /* eslint-disable @typescript-eslint/indent */
   public readonly tasks: Map<WorkerWithMessageChannel, number> = new Map<
-  WorkerWithMessageChannel,
-  number
+    WorkerWithMessageChannel,
+    number
   >()
+  /* eslint-enable @typescript-eslint/indent */
 
-  protected _id: number = 0
+  protected id: number = 0
 
   /**
    * @param numThreads Num of threads for this worker pool.
@@ -60,15 +61,20 @@ export class FixedClusterPool<Data = any, Response = any> {
     public readonly filePath: string,
     public readonly opts: FixedClusterPoolOptions = { maxTasks: 1000 }
   ) {
-    if (!cluster.isMaster) { throw new Error('Cannot start a cluster pool from a worker!') }
-    if (!this.filePath) { throw new Error('Please specify a file with a worker implementation') }
+    if (!cluster.isMaster) {
+      throw new Error('Cannot start a cluster pool from a worker!')
+    }
+    // TODO christopher 2021-02-09: Improve this check e.g. with a pattern or blank check
+    if (!this.filePath) {
+      throw new Error('Please specify a file with a worker implementation')
+    }
 
     cluster.setupMaster({
       exec: this.filePath
     })
 
     for (let i: number = 1; i <= this.numThreads; i++) {
-      this._newWorker()
+      this.newWorker()
     }
   }
 
@@ -84,28 +90,40 @@ export class FixedClusterPool<Data = any, Response = any> {
    * @param data The input for the task specified.
    * @returns Promise that is resolved when the task is done.
    */
-  public async execute (data: Data): Promise<Response> {
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  public execute (data: Data): Promise<Response> {
     // configure worker to handle message with the specified task
-    const worker: WorkerWithMessageChannel = this._chooseWorker()
-    // console.log('FixedClusterPool#execute choosen worker:', worker);
-    this.tasks.set(worker, this.tasks.get(worker) + 1)
-    const id: number = ++this._id
-    const res: Promise<Response> = this._execute(worker, id)
-    // console.log('FixedClusterPool#execute send data to worker:', worker);
-    worker.send({ data: data || {}, _id: id })
-    return await res
+    const worker: WorkerWithMessageChannel = this.chooseWorker()
+    // console.log('FixedClusterPool#execute choosen worker:', worker)
+    const previousWorkerIndex = this.tasks.get(worker)
+    if (previousWorkerIndex !== undefined) {
+      this.tasks.set(worker, previousWorkerIndex + 1)
+    } else {
+      throw Error('Worker could not be found in tasks map')
+    }
+    const id: number = ++this.id
+    const res: Promise<Response> = this.internalExecute(worker, id)
+    // console.log('FixedClusterPool#execute send data to worker:', worker)
+    worker.send({ data: data || {}, id: id })
+    return res
   }
 
-  protected async _execute (
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  protected internalExecute (
     worker: WorkerWithMessageChannel,
     id: number
   ): Promise<Response> {
-    return await new Promise((resolve, reject) => {
-      const listener: (message: any, handle: SendHandle) => void = message => {
-        // console.log('FixedClusterPool#_execute listener:', message);
-        if (message._id === id) {
+    return new Promise((resolve, reject) => {
+      const listener: (message: MessageValue<Data>, handle: SendHandle) => void = message => {
+        // console.log('FixedClusterPool#internalExecute listener:', message)
+        if (message.id === id) {
           worker.removeListener('message', listener)
-          this.tasks.set(worker, this.tasks.get(worker) - 1)
+          const previousWorkerIndex = this.tasks.get(worker)
+          if (previousWorkerIndex !== undefined) {
+            this.tasks.set(worker, previousWorkerIndex + 1)
+          } else {
+            throw Error('Worker could not be found in tasks map')
+          }
           if (message.error) reject(message.error)
           else resolve(message.data)
         }
@@ -114,7 +132,7 @@ export class FixedClusterPool<Data = any, Response = any> {
     })
   }
 
-  protected _chooseWorker (): WorkerWithMessageChannel {
+  protected chooseWorker (): WorkerWithMessageChannel {
     if (this.workers.length - 1 === this.nextWorker) {
       this.nextWorker = 0
       return this.workers[this.nextWorker]
@@ -124,21 +142,21 @@ export class FixedClusterPool<Data = any, Response = any> {
     }
   }
 
-  protected _newWorker (): WorkerWithMessageChannel {
+  protected newWorker (): WorkerWithMessageChannel {
     const worker: WorkerWithMessageChannel = cluster.fork()
-    worker.on('error', this.opts.errorHandler || empty)
-    worker.on('online', this.opts.onlineHandler || empty)
+    worker.on('error', this.opts.errorHandler ?? (() => {}))
+    worker.on('online', this.opts.onlineHandler ?? (() => {}))
     // TODO handle properly when a thread exit
-    worker.on('exit', this.opts.exitHandler || empty)
+    worker.on('exit', this.opts.exitHandler ?? (() => {}))
     this.workers.push(worker)
-    // const { port1, port2 } = new MessageChannel();
-    // worker.send({ parent: port1 }, [port1]);
-    // worker.port1 = port1;
-    // worker.port2 = port2;
+    // const { port1, port2 } = new MessageChannel()
+    // worker.send({ parent: port1 }, [port1])
+    // worker.port1 = port1
+    // worker.port2 = port2
     // we will attach a listener for every task,
     // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
-    // worker.port2.setMaxListeners(this.opts.maxTasks || 1000);
-    worker.setMaxListeners(this.opts.maxTasks || 1000)
+    // worker.port2.setMaxListeners(this.opts.maxTasks ?? 1000)
+    worker.setMaxListeners(this.opts.maxTasks ?? 1000)
     // init tasks map
     this.tasks.set(worker, 0)
     return worker
