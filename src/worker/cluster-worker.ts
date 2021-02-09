@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-
 import * as cluster from 'cluster'
 
 import { AsyncResource } from 'async_hooks'
@@ -15,6 +13,7 @@ import { WorkerOptions } from './worker-options'
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
   protected readonly maxInactiveTime: number
   protected readonly async: boolean

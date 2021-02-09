@@ -110,7 +110,7 @@ export class FixedThreadPool<Data = any, Response = any> {
             throw Error('Worker could not be found in tasks map')
           }
           if (message.error) reject(message.error)
-          else resolve(message.data as any)
+          else resolve(message.data as Response)
         }
       }
       worker.port2?.on('message', listener)
