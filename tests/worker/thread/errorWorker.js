@@ -1,5 +1,5 @@
 'use strict'
-const { ThreadWorker } = require('../../lib/index')
+const { ThreadWorker } = require('../../../lib/index')
 
 function error (data) {
   throw new Error(data)

@@ -1,17 +1,25 @@
 const expect = require('expect')
-const { FixedThreadPool } = require('../lib/index')
+const { FixedThreadPool } = require('../../../lib/index')
 const numThreads = 10
-const pool = new FixedThreadPool(numThreads, './tests/workers/testWorker.js', {
-  errorHandler: e => console.error(e),
-  onlineHandler: () => console.log('worker is online')
-})
-const emptyPool = new FixedThreadPool(1, './tests/workers/emptyWorker.js')
-const echoPool = new FixedThreadPool(1, './tests/workers/echoWorker.js')
-const errorPool = new FixedThreadPool(1, './tests/workers/errorWorker.js', {
-  errorHandler: e => console.error(e),
-  onlineHandler: () => console.log('worker is online')
-})
-const asyncPool = new FixedThreadPool(1, './tests/workers/asyncWorker.js')
+const pool = new FixedThreadPool(
+  numThreads,
+  './tests/worker/thread/testWorker.js',
+  {
+    errorHandler: e => console.error(e),
+    onlineHandler: () => console.log('worker is online')
+  }
+)
+const emptyPool = new FixedThreadPool(1, './tests/worker/thread/emptyWorker.js')
+const echoPool = new FixedThreadPool(1, './tests/worker/thread/echoWorker.js')
+const errorPool = new FixedThreadPool(
+  1,
+  './tests/worker/thread/errorWorker.js',
+  {
+    errorHandler: e => console.error(e),
+    onlineHandler: () => console.log('worker is online')
+  }
+)
+const asyncPool = new FixedThreadPool(1, './tests/worker/thread/asyncWorker.js')
 
 describe('Fixed thread pool test suite ', () => {
   it('Choose worker round robin test', async () => {
@@ -93,7 +101,7 @@ describe('Fixed thread pool test suite ', () => {
   })
 
   it('Should work even without opts in input', async () => {
-    const pool1 = new FixedThreadPool(1, './tests/workers/testWorker.js')
+    const pool1 = new FixedThreadPool(1, './tests/worker/thread/testWorker.js')
     const res = await pool1.execute({ test: 'test' })
     expect(res).toBeFalsy()
   })

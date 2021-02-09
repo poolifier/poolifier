@@ -1,11 +1,16 @@
 const expect = require('expect')
-const { DynamicThreadPool } = require('../lib/index')
+const { DynamicThreadPool } = require('../../../lib/index')
 const min = 1
 const max = 3
-const pool = new DynamicThreadPool(min, max, './tests/workers/testWorker.js', {
-  errorHandler: e => console.error(e),
-  onlineHandler: () => console.log('worker is online')
-})
+const pool = new DynamicThreadPool(
+  min,
+  max,
+  './tests/worker/thread/testWorker.js',
+  {
+    errorHandler: e => console.error(e),
+    onlineHandler: () => console.log('worker is online')
+  }
+)
 
 describe('Dynamic thread pool test suite ', () => {
   it('Verify that the function is executed in a worker thread', async () => {
@@ -72,7 +77,11 @@ describe('Dynamic thread pool test suite ', () => {
   })
 
   it('Should work even without opts in input', async () => {
-    const pool1 = new DynamicThreadPool(1, 1, './tests/workers/testWorker.js')
+    const pool1 = new DynamicThreadPool(
+      1,
+      1,
+      './tests/worker/thread/testWorker.js'
+    )
     const res = await pool1.execute({ test: 'test' })
     expect(res).toBeFalsy()
   })

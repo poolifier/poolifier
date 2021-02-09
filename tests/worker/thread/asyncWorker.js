@@ -1,5 +1,5 @@
 'use strict'
-const { ThreadWorker } = require('../../lib/index')
+const { ThreadWorker } = require('../../../lib/index')
 
 async function sleep (data) {
   return new Promise((resolve, reject) => {
