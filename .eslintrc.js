@@ -20,9 +20,6 @@ module.exports = {
   rules: {
     'no-void': 'off',
 
-    // Disabled because it reports these for js files
-    '@typescript-eslint/no-var-requires': 'off',
-
     // We have some intentionally empty functions
     '@typescript-eslint/no-empty-function': 'off',
 
@@ -30,5 +27,13 @@ module.exports = {
       'error',
       { ignoreProperties: true }
     ]
-  }
+  },
+  overrides: [
+    {
+      files: ['*.js'],
+      rules: {
+        '@typescript-eslint/no-var-requires': 'off'
+      }
+    }
+  ]
 }
