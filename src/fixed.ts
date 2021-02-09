@@ -1,4 +1,4 @@
-import { MessageChannel, SHARE_ENV, Worker, isMainThread } from 'worker_threads'
+import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
 
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 

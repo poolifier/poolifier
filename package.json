@@ -9,8 +9,7 @@
     "test": "npm run build && nyc mocha --exit --timeout 20000 tests/*test.js ",
     "test:debug": "mocha --inspect-brk --exit tests/*test.js ",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "import-sort": "npx import-sort-cli --write '{src,examples}/**/*.ts{,x}'",
-    "format": "prettierx --write .",
+    "format": "prettier --write .; prettierx --write .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },

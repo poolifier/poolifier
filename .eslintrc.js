@@ -34,7 +34,13 @@ module.exports = {
       { ignoreProperties: true }
     ],
 
-    'sort-imports': 'warn'
+    'sort-imports': [
+      'warn',
+      {
+        ignoreMemberSort: true,
+        memberSyntaxSortOrder: ['none', 'all', 'single', 'multiple']
+      }
+    ]
   },
   overrides: [
     {
