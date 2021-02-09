@@ -43,8 +43,9 @@ async function dynamicTest () {
       executions++
       if (executions === tasks) {
         console.log(
-          `Dynamic pool take ${Date.now() -
-            time} to work on ${executions} tasks`
+          `Dynamic pool take ${
+            Date.now() - time
+          } to work on ${executions} tasks`
         )
       }
     })
@@ -73,8 +74,9 @@ async function externalPoolTest () {
     }).then(res => {
       if (tasks === executions) {
         console.log(
-          `External pool take ${Date.now() -
-            time} to work  on ${executions} tasks`
+          `External pool take ${
+            Date.now() - time
+          } to work  on ${executions} tasks`
         )
       }
     })

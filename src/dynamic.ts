@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-
 import {
   FixedThreadPool,
   FixedThreadPoolOptions,
@@ -21,10 +19,12 @@ export type DynamicThreadPoolOptions = FixedThreadPoolOptions
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export class DynamicThreadPool<
   Data = any,
   Response = any
 > extends FixedThreadPool<Data, Response> {
+  /* eslint-enable @typescript-eslint/no-explicit-any */
   public readonly emitter: MyEmitter
 
   /**
@@ -66,7 +66,6 @@ export class DynamicThreadPool<
       worker.port2?.on('message', (message: { kill?: number }) => {
         if (message.kill) {
           worker.postMessage({ kill: 1 })
-          // eslint-disable-next-line no-void
           void worker.terminate()
           // clean workers from data structures
           const workerIndex = this.workers.indexOf(worker)
