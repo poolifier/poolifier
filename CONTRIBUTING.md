@@ -1,28 +1,28 @@
-<h2 id="contribute">How to contribute</h2>
+## How to contribute
 
-[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)<br>
-This repo use standard js style , please use it if you want to contribute <br>
-Take tasks from todo list, develop a new feature or fix a bug and do a pull request.<br>
-Another thing that you can do to contribute is to build something on top of ring-election and link ring-election to your project <br>
+[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)  
+This repo use standard js style, please use it if you want to contribute  
+Take tasks from todo list, develop a new feature or fix a bug and do a pull request.  
+Another thing that you can do to contribute is to build something on top of ring-election and link ring-election to your project
 
-Please ask your PR to be merged on <strong>master</strong> branch . <br>
+Please ask your PR to be merged on **master** branch.
 
-<strong>How to run tests</strong><br>
+**How to run tests**
 
-<strong>Unit tests </strong> <br>
+**Unit tests**
 
 ```bash
   npm run test
 ```
 
-<strong> How to check if your new code is standard style </strong><br>
+**How to check if your new code is standard style**
 
 ```bash
   npm run lint
 ```
 
-<strong>How to lint and format (with prettier) your code</strong><br>
+**How to lint and format (with prettier) your code**
 
 ```bash
-  npm run lint:fix
+  npm run format && npm run lint:fix
 ```
