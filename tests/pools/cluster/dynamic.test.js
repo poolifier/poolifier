@@ -61,7 +61,7 @@ describe('Dynamic cluster pool test suite ', () => {
       })
     })
     pool.destroy()
-    await new Promise(resolve => setTimeout(resolve, 50))
+    await new Promise(resolve => setTimeout(resolve, 200))
     expect(closedWorkers).toBe(min)
   })
 
