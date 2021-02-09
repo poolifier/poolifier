@@ -37,7 +37,8 @@ jspm_packages
 .node_repl_history
 
 # Project specifics
-.vscode/
+.vscode/*
+!.vscode/extensions.json
 
 # Mac
 .DS_Store/
