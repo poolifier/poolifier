@@ -46,26 +46,26 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
     // keep the worker active
     if (!isMainThread) {
       this.interval = setInterval(
-        this._checkAlive.bind(this),
+        this.checkAlive.bind(this),
         this.maxInactiveTime / 2
       )
-      this._checkAlive.bind(this)()
+      this.checkAlive.bind(this)()
     }
     parentPort?.on(
       'message',
       (value: {
         data?: Response
-        _id?: number
+        id?: number
         parent?: MessagePort
         kill?: number
       }) => {
-        if (value?.data && value._id) {
+        if (value?.data && value.id) {
           // here you will receive messages
           // console.log('This is the main thread ' + isMainThread)
           if (this.async) {
-            this.runInAsyncScope(this._runAsync.bind(this), this, fn, value)
+            this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
           } else {
-            this.runInAsyncScope(this._run.bind(this), this, fn, value)
+            this.runInAsyncScope(this.run.bind(this), this, fn, value)
           }
         } else if (value.parent) {
           // save the port to communicate with the main thread
@@ -80,37 +80,37 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
     )
   }
 
-  protected _checkAlive (): void {
+  protected checkAlive (): void {
     if (Date.now() - this.lastTask > this.maxInactiveTime) {
       this.parent?.postMessage({ kill: 1 })
     }
   }
 
-  protected _run (
+  protected run (
     fn: (data: Data) => Response,
-    value: { readonly data: Data; readonly _id: number }
+    value: { readonly data: Data; readonly id: number }
   ): void {
     try {
       const res = fn(value.data)
-      this.parent?.postMessage({ data: res, _id: value._id })
+      this.parent?.postMessage({ data: res, id: value.id })
       this.lastTask = Date.now()
     } catch (e) {
-      this.parent?.postMessage({ error: e, _id: value._id })
+      this.parent?.postMessage({ error: e, id: value.id })
       this.lastTask = Date.now()
     }
   }
 
-  protected _runAsync (
+  protected runAsync (
     fn: (data: Data) => Promise<Response>,
-    value: { readonly data: Data; readonly _id: number }
+    value: { readonly data: Data; readonly id: number }
   ): void {
     fn(value.data)
       .then(res => {
-        this.parent?.postMessage({ data: res, _id: value._id })
+        this.parent?.postMessage({ data: res, id: value.id })
         this.lastTask = Date.now()
       })
       .catch(e => {
-        this.parent?.postMessage({ error: e, _id: value._id })
+        this.parent?.postMessage({ error: e, id: value.id })
         this.lastTask = Date.now()
       })
   }

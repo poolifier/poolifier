@@ -1,8 +1,5 @@
 import { MessageChannel, SHARE_ENV, Worker, isMainThread } from 'worker_threads'
 
-function empty (): void {}
-const _void = {}
-
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 
 export type WorkerWithMessageChannel = Worker & Draft<MessageChannel>
@@ -46,7 +43,7 @@ export class FixedThreadPool<Data = any, Response = any> {
     number
   >()
 
-  protected _id: number = 0
+  protected id: number = 0
 
   /**
    * @param numThreads Num of threads for this worker pool.
@@ -67,7 +64,7 @@ export class FixedThreadPool<Data = any, Response = any> {
     }
 
     for (let i = 1; i <= this.numThreads; i++) {
-      this._newWorker()
+      this.newWorker()
     }
   }
 
@@ -85,30 +82,30 @@ export class FixedThreadPool<Data = any, Response = any> {
    */
   public execute (data: Data): Promise<Response> {
     // configure worker to handle message with the specified task
-    const worker = this._chooseWorker()
+    const worker = this.chooseWorker()
     const previousWorkerIndex = this.tasks.get(worker)
     if (previousWorkerIndex !== undefined) {
       this.tasks.set(worker, previousWorkerIndex + 1)
     } else {
       throw Error('Worker could not be found in tasks map')
     }
-    const id = ++this._id
-    const res = this._execute(worker, id)
-    worker.postMessage({ data: data || _void, _id: id })
+    const id = ++this.id
+    const res = this.internalExecute(worker, id)
+    worker.postMessage({ data: data || {}, id: id })
     return res
   }
 
-  protected _execute (
+  protected internalExecute (
     worker: WorkerWithMessageChannel,
     id: number
   ): Promise<Response> {
     return new Promise((resolve, reject) => {
       const listener = (message: {
-        _id: number
+        id: number
         error?: string
         data: Response
       }): void => {
-        if (message._id === id) {
+        if (message.id === id) {
           worker.port2?.removeListener('message', listener)
           const previousWorkerIndex = this.tasks.get(worker)
           if (previousWorkerIndex !== undefined) {
@@ -124,7 +121,7 @@ export class FixedThreadPool<Data = any, Response = any> {
     })
   }
 
-  protected _chooseWorker (): WorkerWithMessageChannel {
+  protected chooseWorker (): WorkerWithMessageChannel {
     if (this.workers.length - 1 === this.nextWorker) {
       this.nextWorker = 0
       return this.workers[this.nextWorker]
@@ -134,14 +131,14 @@ export class FixedThreadPool<Data = any, Response = any> {
     }
   }
 
-  protected _newWorker (): WorkerWithMessageChannel {
+  protected newWorker (): WorkerWithMessageChannel {
     const worker: WorkerWithMessageChannel = new Worker(this.filePath, {
       env: SHARE_ENV
     })
-    worker.on('error', this.opts.errorHandler ?? empty)
-    worker.on('online', this.opts.onlineHandler ?? empty)
+    worker.on('error', this.opts.errorHandler ?? (() => {}))
+    worker.on('online', this.opts.onlineHandler ?? (() => {}))
     // TODO handle properly when a thread exit
-    worker.on('exit', this.opts.exitHandler ?? empty)
+    worker.on('exit', this.opts.exitHandler ?? (() => {}))
     this.workers.push(worker)
     const { port1, port2 } = new MessageChannel()
     worker.postMessage({ parent: port1 }, [port1])

@@ -42,7 +42,7 @@ export class DynamicThreadPool<
     this.emitter = new MyEmitter()
   }
 
-  protected _chooseWorker (): WorkerWithMessageChannel {
+  protected chooseWorker (): WorkerWithMessageChannel {
     let worker: WorkerWithMessageChannel | undefined
     for (const entry of this.tasks) {
       if (entry[1] === 0) {
@@ -57,10 +57,10 @@ export class DynamicThreadPool<
     } else {
       if (this.workers.length === this.max) {
         this.emitter.emit('FullPool')
-        return super._chooseWorker()
+        return super.chooseWorker()
       }
       // all workers are busy create a new worker
-      const worker = this._newWorker()
+      const worker = this.newWorker()
       worker.port2?.on('message', (message: { kill?: number }) => {
         if (message.kill) {
           worker.postMessage({ kill: 1 })
