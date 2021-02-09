@@ -1,8 +1,8 @@
-import { AsyncResource } from 'async_hooks';
-import * as cluster from 'cluster';
-import { WorkerOptions } from './worker-options';
+import * as cluster from 'cluster'
 
-type MessageValue<Data> = { readonly data?: Data; readonly _id?: number; readonly kill?: number };
+import { AsyncResource } from 'async_hooks'
+import { WorkerOptions } from './worker-options'
+import { MessageValue } from '../utility-types'
 
 /**
  * An example worker that will be always alive, you just need to **extend** this class if you want a static pool.
@@ -14,73 +14,85 @@ type MessageValue<Data> = { readonly data?: Data; readonly _id?: number; readonl
  * @since 0.0.1
  */
 export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
-    protected readonly maxInactiveTime: number;
-    protected readonly async: boolean;
-    protected lastTask: number;
-    protected readonly interval: NodeJS.Timeout;
-    // protected parent: MessagePort;
+  protected readonly maxInactiveTime: number
+  protected readonly async: boolean
+  protected lastTask: number
+  protected readonly interval: NodeJS.Timeout
+  // protected parent: MessagePort;
 
-    public constructor(fn: (data: Data) => Response, public readonly opts: WorkerOptions = {}) {
-        super('worker-cluster-pool:pioardi');
+  public constructor (
+    fn: (data: Data) => Response,
+    public readonly opts: WorkerOptions = {}
+  ) {
+    super('worker-cluster-pool:pioardi')
 
-        this.maxInactiveTime = this.opts.maxInactiveTime || 1000 * 60;
-        this.async = !!this.opts.async;
-        this.lastTask = Date.now();
-        if (!fn) throw new Error('Fn parameter is mandatory');
-        // keep the worker active
-        if (!cluster.isMaster) {
-            // console.log('ClusterWorker#constructor', 'is not master');
-            this.interval = setInterval(this._checkAlive.bind(this), this.maxInactiveTime / 2);
-            this._checkAlive.bind(this)();
+    this.maxInactiveTime = this.opts.maxInactiveTime || 1000 * 60
+    this.async = !!this.opts.async
+    this.lastTask = Date.now()
+    if (!fn) throw new Error('Fn parameter is mandatory')
+    // keep the worker active
+    if (!cluster.isMaster) {
+      // console.log('ClusterWorker#constructor', 'is not master');
+      this.interval = setInterval(
+        this._checkAlive.bind(this),
+        this.maxInactiveTime / 2
+      )
+      this._checkAlive.bind(this)()
+    }
+    cluster.worker.on('message', (value: MessageValue<Data>) => {
+      // console.log("cluster.on('message', value)", value);
+      if (value && value.data && value._id) {
+        // here you will receive messages
+        // console.log('This is the main thread ' + isMainThread)
+        if (this.async) {
+          this.runInAsyncScope(this._runAsync.bind(this), this, fn, value)
+        } else {
+          this.runInAsyncScope(this._run.bind(this), this, fn, value)
         }
-        cluster.worker.on('message', (value: MessageValue<Data>) => {
-            // console.log("cluster.on('message', value)", value);
-            if (value && value.data && value._id) {
-                // here you will receive messages
-                // console.log('This is the main thread ' + isMainThread)
-                if (this.async) {
-                    this.runInAsyncScope(this._runAsync.bind(this), this, fn, value);
-                } else {
-                    this.runInAsyncScope(this._run.bind(this), this, fn, value);
-                }
-                // } else if (value.parent) {
-                //     // save the port to communicate with the main thread
-                //     // this will be received once
-                //     this.parent = value.parent;
-            } else if (value.kill) {
-                // here is time to kill this thread, just clearing the interval
-                clearInterval(this.interval);
-                this.emitDestroy();
-            }
-        });
-    }
+        // } else if (value.parent) {
+        //     // save the port to communicate with the main thread
+        //     // this will be received once
+        //     this.parent = value.parent;
+      } else if (value.kill) {
+        // here is time to kill this thread, just clearing the interval
+        clearInterval(this.interval)
+        this.emitDestroy()
+      }
+    })
+  }
 
-    protected _checkAlive(): void {
-        if (Date.now() - this.lastTask > this.maxInactiveTime) {
-            cluster.worker.send({ kill: 1 });
-        }
+  protected _checkAlive (): void {
+    if (Date.now() - this.lastTask > this.maxInactiveTime) {
+      cluster.worker.send({ kill: 1 })
     }
+  }
 
-    protected _run(fn: (data: Data) => Response, value: MessageValue<Data>): void {
-        try {
-            const res: Response = fn(value.data);
-            cluster.worker.send({ data: res, _id: value._id });
-            this.lastTask = Date.now();
-        } catch (e) {
-            cluster.worker.send({ error: e, _id: value._id });
-            this.lastTask = Date.now();
-        }
+  protected _run (
+    fn: (data: Data) => Response,
+    value: MessageValue<Data>
+  ): void {
+    try {
+      const res: Response = fn(value.data)
+      cluster.worker.send({ data: res, _id: value._id })
+      this.lastTask = Date.now()
+    } catch (e) {
+      cluster.worker.send({ error: e, _id: value._id })
+      this.lastTask = Date.now()
     }
+  }
 
-    protected _runAsync(fn: (data: Data) => Promise<Response>, value: MessageValue<Data>): void {
-        fn(value.data)
-            .then((res) => {
-                cluster.worker.send({ data: res, _id: value._id });
-                this.lastTask = Date.now();
-            })
-            .catch((e) => {
-                cluster.worker.send({ error: e, _id: value._id });
-                this.lastTask = Date.now();
-            });
-    }
+  protected _runAsync (
+    fn: (data: Data) => Promise<Response>,
+    value: MessageValue<Data>
+  ): void {
+    fn(value.data)
+      .then(res => {
+        cluster.worker.send({ data: res, _id: value._id })
+        this.lastTask = Date.now()
+      })
+      .catch(e => {
+        cluster.worker.send({ error: e, _id: value._id })
+        this.lastTask = Date.now()
+      })
+  }
 }
