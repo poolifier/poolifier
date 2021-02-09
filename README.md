@@ -17,19 +17,21 @@ Moreover you can execute your CPU tasks using an API designed to improve the **d
 ## Contents
 
 <h3 align="center">
+  <a href="#overview">Overview</a>
+  <span> · </span>
   <a href="#installation">Installation</a>
   <span> · </span>
   <a href="#usage">Usage</a>
   <span> · </span>
+  <a href="#node-versions">  Node versions</a>
+  <span> · </span>
   <a href="#api">API</a>
   <span> · </span>
-  <a href="#cyp">Choose a pool</a>
+  <a href="#choose-your-pool">Choose your pool</a>
   <span> · </span>
   <a href="#contribute">Contribute</a>
   <span> · </span>
-  <a href="#Team">Team</a>
-  <span> · </span>
-  <a href="#nv">Compatibility</a>
+  <a href="#team">Team</a>
   <span> · </span>
   <a href="#license">License</a>
 </h3>
