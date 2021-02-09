@@ -1,6 +1,6 @@
 import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
 
-export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
+import { Draft } from '../../utility-types'
 
 export type WorkerWithMessageChannel = Worker & Draft<MessageChannel>
 
