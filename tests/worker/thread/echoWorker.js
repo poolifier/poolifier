@@ -1,5 +1,5 @@
 'use strict'
-const { ThreadWorker } = require('../../lib/index')
+const { ThreadWorker } = require('../../../lib/index')
 
 function echo (data) {
   return data
