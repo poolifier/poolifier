@@ -32,6 +32,14 @@ module.exports = {
     '@typescript-eslint/no-inferrable-types': [
       'error',
       { ignoreProperties: true }
+    ],
+
+    'sort-imports': [
+      'warn',
+      {
+        ignoreMemberSort: true,
+        ignoreDeclarationSort: true
+      }
     ]
   },
   overrides: [
