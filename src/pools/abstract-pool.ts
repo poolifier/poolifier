@@ -94,6 +94,15 @@ export abstract class AbstractPool<
     message: MessageValue<Data>
   ): void
 
+  protected addWorker (worker: Worker): void {
+    const previousWorkerIndex = this.tasks.get(worker)
+    if (previousWorkerIndex !== undefined) {
+      this.tasks.set(worker, previousWorkerIndex + 1)
+    } else {
+      throw Error('Worker could not be found in tasks map')
+    }
+  }
+
   /**
    * Execute the task specified into the constructor with the data parameter.
    *
@@ -103,12 +112,7 @@ export abstract class AbstractPool<
   public execute (data: Data): Promise<Response> {
     // configure worker to handle message with the specified task
     const worker = this.chooseWorker()
-    const previousWorkerIndex = this.tasks.get(worker)
-    if (previousWorkerIndex !== undefined) {
-      this.tasks.set(worker, previousWorkerIndex + 1)
-    } else {
-      throw Error('Worker could not be found in tasks map')
-    }
+    this.addWorker(worker)
     const id = ++this.id
     const res = this.internalExecute(worker, id)
     this.sendToWorker(worker, { data: data || ({} as Data), id: id })
@@ -130,12 +134,7 @@ export abstract class AbstractPool<
       const listener: (message: MessageValue<Response>) => void = message => {
         if (message.id === id) {
           this.unregisterWorkerMessageListener(worker, listener)
-          const previousWorkerIndex = this.tasks.get(worker)
-          if (previousWorkerIndex !== undefined) {
-            this.tasks.set(worker, previousWorkerIndex + 1)
-          } else {
-            throw Error('Worker could not be found in tasks map')
-          }
+          this.addWorker(worker)
           if (message.error) reject(message.error)
           else resolve(message.data as Response)
         }
