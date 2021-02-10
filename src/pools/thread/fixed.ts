@@ -32,10 +32,10 @@ export class FixedThreadPool<Data = any, Response = any> extends AbstractPool<
     super(isMainThread, () => {}, numThreads, filePath, opts)
   }
 
-  public async destroy (): Promise<void> {
-    for (const worker of this.workers) {
-      await worker.terminate()
-    }
+  protected async destroyWorker (
+    worker: ThreadWorkerWithMessageChannel
+  ): Promise<void> {
+    await worker.terminate()
   }
 
   /**

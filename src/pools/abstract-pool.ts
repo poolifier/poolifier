@@ -53,7 +53,13 @@ export abstract class AbstractPool<Worker, Data = any, Response = any> {
     }
   }
 
-  public abstract destroy (): void
+  public async destroy (): Promise<void> {
+    for (const worker of this.workers) {
+      await this.destroyWorker(worker)
+    }
+  }
+
+  protected abstract destroyWorker (worker: Worker): void
 
   public abstract execute (data: Data): Promise<Response>
 
