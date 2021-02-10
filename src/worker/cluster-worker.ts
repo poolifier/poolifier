@@ -18,7 +18,6 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
   protected readonly async: boolean
   protected lastTask: number
   protected readonly interval?: NodeJS.Timeout
-  // protected parent: MessagePort
 
   public constructor (
     fn: (data: Data) => Response,
@@ -49,10 +48,6 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
         } else {
           this.runInAsyncScope(this.run.bind(this), this, fn, value)
         }
-        // } else if (value.parent) {
-        //     // save the port to communicate with the main thread
-        //     // this will be received once
-        //     this.parent = value.parent
       } else if (value.kill) {
         // here is time to kill this thread, just clearing the interval
         if (this.interval) clearInterval(this.interval)
