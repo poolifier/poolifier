@@ -32,12 +32,11 @@ export abstract class AbstractPool<Worker, Data = any, Response = any> {
   protected id: number = 0
 
   public constructor (
-    isMain: boolean,
     public readonly numWorkers: number,
     public readonly filePath: string,
     public readonly opts: PoolOptions<Worker> = { maxTasks: 1000 }
   ) {
-    if (!isMain) {
+    if (!this.isMain()) {
       throw new Error('Cannot start a pool from a worker!')
     }
     // TODO christopher 2021-02-07: Improve this check e.g. with a pattern or blank check
@@ -55,6 +54,8 @@ export abstract class AbstractPool<Worker, Data = any, Response = any> {
   protected setupHook (): void {
     // Can be overridden
   }
+
+  protected abstract isMain (): boolean
 
   public async destroy (): Promise<void> {
     for (const worker of this.workers) {
