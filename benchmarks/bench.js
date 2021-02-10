@@ -77,7 +77,7 @@ async function test () {
     })
     // add listeners
     .on('cycle', function (event) {
-      console.log(String(event.target))
+      console.log(event.target.toString())
     })
     .on('complete', function () {
       console.log(
