@@ -3,6 +3,7 @@ import type { MessageValue } from '../utility-types'
 import type { WorkerOptions } from './worker-options'
 
 export abstract class AbstractWorker<
+  MainWorker,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Data = any,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,15 +43,49 @@ export abstract class AbstractWorker<
     }
   }
 
-  protected abstract checkAlive (): void
+  protected abstract getMainWorker (): MainWorker
 
-  protected abstract run (
+  protected abstract sendToMainWorker (message: MessageValue<Response>): void
+
+  protected checkAlive (): void {
+    if (Date.now() - this.lastTask > this.maxInactiveTime) {
+      this.sendToMainWorker({ kill: 1 })
+    }
+  }
+
+  protected handleError (e: Error | string): string {
+    return (e as unknown) as string
+  }
+
+  protected run (
     fn: (data?: Data) => Response,
     value: MessageValue<Data>
-  ): void
+  ): void {
+    try {
+      const res = fn(value.data)
+      this.sendToMainWorker({ data: res, id: value.id })
+      this.lastTask = Date.now()
+    } catch (e) {
+      const err = this.handleError(e)
+      this.sendToMainWorker({ error: err, id: value.id })
+      this.lastTask = Date.now()
+    }
+  }
 
-  protected abstract runAsync (
+  protected runAsync (
     fn: (data?: Data) => Promise<Response>,
-    value: { readonly data: Data; readonly id: number }
-  ): void
+    value: MessageValue<Data>
+  ): void {
+    fn(value.data)
+      .then(res => {
+        this.sendToMainWorker({ data: res, id: value.id })
+        this.lastTask = Date.now()
+        return null
+      })
+      .catch(e => {
+        const err = this.handleError(e)
+        this.sendToMainWorker({ error: err, id: value.id })
+        this.lastTask = Date.now()
+      })
+  }
 }
