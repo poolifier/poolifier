@@ -145,13 +145,8 @@ export class FixedClusterPool<Data = any, Response = any> {
     // TODO handle properly when a worker exit
     worker.on('exit', this.opts.exitHandler ?? (() => {}))
     this.workers.push(worker)
-    // const { port1, port2 } = new MessageChannel()
-    // worker.send({ parent: port1 }, [port1])
-    // worker.port1 = port1
-    // worker.port2 = port2
     // we will attach a listener for every task,
     // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
-    // worker.port2.setMaxListeners(this.opts.maxTasks ?? 1000)
     worker.setMaxListeners(this.opts.maxTasks ?? 1000)
     // init tasks map
     this.tasks.set(worker, 0)
