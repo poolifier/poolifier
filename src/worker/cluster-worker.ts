@@ -76,7 +76,8 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
       worker.send({ data: res, id: value.id })
       this.lastTask = Date.now()
     } catch (e) {
-      worker.send({ error: e, id: value.id })
+      const err = e instanceof Error ? e.message : e
+      worker.send({ error: err, id: value.id })
       this.lastTask = Date.now()
     }
   }
@@ -91,7 +92,8 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
         this.lastTask = Date.now()
       })
       .catch(e => {
-        worker.send({ error: e, id: value.id })
+        const err = e instanceof Error ? e.message : e
+        worker.send({ error: err, id: value.id })
         this.lastTask = Date.now()
       })
   }
