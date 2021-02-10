@@ -8,10 +8,14 @@ const pool = new FixedThreadPool(15, './yourWorker.js', {
 const start = Date.now()
 const iterations = 1000
 for (let i = 0; i <= iterations; i++) {
-  pool.execute({}).then(res => {
-    resolved++
-    if (resolved === iterations) {
-      console.log('Time take is ' + (Date.now() - start))
-    }
-  })
+  pool
+    .execute({})
+    .then(res => {
+      resolved++
+      if (resolved === iterations) {
+        return console.log('Time take is ' + (Date.now() - start))
+      }
+      return null
+    })
+    .catch(err => console.error(err))
 }

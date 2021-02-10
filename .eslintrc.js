@@ -9,7 +9,7 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: 'module'
   },
-  plugins: ['@typescript-eslint', 'prettierx'],
+  plugins: ['@typescript-eslint', 'promise', 'prettierx'],
   extends: [
     'standard',
     'eslint:recommended',
@@ -17,11 +17,9 @@ module.exports = {
     'plugin:import/errors',
     'plugin:import/warnings',
     'plugin:import/typescript',
+    'plugin:promise/recommended',
     'plugin:prettierx/standardx',
-    'plugin:prettierx/@typescript-eslint',
-    'prettier',
-    'prettier/standard',
-    'prettier/@typescript-eslint'
+    'plugin:prettierx/@typescript-eslint'
   ],
   rules: {
     'no-void': 'off',
@@ -45,15 +43,22 @@ module.exports = {
   overrides: [
     {
       files: ['*.js'],
+      extends: 'plugin:node/recommended',
       rules: {
         '@typescript-eslint/no-unused-vars': 'off',
         '@typescript-eslint/no-var-requires': 'off'
       }
     },
     {
-      files: ['examples/typescript/*.ts'],
+      files: ['examples/typescript/**/*.ts'],
       rules: {
         'import/no-unresolved': 'off'
+      }
+    },
+    {
+      files: ['examples/**/*.js'],
+      rules: {
+        'node/no-missing-require': 'off'
       }
     }
   ]
