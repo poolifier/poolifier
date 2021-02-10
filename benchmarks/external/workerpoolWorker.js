@@ -12,5 +12,5 @@ function yourFunction (data) {
 }
 
 workerpool.worker({
-  yourFunction
+  yourFunction: yourFunction
 })
