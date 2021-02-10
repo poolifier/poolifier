@@ -80,7 +80,6 @@ async function test () {
       console.log(String(event.target))
     })
     .on('complete', function () {
-      this.filter('fastest').map('name')
       console.log(
         'Fastest is ' +
           LIST_FORMATTER.format(this.filter('fastest').map('name'))
