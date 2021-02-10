@@ -1,9 +1,6 @@
 import type { Worker } from 'cluster'
-import { EventEmitter } from 'events'
 import type { PoolOptions } from '../abstract-pool'
 import { FixedClusterPool } from './fixed'
-
-class MyEmitter extends EventEmitter {}
 
 /**
  * A cluster pool with a min/max number of workers, is possible to execute tasks in sync or async mode as you prefer.
@@ -20,8 +17,6 @@ export class DynamicClusterPool<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Response = any
 > extends FixedClusterPool<Data, Response> {
-  public readonly emitter: MyEmitter
-
   /**
    * @param min Min number of workers that will be always active
    * @param max Max number of workers that will be active
@@ -35,8 +30,6 @@ export class DynamicClusterPool<
     opts: PoolOptions<Worker> = { maxTasks: 1000 }
   ) {
     super(min, filename, opts)
-
-    this.emitter = new MyEmitter()
   }
 
   protected chooseWorker (): Worker {

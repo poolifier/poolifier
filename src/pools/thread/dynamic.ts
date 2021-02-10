@@ -1,9 +1,6 @@
-import { EventEmitter } from 'events'
 import type { PoolOptions } from '../abstract-pool'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
-
-class MyEmitter extends EventEmitter {}
 
 /**
  * A thread pool with a min/max number of threads, is possible to execute tasks in sync or async mode as you prefer.
@@ -20,8 +17,6 @@ export class DynamicThreadPool<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Response = any
 > extends FixedThreadPool<Data, Response> {
-  public readonly emitter: MyEmitter
-
   /**
    * @param min Min number of threads that will be always active
    * @param max Max number of threads that will be active
@@ -35,8 +30,6 @@ export class DynamicThreadPool<
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
   ) {
     super(min, filename, opts)
-
-    this.emitter = new MyEmitter()
   }
 
   protected chooseWorker (): ThreadWorkerWithMessageChannel {

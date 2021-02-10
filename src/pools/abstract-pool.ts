@@ -1,3 +1,4 @@
+import EventEmitter from 'events'
 import type { MessageValue } from '../utility-types'
 
 export type ErrorHandler<Worker> = (this: Worker, e: Error) => void
@@ -31,6 +32,8 @@ interface IWorker {
   on(event: 'exit', handler: ExitHandler<this>): void
 }
 
+class PoolEmitter extends EventEmitter {}
+
 export abstract class AbstractPool<
   Worker extends IWorker,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,6 +48,8 @@ export abstract class AbstractPool<
    * `workerId` as key and an integer value
    */
   public readonly tasks: Map<Worker, number> = new Map<Worker, number>()
+
+  public readonly emitter: PoolEmitter
 
   protected id: number = 0
 
@@ -66,6 +71,8 @@ export abstract class AbstractPool<
     for (let i = 1; i <= this.numWorkers; i++) {
       this.internalNewWorker()
     }
+
+    this.emitter = new PoolEmitter()
   }
 
   protected setupHook (): void {
