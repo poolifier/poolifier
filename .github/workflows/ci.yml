@@ -32,12 +32,12 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Benchmark
-        run: npm run benchmark
-
       - name: Test
         if: github.ref != 'refs/heads/master'
         run: npm run test
+
+      - name: Benchmark
+        run: npm run benchmark
 
       - name: Test & Coverage
         if: github.ref == 'refs/heads/master'
