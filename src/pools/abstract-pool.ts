@@ -33,7 +33,6 @@ export abstract class AbstractPool<Worker, Data = any, Response = any> {
 
   public constructor (
     isMain: boolean,
-    setupHook: (filePath: string) => void = () => {},
     public readonly numWorkers: number,
     public readonly filePath: string,
     public readonly opts: PoolOptions<Worker> = { maxTasks: 1000 }
@@ -46,11 +45,15 @@ export abstract class AbstractPool<Worker, Data = any, Response = any> {
       throw new Error('Please specify a file with a worker implementation')
     }
 
-    setupHook(this.filePath)
+    this.setupHook()
 
     for (let i = 1; i <= this.numWorkers; i++) {
       this.newWorker()
     }
+  }
+
+  protected setupHook (): void {
+    // Can be overridden
   }
 
   public async destroy (): Promise<void> {

@@ -29,7 +29,7 @@ export class FixedThreadPool<Data = any, Response = any> extends AbstractPool<
     filePath: string,
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
   ) {
-    super(isMainThread, () => {}, numThreads, filePath, opts)
+    super(isMainThread, numThreads, filePath, opts)
   }
 
   protected async destroyWorker (

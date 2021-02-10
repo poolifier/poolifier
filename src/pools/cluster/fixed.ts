@@ -28,17 +28,13 @@ export class FixedClusterPool<Data = any, Response = any> extends AbstractPool<
     filePath: string,
     opts: PoolOptions<Worker> = { maxTasks: 1000 }
   ) {
-    super(
-      isMaster,
-      filePath => {
-        setupMaster({
-          exec: filePath
-        })
-      },
-      numWorkers,
-      filePath,
-      opts
-    )
+    super(isMaster, numWorkers, filePath, opts)
+  }
+
+  protected setupHook (): void {
+    setupMaster({
+      exec: this.filePath
+    })
   }
 
   protected destroyWorker (worker: Worker): void {
