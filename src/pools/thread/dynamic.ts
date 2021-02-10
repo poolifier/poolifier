@@ -1,3 +1,4 @@
+import type { MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
@@ -51,10 +52,10 @@ export class DynamicThreadPool<
       }
       // all workers are busy create a new worker
       const worker = this.internalNewWorker()
-      worker.port2?.on('message', (message: { kill?: number }) => {
+      worker.port2?.on('message', (message: MessageValue<Data>) => {
         if (message.kill) {
-          worker.postMessage({ kill: 1 })
-          void worker.terminate()
+          this.sendToWorker(worker, { kill: 1 })
+          void this.destroyWorker(worker)
           // clean workers from data structures
           const workerIndex = this.workers.indexOf(worker)
           this.workers.splice(workerIndex, 1)
