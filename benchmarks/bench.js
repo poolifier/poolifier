@@ -57,7 +57,7 @@ async function dynamicTest () {
         .then(res => {
           executions++
           if (executions === tasks) {
-            resolve('FINISH')
+            return resolve('FINISH')
           }
           return null
         })
