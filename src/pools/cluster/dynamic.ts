@@ -1,10 +1,9 @@
+import type { Worker } from 'cluster'
 import { EventEmitter } from 'events'
-import type { FixedClusterPoolOptions, WorkerWithMessageChannel } from './fixed'
+import type { PoolOptions } from '../abstract-pool'
 import { FixedClusterPool } from './fixed'
 
 class MyEmitter extends EventEmitter {}
-
-export type DynamicClusterPoolOptions = FixedClusterPoolOptions
 
 /**
  * A cluster pool with a min/max number of workers, is possible to execute tasks in sync or async mode as you prefer.
@@ -30,18 +29,18 @@ export class DynamicClusterPool<
    * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
-    public readonly min: number,
+    min: number,
     public readonly max: number,
-    public readonly filename: string,
-    public readonly opts: DynamicClusterPoolOptions = { maxTasks: 1000 }
+    filename: string,
+    opts: PoolOptions<Worker> = { maxTasks: 1000 }
   ) {
     super(min, filename, opts)
 
     this.emitter = new MyEmitter()
   }
 
-  protected chooseWorker (): WorkerWithMessageChannel {
-    let worker: WorkerWithMessageChannel | undefined
+  protected chooseWorker (): Worker {
+    let worker: Worker | undefined
     for (const entry of this.tasks) {
       if (entry[1] === 0) {
         worker = entry[0]

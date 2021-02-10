@@ -1,28 +1,9 @@
 import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
 import type { Draft, MessageValue } from '../../utility-types'
+import type { PoolOptions } from '../abstract-pool'
+import { AbstractPool } from '../abstract-pool'
 
-export type WorkerWithMessageChannel = Worker & Draft<MessageChannel>
-
-export interface FixedThreadPoolOptions {
-  /**
-   * A function that will listen for error event on each worker thread.
-   */
-  errorHandler?: (this: Worker, e: Error) => void
-  /**
-   * A function that will listen for online event on each worker thread.
-   */
-  onlineHandler?: (this: Worker) => void
-  /**
-   * A function that will listen for exit event on each worker thread.
-   */
-  exitHandler?: (this: Worker, code: number) => void
-  /**
-   * This is just to avoid not useful warnings message, is used to set `maxListeners` on event emitters (workers are event emitters).
-   *
-   * @default 1000
-   */
-  maxTasks?: number
-}
+export type ThreadWorkerWithMessageChannel = Worker & Draft<MessageChannel>
 
 /**
  * A thread pool with a static number of threads, is possible to execute tasks in sync or async mode as you prefer.
@@ -33,39 +14,22 @@ export interface FixedThreadPoolOptions {
  * @since 0.0.1
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class FixedThreadPool<Data = any, Response = any> {
-  public readonly workers: WorkerWithMessageChannel[] = []
-  public nextWorker: number = 0
-
-  // threadId as key and an integer value
-  public readonly tasks: Map<WorkerWithMessageChannel, number> = new Map<
-    WorkerWithMessageChannel,
-    number
-  >()
-
-  protected id: number = 0
-
+export class FixedThreadPool<Data = any, Response = any> extends AbstractPool<
+  ThreadWorkerWithMessageChannel,
+  Data,
+  Response
+> {
   /**
    * @param numThreads Num of threads for this worker pool.
    * @param filePath A file path with implementation of `ThreadWorker` class, relative path is fine.
    * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
-    public readonly numThreads: number,
-    public readonly filePath: string,
-    public readonly opts: FixedThreadPoolOptions = { maxTasks: 1000 }
+    numThreads: number,
+    filePath: string,
+    opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
   ) {
-    if (!isMainThread) {
-      throw new Error('Cannot start a thread pool from a worker thread !!!')
-    }
-    // TODO christopher 2021-02-07: Improve this check e.g. with a pattern or blank check
-    if (!this.filePath) {
-      throw new Error('Please specify a file with a worker implementation')
-    }
-
-    for (let i = 1; i <= this.numThreads; i++) {
-      this.newWorker()
-    }
+    super(isMainThread, () => {}, numThreads, filePath, opts)
   }
 
   public async destroy (): Promise<void> {
@@ -96,7 +60,7 @@ export class FixedThreadPool<Data = any, Response = any> {
   }
 
   protected internalExecute (
-    worker: WorkerWithMessageChannel,
+    worker: ThreadWorkerWithMessageChannel,
     id: number
   ): Promise<Response> {
     return new Promise((resolve, reject) => {
@@ -117,18 +81,8 @@ export class FixedThreadPool<Data = any, Response = any> {
     })
   }
 
-  protected chooseWorker (): WorkerWithMessageChannel {
-    if (this.workers.length - 1 === this.nextWorker) {
-      this.nextWorker = 0
-      return this.workers[this.nextWorker]
-    } else {
-      this.nextWorker++
-      return this.workers[this.nextWorker]
-    }
-  }
-
-  protected newWorker (): WorkerWithMessageChannel {
-    const worker: WorkerWithMessageChannel = new Worker(this.filePath, {
+  protected newWorker (): ThreadWorkerWithMessageChannel {
+    const worker: ThreadWorkerWithMessageChannel = new Worker(this.filePath, {
       env: SHARE_ENV
     })
     worker.on('error', this.opts.errorHandler ?? (() => {}))

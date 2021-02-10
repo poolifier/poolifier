@@ -5,16 +5,8 @@ import { FixedThreadPool } from './pools/thread/fixed'
 import { ClusterWorker } from './worker/cluster-worker'
 import { ThreadWorker } from './worker/thread-worker'
 
-export type { DynamicClusterPoolOptions } from './pools/cluster/dynamic'
-export type {
-  FixedClusterPoolOptions,
-  WorkerWithMessageChannel as ClusterWorkerWithMessageChannel
-} from './pools/cluster/fixed'
-export type { DynamicThreadPoolOptions } from './pools/thread/dynamic'
-export type {
-  FixedThreadPoolOptions,
-  WorkerWithMessageChannel as ThreadWorkerWithMessageChannel
-} from './pools/thread/fixed'
+export type { PoolOptions } from './pools/abstract-pool'
+export type { ThreadWorkerWithMessageChannel } from './pools/thread/fixed'
 export type { WorkerOptions } from './worker/worker-options'
 export {
   FixedThreadPool,
