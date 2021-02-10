@@ -80,8 +80,8 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
   }
 
   protected runAsync (
-    fn: (data: Data) => Promise<Response>,
-    value: { readonly data: Data; readonly id: number }
+    fn: (data?: Data) => Promise<Response>,
+    value: MessageValue<Data>
   ): void {
     fn(value.data)
       .then(res => {
