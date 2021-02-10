@@ -1,6 +1,6 @@
-import { AsyncResource } from 'async_hooks'
 import { isMainThread, parentPort } from 'worker_threads'
 import type { MessageValue } from '../utility-types'
+import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
 /**
@@ -13,31 +13,15 @@ import type { WorkerOptions } from './worker-options'
  * @since 0.0.1
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
-  protected readonly maxInactiveTime: number
-  protected readonly async: boolean
-  protected lastTask: number
-  protected readonly interval?: NodeJS.Timeout
+export class ThreadWorker<Data = any, Response = any> extends AbstractWorker<
+  Data,
+  Response
+> {
   protected parent?: MessagePort
 
-  public constructor (
-    fn: (data: Data) => Response,
-    public readonly opts: WorkerOptions = {}
-  ) {
-    super('worker-thread-pool:pioardi')
+  public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
+    super('worker-thread-pool:pioardi', isMainThread, fn, opts)
 
-    this.maxInactiveTime = this.opts.maxInactiveTime ?? 1000 * 60
-    this.async = !!this.opts.async
-    this.lastTask = Date.now()
-    if (!fn) throw new Error('Fn parameter is mandatory')
-    // keep the worker active
-    if (!isMainThread) {
-      this.interval = setInterval(
-        this.checkAlive.bind(this),
-        this.maxInactiveTime / 2
-      )
-      this.checkAlive.bind(this)()
-    }
     parentPort?.on('message', (value: MessageValue<Data>) => {
       if (value?.data && value.id) {
         // here you will receive messages

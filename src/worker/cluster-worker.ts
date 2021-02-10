@@ -1,6 +1,6 @@
-import { AsyncResource } from 'async_hooks'
 import { isMaster, worker } from 'cluster'
 import type { MessageValue } from '../utility-types'
+import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
 /**
@@ -13,31 +13,13 @@ import type { WorkerOptions } from './worker-options'
  * @since 2.0.0
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
-  protected readonly maxInactiveTime: number
-  protected readonly async: boolean
-  protected lastTask: number
-  protected readonly interval?: NodeJS.Timeout
+export class ClusterWorker<Data = any, Response = any> extends AbstractWorker<
+  Data,
+  Response
+> {
+  public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
+    super('worker-cluster-pool:pioardi', isMaster, fn, opts)
 
-  public constructor (
-    fn: (data: Data) => Response,
-    public readonly opts: WorkerOptions = {}
-  ) {
-    super('worker-cluster-pool:pioardi')
-
-    this.maxInactiveTime = this.opts.maxInactiveTime ?? 1000 * 60
-    this.async = !!this.opts.async
-    this.lastTask = Date.now()
-    if (!fn) throw new Error('Fn parameter is mandatory')
-    // keep the worker active
-    if (!isMaster) {
-      // console.log('ClusterWorker#constructor', 'is not master')
-      this.interval = setInterval(
-        this.checkAlive.bind(this),
-        this.maxInactiveTime / 2
-      )
-      this.checkAlive.bind(this)()
-    }
     worker.on('message', (value: MessageValue<Data>) => {
       // console.log("cluster.on('message', value)", value)
       if (value?.data && value.id) {
@@ -67,7 +49,7 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
     value: MessageValue<Data>
   ): void {
     try {
-      const res = fn(value.data as Data)
+      const res = fn(value.data)
       worker.send({ data: res, id: value.id })
       this.lastTask = Date.now()
     } catch (e) {
