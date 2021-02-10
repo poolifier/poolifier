@@ -22,6 +22,15 @@ const errorPool = new FixedClusterPool(
     onlineHandler: () => console.log('worker is online')
   }
 )
+
+const asyncErrorPool = new FixedClusterPool(
+  1,
+  './tests/worker/cluster/asyncErrorWorker.js',
+  {
+    errorHandler: e => console.error(e),
+    onlineHandler: () => console.log('worker is online')
+  }
+)
 const asyncPool = new FixedClusterPool(
   1,
   './tests/worker/cluster/asyncWorker.js'
@@ -60,7 +69,7 @@ describe('Fixed cluster pool test suite ', () => {
     expect(result.f).toBe(data.f)
   })
 
-  it('Verify that error handling is working properly', async () => {
+  it('Verify that error handling is working properly:sync', async () => {
     const data = { f: 10 }
     let inError
     try {
@@ -71,6 +80,19 @@ describe('Fixed cluster pool test suite ', () => {
     expect(inError).toBeDefined()
     expect(typeof inError === 'string').toBeTruthy()
     expect(inError).toBe('Error Message from ClusterWorker')
+  })
+
+  it('Verify that error handling is working properly:async', async () => {
+    const data = { f: 10 }
+    let inError
+    try {
+      await asyncErrorPool.execute(data)
+    } catch (e) {
+      inError = e
+    }
+    expect(inError).toBeDefined()
+    expect(typeof inError === 'string').toBeTruthy()
+    expect(inError).toBe('Error Message from ClusterWorker:async')
   })
 
   it('Verify that async function is working properly', async () => {
