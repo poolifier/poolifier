@@ -1,5 +1,6 @@
-import { AsyncResource } from 'async_hooks'
 import { isMainThread, parentPort } from 'worker_threads'
+
+import { AsyncResource } from 'async_hooks'
 
 export interface ThreadWorkerOptions {
   /**
@@ -108,7 +109,7 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
       .then(res => {
         this.parent?.postMessage({ data: res, id: value.id })
         this.lastTask = Date.now()
-        return res
+        return null
       })
       .catch(e => {
         this.parent?.postMessage({ error: e, id: value.id })
