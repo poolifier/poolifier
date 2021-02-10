@@ -5,6 +5,11 @@ on:
     branches:
       - master
   pull_request:
+  workflow_dispatch:
+    inputs:
+      withBenchmark:
+        description: 'With Benchmark?'
+        default: false
 
 jobs:
   build:
@@ -44,3 +49,7 @@ jobs:
           npm run coverage
         env:
           CI: true
+
+      - name: Benchmark
+        if: github.event.inputs.withBenchmark
+        run: npm run benchmark
