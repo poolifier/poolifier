@@ -5,6 +5,11 @@ const { DynamicThreadPool } = require('../lib/index')
 const size = 30
 const tasks = 1
 
+const LIST_FORMATTER = new Intl.ListFormat('en-US', {
+  style: 'long',
+  type: 'conjunction'
+})
+
 // pools
 const fixedPool = new FixedThreadPool(size, './threadWorker.js', {
   maxTasks: 10000
@@ -76,7 +81,10 @@ async function test () {
     })
     .on('complete', function () {
       this.filter('fastest').map('name')
-      console.log('Fastest is ' + this.filter('fastest').map('name'))
+      console.log(
+        'Fastest is ' +
+          LIST_FORMATTER.format(this.filter('fastest').map('name'))
+      )
       // eslint-disable-next-line no-process-exit
       process.exit()
     })
