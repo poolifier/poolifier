@@ -1,6 +1,8 @@
 const Benchmark = require('benchmark')
-const { fixedThreadTest } = require('./thread/fixed')
+const { dynamicClusterTest } = require('./cluster/dynamic')
+const { fixedClusterTest } = require('./cluster/fixed')
 const { dynamicThreadTest } = require('./thread/dynamic')
+const { fixedThreadTest } = require('./thread/fixed')
 
 const suite = new Benchmark.Suite()
 
@@ -17,11 +19,17 @@ setTimeout(async () => {
 async function test () {
   // add tests
   suite
-    .add('PioardiStaticPool', async function () {
+    .add('Pioardi:Static:ThreadPool', async function () {
       await fixedThreadTest()
     })
-    .add('PioardiDynamicPool', async function () {
+    .add('Pioardi:Dynamic:ThreadPool', async function () {
       await dynamicThreadTest()
+    })
+    .add('Pioardi:Static:ClusterPool', async function () {
+      await fixedClusterTest()
+    })
+    .add('Pioardi:Dynamic:ClusterPool', async function () {
+      await dynamicClusterTest()
     })
     // add listeners
     .on('cycle', function (event) {

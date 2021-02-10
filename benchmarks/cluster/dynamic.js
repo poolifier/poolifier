@@ -1,18 +1,23 @@
-const { FixedThreadPool } = require('../../lib/index')
+const { DynamicClusterPool } = require('../../lib/index')
 
 const size = 30
 
-const fixedPool = new FixedThreadPool(size, './worker.js', {
-  maxTasks: 10000
-})
+const dynamicPool = new DynamicClusterPool(
+  size / 2,
+  size * 3,
+  './benchmarks/cluster/worker.js',
+  {
+    maxTasks: 10000
+  }
+)
 
-async function fixedThreadTest (
+async function dynamicClusterTest (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
 ) {
   return new Promise((resolve, reject) => {
     let executions = 0
     for (let i = 0; i <= tasks; i++) {
-      fixedPool
+      dynamicPool
         .execute(workerData)
         .then(res => {
           executions++
@@ -21,11 +26,9 @@ async function fixedThreadTest (
           }
           return null
         })
-        .catch(err => {
-          console.error(err)
-        })
+        .catch(err => console.error(err))
     }
   })
 }
 
-module.exports = { fixedThreadTest }
+module.exports = { dynamicClusterTest }

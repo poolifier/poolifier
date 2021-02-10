@@ -1,12 +1,12 @@
-const { FixedThreadPool } = require('../../lib/index')
+const { FixedClusterPool } = require('../../lib/index')
 
 const size = 30
 
-const fixedPool = new FixedThreadPool(size, './worker.js', {
+const fixedPool = new FixedClusterPool(size, './benchmarks/cluster/worker.js', {
   maxTasks: 10000
 })
 
-async function fixedThreadTest (
+async function fixedClusterTest (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
 ) {
   return new Promise((resolve, reject) => {
@@ -28,4 +28,4 @@ async function fixedThreadTest (
   })
 }
 
-module.exports = { fixedThreadTest }
+module.exports = { fixedClusterTest }
