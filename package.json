@@ -46,6 +46,9 @@
     "url": "https://github.com/pioardi/poolifier/issues"
   },
   "homepage": "https://github.com/pioardi/poolifier#readme",
+  "files": [
+    "lib"
+  ],
   "devDependencies": {
     "@types/node": "^14.14.25",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
