@@ -1,18 +1,18 @@
 const Benchmark = require('benchmark')
 const suite = new Benchmark.Suite()
-const FixedThreadPool = require('../lib/fixed')
-const DynamicThreadPool = require('../lib/dynamic')
+const { FixedThreadPool } = require('../lib/index')
+const { DynamicThreadPool } = require('../lib/index')
 const size = 30
 const tasks = 1
 
 // pools
-const fixedPool = new FixedThreadPool(size, './yourWorker.js', {
+const fixedPool = new FixedThreadPool(size, './threadWorker.js', {
   maxTasks: 10000
 })
 const dynamicPool = new DynamicThreadPool(
   size / 2,
   size * 3,
-  './yourWorker.js',
+  './threadWorker.js',
   { maxTasks: 10000 }
 )
 const workerData = { proof: 'ok' }
@@ -27,12 +27,18 @@ async function fixedTest () {
   return new Promise((resolve, reject) => {
     let executions = 0
     for (let i = 0; i <= tasks; i++) {
-      fixedPool.execute(workerData).then(res => {
-        executions++
-        if (executions === tasks) {
-          resolve('FINISH')
-        }
-      })
+      fixedPool
+        .execute(workerData)
+        .then(res => {
+          executions++
+          if (executions === tasks) {
+            return resolve('FINISH')
+          }
+          return res
+        })
+        .catch(err => {
+          console.error(err)
+        })
     }
   })
 }
@@ -41,12 +47,16 @@ async function dynamicTest () {
   return new Promise((resolve, reject) => {
     let executions = 0
     for (let i = 0; i <= tasks; i++) {
-      dynamicPool.execute(workerData).then(res => {
-        executions++
-        if (executions === tasks) {
-          resolve('FINISH')
-        }
-      })
+      dynamicPool
+        .execute(workerData)
+        .then(res => {
+          executions++
+          if (executions === tasks) {
+            resolve('FINISH')
+          }
+          return res
+        })
+        .catch(err => console.error(err))
     }
   })
 }
@@ -67,6 +77,8 @@ async function test () {
     .on('complete', function () {
       this.filter('fastest').map('name')
       console.log('Fastest is ' + this.filter('fastest').map('name'))
+      // eslint-disable-next-line no-process-exit
+      process.exit()
     })
     // run async
     .run({ async: true })
