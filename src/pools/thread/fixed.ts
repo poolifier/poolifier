@@ -42,25 +42,11 @@ export class FixedThreadPool<Data = any, Response = any> extends AbstractPool<
     await worker.terminate()
   }
 
-  /**
-   * Execute the task specified into the constructor with the data parameter.
-   *
-   * @param data The input for the task specified.
-   * @returns Promise that is resolved when the task is done.
-   */
-  public execute (data: Data): Promise<Response> {
-    // configure worker to handle message with the specified task
-    const worker = this.chooseWorker()
-    const previousWorkerIndex = this.tasks.get(worker)
-    if (previousWorkerIndex !== undefined) {
-      this.tasks.set(worker, previousWorkerIndex + 1)
-    } else {
-      throw Error('Worker could not be found in tasks map')
-    }
-    const id = ++this.id
-    const res = this.internalExecute(worker, id)
-    worker.postMessage({ data: data || {}, id: id })
-    return res
+  protected sendToWorker (
+    worker: ThreadWorkerWithMessageChannel,
+    message: MessageValue<Data>
+  ): void {
+    worker.postMessage(message)
   }
 
   protected internalExecute (
@@ -91,7 +77,7 @@ export class FixedThreadPool<Data = any, Response = any> extends AbstractPool<
     })
     worker.on('error', this.opts.errorHandler ?? (() => {}))
     worker.on('online', this.opts.onlineHandler ?? (() => {}))
-    // TODO handle properly when a thread exit
+    // TODO handle properly when a worker exit
     worker.on('exit', this.opts.exitHandler ?? (() => {}))
     this.workers.push(worker)
     const { port1, port2 } = new MessageChannel()

@@ -1,3 +1,5 @@
+import type { MessageValue } from '../utility-types'
+
 export interface PoolOptions<Worker> {
   /**
    * A function that will listen for error event on each worker.
@@ -65,7 +67,31 @@ export abstract class AbstractPool<Worker, Data = any, Response = any> {
 
   protected abstract destroyWorker (worker: Worker): void | Promise<void>
 
-  public abstract execute (data: Data): Promise<Response>
+  protected abstract sendToWorker (
+    worker: Worker,
+    message: MessageValue<Data>
+  ): void
+
+  /**
+   * Execute the task specified into the constructor with the data parameter.
+   *
+   * @param data The input for the task specified.
+   * @returns Promise that is resolved when the task is done.
+   */
+  public execute (data: Data): Promise<Response> {
+    // configure worker to handle message with the specified task
+    const worker = this.chooseWorker()
+    const previousWorkerIndex = this.tasks.get(worker)
+    if (previousWorkerIndex !== undefined) {
+      this.tasks.set(worker, previousWorkerIndex + 1)
+    } else {
+      throw Error('Worker could not be found in tasks map')
+    }
+    const id = ++this.id
+    const res = this.internalExecute(worker, id)
+    this.sendToWorker(worker, { data: data || ({} as Data), id: id })
+    return res
+  }
 
   protected abstract internalExecute (
     worker: Worker,

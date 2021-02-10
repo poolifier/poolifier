@@ -1,4 +1,3 @@
-import type { SendHandle } from 'child_process'
 import { fork, isMaster, setupMaster, Worker } from 'cluster'
 import type { MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
@@ -45,36 +44,13 @@ export class FixedClusterPool<Data = any, Response = any> extends AbstractPool<
     worker.kill()
   }
 
-  /**
-   * Execute the task specified into the constructor with the data parameter.
-   *
-   * @param data The input for the task specified.
-   * @returns Promise that is resolved when the task is done.
-   */
-  public execute (data: Data): Promise<Response> {
-    // configure worker to handle message with the specified task
-    const worker = this.chooseWorker()
-    // console.log('FixedClusterPool#execute choosen worker:', worker)
-    const previousWorkerIndex = this.tasks.get(worker)
-    if (previousWorkerIndex !== undefined) {
-      this.tasks.set(worker, previousWorkerIndex + 1)
-    } else {
-      throw Error('Worker could not be found in tasks map')
-    }
-    const id = ++this.id
-    const res = this.internalExecute(worker, id)
-    // console.log('FixedClusterPool#execute send data to worker:', worker)
-    worker.send({ data: data || {}, id: id })
-    return res
+  protected sendToWorker (worker: Worker, message: MessageValue<Data>): void {
+    worker.send(message)
   }
 
   protected internalExecute (worker: Worker, id: number): Promise<Response> {
     return new Promise((resolve, reject) => {
-      const listener: (
-        message: MessageValue<Response>,
-        handle: SendHandle
-      ) => void = message => {
-        // console.log('FixedClusterPool#internalExecute listener:', message)
+      const listener: (message: MessageValue<Response>) => void = message => {
         if (message.id === id) {
           worker.removeListener('message', listener)
           const previousWorkerIndex = this.tasks.get(worker)
