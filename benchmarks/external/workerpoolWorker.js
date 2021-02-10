@@ -1,5 +1,4 @@
-'use strict'
-const { ThreadWorker } = require('../lib/index')
+const workerpool = require('workerpool')
 
 function yourFunction (data) {
   for (let i = 0; i <= 1000; i++) {
@@ -12,4 +11,6 @@ function yourFunction (data) {
   return { ok: 1 }
 }
 
-module.exports = new ThreadWorker(yourFunction)
+workerpool.worker({
+  yourFunction
+})

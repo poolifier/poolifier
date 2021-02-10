@@ -12,7 +12,7 @@ const workerPool = workerpool.pool('./workerpoolWorker.js', {
   maxWorkers: size * 3,
   workerType: 'thread'
 })
-const fixedPool = new FixedThreadPool(size, './threadWorker.js', {
+const fixedPool = new FixedThreadPool(size, './thread/worker.js', {
   maxTasks: 10000
 })
 const dynamicPool = new DynamicThreadPool(
