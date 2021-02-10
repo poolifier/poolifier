@@ -93,10 +93,34 @@ export abstract class AbstractPool<Worker, Data = any, Response = any> {
     return res
   }
 
-  protected abstract internalExecute (
-    worker: Worker,
-    id: number
-  ): Promise<Response>
+  protected abstract registerWorkerMessageListener (
+    port: Worker,
+    listener: (message: MessageValue<Response>) => void
+  ): void
+
+  protected abstract unregisterWorkerMessageListener (
+    port: Worker,
+    listener: (message: MessageValue<Response>) => void
+  ): void
+
+  protected internalExecute (worker: Worker, id: number): Promise<Response> {
+    return new Promise((resolve, reject) => {
+      const listener: (message: MessageValue<Response>) => void = message => {
+        if (message.id === id) {
+          this.unregisterWorkerMessageListener(worker, listener)
+          const previousWorkerIndex = this.tasks.get(worker)
+          if (previousWorkerIndex !== undefined) {
+            this.tasks.set(worker, previousWorkerIndex + 1)
+          } else {
+            throw Error('Worker could not be found in tasks map')
+          }
+          if (message.error) reject(message.error)
+          else resolve(message.data as Response)
+        }
+      }
+      this.registerWorkerMessageListener(worker, listener)
+    })
+  }
 
   protected chooseWorker (): Worker {
     if (this.workers.length - 1 === this.nextWorker) {

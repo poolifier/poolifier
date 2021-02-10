@@ -49,26 +49,18 @@ export class FixedThreadPool<Data = any, Response = any> extends AbstractPool<
     worker.postMessage(message)
   }
 
-  protected internalExecute (
-    worker: ThreadWorkerWithMessageChannel,
-    id: number
-  ): Promise<Response> {
-    return new Promise((resolve, reject) => {
-      const listener: (message: MessageValue<Response>) => void = message => {
-        if (message.id === id) {
-          worker.port2?.removeListener('message', listener)
-          const previousWorkerIndex = this.tasks.get(worker)
-          if (previousWorkerIndex !== undefined) {
-            this.tasks.set(worker, previousWorkerIndex + 1)
-          } else {
-            throw Error('Worker could not be found in tasks map')
-          }
-          if (message.error) reject(message.error)
-          else resolve(message.data as Response)
-        }
-      }
-      worker.port2?.on('message', listener)
-    })
+  protected registerWorkerMessageListener (
+    port: ThreadWorkerWithMessageChannel,
+    listener: (message: MessageValue<Response>) => void
+  ): void {
+    port.port2?.on('message', listener)
+  }
+
+  protected unregisterWorkerMessageListener (
+    port: ThreadWorkerWithMessageChannel,
+    listener: (message: MessageValue<Response>) => void
+  ): void {
+    port.port2?.removeListener('message', listener)
   }
 
   protected newWorker (): ThreadWorkerWithMessageChannel {
