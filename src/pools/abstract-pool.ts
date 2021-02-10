@@ -1,18 +1,22 @@
 import type { MessageValue } from '../utility-types'
 
+export type ErrorHandler<Worker> = (this: Worker, e: Error) => void
+export type OnlineHandler<Worker> = (this: Worker) => void
+export type ExitHandler<Worker> = (this: Worker, code: number) => void
+
 export interface PoolOptions<Worker> {
   /**
    * A function that will listen for error event on each worker.
    */
-  errorHandler?: (this: Worker, e: Error) => void
+  errorHandler?: ErrorHandler<Worker>
   /**
    * A function that will listen for online event on each worker.
    */
-  onlineHandler?: (this: Worker) => void
+  onlineHandler?: OnlineHandler<Worker>
   /**
    * A function that will listen for exit event on each worker.
    */
-  exitHandler?: (this: Worker, code: number) => void
+  exitHandler?: ExitHandler<Worker>
   /**
    * This is just to avoid not useful warnings message, is used to set `maxListeners` on event emitters (workers are event emitters).
    *
@@ -21,8 +25,19 @@ export interface PoolOptions<Worker> {
   maxTasks?: number
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export abstract class AbstractPool<Worker, Data = any, Response = any> {
+interface IWorker {
+  on(event: 'error', handler: ErrorHandler<this>): void
+  on(event: 'online', handler: OnlineHandler<this>): void
+  on(event: 'exit', handler: ExitHandler<this>): void
+}
+
+export abstract class AbstractPool<
+  Worker extends IWorker,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Data = any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Response = any
+> {
   public readonly workers: Worker[] = []
   public nextWorker: number = 0
 
@@ -49,7 +64,7 @@ export abstract class AbstractPool<Worker, Data = any, Response = any> {
     this.setupHook()
 
     for (let i = 1; i <= this.numWorkers; i++) {
-      this.newWorker()
+      this.internalNewWorker()
     }
   }
 
@@ -133,4 +148,19 @@ export abstract class AbstractPool<Worker, Data = any, Response = any> {
   }
 
   protected abstract newWorker (): Worker
+
+  protected abstract afterNewWorkerPushed (worker: Worker): void
+
+  protected internalNewWorker (): Worker {
+    const worker: Worker = this.newWorker()
+    worker.on('error', this.opts.errorHandler ?? (() => {}))
+    worker.on('online', this.opts.onlineHandler ?? (() => {}))
+    // TODO handle properly when a worker exit
+    worker.on('exit', this.opts.exitHandler ?? (() => {}))
+    this.workers.push(worker)
+    this.afterNewWorkerPushed(worker)
+    // init tasks map
+    this.tasks.set(worker, 0)
+    return worker
+  }
 }

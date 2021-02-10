@@ -57,7 +57,7 @@ export class DynamicThreadPool<
         return super.chooseWorker()
       }
       // all workers are busy create a new worker
-      const worker = this.newWorker()
+      const worker = this.internalNewWorker()
       worker.port2?.on('message', (message: { kill?: number }) => {
         if (message.kill) {
           worker.postMessage({ kill: 1 })

@@ -57,7 +57,7 @@ export class DynamicClusterPool<
         return super.chooseWorker()
       }
       // all workers are busy create a new worker
-      const worker = this.newWorker()
+      const worker = this.internalNewWorker()
       worker.on('message', (message: { kill?: number }) => {
         if (message.kill) {
           worker.send({ kill: 1 })

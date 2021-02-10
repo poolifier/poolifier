@@ -63,17 +63,12 @@ export class FixedClusterPool<Data = any, Response = any> extends AbstractPool<
   }
 
   protected newWorker (): Worker {
-    const worker: Worker = fork()
-    worker.on('error', this.opts.errorHandler ?? (() => {}))
-    worker.on('online', this.opts.onlineHandler ?? (() => {}))
-    // TODO handle properly when a worker exit
-    worker.on('exit', this.opts.exitHandler ?? (() => {}))
-    this.workers.push(worker)
+    return fork()
+  }
+
+  protected afterNewWorkerPushed (worker: Worker): void {
     // we will attach a listener for every task,
     // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
     worker.setMaxListeners(this.opts.maxTasks ?? 1000)
-    // init tasks map
-    this.tasks.set(worker, 0)
-    return worker
   }
 }

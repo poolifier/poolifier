@@ -64,14 +64,14 @@ export class FixedThreadPool<Data = any, Response = any> extends AbstractPool<
   }
 
   protected newWorker (): ThreadWorkerWithMessageChannel {
-    const worker: ThreadWorkerWithMessageChannel = new Worker(this.filePath, {
+    return new Worker(this.filePath, {
       env: SHARE_ENV
     })
-    worker.on('error', this.opts.errorHandler ?? (() => {}))
-    worker.on('online', this.opts.onlineHandler ?? (() => {}))
-    // TODO handle properly when a worker exit
-    worker.on('exit', this.opts.exitHandler ?? (() => {}))
-    this.workers.push(worker)
+  }
+
+  protected afterNewWorkerPushed (
+    worker: ThreadWorkerWithMessageChannel
+  ): void {
     const { port1, port2 } = new MessageChannel()
     worker.postMessage({ parent: port1 }, [port1])
     worker.port1 = port1
@@ -79,8 +79,5 @@ export class FixedThreadPool<Data = any, Response = any> extends AbstractPool<
     // we will attach a listener for every task,
     // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
     worker.port2.setMaxListeners(this.opts.maxTasks ?? 1000)
-    // init tasks map
-    this.tasks.set(worker, 0)
-    return worker
   }
 }
