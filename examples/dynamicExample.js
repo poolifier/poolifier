@@ -10,11 +10,15 @@ pool.emitter.on('FullPool', () => maxReached++)
 const start = Date.now()
 const iterations = 1000
 for (let i = 0; i <= iterations; i++) {
-  pool.execute({}).then(res => {
-    resolved++
-    if (resolved === iterations) {
-      console.log('Time take is ' + (Date.now() - start))
-      console.log('The pool was full for ' + maxReached + ' times')
-    }
-  })
+  pool
+    .execute({})
+    .then(res => {
+      resolved++
+      if (resolved === iterations) {
+        console.log('Time take is ' + (Date.now() - start))
+        return console.log('The pool was full for ' + maxReached + ' times')
+      }
+      return null
+    })
+    .catch(err => console.error(err))
 }

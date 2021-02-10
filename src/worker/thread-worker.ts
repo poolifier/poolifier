@@ -87,6 +87,7 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
       .then(res => {
         this.parent?.postMessage({ data: res, id: value.id })
         this.lastTask = Date.now()
+        return null
       })
       .catch(e => {
         this.parent?.postMessage({ error: e, id: value.id })
