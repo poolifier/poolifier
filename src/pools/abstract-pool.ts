@@ -63,7 +63,7 @@ export abstract class AbstractPool<Worker, Data = any, Response = any> {
     }
   }
 
-  protected abstract destroyWorker (worker: Worker): void
+  protected abstract destroyWorker (worker: Worker): void | Promise<void>
 
   public abstract execute (data: Data): Promise<Response>
 
