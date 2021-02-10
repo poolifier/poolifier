@@ -41,7 +41,7 @@ async function fixedTest () {
             }ms to work on ${executions} tasks`
           )
         }
-        return res
+        return null
       })
       .catch(err => console.error(err))
   }
@@ -62,7 +62,7 @@ async function dynamicTest () {
             }ms to work on ${executions} tasks`
           )
         }
-        return res
+        return null
       })
       .catch(err => console.error(err))
   }
@@ -96,7 +96,7 @@ async function workerThreadsPoolTest () {
             }ms to work on ${executions} tasks`
           )
         }
-        return res
+        return null
       })
       .catch(err => console.error(err))
   }
@@ -110,7 +110,7 @@ async function workerpoolTest () {
       .exec('yourFunction', [workerData])
       .then(res => {
         executions++
-        return res
+        return null
       })
       .catch(err => console.error(err))
       .then(res => {
@@ -121,7 +121,7 @@ async function workerpoolTest () {
             }ms to work on ${executions} tasks`
           )
         }
-        return res
+        return null
       })
       .catch(err => console.error(err))
   }

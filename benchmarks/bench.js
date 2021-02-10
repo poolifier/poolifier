@@ -39,7 +39,7 @@ async function fixedTest () {
           if (executions === tasks) {
             return resolve('FINISH')
           }
-          return res
+          return null
         })
         .catch(err => {
           console.error(err)
@@ -59,7 +59,7 @@ async function dynamicTest () {
           if (executions === tasks) {
             resolve('FINISH')
           }
-          return res
+          return null
         })
         .catch(err => console.error(err))
     }

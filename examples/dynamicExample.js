@@ -18,7 +18,7 @@ for (let i = 0; i <= iterations; i++) {
         console.log('Time take is ' + (Date.now() - start))
         return console.log('The pool was full for ' + maxReached + ' times')
       }
-      return res
+      return null
     })
     .catch(err => console.error(err))
 }

@@ -15,7 +15,7 @@ for (let i = 0; i <= iterations; i++) {
       if (resolved === iterations) {
         return console.log('Time take is ' + (Date.now() - start))
       }
-      return res
+      return null
     })
     .catch(err => console.error(err))
 }
