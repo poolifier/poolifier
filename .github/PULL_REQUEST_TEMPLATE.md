@@ -1,5 +1,5 @@
 Thanks for contributing to poolifier project.
-Please be sure to read our [contributing guidelines](../CONTRIBUTING.MD).
+Please be sure to read our [contributing guidelines](https://github.com/pioardi/poolifier/blob/pr-template/CONTRIBUTING.md).
 
 
  - Please add a description of your changes.
