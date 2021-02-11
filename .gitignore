@@ -39,6 +39,8 @@ jspm_packages
 # Project specifics
 .vscode/*
 !.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
 
 # Mac
 .DS_Store/

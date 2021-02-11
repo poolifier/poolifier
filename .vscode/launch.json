@@ -1,0 +1,40 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Launch Test Debug",
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Development build",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run-script",
+        "test:debug:vscode"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "stopOnEntry": true
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Launch Benchmark Debug",
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Development build",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run-script",
+        "benchmark:debug:vscode"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "stopOnEntry": true
+    }
+  ]
+}
