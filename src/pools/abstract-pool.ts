@@ -46,7 +46,7 @@ export abstract class AbstractPool<
   public nextWorker: number = 0
 
   /**
-   * `workerId` as key and an integer value
+   * Worker as key and an integer value as index
    */
   public readonly tasks: Map<Worker, number> = new Map<Worker, number>()
 
@@ -102,6 +102,13 @@ export abstract class AbstractPool<
     } else {
       throw Error('Worker could not be found in tasks map')
     }
+  }
+
+  protected removeWorker (worker: Worker): void {
+    // clean workers from data structures
+    const workerIndex = this.workers.indexOf(worker)
+    this.workers.splice(workerIndex, 1)
+    this.tasks.delete(worker)
   }
 
   /**
