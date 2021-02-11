@@ -1,9 +1,12 @@
 import EventEmitter from 'events'
 import type { MessageValue } from '../utility-types'
-
-export type ErrorHandler<Worker> = (this: Worker, e: Error) => void
-export type OnlineHandler<Worker> = (this: Worker) => void
-export type ExitHandler<Worker> = (this: Worker, code: number) => void
+import type {
+  ErrorHandler,
+  ExitHandler,
+  IPool,
+  IWorker,
+  OnlineHandler
+} from './pool'
 
 export interface PoolOptions<Worker> {
   /**
@@ -26,13 +29,10 @@ export interface PoolOptions<Worker> {
   maxTasks?: number
 }
 
-interface IWorker {
-  on(event: 'error', handler: ErrorHandler<this>): void
-  on(event: 'online', handler: OnlineHandler<this>): void
-  on(event: 'exit', handler: ExitHandler<this>): void
-}
-
 class PoolEmitter extends EventEmitter {}
+
+// We don't want to export PoolEmitter class to outside, just its type!
+export type { PoolEmitter }
 
 export abstract class AbstractPool<
   Worker extends IWorker,
@@ -40,7 +40,7 @@ export abstract class AbstractPool<
   Data = any,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Response = any
-> {
+> implements IPool<Worker, Data, Response> {
   public readonly workers: Worker[] = []
   public nextWorker: number = 0
 
