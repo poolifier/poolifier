@@ -1,4 +1,3 @@
-// export { AbstractPool } from './pools/abstract-pool'
 export type {
   ErrorHandler,
   ExitHandler,
