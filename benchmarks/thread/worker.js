@@ -1,5 +1,5 @@
 'use strict'
-const { ThreadWorker } = require('../lib/index')
+const { ThreadWorker } = require('../../lib/index')
 
 function yourFunction (data) {
   for (let i = 0; i <= 1000; i++) {

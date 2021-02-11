@@ -1,20 +1,20 @@
-import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
+import type { SendHandle } from 'child_process'
+import { fork, isMaster, setupMaster, Worker } from 'cluster'
+import type { MessageValue } from '../../utility-types'
 
-export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
+export type WorkerWithMessageChannel = Worker // & Draft<MessageChannel>
 
-export type WorkerWithMessageChannel = Worker & Draft<MessageChannel>
-
-export interface FixedThreadPoolOptions {
+export interface FixedClusterPoolOptions {
   /**
-   * A function that will listen for error event on each worker thread.
+   * A function that will listen for error event on each worker.
    */
   errorHandler?: (this: Worker, e: Error) => void
   /**
-   * A function that will listen for online event on each worker thread.
+   * A function that will listen for online event on each worker.
    */
   onlineHandler?: (this: Worker) => void
   /**
-   * A function that will listen for exit event on each worker thread.
+   * A function that will listen for exit event on each worker.
    */
   exitHandler?: (this: Worker, code: number) => void
   /**
@@ -23,22 +23,29 @@ export interface FixedThreadPoolOptions {
    * @default 1000
    */
   maxTasks?: number
+  /**
+   * Key/value pairs to add to worker process environment.
+   *
+   * @see https://nodejs.org/api/cluster.html#cluster_cluster_fork_env
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  env?: any
 }
 
 /**
- * A thread pool with a static number of threads, is possible to execute tasks in sync or async mode as you prefer.
+ * A cluster pool with a static number of workers, is possible to execute tasks in sync or async mode as you prefer.
  *
- * This pool will select the worker thread in a round robin fashion.
+ * This pool will select the worker in a round robin fashion.
  *
- * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
- * @since 0.0.1
+ * @author [Christopher Quadflieg](https://github.com/Shinigami92)
+ * @since 2.0.0
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class FixedThreadPool<Data = any, Response = any> {
+export class FixedClusterPool<Data = any, Response = any> {
   public readonly workers: WorkerWithMessageChannel[] = []
   public nextWorker: number = 0
 
-  // threadId as key and an integer value
+  // workerId as key and an integer value
   public readonly tasks: Map<WorkerWithMessageChannel, number> = new Map<
     WorkerWithMessageChannel,
     number
@@ -47,31 +54,35 @@ export class FixedThreadPool<Data = any, Response = any> {
   protected id: number = 0
 
   /**
-   * @param numThreads Num of threads for this worker pool.
-   * @param filePath A file path with implementation of `ThreadWorker` class, relative path is fine.
+   * @param numWorkers Number of workers for this pool.
+   * @param filePath A file path with implementation of `ClusterWorker` class, relative path is fine.
    * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
-    public readonly numThreads: number,
+    public readonly numWorkers: number,
     public readonly filePath: string,
-    public readonly opts: FixedThreadPoolOptions = { maxTasks: 1000 }
+    public readonly opts: FixedClusterPoolOptions = { maxTasks: 1000 }
   ) {
-    if (!isMainThread) {
-      throw new Error('Cannot start a thread pool from a worker thread !!!')
+    if (!isMaster) {
+      throw new Error('Cannot start a cluster pool from a worker!')
     }
-    // TODO christopher 2021-02-07: Improve this check e.g. with a pattern or blank check
+    // TODO christopher 2021-02-09: Improve this check e.g. with a pattern or blank check
     if (!this.filePath) {
       throw new Error('Please specify a file with a worker implementation')
     }
 
-    for (let i = 1; i <= this.numThreads; i++) {
+    setupMaster({
+      exec: this.filePath
+    })
+
+    for (let i = 1; i <= this.numWorkers; i++) {
       this.newWorker()
     }
   }
 
-  public async destroy (): Promise<void> {
+  public destroy (): void {
     for (const worker of this.workers) {
-      await worker.terminate()
+      worker.kill()
     }
   }
 
@@ -83,16 +94,18 @@ export class FixedThreadPool<Data = any, Response = any> {
    */
   public execute (data: Data): Promise<Response> {
     // configure worker to handle message with the specified task
-    const worker = this.chooseWorker()
+    const worker: WorkerWithMessageChannel = this.chooseWorker()
+    // console.log('FixedClusterPool#execute choosen worker:', worker)
     const previousWorkerIndex = this.tasks.get(worker)
     if (previousWorkerIndex !== undefined) {
       this.tasks.set(worker, previousWorkerIndex + 1)
     } else {
       throw Error('Worker could not be found in tasks map')
     }
-    const id = ++this.id
-    const res = this.internalExecute(worker, id)
-    worker.postMessage({ data: data || {}, id: id })
+    const id: number = ++this.id
+    const res: Promise<Response> = this.internalExecute(worker, id)
+    // console.log('FixedClusterPool#execute send data to worker:', worker)
+    worker.send({ data: data || {}, id: id })
     return res
   }
 
@@ -101,13 +114,13 @@ export class FixedThreadPool<Data = any, Response = any> {
     id: number
   ): Promise<Response> {
     return new Promise((resolve, reject) => {
-      const listener = (message: {
-        id: number
-        error?: string
-        data: Response
-      }): void => {
+      const listener: (
+        message: MessageValue<Response>,
+        handle: SendHandle
+      ) => void = message => {
+        // console.log('FixedClusterPool#internalExecute listener:', message)
         if (message.id === id) {
-          worker.port2?.removeListener('message', listener)
+          worker.removeListener('message', listener)
           const previousWorkerIndex = this.tasks.get(worker)
           if (previousWorkerIndex !== undefined) {
             this.tasks.set(worker, previousWorkerIndex + 1)
@@ -115,10 +128,10 @@ export class FixedThreadPool<Data = any, Response = any> {
             throw Error('Worker could not be found in tasks map')
           }
           if (message.error) reject(message.error)
-          else resolve(message.data)
+          else resolve(message.data as Response)
         }
       }
-      worker.port2?.on('message', listener)
+      worker.on('message', listener)
     })
   }
 
@@ -133,21 +146,15 @@ export class FixedThreadPool<Data = any, Response = any> {
   }
 
   protected newWorker (): WorkerWithMessageChannel {
-    const worker: WorkerWithMessageChannel = new Worker(this.filePath, {
-      env: SHARE_ENV
-    })
+    const worker: WorkerWithMessageChannel = fork(this.opts.env)
     worker.on('error', this.opts.errorHandler ?? (() => {}))
     worker.on('online', this.opts.onlineHandler ?? (() => {}))
-    // TODO handle properly when a thread exit
+    // TODO handle properly when a worker exit
     worker.on('exit', this.opts.exitHandler ?? (() => {}))
     this.workers.push(worker)
-    const { port1, port2 } = new MessageChannel()
-    worker.postMessage({ parent: port1 }, [port1])
-    worker.port1 = port1
-    worker.port2 = port2
     // we will attach a listener for every task,
     // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
-    worker.port2.setMaxListeners(this.opts.maxTasks ?? 1000)
+    worker.setMaxListeners(this.opts.maxTasks ?? 1000)
     // init tasks map
     this.tasks.set(worker, 0)
     return worker
