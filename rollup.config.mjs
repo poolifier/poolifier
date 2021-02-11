@@ -12,7 +12,7 @@ export default {
     preserveModules: true,
     preserveModulesRoot: 'src'
   },
-  external: ['async_hooks', 'events', 'worker_threads'],
+  external: ['async_hooks', 'cluster', 'events', 'worker_threads'],
   plugins: [
     ts({
       tsconfig: isDevelopmentBuild
