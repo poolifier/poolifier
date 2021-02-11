@@ -28,6 +28,7 @@ export interface FixedClusterPoolOptions {
    *
    * @see https://nodejs.org/api/cluster.html#cluster_cluster_fork_env
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   env?: any
 }
 
@@ -57,7 +58,7 @@ export class FixedClusterPool<Data = any, Response = any> {
    * @param filePath A file path with implementation of `ClusterWorker` class, relative path is fine.
    * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
    */
-  public constructor(
+  public constructor (
     public readonly numWorkers: number,
     public readonly filePath: string,
     public readonly opts: FixedClusterPoolOptions = { maxTasks: 1000 }
@@ -79,7 +80,7 @@ export class FixedClusterPool<Data = any, Response = any> {
     }
   }
 
-  public destroy(): void {
+  public destroy (): void {
     for (const worker of this.workers) {
       worker.kill()
     }
@@ -91,7 +92,7 @@ export class FixedClusterPool<Data = any, Response = any> {
    * @param data The input for the task specified.
    * @returns Promise that is resolved when the task is done.
    */
-  public execute(data: Data): Promise<Response> {
+  public execute (data: Data): Promise<Response> {
     // configure worker to handle message with the specified task
     const worker: WorkerWithMessageChannel = this.chooseWorker()
     // console.log('FixedClusterPool#execute choosen worker:', worker)
@@ -108,7 +109,7 @@ export class FixedClusterPool<Data = any, Response = any> {
     return res
   }
 
-  protected internalExecute(
+  protected internalExecute (
     worker: WorkerWithMessageChannel,
     id: number
   ): Promise<Response> {
@@ -134,7 +135,7 @@ export class FixedClusterPool<Data = any, Response = any> {
     })
   }
 
-  protected chooseWorker(): WorkerWithMessageChannel {
+  protected chooseWorker (): WorkerWithMessageChannel {
     if (this.workers.length - 1 === this.nextWorker) {
       this.nextWorker = 0
       return this.workers[this.nextWorker]
@@ -144,7 +145,7 @@ export class FixedClusterPool<Data = any, Response = any> {
     }
   }
 
-  protected newWorker(): WorkerWithMessageChannel {
+  protected newWorker (): WorkerWithMessageChannel {
     const worker: WorkerWithMessageChannel = fork(this.opts.env)
     worker.on('error', this.opts.errorHandler ?? (() => {}))
     worker.on('online', this.opts.onlineHandler ?? (() => {}))
