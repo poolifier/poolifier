@@ -1,6 +1,6 @@
 import type { Worker } from 'cluster'
 import type { MessageValue } from '../../utility-types'
-import type { PoolOptions } from '../abstract-pool'
+import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
 
 /**
@@ -28,7 +28,7 @@ export class DynamicClusterPool<
     min: number,
     public readonly max: number,
     filename: string,
-    opts: PoolOptions<Worker> = { maxTasks: 1000 }
+    opts: ClusterPoolOptions = { maxTasks: 1000 }
   ) {
     super(min, filename, opts)
   }

@@ -6,6 +6,7 @@ import { ClusterWorker } from './worker/cluster-worker'
 import { ThreadWorker } from './worker/thread-worker'
 
 export type { PoolOptions } from './pools/abstract-pool'
+export type { ClusterPoolOptions } from './pools/cluster/fixed'
 export type { ThreadWorkerWithMessageChannel } from './pools/thread/fixed'
 export type { WorkerOptions } from './worker/worker-options'
 export {

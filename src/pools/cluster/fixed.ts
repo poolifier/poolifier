@@ -3,6 +3,16 @@ import type { MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
 
+export interface ClusterPoolOptions extends PoolOptions<Worker> {
+  /**
+   * Key/value pairs to add to worker process environment.
+   *
+   * @see https://nodejs.org/api/cluster.html#cluster_cluster_fork_env
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  env?: any
+}
+
 /**
  * A cluster pool with a static number of workers, is possible to execute tasks in sync or async mode as you prefer.
  *
@@ -25,7 +35,7 @@ export class FixedClusterPool<Data = any, Response = any> extends AbstractPool<
   public constructor (
     numWorkers: number,
     filePath: string,
-    opts: PoolOptions<Worker> = { maxTasks: 1000 }
+    public readonly opts: ClusterPoolOptions = { maxTasks: 1000 }
   ) {
     super(numWorkers, filePath, opts)
   }
@@ -63,7 +73,7 @@ export class FixedClusterPool<Data = any, Response = any> extends AbstractPool<
   }
 
   protected newWorker (): Worker {
-    return fork()
+    return fork(this.opts.env)
   }
 
   protected afterNewWorkerPushed (worker: Worker): void {
