@@ -11,13 +11,8 @@
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "Development build",
       "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run-script",
-        "test:debug:vscode"
-      ],
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "runtimeArgs": ["run-script", "test:debug:vscode"],
+      "skipFiles": ["<node_internals>/**"],
       "stopOnEntry": true
     },
     {
@@ -27,13 +22,8 @@
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "Development build",
       "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run-script",
-        "benchmark:debug:vscode"
-      ],
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "runtimeArgs": ["run-script", "benchmark:debug:vscode"],
+      "skipFiles": ["<node_internals>/**"],
       "stopOnEntry": true
     }
   ]
