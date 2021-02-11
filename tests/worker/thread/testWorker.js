@@ -1,5 +1,5 @@
 'use strict'
-const { ThreadWorker } = require('../../lib/workers')
+const { ThreadWorker } = require('../../../lib/index')
 const { isMainThread } = require('worker_threads')
 
 function test (data) {

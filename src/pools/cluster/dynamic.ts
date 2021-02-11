@@ -1,42 +1,39 @@
 import { EventEmitter } from 'events'
-import {
-  FixedThreadPool,
-  FixedThreadPoolOptions,
-  WorkerWithMessageChannel
-} from './fixed'
+import type { FixedClusterPoolOptions, WorkerWithMessageChannel } from './fixed'
+import { FixedClusterPool } from './fixed'
 
 class MyEmitter extends EventEmitter {}
 
-export type DynamicThreadPoolOptions = FixedThreadPoolOptions
+export type DynamicClusterPoolOptions = FixedClusterPoolOptions
 
 /**
- * A thread pool with a min/max number of threads, is possible to execute tasks in sync or async mode as you prefer.
+ * A cluster pool with a min/max number of workers, is possible to execute tasks in sync or async mode as you prefer.
  *
- * This thread pool will create new workers when the other ones are busy, until the max number of threads,
- * when the max number of threads is reached, an event will be emitted, if you want to listen this event use the emitter method.
+ * This cluster pool will create new workers when the other ones are busy, until the max number of workers,
+ * when the max number of workers is reached, an event will be emitted, if you want to listen this event use the emitter method.
  *
- * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
- * @since 0.0.1
+ * @author [Christopher Quadflieg](https://github.com/Shinigami92)
+ * @since 2.0.0
  */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export class DynamicThreadPool<
+export class DynamicClusterPool<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Data = any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Response = any
-> extends FixedThreadPool<Data, Response> {
-  /* eslint-enable @typescript-eslint/no-explicit-any */
+> extends FixedClusterPool<Data, Response> {
   public readonly emitter: MyEmitter
 
   /**
-   * @param min Min number of threads that will be always active
-   * @param max Max number of threads that will be active
-   * @param filename A file path with implementation of `ThreadWorker` class, relative path is fine.
+   * @param min Min number of workers that will be always active
+   * @param max Max number of workers that will be active
+   * @param filename A file path with implementation of `ClusterWorker` class, relative path is fine.
    * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
     public readonly min: number,
     public readonly max: number,
     public readonly filename: string,
-    public readonly opts: DynamicThreadPoolOptions = { maxTasks: 1000 }
+    public readonly opts: DynamicClusterPoolOptions = { maxTasks: 1000 }
   ) {
     super(min, filename, opts)
 
@@ -62,10 +59,10 @@ export class DynamicThreadPool<
       }
       // all workers are busy create a new worker
       const worker = this.newWorker()
-      worker.port2?.on('message', (message: { kill?: number }) => {
+      worker.on('message', (message: { kill?: number }) => {
         if (message.kill) {
-          worker.postMessage({ kill: 1 })
-          void worker.terminate()
+          worker.send({ kill: 1 })
+          worker.kill()
           // clean workers from data structures
           const workerIndex = this.workers.indexOf(worker)
           this.workers.splice(workerIndex, 1)

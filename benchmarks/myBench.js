@@ -7,18 +7,18 @@ const size = 16
 
 // pools
 const workerThreadsPool = new WorkerThreadsPool({ max: size })
-const workerPool = workerpool.pool('./workerpoolWorker.js', {
+const workerPool = workerpool.pool('./external/workerpoolWorker.js', {
   minWorkers: size / 2,
   maxWorkers: size * 3,
   workerType: 'thread'
 })
-const fixedPool = new FixedThreadPool(size, './threadWorker.js', {
+const fixedPool = new FixedThreadPool(size, './thread/worker.js', {
   maxTasks: 10000
 })
 const dynamicPool = new DynamicThreadPool(
   size / 2,
   size * 3,
-  './threadWorker.js',
+  './thread/worker.js',
   { maxTasks: 10000 }
 )
 
@@ -74,7 +74,7 @@ async function workerThreadsPoolTest () {
   for (let i = 0; i <= tasks; i++) {
     new Promise((resolve, reject) => {
       workerThreadsPool.acquire(
-        './workerThreadsWorker.js',
+        './external/workerThreadsWorker.js',
         { workerData: workerData },
         (err, worker) => {
           if (err) {
