@@ -3,10 +3,22 @@
  */
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 
+/**
+ * Serializable primitive JSON value.
+ */
 export type JSONPrimitive = number | boolean | string | null
+/**
+ * Serializable JSON value.
+ */
 // eslint-disable-next-line no-use-before-define
 export type JSONValue = JSONPrimitive | JSONArray | JSONObject
+/**
+ * Serializable JSON object.
+ */
 export type JSONObject = { [k: string]: JSONValue }
+/**
+ * Serializable JSON array.
+ */
 export type JSONArray = Array<JSONValue>
 
 /**
