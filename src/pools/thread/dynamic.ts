@@ -1,4 +1,4 @@
-import type { MessageValue } from '../../utility-types'
+import type { JSONValue, MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
@@ -13,10 +13,8 @@ import { FixedThreadPool } from './fixed'
  * @since 0.0.1
  */
 export class DynamicThreadPool<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Data = any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Response = any
+  Data extends JSONValue = JSONValue,
+  Response extends JSONValue = JSONValue
 > extends FixedThreadPool<Data, Response> {
   /**
    * @param min Min number of threads that will be always active
