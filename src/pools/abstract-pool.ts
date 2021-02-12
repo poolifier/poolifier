@@ -46,7 +46,8 @@ export abstract class AbstractPool<
   public nextWorker: number = 0
 
   /**
-   * Worker as key and an integer value as index
+   * - `key`: The `Worker`
+   * - `value`: Number of tasks that has been assigned to that worker since it started
    */
   public readonly tasks: Map<Worker, number> = new Map<Worker, number>()
 
