@@ -1,8 +1,8 @@
 import type { Worker } from 'cluster'
 import { isMaster, worker } from 'cluster'
 import type { MessageValue } from '../utility-types'
+import type { WorkerOptions } from '../worker-options'
 import { AbstractWorker } from './abstract-worker'
-import type { WorkerOptions } from './worker-options'
 
 /**
  * An example worker that will be always alive, you just need to **extend** this class if you want a static pool.
