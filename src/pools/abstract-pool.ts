@@ -26,9 +26,11 @@ export interface PoolOptions<Worker> {
    */
   exitHandler?: ExitHandler<Worker>
   /**
-   * This is just to avoid not useful warnings message, is used to set `maxListeners` on event emitters (workers are event emitters).
+   * This is just to avoid non-useful warning messages.
+   * Will be used to set `maxListeners` on event emitters (workers are event emitters).
    *
    * @default 1000
+   * @see [Node events emitter.setMaxListeners(n)](https://nodejs.org/api/events.html#events_emitter_setmaxlisteners_n)
    */
   maxTasks?: number
 }
