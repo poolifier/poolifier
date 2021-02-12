@@ -11,10 +11,8 @@ import type { WorkerOptions } from './worker-options'
  */
 export abstract class AbstractWorker<
   MainWorker,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Data = any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Response = any
+  Data = unknown,
+  Response = unknown
 > extends AsyncResource {
   /**
    * Maximum time this worker can be alive. The pool will check and terminate this worker when the time expires.

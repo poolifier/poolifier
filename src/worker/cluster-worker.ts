@@ -1,6 +1,6 @@
 import type { Worker } from 'cluster'
 import { isMaster, worker } from 'cluster'
-import type { MessageValue } from '../utility-types'
+import type { JSONValue, MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
@@ -19,12 +19,10 @@ import type { WorkerOptions } from './worker-options'
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class ClusterWorker<Data = any, Response = any> extends AbstractWorker<
-  Worker,
-  Data,
-  Response
-> {
+export class ClusterWorker<
+  Data extends JSONValue = JSONValue,
+  Response extends JSONValue = JSONValue
+> extends AbstractWorker<Worker, Data, Response> {
   /**
    * Constructs a new poolifier cluster worker.
    *

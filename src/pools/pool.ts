@@ -4,12 +4,7 @@
  * @template Data Type of data sent to the worker.
  * @template Response Type of response of execution.
  */
-export interface IPool<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Data = any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Response = any
-> {
+export interface IPool<Data = unknown, Response = unknown> {
   /**
    * Shut down every current worker in this pool.
    */

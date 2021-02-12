@@ -67,10 +67,8 @@ class PoolEmitter extends EventEmitter {}
  */
 export abstract class AbstractPool<
   Worker extends IWorker,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Data = any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Response = any
+  Data = unknown,
+  Response = unknown
 > implements IPool<Data, Response> {
   /**
    * List of current workers.

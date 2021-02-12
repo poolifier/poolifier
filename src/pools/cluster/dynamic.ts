@@ -1,5 +1,5 @@
 import type { Worker } from 'cluster'
-import type { MessageValue } from '../../utility-types'
+import type { JSONValue, MessageValue } from '../../utility-types'
 import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
 
@@ -16,10 +16,8 @@ import { FixedClusterPool } from './fixed'
  * @since 2.0.0
  */
 export class DynamicClusterPool<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Data = any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Response = any
+  Data extends JSONValue = JSONValue,
+  Response extends JSONValue = JSONValue
 > extends FixedClusterPool<Data, Response> {
   /**
    * Constructs a new poolifier dynamic cluster pool.
