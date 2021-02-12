@@ -42,7 +42,7 @@ export class FixedClusterPool<Data = any, Response = any> extends AbstractPool<
    * @param filePath Path to an implementation of a `ClusterWorker` file, which can be relative or absolute.
    * @param opts Options for this fixed cluster pool. Default: `{ maxTasks: 1000 }`
    */
-  public constructor(
+  public constructor (
     numWorkers: number,
     filePath: string,
     public readonly opts: ClusterPoolOptions = { maxTasks: 1000 }
@@ -50,43 +50,43 @@ export class FixedClusterPool<Data = any, Response = any> extends AbstractPool<
     super(numWorkers, filePath, opts)
   }
 
-  protected setupHook(): void {
+  protected setupHook (): void {
     setupMaster({
       exec: this.filePath
     })
   }
 
-  protected isMain(): boolean {
+  protected isMain (): boolean {
     return isMaster
   }
 
-  protected destroyWorker(worker: Worker): void {
+  protected destroyWorker (worker: Worker): void {
     worker.kill()
   }
 
-  protected sendToWorker(worker: Worker, message: MessageValue<Data>): void {
+  protected sendToWorker (worker: Worker, message: MessageValue<Data>): void {
     worker.send(message)
   }
 
-  protected registerWorkerMessageListener(
+  protected registerWorkerMessageListener (
     port: Worker,
     listener: (message: MessageValue<Response>) => void
   ): void {
     port.on('message', listener)
   }
 
-  protected unregisterWorkerMessageListener(
+  protected unregisterWorkerMessageListener (
     port: Worker,
     listener: (message: MessageValue<Response>) => void
   ): void {
     port.removeListener('message', listener)
   }
 
-  protected newWorker(): Worker {
+  protected newWorker (): Worker {
     return fork(this.opts.env)
   }
 
-  protected afterNewWorkerPushed(worker: Worker): void {
+  protected afterNewWorkerPushed (worker: Worker): void {
     // we will attach a listener for every task,
     // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
     worker.setMaxListeners(this.opts.maxTasks ?? 1000)

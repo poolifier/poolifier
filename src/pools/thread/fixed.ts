@@ -34,7 +34,7 @@ export class FixedThreadPool<Data = any, Response = any> extends AbstractPool<
    * @param filePath Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
    * @param opts Options for this fixed thread pool. Default: `{ maxTasks: 1000 }`
    */
-  public constructor(
+  public constructor (
     numThreads: number,
     filePath: string,
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
@@ -42,44 +42,46 @@ export class FixedThreadPool<Data = any, Response = any> extends AbstractPool<
     super(numThreads, filePath, opts)
   }
 
-  protected isMain(): boolean {
+  protected isMain (): boolean {
     return isMainThread
   }
 
-  protected async destroyWorker(
+  protected async destroyWorker (
     worker: ThreadWorkerWithMessageChannel
   ): Promise<void> {
     await worker.terminate()
   }
 
-  protected sendToWorker(
+  protected sendToWorker (
     worker: ThreadWorkerWithMessageChannel,
     message: MessageValue<Data>
   ): void {
     worker.postMessage(message)
   }
 
-  protected registerWorkerMessageListener(
+  protected registerWorkerMessageListener (
     port: ThreadWorkerWithMessageChannel,
     listener: (message: MessageValue<Response>) => void
   ): void {
     port.port2?.on('message', listener)
   }
 
-  protected unregisterWorkerMessageListener(
+  protected unregisterWorkerMessageListener (
     port: ThreadWorkerWithMessageChannel,
     listener: (message: MessageValue<Response>) => void
   ): void {
     port.port2?.removeListener('message', listener)
   }
 
-  protected newWorker(): ThreadWorkerWithMessageChannel {
+  protected newWorker (): ThreadWorkerWithMessageChannel {
     return new Worker(this.filePath, {
       env: SHARE_ENV
     })
   }
 
-  protected afterNewWorkerPushed(worker: ThreadWorkerWithMessageChannel): void {
+  protected afterNewWorkerPushed (
+    worker: ThreadWorkerWithMessageChannel
+  ): void {
     const { port1, port2 } = new MessageChannel()
     worker.postMessage({ parent: port1 }, [port1])
     worker.port1 = port1

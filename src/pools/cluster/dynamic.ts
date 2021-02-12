@@ -4,10 +4,13 @@ import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
 
 /**
- * A cluster pool with a min/max number of workers, is possible to execute tasks in sync or async mode as you prefer.
+ * A cluster pool with a dynamic number of workers, but a guaranteed minimum number of workers.
  *
- * This cluster pool will create new workers when the other ones are busy, until the max number of workers,
- * when the max number of workers is reached, an event will be emitted, if you want to listen this event use the emitter method.
+ * This cluster pool creates new workers when the others are busy, up to the maximum number of workers.
+ * When the maximum number of workers is reached, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
+ *
+ * @template Data Type of data sent to the worker.
+ * @template Response Type of response of execution.
  *
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
@@ -19,10 +22,12 @@ export class DynamicClusterPool<
   Response = any
 > extends FixedClusterPool<Data, Response> {
   /**
-   * @param min Min number of workers that will be always active
-   * @param max Max number of workers that will be active
-   * @param filename A file path with implementation of `ClusterWorker` class, relative path is fine.
-   * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
+   * Constructs a new poolifier dynamic cluster pool.
+   *
+   * @param min Minimum number of workers which are always active.
+   * @param max Maximum number of workers that can be created by this pool.
+   * @param filename Path to an implementation of a `ClusterWorker` file, which can be relative or absolute.
+   * @param opts Options for this fixed cluster pool. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
     min: number,
@@ -33,6 +38,11 @@ export class DynamicClusterPool<
     super(min, filename, opts)
   }
 
+  /**
+   * Choose a worker in a round robin fashion.
+   *
+   * If all active workers are currently busy, try creating a new worker and using it.
+   */
   protected chooseWorker (): Worker {
     let worker: Worker | undefined
     for (const entry of this.tasks) {
@@ -43,20 +53,20 @@ export class DynamicClusterPool<
     }
 
     if (worker) {
-      // a worker is free, use it
+      // A worker is free, use it
       return worker
     } else {
       if (this.workers.length === this.max) {
         this.emitter.emit('FullPool')
         return super.chooseWorker()
       }
-      // all workers are busy create a new worker
+      // All workers are busy, create a new worker
       const worker = this.internalNewWorker()
       worker.on('message', (message: MessageValue<Data>) => {
         if (message.kill) {
           this.sendToWorker(worker, { kill: 1 })
           void this.destroyWorker(worker)
-          // clean workers from data structures
+          // Clean workers from data structures
           const workerIndex = this.workers.indexOf(worker)
           this.workers.splice(workerIndex, 1)
           this.tasks.delete(worker)
