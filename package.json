@@ -12,7 +12,7 @@
     "test": "npm run build && nyc mocha --exit --timeout 20000 tests/**/*.test.js",
     "test:debug": "npm run build:dev && mocha -r source-map-support/register --inspect-brk --exit tests/**/*.test.js",
     "test:debug:vscode": "mocha -r source-map-support/register --exit tests/**/*.test.js",
-    "coverage": "nyc report --reporter=lcov --check-coverage --lines 90 --per-file",
+    "coverage": "nyc report --reporter=lcov --check-coverage --lines 99",
     "coverage:html": "nyc --reporter=html mocha --exit --timeout 20000 tests/**/*.test.js",
     "format": "prettier --loglevel silent --write .; prettierx --write .",
     "lint": "eslint .",
