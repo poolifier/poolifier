@@ -1,8 +1,8 @@
+import type { JSONValue } from '../utility-types'
+
 export interface IPool<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Data = any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Response = any
+  Data extends JSONValue = JSONValue,
+  Response extends JSONValue = JSONValue
 > {
   destroy(): Promise<void>
   execute(data: Data): Promise<Response>

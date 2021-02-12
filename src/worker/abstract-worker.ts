@@ -1,13 +1,11 @@
 import { AsyncResource } from 'async_hooks'
-import type { MessageValue } from '../utility-types'
+import type { JSONValue, MessageValue } from '../utility-types'
 import type { WorkerOptions } from './worker-options'
 
 export abstract class AbstractWorker<
   MainWorker,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Data = any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Response = any
+  Data extends JSONValue = JSONValue,
+  Response extends JSONValue = JSONValue
 > extends AsyncResource {
   protected readonly maxInactiveTime: number
   protected readonly async: boolean
