@@ -48,7 +48,8 @@ export abstract class AbstractPool<
   public nextWorker: number = 0
 
   /**
-   * `workerId` as key and an integer value
+   * - `key`: The `Worker`
+   * - `value`: Number of tasks that has been assigned to that worker since it started
    */
   public readonly tasks: Map<Worker, number> = new Map<Worker, number>()
 
@@ -56,7 +57,7 @@ export abstract class AbstractPool<
 
   protected id: number = 0
 
-  public constructor (
+  public constructor(
     public readonly numWorkers: number,
     public readonly filePath: string,
     public readonly opts: PoolOptions<Worker> = { maxTasks: 1000 }
@@ -78,26 +79,26 @@ export abstract class AbstractPool<
     this.emitter = new PoolEmitter()
   }
 
-  protected setupHook (): void {
+  protected setupHook(): void {
     // Can be overridden
   }
 
-  protected abstract isMain (): boolean
+  protected abstract isMain(): boolean
 
-  public async destroy (): Promise<void> {
+  public async destroy(): Promise<void> {
     for (const worker of this.workers) {
       await this.destroyWorker(worker)
     }
   }
 
-  protected abstract destroyWorker (worker: Worker): void | Promise<void>
+  protected abstract destroyWorker(worker: Worker): void | Promise<void>
 
-  protected abstract sendToWorker (
+  protected abstract sendToWorker(
     worker: Worker,
     message: MessageValue<Data>
   ): void
 
-  protected addWorker (worker: Worker): void {
+  protected addWorker(worker: Worker): void {
     const previousWorkerIndex = this.tasks.get(worker)
     if (previousWorkerIndex !== undefined) {
       this.tasks.set(worker, previousWorkerIndex + 1)
@@ -112,7 +113,7 @@ export abstract class AbstractPool<
    * @param data The input for the task specified.
    * @returns Promise that is resolved when the task is done.
    */
-  public execute (data: Data): Promise<Response> {
+  public execute(data: Data): Promise<Response> {
     // configure worker to handle message with the specified task
     const worker = this.chooseWorker()
     this.addWorker(worker)
@@ -122,17 +123,17 @@ export abstract class AbstractPool<
     return res
   }
 
-  protected abstract registerWorkerMessageListener (
+  protected abstract registerWorkerMessageListener(
     port: Worker,
     listener: (message: MessageValue<Response>) => void
   ): void
 
-  protected abstract unregisterWorkerMessageListener (
+  protected abstract unregisterWorkerMessageListener(
     port: Worker,
     listener: (message: MessageValue<Response>) => void
   ): void
 
-  protected internalExecute (worker: Worker, id: number): Promise<Response> {
+  protected internalExecute(worker: Worker, id: number): Promise<Response> {
     return new Promise((resolve, reject) => {
       const listener: (message: MessageValue<Response>) => void = message => {
         if (message.id === id) {
@@ -146,7 +147,7 @@ export abstract class AbstractPool<
     })
   }
 
-  protected chooseWorker (): Worker {
+  protected chooseWorker(): Worker {
     if (this.workers.length - 1 === this.nextWorker) {
       this.nextWorker = 0
       return this.workers[this.nextWorker]
@@ -156,11 +157,11 @@ export abstract class AbstractPool<
     }
   }
 
-  protected abstract newWorker (): Worker
+  protected abstract newWorker(): Worker
 
-  protected abstract afterNewWorkerPushed (worker: Worker): void
+  protected abstract afterNewWorkerPushed(worker: Worker): void
 
-  protected internalNewWorker (): Worker {
+  protected internalNewWorker(): Worker {
     const worker: Worker = this.newWorker()
     worker.on('error', this.opts.errorHandler ?? (() => {}))
     worker.on('online', this.opts.onlineHandler ?? (() => {}))
