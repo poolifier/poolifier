@@ -26,6 +26,10 @@ But you should always prefer just using
 const { DynamicThreadPool } = require('poolifier')
 ```
 
+#### New type definitions for input data and response
+
+For cluster and thread pools, you can now only send and receive serializable `JSON` data.
+
 #### Internal (protected) methods renaming
 
 Those methods are not intended to be used from final users
