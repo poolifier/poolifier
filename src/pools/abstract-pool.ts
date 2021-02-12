@@ -175,6 +175,13 @@ export abstract class AbstractPool<
     }
   }
 
+  protected removeWorker (worker: Worker): void {
+    // Clean worker from data structure
+    const workerIndex = this.workers.indexOf(worker)
+    this.workers.splice(workerIndex, 1)
+    this.tasks.delete(worker)
+  }
+
   public execute (data: Data): Promise<Response> {
     // configure worker to handle message with the specified task
     const worker = this.chooseWorker()

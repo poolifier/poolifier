@@ -39,7 +39,7 @@ export class ThreadWorker<
     parentPort?.on('message', (value: MessageValue<Data>) => {
       if (value?.data && value.id) {
         // here you will receive messages
-        // console.log('This is the main worker ' + isMain)
+        // console.log('This is the main worker ' + isMainThread)
         if (this.async) {
           this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
         } else {

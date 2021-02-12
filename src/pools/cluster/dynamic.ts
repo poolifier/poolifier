@@ -64,10 +64,7 @@ export class DynamicClusterPool<
         if (message.kill) {
           this.sendToWorker(worker, { kill: 1 })
           void this.destroyWorker(worker)
-          // Clean workers from data structures
-          const workerIndex = this.workers.indexOf(worker)
-          this.workers.splice(workerIndex, 1)
-          this.tasks.delete(worker)
+          this.removeWorker(worker)
         }
       })
       return worker
