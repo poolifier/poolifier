@@ -1,9 +1,32 @@
+/**
+ * Make all properties in T non-readonly
+ */
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 
+/**
+ * Message object that is passed between worker and main worker.
+ */
 export interface MessageValue<Data> {
+  /**
+   * Input data that will be passed to the worker.
+   */
   readonly data?: Data
+  /**
+   * ID of the message.
+   */
   readonly id?: number
+  /**
+   * Kill code.
+   */
   readonly kill?: number
+  /**
+   * Error.
+   */
   readonly error?: string
+  /**
+   * Reference to main worker.
+   *
+   * _Only for internal use_
+   */
   readonly parent?: MessagePort
 }
