@@ -49,7 +49,11 @@ jobs:
 
       - name: Sonar Code Analysis
         if: "github.repository == 'pioardi/poolifier'"
-        run: npm run sonar
+        run: |
+          pwd
+          cd lib/
+          ls
+          npm run sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
