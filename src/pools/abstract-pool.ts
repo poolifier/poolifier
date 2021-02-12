@@ -211,6 +211,9 @@ export abstract class AbstractPool<
     })
   }
 
+  /**
+   * Choose a worker in a round robin fashion.
+   */
   protected chooseWorker (): Worker {
     if (this.workers.length - 1 === this.nextWorker) {
       this.nextWorker = 0

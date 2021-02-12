@@ -3,12 +3,20 @@ import type { Draft, MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
 
+/**
+ * A thread worker with message channels for communication between main thread and thread worker.
+ */
 export type ThreadWorkerWithMessageChannel = Worker & Draft<MessageChannel>
 
 /**
- * A thread pool with a static number of threads, is possible to execute tasks in sync or async mode as you prefer.
+ * A thread pool with a fixed number of threads.
  *
- * This pool will select the worker thread in a round robin fashion.
+ * It is possible to perform tasks in sync or asynchronous mode as you prefer.
+ *
+ * This pool selects the threads in a round robin fashion.
+ *
+ * @template Data Type of data sent to the worker.
+ * @template Response Type of response of execution.
  *
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
@@ -20,11 +28,13 @@ export class FixedThreadPool<Data = any, Response = any> extends AbstractPool<
   Response
 > {
   /**
-   * @param numThreads Num of threads for this worker pool.
-   * @param filePath A file path with implementation of `ThreadWorker` class, relative path is fine.
-   * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
+   * Constructs a new poolifier fixed thread pool.
+   *
+   * @param numThreads Number of threads for this pool.
+   * @param filePath Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
+   * @param opts Options for this fixed thread pool. Default: `{ maxTasks: 1000 }`
    */
-  public constructor (
+  public constructor(
     numThreads: number,
     filePath: string,
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
@@ -32,46 +42,44 @@ export class FixedThreadPool<Data = any, Response = any> extends AbstractPool<
     super(numThreads, filePath, opts)
   }
 
-  protected isMain (): boolean {
+  protected isMain(): boolean {
     return isMainThread
   }
 
-  protected async destroyWorker (
+  protected async destroyWorker(
     worker: ThreadWorkerWithMessageChannel
   ): Promise<void> {
     await worker.terminate()
   }
 
-  protected sendToWorker (
+  protected sendToWorker(
     worker: ThreadWorkerWithMessageChannel,
     message: MessageValue<Data>
   ): void {
     worker.postMessage(message)
   }
 
-  protected registerWorkerMessageListener (
+  protected registerWorkerMessageListener(
     port: ThreadWorkerWithMessageChannel,
     listener: (message: MessageValue<Response>) => void
   ): void {
     port.port2?.on('message', listener)
   }
 
-  protected unregisterWorkerMessageListener (
+  protected unregisterWorkerMessageListener(
     port: ThreadWorkerWithMessageChannel,
     listener: (message: MessageValue<Response>) => void
   ): void {
     port.port2?.removeListener('message', listener)
   }
 
-  protected newWorker (): ThreadWorkerWithMessageChannel {
+  protected newWorker(): ThreadWorkerWithMessageChannel {
     return new Worker(this.filePath, {
       env: SHARE_ENV
     })
   }
 
-  protected afterNewWorkerPushed (
-    worker: ThreadWorkerWithMessageChannel
-  ): void {
+  protected afterNewWorkerPushed(worker: ThreadWorkerWithMessageChannel): void {
     const { port1, port2 } = new MessageChannel()
     worker.postMessage({ parent: port1 }, [port1])
     worker.port1 = port1
