@@ -5,10 +5,10 @@ import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
 /**
- * A cluster worker used by a poolifier ClusterPool.
+ * A cluster worker used by a poolifier `ClusterPool`.
  *
  * When this worker is inactive for more than the given `maxInactiveTime`,
- * it will send this a termination request to its main worker.
+ * it will send a termination request to its main worker.
  *
  * If you use a `DynamicClusterPool` the extra workers that were created will be terminated,
  * but the minimum number of workers will be guaranteed.
