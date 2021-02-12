@@ -37,9 +37,11 @@ export class DynamicThreadPool<
   }
 
   /**
-   * Choose a thread in a round robin fashion.
+   * Choose a thread for the next task.
    *
-   * If all active threads are currently busy, try creating a new thread and using it.
+   * It will first check for and return an idle thread.
+   * If all threads are busy, then it will try to create a new one up to the `max` thread count.
+   * If the max thread count is reached, the emitter will emit a `FullPool` event and it will fall back to using a round robin algorithm to distribute the load.
    */
   protected chooseWorker (): ThreadWorkerWithMessageChannel {
     let worker: ThreadWorkerWithMessageChannel | undefined

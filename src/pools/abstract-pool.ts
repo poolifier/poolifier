@@ -18,7 +18,7 @@ export type OnlineHandler<Worker> = (this: Worker) => void
 export type ExitHandler<Worker> = (this: Worker, code: number) => void
 
 /**
- * Basic interface that describes the minimum required implementation listener events for a pool-worker.
+ * Basic interface that describes the minimum required implementation of listener events for a pool-worker.
  */
 export interface IWorker {
   on(event: 'error', handler: ErrorHandler<this>): void
@@ -59,7 +59,7 @@ export interface PoolOptions<Worker> {
 class PoolEmitter extends EventEmitter {}
 
 /**
- * Basic pool abstraction used for common logic between poolifier pools.
+ * Base class containing some shared logic for all poolifier pools.
  *
  * @template Worker Type of worker which manages this pool.
  * @template Data Type of data sent to the worker.
@@ -71,7 +71,7 @@ export abstract class AbstractPool<
   Response = unknown
 > implements IPool<Data, Response> {
   /**
-   * List of current workers.
+   * List of currently available workers.
    */
   public readonly workers: Worker[] = []
 
@@ -227,7 +227,9 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Choose a worker in a round robin fashion.
+   * Choose a worker for the next task.
+   *
+   * The default implementation uses a round robin algorithm to distribute the load.
    */
   protected chooseWorker (): Worker {
     if (this.workers.length - 1 === this.nextWorker) {

@@ -3,7 +3,7 @@ import type { MessageValue } from '../utility-types'
 import type { WorkerOptions } from './worker-options'
 
 /**
- * Basic worker abstraction used for common logic between poolifier workers.
+ * Base class containing some shared logic for all poolifier workers.
  *
  * @template MainWorker Type of main worker.
  * @template Data Type of data this worker receives from pool's execution.
@@ -15,7 +15,7 @@ export abstract class AbstractWorker<
   Response = unknown
 > extends AsyncResource {
   /**
-   * Maximum time this worker can be alive. The pool will check and terminate this worker when the time expires.
+   * The maximum time to keep this worker alive while idle. The pool automatically checks and terminates this worker when the time expires.
    */
   protected readonly maxInactiveTime: number
   /**
