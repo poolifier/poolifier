@@ -34,6 +34,7 @@ export abstract class AbstractWorker<
   protected readonly interval?: NodeJS.Timeout
 
   /**
+   * Constructs a new poolifier worker.
    *
    * @param type The type of async event.
    * @param isMain Whether this is the main worker or not.
