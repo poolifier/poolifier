@@ -46,8 +46,7 @@ export abstract class AbstractPool<
   public nextWorker: number = 0
 
   /**
-   * - `key`: The `Worker`
-   * - `value`: Number of tasks that has been assigned to that worker since it started
+   * `workerId` as key and an integer value
    */
   public readonly tasks: Map<Worker, number> = new Map<Worker, number>()
 
@@ -106,7 +105,7 @@ export abstract class AbstractPool<
   }
 
   protected removeWorker (worker: Worker): void {
-    // clean workers from data structures
+    // Clean workers from data structure
     const workerIndex = this.workers.indexOf(worker)
     this.workers.splice(workerIndex, 1)
     this.tasks.delete(worker)
