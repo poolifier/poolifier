@@ -39,8 +39,9 @@ jobs:
 
       - name: Tests & Coverage
         if: github.ref != 'refs/heads/master'
-        run: npm run test
-        run: npm run coverage
+        run: |
+          npm run test
+          npm run coverage
         env:
           CI: true
 
