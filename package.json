@@ -13,7 +13,7 @@
     "test:debug": "npm run build:dev && mocha -r source-map-support/register --inspect-brk --exit tests/**/*.test.js",
     "test:debug:vscode": "mocha -r source-map-support/register --exit tests/**/*.test.js",
     "coverage": "nyc report --reporter=html --check-coverage --lines 50",
-    "sonar" : "sonar-scanner",
+    "sonar": "sonar-scanner",
     "format": "prettier --loglevel silent --write .; prettierx --write .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
