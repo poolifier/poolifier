@@ -43,7 +43,7 @@ jobs:
           npm run test
           npm run coverage
           ls
-          cd coverage
+          cd coverage/
           ls
         env:
           CI: true
