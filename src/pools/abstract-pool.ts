@@ -144,9 +144,6 @@ export abstract class AbstractPool<
    */
   protected abstract isMain (): boolean
 
-  /**
-   * Shut down every current worker in this pool.
-   */
   public async destroy (): Promise<void> {
     for (const worker of this.workers) {
       await this.destroyWorker(worker)
@@ -180,12 +177,6 @@ export abstract class AbstractPool<
     }
   }
 
-  /**
-   * Execute the task specified into the constructor with the data parameter.
-   *
-   * @param data The input for the specified task.
-   * @returns Promise that will be resolved when the task is successfully completed.
-   */
   public execute (data: Data): Promise<Response> {
     // configure worker to handle message with the specified task
     const worker = this.chooseWorker()
