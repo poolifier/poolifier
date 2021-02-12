@@ -9,7 +9,7 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: 'module'
   },
-  plugins: ['@typescript-eslint', 'promise', 'prettierx'],
+  plugins: ['@typescript-eslint', 'promise'],
   extends: [
     'standard',
     'eslint:recommended',
@@ -17,9 +17,7 @@ module.exports = {
     'plugin:import/errors',
     'plugin:import/warnings',
     'plugin:import/typescript',
-    'plugin:promise/recommended',
-    'plugin:prettierx/standardx',
-    'plugin:prettierx/@typescript-eslint'
+    'plugin:promise/recommended'
   ],
   rules: {
     'no-void': 'off',
