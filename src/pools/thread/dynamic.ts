@@ -1,10 +1,7 @@
-import { EventEmitter } from 'events'
-import type { FixedThreadPoolOptions, WorkerWithMessageChannel } from './fixed'
+import type { MessageValue } from '../../utility-types'
+import type { PoolOptions } from '../abstract-pool'
+import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
-
-class MyEmitter extends EventEmitter {}
-
-export type DynamicThreadPoolOptions = FixedThreadPoolOptions
 
 /**
  * A thread pool with a min/max number of threads, is possible to execute tasks in sync or async mode as you prefer.
@@ -21,8 +18,6 @@ export class DynamicThreadPool<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Response = any
 > extends FixedThreadPool<Data, Response> {
-  public readonly emitter: MyEmitter
-
   /**
    * @param min Min number of threads that will be always active
    * @param max Max number of threads that will be active
@@ -30,18 +25,16 @@ export class DynamicThreadPool<
    * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
-    public readonly min: number,
+    min: number,
     public readonly max: number,
-    public readonly filename: string,
-    public readonly opts: DynamicThreadPoolOptions = { maxTasks: 1000 }
+    filename: string,
+    opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
   ) {
     super(min, filename, opts)
-
-    this.emitter = new MyEmitter()
   }
 
-  protected chooseWorker (): WorkerWithMessageChannel {
-    let worker: WorkerWithMessageChannel | undefined
+  protected chooseWorker (): ThreadWorkerWithMessageChannel {
+    let worker: ThreadWorkerWithMessageChannel | undefined
     for (const entry of this.tasks) {
       if (entry[1] === 0) {
         worker = entry[0]
@@ -58,11 +51,11 @@ export class DynamicThreadPool<
         return super.chooseWorker()
       }
       // all workers are busy create a new worker
-      const worker = this.newWorker()
-      worker.port2?.on('message', (message: { kill?: number }) => {
+      const worker = this.internalNewWorker()
+      worker.port2?.on('message', (message: MessageValue<Data>) => {
         if (message.kill) {
-          worker.postMessage({ kill: 1 })
-          void worker.terminate()
+          this.sendToWorker(worker, { kill: 1 })
+          void this.destroyWorker(worker)
           // clean workers from data structures
           const workerIndex = this.workers.indexOf(worker)
           this.workers.splice(workerIndex, 1)

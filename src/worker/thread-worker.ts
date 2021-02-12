@@ -1,6 +1,6 @@
-import { AsyncResource } from 'async_hooks'
 import { isMainThread, parentPort } from 'worker_threads'
 import type { MessageValue } from '../utility-types'
+import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
 /**
@@ -13,35 +13,20 @@ import type { WorkerOptions } from './worker-options'
  * @since 0.0.1
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
-  protected readonly maxInactiveTime: number
-  protected readonly async: boolean
-  protected lastTask: number
-  protected readonly interval?: NodeJS.Timeout
+export class ThreadWorker<Data = any, Response = any> extends AbstractWorker<
+  MessagePort,
+  Data,
+  Response
+> {
   protected parent?: MessagePort
 
-  public constructor (
-    fn: (data: Data) => Response,
-    public readonly opts: WorkerOptions = {}
-  ) {
-    super('worker-thread-pool:pioardi')
+  public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
+    super('worker-thread-pool:pioardi', isMainThread, fn, opts)
 
-    this.maxInactiveTime = this.opts.maxInactiveTime ?? 1000 * 60
-    this.async = !!this.opts.async
-    this.lastTask = Date.now()
-    if (!fn) throw new Error('Fn parameter is mandatory')
-    // keep the worker active
-    if (!isMainThread) {
-      this.interval = setInterval(
-        this.checkAlive.bind(this),
-        this.maxInactiveTime / 2
-      )
-      this.checkAlive.bind(this)()
-    }
     parentPort?.on('message', (value: MessageValue<Data>) => {
       if (value?.data && value.id) {
         // here you will receive messages
-        // console.log('This is the main thread ' + isMainThread)
+        // console.log('This is the main worker ' + isMain)
         if (this.async) {
           this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
         } else {
@@ -52,46 +37,21 @@ export class ThreadWorker<Data = any, Response = any> extends AsyncResource {
         // this will be received once
         this.parent = value.parent
       } else if (value.kill) {
-        // here is time to kill this thread, just clearing the interval
+        // here is time to kill this worker, just clearing the interval
         if (this.interval) clearInterval(this.interval)
         this.emitDestroy()
       }
     })
   }
 
-  protected checkAlive (): void {
-    if (Date.now() - this.lastTask > this.maxInactiveTime) {
-      this.parent?.postMessage({ kill: 1 })
+  protected getMainWorker (): MessagePort {
+    if (!this.parent) {
+      throw new Error('Parent was not set')
     }
+    return this.parent
   }
 
-  protected run (
-    fn: (data?: Data) => Response,
-    value: MessageValue<Data>
-  ): void {
-    try {
-      const res = fn(value.data)
-      this.parent?.postMessage({ data: res, id: value.id })
-      this.lastTask = Date.now()
-    } catch (e) {
-      this.parent?.postMessage({ error: e, id: value.id })
-      this.lastTask = Date.now()
-    }
-  }
-
-  protected runAsync (
-    fn: (data?: Data) => Promise<Response>,
-    value: MessageValue<Data>
-  ): void {
-    fn(value.data)
-      .then(res => {
-        this.parent?.postMessage({ data: res, id: value.id })
-        this.lastTask = Date.now()
-        return null
-      })
-      .catch(e => {
-        this.parent?.postMessage({ error: e, id: value.id })
-        this.lastTask = Date.now()
-      })
+  protected sendToMainWorker (message: MessageValue<Response>): void {
+    this.getMainWorker().postMessage(message)
   }
 }

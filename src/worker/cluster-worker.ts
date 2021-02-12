@@ -1,6 +1,7 @@
-import { AsyncResource } from 'async_hooks'
+import type { Worker } from 'cluster'
 import { isMaster, worker } from 'cluster'
 import type { MessageValue } from '../utility-types'
+import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
 /**
@@ -13,36 +14,18 @@ import type { WorkerOptions } from './worker-options'
  * @since 2.0.0
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
-  protected readonly maxInactiveTime: number
-  protected readonly async: boolean
-  protected lastTask: number
-  protected readonly interval?: NodeJS.Timeout
+export class ClusterWorker<Data = any, Response = any> extends AbstractWorker<
+  Worker,
+  Data,
+  Response
+> {
+  public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
+    super('worker-cluster-pool:pioardi', isMaster, fn, opts)
 
-  public constructor (
-    fn: (data: Data) => Response,
-    public readonly opts: WorkerOptions = {}
-  ) {
-    super('worker-cluster-pool:pioardi')
-
-    this.maxInactiveTime = this.opts.maxInactiveTime ?? 1000 * 60
-    this.async = !!this.opts.async
-    this.lastTask = Date.now()
-    if (!fn) throw new Error('Fn parameter is mandatory')
-    // keep the worker active
-    if (!isMaster) {
-      // console.log('ClusterWorker#constructor', 'is not master')
-      this.interval = setInterval(
-        this.checkAlive.bind(this),
-        this.maxInactiveTime / 2
-      )
-      this.checkAlive.bind(this)()
-    }
     worker.on('message', (value: MessageValue<Data>) => {
-      // console.log("cluster.on('message', value)", value)
       if (value?.data && value.id) {
         // here you will receive messages
-        // console.log('This is the main worker ' + isMaster)
+        // console.log('This is the main worker ' + isMain)
         if (this.async) {
           this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
         } else {
@@ -56,41 +39,15 @@ export class ClusterWorker<Data = any, Response = any> extends AsyncResource {
     })
   }
 
-  protected checkAlive (): void {
-    if (Date.now() - this.lastTask > this.maxInactiveTime) {
-      worker.send({ kill: 1 })
-    }
+  protected getMainWorker (): Worker {
+    return worker
   }
 
-  protected run (
-    fn: (data?: Data) => Response,
-    value: MessageValue<Data>
-  ): void {
-    try {
-      const res = fn(value.data as Data)
-      worker.send({ data: res, id: value.id })
-      this.lastTask = Date.now()
-    } catch (e) {
-      const err = e instanceof Error ? e.message : e
-      worker.send({ error: err, id: value.id })
-      this.lastTask = Date.now()
-    }
+  protected sendToMainWorker (message: MessageValue<Response>): void {
+    this.getMainWorker().send(message)
   }
 
-  protected runAsync (
-    fn: (data?: Data) => Promise<Response>,
-    value: MessageValue<Data>
-  ): void {
-    fn(value.data)
-      .then(res => {
-        worker.send({ data: res, id: value.id })
-        this.lastTask = Date.now()
-        return null
-      })
-      .catch(e => {
-        const err = e instanceof Error ? e.message : e
-        worker.send({ error: err, id: value.id })
-        this.lastTask = Date.now()
-      })
+  protected handleError (e: Error | string): string {
+    return e instanceof Error ? e.message : e
   }
 }
