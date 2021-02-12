@@ -30,7 +30,7 @@ export abstract class AbstractWorker<
     this.maxInactiveTime = this.opts.maxInactiveTime ?? 1000 * 60
     this.async = !!this.opts.async
     this.lastTask = Date.now()
-    if (!fn) throw new Error('Fn parameter is mandatory')
+    if (!fn) throw new Error('fn parameter is mandatory')
     // keep the worker active
     if (!isMain) {
       this.interval = setInterval(

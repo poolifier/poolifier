@@ -50,6 +50,7 @@ export class FixedClusterPool<
 
   protected destroyWorker (worker: Worker): void {
     worker.kill()
+    // FIXME: The tests are currently failing, so these must be changed first
   }
 
   protected sendToWorker (worker: Worker, message: MessageValue<Data>): void {

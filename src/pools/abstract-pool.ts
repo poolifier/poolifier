@@ -102,6 +102,13 @@ export abstract class AbstractPool<
     }
   }
 
+  protected removeWorker (worker: Worker): void {
+    // Clean worker from data structure
+    const workerIndex = this.workers.indexOf(worker)
+    this.workers.splice(workerIndex, 1)
+    this.tasks.delete(worker)
+  }
+
   /**
    * Execute the task specified into the constructor with the data parameter.
    *
