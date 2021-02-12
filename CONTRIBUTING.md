@@ -26,3 +26,12 @@ Please ask your PR to be merged on **master** branch.
 ```bash
   npm run format && npm run lint:fix
 ```
+
+### Project pillars
+Please consider our pillars before to start change the project
+
+  - Performance :racehorse:
+  - Security :bank: :cop:
+  - No runtime dependencies :white_check_mark: ( until now we don't have any exception to that)
+  - Easy to use :couple:
+  - Code quality :octocat:
