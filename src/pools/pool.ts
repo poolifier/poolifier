@@ -1,9 +1,4 @@
-import type { JSONValue } from '../utility-types'
-
-export interface IPool<
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
-> {
+export interface IPool<Data = unknown, Response = unknown> {
   destroy(): Promise<void>
   execute(data: Data): Promise<Response>
 }

@@ -1,5 +1,5 @@
 import EventEmitter from 'events'
-import type { JSONValue, MessageValue } from '../utility-types'
+import type { MessageValue } from '../utility-types'
 import type { IPool } from './pool'
 
 export type ErrorHandler<Worker> = (this: Worker, e: Error) => void
@@ -37,8 +37,8 @@ class PoolEmitter extends EventEmitter {}
 
 export abstract class AbstractPool<
   Worker extends IWorker,
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
+  Data = unknown,
+  Response = unknown
 > implements IPool<Data, Response> {
   public readonly workers: Worker[] = []
   public nextWorker: number = 0

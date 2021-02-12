@@ -6,7 +6,7 @@ export type JSONValue = JSONPrimitive | JSONArray | JSONObject
 export type JSONObject = { [k: string]: JSONValue }
 export type JSONArray = Array<JSONValue>
 
-export interface MessageValue<Data extends JSONValue> {
+export interface MessageValue<Data = unknown> {
   readonly data?: Data
   readonly id?: number
   readonly kill?: number
