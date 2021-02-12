@@ -52,7 +52,7 @@ export class FixedClusterPool<Data = any, Response = any> extends AbstractPool<
 
   protected destroyWorker (worker: Worker): void {
     worker.kill()
-    this.removeWorker(worker)
+    // FIXME: The tests are currently failing, so these must be changed first
   }
 
   protected sendToWorker (worker: Worker, message: MessageValue<Data>): void {
