@@ -47,17 +47,15 @@ jobs:
           ls
         env:
           CI: true
-
-      - name: Benchmark
-        if: github.event.inputs.withBenchmark
-        run: npm run benchmark
-
-      - name: Archive code coverage results
         uses: actions/upload-artifact@v2
         with:
           name: code-coverage-report
           path: ./coverage/lcov.info
           retention-days: 5
+
+      - name: Benchmark
+        if: github.event.inputs.withBenchmark
+        run: npm run benchmark
 
 
   sonarcloud:
