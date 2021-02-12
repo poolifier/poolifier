@@ -48,7 +48,7 @@ jobs:
           CI: true
 
       - name: Sonar Code Analysis
-        if: github.ref == 'refs/heads/master'
+        if: "github.repository == 'pioardi/poolifier'"
         run: npm run sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
