@@ -11,9 +11,14 @@ on:
         description: 'With Benchmark?'
         default: false
 
+defaults:
+  run:
+    working-directory: poolifier
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
 
     strategy:
       matrix:
@@ -22,6 +27,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis. This is needed for better sonar analysis
+
 
       - name: Set node version to ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -42,16 +50,11 @@ jobs:
         run: |
           npm run test
           npm run coverage
-          ls
-          cd ./coverage/
-          ls
+          npm run sonar
         env:
           CI: true
-        uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report
-          path: ./coverage/lcov.info
-          retention-days: 5
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Benchmark
         if: github.event.inputs.withBenchmark
