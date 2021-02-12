@@ -4,10 +4,8 @@ import type { WorkerOptions } from './worker-options'
 
 export abstract class AbstractWorker<
   MainWorker,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Data = any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Response = any
+  Data = unknown,
+  Response = unknown
 > extends AsyncResource {
   protected readonly maxInactiveTime: number
   protected readonly async: boolean
