@@ -166,6 +166,11 @@ export abstract class AbstractPool<
     message: MessageValue<Data>
   ): void
 
+  /**
+   * Adds the given worker to the pool.
+   *
+   * @param worker Worker that will be added.
+   */
   protected addWorker (worker: Worker): void {
     const previousWorkerIndex = this.tasks.get(worker)
     if (previousWorkerIndex !== undefined) {
@@ -175,6 +180,11 @@ export abstract class AbstractPool<
     }
   }
 
+  /**
+   * Removes the given worker from the pool.
+   *
+   * @param worker Worker that will be removed.
+   */
   protected removeWorker (worker: Worker): void {
     // Clean worker from data structure
     const workerIndex = this.workers.indexOf(worker)
@@ -183,7 +193,7 @@ export abstract class AbstractPool<
   }
 
   public execute (data: Data): Promise<Response> {
-    // configure worker to handle message with the specified task
+    // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
     this.addWorker(worker)
     const id = ++this.id
