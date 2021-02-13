@@ -153,7 +153,7 @@ export abstract class AbstractPool<
   public execute (data: Data): Promise<Response> {
     // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
-    this.addWorker(worker)
+    this.increaseWorkersTask(worker)
     const messageId = ++this.nextMessageId
     const res = this.internalExecute(worker, messageId)
     this.sendToWorker(worker, { data: data || ({} as Data), id: messageId })
@@ -187,14 +187,14 @@ export abstract class AbstractPool<
   protected abstract isMain (): boolean
 
   /**
-   * Adds the given worker to the pool.
+   * Increase the number of tasks that the given workers has done.
    *
-   * @param worker Worker that will be added.
+   * @param worker Workers whose tasks are increased.
    */
-  protected addWorker (worker: Worker): void {
-    const previousWorkerIndex = this.tasks.get(worker)
-    if (previousWorkerIndex !== undefined) {
-      this.tasks.set(worker, previousWorkerIndex + 1)
+  protected increaseWorkersTask (worker: Worker): void {
+    const numberOfTasksTheWorkerHas = this.tasks.get(worker)
+    if (numberOfTasksTheWorkerHas !== undefined) {
+      this.tasks.set(worker, numberOfTasksTheWorkerHas + 1)
     } else {
       throw Error('Worker could not be found in tasks map')
     }
@@ -255,7 +255,7 @@ export abstract class AbstractPool<
       const listener: (message: MessageValue<Response>) => void = message => {
         if (message.id === messageId) {
           this.unregisterWorkerMessageListener(worker, listener)
-          this.addWorker(worker)
+          this.increaseWorkersTask(worker)
           if (message.error) reject(message.error)
           else resolve(message.data as Response)
         }
