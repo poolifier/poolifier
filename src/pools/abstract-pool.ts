@@ -98,7 +98,7 @@ export abstract class AbstractPool<
   /**
    * ID of the next message.
    */
-  protected id: number = 0
+  protected nextMessageId: number = 0
 
   /**
    * Constructs a new poolifier pool.
@@ -217,9 +217,9 @@ export abstract class AbstractPool<
     // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
     this.addWorker(worker)
-    const id = ++this.id
-    const res = this.internalExecute(worker, id)
-    this.sendToWorker(worker, { data: data || ({} as Data), id: id })
+    const messageId = ++this.nextMessageId
+    const res = this.internalExecute(worker, messageId)
+    this.sendToWorker(worker, { data: data || ({} as Data), id: messageId })
     return res
   }
 
@@ -233,10 +233,13 @@ export abstract class AbstractPool<
     listener: (message: MessageValue<Response>) => void
   ): void
 
-  protected internalExecute (worker: Worker, id: number): Promise<Response> {
+  protected internalExecute (
+    worker: Worker,
+    messageId: number
+  ): Promise<Response> {
     return new Promise((resolve, reject) => {
       const listener: (message: MessageValue<Response>) => void = message => {
-        if (message.id === id) {
+        if (message.id === messageId) {
           this.unregisterWorkerMessageListener(worker, listener)
           this.addWorker(worker)
           if (message.error) reject(message.error)
