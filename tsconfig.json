@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2018",
-    "module": "CommonJS",
+    "module": "ES2015",
     "outDir": "lib",
     "esModuleInterop": true,
     "declaration": true,
