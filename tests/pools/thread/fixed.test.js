@@ -1,6 +1,7 @@
 const expect = require('expect')
 const { FixedThreadPool } = require('../../../lib/index')
 const numThreads = 10
+const maxTasks = 400
 const pool = new FixedThreadPool(
   numThreads,
   './tests/worker/thread/testWorker.js',
@@ -19,7 +20,11 @@ const errorPool = new FixedThreadPool(
     onlineHandler: () => console.log('worker is online')
   }
 )
-const asyncPool = new FixedThreadPool(1, './tests/worker/thread/asyncWorker.js')
+const asyncPool = new FixedThreadPool(
+  1,
+  './tests/worker/thread/asyncWorker.js',
+  { maxTasks: maxTasks }
+)
 
 describe('Fixed thread pool test suite ', () => {
   it('Choose worker round robin test', async () => {
@@ -75,6 +80,11 @@ describe('Fixed thread pool test suite ', () => {
     expect(result).toBeTruthy()
     expect(result.f).toBe(data.f)
     expect(usedTime).toBeGreaterThanOrEqual(2000)
+  })
+
+  it('Verify that maxTasks is set properly', async () => {
+    const worker = asyncPool.chooseWorker()
+    expect(worker.port2.getMaxListeners()).toBe(maxTasks)
   })
 
   it('Shutdown test', async () => {

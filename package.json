@@ -1,6 +1,6 @@
 {
   "name": "poolifier",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "description": "Library on top of node js worker threads that implement various worker pools type",
   "main": "lib/index.js",
   "scripts": {
@@ -12,8 +12,9 @@
     "test": "npm run build && nyc mocha --exit --timeout 20000 tests/**/*.test.js",
     "test:debug": "npm run build:dev && mocha -r source-map-support/register --inspect-brk --exit tests/**/*.test.js",
     "test:debug:vscode": "mocha -r source-map-support/register --exit tests/**/*.test.js",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "coverage:html": "nyc --reporter=html mocha --exit --timeout 20000 tests/**/*.test.js",
+    "sonar": "sonar-scanner",
+    "coverage": "nyc report --reporter=lcov --check-coverage --lines 80",
+    "coverage:html": "nyc report --reporter=html --check-coverage --lines 80",
     "format": "prettier --loglevel silent --write .; prettierx --write .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
@@ -58,7 +59,6 @@
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
     "benchmark": "^2.1.4",
-    "coveralls": "^3.1.0",
     "eslint": "^7.20.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
@@ -76,6 +76,7 @@
     "rollup": "^2.39.0",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-typescript2": "^0.29.0",
+    "sonar-scanner": "^3.1.0",
     "source-map-support": "^0.5.19",
     "typescript": "^4.1.5",
     "worker-threads-pool": "^2.0.0",
