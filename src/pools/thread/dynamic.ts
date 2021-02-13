@@ -55,14 +55,14 @@ export class DynamicThreadPool<
     }
 
     if (worker) {
-      // a worker is free, use it
+      // A worker is free, use it
       return worker
     } else {
       if (this.workers.length === this.max) {
         this.emitter.emit('FullPool')
         return super.chooseWorker()
       }
-      // all workers are busy create a new worker
+      // All workers are busy, create a new worker
       const worker = this.createAndSetupWorker()
       worker.port2?.on('message', (message: MessageValue<Data>) => {
         if (message.kill) {
