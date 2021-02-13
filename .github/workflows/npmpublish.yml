@@ -7,26 +7,50 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
         with:
           node-version: 12
+<<<<<<< HEAD
       - run: npm ci
       - run: npm run test
       - run: npm run lint
       - run: npm run coverage
+=======
+
+      - name: Install
+        run: npm ci
+
+      - name: Test
+        run: npm run test
+
+      - name: Coverage
+        run: npm run coverage
+>>>>>>> 57840ba025d0250360fe74d78fc7065b33d8ee87
 
   publish-npm:
     needs: build
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-      - run: npm ci --production
-      - run: npm publish
+
+      - name: Install
+        run: npm ci --production
+
+      - name: Publish
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}

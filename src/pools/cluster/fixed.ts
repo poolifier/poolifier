@@ -3,6 +3,9 @@ import type { JSONValue, MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
 
+/**
+ * Options for a poolifier cluster pool.
+ */
 export interface ClusterPoolOptions extends PoolOptions<Worker> {
   /**
    * Key/value pairs to add to worker process environment.
@@ -14,9 +17,14 @@ export interface ClusterPoolOptions extends PoolOptions<Worker> {
 }
 
 /**
- * A cluster pool with a static number of workers, is possible to execute tasks in sync or async mode as you prefer.
+ * A cluster pool with a fixed number of workers.
  *
- * This pool will select the worker in a round robin fashion.
+ * It is possible to perform tasks in sync or asynchronous mode as you prefer.
+ *
+ * This pool selects the workers in a round robin fashion.
+ *
+ * @template Data Type of data sent to the worker.
+ * @template Response Type of response of execution.
  *
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
@@ -26,9 +34,11 @@ export class FixedClusterPool<
   Response extends JSONValue = JSONValue
 > extends AbstractPool<Worker, Data, Response> {
   /**
+   * Constructs a new poolifier fixed cluster pool.
+   *
    * @param numWorkers Number of workers for this pool.
-   * @param filePath A file path with implementation of `ClusterWorker` class, relative path is fine.
-   * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
+   * @param filePath Path to an implementation of a `ClusterWorker` file, which can be relative or absolute.
+   * @param opts Options for this fixed cluster pool. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
     numWorkers: number,

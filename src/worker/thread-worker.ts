@@ -4,10 +4,16 @@ import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
 /**
- * An example worker that will be always alive, you just need to **extend** this class if you want a static pool.
+ * A thread worker used by a poolifier `ThreadPool`.
  *
- * When this worker is inactive for more than 1 minute, it will send this info to the main thread,
- * if you are using DynamicThreadPool, the workers created after will be killed, the min num of thread will be guaranteed.
+ * When this worker is inactive for more than the given `maxInactiveTime`,
+ * it will send a termination request to its main thread.
+ *
+ * If you use a `DynamicThreadPool` the extra workers that were created will be terminated,
+ * but the minimum number of workers will be guaranteed.
+ *
+ * @template Data Type of data this worker receives from pool's execution.
+ * @template Response Type of response the worker sends back to the main thread.
  *
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
@@ -16,8 +22,17 @@ export class ThreadWorker<
   Data extends JSONValue = JSONValue,
   Response extends JSONValue = JSONValue
 > extends AbstractWorker<MessagePort, Data, Response> {
+  /**
+   * Reference to main thread.
+   */
   protected parent?: MessagePort
 
+  /**
+   * Constructs a new poolifier thread worker.
+   *
+   * @param fn Function processed by the worker when the pool's `execution` function is invoked.
+   * @param opts Options for the worker.
+   */
   public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
     super('worker-thread-pool:pioardi', isMainThread, fn, opts)
 

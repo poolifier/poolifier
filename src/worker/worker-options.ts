@@ -1,12 +1,17 @@
+/**
+ * Options for workers.
+ */
 export interface WorkerOptions {
   /**
-   * Max time to wait tasks to work on (in ms), after this period the new worker threads will die.
+   * Maximum waiting time in milliseconds for tasks.
+   *
+   * After this time, newly created workers will be terminated.
    *
    * @default 60.000 ms
    */
   maxInactiveTime?: number
   /**
-   * `true` if your function contains async pieces, else `false`.
+   * Whether your worker will perform asynchronous or not.
    *
    * @default false
    */
