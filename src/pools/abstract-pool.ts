@@ -267,7 +267,7 @@ export abstract class AbstractPool<
   /**
    * Returns a newly created worker.
    */
-  protected abstract newWorker (): Worker
+  protected abstract createWorker (): Worker
 
   /**
    * Function that can be hooked up when a worker has been newly created and moved to the workers registry.
@@ -284,7 +284,7 @@ export abstract class AbstractPool<
    * @returns New, completely set up worker.
    */
   protected createAndSetupWorker (): Worker {
-    const worker: Worker = this.newWorker()
+    const worker: Worker = this.createWorker()
 
     worker.on('error', this.opts.errorHandler ?? (() => {}))
     worker.on('online', this.opts.onlineHandler ?? (() => {}))

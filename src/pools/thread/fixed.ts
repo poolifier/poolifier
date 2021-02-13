@@ -72,7 +72,7 @@ export class FixedThreadPool<
     port.port2?.removeListener('message', listener)
   }
 
-  protected newWorker (): ThreadWorkerWithMessageChannel {
+  protected createWorker (): ThreadWorkerWithMessageChannel {
     return new Worker(this.filePath, {
       env: SHARE_ENV
     })

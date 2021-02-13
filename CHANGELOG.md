@@ -45,7 +45,7 @@ These properties are not intended for end users
 These methods are not intended for end users
 
 - `_chooseWorker` => `chooseWorker`
-- `_newWorker` => `newWorker`
+- `_newWorker` => `createWorker`
 - `_execute` => `internalExecute`
 - `_chooseWorker` => `chooseWorker`
 - `_checkAlive` => `checkAlive`

@@ -81,7 +81,7 @@ export class FixedClusterPool<
     port.removeListener('message', listener)
   }
 
-  protected newWorker (): Worker {
+  protected createWorker (): Worker {
     return fork(this.opts.env)
   }
 
