@@ -6,14 +6,14 @@
  */
 export interface IPool<Data = unknown, Response = unknown> {
   /**
-   * Shut down every current worker in this pool.
-   */
-  destroy(): Promise<void>
-  /**
    * Perform the task specified in the constructor with the data parameter.
    *
    * @param data The input for the specified task.
    * @returns Promise that will be resolved when the task is successfully completed.
    */
   execute(data: Data): Promise<Response>
+  /**
+   * Shut down every current worker in this pool.
+   */
+  destroy(): Promise<void>
 }

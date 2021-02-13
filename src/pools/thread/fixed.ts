@@ -72,15 +72,13 @@ export class FixedThreadPool<
     port.port2?.removeListener('message', listener)
   }
 
-  protected newWorker (): ThreadWorkerWithMessageChannel {
+  protected createWorker (): ThreadWorkerWithMessageChannel {
     return new Worker(this.filePath, {
       env: SHARE_ENV
     })
   }
 
-  protected afterNewWorkerPushed (
-    worker: ThreadWorkerWithMessageChannel
-  ): void {
+  protected afterWorkerSetup (worker: ThreadWorkerWithMessageChannel): void {
     const { port1, port2 } = new MessageChannel()
     worker.postMessage({ parent: port1 }, [port1])
     worker.port1 = port1

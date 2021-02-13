@@ -34,13 +34,18 @@ _This is not a limitation by poolifier but NodeJS._
 #### Public properties renaming
 
 - Thread Pool's `numWorkers` is now `numberOfWorkers`
+- Thread Pool's `nextWorker` is now `nextWorkerIndex`
 
-#### Internal (protected) methods renaming
+#### Internal (protected) properties and methods renaming
 
-Those methods are not intended to be used from final users
+These properties are not intended for end users
+
+- `id` => `nextMessageId`
+
+These methods are not intended for end users
 
 - `_chooseWorker` => `chooseWorker`
-- `_newWorker` => `newWorker`
+- `_newWorker` => `createWorker`
 - `_execute` => `internalExecute`
 - `_chooseWorker` => `chooseWorker`
 - `_checkAlive` => `checkAlive`
