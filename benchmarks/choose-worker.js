@@ -1,8 +1,4 @@
 const Benchmark = require('benchmark')
-const { dynamicClusterTest } = require('./cluster/dynamic')
-const { fixedClusterTest } = require('./cluster/fixed')
-const { dynamicThreadTest } = require('./thread/dynamic')
-const { fixedThreadTest } = require('./thread/fixed')
 
 const suite = new Benchmark.Suite()
 
@@ -16,9 +12,10 @@ const workers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 let nextWorkerIndex = 0
 
 function chooseWorkerTernary () {
+  const chosenWorker = workers[nextWorkerIndex]
   nextWorkerIndex =
     workers.length - 1 === nextWorkerIndex ? 0 : nextWorkerIndex + 1
-  return workers[nextWorkerIndex]
+  return chosenWorker
 }
 
 function chooseWorkerIncrementModulo () {
