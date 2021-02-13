@@ -115,10 +115,8 @@ describe('Fixed cluster pool test suite ', () => {
 
   it('Shutdown test', async () => {
     let closedWorkers = 0
-    console.log('FixedClusterPool workers length', pool.workers.length)
     pool.workers.forEach(w => {
       w.on('exit', () => {
-        console.log('Remove cluster worker', closedWorkers)
         closedWorkers++
       })
     })
