@@ -11,5 +11,4 @@
   "exclude": ["node_modules"],
   "sourceRoot": "./src",
   "sourceMap": true
-
 }

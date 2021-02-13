@@ -23,8 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis. This is needed for better sonar
-
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis. This is needed for better sonar
 
       - name: Set node version to ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -55,11 +54,9 @@ jobs:
           ls
           npm run sonar
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
 
       - name: Benchmark
         if: github.event.inputs.withBenchmark
         run: npm run benchmark
-
