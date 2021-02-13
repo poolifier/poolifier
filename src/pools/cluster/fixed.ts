@@ -59,8 +59,8 @@ export class FixedClusterPool<
   }
 
   protected destroyWorker (worker: Worker): void {
+    worker.once('error', () => this.removeWorker(worker))
     worker.kill()
-    this.removeWorker(worker)
   }
 
   protected sendToWorker (worker: Worker, message: MessageValue<Data>): void {
