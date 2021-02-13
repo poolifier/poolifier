@@ -150,18 +150,15 @@ export abstract class AbstractPool<
     return this.nextWorkerIndex
   }
 
-  /**
-   * Setup hook that can be overridden by a Poolifier pool implementation
-   * to run code before workers are created in the abstract constructor.
-   */
-  protected setupHook (): void {
-    // Can be overridden
+  public execute (data: Data): Promise<Response> {
+    // Configure worker to handle message with the specified task
+    const worker = this.chooseWorker()
+    this.addWorker(worker)
+    const messageId = ++this.nextMessageId
+    const res = this.internalExecute(worker, messageId)
+    this.sendToWorker(worker, { data: data || ({} as Data), id: messageId })
+    return res
   }
-
-  /**
-   * Should return whether the worker is the main worker or not.
-   */
-  protected abstract isMain (): boolean
 
   public async destroy (): Promise<void> {
     for (const worker of this.workers) {
@@ -177,15 +174,17 @@ export abstract class AbstractPool<
   protected abstract destroyWorker (worker: Worker): void | Promise<void>
 
   /**
-   * Send a message to the given worker.
-   *
-   * @param worker The worker which should receive the message.
-   * @param message The message.
+   * Setup hook that can be overridden by a Poolifier pool implementation
+   * to run code before workers are created in the abstract constructor.
    */
-  protected abstract sendToWorker (
-    worker: Worker,
-    message: MessageValue<Data>
-  ): void
+  protected setupHook (): void {
+    // Can be overridden
+  }
+
+  /**
+   * Should return whether the worker is the main worker or not.
+   */
+  protected abstract isMain (): boolean
 
   /**
    * Adds the given worker to the pool.
@@ -213,15 +212,30 @@ export abstract class AbstractPool<
     this.tasks.delete(worker)
   }
 
-  public execute (data: Data): Promise<Response> {
-    // Configure worker to handle message with the specified task
-    const worker = this.chooseWorker()
-    this.addWorker(worker)
-    const messageId = ++this.nextMessageId
-    const res = this.internalExecute(worker, messageId)
-    this.sendToWorker(worker, { data: data || ({} as Data), id: messageId })
-    return res
+  /**
+   * Choose a worker for the next task.
+   *
+   * The default implementation uses a round robin algorithm to distribute the load.
+   *
+   * @returns Worker.
+   */
+  protected chooseWorker (): Worker {
+    const chosenWorker = this.workers[this.nextWorkerIndex]
+    this.nextWorkerIndex++
+    this.nextWorkerIndex %= this.workers.length
+    return chosenWorker
   }
+
+  /**
+   * Send a message to the given worker.
+   *
+   * @param worker The worker which should receive the message.
+   * @param message The message.
+   */
+  protected abstract sendToWorker (
+    worker: Worker,
+    message: MessageValue<Data>
+  ): void
 
   protected abstract registerWorkerMessageListener (
     port: Worker,
@@ -248,20 +262,6 @@ export abstract class AbstractPool<
       }
       this.registerWorkerMessageListener(worker, listener)
     })
-  }
-
-  /**
-   * Choose a worker for the next task.
-   *
-   * The default implementation uses a round robin algorithm to distribute the load.
-   *
-   * @returns Worker.
-   */
-  protected chooseWorker (): Worker {
-    const chosenWorker = this.workers[this.nextWorkerIndex]
-    this.nextWorkerIndex++
-    this.nextWorkerIndex %= this.workers.length
-    return chosenWorker
   }
 
   /**
