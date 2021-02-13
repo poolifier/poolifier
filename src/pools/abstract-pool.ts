@@ -133,7 +133,7 @@ export abstract class AbstractPool<
    * Number of workers that this pool should manage.
    *
    * @returns Number of workers that this pool manages.
-   * @deprecated Please use `numberOfWorkers`. Will be removed in a later version. Only here for reasons of backward compatibility.
+   * @deprecated Only here for backward compatibility.
    */
   // eslint-disable-next-line spellcheck/spell-checker
   public get numWorkers (): number {

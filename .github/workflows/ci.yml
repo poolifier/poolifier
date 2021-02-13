@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis. This is needed for better sonar
 
       - name: Set node version to ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -37,18 +39,20 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Test
-        if: github.ref != 'refs/heads/master'
-        run: npm run test
-
-      - name: Test & Coverage
-        if: github.ref == 'refs/heads/master'
+      - name: Tests & Coverage
         run: |
           npm run test
-          export COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }}
           npm run coverage
         env:
           CI: true
+
+      - name: Sonar Code Analysis
+        if: "github.repository == 'pioardi/poolifier'"
+        run: |
+          npm run sonar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Benchmark
         if: github.event.inputs.withBenchmark

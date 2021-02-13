@@ -9,10 +9,11 @@ Please ask your PR to be merged on **master** branch.
 
 **How to run tests**
 
-**Unit tests**
+**Unit tests and Coverage**
 
 ```bash
   npm run test
+  npm run coverage
 ```
 
 **How to check if your new code is standard style**

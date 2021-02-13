@@ -48,5 +48,5 @@ jspm_packages
 .DS_Store
 
 .history/
-
+.scannerwork
 lib
