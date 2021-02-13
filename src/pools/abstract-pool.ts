@@ -76,9 +76,9 @@ export abstract class AbstractPool<
   public readonly workers: Worker[] = []
 
   /**
-   * ID for the next worker.
+   * Index for the next worker.
    */
-  public nextWorker: number = 0
+  public nextWorkerIndex: number = 0
 
   /**
    * - `key`: The `Worker`
@@ -245,9 +245,10 @@ export abstract class AbstractPool<
    * @returns Worker.
    */
   protected chooseWorker (): Worker {
-    this.nextWorker =
-      this.nextWorker === this.workers.length - 1 ? 0 : this.nextWorker + 1
-    return this.workers[this.nextWorker]
+    const chosenWorker = this.workers[this.nextWorkerIndex]
+    this.nextWorkerIndex++
+    this.nextWorkerIndex %= this.workers.length
+    return chosenWorker
   }
 
   /**
