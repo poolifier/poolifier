@@ -59,7 +59,6 @@ export class FixedClusterPool<
   }
 
   protected destroyWorker (worker: Worker): void {
-    // worker.once('exit', () => this.removeWorker(worker))
     worker.kill()
   }
 

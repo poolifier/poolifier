@@ -166,7 +166,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Shut down a given worker, then remove it from the pool.
+   * Shut down given worker.
    *
    * @param worker A worker within `workers`.
    */
