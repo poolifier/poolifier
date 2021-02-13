@@ -47,8 +47,8 @@ export class FixedThreadPool<
   protected async destroyWorker (
     worker: ThreadWorkerWithMessageChannel
   ): Promise<void> {
+    worker.once('exit', () => this.removeWorker(worker))
     await worker.terminate()
-    this.removeWorker(worker)
   }
 
   protected sendToWorker (
