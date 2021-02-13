@@ -123,7 +123,7 @@ export abstract class AbstractPool<
     this.setupHook()
 
     for (let i = 1; i <= this.numberOfWorkers; i++) {
-      this.internalNewWorker()
+      this.createAndSetupWorker()
     }
 
     this.emitter = new PoolEmitter()
@@ -283,7 +283,7 @@ export abstract class AbstractPool<
    *
    * @returns New, completely set up worker.
    */
-  protected internalNewWorker (): Worker {
+  protected createAndSetupWorker (): Worker {
     const worker: Worker = this.newWorker()
     worker.on('error', this.opts.errorHandler ?? (() => {}))
     worker.on('online', this.opts.onlineHandler ?? (() => {}))

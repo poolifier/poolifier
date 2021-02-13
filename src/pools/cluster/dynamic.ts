@@ -63,7 +63,7 @@ export class DynamicClusterPool<
         return super.chooseWorker()
       }
       // All workers are busy, create a new worker
-      const worker = this.internalNewWorker()
+      const worker = this.createAndSetupWorker()
       worker.on('message', (message: MessageValue<Data>) => {
         if (message.kill) {
           this.sendToWorker(worker, { kill: 1 })
