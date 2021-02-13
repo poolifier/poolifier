@@ -1,9 +1,9 @@
 const expect = require('expect')
 const { FixedThreadPool } = require('../../../lib/index')
-const numThreads = 10
+const numberOfThreads = 10
 const maxTasks = 400
 const pool = new FixedThreadPool(
-  numThreads,
+  numberOfThreads,
   './tests/worker/thread/testWorker.js',
   {
     errorHandler: e => console.error(e),
@@ -29,10 +29,10 @@ const asyncPool = new FixedThreadPool(
 describe('Fixed thread pool test suite ', () => {
   it('Choose worker round robin test', async () => {
     const results = new Set()
-    for (let i = 0; i < numThreads; i++) {
+    for (let i = 0; i < numberOfThreads; i++) {
       results.add(pool.chooseWorker().threadId)
     }
-    expect(results.size).toBe(numThreads)
+    expect(results.size).toBe(numberOfThreads)
   })
 
   it('Verify that the function is executed in a worker thread', async () => {
@@ -95,7 +95,7 @@ describe('Fixed thread pool test suite ', () => {
       })
     })
     await pool.destroy()
-    expect(closedThreads).toBe(numThreads)
+    expect(closedThreads).toBe(numberOfThreads)
   })
 
   it('Validations test', () => {

@@ -36,16 +36,16 @@ export class FixedClusterPool<
   /**
    * Constructs a new poolifier fixed cluster pool.
    *
-   * @param numWorkers Number of workers for this pool.
+   * @param numberOfWorkers Number of workers for this pool.
    * @param filePath Path to an implementation of a `ClusterWorker` file, which can be relative or absolute.
    * @param opts Options for this fixed cluster pool. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
-    numWorkers: number,
+    numberOfWorkers: number,
     filePath: string,
     public readonly opts: ClusterPoolOptions = { maxTasks: 1000 }
   ) {
-    super(numWorkers, filePath, opts)
+    super(numberOfWorkers, filePath, opts)
   }
 
   protected setupHook (): void {

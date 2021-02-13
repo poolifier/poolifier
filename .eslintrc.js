@@ -9,7 +9,13 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: 'module'
   },
-  plugins: ['@typescript-eslint', 'promise', 'prettierx', 'jsdoc'],
+  plugins: [
+    '@typescript-eslint',
+    'promise',
+    'prettierx',
+    'jsdoc',
+    'spellcheck'
+  ],
   extends: [
     'standard',
     'eslint:recommended',
@@ -37,6 +43,24 @@ module.exports = {
       {
         ignoreMemberSort: true,
         ignoreDeclarationSort: true
+      }
+    ],
+
+    'spellcheck/spell-checker': [
+      'warn',
+      {
+        skipWords: [
+          'poolifier',
+          'pioardi',
+          'christopher',
+          'ecma',
+          'jsdoc',
+          'readonly',
+          'serializable',
+          'unregister',
+          'workerpool'
+        ],
+        skipIfMatch: ['^@.*', '^plugin:.*']
       }
     ]
   },

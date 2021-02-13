@@ -28,16 +28,16 @@ export class FixedThreadPool<
   /**
    * Constructs a new poolifier fixed thread pool.
    *
-   * @param numThreads Number of threads for this pool.
+   * @param numberOfThreads Number of threads for this pool.
    * @param filePath Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
    * @param opts Options for this fixed thread pool. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
-    numThreads: number,
+    numberOfThreads: number,
     filePath: string,
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
   ) {
-    super(numThreads, filePath, opts)
+    super(numberOfThreads, filePath, opts)
   }
 
   protected isMain (): boolean {

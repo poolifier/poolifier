@@ -2,10 +2,10 @@
 const { ThreadWorker } = require('poolifier')
 
 function yourFunction (data) {
-  if (data.fname === 'fn0') {
+  if (data.functionName === 'fn0') {
     console.log('Executing function 0')
     return { data: '0 your input was' + data.input }
-  } else if (data.fname === 'fn1') {
+  } else if (data.functionName === 'fn1') {
     console.log('Executing function 1')
     return { data: '1 your input was' + data.input }
   }
