@@ -24,6 +24,7 @@ export interface IWorker {
   on(event: 'error', handler: ErrorHandler<this>): void
   on(event: 'online', handler: OnlineHandler<this>): void
   on(event: 'exit', handler: ExitHandler<this>): void
+  once(event: 'exit', handler: ExitHandler<this>): void
 }
 
 /**
@@ -286,8 +287,8 @@ export abstract class AbstractPool<
 
     worker.on('error', this.opts.errorHandler ?? (() => {}))
     worker.on('online', this.opts.onlineHandler ?? (() => {}))
-    // TODO handle properly when a worker exit
     worker.on('exit', this.opts.exitHandler ?? (() => {}))
+    worker.once('exit', () => this.removeWorker(worker))
 
     this.workers.push(worker)
 
