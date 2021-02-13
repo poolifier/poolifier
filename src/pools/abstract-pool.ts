@@ -276,7 +276,7 @@ export abstract class AbstractPool<
    *
    * @param worker The newly created worker.
    */
-  protected abstract afterNewWorkerPushed (worker: Worker): void
+  protected abstract afterWorkerSetup (worker: Worker): void
 
   /**
    * Creates a new worker for this pool and sets it up completely.
@@ -296,7 +296,7 @@ export abstract class AbstractPool<
     // Init tasks map
     this.tasks.set(worker, 0)
 
-    this.afterNewWorkerPushed(worker)
+    this.afterWorkerSetup(worker)
 
     return worker
   }

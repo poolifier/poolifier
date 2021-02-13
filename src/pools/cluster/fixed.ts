@@ -85,7 +85,7 @@ export class FixedClusterPool<
     return fork(this.opts.env)
   }
 
-  protected afterNewWorkerPushed (worker: Worker): void {
+  protected afterWorkerSetup (worker: Worker): void {
     // we will attach a listener for every task,
     // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
     worker.setMaxListeners(this.opts.maxTasks ?? 1000)
