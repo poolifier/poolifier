@@ -161,13 +161,11 @@ export abstract class AbstractPool<
   }
 
   public async destroy (): Promise<void> {
-    for (const worker of this.workers) {
-      await this.destroyWorker(worker)
-    }
+    await Promise.all(this.workers.map(worker => this.destroyWorker(worker)))
   }
 
   /**
-   * Shut down given worker.
+   * Shut down a given worker, then remove it from the pool.
    *
    * @param worker A worker within `workers`.
    */

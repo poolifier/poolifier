@@ -68,7 +68,6 @@ export class DynamicClusterPool<
         if (message.kill) {
           this.sendToWorker(worker, { kill: 1 })
           void this.destroyWorker(worker)
-          this.removeWorker(worker)
         }
       })
       return worker

@@ -89,8 +89,10 @@ describe('Fixed thread pool test suite ', () => {
 
   it('Shutdown test', async () => {
     let closedThreads = 0
+    console.log('FixedThreadPool workers length', pool.workers.length)
     pool.workers.forEach(w => {
       w.on('exit', () => {
+        console.log('Remove thread worker', closedThreads)
         closedThreads++
       })
     })
