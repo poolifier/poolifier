@@ -1,5 +1,5 @@
 import { fork, isMaster, setupMaster, Worker } from 'cluster'
-import type { MessageValue } from '../../utility-types'
+import type { JSONValue, MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
 
@@ -21,12 +21,10 @@ export interface ClusterPoolOptions extends PoolOptions<Worker> {
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class FixedClusterPool<Data = any, Response = any> extends AbstractPool<
-  Worker,
-  Data,
-  Response
-> {
+export class FixedClusterPool<
+  Data extends JSONValue = JSONValue,
+  Response extends JSONValue = JSONValue
+> extends AbstractPool<Worker, Data, Response> {
   /**
    * @param numWorkers Number of workers for this pool.
    * @param filePath A file path with implementation of `ClusterWorker` class, relative path is fine.
@@ -52,6 +50,7 @@ export class FixedClusterPool<Data = any, Response = any> extends AbstractPool<
 
   protected destroyWorker (worker: Worker): void {
     worker.kill()
+    // FIXME: The tests are currently failing, so these must be changed first
   }
 
   protected sendToWorker (worker: Worker, message: MessageValue<Data>): void {

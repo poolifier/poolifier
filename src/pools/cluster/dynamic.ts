@@ -1,5 +1,5 @@
 import type { Worker } from 'cluster'
-import type { MessageValue } from '../../utility-types'
+import type { JSONValue, MessageValue } from '../../utility-types'
 import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
 
@@ -13,10 +13,8 @@ import { FixedClusterPool } from './fixed'
  * @since 2.0.0
  */
 export class DynamicClusterPool<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Data = any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Response = any
+  Data extends JSONValue = JSONValue,
+  Response extends JSONValue = JSONValue
 > extends FixedClusterPool<Data, Response> {
   /**
    * @param min Min number of workers that will be always active
@@ -56,10 +54,7 @@ export class DynamicClusterPool<
         if (message.kill) {
           this.sendToWorker(worker, { kill: 1 })
           void this.destroyWorker(worker)
-          // clean workers from data structures
-          const workerIndex = this.workers.indexOf(worker)
-          this.workers.splice(workerIndex, 1)
-          this.tasks.delete(worker)
+          this.removeWorker(worker)
         }
       })
       return worker

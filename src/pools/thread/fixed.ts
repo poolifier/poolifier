@@ -1,5 +1,5 @@
 import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
-import type { Draft, MessageValue } from '../../utility-types'
+import type { Draft, JSONValue, MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
 
@@ -13,12 +13,10 @@ export type ThreadWorkerWithMessageChannel = Worker & Draft<MessageChannel>
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class FixedThreadPool<Data = any, Response = any> extends AbstractPool<
-  ThreadWorkerWithMessageChannel,
-  Data,
-  Response
-> {
+export class FixedThreadPool<
+  Data extends JSONValue = JSONValue,
+  Response extends JSONValue = JSONValue
+> extends AbstractPool<ThreadWorkerWithMessageChannel, Data, Response> {
   /**
    * @param numThreads Num of threads for this worker pool.
    * @param filePath A file path with implementation of `ThreadWorker` class, relative path is fine.
@@ -40,6 +38,7 @@ export class FixedThreadPool<Data = any, Response = any> extends AbstractPool<
     worker: ThreadWorkerWithMessageChannel
   ): Promise<void> {
     await worker.terminate()
+    // FIXME: The tests are currently failing, so these must be changed first
   }
 
   protected sendToWorker (

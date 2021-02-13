@@ -110,10 +110,6 @@ async function workerpoolTest () {
       .exec('yourFunction', [workerData])
       .then(res => {
         executions++
-        return null
-      })
-      .catch(err => console.error(err))
-      .then(res => {
         if (tasks === executions) {
           return console.log(
             `workerpool take ${

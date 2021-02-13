@@ -1,5 +1,5 @@
 import { isMainThread, parentPort } from 'worker_threads'
-import type { MessageValue } from '../utility-types'
+import type { JSONValue, MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
@@ -12,12 +12,10 @@ import type { WorkerOptions } from './worker-options'
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class ThreadWorker<Data = any, Response = any> extends AbstractWorker<
-  MessagePort,
-  Data,
-  Response
-> {
+export class ThreadWorker<
+  Data extends JSONValue = JSONValue,
+  Response extends JSONValue = JSONValue
+> extends AbstractWorker<MessagePort, Data, Response> {
   protected parent?: MessagePort
 
   public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
@@ -26,7 +24,7 @@ export class ThreadWorker<Data = any, Response = any> extends AbstractWorker<
     parentPort?.on('message', (value: MessageValue<Data>) => {
       if (value?.data && value.id) {
         // here you will receive messages
-        // console.log('This is the main worker ' + isMain)
+        // console.log('This is the main worker ' + isMainThread)
         if (this.async) {
           this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
         } else {

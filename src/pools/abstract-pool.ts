@@ -37,10 +37,8 @@ class PoolEmitter extends EventEmitter {}
 
 export abstract class AbstractPool<
   Worker extends IWorker,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Data = any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Response = any
+  Data = unknown,
+  Response = unknown
 > implements IPool<Data, Response> {
   public readonly workers: Worker[] = []
   public nextWorker: number = 0
@@ -102,6 +100,13 @@ export abstract class AbstractPool<
     } else {
       throw Error('Worker could not be found in tasks map')
     }
+  }
+
+  protected removeWorker (worker: Worker): void {
+    // Clean worker from data structure
+    const workerIndex = this.workers.indexOf(worker)
+    this.workers.splice(workerIndex, 1)
+    this.tasks.delete(worker)
   }
 
   /**
