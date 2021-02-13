@@ -34,6 +34,7 @@ _This is not a limitation by poolifier but NodeJS._
 #### Public properties renaming
 
 - Thread Pool's `numWorkers` is now `numberOfWorkers`
+- Thread Pool's `nextWorker` is now `nextWorkerIndex`
 
 #### Internal (protected) methods renaming
 
