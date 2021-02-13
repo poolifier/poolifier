@@ -1,8 +1,8 @@
 const expect = require('expect')
 const { FixedClusterPool } = require('../../../lib/index')
-const numWorkers = 10
+const numberOfWorkers = 10
 const pool = new FixedClusterPool(
-  numWorkers,
+  numberOfWorkers,
   './tests/worker/cluster/testWorker.js',
   {
     errorHandler: e => console.error(e),
@@ -39,10 +39,10 @@ const asyncPool = new FixedClusterPool(
 describe('Fixed cluster pool test suite ', () => {
   it('Choose worker round robin test', async () => {
     const results = new Set()
-    for (let i = 0; i < numWorkers; i++) {
+    for (let i = 0; i < numberOfWorkers; i++) {
       results.add(pool.chooseWorker().id)
     }
-    expect(results.size).toBe(numWorkers)
+    expect(results.size).toBe(numberOfWorkers)
   })
 
   it('Verify that the function is executed in a worker cluster', async () => {
@@ -114,7 +114,7 @@ describe('Fixed cluster pool test suite ', () => {
     })
     pool.destroy()
     await new Promise(resolve => setTimeout(resolve, 200))
-    expect(closedWorkers).toBe(numWorkers)
+    expect(closedWorkers).toBe(numberOfWorkers)
   })
 
   it('Validations test', () => {

@@ -103,12 +103,12 @@ export abstract class AbstractPool<
   /**
    * Constructs a new poolifier pool.
    *
-   * @param numWorkers Number of workers that this pool should manage.
+   * @param numberOfWorkers Number of workers that this pool should manage.
    * @param filePath Path to the worker-file.
    * @param opts Options for the pool. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
-    public readonly numWorkers: number,
+    public readonly numberOfWorkers: number,
     public readonly filePath: string,
     public readonly opts: PoolOptions<Worker> = { maxTasks: 1000 }
   ) {
@@ -122,7 +122,7 @@ export abstract class AbstractPool<
 
     this.setupHook()
 
-    for (let i = 1; i <= this.numWorkers; i++) {
+    for (let i = 1; i <= this.numberOfWorkers; i++) {
       this.internalNewWorker()
     }
 
@@ -130,7 +130,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Setup hook that can be overridden by a Poolifer pool implementation
+   * Setup hook that can be overridden by a Poolifier pool implementation
    * to run code before workers are created in the abstract constructor.
    */
   protected setupHook (): void {
