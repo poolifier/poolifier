@@ -9,7 +9,13 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: 'module'
   },
-  plugins: ['@typescript-eslint', 'promise', 'prettierx', 'spellcheck'],
+  plugins: [
+    '@typescript-eslint',
+    'promise',
+    'prettierx',
+    'jsdoc',
+    'spellcheck'
+  ],
   extends: [
     'standard',
     'eslint:recommended',
@@ -58,6 +64,15 @@ module.exports = {
     ]
   },
   overrides: [
+    {
+      files: ['src/**/*.ts'],
+      extends: 'plugin:jsdoc/recommended',
+      rules: {
+        'jsdoc/no-types': 'error',
+        'jsdoc/require-param-type': 'off',
+        'jsdoc/require-returns-type': 'off'
+      }
+    },
     {
       files: ['*.js'],
       extends: 'plugin:node/recommended',
