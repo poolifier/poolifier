@@ -3,12 +3,20 @@ import type { Draft, JSONValue, MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
 
+/**
+ * A thread worker with message channels for communication between main thread and thread worker.
+ */
 export type ThreadWorkerWithMessageChannel = Worker & Draft<MessageChannel>
 
 /**
- * A thread pool with a static number of threads, is possible to execute tasks in sync or async mode as you prefer.
+ * A thread pool with a fixed number of threads.
  *
- * This pool will select the worker thread in a round robin fashion.
+ * It is possible to perform tasks in sync or asynchronous mode as you prefer.
+ *
+ * This pool selects the threads in a round robin fashion.
+ *
+ * @template Data Type of data sent to the worker.
+ * @template Response Type of response of execution.
  *
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
@@ -18,9 +26,11 @@ export class FixedThreadPool<
   Response extends JSONValue = JSONValue
 > extends AbstractPool<ThreadWorkerWithMessageChannel, Data, Response> {
   /**
-   * @param numThreads Num of threads for this worker pool.
-   * @param filePath A file path with implementation of `ThreadWorker` class, relative path is fine.
-   * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
+   * Constructs a new poolifier fixed thread pool.
+   *
+   * @param numThreads Number of threads for this pool.
+   * @param filePath Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
+   * @param opts Options for this fixed thread pool. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
     numThreads: number,
