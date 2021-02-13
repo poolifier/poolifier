@@ -141,6 +141,16 @@ export abstract class AbstractPool<
   }
 
   /**
+   * Index for the next worker.
+   *
+   * @returns Index for the next worker.
+   * @deprecated Only here for backward compatibility.
+   */
+  public get nextWorker (): number {
+    return this.nextWorkerIndex
+  }
+
+  /**
    * Setup hook that can be overridden by a Poolifier pool implementation
    * to run code before workers are created in the abstract constructor.
    */
