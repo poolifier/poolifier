@@ -232,13 +232,9 @@ export abstract class AbstractPool<
    * The default implementation uses a round robin algorithm to distribute the load.
    */
   protected chooseWorker (): Worker {
-    if (this.workers.length - 1 === this.nextWorker) {
-      this.nextWorker = 0
-      return this.workers[this.nextWorker]
-    } else {
-      this.nextWorker++
-      return this.workers[this.nextWorker]
-    }
+    this.nextWorker =
+      this.nextWorker === this.workers.length - 1 ? 0 : this.nextWorker + 1
+    return this.workers[this.nextWorker]
   }
 
   /**
