@@ -54,6 +54,7 @@ module.exports = {
           'pioardi',
           'christopher',
           'ecma',
+          'jsdoc',
           'readonly',
           'serializable',
           'unregister',
