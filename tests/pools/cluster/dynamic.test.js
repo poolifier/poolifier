@@ -40,6 +40,15 @@ describe('Dynamic cluster pool test suite ', () => {
   })
 
   it('Verify scale worker up and down is working', async () => {
+    const pool = new DynamicClusterPool(
+      min,
+      max,
+      './tests/worker/cluster/testWorker.js',
+      {
+        errorHandler: e => console.error(e),
+        onlineHandler: () => console.log('worker is online')
+      }
+    )
     expect(pool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
       pool.execute({ test: 'test' })
