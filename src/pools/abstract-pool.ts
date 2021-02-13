@@ -230,6 +230,8 @@ export abstract class AbstractPool<
    * Choose a worker for the next task.
    *
    * The default implementation uses a round robin algorithm to distribute the load.
+   *
+   * @returns Worker.
    */
   protected chooseWorker (): Worker {
     this.nextWorker =
@@ -253,6 +255,8 @@ export abstract class AbstractPool<
 
   /**
    * Creates a new worker for this pool and sets it up completely.
+   *
+   * @returns New, completely set up worker.
    */
   protected internalNewWorker (): Worker {
     const worker: Worker = this.newWorker()
