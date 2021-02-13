@@ -4,10 +4,13 @@ import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
 
 /**
- * A thread pool with a min/max number of threads, is possible to execute tasks in sync or async mode as you prefer.
+ * A thread pool with a dynamic number of threads, but a guaranteed minimum number of threads.
  *
- * This thread pool will create new workers when the other ones are busy, until the max number of threads,
- * when the max number of threads is reached, an event will be emitted, if you want to listen this event use the emitter method.
+ * This thread pool creates new threads when the others are busy, up to the maximum number of threads.
+ * When the maximum number of threads is reached, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
+ *
+ * @template Data Type of data sent to the worker.
+ * @template Response Type of response of execution.
  *
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
@@ -17,10 +20,12 @@ export class DynamicThreadPool<
   Response extends JSONValue = JSONValue
 > extends FixedThreadPool<Data, Response> {
   /**
-   * @param min Min number of threads that will be always active
-   * @param max Max number of threads that will be active
-   * @param filename A file path with implementation of `ThreadWorker` class, relative path is fine.
-   * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
+   * Constructs a new poolifier dynamic thread pool.
+   *
+   * @param min Minimum number of threads which are always active.
+   * @param max Maximum number of threads that can be created by this pool.
+   * @param filename Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
+   * @param opts Options for this fixed thread pool. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
     min: number,
@@ -31,6 +36,13 @@ export class DynamicThreadPool<
     super(min, filename, opts)
   }
 
+  /**
+   * Choose a thread for the next task.
+   *
+   * It will first check for and return an idle thread.
+   * If all threads are busy, then it will try to create a new one up to the `max` thread count.
+   * If the max thread count is reached, the emitter will emit a `FullPool` event and it will fall back to using a round robin algorithm to distribute the load.
+   */
   protected chooseWorker (): ThreadWorkerWithMessageChannel {
     let worker: ThreadWorkerWithMessageChannel | undefined
     for (const entry of this.tasks) {
