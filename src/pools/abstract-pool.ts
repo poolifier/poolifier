@@ -285,14 +285,19 @@ export abstract class AbstractPool<
    */
   protected createAndSetupWorker (): Worker {
     const worker: Worker = this.newWorker()
+
     worker.on('error', this.opts.errorHandler ?? (() => {}))
     worker.on('online', this.opts.onlineHandler ?? (() => {}))
     // TODO handle properly when a worker exit
     worker.on('exit', this.opts.exitHandler ?? (() => {}))
+
     this.workers.push(worker)
-    this.afterNewWorkerPushed(worker)
-    // init tasks map
+
+    // Init tasks map
     this.tasks.set(worker, 0)
+
+    this.afterNewWorkerPushed(worker)
+
     return worker
   }
 }
