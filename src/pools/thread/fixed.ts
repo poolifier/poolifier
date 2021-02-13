@@ -48,7 +48,6 @@ export class FixedThreadPool<
     worker: ThreadWorkerWithMessageChannel
   ): Promise<void> {
     await worker.terminate()
-    // FIXME: The tests are currently failing, so these must be changed first
   }
 
   protected sendToWorker (
