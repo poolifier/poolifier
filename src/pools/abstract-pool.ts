@@ -220,10 +220,11 @@ export abstract class AbstractPool<
    * @returns Worker.
    */
   protected chooseWorker (): Worker {
-    const chosenWorker = this.workers[this.nextWorkerIndex]
-    this.nextWorkerIndex++
-    this.nextWorkerIndex %= this.workers.length
-    return chosenWorker
+    this.nextWorkerIndex =
+      this.workers.length - 1 === this.nextWorkerIndex
+        ? 0
+        : this.nextWorkerIndex + 1
+    return this.workers[this.nextWorkerIndex]
   }
 
   /**
