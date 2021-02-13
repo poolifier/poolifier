@@ -1,5 +1,5 @@
+import typescript from 'rollup-plugin-typescript2'
 import del from 'rollup-plugin-delete'
-import ts from '@wessberg/rollup-plugin-ts'
 
 const isDevelopmentBuild = process.env.BUILD === 'development'
 
@@ -14,7 +14,7 @@ export default {
   },
   external: ['async_hooks', 'cluster', 'events', 'worker_threads'],
   plugins: [
-    ts({
+    typescript({
       tsconfig: isDevelopmentBuild
         ? 'tsconfig.development.json'
         : 'tsconfig.json'
