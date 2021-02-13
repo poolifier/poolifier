@@ -42,6 +42,8 @@ export class DynamicClusterPool<
    * It will first check for and return an idle worker.
    * If all workers are busy, then it will try to create a new one up to the `max` worker count.
    * If the max worker count is reached, the emitter will emit a `FullPool` event and it will fall back to using a round robin algorithm to distribute the load.
+   *
+   * @returns Cluster worker.
    */
   protected chooseWorker (): Worker {
     let worker: Worker | undefined
