@@ -1,4 +1,6 @@
 import { AsyncResource } from 'async_hooks'
+import type { Worker } from 'cluster'
+import type { MessagePort } from 'worker_threads'
 import type { MessageValue } from '../utility-types'
 import type { WorkerOptions } from './worker-options'
 
@@ -10,7 +12,7 @@ import type { WorkerOptions } from './worker-options'
  * @template Response Type of response the worker sends back to the main worker.
  */
 export abstract class AbstractWorker<
-  MainWorker,
+  MainWorker extends Worker | MessagePort,
   Data = unknown,
   Response = unknown
 > extends AsyncResource {
@@ -37,12 +39,14 @@ export abstract class AbstractWorker<
    * @param type The type of async event.
    * @param isMain Whether this is the main worker or not.
    * @param fn Function processed by the worker when the pool's `execution` function is invoked.
+   * @param mainWorker Reference to main worker.
    * @param opts Options for the worker.
    */
   public constructor (
     type: string,
     isMain: boolean,
     fn: (data: Data) => Response,
+    protected mainWorker?: MainWorker | null,
     public readonly opts: WorkerOptions = {}
   ) {
     super(type)
@@ -51,7 +55,7 @@ export abstract class AbstractWorker<
     this.async = !!this.opts.async
     this.lastTask = Date.now()
     if (!fn) throw new Error('fn parameter is mandatory')
-    // keep the worker active
+    // Keep the worker active
     if (!isMain) {
       this.interval = setInterval(
         this.checkAlive.bind(this),
@@ -59,12 +63,38 @@ export abstract class AbstractWorker<
       )
       this.checkAlive.bind(this)()
     }
+
+    this.mainWorker?.on('message', (value: MessageValue<Data, MainWorker>) => {
+      if (value?.data && value.id) {
+        // Here you will receive messages
+        if (this.async) {
+          this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
+        } else {
+          this.runInAsyncScope(this.run.bind(this), this, fn, value)
+        }
+      } else if (value.parent) {
+        // Save a reference of the main worker to communicate with it
+        // This will be received once
+        this.mainWorker = value.parent
+      } else if (value.kill) {
+        // Here is time to kill this worker, just clearing the interval
+        if (this.interval) clearInterval(this.interval)
+        this.emitDestroy()
+      }
+    })
   }
 
   /**
    * Returns the main worker.
+   *
+   * @returns Reference to the main worker.
    */
-  protected abstract getMainWorker (): MainWorker
+  protected getMainWorker (): MainWorker {
+    if (!this.mainWorker) {
+      throw new Error('Main worker was not set')
+    }
+    return this.mainWorker
+  }
 
   /**
    * Send a message to the main worker.
