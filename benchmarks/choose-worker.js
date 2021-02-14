@@ -17,7 +17,15 @@ function chooseWorkerTernary () {
   return workers[nextWorkerIndex]
 }
 
-function chooseWorkerIncrementModuloWithPreChoosing () {
+function chooseWorkerTernaryWithNegation () {
+  nextWorkerIndex =
+    !nextWorkerIndex || workers.length - 1 === nextWorkerIndex
+      ? 0
+      : nextWorkerIndex + 1
+  return workers[nextWorkerIndex]
+}
+
+function chooseWorkerTernaryWithPreChoosing () {
   const chosenWorker = workers[nextWorkerIndex]
   nextWorkerIndex =
     workers.length - 1 === nextWorkerIndex ? 0 : nextWorkerIndex + 1
@@ -36,9 +44,13 @@ suite
     nextWorkerIndex = 0
     chooseWorkerTernary()
   })
-  .add('Increment+Modulo with PreChoosing', function () {
+  .add('Ternary with negation', function () {
     nextWorkerIndex = 0
-    chooseWorkerIncrementModuloWithPreChoosing()
+    chooseWorkerTernaryWithNegation()
+  })
+  .add('Ternary with PreChoosing', function () {
+    nextWorkerIndex = 0
+    chooseWorkerTernaryWithPreChoosing()
   })
   .add('Increment+Modulo', function () {
     nextWorkerIndex = 0
