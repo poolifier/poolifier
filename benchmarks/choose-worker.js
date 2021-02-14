@@ -13,6 +13,12 @@ let nextWorkerIndex = 0
 
 function chooseWorkerTernary () {
   nextWorkerIndex =
+    workers.length - 1 === nextWorkerIndex ? 0 : nextWorkerIndex + 1
+  return workers[nextWorkerIndex]
+}
+
+function chooseWorkerTernaryWithNegation () {
+  nextWorkerIndex =
     !nextWorkerIndex || workers.length - 1 === nextWorkerIndex
       ? 0
       : nextWorkerIndex + 1
@@ -37,6 +43,10 @@ suite
   .add('Ternary', function () {
     nextWorkerIndex = 0
     chooseWorkerTernary()
+  })
+  .add('Ternary with negation', function () {
+    nextWorkerIndex = 0
+    chooseWorkerTernaryWithNegation()
   })
   .add('Ternary with PreChoosing', function () {
     nextWorkerIndex = 0
