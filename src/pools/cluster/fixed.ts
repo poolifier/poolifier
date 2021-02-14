@@ -66,18 +66,18 @@ export class FixedClusterPool<
     worker.send(message)
   }
 
-  protected registerWorkerMessageListener (
-    port: Worker,
-    listener: (message: MessageValue<Response>) => void
+  protected registerWorkerMessageListener<Message extends Data | Response> (
+    worker: Worker,
+    listener: (message: MessageValue<Message>) => void
   ): void {
-    port.on('message', listener)
+    worker.on('message', listener)
   }
 
-  protected unregisterWorkerMessageListener (
-    port: Worker,
-    listener: (message: MessageValue<Response>) => void
+  protected unregisterWorkerMessageListener<Message extends Data | Response> (
+    worker: Worker,
+    listener: (message: MessageValue<Message>) => void
   ): void {
-    port.removeListener('message', listener)
+    worker.removeListener('message', listener)
   }
 
   protected createWorker (): Worker {

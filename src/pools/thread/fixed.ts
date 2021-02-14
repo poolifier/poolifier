@@ -57,18 +57,18 @@ export class FixedThreadPool<
     worker.postMessage(message)
   }
 
-  protected registerWorkerMessageListener (
-    port: ThreadWorkerWithMessageChannel,
-    listener: (message: MessageValue<Response>) => void
+  protected registerWorkerMessageListener<Message extends Data | Response> (
+    messageChannel: ThreadWorkerWithMessageChannel,
+    listener: (message: MessageValue<Message>) => void
   ): void {
-    port.port2?.on('message', listener)
+    messageChannel.port2?.on('message', listener)
   }
 
-  protected unregisterWorkerMessageListener (
-    port: ThreadWorkerWithMessageChannel,
-    listener: (message: MessageValue<Response>) => void
+  protected unregisterWorkerMessageListener<Message extends Data | Response> (
+    messageChannel: ThreadWorkerWithMessageChannel,
+    listener: (message: MessageValue<Message>) => void
   ): void {
-    port.port2?.removeListener('message', listener)
+    messageChannel.port2?.removeListener('message', listener)
   }
 
   protected createWorker (): ThreadWorkerWithMessageChannel {

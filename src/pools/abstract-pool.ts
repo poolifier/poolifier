@@ -238,15 +238,13 @@ export abstract class AbstractPool<
     message: MessageValue<Data>
   ): void
 
-  protected abstract registerWorkerMessageListener (
-    port: Worker,
-    listener: (message: MessageValue<Response>) => void
-  ): void
+  protected abstract registerWorkerMessageListener<
+    Message extends Data | Response
+  > (worker: Worker, listener: (message: MessageValue<Message>) => void): void
 
-  protected abstract unregisterWorkerMessageListener (
-    port: Worker,
-    listener: (message: MessageValue<Response>) => void
-  ): void
+  protected abstract unregisterWorkerMessageListener<
+    Message extends Data | Response
+  > (worker: Worker, listener: (message: MessageValue<Message>) => void): void
 
   protected internalExecute (
     worker: Worker,
