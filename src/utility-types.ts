@@ -1,3 +1,6 @@
+import type { Worker } from 'cluster'
+import type { MessagePort } from 'worker_threads'
+
 /**
  * Make all properties in T non-readonly
  */
@@ -24,7 +27,10 @@ export type JSONArray = Array<JSONValue>
 /**
  * Message object that is passed between worker and main worker.
  */
-export interface MessageValue<Data = unknown> {
+export interface MessageValue<
+  Data = unknown,
+  MainWorker extends Worker | MessagePort | unknown = unknown
+> {
   /**
    * Input data that will be passed to the worker.
    */
@@ -46,5 +52,5 @@ export interface MessageValue<Data = unknown> {
    *
    * _Only for internal use_
    */
-  readonly parent?: MessagePort
+  readonly parent?: MainWorker
 }
