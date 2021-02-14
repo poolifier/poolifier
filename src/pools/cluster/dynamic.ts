@@ -1,5 +1,5 @@
 import type { Worker } from 'cluster'
-import type { JSONValue, MessageValue } from '../../utility-types'
+import type { JSONValue } from '../../utility-types'
 import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
 
@@ -64,7 +64,7 @@ export class DynamicClusterPool<
       }
       // All workers are busy, create a new worker
       const worker = this.createAndSetupWorker()
-      worker.on('message', (message: MessageValue<Data>) => {
+      this.registerWorkerMessageListener<Data>(worker, message => {
         if (message.kill) {
           this.sendToWorker(worker, { kill: 1 })
           void this.destroyWorker(worker)

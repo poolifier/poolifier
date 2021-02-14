@@ -1,4 +1,4 @@
-import type { JSONValue, MessageValue } from '../../utility-types'
+import type { JSONValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
@@ -64,7 +64,7 @@ export class DynamicThreadPool<
       }
       // All workers are busy, create a new worker
       const worker = this.createAndSetupWorker()
-      worker.port2?.on('message', (message: MessageValue<Data>) => {
+      this.registerWorkerMessageListener<Data>(worker, message => {
         if (message.kill) {
           this.sendToWorker(worker, { kill: 1 })
           void this.destroyWorker(worker)
