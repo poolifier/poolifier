@@ -30,27 +30,7 @@ export class ClusterWorker<
    * @param opts Options for the worker.
    */
   public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
-    super('worker-cluster-pool:pioardi', isMaster, fn, opts)
-
-    worker.on('message', (value: MessageValue<Data>) => {
-      if (value?.data && value.id) {
-        // here you will receive messages
-        // console.log('This is the main worker ' + isMaster)
-        if (this.async) {
-          this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
-        } else {
-          this.runInAsyncScope(this.run.bind(this), this, fn, value)
-        }
-      } else if (value.kill) {
-        // here is time to kill this worker, just clearing the interval
-        if (this.interval) clearInterval(this.interval)
-        this.emitDestroy()
-      }
-    })
-  }
-
-  protected getMainWorker (): Worker {
-    return worker
+    super('worker-cluster-pool:pioardi', isMaster, fn, worker, opts)
   }
 
   protected sendToMainWorker (message: MessageValue<Response>): void {
