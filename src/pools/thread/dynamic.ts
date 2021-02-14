@@ -46,31 +46,26 @@ export class DynamicThreadPool<
    * @returns Thread worker.
    */
   protected chooseWorker (): ThreadWorkerWithMessageChannel {
-    let worker: ThreadWorkerWithMessageChannel | undefined
-    for (const entry of this.tasks) {
-      if (entry[1] === 0) {
-        worker = entry[0]
-        break
+    for (const [worker, numberOfTasks] of this.tasks) {
+      if (numberOfTasks === 0) {
+        // A worker is free, use it
+        return worker
       }
     }
 
-    if (worker) {
-      // A worker is free, use it
-      return worker
-    } else {
-      if (this.workers.length === this.max) {
-        this.emitter.emit('FullPool')
-        return super.chooseWorker()
-      }
-      // All workers are busy, create a new worker
-      const worker = this.createAndSetupWorker()
-      this.registerWorkerMessageListener<Data>(worker, message => {
-        if (message.kill) {
-          this.sendToWorker(worker, { kill: 1 })
-          void this.destroyWorker(worker)
-        }
-      })
-      return worker
+    if (this.workers.length === this.max) {
+      this.emitter.emit('FullPool')
+      return super.chooseWorker()
     }
+
+    // All workers are busy, create a new worker
+    const worker = this.createAndSetupWorker()
+    this.registerWorkerMessageListener<Data>(worker, message => {
+      if (message.kill) {
+        this.sendToWorker(worker, { kill: 1 })
+        void this.destroyWorker(worker)
+      }
+    })
+    return worker
   }
 }
