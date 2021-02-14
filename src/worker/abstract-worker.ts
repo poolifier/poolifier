@@ -55,7 +55,7 @@ export abstract class AbstractWorker<
     this.async = !!this.opts.async
     this.lastTask = Date.now()
     if (!fn) throw new Error('fn parameter is mandatory')
-    // keep the worker active
+    // Keep the worker active
     if (!isMain) {
       this.interval = setInterval(
         this.checkAlive.bind(this),
@@ -66,19 +66,18 @@ export abstract class AbstractWorker<
 
     this.mainWorker?.on('message', (value: MessageValue<Data, MainWorker>) => {
       if (value?.data && value.id) {
-        // here you will receive messages
-        // console.log('This is the main worker ' + isMaster)
+        // Here you will receive messages
         if (this.async) {
           this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
         } else {
           this.runInAsyncScope(this.run.bind(this), this, fn, value)
         }
       } else if (value.parent) {
-        // save the port to communicate with the main thread
-        // this will be received once
+        // Save a reference of the main worker to communicate with it
+        // This will be received once
         this.mainWorker = value.parent
       } else if (value.kill) {
-        // here is time to kill this worker, just clearing the interval
+        // Here is time to kill this worker, just clearing the interval
         if (this.interval) clearInterval(this.interval)
         this.emitDestroy()
       }
