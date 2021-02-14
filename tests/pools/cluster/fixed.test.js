@@ -4,7 +4,7 @@ const numberOfWorkers = 10
 const maxTasks = 500
 const pool = new FixedClusterPool(
   numberOfWorkers,
-  './tests/worker/cluster/testWorker.js',
+  './tests/worker-files/cluster/testWorker.js',
   {
     errorHandler: e => console.error(e),
     onlineHandler: () => console.log('worker is online')
@@ -12,12 +12,15 @@ const pool = new FixedClusterPool(
 )
 const emptyPool = new FixedClusterPool(
   1,
-  './tests/worker/cluster/emptyWorker.js'
+  './tests/worker-files/cluster/emptyWorker.js'
 )
-const echoPool = new FixedClusterPool(1, './tests/worker/cluster/echoWorker.js')
+const echoPool = new FixedClusterPool(
+  1,
+  './tests/worker-files/cluster/echoWorker.js'
+)
 const errorPool = new FixedClusterPool(
   1,
-  './tests/worker/cluster/errorWorker.js',
+  './tests/worker-files/cluster/errorWorker.js',
   {
     errorHandler: e => console.error(e),
     onlineHandler: () => console.log('worker is online')
@@ -26,14 +29,14 @@ const errorPool = new FixedClusterPool(
 
 const asyncErrorPool = new FixedClusterPool(
   1,
-  './tests/worker/cluster/asyncErrorWorker.js',
+  './tests/worker-files/cluster/asyncErrorWorker.js',
   {
     onlineHandler: () => console.log('worker is online')
   }
 )
 const asyncPool = new FixedClusterPool(
   1,
-  './tests/worker/cluster/asyncWorker.js',
+  './tests/worker-files/cluster/asyncWorker.js',
   {
     maxTasks: maxTasks
   }
@@ -140,7 +143,7 @@ describe('Fixed cluster pool test suite ', () => {
   it('Should work even without opts in input', async () => {
     const pool1 = new FixedClusterPool(
       1,
-      './tests/worker/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.js'
     )
     const res = await pool1.execute({ test: 'test' })
     expect(res).toBeFalsy()

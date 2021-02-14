@@ -5,7 +5,7 @@ const max = 3
 const pool = new DynamicClusterPool(
   min,
   max,
-  './tests/worker/cluster/testWorker.js',
+  './tests/worker-files/cluster/testWorker.js',
   {
     errorHandler: e => console.error(e),
     onlineHandler: () => console.log('worker is online')
@@ -82,7 +82,7 @@ describe('Dynamic cluster pool test suite ', () => {
     const pool1 = new DynamicClusterPool(
       1,
       1,
-      './tests/worker/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.js'
     )
     const res = await pool1.execute({ test: 'test' })
     expect(res).toBeFalsy()

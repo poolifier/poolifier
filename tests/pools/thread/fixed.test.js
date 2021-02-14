@@ -4,17 +4,23 @@ const numberOfThreads = 10
 const maxTasks = 400
 const pool = new FixedThreadPool(
   numberOfThreads,
-  './tests/worker/thread/testWorker.js',
+  './tests/worker-files/thread/testWorker.js',
   {
     errorHandler: e => console.error(e),
     onlineHandler: () => console.log('worker is online')
   }
 )
-const emptyPool = new FixedThreadPool(1, './tests/worker/thread/emptyWorker.js')
-const echoPool = new FixedThreadPool(1, './tests/worker/thread/echoWorker.js')
+const emptyPool = new FixedThreadPool(
+  1,
+  './tests/worker-files/thread/emptyWorker.js'
+)
+const echoPool = new FixedThreadPool(
+  1,
+  './tests/worker-files/thread/echoWorker.js'
+)
 const errorPool = new FixedThreadPool(
   1,
-  './tests/worker/thread/errorWorker.js',
+  './tests/worker-files/thread/errorWorker.js',
   {
     errorHandler: e => console.error(e),
     onlineHandler: () => console.log('worker is online')
@@ -22,7 +28,7 @@ const errorPool = new FixedThreadPool(
 )
 const asyncPool = new FixedThreadPool(
   1,
-  './tests/worker/thread/asyncWorker.js',
+  './tests/worker-files/thread/asyncWorker.js',
   { maxTasks: maxTasks }
 )
 
@@ -111,7 +117,10 @@ describe('Fixed thread pool test suite ', () => {
   })
 
   it('Should work even without opts in input', async () => {
-    const pool1 = new FixedThreadPool(1, './tests/worker/thread/testWorker.js')
+    const pool1 = new FixedThreadPool(
+      1,
+      './tests/worker-files/thread/testWorker.js'
+    )
     const res = await pool1.execute({ test: 'test' })
     expect(res).toBeFalsy()
   })
