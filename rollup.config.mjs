@@ -8,21 +8,14 @@ const isAnalyze = process.env.ANALYZE
 
 export default {
   input: 'src/index.ts',
-  output: [
-    {
-      dir: 'lib',
-      format: 'cjs',
-      sourcemap: !!isDevelopmentBuild,
-      preserveModules: true,
-      preserveModulesRoot: 'src'
-    }
-    // !isDevelopmentBuild && {
-    //   file: 'lib/index.js',
-    //   format: 'cjs',
-    //   sourcemap: !!isDevelopmentBuild,
-    //   plugins: [terser({ numWorkers: 2 })]
-    // }
-  ],
+  output: {
+    ...(isDevelopmentBuild ? { dir: 'lib' } : { file: 'lib/index.js' }),
+    format: 'cjs',
+    sourcemap: !!isDevelopmentBuild,
+    ...(isDevelopmentBuild && { preserveModules: true }),
+    ...(isDevelopmentBuild && { preserveModulesRoot: 'src' }),
+    ...(!isDevelopmentBuild && { plugins: [terser({ numWorkers: 2 })] })
+  },
   external: ['async_hooks', 'cluster', 'events', 'worker_threads'],
   plugins: [
     typescript({
