@@ -31,7 +31,7 @@ Moreover you can execute your CPU tasks using an API designed to improve the **d
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=sqale_index)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
-- Easy switch from a pool to another, easy to tune.
+- Easy switch from a pool to another, easy to tune
 - Dynamic pool size
 - Proper async integration with node async hooks
 - Support for worker threads and cluster node modules
