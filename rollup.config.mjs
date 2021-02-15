@@ -4,6 +4,7 @@ import { terser } from 'rollup-plugin-terser'
 import del from 'rollup-plugin-delete'
 
 const isDevelopmentBuild = process.env.BUILD === 'development'
+const isAnalyze = process.env.ANALYZE
 
 export default {
   input: 'src/index.ts',
@@ -25,6 +26,6 @@ export default {
     del({
       targets: ['lib/*']
     }),
-    isDevelopmentBuild && analyze()
+    isAnalyze && analyze()
   ]
 }
