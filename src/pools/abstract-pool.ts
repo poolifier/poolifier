@@ -190,23 +190,23 @@ export abstract class AbstractPool<
    * @param worker Workers whose tasks are increased.
    */
   protected increaseWorkersTask (worker: Worker): void {
-    const numberOfTasksTheWorkerHas = this.tasks.get(worker)
-    if (numberOfTasksTheWorkerHas !== undefined) {
-      this.tasks.set(worker, numberOfTasksTheWorkerHas + 1)
+    const numberOfTasksInProgress = this.tasks.get(worker)
+    if (numberOfTasksInProgress !== undefined) {
+      this.tasks.set(worker, numberOfTasksInProgress + 1)
     } else {
       throw Error('Worker could not be found in tasks map')
     }
   }
 
   /**
-   * Increase the number of tasks that the given workers has done.
+   * Decrease the number of tasks that the given workers has done.
    *
-   * @param worker Workers whose tasks are increased.
+   * @param worker Workers whose tasks are decreased.
    */
   protected decreaseWorkersTasks (worker: Worker): void {
-    const numberOfTasksTheWorkerHas = this.tasks.get(worker)
-    if (numberOfTasksTheWorkerHas !== undefined) {
-      this.tasks.set(worker, numberOfTasksTheWorkerHas - 1)
+    const numberOfTasksInProgress = this.tasks.get(worker)
+    if (numberOfTasksInProgress !== undefined) {
+      this.tasks.set(worker, numberOfTasksInProgress - 1)
     } else {
       throw Error('Worker could not be found in tasks map')
     }

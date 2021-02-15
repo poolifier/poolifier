@@ -62,7 +62,9 @@ export class DynamicClusterPool<
     const worker = this.createAndSetupWorker()
     this.registerWorkerMessageListener<Data>(worker, message => {
       const tasksInProgress = this.tasks.get(worker)
-      if (message.kill && !tasksInProgress) {
+      if (message.kill && tasksInProgress === 0) {
+        // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
+        // To handle the case of a long-running task we will check if there is any active task
         this.sendToWorker(worker, { kill: 1 })
         void this.destroyWorker(worker)
       }
