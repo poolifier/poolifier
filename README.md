@@ -1,18 +1,33 @@
-# Node Thread Pool :arrow_double_up: :on:
-
-[![npm w](https://img.shields.io/npm/dw/poolifier)](https://www.npmjs.com/package/poolifier)
-[![Actions Status](https://github.com/pioardi/node-pool/workflows/NodeCI/badge.svg)](https://github.com/pioardi/node-pool/actions)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=alert_status)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
- [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=pioardi_poolifier)
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-[![Gitter](https://badges.gitter.im/poolifier/community.svg)](https://gitter.im/poolifier/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![Dependabot](https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot)](https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
-[![NODEP](https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen)](https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen)
-
 <div align="center">
-<img src="./docs/logo.png" width="250" height="300"/>
+<img src="./docs/logo.png" width="300" height="350"/>
 </div>
+
+<h2 align="center">Node Thread Pool :arrow_double_up: :on:</h2>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/poolifier">
+    <img alt="Weekly Downloads" src="https://img.shields.io/npm/dw/poolifier"></a>
+  <a href="https://github.com/pioardi/node-pool/actions">
+    <img alt="Actions Status" src="https://github.com/pioardi/node-pool/workflows/NodeCI/badge.svg"></a>
+  <a href="https://sonarcloud.io/dashboard?id=pioardi_poolifier">
+    <img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=alert_status"></a>
+  <a href="https://sonarcloud.io/component_measures/metric/coverage/list?id=pioardi_poolifier">
+    <img alt="Code coverage" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=coverage"></a>
+  <a href="https://standardjs.com">
+    <img alt="Javascript Standard Style Guide" src="https://img.shields.io/badge/code_style-standard-brightgreen.svg"></a>
+  <a href="https://gitter.im/poolifier/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
+    <img alt="Gitter chat" src="https://badges.gitter.im/poolifier/community.svg"></a>
+  <a href="https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot">
+    <img alt="Dependabot" src="https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot"></a>
+  <a href="http://makeapullrequest.com">
+    <img alt="PR Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square"></a>
+  <a href="https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen">
+    <img alt="No dependencies" src="https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen"></a>
+
+</p>
+
+
+
 
 ## Why Poolifier?
 
