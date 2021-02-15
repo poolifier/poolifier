@@ -87,4 +87,19 @@ describe('Dynamic cluster pool test suite ', () => {
     const res = await pool1.execute({ test: 'test' })
     expect(res).toBeFalsy()
   })
+  it('Verify scale processes up and down is working when long running task is used', async () => {
+    const longRunningPool = new DynamicClusterPool(
+      min,
+      max,
+      './tests/worker/thread/longRunningWorker.js'
+    )
+    expect(longRunningPool.workers.length).toBe(min)
+    for (let i = 0; i < max * 10; i++) {
+      longRunningPool.execute({ test: 'test' })
+    }
+    expect(longRunningPool.workers.length).toBe(max)
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    // Here we expect the workers to be at the max size since that the task is still running
+    expect(longRunningPool.workers.length).toBe(max)
+  })
 })
