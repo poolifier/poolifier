@@ -62,7 +62,7 @@ export class DynamicClusterPool<
     const worker = this.createAndSetupWorker()
     this.registerWorkerMessageListener<Data>(worker, message => {
       const tasksInProgress = this.tasks.get(worker)
-      if (message.kill) {
+      if (message.kill && !tasksInProgress) {
         this.sendToWorker(worker, { kill: 1 })
         void this.destroyWorker(worker)
       }

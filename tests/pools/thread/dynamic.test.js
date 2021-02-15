@@ -7,8 +7,7 @@ const pool = new DynamicThreadPool(
   max,
   './tests/worker/thread/testWorker.js',
   {
-    errorHandler: e => console.error(e),
-    onlineHandler: () => console.log('worker is online')
+    errorHandler: e => console.error(e)
   }
 )
 

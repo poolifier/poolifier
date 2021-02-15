@@ -6,8 +6,7 @@ const pool = new FixedClusterPool(
   numberOfWorkers,
   './tests/worker/cluster/testWorker.js',
   {
-    errorHandler: e => console.error(e),
-    onlineHandler: () => console.log('worker is online')
+    errorHandler: e => console.error(e)
   }
 )
 const emptyPool = new FixedClusterPool(
@@ -19,8 +18,7 @@ const errorPool = new FixedClusterPool(
   1,
   './tests/worker/cluster/errorWorker.js',
   {
-    errorHandler: e => console.error(e),
-    onlineHandler: () => console.log('worker is online')
+    errorHandler: e => console.error(e)
   }
 )
 

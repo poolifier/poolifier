@@ -6,8 +6,7 @@ const pool = new FixedThreadPool(
   numberOfThreads,
   './tests/worker/thread/testWorker.js',
   {
-    errorHandler: e => console.error(e),
-    onlineHandler: () => console.log('worker is online')
+    errorHandler: e => console.error(e)
   }
 )
 const emptyPool = new FixedThreadPool(1, './tests/worker/thread/emptyWorker.js')
