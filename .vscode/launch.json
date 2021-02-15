@@ -9,9 +9,9 @@
       "request": "launch",
       "name": "Launch Test Debug",
       "cwd": "${workspaceFolder}",
-      "preLaunchTask": "Development build",
+      // "preLaunchTask": "Development build",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run-script", "test:debug:vscode"],
+      "runtimeArgs": ["run-script", "test:debug"],
       "skipFiles": ["<node_internals>/**"],
       "stopOnEntry": true
     },
@@ -20,9 +20,9 @@
       "request": "launch",
       "name": "Launch Benchmark Debug",
       "cwd": "${workspaceFolder}",
-      "preLaunchTask": "Development build",
+      // "preLaunchTask": "Development build",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run-script", "benchmark:debug:vscode"],
+      "runtimeArgs": ["run-script", "benchmark:debug"],
       "skipFiles": ["<node_internals>/**"],
       "stopOnEntry": true
     }
