@@ -43,6 +43,5 @@ async function test () {
       // eslint-disable-next-line no-process-exit
       process.exit()
     })
-    // run async
-    .run({ async: true })
+    .run()
 }
