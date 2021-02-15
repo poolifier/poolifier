@@ -11,7 +11,7 @@ export default {
   output: {
     ...(isDevelopmentBuild ? { dir: 'lib' } : { file: 'lib/index.js' }),
     format: 'cjs',
-    sourcemap: !!isDevelopmentBuild,
+    sourcemap: false,
     ...(isDevelopmentBuild && { preserveModules: true }),
     ...(isDevelopmentBuild && { preserveModulesRoot: 'src' }),
     ...(!isDevelopmentBuild && { plugins: [terser({ numWorkers: 2 })] })
