@@ -86,6 +86,7 @@ describe('Dynamic cluster pool test suite ', () => {
     const res = await pool1.execute({ test: 'test' })
     expect(res).toBeFalsy()
   })
+
   it('Verify scale processes up and down is working when long running task is used', async () => {
     const longRunningPool = new DynamicClusterPool(
       min,
