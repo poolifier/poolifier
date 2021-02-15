@@ -65,7 +65,6 @@ export class DynamicThreadPool<
       if (message.kill && !tasksInProgress) {
         // Kill received from the worker, means that no new tasks are submitted to that worker for a while( > maxInactiveTime)
         // To handle the case of a long-running task we will check if the there is any active task
-        console.log('Here we are')
         this.sendToWorker(worker, { kill: 1 })
         void this.destroyWorker(worker)
       }
