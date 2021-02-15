@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Bug fixes
 
-- Now a thread/process is not delete when the task submitted take more time than maxInactiveTime configured (issue #70)
+- Now a thread/process is not deleted when the task submitted take more time than maxInactiveTime configured (issue #70)
 
 ### Breaking Changes
 
