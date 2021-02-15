@@ -34,14 +34,14 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build:dev --if-present
+        run: npm run build --if-present
 
       - name: Lint
         run: npm run lint
 
       - name: Tests & Coverage
         run: |
-          npm run test:dev
+          npm run test
           npm run coverage
         env:
           CI: true
@@ -56,4 +56,4 @@ jobs:
 
       - name: Benchmark
         if: github.event.inputs.withBenchmark
-        run: npm run benchmark:dev
+        run: npm run benchmark

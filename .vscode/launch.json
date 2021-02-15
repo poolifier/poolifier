@@ -11,7 +11,7 @@
       "cwd": "${workspaceFolder}",
       // "preLaunchTask": "Development build",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run-script", "test:dev:debug"],
+      "runtimeArgs": ["run-script", "test:debug"],
       "skipFiles": ["<node_internals>/**"],
       "stopOnEntry": true
     },
@@ -22,7 +22,7 @@
       "cwd": "${workspaceFolder}",
       // "preLaunchTask": "Development build",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run-script", "benchmark:dev:debug"],
+      "runtimeArgs": ["run-script", "benchmark:debug"],
       "skipFiles": ["<node_internals>/**"],
       "stopOnEntry": true
     }

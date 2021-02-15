@@ -4,12 +4,12 @@
     {
       "label": "Build",
       "type": "npm",
-      "script": "build"
+      "script": "build:prod"
     },
     {
       "label": "Development build",
       "type": "npm",
-      "script": "build:dev"
+      "script": "build"
     }
   ]
 }
