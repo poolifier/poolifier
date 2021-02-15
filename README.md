@@ -1,19 +1,60 @@
-# Node Thread Pool :arrow_double_up: :on:
+<div align="center">
+<img src="./docs/logo.png" width="475" height="400"/>
+</div>
 
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-[![Dependabot](https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot)](https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot)
-[![npm w](https://img.shields.io/npm/dw/poolifier)](https://www.npmjs.com/package/poolifier)
-[![Actions Status](https://github.com/pioardi/node-pool/workflows/NodeCI/badge.svg)](https://github.com/pioardi/node-pool/actions)
-[![Coverage Status](https://coveralls.io/repos/github/pioardi/poolifier/badge.svg?branch=master)](https://coveralls.io/github/pioardi/poolifier?branch=master)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
-[![NODEP](https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen)](https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen)
-[![Gitter](https://badges.gitter.im/poolifier/community.svg)](https://gitter.im/poolifier/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+<h2 align="center">Node Thread Pool :arrow_double_up: :on:</h2>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/poolifier">
+    <img alt="Weekly Downloads" src="https://img.shields.io/npm/dw/poolifier"></a>
+  <a href="https://github.com/pioardi/node-pool/actions">
+    <img alt="Actions Status" src="https://github.com/pioardi/node-pool/workflows/NodeCI/badge.svg"></a>
+  <a href="https://sonarcloud.io/dashboard?id=pioardi_poolifier">
+    <img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=alert_status"></a>
+  <a href="https://sonarcloud.io/component_measures/metric/coverage/list?id=pioardi_poolifier">
+    <img alt="Code coverage" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=coverage"></a>
+  <a href="https://standardjs.com">
+    <img alt="Javascript Standard Style Guide" src="https://img.shields.io/badge/code_style-standard-brightgreen.svg"></a>
+  <a href="https://gitter.im/poolifier/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
+    <img alt="Gitter chat" src="https://badges.gitter.im/poolifier/community.svg"></a>
+  <a href="https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot">
+    <img alt="Dependabot" src="https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot"></a>
+  <a href="http://makeapullrequest.com">
+    <img alt="PR Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square"></a>
+  <a href="https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen">
+    <img alt="No dependencies" src="https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen"></a>
+
+</p>
+
+
+
 
 ## Why Poolifier?
 
 Poolifier is used to perform heavy CPU bound tasks on nodejs servers, it implements thread pools (yes, more thread pool implementations, so you can choose which one fit better for you) using [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads).  
 With poolifier you can improve your **performance** and resolve problems related to the event loop.  
 Moreover you can execute your CPU tasks using an API designed to improve the **developer experience**.
+
+- Performance :racehorse:
+- Security :bank: :cop: [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=security_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
+- Easy to use :couple:
+- Easy switch from a pool to another, easy to tune :heavy_check_mark:
+- Dynamic pool size :heavy_check_mark:
+- No runtime dependencies :heavy_check_mark: 
+- Proper async integration with node async hooks :heavy_check_mark:
+- Support for worker threads and cluster node modules :heavy_check_mark:
+- Support sync and async tasks :heavy_check_mark:
+- General guidance on pools to use :heavy_check_mark:
+- Widely tested :heavy_check_mark:
+- Error handling out of the box :heavy_check_mark:
+- Active community :heavy_check_mark:
+- Code quality :octocat: [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=bugs)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=code_smells)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=sqale_index)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
+
 
 ## Contents
 
