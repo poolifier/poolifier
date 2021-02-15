@@ -10,8 +10,8 @@
 [![NODEP](https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen)](https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen)
 [![Gitter](https://badges.gitter.im/poolifier/community.svg)](https://gitter.im/poolifier/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-<div align="left">
-<img src="./docs/logo.png" width="400" height="475"/>
+<div align="center">
+<img src="./docs/logo.png" width="250" height="300"/>
 </div>
 
 ## Why Poolifier?
@@ -21,10 +21,9 @@ With poolifier you can improve your **performance** and resolve problems related
 Moreover you can execute your CPU tasks using an API designed to improve the **developer experience**.
 
 - Performance :racehorse:
-- Security :bank: :cop: [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=security_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
+- Security :bank: :cop: [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=security_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 
-- No runtime dependencies :white_check_mark: (until now we don't have any exception to that)
-- Easy to use :couple:
+- No runtime dependencies :heavy_check_mark: (until now we don't have any expectations to add some)- Easy to use :couple:
 - Code quality :octocat: [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=bugs)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=code_smells)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
