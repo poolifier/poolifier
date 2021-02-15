@@ -40,15 +40,15 @@ Moreover you can execute your CPU tasks using an API designed to improve the **d
 
 - No runtime dependencies :heavy_check_mark: 
 - Easy to use :couple:
-- Easy switch from a pool to another, easy to tune
-- Dynamic pool size
-- Proper async integration with node async hooks
-- Support for worker threads and cluster node modules
-- Active community
-- Support sync and async tasks
-- General guidance on pools to use
-- Widely tested
-- Error handling out of the box 
+- Easy switch from a pool to another, easy to tune :heavy_check_mark:
+- Dynamic pool size :heavy_check_mark:
+- Proper async integration with node async hooks :heavy_check_mark:
+- Support for worker threads and cluster node modules :heavy_check_mark:
+- Active community :heavy_check_mark:
+- Support sync and async tasks :heavy_check_mark:
+- General guidance on pools to use :heavy_check_mark:
+- Widely tested :heavy_check_mark:
+- Error handling out of the box :heavy_check_mark:
 - Code quality :octocat: [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=bugs)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=code_smells)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
