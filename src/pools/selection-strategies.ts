@@ -1,5 +1,12 @@
+/**
+ * Result of the round robin selection function.
+ *
+ * @template Type of the chosen element.
+ */
 export interface RoundRobinSelectionResult<Element> {
+  /** The element that was chosen. */
   chosenElement: Element
+  /** The next calculated index. */
   nextIndex: number
 }
 
