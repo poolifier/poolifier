@@ -27,7 +27,7 @@ export abstract class AbstractWorker<
   /**
    * The kill behavior set as option on the Worker constructor or a default value.
    */
-  protected readonly killBehavior: string
+  protected readonly killBehavior: 'HARD' | 'SOFT'
   /**
    * Whether the worker is working asynchronously or not.
    */
