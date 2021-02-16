@@ -1,10 +1,6 @@
 import type { JSONValue } from '../../utility-types'
-import { isKillBehavior, KillBehaviors } from '../../worker/worker-options'
 import type { PoolOptions } from '../abstract-pool'
-import {
-  findFreeWorkerBasedOnTasks,
-  roundRobinSelection
-} from '../selection-strategies'
+import { dynamicallyChooseWorker } from '../selection-strategies'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
 
@@ -51,34 +47,17 @@ export class DynamicThreadPool<
    * @returns Thread worker.
    */
   protected chooseWorker (): ThreadWorkerWithMessageChannel {
-    const freeWorker = findFreeWorkerBasedOnTasks(this.tasks)
-    if (freeWorker) {
-      return freeWorker
-    }
-
-    if (this.workers.length === this.max) {
-      this.emitter.emit('FullPool')
-      const { chosenElement, nextIndex } = roundRobinSelection(
-        this.workers,
-        this.nextWorkerIndex
-      )
-      this.nextWorkerIndex = nextIndex
-      return chosenElement
-    }
-
-    // All workers are busy, create a new worker
-    const workerCreated = this.createAndSetupWorker()
-    this.registerWorkerMessageListener<Data>(workerCreated, message => {
-      const tasksInProgress = this.tasks.get(workerCreated)
-      if (
-        isKillBehavior(KillBehaviors.HARD, message.kill) ||
-        tasksInProgress === 0
-      ) {
-        // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-        this.sendToWorker(workerCreated, { kill: 1 })
-        void this.destroyWorker(workerCreated)
-      }
-    })
-    return workerCreated
+    return dynamicallyChooseWorker<ThreadWorkerWithMessageChannel, Data>(
+      this.tasks,
+      this.workers,
+      this.max,
+      this.emitter,
+      this.nextWorkerIndex,
+      nextIndex => (this.nextWorkerIndex = nextIndex),
+      this.createAndSetupWorker.bind(this),
+      this.registerWorkerMessageListener.bind(this),
+      this.sendToWorker.bind(this),
+      this.destroyWorker.bind(this)
+    )
   }
 }

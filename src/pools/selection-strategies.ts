@@ -1,3 +1,7 @@
+import type { JSONValue, MessageValue } from '../utility-types'
+import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
+import type { AbstractPool, IWorker } from './abstract-pool'
+
 /**
  * Result of the round robin selection function.
  *
@@ -47,4 +51,53 @@ export function findFreeWorkerBasedOnTasks<Worker> (
     }
   }
   return null
+}
+
+export function dynamicallyChooseWorker<
+  Worker extends IWorker,
+  Data extends JSONValue = JSONValue
+> (
+  tasks: Map<Worker, number>,
+  workers: Worker[],
+  max: number,
+  emitter: AbstractPool<Worker>['emitter'],
+  nextWorkerIndex: number,
+  nextIndexCallback: (nextIndex: number) => void,
+  createAndSetupWorker: () => Worker,
+  registerWorkerMessageListener: (
+    worker: Worker,
+    listener: (message: MessageValue<Data, unknown>) => void
+  ) => void,
+  sendToWorker: (worker: Worker, message: MessageValue<Data, unknown>) => void,
+  destroyWorker: (worker: Worker) => void | Promise<void>
+): Worker {
+  const freeWorker = findFreeWorkerBasedOnTasks(tasks)
+  if (freeWorker) {
+    return freeWorker
+  }
+
+  if (workers.length === max) {
+    emitter.emit('FullPool')
+    const { chosenElement, nextIndex } = roundRobinSelection(
+      workers,
+      nextWorkerIndex
+    )
+    nextIndexCallback(nextIndex)
+    return chosenElement
+  }
+
+  // All workers are busy, create a new worker
+  const workerCreated = createAndSetupWorker()
+  registerWorkerMessageListener(workerCreated, message => {
+    const tasksInProgress = tasks.get(workerCreated)
+    if (
+      isKillBehavior(KillBehaviors.HARD, message.kill) ||
+      tasksInProgress === 0
+    ) {
+      // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
+      sendToWorker(workerCreated, { kill: 1 })
+      void destroyWorker(workerCreated)
+    }
+  })
+  return workerCreated
 }
