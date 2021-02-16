@@ -1,5 +1,4 @@
 const Benchmark = require('benchmark')
-const TestUtils = require('../tests/test-utils')
 const { dynamicClusterTest } = require('./cluster/dynamic')
 const { fixedClusterTest } = require('./cluster/fixed')
 const { dynamicThreadTest } = require('./thread/dynamic')
