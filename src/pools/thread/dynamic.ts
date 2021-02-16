@@ -1,4 +1,5 @@
 import type { JSONValue } from '../../utility-types'
+import { isKillBehavior, KillBehaviors } from '../../worker/worker-options'
 import type { PoolOptions } from '../abstract-pool'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
@@ -59,13 +60,18 @@ export class DynamicThreadPool<
     }
 
     // All workers are busy, create a new worker
-    const worker = this.createAndSetupWorker()
-    this.registerWorkerMessageListener<Data>(worker, message => {
-      if (message.kill) {
-        this.sendToWorker(worker, { kill: 1 })
-        void this.destroyWorker(worker)
+    const workerCreated = this.createAndSetupWorker()
+    this.registerWorkerMessageListener<Data>(workerCreated, message => {
+      const tasksInProgress = this.tasks.get(workerCreated)
+      if (
+        isKillBehavior(KillBehaviors.HARD, message.kill) ||
+        tasksInProgress === 0
+      ) {
+        // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
+        this.sendToWorker(workerCreated, { kill: 1 })
+        void this.destroyWorker(workerCreated)
       }
     })
-    return worker
+    return workerCreated
   }
 }

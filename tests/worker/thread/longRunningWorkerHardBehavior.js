@@ -3,7 +3,7 @@ const { ThreadWorker, KillBehaviors } = require('../../../lib/index')
 
 async function sleep (data) {
   return new Promise((resolve, reject) => {
-    setTimeout(() => resolve(data), 2000)
+    setTimeout(() => resolve(data), 50000)
   })
 }
 

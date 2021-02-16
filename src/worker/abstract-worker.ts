@@ -2,7 +2,11 @@ import { AsyncResource } from 'async_hooks'
 import type { Worker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
 import type { MessageValue } from '../utility-types'
-import type { WorkerOptions } from './worker-options'
+import type { KillBehavior, WorkerOptions } from './worker-options'
+import { KillBehaviors } from './worker-options'
+
+const DEFAULT_MAX_INACTIVE_TIME = 1000 * 60
+const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
 
 /**
  * Base class containing some shared logic for all poolifier workers.
@@ -20,6 +24,10 @@ export abstract class AbstractWorker<
    * The maximum time to keep this worker alive while idle. The pool automatically checks and terminates this worker when the time expires.
    */
   protected readonly maxInactiveTime: number
+  /**
+   * The kill behavior set as option on the Worker constructor or a default value.
+   */
+  protected readonly killBehavior: KillBehavior
   /**
    * Whether the worker is working asynchronously or not.
    */
@@ -47,11 +55,15 @@ export abstract class AbstractWorker<
     isMain: boolean,
     fn: (data: Data) => Response,
     protected mainWorker?: MainWorker | null,
-    public readonly opts: WorkerOptions = {}
+    public readonly opts: WorkerOptions = {
+      killBehavior: DEFAULT_KILL_BEHAVIOR,
+      maxInactiveTime: DEFAULT_MAX_INACTIVE_TIME
+    }
   ) {
     super(type)
-
-    this.maxInactiveTime = this.opts.maxInactiveTime ?? 1000 * 60
+    this.killBehavior = this.opts.killBehavior ?? DEFAULT_KILL_BEHAVIOR
+    this.maxInactiveTime =
+      this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME
     this.async = !!this.opts.async
     this.lastTask = Date.now()
     if (!fn) throw new Error('fn parameter is mandatory')
@@ -108,7 +120,7 @@ export abstract class AbstractWorker<
    */
   protected checkAlive (): void {
     if (Date.now() - this.lastTask > this.maxInactiveTime) {
-      this.sendToMainWorker({ kill: 1 })
+      this.sendToMainWorker({ kill: this.killBehavior })
     }
   }
 
