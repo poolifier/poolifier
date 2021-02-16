@@ -33,7 +33,7 @@ export interface WorkerOptions {
    * HARD: If last active time is greater than `maxInactiveTime` option, but a task is still running then the worker will be deleted.
    * This option only apply to the newly created workers.
    *
-   * @default SOFT
+   * @default `'SOFT'`
    */
   killBehavior?: 'HARD' | 'SOFT'
 }
