@@ -3,7 +3,7 @@ import type { KillBehavior } from '../utility-types'
 /**
  * Kill behavior enumeration
  */
-export const killBehaviorEnumeration = Object.freeze({
+export const killBehaviorTypes = Object.freeze({
   SOFT: 'SOFT',
   HARD: 'HARD'
 })

@@ -1,5 +1,5 @@
 'use strict'
-const { ClusterWorker, killBehaviorEnumeration } = require('../../../lib/index')
+const { ClusterWorker, killBehaviorTypes } = require('../../../lib/index')
 
 async function error (data) {
   return new Promise((resolve, reject) => {
@@ -13,5 +13,5 @@ async function error (data) {
 module.exports = new ClusterWorker(error, {
   maxInactiveTime: 500,
   async: true,
-  killBehavior: killBehaviorEnumeration
+  killBehavior: killBehaviorTypes
 })

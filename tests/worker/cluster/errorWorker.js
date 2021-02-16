@@ -1,5 +1,5 @@
 'use strict'
-const { ClusterWorker, killBehaviorEnumeration } = require('../../../lib/index')
+const { ClusterWorker, killBehaviorTypes } = require('../../../lib/index')
 
 function error (data) {
   throw new Error('Error Message from ClusterWorker')
@@ -8,5 +8,5 @@ function error (data) {
 module.exports = new ClusterWorker(error, {
   maxInactiveTime: 500,
   async: false,
-  killBehavior: killBehaviorEnumeration
+  killBehavior: killBehaviorTypes
 })

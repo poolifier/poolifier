@@ -1,5 +1,5 @@
 'use strict'
-const { ThreadWorker, killBehaviorEnumeration } = require('../../../lib/index')
+const { ThreadWorker, killBehaviorTypes } = require('../../../lib/index')
 
 async function sleep (data) {
   return new Promise((resolve, reject) => {
@@ -10,5 +10,5 @@ async function sleep (data) {
 module.exports = new ThreadWorker(sleep, {
   maxInactiveTime: 500,
   async: true,
-  killBehavior: killBehaviorEnumeration.HARD
+  killBehavior: killBehaviorTypes.HARD
 })
