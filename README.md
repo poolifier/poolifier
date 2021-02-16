@@ -174,7 +174,7 @@ This method will call the terminate method on each worker.
 `fn` (mandatory) The function that you want to execute on the worker thread  
 `opts` (optional) An object with these properties:
 
-- `maxInactiveTime` - Max time to wait tasks to work on ( in ms) , after this period the new worker threads will die.  
+- `maxInactiveTime` - Max time to wait tasks to work on (in ms), after this period the new worker threads will die.  
 The last active time of your worker unit will be updated when a task is submitted to a worker or when a worker terminate a task.  
 If `killBehavior` is set to `KillBehaviors.HARD` this value represents also the timeout for the tasks that you submit to the pool, when this timeout expires your tasks is interrupted and the worker is killed if is not part of the minimum size of the pool.  
 If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.  
@@ -182,8 +182,8 @@ Default: 60.000 ms
 
 - `async` - true/false, true if your function contains async pieces else false
 - `killBehavior` - Dictates if your async unit (worker/process) will be deleted in case that a task is active on it.  
-SOFT: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker **wont** be deleted.  
-HARD: If `lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker will be deleted.  
+**SOFT**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker **wont** be deleted.  
+**HARD**: If `lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker will be deleted.  
 This option only apply to the newly created workers.  
 Default: `SOFT`
 
