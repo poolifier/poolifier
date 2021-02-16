@@ -42,7 +42,7 @@ export interface MessageValue<
   /**
    * Kill code.
    */
-  readonly kill?: string | number
+  readonly kill?: 'HARD' | 'SOFT' | number
   /**
    * Error.
    */
