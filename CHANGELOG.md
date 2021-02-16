@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking Changes
 
-- maxInactiveTime default behavior is now changed, if you want to keep the old behavior set killBehavior to HARD ( Find more details on our JSDoc ).
+- `maxInactiveTime` default behavior is now changed, if you want to keep the old behavior set `killBehavior` to `KillBehaviors.HARD`.
+  _Find more details on our JSDoc._
 
 - We changed some internal structures, but you shouldn't be too affected by them as these are internal changes.
 
