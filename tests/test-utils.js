@@ -13,7 +13,7 @@ class TestUtils {
     })
   }
 
-  static async sleep(ms) {
+  static async sleep (ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 }
