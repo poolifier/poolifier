@@ -1,5 +1,5 @@
 {
-  "check-coverage" : true,
+  "check-coverage": true,
   "lines": 89,
   "statements": 89,
   "functions": 85,
