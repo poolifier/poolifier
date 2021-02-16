@@ -1,12 +1,13 @@
 import { AsyncResource } from 'async_hooks'
 import type { Worker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
-import type { MessageValue } from '../utility-types'
+import type { MessageValue, KillBehavior } from '../utility-types'
 import type { WorkerOptions } from './worker-options'
 import { killBehaviorEnumeration } from './worker-options'
 
 const defaultMaxInactiveTime = 1000 * 60
-const defaultKillBehavior = killBehaviorEnumeration.SOFT
+// TODO Shinigami92 to fix this and avoid that SOFT/HARD words are replicated so much times into the project
+const defaultKillBehavior: KillBehavior = 'SOFT'
 
 /**
  * Base class containing some shared logic for all poolifier workers.
@@ -27,7 +28,7 @@ export abstract class AbstractWorker<
   /**
    * The kill behavior set as option on the Worker constructor or a default value.
    */
-  protected readonly killBehavior: 'HARD' | 'SOFT'
+  protected readonly killBehavior: KillBehavior
   /**
    * Whether the worker is working asynchronously or not.
    */
