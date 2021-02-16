@@ -5,7 +5,7 @@ const max = 3
 const pool = new DynamicThreadPool(
   min,
   max,
-  './tests/worker/thread/testWorker.js',
+  './tests/worker-files/thread/testWorker.js',
   {
     errorHandler: e => console.error(e)
   }
@@ -80,7 +80,7 @@ describe('Dynamic thread pool test suite ', () => {
     const pool1 = new DynamicThreadPool(
       1,
       1,
-      './tests/worker/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.js'
     )
     const res = await pool1.execute({ test: 'test' })
     expect(res).toBeFalsy()

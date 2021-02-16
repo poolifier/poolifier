@@ -18,7 +18,7 @@ describe('Abstract pool test suite ', () => {
   it('Simulate worker not found during increaseWorkersTask', () => {
     const pool = new StubPoolWithTasksMapClear(
       1,
-      './tests/worker/cluster/testWorker.js',
+      './tests/worker-files/cluster/testWorker.js',
       {
         errorHandler: e => console.error(e)
       }
@@ -31,7 +31,7 @@ describe('Abstract pool test suite ', () => {
   it('Simulate worker not found during decreaseWorkersTasks', () => {
     const pool = new StubPoolWithTasksMapClear(
       1,
-      './tests/worker/cluster/testWorker.js',
+      './tests/worker-files/cluster/testWorker.js',
       {
         errorHandler: e => console.error(e)
       }
@@ -45,7 +45,7 @@ describe('Abstract pool test suite ', () => {
     expect(() => {
       const pool = new StubPoolWithIsMainMethod(
         1,
-        './tests/worker/cluster/testWorker.js',
+        './tests/worker-files/cluster/testWorker.js',
         {
           errorHandler: e => console.error(e)
         }
