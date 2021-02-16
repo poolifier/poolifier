@@ -21,7 +21,7 @@ export type KillBehavior = keyof typeof KillBehaviors
  * Detects whether the given value is a kill behavior or not.
  *
  * @template KB Which specific KillBehavior to test against.
- * @param killBehavior Which kind of kill behavior to detect. Default: `KillBehaviors.HARD`.
+ * @param killBehavior Which kind of kill behavior to detect.
  * @param value Any value.
  * @returns `true` if `value` was strictly equals to `killBehavior`, otherwise `false`.
  */
