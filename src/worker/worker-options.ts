@@ -14,7 +14,7 @@ export interface WorkerOptions {
    * Maximum waiting time in milliseconds for tasks.
    * After this time, newly created workers will be terminated.
    * The last active time of your worker unit will be updated when a task is submitted to a worker or when a worker terminate a task.
-   * If killBehavior is set to HARD this value represents also the timeout for the tasks that you submit to the pool,
+   * If `killBehavior` is set to `HARD` this value represents also the timeout for the tasks that you submit to the pool,
    * when this timeout expires your tasks is interrupted and the worker is killed if is not part of the minimum size of the pool.
    * If `killBehavior` is set to `SOFT` your tasks have no timeout and your workers will not be terminated until your task is finished.
    *
