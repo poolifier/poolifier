@@ -3,10 +3,10 @@ import type { Worker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
 import type { MessageValue, KillBehavior } from '../utility-types'
 import type { WorkerOptions } from './worker-options'
-import { killBehaviorEnumeration } from './worker-options'
+// import { killBehaviorEnumeration } from './worker-options'
 
 const defaultMaxInactiveTime = 1000 * 60
-// TODO Shinigami92 to fix this and avoid that SOFT/HARD words are replicated so much times into the project
+// TODO fix this and avoid that SOFT/HARD words are replicated so much times into the project
 const defaultKillBehavior: KillBehavior = 'SOFT'
 
 /**

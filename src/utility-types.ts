@@ -55,4 +55,3 @@ export interface MessageValue<
    */
   readonly parent?: MainWorker
 }
-
