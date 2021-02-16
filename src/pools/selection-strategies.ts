@@ -53,6 +53,21 @@ export function findFreeWorkerBasedOnTasks<Worker> (
   return null
 }
 
+/**
+ * Dynamically choose a worker.
+ *
+ * @param tasks tasks.
+ * @param workers workers.
+ * @param max max.
+ * @param emitter emitter.
+ * @param nextWorkerIndex nextWorkerIndex.
+ * @param nextIndexCallback nextIndexCallback.
+ * @param createAndSetupWorker createAndSetupWorker.
+ * @param registerWorkerMessageListener registerWorkerMessageListener.
+ * @param sendToWorker sendToWorker.
+ * @param destroyWorker destroyWorker.
+ * @returns The chosen one.
+ */
 export function dynamicallyChooseWorker<
   Worker extends IWorker,
   Data extends JSONValue = JSONValue
