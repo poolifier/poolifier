@@ -26,3 +26,25 @@ export function roundRobinSelection<Element> (
   nextIndex = elements.length - 1 === nextIndex ? 0 : nextIndex + 1
   return { chosenElement, nextIndex }
 }
+
+/**
+ * Find a free worker based on number of tasks the worker has applied.
+ *
+ * If a worker was found that has `0` tasks, it is detected as free and will be returned.
+ *
+ * If no free worker was found, `null` will be returned.
+ *
+ * @param tasks A map of tasks.
+ * @returns A free worker if there was one, otherwise `null`.
+ */
+export function findFreeWorkerBasedOnTasks<Worker> (
+  tasks: Map<Worker, number>
+): Worker | null {
+  for (const [worker, numberOfTasks] of tasks) {
+    if (numberOfTasks === 0) {
+      // A worker is free, use it
+      return worker
+    }
+  }
+  return null
+}

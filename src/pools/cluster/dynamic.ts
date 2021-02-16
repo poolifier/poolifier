@@ -1,7 +1,10 @@
 import type { Worker } from 'cluster'
 import type { JSONValue } from '../../utility-types'
 import { isKillBehavior, KillBehaviors } from '../../worker/worker-options'
-import { roundRobinSelection } from '../selection-strategies'
+import {
+  findFreeWorkerBasedOnTasks,
+  roundRobinSelection
+} from '../selection-strategies'
 import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
 
@@ -48,11 +51,9 @@ export class DynamicClusterPool<
    * @returns Cluster worker.
    */
   protected chooseWorker (): Worker {
-    for (const [worker, numberOfTasks] of this.tasks) {
-      if (numberOfTasks === 0) {
-        // A worker is free, use it
-        return worker
-      }
+    const freeWorker = findFreeWorkerBasedOnTasks(this.tasks)
+    if (freeWorker) {
+      return freeWorker
     }
 
     if (this.workers.length === this.max) {

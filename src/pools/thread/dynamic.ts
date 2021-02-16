@@ -1,7 +1,10 @@
 import type { JSONValue } from '../../utility-types'
 import { isKillBehavior, KillBehaviors } from '../../worker/worker-options'
 import type { PoolOptions } from '../abstract-pool'
-import { roundRobinSelection } from '../selection-strategies'
+import {
+  findFreeWorkerBasedOnTasks,
+  roundRobinSelection
+} from '../selection-strategies'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
 
@@ -48,11 +51,9 @@ export class DynamicThreadPool<
    * @returns Thread worker.
    */
   protected chooseWorker (): ThreadWorkerWithMessageChannel {
-    for (const [worker, numberOfTasks] of this.tasks) {
-      if (numberOfTasks === 0) {
-        // A worker is free, use it
-        return worker
-      }
+    const freeWorker = findFreeWorkerBasedOnTasks(this.tasks)
+    if (freeWorker) {
+      return freeWorker
     }
 
     if (this.workers.length === this.max) {
