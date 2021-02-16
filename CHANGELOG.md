@@ -59,6 +59,11 @@ These methods are not intended for end users
 - `_run` => `run`
 - `_runAsync` => `runAsync`
 
+### Internal methods removed
+
+`numWorkers` method removed
+`nextWorker` method removed
+
 ## [1.1.0] - 2020-21-05
 
 ### Added
