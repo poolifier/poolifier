@@ -87,11 +87,27 @@ describe('Dynamic cluster pool test suite ', () => {
     expect(res).toBeFalsy()
   })
 
-  it('Verify scale processes up and down is working when long running task is used', async () => {
+  it('Verify scale processes up and down is working when long running task is used:hard', async () => {
     const longRunningPool = new DynamicClusterPool(
       min,
       max,
-      './tests/worker/cluster/longRunningWorker.js'
+      './tests/worker/cluster/longRunningWorkerHardBehavior.js'
+    )
+    expect(longRunningPool.workers.length).toBe(min)
+    for (let i = 0; i < max * 10; i++) {
+      longRunningPool.execute({ test: 'test' })
+    }
+    expect(longRunningPool.workers.length).toBe(max)
+    await new Promise(resolve => setTimeout(resolve, 3000))
+    // Here we expect the workers to be at the max size since that the task is still running
+    expect(longRunningPool.workers.length).toBe(min)
+  })
+
+  it('Verify scale processes up and down is working when long running task is used:soft', async () => {
+    const longRunningPool = new DynamicClusterPool(
+      min,
+      max,
+      './tests/worker/cluster/longRunningWorkerSoftBehavior.js'
     )
     expect(longRunningPool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {

@@ -7,4 +7,7 @@ async function sleep (data) {
   })
 }
 
-module.exports = new ThreadWorker(sleep, { maxInactiveTime: 500, async: true })
+module.exports = new ThreadWorker(sleep, {
+  maxInactiveTime: 500,
+  async: true
+})

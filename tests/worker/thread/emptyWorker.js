@@ -1,6 +1,9 @@
 'use strict'
-const { ThreadWorker } = require('../../../lib/index')
+const { ThreadWorker, killBehaviorEnumeration } = require('../../../lib/index')
 
 function test (data) {}
 
-module.exports = new ThreadWorker(test, { maxInactiveTime: 500 })
+module.exports = new ThreadWorker(test, {
+  maxInactiveTime: 500,
+  killBehavior: killBehaviorEnumeration.HARD
+})

@@ -1,5 +1,5 @@
 'use strict'
-const { ThreadWorker } = require('../../../lib/index')
+const { ThreadWorker, killBehaviorEnumeration } = require('../../../lib/index')
 const { isMainThread } = require('worker_threads')
 
 function test (data) {
@@ -12,4 +12,7 @@ function test (data) {
   return isMainThread
 }
 
-module.exports = new ThreadWorker(test, { maxInactiveTime: 500 })
+module.exports = new ThreadWorker(test, {
+  maxInactiveTime: 500,
+  killBehavior: killBehaviorEnumeration.HARD
+})

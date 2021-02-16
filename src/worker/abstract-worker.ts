@@ -3,6 +3,10 @@ import type { Worker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
 import type { MessageValue } from '../utility-types'
 import type { WorkerOptions } from './worker-options'
+import { killBehaviorEnumeration } from './worker-options'
+
+const defaultMaxInactiveTime = 1000 * 60
+const defaultKillBehavior = killBehaviorEnumeration.SOFT
 
 /**
  * Base class containing some shared logic for all poolifier workers.
@@ -20,6 +24,10 @@ export abstract class AbstractWorker<
    * The maximum time to keep this worker alive while idle. The pool automatically checks and terminates this worker when the time expires.
    */
   protected readonly maxInactiveTime: number
+  /**
+   * The kill behavior set as option on the Worker constructor or a default value.
+   */
+  protected readonly killBehavior: string
   /**
    * Whether the worker is working asynchronously or not.
    */
@@ -47,11 +55,14 @@ export abstract class AbstractWorker<
     isMain: boolean,
     fn: (data: Data) => Response,
     protected mainWorker?: MainWorker | null,
-    public readonly opts: WorkerOptions = {}
+    public readonly opts: WorkerOptions = {
+      killBehavior: defaultKillBehavior,
+      maxInactiveTime: defaultMaxInactiveTime
+    }
   ) {
     super(type)
-
-    this.maxInactiveTime = this.opts.maxInactiveTime ?? 1000 * 60
+    this.killBehavior = this.opts.killBehavior ?? defaultKillBehavior
+    this.maxInactiveTime = this.opts.maxInactiveTime ?? defaultMaxInactiveTime
     this.async = !!this.opts.async
     this.lastTask = Date.now()
     if (!fn) throw new Error('fn parameter is mandatory')
@@ -108,7 +119,7 @@ export abstract class AbstractWorker<
    */
   protected checkAlive (): void {
     if (Date.now() - this.lastTask > this.maxInactiveTime) {
-      this.sendToMainWorker({ kill: 1 })
+      this.sendToMainWorker({ kill: this.killBehavior })
     }
   }
 

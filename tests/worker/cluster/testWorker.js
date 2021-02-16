@@ -1,5 +1,5 @@
 'use strict'
-const { ClusterWorker } = require('../../../lib/index')
+const { ClusterWorker, killBehaviorEnumeration } = require('../../../lib/index')
 const { isMaster } = require('cluster')
 
 function test (data) {
@@ -12,4 +12,7 @@ function test (data) {
   return isMaster
 }
 
-module.exports = new ClusterWorker(test, { maxInactiveTime: 500 })
+module.exports = new ClusterWorker(test, {
+  maxInactiveTime: 500,
+  killBehavior: killBehaviorEnumeration.HARD
+})

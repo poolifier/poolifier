@@ -86,11 +86,30 @@ describe('Dynamic thread pool test suite ', () => {
     expect(res).toBeFalsy()
   })
 
-  it('Verify scale thread up and down is working when long running task is used', async () => {
+  it('Verify scale thread up and down is working when long running task is used:hard', async () => {
     const longRunningPool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker/thread/longRunningWorker.js',
+      './tests/worker/thread/longRunningWorkerHardBehavior.js',
+      {
+        errorHandler: e => console.error(e),
+        onlineHandler: () => console.log('worker is online')
+      }
+    )
+    expect(longRunningPool.workers.length).toBe(min)
+    for (let i = 0; i < max * 10; i++) {
+      longRunningPool.execute({ test: 'test' })
+    }
+    expect(longRunningPool.workers.length).toBe(max)
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    expect(longRunningPool.workers.length).toBe(min)
+  })
+
+  it('Verify scale thread up and down is working when long running task is used:soft', async () => {
+    const longRunningPool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker/thread/longRunningWorkerSoftBehavior.js',
       {
         errorHandler: e => console.error(e),
         onlineHandler: () => console.log('worker is online')

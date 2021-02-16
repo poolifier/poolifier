@@ -2,6 +2,7 @@ import type { Worker } from 'cluster'
 import type { JSONValue } from '../../utility-types'
 import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
+import { killBehaviorEnumeration } from '../../worker/worker-options'
 
 /**
  * A cluster pool with a dynamic number of workers, but a guaranteed minimum number of workers.
@@ -62,9 +63,10 @@ export class DynamicClusterPool<
     const worker = this.createAndSetupWorker()
     this.registerWorkerMessageListener<Data>(worker, message => {
       const tasksInProgress = this.tasks.get(worker)
-      if (message.kill && tasksInProgress === 0) {
+      const isKillBehaviorOptionHard =
+        message.kill === killBehaviorEnumeration.HARD
+      if (isKillBehaviorOptionHard || tasksInProgress === 0) {
         // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-        // To handle the case of a long-running task we will check if there is any active task
         this.sendToWorker(worker, { kill: 1 })
         void this.destroyWorker(worker)
       }
