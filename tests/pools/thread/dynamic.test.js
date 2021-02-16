@@ -49,7 +49,7 @@ describe('Dynamic thread pool test suite ', () => {
       pool.execute({ test: 'test' })
     }
     expect(pool.workers.length).toBe(max)
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise(resolve => setTimeout(resolve, 1500))
     expect(pool.workers.length).toBe(min)
   })
 
@@ -101,7 +101,7 @@ describe('Dynamic thread pool test suite ', () => {
       longRunningPool.execute({ test: 'test' })
     }
     expect(longRunningPool.workers.length).toBe(max)
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise(resolve => setTimeout(resolve, 1500))
     expect(longRunningPool.workers.length).toBe(min)
   })
 
@@ -120,7 +120,7 @@ describe('Dynamic thread pool test suite ', () => {
       longRunningPool.execute({ test: 'test' })
     }
     expect(longRunningPool.workers.length).toBe(max)
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise(resolve => setTimeout(resolve, 1500))
     // Here we expect the workers to be at the max size since that the task is still running
     expect(longRunningPool.workers.length).toBe(max)
   })

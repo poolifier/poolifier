@@ -119,7 +119,7 @@ describe('Fixed cluster pool test suite ', () => {
       })
     })
     await pool.destroy()
-    await new Promise(resolve => setTimeout(resolve, 200))
+    await new Promise(resolve => setTimeout(resolve, 500))
     expect(closedWorkers).toBe(numberOfWorkers)
   })
 
