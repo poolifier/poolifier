@@ -2,7 +2,13 @@
  * Enumeration of kill behaviors.
  */
 export const KillBehaviors = Object.freeze({
+  /**
+   * If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker **wont** be deleted.
+   */
   SOFT: 'SOFT',
+  /**
+   * If `lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker will be deleted.
+   */
   HARD: 'HARD'
 } as const)
 
@@ -52,8 +58,8 @@ export interface WorkerOptions {
   /**
    * `killBehavior` dictates if your async unit (worker/process) will be deleted in case that a task is active on it.
    *
-   * - SOFT: If current time - last active time is greater than maxInactiveTime option, but a task is still running then the worker will be not deleted.
-   * - HARD: If last active time is greater than maxInactiveTime option, but a task is still running then the worker will be deleted.
+   * - SOFT: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker **wont** be deleted.
+   * - HARD: If `lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker will be deleted.
    *
    * This option only apply to the newly created workers.
    *
