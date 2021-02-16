@@ -1,6 +1,7 @@
 import type { Worker } from 'cluster'
 import type { JSONValue } from '../../utility-types'
 import { isKillBehavior, KillBehaviors } from '../../worker/worker-options'
+import { roundRobinSelection } from '../selection-strategies'
 import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
 
@@ -56,7 +57,12 @@ export class DynamicClusterPool<
 
     if (this.workers.length === this.max) {
       this.emitter.emit('FullPool')
-      return super.chooseWorker()
+      const { chosenElement, nextIndex } = roundRobinSelection(
+        this.workers,
+        this.nextWorkerIndex
+      )
+      this.nextWorkerIndex = nextIndex
+      return chosenElement
     }
 
     // All workers are busy, create a new worker

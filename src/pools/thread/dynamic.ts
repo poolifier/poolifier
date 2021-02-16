@@ -1,6 +1,7 @@
 import type { JSONValue } from '../../utility-types'
 import { isKillBehavior, KillBehaviors } from '../../worker/worker-options'
 import type { PoolOptions } from '../abstract-pool'
+import { roundRobinSelection } from '../selection-strategies'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
 
@@ -56,7 +57,12 @@ export class DynamicThreadPool<
 
     if (this.workers.length === this.max) {
       this.emitter.emit('FullPool')
-      return super.chooseWorker()
+      const { chosenElement, nextIndex } = roundRobinSelection(
+        this.workers,
+        this.nextWorkerIndex
+      )
+      this.nextWorkerIndex = nextIndex
+      return chosenElement
     }
 
     // All workers are busy, create a new worker
