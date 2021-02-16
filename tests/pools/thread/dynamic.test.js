@@ -7,8 +7,7 @@ const pool = new DynamicThreadPool(
   max,
   './tests/worker-files/thread/testWorker.js',
   {
-    errorHandler: e => console.error(e),
-    onlineHandler: () => console.log('worker is online')
+    errorHandler: e => console.error(e)
   }
 )
 
@@ -50,9 +49,10 @@ describe('Dynamic thread pool test suite ', () => {
       pool.execute({ test: 'test' })
     }
     expect(pool.workers.length).toBe(max)
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise(resolve => setTimeout(resolve, 1500))
     expect(pool.workers.length).toBe(min)
   })
+
   it('Shutdown test', async () => {
     let closedThreads = 0
     pool.workers.forEach(w => {
@@ -84,5 +84,44 @@ describe('Dynamic thread pool test suite ', () => {
     )
     const res = await pool1.execute({ test: 'test' })
     expect(res).toBeFalsy()
+  })
+
+  it('Verify scale thread up and down is working when long running task is used:hard', async () => {
+    const longRunningPool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker/thread/longRunningWorkerHardBehavior.js',
+      {
+        errorHandler: e => console.error(e),
+        onlineHandler: () => console.log('worker is online')
+      }
+    )
+    expect(longRunningPool.workers.length).toBe(min)
+    for (let i = 0; i < max * 10; i++) {
+      longRunningPool.execute({ test: 'test' })
+    }
+    expect(longRunningPool.workers.length).toBe(max)
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    expect(longRunningPool.workers.length).toBe(min)
+  })
+
+  it('Verify scale thread up and down is working when long running task is used:soft', async () => {
+    const longRunningPool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker/thread/longRunningWorkerSoftBehavior.js',
+      {
+        errorHandler: e => console.error(e),
+        onlineHandler: () => console.log('worker is online')
+      }
+    )
+    expect(longRunningPool.workers.length).toBe(min)
+    for (let i = 0; i < max * 10; i++) {
+      longRunningPool.execute({ test: 'test' })
+    }
+    expect(longRunningPool.workers.length).toBe(max)
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    // Here we expect the workers to be at the max size since that the task is still running
+    expect(longRunningPool.workers.length).toBe(max)
   })
 })

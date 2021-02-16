@@ -83,7 +83,7 @@ export abstract class AbstractPool<
 
   /**
    * - `key`: The `Worker`
-   * - `value`: Number of tasks that has been assigned to that worker since it started
+   * - `value`: Number of tasks currently in progress on the worker.
    */
   public readonly tasks: Map<Worker, number> = new Map<Worker, number>()
 
@@ -120,7 +120,6 @@ export abstract class AbstractPool<
     if (!this.filePath) {
       throw new Error('Please specify a file with a worker implementation')
     }
-
     this.setupHook()
 
     for (let i = 1; i <= this.numberOfWorkers; i++) {
@@ -191,9 +190,23 @@ export abstract class AbstractPool<
    * @param worker Workers whose tasks are increased.
    */
   protected increaseWorkersTask (worker: Worker): void {
-    const numberOfTasksTheWorkerHas = this.tasks.get(worker)
-    if (numberOfTasksTheWorkerHas !== undefined) {
-      this.tasks.set(worker, numberOfTasksTheWorkerHas + 1)
+    const numberOfTasksInProgress = this.tasks.get(worker)
+    if (numberOfTasksInProgress !== undefined) {
+      this.tasks.set(worker, numberOfTasksInProgress + 1)
+    } else {
+      throw Error('Worker could not be found in tasks map')
+    }
+  }
+
+  /**
+   * Decrease the number of tasks that the given workers has done.
+   *
+   * @param worker Workers whose tasks are decreased.
+   */
+  protected decreaseWorkersTasks (worker: Worker): void {
+    const numberOfTasksInProgress = this.tasks.get(worker)
+    if (numberOfTasksInProgress !== undefined) {
+      this.tasks.set(worker, numberOfTasksInProgress - 1)
     } else {
       throw Error('Worker could not be found in tasks map')
     }
@@ -254,7 +267,7 @@ export abstract class AbstractPool<
       const listener: (message: MessageValue<Response>) => void = message => {
         if (message.id === messageId) {
           this.unregisterWorkerMessageListener(worker, listener)
-          this.increaseWorkersTask(worker)
+          this.decreaseWorkersTasks(worker)
           if (message.error) reject(message.error)
           else resolve(message.data as Response)
         }

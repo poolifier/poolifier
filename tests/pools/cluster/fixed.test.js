@@ -6,8 +6,7 @@ const pool = new FixedClusterPool(
   numberOfWorkers,
   './tests/worker-files/cluster/testWorker.js',
   {
-    errorHandler: e => console.error(e),
-    onlineHandler: () => console.log('worker is online')
+    errorHandler: e => console.error(e)
   }
 )
 const emptyPool = new FixedClusterPool(
@@ -22,8 +21,7 @@ const errorPool = new FixedClusterPool(
   1,
   './tests/worker-files/cluster/errorWorker.js',
   {
-    errorHandler: e => console.error(e),
-    onlineHandler: () => console.log('worker is online')
+    errorHandler: e => console.error(e)
   }
 )
 
@@ -124,7 +122,7 @@ describe('Fixed cluster pool test suite ', () => {
       })
     })
     await pool.destroy()
-    await new Promise(resolve => setTimeout(resolve, 200))
+    await new Promise(resolve => setTimeout(resolve, 500))
     expect(closedWorkers).toBe(numberOfWorkers)
   })
 

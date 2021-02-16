@@ -1,5 +1,6 @@
 import type { Worker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
+import type { KillBehavior } from './worker/worker-options'
 
 /**
  * Make all properties in T non-readonly
@@ -42,7 +43,7 @@ export interface MessageValue<
   /**
    * Kill code.
    */
-  readonly kill?: number
+  readonly kill?: KillBehavior | 1
   /**
    * Error.
    */
