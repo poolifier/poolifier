@@ -44,7 +44,7 @@ export interface WorkerOptions {
    *
    * - If `killBehavior` is set to `KillBehaviors.HARD` this value represents also the timeout for the tasks that you submit to the pool,
    *   when this timeout expires your tasks is interrupted and the worker is killed if is not part of the minimum size of the pool.
-   * - If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is.
+   * - If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.
    *
    * @default 60.000 ms
    */
