@@ -1,4 +1,5 @@
 const Benchmark = require('benchmark')
+const TestUtils = require('../tests/test-utils')
 const { dynamicClusterTest } = require('./cluster/dynamic')
 const { fixedClusterTest } = require('./cluster/fixed')
 const { dynamicThreadTest } = require('./thread/dynamic')
@@ -10,11 +11,6 @@ const LIST_FORMATTER = new Intl.ListFormat('en-US', {
   style: 'long',
   type: 'conjunction'
 })
-
-// wait some seconds before start, my pools need to load threads !!!
-setTimeout(async () => {
-  test()
-}, 3000)
 
 async function test () {
   // add tests
@@ -45,3 +41,8 @@ async function test () {
     })
     .run()
 }
+
+// Wait some seconds before start, pools need to load threads !!!
+setTimeout(async () => {
+  test()
+}, 3000)

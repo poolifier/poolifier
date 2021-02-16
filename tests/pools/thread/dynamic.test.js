@@ -1,5 +1,6 @@
 const expect = require('expect')
 const { DynamicThreadPool } = require('../../../lib/index')
+const TestUtils = require('../../test-utils')
 const min = 1
 const max = 3
 const pool = new DynamicThreadPool(
@@ -33,7 +34,7 @@ describe('Dynamic thread pool test suite ', () => {
       })
     })
     expect(fullPool > 1).toBeTruthy()
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await TestUtils.sleep(2000)
     expect(closedThreads).toBe(max - min)
   })
 
@@ -43,13 +44,13 @@ describe('Dynamic thread pool test suite ', () => {
       pool.execute({ test: 'test' })
     }
     expect(pool.workers.length).toBe(max)
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await TestUtils.sleep(1000)
     expect(pool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
       pool.execute({ test: 'test' })
     }
     expect(pool.workers.length).toBe(max)
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    await TestUtils.sleep(1500)
     expect(pool.workers.length).toBe(min)
   })
 
@@ -90,7 +91,7 @@ describe('Dynamic thread pool test suite ', () => {
     const longRunningPool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker/thread/longRunningWorkerHardBehavior.js',
+      './tests/worker-files/thread/longRunningWorkerHardBehavior.js',
       {
         errorHandler: e => console.error(e),
         onlineHandler: () => console.log('worker is online')
@@ -101,7 +102,7 @@ describe('Dynamic thread pool test suite ', () => {
       longRunningPool.execute({ test: 'test' })
     }
     expect(longRunningPool.workers.length).toBe(max)
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    await TestUtils.sleep(1500)
     expect(longRunningPool.workers.length).toBe(min)
   })
 
@@ -109,7 +110,7 @@ describe('Dynamic thread pool test suite ', () => {
     const longRunningPool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker/thread/longRunningWorkerSoftBehavior.js',
+      './tests/worker-files/thread/longRunningWorkerSoftBehavior.js',
       {
         errorHandler: e => console.error(e),
         onlineHandler: () => console.log('worker is online')
@@ -120,7 +121,7 @@ describe('Dynamic thread pool test suite ', () => {
       longRunningPool.execute({ test: 'test' })
     }
     expect(longRunningPool.workers.length).toBe(max)
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    await TestUtils.sleep(1500)
     // Here we expect the workers to be at the max size since that the task is still running
     expect(longRunningPool.workers.length).toBe(max)
   })

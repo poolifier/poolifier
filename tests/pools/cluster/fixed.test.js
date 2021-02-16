@@ -1,5 +1,6 @@
 const expect = require('expect')
 const { FixedClusterPool } = require('../../../lib/index')
+const TestUtils = require('../../test-utils')
 const numberOfWorkers = 10
 const maxTasks = 500
 const pool = new FixedClusterPool(
@@ -122,7 +123,7 @@ describe('Fixed cluster pool test suite ', () => {
       })
     })
     await pool.destroy()
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await TestUtils.sleep(500)
     expect(closedWorkers).toBe(numberOfWorkers)
   })
 

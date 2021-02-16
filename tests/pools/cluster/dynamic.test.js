@@ -1,5 +1,6 @@
 const expect = require('expect')
 const { DynamicClusterPool } = require('../../../lib/index')
+const TestUtils = require('../../test-utils')
 const min = 1
 const max = 3
 const pool = new DynamicClusterPool(
@@ -34,7 +35,7 @@ describe('Dynamic cluster pool test suite ', () => {
       })
     })
     expect(fullPool > 1).toBeTruthy()
-    await new Promise(resolve => setTimeout(resolve, 5000))
+    await TestUtils.sleep(5000)
     expect(closedWorkers).toBe(max - min)
   })
 
@@ -44,13 +45,13 @@ describe('Dynamic cluster pool test suite ', () => {
       pool.execute({ test: 'test' })
     }
     expect(pool.workers.length).toBeGreaterThan(min)
-    await new Promise(resolve => setTimeout(resolve, 3000))
+    await TestUtils.sleep(3000)
     expect(pool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
       pool.execute({ test: 'test' })
     }
     expect(pool.workers.length).toBeGreaterThan(min)
-    await new Promise(resolve => setTimeout(resolve, 3000))
+    await TestUtils.sleep(3000)
     expect(pool.workers.length).toBe(min)
   })
   it('Shutdown test', async () => {
@@ -61,7 +62,7 @@ describe('Dynamic cluster pool test suite ', () => {
       })
     })
     pool.destroy()
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await TestUtils.sleep(2000)
     expect(closedWorkers).toBe(min)
   })
 
@@ -91,14 +92,14 @@ describe('Dynamic cluster pool test suite ', () => {
     const longRunningPool = new DynamicClusterPool(
       min,
       max,
-      './tests/worker/cluster/longRunningWorkerHardBehavior.js'
+      './tests/worker-files/cluster/longRunningWorkerHardBehavior.js'
     )
     expect(longRunningPool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
       longRunningPool.execute({ test: 'test' })
     }
     expect(longRunningPool.workers.length).toBe(max)
-    await new Promise(resolve => setTimeout(resolve, 3000))
+    await TestUtils.sleep(3000)
     // Here we expect the workers to be at the max size since that the task is still running
     expect(longRunningPool.workers.length).toBe(min)
   })
@@ -107,14 +108,14 @@ describe('Dynamic cluster pool test suite ', () => {
     const longRunningPool = new DynamicClusterPool(
       min,
       max,
-      './tests/worker/cluster/longRunningWorkerSoftBehavior.js'
+      './tests/worker-files/cluster/longRunningWorkerSoftBehavior.js'
     )
     expect(longRunningPool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
       longRunningPool.execute({ test: 'test' })
     }
     expect(longRunningPool.workers.length).toBe(max)
-    await new Promise(resolve => setTimeout(resolve, 3000))
+    await TestUtils.sleep(3000)
     // Here we expect the workers to be at the max size since that the task is still running
     expect(longRunningPool.workers.length).toBe(max)
   })
