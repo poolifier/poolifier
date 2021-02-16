@@ -11,13 +11,13 @@ const LIST_FORMATTER = new Intl.ListFormat('en-US', {
   type: 'conjunction'
 })
 
-// wait some seconds before start, my pools need to load threads !!!
+// Wait some seconds before start, pools need to load threads !!!
 setTimeout(async () => {
   test()
 }, 3000)
 
 async function test () {
-  // add tests
+  // Add tests
   suite
     .add('Pioardi:Static:ThreadPool', async function () {
       await fixedThreadTest()
@@ -31,7 +31,7 @@ async function test () {
     .add('Pioardi:Dynamic:ClusterPool', async function () {
       await dynamicClusterTest()
     })
-    // add listeners
+    // Add listeners
     .on('cycle', function (event) {
       console.log(event.target.toString())
     })

@@ -1,6 +1,6 @@
 const expect = require('expect')
 const { DynamicThreadPool } = require('../../../lib/index')
-const { waitExits } = require('../../test-util-functions')
+const TestUtils = require('../../test-utils')
 const min = 1
 const max = 3
 const pool = new DynamicThreadPool(
@@ -28,7 +28,7 @@ describe('Dynamic thread pool test suite ', () => {
     }
     expect(pool.workers.length).toBe(max)
     expect(fullPool > 1).toBeTruthy()
-    const res = await waitExits(pool, max - min)
+    const res = await TestUtils.waitExits(pool, max - min)
     expect(res).toBe(max - min)
   })
 
@@ -38,13 +38,13 @@ describe('Dynamic thread pool test suite ', () => {
       pool.execute({ test: 'test' })
     }
     expect(pool.workers.length).toBe(max)
-    await waitExits(pool, max - min)
+    await TestUtils.waitExits(pool, max - min)
     expect(pool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
       pool.execute({ test: 'test' })
     }
     expect(pool.workers.length).toBe(max)
-    await waitExits(pool, max - min)
+    await TestUtils.waitExits(pool, max - min)
     expect(pool.workers.length).toBe(min)
   })
 
@@ -92,7 +92,7 @@ describe('Dynamic thread pool test suite ', () => {
       longRunningPool.execute({ test: 'test' })
     }
     expect(longRunningPool.workers.length).toBe(max)
-    await waitExits(longRunningPool, max - min)
+    await TestUtils.waitExits(longRunningPool, max - min)
     expect(longRunningPool.workers.length).toBe(min)
   })
 
@@ -111,7 +111,7 @@ describe('Dynamic thread pool test suite ', () => {
       longRunningPool.execute({ test: 'test' })
     }
     expect(longRunningPool.workers.length).toBe(max)
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    await TestUtils.waitExits(longRunningPool, max - min)
     // Here we expect the workers to be at the max size since that the task is still running
     expect(longRunningPool.workers.length).toBe(max)
   })

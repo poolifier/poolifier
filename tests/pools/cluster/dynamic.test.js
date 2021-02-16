@@ -1,6 +1,6 @@
 const expect = require('expect')
 const { DynamicClusterPool } = require('../../../lib/index')
-const { waitExits } = require('../../test-util-functions')
+const TestUtils = require('../../test-utils')
 const min = 1
 const max = 3
 const pool = new DynamicClusterPool(
@@ -29,7 +29,7 @@ describe('Dynamic cluster pool test suite ', () => {
     expect(pool.workers.length).toBeLessThanOrEqual(max)
     expect(pool.workers.length).toBeGreaterThan(min)
     expect(fullPool > 1).toBeTruthy()
-    const numberOfExitEvents = await waitExits(pool, max - min)
+    const numberOfExitEvents = await TestUtils.waitExits(pool, max - min)
     expect(numberOfExitEvents).toBe(max - min)
   })
 
@@ -39,18 +39,18 @@ describe('Dynamic cluster pool test suite ', () => {
       pool.execute({ test: 'test' })
     }
     expect(pool.workers.length).toBeGreaterThan(min)
-    await waitExits(pool, max - min)
+    await TestUtils.waitExits(pool, max - min)
     expect(pool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
       pool.execute({ test: 'test' })
     }
     expect(pool.workers.length).toBeGreaterThan(min)
-    await waitExits(pool, max - min)
+    await TestUtils.waitExits(pool, max - min)
     expect(pool.workers.length).toBe(min)
   })
 
   it('Shutdown test', async () => {
-    const exitPromise = waitExits(pool, min)
+    const exitPromise = TestUtils.waitExits(pool, min)
     await pool.destroy()
     const res = await exitPromise
     expect(res).toBe(min)
@@ -77,7 +77,7 @@ describe('Dynamic cluster pool test suite ', () => {
       longRunningPool.execute({ test: 'test' })
     }
     expect(longRunningPool.workers.length).toBe(max)
-    await waitExits(longRunningPool, max - min)
+    await TestUtils.waitExits(longRunningPool, max - min)
     // Here we expect the workers to be at the max size since that the task is still running
     expect(longRunningPool.workers.length).toBe(min)
   })
@@ -93,7 +93,7 @@ describe('Dynamic cluster pool test suite ', () => {
       longRunningPool.execute({ test: 'test' })
     }
     expect(longRunningPool.workers.length).toBe(max)
-    await new Promise(resolve => setTimeout(resolve, 3000))
+    await TestUtils.sleep(1500)
     // Here we expect the workers to be at the max size since that the task is still running
     expect(longRunningPool.workers.length).toBe(max)
   })

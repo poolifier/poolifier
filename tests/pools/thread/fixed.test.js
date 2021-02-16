@@ -1,6 +1,6 @@
 const expect = require('expect')
 const { FixedThreadPool } = require('../../../lib/index')
-const { waitExits } = require('../../test-util-functions')
+const TestUtils = require('../../test-utils')
 const numberOfThreads = 10
 const maxTasks = 400
 const pool = new FixedThreadPool(
@@ -94,7 +94,7 @@ describe('Fixed thread pool test suite ', () => {
   })
 
   it('Shutdown test', async () => {
-    const exitPromise = waitExits(pool, numberOfThreads)
+    const exitPromise = TestUtils.waitExits(pool, numberOfThreads)
     await pool.destroy()
     const res = await exitPromise
     expect(res).toBe(numberOfThreads)
