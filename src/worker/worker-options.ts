@@ -35,5 +35,5 @@ export interface WorkerOptions {
    *
    * @default SOFT
    */
-  killBehavior?: string
+  killBehavior?: 'HARD' | 'SOFT'
 }
