@@ -1,13 +1,12 @@
 import { AsyncResource } from 'async_hooks'
 import type { Worker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
-import type { MessageValue, KillBehavior } from '../utility-types'
-import type { WorkerOptions } from './worker-options'
-// import { killBehaviorTypes } from './worker-options'
+import type { MessageValue } from '../utility-types'
+import type { KillBehavior, WorkerOptions } from './worker-options'
+import { KillBehaviors } from './worker-options'
 
-const defaultMaxInactiveTime = 1000 * 60
-// TODO fix this and avoid that SOFT/HARD words are replicated so much times into the project
-const defaultKillBehavior: KillBehavior = 'SOFT'
+const DEFAULT_MAX_INACTIVE_TIME = 1000 * 60
+const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
 
 /**
  * Base class containing some shared logic for all poolifier workers.
@@ -57,13 +56,14 @@ export abstract class AbstractWorker<
     fn: (data: Data) => Response,
     protected mainWorker?: MainWorker | null,
     public readonly opts: WorkerOptions = {
-      killBehavior: defaultKillBehavior,
-      maxInactiveTime: defaultMaxInactiveTime
+      killBehavior: DEFAULT_KILL_BEHAVIOR,
+      maxInactiveTime: DEFAULT_MAX_INACTIVE_TIME
     }
   ) {
     super(type)
-    this.killBehavior = this.opts.killBehavior ?? defaultKillBehavior
-    this.maxInactiveTime = this.opts.maxInactiveTime ?? defaultMaxInactiveTime
+    this.killBehavior = this.opts.killBehavior ?? DEFAULT_KILL_BEHAVIOR
+    this.maxInactiveTime =
+      this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME
     this.async = !!this.opts.async
     this.lastTask = Date.now()
     if (!fn) throw new Error('fn parameter is mandatory')

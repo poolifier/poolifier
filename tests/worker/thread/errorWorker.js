@@ -1,5 +1,5 @@
 'use strict'
-const { ThreadWorker, killBehaviorTypes } = require('../../../lib/index')
+const { ThreadWorker, KillBehaviors } = require('../../../lib/index')
 
 function error (data) {
   throw new Error(data)
@@ -7,5 +7,5 @@ function error (data) {
 
 module.exports = new ThreadWorker(error, {
   maxInactiveTime: 500,
-  killBehavior: killBehaviorTypes.HARD
+  killBehavior: KillBehaviors.HARD
 })
