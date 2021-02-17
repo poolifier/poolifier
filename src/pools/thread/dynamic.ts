@@ -4,6 +4,7 @@ import { dynamicallyChooseWorker } from '../selection-strategies'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
 
+
 /**
  * A thread pool with a dynamic number of threads, but a guaranteed minimum number of threads.
  *
@@ -35,6 +36,10 @@ export class DynamicThreadPool<
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
   ) {
     super(min, filename, opts)
+    this.registerWorkerMessageListener = this.registerWorkerMessageListener.bind(this)
+    this.createAndSetupWorker = this.createAndSetupWorker.bind(this)
+    this.sendToWorker = this.sendToWorker.bind(this)
+    this.destroyWorker = this.destroyWorker.bind(this)
   }
 
   /**
@@ -54,10 +59,10 @@ export class DynamicThreadPool<
       this.emitter,
       this.nextWorkerIndex,
       nextIndex => (this.nextWorkerIndex = nextIndex),
-      this.createAndSetupWorker.bind(this),
-      this.registerWorkerMessageListener.bind(this),
-      this.sendToWorker.bind(this),
-      this.destroyWorker.bind(this)
+      this.createAndSetupWorker,
+      this.registerWorkerMessageListener,
+      this.sendToWorker,
+      this.destroyWorker
     )
   }
 }
