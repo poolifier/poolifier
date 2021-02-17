@@ -1,6 +1,7 @@
-import type { JSONValue, MessageValue } from '../utility-types'
+import type { JSONValue } from '../utility-types'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
-import type { AbstractPool, IWorker } from './abstract-pool'
+import type { IWorker } from './abstract-pool'
+import type { IDynamicPool } from './dynamic-pool'
 
 /**
  * Result of the round robin selection function.
@@ -57,7 +58,6 @@ export function findFreeWorkerBasedOnTasks<Worker> (
  * Dynamically choose a worker.
  *
  * @param poolReference Reference to the pool instance.
- * @param max `max`.
  * @param createAndSetupWorker `createAndSetupWorker` bounded function.
  * @param registerWorkerMessageListener `registerWorkerMessageListener` bounded function.
  * @param sendToWorker `sendToWorker` bounded function.
@@ -69,22 +69,26 @@ export function dynamicallyChooseWorker<
   Data extends JSONValue = JSONValue,
   Response extends JSONValue = JSONValue
 > (
-  poolReference: AbstractPool<Worker, Data, Response>,
-  max: number,
-  createAndSetupWorker: () => Worker,
-  registerWorkerMessageListener: (
-    worker: Worker,
-    listener: (message: MessageValue<Data, unknown>) => void
-  ) => void,
-  sendToWorker: (worker: Worker, message: MessageValue<Data, unknown>) => void,
-  destroyWorker: (worker: Worker) => void | Promise<void>
+  poolReference: IDynamicPool<Worker, Data, Response>,
+  createAndSetupWorker: IDynamicPool<
+    Worker,
+    Data,
+    Response
+  >['createAndSetupWorker'],
+  registerWorkerMessageListener: IDynamicPool<
+    Worker,
+    Data,
+    Response
+  >['registerWorkerMessageListener'],
+  sendToWorker: IDynamicPool<Worker, Data, Response>['sendToWorker'],
+  destroyWorker: IDynamicPool<Worker, Data, Response>['destroyWorker']
 ): Worker {
   const freeWorker = findFreeWorkerBasedOnTasks(poolReference.tasks)
   if (freeWorker) {
     return freeWorker
   }
 
-  if (poolReference.workers.length === max) {
+  if (poolReference.workers.length === poolReference.max) {
     poolReference.emitter.emit('FullPool')
     const { chosenElement, nextIndex } = roundRobinSelection(
       poolReference.workers,

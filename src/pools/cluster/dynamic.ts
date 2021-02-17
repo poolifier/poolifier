@@ -1,5 +1,6 @@
 import type { Worker } from 'cluster'
 import type { JSONValue } from '../../utility-types'
+import type { IDynamicPool } from '../dynamic-pool'
 import { dynamicallyChooseWorker } from '../selection-strategies'
 import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
@@ -19,11 +20,31 @@ import { FixedClusterPool } from './fixed'
 export class DynamicClusterPool<
   Data extends JSONValue = JSONValue,
   Response extends JSONValue = JSONValue
-> extends FixedClusterPool<Data, Response> {
-  private readonly boundCreateAndSetupWorker: DynamicClusterPool['createAndSetupWorker']
-  private readonly boundRegisterWorkerMessageListener: DynamicClusterPool['registerWorkerMessageListener']
-  private readonly boundSendToWorker: DynamicClusterPool['sendToWorker']
-  private readonly boundDestroyWorker: DynamicClusterPool['destroyWorker']
+> extends FixedClusterPool<Data, Response>
+  implements IDynamicPool<Worker, Data, Response> {
+  private readonly boundCreateAndSetupWorker: IDynamicPool<
+    Worker,
+    Data,
+    Response
+  >['createAndSetupWorker']
+
+  private readonly boundRegisterWorkerMessageListener: IDynamicPool<
+    Worker,
+    Data,
+    Response
+  >['registerWorkerMessageListener']
+
+  private readonly boundSendToWorker: IDynamicPool<
+    Worker,
+    Data,
+    Response
+  >['sendToWorker']
+
+  private readonly boundDestroyWorker: IDynamicPool<
+    Worker,
+    Data,
+    Response
+  >['destroyWorker']
 
   /**
    * Constructs a new poolifier dynamic cluster pool.
@@ -60,7 +81,6 @@ export class DynamicClusterPool<
   protected chooseWorker (): Worker {
     return dynamicallyChooseWorker(
       this,
-      this.max,
       this.boundCreateAndSetupWorker,
       this.boundRegisterWorkerMessageListener,
       this.boundSendToWorker,

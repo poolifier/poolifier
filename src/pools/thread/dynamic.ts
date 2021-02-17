@@ -1,5 +1,6 @@
 import type { JSONValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
+import type { IDynamicPool } from '../dynamic-pool'
 import { dynamicallyChooseWorker } from '../selection-strategies'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
@@ -19,11 +20,31 @@ import { FixedThreadPool } from './fixed'
 export class DynamicThreadPool<
   Data extends JSONValue = JSONValue,
   Response extends JSONValue = JSONValue
-> extends FixedThreadPool<Data, Response> {
-  private readonly boundCreateAndSetupWorker: DynamicThreadPool['createAndSetupWorker']
-  private readonly boundRegisterWorkerMessageListener: DynamicThreadPool['registerWorkerMessageListener']
-  private readonly boundSendToWorker: DynamicThreadPool['sendToWorker']
-  private readonly boundDestroyWorker: DynamicThreadPool['destroyWorker']
+> extends FixedThreadPool<Data, Response>
+  implements IDynamicPool<ThreadWorkerWithMessageChannel, Data, Response> {
+  private readonly boundCreateAndSetupWorker: IDynamicPool<
+    ThreadWorkerWithMessageChannel,
+    Data,
+    Response
+  >['createAndSetupWorker']
+
+  private readonly boundRegisterWorkerMessageListener: IDynamicPool<
+    ThreadWorkerWithMessageChannel,
+    Data,
+    Response
+  >['registerWorkerMessageListener']
+
+  private readonly boundSendToWorker: IDynamicPool<
+    ThreadWorkerWithMessageChannel,
+    Data,
+    Response
+  >['sendToWorker']
+
+  private readonly boundDestroyWorker: IDynamicPool<
+    ThreadWorkerWithMessageChannel,
+    Data,
+    Response
+  >['destroyWorker']
 
   /**
    * Constructs a new poolifier dynamic thread pool.
@@ -60,7 +81,6 @@ export class DynamicThreadPool<
   protected chooseWorker (): ThreadWorkerWithMessageChannel {
     return dynamicallyChooseWorker(
       this,
-      this.max,
       this.boundCreateAndSetupWorker,
       this.boundRegisterWorkerMessageListener,
       this.boundSendToWorker,
