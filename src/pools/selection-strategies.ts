@@ -56,16 +56,16 @@ export function findFreeWorkerBasedOnTasks<Worker> (
 /**
  * Dynamically choose a worker.
  *
- * @param tasks tasks.
- * @param workers workers.
- * @param max max.
- * @param emitter emitter.
- * @param nextWorkerIndex nextWorkerIndex.
- * @param nextIndexCallback nextIndexCallback.
- * @param createAndSetupWorker createAndSetupWorker.
- * @param registerWorkerMessageListener registerWorkerMessageListener.
- * @param sendToWorker sendToWorker.
- * @param destroyWorker destroyWorker.
+ * @param tasks `tasks`.
+ * @param workers `workers`.
+ * @param max `max`.
+ * @param emitter `emitter`.
+ * @param nextWorkerIndex `nextWorkerIndex`.
+ * @param nextIndexCallback `nextIndexCallback`.
+ * @param createAndSetupWorker `createAndSetupWorker` bounded function.
+ * @param registerWorkerMessageListener `registerWorkerMessageListener` bounded function.
+ * @param sendToWorker `sendToWorker` bounded function.
+ * @param destroyWorker `destroyWorker` bounded function.
  * @returns The chosen one.
  */
 export function dynamicallyChooseWorker<

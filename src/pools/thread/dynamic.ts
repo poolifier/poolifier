@@ -20,6 +20,11 @@ export class DynamicThreadPool<
   Data extends JSONValue = JSONValue,
   Response extends JSONValue = JSONValue
 > extends FixedThreadPool<Data, Response> {
+  private readonly boundCreateAndSetupWorker: DynamicThreadPool['createAndSetupWorker']
+  private readonly boundRegisterWorkerMessageListener: DynamicThreadPool['registerWorkerMessageListener']
+  private readonly boundSendToWorker: DynamicThreadPool['sendToWorker']
+  private readonly boundDestroyWorker: DynamicThreadPool['destroyWorker']
+
   /**
    * Constructs a new poolifier dynamic thread pool.
    *
@@ -35,6 +40,12 @@ export class DynamicThreadPool<
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
   ) {
     super(min, filename, opts)
+    this.boundCreateAndSetupWorker = this.createAndSetupWorker.bind(this)
+    this.boundRegisterWorkerMessageListener = this.registerWorkerMessageListener.bind(
+      this
+    )
+    this.boundSendToWorker = this.sendToWorker.bind(this)
+    this.boundDestroyWorker = this.destroyWorker.bind(this)
   }
 
   /**
@@ -54,10 +65,10 @@ export class DynamicThreadPool<
       this.emitter,
       this.nextWorkerIndex,
       nextIndex => (this.nextWorkerIndex = nextIndex),
-      this.createAndSetupWorker.bind(this),
-      this.registerWorkerMessageListener.bind(this),
-      this.sendToWorker.bind(this),
-      this.destroyWorker.bind(this)
+      this.boundCreateAndSetupWorker,
+      this.boundRegisterWorkerMessageListener,
+      this.boundSendToWorker,
+      this.boundDestroyWorker
     )
   }
 }

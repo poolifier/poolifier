@@ -20,6 +20,11 @@ export class DynamicClusterPool<
   Data extends JSONValue = JSONValue,
   Response extends JSONValue = JSONValue
 > extends FixedClusterPool<Data, Response> {
+  private readonly boundCreateAndSetupWorker: DynamicClusterPool['createAndSetupWorker']
+  private readonly boundRegisterWorkerMessageListener: DynamicClusterPool['registerWorkerMessageListener']
+  private readonly boundSendToWorker: DynamicClusterPool['sendToWorker']
+  private readonly boundDestroyWorker: DynamicClusterPool['destroyWorker']
+
   /**
    * Constructs a new poolifier dynamic cluster pool.
    *
@@ -35,6 +40,12 @@ export class DynamicClusterPool<
     opts: ClusterPoolOptions = { maxTasks: 1000 }
   ) {
     super(min, filename, opts)
+    this.boundCreateAndSetupWorker = this.createAndSetupWorker.bind(this)
+    this.boundRegisterWorkerMessageListener = this.registerWorkerMessageListener.bind(
+      this
+    )
+    this.boundSendToWorker = this.sendToWorker.bind(this)
+    this.boundDestroyWorker = this.destroyWorker.bind(this)
   }
 
   /**
@@ -54,10 +65,10 @@ export class DynamicClusterPool<
       this.emitter,
       this.nextWorkerIndex,
       nextIndex => (this.nextWorkerIndex = nextIndex),
-      this.createAndSetupWorker.bind(this),
-      this.registerWorkerMessageListener.bind(this),
-      this.sendToWorker.bind(this),
-      this.destroyWorker.bind(this)
+      this.boundCreateAndSetupWorker,
+      this.boundRegisterWorkerMessageListener,
+      this.boundSendToWorker,
+      this.boundDestroyWorker
     )
   }
 }
