@@ -51,10 +51,11 @@ module.exports = {
       {
         skipWords: [
           'poolifier',
-          'pioardi',
           'christopher',
           'ecma',
+          'enum',
           'jsdoc',
+          'pioardi',
           'readonly',
           'serializable',
           'unregister',
@@ -69,7 +70,37 @@ module.exports = {
       files: ['src/**/*.ts'],
       extends: 'plugin:jsdoc/recommended',
       rules: {
+        'jsdoc/match-description': [
+          'warn',
+          {
+            mainDescription:
+              '/^[A-Z`].+?(\\.|:)(\\n\\n.*((\\n{1,2}- .+)|(_.+_)|`.+`|\\n\\n---))?$/us',
+            matchDescription: '^[A-Z`].+(\\.|`.+`)$',
+            contexts: ['any'],
+            tags: {
+              param: true,
+              returns: true
+            }
+          }
+        ],
         'jsdoc/no-types': 'error',
+        'jsdoc/require-jsdoc': [
+          'warn',
+          {
+            contexts: [
+              'ClassDeclaration',
+              'ClassProperty:not([accessibility=/(private|protected)/])',
+              'ExportNamedDeclaration:has(VariableDeclaration)',
+              'FunctionExpression',
+              'MethodDefinition:not([accessibility=/(private|protected)/]) > FunctionExpression',
+              'TSEnumDeclaration',
+              'TSInterfaceDeclaration',
+              'TSMethodSignature',
+              // 'TSPropertySignature',
+              'TSTypeAliasDeclaration'
+            ]
+          }
+        ],
         'jsdoc/require-param-type': 'off',
         'jsdoc/require-returns-type': 'off'
       }
@@ -94,5 +125,10 @@ module.exports = {
         'node/no-missing-require': 'off'
       }
     }
-  ]
+  ],
+  settings: {
+    jsdoc: {
+      mode: 'typescript'
+    }
+  }
 }
