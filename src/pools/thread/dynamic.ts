@@ -67,8 +67,6 @@ export class DynamicThreadPool<
         isKillBehavior(KillBehaviors.HARD, message.kill) ||
         tasksInProgress === 0
       ) {
-        // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-        this.sendToWorker(workerCreated, { kill: 1 })
         void this.destroyWorker(workerCreated)
       }
     })

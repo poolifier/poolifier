@@ -59,6 +59,8 @@ export class FixedClusterPool<
   }
 
   protected destroyWorker (worker: Worker): void {
+    // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
+    this.sendToWorker(worker, { kill: 1 })
     worker.kill()
   }
 
