@@ -1,5 +1,6 @@
 const expect = require('expect')
 const { FixedClusterPool } = require('../../../lib/index')
+const TestUtils = require('../../test-utils')
 const numberOfWorkers = 10
 const maxTasks = 500
 const pool = new FixedClusterPool(
@@ -115,27 +116,10 @@ describe('Fixed cluster pool test suite ', () => {
   })
 
   it('Shutdown test', async () => {
-    let closedWorkers = 0
-    pool.workers.forEach(w => {
-      w.on('exit', () => {
-        closedWorkers++
-      })
-    })
+    const exitPromise = TestUtils.waitExits(pool, numberOfWorkers)
     await pool.destroy()
-    await new Promise(resolve => setTimeout(resolve, 500))
-    expect(closedWorkers).toBe(numberOfWorkers)
-  })
-
-  it('Validations test', () => {
-    let error
-    try {
-      const pool1 = new FixedClusterPool()
-      console.log(pool1)
-    } catch (e) {
-      error = e
-    }
-    expect(error).toBeTruthy()
-    expect(error.message).toBeTruthy()
+    const res = await exitPromise
+    expect(res).toBe(numberOfWorkers)
   })
 
   it('Should work even without opts in input', async () => {

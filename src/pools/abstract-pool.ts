@@ -156,27 +156,6 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Number of workers that this pool should manage.
-   *
-   * @returns Number of workers that this pool manages.
-   * @deprecated Only here for backward compatibility.
-   */
-  // eslint-disable-next-line spellcheck/spell-checker
-  public get numWorkers (): number {
-    return this.numberOfWorkers
-  }
-
-  /**
-   * Index for the next worker.
-   *
-   * @returns Index for the next worker.
-   * @deprecated Only here for backward compatibility.
-   */
-  public get nextWorker (): number {
-    return this.nextWorkerIndex
-  }
-
-  /**
    * Perform the task specified in the constructor with the data parameter.
    *
    * @param data The input for the specified task.

@@ -1,5 +1,6 @@
 const expect = require('expect')
 const { DynamicClusterPool } = require('../../../lib/index')
+const TestUtils = require('../../test-utils')
 const min = 1
 const max = 3
 const pool = new DynamicClusterPool(
@@ -20,7 +21,6 @@ describe('Dynamic cluster pool test suite ', () => {
 
   it('Verify that new workers are created when required, max size is not exceeded and that after a while new workers will die', async () => {
     const promises = []
-    let closedWorkers = 0
     let fullPool = 0
     pool.emitter.on('FullPool', () => fullPool++)
     for (let i = 0; i < max * 2; i++) {
@@ -28,14 +28,9 @@ describe('Dynamic cluster pool test suite ', () => {
     }
     expect(pool.workers.length).toBeLessThanOrEqual(max)
     expect(pool.workers.length).toBeGreaterThan(min)
-    pool.workers.forEach(w => {
-      w.on('exit', () => {
-        closedWorkers++
-      })
-    })
     expect(fullPool > 1).toBeTruthy()
-    await new Promise(resolve => setTimeout(resolve, 5000))
-    expect(closedWorkers).toBe(max - min)
+    const numberOfExitEvents = await TestUtils.waitExits(pool, max - min)
+    expect(numberOfExitEvents).toBe(max - min)
   })
 
   it('Verify scale worker up and down is working', async () => {
@@ -44,37 +39,21 @@ describe('Dynamic cluster pool test suite ', () => {
       pool.execute({ test: 'test' })
     }
     expect(pool.workers.length).toBeGreaterThan(min)
-    await new Promise(resolve => setTimeout(resolve, 3000))
+    await TestUtils.waitExits(pool, max - min)
     expect(pool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
       pool.execute({ test: 'test' })
     }
     expect(pool.workers.length).toBeGreaterThan(min)
-    await new Promise(resolve => setTimeout(resolve, 3000))
+    await TestUtils.waitExits(pool, max - min)
     expect(pool.workers.length).toBe(min)
   })
-  it('Shutdown test', async () => {
-    let closedWorkers = 0
-    pool.workers.forEach(w => {
-      w.on('exit', () => {
-        closedWorkers++
-      })
-    })
-    pool.destroy()
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    expect(closedWorkers).toBe(min)
-  })
 
-  it('Validations test', () => {
-    let error
-    try {
-      const pool1 = new DynamicClusterPool()
-      console.log(pool1)
-    } catch (e) {
-      error = e
-    }
-    expect(error).toBeTruthy()
-    expect(error.message).toBeTruthy()
+  it('Shutdown test', async () => {
+    const exitPromise = TestUtils.waitExits(pool, min)
+    await pool.destroy()
+    const res = await exitPromise
+    expect(res).toBe(min)
   })
 
   it('Should work even without opts in input', async () => {
@@ -91,14 +70,14 @@ describe('Dynamic cluster pool test suite ', () => {
     const longRunningPool = new DynamicClusterPool(
       min,
       max,
-      './tests/worker/cluster/longRunningWorkerHardBehavior.js'
+      './tests/worker-files/cluster/longRunningWorkerHardBehavior.js'
     )
     expect(longRunningPool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
       longRunningPool.execute({ test: 'test' })
     }
     expect(longRunningPool.workers.length).toBe(max)
-    await new Promise(resolve => setTimeout(resolve, 3000))
+    await TestUtils.waitExits(longRunningPool, max - min)
     // Here we expect the workers to be at the max size since that the task is still running
     expect(longRunningPool.workers.length).toBe(min)
   })
@@ -107,14 +86,14 @@ describe('Dynamic cluster pool test suite ', () => {
     const longRunningPool = new DynamicClusterPool(
       min,
       max,
-      './tests/worker/cluster/longRunningWorkerSoftBehavior.js'
+      './tests/worker-files/cluster/longRunningWorkerSoftBehavior.js'
     )
     expect(longRunningPool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
       longRunningPool.execute({ test: 'test' })
     }
     expect(longRunningPool.workers.length).toBe(max)
-    await new Promise(resolve => setTimeout(resolve, 3000))
+    await TestUtils.sleep(1500)
     // Here we expect the workers to be at the max size since that the task is still running
     expect(longRunningPool.workers.length).toBe(max)
   })

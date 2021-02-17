@@ -1,5 +1,6 @@
 const expect = require('expect')
 const { FixedThreadPool } = require('../../../lib/index')
+const TestUtils = require('../../test-utils')
 const numberOfThreads = 10
 const maxTasks = 400
 const pool = new FixedThreadPool(
@@ -93,26 +94,10 @@ describe('Fixed thread pool test suite ', () => {
   })
 
   it('Shutdown test', async () => {
-    let closedThreads = 0
-    pool.workers.forEach(w => {
-      w.on('exit', () => {
-        closedThreads++
-      })
-    })
+    const exitPromise = TestUtils.waitExits(pool, numberOfThreads)
     await pool.destroy()
-    expect(closedThreads).toBe(numberOfThreads)
-  })
-
-  it('Validations test', () => {
-    let error
-    try {
-      const pool1 = new FixedThreadPool()
-      console.log(pool1)
-    } catch (e) {
-      error = e
-    }
-    expect(error).toBeTruthy()
-    expect(error.message).toBeTruthy()
+    const res = await exitPromise
+    expect(res).toBe(numberOfThreads)
   })
 
   it('Should work even without opts in input', async () => {

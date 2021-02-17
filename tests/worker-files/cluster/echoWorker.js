@@ -6,6 +6,5 @@ function echo (data) {
 }
 
 module.exports = new ClusterWorker(echo, {
-  maxInactiveTime: 500,
   killBehavior: KillBehaviors.HARD
 })
