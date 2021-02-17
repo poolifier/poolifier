@@ -3,7 +3,7 @@ import type { MessagePort } from 'worker_threads'
 import type { KillBehavior } from './worker/worker-options'
 
 /**
- * Make all properties in T non-readonly
+ * Make all properties in T non-readonly.
  */
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 
