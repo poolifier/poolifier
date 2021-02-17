@@ -58,13 +58,9 @@ export class DynamicThreadPool<
    * @returns Thread worker.
    */
   protected chooseWorker (): ThreadWorkerWithMessageChannel {
-    return dynamicallyChooseWorker<ThreadWorkerWithMessageChannel, Data>(
-      this.tasks,
-      this.workers,
+    return dynamicallyChooseWorker(
+      this,
       this.max,
-      this.emitter,
-      this.nextWorkerIndex,
-      nextIndex => (this.nextWorkerIndex = nextIndex),
       this.boundCreateAndSetupWorker,
       this.boundRegisterWorkerMessageListener,
       this.boundSendToWorker,

@@ -56,12 +56,8 @@ export function findFreeWorkerBasedOnTasks<Worker> (
 /**
  * Dynamically choose a worker.
  *
- * @param tasks `tasks`.
- * @param workers `workers`.
+ * @param poolReference Reference to the pool instance.
  * @param max `max`.
- * @param emitter `emitter`.
- * @param nextWorkerIndex `nextWorkerIndex`.
- * @param nextIndexCallback `nextIndexCallback`.
  * @param createAndSetupWorker `createAndSetupWorker` bounded function.
  * @param registerWorkerMessageListener `registerWorkerMessageListener` bounded function.
  * @param sendToWorker `sendToWorker` bounded function.
@@ -70,14 +66,11 @@ export function findFreeWorkerBasedOnTasks<Worker> (
  */
 export function dynamicallyChooseWorker<
   Worker extends IWorker,
-  Data extends JSONValue = JSONValue
+  Data extends JSONValue = JSONValue,
+  Response extends JSONValue = JSONValue
 > (
-  tasks: Map<Worker, number>,
-  workers: Worker[],
+  poolReference: AbstractPool<Worker, Data, Response>,
   max: number,
-  emitter: AbstractPool<Worker>['emitter'],
-  nextWorkerIndex: number,
-  nextIndexCallback: (nextIndex: number) => void,
   createAndSetupWorker: () => Worker,
   registerWorkerMessageListener: (
     worker: Worker,
@@ -86,25 +79,25 @@ export function dynamicallyChooseWorker<
   sendToWorker: (worker: Worker, message: MessageValue<Data, unknown>) => void,
   destroyWorker: (worker: Worker) => void | Promise<void>
 ): Worker {
-  const freeWorker = findFreeWorkerBasedOnTasks(tasks)
+  const freeWorker = findFreeWorkerBasedOnTasks(poolReference.tasks)
   if (freeWorker) {
     return freeWorker
   }
 
-  if (workers.length === max) {
-    emitter.emit('FullPool')
+  if (poolReference.workers.length === max) {
+    poolReference.emitter.emit('FullPool')
     const { chosenElement, nextIndex } = roundRobinSelection(
-      workers,
-      nextWorkerIndex
+      poolReference.workers,
+      poolReference.nextWorkerIndex
     )
-    nextIndexCallback(nextIndex)
+    poolReference.nextWorkerIndex = nextIndex
     return chosenElement
   }
 
   // All workers are busy, create a new worker
   const workerCreated = createAndSetupWorker()
   registerWorkerMessageListener(workerCreated, message => {
-    const tasksInProgress = tasks.get(workerCreated)
+    const tasksInProgress = poolReference.tasks.get(workerCreated)
     if (
       isKillBehavior(KillBehaviors.HARD, message.kill) ||
       tasksInProgress === 0
