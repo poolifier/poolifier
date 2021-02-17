@@ -38,10 +38,10 @@ const { DynamicThreadPool } = require('poolifier')
 For cluster and thread pools, you can now only send and receive serializable `JSON` data.  
 _This is not a limitation by poolifier but NodeJS._
 
-### Public methods removed
+#### Public property replacements
 
-`numWorkers` method removed
-`nextWorker` method removed
+`numWorkers` property is now `numberOfWorkers`
+`nextWorker` property is now `nextWorkerIndex`
 
 #### Internal (protected) properties and methods renaming
 
