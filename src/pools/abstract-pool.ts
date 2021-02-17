@@ -22,9 +22,33 @@ export type ExitHandler<Worker> = (this: Worker, code: number) => void
  * Basic interface that describes the minimum required implementation of listener events for a pool-worker.
  */
 export interface IWorker {
+  /**
+   * Register a listener to the error event.
+   *
+   * @param event `'error'`.
+   * @param handler The error handler.
+   */
   on(event: 'error', handler: ErrorHandler<this>): void
+  /**
+   * Register a listener to the online event.
+   *
+   * @param event `'online'`.
+   * @param handler The online handler.
+   */
   on(event: 'online', handler: OnlineHandler<this>): void
+  /**
+   * Register a listener to the exit event.
+   *
+   * @param event `'exit'`.
+   * @param handler The exit handler.
+   */
   on(event: 'exit', handler: ExitHandler<this>): void
+  /**
+   * Register a listener to the exit event that will only performed once.
+   *
+   * @param event `'exit'`.
+   * @param handler The exit handler.
+   */
   once(event: 'exit', handler: ExitHandler<this>): void
 }
 
@@ -83,6 +107,8 @@ export abstract class AbstractPool<
   public nextWorkerIndex: number = 0
 
   /**
+   * The tasks map.
+   *
    * - `key`: The `Worker`
    * - `value`: Number of tasks currently in progress on the worker.
    */
@@ -131,26 +157,11 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Number of workers that this pool should manage.
+   * Perform the task specified in the constructor with the data parameter.
    *
-   * @returns Number of workers that this pool manages.
-   * @deprecated Only here for backward compatibility.
+   * @param data The input for the specified task.
+   * @returns Promise that will be resolved when the task is successfully completed.
    */
-  // eslint-disable-next-line spellcheck/spell-checker
-  public get numWorkers (): number {
-    return this.numberOfWorkers
-  }
-
-  /**
-   * Index for the next worker.
-   *
-   * @returns Index for the next worker.
-   * @deprecated Only here for backward compatibility.
-   */
-  public get nextWorker (): number {
-    return this.nextWorkerIndex
-  }
-
   public execute (data: Data): Promise<Response> {
     // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
@@ -161,6 +172,9 @@ export abstract class AbstractPool<
     return res
   }
 
+  /**
+   * Shut down every current worker in this pool.
+   */
   public async destroy (): Promise<void> {
     await Promise.all(this.workers.map(worker => this.destroyWorker(worker)))
   }
