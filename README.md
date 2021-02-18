@@ -156,10 +156,10 @@ You can use node versions 12.x, 13.x, 14.x
 
 ### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
 
-`min` (mandatory) Same as FixedThreadPool numThreads, this number of workers will be always active  
+`min` (mandatory) Same as FixedThreadPool/FixedClusterPool numThreads, this number of workers will be always active  
 `max` (mandatory) Max number of workers that this pool can contain, the new created workers will die after a threshold (default is 1 minute, you can override it in your worker implementation).  
-`filePath` (mandatory) Same as FixedThreadPool  
-`opts` (optional) Same as FixedThreadPool
+`filePath` (mandatory) Same as FixedThreadPool/FixedClusterPool  
+`opts` (optional) Same as FixedThreadPool/FixedClusterPool
 
 ### `pool.execute(data)`
 
@@ -193,10 +193,10 @@ This method will call the terminate method on each worker.
 
 Performance is one of the main target of these worker pool implementations, we want to have a strong focus on this.  
 We already have a bench folder where you can find some comparisons.
-To choose your pool consider that with a FixedThreadPool or a DynamicThreadPool (in this case is important the min parameter passed to the constructor) your application memory footprint will increase.  
+To choose your pool consider that with a FixedThreadPool/FixedClusterPool or a DynamicThreadPool/DynamicClusterPool (in this case is important the min parameter passed to the constructor) your application memory footprint will increase.  
 Increasing the memory footprint, your application will be ready to accept more CPU bound tasks, but during idle time your application will consume more memory.  
 One good choose from my point of view is to profile your application using Fixed/Dynamic worker pool, and to see your application metrics when you increase/decrease the num of workers.  
-For example you could keep the memory footprint low choosing a DynamicThreadPool with 5 workers, and allow to create new workers until 50/100 when needed, this is the advantage to use the DynamicThreadPool.  
+For example you could keep the memory footprint low choosing a DynamicThreadPool/DynamicClusterPool with 5 workers, and allow to create new workers until 50/100 when needed, this is the advantage to use the DynamicThreadPool/DynamicClusterPool.  
 But in general, **always profile your application**
 
 ## Contribute
