@@ -88,7 +88,7 @@ npm install poolifier --save
 
 ## Usage
 
-You can implement a worker in a simple way, extending the class ThreadWorker:
+You can implement a worker-threads pool in a simple way by extending the class ThreadWorker:
 
 ```js
 'use strict'
@@ -132,6 +132,8 @@ pool.execute({}).then(res => {
 
 ```
 
+You can do the same with the class ClusterWorker.
+
 **See examples folder for more details (in particular if you want to use a pool for [multiple functions](./examples/multiFunctionExample.js)).**
 **Now typescript is also supported, find how to use it into the example folder**
 
@@ -141,7 +143,7 @@ You can use node versions 12.x, 13.x, 14.x
 
 ## API
 
-### `pool = new FixedThreadPool(numThreads, filePath, opts)`
+### `pool = new FixedThreadPool/FixedClusterPool(numThreads, filePath, opts)`
 
 `numThreads` (mandatory) Num of workers for this worker pool  
 `filePath` (mandatory) Path to a file with a worker implementation  
@@ -152,7 +154,7 @@ You can use node versions 12.x, 13.x, 14.x
 - `exitHandler` - A function that will listen for exit event on each worker
 - `maxTasks` - This is just to avoid not useful warnings message, is used to set [maxListeners](https://nodejs.org/dist/latest-v12.x/docs/api/events.html#events_emitter_setmaxlisteners_n) on event emitters (workers are event emitters)
 
-### `pool = new DynamicThreadPool(min, max, filePath, opts)`
+### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
 
 `min` (mandatory) Same as FixedThreadPool numThreads, this number of workers will be always active  
 `max` (mandatory) Max number of workers that this pool can contain, the new created workers will die after a threshold (default is 1 minute, you can override it in your worker implementation).  
@@ -169,7 +171,7 @@ Execute method is available on both pool implementations (return type : Promise)
 Destroy method is available on both pool implementations.  
 This method will call the terminate method on each worker.
 
-### `class YourWorker extends ThreadWorker`
+### `class YourWorker extends ThreadWorker/ClusterWorker`
 
 `fn` (mandatory) The function that you want to execute on the worker  
 `opts` (optional) An object with these properties:
