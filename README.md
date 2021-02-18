@@ -132,10 +132,10 @@ pool.execute({}).then(res => {
 
 ```
 
-You can do the same with the class ClusterWorker.
+You can do the same with the classes ClusterWorker, FixedClusterPool and DynamicClusterPool.
 
-**See examples folder for more details (in particular if you want to use a pool for [multiple functions](./examples/multiFunctionExample.js)).**
-**Now TypeScript is also supported, find how to use it into the example folder**
+**See examples folder for more details (in particular if you want to use a pool for [multiple functions](./examples/multiFunctionExample.js)).**  
+**Now TypeScript is also supported, find how to use it into the example folder**.
 
 ## Node versions
 
