@@ -99,7 +99,7 @@ export abstract class AbstractWorker<
   /**
    * Check if the fn parameter is passed to the constructor.
    *
-   * @param fn the function that should be defined
+   * @param fn The function that should be defined.
    */
   private checkFunctionInput (fn: (data: Data) => Response) {
     if (!fn) throw new Error('fn parameter is mandatory')
