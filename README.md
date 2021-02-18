@@ -27,7 +27,7 @@
 
 ## Why Poolifier?
 
-Poolifier is used to perform heavy CPU bound tasks on nodejs servers, it implements worker pools (yes, more worker pool implementations, so you can choose which one fit better for you) using [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads)/[cluster worker](https://nodejs.org/api/cluster.html#cluster_class_worker).  
+Poolifier is used to perform heavy CPU bound tasks on nodejs servers, it implements worker pools (yes, more worker pool implementations, so you can choose which one fit better for you) using [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads).  
 With poolifier you can improve your **performance** and resolve problems related to the event loop.  
 Moreover you can execute your CPU tasks using an API designed to improve the **developer experience**.
 
