@@ -120,6 +120,12 @@ describe('Fixed cluster pool test suite ', () => {
     await pool.destroy()
     const res = await exitPromise
     expect(res).toBe(numberOfWorkers)
+    // we need to clean up the resources after our test
+    await echoPool.destroy()
+    await asyncPool.destroy()
+    await errorPool.destroy()
+    await asyncErrorPool.destroy()
+    await emptyPool.destroy()
   })
 
   it('Should work even without opts in input', async () => {
@@ -129,5 +135,7 @@ describe('Fixed cluster pool test suite ', () => {
     )
     const res = await pool1.execute({ test: 'test' })
     expect(res).toBeFalsy()
+    // we need to clean up the resources after our test
+    await pool1.destroy()
   })
 })
