@@ -27,7 +27,7 @@
 
 ## Why Poolifier?
 
-Poolifier is used to perform heavy CPU bound tasks on nodejs servers, it implements thread pools (yes, more thread pool implementations, so you can choose which one fit better for you) using [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads).  
+Poolifier is used to perform heavy CPU bound tasks on nodejs servers, it implements worker pools (yes, more worker pool implementations, so you can choose which one fit better for you) using [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads).  
 With poolifier you can improve your **performance** and resolve problems related to the event loop.  
 Moreover you can execute your CPU tasks using an API designed to improve the **developer experience**.
 
@@ -75,10 +75,10 @@ Moreover you can execute your CPU tasks using an API designed to improve the **d
 
 ## Overview
 
-Node pool contains two [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) pool implementations, you don't have to deal with worker-threads complexity.  
-The first implementation is a static thread pool, with a defined number of threads that are started at creation time and will be reused.  
-The second implementation is a dynamic thread pool with a number of threads started at creation time (these threads will be always active and reused) and other threads created when the load will increase (with an upper limit, these threads will be reused when active), the new created threads will be stopped after a configurable period of inactivity.  
-You have to implement your worker extending the ThreadWorker class
+Node pool contains two [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads)/[cluster worker](https://nodejs.org/api/cluster.html#cluster_class_worker) pool implementations, you don't have to deal with worker-threads/cluster worker complexity.  
+The first implementation is a static worker pool, with a defined number of workers that are started at creation time and will be reused.  
+The second implementation is a dynamic worker pool with a number of worker started at creation time (these workers will be always active and reused) and other workers created when the load will increase (with an upper limit, these workers will be reused when active), the new created workers will be stopped after a configurable period of inactivity.  
+You have to implement your worker extending the ThreadWorker or ClusterWorker class
 
 ## Installation
 
@@ -88,7 +88,7 @@ npm install poolifier --save
 
 ## Usage
 
-You can implement a worker in a simple way, extending the class ThreadWorker:
+You can implement a worker-threads worker in a simple way by extending the class ThreadWorker:
 
 ```js
 'use strict'
@@ -112,12 +112,12 @@ Instantiate your pool based on your needed :
 'use strict'
 const { FixedThreadPool, DynamicThreadPool } = require('poolifier')
 
-// a fixed thread pool
+// a fixed worker-threads pool
 const pool = new FixedThreadPool(15,
   './yourWorker.js',
   { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
 
-// or a dynamic thread pool
+// or a dynamic worker-threads pool
 const pool = new DynamicThreadPool(10, 100,
   './yourWorker.js',
   { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
@@ -132,8 +132,10 @@ pool.execute({}).then(res => {
 
 ```
 
+You can do the same with the class ClusterWorker.
+
 **See examples folder for more details (in particular if you want to use a pool for [multiple functions](./examples/multiFunctionExample.js)).**
-**Now type script is also supported, find how to use it into the example folder**
+**Now TypeScript is also supported, find how to use it into the example folder**
 
 ## Node versions
 
@@ -141,23 +143,23 @@ You can use node versions 12.x, 13.x, 14.x
 
 ## API
 
-### `pool = new FixedThreadPool(numThreads, filePath, opts)`
+### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
 
-`numThreads` (mandatory) Num of threads for this worker pool  
+`numberOfThreads/numberOfWorkers` (mandatory) Num of workers for this worker pool  
 `filePath` (mandatory) Path to a file with a worker implementation  
 `opts` (optional) An object with these properties :
 
-- `errorHandler` - A function that will listen for error event on each worker thread
-- `onlineHandler` - A function that will listen for online event on each worker thread
-- `exitHandler` - A function that will listen for exit event on each worker thread
+- `errorHandler` - A function that will listen for error event on each worker
+- `onlineHandler` - A function that will listen for online event on each worker
+- `exitHandler` - A function that will listen for exit event on each worker
 - `maxTasks` - This is just to avoid not useful warnings message, is used to set [maxListeners](https://nodejs.org/dist/latest-v12.x/docs/api/events.html#events_emitter_setmaxlisteners_n) on event emitters (workers are event emitters)
 
-### `pool = new DynamicThreadPool(min, max, filePath, opts)`
+### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
 
-`min` (mandatory) Same as FixedThreadPool numThreads, this number of threads will be always active  
-`max` (mandatory) Max number of workers that this pool can contain, the new created threads will die after a threshold (default is 1 minute, you can override it in your worker implementation).  
-`filePath` (mandatory) Same as FixedThreadPool  
-`opts` (optional) Same as FixedThreadPool
+`min` (mandatory) Same as FixedThreadPool/FixedClusterPool numberOfThreads/numberOfWorkers, this number of workers will be always active  
+`max` (mandatory) Max number of workers that this pool can contain, the new created workers will die after a threshold (default is 1 minute, you can override it in your worker implementation).  
+`filePath` (mandatory) Same as FixedThreadPool/FixedClusterPool  
+`opts` (optional) Same as FixedThreadPool/FixedClusterPool
 
 ### `pool.execute(data)`
 
@@ -169,12 +171,12 @@ Execute method is available on both pool implementations (return type : Promise)
 Destroy method is available on both pool implementations.  
 This method will call the terminate method on each worker.
 
-### `class YourWorker extends ThreadWorker`
+### `class YourWorker extends ThreadWorker/ClusterWorker`
 
-`fn` (mandatory) The function that you want to execute on the worker thread  
+`fn` (mandatory) The function that you want to execute on the worker  
 `opts` (optional) An object with these properties:
 
-- `maxInactiveTime` - Max time to wait tasks to work on (in ms), after this period the new worker threads will die.  
+- `maxInactiveTime` - Max time to wait tasks to work on (in ms), after this period the new worker will die.  
   The last active time of your worker unit will be updated when a task is submitted to a worker or when a worker terminate a task.  
   If `killBehavior` is set to `KillBehaviors.HARD` this value represents also the timeout for the tasks that you submit to the pool, when this timeout expires your tasks is interrupted and the worker is killed if is not part of the minimum size of the pool.  
   If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.  
@@ -182,19 +184,19 @@ This method will call the terminate method on each worker.
 
 - `async` - true/false, true if your function contains async pieces else false
 - `killBehavior` - Dictates if your async unit (worker/process) will be deleted in case that a task is active on it.  
-  **SOFT**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker **wont** be deleted.  
+  **SOFT**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker **won't** be deleted.  
   **HARD**: If `lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker will be deleted.  
   This option only apply to the newly created workers.  
   Default: `SOFT`
 
 ## Choose your pool
 
-Performance is one of the main target of these thread pool implementations, we want to have a strong focus on this.  
+Performance is one of the main target of these worker pool implementations, we want to have a strong focus on this.  
 We already have a bench folder where you can find some comparisons.
-To choose your pool consider that with a FixedThreadPool or a DynamicThreadPool (in this case is important the min parameter passed to the constructor) your application memory footprint will increase.  
+To choose your pool consider that with a FixedThreadPool/FixedClusterPool or a DynamicThreadPool/DynamicClusterPool (in this case is important the min parameter passed to the constructor) your application memory footprint will increase.  
 Increasing the memory footprint, your application will be ready to accept more CPU bound tasks, but during idle time your application will consume more memory.  
-One good choose from my point of view is to profile your application using Fixed/Dynamic thread pool, and to see your application metrics when you increase/decrease the num of threads.  
-For example you could keep the memory footprint low choosing a DynamicThreadPool with 5 threads, and allow to create new threads until 50/100 when needed, this is the advantage to use the DynamicThreadPool.  
+One good choose from my point of view is to profile your application using Fixed/Dynamic worker pool, and to see your application metrics when you increase/decrease the num of workers.  
+For example you could keep the memory footprint low choosing a DynamicThreadPool/DynamicClusterPool with 5 workers, and allow to create new workers until 50/100 when needed, this is the advantage to use the DynamicThreadPool/DynamicClusterPool.  
 But in general, **always profile your application**
 
 ## Contribute
