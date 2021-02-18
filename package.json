@@ -1,7 +1,7 @@
 {
   "name": "poolifier",
-  "version": "v2.0.0-beta.1",
-  "description": "Library on top of node js worker threads that implement various worker pools type",
+  "version": "v2.0.0-beta.4",
+  "description": "A fast, easy to use Node.js Worker Thread Pool and Cluster Pool implementation",
   "main": "lib/index.js",
   "scripts": {
     "build": "rollup --config --environment BUILD:development",
