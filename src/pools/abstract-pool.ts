@@ -3,7 +3,7 @@ import type { MessageValue } from '../utility-types'
 import type { IPool } from './pool'
 
 /**
- * An intentional empty function
+ * An intentional empty function.
  */
 function emptyFunction () {
   // intentionally left blank
