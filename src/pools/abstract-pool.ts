@@ -1,6 +1,7 @@
 import EventEmitter from 'events'
 import type { MessageValue } from '../utility-types'
 import type { IPool } from './pool'
+import { roundRobinSelection } from './selection-strategies'
 
 /**
  * An intentional empty function.
@@ -261,12 +262,12 @@ export abstract class AbstractPool<
    * @returns Worker.
    */
   protected chooseWorker (): Worker {
-    const chosenWorker = this.workers[this.nextWorkerIndex]
-    this.nextWorkerIndex =
-      this.workers.length - 1 === this.nextWorkerIndex
-        ? 0
-        : this.nextWorkerIndex + 1
-    return chosenWorker
+    const { chosenElement, nextIndex } = roundRobinSelection(
+      this.workers,
+      this.nextWorkerIndex
+    )
+    this.nextWorkerIndex = nextIndex
+    return chosenElement
   }
 
   /**

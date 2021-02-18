@@ -1,6 +1,7 @@
 import type { Worker } from 'cluster'
 import type { JSONValue } from '../../utility-types'
-import { isKillBehavior, KillBehaviors } from '../../worker/worker-options'
+import type { IDynamicPool } from '../dynamic-pool'
+import { dynamicallyChooseWorker } from '../selection-strategies'
 import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
 
@@ -19,7 +20,8 @@ import { FixedClusterPool } from './fixed'
 export class DynamicClusterPool<
   Data extends JSONValue = JSONValue,
   Response extends JSONValue = JSONValue
-> extends FixedClusterPool<Data, Response> {
+> extends FixedClusterPool<Data, Response>
+  implements IDynamicPool<Worker, Data, Response> {
   /**
    * Constructs a new poolifier dynamic cluster pool.
    *
@@ -35,6 +37,11 @@ export class DynamicClusterPool<
     opts: ClusterPoolOptions = { maxTasks: 1000 }
   ) {
     super(min, filePath, opts)
+    this.createAndSetupWorker = this.createAndSetupWorker.bind(this)
+    this.registerWorkerMessageListener = this.registerWorkerMessageListener.bind(
+      this
+    )
+    this.destroyWorker = this.destroyWorker.bind(this)
   }
 
   /**
@@ -47,30 +54,11 @@ export class DynamicClusterPool<
    * @returns Cluster worker.
    */
   protected chooseWorker (): Worker {
-    for (const [worker, numberOfTasks] of this.tasks) {
-      if (numberOfTasks === 0) {
-        // A worker is free, use it
-        return worker
-      }
-    }
-
-    if (this.workers.length === this.max) {
-      this.emitter.emit('FullPool')
-      return super.chooseWorker()
-    }
-
-    // All workers are busy, create a new worker
-    const workerCreated = this.createAndSetupWorker()
-    this.registerWorkerMessageListener<Data>(workerCreated, message => {
-      const tasksInProgress = this.tasks.get(workerCreated)
-      if (
-        isKillBehavior(KillBehaviors.HARD, message.kill) ||
-        tasksInProgress === 0
-      ) {
-        // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-        void this.destroyWorker(workerCreated)
-      }
-    })
-    return workerCreated
+    return dynamicallyChooseWorker(
+      this,
+      this.createAndSetupWorker,
+      this.registerWorkerMessageListener,
+      this.destroyWorker
+    )
   }
 }
