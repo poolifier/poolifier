@@ -52,4 +52,13 @@ describe('Abstract pool test suite ', () => {
       )
     }).toThrowError()
   })
+
+  it('Verify that filePath is checked', () => {
+    expect(() => {
+      const pool = new StubPoolWithIsMainMethod(1).toThrowError()
+    })
+    expect(() => {
+      const pool = new StubPoolWithIsMainMethod(1, '').toThrowError()
+    })
+  })
 })
