@@ -42,6 +42,11 @@ export abstract class AbstractWorker<
   protected readonly interval?: NodeJS.Timeout
 
   /**
+   * This value is immediately set to true when the kill from the main worker is received.
+   */
+  private isKilled: boolean = false
+
+  /**
    * Constructs a new poolifier worker.
    *
    * @param type The type of async event.
@@ -90,6 +95,7 @@ export abstract class AbstractWorker<
         this.mainWorker = value.parent
       } else if (value.kill) {
         // Here is time to kill this worker, just clearing the interval
+        this.isKilled = true
         if (this.interval) clearInterval(this.interval)
         this.emitDestroy()
       }
@@ -128,7 +134,7 @@ export abstract class AbstractWorker<
    * Check to see if the worker should be terminated, because its living too long.
    */
   protected checkAlive (): void {
-    if (Date.now() - this.lastTask > this.maxInactiveTime) {
+    if (Date.now() - this.lastTask > this.maxInactiveTime && !this.isKilled) {
       this.sendToMainWorker({ kill: this.killBehavior })
     }
   }
