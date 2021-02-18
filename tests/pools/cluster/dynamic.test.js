@@ -64,7 +64,7 @@ describe('Dynamic cluster pool test suite ', () => {
     )
     const result = await pool1.execute({ test: 'test' })
     expect(result).toBeFalsy()
-    // we need to clean up the resources after our test
+    // We need to clean up the resources after our test
     await pool1.destroy()
   })
 
@@ -82,7 +82,7 @@ describe('Dynamic cluster pool test suite ', () => {
     await TestUtils.waitExits(longRunningPool, max - min)
     // Here we expect the workers to be at the max size since that the task is still running
     expect(longRunningPool.workers.length).toBe(min)
-    // we need to clean up the resources after our test
+    // We need to clean up the resources after our test
     await longRunningPool.destroy()
   })
 
@@ -100,7 +100,7 @@ describe('Dynamic cluster pool test suite ', () => {
     await TestUtils.sleep(1500)
     // Here we expect the workers to be at the max size since that the task is still running
     expect(longRunningPool.workers.length).toBe(max)
-    // we need to clean up the resources after our test
+    // We need to clean up the resources after our test
     await longRunningPool.destroy()
   })
 })
