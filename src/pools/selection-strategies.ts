@@ -60,7 +60,6 @@ export function findFreeWorkerBasedOnTasks<Worker> (
  * @param poolReference Reference to the pool instance.
  * @param createAndSetupWorker `createAndSetupWorker` bounded function.
  * @param registerWorkerMessageListener `registerWorkerMessageListener` bounded function.
- * @param sendToWorker `sendToWorker` bounded function.
  * @param destroyWorker `destroyWorker` bounded function.
  * @returns The chosen one.
  */
@@ -80,7 +79,6 @@ export function dynamicallyChooseWorker<
     Data,
     Response
   >['registerWorkerMessageListener'],
-  sendToWorker: IDynamicPool<Worker, Data, Response>['sendToWorker'],
   destroyWorker: IDynamicPool<Worker, Data, Response>['destroyWorker']
 ): Worker {
   const freeWorker = findFreeWorkerBasedOnTasks(poolReference.tasks)
@@ -107,7 +105,6 @@ export function dynamicallyChooseWorker<
       tasksInProgress === 0
     ) {
       // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-      sendToWorker(workerCreated, { kill: 1 })
       void destroyWorker(workerCreated)
     }
   })

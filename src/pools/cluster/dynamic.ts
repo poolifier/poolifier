@@ -59,7 +59,6 @@ export class DynamicClusterPool<
       this,
       this.createAndSetupWorker,
       this.registerWorkerMessageListener,
-      this.sendToWorker,
       this.destroyWorker
     )
   }

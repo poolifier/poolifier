@@ -59,7 +59,6 @@ export class DynamicThreadPool<
       this,
       this.createAndSetupWorker,
       this.registerWorkerMessageListener,
-      this.sendToWorker,
       this.destroyWorker
     )
   }
