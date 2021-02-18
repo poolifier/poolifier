@@ -66,7 +66,7 @@ export abstract class AbstractWorker<
       this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME
     this.async = !!this.opts.async
     this.lastTask = Date.now()
-    if (!fn) throw new Error('fn parameter is mandatory')
+    this.checkFunctionInput(fn)
     // Keep the worker active
     if (!isMain) {
       this.interval = setInterval(
@@ -94,6 +94,15 @@ export abstract class AbstractWorker<
         this.emitDestroy()
       }
     })
+  }
+
+  /**
+   * Check if the fn parameter is passed to the constructor.
+   *
+   * @param fn the function that should be defined
+   */
+  private checkFunctionInput (fn: (data: Data) => Response) {
+    if (!fn) throw new Error('fn parameter is mandatory')
   }
 
   /**

@@ -3,6 +3,13 @@ import type { MessageValue } from '../utility-types'
 import type { IPool } from './pool'
 
 /**
+ * An intentional empty function
+ */
+function emptyFunction () {
+  // intentionally left blank
+}
+
+/**
  * Callback invoked if the worker raised an error.
  */
 export type ErrorHandler<Worker> = (this: Worker, e: Error) => void
@@ -142,10 +149,7 @@ export abstract class AbstractPool<
     if (!this.isMain()) {
       throw new Error('Cannot start a pool from a worker!')
     }
-    // TODO christopher 2021-02-07: Improve this check e.g. with a pattern or blank check
-    if (!this.filePath) {
-      throw new Error('Please specify a file with a worker implementation')
-    }
+    this.checkFilePath(this.filePath)
     this.setupHook()
 
     for (let i = 1; i <= this.numberOfWorkers; i++) {
@@ -153,6 +157,12 @@ export abstract class AbstractPool<
     }
 
     this.emitter = new PoolEmitter()
+  }
+
+  private checkFilePath (filePath: string) {
+    if (!filePath || filePath === '') {
+      throw new Error('Please specify a file with a worker implementation')
+    }
   }
 
   /**
@@ -317,9 +327,9 @@ export abstract class AbstractPool<
   protected createAndSetupWorker (): Worker {
     const worker: Worker = this.createWorker()
 
-    worker.on('error', this.opts.errorHandler ?? (() => {}))
-    worker.on('online', this.opts.onlineHandler ?? (() => {}))
-    worker.on('exit', this.opts.exitHandler ?? (() => {}))
+    worker.on('error', this.opts.errorHandler ?? emptyFunction)
+    worker.on('online', this.opts.onlineHandler ?? emptyFunction)
+    worker.on('exit', this.opts.exitHandler ?? emptyFunction)
     worker.once('exit', () => this.removeWorker(worker))
 
     this.workers.push(worker)
