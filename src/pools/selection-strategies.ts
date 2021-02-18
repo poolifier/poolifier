@@ -79,10 +79,7 @@ export function dynamicallyChooseWorker<
 
   if (poolReference.workers.length === poolReference.max) {
     poolReference.emitter.emit('FullPool')
-    const chosenWorker = roundRobinChooseWorker<Worker, Data, Response>(
-      poolReference
-    )
-    return chosenWorker
+    return roundRobinChooseWorker<Worker, Data, Response>(poolReference)
   }
 
   // All workers are busy, create a new worker
