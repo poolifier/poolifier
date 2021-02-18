@@ -5,10 +5,10 @@ import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
 
 /**
- * A worker pool with a dynamic number of workers, but a guaranteed minimum number of workers.
+ * A thread pool with a dynamic number of threads, but a guaranteed minimum number of threads.
  *
- * This worker pool creates new workers when the others are busy, up to the maximum number of workers.
- * When the maximum number of workers is reached, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
+ * This thread pool creates new threads when the others are busy, up to the maximum number of threads.
+ * When the maximum number of threads is reached, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
  *
  * @template Data Type of data sent to the worker.
  * @template Response Type of response of execution.
@@ -21,12 +21,12 @@ export class DynamicThreadPool<
   Response extends JSONValue = JSONValue
 > extends FixedThreadPool<Data, Response> {
   /**
-   * Constructs a new poolifier dynamic worker pool.
+   * Constructs a new poolifier dynamic thread pool.
    *
    * @param min Minimum number of threads which are always active.
    * @param max Maximum number of threads that can be created by this pool.
    * @param filename Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
-   * @param opts Options for this dynamic worker pool. Default: `{ maxTasks: 1000 }`
+   * @param opts Options for this dynamic thread pool. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
     min: number,

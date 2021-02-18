@@ -112,12 +112,12 @@ Instantiate your pool based on your needed :
 'use strict'
 const { FixedThreadPool, DynamicThreadPool } = require('poolifier')
 
-// a fixed worker pool
+// a fixed worker thread pool
 const pool = new FixedThreadPool(15,
   './yourWorker.js',
   { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
 
-// or a dynamic worker pool
+// or a dynamic worker thread pool
 const pool = new DynamicThreadPool(10, 100,
   './yourWorker.js',
   { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
@@ -143,9 +143,9 @@ You can use node versions 12.x, 13.x, 14.x
 
 ## API
 
-### `pool = new FixedThreadPool/FixedClusterPool(numThreads, filePath, opts)`
+### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
 
-`numThreads` (mandatory) Num of workers for this worker pool  
+`numberOfThreads/numberOfWorkers` (mandatory) Num of workers for this worker pool  
 `filePath` (mandatory) Path to a file with a worker implementation  
 `opts` (optional) An object with these properties :
 
@@ -156,7 +156,7 @@ You can use node versions 12.x, 13.x, 14.x
 
 ### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
 
-`min` (mandatory) Same as FixedThreadPool/FixedClusterPool numThreads, this number of workers will be always active  
+`min` (mandatory) Same as FixedThreadPool/FixedClusterPool numberOfThreads/numberOfWorkers, this number of workers will be always active  
 `max` (mandatory) Max number of workers that this pool can contain, the new created workers will die after a threshold (default is 1 minute, you can override it in your worker implementation).  
 `filePath` (mandatory) Same as FixedThreadPool/FixedClusterPool  
 `opts` (optional) Same as FixedThreadPool/FixedClusterPool
