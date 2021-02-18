@@ -97,7 +97,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Check if the fn parameter is passed to the constructor.
+   * Check if the `fn` parameter is passed to the constructor.
    *
    * @param fn The function that should be defined.
    */
