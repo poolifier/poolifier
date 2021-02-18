@@ -1,7 +1,7 @@
 import EventEmitter from 'events'
-import type { MessageValue } from '../utility-types'
+import type { JSONValue, MessageValue } from '../utility-types'
 import type { IPool } from './pool'
-import { roundRobinSelection } from './selection-strategies'
+import { roundRobinChooseWorker } from './selection-strategies'
 
 /**
  * An intentional empty function.
@@ -100,9 +100,9 @@ class PoolEmitter extends EventEmitter {}
  */
 export abstract class AbstractPool<
   Worker extends IWorker,
-  Data = unknown,
-  Response = unknown
-> implements IPool<Data, Response> {
+  Data extends JSONValue = JSONValue,
+  Response extends JSONValue = JSONValue
+> implements IPool<Worker, Data, Response> {
   /**
    * List of currently available workers.
    */
@@ -134,6 +134,11 @@ export abstract class AbstractPool<
    * ID of the next message.
    */
   protected nextMessageId: number = 0
+
+  protected workerChoiceCallback: (
+    poolReference: IPool<Worker, Data, Response>,
+    ...args: unknown[]
+  ) => Worker = roundRobinChooseWorker
 
   /**
    * Constructs a new poolifier pool.
@@ -254,6 +259,15 @@ export abstract class AbstractPool<
     this.tasks.delete(worker)
   }
 
+  protected registerWorkerChoiceCallback (
+    callback: (
+      poolReference: IPool<Worker, Data, Response>,
+      ...args: unknown[]
+    ) => Worker
+  ): void {
+    this.workerChoiceCallback = callback
+  }
+
   /**
    * Choose a worker for the next task.
    *
@@ -262,12 +276,7 @@ export abstract class AbstractPool<
    * @returns Worker.
    */
   protected chooseWorker (): Worker {
-    const { chosenElement, nextIndex } = roundRobinSelection(
-      this.workers,
-      this.nextWorkerIndex
-    )
-    this.nextWorkerIndex = nextIndex
-    return chosenElement
+    return this.workerChoiceCallback(this)
   }
 
   /**

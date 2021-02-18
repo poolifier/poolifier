@@ -2,34 +2,25 @@ import type { JSONValue } from '../utility-types'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { IWorker } from './abstract-pool'
 import type { IDynamicPool } from './dynamic-pool'
+import { IPool } from './pool'
 
 /**
- * Result of the round robin selection function.
+ * Selects the next worker in a round robin selection based on the given index.
  *
- * @template Type of the chosen element.
+ * @param poolReference Reference to the pool instance.
+ * @returns The chosen worker.
  */
-export interface RoundRobinSelectionResult<Element> {
-  /** The element that was chosen. */
-  chosenElement: Element
-  /** The next calculated index. */
-  nextIndex: number
-}
-
-/**
- * Selects the next element in a round robin selection based on the given index.
- *
- * @template Element Type of the element.
- * @param elements An array of elements.
- * @param nextIndex The next calculated index.
- * @returns The chosen element together with the next calculated index.
- */
-export function roundRobinSelection<Element> (
-  elements: readonly Element[],
-  nextIndex: number
-): RoundRobinSelectionResult<Element> {
-  const chosenElement = elements[nextIndex]
-  nextIndex = elements.length - 1 === nextIndex ? 0 : nextIndex + 1
-  return { chosenElement, nextIndex }
+export function roundRobinChooseWorker<
+  Worker extends IWorker,
+  Data extends JSONValue = JSONValue,
+  Response extends JSONValue = JSONValue
+> (poolReference: IPool<Worker, Data, Response>): Worker {
+  const chosenWorker = poolReference.workers[poolReference.nextWorkerIndex]
+  poolReference.nextWorkerIndex =
+    poolReference.workers.length - 1 === poolReference.nextWorkerIndex
+      ? 0
+      : poolReference.nextWorkerIndex + 1
+  return chosenWorker
 }
 
 /**
@@ -42,7 +33,7 @@ export function roundRobinSelection<Element> (
  * @param tasks A map of tasks.
  * @returns A free worker if there was one, otherwise `null`.
  */
-export function findFreeWorkerBasedOnTasks<Worker> (
+function findFreeWorkerBasedOnTasks<Worker> (
   tasks: Map<Worker, number>
 ): Worker | null {
   for (const [worker, numberOfTasks] of tasks) {
@@ -61,7 +52,7 @@ export function findFreeWorkerBasedOnTasks<Worker> (
  * @param createAndSetupWorker `createAndSetupWorker` bounded function.
  * @param registerWorkerMessageListener `registerWorkerMessageListener` bounded function.
  * @param destroyWorker `destroyWorker` bounded function.
- * @returns The chosen one.
+ * @returns The chosen worker.
  */
 export function dynamicallyChooseWorker<
   Worker extends IWorker,
@@ -88,12 +79,10 @@ export function dynamicallyChooseWorker<
 
   if (poolReference.workers.length === poolReference.max) {
     poolReference.emitter.emit('FullPool')
-    const { chosenElement, nextIndex } = roundRobinSelection(
-      poolReference.workers,
-      poolReference.nextWorkerIndex
+    const chosenWorker = roundRobinChooseWorker<Worker, Data, Response>(
+      poolReference
     )
-    poolReference.nextWorkerIndex = nextIndex
-    return chosenElement
+    return chosenWorker
   }
 
   // All workers are busy, create a new worker

@@ -1,10 +1,17 @@
+import { JSONValue } from '../utility-types'
+import { AbstractPool, IWorker } from './abstract-pool'
+
 /**
  * Contract definition for a poolifier pool.
  *
  * @template Data Type of data sent to the worker.
  * @template Response Type of response of execution.
  */
-export interface IPool<Data = unknown, Response = unknown> {
+export interface IPool<
+  Worker extends IWorker,
+  Data extends JSONValue = JSONValue,
+  Response extends JSONValue = JSONValue
+> extends AbstractPool<Worker, Data, Response> {
   /**
    * Perform the task specified in the constructor with the data parameter.
    *
