@@ -42,6 +42,15 @@ const asyncPool = new FixedClusterPool(
 )
 
 describe('Fixed cluster pool test suite ', () => {
+  after('Destroy all pools', async () => {
+    // We need to clean up the resources after our test
+    await echoPool.destroy()
+    await asyncPool.destroy()
+    await errorPool.destroy()
+    await asyncErrorPool.destroy()
+    await emptyPool.destroy()
+  })
+
   it('Choose worker round robin test', async () => {
     const results = new Set()
     for (let i = 0; i < numberOfWorkers; i++) {
@@ -120,12 +129,6 @@ describe('Fixed cluster pool test suite ', () => {
     await pool.destroy()
     const res = await exitPromise
     expect(res).toBe(numberOfWorkers)
-    // We need to clean up the resources after our test
-    await echoPool.destroy()
-    await asyncPool.destroy()
-    await errorPool.destroy()
-    await asyncErrorPool.destroy()
-    await emptyPool.destroy()
   })
 
   it('Should work even without opts in input', async () => {
