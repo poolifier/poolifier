@@ -27,7 +27,7 @@
 
 ## Why Poolifier?
 
-Poolifier is used to perform heavy CPU bound tasks on nodejs servers, it implements thread pools (yes, more thread pool implementations, so you can choose which one fit better for you) using [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads).  
+Poolifier is used to perform heavy CPU bound tasks on nodejs servers, it implements worker pools (yes, more worker pool implementations, so you can choose which one fit better for you) using [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads)/[cluster worker](https://nodejs.org/api/cluster.html#cluster_class_worker).  
 With poolifier you can improve your **performance** and resolve problems related to the event loop.  
 Moreover you can execute your CPU tasks using an API designed to improve the **developer experience**.
 
@@ -77,7 +77,7 @@ Moreover you can execute your CPU tasks using an API designed to improve the **d
 
 Node pool contains two [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads)/[cluster worker](https://nodejs.org/api/cluster.html#cluster_class_worker) pool implementations, you don't have to deal with worker-threads/cluster worker complexity.  
 The first implementation is a static worker pool, with a defined number of workers that are started at creation time and will be reused.  
-The second implementation is a dynamic thread pool with a number of worker started at creation time (these workers will be always active and reused) and other workers created when the load will increase (with an upper limit, these workers will be reused when active), the new created workers will be stopped after a configurable period of inactivity.  
+The second implementation is a dynamic worker pool with a number of worker started at creation time (these workers will be always active and reused) and other workers created when the load will increase (with an upper limit, these workers will be reused when active), the new created workers will be stopped after a configurable period of inactivity.  
 You have to implement your worker extending the ThreadWorker class
 
 ## Installation
@@ -112,12 +112,12 @@ Instantiate your pool based on your needed :
 'use strict'
 const { FixedThreadPool, DynamicThreadPool } = require('poolifier')
 
-// a fixed thread pool
+// a fixed worker pool
 const pool = new FixedThreadPool(15,
   './yourWorker.js',
   { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
 
-// or a dynamic thread pool
+// or a dynamic worker pool
 const pool = new DynamicThreadPool(10, 100,
   './yourWorker.js',
   { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
@@ -189,11 +189,11 @@ This method will call the terminate method on each worker.
 
 ## Choose your pool
 
-Performance is one of the main target of these thread pool implementations, we want to have a strong focus on this.  
+Performance is one of the main target of these worker pool implementations, we want to have a strong focus on this.  
 We already have a bench folder where you can find some comparisons.
 To choose your pool consider that with a FixedThreadPool or a DynamicThreadPool (in this case is important the min parameter passed to the constructor) your application memory footprint will increase.  
 Increasing the memory footprint, your application will be ready to accept more CPU bound tasks, but during idle time your application will consume more memory.  
-One good choose from my point of view is to profile your application using Fixed/Dynamic thread pool, and to see your application metrics when you increase/decrease the num of workers.  
+One good choose from my point of view is to profile your application using Fixed/Dynamic worker pool, and to see your application metrics when you increase/decrease the num of workers.  
 For example you could keep the memory footprint low choosing a DynamicThreadPool with 5 workers, and allow to create new workers until 50/100 when needed, this is the advantage to use the DynamicThreadPool.  
 But in general, **always profile your application**
 
