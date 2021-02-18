@@ -26,7 +26,7 @@ export class DynamicThreadPool<
    * @param min Minimum number of threads which are always active.
    * @param max Maximum number of threads that can be created by this pool.
    * @param filename Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
-   * @param opts Options for this fixed worker pool. Default: `{ maxTasks: 1000 }`
+   * @param opts Options for this dynamic worker pool. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
     min: number,
