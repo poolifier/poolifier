@@ -42,6 +42,15 @@ const asyncPool = new FixedClusterPool(
 )
 
 describe('Fixed cluster pool test suite ', () => {
+  after('Destroy all pools', async () => {
+    // We need to clean up the resources after our test
+    await echoPool.destroy()
+    await asyncPool.destroy()
+    await errorPool.destroy()
+    await asyncErrorPool.destroy()
+    await emptyPool.destroy()
+  })
+
   it('Choose worker round robin test', async () => {
     const results = new Set()
     for (let i = 0; i < numberOfWorkers; i++) {
@@ -129,5 +138,7 @@ describe('Fixed cluster pool test suite ', () => {
     )
     const res = await pool1.execute({ test: 'test' })
     expect(res).toBeFalsy()
+    // We need to clean up the resources after our test
+    await pool1.destroy()
   })
 })
