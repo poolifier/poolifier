@@ -135,7 +135,7 @@ pool.execute({}).then(res => {
 You can do the same with the class ClusterWorker.
 
 **See examples folder for more details (in particular if you want to use a pool for [multiple functions](./examples/multiFunctionExample.js)).**
-**Now typescript is also supported, find how to use it into the example folder**
+**Now TypeScript is also supported, find how to use it into the example folder**
 
 ## Node versions
 
