@@ -1,6 +1,6 @@
 {
   "name": "poolifier",
-  "version": "2.0.0",
+  "version": "v2.0.0-beta.1",
   "description": "Library on top of node js worker threads that implement various worker pools type",
   "main": "lib/index.js",
   "scripts": {
