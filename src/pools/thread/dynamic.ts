@@ -27,21 +27,20 @@ export class DynamicThreadPool<
    *
    * @param min Minimum number of threads which are always active.
    * @param max Maximum number of threads that can be created by this pool.
-   * @param filename Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
-   * @param opts Options for this fixed thread pool. Default: `{ maxTasks: 1000 }`
+   * @param filePath Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
+   * @param opts Options for this dynamic thread pool. Default: `{ maxTasks: 1000 }`
    */
   public constructor (
     min: number,
     public readonly max: number,
-    filename: string,
+    filePath: string,
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
   ) {
-    super(min, filename, opts)
+    super(min, filePath, opts)
     this.createAndSetupWorker = this.createAndSetupWorker.bind(this)
     this.registerWorkerMessageListener = this.registerWorkerMessageListener.bind(
       this
     )
-    this.sendToWorker = this.sendToWorker.bind(this)
     this.destroyWorker = this.destroyWorker.bind(this)
   }
 

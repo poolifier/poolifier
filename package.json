@@ -25,13 +25,18 @@
   },
   "keywords": [
     "node",
-    "thread-pool",
+    "pool",
+    "workers pool",
+    "threads pool",
     "worker-threads",
     "cluster",
+    "cluster worker",
+    "concurrency",
     "performance",
     "cpu",
     "computing",
-    "async-resource"
+    "async computing",
+    "async resource"
   ],
   "author": "pioardi",
   "contributors": [
