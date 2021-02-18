@@ -160,7 +160,7 @@ export abstract class AbstractPool<
   }
 
   private checkFilePath (filePath: string) {
-    if (!filePath || filePath === '') {
+    if (!filePath) {
       throw new Error('Please specify a file with a worker implementation')
     }
   }
