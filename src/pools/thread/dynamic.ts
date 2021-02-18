@@ -42,7 +42,7 @@ export class DynamicThreadPool<
    *
    * It will first check for and return an idle thread.
    * If all threads are busy, then it will try to create a new one up to the `max` thread count.
-   * If the max worker count is reached, the emitter will emit a `FullPool` event and it will fall back to using a round robin algorithm to distribute the load.
+   * If the max thread count is reached, the emitter will emit a `FullPool` event and it will fall back to using a round robin algorithm to distribute the load.
    *
    * @returns Thread worker.
    */
