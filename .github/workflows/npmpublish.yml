@@ -35,8 +35,8 @@ jobs:
           node-version: 12
           registry-url: https://registry.npmjs.org/
 
-      - name: Install Production
-        run: npm ci --production
+      - name: Install
+        run: npm ci
 
       - name: Publish
         run: npm publish
