@@ -9,8 +9,8 @@ import { FixedThreadPool } from './fixed'
  * This thread pool creates new threads when the others are busy, up to the maximum number of threads.
  * When the maximum number of threads is reached, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
  *
- * @template Data Type of data sent to the worker.
- * @template Response Type of response of execution.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
  *
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1

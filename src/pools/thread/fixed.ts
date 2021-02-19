@@ -15,8 +15,8 @@ export type ThreadWorkerWithMessageChannel = Worker & Draft<MessageChannel>
  *
  * This pool selects the threads in a round robin fashion.
  *
- * @template Data Type of data sent to the worker.
- * @template Response Type of response of execution.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
  *
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1

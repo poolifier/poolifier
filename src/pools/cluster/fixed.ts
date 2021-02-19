@@ -23,8 +23,8 @@ export interface ClusterPoolOptions extends PoolOptions<Worker> {
  *
  * This pool selects the workers in a round robin fashion.
  *
- * @template Data Type of data sent to the worker.
- * @template Response Type of response of execution.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
  *
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0

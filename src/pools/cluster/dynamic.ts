@@ -9,8 +9,8 @@ import { FixedClusterPool } from './fixed'
  * This cluster pool creates new workers when the others are busy, up to the maximum number of workers.
  * When the maximum number of workers is reached, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
  *
- * @template Data Type of data sent to the worker.
- * @template Response Type of response of execution.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
  *
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
