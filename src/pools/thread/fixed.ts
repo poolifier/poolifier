@@ -2,7 +2,7 @@ import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
 import type { Draft, MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
-import { IPoolInternal } from '../pool-internal'
+import type { IPoolInternal } from '../pool-internal'
 
 /**
  * A thread worker with message channels for communication between main thread and thread worker.

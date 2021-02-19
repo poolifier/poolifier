@@ -50,7 +50,7 @@ function findFreeWorkerBasedOnTasks<Worker> (
  * @param createAndSetupWorker `createAndSetupWorker` bounded function.
  * @param registerWorkerMessageListener `registerWorkerMessageListener` bounded function.
  * @param destroyWorker `destroyWorker` bounded function.
- * @returns The chosen worker.
+ * @returns The chosen one.
  */
 export function dynamicallyChooseWorker<
   Worker extends IWorker,
