@@ -16,10 +16,22 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 12
-      - run: npm ci
-      - run: npm run test:prod
-      - run: npm run lint
-      - run: npm run coverage
+
+      - name: Install
+        run: npm ci
+
+      - name: Production Build
+        run: npm run build:prod --if-present
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Production Tests & Coverage
+        run: |
+          npm run test:prod
+          npm run coverage
+        env:
+          CI: true
 
   publish-npm:
     needs: build
@@ -38,10 +50,10 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Build
-        run: npm run build:prod
+      - name: Production Build
+        run: npm run build:prod --if-present
 
-      - name: Install Production
+      - name: Production Install
         run: npm ci --production
 
       - name: Publish
