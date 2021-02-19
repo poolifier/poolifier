@@ -3,6 +3,7 @@ import type { MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
 import type { IPoolInternal } from '../pool-internal'
+import { roundRobinChooseWorker } from '../selection-strategies'
 
 /**
  * Options for a poolifier cluster pool.
@@ -46,6 +47,9 @@ export class FixedClusterPool<Data = unknown, Response = unknown>
     public readonly opts: ClusterPoolOptions = { maxTasks: 1000 }
   ) {
     super(numberOfWorkers, filePath, opts)
+    this.registerWorkerChoiceCallback(() =>
+      roundRobinChooseWorker<Worker, Data, Response>(this)
+    )
   }
 
   protected setupHook (): void {
@@ -86,7 +90,7 @@ export class FixedClusterPool<Data = unknown, Response = unknown>
   }
 
   protected afterWorkerSetup (worker: Worker): void {
-    // we will attach a listener for every task,
+    // We will attach a listener for every task,
     // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
     worker.setMaxListeners(this.opts.maxTasks ?? 1000)
   }

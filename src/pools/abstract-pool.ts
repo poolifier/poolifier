@@ -2,6 +2,7 @@ import EventEmitter from 'events'
 import type { MessageValue } from '../utility-types'
 import type { IPool } from './pool'
 import type { IPoolInternal } from './pool-internal'
+import type { WorkerChoiceStrategy } from './selection-strategies'
 import { roundRobinChooseWorker } from './selection-strategies'
 
 /**
@@ -140,10 +141,11 @@ export abstract class AbstractPool<
    * Register callback function for worker choice.
    * Default to round robin choice algorithm.
    */
-  protected workerChoiceCallback: (
-    poolReference: IPoolInternal<Worker, Data, Response>,
-    ...args: unknown[]
-  ) => Worker = roundRobinChooseWorker
+  protected workerChoiceCallback: WorkerChoiceStrategy<
+    Worker,
+    Data,
+    Response
+  > = roundRobinChooseWorker
 
   /**
    * Constructs a new poolifier pool.
@@ -265,10 +267,7 @@ export abstract class AbstractPool<
   }
 
   protected registerWorkerChoiceCallback (
-    callback: (
-      poolReference: IPoolInternal<Worker, Data, Response>,
-      ...args: unknown[]
-    ) => Worker
+    callback: WorkerChoiceStrategy<Worker, Data, Response>
   ): void {
     this.workerChoiceCallback = callback
   }

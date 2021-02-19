@@ -3,6 +3,7 @@ import type { Draft, MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
 import type { IPoolInternal } from '../pool-internal'
+import { roundRobinChooseWorker } from '../selection-strategies'
 
 /**
  * A thread worker with message channels for communication between main thread and thread worker.
@@ -38,6 +39,11 @@ export class FixedThreadPool<Data = unknown, Response = unknown>
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
   ) {
     super(numberOfThreads, filePath, opts)
+    this.registerWorkerChoiceCallback(() =>
+      roundRobinChooseWorker<ThreadWorkerWithMessageChannel, Data, Response>(
+        this
+      )
+    )
   }
 
   protected isMain (): boolean {
@@ -83,7 +89,7 @@ export class FixedThreadPool<Data = unknown, Response = unknown>
     worker.postMessage({ parent: port1 }, [port1])
     worker.port1 = port1
     worker.port2 = port2
-    // we will attach a listener for every task,
+    // We will attach a listener for every task,
     // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
     worker.port2.setMaxListeners(this.opts.maxTasks ?? 1000)
   }

@@ -3,6 +3,14 @@ import type { IWorker } from './abstract-pool'
 import type { IPoolDynamicInternal, IPoolInternal } from './pool-internal'
 
 /**
+ * Choice strategy callback type.
+ */
+export type WorkerChoiceStrategy<Worker extends IWorker, Data, Response> = (
+  poolReference: IPoolInternal<Worker, Data, Response>,
+  ...args: unknown[]
+) => Worker
+
+/**
  * Selects the next worker in a round robin selection based on the given index.
  *
  * @param poolReference Reference to the pool instance.
@@ -46,7 +54,12 @@ function findFreeWorkerBasedOnTasks<Worker> (
 /**
  * Dynamically choose a worker.
  *
+ * It will first check for and return an idle worker.
+ * If all workers are busy, then it will try to create a new one up to the `max` worker count.
+ * If the max worker count is reached, the emitter will emit a `FullPool` event and it will fall back to using a round robin algorithm to distribute the load.
+ *
  * @param poolReference Reference to the pool instance.
+ * @param defaultChoiceCallback `defaultChoiceCallback` function.
  * @param createAndSetupWorker `createAndSetupWorker` bounded function.
  * @param registerWorkerMessageListener `registerWorkerMessageListener` bounded function.
  * @param destroyWorker `destroyWorker` bounded function.
@@ -58,6 +71,11 @@ export function dynamicallyChooseWorker<
   Response = unknown
 > (
   poolReference: IPoolDynamicInternal<Worker, Data, Response>,
+  defaultChoiceCallback: IPoolInternal<
+    Worker,
+    Data,
+    Response
+  >['workerChoiceCallback'],
   createAndSetupWorker: IPoolInternal<
     Worker,
     Data,
@@ -77,7 +95,7 @@ export function dynamicallyChooseWorker<
 
   if (poolReference.workers.length === poolReference.max) {
     poolReference.emitter.emit('FullPool')
-    return roundRobinChooseWorker<Worker, Data, Response>(poolReference)
+    return defaultChoiceCallback(poolReference)
   }
 
   // All workers are busy, create a new worker
