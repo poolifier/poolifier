@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./docs/logo.png" width="500px" height="391px"/>
+<img src="./docs/logo.png" width="340px" height="266px"/>
 </div>
 
 <h2 align="center">Node Thread Pool :arrow_double_up: :on:</h2>
