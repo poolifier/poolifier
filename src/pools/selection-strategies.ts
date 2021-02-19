@@ -1,6 +1,6 @@
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { IWorker } from './abstract-pool'
-import type { IPoolDynamicInternal, IPoolInternal } from './pool-internal'
+import type { IPoolInternal } from './pool-internal'
 
 /**
  * Choice strategy callback type.
@@ -70,7 +70,7 @@ export function dynamicallyChooseWorker<
   Data = unknown,
   Response = unknown
 > (
-  poolReference: IPoolDynamicInternal<Worker, Data, Response>,
+  poolReference: IPoolInternal<Worker, Data, Response>,
   defaultChoiceCallback: IPoolInternal<
     Worker,
     Data,

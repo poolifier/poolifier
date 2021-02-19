@@ -1,5 +1,5 @@
 import type { PoolOptions } from '../abstract-pool'
-import type { IPoolDynamicInternal } from '../pool-internal'
+import type { IPoolInternal } from '../pool-internal'
 import {
   dynamicallyChooseWorker,
   roundRobinChooseWorker
@@ -21,8 +21,7 @@ import { FixedThreadPool } from './fixed'
  */
 export class DynamicThreadPool<Data = unknown, Response = unknown>
   extends FixedThreadPool<Data, Response>
-  implements
-    IPoolDynamicInternal<ThreadWorkerWithMessageChannel, Data, Response> {
+  implements IPoolInternal<ThreadWorkerWithMessageChannel, Data, Response> {
   /**
    * Constructs a new poolifier dynamic thread pool.
    *
