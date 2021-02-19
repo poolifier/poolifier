@@ -94,7 +94,7 @@ You can implement a worker-threads worker in a simple way by extending the class
 'use strict'
 const { ThreadWorker } = require('poolifier')
 
-function yourFunction(data) {
+function yourFunction (data) {
   // this will be executed in the worker thread,
   // the data will be received by using the execute method
   return { ok: 1 }
@@ -136,6 +136,8 @@ You can do the same with the classes ClusterWorker, FixedClusterPool and Dynamic
 
 **See examples folder for more details (in particular if you want to use a pool for [multiple functions](./examples/multiFunctionExample.js)).**  
 **Now TypeScript is also supported, find how to use it into the example folder**.
+
+Remember that workers can only send and receive serializable (JSON) data.
 
 ## Node versions
 

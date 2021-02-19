@@ -12,8 +12,8 @@ const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
  * Base class containing some shared logic for all poolifier workers.
  *
  * @template MainWorker Type of main worker.
- * @template Data Type of data this worker receives from pool's execution.
- * @template Response Type of response the worker sends back to the main worker.
+ * @template Data Type of data this worker receives from pool's execution. This can only be serializable data.
+ * @template Response Type of response the worker sends back to the main worker. This can only be serializable data.
  */
 export abstract class AbstractWorker<
   MainWorker extends Worker | MessagePort,
