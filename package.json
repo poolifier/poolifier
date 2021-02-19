@@ -17,7 +17,8 @@
     "coverage:html": "nyc report --reporter=html",
     "format": "prettier --loglevel silent --write .; prettierx --write .",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "prepublishOnly": "npm run test:prod"
   },
   "repository": {
     "type": "git",
