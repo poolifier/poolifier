@@ -8,22 +8,15 @@ import type { KillBehavior } from './worker/worker-options'
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 
 /**
- * Serializable primitive JSON value.
- */
-export type JSONPrimitive = number | boolean | string | null
-/**
  * Serializable JSON value.
  */
-// eslint-disable-next-line no-use-before-define
-export type JSONValue = JSONPrimitive | JSONArray | JSONObject
-/**
- * Serializable JSON object.
- */
-export type JSONObject = { [k: string]: JSONValue }
-/**
- * Serializable JSON array.
- */
-export type JSONArray = Array<JSONValue>
+export type JSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JSONValue[]
+  | Record<string, JSONValue>
 
 /**
  * Message object that is passed between worker and main worker.
