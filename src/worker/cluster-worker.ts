@@ -1,6 +1,6 @@
 import type { Worker } from 'cluster'
 import { isMaster, worker } from 'cluster'
-import type { JSONValue, MessageValue } from '../utility-types'
+import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
@@ -13,15 +13,15 @@ import type { WorkerOptions } from './worker-options'
  * If you use a `DynamicClusterPool` the extra workers that were created will be terminated,
  * but the minimum number of workers will be guaranteed.
  *
- * @template Data Type of data this worker receives from pool's execution.
- * @template Response Type of response the worker sends back to the main worker.
+ * @template Data Type of data this worker receives from pool's execution. This can only be serializable data.
+ * @template Response Type of response the worker sends back to the main worker. This can only be serializable data.
  *
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
  */
 export class ClusterWorker<
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
+  Data = unknown,
+  Response = unknown
 > extends AbstractWorker<Worker, Data, Response> {
   /**
    * Constructs a new poolifier cluster worker.

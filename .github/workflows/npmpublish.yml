@@ -50,13 +50,7 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Production Build
-        run: npm run build:prod
-
-      - name: Production Install
-        run: npm ci --production
-
       - name: Publish
-        run: npm publish --prepublishOnly
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}

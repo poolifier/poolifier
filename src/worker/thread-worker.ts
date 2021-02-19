@@ -1,6 +1,6 @@
 import type { MessagePort } from 'worker_threads'
 import { isMainThread, parentPort } from 'worker_threads'
-import type { JSONValue, MessageValue } from '../utility-types'
+import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
@@ -13,15 +13,15 @@ import type { WorkerOptions } from './worker-options'
  * If you use a `DynamicThreadPool` the extra workers that were created will be terminated,
  * but the minimum number of workers will be guaranteed.
  *
- * @template Data Type of data this worker receives from pool's execution.
- * @template Response Type of response the worker sends back to the main thread.
+ * @template Data Type of data this worker receives from pool's execution. This can only be serializable data.
+ * @template Response Type of response the worker sends back to the main thread. This can only be serializable data.
  *
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
 export class ThreadWorker<
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
+  Data = unknown,
+  Response = unknown
 > extends AbstractWorker<MessagePort, Data, Response> {
   /**
    * Constructs a new poolifier thread worker.
