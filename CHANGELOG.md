@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - We changed some internal structures, but you shouldn't be too affected by them as these are internal changes.
 
+### Pool options types declaration merge
+
+`FixedThreadPoolOptions` and `DynamicThreadPoolOptions` type declarations have been merged to `PoolOptions<WorkerType>`
+
 #### New `export` strategy
 
 ```js
@@ -35,7 +39,7 @@ const { DynamicThreadPool } = require('poolifier')
 
 #### New type definitions for input data and response
 
-For cluster worker and worker-thread pools, you can now only send and receive serializable `JSON` data.  
+For cluster worker and worker-thread pools, you can now only send and receive serializable data.  
 _This is not a limitation by poolifier but NodeJS._
 
 #### Public property replacements
