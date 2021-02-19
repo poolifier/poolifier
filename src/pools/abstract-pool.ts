@@ -136,6 +136,10 @@ export abstract class AbstractPool<
    */
   protected nextMessageId: number = 0
 
+  /**
+   * Register callback function for worker choice.
+   * Default to round robin choice algorithm.
+   */
   protected workerChoiceCallback: (
     poolReference: IPoolInternal<Worker, Data, Response>,
     ...args: unknown[]
