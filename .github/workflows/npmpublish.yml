@@ -17,8 +17,8 @@ jobs:
         with:
           node-version: 12
       - run: npm ci
-      - run: npm run lint
       - run: npm run test:prod
+      - run: npm run lint
       - run: npm run coverage
 
   publish-npm:
@@ -36,9 +36,15 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build:prod
+
+      - name: Install Production
         run: npm ci --production
 
       - name: Publish
-        run: npm publish
+        run: npm publish --prepublishOnly
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
