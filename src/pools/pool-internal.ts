@@ -1,7 +1,7 @@
 import type { AbstractPool, IWorker } from './abstract-pool'
 
 /**
- * Internal contract definition for a poolifier dynamic pool.
+ * Internal contract definition for a poolifier pool.
  *
  * @template Worker Type of worker which manages this pool.
  * @template Data Type of data sent to the worker.
