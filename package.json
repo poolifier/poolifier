@@ -18,7 +18,7 @@
     "format": "prettier --loglevel silent --write .; prettierx --write .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepublishOnly": "npm run test:prod"
+    "prepublishOnly": "npm run build:prod"
   },
   "repository": {
     "type": "git",
