@@ -1,5 +1,4 @@
 import type { Worker } from 'cluster'
-import type { JSONValue } from '../../utility-types'
 import type { IDynamicPool } from '../dynamic-pool'
 import { dynamicallyChooseWorker } from '../selection-strategies'
 import type { ClusterPoolOptions } from './fixed'
@@ -11,16 +10,14 @@ import { FixedClusterPool } from './fixed'
  * This cluster pool creates new workers when the others are busy, up to the maximum number of workers.
  * When the maximum number of workers is reached, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
  *
- * @template Data Type of data sent to the worker.
- * @template Response Type of response of execution.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
  *
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
  */
-export class DynamicClusterPool<
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
-> extends FixedClusterPool<Data, Response>
+export class DynamicClusterPool<Data = unknown, Response = unknown>
+  extends FixedClusterPool<Data, Response>
   implements IDynamicPool<Worker, Data, Response> {
   /**
    * Constructs a new poolifier dynamic cluster pool.

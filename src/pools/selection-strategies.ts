@@ -1,4 +1,3 @@
-import type { JSONValue } from '../utility-types'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { IWorker } from './abstract-pool'
 import type { IDynamicPool } from './dynamic-pool'
@@ -65,8 +64,8 @@ export function findFreeWorkerBasedOnTasks<Worker> (
  */
 export function dynamicallyChooseWorker<
   Worker extends IWorker,
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
+  Data = unknown,
+  Response = unknown
 > (
   poolReference: IDynamicPool<Worker, Data, Response>,
   createAndSetupWorker: IDynamicPool<
