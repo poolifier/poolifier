@@ -138,8 +138,8 @@ export abstract class AbstractPool<
   protected nextMessageId: number = 0
 
   /**
-   * Register callback function for worker choice.
-   * Default to round robin choice algorithm.
+   * Callback function implementing the worker choice algorithm.
+   * Default to a function implementing a round robin choice algorithm.
    */
   protected workerChoiceCallback: WorkerChoiceStrategy<
     Worker,
@@ -266,6 +266,11 @@ export abstract class AbstractPool<
     this.tasks.delete(worker)
   }
 
+  /**
+   * Register the callback function implementing the worker choice algorithm.
+   *
+   * @param callback The worker choice callback function.
+   */
   protected registerWorkerChoiceCallback (
     callback: WorkerChoiceStrategy<Worker, Data, Response>
   ): void {
