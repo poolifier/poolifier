@@ -1,5 +1,4 @@
 import type { Worker } from 'cluster'
-import type { JSONValue } from '../../utility-types'
 import { isKillBehavior, KillBehaviors } from '../../worker/worker-options'
 import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
@@ -17,8 +16,8 @@ import { FixedClusterPool } from './fixed'
  * @since 2.0.0
  */
 export class DynamicClusterPool<
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
+  Data = unknown,
+  Response = unknown
 > extends FixedClusterPool<Data, Response> {
   /**
    * Constructs a new poolifier dynamic cluster pool.

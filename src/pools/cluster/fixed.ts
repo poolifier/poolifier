@@ -1,5 +1,5 @@
 import { fork, isMaster, setupMaster, Worker } from 'cluster'
-import type { JSONValue, MessageValue } from '../../utility-types'
+import type { MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
 
@@ -30,8 +30,8 @@ export interface ClusterPoolOptions extends PoolOptions<Worker> {
  * @since 2.0.0
  */
 export class FixedClusterPool<
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
+  Data = unknown,
+  Response = unknown
 > extends AbstractPool<Worker, Data, Response> {
   /**
    * Constructs a new poolifier fixed cluster pool.

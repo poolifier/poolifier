@@ -8,17 +8,6 @@ import type { KillBehavior } from './worker/worker-options'
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 
 /**
- * Serializable JSON value.
- */
-export type JSONValue =
-  | string
-  | number
-  | boolean
-  | null
-  | JSONValue[]
-  | Record<string, JSONValue>
-
-/**
  * Message object that is passed between worker and main worker.
  */
 export interface MessageValue<

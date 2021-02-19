@@ -1,6 +1,6 @@
 import type { MessagePort } from 'worker_threads'
 import { isMainThread, parentPort } from 'worker_threads'
-import type { JSONValue, MessageValue } from '../utility-types'
+import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
@@ -20,8 +20,8 @@ import type { WorkerOptions } from './worker-options'
  * @since 0.0.1
  */
 export class ThreadWorker<
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
+  Data = unknown,
+  Response = unknown
 > extends AbstractWorker<MessagePort, Data, Response> {
   /**
    * Constructs a new poolifier thread worker.

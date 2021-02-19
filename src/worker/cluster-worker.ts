@@ -1,6 +1,6 @@
 import type { Worker } from 'cluster'
 import { isMaster, worker } from 'cluster'
-import type { JSONValue, MessageValue } from '../utility-types'
+import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
@@ -20,8 +20,8 @@ import type { WorkerOptions } from './worker-options'
  * @since 2.0.0
  */
 export class ClusterWorker<
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
+  Data = unknown,
+  Response = unknown
 > extends AbstractWorker<Worker, Data, Response> {
   /**
    * Constructs a new poolifier cluster worker.

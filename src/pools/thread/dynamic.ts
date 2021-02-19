@@ -1,4 +1,3 @@
-import type { JSONValue } from '../../utility-types'
 import { isKillBehavior, KillBehaviors } from '../../worker/worker-options'
 import type { PoolOptions } from '../abstract-pool'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
@@ -17,8 +16,8 @@ import { FixedThreadPool } from './fixed'
  * @since 0.0.1
  */
 export class DynamicThreadPool<
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
+  Data = unknown,
+  Response = unknown
 > extends FixedThreadPool<Data, Response> {
   /**
    * Constructs a new poolifier dynamic thread pool.

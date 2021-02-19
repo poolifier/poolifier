@@ -1,5 +1,5 @@
 import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
-import type { Draft, JSONValue, MessageValue } from '../../utility-types'
+import type { Draft, MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
 
@@ -22,8 +22,8 @@ export type ThreadWorkerWithMessageChannel = Worker & Draft<MessageChannel>
  * @since 0.0.1
  */
 export class FixedThreadPool<
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
+  Data = unknown,
+  Response = unknown
 > extends AbstractPool<ThreadWorkerWithMessageChannel, Data, Response> {
   /**
    * Constructs a new poolifier fixed thread pool.
