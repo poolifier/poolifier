@@ -2,7 +2,7 @@ import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
 import type { Draft, MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
-import type { IPool } from '../pool'
+import { IPoolInternal } from '../pool-internal'
 
 /**
  * A thread worker with message channels for communication between main thread and thread worker.
@@ -24,7 +24,7 @@ export type ThreadWorkerWithMessageChannel = Worker & Draft<MessageChannel>
  */
 export class FixedThreadPool<Data = unknown, Response = unknown>
   extends AbstractPool<ThreadWorkerWithMessageChannel, Data, Response>
-  implements IPool<ThreadWorkerWithMessageChannel, Data, Response> {
+  implements IPoolInternal<Worker, Data, Response> {
   /**
    * Constructs a new poolifier fixed thread pool.
    *

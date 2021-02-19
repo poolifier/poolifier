@@ -1,17 +1,10 @@
-import type { IWorker } from './abstract-pool'
-import { AbstractPool } from './abstract-pool'
-
 /**
  * Contract definition for a poolifier pool.
  *
  * @template Data Type of data sent to the worker. This can only be serializable data.
  * @template Response Type of response of execution. This can only be serializable data.
  */
-export interface IPool<
-  Worker extends IWorker,
-  Data = unknown,
-  Response = unknown
-> extends AbstractPool<Worker, Data, Response> {
+export interface IPool<Data = unknown, Response = unknown> {
   /**
    * Perform the task specified in the constructor with the data parameter.
    *

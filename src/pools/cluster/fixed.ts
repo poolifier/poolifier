@@ -2,7 +2,7 @@ import { fork, isMaster, setupMaster, Worker } from 'cluster'
 import type { MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
-import type { IPool } from '../pool'
+import type { IPoolInternal } from '../pool-internal'
 
 /**
  * Options for a poolifier cluster pool.
@@ -32,7 +32,7 @@ export interface ClusterPoolOptions extends PoolOptions<Worker> {
  */
 export class FixedClusterPool<Data = unknown, Response = unknown>
   extends AbstractPool<Worker, Data, Response>
-  implements IPool<Worker, Data, Response> {
+  implements IPoolInternal<Worker, Data, Response> {
   /**
    * Constructs a new poolifier fixed cluster pool.
    *

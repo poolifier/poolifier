@@ -1,6 +1,7 @@
 import EventEmitter from 'events'
 import type { MessageValue } from '../utility-types'
 import type { IPool } from './pool'
+import type { IPoolInternal } from './pool-internal'
 import { roundRobinChooseWorker } from './selection-strategies'
 
 /**
@@ -102,7 +103,7 @@ export abstract class AbstractPool<
   Worker extends IWorker,
   Data = unknown,
   Response = unknown
-> implements IPool<Worker, Data, Response> {
+> implements IPool<Data, Response>, IPoolInternal<Worker, Data, Response> {
   /**
    * List of currently available workers.
    */
@@ -136,7 +137,7 @@ export abstract class AbstractPool<
   protected nextMessageId: number = 0
 
   protected workerChoiceCallback: (
-    poolReference: IPool<Worker, Data, Response>,
+    poolReference: IPoolInternal<Worker, Data, Response>,
     ...args: unknown[]
   ) => Worker = roundRobinChooseWorker
 
@@ -261,7 +262,7 @@ export abstract class AbstractPool<
 
   protected registerWorkerChoiceCallback (
     callback: (
-      poolReference: IPool<Worker, Data, Response>,
+      poolReference: IPoolInternal<Worker, Data, Response>,
       ...args: unknown[]
     ) => Worker
   ): void {

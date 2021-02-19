@@ -1,5 +1,5 @@
 import type { Worker } from 'cluster'
-import type { IDynamicPool } from '../dynamic-pool'
+import type { IPoolDynamicInternal } from '../pool-internal'
 import { dynamicallyChooseWorker } from '../selection-strategies'
 import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
@@ -18,7 +18,7 @@ import { FixedClusterPool } from './fixed'
  */
 export class DynamicClusterPool<Data = unknown, Response = unknown>
   extends FixedClusterPool<Data, Response>
-  implements IDynamicPool<Worker, Data, Response> {
+  implements IPoolDynamicInternal<Worker, Data, Response> {
   /**
    * Constructs a new poolifier dynamic cluster pool.
    *

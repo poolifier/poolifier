@@ -1,7 +1,6 @@
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { IWorker } from './abstract-pool'
-import type { IDynamicPool } from './dynamic-pool'
-import type { IPool } from './pool'
+import type { IPoolDynamicInternal, IPoolInternal } from './pool-internal'
 
 /**
  * Selects the next worker in a round robin selection based on the given index.
@@ -13,7 +12,7 @@ export function roundRobinChooseWorker<
   Worker extends IWorker,
   Data = unknown,
   Response = unknown
-> (poolReference: IPool<Worker, Data, Response>): Worker {
+> (poolReference: IPoolInternal<Worker, Data, Response>): Worker {
   const chosenWorker = poolReference.workers[poolReference.nextWorkerIndex]
   poolReference.nextWorkerIndex =
     poolReference.workers.length - 1 === poolReference.nextWorkerIndex
@@ -58,18 +57,18 @@ export function dynamicallyChooseWorker<
   Data = unknown,
   Response = unknown
 > (
-  poolReference: IDynamicPool<Worker, Data, Response>,
-  createAndSetupWorker: IDynamicPool<
+  poolReference: IPoolDynamicInternal<Worker, Data, Response>,
+  createAndSetupWorker: IPoolInternal<
     Worker,
     Data,
     Response
   >['createAndSetupWorker'],
-  registerWorkerMessageListener: IDynamicPool<
+  registerWorkerMessageListener: IPoolInternal<
     Worker,
     Data,
     Response
   >['registerWorkerMessageListener'],
-  destroyWorker: IDynamicPool<Worker, Data, Response>['destroyWorker']
+  destroyWorker: IPoolInternal<Worker, Data, Response>['destroyWorker']
 ): Worker {
   const freeWorker = findFreeWorkerBasedOnTasks(poolReference.tasks)
   if (freeWorker) {
