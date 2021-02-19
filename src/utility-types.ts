@@ -16,7 +16,8 @@ export type JSONValue =
   | boolean
   | null
   | JSONValue[]
-  | Record<string, JSONValue>
+  // FIXME: Record<string, JSONValue> is working but some code analyzer wrongly shows error with it
+  | { [key in string]: JSONValue }
 
 /**
  * Message object that is passed between worker and main worker.
