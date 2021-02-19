@@ -1,8 +1,8 @@
 import { fork, isMaster, setupMaster, Worker } from 'cluster'
-import type { JSONValue, MessageValue } from '../../utility-types'
+import type { MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
-import { IPool } from '../pool'
+import type { IPool } from '../pool'
 
 /**
  * Options for a poolifier cluster pool.
@@ -24,16 +24,14 @@ export interface ClusterPoolOptions extends PoolOptions<Worker> {
  *
  * This pool selects the workers in a round robin fashion.
  *
- * @template Data Type of data sent to the worker.
- * @template Response Type of response of execution.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
  *
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
  */
-export class FixedClusterPool<
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
-> extends AbstractPool<Worker, Data, Response>
+export class FixedClusterPool<Data = unknown, Response = unknown>
+  extends AbstractPool<Worker, Data, Response>
   implements IPool<Worker, Data, Response> {
   /**
    * Constructs a new poolifier fixed cluster pool.

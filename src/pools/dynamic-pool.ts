@@ -1,6 +1,5 @@
-import type { JSONValue } from '../utility-types'
 import type { IWorker } from './abstract-pool'
-import { IPool } from './pool'
+import type { IPool } from './pool'
 
 /**
  * Contract definition for a dynamic poolifier pool.
@@ -11,8 +10,8 @@ import { IPool } from './pool'
  */
 export interface IDynamicPool<
   Worker extends IWorker,
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
+  Data = unknown,
+  Response = unknown
 > extends IPool<Worker, Data, Response> {
   /**
    * Maximum number of workers that can be created by this pool.

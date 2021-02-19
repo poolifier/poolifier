@@ -1,4 +1,3 @@
-import type { JSONValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import type { IDynamicPool } from '../dynamic-pool'
 import { dynamicallyChooseWorker } from '../selection-strategies'
@@ -11,16 +10,14 @@ import { FixedThreadPool } from './fixed'
  * This thread pool creates new threads when the others are busy, up to the maximum number of threads.
  * When the maximum number of threads is reached, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
  *
- * @template Data Type of data sent to the worker.
- * @template Response Type of response of execution.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
  *
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
-export class DynamicThreadPool<
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
-> extends FixedThreadPool<Data, Response>
+export class DynamicThreadPool<Data = unknown, Response = unknown>
+  extends FixedThreadPool<Data, Response>
   implements IDynamicPool<ThreadWorkerWithMessageChannel, Data, Response> {
   /**
    * Constructs a new poolifier dynamic thread pool.

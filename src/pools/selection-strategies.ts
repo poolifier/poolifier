@@ -1,8 +1,7 @@
-import type { JSONValue } from '../utility-types'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { IWorker } from './abstract-pool'
 import type { IDynamicPool } from './dynamic-pool'
-import { IPool } from './pool'
+import type { IPool } from './pool'
 
 /**
  * Selects the next worker in a round robin selection based on the given index.
@@ -12,8 +11,8 @@ import { IPool } from './pool'
  */
 export function roundRobinChooseWorker<
   Worker extends IWorker,
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
+  Data = unknown,
+  Response = unknown
 > (poolReference: IPool<Worker, Data, Response>): Worker {
   const chosenWorker = poolReference.workers[poolReference.nextWorkerIndex]
   poolReference.nextWorkerIndex =
@@ -56,8 +55,8 @@ function findFreeWorkerBasedOnTasks<Worker> (
  */
 export function dynamicallyChooseWorker<
   Worker extends IWorker,
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
+  Data = unknown,
+  Response = unknown
 > (
   poolReference: IDynamicPool<Worker, Data, Response>,
   createAndSetupWorker: IDynamicPool<

@@ -1,8 +1,8 @@
 import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
-import type { Draft, JSONValue, MessageValue } from '../../utility-types'
+import type { Draft, MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
-import { IPool } from '../pool'
+import type { IPool } from '../pool'
 
 /**
  * A thread worker with message channels for communication between main thread and thread worker.
@@ -16,16 +16,14 @@ export type ThreadWorkerWithMessageChannel = Worker & Draft<MessageChannel>
  *
  * This pool selects the threads in a round robin fashion.
  *
- * @template Data Type of data sent to the worker.
- * @template Response Type of response of execution.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
  *
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
-export class FixedThreadPool<
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
-> extends AbstractPool<ThreadWorkerWithMessageChannel, Data, Response>
+export class FixedThreadPool<Data = unknown, Response = unknown>
+  extends AbstractPool<ThreadWorkerWithMessageChannel, Data, Response>
   implements IPool<ThreadWorkerWithMessageChannel, Data, Response> {
   /**
    * Constructs a new poolifier fixed thread pool.

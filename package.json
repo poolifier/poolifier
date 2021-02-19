@@ -1,7 +1,7 @@
 {
   "name": "poolifier",
-  "version": "v2.0.0-beta.1",
-  "description": "Library on top of node js worker threads that implement various worker pools type",
+  "version": "v2.0.0-beta.5",
+  "description": "A fast, easy to use Node.js Worker Thread Pool and Cluster Pool implementation",
   "main": "lib/index.js",
   "scripts": {
     "build": "rollup --config --environment BUILD:development",
@@ -17,7 +17,8 @@
     "coverage:html": "nyc report --reporter=html",
     "format": "prettier --loglevel silent --write .; prettierx --write .",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "prepublishOnly": "npm run build:prod"
   },
   "repository": {
     "type": "git",
@@ -60,7 +61,7 @@
     "lib"
   ],
   "devDependencies": {
-    "@types/node": "^14.14.28",
+    "@types/node": "^14.14.30",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
     "benchmark": "^2.1.4",
@@ -83,7 +84,7 @@
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-typescript2": "^0.29.0",
+    "rollup-plugin-typescript2": "^0.30.0",
     "sonar-scanner": "^3.1.0",
     "source-map-support": "^0.5.19",
     "typescript": "^4.1.5",
