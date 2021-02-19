@@ -21,7 +21,7 @@ jobs:
         run: npm ci
 
       - name: Production Build
-        run: npm run build:prod --if-present
+        run: npm run build:prod
 
       - name: Lint
         run: npm run lint
@@ -51,7 +51,7 @@ jobs:
         run: npm ci
 
       - name: Production Build
-        run: npm run build:prod --if-present
+        run: npm run build:prod
 
       - name: Production Install
         run: npm ci --production
