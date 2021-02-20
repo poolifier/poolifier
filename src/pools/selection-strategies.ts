@@ -78,6 +78,7 @@ class LessUsedWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
       if (numberOfTasks < minNumberOfTasks) {
         minNumberOfTasks = numberOfTasks
         lessUsedWorker = worker
+        if (numberOfTasks === 0) break
       }
     }
     return lessUsedWorker
@@ -215,12 +216,11 @@ export class WorkerChoiceStrategyContext<
         this.pool,
         workerChoiceStrategy
       )
-    } else {
-      return getWorkerChoiceStrategy<Worker, Data, Response>(
-        this.pool,
-        workerChoiceStrategy
-      )
     }
+    return getWorkerChoiceStrategy<Worker, Data, Response>(
+      this.pool,
+      workerChoiceStrategy
+    )
   }
 
   /**
