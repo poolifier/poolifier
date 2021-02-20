@@ -1,7 +1,7 @@
 import EventEmitter from 'events'
-import { MessageValue } from '../utility-types'
+import type { MessageValue } from '../utility-types'
 import type { IWorker } from './abstract-pool'
-import { IPool } from './pool'
+import type { IPool } from './pool'
 
 /**
  * Internal poolifier pool emitter.
