@@ -1,9 +1,4 @@
-import type { Worker } from 'cluster'
-import type { IPoolInternal } from '../pool-internal'
-import {
-  dynamicallyChooseWorker,
-  roundRobinChooseWorker
-} from '../selection-strategies'
+import { WorkerChoiceStrategy } from '../selection-strategies'
 import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
 
@@ -19,9 +14,10 @@ import { FixedClusterPool } from './fixed'
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
  */
-export class DynamicClusterPool<Data = unknown, Response = unknown>
-  extends FixedClusterPool<Data, Response>
-  implements IPoolInternal<Worker, Data, Response> {
+export class DynamicClusterPool<
+  Data = unknown,
+  Response = unknown
+> extends FixedClusterPool<Data, Response> {
   /**
    * Constructs a new poolifier dynamic cluster pool.
    *
@@ -42,14 +38,8 @@ export class DynamicClusterPool<Data = unknown, Response = unknown>
       this
     )
     this.destroyWorker = this.destroyWorker.bind(this)
-    this.registerWorkerChoiceCallback(() =>
-      dynamicallyChooseWorker<Worker, Data, Response>(
-        this,
-        roundRobinChooseWorker,
-        this.createAndSetupWorker,
-        this.registerWorkerMessageListener,
-        this.destroyWorker
-      )
+    this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
+      WorkerChoiceStrategy.DYNAMIC
     )
   }
 }

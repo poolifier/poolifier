@@ -2,8 +2,6 @@ import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
 import type { Draft, MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
-import type { IPoolInternal } from '../pool-internal'
-import { roundRobinChooseWorker } from '../selection-strategies'
 
 /**
  * A thread worker with message channels for communication between main thread and thread worker.
@@ -23,9 +21,10 @@ export type ThreadWorkerWithMessageChannel = Worker & Draft<MessageChannel>
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
-export class FixedThreadPool<Data = unknown, Response = unknown>
-  extends AbstractPool<ThreadWorkerWithMessageChannel, Data, Response>
-  implements IPoolInternal<Worker, Data, Response> {
+export class FixedThreadPool<
+  Data = unknown,
+  Response = unknown
+> extends AbstractPool<ThreadWorkerWithMessageChannel, Data, Response> {
   /**
    * Constructs a new poolifier fixed thread pool.
    *
@@ -39,18 +38,13 @@ export class FixedThreadPool<Data = unknown, Response = unknown>
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
   ) {
     super(numberOfThreads, filePath, opts)
-    this.registerWorkerChoiceCallback(() =>
-      roundRobinChooseWorker<ThreadWorkerWithMessageChannel, Data, Response>(
-        this
-      )
-    )
   }
 
   protected isMain (): boolean {
     return isMainThread
   }
 
-  protected async destroyWorker (
+  public async destroyWorker (
     worker: ThreadWorkerWithMessageChannel
   ): Promise<void> {
     this.sendToWorker(worker, { kill: 1 })
@@ -64,7 +58,7 @@ export class FixedThreadPool<Data = unknown, Response = unknown>
     worker.postMessage(message)
   }
 
-  protected registerWorkerMessageListener<Message extends Data | Response> (
+  public registerWorkerMessageListener<Message extends Data | Response> (
     messageChannel: ThreadWorkerWithMessageChannel,
     listener: (message: MessageValue<Message>) => void
   ): void {

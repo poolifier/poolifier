@@ -2,8 +2,6 @@ import { fork, isMaster, setupMaster, Worker } from 'cluster'
 import type { MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
-import type { IPoolInternal } from '../pool-internal'
-import { roundRobinChooseWorker } from '../selection-strategies'
 
 /**
  * Options for a poolifier cluster pool.
@@ -31,9 +29,10 @@ export interface ClusterPoolOptions extends PoolOptions<Worker> {
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
  */
-export class FixedClusterPool<Data = unknown, Response = unknown>
-  extends AbstractPool<Worker, Data, Response>
-  implements IPoolInternal<Worker, Data, Response> {
+export class FixedClusterPool<
+  Data = unknown,
+  Response = unknown
+> extends AbstractPool<Worker, Data, Response> {
   /**
    * Constructs a new poolifier fixed cluster pool.
    *
@@ -47,9 +46,6 @@ export class FixedClusterPool<Data = unknown, Response = unknown>
     public readonly opts: ClusterPoolOptions = { maxTasks: 1000 }
   ) {
     super(numberOfWorkers, filePath, opts)
-    this.registerWorkerChoiceCallback(() =>
-      roundRobinChooseWorker<Worker, Data, Response>(this)
-    )
   }
 
   protected setupHook (): void {
@@ -62,7 +58,7 @@ export class FixedClusterPool<Data = unknown, Response = unknown>
     return isMaster
   }
 
-  protected destroyWorker (worker: Worker): void {
+  public destroyWorker (worker: Worker): void {
     this.sendToWorker(worker, { kill: 1 })
     worker.kill()
   }
@@ -71,7 +67,7 @@ export class FixedClusterPool<Data = unknown, Response = unknown>
     worker.send(message)
   }
 
-  protected registerWorkerMessageListener<Message extends Data | Response> (
+  public registerWorkerMessageListener<Message extends Data | Response> (
     worker: Worker,
     listener: (message: MessageValue<Message>) => void
   ): void {

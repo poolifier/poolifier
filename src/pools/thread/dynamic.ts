@@ -1,9 +1,5 @@
 import type { PoolOptions } from '../abstract-pool'
-import type { IPoolInternal } from '../pool-internal'
-import {
-  dynamicallyChooseWorker,
-  roundRobinChooseWorker
-} from '../selection-strategies'
+import { WorkerChoiceStrategy } from '../selection-strategies'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
 
@@ -19,9 +15,10 @@ import { FixedThreadPool } from './fixed'
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
-export class DynamicThreadPool<Data = unknown, Response = unknown>
-  extends FixedThreadPool<Data, Response>
-  implements IPoolInternal<ThreadWorkerWithMessageChannel, Data, Response> {
+export class DynamicThreadPool<
+  Data = unknown,
+  Response = unknown
+> extends FixedThreadPool<Data, Response> {
   /**
    * Constructs a new poolifier dynamic thread pool.
    *
@@ -42,14 +39,8 @@ export class DynamicThreadPool<Data = unknown, Response = unknown>
       this
     )
     this.destroyWorker = this.destroyWorker.bind(this)
-    this.registerWorkerChoiceCallback(() =>
-      dynamicallyChooseWorker<ThreadWorkerWithMessageChannel, Data, Response>(
-        this,
-        roundRobinChooseWorker,
-        this.createAndSetupWorker,
-        this.registerWorkerMessageListener,
-        this.destroyWorker
-      )
+    this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
+      WorkerChoiceStrategy.DYNAMIC
     )
   }
 }

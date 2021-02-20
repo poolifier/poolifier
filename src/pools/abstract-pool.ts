@@ -1,9 +1,8 @@
-import EventEmitter from 'events'
 import type { MessageValue } from '../utility-types'
 import type { IPool } from './pool'
 import type { IPoolInternal } from './pool-internal'
-import type { WorkerChoiceStrategy } from './selection-strategies'
-import { roundRobinChooseWorker } from './selection-strategies'
+import { PoolEmitter } from './pool-internal'
+import { WorkerChoiceStrategyContext } from './selection-strategies'
 
 /**
  * An intentional empty function.
@@ -89,11 +88,6 @@ export interface PoolOptions<Worker> {
 }
 
 /**
- * Internal poolifier pool emitter.
- */
-class PoolEmitter extends EventEmitter {}
-
-/**
  * Base class containing some shared logic for all poolifier pools.
  *
  * @template Worker Type of worker which manages this pool.
@@ -141,11 +135,11 @@ export abstract class AbstractPool<
    * Callback function implementing the worker choice algorithm.
    * Default to a function implementing a round robin choice algorithm.
    */
-  protected workerChoiceCallback: WorkerChoiceStrategy<
+  protected workerChoiceStrategyContext: WorkerChoiceStrategyContext<
     Worker,
     Data,
     Response
-  > = roundRobinChooseWorker.bind(this)
+  >
 
   /**
    * Constructs a new poolifier pool.
@@ -170,6 +164,7 @@ export abstract class AbstractPool<
     }
 
     this.emitter = new PoolEmitter()
+    this.workerChoiceStrategyContext = new WorkerChoiceStrategyContext(this)
   }
 
   private checkFilePath (filePath: string) {
@@ -206,7 +201,7 @@ export abstract class AbstractPool<
    *
    * @param worker A worker within `workers`.
    */
-  protected abstract destroyWorker (worker: Worker): void | Promise<void>
+  public abstract destroyWorker (worker: Worker): void | Promise<void>
 
   /**
    * Setup hook that can be overridden by a Poolifier pool implementation
@@ -267,17 +262,6 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Register the callback function implementing the worker choice algorithm.
-   *
-   * @param callback The worker choice callback function.
-   */
-  protected registerWorkerChoiceCallback (
-    callback: WorkerChoiceStrategy<Worker, Data, Response>
-  ): void {
-    this.workerChoiceCallback = callback.bind(this)
-  }
-
-  /**
    * Choose a worker for the next task.
    *
    * The default implementation uses a round robin algorithm to distribute the load.
@@ -285,7 +269,7 @@ export abstract class AbstractPool<
    * @returns Worker.
    */
   protected chooseWorker (): Worker {
-    return this.workerChoiceCallback(this)
+    return this.workerChoiceStrategyContext.execute()
   }
 
   /**
@@ -299,7 +283,7 @@ export abstract class AbstractPool<
     message: MessageValue<Data>
   ): void
 
-  protected abstract registerWorkerMessageListener<
+  public abstract registerWorkerMessageListener<
     Message extends Data | Response
   > (worker: Worker, listener: (message: MessageValue<Message>) => void): void
 
@@ -343,7 +327,7 @@ export abstract class AbstractPool<
    *
    * @returns New, completely set up worker.
    */
-  protected createAndSetupWorker (): Worker {
+  public createAndSetupWorker (): Worker {
     const worker: Worker = this.createWorker()
 
     worker.on('error', this.opts.errorHandler ?? emptyFunction)

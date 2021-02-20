@@ -3,112 +3,157 @@ import type { IWorker } from './abstract-pool'
 import type { IPoolInternal } from './pool-internal'
 
 /**
- * Choice strategy callback type.
+ * Worker choice strategies string list.
  */
-export type WorkerChoiceStrategy<Worker extends IWorker, Data, Response> = (
-  poolReference: IPoolInternal<Worker, Data, Response>,
-  ...args: unknown[]
-) => Worker
+export enum WorkerChoiceStrategy {
+  ROUND_ROBIN = 'RoundRobin',
+  DYNAMIC = 'Dynamic'
+}
+
+interface IWorkerChoiceStrategy<Worker extends IWorker> {
+  choose(): Worker
+}
 
 /**
  * Selects the next worker in a round robin selection based on the given index.
  *
- * @param poolReference Reference to the pool instance.
- * @returns The chosen worker.
+ * @template Worker Type of worker which manages this pool.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
  */
-export function roundRobinChooseWorker<
-  Worker extends IWorker,
-  Data = unknown,
-  Response = unknown
-> (poolReference: IPoolInternal<Worker, Data, Response>): Worker {
-  const chosenWorker = poolReference.workers[poolReference.nextWorkerIndex]
-  poolReference.nextWorkerIndex =
-    poolReference.workers.length - 1 === poolReference.nextWorkerIndex
-      ? 0
-      : poolReference.nextWorkerIndex + 1
-  return chosenWorker
-}
-
-/**
- * Find a free worker based on number of tasks the worker has applied.
- *
- * If a worker was found that has `0` tasks, it is detected as free and will be returned.
- *
- * If no free worker was found, `null` will be returned.
- *
- * @param tasks A map of tasks.
- * @returns A free worker if there was one, otherwise `null`.
- */
-function findFreeWorkerBasedOnTasks<Worker> (
-  tasks: Map<Worker, number>
-): Worker | null {
-  for (const [worker, numberOfTasks] of tasks) {
-    if (numberOfTasks === 0) {
-      // A worker is free, use it
-      return worker
-    }
+class RoundRobinWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
+  implements IWorkerChoiceStrategy<Worker> {
+  /**
+   * @param pool The pool instance.
+   */
+  constructor (private pool: IPoolInternal<Worker, Data, Response>) {
+    this.pool = pool
   }
-  return null
+
+  public choose () {
+    const chosenWorker = this.pool.workers[this.pool.nextWorkerIndex]
+    this.pool.nextWorkerIndex =
+      this.pool.workers.length - 1 === this.pool.nextWorkerIndex
+        ? 0
+        : this.pool.nextWorkerIndex + 1
+    return chosenWorker
+  }
 }
 
 /**
  * Dynamically choose a worker.
  *
- * It will first check for and return an idle worker.
- * If all workers are busy, then it will try to create a new one up to the `max` worker count.
- * If the max worker count is reached, the emitter will emit a `FullPool` event and it will fall back to using a round robin algorithm to distribute the load.
- *
- * @param poolReference Reference to the pool instance.
- * @param defaultWorkerChoiceCallback `defaultChoiceCallback` function.
- * @param createAndSetupWorker `createAndSetupWorker` bounded function.
- * @param registerWorkerMessageListener `registerWorkerMessageListener` bounded function.
- * @param destroyWorker `destroyWorker` bounded function.
- * @returns The chosen one.
+ * @template Worker Type of worker which manages this pool.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
  */
-export function dynamicallyChooseWorker<
-  Worker extends IWorker,
-  Data = unknown,
-  Response = unknown
-> (
-  poolReference: IPoolInternal<Worker, Data, Response>,
-  defaultWorkerChoiceCallback: IPoolInternal<
-    Worker,
-    Data,
-    Response
-  >['workerChoiceCallback'],
-  createAndSetupWorker: IPoolInternal<
-    Worker,
-    Data,
-    Response
-  >['createAndSetupWorker'],
-  registerWorkerMessageListener: IPoolInternal<
-    Worker,
-    Data,
-    Response
-  >['registerWorkerMessageListener'],
-  destroyWorker: IPoolInternal<Worker, Data, Response>['destroyWorker']
-): Worker {
-  const freeWorker = findFreeWorkerBasedOnTasks(poolReference.tasks)
-  if (freeWorker) {
-    return freeWorker
+class DynamicWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
+  implements IWorkerChoiceStrategy<Worker> {
+  private workerChoiceStrategy: IWorkerChoiceStrategy<Worker>
+
+  /**
+   * @param pool The pool instance.
+   * @param workerChoiceStrategy The default worker choice strategy.
+   */
+  constructor (
+    private pool: IPoolInternal<Worker, Data, Response>,
+    workerChoiceStrategy: WorkerChoiceStrategy
+  ) {
+    this.pool = pool
+    this.workerChoiceStrategy = getWorkerChoiceStrategy(
+      this.pool,
+      workerChoiceStrategy
+    )
   }
 
-  if (poolReference.workers.length === poolReference.max) {
-    poolReference.emitter.emit('FullPool')
-    return defaultWorkerChoiceCallback(poolReference)
-  }
-
-  // All workers are busy, create a new worker
-  const workerCreated = createAndSetupWorker()
-  registerWorkerMessageListener(workerCreated, message => {
-    const tasksInProgress = poolReference.tasks.get(workerCreated)
-    if (
-      isKillBehavior(KillBehaviors.HARD, message.kill) ||
-      tasksInProgress === 0
-    ) {
-      // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-      void destroyWorker(workerCreated)
+  /**
+   * Find a free worker based on number of tasks the worker has applied.
+   *
+   * If a worker was found that has `0` tasks, it is detected as free and will be returned.
+   *
+   * If no free worker was found, `null` will be returned.
+   *
+   * @returns A free worker if there was one, otherwise `null`.
+   */
+  private findFreeWorkerBasedOnTasks (): Worker | null {
+    for (const [worker, numberOfTasks] of this.pool.tasks) {
+      if (numberOfTasks === 0) {
+        // A worker is free, use it
+        return worker
+      }
     }
-  })
-  return workerCreated
+    return null
+  }
+
+  public choose (): Worker {
+    const freeWorker = this.findFreeWorkerBasedOnTasks()
+    if (freeWorker) {
+      return freeWorker
+    }
+
+    if (this.pool.workers.length === this.pool.max) {
+      this.pool.emitter.emit('FullPool')
+      return this.workerChoiceStrategy.choose()
+    }
+
+    // All workers are busy, create a new worker
+    const workerCreated = this.pool.createAndSetupWorker()
+    this.pool.registerWorkerMessageListener(workerCreated, message => {
+      const tasksInProgress = this.pool.tasks.get(workerCreated)
+      if (
+        isKillBehavior(KillBehaviors.HARD, message.kill) ||
+        tasksInProgress === 0
+      ) {
+        // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
+        void this.pool.destroyWorker(workerCreated)
+      }
+    })
+    return workerCreated
+  }
+}
+
+function getWorkerChoiceStrategy<Worker extends IWorker, Data, Response> (
+  pool: IPoolInternal<Worker, Data, Response>,
+  workerChoiceStrategy: WorkerChoiceStrategy
+): IWorkerChoiceStrategy<Worker> {
+  switch (workerChoiceStrategy) {
+    case WorkerChoiceStrategy.ROUND_ROBIN:
+      return new RoundRobinWorkerChoiceStrategy<Worker, Data, Response>(pool)
+    case WorkerChoiceStrategy.DYNAMIC:
+      return new DynamicWorkerChoiceStrategy<Worker, Data, Response>(
+        pool,
+        WorkerChoiceStrategy.ROUND_ROBIN
+      )
+  }
+}
+
+export class WorkerChoiceStrategyContext<
+  Worker extends IWorker,
+  Data,
+  Response
+> {
+  private workerChoiceStrategy: IWorkerChoiceStrategy<
+    Worker
+  > = {} as IWorkerChoiceStrategy<Worker>
+
+  constructor (
+    private pool: IPoolInternal<Worker, Data, Response>,
+    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategy.ROUND_ROBIN
+  ) {
+    this.setWorkerChoiceStrategy(workerChoiceStrategy)
+  }
+
+  setWorkerChoiceStrategy (workerChoiceStrategy: WorkerChoiceStrategy): void {
+    this.workerChoiceStrategy = getWorkerChoiceStrategy(
+      this.pool,
+      workerChoiceStrategy
+    )
+  }
+
+  /**
+   * @returns The chosen one.
+   */
+  public execute (): Worker {
+    return this.workerChoiceStrategy.choose()
+  }
 }
