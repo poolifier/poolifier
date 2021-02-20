@@ -10,6 +10,11 @@ export enum WorkerChoiceStrategy {
   DYNAMIC = 'Dynamic'
 }
 
+/**
+ * Worker choice strategy interface.
+ *
+ * @template Worker Type of worker which manages the strategy.
+ */
 interface IWorkerChoiceStrategy<Worker extends IWorker> {
   /**
    * Choose a worker in the pool.
@@ -20,7 +25,7 @@ interface IWorkerChoiceStrategy<Worker extends IWorker> {
 /**
  * Selects the next worker in a round robin selection based on the given index.
  *
- * @template Worker Type of worker which manages this pool.
+ * @template Worker Type of worker which manages the strategy.
  * @template Data Type of data sent to the worker. This can only be serializable data.
  * @template Response Type of response of execution. This can only be serializable data.
  */
@@ -52,7 +57,7 @@ class RoundRobinWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
 /**
  * Dynamically choose a worker.
  *
- * @template Worker Type of worker which manages this pool.
+ * @template Worker Type of worker which manages the strategy.
  * @template Data Type of data sent to the worker. This can only be serializable data.
  * @template Response Type of response of execution. This can only be serializable data.
  */
@@ -62,7 +67,7 @@ class DynamicWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
 
   /**
    * @param pool The pool instance.
-   * @param workerChoiceStrategy The default worker choice strategy.
+   * @param workerChoiceStrategy The worker choice strategy when the pull is full.
    */
   constructor (
     private pool: IPoolInternal<Worker, Data, Response>,
@@ -128,6 +133,14 @@ class DynamicWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
   }
 }
 
+/**
+ * Get the worker choice strategy instance.
+ *
+ * @param pool The pool instance.
+ * @param workerChoiceStrategy The worker choice strategy.
+ * @param dynamicWorkerChoiceStrategy The worker choice strategy when the dynamic pool is full.
+ * @returns The worker choice strategy instance.
+ */
 function getWorkerChoiceStrategy<Worker extends IWorker, Data, Response> (
   pool: IPoolInternal<Worker, Data, Response>,
   workerChoiceStrategy: WorkerChoiceStrategy,
@@ -144,6 +157,9 @@ function getWorkerChoiceStrategy<Worker extends IWorker, Data, Response> (
   }
 }
 
+/**
+ * The worker choice strategy context.
+ */
 export class WorkerChoiceStrategyContext<
   Worker extends IWorker,
   Data,
@@ -153,6 +169,12 @@ export class WorkerChoiceStrategyContext<
     Worker
   > = {} as IWorkerChoiceStrategy<Worker>
 
+  /**
+   * Worker choice strategy context constructor.
+   *
+   * @param pool The pool instance.
+   * @param workerChoiceStrategy The worker choice strategy.
+   */
   constructor (
     private pool: IPoolInternal<Worker, Data, Response>,
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategy.ROUND_ROBIN
@@ -163,7 +185,7 @@ export class WorkerChoiceStrategyContext<
   /**
    * Set the worker choice strategy to use in the context.
    *
-   * @param workerChoiceStrategy The strategy type.
+   * @param workerChoiceStrategy The worker choice strategy to set.
    */
   setWorkerChoiceStrategy (workerChoiceStrategy: WorkerChoiceStrategy): void {
     this.workerChoiceStrategy = getWorkerChoiceStrategy(
