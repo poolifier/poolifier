@@ -102,9 +102,6 @@ export abstract class AbstractPool<
   public readonly workers: Worker[] = []
 
   /** @inheritdoc */
-  public nextWorkerIndex: number = 0
-
-  /** @inheritdoc */
   public readonly tasks: Map<Worker, number> = new Map<Worker, number>()
 
   /** @inheritdoc */

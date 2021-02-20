@@ -26,11 +26,6 @@ export interface IPoolInternal<
   readonly workers: Worker[]
 
   /**
-   * Index for the next worker.
-   */
-  nextWorkerIndex: number
-
-  /**
    * The tasks map.
    *
    * - `key`: The `Worker`

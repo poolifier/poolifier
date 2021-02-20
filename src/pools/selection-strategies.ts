@@ -27,6 +27,11 @@ interface IWorkerChoiceStrategy<Worker extends IWorker> {
 class RoundRobinWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
   implements IWorkerChoiceStrategy<Worker> {
   /**
+   * Index for the next worker.
+   */
+  private nextWorkerIndex: number = 0
+
+  /**
    * @param pool The pool instance.
    */
   constructor (private pool: IPoolInternal<Worker, Data, Response>) {
@@ -35,11 +40,11 @@ class RoundRobinWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
 
   /** @inheritdoc */
   public choose () {
-    const chosenWorker = this.pool.workers[this.pool.nextWorkerIndex]
-    this.pool.nextWorkerIndex =
-      this.pool.workers.length - 1 === this.pool.nextWorkerIndex
+    const chosenWorker = this.pool.workers[this.nextWorkerIndex]
+    this.nextWorkerIndex =
+      this.pool.workers.length - 1 === this.nextWorkerIndex
         ? 0
-        : this.pool.nextWorkerIndex + 1
+        : this.nextWorkerIndex + 1
     return chosenWorker
   }
 }
