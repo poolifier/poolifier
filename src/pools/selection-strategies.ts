@@ -60,10 +60,16 @@ class DynamicWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
     workerChoiceStrategy: WorkerChoiceStrategy
   ) {
     this.pool = pool
-    this.workerChoiceStrategy = getWorkerChoiceStrategy(
-      this.pool,
-      workerChoiceStrategy
-    )
+    if (workerChoiceStrategy !== WorkerChoiceStrategy.DYNAMIC) {
+      this.workerChoiceStrategy = getWorkerChoiceStrategy(
+        this.pool,
+        workerChoiceStrategy
+      )
+    } else {
+      throw Error(
+        `Cannot instantiate DynamicWorkerChoiceStrategy class with a ${WorkerChoiceStrategy} type`
+      )
+    }
   }
 
   /**
