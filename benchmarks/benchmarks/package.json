@@ -1,0 +1,21 @@
+{
+  "name": "thread-pools-benchs",
+  "version": "1.0.0",
+  "description": "This project contains benchmarks for the most used and popular Node.js thread/cluster pools implementations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "pioardi",
+  "license": "MIT",
+  "dependencies": {
+    "benchmark": "^2.1.4",
+    "poolifier": "^2.0.0-beta.5",
+    "piscina": "^2.1.0",
+    "node-worker-threads-pool": "^1.4.3",
+    "worker-threads-pool": "^2.0.0",
+    "microjob": "^0.7.0",
+    "threads": "^1.6.3",
+    "workerpool": "^6.1.0"
+  }
+}

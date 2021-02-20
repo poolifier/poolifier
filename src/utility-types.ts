@@ -55,3 +55,18 @@ export interface MessageValue<
    */
   readonly parent?: MainWorker
 }
+
+/**
+ *
+ */
+export type JustTempValue = {
+  /**
+   * Input data that will be passed to the worker.
+   */
+  readonly resolve?: Function
+  /**
+   * ID of the message.
+   */
+  readonly reject?: Function
+  readonly worker: Worker | MessagePort | unknown
+}

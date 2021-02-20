@@ -1,5 +1,10 @@
 import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
-import type { Draft, JSONValue, MessageValue } from '../../utility-types'
+import type {
+  Draft,
+  JSONValue,
+  MessageValue,
+  JustTempValue
+} from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
 
@@ -26,6 +31,17 @@ export class FixedThreadPool<
   Response extends JSONValue = JSONValue
 > extends AbstractPool<ThreadWorkerWithMessageChannel, Data, Response> {
   /**
+   * The tasks map.
+   *
+   * - `key`: The `Worker`
+   * - `value`: Number of tasks currently in progress on the worker.
+   */
+  protected readonly promiseMap: Map<number, any> = new Map<
+    number,
+    JustTempValue
+  >()
+
+  /**
    * Constructs a new poolifier fixed thread pool.
    *
    * @param numberOfThreads Number of threads for this pool.
@@ -38,6 +54,7 @@ export class FixedThreadPool<
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
   ) {
     super(numberOfThreads, filePath, opts)
+    // this.promiseMap = new Map()
   }
 
   protected isMain (): boolean {
@@ -73,9 +90,24 @@ export class FixedThreadPool<
   }
 
   protected createWorker (): ThreadWorkerWithMessageChannel {
-    return new Worker(this.filePath, {
+    const worker = new Worker(this.filePath, {
       env: SHARE_ENV
     })
+    return worker
+  }
+
+  protected internalExecute (
+    worker: Worker,
+    messageId: number
+  ): Promise<unknown> {
+    const promise = new Promise((resolve, reject) => {
+      this.promiseMap.set(messageId, {
+        resolve: resolve,
+        reject: reject,
+        worker: worker
+      })
+    })
+    return promise
   }
 
   protected afterWorkerSetup (worker: ThreadWorkerWithMessageChannel): void {
@@ -86,5 +118,18 @@ export class FixedThreadPool<
     // we will attach a listener for every task,
     // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
     worker.port2.setMaxListeners(this.opts.maxTasks ?? 1000)
+    const listener: (message: MessageValue<Response>) => void = message => {
+      if (message.id) {
+        const value = this.promiseMap.get(message.id)
+        // FIXME this check is really not needed I need to understand why TS ask for it.
+        if (value && value.worker && value.resolve && value.reject) {
+          this.decreaseWorkersTasks(value.worker)
+          if (message.error) value.reject(message.error)
+          else value.resolve(message.data as Response)
+          this.promiseMap.delete(message.id)
+        }
+      }
+    }
+    this.registerWorkerMessageListener(worker, listener)
   }
 }
