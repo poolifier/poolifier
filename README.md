@@ -137,7 +137,7 @@ You can do the same with the classes ClusterWorker, FixedClusterPool and Dynamic
 **See examples folder for more details (in particular if you want to use a pool for [multiple functions](./examples/multiFunctionExample.js)).**  
 **Now TypeScript is also supported, find how to use it into the example folder**.
 
-Remember that workers can only send and receive serializable (JSON) data.
+Remember that workers can only send and receive serializable data.
 
 ## Node versions
 
