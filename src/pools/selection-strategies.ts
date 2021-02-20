@@ -114,7 +114,8 @@ class DynamicWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
 
 function getWorkerChoiceStrategy<Worker extends IWorker, Data, Response> (
   pool: IPoolInternal<Worker, Data, Response>,
-  workerChoiceStrategy: WorkerChoiceStrategy
+  workerChoiceStrategy: WorkerChoiceStrategy,
+  dynamicWorkerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategy.ROUND_ROBIN
 ): IWorkerChoiceStrategy<Worker> {
   switch (workerChoiceStrategy) {
     case WorkerChoiceStrategy.ROUND_ROBIN:
@@ -122,7 +123,7 @@ function getWorkerChoiceStrategy<Worker extends IWorker, Data, Response> (
     case WorkerChoiceStrategy.DYNAMIC:
       return new DynamicWorkerChoiceStrategy<Worker, Data, Response>(
         pool,
-        WorkerChoiceStrategy.ROUND_ROBIN
+        dynamicWorkerChoiceStrategy
       )
   }
 }
