@@ -1,8 +1,10 @@
 import type { MessageValue } from '../utility-types'
 import type { IPoolInternal } from './pool-internal'
 import { PoolEmitter } from './pool-internal'
-import type { WorkerChoiceStrategy } from './selection-strategies'
-import { WorkerChoiceStrategyContext } from './selection-strategies'
+import {
+  WorkerChoiceStrategy,
+  WorkerChoiceStrategyContext
+} from './selection-strategies'
 
 /**
  * An intentional empty function.
@@ -85,6 +87,10 @@ export interface PoolOptions<Worker> {
    * @see [Node events emitter.setMaxListeners(n)](https://nodejs.org/api/events.html#events_emitter_setmaxlisteners_n)
    */
   maxTasks?: number
+  /**
+   * The work choice strategy to use in this pool.
+   */
+  workerChoiceStrategy?: WorkerChoiceStrategy
 }
 
 /**
@@ -146,7 +152,12 @@ export abstract class AbstractPool<
     }
 
     this.emitter = new PoolEmitter()
-    this.workerChoiceStrategyContext = new WorkerChoiceStrategyContext(this)
+    this.workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      this,
+      opts.workerChoiceStrategy
+        ? opts.workerChoiceStrategy
+        : WorkerChoiceStrategy.ROUND_ROBIN
+    )
   }
 
   private checkFilePath (filePath: string) {
