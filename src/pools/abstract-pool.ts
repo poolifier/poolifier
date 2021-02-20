@@ -145,7 +145,7 @@ export abstract class AbstractPool<
     Worker,
     Data,
     Response
-  > = roundRobinChooseWorker
+  > = roundRobinChooseWorker.bind(this)
 
   /**
    * Constructs a new poolifier pool.
@@ -274,7 +274,7 @@ export abstract class AbstractPool<
   protected registerWorkerChoiceCallback (
     callback: WorkerChoiceStrategy<Worker, Data, Response>
   ): void {
-    this.workerChoiceCallback = callback
+    this.workerChoiceCallback = callback.bind(this)
   }
 
   /**

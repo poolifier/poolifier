@@ -59,7 +59,7 @@ function findFreeWorkerBasedOnTasks<Worker> (
  * If the max worker count is reached, the emitter will emit a `FullPool` event and it will fall back to using a round robin algorithm to distribute the load.
  *
  * @param poolReference Reference to the pool instance.
- * @param defaultChoiceCallback `defaultChoiceCallback` function.
+ * @param defaultWorkerChoiceCallback `defaultChoiceCallback` function.
  * @param createAndSetupWorker `createAndSetupWorker` bounded function.
  * @param registerWorkerMessageListener `registerWorkerMessageListener` bounded function.
  * @param destroyWorker `destroyWorker` bounded function.
@@ -71,7 +71,7 @@ export function dynamicallyChooseWorker<
   Response = unknown
 > (
   poolReference: IPoolInternal<Worker, Data, Response>,
-  defaultChoiceCallback: IPoolInternal<
+  defaultWorkerChoiceCallback: IPoolInternal<
     Worker,
     Data,
     Response
@@ -95,7 +95,7 @@ export function dynamicallyChooseWorker<
 
   if (poolReference.workers.length === poolReference.max) {
     poolReference.emitter.emit('FullPool')
-    return defaultChoiceCallback(poolReference)
+    return defaultWorkerChoiceCallback(poolReference)
   }
 
   // All workers are busy, create a new worker
