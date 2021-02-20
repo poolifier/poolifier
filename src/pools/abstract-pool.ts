@@ -1,6 +1,7 @@
 import type { MessageValue } from '../utility-types'
 import type { IPoolInternal } from './pool-internal'
 import { PoolEmitter } from './pool-internal'
+import type { WorkerChoiceStrategy } from './selection-strategies'
 import { WorkerChoiceStrategyContext } from './selection-strategies'
 
 /**
@@ -152,6 +153,20 @@ export abstract class AbstractPool<
     if (!filePath) {
       throw new Error('Please specify a file with a worker implementation')
     }
+  }
+
+  /** @inheritdoc */
+  public isDynamic (): boolean {
+    return false
+  }
+
+  /** @inheritdoc */
+  public setWorkerChoiceStrategy (
+    workerChoiceStrategy: WorkerChoiceStrategy
+  ): void {
+    this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
+      workerChoiceStrategy
+    )
   }
 
   /** @inheritdoc */

@@ -1,5 +1,4 @@
 import type { PoolOptions } from '../abstract-pool'
-import { WorkerChoiceStrategy } from '../selection-strategies'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
 
@@ -39,8 +38,10 @@ export class DynamicThreadPool<
       this
     )
     this.destroyWorker = this.destroyWorker.bind(this)
-    this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      WorkerChoiceStrategy.DYNAMIC
-    )
+  }
+
+  /** @inheritdoc */
+  public isDynamic (): boolean {
+    return true
   }
 }

@@ -1,4 +1,3 @@
-import { WorkerChoiceStrategy } from '../selection-strategies'
 import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
 
@@ -38,8 +37,10 @@ export class DynamicClusterPool<
       this
     )
     this.destroyWorker = this.destroyWorker.bind(this)
-    this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      WorkerChoiceStrategy.DYNAMIC
-    )
+  }
+
+  /** @inheritdoc */
+  public isDynamic (): boolean {
+    return true
   }
 }
