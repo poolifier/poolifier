@@ -1,5 +1,4 @@
 import type { MessageValue } from '../utility-types'
-import type { IPool } from './pool'
 import type { IPoolInternal } from './pool-internal'
 import { PoolEmitter } from './pool-internal'
 import { WorkerChoiceStrategyContext } from './selection-strategies'

@@ -11,6 +11,9 @@ export enum WorkerChoiceStrategy {
 }
 
 interface IWorkerChoiceStrategy<Worker extends IWorker> {
+  /**
+   * Choose a worker in the pool.
+   */
   choose(): Worker
 }
 
@@ -30,6 +33,7 @@ class RoundRobinWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
     this.pool = pool
   }
 
+  /** @inheritdoc */
   public choose () {
     const chosenWorker = this.pool.workers[this.pool.nextWorkerIndex]
     this.pool.nextWorkerIndex =
@@ -91,6 +95,7 @@ class DynamicWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
     return null
   }
 
+  /** @inheritdoc */
   public choose (): Worker {
     const freeWorker = this.findFreeWorkerBasedOnTasks()
     if (freeWorker) {
@@ -150,6 +155,11 @@ export class WorkerChoiceStrategyContext<
     this.setWorkerChoiceStrategy(workerChoiceStrategy)
   }
 
+  /**
+   * Set the worker choice strategy to use in the context.
+   *
+   * @param workerChoiceStrategy The strategy type.
+   */
   setWorkerChoiceStrategy (workerChoiceStrategy: WorkerChoiceStrategy): void {
     this.workerChoiceStrategy = getWorkerChoiceStrategy(
       this.pool,
