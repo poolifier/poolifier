@@ -1,10 +1,5 @@
 import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
-import type {
-  Draft,
-  JSONValue,
-  MessageValue,
-  JustTempValue
-} from '../../utility-types'
+import type { Draft, MessageValue, JustTempValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
 
@@ -20,15 +15,15 @@ export type ThreadWorkerWithMessageChannel = Worker & Draft<MessageChannel>
  *
  * This pool selects the threads in a round robin fashion.
  *
- * @template Data Type of data sent to the worker.
- * @template Response Type of response of execution.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
  *
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
 export class FixedThreadPool<
-  Data extends JSONValue = JSONValue,
-  Response extends JSONValue = JSONValue
+  Data = unknown,
+  Response = unknown
 > extends AbstractPool<ThreadWorkerWithMessageChannel, Data, Response> {
   /**
    * The tasks map.
