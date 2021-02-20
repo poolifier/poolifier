@@ -75,10 +75,12 @@ class LessUsedWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
     let minNumberOfTasks = Infinity
     let lessUsedWorker: Worker = {} as Worker
     for (const [worker, numberOfTasks] of this.pool.tasks) {
-      if (numberOfTasks < minNumberOfTasks) {
+      if (numberOfTasks === 0) {
+        lessUsedWorker = worker
+        break
+      } else if (numberOfTasks < minNumberOfTasks) {
         minNumberOfTasks = numberOfTasks
         lessUsedWorker = worker
-        if (numberOfTasks === 0) break
       }
     }
     return lessUsedWorker
