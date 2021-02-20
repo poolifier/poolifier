@@ -58,6 +58,7 @@ export class FixedClusterPool<
     return isMaster
   }
 
+  /** @inheritdoc */
   public destroyWorker (worker: Worker): void {
     this.sendToWorker(worker, { kill: 1 })
     worker.kill()
@@ -67,6 +68,7 @@ export class FixedClusterPool<
     worker.send(message)
   }
 
+  /** @inheritdoc */
   public registerWorkerMessageListener<Message extends Data | Response> (
     worker: Worker,
     listener: (message: MessageValue<Message>) => void

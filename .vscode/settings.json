@@ -15,6 +15,7 @@
     "prettierx",
     "serializable",
     "standardx",
-    "workerpool"
+    "workerpool",
+    "inheritdoc"
   ]
 }

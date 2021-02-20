@@ -44,6 +44,7 @@ export class FixedThreadPool<
     return isMainThread
   }
 
+  /** @inheritdoc */
   public async destroyWorker (
     worker: ThreadWorkerWithMessageChannel
   ): Promise<void> {
@@ -58,6 +59,7 @@ export class FixedThreadPool<
     worker.postMessage(message)
   }
 
+  /** @inheritdoc */
   public registerWorkerMessageListener<Message extends Data | Response> (
     messageChannel: ThreadWorkerWithMessageChannel,
     listener: (message: MessageValue<Message>) => void

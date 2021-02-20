@@ -99,31 +99,16 @@ export abstract class AbstractPool<
   Data = unknown,
   Response = unknown
 > implements IPool<Data, Response>, IPoolInternal<Worker, Data, Response> {
-  /**
-   * List of currently available workers.
-   */
+  /** @inheritdoc */
   public readonly workers: Worker[] = []
 
-  /**
-   * Index for the next worker.
-   */
+  /** @inheritdoc */
   public nextWorkerIndex: number = 0
 
-  /**
-   * The tasks map.
-   *
-   * - `key`: The `Worker`
-   * - `value`: Number of tasks currently in progress on the worker.
-   */
+  /** @inheritdoc */
   public readonly tasks: Map<Worker, number> = new Map<Worker, number>()
 
-  /**
-   * Emitter on which events can be listened to.
-   *
-   * Events that can currently be listened to:
-   *
-   * - `'FullPool'`
-   */
+  /** @inheritdoc */
   public readonly emitter: PoolEmitter
 
   /**
@@ -173,12 +158,7 @@ export abstract class AbstractPool<
     }
   }
 
-  /**
-   * Perform the task specified in the constructor with the data parameter.
-   *
-   * @param data The input for the specified task. This can only be serializable data.
-   * @returns Promise that will be resolved when the task is successfully completed.
-   */
+  /** @inheritdoc */
   public execute (data: Data): Promise<Response> {
     // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
@@ -189,18 +169,12 @@ export abstract class AbstractPool<
     return res
   }
 
-  /**
-   * Shut down every current worker in this pool.
-   */
+  /** @inheritdoc */
   public async destroy (): Promise<void> {
     await Promise.all(this.workers.map(worker => this.destroyWorker(worker)))
   }
 
-  /**
-   * Shut down given worker.
-   *
-   * @param worker A worker within `workers`.
-   */
+  /** @inheritdoc */
   public abstract destroyWorker (worker: Worker): void | Promise<void>
 
   /**
@@ -283,6 +257,7 @@ export abstract class AbstractPool<
     message: MessageValue<Data>
   ): void
 
+  /** @inheritdoc */
   public abstract registerWorkerMessageListener<
     Message extends Data | Response
   > (worker: Worker, listener: (message: MessageValue<Message>) => void): void
@@ -322,11 +297,7 @@ export abstract class AbstractPool<
    */
   protected abstract afterWorkerSetup (worker: Worker): void
 
-  /**
-   * Creates a new worker for this pool and sets it up completely.
-   *
-   * @returns New, completely set up worker.
-   */
+  /** @inheritdoc */
   public createAndSetupWorker (): Worker {
     const worker: Worker = this.createWorker()
 

@@ -66,6 +66,12 @@ export interface IPoolInternal<
    */
   destroyWorker(worker: Worker): void | Promise<void>
 
+  /**
+   * Register a listener callback on a given worker.
+   *
+   * @param worker A worker.
+   * @param listener A message listener callback.
+   */
   registerWorkerMessageListener<Message extends Data | Response>(
     worker: Worker,
     listener: (message: MessageValue<Message>) => void

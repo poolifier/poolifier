@@ -59,7 +59,8 @@ module.exports = {
           'readonly',
           'serializable',
           'unregister',
-          'workerpool'
+          'workerpool',
+          'inheritdoc'
         ],
         skipIfMatch: ['^@.*', '^plugin:.*']
       }
