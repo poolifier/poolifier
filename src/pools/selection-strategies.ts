@@ -57,7 +57,7 @@ class DynamicWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
    */
   constructor (
     private pool: IPoolInternal<Worker, Data, Response>,
-    workerChoiceStrategy: WorkerChoiceStrategy
+    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategy.ROUND_ROBIN
   ) {
     this.pool = pool
     if (workerChoiceStrategy !== WorkerChoiceStrategy.DYNAMIC) {

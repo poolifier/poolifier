@@ -132,8 +132,8 @@ export abstract class AbstractPool<
   protected nextMessageId: number = 0
 
   /**
-   * Callback function implementing the worker choice algorithm.
-   * Default to a function implementing a round robin choice algorithm.
+   * Worker choice strategy instance implementing the worker choice algorithm.
+   * Default to a strategy implementing a round robin algorithm.
    */
   protected workerChoiceStrategyContext: WorkerChoiceStrategyContext<
     Worker,
