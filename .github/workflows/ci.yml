@@ -47,7 +47,7 @@ jobs:
           CI: true
 
       - name: Sonar Code Analysis
-        if: "github.repository == 'pioardi/poolifier' && matrix.node-version == '12.x'"
+        if: "github.repository == 'pioardi/poolifier' && matrix.node-version == '14.x'"
         run: |
           npm run sonar
         env:
