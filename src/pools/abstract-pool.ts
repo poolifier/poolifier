@@ -300,10 +300,6 @@ export abstract class AbstractPool<
     Message extends Data | Response
   > (worker: Worker, listener: (message: MessageValue<Message>) => void): void
 
-  protected abstract unregisterWorkerMessageListener<
-    Message extends Data | Response
-  > (worker: Worker, listener: (message: MessageValue<Message>) => void): void
-
   protected internalExecute (
     worker: Worker,
     messageId: number

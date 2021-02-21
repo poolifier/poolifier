@@ -67,13 +67,6 @@ export class FixedThreadPool<
     messageChannel.port2?.on('message', listener)
   }
 
-  protected unregisterWorkerMessageListener<Message extends Data | Response> (
-    messageChannel: ThreadWorkerWithMessageChannel,
-    listener: (message: MessageValue<Message>) => void
-  ): void {
-    messageChannel.port2?.removeListener('message', listener)
-  }
-
   protected createWorker (): ThreadWorkerWithMessageChannel {
     return new Worker(this.filePath, {
       env: SHARE_ENV

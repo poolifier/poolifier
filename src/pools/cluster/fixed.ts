@@ -76,13 +76,6 @@ export class FixedClusterPool<
     worker.on('message', listener)
   }
 
-  protected unregisterWorkerMessageListener<Message extends Data | Response> (
-    worker: Worker,
-    listener: (message: MessageValue<Message>) => void
-  ): void {
-    worker.removeListener('message', listener)
-  }
-
   protected createWorker (): Worker {
     return fork(this.opts.env)
   }
