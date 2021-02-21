@@ -1,11 +1,11 @@
-const { DynamicClusterPool } = require('../../lib/index')
+const { DynamicClusterPool } = require('../../../lib/index')
 
 const size = 30
 
 const dynamicPool = new DynamicClusterPool(
   size / 2,
   size * 3,
-  './benchmarks/cluster/worker.js',
+  './benchmarks/internal/cluster/worker.js',
   {
     maxTasks: 10000
   }
