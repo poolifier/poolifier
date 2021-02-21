@@ -23,7 +23,7 @@ describe('Abstract pool test suite', () => {
         errorHandler: e => console.error(e)
       }
     )
-    // simulate worker not found.
+    // Simulate worker not found.
     pool.removeAllWorker()
     expect(() => pool.increaseWorkersTask()).toThrowError(expectedError)
   })
@@ -36,7 +36,7 @@ describe('Abstract pool test suite', () => {
         errorHandler: e => console.error(e)
       }
     )
-    // simulate worker not found.
+    // Simulate worker not found.
     pool.removeAllWorker()
     expect(() => pool.decreaseWorkersTasks()).toThrowError(expectedError)
   })
