@@ -1,4 +1,5 @@
 // IMPORT LIBRARIES
+/* eslint-disable node/no-missing-require */
 const { DynamicPool, StaticPool } = require('node-worker-threads-pool')
 // FINISH IMPORT LIBRARIES
 // IMPORT FUNCTION TO BENCH

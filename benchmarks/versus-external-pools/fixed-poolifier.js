@@ -1,5 +1,6 @@
 // IMPORT LIBRARIES
 /* eslint-disable node/no-unpublished-require */
+/* eslint-disable node/no-missing-require */
 const { FixedThreadPool, DynamicThreadPool } = require('../../lib/index')
 // FINISH IMPORT LIBRARIES
 const size = process.env.POOL_SIZE
