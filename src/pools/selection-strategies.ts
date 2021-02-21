@@ -214,7 +214,7 @@ export class WorkerChoiceStrategyContext<
    * @param workerChoiceStrategy The worker choice strategy.
    */
   public constructor (
-    private pool: IPoolInternal<Worker, Data, Response>,
+    private readonly pool: IPoolInternal<Worker, Data, Response>,
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     this.setWorkerChoiceStrategy(workerChoiceStrategy)
