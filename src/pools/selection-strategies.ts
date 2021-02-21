@@ -7,11 +7,11 @@ import type { IPoolInternal } from './pool-internal'
  */
 export const WorkerChoiceStrategies = Object.freeze({
   /**
-   * TODO: Add description.
+   * Round robin worker selection strategy.
    */
   ROUND_ROBIN: 'ROUND_ROBIN',
   /**
-   * TODO: Add description.
+   * Less recently used worker selection strategy.
    */
   LESS_RECENTLY_USED: 'LESS_RECENTLY_USED'
 } as const)
