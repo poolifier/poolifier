@@ -1,7 +1,5 @@
 // IMPORT LIBRARIES
-/* eslint-disable node/no-unpublished-require */
-/* eslint-disable node/no-missing-require */
-const { FixedThreadPool, DynamicThreadPool } = require('../../lib/index')
+const { FixedThreadPool, DynamicThreadPool } = require('poolifier')
 // FINISH IMPORT LIBRARIES
 const size = process.env.POOL_SIZE
 const iterations = process.env.NUM_ITERATIONS

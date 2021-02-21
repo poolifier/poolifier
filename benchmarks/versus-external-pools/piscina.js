@@ -1,6 +1,5 @@
-// IMPORT LIBRARIES
 /* eslint-disable spellcheck/spell-checker */
-/* eslint-disable node/no-missing-require */
+// IMPORT LIBRARIES
 const Piscina = require('piscina')
 // FINISH IMPORT LIBRARIES
 const size = process.env.POOL_SIZE
