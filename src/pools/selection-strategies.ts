@@ -230,15 +230,12 @@ export class WorkerChoiceStrategyContext<
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ): IWorkerChoiceStrategy<Worker> {
     if (this.pool.isDynamic()) {
-      return new DynamicPoolWorkerChoiceStrategy<Worker, Data, Response>(
+      return new DynamicPoolWorkerChoiceStrategy(
         this.pool,
         workerChoiceStrategy
       )
     }
-    return getWorkerChoiceStrategy<Worker, Data, Response>(
-      this.pool,
-      workerChoiceStrategy
-    )
+    return getWorkerChoiceStrategy(this.pool, workerChoiceStrategy)
   }
 
   /**
