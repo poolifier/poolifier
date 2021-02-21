@@ -49,7 +49,6 @@ export class FixedThreadPool<
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
   ) {
     super(numberOfThreads, filePath, opts)
-    // this.promiseMap = new Map()
   }
 
   protected isMain (): boolean {
