@@ -59,14 +59,6 @@ describe('Dynamic thread pool test suite', () => {
     expect(closedThreads).toBe(min)
   })
 
-  it('Validations test', () => {
-    expect(() => {
-      const pool1 = new DynamicThreadPool()
-    }).toThrowError(
-      new Error('Please specify a file with a worker implementation')
-    )
-  })
-
   it('Should work even without opts in input', async () => {
     const pool1 = new DynamicThreadPool(
       1,
