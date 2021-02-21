@@ -12,7 +12,7 @@ const pool = new DynamicClusterPool(
   }
 )
 
-describe('Dynamic cluster pool test suite ', () => {
+describe('Dynamic cluster pool test suite', () => {
   it('Verify that the function is executed in a worker cluster', async () => {
     const result = await pool.execute({ test: 'test' })
     expect(result).toBeDefined()
