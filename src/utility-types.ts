@@ -40,12 +40,15 @@ export interface MessageValue<
 }
 
 /**
- * TODO: Needs description.
+ * An object holding the worker that will be used to resolve/rejects the promise later on.
  *
  * @template Worker Type of worker.
  * @template Response Type of response of execution. This can only be serializable data.
  */
-export interface ThisNeedsAName<Worker extends IWorker, Response = unknown> {
+export interface PromiseWorkerResponseWrapper<
+  Worker extends IWorker,
+  Response = unknown
+> {
   /**
    * Resolve callback to fulfill the promise.
    */
@@ -54,5 +57,8 @@ export interface ThisNeedsAName<Worker extends IWorker, Response = unknown> {
    * Reject callback to reject the promise.
    */
   readonly reject: (reason?: string) => void
+  /**
+   * The worker that has the assigned task.
+   */
   readonly worker: Worker
 }

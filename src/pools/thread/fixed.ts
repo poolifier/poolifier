@@ -1,5 +1,9 @@
 import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
-import type { Draft, MessageValue, ThisNeedsAName } from '../../utility-types'
+import type {
+  Draft,
+  MessageValue,
+  PromiseWorkerResponseWrapper
+} from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
 
@@ -35,10 +39,10 @@ export class FixedThreadPool<
    */
   protected readonly promiseMap: Map<
     number,
-    ThisNeedsAName<ThreadWorkerWithMessageChannel, Response>
+    PromiseWorkerResponseWrapper<ThreadWorkerWithMessageChannel, Response>
   > = new Map<
     number,
-    ThisNeedsAName<ThreadWorkerWithMessageChannel, Response>
+    PromiseWorkerResponseWrapper<ThreadWorkerWithMessageChannel, Response>
   >()
 
   /**
