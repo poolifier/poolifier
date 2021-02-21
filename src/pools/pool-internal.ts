@@ -48,7 +48,9 @@ export interface IPoolInternal<
   readonly max?: number
 
   /**
-   * Is this pool dynamic?.
+   * Whether the pool is dynamic or not.
+   *
+   * If it is dynamic, it provides the `max` property.
    */
   isDynamic(): boolean
 
