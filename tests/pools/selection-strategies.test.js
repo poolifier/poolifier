@@ -37,4 +37,21 @@ describe('Selection strategies test suite', () => {
     const res = await TestUtils.waitExits(poolWithLessRecentlyUsed, max - min)
     expect(res).toBe(max - min)
   })
+
+  it('Verify unknown strategies throw error', () => {
+    expect(
+      () =>
+        new DynamicThreadPool(
+          min,
+          max,
+          './tests/worker-files/thread/testWorker.js',
+          {
+            maxTasks: 1000,
+            workerChoiceStrategy: 'UNKNOWN_STRATEGY'
+          }
+        )
+    ).toThrowError(
+      new Error("Worker choice strategy 'UNKNOWN_STRATEGY' not found")
+    )
+  })
 })
