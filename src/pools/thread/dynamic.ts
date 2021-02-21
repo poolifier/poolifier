@@ -33,11 +33,6 @@ export class DynamicThreadPool<
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
   ) {
     super(min, filePath, opts)
-    this.createAndSetupWorker = this.createAndSetupWorker.bind(this)
-    this.registerWorkerMessageListener = this.registerWorkerMessageListener.bind(
-      this
-    )
-    this.destroyWorker = this.destroyWorker.bind(this)
   }
 
   /** @inheritdoc */
