@@ -7,7 +7,7 @@ import type { IPoolInternal } from './pool-internal'
  */
 export enum WorkerChoiceStrategy {
   ROUND_ROBIN = 'RoundRobin',
-  LESS_USED = 'LessUsed'
+  LESS_RECENTLY_USED = 'LessRecentlyUsed'
 }
 
 /**
@@ -55,14 +55,17 @@ class RoundRobinWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
 }
 
 /**
- * Selects the less used worker.
+ * Selects the less recently used worker.
  *
  * @template Worker Type of worker which manages the strategy.
  * @template Data Type of data sent to the worker. This can only be serializable data.
  * @template Response Type of response of execution. This can only be serializable data.
  */
-class LessUsedWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
-  implements IWorkerChoiceStrategy<Worker> {
+class LessRecentlyUsedWorkerChoiceStrategy<
+  Worker extends IWorker,
+  Data,
+  Response
+> implements IWorkerChoiceStrategy<Worker> {
   /**
    * @param pool The pool instance.
    */
@@ -73,17 +76,17 @@ class LessUsedWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
   /** @inheritdoc */
   public choose (): Worker {
     let minNumberOfTasks = Infinity
-    let lessUsedWorker: Worker = {} as Worker
+    let lessRecentlyUsedWorker: Worker = {} as Worker
     for (const [worker, numberOfTasks] of this.pool.tasks) {
       if (numberOfTasks === 0) {
-        lessUsedWorker = worker
+        lessRecentlyUsedWorker = worker
         break
       } else if (numberOfTasks < minNumberOfTasks) {
         minNumberOfTasks = numberOfTasks
-        lessUsedWorker = worker
+        lessRecentlyUsedWorker = worker
       }
     }
-    return lessUsedWorker
+    return lessRecentlyUsedWorker
   }
 }
 
@@ -101,8 +104,10 @@ function getWorkerChoiceStrategy<Worker extends IWorker, Data, Response> (
   switch (workerChoiceStrategy) {
     case WorkerChoiceStrategy.ROUND_ROBIN:
       return new RoundRobinWorkerChoiceStrategy<Worker, Data, Response>(pool)
-    case WorkerChoiceStrategy.LESS_USED:
-      return new LessUsedWorkerChoiceStrategy<Worker, Data, Response>(pool)
+    case WorkerChoiceStrategy.LESS_RECENTLY_USED:
+      return new LessRecentlyUsedWorkerChoiceStrategy<Worker, Data, Response>(
+        pool
+      )
   }
 }
 
