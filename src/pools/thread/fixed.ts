@@ -28,8 +28,10 @@ export class FixedThreadPool<
   /**
    * The tasks map.
    *
-   * - `key`: The `Worker`
-   * - `value`: Number of tasks currently in progress on the worker.
+   * - `key`: The is the message id of each task submitted.
+   * - `value`: An object that contains the worker, the resolve function and the reject function.
+   *
+   * When we receive a message from the worker we get a map entry and resolve/reject the promise based on the message.
    */
   protected readonly promiseMap: Map<number, any> = new Map<
     number,
@@ -115,8 +117,7 @@ export class FixedThreadPool<
     const listener: (message: MessageValue<Response>) => void = message => {
       if (message.id) {
         const value = this.promiseMap.get(message.id)
-        // FIXME this check is really not needed I need to understand why TS ask for it.
-        if (value && value.worker && value.resolve && value.reject) {
+        if (value) {
           this.decreaseWorkersTasks(value.worker)
           if (message.error) value.reject(message.error)
           else value.resolve(message.data as Response)
