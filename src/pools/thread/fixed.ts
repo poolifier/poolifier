@@ -44,7 +44,8 @@ export class FixedThreadPool<
     return isMainThread
   }
 
-  protected async destroyWorker (
+  /** @inheritdoc */
+  public async destroyWorker (
     worker: ThreadWorkerWithMessageChannel
   ): Promise<void> {
     this.sendToWorker(worker, { kill: 1 })
@@ -58,7 +59,8 @@ export class FixedThreadPool<
     worker.postMessage(message)
   }
 
-  protected registerWorkerMessageListener<Message extends Data | Response> (
+  /** @inheritdoc */
+  public registerWorkerMessageListener<Message extends Data | Response> (
     messageChannel: ThreadWorkerWithMessageChannel,
     listener: (message: MessageValue<Message>) => void
   ): void {
@@ -83,7 +85,7 @@ export class FixedThreadPool<
     worker.postMessage({ parent: port1 }, [port1])
     worker.port1 = port1
     worker.port2 = port2
-    // we will attach a listener for every task,
+    // We will attach a listener for every task,
     // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
     worker.port2.setMaxListeners(this.opts.maxTasks ?? 1000)
   }

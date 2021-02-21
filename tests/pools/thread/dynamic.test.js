@@ -12,7 +12,7 @@ const pool = new DynamicThreadPool(
   }
 )
 
-describe('Dynamic thread pool test suite ', () => {
+describe('Dynamic thread pool test suite', () => {
   it('Verify that the function is executed in a worker thread', async () => {
     const result = await pool.execute({ test: 'test' })
     expect(result).toBeDefined()

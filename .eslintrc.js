@@ -50,12 +50,13 @@ module.exports = {
       'warn',
       {
         skipWords: [
-          'poolifier',
           'christopher',
           'ecma',
           'enum',
+          'inheritdoc',
           'jsdoc',
           'pioardi',
+          'poolifier',
           'readonly',
           'serializable',
           'unregister',
@@ -70,6 +71,8 @@ module.exports = {
       files: ['src/**/*.ts'],
       extends: 'plugin:jsdoc/recommended',
       rules: {
+        'no-useless-constructor': 'off',
+
         'jsdoc/match-description': [
           'warn',
           {

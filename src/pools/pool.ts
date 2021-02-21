@@ -1,3 +1,5 @@
+import type { WorkerChoiceStrategy } from './selection-strategies'
+
 /**
  * Contract definition for a poolifier pool.
  *
@@ -16,4 +18,10 @@ export interface IPool<Data = unknown, Response = unknown> {
    * Shut down every current worker in this pool.
    */
   destroy(): Promise<void>
+  /**
+   * Set the worker choice strategy in this pool.
+   *
+   * @param workerChoiceStrategy The worker choice strategy.
+   */
+  setWorkerChoiceStrategy(workerChoiceStrategy: WorkerChoiceStrategy): void
 }
