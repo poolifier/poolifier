@@ -168,7 +168,7 @@ export abstract class AbstractPool<
   }
 
   private checkNumberOfWorkers (numberOfWorkers: number): void {
-    if (numberOfWorkers === undefined) {
+    if (numberOfWorkers == null) {
       throw new Error(
         'Cannot instantiate a pool without specifying the number of workers'
       )
@@ -180,7 +180,7 @@ export abstract class AbstractPool<
       throw new Error(
         'Cannot instantiate a pool with a negative number of workers'
       )
-    } else if (!this.isDynamic() && numberOfWorkers <= 0) {
+    } else if (!this.isDynamic() && numberOfWorkers === 0) {
       throw new Error('Cannot instantiate a fixed pool with no worker')
     }
   }

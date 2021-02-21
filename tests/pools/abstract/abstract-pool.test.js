@@ -1,6 +1,5 @@
 const expect = require('expect')
-const { FixedThreadPool } = require('../../../lib/index')
-const { FixedClusterPool } = require('../../../lib/index')
+const { FixedThreadPool, FixedClusterPool } = require('../../../lib/index')
 const expectedError = new Error('Worker could not be found in tasks map')
 
 class StubPoolWithTasksMapClear extends FixedThreadPool {
