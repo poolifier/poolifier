@@ -1,5 +1,9 @@
 const expect = require('expect')
-const { WorkerChoiceStrategies, DynamicThreadPool } = require('../../lib/index')
+const {
+  WorkerChoiceStrategies,
+  DynamicThreadPool,
+  FixedThreadPool
+} = require('../../lib/index')
 const TestUtils = require('../test-utils')
 
 describe('Selection strategies test suite', () => {
@@ -9,10 +13,8 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify LESS_RECENTLY_USED is taken', async () => {
-    const min = 1
     const max = 3
-    const pool = new DynamicThreadPool(
-      min,
+    const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
