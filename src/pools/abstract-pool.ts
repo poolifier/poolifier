@@ -166,7 +166,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private checkNumberOfWorkers (numberOfWorkers: number) {
+  private checkNumberOfWorkers (numberOfWorkers: number): void {
     if (numberOfWorkers <= 0) {
       throw new Error('Cannot instantiate a pool with no worker')
     }
