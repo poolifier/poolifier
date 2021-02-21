@@ -32,7 +32,15 @@ const asyncPool = new FixedThreadPool(
   { maxTasks: maxTasks }
 )
 
-describe('Fixed thread pool test suite ', () => {
+describe('Fixed thread pool test suite', () => {
+  after('Destroy all pools', async () => {
+    // We need to clean up the resources after our test
+    await echoPool.destroy()
+    await asyncPool.destroy()
+    await errorPool.destroy()
+    await emptyPool.destroy()
+  })
+
   it('Choose worker round robin test', async () => {
     const results = new Set()
     for (let i = 0; i < numberOfThreads; i++) {
@@ -107,5 +115,7 @@ describe('Fixed thread pool test suite ', () => {
     )
     const res = await pool1.execute({ test: 'test' })
     expect(res).toBeFalsy()
+    // We need to clean up the resources after our test
+    await pool1.destroy()
   })
 })

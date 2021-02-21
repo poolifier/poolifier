@@ -25,7 +25,6 @@ const errorPool = new FixedClusterPool(
     errorHandler: e => console.error(e)
   }
 )
-
 const asyncErrorPool = new FixedClusterPool(
   1,
   './tests/worker-files/cluster/asyncErrorWorker.js',
@@ -41,7 +40,7 @@ const asyncPool = new FixedClusterPool(
   }
 )
 
-describe('Fixed cluster pool test suite ', () => {
+describe('Fixed cluster pool test suite', () => {
   after('Destroy all pools', async () => {
     // We need to clean up the resources after our test
     await echoPool.destroy()

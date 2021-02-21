@@ -58,7 +58,8 @@ export class FixedClusterPool<
     return isMaster
   }
 
-  protected destroyWorker (worker: Worker): void {
+  /** @inheritdoc */
+  public destroyWorker (worker: Worker): void {
     this.sendToWorker(worker, { kill: 1 })
     worker.kill()
   }
@@ -67,7 +68,8 @@ export class FixedClusterPool<
     worker.send(message)
   }
 
-  protected registerWorkerMessageListener<Message extends Data | Response> (
+  /** @inheritdoc */
+  public registerWorkerMessageListener<Message extends Data | Response> (
     worker: Worker,
     listener: (message: MessageValue<Message>) => void
   ): void {
@@ -86,7 +88,7 @@ export class FixedClusterPool<
   }
 
   protected afterWorkerSetup (worker: Worker): void {
-    // we will attach a listener for every task,
+    // We will attach a listener for every task,
     // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
     worker.setMaxListeners(this.opts.maxTasks ?? 1000)
   }
