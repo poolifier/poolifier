@@ -1,5 +1,6 @@
 const expect = require('expect')
 const { FixedThreadPool } = require('../../../lib/index')
+const { FixedClusterPool } = require('../../../lib/index')
 const expectedError = new Error('Worker could not be found in tasks map')
 
 class StubPoolWithTasksMapClear extends FixedThreadPool {
@@ -76,9 +77,9 @@ describe('Abstract pool test suite', () => {
 
   it('Verify that a negative number of workers is checked', () => {
     expect(() => {
-      const pool = new FixedThreadPool(
+      const pool = new FixedClusterPool(
         -1,
-        './tests/worker-files/thread/testWorker.js'
+        './tests/worker-files/cluster/testWorker.js'
       ).toThrowError(
         new Error('Cannot instantiate a pool with a negative number of workers')
       )
