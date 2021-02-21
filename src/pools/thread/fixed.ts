@@ -1,5 +1,5 @@
 import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
-import type { Draft, MessageValue, JustTempValue } from '../../utility-types'
+import type { Draft, MessageValue, ThisNeedsAName } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
 
@@ -26,16 +26,19 @@ export class FixedThreadPool<
   Response = unknown
 > extends AbstractPool<ThreadWorkerWithMessageChannel, Data, Response> {
   /**
-   * The tasks map.
+   * The promise map.
    *
-   * - `key`: The is the message id of each task submitted.
+   * - `key`: This is the message ID of each submitted task.
    * - `value`: An object that contains the worker, the resolve function and the reject function.
    *
    * When we receive a message from the worker we get a map entry and resolve/reject the promise based on the message.
    */
-  protected readonly promiseMap: Map<number, any> = new Map<
+  protected readonly promiseMap: Map<
     number,
-    JustTempValue
+    ThisNeedsAName<ThreadWorkerWithMessageChannel, Response>
+  > = new Map<
+    number,
+    ThisNeedsAName<ThreadWorkerWithMessageChannel, Response>
   >()
 
   /**
@@ -98,11 +101,7 @@ export class FixedThreadPool<
     messageId: number
   ): Promise<Response> {
     return new Promise<Response>((resolve, reject) => {
-      this.promiseMap.set(messageId, {
-        resolve: resolve,
-        reject: reject,
-        worker: worker
-      })
+      this.promiseMap.set(messageId, { resolve, reject, worker })
     })
   }
 
@@ -112,7 +111,7 @@ export class FixedThreadPool<
     worker.port1 = port1
     worker.port2 = port2
     // We will attach a listener for every task,
-    // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
+    // when the task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size.
     worker.port2.setMaxListeners(this.opts.maxTasks ?? 1000)
     const listener: (message: MessageValue<Response>) => void = message => {
       if (message.id) {

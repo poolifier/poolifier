@@ -1,5 +1,6 @@
 import type { Worker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
+import type { IWorker } from './pools/abstract-pool'
 import type { KillBehavior } from './worker/worker-options'
 
 /**
@@ -39,16 +40,19 @@ export interface MessageValue<
 }
 
 /**
+ * TODO: Needs description.
  *
+ * @template Worker Type of worker.
+ * @template Response Type of response of execution. This can only be serializable data.
  */
-export type JustTempValue = {
+export interface ThisNeedsAName<Worker extends IWorker, Response = unknown> {
   /**
-   * Input data that will be passed to the worker.
+   * Resolve callback to fulfill the promise.
    */
-  readonly resolve: (value: T | PromiseLike<T>) => void
+  readonly resolve: (value: Response) => void
   /**
-   * ID of the message.
+   * Reject callback to reject the promise.
    */
-  readonly reject: (reason?: T) => void
-  readonly worker: Worker | MessagePort | unknown
+  readonly reject: (reason?: string) => void
+  readonly worker: Worker
 }
