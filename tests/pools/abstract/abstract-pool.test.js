@@ -14,7 +14,7 @@ class StubPoolWithIsMainMethod extends FixedThreadPool {
   }
 }
 
-describe('Abstract pool test suite ', () => {
+describe('Abstract pool test suite', () => {
   it('Simulate worker not found during increaseWorkersTask', () => {
     const pool = new StubPoolWithTasksMapClear(
       1,
