@@ -120,6 +120,7 @@ export abstract class AbstractPool<
 
   /**
    * Worker choice strategy instance implementing the worker choice algorithm.
+   *
    * Default to a strategy implementing a round robin algorithm.
    */
   protected workerChoiceStrategyContext: WorkerChoiceStrategyContext<
