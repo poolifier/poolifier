@@ -1,9 +1,5 @@
 import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
-import type {
-  Draft,
-  MessageValue,
-  PromiseWorkerResponseWrapper
-} from '../../utility-types'
+import type { Draft, MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
 
@@ -29,22 +25,6 @@ export class FixedThreadPool<
   Data = unknown,
   Response = unknown
 > extends AbstractPool<ThreadWorkerWithMessageChannel, Data, Response> {
-  /**
-   * The promise map.
-   *
-   * - `key`: This is the message ID of each submitted task.
-   * - `value`: An object that contains the worker, the resolve function and the reject function.
-   *
-   * When we receive a message from the worker we get a map entry and resolve/reject the promise based on the message.
-   */
-  protected readonly promiseMap: Map<
-    number,
-    PromiseWorkerResponseWrapper<ThreadWorkerWithMessageChannel, Response>
-  > = new Map<
-    number,
-    PromiseWorkerResponseWrapper<ThreadWorkerWithMessageChannel, Response>
-  >()
-
   /**
    * Constructs a new poolifier fixed thread pool.
    *
@@ -100,15 +80,6 @@ export class FixedThreadPool<
     })
   }
 
-  protected internalExecute (
-    worker: Worker,
-    messageId: number
-  ): Promise<Response> {
-    return new Promise<Response>((resolve, reject) => {
-      this.promiseMap.set(messageId, { resolve, reject, worker })
-    })
-  }
-
   protected afterWorkerSetup (worker: ThreadWorkerWithMessageChannel): void {
     const { port1, port2 } = new MessageChannel()
     worker.postMessage({ parent: port1 }, [port1])
@@ -117,17 +88,6 @@ export class FixedThreadPool<
     // We will attach a listener for every task,
     // when the task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size.
     worker.port2.setMaxListeners(this.opts.maxTasks ?? 1000)
-    const listener: (message: MessageValue<Response>) => void = message => {
-      if (message.id) {
-        const value = this.promiseMap.get(message.id)
-        if (value) {
-          this.decreaseWorkersTasks(value.worker)
-          if (message.error) value.reject(message.error)
-          else value.resolve(message.data as Response)
-          this.promiseMap.delete(message.id)
-        }
-      }
-    }
-    this.registerWorkerMessageListener(worker, listener)
+    this.registerWorkerMessageListener(worker, super.workerListener())
   }
 }

@@ -91,5 +91,6 @@ export class FixedClusterPool<
     // We will attach a listener for every task,
     // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
     worker.setMaxListeners(this.opts.maxTasks ?? 1000)
+    this.registerWorkerMessageListener(worker, super.workerListener())
   }
 }
