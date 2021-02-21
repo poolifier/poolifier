@@ -25,7 +25,6 @@ const errorPool = new FixedClusterPool(
     errorHandler: e => console.error(e)
   }
 )
-
 const asyncErrorPool = new FixedClusterPool(
   1,
   './tests/worker-files/cluster/asyncErrorWorker.js',
