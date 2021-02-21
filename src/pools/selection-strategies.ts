@@ -121,6 +121,10 @@ function getWorkerChoiceStrategy<Worker extends IWorker, Data, Response> (
       return new RoundRobinWorkerChoiceStrategy(pool)
     case WorkerChoiceStrategies.LESS_RECENTLY_USED:
       return new LessRecentlyUsedWorkerChoiceStrategy(pool)
+    default:
+      throw new Error(
+        `Worker choice strategy '${workerChoiceStrategy}' not found`
+      )
   }
 }
 
