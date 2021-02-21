@@ -86,24 +86,22 @@ export class FixedThreadPool<
   }
 
   protected createWorker (): ThreadWorkerWithMessageChannel {
-    const worker = new Worker(this.filePath, {
+    return new Worker(this.filePath, {
       env: SHARE_ENV
     })
-    return worker
   }
 
   protected internalExecute (
     worker: Worker,
     messageId: number
   ): Promise<Response> {
-    const promise = new Promise<Response>((resolve, reject) => {
+    return new Promise<Response>((resolve, reject) => {
       this.promiseMap.set(messageId, {
         resolve: resolve,
         reject: reject,
         worker: worker
       })
     })
-    return promise
   }
 
   protected afterWorkerSetup (worker: ThreadWorkerWithMessageChannel): void {
