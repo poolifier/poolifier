@@ -10,9 +10,7 @@ import {
 /**
  * An intentional empty function.
  */
-function emptyFunction () {
-  // intentionally left blank
-}
+const EMPTY_FUNCTION: () => void = () => {}
 
 /**
  * Callback invoked if the worker raised an error.
@@ -159,7 +157,7 @@ export abstract class AbstractPool<
     )
   }
 
-  private checkFilePath (filePath: string) {
+  private checkFilePath (filePath: string): void {
     if (!filePath) {
       throw new Error('Please specify a file with a worker implementation')
     }
@@ -235,7 +233,7 @@ export abstract class AbstractPool<
    * @param worker Worker whose tasks are set.
    * @param step Worker number of tasks step.
    */
-  private stepWorkerNumberOfTasks (worker: Worker, step: number) {
+  private stepWorkerNumberOfTasks (worker: Worker, step: number): void {
     const numberOfTasksInProgress = this.tasks.get(worker)
     if (numberOfTasksInProgress !== undefined) {
       this.tasks.set(worker, numberOfTasksInProgress + step)
@@ -322,9 +320,9 @@ export abstract class AbstractPool<
   public createAndSetupWorker (): Worker {
     const worker: Worker = this.createWorker()
 
-    worker.on('error', this.opts.errorHandler ?? emptyFunction)
-    worker.on('online', this.opts.onlineHandler ?? emptyFunction)
-    worker.on('exit', this.opts.exitHandler ?? emptyFunction)
+    worker.on('error', this.opts.errorHandler ?? EMPTY_FUNCTION)
+    worker.on('online', this.opts.onlineHandler ?? EMPTY_FUNCTION)
+    worker.on('exit', this.opts.exitHandler ?? EMPTY_FUNCTION)
     worker.once('exit', () => this.removeWorker(worker))
 
     this.workers.push(worker)

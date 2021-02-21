@@ -101,7 +101,7 @@ export abstract class AbstractWorker<
    *
    * @param fn The function that should be defined.
    */
-  private checkFunctionInput (fn: (data: Data) => Response) {
+  private checkFunctionInput (fn: (data: Data) => Response): void {
     if (!fn) throw new Error('fn parameter is mandatory')
   }
 
