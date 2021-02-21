@@ -45,10 +45,10 @@ export type JustTempValue = {
   /**
    * Input data that will be passed to the worker.
    */
-  readonly resolve?: (value: T | PromiseLike<T>) => void
+  readonly resolve: (value: T | PromiseLike<T>) => void
   /**
    * ID of the message.
    */
-  readonly reject?: (reason?: T) => void
+  readonly reject: (reason?: T) => void
   readonly worker: Worker | MessagePort | unknown
 }

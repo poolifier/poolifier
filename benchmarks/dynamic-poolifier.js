@@ -1,5 +1,5 @@
 // IMPORT LIBRARIES
-const { FixedThreadPool, DynamicThreadPool } = require('../../lib/index')
+const { FixedThreadPool, DynamicThreadPool } = require('../lib/index')
 // FINISH IMPORT LIBRARIES
 const size = process.env.POOL_SIZE
 const iterations = process.env.NUM_ITERATIONS
