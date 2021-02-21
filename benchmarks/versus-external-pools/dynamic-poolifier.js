@@ -22,7 +22,6 @@ async function run () {
     promises.push(dynamicPool.execute(data))
   }
   await Promise.all(promises)
-  /* eslint-disable no-process-exit */
   process.exit()
 }
 

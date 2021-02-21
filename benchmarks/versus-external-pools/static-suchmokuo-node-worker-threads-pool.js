@@ -21,7 +21,6 @@ async function run () {
     promises.push(pool.exec(data))
   }
   await Promise.all(promises)
-  /* eslint-disable no-process-exit */
   process.exit()
 }
 

@@ -1,4 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
 // IMPORT LIBRARIES
 const Piscina = require('piscina')
 // FINISH IMPORT LIBRARIES
@@ -21,7 +20,6 @@ async function run () {
     promises.push(piscina.runTask(data))
   }
   await Promise.all(promises)
-  /* eslint-disable no-process-exit */
   process.exit()
 }
 
