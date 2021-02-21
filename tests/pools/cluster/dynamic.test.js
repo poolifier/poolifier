@@ -103,4 +103,15 @@ describe('Dynamic cluster pool test suite', () => {
     // We need to clean up the resources after our test
     await longRunningPool.destroy()
   })
+
+  it('Verify that a pool with zero worker can be instantiated', async () => {
+    const pool = new DynamicClusterPool(
+      0,
+      max,
+      './tests/worker-files/cluster/testWorker.js'
+    )
+    expect(pool).toBeInstanceOf(DynamicClusterPool)
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
 })

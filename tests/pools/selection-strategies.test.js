@@ -4,7 +4,6 @@ const {
   DynamicThreadPool,
   FixedThreadPool
 } = require('../../lib/index')
-const TestUtils = require('../test-utils')
 
 describe('Selection strategies test suite', () => {
   it('Verify that WorkerChoiceStrategies enumeration provides string values', () => {
@@ -12,7 +11,7 @@ describe('Selection strategies test suite', () => {
     expect(WorkerChoiceStrategies.LESS_RECENTLY_USED).toBe('LESS_RECENTLY_USED')
   })
 
-  it('Verify LESS_RECENTLY_USED is taken', async () => {
+  it('Verify LESS_RECENTLY_USED strategy is taken', async () => {
     const max = 3
     const pool = new FixedThreadPool(
       max,

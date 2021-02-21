@@ -118,4 +118,10 @@ describe('Fixed thread pool test suite', () => {
     // We need to clean up the resources after our test
     await pool1.destroy()
   })
+
+  it('Verify that a pool with zero worker fails', async () => {
+    expect(
+      () => new FixedThreadPool(0, './tests/worker-files/thread/testWorker.js')
+    ).toThrowError(new Error('Cannot instantiate a fixed pool with no worker'))
+  })
 })

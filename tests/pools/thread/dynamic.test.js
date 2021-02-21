@@ -121,4 +121,15 @@ describe('Dynamic thread pool test suite', () => {
     // We need to clean up the resources after our test
     await longRunningPool.destroy()
   })
+
+  it('Verify that a pool with zero worker can be instantiated', async () => {
+    const pool = new DynamicThreadPool(
+      0,
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(pool).toBeInstanceOf(DynamicThreadPool)
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
 })
