@@ -56,6 +56,14 @@ describe('Dynamic cluster pool test suite', () => {
     expect(res).toBe(min)
   })
 
+  it('Validation of inputs test', () => {
+    expect(() => {
+      const pool1 = new DynamicClusterPool(min)
+    }).toThrowError(
+      new Error('Please specify a file with a worker implementation')
+    )
+  })
+
   it('Should work even without opts in input', async () => {
     const pool1 = new DynamicClusterPool(
       1,
