@@ -10,7 +10,9 @@ import {
 /**
  * An intentional empty function.
  */
-const EMPTY_FUNCTION: () => void = () => {}
+const EMPTY_FUNCTION: () => void = () => {
+  /* Intentionally empty */
+}
 
 /**
  * Callback invoked if the worker raised an error.
