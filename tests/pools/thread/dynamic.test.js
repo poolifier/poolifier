@@ -75,6 +75,8 @@ describe('Dynamic thread pool test suite', () => {
     )
     const res = await pool1.execute({ test: 'test' })
     expect(res).toBeFalsy()
+    // We need to clean up the resources after our test
+    await pool1.destroy()
   })
 
   it('Verify scale thread up and down is working when long running task is used:hard', async () => {
@@ -94,6 +96,8 @@ describe('Dynamic thread pool test suite', () => {
     expect(longRunningPool.workers.length).toBe(max)
     await TestUtils.waitExits(longRunningPool, max - min)
     expect(longRunningPool.workers.length).toBe(min)
+    // We need to clean up the resources after our test
+    await longRunningPool.destroy()
   })
 
   it('Verify scale thread up and down is working when long running task is used:soft', async () => {
@@ -114,5 +118,7 @@ describe('Dynamic thread pool test suite', () => {
     await TestUtils.sleep(1500)
     // Here we expect the workers to be at the max size since that the task is still running
     expect(longRunningPool.workers.length).toBe(max)
+    // We need to clean up the resources after our test
+    await longRunningPool.destroy()
   })
 })
