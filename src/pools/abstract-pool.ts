@@ -171,7 +171,7 @@ export abstract class AbstractPool<
    * @param data The input for the specified task. This can only be serializable data.
    * @returns Promise that will be resolved when the task is successfully completed.
    */
-  public execute (data: Data): Promise<unknown> {
+  public execute (data: Data): Promise<Response> {
     // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
     this.increaseWorkersTask(worker)
@@ -291,7 +291,7 @@ export abstract class AbstractPool<
   protected internalExecute (
     worker: Worker,
     messageId: number
-  ): Promise<unknown> {
+  ): Promise<Response> {
     return new Promise((resolve, reject) => {
       const listener: (message: MessageValue<Response>) => void = message => {
         if (message.id === messageId) {

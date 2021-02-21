@@ -94,8 +94,8 @@ export class FixedThreadPool<
   protected internalExecute (
     worker: Worker,
     messageId: number
-  ): Promise<unknown> {
-    const promise = new Promise((resolve, reject) => {
+  ): Promise<Response> {
+    const promise = new Promise<Response>((resolve, reject) => {
       this.promiseMap.set(messageId, {
         resolve: resolve,
         reject: reject,

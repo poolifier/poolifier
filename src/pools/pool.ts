@@ -11,7 +11,7 @@ export interface IPool<Data = unknown, Response = unknown> {
    * @param data The input for the specified task. This can only be serializable data.
    * @returns Promise that will be resolved when the task is successfully completed.
    */
-  execute(data: Data): Promise<unknown>
+  execute(data: Data): Promise<Response>
   /**
    * Shut down every current worker in this pool.
    */
