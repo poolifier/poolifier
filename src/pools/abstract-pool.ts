@@ -155,9 +155,7 @@ export abstract class AbstractPool<
     this.emitter = new PoolEmitter()
     this.workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       this,
-      opts.workerChoiceStrategy
-        ? opts.workerChoiceStrategy
-        : WorkerChoiceStrategies.ROUND_ROBIN
+      opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
     )
   }
 
