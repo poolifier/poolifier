@@ -136,6 +136,8 @@ class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
   private workerChoiceStrategy: IWorkerChoiceStrategy<Worker>
 
   /**
+   * Constructs a worker choice strategy for dynamical pools.
+   *
    * @param pool The pool instance.
    * @param workerChoiceStrategy The worker choice strategy when the pull is full.
    */
@@ -198,6 +200,10 @@ class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
 
 /**
  * The worker choice strategy context.
+ *
+ * @template Worker Type of worker.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
  */
 export class WorkerChoiceStrategyContext<
   Worker extends IWorker,
