@@ -41,7 +41,7 @@ const asyncPool = new FixedClusterPool(
   }
 )
 
-describe('Fixed cluster pool test suite ', () => {
+describe('Fixed cluster pool test suite', () => {
   after('Destroy all pools', async () => {
     // We need to clean up the resources after our test
     await echoPool.destroy()

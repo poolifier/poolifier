@@ -32,7 +32,7 @@ const asyncPool = new FixedThreadPool(
   { maxTasks: maxTasks }
 )
 
-describe('Fixed thread pool test suite ', () => {
+describe('Fixed thread pool test suite', () => {
   it('Choose worker round robin test', async () => {
     const results = new Set()
     for (let i = 0; i < numberOfThreads; i++) {

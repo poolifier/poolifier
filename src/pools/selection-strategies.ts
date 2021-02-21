@@ -3,12 +3,23 @@ import type { IWorker } from './abstract-pool'
 import type { IPoolInternal } from './pool-internal'
 
 /**
- * Worker choice strategies string list.
+ * Enumeration of worker choice strategies.
  */
-export enum WorkerChoiceStrategy {
-  ROUND_ROBIN = 'RoundRobin',
-  DYNAMIC = 'Dynamic'
-}
+export const WorkerChoiceStrategies = Object.freeze({
+  /**
+   * Round robin worker selection strategy.
+   */
+  ROUND_ROBIN: 'ROUND_ROBIN',
+  /**
+   * Less recently used worker selection strategy.
+   */
+  LESS_RECENTLY_USED: 'LESS_RECENTLY_USED'
+} as const)
+
+/**
+ * Worker choice strategy.
+ */
+export type WorkerChoiceStrategy = keyof typeof WorkerChoiceStrategies
 
 /**
  * Worker choice strategy interface.
@@ -23,7 +34,7 @@ interface IWorkerChoiceStrategy<Worker extends IWorker> {
 }
 
 /**
- * Selects the next worker in a round robin selection based on the given index.
+ * Selects the next worker in a round robin fashion.
  *
  * @template Worker Type of worker which manages the strategy.
  * @template Data Type of data sent to the worker. This can only be serializable data.
@@ -37,14 +48,16 @@ class RoundRobinWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
   private nextWorkerIndex: number = 0
 
   /**
+   * Constructs a worker choice strategy that selects in a round robin fashion.
+   *
    * @param pool The pool instance.
    */
-  constructor (private pool: IPoolInternal<Worker, Data, Response>) {
-    this.pool = pool
-  }
+  public constructor (
+    private readonly pool: IPoolInternal<Worker, Data, Response>
+  ) {}
 
   /** @inheritdoc */
-  public choose () {
+  public choose (): Worker {
     const chosenWorker = this.pool.workers[this.nextWorkerIndex]
     this.nextWorkerIndex =
       this.pool.workers.length - 1 === this.nextWorkerIndex
@@ -55,35 +68,87 @@ class RoundRobinWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
 }
 
 /**
+ * Selects the less recently used worker.
+ *
+ * @template Worker Type of worker which manages the strategy.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
+ */
+class LessRecentlyUsedWorkerChoiceStrategy<
+  Worker extends IWorker,
+  Data,
+  Response
+> implements IWorkerChoiceStrategy<Worker> {
+  /**
+   * Constructs a worker choice strategy that selects based on less recently used.
+   *
+   * @param pool The pool instance.
+   */
+  public constructor (
+    private readonly pool: IPoolInternal<Worker, Data, Response>
+  ) {}
+
+  /** @inheritdoc */
+  public choose (): Worker {
+    let minNumberOfTasks = Infinity
+    // A worker is always found because it picks the one with fewer tasks
+    let lessRecentlyUsedWorker!: Worker
+    for (const [worker, numberOfTasks] of this.pool.tasks) {
+      if (numberOfTasks === 0) {
+        return worker
+      } else if (numberOfTasks < minNumberOfTasks) {
+        minNumberOfTasks = numberOfTasks
+        lessRecentlyUsedWorker = worker
+      }
+    }
+    return lessRecentlyUsedWorker
+  }
+}
+
+/**
+ * Get the worker choice strategy instance.
+ *
+ * @param pool The pool instance.
+ * @param workerChoiceStrategy The worker choice strategy.
+ * @returns The worker choice strategy instance.
+ */
+function getWorkerChoiceStrategy<Worker extends IWorker, Data, Response> (
+  pool: IPoolInternal<Worker, Data, Response>,
+  workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
+): IWorkerChoiceStrategy<Worker> {
+  switch (workerChoiceStrategy) {
+    case WorkerChoiceStrategies.ROUND_ROBIN:
+      return new RoundRobinWorkerChoiceStrategy(pool)
+    case WorkerChoiceStrategies.LESS_RECENTLY_USED:
+      return new LessRecentlyUsedWorkerChoiceStrategy(pool)
+  }
+}
+
+/**
  * Dynamically choose a worker.
  *
  * @template Worker Type of worker which manages the strategy.
  * @template Data Type of data sent to the worker. This can only be serializable data.
  * @template Response Type of response of execution. This can only be serializable data.
  */
-class DynamicWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
+class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
   implements IWorkerChoiceStrategy<Worker> {
   private workerChoiceStrategy: IWorkerChoiceStrategy<Worker>
 
   /**
+   * Constructs a worker choice strategy for dynamical pools.
+   *
    * @param pool The pool instance.
    * @param workerChoiceStrategy The worker choice strategy when the pull is full.
    */
-  constructor (
-    private pool: IPoolInternal<Worker, Data, Response>,
-    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategy.ROUND_ROBIN
+  public constructor (
+    private readonly pool: IPoolInternal<Worker, Data, Response>,
+    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
-    this.pool = pool
-    if (workerChoiceStrategy !== WorkerChoiceStrategy.DYNAMIC) {
-      this.workerChoiceStrategy = getWorkerChoiceStrategy(
-        this.pool,
-        workerChoiceStrategy
-      )
-    } else {
-      throw Error(
-        `Cannot instantiate DynamicWorkerChoiceStrategy class with a ${WorkerChoiceStrategy} type`
-      )
-    }
+    this.workerChoiceStrategy = getWorkerChoiceStrategy(
+      this.pool,
+      workerChoiceStrategy
+    )
   }
 
   /**
@@ -134,40 +199,19 @@ class DynamicWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
 }
 
 /**
- * Get the worker choice strategy instance.
- *
- * @param pool The pool instance.
- * @param workerChoiceStrategy The worker choice strategy.
- * @param dynamicWorkerChoiceStrategy The worker choice strategy when the dynamic pool is full.
- * @returns The worker choice strategy instance.
- */
-function getWorkerChoiceStrategy<Worker extends IWorker, Data, Response> (
-  pool: IPoolInternal<Worker, Data, Response>,
-  workerChoiceStrategy: WorkerChoiceStrategy,
-  dynamicWorkerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategy.ROUND_ROBIN
-): IWorkerChoiceStrategy<Worker> {
-  switch (workerChoiceStrategy) {
-    case WorkerChoiceStrategy.ROUND_ROBIN:
-      return new RoundRobinWorkerChoiceStrategy<Worker, Data, Response>(pool)
-    case WorkerChoiceStrategy.DYNAMIC:
-      return new DynamicWorkerChoiceStrategy<Worker, Data, Response>(
-        pool,
-        dynamicWorkerChoiceStrategy
-      )
-  }
-}
-
-/**
  * The worker choice strategy context.
+ *
+ * @template Worker Type of worker.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
  */
 export class WorkerChoiceStrategyContext<
   Worker extends IWorker,
   Data,
   Response
 > {
-  private workerChoiceStrategy: IWorkerChoiceStrategy<
-    Worker
-  > = {} as IWorkerChoiceStrategy<Worker>
+  // Will be set by setter in constructor
+  private workerChoiceStrategy!: IWorkerChoiceStrategy<Worker>
 
   /**
    * Worker choice strategy context constructor.
@@ -175,11 +219,29 @@ export class WorkerChoiceStrategyContext<
    * @param pool The pool instance.
    * @param workerChoiceStrategy The worker choice strategy.
    */
-  constructor (
-    private pool: IPoolInternal<Worker, Data, Response>,
-    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategy.ROUND_ROBIN
+  public constructor (
+    private readonly pool: IPoolInternal<Worker, Data, Response>,
+    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     this.setWorkerChoiceStrategy(workerChoiceStrategy)
+  }
+
+  /**
+   * Get the worker choice strategy instance specific to the pool type.
+   *
+   * @param workerChoiceStrategy The worker choice strategy.
+   * @returns The worker choice strategy instance for the pool type.
+   */
+  private getPoolWorkerChoiceStrategy (
+    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
+  ): IWorkerChoiceStrategy<Worker> {
+    if (this.pool.isDynamic()) {
+      return new DynamicPoolWorkerChoiceStrategy(
+        this.pool,
+        workerChoiceStrategy
+      )
+    }
+    return getWorkerChoiceStrategy(this.pool, workerChoiceStrategy)
   }
 
   /**
@@ -187,14 +249,17 @@ export class WorkerChoiceStrategyContext<
    *
    * @param workerChoiceStrategy The worker choice strategy to set.
    */
-  setWorkerChoiceStrategy (workerChoiceStrategy: WorkerChoiceStrategy): void {
-    this.workerChoiceStrategy = getWorkerChoiceStrategy(
-      this.pool,
+  public setWorkerChoiceStrategy (
+    workerChoiceStrategy: WorkerChoiceStrategy
+  ): void {
+    this.workerChoiceStrategy = this.getPoolWorkerChoiceStrategy(
       workerChoiceStrategy
     )
   }
 
   /**
+   * Choose a worker with the underlying selection strategy.
+   *
    * @returns The chosen one.
    */
   public execute (): Worker {

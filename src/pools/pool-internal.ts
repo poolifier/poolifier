@@ -48,6 +48,13 @@ export interface IPoolInternal<
   readonly max?: number
 
   /**
+   * Whether the pool is dynamic or not.
+   *
+   * If it is dynamic, it provides the `max` property.
+   */
+  isDynamic(): boolean
+
+  /**
    * Creates a new worker for this pool and sets it up completely.
    *
    * @returns New, completely set up worker.
