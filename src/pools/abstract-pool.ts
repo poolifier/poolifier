@@ -149,6 +149,7 @@ export abstract class AbstractPool<
     if (!this.isMain()) {
       throw new Error('Cannot start a pool from a worker!')
     }
+    this.checkNumberOfWorkers(this.numberOfWorkers)
     this.checkFilePath(this.filePath)
     this.setupHook()
 
@@ -162,6 +163,12 @@ export abstract class AbstractPool<
   private checkFilePath (filePath: string) {
     if (!filePath) {
       throw new Error('Please specify a file with a worker implementation')
+    }
+  }
+
+  private checkNumberOfWorkers (numberOfWorkers: number) {
+    if (numberOfWorkers <= 0) {
+      throw new Error('Cannot instantiate a pool with no worker')
     }
   }
 
