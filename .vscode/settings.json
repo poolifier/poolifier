@@ -6,6 +6,7 @@
     "Dependabot",
     "Gitter",
     "Shinigami",
+    "inheritdoc",
     "lcov",
     "loglevel",
     "markdownlint",
@@ -15,7 +16,6 @@
     "prettierx",
     "serializable",
     "standardx",
-    "workerpool",
-    "inheritdoc"
+    "workerpool"
   ]
 }
