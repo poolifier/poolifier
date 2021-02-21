@@ -1,6 +1,4 @@
 import type { PoolOptions } from '../abstract-pool'
-import type { IDynamicPool } from '../dynamic-pool'
-import { dynamicallyChooseWorker } from '../selection-strategies'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
 
@@ -16,9 +14,10 @@ import { FixedThreadPool } from './fixed'
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
-export class DynamicThreadPool<Data = unknown, Response = unknown>
-  extends FixedThreadPool<Data, Response>
-  implements IDynamicPool<ThreadWorkerWithMessageChannel, Data, Response> {
+export class DynamicThreadPool<
+  Data = unknown,
+  Response = unknown
+> extends FixedThreadPool<Data, Response> {
   /**
    * Constructs a new poolifier dynamic thread pool.
    *
@@ -41,21 +40,8 @@ export class DynamicThreadPool<Data = unknown, Response = unknown>
     this.destroyWorker = this.destroyWorker.bind(this)
   }
 
-  /**
-   * Choose a thread for the next task.
-   *
-   * It will first check for and return an idle thread.
-   * If all threads are busy, then it will try to create a new one up to the `max` thread count.
-   * If the max thread count is reached, the emitter will emit a `FullPool` event and it will fall back to using a round robin algorithm to distribute the load.
-   *
-   * @returns Thread worker.
-   */
-  protected chooseWorker (): ThreadWorkerWithMessageChannel {
-    return dynamicallyChooseWorker(
-      this,
-      this.createAndSetupWorker,
-      this.registerWorkerMessageListener,
-      this.destroyWorker
-    )
+  /** @inheritdoc */
+  public isDynamic (): boolean {
+    return true
   }
 }

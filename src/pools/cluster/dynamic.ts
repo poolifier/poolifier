@@ -1,6 +1,3 @@
-import type { Worker } from 'cluster'
-import type { IDynamicPool } from '../dynamic-pool'
-import { dynamicallyChooseWorker } from '../selection-strategies'
 import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
 
@@ -16,9 +13,10 @@ import { FixedClusterPool } from './fixed'
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
  */
-export class DynamicClusterPool<Data = unknown, Response = unknown>
-  extends FixedClusterPool<Data, Response>
-  implements IDynamicPool<Worker, Data, Response> {
+export class DynamicClusterPool<
+  Data = unknown,
+  Response = unknown
+> extends FixedClusterPool<Data, Response> {
   /**
    * Constructs a new poolifier dynamic cluster pool.
    *
@@ -41,21 +39,8 @@ export class DynamicClusterPool<Data = unknown, Response = unknown>
     this.destroyWorker = this.destroyWorker.bind(this)
   }
 
-  /**
-   * Choose a worker for the next task.
-   *
-   * It will first check for and return an idle worker.
-   * If all workers are busy, then it will try to create a new one up to the `max` worker count.
-   * If the max worker count is reached, the emitter will emit a `FullPool` event and it will fall back to using a round robin algorithm to distribute the load.
-   *
-   * @returns Cluster worker.
-   */
-  protected chooseWorker (): Worker {
-    return dynamicallyChooseWorker(
-      this,
-      this.createAndSetupWorker,
-      this.registerWorkerMessageListener,
-      this.destroyWorker
-    )
+  /** @inheritdoc */
+  public isDynamic (): boolean {
+    return true
   }
 }
