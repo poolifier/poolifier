@@ -1,8 +1,9 @@
 import type { MessageValue } from '../utility-types'
 import type { IPoolInternal } from './pool-internal'
 import { PoolEmitter } from './pool-internal'
+import type { WorkerChoiceStrategy } from './selection-strategies'
 import {
-  WorkerChoiceStrategy,
+  WorkerChoiceStrategies,
   WorkerChoiceStrategyContext
 } from './selection-strategies'
 
@@ -156,7 +157,7 @@ export abstract class AbstractPool<
       this,
       opts.workerChoiceStrategy
         ? opts.workerChoiceStrategy
-        : WorkerChoiceStrategy.ROUND_ROBIN
+        : WorkerChoiceStrategies.ROUND_ROBIN
     )
   }
 
