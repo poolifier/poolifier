@@ -1,4 +1,5 @@
 // IMPORT LIBRARIES
+/* eslint-disable node/no-unpublished-require */
 const { FixedThreadPool, DynamicThreadPool } = require('../../lib/index')
 // FINISH IMPORT LIBRARIES
 const size = process.env.POOL_SIZE
@@ -22,6 +23,7 @@ async function run () {
     promises.push(dynamicPool.execute(data))
   }
   await Promise.all(promises)
+  /* eslint-disable no-process-exit */
   process.exit()
 }
 

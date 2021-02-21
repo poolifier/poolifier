@@ -1,4 +1,5 @@
 // IMPORT LIBRARIES
+/* eslint-disable spellcheck/spell-checker */
 const Piscina = require('piscina')
 // FINISH IMPORT LIBRARIES
 const size = process.env.POOL_SIZE
@@ -20,6 +21,7 @@ async function run () {
     promises.push(piscina.runTask(data))
   }
   await Promise.all(promises)
+  /* eslint-disable no-process-exit */
   process.exit()
 }
 

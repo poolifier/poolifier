@@ -2,7 +2,7 @@
 const { DynamicPool, StaticPool } = require('node-worker-threads-pool')
 // FINISH IMPORT LIBRARIES
 // IMPORT FUNCTION TO BENCH
-const jsonStringify = require('./functions/jsonstringify')
+const functionToBench = require('./functions/json-stringify')
 // FINISH IMPORT FUNCTION TO BENCH
 const size = process.env.POOL_SIZE
 const iterations = process.env.NUM_ITERATIONS
@@ -12,7 +12,7 @@ const data = {
 
 const pool = new StaticPool({
   size: Number(size),
-  task: jsonStringify
+  task: functionToBench
 })
 
 async function run () {
@@ -21,6 +21,7 @@ async function run () {
     promises.push(pool.exec(data))
   }
   await Promise.all(promises)
+  /* eslint-disable no-process-exit */
   process.exit()
 }
 
