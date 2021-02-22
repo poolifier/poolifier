@@ -16,9 +16,10 @@ export NODE_ENV=production
 export POOL_SIZE=10
 export NUM_ITERATIONS=100000
 hyperfine --export-markdown BENCH-100000.MD --min-runs 10 \
-  'node static-suchmokuo-node-worker-threads-pool.js' \
-  'node dynamic-suchmokuo-node-worker-threads-pool.js' \
+  --prepare 'sleep 15' \
+  'node dynamic-piscina.js' \
+  'node fixed-piscina.js' \
   'node dynamic-poolifier.js' \
   'node fixed-poolifier.js' \
-  'node dynamic-piscina.js' \
-  'node fixed-piscina.js'
+  'node static-suchmokuo-node-worker-threads-pool.js' \
+  'node dynamic-suchmokuo-node-worker-threads-pool.js'
