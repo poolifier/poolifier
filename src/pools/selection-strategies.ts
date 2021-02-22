@@ -13,7 +13,11 @@ export const WorkerChoiceStrategies = Object.freeze({
   /**
    * Less recently used worker selection strategy.
    */
-  LESS_RECENTLY_USED: 'LESS_RECENTLY_USED'
+  LESS_RECENTLY_USED: 'LESS_RECENTLY_USED',
+  /**
+   * Random worker selection strategy.
+   */
+  RANDOM: 'RANDOM'
 } as const)
 
 /**
@@ -94,7 +98,7 @@ class LessRecentlyUsedWorkerChoiceStrategy<
     // A worker is always found because it picks the one with fewer tasks
     let lessRecentlyUsedWorker!: Worker
     for (const [worker, numberOfTasks] of this.pool.tasks) {
-      if (numberOfTasks === 0) {
+      if (!this.pool.isDynamic() && numberOfTasks === 0) {
         return worker
       } else if (numberOfTasks < minNumberOfTasks) {
         minNumberOfTasks = numberOfTasks
@@ -106,25 +110,41 @@ class LessRecentlyUsedWorkerChoiceStrategy<
 }
 
 /**
- * Get the worker choice strategy instance.
+ * Selects randomly a worker once the pool is busy.
  *
- * @param pool The pool instance.
- * @param workerChoiceStrategy The worker choice strategy.
- * @returns The worker choice strategy instance.
+ * @template Worker Type of worker which manages the strategy.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
  */
-function getWorkerChoiceStrategy<Worker extends IWorker, Data, Response> (
-  pool: IPoolInternal<Worker, Data, Response>,
-  workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
-): IWorkerChoiceStrategy<Worker> {
-  switch (workerChoiceStrategy) {
-    case WorkerChoiceStrategies.ROUND_ROBIN:
-      return new RoundRobinWorkerChoiceStrategy(pool)
-    case WorkerChoiceStrategies.LESS_RECENTLY_USED:
-      return new LessRecentlyUsedWorkerChoiceStrategy(pool)
-    default:
-      throw new Error(
-        `Worker choice strategy '${workerChoiceStrategy}' not found`
+class RandomWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
+  implements IWorkerChoiceStrategy<Worker> {
+  /**
+   * Constructs a worker choice strategy that selects randomly once the pool is busy.
+   *
+   * @param pool The pool instance.
+   */
+  public constructor (
+    private readonly pool: IPoolInternal<Worker, Data, Response>
+  ) {}
+
+  /** @inheritdoc */
+  public choose (): Worker {
+    if (!this.pool.isDynamic()) {
+      const freeWorker = SelectionStrategiesUtils.findFreeWorkerBasedOnTasks(
+        this.pool
       )
+      if (freeWorker) {
+        return freeWorker
+      }
+    }
+    return this.pool.workers[this.getRandomInt(0, this.pool.workers.length - 1)]
+  }
+
+  private getRandomInt (max: number, min = 0): number {
+    if (min) {
+      return Math.floor(Math.random() * (max - min + 1) + min)
+    }
+    return Math.floor(Math.random() * max + 1)
   }
 }
 
@@ -149,34 +169,17 @@ class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
     private readonly pool: IPoolInternal<Worker, Data, Response>,
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
-    this.workerChoiceStrategy = getWorkerChoiceStrategy(
+    this.workerChoiceStrategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(
       this.pool,
       workerChoiceStrategy
     )
   }
 
-  /**
-   * Find a free worker based on number of tasks the worker has applied.
-   *
-   * If a worker was found that has `0` tasks, it is detected as free and will be returned.
-   *
-   * If no free worker was found, `null` will be returned.
-   *
-   * @returns A free worker if there was one, otherwise `null`.
-   */
-  private findFreeWorkerBasedOnTasks (): Worker | null {
-    for (const [worker, numberOfTasks] of this.pool.tasks) {
-      if (numberOfTasks === 0) {
-        // A worker is free, use it
-        return worker
-      }
-    }
-    return null
-  }
-
   /** @inheritdoc */
   public choose (): Worker {
-    const freeWorker = this.findFreeWorkerBasedOnTasks()
+    const freeWorker = SelectionStrategiesUtils.findFreeWorkerBasedOnTasks(
+      this.pool
+    )
     if (freeWorker) {
       return freeWorker
     }
@@ -245,7 +248,10 @@ export class WorkerChoiceStrategyContext<
         workerChoiceStrategy
       )
     }
-    return getWorkerChoiceStrategy(this.pool, workerChoiceStrategy)
+    return SelectionStrategiesUtils.getWorkerChoiceStrategy(
+      this.pool,
+      workerChoiceStrategy
+    )
   }
 
   /**
@@ -268,5 +274,63 @@ export class WorkerChoiceStrategyContext<
    */
   public execute (): Worker {
     return this.workerChoiceStrategy.choose()
+  }
+}
+
+/**
+ * Worker selection strategies helpers.
+ */
+class SelectionStrategiesUtils {
+  /**
+   * Find a free worker based on number of tasks the worker has applied.
+   *
+   * If a worker was found that has `0` tasks, it is detected as free and will be returned.
+   *
+   * If no free worker was found, `null` will be returned.
+   *
+   * @param pool The pool instance.
+   * @returns A free worker if there was one, otherwise `null`.
+   */
+  public static findFreeWorkerBasedOnTasks<
+    Worker extends IWorker,
+    Data,
+    Response
+  > (pool: IPoolInternal<Worker, Data, Response>): Worker | null {
+    for (const [worker, numberOfTasks] of pool.tasks) {
+      if (numberOfTasks === 0) {
+        // A worker is free, use it
+        return worker
+      }
+    }
+    return null
+  }
+
+  /**
+   * Get the worker choice strategy instance.
+   *
+   * @param pool The pool instance.
+   * @param workerChoiceStrategy The worker choice strategy.
+   * @returns The worker choice strategy instance.
+   */
+  public static getWorkerChoiceStrategy<
+    Worker extends IWorker,
+    Data,
+    Response
+  > (
+    pool: IPoolInternal<Worker, Data, Response>,
+    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
+  ): IWorkerChoiceStrategy<Worker> {
+    switch (workerChoiceStrategy) {
+      case WorkerChoiceStrategies.ROUND_ROBIN:
+        return new RoundRobinWorkerChoiceStrategy(pool)
+      case WorkerChoiceStrategies.LESS_RECENTLY_USED:
+        return new LessRecentlyUsedWorkerChoiceStrategy(pool)
+      case WorkerChoiceStrategies.RANDOM:
+        return new RandomWorkerChoiceStrategy(pool)
+      default:
+        throw new Error(
+          `Worker choice strategy '${workerChoiceStrategy}' not found`
+        )
+    }
   }
 }
