@@ -57,9 +57,7 @@ describe('Dynamic cluster pool test suite', () => {
   })
 
   it('Validation of inputs test', () => {
-    expect(() => {
-      const pool1 = new DynamicClusterPool(min)
-    }).toThrowError(
+    expect(() => new DynamicClusterPool(min)).toThrowError(
       new Error('Please specify a file with a worker implementation')
     )
   })
