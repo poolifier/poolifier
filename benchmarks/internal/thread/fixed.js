@@ -1,18 +1,18 @@
-const { DynamicThreadPool } = require('../../lib/index')
+const { FixedThreadPool } = require('../../../lib/index')
 
 const size = 30
 
-const dynamicPool = new DynamicThreadPool(size / 2, size * 3, './worker.js', {
+const fixedPool = new FixedThreadPool(size, './worker.js', {
   maxTasks: 10000
 })
 
-async function dynamicThreadTest (
+async function fixedThreadTest (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
 ) {
   return new Promise((resolve, reject) => {
     let executions = 0
     for (let i = 0; i <= tasks; i++) {
-      dynamicPool
+      fixedPool
         .execute(workerData)
         .then(res => {
           executions++
@@ -21,9 +21,11 @@ async function dynamicThreadTest (
           }
           return null
         })
-        .catch(err => console.error(err))
+        .catch(err => {
+          console.error(err)
+        })
     }
   })
 }
 
-module.exports = { dynamicThreadTest }
+module.exports = { fixedThreadTest }

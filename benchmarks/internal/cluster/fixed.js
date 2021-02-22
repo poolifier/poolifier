@@ -1,10 +1,14 @@
-const { FixedClusterPool } = require('../../lib/index')
+const { FixedClusterPool } = require('../../../lib/index')
 
 const size = 30
 
-const fixedPool = new FixedClusterPool(size, './benchmarks/cluster/worker.js', {
-  maxTasks: 10000
-})
+const fixedPool = new FixedClusterPool(
+  size,
+  './benchmarks/internal/cluster/worker.js',
+  {
+    maxTasks: 10000
+  }
+)
 
 async function fixedClusterTest (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }

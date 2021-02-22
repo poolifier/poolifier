@@ -6,9 +6,9 @@
   "scripts": {
     "build": "rollup --config --environment BUILD:development",
     "build:prod": "rollup --config",
-    "benchmark": "npm run build && node -r source-map-support/register benchmarks/bench.js",
-    "benchmark:debug": "npm run build && node -r source-map-support/register --inspect benchmarks/bench.js",
-    "benchmark:prod": "npm run build:prod && node -r source-map-support/register benchmarks/bench.js",
+    "benchmark": "npm run build && node -r source-map-support/register benchmarks/internal/bench.js",
+    "benchmark:debug": "npm run build && node -r source-map-support/register --inspect benchmarks/internal/bench.js",
+    "benchmark:prod": "npm run build:prod && node -r source-map-support/register benchmarks/internal/bench.js",
     "test": "npm run build && nyc mocha --parallel 'tests/**/*.test.js'",
     "test:debug": "npm run build && mocha --inspect 'tests/**/*.test.js'",
     "test:prod": "npm run build:prod && nyc mocha --parallel 'tests/**/*.test.js'",
@@ -87,9 +87,7 @@
     "rollup-plugin-typescript2": "^0.30.0",
     "sonar-scanner": "^3.1.0",
     "source-map-support": "^0.5.19",
-    "typescript": "^4.1.5",
-    "worker-threads-pool": "^2.0.0",
-    "workerpool": "^6.1.0"
+    "typescript": "^4.1.5"
   },
   "engines": {
     "node": ">=12.11.0",

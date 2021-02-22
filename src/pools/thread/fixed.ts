@@ -67,13 +67,6 @@ export class FixedThreadPool<
     messageChannel.port2?.on('message', listener)
   }
 
-  protected unregisterWorkerMessageListener<Message extends Data | Response> (
-    messageChannel: ThreadWorkerWithMessageChannel,
-    listener: (message: MessageValue<Message>) => void
-  ): void {
-    messageChannel.port2?.removeListener('message', listener)
-  }
-
   protected createWorker (): ThreadWorkerWithMessageChannel {
     return new Worker(this.filePath, {
       env: SHARE_ENV
@@ -86,7 +79,8 @@ export class FixedThreadPool<
     worker.port1 = port1
     worker.port2 = port2
     // We will attach a listener for every task,
-    // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
+    // when the task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size.
     worker.port2.setMaxListeners(this.opts.maxTasks ?? 1000)
+    this.registerWorkerMessageListener(worker, super.workerListener())
   }
 }
