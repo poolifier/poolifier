@@ -210,6 +210,7 @@ export abstract class AbstractPool<
   public setWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
+    this.opts.workerChoiceStrategy = workerChoiceStrategy
     this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
       workerChoiceStrategy
     )
