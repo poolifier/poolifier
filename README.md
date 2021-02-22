@@ -32,7 +32,7 @@ With poolifier you can improve your **performance** and resolve problems related
 Moreover you can execute your tasks using an API designed to improve the **developer experience**.  
 Please consult our guidelines to <a href="#choose-your-pool">choose your pool</a>
 
-- Performance :racehorse: [benchmarks](./benchmarks/README.MD)
+- Performance :racehorse: [benchmarks](./benchmarks/README.md)
 - Security :bank: :cop: [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=security_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 - Easy to use :couple:
 - Easy switch from a pool to another, easy to tune :heavy_check_mark:
