@@ -2,7 +2,7 @@ const expect = require('expect')
 const { ThreadWorker } = require('../../lib')
 
 let numberOfMessagesPosted = 0
-const postMessage = function (message) {
+const postMessage = function () {
   numberOfMessagesPosted++
 }
 class SpyWorker extends ThreadWorker {
