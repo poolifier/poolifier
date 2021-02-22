@@ -195,7 +195,7 @@ This method will call the terminate method on each worker.
 ## Choose your pool
 
 Performance is one of the main target of these worker pool implementations, we want to have a strong focus on this.  
-We already have a bench folder where you can find some comparisons.
+We already have a bench folder where you can find some comparisons.  
 **Thread pools** ( FixedThreadPool and DynamicThreadPool ) are suggested to run CPU intensive tasks, you can still run I/O intensive tasks into thread pools, but performance enhancement is expected to be minimal.
 Thread pools are built on top of Node.js [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) module.
 
