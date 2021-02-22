@@ -4,13 +4,13 @@ Welcome to poolifier benchmarks and thanks to look into this project.
 
 ## Folder Structure
 
-The internal folder contains poolifier internal benchmarks.
+The internal folder contains poolifier internal benchmarks.  
 The versus-external-pools folder contains benchmarks versus other Node.js pools.
 
 ## Poolifier vs other pools benchmark
 
-To compare poolifier pools performance vs other pools performance we chose to use [hyperfine](https://github.com/sharkdp/hyperfine).
-We chose to use this tool because it allows to run isolated Node.js processes so that each pool does not impact each other.
+To compare poolifier pools performance vs other pools performance we chose to use [hyperfine](https://github.com/sharkdp/hyperfine).  
+We chose to use this tool because it allows to run isolated Node.js processes so that each pool does not impact each other.  
 External pools with which we compared the poolifier results:
 
 - [piscina](https://github.com/piscinajs/piscina)
