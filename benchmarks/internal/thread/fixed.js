@@ -2,9 +2,13 @@ const { FixedThreadPool } = require('../../../lib/index')
 
 const size = 30
 
-const fixedPool = new FixedThreadPool(size, './worker.js', {
-  maxTasks: 10000
-})
+const fixedPool = new FixedThreadPool(
+  size,
+  './benchmarks/internal/thread/worker.js',
+  {
+    maxTasks: 10000
+  }
+)
 
 async function fixedThreadTest (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
