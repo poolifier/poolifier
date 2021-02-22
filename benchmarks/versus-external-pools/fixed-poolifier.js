@@ -4,12 +4,13 @@ const { FixedThreadPool, DynamicThreadPool } = require('poolifier')
 const size = process.env.POOL_SIZE
 const iterations = process.env.NUM_ITERATIONS
 const data = {
-  test: 'MYBENCH'
+  test: 'MYBENCH',
+  taskType: process.env['TASK_TYPE']
 }
 
 const fixedPool = new FixedThreadPool(
   size,
-  './workers/poolifier/json-stringify.worker.js',
+  './workers/poolifier/function-to-bench-worker.js',
   {
     maxTasks: 100000
   }

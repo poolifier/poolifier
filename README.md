@@ -2,7 +2,7 @@
 <img src="./docs/logo.png" width="340px" height="266px"/>
 </div>
 
-<h2 align="center">Node Thread Pool :arrow_double_up: :on:</h2>
+<h2 align="center">Node Thread Pool and Cluster Pool :arrow_double_up: :on:</h2>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/poolifier">
@@ -27,11 +27,12 @@
 
 ## Why Poolifier?
 
-Poolifier is used to perform heavy CPU bound tasks on nodejs servers, it implements worker pools (yes, more worker pool implementations, so you can choose which one fit better for you) using [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads).  
+Poolifier is used to perform CPU intensive and I/O intensive tasks on nodejs servers, it implements worker pools (yes, more worker pool implementations, so you can choose which one fit better for you) using [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) and cluster pools using [Node.js cluster](https://nodejs.org/api/cluster.html) modules.  
 With poolifier you can improve your **performance** and resolve problems related to the event loop.  
-Moreover you can execute your CPU tasks using an API designed to improve the **developer experience**.
+Moreover you can execute your tasks using an API designed to improve the **developer experience**.  
+Please consult our guidelines to <a href="#choose-your-pool">choose your pool</a>
 
-- Performance :racehorse:
+- Performance :racehorse: [benchmarks](./benchmarks/README.md)
 - Security :bank: :cop: [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=security_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 - Easy to use :couple:
 - Easy switch from a pool to another, easy to tune :heavy_check_mark:
@@ -194,9 +195,15 @@ This method will call the terminate method on each worker.
 ## Choose your pool
 
 Performance is one of the main target of these worker pool implementations, we want to have a strong focus on this.  
-We already have a bench folder where you can find some comparisons.
+We already have a bench folder where you can find some comparisons.  
+**Thread pools** ( FixedThreadPool and DynamicThreadPool ) are suggested to run CPU intensive tasks, you can still run I/O intensive tasks into thread pools, but performance enhancement is expected to be minimal.  
+Thread pools are built on top of Node.js [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) module.
+
+**Cluster pools** (FixedClusterPool and DynamicClusterPool) are suggested to run I/O intensive tasks, again you can still run CPU intensive tasks into cluster pools, but performance enhancement is expected to be minimal.  
+Cluster pools are built on top of Node.js [cluster](https://nodejs.org/api/cluster.html) module.
+
 To choose your pool consider that with a FixedThreadPool/FixedClusterPool or a DynamicThreadPool/DynamicClusterPool (in this case is important the min parameter passed to the constructor) your application memory footprint will increase.  
-Increasing the memory footprint, your application will be ready to accept more CPU bound tasks, but during idle time your application will consume more memory.  
+Increasing the memory footprint, your application will be ready to accept more tasks, but during idle time your application will consume more memory.  
 One good choose from my point of view is to profile your application using Fixed/Dynamic worker pool, and to see your application metrics when you increase/decrease the num of workers.  
 For example you could keep the memory footprint low choosing a DynamicThreadPool/DynamicClusterPool with 5 workers, and allow to create new workers until 50/100 when needed, this is the advantage to use the DynamicThreadPool/DynamicClusterPool.  
 But in general, **always profile your application**
