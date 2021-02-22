@@ -40,9 +40,29 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify LESS_RECENTLY_USED strategy can be run in a pool', async () => {
+  it('Verify LESS_RECENTLY_USED strategy can be run in a fixed pool', async () => {
     const max = 3
     const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
+    )
+    // TODO: Create a better test to cover `LessRecentlyUsedWorkerChoiceStrategy#choose`
+    const promises = []
+    for (let i = 0; i < max * 2; i++) {
+      promises.push(pool.execute({ test: 'test' }))
+    }
+    await Promise.all(promises)
+
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LESS_RECENTLY_USED strategy can be run in a dynamic pool', async () => {
+    const min = 0
+    const max = 3
+    const pool = new DynamicThreadPool(
+      min,
       max,
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
@@ -82,13 +102,33 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify RANDOM strategy can be run in a pool', async () => {
+  it('Verify RANDOM strategy can be run in a fixed pool', async () => {
     const max = 3
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy: WorkerChoiceStrategies.RANDOM }
     )
+    const promises = []
+    for (let i = 0; i < max * 2; i++) {
+      promises.push(pool.execute({ test: 'test' }))
+    }
+    await Promise.all(promises)
+
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify RANDOM strategy can be run in a dynamic pool', async () => {
+    const min = 0
+    const max = 3
+    const pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.RANDOM }
+    )
+
     const promises = []
     for (let i = 0; i < max * 2; i++) {
       promises.push(pool.execute({ test: 'test' }))

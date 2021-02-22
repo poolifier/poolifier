@@ -137,7 +137,7 @@ class RandomWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
         return freeWorker
       }
     }
-    return this.pool.workers[this.getRandomInt(0, this.pool.workers.length - 1)]
+    return this.pool.workers[this.getRandomInt(this.pool.workers.length - 1)]
   }
 
   private getRandomInt (max: number, min = 0): number {
