@@ -51,12 +51,16 @@ describe('Abstract pool test suite', () => {
             errorHandler: e => console.error(e)
           }
         )
-    ).toThrowError()
+    ).toThrowError(new Error('Cannot start a pool from a worker!'))
   })
 
   it('Verify that filePath is checked', () => {
-    expect(() => new StubPoolWithIsMainMethod(1)).toThrowError()
-    expect(() => new StubPoolWithIsMainMethod(1, '')).toThrowError()
+    expect(() => new StubPoolWithIsMainMethod(1)).toThrowError(
+      new Error('Cannot start a pool from a worker!')
+    )
+    expect(() => new StubPoolWithIsMainMethod(1, '')).toThrowError(
+      new Error('Cannot start a pool from a worker!')
+    )
   })
 
   it('Verify that numberOfWorkers is checked', () => {
