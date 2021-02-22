@@ -140,10 +140,7 @@ class RandomWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
     return this.pool.workers[this.getRandomInt(this.pool.workers.length - 1)]
   }
 
-  private getRandomInt (max: number, min = 0): number {
-    if (min) {
-      return Math.floor(Math.random() * (max - min + 1) + min)
-    }
+  private getRandomInt (max: number): number {
     return Math.floor(Math.random() * max + 1)
   }
 }
