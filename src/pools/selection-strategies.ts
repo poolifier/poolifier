@@ -94,11 +94,12 @@ class LessRecentlyUsedWorkerChoiceStrategy<
 
   /** @inheritdoc */
   public choose (): Worker {
+    const isPoolDynamic = this.pool.dynamic
     let minNumberOfTasks = Infinity
     // A worker is always found because it picks the one with fewer tasks
     let lessRecentlyUsedWorker!: Worker
     for (const [worker, numberOfTasks] of this.pool.tasks) {
-      if (!this.pool.dynamic && numberOfTasks === 0) {
+      if (!isPoolDynamic && numberOfTasks === 0) {
         return worker
       } else if (numberOfTasks < minNumberOfTasks) {
         minNumberOfTasks = numberOfTasks
