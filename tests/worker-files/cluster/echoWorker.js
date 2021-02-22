@@ -5,6 +5,4 @@ function echo (data) {
   return data
 }
 
-module.exports = new ClusterWorker(echo, {
-  killBehavior: KillBehaviors.HARD
-})
+module.exports = new ClusterWorker(echo)
