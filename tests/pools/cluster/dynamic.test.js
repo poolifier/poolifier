@@ -56,6 +56,12 @@ describe('Dynamic cluster pool test suite', () => {
     expect(res).toBe(min)
   })
 
+  it('Validation of inputs test', () => {
+    expect(() => new DynamicClusterPool(min)).toThrowError(
+      new Error('Please specify a file with a worker implementation')
+    )
+  })
+
   it('Should work even without opts in input', async () => {
     const pool1 = new DynamicClusterPool(
       1,
@@ -102,5 +108,16 @@ describe('Dynamic cluster pool test suite', () => {
     expect(longRunningPool.workers.length).toBe(max)
     // We need to clean up the resources after our test
     await longRunningPool.destroy()
+  })
+
+  it('Verify that a pool with zero worker can be instantiated', async () => {
+    const pool = new DynamicClusterPool(
+      0,
+      max,
+      './tests/worker-files/cluster/testWorker.js'
+    )
+    expect(pool).toBeInstanceOf(DynamicClusterPool)
+    // We need to clean up the resources after our test
+    await pool.destroy()
   })
 })

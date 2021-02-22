@@ -59,10 +59,8 @@ describe('Dynamic thread pool test suite', () => {
     expect(closedThreads).toBe(min)
   })
 
-  it('Validations test', () => {
-    expect(() => {
-      const pool1 = new DynamicThreadPool()
-    }).toThrowError(
+  it('Validation of inputs test', () => {
+    expect(() => new DynamicThreadPool(min)).toThrowError(
       new Error('Please specify a file with a worker implementation')
     )
   })
@@ -120,5 +118,16 @@ describe('Dynamic thread pool test suite', () => {
     expect(longRunningPool.workers.length).toBe(max)
     // We need to clean up the resources after our test
     await longRunningPool.destroy()
+  })
+
+  it('Verify that a pool with zero worker can be instantiated', async () => {
+    const pool = new DynamicThreadPool(
+      0,
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(pool).toBeInstanceOf(DynamicThreadPool)
+    // We need to clean up the resources after our test
+    await pool.destroy()
   })
 })

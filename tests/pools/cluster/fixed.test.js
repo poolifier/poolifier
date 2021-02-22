@@ -140,4 +140,11 @@ describe('Fixed cluster pool test suite', () => {
     // We need to clean up the resources after our test
     await pool1.destroy()
   })
+
+  it('Verify that a pool with zero worker fails', async () => {
+    expect(
+      () =>
+        new FixedClusterPool(0, './tests/worker-files/cluster/testWorker.js')
+    ).toThrowError(new Error('Cannot instantiate a fixed pool with no worker'))
+  })
 })
