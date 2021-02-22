@@ -12,7 +12,7 @@ The versus-external-pools folder contains benchmarks versus other Node.js pools.
 To compare poolifier pools performance vs other pools performance we chose to use [hyperfine](https://github.com/sharkdp/hyperfine).
 We chose to use this tool because it allows to run isolated Node.js processes so that each pool does not impact each other.
 
-We will other more details on each function that we benchmarked.
+We will add more details on each function that we benchmark.
 
 Those are our results:
 
