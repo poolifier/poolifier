@@ -1,5 +1,5 @@
 // IMPORT LIBRARIES
-const { FixedThreadPool, DynamicThreadPool } = require('poolifier')
+const Piscina = require('piscina')
 // FINISH IMPORT LIBRARIES
 const size = process.env.POOL_SIZE
 const iterations = process.env.NUM_ITERATIONS
@@ -8,19 +8,16 @@ const data = {
   taskType: process.env['TASK_TYPE']
 }
 
-const dynamicPool = new DynamicThreadPool(
-  size,
-  size * 3,
-  './workers/poolifier/function-to-bench-worker.js',
-  {
-    maxTasks: 10000
-  }
-)
+const piscina = new Piscina({
+  filename: './workers/piscina/function-to-bench-worker.js',
+  minThreads: Number(size),
+  idleTimeout: 1000 * 60 // this is the same as poolifier default
+})
 
 async function run () {
   const promises = []
   for (let i = 0; i < iterations; i++) {
-    promises.push(dynamicPool.execute(data))
+    promises.push(piscina.runTask(data))
   }
   await Promise.all(promises)
   process.exit()

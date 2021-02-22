@@ -4,11 +4,12 @@ const Piscina = require('piscina')
 const size = process.env.POOL_SIZE
 const iterations = process.env.NUM_ITERATIONS
 const data = {
-  test: 'MYBENCH'
+  test: 'MYBENCH',
+  taskType: process.env['TASK_TYPE']
 }
 
 const piscina = new Piscina({
-  filename: './workers/piscina/json-stringify.worker.js',
+  filename: './workers/piscina/function-to-bench-worker.js',
   minThreads: Number(size),
   maxThreads: size * 3,
   idleTimeout: 1000 * 60 // this is the same as poolifier default

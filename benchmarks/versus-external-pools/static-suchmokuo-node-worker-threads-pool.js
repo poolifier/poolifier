@@ -2,12 +2,13 @@
 const { DynamicPool, StaticPool } = require('node-worker-threads-pool')
 // FINISH IMPORT LIBRARIES
 // IMPORT FUNCTION TO BENCH
-const functionToBench = require('./functions/json-stringify')
+const functionToBench = require('./functions/function-to-bench')
 // FINISH IMPORT FUNCTION TO BENCH
 const size = process.env.POOL_SIZE
 const iterations = process.env.NUM_ITERATIONS
 const data = {
-  test: 'MYBENCH'
+  test: 'MYBENCH',
+  taskType: process.env['TASK_TYPE']
 }
 
 const pool = new StaticPool({

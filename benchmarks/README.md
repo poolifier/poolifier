@@ -12,11 +12,10 @@ The versus-external-pools folder contains benchmarks versus other Node.js pools.
 To compare poolifier pools performance vs other pools performance we chose to use [hyperfine](https://github.com/sharkdp/hyperfine).
 We chose to use this tool because it allows to run isolated Node.js processes so that each pool does not impact each other.
 
-We will add more details on each function that we benchmark.
-
 Those are our results:
 
-- CPU Intensive task with 100k operations submitted to each pool [BENCH-100000.MD](./versus-external-pools/BENCH-100000.MD)
+- CPU Intensive task with 100k operations submitted to each pool [BENCH-100000.MD](./versus-external-pools/BENCH-100000.MD).  
+This benchmark ran on a MacBook Pro 2015, 2,2 GHz Intel Core i7 quad-core, 16 GB 1600 MHz DDR3
 
 ## How to run benchmarks
 
@@ -30,3 +29,5 @@ To run the benchmark versus other pools you will need to:
 
 - [Install hyperfine](https://github.com/sharkdp/hyperfine#installation)
 - Run the `./bench.sh` into the `versus-external-pools` folder
+
+> :warning: **Please be sure to use a quite PC when you run the benchmarks**
