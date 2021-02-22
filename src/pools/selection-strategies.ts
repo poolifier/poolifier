@@ -98,7 +98,7 @@ class LessRecentlyUsedWorkerChoiceStrategy<
     // A worker is always found because it picks the one with fewer tasks
     let lessRecentlyUsedWorker!: Worker
     for (const [worker, numberOfTasks] of this.pool.tasks) {
-      if (!this.pool.isDynamic() && numberOfTasks === 0) {
+      if (!this.pool.dynamic && numberOfTasks === 0) {
         return worker
       } else if (numberOfTasks < minNumberOfTasks) {
         minNumberOfTasks = numberOfTasks
@@ -129,7 +129,7 @@ class RandomWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
 
   /** @inheritdoc */
   public choose (): Worker {
-    if (!this.pool.isDynamic()) {
+    if (!this.pool.dynamic) {
       const freeWorker = SelectionStrategiesUtils.findFreeWorkerBasedOnTasks(
         this.pool
       )
@@ -239,7 +239,7 @@ export class WorkerChoiceStrategyContext<
   private getPoolWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ): IWorkerChoiceStrategy<Worker> {
-    if (this.pool.isDynamic()) {
+    if (this.pool.dynamic) {
       return new DynamicPoolWorkerChoiceStrategy(
         this.pool,
         workerChoiceStrategy

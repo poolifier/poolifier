@@ -196,13 +196,13 @@ export abstract class AbstractPool<
       throw new Error(
         'Cannot instantiate a pool with a negative number of workers'
       )
-    } else if (!this.isDynamic() && numberOfWorkers === 0) {
+    } else if (!this.dynamic && numberOfWorkers === 0) {
       throw new Error('Cannot instantiate a fixed pool with no worker')
     }
   }
 
   /** @inheritdoc */
-  public isDynamic (): boolean {
+  public get dynamic (): boolean {
     return false
   }
 
