@@ -4,7 +4,6 @@ const { ThreadWorker } = require('../../lib')
 let numberOfMessagesPosted = 0
 const postMessage = function (message) {
   numberOfMessagesPosted++
-  console.log(message)
 }
 class SpyWorker extends ThreadWorker {
   getMainWorker () {
