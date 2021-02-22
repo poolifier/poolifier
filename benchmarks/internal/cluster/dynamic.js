@@ -2,6 +2,7 @@ const {
   DynamicClusterPool,
   WorkerChoiceStrategies
 } = require('../../../lib/index')
+const { runTest } = require('../benchmark-utils')
 
 const size = 30
 
@@ -37,61 +38,19 @@ const dynamicPoolRandom = new DynamicClusterPool(
 async function dynamicClusterTest (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
 ) {
-  return new Promise((resolve, reject) => {
-    let executions = 0
-    for (let i = 0; i <= tasks; i++) {
-      dynamicPool
-        .execute(workerData)
-        .then(res => {
-          executions++
-          if (executions === tasks) {
-            return resolve('FINISH')
-          }
-          return null
-        })
-        .catch(err => console.error(err))
-    }
-  })
+  return runTest(dynamicPool, { tasks, workerData })
 }
 
 async function dynamicClusterTestLessRecentlyUsed (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
 ) {
-  return new Promise((resolve, reject) => {
-    let executions = 0
-    for (let i = 0; i <= tasks; i++) {
-      dynamicPoolLessRecentlyUsed
-        .execute(workerData)
-        .then(res => {
-          executions++
-          if (executions === tasks) {
-            return resolve('FINISH')
-          }
-          return null
-        })
-        .catch(err => console.error(err))
-    }
-  })
+  return runTest(dynamicPoolLessRecentlyUsed, { tasks, workerData })
 }
 
 async function dynamicClusterTestRandom (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
 ) {
-  return new Promise((resolve, reject) => {
-    let executions = 0
-    for (let i = 0; i <= tasks; i++) {
-      dynamicPoolRandom
-        .execute(workerData)
-        .then(res => {
-          executions++
-          if (executions === tasks) {
-            return resolve('FINISH')
-          }
-          return null
-        })
-        .catch(err => console.error(err))
-    }
-  })
+  return runTest(dynamicPoolRandom, { tasks, workerData })
 }
 
 module.exports = {
