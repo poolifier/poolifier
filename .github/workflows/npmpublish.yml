@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 14
 
       - name: Install
         run: npm ci
@@ -44,7 +44,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 14
           registry-url: https://registry.npmjs.org/
 
       - name: Read package.json version
