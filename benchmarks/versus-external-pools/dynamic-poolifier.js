@@ -11,10 +11,7 @@ const data = {
 const dynamicPool = new DynamicThreadPool(
   size,
   size * 3,
-  './workers/poolifier/function-to-bench-worker.js',
-  {
-    maxTasks: 10000
-  }
+  './workers/poolifier/function-to-bench-worker.js'
 )
 
 async function run () {

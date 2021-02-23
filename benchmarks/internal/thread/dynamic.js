@@ -2,9 +2,7 @@ const { DynamicThreadPool } = require('../../../lib/index')
 
 const size = 30
 
-const dynamicPool = new DynamicThreadPool(size / 2, size * 3, './worker.js', {
-  maxTasks: 10000
-})
+const dynamicPool = new DynamicThreadPool(size / 2, size * 3, './worker.js')
 
 async function dynamicThreadTest (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }

@@ -38,12 +38,12 @@ export class FixedClusterPool<
    *
    * @param numberOfWorkers Number of workers for this pool.
    * @param filePath Path to an implementation of a `ClusterWorker` file, which can be relative or absolute.
-   * @param opts Options for this fixed cluster pool. Default: `{ maxTasks: 1000 }`
+   * @param opts Options for this fixed cluster pool. Default: `{}`
    */
   public constructor (
     numberOfWorkers: number,
     filePath: string,
-    public readonly opts: ClusterPoolOptions = { maxTasks: 1000 }
+    public readonly opts: ClusterPoolOptions = {}
   ) {
     super(numberOfWorkers, filePath, opts)
   }
@@ -81,9 +81,7 @@ export class FixedClusterPool<
   }
 
   protected afterWorkerSetup (worker: Worker): void {
-    // We will attach a listener for every task,
-    // when task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size
-    worker.setMaxListeners(this.opts.maxTasks ?? 1000)
+    // Listen worker messages.
     this.registerWorkerMessageListener(worker, super.workerListener())
   }
 }

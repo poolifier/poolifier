@@ -66,10 +66,7 @@ describe('Selection strategies test suite', () => {
           min,
           max,
           './tests/worker-files/thread/testWorker.js',
-          {
-            maxTasks: 1000,
-            workerChoiceStrategy: 'UNKNOWN_STRATEGY'
-          }
+          { workerChoiceStrategy: 'UNKNOWN_STRATEGY' }
         )
     ).toThrowError(
       new Error("Worker choice strategy 'UNKNOWN_STRATEGY' not found")

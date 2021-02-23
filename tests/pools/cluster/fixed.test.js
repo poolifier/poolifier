@@ -2,7 +2,6 @@ const expect = require('expect')
 const { FixedClusterPool } = require('../../../lib/index')
 const TestUtils = require('../../test-utils')
 const numberOfWorkers = 10
-const maxTasks = 500
 const pool = new FixedClusterPool(
   numberOfWorkers,
   './tests/worker-files/cluster/testWorker.js',
@@ -34,10 +33,7 @@ const asyncErrorPool = new FixedClusterPool(
 )
 const asyncPool = new FixedClusterPool(
   1,
-  './tests/worker-files/cluster/asyncWorker.js',
-  {
-    maxTasks: maxTasks
-  }
+  './tests/worker-files/cluster/asyncWorker.js'
 )
 
 describe('Fixed cluster pool test suite', () => {
@@ -116,11 +112,6 @@ describe('Fixed cluster pool test suite', () => {
     expect(result).toBeTruthy()
     expect(result.f).toBe(data.f)
     expect(usedTime).toBeGreaterThanOrEqual(2000)
-  })
-
-  it('Verify that maxTasks is set properly', async () => {
-    const worker = asyncPool.chooseWorker()
-    expect(worker.getMaxListeners()).toBe(maxTasks)
   })
 
   it('Shutdown test', async () => {
