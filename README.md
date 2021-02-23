@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./docs/logo.png" width="340px" height="266px"/>
+<img src="./images/logo.png" width="340px" height="266px"/>
 </div>
 
 <h2 align="center">Node Thread Pool and Cluster Pool :arrow_double_up: :on:</h2>
@@ -203,7 +203,7 @@ We already have a bench folder where you can find some comparisons.
 Thread pools are built on top of Node.js [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) module.
 
 **Cluster pools** (FixedClusterPool and DynamicClusterPool) are suggested to run I/O intensive tasks, again you can still run CPU intensive tasks into cluster pools, but performance enhancement is expected to be minimal.  
-Cluster pools are built on top of Node.js [cluster](https://nodejs.org/api/cluster.html) module.  
+Cluster pools are built on top of Node.js [cluster](https://nodejs.org/api/cluster.html) module.
 
 **Remember** that some Node.js tasks are execute by Node.js into the libuv worker pool at process level as explained [here](https://nodejs.org/en/docs/guides/dont-block-the-event-loop/#what-code-runs-on-the-worker-pool).
 
