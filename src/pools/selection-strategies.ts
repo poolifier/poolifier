@@ -120,13 +120,13 @@ class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
    * Constructs a worker choice strategy for dynamical pools.
    *
    * @param pool The pool instance.
-   * @param workerChoiceStrategy The worker choice strategy when the pull is full.
    * @param createDynamicallyWorkerCallback The worker creation callback for dynamic pool.
+   * @param workerChoiceStrategy The worker choice strategy when the pull is full.
    */
   public constructor (
     private readonly pool: IPoolInternal<Worker, Data, Response>,
     private createDynamicallyWorkerCallback: () => Worker,
-    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN,
+    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     this.workerChoiceStrategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(
       this.pool,
@@ -172,13 +172,13 @@ export class WorkerChoiceStrategyContext<
    * Worker choice strategy context constructor.
    *
    * @param pool The pool instance.
-   * @param workerChoiceStrategy The worker choice strategy.
    * @param createDynamicallyWorkerCallback The worker creation callback for dynamic pool.
+   * @param workerChoiceStrategy The worker choice strategy.
    */
   public constructor (
     private readonly pool: IPoolInternal<Worker, Data, Response>,
     private createDynamicallyWorkerCallback: () => Worker,
-    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN,
+    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     this.setWorkerChoiceStrategy(workerChoiceStrategy)
   }
