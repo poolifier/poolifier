@@ -15,6 +15,7 @@ External pools with which we compared the poolifier results:
 
 - [piscina](https://github.com/piscinajs/piscina)
 - [SUCHMOKUO/node-worker-threads-pool](https://github.com/SUCHMOKUO/node-worker-threads-pool)
+- [threads.js](https://github.com/andywer/threads.js/)
 
 Those are our results:
 
