@@ -148,7 +148,7 @@ export abstract class AbstractPool<
   public constructor (
     public readonly numberOfWorkers: number,
     public readonly filePath: string,
-    public readonly opts: PoolOptions<Worker> = {}
+    public readonly opts: PoolOptions<Worker>
   ) {
     if (!this.isMain()) {
       throw new Error('Cannot start a pool from a worker!')
