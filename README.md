@@ -200,7 +200,7 @@ This method will call the terminate method on each worker.
 Performance is one of the main target of these worker pool implementations, we want to have a strong focus on this.  
 We already have a bench folder where you can find some comparisons.  
 
-Before to jump into each poolifier pool type let highlight that **Node.js comes with a thread pool already**, the libuv thread pool where some particular tasks already run by default.  
+Before to jump into each poolifier pool type, let highlight that **Node.js comes with a thread pool already**, the libuv thread pool where some particular tasks already run by default.  
 Please take a look at [which tasks run on the libuv thread pool](https://nodejs.org/en/docs/guides/dont-block-the-event-loop/#what-code-runs-on-the-worker-pool).  
 
 Now **if your task runs on libuv thread pool**, you can :
@@ -214,7 +214,7 @@ Thread pools are built on top of Node.js [worker-threads](https://nodejs.org/api
 **If your task does not run into libuv thread pool** and is I/O intensive then poolifier **cluster pools** (FixedClusterPool and DynamicClusterPool) are suggested to run I/O intensive tasks, again you can still run CPU intensive tasks into cluster pools, but performance enhancement is expected to be minimal.  
 Cluster pools are built on top of Node.js [cluster](https://nodejs.org/api/cluster.html) module.  
 
-If your task contains code that runs on libuv and is CPU intensive or I/O intensive you either split it either combine more strategies (i.e. increase number of libuv threads and use cluster/thread pools).
+If your task contains code that runs on libuv plus code that is CPU intensive or I/O intensive you either split it either combine more strategies (i.e. increase number of libuv threads and use cluster/thread pools).
 
 ### Fixed vs Dynamic pools
 
