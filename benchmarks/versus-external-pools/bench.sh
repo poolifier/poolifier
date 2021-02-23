@@ -22,4 +22,5 @@ hyperfine --export-markdown BENCH-100000.MD --min-runs 10 \
   'node dynamic-poolifier.js' \
   'node fixed-poolifier.js' \
   'node static-suchmokuo-node-worker-threads-pool.js' \
-  'node dynamic-suchmokuo-node-worker-threads-pool.js'
+  'node dynamic-suchmokuo-node-worker-threads-pool.js' \
+  'node threadjs.js'
