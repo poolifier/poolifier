@@ -11,7 +11,7 @@ const workers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 let nextWorkerIndex = 0
 
-function chooseWorkerTernary () {
+function chooseWorkerTernaryOffByOne () {
   nextWorkerIndex =
     workers.length - 1 === nextWorkerIndex ? 0 : nextWorkerIndex + 1
   return workers[nextWorkerIndex]
@@ -40,9 +40,9 @@ function chooseWorkerIncrementModulo () {
 }
 
 suite
-  .add('Ternary', function () {
+  .add('Ternary off by one', function () {
     nextWorkerIndex = 0
-    chooseWorkerTernary()
+    chooseWorkerTernaryOffByOne()
   })
   .add('Ternary with negation', function () {
     nextWorkerIndex = 0
