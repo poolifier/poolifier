@@ -43,16 +43,16 @@ export interface IPoolInternal<
   readonly emitter: PoolEmitter
 
   /**
-   * Maximum number of workers that can be created by this pool.
-   */
-  readonly max?: number
-
-  /**
    * Whether the pool is dynamic or not.
    *
    * If it is dynamic, it provides the `max` property.
    */
-  isDynamic(): boolean
+  readonly dynamic: boolean
+
+  /**
+   * Maximum number of workers that can be created by this pool.
+   */
+  readonly max?: number
 
   /**
    * Creates a new worker for this pool and sets it up completely.

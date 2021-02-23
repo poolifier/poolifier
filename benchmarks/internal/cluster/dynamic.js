@@ -1,4 +1,8 @@
-const { DynamicClusterPool } = require('../../../lib/index')
+const {
+  DynamicClusterPool,
+  WorkerChoiceStrategies
+} = require('../../../lib/index')
+const { runTest } = require('../benchmark-utils')
 
 const size = 30
 
@@ -8,24 +12,26 @@ const dynamicPool = new DynamicClusterPool(
   './benchmarks/internal/cluster/worker.js'
 )
 
+const dynamicPoolLessRecentlyUsed = new DynamicClusterPool(
+  size / 2,
+  size * 3,
+  './benchmarks/internal/cluster/worker.js',
+  { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
+)
+
 async function dynamicClusterTest (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
 ) {
-  return new Promise((resolve, reject) => {
-    let executions = 0
-    for (let i = 0; i <= tasks; i++) {
-      dynamicPool
-        .execute(workerData)
-        .then(res => {
-          executions++
-          if (executions === tasks) {
-            return resolve('FINISH')
-          }
-          return null
-        })
-        .catch(err => console.error(err))
-    }
-  })
+  return runTest(dynamicPool, { tasks, workerData })
 }
 
-module.exports = { dynamicClusterTest }
+async function dynamicClusterTestLessRecentlyUsed (
+  { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
+) {
+  return runTest(dynamicPoolLessRecentlyUsed, { tasks, workerData })
+}
+
+module.exports = {
+  dynamicClusterTest,
+  dynamicClusterTestLessRecentlyUsed
+}

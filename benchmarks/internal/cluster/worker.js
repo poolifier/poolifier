@@ -8,7 +8,7 @@ function yourFunction (data) {
     }
     JSON.stringify(o)
   }
-  // console.log('This is the main thread ' + isMainThread)
+  // console.log('This is the main thread ' + isMaster)
   return { ok: 1 }
 }
 

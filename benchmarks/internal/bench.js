@@ -1,10 +1,16 @@
 const Benchmark = require('benchmark')
-const { dynamicClusterTest } = require('./cluster/dynamic')
+const {
+  dynamicClusterTest,
+  dynamicClusterTestLessRecentlyUsed
+} = require('./cluster/dynamic')
 const { fixedClusterTest } = require('./cluster/fixed')
-const { dynamicThreadTest } = require('./thread/dynamic')
+const {
+  dynamicThreadTest,
+  dynamicThreadTestLessRecentlyUsed
+} = require('./thread/dynamic')
 const { fixedThreadTest } = require('./thread/fixed')
 
-const suite = new Benchmark.Suite()
+const suite = new Benchmark.Suite('poolifier')
 
 const LIST_FORMATTER = new Intl.ListFormat('en-US', {
   style: 'long',
@@ -19,17 +25,23 @@ setTimeout(async () => {
 async function test () {
   // Add tests
   suite
-    .add('Pioardi:Static:ThreadPool', async function () {
+    .add('Poolifier:Static:ThreadPool', async function () {
       await fixedThreadTest()
     })
-    .add('Pioardi:Dynamic:ThreadPool', async function () {
+    .add('Poolifier:Dynamic:ThreadPool', async function () {
       await dynamicThreadTest()
     })
-    .add('Pioardi:Static:ClusterPool', async function () {
+    .add('Poolifier:Dynamic:ThreadPool:LessRecentlyUsed', async function () {
+      await dynamicThreadTestLessRecentlyUsed()
+    })
+    .add('Poolifier:Static:ClusterPool', async function () {
       await fixedClusterTest()
     })
-    .add('Pioardi:Dynamic:ClusterPool', async function () {
+    .add('Poolifier:Dynamic:ClusterPool', async function () {
       await dynamicClusterTest()
+    })
+    .add('Poolifier:Dynamic:ClusterPool:LessRecentlyUsed', async function () {
+      await dynamicClusterTestLessRecentlyUsed()
     })
     // Add listeners
     .on('cycle', function (event) {
@@ -43,5 +55,5 @@ async function test () {
       // eslint-disable-next-line no-process-exit
       process.exit()
     })
-    .run()
+    .run({ async: true, queued: true })
 }

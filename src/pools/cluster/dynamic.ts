@@ -35,7 +35,7 @@ export class DynamicClusterPool<
   }
 
   /** @inheritdoc */
-  public isDynamic (): boolean {
+  public get dynamic (): boolean {
     return true
   }
 }
