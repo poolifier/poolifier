@@ -143,7 +143,7 @@ export abstract class AbstractPool<
    *
    * @param numberOfWorkers Number of workers that this pool should manage.
    * @param filePath Path to the worker-file.
-   * @param opts Options for the pool. Default: `{}`
+   * @param opts Options for the pool.
    */
   public constructor (
     public readonly numberOfWorkers: number,
