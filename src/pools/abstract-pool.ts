@@ -387,7 +387,7 @@ export abstract class AbstractPool<
    * @returns The listener function to execute when a message is sent from a worker.
    */
   protected workerListener (): (message: MessageValue<Response>) => void {
-    const listener: (message: MessageValue<Response>) => void = message => {
+    return message => {
       if (message.id) {
         const value = this.promiseMap.get(message.id)
         if (value) {
@@ -398,6 +398,5 @@ export abstract class AbstractPool<
         }
       }
     }
-    return listener
   }
 }
