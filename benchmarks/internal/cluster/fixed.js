@@ -1,4 +1,5 @@
 const { FixedClusterPool } = require('../../../lib/index')
+const { runTest } = require('../benchmark-utils')
 
 const size = 30
 
@@ -10,23 +11,7 @@ const fixedPool = new FixedClusterPool(
 async function fixedClusterTest (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
 ) {
-  return new Promise((resolve, reject) => {
-    let executions = 0
-    for (let i = 0; i <= tasks; i++) {
-      fixedPool
-        .execute(workerData)
-        .then(res => {
-          executions++
-          if (executions === tasks) {
-            return resolve('FINISH')
-          }
-          return null
-        })
-        .catch(err => {
-          console.error(err)
-        })
-    }
-  })
+  return runTest(fixedPool, { tasks, workerData })
 }
 
 module.exports = { fixedClusterTest }

@@ -36,7 +36,7 @@ export class DynamicThreadPool<
   }
 
   /** @inheritdoc */
-  public isDynamic (): boolean {
+  public get dynamic (): boolean {
     return true
   }
 }
