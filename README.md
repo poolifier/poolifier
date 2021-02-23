@@ -203,10 +203,10 @@ We already have a bench folder where you can find some comparisons.
 Before to jump into each poolifier pool type, let highlight that **Node.js comes with a thread pool already**, the libuv thread pool where some particular tasks already run by default.  
 Please take a look at [which tasks run on the libuv thread pool](https://nodejs.org/en/docs/guides/dont-block-the-event-loop/#what-code-runs-on-the-worker-pool).  
 
-Now **if your task runs on libuv thread pool**, you can :
+Now **if your task runs on libuv thread pool**, you can try to:
 
- -Increase the libuv thread pool size setting the [UV_THREADPOOL_SIZE](https://nodejs.org/api/cli.html#cli_uv_threadpool_size_size) and/or  
- -Use poolifier cluster pool that spawning child processes will also increase the number of libuv threads since that any new child process comes with a separated libuv thread pool.
+ -Tune the libuv thread pool size setting the [UV_THREADPOOL_SIZE](https://nodejs.org/api/cli.html#cli_uv_threadpool_size_size) and/or  
+ -Use poolifier cluster pool that spawning child processes will also increase the number of libuv threads since that any new child process comes with a separated libuv thread pool.**More threads does not mean more fast, so please tune your application.**
 
 **If your task does not run into libuv thread pool** and is CPU intensive then poolifier **thread pools** ( FixedThreadPool and DynamicThreadPool ) are suggested to run CPU intensive tasks, you can still run I/O intensive tasks into thread pools, but performance enhancement is expected to be minimal.  
 Thread pools are built on top of Node.js [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) module.
