@@ -22,7 +22,8 @@ describe('Abstract worker test suite', () => {
   })
 
   it('Verify that get main worker throw error if main worker is not set', () => {
-    const worker = new StubPoolWithIsMainWorker(() => {})
-    expect(() => worker.getMainWorker()).toThrowError()
+    expect(() =>
+      new StubPoolWithIsMainWorker(() => {}).getMainWorker()
+    ).toThrowError()
   })
 })
