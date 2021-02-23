@@ -155,7 +155,6 @@ You can use node versions 12.x, 13.x, 14.x
 - `errorHandler` - A function that will listen for error event on each worker
 - `onlineHandler` - A function that will listen for online event on each worker
 - `exitHandler` - A function that will listen for exit event on each worker
-- `maxTasks` - This is just to avoid not useful warnings message, is used to set [maxListeners](https://nodejs.org/dist/latest-v12.x/docs/api/events.html#events_emitter_setmaxlisteners_n) on event emitters (workers are event emitters)
 
 ### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
 

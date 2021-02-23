@@ -30,12 +30,12 @@ export class FixedThreadPool<
    *
    * @param numberOfThreads Number of threads for this pool.
    * @param filePath Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
-   * @param opts Options for this fixed thread pool. Default: `{ maxTasks: 1000 }`
+   * @param opts Options for this fixed thread pool. Default: `{}`
    */
   public constructor (
     numberOfThreads: number,
     filePath: string,
-    opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
+    opts: PoolOptions<ThreadWorkerWithMessageChannel> = {}
   ) {
     super(numberOfThreads, filePath, opts)
   }
@@ -78,9 +78,7 @@ export class FixedThreadPool<
     worker.postMessage({ parent: port1 }, [port1])
     worker.port1 = port1
     worker.port2 = port2
-    // We will attach a listener for every task,
-    // when the task is completed the listener will be removed but to avoid warnings we are increasing the max listeners size.
-    worker.port2.setMaxListeners(this.opts.maxTasks ?? 1000)
+    // Listen worker messages.
     this.registerWorkerMessageListener(worker, super.workerListener())
   }
 }

@@ -5,10 +5,7 @@ const size = 30
 
 const fixedPool = new FixedClusterPool(
   size,
-  './benchmarks/internal/cluster/worker.js',
-  {
-    maxTasks: 10000
-  }
+  './benchmarks/internal/cluster/worker.js'
 )
 
 async function fixedClusterTest (

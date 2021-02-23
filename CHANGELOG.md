@@ -13,8 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking Changes
 
-- `maxInactiveTime` default behavior is now changed, if you want to keep the old behavior set `killBehavior` to `KillBehaviors.HARD`.
+- `maxInactiveTime` on `ThreadWorker` default behavior is now changed, if you want to keep the old behavior set `killBehavior` to `KillBehaviors.HARD`.
   _Find more details on our JSDoc._
+
+- `maxTasks` option on `FixedThreadPool` and `DynamicThreadPool` is now removed since is no more needed.
 
 - We changed some internal structures, but you shouldn't be too affected by them as these are internal changes.
 

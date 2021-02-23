@@ -9,19 +9,13 @@ const size = 30
 const dynamicPool = new DynamicThreadPool(
   size / 2,
   size * 3,
-  './benchmarks/internal/thread/worker.js',
-  {
-    maxTasks: 10000
-  }
+  './benchmarks/internal/thread/worker.js'
 )
 
 const dynamicPoolLessRecentlyUsed = new DynamicThreadPool(
   size / 2,
   size * 3,
   './benchmarks/internal/thread/worker.js',
-  {
-    maxTasks: 10000
-  },
   { workerChoiceStrategy: DynamicThreadPool.LESS_RECENTLY_USED }
 )
 
@@ -29,9 +23,6 @@ const dynamicPoolRandom = new DynamicThreadPool(
   size / 2,
   size * 3,
   './benchmarks/internal/thread/worker.js',
-  {
-    maxTasks: 10000
-  },
   { workerChoiceStrategy: WorkerChoiceStrategies.RANDOM }
 )
 

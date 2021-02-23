@@ -5,10 +5,7 @@ const size = 30
 
 const fixedPool = new FixedThreadPool(
   size,
-  './benchmarks/internal/thread/worker.js',
-  {
-    maxTasks: 10000
-  }
+  './benchmarks/internal/thread/worker.js'
 )
 
 async function fixedThreadTest (
