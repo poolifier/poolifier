@@ -165,7 +165,6 @@ export abstract class AbstractPool<
     this.emitter = new PoolEmitter()
     this.workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       this,
-      opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN,
       () => {
         const workerCreated = this.createAndSetupWorker()
         this.registerWorkerMessageListener(workerCreated, message => {
@@ -179,7 +178,8 @@ export abstract class AbstractPool<
           }
         })
         return workerCreated
-      }
+      },
+      opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
     )
   }
 

@@ -125,8 +125,8 @@ class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
    */
   public constructor (
     private readonly pool: IPoolInternal<Worker, Data, Response>,
+    private createDynamicallyWorkerCallback: () => Worker,
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN,
-    private createDynamicallyWorkerCallback: () => Worker
   ) {
     this.workerChoiceStrategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(
       this.pool,
@@ -177,8 +177,8 @@ export class WorkerChoiceStrategyContext<
    */
   public constructor (
     private readonly pool: IPoolInternal<Worker, Data, Response>,
+    private createDynamicallyWorkerCallback: () => Worker,
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN,
-    private createDynamicallyWorkerCallback: () => Worker
   ) {
     this.setWorkerChoiceStrategy(workerChoiceStrategy)
   }
@@ -195,8 +195,8 @@ export class WorkerChoiceStrategyContext<
     if (this.pool.dynamic) {
       return new DynamicPoolWorkerChoiceStrategy(
         this.pool,
-        workerChoiceStrategy,
-        this.createDynamicallyWorkerCallback
+        this.createDynamicallyWorkerCallback,
+        workerChoiceStrategy
       )
     }
     return SelectionStrategiesUtils.getWorkerChoiceStrategy(
@@ -239,13 +239,13 @@ class SelectionStrategiesUtils {
    *
    * If no free worker was found, `null` will be returned.
    *
-   * @param tasks The pool worker tasks map.
+   * @param workerTasksMap The pool worker tasks map.
    * @returns A free worker if there was one, otherwise `null`.
    */
   public static findFreeWorkerBasedOnTasks<Worker extends IWorker> (
-    tasks: Map<Worker, number>
+    workerTasksMap: Map<Worker, number>
   ): Worker | null {
-    for (const [worker, numberOfTasks] of tasks) {
+    for (const [worker, numberOfTasks] of workerTasksMap) {
       if (numberOfTasks === 0) {
         // A worker is free, use it
         return worker
