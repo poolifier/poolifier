@@ -205,7 +205,7 @@ Please take a look at [which tasks run on the libuv thread pool](https://nodejs.
 
 Now **if your task runs on libuv thread pool**, you can :
 
- -Increase the libuv thread pool size setting the [UV_THREADPOOL_SIZE](https://nodejs.org/api/cli.html#cli_uv_threadpool_size_size) and/or
+ -Increase the libuv thread pool size setting the [UV_THREADPOOL_SIZE](https://nodejs.org/api/cli.html#cli_uv_threadpool_size_size) and/or  
  -Use poolifier cluster pool that spawning child processes will also increase the number of libuv threads since that any new child process comes with a separated libuv thread pool.
 
 **If your task does not run into libuv thread pool** and is CPU intensive then poolifier **thread pools** ( FixedThreadPool and DynamicThreadPool ) are suggested to run CPU intensive tasks, you can still run I/O intensive tasks into thread pools, but performance enhancement is expected to be minimal.  
