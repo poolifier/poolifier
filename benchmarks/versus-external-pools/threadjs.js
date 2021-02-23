@@ -11,18 +11,19 @@ const data = {
 // Threads.js is not really a pool so we need to write few additional code
 const workers = []
 async function poolify () {
-  for (let i = 0; i < size ; i++ ){
-    const worker = await spawn(new Worker("./workers/threadjs/function-to-bench-worker.js"))
+  for (let i = 0; i < size; i++) {
+    const worker = await spawn(
+      new Worker('./workers/threadjs/function-to-bench-worker.js')
+    )
     workers.push(worker)
   }
 }
-
 
 async function run () {
   await poolify()
   const promises = []
   for (let i = 0; i < iterations; i++) {
-    const worker = workers[(i % size)]
+    const worker = workers[i % size]
     promises.push(worker.exposedFunction(data))
   }
   await Promise.all(promises)

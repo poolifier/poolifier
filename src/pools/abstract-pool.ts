@@ -2,6 +2,7 @@ import type {
   MessageValue,
   PromiseWorkerResponseWrapper
 } from '../utility-types'
+import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { IPoolInternal } from './pool-internal'
 import { PoolEmitter } from './pool-internal'
 import type { WorkerChoiceStrategy } from './selection-strategies'
@@ -100,6 +101,15 @@ export abstract class AbstractPool<
   Data = unknown,
   Response = unknown
 > implements IPoolInternal<Worker, Data, Response> {
+  /** @inheritdoc */
+  public readonly workers: Worker[] = []
+
+  /** @inheritdoc */
+  public readonly tasks: Map<Worker, number> = new Map<Worker, number>()
+
+  /** @inheritdoc */
+  public readonly emitter: PoolEmitter
+
   /**
    * The promise map.
    *
@@ -112,15 +122,6 @@ export abstract class AbstractPool<
     number,
     PromiseWorkerResponseWrapper<Worker, Response>
   > = new Map<number, PromiseWorkerResponseWrapper<Worker, Response>>()
-
-  /** @inheritdoc */
-  public readonly workers: Worker[] = []
-
-  /** @inheritdoc */
-  public readonly tasks: Map<Worker, number> = new Map<Worker, number>()
-
-  /** @inheritdoc */
-  public readonly emitter: PoolEmitter
 
   /**
    * ID of the next message.
@@ -164,7 +165,21 @@ export abstract class AbstractPool<
     this.emitter = new PoolEmitter()
     this.workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       this,
-      opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
+      opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN,
+      () => {
+        const workerCreated = this.createAndSetupWorker()
+        this.registerWorkerMessageListener(workerCreated, message => {
+          const tasksInProgress = this.tasks.get(workerCreated)
+          if (
+            isKillBehavior(KillBehaviors.HARD, message.kill) ||
+            tasksInProgress === 0
+          ) {
+            // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
+            void this.destroyWorker(workerCreated)
+          }
+        })
+        return workerCreated
+      }
     )
   }
 
@@ -223,8 +238,12 @@ export abstract class AbstractPool<
     await Promise.all(this.workers.map(worker => this.destroyWorker(worker)))
   }
 
-  /** @inheritdoc */
-  public abstract destroyWorker (worker: Worker): void | Promise<void>
+  /**
+   * Shut down given worker.
+   *
+   * @param worker A worker within `workers`.
+   */
+  protected abstract destroyWorker (worker: Worker): void | Promise<void>
 
   /**
    * Setup hook that can be overridden by a Poolifier pool implementation
@@ -306,8 +325,13 @@ export abstract class AbstractPool<
     message: MessageValue<Data>
   ): void
 
-  /** @inheritdoc */
-  public abstract registerWorkerMessageListener<
+  /**
+   * Register a listener callback on a given worker.
+   *
+   * @param worker A worker.
+   * @param listener A message listener callback.
+   */
+  protected abstract registerWorkerMessageListener<
     Message extends Data | Response
   > (worker: Worker, listener: (message: MessageValue<Message>) => void): void
 
@@ -334,8 +358,12 @@ export abstract class AbstractPool<
    */
   protected abstract afterWorkerSetup (worker: Worker): void
 
-  /** @inheritdoc */
-  public createAndSetupWorker (): Worker {
+  /**
+   * Creates a new worker for this pool and sets it up completely.
+   *
+   * @returns New, completely set up worker.
+   */
+  protected createAndSetupWorker (): Worker {
     const worker: Worker = this.createWorker()
 
     worker.on('error', this.opts.errorHandler ?? EMPTY_FUNCTION)
