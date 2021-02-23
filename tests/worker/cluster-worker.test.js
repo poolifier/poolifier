@@ -6,4 +6,10 @@ describe('Cluster worker test suite', () => {
     const worker = new ClusterWorker(() => {})
     expect(worker.maxInactiveTime).toEqual(60_000)
   })
+
+  it('Verify that handleError function works properly', () => {
+    const errorMessage = 'Error as a string'
+    const worker = new ClusterWorker(() => {})
+    expect(worker.handleError(errorMessage)).toBe(errorMessage)
+  })
 })
