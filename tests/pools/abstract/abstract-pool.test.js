@@ -18,10 +18,7 @@ describe('Abstract pool test suite', () => {
   it('Simulate worker not found during increaseWorkersTask', () => {
     const pool = new StubPoolWithTasksMapClear(
       1,
-      './tests/worker-files/thread/testWorker.js',
-      {
-        errorHandler: e => console.error(e)
-      }
+      './tests/worker-files/thread/testWorker.js'
     )
     // Simulate worker not found.
     pool.removeAllWorker()
