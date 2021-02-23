@@ -6,6 +6,7 @@ import command from 'rollup-plugin-command'
 
 const isDevelopmentBuild = process.env.BUILD === 'development'
 const isAnalyze = process.env.ANALYZE
+const isDocumentation = process.env.DOCUMENTATION
 
 export default {
   input: 'src/index.ts',
@@ -28,6 +29,6 @@ export default {
       targets: ['lib/*']
     }),
     isAnalyze && analyze(),
-    command('npm run typedoc')
+    isDocumentation && command('npm run typedoc')
   ]
 }
