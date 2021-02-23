@@ -11,7 +11,8 @@ const pool = new FixedThreadPool(
 )
 const emptyPool = new FixedThreadPool(
   1,
-  './tests/worker-files/thread/emptyWorker.js'
+  './tests/worker-files/thread/emptyWorker.js',
+  { exitHandler: () => console.log('WORKER EXITED') }
 )
 const echoPool = new FixedThreadPool(
   1,
