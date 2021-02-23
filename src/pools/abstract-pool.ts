@@ -83,15 +83,6 @@ export interface PoolOptions<Worker> {
    */
   exitHandler?: ExitHandler<Worker>
   /**
-   * This is just to avoid non-useful warning messages.
-   *
-   * Will be used to set `maxListeners` on event emitters (workers are event emitters).
-   *
-   * @default 1000
-   * @see [Node events emitter.setMaxListeners(n)](https://nodejs.org/api/events.html#events_emitter_setmaxlisteners_n)
-   */
-  maxTasks?: number
-  /**
    * The work choice strategy to use in this pool.
    */
   workerChoiceStrategy?: WorkerChoiceStrategy
@@ -152,12 +143,12 @@ export abstract class AbstractPool<
    *
    * @param numberOfWorkers Number of workers that this pool should manage.
    * @param filePath Path to the worker-file.
-   * @param opts Options for the pool. Default: `{ maxTasks: 1000 }`
+   * @param opts Options for the pool. Default: `{}`
    */
   public constructor (
     public readonly numberOfWorkers: number,
     public readonly filePath: string,
-    public readonly opts: PoolOptions<Worker> = { maxTasks: 1000 }
+    public readonly opts: PoolOptions<Worker> = {}
   ) {
     if (!this.isMain()) {
       throw new Error('Cannot start a pool from a worker!')

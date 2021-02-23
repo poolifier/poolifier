@@ -67,7 +67,6 @@ describe('Selection strategies test suite', () => {
           max,
           './tests/worker-files/thread/testWorker.js',
           {
-            maxTasks: 1000,
             workerChoiceStrategy: 'UNKNOWN_STRATEGY'
           }
         )

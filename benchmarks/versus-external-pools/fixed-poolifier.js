@@ -10,10 +10,7 @@ const data = {
 
 const fixedPool = new FixedThreadPool(
   size,
-  './workers/poolifier/function-to-bench-worker.js',
-  {
-    maxTasks: 100000
-  }
+  './workers/poolifier/function-to-bench-worker.js'
 )
 
 async function run () {

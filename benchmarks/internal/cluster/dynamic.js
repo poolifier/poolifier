@@ -5,10 +5,7 @@ const size = 30
 const dynamicPool = new DynamicClusterPool(
   size / 2,
   size * 3,
-  './benchmarks/internal/cluster/worker.js',
-  {
-    maxTasks: 10000
-  }
+  './benchmarks/internal/cluster/worker.js'
 )
 
 async function dynamicClusterTest (
