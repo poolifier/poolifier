@@ -199,13 +199,24 @@ This method will call the terminate method on each worker.
 
 Performance is one of the main target of these worker pool implementations, we want to have a strong focus on this.  
 We already have a bench folder where you can find some comparisons.  
-**Thread pools** ( FixedThreadPool and DynamicThreadPool ) are suggested to run CPU intensive tasks, you can still run I/O intensive tasks into thread pools, but performance enhancement is expected to be minimal.  
+
+Before to jump into each poolifier pool type let highlight that **Node.js comes with a thread pool already**, the libuv thread pool where some particular tasks already run by default.  
+Please take a look at [which tasks run on the libuv thread pool](https://nodejs.org/en/docs/guides/dont-block-the-event-loop/#what-code-runs-on-the-worker-pool).  
+
+Now **if your task runs on libuv thread pool**, you can :
+
+ -Increase the libuv thread pool size setting the [UV_THREADPOOL_SIZE](https://nodejs.org/api/cli.html#cli_uv_threadpool_size_size) and/or
+ -Use poolifier cluster pool that spawning child processes will also increase the number of libuv threads since that any new child process comes with a separated libuv thread pool.
+
+**If your task does not run into libuv thread pool** and is CPU intensive then poolifier **thread pools** ( FixedThreadPool and DynamicThreadPool ) are suggested to run CPU intensive tasks, you can still run I/O intensive tasks into thread pools, but performance enhancement is expected to be minimal.  
 Thread pools are built on top of Node.js [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) module.
 
-**Cluster pools** (FixedClusterPool and DynamicClusterPool) are suggested to run I/O intensive tasks, again you can still run CPU intensive tasks into cluster pools, but performance enhancement is expected to be minimal.  
+**If your task does not run into libuv thread pool** and is I/O intensive then poolifier **cluster pools** (FixedClusterPool and DynamicClusterPool) are suggested to run I/O intensive tasks, again you can still run CPU intensive tasks into cluster pools, but performance enhancement is expected to be minimal.  
 Cluster pools are built on top of Node.js [cluster](https://nodejs.org/api/cluster.html) module.  
 
-**Remember** that some Node.js tasks are execute by Node.js into the libuv worker pool at process level as explained [here](https://nodejs.org/en/docs/guides/dont-block-the-event-loop/#what-code-runs-on-the-worker-pool).
+If your task contains code that runs on libuv and is CPU intensive or I/O intensive you either split it either combine more strategies (i.e. increase number of libuv threads and use cluster/thread pools).
+
+### Fixed vs Dynamic pools
 
 To choose your pool consider that with a FixedThreadPool/FixedClusterPool or a DynamicThreadPool/DynamicClusterPool (in this case is important the min parameter passed to the constructor) your application memory footprint will increase.  
 Increasing the memory footprint, your application will be ready to accept more tasks, but during idle time your application will consume more memory.  
