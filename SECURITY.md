@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-Security matrix, currently there are not security vulnerabilities.
+Security matrix, currently there are no security vulnerabilities.
 
 | Version | Supported          |
 | ------- | ------------------ |
