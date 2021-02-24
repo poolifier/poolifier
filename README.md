@@ -212,7 +212,8 @@ Now **if your task runs on libuv thread pool**, you can try to:
 Thread pools are built on top of Node.js [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) module.
 
 **If your task does not run into libuv thread pool** and is I/O intensive then poolifier **cluster pools** (FixedClusterPool and DynamicClusterPool) are suggested to run I/O intensive tasks, again you can still run CPU intensive tasks into cluster pools, but performance enhancement is expected to be minimal.  
-Cluster pools are built on top of Node.js [cluster](https://nodejs.org/api/cluster.html) module.  
+Consider that by default Node.js already has great performance for I/O tasks ( asynchronous I/O ).  
+Cluster pools are built on top of Node.js [cluster](https://nodejs.org/api/cluster.html) module.
 
 If your task contains code that runs on libuv plus code that is CPU intensive or I/O intensive you either split it either combine more strategies (i.e. tune the number of libuv threads and use cluster/thread pools).  
 But in general, **always profile your application**
