@@ -47,7 +47,6 @@ _This is not a limitation by poolifier but NodeJS._
 #### Public property replacements
 
 `numWorkers` property is now `numberOfWorkers`
-`nextWorker` property is now `nextWorkerIndex`
 
 #### Internal (protected) properties and methods renaming
 
