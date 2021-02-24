@@ -1,5 +1,4 @@
 import EventEmitter from 'events'
-import type { MessageValue } from '../utility-types'
 import type { IWorker } from './abstract-pool'
 import type { IPool } from './pool'
 
@@ -53,29 +52,4 @@ export interface IPoolInternal<
    * Maximum number of workers that can be created by this pool.
    */
   readonly max?: number
-
-  /**
-   * Creates a new worker for this pool and sets it up completely.
-   *
-   * @returns New, completely set up worker.
-   */
-  createAndSetupWorker(): Worker
-
-  /**
-   * Shut down given worker.
-   *
-   * @param worker A worker within `workers`.
-   */
-  destroyWorker(worker: Worker): void | Promise<void>
-
-  /**
-   * Register a listener callback on a given worker.
-   *
-   * @param worker A worker.
-   * @param listener A message listener callback.
-   */
-  registerWorkerMessageListener<Message extends Data | Response>(
-    worker: Worker,
-    listener: (message: MessageValue<Message>) => void
-  ): void
 }

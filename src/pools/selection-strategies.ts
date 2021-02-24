@@ -1,4 +1,3 @@
-import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { IWorker } from './abstract-pool'
 import type { IPoolInternal } from './pool-internal'
 
@@ -121,10 +120,12 @@ class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
    * Constructs a worker choice strategy for dynamical pools.
    *
    * @param pool The pool instance.
+   * @param createDynamicallyWorkerCallback The worker creation callback for dynamic pool.
    * @param workerChoiceStrategy The worker choice strategy when the pull is full.
    */
   public constructor (
     private readonly pool: IPoolInternal<Worker, Data, Response>,
+    private createDynamicallyWorkerCallback: () => Worker,
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     this.workerChoiceStrategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(
@@ -136,7 +137,7 @@ class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
   /** @inheritdoc */
   public choose (): Worker {
     const freeWorker = SelectionStrategiesUtils.findFreeWorkerBasedOnTasks(
-      this.pool
+      this.pool.tasks
     )
     if (freeWorker) {
       return freeWorker
@@ -148,18 +149,7 @@ class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
     }
 
     // All workers are busy, create a new worker
-    const workerCreated = this.pool.createAndSetupWorker()
-    this.pool.registerWorkerMessageListener(workerCreated, message => {
-      const tasksInProgress = this.pool.tasks.get(workerCreated)
-      if (
-        isKillBehavior(KillBehaviors.HARD, message.kill) ||
-        tasksInProgress === 0
-      ) {
-        // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-        void this.pool.destroyWorker(workerCreated)
-      }
-    })
-    return workerCreated
+    return this.createDynamicallyWorkerCallback()
   }
 }
 
@@ -182,10 +172,12 @@ export class WorkerChoiceStrategyContext<
    * Worker choice strategy context constructor.
    *
    * @param pool The pool instance.
+   * @param createDynamicallyWorkerCallback The worker creation callback for dynamic pool.
    * @param workerChoiceStrategy The worker choice strategy.
    */
   public constructor (
     private readonly pool: IPoolInternal<Worker, Data, Response>,
+    private createDynamicallyWorkerCallback: () => Worker,
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     this.setWorkerChoiceStrategy(workerChoiceStrategy)
@@ -203,6 +195,7 @@ export class WorkerChoiceStrategyContext<
     if (this.pool.dynamic) {
       return new DynamicPoolWorkerChoiceStrategy(
         this.pool,
+        this.createDynamicallyWorkerCallback,
         workerChoiceStrategy
       )
     }
@@ -246,15 +239,13 @@ class SelectionStrategiesUtils {
    *
    * If no free worker was found, `null` will be returned.
    *
-   * @param pool The pool instance.
+   * @param workerTasksMap The pool worker tasks map.
    * @returns A free worker if there was one, otherwise `null`.
    */
-  public static findFreeWorkerBasedOnTasks<
-    Worker extends IWorker,
-    Data,
-    Response
-  > (pool: IPoolInternal<Worker, Data, Response>): Worker | null {
-    for (const [worker, numberOfTasks] of pool.tasks) {
+  public static findFreeWorkerBasedOnTasks<Worker extends IWorker> (
+    workerTasksMap: Map<Worker, number>
+  ): Worker | null {
+    for (const [worker, numberOfTasks] of workerTasksMap) {
       if (numberOfTasks === 0) {
         // A worker is free, use it
         return worker
