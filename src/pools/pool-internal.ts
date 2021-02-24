@@ -56,7 +56,7 @@ export interface IPoolInternal<
   /**
    * Whether the pool is busy or not.
    *
-   * @returns The pool business boolean status.
+   * @returns The pool busyness boolean status.
    */
   isPoolBusy(): boolean
 
