@@ -34,7 +34,7 @@
 Poolifier is used to perform CPU intensive and I/O intensive tasks on nodejs servers, it implements worker pools (yes, more worker pool implementations, so you can choose which one fit better for you) using [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) and cluster pools using [Node.js cluster](https://nodejs.org/api/cluster.html) modules.  
 With poolifier you can improve your **performance** and resolve problems related to the event loop.  
 Moreover you can execute your tasks using an API designed to improve the **developer experience**.  
-Please consult our guidelines to <a href="#choose-your-pool">choose your pool</a>
+Please consult our  <a href="#general-guidance">general guidelines</a>
 
 - Performance :racehorse: [benchmarks](./benchmarks/README.md)
 - Security :bank: :cop: [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=security_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
@@ -69,7 +69,7 @@ Please consult our guidelines to <a href="#choose-your-pool">choose your pool</a
   <span> · </span>
   <a href="#api">API</a>
   <span> · </span>
-  <a href="#choose-your-pool">Choose your pool</a>
+  <a href="#general-guidance">General guidance</a>
   <span> · </span>
   <a href="#contribute">Contribute</a>
   <span> · </span>
@@ -195,7 +195,7 @@ This method will call the terminate method on each worker.
   This option only apply to the newly created workers.  
   Default: `SOFT`
 
-## Choose your pool
+## General guidance
 
 Performance is one of the main target of these worker pool implementations, we want to have a strong focus on this.  
 We already have a bench folder where you can find some comparisons.  
