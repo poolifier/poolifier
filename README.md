@@ -127,7 +127,7 @@ const pool = new DynamicThreadPool(10, 100,
   './yourWorker.js',
   { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
 
-pool.emitter.on('FullPool', () => console.log('Pool is full'))
+pool.emitter.on('busy', () => console.log('Pool is busy'))
 
 // the execute method signature is the same for both implementations,
 // so you can easy switch from one to another

@@ -37,7 +37,7 @@ export interface IPoolInternal<
    *
    * Events that can currently be listened to:
    *
-   * - `'FullPool'`
+   * - `'busy'`
    */
   readonly emitter: PoolEmitter
 
@@ -52,4 +52,22 @@ export interface IPoolInternal<
    * Maximum number of workers that can be created by this pool.
    */
   readonly max?: number
+
+  /**
+   * Whether the pool is busy or not.
+   *
+   * @returns The pool business boolean status.
+   */
+  isPoolBusy(): boolean
+
+  /**
+   * Find a tasks map entry with a free worker based on the number of tasks the worker has applied.
+   *
+   * If a worker was found that has `0` tasks, it is detected as free.
+   *
+   * If no tasks map entry with a free worker was found, `null` will be returned.
+   *
+   * @returns A tasks map entry with a free worker if there was one, otherwise `null`.
+   */
+  findFreeTasksMapEntry(): [Worker, number] | [null, null]
 }

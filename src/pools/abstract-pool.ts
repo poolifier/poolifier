@@ -110,6 +110,9 @@ export abstract class AbstractPool<
   /** @inheritdoc */
   public readonly emitter: PoolEmitter
 
+  /** @inheritdoc */
+  public readonly max?: number
+
   /**
    * The promise map.
    *
@@ -223,6 +226,27 @@ export abstract class AbstractPool<
   }
 
   /** @inheritdoc */
+  public isPoolBusy (): boolean {
+    if (this.dynamic && this.workers.length === this.max) {
+      return true
+    } else if (this.findFreeTasksMapEntry() === [null, null]) {
+      return true
+    }
+    return false
+  }
+
+  /** @inheritdoc */
+  public findFreeTasksMapEntry (): [Worker, number] | [null, null] {
+    for (const [worker, numberOfTasks] of this.tasks) {
+      if (numberOfTasks === 0) {
+        // A worker is free, return the matching tasks map entry
+        return [worker, numberOfTasks]
+      }
+    }
+    return [null, null]
+  }
+
+  /** @inheritdoc */
   public execute (data: Data): Promise<Response> {
     // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
@@ -311,6 +335,7 @@ export abstract class AbstractPool<
    * @returns Worker.
    */
   protected chooseWorker (): Worker {
+    this.checkEmitBusy()
     return this.workerChoiceStrategyContext.execute()
   }
 
@@ -397,6 +422,12 @@ export abstract class AbstractPool<
           this.promiseMap.delete(message.id)
         }
       }
+    }
+  }
+
+  private checkEmitBusy (): void {
+    if (this.isPoolBusy()) {
+      this.emitter.emit('busy')
     }
   }
 }
