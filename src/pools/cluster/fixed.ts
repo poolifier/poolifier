@@ -95,8 +95,7 @@ export class FixedClusterPool<
   public get busy (): boolean {
     return (
       this.promiseMap.size >= this.numberOfWorkers &&
-      JSON.stringify(this.findFreeTasksMapEntry()) ===
-        JSON.stringify([null, null])
+      this.findFreeTasksMapEntry() === false
     )
   }
 }
