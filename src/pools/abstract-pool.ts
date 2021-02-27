@@ -242,7 +242,7 @@ export abstract class AbstractPool<
     // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
     this.increaseWorkersTask(worker)
-    this.checkEmitBusy()
+    this.checkAndEmitBusy()
     const messageId = ++this.nextMessageId
     const res = this.internalExecute(worker, messageId)
     this.sendToWorker(worker, { data: data || ({} as Data), id: messageId })
@@ -416,7 +416,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private checkEmitBusy (): void {
+  private checkAndEmitBusy (): void {
     if (this.busy) {
       this.emitter.emit('busy')
     }
