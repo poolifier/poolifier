@@ -52,7 +52,7 @@ export interface IPoolInternal<
   /**
    * Pool type.
    *
-   * If it is 'dynamic', it provides the `max` property.
+   * If it is `'dynamic'`, it provides the `max` property.
    */
   readonly type: PoolType
 
