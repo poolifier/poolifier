@@ -144,7 +144,7 @@ class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
     }
 
     if (this.pool.workers.length === this.pool.max) {
-      this.pool.emitter.emit('FullPool')
+      this.pool.emitter.emit('busy')
       return this.workerChoiceStrategy.choose()
     }
 

@@ -12,7 +12,7 @@
     "benchmark": "^2.1.4",
     "microjob": "0.7.0",
     "node-worker-threads-pool": "1.4.3",
-    "piscina": "2.1.0",
+    "piscina": "2.2.0",
     "poolifier": "2.0.0-beta.7",
     "threads": "1.6.3",
     "worker-threads-pool": "2.0.0",

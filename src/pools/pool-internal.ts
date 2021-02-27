@@ -37,7 +37,7 @@ export interface IPoolInternal<
    *
    * Events that can currently be listened to:
    *
-   * - `'FullPool'`
+   * - `'busy'`
    */
   readonly emitter: PoolEmitter
 

@@ -5,7 +5,7 @@ const pool = new DynamicThreadPool(10, 20, './yourWorker.js', {
   errorHandler: e => console.error(e),
   onlineHandler: () => console.log('worker is online')
 })
-pool.emitter.on('FullPool', () => maxReached++)
+pool.emitter.on('busy', () => maxReached++)
 
 const start = Date.now()
 const iterations = 1000

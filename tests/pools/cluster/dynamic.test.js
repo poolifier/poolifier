@@ -21,14 +21,14 @@ describe('Dynamic cluster pool test suite', () => {
 
   it('Verify that new workers are created when required, max size is not exceeded and that after a while new workers will die', async () => {
     const promises = []
-    let fullPool = 0
-    pool.emitter.on('FullPool', () => fullPool++)
+    let busy = 0
+    pool.emitter.on('busy', () => busy++)
     for (let i = 0; i < max * 2; i++) {
       promises.push(pool.execute({ test: 'test' }))
     }
     expect(pool.workers.length).toBeLessThanOrEqual(max)
     expect(pool.workers.length).toBeGreaterThan(min)
-    expect(fullPool > 1).toBeTruthy()
+    expect(busy > 1).toBeTruthy()
     const numberOfExitEvents = await TestUtils.waitExits(pool, max - min)
     expect(numberOfExitEvents).toBe(max - min)
   })
