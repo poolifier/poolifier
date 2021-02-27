@@ -275,7 +275,7 @@ export abstract class AbstractPool<
   protected abstract isMain (): boolean
 
   /**
-   * Increase the number of tasks that the given workers has.
+   * Increase the number of tasks that the given workers has applied.
    *
    * @param worker Worker whose tasks are increased.
    */
@@ -284,7 +284,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Decrease the number of tasks that the given workers has.
+   * Decrease the number of tasks that the given workers has applied.
    *
    * @param worker Worker whose tasks are decreased.
    */
@@ -293,7 +293,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Step the number of tasks that the given workers has.
+   * Step the number of tasks that the given workers has applied.
    *
    * @param worker Worker whose tasks are set.
    * @param step Worker number of tasks step.
