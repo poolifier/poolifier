@@ -28,7 +28,7 @@ describe('Dynamic cluster pool test suite', () => {
     }
     expect(pool.workers.length).toBeLessThanOrEqual(max)
     expect(pool.workers.length).toBeGreaterThan(min)
-    expect(poolBusy > 1).toBeTruthy()
+    expect(poolBusy).toEqual(max + 1)
     const numberOfExitEvents = await TestUtils.waitExits(pool, max - min)
     expect(numberOfExitEvents).toBe(max - min)
   })

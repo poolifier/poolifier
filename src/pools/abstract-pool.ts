@@ -4,7 +4,7 @@ import type {
 } from '../utility-types'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { IPoolInternal } from './pool-internal'
-import { PoolEmitter } from './pool-internal'
+import { PoolEmitter, PoolType } from './pool-internal'
 import type { WorkerChoiceStrategy } from './selection-strategies'
 import {
   WorkerChoiceStrategies,
@@ -205,15 +205,13 @@ export abstract class AbstractPool<
       throw new Error(
         'Cannot instantiate a pool with a negative number of workers'
       )
-    } else if (!this.dynamic && numberOfWorkers === 0) {
+    } else if (this.type === PoolType.FIXED && numberOfWorkers === 0) {
       throw new Error('Cannot instantiate a fixed pool with no worker')
     }
   }
 
   /** @inheritdoc */
-  public get dynamic (): boolean {
-    return false
-  }
+  public abstract get type (): PoolType
 
   /** @inheritdoc */
   public setWorkerChoiceStrategy (
@@ -226,14 +224,7 @@ export abstract class AbstractPool<
   }
 
   /** @inheritdoc */
-  public isPoolBusy (): boolean {
-    if (this.dynamic && this.workers.length === this.max) {
-      return true
-    } else if (this.findFreeTasksMapEntry() === [null, null]) {
-      return true
-    }
-    return false
-  }
+  public abstract get busy (): boolean
 
   /** @inheritdoc */
   public findFreeTasksMapEntry (): [Worker, number] | [null, null] {
@@ -251,6 +242,7 @@ export abstract class AbstractPool<
     // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
     this.increaseWorkersTask(worker)
+    this.checkEmitBusy()
     const messageId = ++this.nextMessageId
     const res = this.internalExecute(worker, messageId)
     this.sendToWorker(worker, { data: data || ({} as Data), id: messageId })
@@ -283,7 +275,7 @@ export abstract class AbstractPool<
   protected abstract isMain (): boolean
 
   /**
-   * Increase the number of tasks that the given workers has done.
+   * Increase the number of tasks that the given workers has.
    *
    * @param worker Worker whose tasks are increased.
    */
@@ -292,7 +284,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Decrease the number of tasks that the given workers has done.
+   * Decrease the number of tasks that the given workers has.
    *
    * @param worker Worker whose tasks are decreased.
    */
@@ -301,7 +293,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Step the number of tasks that the given workers has done.
+   * Step the number of tasks that the given workers has.
    *
    * @param worker Worker whose tasks are set.
    * @param step Worker number of tasks step.
@@ -335,7 +327,6 @@ export abstract class AbstractPool<
    * @returns Worker.
    */
   protected chooseWorker (): Worker {
-    this.checkEmitBusy()
     return this.workerChoiceStrategyContext.execute()
   }
 
@@ -426,7 +417,7 @@ export abstract class AbstractPool<
   }
 
   private checkEmitBusy (): void {
-    if (this.isPoolBusy()) {
+    if (this.busy) {
       this.emitter.emit('busy')
     }
   }

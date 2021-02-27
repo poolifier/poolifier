@@ -66,6 +66,16 @@ describe('Fixed cluster pool test suite', () => {
     expect(result).toBeFalsy()
   })
 
+  it('Verify that busy event is emitted', async () => {
+    const promises = []
+    let poolBusy = 0
+    pool.emitter.on('busy', () => poolBusy++)
+    for (let i = 0; i < numberOfWorkers * 2; i++) {
+      promises.push(pool.execute({ test: 'test' }))
+    }
+    expect(poolBusy).toEqual(numberOfWorkers)
+  })
+
   it('Verify that is possible to have a worker that return undefined', async () => {
     const result = await emptyPool.execute()
     expect(result).toBeFalsy()

@@ -27,7 +27,7 @@ describe('Dynamic thread pool test suite', () => {
       promises.push(pool.execute({ test: 'test' }))
     }
     expect(pool.workers.length).toBe(max)
-    expect(poolBusy > 1).toBeTruthy()
+    expect(poolBusy).toEqual(max + 1)
     const res = await TestUtils.waitExits(pool, max - min)
     expect(res).toBe(max - min)
   })

@@ -1,4 +1,5 @@
 import type { PoolOptions } from '../abstract-pool'
+import { PoolType } from '../pool-internal'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
 
@@ -36,7 +37,12 @@ export class DynamicThreadPool<
   }
 
   /** @inheritdoc */
-  public get dynamic (): boolean {
-    return true
+  public get type (): PoolType {
+    return PoolType.DYNAMIC
+  }
+
+  /** @inheritdoc */
+  public get busy (): boolean {
+    return this.workers.length === this.max
   }
 }

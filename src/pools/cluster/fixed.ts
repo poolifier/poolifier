@@ -2,6 +2,7 @@ import { fork, isMaster, setupMaster, Worker } from 'cluster'
 import type { MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
+import { PoolType } from '../pool-internal'
 
 /**
  * Options for a poolifier cluster pool.
@@ -83,5 +84,19 @@ export class FixedClusterPool<
   protected afterWorkerSetup (worker: Worker): void {
     // Listen worker messages.
     this.registerWorkerMessageListener(worker, super.workerListener())
+  }
+
+  /** @inheritdoc */
+  public get type (): PoolType {
+    return PoolType.FIXED
+  }
+
+  /** @inheritdoc */
+  public get busy (): boolean {
+    return (
+      this.promiseMap.size >= this.numberOfWorkers &&
+      JSON.stringify(this.findFreeTasksMapEntry()) ===
+        JSON.stringify([null, null])
+    )
   }
 }

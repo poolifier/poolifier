@@ -1,5 +1,6 @@
 import type { IWorker } from './abstract-pool'
 import type { IPoolInternal } from './pool-internal'
+import { PoolType } from './pool-internal'
 
 /**
  * Enumeration of worker choice strategies.
@@ -89,7 +90,7 @@ class LessRecentlyUsedWorkerChoiceStrategy<
 
   /** @inheritdoc */
   public choose (): Worker {
-    const isPoolDynamic = this.pool.dynamic
+    const isPoolDynamic = this.pool.type === PoolType.DYNAMIC
     let minNumberOfTasks = Infinity
     // A worker is always found because it picks the one with fewer tasks
     let lessRecentlyUsedWorker!: Worker
@@ -141,7 +142,7 @@ class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
       return freeWorker
     }
 
-    if (this.pool.isPoolBusy()) {
+    if (this.pool.busy) {
       return this.workerChoiceStrategy.choose()
     }
 
@@ -189,7 +190,7 @@ export class WorkerChoiceStrategyContext<
   private getPoolWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ): IWorkerChoiceStrategy<Worker> {
-    if (this.pool.dynamic) {
+    if (this.pool.type === PoolType.DYNAMIC) {
       return new DynamicPoolWorkerChoiceStrategy(
         this.pool,
         this.createDynamicallyWorkerCallback,

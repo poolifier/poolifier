@@ -2,6 +2,7 @@ import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
 import type { Draft, MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
+import { PoolType } from '../pool-internal'
 
 /**
  * A thread worker with message channels for communication between main thread and thread worker.
@@ -80,5 +81,21 @@ export class FixedThreadPool<
     worker.port2 = port2
     // Listen worker messages.
     this.registerWorkerMessageListener(worker, super.workerListener())
+  }
+
+  /** @inheritdoc */
+  public get type (): PoolType {
+    return PoolType.FIXED
+  }
+
+  /** @inheritdoc */
+  public get busy (): boolean {
+    console.log(this.promiseMap.size)
+    console.log(this.numberOfWorkers)
+    return (
+      this.promiseMap.size >= this.numberOfWorkers &&
+      JSON.stringify(this.findFreeTasksMapEntry()) ===
+        JSON.stringify([null, null])
+    )
   }
 }

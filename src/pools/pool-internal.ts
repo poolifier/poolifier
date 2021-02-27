@@ -3,6 +3,14 @@ import type { IWorker } from './abstract-pool'
 import type { IPool } from './pool'
 
 /**
+ * Pool types.
+ */
+export enum PoolType {
+  FIXED = 'fixed',
+  DYNAMIC = 'dynamic'
+}
+
+/**
  * Internal poolifier pool emitter.
  */
 export class PoolEmitter extends EventEmitter {}
@@ -42,11 +50,11 @@ export interface IPoolInternal<
   readonly emitter: PoolEmitter
 
   /**
-   * Whether the pool is dynamic or not.
+   * Pool type.
    *
-   * If it is dynamic, it provides the `max` property.
+   * If it is 'dynamic', it provides the `max` property.
    */
-  readonly dynamic: boolean
+  readonly type: PoolType
 
   /**
    * Maximum number of workers that can be created by this pool.
@@ -58,7 +66,7 @@ export interface IPoolInternal<
    *
    * @returns The pool busyness boolean status.
    */
-  isPoolBusy(): boolean
+  busy: boolean
 
   /**
    * Find a tasks map entry with a free worker based on the number of tasks the worker has applied.
