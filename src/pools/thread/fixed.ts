@@ -90,8 +90,6 @@ export class FixedThreadPool<
 
   /** @inheritdoc */
   public get busy (): boolean {
-    console.log(this.promiseMap.size)
-    console.log(this.numberOfWorkers)
     return (
       this.promiseMap.size >= this.numberOfWorkers &&
       JSON.stringify(this.findFreeTasksMapEntry()) ===

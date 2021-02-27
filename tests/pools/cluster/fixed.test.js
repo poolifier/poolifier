@@ -11,7 +11,8 @@ const pool = new FixedClusterPool(
 )
 const emptyPool = new FixedClusterPool(
   1,
-  './tests/worker-files/cluster/emptyWorker.js'
+  './tests/worker-files/cluster/emptyWorker.js',
+  { exitHandler: () => console.log('empty pool worker exited') }
 )
 const echoPool = new FixedClusterPool(
   1,
