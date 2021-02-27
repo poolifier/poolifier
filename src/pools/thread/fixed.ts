@@ -90,9 +90,6 @@ export class FixedThreadPool<
 
   /** @inheritdoc */
   public get busy (): boolean {
-    return (
-      this.promiseMap.size >= this.numberOfWorkers &&
-      this.findFreeTasksMapEntry() === false
-    )
+    return this.internalBusyStatus()
   }
 }

@@ -226,6 +226,13 @@ export abstract class AbstractPool<
   /** @inheritdoc */
   public abstract get busy (): boolean
 
+  protected internalBusyStatus (): boolean {
+    return (
+      this.promiseMap.size >= this.numberOfWorkers &&
+      this.findFreeTasksMapEntry() === false
+    )
+  }
+
   /** @inheritdoc */
   public findFreeTasksMapEntry (): [Worker, number] | false {
     for (const [worker, numberOfTasks] of this.tasks) {
