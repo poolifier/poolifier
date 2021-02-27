@@ -73,9 +73,9 @@ export interface IPoolInternal<
    *
    * If an entry is found with a worker that has `0` tasks, it is detected as free.
    *
-   * If no tasks map entry with a free worker was found, `[null, null]` will be returned.
+   * If no tasks map entry with a free worker was found, `false` will be returned.
    *
-   * @returns A tasks map entry with a free worker if there was one, otherwise `[null, null]`.
+   * @returns A tasks map entry with a free worker if there was one, otherwise `false`.
    */
-  findFreeTasksMapEntry(): [Worker, number] | [null, null]
+  findFreeTasksMapEntry(): [Worker, number] | false
 }

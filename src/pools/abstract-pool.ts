@@ -227,14 +227,14 @@ export abstract class AbstractPool<
   public abstract get busy (): boolean
 
   /** @inheritdoc */
-  public findFreeTasksMapEntry (): [Worker, number] | [null, null] {
+  public findFreeTasksMapEntry (): [Worker, number] | false {
     for (const [worker, numberOfTasks] of this.tasks) {
       if (numberOfTasks === 0) {
         // A worker is free, return the matching tasks map entry
         return [worker, numberOfTasks]
       }
     }
-    return [null, null]
+    return false
   }
 
   /** @inheritdoc */

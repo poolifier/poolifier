@@ -137,9 +137,9 @@ class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
 
   /** @inheritdoc */
   public choose (): Worker {
-    const freeWorker = this.pool.findFreeTasksMapEntry()[0]
-    if (freeWorker) {
-      return freeWorker
+    const freeTaskMapEntry = this.pool.findFreeTasksMapEntry()
+    if (freeTaskMapEntry) {
+      return freeTaskMapEntry[0]
     }
 
     if (this.pool.busy) {
