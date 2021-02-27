@@ -90,6 +90,6 @@ export class FixedThreadPool<
 
   /** @inheritdoc */
   public get busy (): boolean {
-    return this.internalBusyStatus()
+    return this.internalGetBusyStatus()
   }
 }

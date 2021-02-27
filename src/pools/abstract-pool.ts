@@ -226,7 +226,7 @@ export abstract class AbstractPool<
   /** @inheritdoc */
   public abstract get busy (): boolean
 
-  protected internalBusyStatus (): boolean {
+  protected internalGetBusyStatus (): boolean {
     return (
       this.promiseMap.size >= this.numberOfWorkers &&
       this.findFreeTasksMapEntry() === false
