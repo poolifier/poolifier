@@ -90,8 +90,9 @@ describe('Fixed thread pool test suite', () => {
     } catch (e) {
       inError = e
     }
-    expect(inError).toBeTruthy()
+    expect(inError).toBeDefined()
     expect(inError).toBeInstanceOf(Error)
+    expect(inError.message).toBeDefined()
     expect(typeof inError.message === 'string').toEqual(true)
   })
 
