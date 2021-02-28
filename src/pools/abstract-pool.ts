@@ -165,7 +165,7 @@ export abstract class AbstractPool<
     }
     this.checkNumberOfWorkers(this.numberOfWorkers)
     this.checkFilePath(this.filePath)
-    this.checkPoolOptions(opts)
+    this.checkAndAffectPoolOptions(opts)
     this.setupHook()
 
     for (let i = 1; i <= this.numberOfWorkers; i++) {
@@ -219,7 +219,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private checkPoolOptions (opts: PoolOptions<Worker>): void {
+  private checkAndAffectPoolOptions (opts: PoolOptions<Worker>): void {
     this.opts.enableEvents =
       opts.enableEvents != null ? opts.enableEvents : true
   }
