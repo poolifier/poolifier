@@ -172,7 +172,9 @@ export abstract class AbstractPool<
       this.createAndSetupWorker()
     }
 
-    this.opts.enableEvents && (this.emitter = new PoolEmitter())
+    if (this.opts.enableEvents) {
+      this.emitter = new PoolEmitter()
+    }
     this.workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       this,
       () => {
