@@ -88,9 +88,9 @@ export interface PoolOptions<Worker> {
    */
   workerChoiceStrategy?: WorkerChoiceStrategy
   /**
-   * Pool events emitted?.
+   * Pool events emission.
    */
-  eventsEmitted?: boolean
+  eventsEnabled?: boolean
 }
 
 /**
@@ -170,7 +170,7 @@ export abstract class AbstractPool<
       this.createAndSetupWorker()
     }
 
-    this.opts.eventsEmitted && (this.emitter = new PoolEmitter())
+    this.opts.eventsEnabled && (this.emitter = new PoolEmitter())
     this.workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       this,
       () => {
@@ -216,8 +216,8 @@ export abstract class AbstractPool<
   }
 
   private checkPoolOptions (opts: PoolOptions<Worker>): void {
-    this.opts.eventsEmitted =
-      opts.eventsEmitted !== undefined ? opts.eventsEmitted : true
+    this.opts.eventsEnabled =
+      opts.eventsEnabled !== undefined ? opts.eventsEnabled : true
   }
 
   /** @inheritdoc */
@@ -439,7 +439,7 @@ export abstract class AbstractPool<
   }
 
   private checkAndEmitBusy (): void {
-    if (this.opts.eventsEmitted && this.busy) {
+    if (this.opts.eventsEnabled && this.busy) {
       this.emitter?.emit('busy')
     }
   }

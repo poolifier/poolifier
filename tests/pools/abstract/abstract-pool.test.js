@@ -95,12 +95,13 @@ describe('Abstract pool test suite', () => {
       1,
       './tests/worker-files/thread/testWorker.js'
     )
-    expect(pool.opts.eventsEmitted).toEqual(true)
+    expect(pool.opts.eventsEnabled).toEqual(true)
     pool.destroy()
     pool = new FixedThreadPool(1, './tests/worker-files/thread/testWorker.js', {
-      eventsEmitted: false
+      eventsEnabled: false
     })
-    expect(pool.opts.eventsEmitted).toEqual(false)
+    expect(pool.opts.eventsEnabled).toEqual(false)
+    expect(pool.emitter).toBeUndefined()
     pool.destroy()
   })
 })
