@@ -112,7 +112,7 @@ export abstract class AbstractPool<
   public readonly tasks: Map<Worker, number> = new Map<Worker, number>()
 
   /** @inheritdoc */
-  public readonly emitter: PoolEmitter
+  public readonly emitter?: PoolEmitter
 
   /** @inheritdoc */
   public readonly max?: number
@@ -163,15 +163,14 @@ export abstract class AbstractPool<
     }
     this.checkNumberOfWorkers(this.numberOfWorkers)
     this.checkFilePath(this.filePath)
-    this.opts.emitEvents =
-      this.opts.emitEvents !== undefined ? this.opts.emitEvents : true
+    this.checkPoolOptions(opts)
     this.setupHook()
 
     for (let i = 1; i <= this.numberOfWorkers; i++) {
       this.createAndSetupWorker()
     }
 
-    this.emitter = new PoolEmitter()
+    this.opts.emitEvents && (this.emitter = new PoolEmitter())
     this.workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       this,
       () => {
@@ -214,6 +213,11 @@ export abstract class AbstractPool<
     } else if (this.type === PoolType.FIXED && numberOfWorkers === 0) {
       throw new Error('Cannot instantiate a fixed pool with no worker')
     }
+  }
+
+  private checkPoolOptions (opts: PoolOptions<Worker>): void {
+    this.opts.emitEvents =
+      opts.emitEvents !== undefined ? opts.emitEvents : true
   }
 
   /** @inheritdoc */
@@ -436,7 +440,7 @@ export abstract class AbstractPool<
 
   private checkAndEmitBusy (): void {
     if (this.opts.emitEvents && this.busy) {
-      this.emitter.emit('busy')
+      this.emitter?.emit('busy')
     }
   }
 }

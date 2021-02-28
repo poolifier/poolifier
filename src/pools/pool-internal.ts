@@ -47,7 +47,7 @@ export interface IPoolInternal<
    *
    * - `'busy'`
    */
-  readonly emitter: PoolEmitter
+  readonly emitter?: PoolEmitter
 
   /**
    * Pool type.
