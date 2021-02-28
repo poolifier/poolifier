@@ -150,6 +150,7 @@
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="fixedclusterpool.html#busy" class="tsd-kind-icon">busy</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="fixedclusterpool.html#numberofrunningtasks" class="tsd-kind-icon">number<wbr>OfRunning<wbr>Tasks</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="fixedclusterpool.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
@@ -192,7 +193,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/cluster/fixed.ts#L36">src/pools/cluster/fixed.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/cluster/fixed.ts#L36">src/pools/cluster/fixed.ts:36</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -239,11 +240,11 @@
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="emitter" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> emitter</h3>
-					<div class="tsd-signature tsd-kind-icon">emitter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">PoolEmitter</span></div>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> emitter</h3>
+					<div class="tsd-signature tsd-kind-icon">emitter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">PoolEmitter</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L111">src/pools/abstract-pool.ts:111</a></li>
+							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L117">src/pools/abstract-pool.ts:117</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -266,7 +267,7 @@
 					<div class="tsd-signature tsd-kind-icon">max<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L114">src/pools/abstract-pool.ts:114</a></li>
+							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L120">src/pools/abstract-pool.ts:120</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -282,7 +283,7 @@
 					<div class="tsd-signature tsd-kind-icon">next<wbr>Message<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L132">src/pools/abstract-pool.ts:132</a></li>
+							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L138">src/pools/abstract-pool.ts:138</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -311,7 +312,7 @@
 					<div class="tsd-signature tsd-kind-icon">promise<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">PromiseWorkerResponseWrapper</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Worker</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L124">src/pools/abstract-pool.ts:124</a></li>
+							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L130">src/pools/abstract-pool.ts:130</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -331,7 +332,7 @@
 					<div class="tsd-signature tsd-kind-icon">tasks<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Worker</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L108">src/pools/abstract-pool.ts:108</a></li>
+							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L114">src/pools/abstract-pool.ts:114</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -347,7 +348,7 @@
 					<div class="tsd-signature tsd-kind-icon">worker<wbr>Choice<wbr>Strategy<wbr>Context<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WorkerChoiceStrategyContext</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Worker</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L139">src/pools/abstract-pool.ts:139</a></li>
+							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L145">src/pools/abstract-pool.ts:145</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -363,7 +364,7 @@
 					<div class="tsd-signature tsd-kind-icon">workers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Worker</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L105">src/pools/abstract-pool.ts:105</a></li>
+							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L111">src/pools/abstract-pool.ts:111</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -386,7 +387,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/cluster/fixed.ts#L95">src/pools/cluster/fixed.ts:95</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/cluster/fixed.ts#L95">src/pools/cluster/fixed.ts:95</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -400,6 +401,29 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="numberofrunningtasks" class="tsd-anchor"></a>
+					<h3>number<wbr>OfRunning<wbr>Tasks</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> numberOfRunningTasks<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L229">src/pools/abstract-pool.ts:229</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>inheritdoc</dt>
+									<dd></dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
 					<a name="type" class="tsd-anchor"></a>
 					<h3>type</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
@@ -409,7 +433,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/cluster/fixed.ts#L90">src/pools/cluster/fixed.ts:90</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/cluster/fixed.ts#L90">src/pools/cluster/fixed.ts:90</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -435,7 +459,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/cluster/fixed.ts#L84">src/pools/cluster/fixed.ts:84</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/cluster/fixed.ts#L84">src/pools/cluster/fixed.ts:84</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -458,7 +482,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L336">src/pools/abstract-pool.ts:336</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L353">src/pools/abstract-pool.ts:353</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -482,7 +506,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L389">src/pools/abstract-pool.ts:389</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L406">src/pools/abstract-pool.ts:406</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -505,7 +529,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/cluster/fixed.ts#L80">src/pools/cluster/fixed.ts:80</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/cluster/fixed.ts#L80">src/pools/cluster/fixed.ts:80</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Worker</span></h4>
@@ -522,7 +546,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L298">src/pools/abstract-pool.ts:298</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L315">src/pools/abstract-pool.ts:315</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -553,7 +577,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L260">src/pools/abstract-pool.ts:260</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L277">src/pools/abstract-pool.ts:277</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -576,7 +600,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/cluster/fixed.ts#L63">src/pools/cluster/fixed.ts:63</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/cluster/fixed.ts#L63">src/pools/cluster/fixed.ts:63</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -605,7 +629,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L248">src/pools/abstract-pool.ts:248</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L265">src/pools/abstract-pool.ts:265</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -634,7 +658,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L237">src/pools/abstract-pool.ts:237</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L254">src/pools/abstract-pool.ts:254</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -657,7 +681,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L289">src/pools/abstract-pool.ts:289</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L306">src/pools/abstract-pool.ts:306</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -688,7 +712,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L361">src/pools/abstract-pool.ts:361</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L378">src/pools/abstract-pool.ts:378</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -714,7 +738,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L229">src/pools/abstract-pool.ts:229</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L246">src/pools/abstract-pool.ts:246</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -731,7 +755,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/cluster/fixed.ts#L58">src/pools/cluster/fixed.ts:58</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/cluster/fixed.ts#L58">src/pools/cluster/fixed.ts:58</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -748,7 +772,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/cluster/fixed.ts#L73">src/pools/cluster/fixed.ts:73</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/cluster/fixed.ts#L73">src/pools/cluster/fixed.ts:73</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -804,7 +828,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L322">src/pools/abstract-pool.ts:322</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L339">src/pools/abstract-pool.ts:339</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -835,7 +859,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/cluster/fixed.ts#L68">src/pools/cluster/fixed.ts:68</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/cluster/fixed.ts#L68">src/pools/cluster/fixed.ts:68</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -861,7 +885,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L217">src/pools/abstract-pool.ts:217</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L234">src/pools/abstract-pool.ts:234</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -890,7 +914,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/cluster/fixed.ts#L52">src/pools/cluster/fixed.ts:52</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/cluster/fixed.ts#L52">src/pools/cluster/fixed.ts:52</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -907,7 +931,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/05f6f99/src/pools/abstract-pool.ts#L412">src/pools/abstract-pool.ts:412</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/ca7b67c/src/pools/abstract-pool.ts#L429">src/pools/abstract-pool.ts:429</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1002,6 +1026,9 @@
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="fixedclusterpool.html#busy" class="tsd-kind-icon">busy</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="fixedclusterpool.html#numberofrunningtasks" class="tsd-kind-icon">number<wbr>OfRunning<wbr>Tasks</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="fixedclusterpool.html#type" class="tsd-kind-icon">type</a>
