@@ -23,6 +23,7 @@ describe('Abstract pool test suite', () => {
     // Simulate worker not found.
     pool.removeAllWorker()
     expect(() => pool.increaseWorkersTask()).toThrowError(expectedError)
+    pool.destroy()
   })
 
   it('Simulate worker not found during decreaseWorkersTasks', () => {
@@ -36,6 +37,7 @@ describe('Abstract pool test suite', () => {
     // Simulate worker not found.
     pool.removeAllWorker()
     expect(() => pool.decreaseWorkersTasks()).toThrowError(expectedError)
+    pool.destroy()
   })
 
   it('Simulate pool creation from a non main thread/process', () => {
@@ -52,11 +54,11 @@ describe('Abstract pool test suite', () => {
   })
 
   it('Verify that filePath is checked', () => {
-    expect(() => new StubPoolWithIsMainMethod(1)).toThrowError(
-      new Error('Cannot start a pool from a worker!')
+    expect(() => new FixedThreadPool(1)).toThrowError(
+      new Error('Please specify a file with a worker implementation')
     )
-    expect(() => new StubPoolWithIsMainMethod(1, '')).toThrowError(
-      new Error('Cannot start a pool from a worker!')
+    expect(() => new FixedThreadPool(1, '')).toThrowError(
+      new Error('Please specify a file with a worker implementation')
     )
   })
 
@@ -86,5 +88,15 @@ describe('Abstract pool test suite', () => {
         'Cannot instantiate a pool with a non integer number of workers'
       )
     )
+  })
+
+  it('Verify that pool options are checked', () => {
+    const pool = new FixedThreadPool(
+      1,
+      './tests/worker-files/thread/testWorker.js',
+      { eventsEmitted: false }
+    )
+    expect(pool.opts.eventsEmitted).toEqual(false)
+    pool.destroy()
   })
 })
