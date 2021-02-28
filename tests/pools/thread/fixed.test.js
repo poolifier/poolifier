@@ -91,8 +91,8 @@ describe('Fixed thread pool test suite', () => {
       inError = e
     }
     expect(inError).toBeTruthy()
-    expect(inError instanceof Error).toBeTruthy()
-    expect(inError.message).toBeTruthy()
+    expect(inError).toBeInstanceOf(Error)
+    expect(typeof inError.message === 'string').toEqual(true)
   })
 
   it('Verify that async function is working properly', async () => {

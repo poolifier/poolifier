@@ -98,7 +98,7 @@ describe('Fixed cluster pool test suite', () => {
       inError = e
     }
     expect(inError).toBeDefined()
-    expect(typeof inError === 'string').toBeTruthy()
+    expect(typeof inError === 'string').toEqual(true)
     expect(inError).toBe('Error Message from ClusterWorker')
   })
 
@@ -111,7 +111,7 @@ describe('Fixed cluster pool test suite', () => {
       inError = e
     }
     expect(inError).toBeDefined()
-    expect(typeof inError === 'string').toBeTruthy()
+    expect(typeof inError === 'string').toEqual(true)
     expect(inError).toBe('Error Message from ClusterWorker:async')
   })
 
