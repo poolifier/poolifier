@@ -87,6 +87,10 @@ export interface PoolOptions<Worker> {
    * The work choice strategy to use in this pool.
    */
   workerChoiceStrategy?: WorkerChoiceStrategy
+  /**
+   * Pool events emitting.
+   */
+  emitEvents?: boolean
 }
 
 /**
@@ -159,6 +163,8 @@ export abstract class AbstractPool<
     }
     this.checkNumberOfWorkers(this.numberOfWorkers)
     this.checkFilePath(this.filePath)
+    this.opts.emitEvents =
+      this.opts.emitEvents !== undefined ? this.opts.emitEvents : true
     this.setupHook()
 
     for (let i = 1; i <= this.numberOfWorkers; i++) {
@@ -429,7 +435,7 @@ export abstract class AbstractPool<
   }
 
   private checkAndEmitBusy (): void {
-    if (this.busy) {
+    if (this.opts.emitEvents && this.busy) {
       this.emitter.emit('busy')
     }
   }
