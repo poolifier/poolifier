@@ -91,11 +91,15 @@ describe('Abstract pool test suite', () => {
   })
 
   it('Verify that pool options are checked', () => {
-    const pool = new FixedThreadPool(
+    let pool = new FixedThreadPool(
       1,
-      './tests/worker-files/thread/testWorker.js',
-      { eventsEmitted: false }
+      './tests/worker-files/thread/testWorker.js'
     )
+    expect(pool.opts.eventsEmitted).toEqual(true)
+    pool.destroy()
+    pool = new FixedThreadPool(1, './tests/worker-files/thread/testWorker.js', {
+      eventsEmitted: false
+    })
     expect(pool.opts.eventsEmitted).toEqual(false)
     pool.destroy()
   })
