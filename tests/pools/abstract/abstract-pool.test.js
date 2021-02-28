@@ -98,6 +98,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.js'
     )
     expect(pool.opts.enableEvents).toEqual(true)
+    expect(pool.emitter).toBeDefined()
     pool.destroy()
     pool = new FixedThreadPool(
       numberOfWorkers,
