@@ -224,7 +224,7 @@ export abstract class AbstractPool<
   public abstract get type (): PoolType
 
   /** @inheritdoc */
-  public get numberOfConcurrentTasks (): number {
+  public get numberOfRunningTasks (): number {
     return this.promiseMap.size
   }
 
@@ -243,7 +243,7 @@ export abstract class AbstractPool<
 
   protected internalGetBusyStatus (): boolean {
     return (
-      this.numberOfConcurrentTasks >= this.numberOfWorkers &&
+      this.numberOfRunningTasks >= this.numberOfWorkers &&
       this.findFreeTasksMapEntry() === false
     )
   }
