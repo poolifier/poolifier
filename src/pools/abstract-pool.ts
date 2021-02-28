@@ -214,6 +214,11 @@ export abstract class AbstractPool<
   public abstract get type (): PoolType
 
   /** @inheritdoc */
+  public get numberOfConcurrentTasks (): number {
+    return this.promiseMap.size
+  }
+
+  /** @inheritdoc */
   public setWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
@@ -228,7 +233,7 @@ export abstract class AbstractPool<
 
   protected internalGetBusyStatus (): boolean {
     return (
-      this.promiseMap.size >= this.numberOfWorkers &&
+      this.numberOfConcurrentTasks >= this.numberOfWorkers &&
       this.findFreeTasksMapEntry() === false
     )
   }

@@ -64,9 +64,14 @@ export interface IPoolInternal<
   /**
    * Whether the pool is busy or not.
    *
-   * @returns The pool busyness boolean status.
+   * The pool busyness boolean status.
    */
   busy: boolean
+
+  /**
+   * Number of tasks running concurrently.
+   */
+  numberOfConcurrentTasks: number
 
   /**
    * Find a tasks map entry with a free worker based on the number of tasks the worker has applied.
