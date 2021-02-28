@@ -69,7 +69,7 @@ export interface IPoolInternal<
   readonly busy: boolean
 
   /**
-   * Number of tasks currently running concurrently.
+   * Number of tasks currently concurrently running.
    */
   readonly numberOfRunningTasks: number
 
