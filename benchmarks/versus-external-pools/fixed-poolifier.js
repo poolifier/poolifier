@@ -9,7 +9,7 @@ const data = {
 }
 
 const fixedPool = new FixedThreadPool(
-  size,
+  Number(size),
   './workers/poolifier/function-to-bench-worker.js'
 )
 

@@ -29,7 +29,7 @@
     <img alt="No dependencies" src="https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen"></a>
 </p>
 
-## Why Poolifier?
+## Why Poolifier? 
 
 Poolifier is used to perform CPU intensive and I/O intensive tasks on nodejs servers, it implements worker pools (yes, more worker pool implementations, so you can choose which one fit better for you) using [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) and cluster pools using [Node.js cluster](https://nodejs.org/api/cluster.html) modules.  
 With poolifier you can improve your **performance** and resolve problems related to the event loop.  
