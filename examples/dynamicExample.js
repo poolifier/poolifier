@@ -16,7 +16,7 @@ for (let i = 0; i <= iterations; i++) {
       resolved++
       if (resolved === iterations) {
         console.log('Time take is ' + (Date.now() - start))
-        return console.log('The pool was full for ' + maxReached + ' times')
+        return console.log('The pool was busy for ' + maxReached + ' times')
       }
       return null
     })
