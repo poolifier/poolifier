@@ -71,6 +71,10 @@ const defaultComparator = (a, b) => {
   return a < b
 }
 
+const defaultPivotIndexSelect = (leftIndex, rightIndex) => {
+  return leftIndex + Math.floor((rightIndex - leftIndex) / 2)
+}
+
 function swap (array, index1, index2) {
   const tmp = array[index1]
   array[index1] = array[index2]
@@ -103,9 +107,7 @@ function selectLoop (
   leftIndex,
   rightIndex,
   compare = defaultComparator,
-  pivotIndexSelect = (leftIndex, rightIndex) => {
-    return leftIndex + Math.floor((rightIndex - leftIndex) / 2)
-  }
+  pivotIndexSelect = defaultPivotIndexSelect
 ) {
   while (true) {
     if (leftIndex === rightIndex) return array[leftIndex]
@@ -127,9 +129,7 @@ function selectRecursion (
   leftIndex,
   rightIndex,
   compare = defaultComparator,
-  pivotIndexSelect = (leftIndex, rightIndex) => {
-    return leftIndex + Math.floor((rightIndex - leftIndex) / 2)
-  }
+  pivotIndexSelect = defaultPivotIndexSelect
 ) {
   if (leftIndex === rightIndex) return array[leftIndex]
   let pivotIndex = pivotIndexSelect(leftIndex, rightIndex)
