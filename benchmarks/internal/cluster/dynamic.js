@@ -2,7 +2,7 @@ const {
   DynamicClusterPool,
   WorkerChoiceStrategies
 } = require('../../../lib/index')
-const { runTest } = require('../benchmark-utils')
+const { runPoolifierTest } = require('../benchmark-utils')
 
 const size = 30
 
@@ -22,13 +22,13 @@ const dynamicPoolLessRecentlyUsed = new DynamicClusterPool(
 async function dynamicClusterTest (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
 ) {
-  return runTest(dynamicPool, { tasks, workerData })
+  return runPoolifierTest(dynamicPool, { tasks, workerData })
 }
 
 async function dynamicClusterTestLessRecentlyUsed (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
 ) {
-  return runTest(dynamicPoolLessRecentlyUsed, { tasks, workerData })
+  return runPoolifierTest(dynamicPoolLessRecentlyUsed, { tasks, workerData })
 }
 
 module.exports = {

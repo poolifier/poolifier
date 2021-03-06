@@ -1,5 +1,5 @@
 const { FixedThreadPool } = require('../../../lib/index')
-const { runTest } = require('../benchmark-utils')
+const { runPoolifierTest } = require('../benchmark-utils')
 
 const size = 30
 
@@ -11,7 +11,7 @@ const fixedPool = new FixedThreadPool(
 async function fixedThreadTest (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
 ) {
-  return runTest(fixedPool, { tasks, workerData })
+  return runPoolifierTest(fixedPool, { tasks, workerData })
 }
 
 module.exports = { fixedThreadTest }
