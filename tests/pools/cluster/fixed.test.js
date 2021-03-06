@@ -29,7 +29,7 @@ const asyncErrorPool = new FixedClusterPool(
   1,
   './tests/worker-files/cluster/asyncErrorWorker.js',
   {
-    onlineHandler: () => console.log('worker is online')
+    errorHandler: e => console.error(e)
   }
 )
 const asyncPool = new FixedClusterPool(

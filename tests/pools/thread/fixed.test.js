@@ -22,16 +22,14 @@ const errorPool = new FixedThreadPool(
   1,
   './tests/worker-files/thread/errorWorker.js',
   {
-    errorHandler: e => console.error(e),
-    onlineHandler: () => console.log('worker is online')
+    errorHandler: e => console.error(e)
   }
 )
 const asyncErrorPool = new FixedThreadPool(
   1,
   './tests/worker-files/thread/asyncErrorWorker.js',
   {
-    errorHandler: e => console.error(e),
-    onlineHandler: () => console.log('worker is online')
+    errorHandler: e => console.error(e)
   }
 )
 const asyncPool = new FixedThreadPool(

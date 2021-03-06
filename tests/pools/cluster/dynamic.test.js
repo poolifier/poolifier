@@ -78,7 +78,11 @@ describe('Dynamic cluster pool test suite', () => {
     const longRunningPool = new DynamicClusterPool(
       min,
       max,
-      './tests/worker-files/cluster/longRunningWorkerHardBehavior.js'
+      './tests/worker-files/cluster/longRunningWorkerHardBehavior.js',
+      {
+        errorHandler: e => console.error(e),
+        onlineHandler: () => console.log('worker is online')
+      }
     )
     expect(longRunningPool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
@@ -96,7 +100,11 @@ describe('Dynamic cluster pool test suite', () => {
     const longRunningPool = new DynamicClusterPool(
       min,
       max,
-      './tests/worker-files/cluster/longRunningWorkerSoftBehavior.js'
+      './tests/worker-files/cluster/longRunningWorkerSoftBehavior.js',
+      {
+        errorHandler: e => console.error(e),
+        onlineHandler: () => console.log('worker is online')
+      }
     )
     expect(longRunningPool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
