@@ -11,7 +11,8 @@ const pool = new FixedClusterPool(
 )
 const emptyPool = new FixedClusterPool(
   1,
-  './tests/worker-files/cluster/emptyWorker.js'
+  './tests/worker-files/cluster/emptyWorker.js',
+  { exitHandler: () => console.log('empty pool worker exited') }
 )
 const echoPool = new FixedClusterPool(
   1,
@@ -66,6 +67,16 @@ describe('Fixed cluster pool test suite', () => {
     expect(result).toBeFalsy()
   })
 
+  it('Verify that busy event is emitted', async () => {
+    const promises = []
+    let poolBusy = 0
+    pool.emitter.on('busy', () => poolBusy++)
+    for (let i = 0; i < numberOfWorkers * 2; i++) {
+      promises.push(pool.execute({ test: 'test' }))
+    }
+    expect(poolBusy).toEqual(numberOfWorkers)
+  })
+
   it('Verify that is possible to have a worker that return undefined', async () => {
     const result = await emptyPool.execute()
     expect(result).toBeFalsy()
@@ -87,7 +98,7 @@ describe('Fixed cluster pool test suite', () => {
       inError = e
     }
     expect(inError).toBeDefined()
-    expect(typeof inError === 'string').toBeTruthy()
+    expect(typeof inError === 'string').toEqual(true)
     expect(inError).toBe('Error Message from ClusterWorker')
   })
 
@@ -100,7 +111,7 @@ describe('Fixed cluster pool test suite', () => {
       inError = e
     }
     expect(inError).toBeDefined()
-    expect(typeof inError === 'string').toBeTruthy()
+    expect(typeof inError === 'string').toEqual(true)
     expect(inError).toBe('Error Message from ClusterWorker:async')
   })
 

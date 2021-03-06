@@ -2,6 +2,8 @@ const expect = require('expect')
 const { FixedClusterPool, FixedThreadPool } = require('../../../lib/index')
 const expectedError = new Error('Worker could not be found in tasks map')
 
+const numberOfWorkers = 1
+
 class StubPoolWithTasksMapClear extends FixedThreadPool {
   removeAllWorker () {
     this.tasks.clear()
@@ -17,17 +19,18 @@ class StubPoolWithIsMainMethod extends FixedThreadPool {
 describe('Abstract pool test suite', () => {
   it('Simulate worker not found during increaseWorkersTask', () => {
     const pool = new StubPoolWithTasksMapClear(
-      1,
+      numberOfWorkers,
       './tests/worker-files/thread/testWorker.js'
     )
     // Simulate worker not found.
     pool.removeAllWorker()
     expect(() => pool.increaseWorkersTask()).toThrowError(expectedError)
+    pool.destroy()
   })
 
   it('Simulate worker not found during decreaseWorkersTasks', () => {
     const pool = new StubPoolWithTasksMapClear(
-      1,
+      numberOfWorkers,
       './tests/worker-files/thread/testWorker.js',
       {
         errorHandler: e => console.error(e)
@@ -36,13 +39,14 @@ describe('Abstract pool test suite', () => {
     // Simulate worker not found.
     pool.removeAllWorker()
     expect(() => pool.decreaseWorkersTasks()).toThrowError(expectedError)
+    pool.destroy()
   })
 
   it('Simulate pool creation from a non main thread/process', () => {
     expect(
       () =>
         new StubPoolWithIsMainMethod(
-          1,
+          numberOfWorkers,
           './tests/worker-files/thread/testWorker.js',
           {
             errorHandler: e => console.error(e)
@@ -52,11 +56,11 @@ describe('Abstract pool test suite', () => {
   })
 
   it('Verify that filePath is checked', () => {
-    expect(() => new StubPoolWithIsMainMethod(1)).toThrowError(
-      new Error('Cannot start a pool from a worker!')
+    expect(() => new FixedThreadPool(numberOfWorkers)).toThrowError(
+      new Error('Please specify a file with a worker implementation')
     )
-    expect(() => new StubPoolWithIsMainMethod(1, '')).toThrowError(
-      new Error('Cannot start a pool from a worker!')
+    expect(() => new FixedThreadPool(numberOfWorkers, '')).toThrowError(
+      new Error('Please specify a file with a worker implementation')
     )
   })
 
@@ -86,5 +90,40 @@ describe('Abstract pool test suite', () => {
         'Cannot instantiate a pool with a non integer number of workers'
       )
     )
+  })
+
+  it('Verify that pool options are checked', () => {
+    let pool = new FixedThreadPool(
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(pool.opts.enableEvents).toEqual(true)
+    expect(pool.emitter).toBeDefined()
+    pool.destroy()
+    pool = new FixedThreadPool(
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.js',
+      {
+        enableEvents: false
+      }
+    )
+    expect(pool.opts.enableEvents).toEqual(false)
+    expect(pool.emitter).toBeUndefined()
+    pool.destroy()
+  })
+
+  it("Verify that pool event emitter 'busy' event can register a callback", () => {
+    const pool = new FixedThreadPool(
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    const promises = []
+    let poolBusy = 0
+    pool.emitter.on('busy', () => poolBusy++)
+    for (let i = 0; i < numberOfWorkers * 2; i++) {
+      promises.push(pool.execute({ test: 'test' }))
+    }
+    expect(poolBusy).toEqual(numberOfWorkers)
+    pool.destroy()
   })
 })

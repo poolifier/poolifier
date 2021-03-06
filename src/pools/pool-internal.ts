@@ -3,6 +3,14 @@ import type { IWorker } from './abstract-pool'
 import type { IPool } from './pool'
 
 /**
+ * Pool types.
+ */
+export enum PoolType {
+  FIXED = 'fixed',
+  DYNAMIC = 'dynamic'
+}
+
+/**
  * Internal poolifier pool emitter.
  */
 export class PoolEmitter extends EventEmitter {}
@@ -39,17 +47,40 @@ export interface IPoolInternal<
    *
    * - `'busy'`
    */
-  readonly emitter: PoolEmitter
+  readonly emitter?: PoolEmitter
 
   /**
-   * Whether the pool is dynamic or not.
+   * Pool type.
    *
-   * If it is dynamic, it provides the `max` property.
+   * If it is `'dynamic'`, it provides the `max` property.
    */
-  readonly dynamic: boolean
+  readonly type: PoolType
 
   /**
    * Maximum number of workers that can be created by this pool.
    */
   readonly max?: number
+
+  /**
+   * Whether the pool is busy or not.
+   *
+   * The pool busyness boolean status.
+   */
+  readonly busy: boolean
+
+  /**
+   * Number of tasks currently concurrently running.
+   */
+  readonly numberOfRunningTasks: number
+
+  /**
+   * Find a tasks map entry with a free worker based on the number of tasks the worker has applied.
+   *
+   * If an entry is found with a worker that has `0` tasks, it is detected as free.
+   *
+   * If no tasks map entry with a free worker was found, `false` will be returned.
+   *
+   * @returns A tasks map entry with a free worker if there was one, otherwise `false`.
+   */
+  findFreeTasksMapEntry(): [Worker, number] | false
 }

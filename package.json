@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "rollup --config --environment BUILD:development",
+    "build:typedoc": "rollup --config --environment BUILD:development --environment DOCUMENTATION",
     "build:prod": "rollup --config",
     "benchmark": "npm run build && node -r source-map-support/register benchmarks/internal/bench.js",
     "benchmark:debug": "npm run build && node -r source-map-support/register --inspect benchmarks/internal/bench.js",
