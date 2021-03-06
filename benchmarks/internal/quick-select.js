@@ -1,12 +1,7 @@
 const Benchmark = require('benchmark')
-const { generateRandomInteger } = require('./benchmark-utils')
+const { generateRandomInteger, LIST_FORMATTER } = require('./benchmark-utils')
 
 const suite = new Benchmark.Suite()
-
-const LIST_FORMATTER = new Intl.ListFormat('en-US', {
-  style: 'long',
-  type: 'conjunction'
-})
 
 const tasksMap = new Map([
   [0, generateRandomInteger(10)],
@@ -73,6 +68,10 @@ const defaultComparator = (a, b) => {
 
 const defaultPivotIndexSelect = (leftIndex, rightIndex) => {
   return leftIndex + Math.floor((rightIndex - leftIndex) / 2)
+}
+
+const randomPivotIndexSelect = (leftIndex, rightIndex) => {
+  return generateRandomInteger(leftIndex, rightIndex)
 }
 
 function swap (array, index1, index2) {
@@ -162,9 +161,7 @@ function quickSelectLoopRandomPivot (tasksMap) {
     (a, b) => {
       return a[1] < b[1]
     },
-    (leftIndex, rightIndex) => {
-      return generateRandomInteger(leftIndex, rightIndex)
-    }
+    randomPivotIndexSelect
   )
 }
 
@@ -187,9 +184,7 @@ function quickSelectRecursionRandomPivot (tasksMap) {
     (a, b) => {
       return a[1] < b[1]
     },
-    (leftIndex, rightIndex) => {
-      return generateRandomInteger(leftIndex, rightIndex)
-    }
+    randomPivotIndexSelect
   )
 }
 

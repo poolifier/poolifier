@@ -9,13 +9,9 @@ const {
   dynamicThreadTestLessRecentlyUsed
 } = require('./thread/dynamic')
 const { fixedThreadTest } = require('./thread/fixed')
+const { LIST_FORMATTER } = require('./benchmark-utils')
 
 const suite = new Benchmark.Suite('poolifier')
-
-const LIST_FORMATTER = new Intl.ListFormat('en-US', {
-  style: 'long',
-  type: 'conjunction'
-})
 
 // Wait some seconds before start, pools need to load threads !!!
 setTimeout(async () => {
