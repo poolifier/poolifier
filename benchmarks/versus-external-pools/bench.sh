@@ -15,7 +15,7 @@ export TASK_TYPE=$taskType
 export NODE_ENV=production
 export POOL_SIZE=10
 export NUM_ITERATIONS=100000
-hyperfine --export-markdown BENCH-100000.MD --min-runs 10 \
+hyperfine --export-markdown BENCH-100000.md --min-runs 10 \
   --prepare 'sleep 15' \
   'node dynamic-piscina.js' \
   'node fixed-piscina.js' \

@@ -19,7 +19,7 @@ External pools with which we compared the poolifier results:
 
 Those are our results:
 
-- CPU Intensive task with 100k operations submitted to each pool [BENCH-100000.MD](./versus-external-pools/BENCH-100000.MD).  
+- CPU Intensive task with 100k operations submitted to each pool [BENCH-100000.md](./versus-external-pools/BENCH-100000.md).  
   This benchmark ran on a MacBook Pro 2015, 2,2 GHz Intel Core i7 quad-core, 16 GB 1600 MHz DDR3.
 
 > :warning: **We would need funds to run our benchmarks more often and on Cloud VMs, please consider to sponsor this project**
@@ -34,7 +34,7 @@ To run the internal benchmark you just need to navigate to the root of poolifier
 
 To run the benchmark versus other pools you will need to:
 
-- [Install hyperfine](https://github.com/sharkdp/hyperfine#installation)
+- Install [hyperfine](https://github.com/sharkdp/hyperfine#installation)
 - Run the `./bench.sh` into the `versus-external-pools` folder
 
 > :warning: **Please be sure to use a quite PC when you run the benchmarks**
