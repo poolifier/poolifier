@@ -9,7 +9,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "benchmark": "^2.1.4",
     "microjob": "0.7.0",
     "node-worker-threads-pool": "1.4.3",
     "piscina": "2.2.0",
