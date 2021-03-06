@@ -1,4 +1,4 @@
-async function runTest (pool, { tasks, workerData }) {
+async function runPoolifierTest (pool, { tasks, workerData }) {
   return new Promise((resolve, reject) => {
     let executions = 0
     for (let i = 0; i <= tasks; i++) {
@@ -23,4 +23,4 @@ function generateRandomInteger (max, min = 0) {
   return Math.floor(Math.random() * max + 1)
 }
 
-module.exports = { runTest, generateRandomInteger }
+module.exports = { runPoolifierTest, generateRandomInteger }

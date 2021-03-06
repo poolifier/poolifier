@@ -2,7 +2,7 @@ const {
   DynamicThreadPool,
   WorkerChoiceStrategies
 } = require('../../../lib/index')
-const { runTest } = require('../benchmark-utils')
+const { runPoolifierTest } = require('../benchmark-utils')
 
 const size = 30
 
@@ -16,19 +16,19 @@ const dynamicPoolLessRecentlyUsed = new DynamicThreadPool(
   size / 2,
   size * 3,
   './benchmarks/internal/thread/worker.js',
-  { workerChoiceStrategy: DynamicThreadPool.LESS_RECENTLY_USED }
+  { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
 )
 
 async function dynamicThreadTest (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
 ) {
-  return runTest(dynamicPool, { tasks, workerData })
+  return runPoolifierTest(dynamicPool, { tasks, workerData })
 }
 
 async function dynamicThreadTestLessRecentlyUsed (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
 ) {
-  return runTest(dynamicPoolLessRecentlyUsed, { tasks, workerData })
+  return runPoolifierTest(dynamicPoolLessRecentlyUsed, { tasks, workerData })
 }
 
 module.exports = {
