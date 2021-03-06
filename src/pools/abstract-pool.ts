@@ -220,8 +220,7 @@ export abstract class AbstractPool<
   }
 
   private checkPoolOptions (opts: PoolOptions<Worker>): void {
-    this.opts.enableEvents =
-      opts.enableEvents != null ? opts.enableEvents : true
+    this.opts.enableEvents = opts.enableEvents ?? true
   }
 
   /** @inheritdoc */
