@@ -98,8 +98,8 @@ class LessRecentlyUsedWorkerChoiceStrategy<
       if (!isPoolDynamic && numberOfTasks === 0) {
         return worker
       } else if (numberOfTasks < minNumberOfTasks) {
-        minNumberOfTasks = numberOfTasks
         lessRecentlyUsedWorker = worker
+        minNumberOfTasks = numberOfTasks
       }
     }
     return lessRecentlyUsedWorker
