@@ -26,6 +26,14 @@ const errorPool = new FixedThreadPool(
     onlineHandler: () => console.log('worker is online')
   }
 )
+const asyncErrorPool = new FixedThreadPool(
+  1,
+  './tests/worker-files/thread/asyncErrorWorker.js',
+  {
+    errorHandler: e => console.error(e),
+    onlineHandler: () => console.log('worker is online')
+  }
+)
 const asyncPool = new FixedThreadPool(
   1,
   './tests/worker-files/thread/asyncWorker.js'
@@ -82,11 +90,25 @@ describe('Fixed thread pool test suite', () => {
     expect(result.f).toBe(data.f)
   })
 
-  it('Verify that error handling is working properly', async () => {
+  it('Verify that error handling is working properly:sync', async () => {
     const data = { f: 10 }
     let inError
     try {
       await errorPool.execute(data)
+    } catch (e) {
+      inError = e
+    }
+    expect(inError).toBeDefined()
+    expect(inError).toBeInstanceOf(Error)
+    expect(inError.message).toBeDefined()
+    expect(typeof inError.message === 'string').toEqual(true)
+  })
+
+  it('Verify that error handling is working properly:async', async () => {
+    const data = { f: 10 }
+    let inError
+    try {
+      await asyncErrorPool.execute(data)
     } catch (e) {
       inError = e
     }
