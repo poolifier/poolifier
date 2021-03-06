@@ -90,10 +90,10 @@ function partition (
   const pivotValue = array[pivotIndex]
   swap(array, pivotIndex, rightIndex)
   let storeIndex = leftIndex
-  for (let i = leftIndex; i < rightIndex; i += 1) {
+  for (let i = leftIndex; i < rightIndex; i++) {
     if (compare(array[i], pivotValue)) {
       swap(array, storeIndex, i)
-      storeIndex += 1
+      storeIndex++
     }
   }
   swap(array, rightIndex, storeIndex)

@@ -1,7 +1,7 @@
 async function runPoolifierTest (pool, { tasks, workerData }) {
   return new Promise((resolve, reject) => {
     let executions = 0
-    for (let i = 0; i <= tasks; i++) {
+    for (let i = 1; i <= tasks; i++) {
       pool
         .execute(workerData)
         .then(res => {
