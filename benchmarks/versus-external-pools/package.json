@@ -14,6 +14,7 @@
     "piscina": "2.2.0",
     "poolifier": "2.0.0",
     "threads": "1.6.3",
+    "threadwork": "^0.6.0",
     "worker-threads-pool": "2.0.0",
     "workerpool": "6.1.0"
   }
