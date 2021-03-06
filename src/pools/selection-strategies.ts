@@ -1,5 +1,6 @@
 import type { IWorker } from './abstract-pool'
 import type { IPoolInternal } from './pool-internal'
+import { PoolType } from './pool-internal'
 
 /**
  * Enumeration of worker choice strategies.
@@ -89,7 +90,7 @@ class LessRecentlyUsedWorkerChoiceStrategy<
 
   /** @inheritdoc */
   public choose (): Worker {
-    const isPoolDynamic = this.pool.dynamic
+    const isPoolDynamic = this.pool.type === PoolType.DYNAMIC
     let minNumberOfTasks = Infinity
     // A worker is always found because it picks the one with fewer tasks
     let lessRecentlyUsedWorker!: Worker
@@ -97,8 +98,8 @@ class LessRecentlyUsedWorkerChoiceStrategy<
       if (!isPoolDynamic && numberOfTasks === 0) {
         return worker
       } else if (numberOfTasks < minNumberOfTasks) {
-        minNumberOfTasks = numberOfTasks
         lessRecentlyUsedWorker = worker
+        minNumberOfTasks = numberOfTasks
       }
     }
     return lessRecentlyUsedWorker
@@ -121,7 +122,7 @@ class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
    *
    * @param pool The pool instance.
    * @param createDynamicallyWorkerCallback The worker creation callback for dynamic pool.
-   * @param workerChoiceStrategy The worker choice strategy when the pull is full.
+   * @param workerChoiceStrategy The worker choice strategy when the pull is busy.
    */
   public constructor (
     private readonly pool: IPoolInternal<Worker, Data, Response>,
@@ -136,15 +137,12 @@ class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
 
   /** @inheritdoc */
   public choose (): Worker {
-    const freeWorker = SelectionStrategiesUtils.findFreeWorkerBasedOnTasks(
-      this.pool.tasks
-    )
-    if (freeWorker) {
-      return freeWorker
+    const freeTaskMapEntry = this.pool.findFreeTasksMapEntry()
+    if (freeTaskMapEntry) {
+      return freeTaskMapEntry[0]
     }
 
-    if (this.pool.workers.length === this.pool.max) {
-      this.pool.emitter.emit('busy')
+    if (this.pool.busy) {
       return this.workerChoiceStrategy.choose()
     }
 
@@ -192,7 +190,7 @@ export class WorkerChoiceStrategyContext<
   private getPoolWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ): IWorkerChoiceStrategy<Worker> {
-    if (this.pool.dynamic) {
+    if (this.pool.type === PoolType.DYNAMIC) {
       return new DynamicPoolWorkerChoiceStrategy(
         this.pool,
         this.createDynamicallyWorkerCallback,
@@ -229,31 +227,9 @@ export class WorkerChoiceStrategyContext<
 }
 
 /**
- * Worker selection strategies helpers.
+ * Worker selection strategies helpers class.
  */
 class SelectionStrategiesUtils {
-  /**
-   * Find a free worker based on number of tasks the worker has applied.
-   *
-   * If a worker was found that has `0` tasks, it is detected as free and will be returned.
-   *
-   * If no free worker was found, `null` will be returned.
-   *
-   * @param workerTasksMap The pool worker tasks map.
-   * @returns A free worker if there was one, otherwise `null`.
-   */
-  public static findFreeWorkerBasedOnTasks<Worker extends IWorker> (
-    workerTasksMap: Map<Worker, number>
-  ): Worker | null {
-    for (const [worker, numberOfTasks] of workerTasksMap) {
-      if (numberOfTasks === 0) {
-        // A worker is free, use it
-        return worker
-      }
-    }
-    return null
-  }
-
   /**
    * Get the worker choice strategy instance.
    *

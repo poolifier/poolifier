@@ -4,7 +4,7 @@ import type {
 } from '../utility-types'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { IPoolInternal } from './pool-internal'
-import { PoolEmitter } from './pool-internal'
+import { PoolEmitter, PoolType } from './pool-internal'
 import type { WorkerChoiceStrategy } from './selection-strategies'
 import {
   WorkerChoiceStrategies,
@@ -87,6 +87,12 @@ export interface PoolOptions<Worker> {
    * The work choice strategy to use in this pool.
    */
   workerChoiceStrategy?: WorkerChoiceStrategy
+  /**
+   * Pool events emission.
+   *
+   * Default to true.
+   */
+  enableEvents?: boolean
 }
 
 /**
@@ -108,7 +114,10 @@ export abstract class AbstractPool<
   public readonly tasks: Map<Worker, number> = new Map<Worker, number>()
 
   /** @inheritdoc */
-  public readonly emitter: PoolEmitter
+  public readonly emitter?: PoolEmitter
+
+  /** @inheritdoc */
+  public readonly max?: number
 
   /**
    * The promise map.
@@ -156,13 +165,16 @@ export abstract class AbstractPool<
     }
     this.checkNumberOfWorkers(this.numberOfWorkers)
     this.checkFilePath(this.filePath)
+    this.checkPoolOptions(this.opts)
     this.setupHook()
 
     for (let i = 1; i <= this.numberOfWorkers; i++) {
       this.createAndSetupWorker()
     }
 
-    this.emitter = new PoolEmitter()
+    if (this.opts.enableEvents) {
+      this.emitter = new PoolEmitter()
+    }
     this.workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       this,
       () => {
@@ -202,14 +214,21 @@ export abstract class AbstractPool<
       throw new Error(
         'Cannot instantiate a pool with a negative number of workers'
       )
-    } else if (!this.dynamic && numberOfWorkers === 0) {
+    } else if (this.type === PoolType.FIXED && numberOfWorkers === 0) {
       throw new Error('Cannot instantiate a fixed pool with no worker')
     }
   }
 
+  private checkPoolOptions (opts: PoolOptions<Worker>): void {
+    this.opts.enableEvents = opts.enableEvents ?? true
+  }
+
   /** @inheritdoc */
-  public get dynamic (): boolean {
-    return false
+  public abstract get type (): PoolType
+
+  /** @inheritdoc */
+  public get numberOfRunningTasks (): number {
+    return this.promiseMap.size
   }
 
   /** @inheritdoc */
@@ -223,10 +242,32 @@ export abstract class AbstractPool<
   }
 
   /** @inheritdoc */
+  public abstract get busy (): boolean
+
+  protected internalGetBusyStatus (): boolean {
+    return (
+      this.numberOfRunningTasks >= this.numberOfWorkers &&
+      this.findFreeTasksMapEntry() === false
+    )
+  }
+
+  /** @inheritdoc */
+  public findFreeTasksMapEntry (): [Worker, number] | false {
+    for (const [worker, numberOfTasks] of this.tasks) {
+      if (numberOfTasks === 0) {
+        // A worker is free, return the matching tasks map entry
+        return [worker, numberOfTasks]
+      }
+    }
+    return false
+  }
+
+  /** @inheritdoc */
   public execute (data: Data): Promise<Response> {
     // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
     this.increaseWorkersTask(worker)
+    this.checkAndEmitBusy()
     const messageId = ++this.nextMessageId
     const res = this.internalExecute(worker, messageId)
     this.sendToWorker(worker, { data: data || ({} as Data), id: messageId })
@@ -259,7 +300,7 @@ export abstract class AbstractPool<
   protected abstract isMain (): boolean
 
   /**
-   * Increase the number of tasks that the given workers has done.
+   * Increase the number of tasks that the given workers has applied.
    *
    * @param worker Worker whose tasks are increased.
    */
@@ -268,7 +309,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Decrease the number of tasks that the given workers has done.
+   * Decrease the number of tasks that the given workers has applied.
    *
    * @param worker Worker whose tasks are decreased.
    */
@@ -277,7 +318,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Step the number of tasks that the given workers has done.
+   * Step the number of tasks that the given workers has applied.
    *
    * @param worker Worker whose tasks are set.
    * @param step Worker number of tasks step.
@@ -397,6 +438,12 @@ export abstract class AbstractPool<
           this.promiseMap.delete(message.id)
         }
       }
+    }
+  }
+
+  private checkAndEmitBusy (): void {
+    if (this.opts.enableEvents && this.busy) {
+      this.emitter?.emit('busy')
     }
   }
 }

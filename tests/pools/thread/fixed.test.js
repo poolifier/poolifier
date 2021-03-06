@@ -12,7 +12,7 @@ const pool = new FixedThreadPool(
 const emptyPool = new FixedThreadPool(
   1,
   './tests/worker-files/thread/emptyWorker.js',
-  { exitHandler: () => console.log('WORKER EXITED') }
+  { exitHandler: () => console.log('empty pool worker exited') }
 )
 const echoPool = new FixedThreadPool(
   1,
@@ -21,6 +21,14 @@ const echoPool = new FixedThreadPool(
 const errorPool = new FixedThreadPool(
   1,
   './tests/worker-files/thread/errorWorker.js',
+  {
+    errorHandler: e => console.error(e),
+    onlineHandler: () => console.log('worker is online')
+  }
+)
+const asyncErrorPool = new FixedThreadPool(
+  1,
+  './tests/worker-files/thread/asyncErrorWorker.js',
   {
     errorHandler: e => console.error(e),
     onlineHandler: () => console.log('worker is online')
@@ -37,6 +45,7 @@ describe('Fixed thread pool test suite', () => {
     await echoPool.destroy()
     await asyncPool.destroy()
     await errorPool.destroy()
+    await asyncErrorPool.destroy()
     await emptyPool.destroy()
   })
 
@@ -60,6 +69,16 @@ describe('Fixed thread pool test suite', () => {
     expect(result).toBeFalsy()
   })
 
+  it('Verify that busy event is emitted', async () => {
+    const promises = []
+    let poolBusy = 0
+    pool.emitter.on('busy', () => poolBusy++)
+    for (let i = 0; i < numberOfThreads * 2; i++) {
+      promises.push(pool.execute({ test: 'test' }))
+    }
+    expect(poolBusy).toEqual(numberOfThreads)
+  })
+
   it('Verify that is possible to have a worker that return undefined', async () => {
     const result = await emptyPool.execute()
     expect(result).toBeFalsy()
@@ -72,7 +91,7 @@ describe('Fixed thread pool test suite', () => {
     expect(result.f).toBe(data.f)
   })
 
-  it('Verify that error handling is working properly', async () => {
+  it('Verify that error handling is working properly:sync', async () => {
     const data = { f: 10 }
     let inError
     try {
@@ -80,9 +99,24 @@ describe('Fixed thread pool test suite', () => {
     } catch (e) {
       inError = e
     }
-    expect(inError).toBeTruthy()
-    expect(inError instanceof Error).toBeTruthy()
-    expect(inError.message).toBeTruthy()
+    expect(inError).toBeDefined()
+    expect(inError).toBeInstanceOf(Error)
+    expect(inError.message).toBeDefined()
+    expect(typeof inError.message === 'string').toEqual(true)
+  })
+
+  it('Verify that error handling is working properly:async', async () => {
+    const data = { f: 10 }
+    let inError
+    try {
+      await asyncErrorPool.execute(data)
+    } catch (e) {
+      inError = e
+    }
+    expect(inError).toBeDefined()
+    expect(inError).toBeInstanceOf(Error)
+    expect(inError.message).toBeDefined()
+    expect(typeof inError.message === 'string').toEqual(true)
   })
 
   it('Verify that async function is working properly', async () => {

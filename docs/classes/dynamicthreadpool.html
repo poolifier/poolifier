@@ -131,7 +131,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="dynamicthreadpool.html#emitter" class="tsd-kind-icon">emitter</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="dynamicthreadpool.html#filepath" class="tsd-kind-icon">file<wbr>Path</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="dynamicthreadpool.html#max" class="tsd-kind-icon">max</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="dynamicthreadpool.html#max" class="tsd-kind-icon">max</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="dynamicthreadpool.html#nextmessageid" class="tsd-kind-icon">next<wbr>Message<wbr>Id</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="dynamicthreadpool.html#numberofworkers" class="tsd-kind-icon">number<wbr>OfWorkers</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="dynamicthreadpool.html#opts" class="tsd-kind-icon">opts</a></li>
@@ -144,7 +144,9 @@
 						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="dynamicthreadpool.html#dynamic" class="tsd-kind-icon">dynamic</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="dynamicthreadpool.html#busy" class="tsd-kind-icon">busy</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="dynamicthreadpool.html#numberofrunningtasks" class="tsd-kind-icon">number<wbr>OfRunning<wbr>Tasks</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="dynamicthreadpool.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -158,8 +160,10 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="dynamicthreadpool.html#destroy" class="tsd-kind-icon">destroy</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="dynamicthreadpool.html#destroyworker" class="tsd-kind-icon">destroy<wbr>Worker</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="dynamicthreadpool.html#execute" class="tsd-kind-icon">execute</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="dynamicthreadpool.html#findfreetasksmapentry" class="tsd-kind-icon">find<wbr>Free<wbr>Tasks<wbr>Map<wbr>Entry</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="dynamicthreadpool.html#increaseworkerstask" class="tsd-kind-icon">increase<wbr>Workers<wbr>Task</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="dynamicthreadpool.html#internalexecute" class="tsd-kind-icon">internal<wbr>Execute</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="dynamicthreadpool.html#internalgetbusystatus" class="tsd-kind-icon">internal<wbr>Get<wbr>Busy<wbr>Status</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="dynamicthreadpool.html#ismain" class="tsd-kind-icon">is<wbr>Main</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="dynamicthreadpool.html#registerworkermessagelistener" class="tsd-kind-icon">register<wbr>Worker<wbr>Message<wbr>Listener</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="dynamicthreadpool.html#removeworker" class="tsd-kind-icon">remove<wbr>Worker</a></li>
@@ -185,7 +189,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/thread/dynamic.ts#L20">src/pools/thread/dynamic.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/thread/dynamic.ts#L21">src/pools/thread/dynamic.ts:21</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -238,12 +242,12 @@
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="emitter" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> emitter</h3>
-					<div class="tsd-signature tsd-kind-icon">emitter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">PoolEmitter</span></div>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> emitter</h3>
+					<div class="tsd-signature tsd-kind-icon">emitter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">PoolEmitter</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#emitter">emitter</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L111">src/pools/abstract-pool.ts:111</a></li>
+							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L117">src/pools/abstract-pool.ts:117</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -255,11 +259,12 @@
 						<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#filepath">filePath</a></p>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="max" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> max</h3>
 					<div class="tsd-signature tsd-kind-icon">max<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#max">max</a></p>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
@@ -269,7 +274,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#nextmessageid">nextMessageId</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L129">src/pools/abstract-pool.ts:129</a></li>
+							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L138">src/pools/abstract-pool.ts:138</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -301,7 +306,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#promisemap">promiseMap</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L121">src/pools/abstract-pool.ts:121</a></li>
+							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L130">src/pools/abstract-pool.ts:130</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -322,7 +327,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#tasks">tasks</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L108">src/pools/abstract-pool.ts:108</a></li>
+							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L114">src/pools/abstract-pool.ts:114</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -333,7 +338,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#workerchoicestrategycontext">workerChoiceStrategyContext</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L136">src/pools/abstract-pool.ts:136</a></li>
+							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L145">src/pools/abstract-pool.ts:145</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -350,7 +355,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#workers">workers</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L105">src/pools/abstract-pool.ts:105</a></li>
+							<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L111">src/pools/abstract-pool.ts:111</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -358,16 +363,16 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Accessors</h2>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
-					<a name="dynamic" class="tsd-anchor"></a>
-					<h3>dynamic</h3>
+					<a name="busy" class="tsd-anchor"></a>
+					<h3>busy</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> dynamic<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> busy<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/thread/dynamic.ts#L39">src/pools/thread/dynamic.ts:39</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/thread/dynamic.ts#L45">src/pools/thread/dynamic.ts:45</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -377,6 +382,52 @@
 								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+					<a name="numberofrunningtasks" class="tsd-anchor"></a>
+					<h3>number<wbr>OfRunning<wbr>Tasks</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> numberOfRunningTasks<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L231">src/pools/abstract-pool.ts:231</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>inheritdoc</dt>
+									<dd></dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+					<a name="type" class="tsd-anchor"></a>
+					<h3>type</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> type<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PoolType</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/thread/dynamic.ts#L40">src/pools/thread/dynamic.ts:40</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>inheritdoc</dt>
+									<dd></dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PoolType</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -394,7 +445,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#afterworkersetup">afterWorkerSetup</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/thread/fixed.ts#L76">src/pools/thread/fixed.ts:76</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/thread/fixed.ts#L77">src/pools/thread/fixed.ts:77</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -418,7 +469,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#chooseworker">chooseWorker</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L313">src/pools/abstract-pool.ts:313</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L355">src/pools/abstract-pool.ts:355</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -443,7 +494,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#createandsetupworker">createAndSetupWorker</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L366">src/pools/abstract-pool.ts:366</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L408">src/pools/abstract-pool.ts:408</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -467,7 +518,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#createworker">createWorker</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/thread/fixed.ts#L70">src/pools/thread/fixed.ts:70</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/thread/fixed.ts#L71">src/pools/thread/fixed.ts:71</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../index.html#threadworkerwithmessagechannel" class="tsd-signature-type" data-tsd-kind="Type alias">ThreadWorkerWithMessageChannel</a></h4>
@@ -485,12 +536,12 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#decreaseworkerstasks">decreaseWorkersTasks</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L275">src/pools/abstract-pool.ts:275</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L317">src/pools/abstract-pool.ts:317</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Decrease the number of tasks that the given workers has done.</p>
+									<p>Decrease the number of tasks that the given workers has applied.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -517,7 +568,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#destroy">destroy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L237">src/pools/abstract-pool.ts:237</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L279">src/pools/abstract-pool.ts:279</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -541,7 +592,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#destroyworker">destroyWorker</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/thread/fixed.ts#L48">src/pools/thread/fixed.ts:48</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/thread/fixed.ts#L49">src/pools/thread/fixed.ts:49</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -571,7 +622,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#execute">execute</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L226">src/pools/abstract-pool.ts:226</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L267">src/pools/abstract-pool.ts:267</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -590,6 +641,30 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="findfreetasksmapentry" class="tsd-anchor"></a>
+					<h3>find<wbr>Free<wbr>Tasks<wbr>Map<wbr>Entry</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">find<wbr>Free<wbr>Tasks<wbr>Map<wbr>Entry<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">[</span><a href="../index.html#threadworkerwithmessagechannel" class="tsd-signature-type" data-tsd-kind="Type alias">ThreadWorkerWithMessageChannel</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#findfreetasksmapentry">findFreeTasksMapEntry</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L256">src/pools/abstract-pool.ts:256</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>inheritdoc</dt>
+									<dd></dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">[</span><a href="../index.html#threadworkerwithmessagechannel" class="tsd-signature-type" data-tsd-kind="Type alias">ThreadWorkerWithMessageChannel</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 					<a name="increaseworkerstask" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> increase<wbr>Workers<wbr>Task</h3>
@@ -601,12 +676,12 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#increaseworkerstask">increaseWorkersTask</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L266">src/pools/abstract-pool.ts:266</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L308">src/pools/abstract-pool.ts:308</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Increase the number of tasks that the given workers has done.</p>
+									<p>Increase the number of tasks that the given workers has applied.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -633,7 +708,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#internalexecute">internalExecute</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L338">src/pools/abstract-pool.ts:338</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L380">src/pools/abstract-pool.ts:380</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -650,6 +725,24 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="internalgetbusystatus" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> internal<wbr>Get<wbr>Busy<wbr>Status</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">internal<wbr>Get<wbr>Busy<wbr>Status<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#internalgetbusystatus">internalGetBusyStatus</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L248">src/pools/abstract-pool.ts:248</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 					<a name="ismain" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> is<wbr>Main</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
@@ -660,7 +753,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#ismain">isMain</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/thread/fixed.ts#L43">src/pools/thread/fixed.ts:43</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/thread/fixed.ts#L44">src/pools/thread/fixed.ts:44</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -678,7 +771,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#registerworkermessagelistener">registerWorkerMessageListener</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/thread/fixed.ts#L63">src/pools/thread/fixed.ts:63</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/thread/fixed.ts#L64">src/pools/thread/fixed.ts:64</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -735,7 +828,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#removeworker">removeWorker</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L299">src/pools/abstract-pool.ts:299</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L341">src/pools/abstract-pool.ts:341</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -767,7 +860,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#sendtoworker">sendToWorker</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/thread/fixed.ts#L55">src/pools/thread/fixed.ts:55</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/thread/fixed.ts#L56">src/pools/thread/fixed.ts:56</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -794,7 +887,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#setworkerchoicestrategy">setWorkerChoiceStrategy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L216">src/pools/abstract-pool.ts:216</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L236">src/pools/abstract-pool.ts:236</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -824,7 +917,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#setuphook">setupHook</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L252">src/pools/abstract-pool.ts:252</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L294">src/pools/abstract-pool.ts:294</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -848,7 +941,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="fixedthreadpool.html">FixedThreadPool</a>.<a href="fixedthreadpool.html#workerlistener">workerListener</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/5d4101b/src/pools/abstract-pool.ts#L389">src/pools/abstract-pool.ts:389</a></li>
+									<li>Defined in <a href="https://github.com/jerome-benoit/poolifier/blob/7fb595d/src/pools/abstract-pool.ts#L431">src/pools/abstract-pool.ts:431</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -914,7 +1007,7 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="dynamicthreadpool.html#filepath" class="tsd-kind-icon">file<wbr>Path</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="dynamicthreadpool.html#max" class="tsd-kind-icon">max</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
@@ -939,7 +1032,13 @@
 								<a href="dynamicthreadpool.html#workers" class="tsd-kind-icon">workers</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
-								<a href="dynamicthreadpool.html#dynamic" class="tsd-kind-icon">dynamic</a>
+								<a href="dynamicthreadpool.html#busy" class="tsd-kind-icon">busy</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+								<a href="dynamicthreadpool.html#numberofrunningtasks" class="tsd-kind-icon">number<wbr>OfRunning<wbr>Tasks</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+								<a href="dynamicthreadpool.html#type" class="tsd-kind-icon">type</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 								<a href="dynamicthreadpool.html#afterworkersetup" class="tsd-kind-icon">after<wbr>Worker<wbr>Setup</a>
@@ -965,11 +1064,17 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="dynamicthreadpool.html#execute" class="tsd-kind-icon">execute</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="dynamicthreadpool.html#findfreetasksmapentry" class="tsd-kind-icon">find<wbr>Free<wbr>Tasks<wbr>Map<wbr>Entry</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 								<a href="dynamicthreadpool.html#increaseworkerstask" class="tsd-kind-icon">increase<wbr>Workers<wbr>Task</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 								<a href="dynamicthreadpool.html#internalexecute" class="tsd-kind-icon">internal<wbr>Execute</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="dynamicthreadpool.html#internalgetbusystatus" class="tsd-kind-icon">internal<wbr>Get<wbr>Busy<wbr>Status</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 								<a href="dynamicthreadpool.html#ismain" class="tsd-kind-icon">is<wbr>Main</a>
