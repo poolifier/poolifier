@@ -45,6 +45,7 @@ describe('Fixed thread pool test suite', () => {
     await echoPool.destroy()
     await asyncPool.destroy()
     await errorPool.destroy()
+    await asyncErrorPool.destroy()
     await emptyPool.destroy()
   })
 
