@@ -1,4 +1,5 @@
 const Benchmark = require('benchmark')
+const { generateRandomInteger } = require('./benchmark-utils')
 
 const suite = new Benchmark.Suite()
 
@@ -6,13 +7,6 @@ const LIST_FORMATTER = new Intl.ListFormat('en-US', {
   style: 'long',
   type: 'conjunction'
 })
-
-function generateRandomInteger (max, min = 0) {
-  if (min) {
-    return Math.floor(Math.random() * (max - min + 1) + min)
-  }
-  return Math.floor(Math.random() * max + 1)
-}
 
 const tasksMap = new Map([
   [0, generateRandomInteger(10)],
@@ -61,6 +55,18 @@ function loopSelect (tasksMap) {
   return [minKey, minValue]
 }
 
+function arraySortSelect (tasksMap) {
+  const tasksArray = Array.from(tasksMap)
+  return tasksArray.sort((a, b) => {
+    if (a[1] < b[1]) {
+      return -1
+    } else if (a[1] > b[1]) {
+      return 1
+    }
+    return 0
+  })[0]
+}
+
 const defaultComparator = (a, b) => {
   return a < b
 }
@@ -96,11 +102,14 @@ function selectLoop (
   k,
   leftIndex,
   rightIndex,
-  compare = defaultComparator
+  compare = defaultComparator,
+  pivotIndexSelect = (leftIndex, rightIndex) => {
+    return leftIndex + Math.floor((rightIndex - leftIndex) / 2)
+  }
 ) {
   while (true) {
     if (leftIndex === rightIndex) return array[leftIndex]
-    let pivotIndex = leftIndex + Math.floor((rightIndex - leftIndex) / 2)
+    let pivotIndex = pivotIndexSelect(leftIndex, rightIndex)
     pivotIndex = partition(array, leftIndex, rightIndex, pivotIndex, compare)
     if (k === pivotIndex) {
       return array[k]
@@ -117,10 +126,13 @@ function selectRecursion (
   k,
   leftIndex,
   rightIndex,
-  compare = defaultComparator
+  compare = defaultComparator,
+  pivotIndexSelect = (leftIndex, rightIndex) => {
+    return leftIndex + Math.floor((rightIndex - leftIndex) / 2)
+  }
 ) {
   if (leftIndex === rightIndex) return array[leftIndex]
-  let pivotIndex = leftIndex + Math.floor((rightIndex - leftIndex) / 2)
+  let pivotIndex = pivotIndexSelect(leftIndex, rightIndex)
   pivotIndex = partition(array, leftIndex, rightIndex, pivotIndex, compare)
   if (k === pivotIndex) {
     return array[k]
@@ -139,6 +151,23 @@ function quickSelectLoop (tasksMap) {
   })
 }
 
+function quickSelectLoopRandomPivot (tasksMap) {
+  const tasksArray = Array.from(tasksMap)
+
+  return selectLoop(
+    tasksArray,
+    0,
+    0,
+    tasksArray.length - 1,
+    (a, b) => {
+      return a[1] < b[1]
+    },
+    (leftIndex, rightIndex) => {
+      return generateRandomInteger(leftIndex, rightIndex)
+    }
+  )
+}
+
 function quickSelectRecursion (tasksMap) {
   const tasksArray = Array.from(tasksMap)
 
@@ -147,20 +176,49 @@ function quickSelectRecursion (tasksMap) {
   })
 }
 
+function quickSelectRecursionRandomPivot (tasksMap) {
+  const tasksArray = Array.from(tasksMap)
+
+  return selectRecursion(
+    tasksArray,
+    0,
+    0,
+    tasksArray.length - 1,
+    (a, b) => {
+      return a[1] < b[1]
+    },
+    (leftIndex, rightIndex) => {
+      return generateRandomInteger(leftIndex, rightIndex)
+    }
+  )
+}
+
 // console.log(Array.from(tasksMap))
 // console.log(loopSelect(tasksMap))
+// console.log(arraySortSelect(tasksMap))
 // console.log(quickSelectLoop(tasksMap))
+// console.log(quickSelectLoopRandomPivot(tasksMap))
 // console.log(quickSelectRecursion(tasksMap))
+// console.log(quickSelectRecursionRandomPivot(tasksMap))
 
 suite
   .add('Loop select', function () {
     loopSelect(tasksMap)
   })
+  .add('Array sort select', function () {
+    arraySortSelect(tasksMap)
+  })
   .add('Quick select loop', function () {
     quickSelectLoop(tasksMap)
   })
+  .add('Quick select loop with random pivot', function () {
+    quickSelectLoopRandomPivot(tasksMap)
+  })
   .add('Quick select recursion', function () {
     quickSelectRecursion(tasksMap)
+  })
+  .add('Quick select recursion with random pivot', function () {
+    quickSelectRecursionRandomPivot(tasksMap)
   })
   .on('cycle', function (event) {
     console.log(event.target.toString())

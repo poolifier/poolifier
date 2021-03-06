@@ -16,4 +16,11 @@ async function runTest (pool, { tasks, workerData }) {
   })
 }
 
-module.exports = { runTest }
+function generateRandomInteger (max, min = 0) {
+  if (min) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
+  }
+  return Math.floor(Math.random() * max + 1)
+}
+
+module.exports = { runTest, generateRandomInteger }

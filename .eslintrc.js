@@ -52,6 +52,7 @@ module.exports = {
       {
         skipWords: [
           'christopher',
+          'comparator',
           'ecma',
           'enum',
           'inheritdoc',
