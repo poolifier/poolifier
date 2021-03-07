@@ -1,4 +1,7 @@
-const { FixedClusterPool } = require('../../../lib/index')
+const {
+  FixedClusterPool,
+  WorkerChoiceStrategies
+} = require('../../../lib/index')
 const { runPoolifierTest } = require('../benchmark-utils')
 
 const size = 30
@@ -8,10 +11,22 @@ const fixedPool = new FixedClusterPool(
   './benchmarks/internal/cluster/worker.js'
 )
 
+const fixedPoolLessRecentlyUsed = new FixedClusterPool(
+  size,
+  './benchmarks/internal/cluster/worker.js',
+  { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
+)
+
 async function fixedClusterTest (
   { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
 ) {
   return runPoolifierTest(fixedPool, { tasks, workerData })
 }
 
-module.exports = { fixedClusterTest }
+async function fixedClusterTestLessRecentlyUsed (
+  { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
+) {
+  return runPoolifierTest(fixedPoolLessRecentlyUsed, { tasks, workerData })
+}
+
+module.exports = { fixedClusterTest, fixedClusterTestLessRecentlyUsed }
