@@ -27,7 +27,7 @@ async function test () {
     .add('Poolifier:Dynamic:ThreadPool', async function () {
       await dynamicThreadTest()
     })
-    .add('Poolifier:Dynamic:ThreadPool:LRU', async function () {
+    .add('Poolifier:Dynamic:ThreadPool:LessRecentlyUsed', async function () {
       await dynamicThreadTestLessRecentlyUsed()
     })
     .add('Poolifier:Static:ClusterPool', async function () {
@@ -36,7 +36,7 @@ async function test () {
     .add('Poolifier:Dynamic:ClusterPool', async function () {
       await dynamicClusterTest()
     })
-    .add('Poolifier:Dynamic:ClusterPool:LRU', async function () {
+    .add('Poolifier:Dynamic:ClusterPool:LessRecentlyUsed', async function () {
       await dynamicClusterTestLessRecentlyUsed()
     })
     // Add listeners
