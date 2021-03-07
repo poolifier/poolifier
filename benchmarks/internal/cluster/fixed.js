@@ -5,6 +5,7 @@ const {
 const { runPoolifierTest } = require('../benchmark-utils')
 
 const size = 30
+const numberOfTasks = 1
 
 const fixedPool = new FixedClusterPool(
   size,
@@ -18,13 +19,13 @@ const fixedPoolLessRecentlyUsed = new FixedClusterPool(
 )
 
 async function fixedClusterTest (
-  { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
+  { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
 ) {
   return runPoolifierTest(fixedPool, { tasks, workerData })
 }
 
 async function fixedClusterTestLessRecentlyUsed (
-  { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
+  { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
 ) {
   return runPoolifierTest(fixedPoolLessRecentlyUsed, { tasks, workerData })
 }

@@ -5,6 +5,7 @@ const {
 const { runPoolifierTest } = require('../benchmark-utils')
 
 const size = 30
+const numberOfTasks = 1
 
 const dynamicPool = new DynamicThreadPool(
   size / 2,
@@ -20,13 +21,13 @@ const dynamicPoolLessRecentlyUsed = new DynamicThreadPool(
 )
 
 async function dynamicThreadTest (
-  { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
+  { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
 ) {
   return runPoolifierTest(dynamicPool, { tasks, workerData })
 }
 
 async function dynamicThreadTestLessRecentlyUsed (
-  { tasks, workerData } = { tasks: 1, workerData: { proof: 'ok' } }
+  { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
 ) {
   return runPoolifierTest(dynamicPoolLessRecentlyUsed, { tasks, workerData })
 }

@@ -11,6 +11,37 @@ describe('Selection strategies test suite', () => {
     expect(WorkerChoiceStrategies.LESS_RECENTLY_USED).toBe('LESS_RECENTLY_USED')
   })
 
+  it('Verify ROUND_ROBIN strategy is the default at pool creation', async () => {
+    const min = 0
+    const max = 3
+    const pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(pool.opts.workerChoiceStrategy).toBe(
+      WorkerChoiceStrategies.ROUND_ROBIN
+    )
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify ROUND_ROBIN strategy can be set after pool creation', async () => {
+    const min = 0
+    const max = 3
+    const pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.ROUND_ROBIN)
+    expect(pool.opts.workerChoiceStrategy).toBe(
+      WorkerChoiceStrategies.ROUND_ROBIN
+    )
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
   it('Verify LESS_RECENTLY_USED strategy is taken at pool creation', async () => {
     const max = 3
     const pool = new FixedThreadPool(
@@ -52,7 +83,6 @@ describe('Selection strategies test suite', () => {
       promises.push(pool.execute({ test: 'test' }))
     }
     await Promise.all(promises)
-
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -72,7 +102,6 @@ describe('Selection strategies test suite', () => {
       promises.push(pool.execute({ test: 'test' }))
     }
     await Promise.all(promises)
-
     // We need to clean up the resources after our test
     await pool.destroy()
   })

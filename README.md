@@ -205,7 +205,7 @@ We already have a bench folder where you can find some comparisons.
 Before to jump into each poolifier pool type, let highlight that **Node.js comes with a thread pool already**, the libuv thread pool where some particular tasks already run by default.  
 Please take a look at [which tasks run on the libuv thread pool](https://nodejs.org/en/docs/guides/dont-block-the-event-loop/#what-code-runs-on-the-worker-pool).
 
-Now **if your task runs on libuv thread pool**, you can try to:
+**If your task runs on libuv thread pool**, you can try to:
 
 - Tune the libuv thread pool size setting the [UV_THREADPOOL_SIZE](https://nodejs.org/api/cli.html#cli_uv_threadpool_size_size)
 

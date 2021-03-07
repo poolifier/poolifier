@@ -191,7 +191,7 @@ export abstract class AbstractPool<
         })
         return workerCreated
       },
-      opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
+      this.opts.workerChoiceStrategy
     )
   }
 
@@ -220,6 +220,8 @@ export abstract class AbstractPool<
   }
 
   private checkPoolOptions (opts: PoolOptions<Worker>): void {
+    this.opts.workerChoiceStrategy =
+      opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
     this.opts.enableEvents = opts.enableEvents ?? true
   }
 
