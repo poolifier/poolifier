@@ -3,10 +3,13 @@ const { generateRandomInteger, LIST_FORMATTER } = require('./benchmark-utils')
 
 const suite = new Benchmark.Suite()
 
-function generateRandomTasksMap (numberOfWorkers, maxNumberOfTasks = 10) {
+function generateRandomTasksMap (
+  numberOfWorkers,
+  maxNumberOfTasksPerWorker = 10
+) {
   const tasksArray = []
   for (let i = 0; i < numberOfWorkers; i++) {
-    const task = [i, generateRandomInteger(maxNumberOfTasks)]
+    const task = [i, generateRandomInteger(maxNumberOfTasksPerWorker)]
     tasksArray.push(task)
   }
   return new Map(tasksArray)
