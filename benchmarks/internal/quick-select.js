@@ -3,38 +3,16 @@ const { generateRandomInteger, LIST_FORMATTER } = require('./benchmark-utils')
 
 const suite = new Benchmark.Suite()
 
-const tasksMap = new Map([
-  [0, generateRandomInteger(10)],
-  [1, generateRandomInteger(10)],
-  [2, generateRandomInteger(10)],
-  [3, generateRandomInteger(10)],
-  [4, generateRandomInteger(10)],
-  [5, generateRandomInteger(10)],
-  [6, generateRandomInteger(10)],
-  [7, generateRandomInteger(10)],
-  [8, generateRandomInteger(10)],
-  [9, generateRandomInteger(10)],
-  [10, generateRandomInteger(10)],
-  [11, generateRandomInteger(10)],
-  [12, generateRandomInteger(10)],
-  [13, generateRandomInteger(10)],
-  [14, generateRandomInteger(10)],
-  [15, generateRandomInteger(10)],
-  [16, generateRandomInteger(10)],
-  [17, generateRandomInteger(10)],
-  [18, generateRandomInteger(10)],
-  [19, generateRandomInteger(10)],
-  [20, generateRandomInteger(10)],
-  [21, generateRandomInteger(10)],
-  [22, generateRandomInteger(10)],
-  [23, generateRandomInteger(10)],
-  [24, generateRandomInteger(10)],
-  [25, generateRandomInteger(10)],
-  [26, generateRandomInteger(10)],
-  [27, generateRandomInteger(10)],
-  [28, generateRandomInteger(10)],
-  [29, generateRandomInteger(10)]
-])
+function generateRandomTasksMap (numberOfWorkers, maxNumberOfTasks = 10) {
+  const tasksArray = []
+  for (let i = 0; i < numberOfWorkers; i++) {
+    const task = [i, generateRandomInteger(maxNumberOfTasks)]
+    tasksArray.push(task)
+  }
+  return new Map(tasksArray)
+}
+
+const tasksMap = generateRandomTasksMap(60, 20)
 
 function loopSelect (tasksMap) {
   let minValue = Infinity
