@@ -4,11 +4,7 @@ const { LIST_FORMATTER } = require('./benchmark-utils')
 const suite = new Benchmark.Suite()
 
 function generateWorkersArray (numberOfWorkers) {
-  const workers = []
-  for (let i = 0; i < numberOfWorkers; i++) {
-    workers.push(i)
-  }
-  return workers
+  return [...Array(numberOfWorkers).keys()]
 }
 
 const workers = generateWorkersArray(60)
