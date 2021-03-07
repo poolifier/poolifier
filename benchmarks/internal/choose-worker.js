@@ -9,7 +9,7 @@ function generateWorkersArray (numberOfWorkers) {
 
 const workers = generateWorkersArray(60)
 
-let nextWorkerIndex = 0
+let nextWorkerIndex
 
 function chooseWorkerTernaryOffByOne () {
   nextWorkerIndex =
@@ -48,7 +48,7 @@ suite
     nextWorkerIndex = 0
     chooseWorkerTernaryWithNegation()
   })
-  .add('Ternary with PreChoosing', function () {
+  .add('Ternary with pre-choosing', function () {
     nextWorkerIndex = 0
     chooseWorkerTernaryWithPreChoosing()
   })
