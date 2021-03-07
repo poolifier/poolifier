@@ -56,11 +56,14 @@ describe('Abstract pool test suite', () => {
   })
 
   it('Verify that filePath is checked', () => {
+    const expectedError = new Error(
+      'Please specify a file with a worker implementation'
+    )
     expect(() => new FixedThreadPool(numberOfWorkers)).toThrowError(
-      new Error('Please specify a file with a worker implementation')
+      expectedError
     )
     expect(() => new FixedThreadPool(numberOfWorkers, '')).toThrowError(
-      new Error('Please specify a file with a worker implementation')
+      expectedError
     )
   })
 

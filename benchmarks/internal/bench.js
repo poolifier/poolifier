@@ -3,19 +3,21 @@ const {
   dynamicClusterTest,
   dynamicClusterTestLessRecentlyUsed
 } = require('./cluster/dynamic')
-const { fixedClusterTest } = require('./cluster/fixed')
+const {
+  fixedClusterTest,
+  fixedClusterTestLessRecentlyUsed
+} = require('./cluster/fixed')
 const {
   dynamicThreadTest,
   dynamicThreadTestLessRecentlyUsed
 } = require('./thread/dynamic')
-const { fixedThreadTest } = require('./thread/fixed')
+const {
+  fixedThreadTest,
+  fixedThreadTestLessRecentlyUsed
+} = require('./thread/fixed')
+const { LIST_FORMATTER } = require('./benchmark-utils')
 
 const suite = new Benchmark.Suite('poolifier')
-
-const LIST_FORMATTER = new Intl.ListFormat('en-US', {
-  style: 'long',
-  type: 'conjunction'
-})
 
 // Wait some seconds before start, pools need to load threads !!!
 setTimeout(async () => {
@@ -25,8 +27,11 @@ setTimeout(async () => {
 async function test () {
   // Add tests
   suite
-    .add('Poolifier:Static:ThreadPool', async function () {
+    .add('Poolifier:Fixed:ThreadPool', async function () {
       await fixedThreadTest()
+    })
+    .add('Poolifier:Fixed:ThreadPool:LessRecentlyUsed', async function () {
+      await fixedThreadTestLessRecentlyUsed()
     })
     .add('Poolifier:Dynamic:ThreadPool', async function () {
       await dynamicThreadTest()
@@ -34,8 +39,11 @@ async function test () {
     .add('Poolifier:Dynamic:ThreadPool:LessRecentlyUsed', async function () {
       await dynamicThreadTestLessRecentlyUsed()
     })
-    .add('Poolifier:Static:ClusterPool', async function () {
+    .add('Poolifier:Fixed:ClusterPool', async function () {
       await fixedClusterTest()
+    })
+    .add('Poolifier:Fixed:ClusterPool:LessRecentlyUsed', async function () {
+      await fixedClusterTestLessRecentlyUsed()
     })
     .add('Poolifier:Dynamic:ClusterPool', async function () {
       await dynamicClusterTest()
@@ -55,5 +63,5 @@ async function test () {
       // eslint-disable-next-line no-process-exit
       process.exit()
     })
-    .run({ async: true, queued: true })
+    .run({ async: true })
 }

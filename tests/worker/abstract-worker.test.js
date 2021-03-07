@@ -15,7 +15,7 @@ describe('Abstract worker test suite', () => {
     )
   })
 
-  it('Verify that handle Error function is working properly', () => {
+  it('Verify that handleError function is working properly', () => {
     const error = new Error('My error')
     const worker = new ThreadWorker(() => {})
     expect(worker.handleError(error)).toBe(error)
@@ -24,6 +24,6 @@ describe('Abstract worker test suite', () => {
   it('Verify that get main worker throw error if main worker is not set', () => {
     expect(() =>
       new StubPoolWithIsMainWorker(() => {}).getMainWorker()
-    ).toThrowError()
+    ).toThrowError(new Error('Main worker was not set'))
   })
 })

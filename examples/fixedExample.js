@@ -7,7 +7,7 @@ const pool = new FixedThreadPool(15, './yourWorker.js', {
 
 const start = Date.now()
 const iterations = 1000
-for (let i = 0; i <= iterations; i++) {
+for (let i = 1; i <= iterations; i++) {
   pool
     .execute({})
     .then(res => {
