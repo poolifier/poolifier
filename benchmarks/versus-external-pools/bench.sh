@@ -21,8 +21,8 @@ hyperfine --export-markdown BENCH-100000.md --min-runs 10 \
   'node fixed-piscina.js' \
   'node dynamic-poolifier.js' \
   'node fixed-poolifier.js' \
-  'node static-suchmokuo-node-worker-threads-pool.js' \
   'node dynamic-suchmokuo-node-worker-threads-pool.js' \
+  'node static-suchmokuo-node-worker-threads-pool.js' \
   'node threadjs.js' \
   'node dynamic-workerpool.js' \
   'node fixed-workerpool.js'
