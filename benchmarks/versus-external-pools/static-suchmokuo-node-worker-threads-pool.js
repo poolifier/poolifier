@@ -1,5 +1,5 @@
 // IMPORT LIBRARIES
-const { DynamicPool, StaticPool } = require('node-worker-threads-pool')
+const { StaticPool } = require('node-worker-threads-pool')
 // FINISH IMPORT LIBRARIES
 // IMPORT FUNCTION TO BENCH
 const functionToBench = require('./functions/function-to-bench')
