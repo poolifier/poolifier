@@ -74,7 +74,7 @@ describe('Fixed cluster pool test suite', () => {
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.push(pool.execute({ test: 'test' }))
     }
-    expect(poolBusy).toEqual(numberOfWorkers)
+    expect(poolBusy).toBe(numberOfWorkers)
   })
 
   it('Verify that is possible to have a worker that return undefined', async () => {
@@ -98,7 +98,7 @@ describe('Fixed cluster pool test suite', () => {
       inError = e
     }
     expect(inError).toBeDefined()
-    expect(typeof inError === 'string').toEqual(true)
+    expect(typeof inError === 'string').toBe(true)
     expect(inError).toBe('Error Message from ClusterWorker')
   })
 
@@ -111,7 +111,7 @@ describe('Fixed cluster pool test suite', () => {
       inError = e
     }
     expect(inError).toBeDefined()
-    expect(typeof inError === 'string').toEqual(true)
+    expect(typeof inError === 'string').toBe(true)
     expect(inError).toBe('Error Message from ClusterWorker:async')
   })
 
