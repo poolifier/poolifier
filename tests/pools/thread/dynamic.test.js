@@ -27,7 +27,7 @@ describe('Dynamic thread pool test suite', () => {
       promises.push(pool.execute({ test: 'test' }))
     }
     expect(pool.workers.length).toBe(max)
-    expect(poolBusy).toEqual(max + 1)
+    expect(poolBusy).toBe(max + 1)
     const res = await TestUtils.waitExits(pool, max - min)
     expect(res).toBe(max - min)
   })
@@ -72,6 +72,7 @@ describe('Dynamic thread pool test suite', () => {
       './tests/worker-files/thread/testWorker.js'
     )
     const res = await pool1.execute({ test: 'test' })
+    expect(res).toBeDefined()
     expect(res).toBeFalsy()
     // We need to clean up the resources after our test
     await pool1.destroy()
