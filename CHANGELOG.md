@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.x] - yyyy-dd-mm
+
+### Bug fixes
+
+- Check if pool options are properly set.
+- `busy` event is emitted on all pool types.
+
 ## [2.0.0] - 2021-01-03
 
 ### Bug fixes
@@ -13,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking Changes
 
-- `FullPool` event is now renamed to `busy` and emitted on all pool types.
+- `FullPool` event is now renamed to `busy`.
 - `maxInactiveTime` on `ThreadWorker` default behavior is now changed, if you want to keep the old behavior set `killBehavior` to `KillBehaviors.HARD`.
   _Find more details on our JSDoc._
 
