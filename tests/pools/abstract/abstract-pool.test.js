@@ -104,7 +104,7 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js'
     )
-    expect(pool.opts.enableEvents).toEqual(true)
+    expect(pool.opts.enableEvents).toBe(true)
     expect(pool.emitter).toBeDefined()
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
@@ -118,7 +118,7 @@ describe('Abstract pool test suite', () => {
         enableEvents: false
       }
     )
-    expect(pool.opts.enableEvents).toEqual(false)
+    expect(pool.opts.enableEvents).toBe(false)
     expect(pool.emitter).toBeUndefined()
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.LESS_RECENTLY_USED
@@ -137,7 +137,7 @@ describe('Abstract pool test suite', () => {
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.push(pool.execute({ test: 'test' }))
     }
-    expect(poolBusy).toEqual(numberOfWorkers)
+    expect(poolBusy).toBe(numberOfWorkers)
     pool.destroy()
   })
 })

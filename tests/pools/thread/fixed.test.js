@@ -74,7 +74,7 @@ describe('Fixed thread pool test suite', () => {
     for (let i = 0; i < numberOfThreads * 2; i++) {
       promises.push(pool.execute({ test: 'test' }))
     }
-    expect(poolBusy).toEqual(numberOfThreads)
+    expect(poolBusy).toBe(numberOfThreads)
   })
 
   it('Verify that is possible to have a worker that return undefined', async () => {
@@ -100,7 +100,7 @@ describe('Fixed thread pool test suite', () => {
     expect(inError).toBeDefined()
     expect(inError).toBeInstanceOf(Error)
     expect(inError.message).toBeDefined()
-    expect(typeof inError.message === 'string').toEqual(true)
+    expect(typeof inError.message === 'string').toBe(true)
   })
 
   it('Verify that error handling is working properly:async', async () => {
@@ -114,7 +114,7 @@ describe('Fixed thread pool test suite', () => {
     expect(inError).toBeDefined()
     expect(inError).toBeInstanceOf(Error)
     expect(inError.message).toBeDefined()
-    expect(typeof inError.message === 'string').toEqual(true)
+    expect(typeof inError.message === 'string').toBe(true)
   })
 
   it('Verify that async function is working properly', async () => {

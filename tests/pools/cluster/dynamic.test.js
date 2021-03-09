@@ -28,7 +28,7 @@ describe('Dynamic cluster pool test suite', () => {
     }
     expect(pool.workers.length).toBeLessThanOrEqual(max)
     expect(pool.workers.length).toBeGreaterThan(min)
-    expect(poolBusy).toEqual(max + 1)
+    expect(poolBusy).toBe(max + 1)
     const numberOfExitEvents = await TestUtils.waitExits(pool, max - min)
     expect(numberOfExitEvents).toBe(max - min)
   })
@@ -69,6 +69,7 @@ describe('Dynamic cluster pool test suite', () => {
       './tests/worker-files/cluster/testWorker.js'
     )
     const result = await pool1.execute({ test: 'test' })
+    expect(result).toBeDefined()
     expect(result).toBeFalsy()
     // We need to clean up the resources after our test
     await pool1.destroy()
