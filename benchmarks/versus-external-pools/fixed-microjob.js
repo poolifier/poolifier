@@ -1,5 +1,5 @@
 // IMPORT LIBRARIES
-const { job, start, stop } = require('microjob')
+const { job, start } = require('microjob')
 // FINISH IMPORT LIBRARIES
 // IMPORT FUNCTION TO BENCH
 const functionToBench = require('./functions/function-to-bench')
