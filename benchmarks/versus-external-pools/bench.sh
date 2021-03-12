@@ -25,4 +25,6 @@ hyperfine --export-markdown BENCH-100000.md --min-runs 10 \
   'node static-suchmokuo-node-worker-threads-pool.js' \
   'node threadjs.js' \
   'node dynamic-workerpool.js' \
-  'node fixed-workerpool.js'
+  'node fixed-workerpool.js' \
+  'node fixed-threadwork.js' \
+  'node fixed-microjob.js'
