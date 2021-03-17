@@ -1,9 +1,6 @@
 // IMPORT LIBRARIES
-const { ThreadPool } = require('threadwork')
+const Pool = require('worker-threads-pool')
 // FINISH IMPORT LIBRARIES
-// IMPORT FUNCTION TO BENCH
-const functionToBench = require('./functions/function-to-bench')
-// FINISH IMPORT FUNCTION TO BENCH
 const size = process.env.POOL_SIZE
 const iterations = process.env.NUM_ITERATIONS
 const data = {
@@ -11,12 +8,19 @@ const data = {
   taskType: process.env['TASK_TYPE']
 }
 
-const threadPool = new ThreadPool({ task: functionToBench, size: Number(size) })
+const pool = new Pool({ max: Number(size) })
 
 async function run () {
   const promises = []
   for (let i = 0; i < iterations; i++) {
-    promises.push(threadPool.run(data))
+    promises.push(
+      pool.acquire(
+        './workers/worker-threads-pool/function-to-bench-worker.js',
+        {
+          workerData: data
+        }
+      )
+    )
   }
   await Promise.all(promises)
   process.exit()
