@@ -4,14 +4,14 @@ const { DynamicPool } = require('node-worker-threads-pool')
 // IMPORT FUNCTION TO BENCH
 const functionToBench = require('./functions/function-to-bench')
 // FINISH IMPORT FUNCTION TO BENCH
-const size = process.env.POOL_SIZE
-const iterations = process.env.NUM_ITERATIONS
+const size = Number(process.env.POOL_SIZE)
+const iterations = Number(process.env.NUM_ITERATIONS)
 const data = {
   test: 'MYBENCH',
   taskType: process.env['TASK_TYPE']
 }
 
-const pool = new DynamicPool(Number(size))
+const pool = new DynamicPool(size)
 
 async function run () {
   const promises = []

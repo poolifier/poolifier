@@ -1,9 +1,6 @@
 // IMPORT LIBRARIES
-const { job, start } = require('microjob')
+const Pool = require('worker-threads-pool')
 // FINISH IMPORT LIBRARIES
-// IMPORT FUNCTION TO BENCH
-const functionToBench = require('./functions/function-to-bench')
-// FINISH IMPORT FUNCTION TO BENCH
 const size = Number(process.env.POOL_SIZE)
 const iterations = Number(process.env.NUM_ITERATIONS)
 const data = {
@@ -11,16 +8,17 @@ const data = {
   taskType: process.env['TASK_TYPE']
 }
 
+const pool = new Pool({ max: size })
+
 async function run () {
-  await start({ maxWorkers: size })
   const promises = []
   for (let i = 0; i < iterations; i++) {
     promises.push(
-      job(
-        data => {
-          functionToBench(data)
-        },
-        { data: data, ctx: { functionToBench } }
+      pool.acquire(
+        './workers/worker-threads-pool/function-to-bench-worker.js',
+        {
+          workerData: data
+        }
       )
     )
   }

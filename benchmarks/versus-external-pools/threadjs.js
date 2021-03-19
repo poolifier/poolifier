@@ -1,8 +1,8 @@
 // IMPORT LIBRARIES
 const { spawn, Thread, Worker } = require('threads')
 // FINISH IMPORT LIBRARIES
-const size = process.env.POOL_SIZE
-const iterations = process.env.NUM_ITERATIONS
+const size = Number(process.env.POOL_SIZE)
+const iterations = Number(process.env.NUM_ITERATIONS)
 const data = {
   test: 'MYBENCH',
   taskType: process.env['TASK_TYPE']
