@@ -2,6 +2,7 @@ import { AsyncResource } from 'async_hooks'
 import type { Worker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
 import type { MessageValue } from '../utility-types'
+import { EMPTY_FUNCTION } from '../utils'
 import type { KillBehavior, WorkerOptions } from './worker-options'
 import { KillBehaviors } from './worker-options'
 
@@ -186,6 +187,6 @@ export abstract class AbstractWorker<
       .finally(() => {
         this.lastTask = Date.now()
       })
-      .catch(() => {})
+      .catch(EMPTY_FUNCTION)
   }
 }

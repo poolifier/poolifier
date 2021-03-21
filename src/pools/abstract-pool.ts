@@ -2,6 +2,7 @@ import type {
   MessageValue,
   PromiseWorkerResponseWrapper
 } from '../utility-types'
+import { EMPTY_FUNCTION } from '../utils'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { IPoolInternal } from './pool-internal'
 import { PoolEmitter, PoolType } from './pool-internal'
@@ -10,13 +11,6 @@ import {
   WorkerChoiceStrategies,
   WorkerChoiceStrategyContext
 } from './selection-strategies'
-
-/**
- * An intentional empty function.
- */
-const EMPTY_FUNCTION: () => void = () => {
-  /* Intentionally empty */
-}
 
 /**
  * Callback invoked if the worker raised an error.
