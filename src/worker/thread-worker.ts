@@ -33,6 +33,7 @@ export class ThreadWorker<
     super('worker-thread-pool:pioardi', isMainThread, fn, parentPort, opts)
   }
 
+  /** @inheritdoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
     this.getMainWorker().postMessage(message)
   }

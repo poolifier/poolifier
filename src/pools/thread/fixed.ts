@@ -41,6 +41,7 @@ export class FixedThreadPool<
     super(numberOfThreads, filePath, opts)
   }
 
+  /** @inheritdoc */
   protected isMain (): boolean {
     return isMainThread
   }
@@ -53,6 +54,7 @@ export class FixedThreadPool<
     await worker.terminate()
   }
 
+  /** @inheritdoc */
   protected sendToWorker (
     worker: ThreadWorkerWithMessageChannel,
     message: MessageValue<Data>
@@ -68,12 +70,14 @@ export class FixedThreadPool<
     messageChannel.port2?.on('message', listener)
   }
 
+  /** @inheritdoc */
   protected createWorker (): ThreadWorkerWithMessageChannel {
     return new Worker(this.filePath, {
       env: SHARE_ENV
     })
   }
 
+  /** @inheritdoc */
   protected afterWorkerSetup (worker: ThreadWorkerWithMessageChannel): void {
     const { port1, port2 } = new MessageChannel()
     worker.postMessage({ parent: port1 }, [port1])

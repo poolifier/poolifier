@@ -33,10 +33,12 @@ export class ClusterWorker<
     super('worker-cluster-pool:pioardi', isMaster, fn, worker, opts)
   }
 
+  /** @inheritdoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
     this.getMainWorker().send(message)
   }
 
+  /** @inheritdoc */
   protected handleError (e: Error | string): string {
     return e instanceof Error ? e.message : e
   }
