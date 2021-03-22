@@ -2,6 +2,7 @@ import { AsyncResource } from 'async_hooks'
 import type { Worker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
 import type { MessageValue } from '../utility-types'
+import { EMPTY_FUNCTION } from '../utils'
 import type { KillBehavior, WorkerOptions } from './worker-options'
 import { KillBehaviors } from './worker-options'
 
@@ -156,10 +157,10 @@ export abstract class AbstractWorker<
     try {
       const res = fn(value.data)
       this.sendToMainWorker({ data: res, id: value.id })
-      this.lastTask = Date.now()
     } catch (e) {
       const err = this.handleError(e)
       this.sendToMainWorker({ error: err, id: value.id })
+    } finally {
       this.lastTask = Date.now()
     }
   }
@@ -177,13 +178,15 @@ export abstract class AbstractWorker<
     fn(value.data)
       .then(res => {
         this.sendToMainWorker({ data: res, id: value.id })
-        this.lastTask = Date.now()
         return null
       })
       .catch(e => {
         const err = this.handleError(e)
         this.sendToMainWorker({ error: err, id: value.id })
+      })
+      .finally(() => {
         this.lastTask = Date.now()
       })
+      .catch(EMPTY_FUNCTION)
   }
 }
