@@ -2,7 +2,7 @@
 const { ClusterWorker } = require('../../../lib/index')
 
 function yourFunction (data) {
-  for (let i = 0; i <= 1000; i++) {
+  for (let i = 0; i < 1000; i++) {
     const o = {
       a: i
     }

@@ -49,12 +49,14 @@ export class FixedClusterPool<
     super(numberOfWorkers, filePath, opts)
   }
 
+  /** @inheritdoc */
   protected setupHook (): void {
     setupMaster({
       exec: this.filePath
     })
   }
 
+  /** @inheritdoc */
   protected isMain (): boolean {
     return isMaster
   }
@@ -65,6 +67,7 @@ export class FixedClusterPool<
     worker.kill()
   }
 
+  /** @inheritdoc */
   protected sendToWorker (worker: Worker, message: MessageValue<Data>): void {
     worker.send(message)
   }
@@ -77,10 +80,12 @@ export class FixedClusterPool<
     worker.on('message', listener)
   }
 
+  /** @inheritdoc */
   protected createWorker (): Worker {
     return fork(this.opts.env)
   }
 
+  /** @inheritdoc */
   protected afterWorkerSetup (worker: Worker): void {
     // Listen worker messages.
     this.registerWorkerMessageListener(worker, super.workerListener())

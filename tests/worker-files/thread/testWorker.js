@@ -3,7 +3,7 @@ const { ThreadWorker, KillBehaviors } = require('../../../lib/index')
 const { isMainThread } = require('worker_threads')
 
 function test (data) {
-  for (let i = 0; i <= 50; i++) {
+  for (let i = 0; i < 50; i++) {
     const o = {
       a: i
     }

@@ -3,7 +3,7 @@ const { ClusterWorker, KillBehaviors } = require('../../../lib/index')
 const { isMaster } = require('cluster')
 
 function test (data) {
-  for (let i = 0; i <= 50; i++) {
+  for (let i = 0; i < 50; i++) {
     const o = {
       a: i
     }
