@@ -1,4 +1,7 @@
-module.exports = {
+// @ts-check
+const { defineConfig } = require('eslint-define-config')
+
+module.exports = defineConfig({
   env: {
     es2021: true,
     node: true,
@@ -136,4 +139,4 @@ module.exports = {
       mode: 'typescript'
     }
   }
-}
+})

@@ -63,12 +63,13 @@
     "lib"
   ],
   "devDependencies": {
-    "@types/node": "^14.14.35",
+    "@types/node": "^14.14.36",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",
     "benchmark": "^2.1.4",
     "eslint": "^7.22.0",
     "eslint-config-standard": "^16.0.2",
+    "eslint-define-config": "^1.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsdoc": "^32.3.0",
     "eslint-plugin-node": "^11.1.0",
@@ -91,7 +92,7 @@
     "rollup-plugin-typescript2": "^0.30.0",
     "sonar-scanner": "^3.1.0",
     "source-map-support": "^0.5.19",
-    "typedoc": "^0.20.33",
+    "typedoc": "^0.20.34",
     "typescript": "^4.2.3"
   },
   "engines": {
