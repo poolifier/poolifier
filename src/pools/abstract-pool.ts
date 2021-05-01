@@ -173,14 +173,14 @@ export abstract class AbstractPool<
       this,
       () => {
         const workerCreated = this.createAndSetupWorker()
-        this.registerWorkerMessageListener(workerCreated, message => {
+        this.registerWorkerMessageListener(workerCreated, async message => {
           const tasksInProgress = this.tasks.get(workerCreated)
           if (
             isKillBehavior(KillBehaviors.HARD, message.kill) ||
             tasksInProgress === 0
           ) {
             // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-            void this.destroyWorker(workerCreated)
+            await this.destroyWorker(workerCreated)
           }
         })
         return workerCreated

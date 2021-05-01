@@ -74,6 +74,8 @@ describe('Fixed thread pool test suite', () => {
     for (let i = 0; i < numberOfThreads * 2; i++) {
       promises.push(pool.execute({ test: 'test' }))
     }
+    // The `busy` event is triggered when the number of submitted tasks at once reach the number of fixed pool workers.
+    // So in total numberOfThreads + 1 times for a loop submitting up to numberOfThreads * 2 tasks to the fixed pool.
     expect(poolBusy).toBe(numberOfThreads + 1)
   })
 

@@ -27,6 +27,8 @@ describe('Dynamic thread pool test suite', () => {
       promises.push(pool.execute({ test: 'test' }))
     }
     expect(pool.workers.length).toBe(max)
+    // The `busy` event is triggered when the number of submitted tasks at once reach the max number of worker in the dynamic pool.
+    // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the dynamic pool.
     expect(poolBusy).toBe(max + 1)
     const res = await TestUtils.waitExits(pool, max - min)
     expect(res).toBe(max - min)
