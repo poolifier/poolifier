@@ -74,7 +74,7 @@ describe('Fixed thread pool test suite', () => {
     for (let i = 0; i < numberOfThreads * 2; i++) {
       promises.push(pool.execute({ test: 'test' }))
     }
-    expect(poolBusy).toBe(numberOfThreads)
+    expect(poolBusy).toBe(numberOfThreads + 1)
   })
 
   it('Verify that is possible to have a worker that return undefined', async () => {

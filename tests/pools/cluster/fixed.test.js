@@ -74,7 +74,7 @@ describe('Fixed cluster pool test suite', () => {
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.push(pool.execute({ test: 'test' }))
     }
-    expect(poolBusy).toBe(numberOfWorkers)
+    expect(poolBusy).toBe(numberOfWorkers + 1)
   })
 
   it('Verify that is possible to have a worker that return undefined', async () => {

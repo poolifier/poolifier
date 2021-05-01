@@ -137,7 +137,7 @@ describe('Abstract pool test suite', () => {
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.push(pool.execute({ test: 'test' }))
     }
-    expect(poolBusy).toBe(numberOfWorkers)
+    expect(poolBusy).toBe(numberOfWorkers + 1)
     pool.destroy()
   })
 })
