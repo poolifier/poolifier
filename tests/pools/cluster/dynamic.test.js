@@ -28,6 +28,8 @@ describe('Dynamic cluster pool test suite', () => {
     }
     expect(pool.workers.length).toBeLessThanOrEqual(max)
     expect(pool.workers.length).toBeGreaterThan(min)
+    // The `busy` event is triggered when the number of submitted tasks at once reach the max number of workers in the dynamic pool.
+    // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the dynamic pool.
     expect(poolBusy).toBe(max + 1)
     const numberOfExitEvents = await TestUtils.waitExits(pool, max - min)
     expect(numberOfExitEvents).toBe(max - min)
