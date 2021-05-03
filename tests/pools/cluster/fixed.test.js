@@ -74,7 +74,9 @@ describe('Fixed cluster pool test suite', () => {
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.push(pool.execute({ test: 'test' }))
     }
-    expect(poolBusy).toBe(numberOfWorkers)
+    // The `busy` event is triggered when the number of submitted tasks at once reach the number of fixed pool workers.
+    // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the fixed pool.
+    expect(poolBusy).toBe(numberOfWorkers + 1)
   })
 
   it('Verify that is possible to have a worker that return undefined', async () => {

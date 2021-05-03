@@ -173,14 +173,14 @@ export abstract class AbstractPool<
       this,
       () => {
         const workerCreated = this.createAndSetupWorker()
-        this.registerWorkerMessageListener(workerCreated, message => {
+        this.registerWorkerMessageListener(workerCreated, async message => {
           const tasksInProgress = this.tasks.get(workerCreated)
           if (
             isKillBehavior(KillBehaviors.HARD, message.kill) ||
             tasksInProgress === 0
           ) {
             // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-            void this.destroyWorker(workerCreated)
+            await this.destroyWorker(workerCreated)
           }
         })
         return workerCreated
@@ -262,10 +262,9 @@ export abstract class AbstractPool<
   public execute (data: Data): Promise<Response> {
     // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
-    this.increaseWorkersTask(worker)
-    this.checkAndEmitBusy()
     const messageId = ++this.nextMessageId
     const res = this.internalExecute(worker, messageId)
+    this.checkAndEmitBusy()
     this.sendToWorker(worker, { data: data || ({} as Data), id: messageId })
     return res
   }
@@ -376,6 +375,7 @@ export abstract class AbstractPool<
     worker: Worker,
     messageId: number
   ): Promise<Response> {
+    this.increaseWorkersTask(worker)
     return new Promise<Response>((resolve, reject) => {
       this.promiseMap.set(messageId, { resolve, reject, worker })
     })
