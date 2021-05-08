@@ -162,6 +162,7 @@ You can use node versions 12.x, 13.x, 14.x, 16.x
 - `workerChoiceStrategy` (optional) - The work choice strategy to use in this pool:
   - `WorkerChoiceStrategies.ROUND_ROBIN`: Submit tasks to worker in this pool in a round robbin fashion
   - `WorkerChoiceStrategies.LESS_RECENTLY_USED`: Submit tasks to the less recently used worker in the pool
+  Default: `WorkerChoiceStrategies.ROUND_ROBIN`
 - `enableEvents` (optional) - Events emission enablement in this pool. Default: true
 
 ### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
