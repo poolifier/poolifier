@@ -146,19 +146,23 @@ Remember that workers can only send and receive serializable data.
 
 ## Node versions
 
-You can use node versions 12.x, 13.x, 14.x
+You can use node versions 12.x, 13.x, 14.x, 16.x
 
 ## API
 
 ### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
 
-`numberOfThreads/numberOfWorkers` (mandatory) Num of workers for this worker pool  
+`numberOfThreads/numberOfWorkers` (mandatory) Number of workers for this pool  
 `filePath` (mandatory) Path to a file with a worker implementation  
-`opts` (optional) An object with these properties :
+`opts` (optional) An object with these properties:
 
-- `errorHandler` - A function that will listen for error event on each worker
-- `onlineHandler` - A function that will listen for online event on each worker
-- `exitHandler` - A function that will listen for exit event on each worker
+- `errorHandler` (optional) - A function that will listen for error event on each worker
+- `onlineHandler` (optional) - A function that will listen for online event on each worker
+- `exitHandler` (optional) - A function that will listen for exit event on each worker
+- `workerChoiceStrategy` (optional) - The work choice strategy to use in this pool:
+  - `WorkerChoiceStrategies.ROUND_ROBIN`: Submit tasks to worker in this pool in a round robbin fashion
+  - `WorkerChoiceStrategies.LESS_RECENTLY_USED`: Submit tasks to the less recently used worker in the pool
+- `enableEvents` (optional) - Events emission enablement in this pool. Default: true
 
 ### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
 
@@ -169,7 +173,7 @@ You can use node versions 12.x, 13.x, 14.x
 
 ### `pool.execute(data)`
 
-Execute method is available on both pool implementations (return type : Promise):  
+Execute method is available on both pool implementations (return type: Promise):  
 `data` (mandatory) An object that you want to pass to your worker implementation
 
 ### `pool.destroy()`
@@ -190,10 +194,10 @@ This method will call the terminate method on each worker.
 
 - `async` - true/false, true if your function contains async pieces else false
 - `killBehavior` - Dictates if your async unit (worker/process) will be deleted in case that a task is active on it.  
-  **SOFT**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker **won't** be deleted.  
-  **HARD**: If `lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker will be deleted.  
+  **KillBehaviors.SOFT**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker **won't** be deleted.  
+  **KillBehaviors.HARD**: If `lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker will be deleted.  
   This option only apply to the newly created workers.  
-  Default: `SOFT`
+  Default: `KillBehaviors.SOFT`
 
 ## General guidance
 
