@@ -23,7 +23,7 @@ External pools with which we compared the poolifier results:
 
 Those are our results:
 
-- CPU Intensive task with 100k operations submitted to each pool [BENCH-100000.md](./versus-external-pools/BENCH-100000.md).  
+- CPU Intensive task with 100k operations submitted to each pool [BENCH-100000.md](./versus-external-pools/BENCH-100000.md).
 
 > :warning: **We would need funds to run our benchmarks more often and on Cloud VMs, please consider to sponsor this project**
 
