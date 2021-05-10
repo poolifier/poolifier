@@ -13,6 +13,6 @@ hyperfine --export-markdown BENCH-100000.md --min-runs 10 \
   'node fixed-workerpool.js' \
   'node fixed-threadwork.js' \
   'node fixed-microjob.js' \
-  'node fixed-worker-threads-pool.js'
+  # 'node fixed-worker-threads-pool.js'
 
 

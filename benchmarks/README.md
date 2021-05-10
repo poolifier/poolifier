@@ -19,7 +19,7 @@ External pools with which we compared the poolifier results:
 - [workerpool](https://github.com/josdejong/workerpool)
 - [threadwork](https://github.com/kevlened/threadwork)
 - [microjob](https://github.com/wilk/microjob)
-- [worker-threads-pool](https://github.com/watson/worker-threads-pool)
+<!-- - [worker-threads-pool](https://github.com/watson/worker-threads-pool) -->
 
 Those are our results:
 
