@@ -35,9 +35,4 @@ To run the internal benchmark you just need to navigate to the root of poolifier
 
 ## Versus other pools
 
-To run the benchmark versus other pools you will need to:
-
-- [Install hyperfine](https://github.com/sharkdp/hyperfine#installation)
-- Run the `./bench.sh` into the `versus-external-pools` folder
-
-> :warning: **Please be sure to use a quite PC when you run the benchmarks**
+Read [README.md](./versus-external-pools/README.md)
