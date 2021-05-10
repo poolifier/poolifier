@@ -3,6 +3,7 @@ import analyze from 'rollup-plugin-analyzer'
 import { terser } from 'rollup-plugin-terser'
 import del from 'rollup-plugin-delete'
 import command from 'rollup-plugin-command'
+import istanbul from 'rollup-plugin-istanbul'
 
 const isDevelopmentBuild = process.env.BUILD === 'development'
 const isAnalyze = process.env.ANALYZE
@@ -25,6 +26,7 @@ export default {
         ? 'tsconfig.development.json'
         : 'tsconfig.json'
     }),
+    isDevelopmentBuild && istanbul(),
     del({
       targets: ['lib/*']
     }),
