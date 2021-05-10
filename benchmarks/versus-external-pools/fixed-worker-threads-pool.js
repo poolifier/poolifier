@@ -10,17 +10,25 @@ const data = {
 
 const pool = new Pool({ max: size })
 
+async function poolAcquireAsync () {
+  return new Promise((resolve, reject) => {
+    pool.acquire(
+      './workers/worker-threads-pool/function-to-bench-worker.js',
+      {
+        workerData: data
+      },
+      err => {
+        if (err) reject(err)
+        resolve()
+      }
+    )
+  })
+}
+
 async function run () {
   const promises = []
   for (let i = 0; i < iterations; i++) {
-    promises.push(
-      pool.acquire(
-        './workers/worker-threads-pool/function-to-bench-worker.js',
-        {
-          workerData: data
-        }
-      )
-    )
+    promises.push(poolAcquireAsync())
   }
   await Promise.all(promises)
   process.exit()
