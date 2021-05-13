@@ -56,6 +56,7 @@ module.exports = defineConfig({
         skipWords: [
           'christopher',
           'comparator',
+          'cpu',
           'ecma',
           'enum',
           'inheritdoc',
@@ -63,6 +64,7 @@ module.exports = defineConfig({
           'pioardi',
           'poolifier',
           'readonly',
+          'resize',
           'serializable',
           'unregister',
           'workerpool'

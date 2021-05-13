@@ -45,8 +45,9 @@ export class CircularArray<T> extends Array<T> {
   }
 
   /**
+   * Resize.
    *
-   * @param size
+   * @param size Size.
    */
   public resize (size: number): void {
     if (size < 0) {
@@ -63,16 +64,18 @@ export class CircularArray<T> extends Array<T> {
   }
 
   /**
+   * Returns `true` if it's currently empty.
    *
-   * @returns
+   * @returns `true` if empty, otherwise `false`.
    */
   public empty (): boolean {
     return this.length === 0
   }
 
   /**
+   * Returns `true` if it's currently full.
    *
-   * @returns
+   * @returns `true` if full, otherwise `false`.
    */
   public full (): boolean {
     return this.length === this.size
