@@ -14,7 +14,7 @@ class SpyWorker extends ThreadWorker {
 describe('Thread worker test suite', () => {
   it('Verify worker has default maxInactiveTime', () => {
     const worker = new ThreadWorker(() => {})
-    expect(worker.maxInactiveTime).toEqual(60_000)
+    expect(worker.opts.maxInactiveTime).toEqual(60_000)
   })
 
   it('Verify worker invoke the getMainWorker and postMessage methods', () => {

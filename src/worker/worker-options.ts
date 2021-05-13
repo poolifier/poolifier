@@ -66,4 +66,8 @@ export interface WorkerOptions {
    * @default KillBehaviors.SOFT
    */
   killBehavior?: KillBehavior
+  /**
+   *
+   */
+  usage?: boolean
 }

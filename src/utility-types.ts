@@ -62,3 +62,17 @@ export interface PromiseWorkerResponseWrapper<
    */
   readonly worker: Worker
 }
+
+/**
+ * Worker usage.
+ */
+export interface WorkerUsage {
+  taskId: number
+  timestamp: number
+  /**
+   * Task run time in milliseconds.
+   */
+  taskRunTime: number
+  cpu: NodeJS.CpuUsage
+  memory: NodeJS.MemoryUsage
+}

@@ -1,8 +1,9 @@
 import { AsyncResource } from 'async_hooks'
 import type { Worker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
-import type { MessageValue } from '../utility-types'
+import type { MessageValue, WorkerUsage } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
+import { CircularArray } from './circular-array'
 import type { KillBehavior, WorkerOptions } from './worker-options'
 import { KillBehaviors } from './worker-options'
 
@@ -22,26 +23,21 @@ export abstract class AbstractWorker<
   Response = unknown
 > extends AsyncResource {
   /**
-   * The maximum time to keep this worker alive while idle. The pool automatically checks and terminates this worker when the time expires.
+   * Id of the last task processed by this worker.
    */
-  protected readonly maxInactiveTime: number
-  /**
-   * The kill behavior set as option on the Worker constructor or a default value.
-   */
-  protected readonly killBehavior: KillBehavior
-  /**
-   * Whether the worker is working asynchronously or not.
-   */
-  protected readonly async: boolean
+  protected lastTaskId: number
   /**
    * Timestamp of the last task processed by this worker.
    */
-  protected lastTask: number
+  protected lastTaskTimestamp: number
   /**
-   * Handler ID of the `interval` alive check.
+   * Handler ID of the `aliveInterval` alive check.
    */
-  protected readonly interval?: NodeJS.Timeout
-
+  protected readonly aliveInterval?: NodeJS.Timeout
+  /**
+   *
+   */
+  protected usageHistory?: CircularArray<WorkerUsage>
   /**
    * Constructs a new poolifier worker.
    *
@@ -57,30 +53,39 @@ export abstract class AbstractWorker<
     fn: (data: Data) => Response,
     protected mainWorker?: MainWorker | null,
     public readonly opts: WorkerOptions = {
+      /**
+       * The kill behavior option on this Worker or its default value.
+       */
       killBehavior: DEFAULT_KILL_BEHAVIOR,
+      /**
+       * The maximum time to keep this worker alive while idle.
+       * The pool automatically checks and terminates this worker when the time expires.
+       */
       maxInactiveTime: DEFAULT_MAX_INACTIVE_TIME
     }
   ) {
     super(type)
-    this.killBehavior = this.opts.killBehavior ?? DEFAULT_KILL_BEHAVIOR
-    this.maxInactiveTime =
-      this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME
-    this.async = !!this.opts.async
-    this.lastTask = Date.now()
+    this.checkWorkerOptions(this.opts)
+    this.lastTaskId = 0
+    this.lastTaskTimestamp = Date.now()
+    if (this.opts.usage) {
+      this.usageHistory = new CircularArray<WorkerUsage>()
+    }
     this.checkFunctionInput(fn)
     // Keep the worker active
     if (!isMain) {
-      this.interval = setInterval(
+      this.aliveInterval = setInterval(
         this.checkAlive.bind(this),
-        this.maxInactiveTime / 2
+        this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME / 2
       )
       this.checkAlive.bind(this)()
     }
 
     this.mainWorker?.on('message', (value: MessageValue<Data, MainWorker>) => {
       if (value?.data && value.id) {
+        this.lastTaskId++
         // Here you will receive messages
-        if (this.async) {
+        if (this.opts.async) {
           this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
         } else {
           this.runInAsyncScope(this.run.bind(this), this, fn, value)
@@ -91,10 +96,18 @@ export abstract class AbstractWorker<
         this.mainWorker = value.parent
       } else if (value.kill) {
         // Here is time to kill this worker, just clearing the interval
-        if (this.interval) clearInterval(this.interval)
+        if (this.aliveInterval) clearInterval(this.aliveInterval)
         this.emitDestroy()
       }
     })
+  }
+
+  private checkWorkerOptions (opts: WorkerOptions) {
+    this.opts.killBehavior = opts.killBehavior ?? DEFAULT_KILL_BEHAVIOR
+    this.opts.maxInactiveTime =
+      opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME
+    this.opts.async = !!opts.async
+    this.opts.usage = !!opts.usage
   }
 
   /**
@@ -129,8 +142,11 @@ export abstract class AbstractWorker<
    * Check to see if the worker should be terminated, because its living too long.
    */
   protected checkAlive (): void {
-    if (Date.now() - this.lastTask > this.maxInactiveTime) {
-      this.sendToMainWorker({ kill: this.killBehavior })
+    if (
+      Date.now() - this.lastTaskTimestamp >
+      (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME)
+    ) {
+      this.sendToMainWorker({ kill: this.opts.killBehavior })
     }
   }
 
@@ -155,13 +171,15 @@ export abstract class AbstractWorker<
     value: MessageValue<Data>
   ): void {
     try {
+      const startTaskTimestamp = this.beforeRunHook()
       const res = fn(value.data)
+      this.afterRunHook(startTaskTimestamp ?? 0)
       this.sendToMainWorker({ data: res, id: value.id })
     } catch (e) {
       const err = this.handleError(e)
       this.sendToMainWorker({ error: err, id: value.id })
     } finally {
-      this.lastTask = Date.now()
+      this.lastTaskTimestamp = Date.now()
     }
   }
 
@@ -175,8 +193,10 @@ export abstract class AbstractWorker<
     fn: (data?: Data) => Promise<Response>,
     value: MessageValue<Data>
   ): void {
+    const startTaskTimestamp = this.beforeRunHook()
     fn(value.data)
       .then(res => {
+        this.afterRunHook(startTaskTimestamp ?? 0)
         this.sendToMainWorker({ data: res, id: value.id })
         return null
       })
@@ -185,8 +205,32 @@ export abstract class AbstractWorker<
         this.sendToMainWorker({ error: err, id: value.id })
       })
       .finally(() => {
-        this.lastTask = Date.now()
+        this.lastTaskTimestamp = Date.now()
       })
       .catch(EMPTY_FUNCTION)
+  }
+
+  private beforeRunHook (): number | undefined {
+    if (this.opts.usage) {
+      this.addUsage()
+      return Date.now()
+    }
+  }
+
+  private afterRunHook (startTaskTimestamp: number) {
+    if (this.opts.usage) {
+      const taskRunTime = Date.now() - startTaskTimestamp
+      this.addUsage(taskRunTime)
+    }
+  }
+
+  private addUsage (taskRunTime = 0) {
+    this.usageHistory?.push({
+      taskId: this.lastTaskId,
+      timestamp: Date.now(),
+      taskRunTime: taskRunTime,
+      cpu: process.cpuUsage(),
+      memory: process.memoryUsage()
+    })
   }
 }
