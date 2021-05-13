@@ -8,10 +8,7 @@ export class CircularArray<T> extends Array<T> {
   /** @inheritdoc */
   constructor (size?: number) {
     super()
-    this.size =
-      size && size <= DEFAULT_CIRCULAR_ARRAY_SIZE
-        ? size
-        : DEFAULT_CIRCULAR_ARRAY_SIZE
+    this.size = size ?? DEFAULT_CIRCULAR_ARRAY_SIZE
   }
 
   /** @inheritdoc */
