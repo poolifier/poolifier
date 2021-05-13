@@ -2,19 +2,19 @@
 export class CircularArray<T> extends Array<T> {
   /** @inheritdoc */
   public size: number
-  private readonly maximumCircularArraySize = 2000
+  private readonly defaultMaximumCircularArraySize = 2000
 
   /** @inheritdoc */
   constructor (size?: number) {
     super()
     this.size =
-      size && size <= this.maximumCircularArraySize
+      size && size <= this.defaultMaximumCircularArraySize
         ? size
-        : this.maximumCircularArraySize
+        : this.defaultMaximumCircularArraySize
   }
 
   /** @inheritdoc */
-  push (...items: T[]): number {
+  public push (...items: T[]): number {
     if (this.length + items.length > this.size) {
       super.splice(0, this.length + items.length - this.size)
     }
@@ -22,7 +22,7 @@ export class CircularArray<T> extends Array<T> {
   }
 
   /** @inheritdoc */
-  unshift (...items: T[]): number {
+  public unshift (...items: T[]): number {
     if (this.length + items.length > this.size) {
       super.splice(
         this.size - items.length,
@@ -33,7 +33,7 @@ export class CircularArray<T> extends Array<T> {
   }
 
   /** @inheritdoc */
-  concat (...items: (T | ConcatArray<T>)[]): T[] {
+  public concat (...items: (T | ConcatArray<T>)[]): T[] {
     if (this.length + items.length > this.size) {
       super.splice(0, this.length + items.length - this.size)
     }
@@ -41,7 +41,7 @@ export class CircularArray<T> extends Array<T> {
   }
 
   /** @inheritdoc */
-  splice (start: number, deleteCount?: number, ...items: T[]): T[] {
+  public splice (start: number, deleteCount?: number, ...items: T[]): T[] {
     this.push(...items)
     return super.splice(start, deleteCount)
   }
@@ -50,7 +50,7 @@ export class CircularArray<T> extends Array<T> {
    *
    * @param size
    */
-  resize (size: number): void {
+  public resize (size: number): void {
     if (size < 0) {
       throw new RangeError(
         'circular array size does not allow negative values.'
@@ -68,7 +68,7 @@ export class CircularArray<T> extends Array<T> {
    *
    * @returns
    */
-  empty (): boolean {
+  public empty (): boolean {
     return this.length === 0
   }
 
@@ -76,7 +76,7 @@ export class CircularArray<T> extends Array<T> {
    *
    * @returns
    */
-  full (): boolean {
+  public full (): boolean {
     return this.length === this.size
   }
 }
