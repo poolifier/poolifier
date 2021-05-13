@@ -1,16 +1,17 @@
+const DEFAULT_CIRCULAR_ARRAY_SIZE = 2000
+
 /** @inheritdoc */
 export class CircularArray<T> extends Array<T> {
   /** @inheritdoc */
   public size: number
-  private readonly defaultMaximumCircularArraySize = 2000
 
   /** @inheritdoc */
   constructor (size?: number) {
     super()
     this.size =
-      size && size <= this.defaultMaximumCircularArraySize
+      size && size <= DEFAULT_CIRCULAR_ARRAY_SIZE
         ? size
-        : this.defaultMaximumCircularArraySize
+        : DEFAULT_CIRCULAR_ARRAY_SIZE
   }
 
   /** @inheritdoc */
