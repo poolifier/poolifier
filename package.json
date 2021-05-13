@@ -63,7 +63,7 @@
     "lib"
   ],
   "devDependencies": {
-    "@types/node": "^14.14.44",
+    "@types/node": "^15.0.3",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
     "benchmark": "^2.1.4",
