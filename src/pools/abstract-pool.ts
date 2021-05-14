@@ -1,10 +1,12 @@
 import type {
   MessageValue,
-  PromiseWorkerResponseWrapper
+  PromiseWorkerResponseWrapper,
+  WorkerUsage
 } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
+import { CircularArray } from '../worker/circular-array'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
-import type { IPoolInternal } from './pool-internal'
+import type { IPoolInternal, WorkerUsageHistory } from './pool-internal'
 import { PoolEmitter, PoolType } from './pool-internal'
 import type { WorkerChoiceStrategy } from './selection-strategies'
 import {
@@ -31,6 +33,11 @@ export type ExitHandler<Worker> = (this: Worker, code: number) => void
  * Basic interface that describes the minimum required implementation of listener events for a pool-worker.
  */
 export interface IWorker {
+  /**
+   * Worker identifiers list.
+   */
+  id?: number
+  threadId?: number
   /**
    * Register a listener to the error event.
    *
@@ -59,6 +66,10 @@ export interface IWorker {
    * @param handler The exit handler.
    */
   once(event: 'exit', handler: ExitHandler<this>): void
+  /**
+   * Worker usage circular history.
+   */
+  usageHistory?: CircularArray<WorkerUsage>
 }
 
 /**
@@ -435,6 +446,32 @@ export abstract class AbstractPool<
         }
       }
     }
+  }
+
+  /**
+   *
+   * @param worker
+   * @returns
+   */
+  protected getWorkerUsageHistory (
+    worker: Worker
+  ): CircularArray<WorkerUsage> | undefined {
+    return worker.usageHistory
+  }
+
+  /**
+   *
+   * @returns
+   */
+  protected getPoolWorkersUsageHistory (): WorkerUsageHistory[] {
+    const poolWorkersUsageHistory: WorkerUsageHistory[] = []
+    for (const worker of this.workers) {
+      poolWorkersUsageHistory.push({
+        workerId: worker.id ? worker.id : worker.threadId,
+        usageHistory: this.getWorkerUsageHistory(worker)
+      })
+    }
+    return poolWorkersUsageHistory
   }
 
   private checkAndEmitBusy (): void {

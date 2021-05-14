@@ -35,9 +35,9 @@ export abstract class AbstractWorker<
    */
   protected readonly aliveInterval?: NodeJS.Timeout
   /**
-   *
+   * Worker usage circular history.
    */
-  protected usageHistory?: CircularArray<WorkerUsage>
+  public usageHistory?: CircularArray<WorkerUsage>
   /**
    * Constructs a new poolifier worker.
    *
@@ -118,6 +118,11 @@ export abstract class AbstractWorker<
   private checkFunctionInput (fn: (data: Data) => Response): void {
     if (!fn) throw new Error('fn parameter is mandatory')
   }
+
+  /**
+   * Worker identifier.
+   */
+  protected abstract get id (): number
 
   /**
    * Returns the main worker.
@@ -217,14 +222,14 @@ export abstract class AbstractWorker<
     }
   }
 
-  private afterRunHook (startTaskTimestamp: number) {
+  private afterRunHook (startTaskTimestamp: number): void {
     if (this.opts.usage) {
       const taskRunTime = Date.now() - startTaskTimestamp
       this.addUsage(taskRunTime)
     }
   }
 
-  private addUsage (taskRunTime = 0) {
+  private addUsage (taskRunTime = 0): void {
     this.usageHistory?.push({
       taskId: this.lastTaskId,
       timestamp: Date.now(),

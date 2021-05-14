@@ -1,5 +1,5 @@
 import type { MessagePort } from 'worker_threads'
-import { isMainThread, parentPort } from 'worker_threads'
+import { isMainThread, parentPort, threadId } from 'worker_threads'
 import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
@@ -23,6 +23,11 @@ export class ThreadWorker<
   Data = unknown,
   Response = unknown
 > extends AbstractWorker<MessagePort, Data, Response> {
+  /** @inheritdoc */
+  public get id (): number {
+    return threadId
+  }
+
   /**
    * Constructs a new poolifier thread worker.
    *

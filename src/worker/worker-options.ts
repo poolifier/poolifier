@@ -67,7 +67,9 @@ export interface WorkerOptions {
    */
   killBehavior?: KillBehavior
   /**
+   * Enable worker usage historic.
    *
+   * @default false
    */
   usage?: boolean
 }
