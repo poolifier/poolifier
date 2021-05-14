@@ -6,45 +6,61 @@ export class CircularArray<T> extends Array<T> {
   public size: number
 
   /** @inheritdoc */
-  constructor (size?: number) {
+  constructor (size: number = DEFAULT_CIRCULAR_ARRAY_SIZE, ...items: T[]) {
     super()
-    if (size) {
-      this.checkSize(size)
+    this.checkSize(size)
+    this.size = size
+    if (arguments.length > 1) {
+      this.push(...items)
     }
-    this.size = size ?? DEFAULT_CIRCULAR_ARRAY_SIZE
   }
 
   /** @inheritdoc */
   public push (...items: T[]): number {
-    if (this.length + items.length > this.size) {
-      super.splice(0, this.length + items.length - this.size)
+    const length = super.push(...items)
+    if (length > this.size) {
+      super.splice(0, length - this.size)
     }
-    return super.push(...items)
+    return this.length
   }
 
   /** @inheritdoc */
   public unshift (...items: T[]): number {
-    if (this.length + items.length > this.size) {
-      super.splice(
-        this.size - items.length,
-        this.length + items.length - this.size
-      )
+    const length = super.unshift(...items)
+    if (length > this.size) {
+      super.splice(this.size, items.length)
     }
-    return super.unshift(...items)
+    return length
   }
 
   /** @inheritdoc */
-  public concat (...items: (T | ConcatArray<T>)[]): T[] {
-    if (this.length + items.length > this.size) {
-      super.splice(0, this.length + items.length - this.size)
+  public concat (...items: (T | ConcatArray<T>)[]): CircularArray<T> {
+    const concatenatedCircularArray = super.concat(
+      items as T[]
+    ) as CircularArray<T>
+    concatenatedCircularArray.size = this.size
+    if (concatenatedCircularArray.length > concatenatedCircularArray.size) {
+      concatenatedCircularArray.splice(
+        0,
+        concatenatedCircularArray.length - this.size
+      )
     }
-    return super.concat(items as T[])
+    return concatenatedCircularArray
   }
 
   /** @inheritdoc */
   public splice (start: number, deleteCount?: number, ...items: T[]): T[] {
-    this.push(...items)
-    return super.splice(start, deleteCount)
+    let itemsRemoved: T[]
+    if (arguments.length >= 3 && deleteCount !== undefined) {
+      itemsRemoved = super.splice(start, deleteCount)
+      // FIXME: that makes the items insert not in place
+      this.push(...items)
+    } else if (arguments.length === 2) {
+      itemsRemoved = super.splice(start, deleteCount)
+    } else {
+      itemsRemoved = super.splice(start)
+    }
+    return itemsRemoved
   }
 
   /**
@@ -56,8 +72,10 @@ export class CircularArray<T> extends Array<T> {
     this.checkSize(size)
     if (size === 0) {
       this.length = 0
-    } else if (size !== this.size) {
-      super.slice(-size)
+    } else if (size < this.size) {
+      for (let i = size; i < this.size; i++) {
+        super.pop()
+      }
     }
     this.size = size
   }
@@ -82,9 +100,7 @@ export class CircularArray<T> extends Array<T> {
 
   private checkSize (size: number) {
     if (size < 0) {
-      throw new RangeError(
-        'circular array size does not allow negative values.'
-      )
+      throw new RangeError('Invalid circular array size')
     }
   }
 }
