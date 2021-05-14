@@ -1,4 +1,7 @@
-const DEFAULT_CIRCULAR_ARRAY_SIZE = 2000
+/**
+ * Default circular array size.
+ */
+export const DEFAULT_CIRCULAR_ARRAY_SIZE = 2000
 
 /** @inheritdoc */
 export class CircularArray<T> extends Array<T> {
