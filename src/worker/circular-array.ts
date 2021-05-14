@@ -8,6 +8,9 @@ export class CircularArray<T> extends Array<T> {
   /** @inheritdoc */
   constructor (size?: number) {
     super()
+    if (size) {
+      this.checkSize(size)
+    }
     this.size = size ?? DEFAULT_CIRCULAR_ARRAY_SIZE
   }
 
@@ -50,15 +53,11 @@ export class CircularArray<T> extends Array<T> {
    * @param size Size.
    */
   public resize (size: number): void {
-    if (size < 0) {
-      throw new RangeError(
-        'circular array size does not allow negative values.'
-      )
-    }
+    this.checkSize(size)
     if (size === 0) {
       this.length = 0
     } else if (size !== this.size) {
-      this.slice(-size)
+      super.slice(-size)
     }
     this.size = size
   }
@@ -79,5 +78,13 @@ export class CircularArray<T> extends Array<T> {
    */
   public full (): boolean {
     return this.length === this.size
+  }
+
+  private checkSize (size: number) {
+    if (size < 0) {
+      throw new RangeError(
+        'circular array size does not allow negative values.'
+      )
+    }
   }
 }
