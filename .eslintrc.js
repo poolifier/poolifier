@@ -28,8 +28,7 @@ module.exports = defineConfig({
     'plugin:import/warnings',
     'plugin:import/typescript',
     'plugin:promise/recommended',
-    'plugin:prettierx/standardx',
-    'plugin:prettierx/@typescript-eslint'
+    'plugin:prettierx/standardx'
   ],
   rules: {
     'no-void': 'off',
