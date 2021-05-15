@@ -76,7 +76,7 @@ export abstract class AbstractWorker<
     if (!isMain) {
       this.aliveInterval = setInterval(
         this.checkAlive.bind(this),
-        this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME / 2
+        (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) / 2
       )
       this.checkAlive.bind(this)()
     }
@@ -178,7 +178,7 @@ export abstract class AbstractWorker<
     try {
       const startTaskTimestamp = this.beforeRunHook()
       const res = fn(value.data)
-      this.afterRunHook(startTaskTimestamp ?? 0)
+      this.afterRunHook(startTaskTimestamp)
       this.sendToMainWorker({ data: res, id: value.id })
     } catch (e) {
       const err = this.handleError(e)
@@ -201,7 +201,7 @@ export abstract class AbstractWorker<
     const startTaskTimestamp = this.beforeRunHook()
     fn(value.data)
       .then(res => {
-        this.afterRunHook(startTaskTimestamp ?? 0)
+        this.afterRunHook(startTaskTimestamp)
         this.sendToMainWorker({ data: res, id: value.id })
         return null
       })
@@ -215,11 +215,12 @@ export abstract class AbstractWorker<
       .catch(EMPTY_FUNCTION)
   }
 
-  private beforeRunHook (): number | undefined {
+  private beforeRunHook (): number {
     if (this.opts.usage) {
       this.addUsage()
       return Date.now()
     }
+    return 0
   }
 
   private afterRunHook (startTaskTimestamp: number): void {
