@@ -31,7 +31,7 @@ export abstract class AbstractWorker<
    */
   protected lastTaskTimestamp: number
   /**
-   * Handler ID of the `aliveInterval` alive check.
+   * Handler Id of the `aliveInterval` alive check.
    */
   protected readonly aliveInterval?: NodeJS.Timeout
   /**

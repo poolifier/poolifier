@@ -127,7 +127,7 @@ export abstract class AbstractPool<
   /**
    * The promise map.
    *
-   * - `key`: This is the message ID of each submitted task.
+   * - `key`: This is the message Id of each submitted task.
    * - `value`: An object that contains the worker, the resolve function and the reject function.
    *
    * When we receive a message from the worker we get a map entry and resolve/reject the promise based on the message.
@@ -138,7 +138,7 @@ export abstract class AbstractPool<
   > = new Map<number, PromiseWorkerResponseWrapper<Worker, Response>>()
 
   /**
-   * ID of the next message.
+   * Id of the next message.
    */
   protected nextMessageId: number = 0
 

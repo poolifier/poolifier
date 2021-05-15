@@ -20,7 +20,7 @@ export interface MessageValue<
    */
   readonly data?: Data
   /**
-   * ID of the message.
+   * Id of the message.
    */
   readonly id?: number
   /**
