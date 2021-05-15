@@ -33,7 +33,7 @@ export class CircularArray<T> extends Array<T> {
     if (length > this.size) {
       super.splice(this.size, items.length)
     }
-    return length
+    return this.length
   }
 
   /** @inheritdoc */
