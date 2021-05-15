@@ -467,7 +467,7 @@ export abstract class AbstractPool<
     const poolWorkersUsageHistory: WorkerUsageHistory[] = []
     for (const worker of this.workers) {
       poolWorkersUsageHistory.push({
-        workerId: worker.id ? worker.id : worker.threadId,
+        workerId: worker.id ?? worker.threadId,
         usageHistory: this.getWorkerUsageHistory(worker)
       })
     }
