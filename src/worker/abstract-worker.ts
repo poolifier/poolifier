@@ -217,7 +217,7 @@ export abstract class AbstractWorker<
 
   private beforeRunHook (): number {
     if (this.opts.usage) {
-      this.addUsage()
+      this.addUsageSample()
       return Date.now()
     }
     return 0
@@ -226,11 +226,11 @@ export abstract class AbstractWorker<
   private afterRunHook (startTaskTimestamp: number): void {
     if (this.opts.usage) {
       const taskRunTime = Date.now() - startTaskTimestamp
-      this.addUsage(taskRunTime)
+      this.addUsageSample(taskRunTime)
     }
   }
 
-  private addUsage (taskRunTime = 0): void {
+  private addUsageSample (taskRunTime = 0): void {
     this.usageHistory?.push({
       taskId: this.lastTaskId,
       timestamp: Date.now(),
