@@ -23,11 +23,6 @@ export class ClusterWorker<
   Data = unknown,
   Response = unknown
 > extends AbstractWorker<Worker, Data, Response> {
-  /** @inheritdoc */
-  public get id (): number {
-    return worker.id
-  }
-
   /**
    * Constructs a new poolifier cluster worker.
    *
@@ -36,6 +31,11 @@ export class ClusterWorker<
    */
   public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
     super('worker-cluster-pool:poolifier', isMaster, fn, worker, opts)
+  }
+
+  /** @inheritdoc */
+  public get id (): number {
+    return worker.id
   }
 
   /** @inheritdoc */

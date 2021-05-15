@@ -37,7 +37,7 @@ export abstract class AbstractWorker<
   /**
    * Worker usage circular history.
    */
-  public usageHistory?: CircularArray<WorkerUsage>
+  public readonly usageHistory?: CircularArray<WorkerUsage>
   /**
    * Constructs a new poolifier worker.
    *

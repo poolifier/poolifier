@@ -23,11 +23,6 @@ export class ThreadWorker<
   Data = unknown,
   Response = unknown
 > extends AbstractWorker<MessagePort, Data, Response> {
-  /** @inheritdoc */
-  public get id (): number {
-    return threadId
-  }
-
   /**
    * Constructs a new poolifier thread worker.
    *
@@ -36,6 +31,11 @@ export class ThreadWorker<
    */
   public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
     super('worker-thread-pool:poolifier', isMainThread, fn, parentPort, opts)
+  }
+
+  /** @inheritdoc */
+  public get id (): number {
+    return threadId
   }
 
   /** @inheritdoc */

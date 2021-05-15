@@ -91,6 +91,6 @@ export interface IPoolInternal<
  * Worker usage history.
  */
 export interface WorkerUsageHistory {
-  workerId: number | undefined
-  usageHistory: CircularArray<WorkerUsage> | undefined
+  workerId?: number
+  usageHistory?: CircularArray<WorkerUsage>
 }
