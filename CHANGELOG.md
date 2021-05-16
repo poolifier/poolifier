@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2021-dd-mm
+
+### Breaking Changes
+
+- `AbstractWorker` class `maxInactiveTime`, `killBehavior` and `async` attributes have been removed in favour of the same ones in the worker options `opts` public attribute.
+- `AbstractWorker` class `lastTask` attribute have been renamed to `lastTaskTimestamp`.
+- `AbstractWorker` class `interval` attribute have been renamed to `aliveInterval`.
+
 ## [2.0.2] - 2021-12-05
 
 ### Bug fixes
