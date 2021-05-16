@@ -139,7 +139,7 @@ class FairShareChoiceStrategy<Worker extends IWorker, Data, Response>
   public choose (): Worker {
     let minWorkerVirtualTaskFinishPredictedTimestamp = Infinity
     let chosenWorker!: Worker
-    for (const worker of this.pool.workerTasksUsage.keys()) {
+    for (const worker of this.pool.workers) {
       const workerLastVirtualTaskFinishPredictedTimestamp = this.getWorkerLastVirtualTaskFinishPredictedTimestamp(
         worker
       )
