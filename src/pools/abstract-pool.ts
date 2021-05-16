@@ -433,7 +433,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Step the number of tasks that the given workers has run.
+   * Step the number of tasks that the given worker has run.
    *
    * @param worker Worker whose run tasks has run.
    * @param step Worker number of run tasks step.
@@ -449,7 +449,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Compute task run time that the given workers has run.
+   * Compute task run time that the given worker has run.
    *
    * @param worker Worker which run task.
    * @param taskRunTime Worker task run time.
