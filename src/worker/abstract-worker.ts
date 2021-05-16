@@ -31,7 +31,7 @@ export abstract class AbstractWorker<
    */
   protected lastTaskTimestamp: number
   /**
-   * Handler Id of the `aliveInterval` alive check.
+   * Handler Id of the `aliveInterval` worker alive check.
    */
   protected readonly aliveInterval?: NodeJS.Timeout
   /**
@@ -65,13 +65,13 @@ export abstract class AbstractWorker<
     }
   ) {
     super(type)
+    this.checkFunctionInput(fn)
     this.checkWorkerOptions(this.opts)
     this.lastTaskId = 0
     this.lastTaskTimestamp = Date.now()
     if (this.opts.usage) {
       this.usageHistory = new CircularArray<WorkerUsage>()
     }
-    this.checkFunctionInput(fn)
     // Keep the worker active
     if (!isMain) {
       this.aliveInterval = setInterval(
@@ -106,6 +106,9 @@ export abstract class AbstractWorker<
     this.opts.killBehavior = opts.killBehavior ?? DEFAULT_KILL_BEHAVIOR
     this.opts.maxInactiveTime =
       opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME
+    /**
+     * Whether the worker is working asynchronously or not.
+     */
     this.opts.async = !!opts.async
     this.opts.usage = !!opts.usage
   }
