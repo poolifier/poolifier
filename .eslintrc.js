@@ -59,7 +59,6 @@ module.exports = defineConfig({
           'enum',
           'inheritdoc',
           'jsdoc',
-          'pioardi',
           'poolifier',
           'readonly',
           'serializable',
