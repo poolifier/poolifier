@@ -151,7 +151,10 @@ class FairShareChoiceStrategy<Worker extends IWorker, Data, Response>
         chosenWorker = worker
       }
     }
-    this.updateWorkerLastVirtualTaskFinishTimestamp(chosenWorker)
+    this.setWorkerLastVirtualTaskFinishTimestamp(
+      chosenWorker,
+      minWorkerVirtualTaskFinishPredictedTimestamp
+    )
     return chosenWorker
   }
 
@@ -179,10 +182,13 @@ class FairShareChoiceStrategy<Worker extends IWorker, Data, Response>
     return workerAvgRunTime + workerVirtualTaskStartTimestamp
   }
 
-  private updateWorkerLastVirtualTaskFinishTimestamp (worker: Worker): void {
+  private setWorkerLastVirtualTaskFinishTimestamp (
+    worker: Worker,
+    lastVirtualTaskFinishTimestamp: number
+  ): void {
     this.workerLastVirtualTaskFinishTimestamp.set(
       worker,
-      this.getWorkerLastVirtualTaskFinishPredictedTimestamp(worker)
+      lastVirtualTaskFinishTimestamp
     )
   }
 }
