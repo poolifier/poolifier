@@ -155,8 +155,13 @@ class FairShareChoiceStrategy<Worker extends IWorker, Data, Response>
     return chosenWorker
   }
 
-  private getLastWorkerVirtualTaskFinishTimestamp (worker: Worker): number {
-    // workerVirtualTaskStartTimestamp is the virtual start of the strategy
+  /**
+   * Get the worker virtual task start timestamp.
+   *
+   * @param worker The worker.
+   * @returns The worker virtual task start timestamp.
+   */
+  private getLastWorkerVirtualTaskStartTimestamp (worker: Worker): number {
     return Math.max(
       Date.now(),
       this.lastWorkerVirtualTaskFinishTimestamp.get(worker) ?? 0
@@ -166,7 +171,7 @@ class FairShareChoiceStrategy<Worker extends IWorker, Data, Response>
   private getLastWorkerVirtualTaskFinishPredictedTimestamp (
     worker: Worker
   ): number {
-    const workerVirtualTaskStartTimestamp = this.getLastWorkerVirtualTaskFinishTimestamp(
+    const workerVirtualTaskStartTimestamp = this.getLastWorkerVirtualTaskStartTimestamp(
       worker
     )
     const workerAvgRunTime =
