@@ -91,15 +91,15 @@ class LessRecentlyUsedWorkerChoiceStrategy<
   /** @inheritdoc */
   public choose (): Worker {
     const isPoolDynamic = this.pool.type === PoolType.DYNAMIC
-    let minNumberOfTasks = Infinity
+    let minNumberOfRunningTasks = Infinity
     // A worker is always found because it picks the one with fewer tasks
     let lessRecentlyUsedWorker!: Worker
-    for (const [worker, numberOfTasks] of this.pool.tasks) {
-      if (!isPoolDynamic && numberOfTasks === 0) {
+    for (const [worker, tasksUsage] of this.pool.workerTasksUsage) {
+      if (!isPoolDynamic && tasksUsage.running === 0) {
         return worker
-      } else if (numberOfTasks < minNumberOfTasks) {
+      } else if (tasksUsage.running < minNumberOfRunningTasks) {
         lessRecentlyUsedWorker = worker
-        minNumberOfTasks = numberOfTasks
+        minNumberOfRunningTasks = tasksUsage.running
       }
     }
     return lessRecentlyUsedWorker
@@ -137,9 +137,9 @@ class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
 
   /** @inheritdoc */
   public choose (): Worker {
-    const freeTaskMapEntry = this.pool.findFreeTasksMapEntry()
-    if (freeTaskMapEntry) {
-      return freeTaskMapEntry[0]
+    const freeWorkerTasksUsageMapEntry = this.pool.findFreeWorkerTasksUsageMapEntry()
+    if (freeWorkerTasksUsageMapEntry) {
+      return freeWorkerTasksUsageMapEntry[0]
     }
 
     if (this.pool.busy) {

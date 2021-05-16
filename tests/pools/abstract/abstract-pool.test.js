@@ -4,13 +4,15 @@ const {
   FixedThreadPool,
   WorkerChoiceStrategies
 } = require('../../../lib/index')
-const expectedError = new Error('Worker could not be found in tasks map')
+const expectedError = new Error(
+  'Worker could not be found in worker tasks usage map'
+)
 
 const numberOfWorkers = 1
 
-class StubPoolWithTasksMapClear extends FixedThreadPool {
+class StubPoolWithWorkerTasksUsageMapClear extends FixedThreadPool {
   removeAllWorker () {
-    this.tasks.clear()
+    this.workerTasksUsage.clear()
   }
 }
 
@@ -21,19 +23,19 @@ class StubPoolWithIsMainMethod extends FixedThreadPool {
 }
 
 describe('Abstract pool test suite', () => {
-  it('Simulate worker not found during increaseWorkersTask', () => {
-    const pool = new StubPoolWithTasksMapClear(
+  it('Simulate worker not found during increaseWorkerRunningTasks', () => {
+    const pool = new StubPoolWithWorkerTasksUsageMapClear(
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js'
     )
     // Simulate worker not found.
     pool.removeAllWorker()
-    expect(() => pool.increaseWorkersTask()).toThrowError(expectedError)
+    expect(() => pool.increaseWorkerRunningTasks()).toThrowError(expectedError)
     pool.destroy()
   })
 
-  it('Simulate worker not found during decreaseWorkersTasks', () => {
-    const pool = new StubPoolWithTasksMapClear(
+  it('Simulate worker not found during decreaseWorkerRunningTasks', () => {
+    const pool = new StubPoolWithWorkerTasksUsageMapClear(
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js',
       {
@@ -42,7 +44,35 @@ describe('Abstract pool test suite', () => {
     )
     // Simulate worker not found.
     pool.removeAllWorker()
-    expect(() => pool.decreaseWorkersTasks()).toThrowError(expectedError)
+    expect(() => pool.decreaseWorkerRunningTasks()).toThrowError(expectedError)
+    pool.destroy()
+  })
+
+  it('Simulate worker not found during stepWorkerRunTasks', () => {
+    const pool = new StubPoolWithWorkerTasksUsageMapClear(
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.js',
+      {
+        errorHandler: e => console.error(e)
+      }
+    )
+    // Simulate worker not found.
+    pool.removeAllWorker()
+    expect(() => pool.stepWorkerRunTasks()).toThrowError(expectedError)
+    pool.destroy()
+  })
+
+  it('Simulate worker not found during computeWorkerTasksRunTime', () => {
+    const pool = new StubPoolWithWorkerTasksUsageMapClear(
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.js',
+      {
+        errorHandler: e => console.error(e)
+      }
+    )
+    // Simulate worker not found.
+    pool.removeAllWorker()
+    expect(() => pool.computeWorkerTasksRunTime()).toThrowError(expectedError)
     pool.destroy()
   })
 
@@ -140,6 +170,48 @@ describe('Abstract pool test suite', () => {
     // The `busy` event is triggered when the number of submitted tasks at once reach the number of fixed pool workers.
     // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the fixed pool.
     expect(poolBusy).toBe(numberOfWorkers + 1)
+    pool.destroy()
+  })
+
+  it('Verify that worker pool tasks usage are initialized', () => {
+    const pool = new FixedThreadPool(
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    for (const tasksUsage of pool.workerTasksUsage.values()) {
+      expect(tasksUsage).toBeDefined()
+      expect(tasksUsage.run).toBe(0)
+      expect(tasksUsage.running).toBe(0)
+      expect(tasksUsage.runTime).toBe(0)
+      expect(tasksUsage.avgRunTime).toBe(0)
+    }
+    pool.destroy()
+  })
+
+  it('Verify that worker pool tasks usage are computed', async () => {
+    const pool = new FixedThreadPool(
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    const promises = []
+    for (let i = 0; i < numberOfWorkers * 2; i++) {
+      promises.push(pool.execute({ test: 'test' }))
+    }
+    for (const tasksUsage of pool.workerTasksUsage.values()) {
+      expect(tasksUsage).toBeDefined()
+      expect(tasksUsage.run).toBe(0)
+      expect(tasksUsage.running).toBe(numberOfWorkers * 2)
+      expect(tasksUsage.runTime).toBe(0)
+      expect(tasksUsage.avgRunTime).toBe(0)
+    }
+    await Promise.all(promises)
+    for (const tasksUsage of pool.workerTasksUsage.values()) {
+      expect(tasksUsage).toBeDefined()
+      expect(tasksUsage.run).toBe(numberOfWorkers * 2)
+      expect(tasksUsage.running).toBe(0)
+      expect(tasksUsage.runTime).toBeGreaterThan(0)
+      expect(tasksUsage.avgRunTime).toBeGreaterThan(0)
+    }
     pool.destroy()
   })
 })

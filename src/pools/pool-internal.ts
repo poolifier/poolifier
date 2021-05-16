@@ -11,6 +11,16 @@ export enum PoolType {
 }
 
 /**
+ * Tasks usage statistics.
+ */
+export interface TasksUsage {
+  run: number
+  running: number
+  runTime: number
+  avgRunTime: number
+}
+
+/**
  * Internal poolifier pool emitter.
  */
 export class PoolEmitter extends EventEmitter {}
@@ -33,12 +43,12 @@ export interface IPoolInternal<
   readonly workers: Worker[]
 
   /**
-   * The tasks map.
+   * The worker tasks usage map.
    *
    * - `key`: The `Worker`
-   * - `value`: Number of tasks currently in progress on the worker.
+   * - `value`: Worker tasks usage statistics.
    */
-  readonly tasks: Map<Worker, number>
+  readonly workerTasksUsage: Map<Worker, TasksUsage>
 
   /**
    * Emitter on which events can be listened to.
@@ -74,13 +84,13 @@ export interface IPoolInternal<
   readonly numberOfRunningTasks: number
 
   /**
-   * Find a tasks map entry with a free worker based on the number of tasks the worker has applied.
+   * Find a worker tasks usage map entry with a free worker based on the number of tasks the worker has applied.
    *
-   * If an entry is found with a worker that has `0` tasks, it is detected as free.
+   * If an entry is found with a worker that has `0` running tasks, it is detected as free.
    *
-   * If no tasks map entry with a free worker was found, `false` will be returned.
+   * If no worker tasks usage map entry with a free worker was found, `false` will be returned.
    *
-   * @returns A tasks map entry with a free worker if there was one, otherwise `false`.
+   * @returns A worker tasks usage map entry with a free worker if there was one, otherwise `false`.
    */
-  findFreeTasksMapEntry(): [Worker, number] | false
+  findFreeWorkerTasksUsageMapEntry(): [Worker, TasksUsage] | false
 }

@@ -182,12 +182,18 @@ export abstract class AbstractWorker<
   ): void {
     fn(value.data)
       .then(res => {
-        this.sendToMainWorker({ data: res, id: value.id })
+        this.sendToMainWorker({
+          data: res,
+          id: value.id
+        })
         return null
       })
       .catch(e => {
         const err = this.handleError(e)
-        this.sendToMainWorker({ error: err, id: value.id })
+        this.sendToMainWorker({
+          error: err,
+          id: value.id
+        })
       })
       .finally(() => {
         this.lastTaskTimestamp = Date.now()

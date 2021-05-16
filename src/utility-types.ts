@@ -50,6 +50,10 @@ export interface PromiseWorkerResponseWrapper<
   Response = unknown
 > {
   /**
+   * Promise timestamp.
+   */
+  readonly timestamp: number
+  /**
    * Resolve callback to fulfill the promise.
    */
   readonly resolve: (value: Response) => void
