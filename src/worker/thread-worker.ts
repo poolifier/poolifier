@@ -30,7 +30,7 @@ export class ThreadWorker<
    * @param opts Options for the worker.
    */
   public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
-    super('worker-thread-pool:pioardi', isMainThread, fn, parentPort, opts)
+    super('worker-thread-pool:poolifier', isMainThread, fn, parentPort, opts)
   }
 
   /** @inheritdoc */
