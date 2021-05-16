@@ -30,7 +30,7 @@ export class ClusterWorker<
    * @param opts Options for the worker.
    */
   public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
-    super('worker-cluster-pool:pioardi', isMaster, fn, worker, opts)
+    super('worker-cluster-pool:poolifier', isMaster, fn, worker, opts)
   }
 
   /** @inheritdoc */
