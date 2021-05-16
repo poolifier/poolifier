@@ -120,9 +120,9 @@ class LessRecentlyUsedWorkerChoiceStrategy<
 class FairShareChoiceStrategy<Worker extends IWorker, Data, Response>
   implements IWorkerChoiceStrategy<Worker> {
   /**
-   * Last worker virtual task execution end timestamp.
+   *  Worker last virtual task execution end timestamp.
    */
-  private lastWorkerVirtualTaskFinishTimestamp: Map<Worker, number>
+  private workerLastVirtualTaskFinishTimestamp: Map<Worker, number>
 
   /**
    * Constructs a worker choice strategy that selects based a fair share tasks scheduling algorithm.
@@ -132,7 +132,7 @@ class FairShareChoiceStrategy<Worker extends IWorker, Data, Response>
   public constructor (
     private readonly pool: IPoolInternal<Worker, Data, Response>
   ) {
-    this.lastWorkerVirtualTaskFinishTimestamp = new Map<Worker, number>()
+    this.workerLastVirtualTaskFinishTimestamp = new Map<Worker, number>()
   }
 
   /** @inheritdoc */
@@ -140,38 +140,38 @@ class FairShareChoiceStrategy<Worker extends IWorker, Data, Response>
     let minWorkerVirtualTaskFinishPredictedTimestamp = Infinity
     let chosenWorker!: Worker
     for (const worker of this.pool.workerTasksUsage.keys()) {
-      const lastWorkerVirtualTaskFinishPredictedTimestamp = this.getLastWorkerVirtualTaskFinishPredictedTimestamp(
+      const workerLastVirtualTaskFinishPredictedTimestamp = this.getWorkerLastVirtualTaskFinishPredictedTimestamp(
         worker
       )
       if (
-        lastWorkerVirtualTaskFinishPredictedTimestamp <
+        workerLastVirtualTaskFinishPredictedTimestamp <
         minWorkerVirtualTaskFinishPredictedTimestamp
       ) {
-        minWorkerVirtualTaskFinishPredictedTimestamp = lastWorkerVirtualTaskFinishPredictedTimestamp
+        minWorkerVirtualTaskFinishPredictedTimestamp = workerLastVirtualTaskFinishPredictedTimestamp
         chosenWorker = worker
       }
     }
-    this.updateLastWorkerVirtualTaskFinishTimestamp(chosenWorker)
+    this.updateWorkerLastVirtualTaskFinishTimestamp(chosenWorker)
     return chosenWorker
   }
 
   /**
-   * Get the worker virtual task start timestamp.
+   * Get the worker last virtual task start timestamp.
    *
    * @param worker The worker.
-   * @returns The worker virtual task start timestamp.
+   * @returns The worker last virtual task start timestamp.
    */
-  private getLastWorkerVirtualTaskStartTimestamp (worker: Worker): number {
+  private getWorkerLastVirtualTaskStartTimestamp (worker: Worker): number {
     return Math.max(
       Date.now(),
-      this.lastWorkerVirtualTaskFinishTimestamp.get(worker) ?? 0
+      this.workerLastVirtualTaskFinishTimestamp.get(worker) ?? 0
     )
   }
 
-  private getLastWorkerVirtualTaskFinishPredictedTimestamp (
+  private getWorkerLastVirtualTaskFinishPredictedTimestamp (
     worker: Worker
   ): number {
-    const workerVirtualTaskStartTimestamp = this.getLastWorkerVirtualTaskStartTimestamp(
+    const workerVirtualTaskStartTimestamp = this.getWorkerLastVirtualTaskStartTimestamp(
       worker
     )
     const workerAvgRunTime =
@@ -179,10 +179,10 @@ class FairShareChoiceStrategy<Worker extends IWorker, Data, Response>
     return workerAvgRunTime + workerVirtualTaskStartTimestamp
   }
 
-  private updateLastWorkerVirtualTaskFinishTimestamp (worker: Worker): void {
-    this.lastWorkerVirtualTaskFinishTimestamp.set(
+  private updateWorkerLastVirtualTaskFinishTimestamp (worker: Worker): void {
+    this.workerLastVirtualTaskFinishTimestamp.set(
       worker,
-      this.getLastWorkerVirtualTaskFinishPredictedTimestamp(worker)
+      this.getWorkerLastVirtualTaskFinishPredictedTimestamp(worker)
     )
   }
 }
