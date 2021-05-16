@@ -13,7 +13,11 @@ export const WorkerChoiceStrategies = Object.freeze({
   /**
    * Less recently used worker selection strategy.
    */
-  LESS_RECENTLY_USED: 'LESS_RECENTLY_USED'
+  LESS_RECENTLY_USED: 'LESS_RECENTLY_USED',
+  /**
+   * Fair share worker selection strategy.
+   */
+  FAIR_SHARE: 'FAIR_SHARE'
 } as const)
 
 /**
@@ -103,6 +107,79 @@ class LessRecentlyUsedWorkerChoiceStrategy<
       }
     }
     return lessRecentlyUsedWorker
+  }
+}
+
+/**
+ * Selects the next worker with a fair share tasks scheduling algorithm.
+ *
+ * @template Worker Type of worker which manages the strategy.
+ * @template Data Type of data sent to the worker. This can only be serializable data.
+ * @template Response Type of response of execution. This can only be serializable data.
+ */
+class FairShareChoiceStrategy<Worker extends IWorker, Data, Response>
+  implements IWorkerChoiceStrategy<Worker> {
+  /**
+   * Last worker virtual task execution end timestamp.
+   */
+  private lastWorkerVirtualTaskFinishTimestamp: Map<Worker, number>
+
+  /**
+   * Constructs a worker choice strategy that selects based a fair share tasks scheduling algorithm.
+   *
+   * @param pool The pool instance.
+   */
+  public constructor (
+    private readonly pool: IPoolInternal<Worker, Data, Response>
+  ) {
+    this.lastWorkerVirtualTaskFinishTimestamp = new Map<Worker, number>()
+  }
+
+  /** @inheritdoc */
+  public choose (): Worker {
+    let minWorkerVirtualTaskFinishPredictedTimestamp = Infinity
+    let chosenWorker!: Worker
+    for (const worker of this.pool.workerTasksUsage.keys()) {
+      const lastWorkerVirtualTaskFinishPredictedTimestamp = this.getLastWorkerVirtualTaskFinishPredictedTimestamp(
+        worker
+      )
+      if (
+        lastWorkerVirtualTaskFinishPredictedTimestamp <
+        minWorkerVirtualTaskFinishPredictedTimestamp
+      ) {
+        minWorkerVirtualTaskFinishPredictedTimestamp = lastWorkerVirtualTaskFinishPredictedTimestamp
+        chosenWorker = worker
+      }
+    }
+    this.updateLastWorkerVirtualTaskFinishTimestamp(chosenWorker)
+    return chosenWorker
+  }
+
+  private getLastWorkerVirtualTaskFinishTimestamp (worker: Worker): number {
+    // workerVirtualTaskStartTimestamp is the virtual start of the strategy
+    const workerVirtualTaskStartTimestamp = Math.max(
+      Date.now(),
+      this.lastWorkerVirtualTaskFinishTimestamp.get(worker) ?? 0
+    )
+    return workerVirtualTaskStartTimestamp
+  }
+
+  private getLastWorkerVirtualTaskFinishPredictedTimestamp (
+    worker: Worker
+  ): number {
+    const workerVirtualTaskStartTimestamp = this.getLastWorkerVirtualTaskFinishTimestamp(
+      worker
+    )
+    const workerAvgRunTime =
+      this.pool.workerTasksUsage.get(worker)?.avgRunTime ?? 0
+    return workerAvgRunTime + workerVirtualTaskStartTimestamp
+  }
+
+  private updateLastWorkerVirtualTaskFinishTimestamp (worker: Worker): void {
+    this.lastWorkerVirtualTaskFinishTimestamp.set(
+      worker,
+      this.getLastWorkerVirtualTaskFinishPredictedTimestamp(worker)
+    )
   }
 }
 
@@ -250,6 +327,8 @@ class SelectionStrategiesUtils {
         return new RoundRobinWorkerChoiceStrategy(pool)
       case WorkerChoiceStrategies.LESS_RECENTLY_USED:
         return new LessRecentlyUsedWorkerChoiceStrategy(pool)
+      case WorkerChoiceStrategies.FAIR_SHARE:
+        return new FairShareChoiceStrategy(pool)
       default:
         throw new Error(
           `Worker choice strategy '${workerChoiceStrategy}' not found`

@@ -163,6 +163,7 @@ You can use node versions 12.x, 13.x, 14.x, 16.x
 
   - `WorkerChoiceStrategies.ROUND_ROBIN`: Submit tasks to worker in this pool in a round robbin fashion
   - `WorkerChoiceStrategies.LESS_RECENTLY_USED`: Submit tasks to the less recently used worker in the pool
+  - `WorkerChoiceStrategies.FAIR_SHARE`: Submit tasks to worker using a fair share tasks scheduling algorithm
 
   Default: `WorkerChoiceStrategies.ROUND_ROBIN`
 

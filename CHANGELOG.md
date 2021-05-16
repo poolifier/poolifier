@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.0] - 2021-dd-mm
 
+### Features
+
+- Pool worker choice `WorkerChoiceStrategies.FAIR_SHARE` strategy based on fair share tasks scheduling algorithm using tasks execution time for now.
+
 ### Breaking Changes
 
 - `AbstractWorker` class `maxInactiveTime`, `killBehavior` and `async` attributes have been removed in favour of the same ones in the worker options `opts` public attribute.
