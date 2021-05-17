@@ -16,6 +16,7 @@ module.exports = defineConfig({
   plugins: [
     '@typescript-eslint',
     'promise',
+    'prettierx',
     'jsdoc',
     'spellcheck'
   ],
@@ -26,6 +27,7 @@ module.exports = defineConfig({
     'plugin:import/errors',
     'plugin:import/warnings',
     'plugin:import/typescript',
+    'plugin:prettierx/standardx',
     'plugin:promise/recommended'
   ],
   rules: {
