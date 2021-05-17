@@ -1,68 +1,47 @@
-import type { MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
+import { PoolType } from '../pool-internal'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
 
 /**
- * A thread pool with a min/max number of threads, is possible to execute tasks in sync or async mode as you prefer.
+ * A thread pool with a dynamic number of threads, but a guaranteed minimum number of threads.
  *
- * This thread pool will create new workers when the other ones are busy, until the max number of threads,
- * when the max number of threads is reached, an event will be emitted, if you want to listen this event use the emitter method.
+ * This thread pool creates new threads when the others are busy, up to the maximum number of threads.
+ * When the maximum number of threads is reached, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
  *
+ * @template DataType of data sent to the worker. This can only be serializable data.
+ * @template ResponseType of response of execution. This can only be serializable data.
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
 export class DynamicThreadPool<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Data = any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Response = any
+  Data = unknown,
+  Response = unknown
 > extends FixedThreadPool<Data, Response> {
   /**
-   * @param min Min number of threads that will be always active
-   * @param max Max number of threads that will be active
-   * @param filename A file path with implementation of `ThreadWorker` class, relative path is fine.
-   * @param opts An object with possible options for example `errorHandler`, `onlineHandler`. Default: `{ maxTasks: 1000 }`
+   * Constructs a new poolifier dynamic thread pool.
+   *
+   * @param min Minimum number of threads which are always active.
+   * @param max Maximum number of threads that can be created by this pool.
+   * @param filePath Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
+   * @param opts Options for this dynamic thread pool. Default: `{}`
    */
   public constructor (
     min: number,
     public readonly max: number,
-    filename: string,
-    opts: PoolOptions<ThreadWorkerWithMessageChannel> = { maxTasks: 1000 }
+    filePath: string,
+    opts: PoolOptions<ThreadWorkerWithMessageChannel> = {}
   ) {
-    super(min, filename, opts)
+    super(min, filePath, opts)
   }
 
-  protected chooseWorker (): ThreadWorkerWithMessageChannel {
-    let worker: ThreadWorkerWithMessageChannel | undefined
-    for (const entry of this.tasks) {
-      if (entry[1] === 0) {
-        worker = entry[0]
-        break
-      }
-    }
+  /** @inheritdoc */
+  public get type (): PoolType {
+    return PoolType.DYNAMIC
+  }
 
-    if (worker) {
-      // a worker is free, use it
-      return worker
-    } else {
-      if (this.workers.length === this.max) {
-        this.emitter.emit('FullPool')
-        return super.chooseWorker()
-      }
-      // all workers are busy create a new worker
-      const worker = this.internalNewWorker()
-      worker.port2?.on('message', (message: MessageValue<Data>) => {
-        if (message.kill) {
-          this.sendToWorker(worker, { kill: 1 })
-          void this.destroyWorker(worker)
-          // clean workers from data structures
-          const workerIndex = this.workers.indexOf(worker)
-          this.workers.splice(workerIndex, 1)
-          this.tasks.delete(worker)
-        }
-      })
-      return worker
-    }
+  /** @inheritdoc */
+  public get busy (): boolean {
+    return this.workers.length === this.max
   }
 }

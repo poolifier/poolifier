@@ -40,12 +40,12 @@ jspm_packages
 .vscode/*
 !.vscode/extensions.json
 !.vscode/launch.json
+!.vscode/settings.json
 !.vscode/tasks.json
 
 # Mac
-.DS_Store/
 .DS_Store
 
 .history/
-
+.scannerwork
 lib

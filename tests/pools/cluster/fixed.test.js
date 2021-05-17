@@ -1,48 +1,58 @@
 const expect = require('expect')
 const { FixedClusterPool } = require('../../../lib/index')
-const numWorkers = 10
+const TestUtils = require('../../test-utils')
+const numberOfWorkers = 10
 const pool = new FixedClusterPool(
-  numWorkers,
-  './tests/worker/cluster/testWorker.js',
+  numberOfWorkers,
+  './tests/worker-files/cluster/testWorker.js',
   {
-    errorHandler: e => console.error(e),
-    onlineHandler: () => console.log('worker is online')
+    errorHandler: e => console.error(e)
   }
 )
 const emptyPool = new FixedClusterPool(
   1,
-  './tests/worker/cluster/emptyWorker.js'
+  './tests/worker-files/cluster/emptyWorker.js',
+  { exitHandler: () => console.log('empty pool worker exited') }
 )
-const echoPool = new FixedClusterPool(1, './tests/worker/cluster/echoWorker.js')
+const echoPool = new FixedClusterPool(
+  1,
+  './tests/worker-files/cluster/echoWorker.js'
+)
 const errorPool = new FixedClusterPool(
   1,
-  './tests/worker/cluster/errorWorker.js',
+  './tests/worker-files/cluster/errorWorker.js',
   {
-    errorHandler: e => console.error(e),
-    onlineHandler: () => console.log('worker is online')
+    errorHandler: e => console.error(e)
   }
 )
-
 const asyncErrorPool = new FixedClusterPool(
   1,
-  './tests/worker/cluster/asyncErrorWorker.js',
+  './tests/worker-files/cluster/asyncErrorWorker.js',
   {
-    errorHandler: e => console.error(e),
-    onlineHandler: () => console.log('worker is online')
+    errorHandler: e => console.error(e)
   }
 )
 const asyncPool = new FixedClusterPool(
   1,
-  './tests/worker/cluster/asyncWorker.js'
+  './tests/worker-files/cluster/asyncWorker.js'
 )
 
-describe('Fixed cluster pool test suite ', () => {
+describe('Fixed cluster pool test suite', () => {
+  after('Destroy all pools', async () => {
+    // We need to clean up the resources after our test
+    await echoPool.destroy()
+    await asyncPool.destroy()
+    await errorPool.destroy()
+    await asyncErrorPool.destroy()
+    await emptyPool.destroy()
+  })
+
   it('Choose worker round robin test', async () => {
     const results = new Set()
-    for (let i = 0; i < numWorkers; i++) {
+    for (let i = 0; i < numberOfWorkers; i++) {
       results.add(pool.chooseWorker().id)
     }
-    expect(results.size).toBe(numWorkers)
+    expect(results.size).toBe(numberOfWorkers)
   })
 
   it('Verify that the function is executed in a worker cluster', async () => {
@@ -55,6 +65,18 @@ describe('Fixed cluster pool test suite ', () => {
     const result = await pool.execute()
     expect(result).toBeDefined()
     expect(result).toBeFalsy()
+  })
+
+  it('Verify that busy event is emitted', async () => {
+    const promises = []
+    let poolBusy = 0
+    pool.emitter.on('busy', () => poolBusy++)
+    for (let i = 0; i < numberOfWorkers * 2; i++) {
+      promises.push(pool.execute({ test: 'test' }))
+    }
+    // The `busy` event is triggered when the number of submitted tasks at once reach the number of fixed pool workers.
+    // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the fixed pool.
+    expect(poolBusy).toBe(numberOfWorkers + 1)
   })
 
   it('Verify that is possible to have a worker that return undefined', async () => {
@@ -78,7 +100,7 @@ describe('Fixed cluster pool test suite ', () => {
       inError = e
     }
     expect(inError).toBeDefined()
-    expect(typeof inError === 'string').toBeTruthy()
+    expect(typeof inError === 'string').toBe(true)
     expect(inError).toBe('Error Message from ClusterWorker')
   })
 
@@ -91,7 +113,7 @@ describe('Fixed cluster pool test suite ', () => {
       inError = e
     }
     expect(inError).toBeDefined()
-    expect(typeof inError === 'string').toBeTruthy()
+    expect(typeof inError === 'string').toBe(true)
     expect(inError).toBe('Error Message from ClusterWorker:async')
   })
 
@@ -106,35 +128,27 @@ describe('Fixed cluster pool test suite ', () => {
   })
 
   it('Shutdown test', async () => {
-    let closedWorkers = 0
-    pool.workers.forEach(w => {
-      w.on('exit', () => {
-        closedWorkers++
-      })
-    })
-    pool.destroy()
-    await new Promise(resolve => setTimeout(resolve, 200))
-    expect(closedWorkers).toBe(numWorkers)
-  })
-
-  it('Validations test', () => {
-    let error
-    try {
-      const pool1 = new FixedClusterPool()
-      console.log(pool1)
-    } catch (e) {
-      error = e
-    }
-    expect(error).toBeTruthy()
-    expect(error.message).toBeTruthy()
+    const exitPromise = TestUtils.waitExits(pool, numberOfWorkers)
+    await pool.destroy()
+    const res = await exitPromise
+    expect(res).toBe(numberOfWorkers)
   })
 
   it('Should work even without opts in input', async () => {
     const pool1 = new FixedClusterPool(
       1,
-      './tests/worker/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.js'
     )
     const res = await pool1.execute({ test: 'test' })
     expect(res).toBeFalsy()
+    // We need to clean up the resources after our test
+    await pool1.destroy()
+  })
+
+  it('Verify that a pool with zero worker fails', async () => {
+    expect(
+      () =>
+        new FixedClusterPool(0, './tests/worker-files/cluster/testWorker.js')
+    ).toThrowError(new Error('Cannot instantiate a fixed pool with no worker'))
   })
 })

@@ -1,0 +1,296 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>WorkerOptions | poolifier</title>
+	<meta name="description" content="Documentation for poolifier">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">poolifier</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../index.html">poolifier</a>
+				</li>
+				<li>
+					<a href="workeroptions.html">WorkerOptions</a>
+				</li>
+			</ul>
+			<h1>Interface WorkerOptions</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Options for workers.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">WorkerOptions</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="workeroptions.html#async" class="tsd-kind-icon">async</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="workeroptions.html#killbehavior" class="tsd-kind-icon">kill<wbr>Behavior</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="workeroptions.html#maxinactivetime" class="tsd-kind-icon">max<wbr>Inactive<wbr>Time</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="async" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> async</h3>
+					<div class="tsd-signature tsd-kind-icon">async<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/pioardi/poolifier/blob/36b71cf/src/worker/worker-options.ts#L57">src/worker/worker-options.ts:57</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Whether your worker will perform asynchronous or not.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>false</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="killbehavior" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> kill<wbr>Behavior</h3>
+					<div class="tsd-signature tsd-kind-icon">kill<wbr>Behavior<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;SOFT&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;HARD&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/pioardi/poolifier/blob/36b71cf/src/worker/worker-options.ts#L68">src/worker/worker-options.ts:68</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p><code>killBehavior</code> dictates if your async unit (worker/process) will be deleted in case that a task is active on it.</p>
+						</div>
+						<ul>
+							<li>SOFT: If <code>currentTime - lastActiveTime</code> is greater than <code>maxInactiveTime</code> but a task is still running, then the worker <strong>won&#39;t</strong> be deleted.</li>
+							<li>HARD: If <code>lastActiveTime</code> is greater than <code>maxInactiveTime</code> but a task is still running, then the worker will be deleted.</li>
+						</ul>
+						<p>This option only apply to the newly created workers.</p>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>KillBehaviors.SOFT</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="maxinactivetime" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> max<wbr>Inactive<wbr>Time</h3>
+					<div class="tsd-signature tsd-kind-icon">max<wbr>Inactive<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/pioardi/poolifier/blob/36b71cf/src/worker/worker-options.ts#L51">src/worker/worker-options.ts:51</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Maximum waiting time in milliseconds for tasks.</p>
+						</div>
+						<p>After this time, newly created workers will be terminated.
+						The last active time of your worker unit will be updated when a task is submitted to a worker or when a worker terminate a task.</p>
+						<ul>
+							<li>If <code>killBehavior</code> is set to <code>KillBehaviors.HARD</code> this value represents also the timeout for the tasks that you submit to the pool,
+							when this timeout expires your tasks is interrupted and the worker is killed if is not part of the minimum size of the pool.</li>
+							<li>If <code>killBehavior</code> is set to <code>KillBehaviors.SOFT</code> your tasks have no timeout and your workers will not be terminated until your task is completed.</li>
+						</ul>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>60.000 ms</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../index.html">Exports</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="../classes/abstractworker.html" class="tsd-kind-icon">Abstract<wbr>Worker</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="../classes/clusterworker.html" class="tsd-kind-icon">Cluster<wbr>Worker</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="../classes/dynamicclusterpool.html" class="tsd-kind-icon">Dynamic<wbr>Cluster<wbr>Pool</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="../classes/dynamicthreadpool.html" class="tsd-kind-icon">Dynamic<wbr>Thread<wbr>Pool</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="../classes/fixedclusterpool.html" class="tsd-kind-icon">Fixed<wbr>Cluster<wbr>Pool</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="../classes/fixedthreadpool.html" class="tsd-kind-icon">Fixed<wbr>Thread<wbr>Pool</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="../classes/threadworker.html" class="tsd-kind-icon">Thread<wbr>Worker</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="clusterpooloptions.html" class="tsd-kind-icon">Cluster<wbr>Pool<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="ipool.html" class="tsd-kind-icon">IPool</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="iworker.html" class="tsd-kind-icon">IWorker</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="pooloptions.html" class="tsd-kind-icon">Pool<wbr>Options</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
+						<a href="workeroptions.html" class="tsd-kind-icon">Worker<wbr>Options</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="workeroptions.html#async" class="tsd-kind-icon">async</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="workeroptions.html#killbehavior" class="tsd-kind-icon">kill<wbr>Behavior</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="workeroptions.html#maxinactivetime" class="tsd-kind-icon">max<wbr>Inactive<wbr>Time</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="../index.html#errorhandler" class="tsd-kind-icon">Error<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="../index.html#exithandler" class="tsd-kind-icon">Exit<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../index.html#killbehavior" class="tsd-kind-icon">Kill<wbr>Behavior</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="../index.html#onlinehandler" class="tsd-kind-icon">Online<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../index.html#threadworkerwithmessagechannel" class="tsd-kind-icon">Thread<wbr>Worker<wbr>With<wbr>Message<wbr>Channel</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../index.html#workerchoicestrategy" class="tsd-kind-icon">Worker<wbr>Choice<wbr>Strategy</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="../index.html#killbehaviors" class="tsd-kind-icon">Kill<wbr>Behaviors</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="../index.html#workerchoicestrategies" class="tsd-kind-icon">Worker<wbr>Choice<wbr>Strategies</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

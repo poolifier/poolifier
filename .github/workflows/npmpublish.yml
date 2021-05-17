@@ -7,24 +7,61 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
         with:
-          node-version: 12
-      - run: npm ci
-      - run: npm run test
+          node-version: 14
+
+      - name: Install
+        run: npm ci
+
+      - name: Production Build
+        run: npm run build:prod
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Production Tests & Coverage
+        run: |
+          npm run test:prod
+          npm run coverage
+        env:
+          CI: true
 
   publish-npm:
     needs: build
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 14
           registry-url: https://registry.npmjs.org/
-      - run: npm ci
-      - run: npm publish
+
+      - name: Read package.json version
+        uses: tyankatsu0105/read-package-version-actions@v1
+        id: package-version
+
+      - name: Install
+        run: npm ci
+
+      - name: Publish Release
+        if: ${{ contains(steps.package-version.outputs.version, '-') == false }}
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+
+      - name: Publish Beta
+        if: ${{ contains(steps.package-version.outputs.version, 'beta') }}
+        run: npm publish --tag beta
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}

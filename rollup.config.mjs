@@ -1,26 +1,36 @@
+import typescript from 'rollup-plugin-typescript2'
+import analyze from 'rollup-plugin-analyzer'
+import { terser } from 'rollup-plugin-terser'
 import del from 'rollup-plugin-delete'
-import ts from '@wessberg/rollup-plugin-ts'
+import command from 'rollup-plugin-command'
+import istanbul from 'rollup-plugin-istanbul'
 
 const isDevelopmentBuild = process.env.BUILD === 'development'
+const isAnalyze = process.env.ANALYZE
+const isDocumentation = process.env.DOCUMENTATION
 
 export default {
   input: 'src/index.ts',
   output: {
-    dir: 'lib',
+    ...(isDevelopmentBuild ? { dir: 'lib' } : { file: 'lib/index.js' }),
     format: 'cjs',
     sourcemap: !!isDevelopmentBuild,
-    preserveModules: true,
-    preserveModulesRoot: 'src'
+    ...(isDevelopmentBuild && { preserveModules: true }),
+    ...(isDevelopmentBuild && { preserveModulesRoot: 'src' }),
+    ...(!isDevelopmentBuild && { plugins: [terser({ numWorkers: 2 })] })
   },
   external: ['async_hooks', 'cluster', 'events', 'worker_threads'],
   plugins: [
-    ts({
+    typescript({
       tsconfig: isDevelopmentBuild
         ? 'tsconfig.development.json'
         : 'tsconfig.json'
     }),
+    isDevelopmentBuild && istanbul(),
     del({
-      targets: 'lib/*'
-    })
+      targets: ['lib/*']
+    }),
+    isAnalyze && analyze(),
+    isDocumentation && command('npm run typedoc')
   ]
 }

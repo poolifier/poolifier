@@ -9,10 +9,11 @@ Please ask your PR to be merged on **master** branch.
 
 **How to run tests**
 
-**Unit tests**
+**Unit tests and Coverage**
 
 ```bash
   npm run test
+  npm run coverage
 ```
 
 **How to check if your new code is standard style**
@@ -28,10 +29,11 @@ Please ask your PR to be merged on **master** branch.
 ```
 
 ### Project pillars
+
 Please consider our pillars before to start change the project
 
-  - Performance :racehorse:
-  - Security :bank: :cop:
-  - No runtime dependencies :white_check_mark: ( until now we don't have any exception to that)
-  - Easy to use :couple:
-  - Code quality :octocat:
+- Performance :racehorse:
+- Security :bank: :cop:
+- No runtime dependencies :white_check_mark: (until now we don't have any exception to that)
+- Easy to use :couple:
+- Code quality :octocat:

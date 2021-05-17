@@ -1,33 +1,58 @@
 const expect = require('expect')
 const { FixedThreadPool } = require('../../../lib/index')
-const numThreads = 10
+const TestUtils = require('../../test-utils')
+const numberOfThreads = 10
 const pool = new FixedThreadPool(
-  numThreads,
-  './tests/worker/thread/testWorker.js',
+  numberOfThreads,
+  './tests/worker-files/thread/testWorker.js',
   {
-    errorHandler: e => console.error(e),
-    onlineHandler: () => console.log('worker is online')
+    errorHandler: e => console.error(e)
   }
 )
-const emptyPool = new FixedThreadPool(1, './tests/worker/thread/emptyWorker.js')
-const echoPool = new FixedThreadPool(1, './tests/worker/thread/echoWorker.js')
+const emptyPool = new FixedThreadPool(
+  1,
+  './tests/worker-files/thread/emptyWorker.js',
+  { exitHandler: () => console.log('empty pool worker exited') }
+)
+const echoPool = new FixedThreadPool(
+  1,
+  './tests/worker-files/thread/echoWorker.js'
+)
 const errorPool = new FixedThreadPool(
   1,
-  './tests/worker/thread/errorWorker.js',
+  './tests/worker-files/thread/errorWorker.js',
   {
-    errorHandler: e => console.error(e),
-    onlineHandler: () => console.log('worker is online')
+    errorHandler: e => console.error(e)
   }
 )
-const asyncPool = new FixedThreadPool(1, './tests/worker/thread/asyncWorker.js')
+const asyncErrorPool = new FixedThreadPool(
+  1,
+  './tests/worker-files/thread/asyncErrorWorker.js',
+  {
+    errorHandler: e => console.error(e)
+  }
+)
+const asyncPool = new FixedThreadPool(
+  1,
+  './tests/worker-files/thread/asyncWorker.js'
+)
 
-describe('Fixed thread pool test suite ', () => {
+describe('Fixed thread pool test suite', () => {
+  after('Destroy all pools', async () => {
+    // We need to clean up the resources after our test
+    await echoPool.destroy()
+    await asyncPool.destroy()
+    await errorPool.destroy()
+    await asyncErrorPool.destroy()
+    await emptyPool.destroy()
+  })
+
   it('Choose worker round robin test', async () => {
     const results = new Set()
-    for (let i = 0; i < numThreads; i++) {
+    for (let i = 0; i < numberOfThreads; i++) {
       results.add(pool.chooseWorker().threadId)
     }
-    expect(results.size).toBe(numThreads)
+    expect(results.size).toBe(numberOfThreads)
   })
 
   it('Verify that the function is executed in a worker thread', async () => {
@@ -42,6 +67,18 @@ describe('Fixed thread pool test suite ', () => {
     expect(result).toBeFalsy()
   })
 
+  it('Verify that busy event is emitted', async () => {
+    const promises = []
+    let poolBusy = 0
+    pool.emitter.on('busy', () => poolBusy++)
+    for (let i = 0; i < numberOfThreads * 2; i++) {
+      promises.push(pool.execute({ test: 'test' }))
+    }
+    // The `busy` event is triggered when the number of submitted tasks at once reach the number of fixed pool workers.
+    // So in total numberOfThreads + 1 times for a loop submitting up to numberOfThreads * 2 tasks to the fixed pool.
+    expect(poolBusy).toBe(numberOfThreads + 1)
+  })
+
   it('Verify that is possible to have a worker that return undefined', async () => {
     const result = await emptyPool.execute()
     expect(result).toBeFalsy()
@@ -54,7 +91,7 @@ describe('Fixed thread pool test suite ', () => {
     expect(result.f).toBe(data.f)
   })
 
-  it('Verify that error handling is working properly', async () => {
+  it('Verify that error handling is working properly:sync', async () => {
     const data = { f: 10 }
     let inError
     try {
@@ -62,9 +99,24 @@ describe('Fixed thread pool test suite ', () => {
     } catch (e) {
       inError = e
     }
-    expect(inError).toBeTruthy()
-    expect(inError instanceof Error).toBeTruthy()
-    expect(inError.message).toBeTruthy()
+    expect(inError).toBeDefined()
+    expect(inError).toBeInstanceOf(Error)
+    expect(inError.message).toBeDefined()
+    expect(typeof inError.message === 'string').toBe(true)
+  })
+
+  it('Verify that error handling is working properly:async', async () => {
+    const data = { f: 10 }
+    let inError
+    try {
+      await asyncErrorPool.execute(data)
+    } catch (e) {
+      inError = e
+    }
+    expect(inError).toBeDefined()
+    expect(inError).toBeInstanceOf(Error)
+    expect(inError.message).toBeDefined()
+    expect(typeof inError.message === 'string').toBe(true)
   })
 
   it('Verify that async function is working properly', async () => {
@@ -78,31 +130,26 @@ describe('Fixed thread pool test suite ', () => {
   })
 
   it('Shutdown test', async () => {
-    let closedThreads = 0
-    pool.workers.forEach(w => {
-      w.on('exit', () => {
-        closedThreads++
-      })
-    })
+    const exitPromise = TestUtils.waitExits(pool, numberOfThreads)
     await pool.destroy()
-    expect(closedThreads).toBe(numThreads)
-  })
-
-  it('Validations test', () => {
-    let error
-    try {
-      const pool1 = new FixedThreadPool()
-      console.log(pool1)
-    } catch (e) {
-      error = e
-    }
-    expect(error).toBeTruthy()
-    expect(error.message).toBeTruthy()
+    const res = await exitPromise
+    expect(res).toBe(numberOfThreads)
   })
 
   it('Should work even without opts in input', async () => {
-    const pool1 = new FixedThreadPool(1, './tests/worker/thread/testWorker.js')
+    const pool1 = new FixedThreadPool(
+      1,
+      './tests/worker-files/thread/testWorker.js'
+    )
     const res = await pool1.execute({ test: 'test' })
     expect(res).toBeFalsy()
+    // We need to clean up the resources after our test
+    await pool1.destroy()
+  })
+
+  it('Verify that a pool with zero worker fails', async () => {
+    expect(
+      () => new FixedThreadPool(0, './tests/worker-files/thread/testWorker.js')
+    ).toThrowError(new Error('Cannot instantiate a fixed pool with no worker'))
   })
 })

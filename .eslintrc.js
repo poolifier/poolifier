@@ -1,4 +1,7 @@
-module.exports = {
+// @ts-check
+const { defineConfig } = require('eslint-define-config')
+
+module.exports = defineConfig({
   env: {
     es2021: true,
     node: true,
@@ -7,9 +10,15 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2020,
-    sourceType: 'module'
+    sourceType: 'module',
+    warnOnUnsupportedTypeScriptVersion: false
   },
-  plugins: ['@typescript-eslint', 'promise'],
+  plugins: [
+    '@typescript-eslint',
+    'promise',
+    'jsdoc',
+    'spellcheck'
+  ],
   extends: [
     'standard',
     'eslint:recommended',
@@ -36,9 +45,70 @@ module.exports = {
         ignoreMemberSort: true,
         ignoreDeclarationSort: true
       }
+    ],
+
+    'spellcheck/spell-checker': [
+      'warn',
+      {
+        skipWords: [
+          'christopher',
+          'comparator',
+          'ecma',
+          'enum',
+          'inheritdoc',
+          'jsdoc',
+          'poolifier',
+          'readonly',
+          'serializable',
+          'unregister',
+          'workerpool'
+        ],
+        skipIfMatch: ['^@.*', '^plugin:.*']
+      }
     ]
   },
   overrides: [
+    {
+      files: ['src/**/*.ts'],
+      extends: 'plugin:jsdoc/recommended',
+      rules: {
+        'no-useless-constructor': 'off',
+
+        'jsdoc/match-description': [
+          'warn',
+          {
+            mainDescription:
+              '/^[A-Z`].+?(\\.|:)(\\n\\n.*((\\n{1,2}- .+)|(_.+_)|`.+`|\\n\\n---))?$/us',
+            matchDescription: '^[A-Z`].+(\\.|`.+`)$',
+            contexts: ['any'],
+            tags: {
+              param: true,
+              returns: true
+            }
+          }
+        ],
+        'jsdoc/no-types': 'error',
+        'jsdoc/require-jsdoc': [
+          'warn',
+          {
+            contexts: [
+              'ClassDeclaration',
+              'ClassProperty:not([accessibility=/(private|protected)/])',
+              'ExportNamedDeclaration:has(VariableDeclaration)',
+              'FunctionExpression',
+              'MethodDefinition:not([accessibility=/(private|protected)/]) > FunctionExpression',
+              'TSEnumDeclaration',
+              'TSInterfaceDeclaration',
+              'TSMethodSignature',
+              // 'TSPropertySignature',
+              'TSTypeAliasDeclaration'
+            ]
+          }
+        ],
+        'jsdoc/require-param-type': 'off',
+        'jsdoc/require-returns-type': 'off'
+      }
+    },
     {
       files: ['*.js'],
       extends: 'plugin:node/recommended',
@@ -59,5 +129,10 @@ module.exports = {
         'node/no-missing-require': 'off'
       }
     }
-  ]
-}
+  ],
+  settings: {
+    jsdoc: {
+      mode: 'typescript'
+    }
+  }
+})

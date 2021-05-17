@@ -5,18 +5,18 @@ const pool = new DynamicThreadPool(10, 20, './yourWorker.js', {
   errorHandler: e => console.error(e),
   onlineHandler: () => console.log('worker is online')
 })
-pool.emitter.on('FullPool', () => maxReached++)
+pool.emitter.on('busy', () => maxReached++)
 
 const start = Date.now()
 const iterations = 1000
-for (let i = 0; i <= iterations; i++) {
+for (let i = 1; i <= iterations; i++) {
   pool
     .execute({})
     .then(res => {
       resolved++
       if (resolved === iterations) {
         console.log('Time take is ' + (Date.now() - start))
-        return console.log('The pool was full for ' + maxReached + ' times')
+        return console.log('The pool was busy for ' + maxReached + ' times')
       }
       return null
     })

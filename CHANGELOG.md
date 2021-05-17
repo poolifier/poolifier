@@ -5,11 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - not released yet
+## [2.1.0] - 2021-dd-mm
 
 ### Breaking Changes
 
-We changed some internal structures, but you shouldn't be too affected by them as these are internal changes.
+- `AbstractWorker` class `maxInactiveTime`, `killBehavior` and `async` attributes have been removed in favour of the same ones in the worker options `opts` public attribute.
+- `AbstractWorker` class `lastTask` attribute have been renamed to `lastTaskTimestamp`.
+- `AbstractWorker` class `interval` attribute have been renamed to `aliveInterval`.
+
+## [2.0.2] - 2021-12-05
+
+### Bug fixes
+
+- Fix `busy` event emission on fixed pool type
+
+## [2.0.1] - 2021-16-03
+
+### Bug fixes
+
+- Check if pool options are properly set.
+- `busy` event is emitted on all pool types.
+
+## [2.0.0] - 2021-01-03
+
+### Bug fixes
+
+- Now a thread/process by default is not deleted when the task submitted take more time than maxInactiveTime configured (issue #70).
+
+### Breaking Changes
+
+- `FullPool` event is now renamed to `busy`.
+- `maxInactiveTime` on `ThreadWorker` default behavior is now changed, if you want to keep the old behavior set `killBehavior` to `KillBehaviors.HARD`.
+  _Find more details on our JSDoc._
+
+- `maxTasks` option on `FixedThreadPool` and `DynamicThreadPool` is now removed since is no more needed.
+
+- We changed some internal structures, but you shouldn't be too affected by them as these are internal changes.
+
+### Pool options types declaration merge
+
+`FixedThreadPoolOptions` and `DynamicThreadPoolOptions` type declarations have been merged to `PoolOptions<Worker>`.
 
 #### New `export` strategy
 
@@ -26,12 +61,25 @@ But you should always prefer just using
 const { DynamicThreadPool } = require('poolifier')
 ```
 
-#### Internal (protected) methods renaming
+#### New type definitions for input data and response
 
-Those methods are not intended to be used from final users
+For cluster worker and worker-thread pools, you can now only send and receive serializable data.  
+_This is not a limitation by poolifier but NodeJS._
+
+#### Public property replacements
+
+`numWorkers` property is now `numberOfWorkers`
+
+#### Internal (protected) properties and methods renaming
+
+These properties are not intended for end users
+
+- `id` => `nextMessageId`
+
+These methods are not intended for end users
 
 - `_chooseWorker` => `chooseWorker`
-- `_newWorker` => `newWorker`
+- `_newWorker` => `createWorker`
 - `_execute` => `internalExecute`
 - `_chooseWorker` => `chooseWorker`
 - `_checkAlive` => `checkAlive`
