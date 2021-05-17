@@ -27,8 +27,8 @@ module.exports = defineConfig({
     'plugin:import/errors',
     'plugin:import/warnings',
     'plugin:import/typescript',
-    'plugin:prettierx/standardx',
-    'plugin:promise/recommended'
+    'plugin:promise/recommended',
+    'plugin:prettierx/standardx'
   ],
   rules: {
     'no-void': 'off',
