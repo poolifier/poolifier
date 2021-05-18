@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `AbstractWorker` class `maxInactiveTime`, `killBehavior` and `async` attributes have been removed in favour of the same ones in the worker options `opts` public attribute.
 - `AbstractWorker` class `lastTask` attribute have been renamed to `lastTaskTimestamp`.
 - `AbstractWorker` class `interval` attribute have been renamed to `aliveInterval`.
+- `AbstractWorker` class cannot be instantiated without specifying the `mainWorker` argument referencing the main worker.
 
 ## [2.0.2] - 2021-12-05
 
