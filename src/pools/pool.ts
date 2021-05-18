@@ -1,4 +1,4 @@
-import type { WorkerChoiceStrategy } from './selection-strategies'
+import type { WorkerChoiceStrategy } from './selection-strategies/selection-strategies-types'
 
 /**
  * Contract definition for a poolifier pool.

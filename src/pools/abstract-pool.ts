@@ -6,11 +6,9 @@ import { EMPTY_FUNCTION } from '../utils'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { IPoolInternal, TasksUsage } from './pool-internal'
 import { PoolEmitter, PoolType } from './pool-internal'
-import type { WorkerChoiceStrategy } from './selection-strategies'
-import {
-  WorkerChoiceStrategies,
-  WorkerChoiceStrategyContext
-} from './selection-strategies'
+import type { WorkerChoiceStrategy } from './selection-strategies/selection-strategies-types'
+import { WorkerChoiceStrategies } from './selection-strategies/selection-strategies-types'
+import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
 
 /**
  * Callback invoked if the worker raised an error.
