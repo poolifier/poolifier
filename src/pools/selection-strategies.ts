@@ -112,6 +112,7 @@ class LessRecentlyUsedWorkerChoiceStrategy<
 
 /**
  * Selects the next worker with a fair share tasks scheduling algorithm.
+ * Loosely modeled from the fair queueing algorithm: https://en.wikipedia.org/wiki/Fair_queuing.
  *
  * @template Worker Type of worker which manages the strategy.
  * @template Data Type of data sent to the worker. This can only be serializable data.
@@ -122,7 +123,10 @@ class FairShareChoiceStrategy<Worker extends IWorker, Data, Response>
   /**
    *  Worker last virtual task execution end timestamp.
    */
-  private workerLastVirtualTaskFinishTimestamp: Map<Worker, number>
+  private workerLastVirtualTaskFinishTimestamp: Map<Worker, number> = new Map<
+    Worker,
+    number
+  >()
 
   /**
    * Constructs a worker choice strategy that selects based a fair share tasks scheduling algorithm.
@@ -131,9 +135,7 @@ class FairShareChoiceStrategy<Worker extends IWorker, Data, Response>
    */
   public constructor (
     private readonly pool: IPoolInternal<Worker, Data, Response>
-  ) {
-    this.workerLastVirtualTaskFinishTimestamp = new Map<Worker, number>()
-  }
+  ) {}
 
   /** @inheritdoc */
   public choose (): Worker {
