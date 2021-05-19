@@ -447,7 +447,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Compute task run time that the given worker has run.
+   * Compute tasks run time that the given worker has run.
    *
    * @param worker Worker which run task.
    * @param taskRunTime Worker task run time.
