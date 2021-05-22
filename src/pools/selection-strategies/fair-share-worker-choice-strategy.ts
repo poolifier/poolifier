@@ -3,7 +3,7 @@ import type { IPoolInternal } from '../pool-internal'
 import type { IWorkerChoiceStrategy } from './selection-strategies-types'
 
 /**
- * Selects the next worker with a fair share tasks scheduling algorithm.
+ * Selects the next worker with a fair share scheduling algorithm.
  * Loosely modeled after the fair queueing algorithm: https://en.wikipedia.org/wiki/Fair_queuing.
  *
  * @template Worker Type of worker which manages the strategy.
@@ -24,7 +24,7 @@ export class FairShareWorkerChoiceStrategy<
   >()
 
   /**
-   * Constructs a worker choice strategy that selects based a fair share tasks scheduling algorithm.
+   * Constructs a worker choice strategy that selects based a fair share scheduling algorithm.
    *
    * @param pool The pool instance.
    */
