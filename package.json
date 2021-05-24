@@ -70,7 +70,7 @@
     "eslint": "^7.26.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-define-config": "^1.0.8",
-    "eslint-plugin-import": "^2.23.2",
+    "eslint-plugin-import": "^2.23.3",
     "eslint-plugin-jsdoc": "^34.7.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettierx": "^0.18.0",
