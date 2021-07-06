@@ -75,7 +75,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettierx": "^0.18.0",
     "eslint-plugin-promise": "^5.1.0",
-    "eslint-plugin-spellcheck": "0.0.17",
+    "eslint-plugin-spellcheck": "0.0.19",
     "expect": "^27.0.2",
     "microtime": "^3.0.0",
     "mochawesome": "^6.2.2",
