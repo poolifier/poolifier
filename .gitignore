@@ -36,16 +36,23 @@ jspm_packages
 # Optional REPL history
 .node_repl_history
 
-# Project specifics
+# VisualStudioCode
 .vscode/*
 !.vscode/extensions.json
 !.vscode/launch.json
 !.vscode/settings.json
 !.vscode/tasks.json
 
+# Intellij
+/.idea
+/outputs
+/docker/mongo
+build/config.gypi
+
 # Mac
 .DS_Store
 
+# Project specifics
 .history/
 .scannerwork
 lib
