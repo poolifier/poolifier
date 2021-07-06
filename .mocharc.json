@@ -1,8 +1,11 @@
 {
+  "parallel": true,
   "diff": true,
   "package": "./package.json",
   "timeout": 20000,
   "full-trace": true,
   "exit": true,
-  "require": ["source-map-support/register"]
+  "reporter": "mochawesome",
+  "reporter-options": "reportDir=outputs/mochawesome-report,json=false",
+  "require": ["source-map-support/register", "mochawesome/register"]
 }
