@@ -41,7 +41,8 @@ interface IWorkerChoiceStrategy<Worker extends IWorker> {
  * @template Response Type of response of execution. This can only be serializable data.
  */
 class RoundRobinWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
-  implements IWorkerChoiceStrategy<Worker> {
+  implements IWorkerChoiceStrategy<Worker>
+{
   /**
    * Index for the next worker.
    */
@@ -78,7 +79,8 @@ class LessRecentlyUsedWorkerChoiceStrategy<
   Worker extends IWorker,
   Data,
   Response
-> implements IWorkerChoiceStrategy<Worker> {
+> implements IWorkerChoiceStrategy<Worker>
+{
   /**
    * Constructs a worker choice strategy that selects based on less recently used.
    *
@@ -114,7 +116,8 @@ class LessRecentlyUsedWorkerChoiceStrategy<
  * @template Response Type of response of execution. This can only be serializable data.
  */
 class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
-  implements IWorkerChoiceStrategy<Worker> {
+  implements IWorkerChoiceStrategy<Worker>
+{
   private workerChoiceStrategy: IWorkerChoiceStrategy<Worker>
 
   /**
@@ -129,10 +132,11 @@ class DynamicPoolWorkerChoiceStrategy<Worker extends IWorker, Data, Response>
     private createDynamicallyWorkerCallback: () => Worker,
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
-    this.workerChoiceStrategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(
-      this.pool,
-      workerChoiceStrategy
-    )
+    this.workerChoiceStrategy =
+      SelectionStrategiesUtils.getWorkerChoiceStrategy(
+        this.pool,
+        workerChoiceStrategy
+      )
   }
 
   /** @inheritdoc */
@@ -211,9 +215,8 @@ export class WorkerChoiceStrategyContext<
   public setWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
-    this.workerChoiceStrategy = this.getPoolWorkerChoiceStrategy(
-      workerChoiceStrategy
-    )
+    this.workerChoiceStrategy =
+      this.getPoolWorkerChoiceStrategy(workerChoiceStrategy)
   }
 
   /**
