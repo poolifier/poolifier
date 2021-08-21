@@ -13,7 +13,6 @@
     "test": "npm run build && nyc mocha 'tests/**/*.test.js'",
     "test:debug": "npm run build && mocha --no-parallel --inspect 'tests/**/*.test.js'",
     "test:prod": "npm run build:prod && nyc mocha 'tests/**/*.test.js'",
-    "sonar": "sonar-scanner",
     "coverage": "nyc report --reporter=lcov",
     "coverage:html": "nyc report --reporter=html",
     "format": "prettier --loglevel silent --write .; prettierx --write .",
@@ -91,7 +90,6 @@
     "rollup-plugin-istanbul": "^3.0.0",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.30.0",
-    "sonar-scanner": "^3.1.0",
     "source-map-support": "^0.5.19",
     "typedoc": "^0.21.6",
     "typescript": "^4.3.5"
