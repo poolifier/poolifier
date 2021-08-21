@@ -25,15 +25,15 @@ jobs:
           npm run typedoc
 
       - name: Commit files
-        if: "github.repository == 'pioardi/poolifier' && github.ref == 'refs/heads/master'"
+        if: "github.repository == 'poolifier/poolifier' && github.ref == 'refs/heads/master'"
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git commit -m "Generate TypeDoc" -a
 
       - name: Push changes
-        if: "github.repository == 'pioardi/poolifier' && github.ref == 'refs/heads/master'"
+        if: "github.repository == 'poolifier/poolifier' && github.ref == 'refs/heads/master'"
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.USER_TOKEN }}
           branch: master
