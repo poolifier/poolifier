@@ -111,8 +111,7 @@ export abstract class AbstractPool<
   Worker extends IWorker,
   Data = unknown,
   Response = unknown
-> implements IPoolInternal<Worker, Data, Response>
-{
+> implements IPoolInternal<Worker, Data, Response> {
   /** @inheritdoc */
   public readonly workers: Worker[] = []
 

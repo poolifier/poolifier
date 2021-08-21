@@ -58,10 +58,10 @@ jobs:
         if: ${{ contains(steps.package-version.outputs.version, '-') == false }}
         run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
       - name: Publish Beta
         if: ${{ contains(steps.package-version.outputs.version, 'beta') }}
         run: npm publish --tag beta
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

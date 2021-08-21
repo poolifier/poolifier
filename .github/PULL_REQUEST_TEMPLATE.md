@@ -1,6 +1,6 @@
 <!--
   Thanks for contributing to poolifier project.
-  Please be sure to read our [contributing guidelines](https://github.com/pioardi/poolifier/blob/pr-template/CONTRIBUTING.md).
+  Please be sure to read our [contributing guidelines](https://github.com/poolifier/poolifier/blob/pr-template/CONTRIBUTING.md).
 -->
 
 ## PR Checklist

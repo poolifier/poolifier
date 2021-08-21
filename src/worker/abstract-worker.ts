@@ -165,7 +165,7 @@ export abstract class AbstractWorker<
    * @returns Message of the error.
    */
   protected handleError (e: Error | string): string {
-    return e as unknown as string
+    return (e as unknown) as string
   }
 
   /**
