@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pioardi/poolifier.git"
+    "url": "git+https://github.com/poolifier/poolifier.git"
   },
   "keywords": [
     "node",
@@ -55,9 +55,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pioardi/poolifier/issues"
+    "url": "https://github.com/poolifier/poolifier/issues"
   },
-  "homepage": "https://github.com/pioardi/poolifier#readme",
+  "homepage": "https://github.com/poolifier/poolifier#readme",
   "files": [
     "lib"
   ],
