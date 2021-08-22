@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - master
-  pull_request:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    branches:
+      - master
   workflow_dispatch:
     inputs:
       withBenchmark:
@@ -47,9 +50,8 @@ jobs:
           CI: true
 
       - name: Sonar Code Analysis
-        if: "github.repository == 'pioardi/poolifier' && matrix.node-version == '14.x'"
-        run: |
-          npm run sonar
+        if: "github.repository == 'poolifier/poolifier' && matrix.node-version == '14.x'"
+        uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
