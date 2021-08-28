@@ -13,6 +13,14 @@ import {
 } from './selection-strategies'
 
 /**
+ * Callback invoked if the worker has received a message.
+ */
+export type MessageHandler<Worker> = (
+  this: Worker,
+  m: MessageValue<unknown>
+) => void
+
+/**
  * Callback invoked if the worker raised an error.
  */
 export type ErrorHandler<Worker> = (this: Worker, e: Error) => void
@@ -31,6 +39,13 @@ export type ExitHandler<Worker> = (this: Worker, code: number) => void
  * Basic interface that describes the minimum required implementation of listener events for a pool-worker.
  */
 export interface IWorker {
+  /**
+   * Register a listener to the message event.
+   *
+   * @param event `'message'`.
+   * @param handler The message handler.
+   */
+  on(event: 'message', handler: MessageHandler<this>): void
   /**
    * Register a listener to the error event.
    *
@@ -66,6 +81,10 @@ export interface IWorker {
  */
 export interface PoolOptions<Worker> {
   /**
+   * A function that will listen for message event on each worker.
+   */
+  messageHandler?: MessageHandler<Worker>
+  /**
    * A function that will listen for error event on each worker.
    */
   errorHandler?: ErrorHandler<Worker>
@@ -84,7 +103,7 @@ export interface PoolOptions<Worker> {
   /**
    * Pool events emission.
    *
-   * Default to true.
+   * @default true
    */
   enableEvents?: boolean
 }
@@ -295,7 +314,7 @@ export abstract class AbstractPool<
   protected abstract isMain (): boolean
 
   /**
-   * Increase the number of tasks that the given workers has applied.
+   * Increase the number of tasks that the given worker has applied.
    *
    * @param worker Worker whose tasks are increased.
    */
@@ -304,7 +323,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Decrease the number of tasks that the given workers has applied.
+   * Decrease the number of tasks that the given worker has applied.
    *
    * @param worker Worker whose tasks are decreased.
    */
@@ -313,7 +332,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Step the number of tasks that the given workers has applied.
+   * Step the number of tasks that the given worker has applied.
    *
    * @param worker Worker whose tasks are set.
    * @param step Worker number of tasks step.
@@ -403,6 +422,7 @@ export abstract class AbstractPool<
   protected createAndSetupWorker (): Worker {
     const worker: Worker = this.createWorker()
 
+    worker.on('message', this.opts.messageHandler ?? EMPTY_FUNCTION)
     worker.on('error', this.opts.errorHandler ?? EMPTY_FUNCTION)
     worker.on('online', this.opts.onlineHandler ?? EMPTY_FUNCTION)
     worker.on('exit', this.opts.exitHandler ?? EMPTY_FUNCTION)
