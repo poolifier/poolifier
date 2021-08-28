@@ -15,10 +15,7 @@ import {
 /**
  * Callback invoked if the worker has received a message.
  */
-export type MessageHandler<Worker> = (
-  this: Worker,
-  m: MessageValue<unknown>
-) => void
+export type MessageHandler<Worker> = (this: Worker, m: unknown) => void
 
 /**
  * Callback invoked if the worker raised an error.
