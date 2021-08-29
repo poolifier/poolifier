@@ -139,13 +139,22 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
+    expect(pool.opts.messageHandler).toBeUndefined()
+    expect(pool.opts.errorHandler).toBeUndefined()
+    expect(pool.opts.onlineHandler).toBeUndefined()
+    expect(pool.opts.exitHandler).toBeUndefined()
     pool.destroy()
+    const testHandler = () => console.log('test handler executed')
     pool = new FixedThreadPool(
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js',
       {
         workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED,
-        enableEvents: false
+        enableEvents: false,
+        messageHandler: testHandler,
+        errorHandler: testHandler,
+        onlineHandler: testHandler,
+        exitHandler: testHandler
       }
     )
     expect(pool.opts.enableEvents).toBe(false)
@@ -153,6 +162,10 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.LESS_RECENTLY_USED
     )
+    expect(pool.opts.messageHandler).toStrictEqual(testHandler)
+    expect(pool.opts.errorHandler).toStrictEqual(testHandler)
+    expect(pool.opts.onlineHandler).toStrictEqual(testHandler)
+    expect(pool.opts.exitHandler).toStrictEqual(testHandler)
     pool.destroy()
   })
 
