@@ -146,7 +146,7 @@ export abstract class AbstractWorker<
    * @returns Message of the error.
    */
   protected handleError (e: Error | string): string {
-    return e.toString()
+    return e as string
   }
 
   /**
