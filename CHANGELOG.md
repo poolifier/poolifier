@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.1.0] - 2021-dd-mm
+## [2.1.0] - 2021-28-08
+
+### Added
+
+- Add an optional pool option `messageHandler` to `PoolOptions<Worker>` for registering a message handler callback on each worker.
 
 ### Breaking Changes
 
