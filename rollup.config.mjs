@@ -1,4 +1,4 @@
-import typescript from 'rollup-plugin-typescript2'
+import ts from 'rollup-plugin-ts'
 import analyze from 'rollup-plugin-analyzer'
 import { terser } from 'rollup-plugin-terser'
 import del from 'rollup-plugin-delete'
@@ -21,10 +21,11 @@ export default {
   },
   external: ['async_hooks', 'cluster', 'events', 'worker_threads'],
   plugins: [
-    typescript({
+    ts({
       tsconfig: isDevelopmentBuild
         ? 'tsconfig.development.json'
-        : 'tsconfig.json'
+        : 'tsconfig.json',
+      browserslist: false
     }),
     isDevelopmentBuild && istanbul(),
     del({
