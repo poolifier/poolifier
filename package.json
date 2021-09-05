@@ -1,7 +1,7 @@
 {
   "name": "poolifier",
   "version": "2.1.0",
-  "description": "A fast, easy to use Node.js Worker Thread Pool and Cluster Pool implementation",
+  "description": "A fast, easy to use Node.js Worker Thread Pool and Cluster Pool implementation. Test sonar",
   "main": "lib/index.js",
   "scripts": {
     "build": "rollup --config --environment BUILD:development",
