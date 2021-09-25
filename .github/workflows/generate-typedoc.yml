@@ -35,5 +35,5 @@ jobs:
         if: "github.repository == 'poolifier/poolifier' && github.ref == 'refs/heads/master'"
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.USER_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: master

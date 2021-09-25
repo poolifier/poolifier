@@ -11,6 +11,11 @@ import { WorkerChoiceStrategies } from './selection-strategies/selection-strateg
 import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
 
 /**
+ * Callback invoked if the worker has received a message.
+ */
+export type MessageHandler<Worker> = (this: Worker, m: unknown) => void
+
+/**
  * Callback invoked if the worker raised an error.
  */
 export type ErrorHandler<Worker> = (this: Worker, e: Error) => void
@@ -29,6 +34,13 @@ export type ExitHandler<Worker> = (this: Worker, code: number) => void
  * Basic interface that describes the minimum required implementation of listener events for a pool-worker.
  */
 export interface IWorker {
+  /**
+   * Register a listener to the message event.
+   *
+   * @param event `'message'`.
+   * @param handler The message handler.
+   */
+  on(event: 'message', handler: MessageHandler<this>): void
   /**
    * Register a listener to the error event.
    *
@@ -63,6 +75,10 @@ export interface IWorker {
  * Options for a poolifier pool.
  */
 export interface PoolOptions<Worker> {
+  /**
+   * A function that will listen for message event on each worker.
+   */
+  messageHandler?: MessageHandler<Worker>
   /**
    * A function that will listen for error event on each worker.
    */
@@ -410,6 +426,7 @@ export abstract class AbstractPool<
   protected createAndSetupWorker (): Worker {
     const worker: Worker = this.createWorker()
 
+    worker.on('message', this.opts.messageHandler ?? EMPTY_FUNCTION)
     worker.on('error', this.opts.errorHandler ?? EMPTY_FUNCTION)
     worker.on('online', this.opts.onlineHandler ?? EMPTY_FUNCTION)
     worker.on('exit', this.opts.exitHandler ?? EMPTY_FUNCTION)
