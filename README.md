@@ -11,8 +11,8 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/poolifier">
     <img alt="Weekly Downloads" src="https://img.shields.io/npm/dw/poolifier"></a>
-  <a href="https://github.com/pioardi/node-pool/actions">
-    <img alt="Actions Status" src="https://github.com/pioardi/node-pool/workflows/NodeCI/badge.svg"></a>
+  <a href="https://github.com/poolifier/poolifier/actions">
+    <img alt="Actions Status" src="https://github.com/poolifier/poolifier/workflows/NodeCI/badge.svg"></a>
   <a href="https://sonarcloud.io/dashboard?id=pioardi_poolifier">
     <img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=alert_status"></a>
   <a href="https://sonarcloud.io/component_measures/metric/coverage/list?id=pioardi_poolifier">
@@ -245,7 +245,7 @@ But in general, **always profile your application**
 ## Contribute
 
 See guidelines [CONTRIBUTING](CONTRIBUTING.md)  
-Choose your task here [2.0.0](https://github.com/pioardi/poolifier/projects/1), propose an idea, a fix, an improvement.
+Choose your task here [2.0.0](https://github.com/poolifier/poolifier/projects/1), propose an idea, a fix, an improvement.
 
 ## Team
 

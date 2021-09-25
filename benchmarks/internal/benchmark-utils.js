@@ -17,10 +17,12 @@ async function runPoolifierTest (pool, { tasks, workerData }) {
 }
 
 function generateRandomInteger (max, min = 0) {
+  max = Math.floor(max)
   if (min) {
-    return Math.floor(Math.random() * (max - min + 1) + min)
+    min = Math.ceil(min)
+    return Math.floor(Math.random() * (max - min + 1)) + min
   }
-  return Math.floor(Math.random() * max + 1)
+  return Math.floor(Math.random() * (max + 1))
 }
 
 const LIST_FORMATTER = new Intl.ListFormat('en-US', {

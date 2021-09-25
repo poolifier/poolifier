@@ -146,7 +146,7 @@ export abstract class AbstractWorker<
    * @returns Message of the error.
    */
   protected handleError (e: Error | string): string {
-    return (e as unknown) as string
+    return e as string
   }
 
   /**
@@ -163,7 +163,7 @@ export abstract class AbstractWorker<
       const res = fn(value.data)
       this.sendToMainWorker({ data: res, id: value.id })
     } catch (e) {
-      const err = this.handleError(e)
+      const err = this.handleError(e as Error)
       this.sendToMainWorker({ error: err, id: value.id })
     } finally {
       this.lastTaskTimestamp = Date.now()
