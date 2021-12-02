@@ -48,7 +48,7 @@ jobs:
           CI: true
 
       - name: Sonar Code Analysis
-        if: "github.repository == 'poolifier/poolifier' && matrix.node-version == '14.x'"
+        if: "github.repository == 'poolifier/poolifier' && matrix.node-version == '16.x'"
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
