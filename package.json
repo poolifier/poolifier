@@ -80,6 +80,7 @@
     "mocha": "^9.1.3",
     "mochawesome": "^7.0.1",
     "nyc": "^15.1.0",
+    "parse-srcset": "^1.0.2",
     "prettier": "^2.5.1",
     "prettier-plugin-organize-imports": "^2.3.4",
     "prettierx": "^0.19.0",
