@@ -82,7 +82,7 @@
     "nyc": "^15.1.0",
     "prettier": "^2.5.1",
     "prettier-plugin-organize-imports": "^2.3.4",
-    "prettierx": "^0.18.1",
+    "prettierx": "^0.18.3",
     "rollup": "^2.62.0",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",
