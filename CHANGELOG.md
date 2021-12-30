@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking Changes
 
-- Support only NodeJS version 16.x.x
+- Support only NodeJS version 16.x.x for cluster pool: upstream API have changed on that version.
 
 ## [2.1.0] - 2021-29-08
 
