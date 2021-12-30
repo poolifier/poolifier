@@ -1,9 +1,9 @@
-import ts from 'rollup-plugin-ts'
 import analyze from 'rollup-plugin-analyzer'
-import { terser } from 'rollup-plugin-terser'
-import del from 'rollup-plugin-delete'
 import command from 'rollup-plugin-command'
+import del from 'rollup-plugin-delete'
 import istanbul from 'rollup-plugin-istanbul'
+import { terser } from 'rollup-plugin-terser'
+import ts from 'rollup-plugin-ts'
 
 const isDevelopmentBuild = process.env.BUILD === 'development'
 const isAnalyze = process.env.ANALYZE
