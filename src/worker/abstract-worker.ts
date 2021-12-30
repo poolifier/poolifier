@@ -43,7 +43,7 @@ export abstract class AbstractWorker<
     type: string,
     isMain: boolean,
     fn: (data: Data) => Response,
-    protected mainWorker: MainWorker | null,
+    protected mainWorker: MainWorker | undefined | null,
     public readonly opts: WorkerOptions = {
       /**
        * The kill behavior option on this Worker or its default value.
