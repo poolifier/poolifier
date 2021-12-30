@@ -1,5 +1,5 @@
 import type { Worker } from 'cluster'
-import { isMaster, worker } from 'cluster'
+import cluster from 'cluster'
 import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
@@ -29,7 +29,13 @@ export class ClusterWorker<
    * @param opts Options for the worker.
    */
   public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
-    super('worker-cluster-pool:poolifier', isMaster, fn, worker, opts)
+    super(
+      'worker-cluster-pool:poolifier',
+      cluster.isPrimary,
+      fn,
+      cluster.worker,
+      opts
+    )
   }
 
   /** @inheritdoc */
