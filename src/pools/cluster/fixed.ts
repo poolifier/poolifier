@@ -1,4 +1,4 @@
-import { fork, isMaster, setupMaster, Worker } from 'cluster'
+import cluster, { Worker } from 'cluster'
 import type { MessageValue } from '../../utility-types'
 import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
@@ -50,14 +50,14 @@ export class FixedClusterPool<
 
   /** @inheritdoc */
   protected setupHook (): void {
-    setupMaster({
+    cluster.setupPrimary({
       exec: this.filePath
     })
   }
 
   /** @inheritdoc */
   protected isMain (): boolean {
-    return isMaster
+    return cluster.isPrimary
   }
 
   /** @inheritdoc */
@@ -81,7 +81,7 @@ export class FixedClusterPool<
 
   /** @inheritdoc */
   protected createWorker (): Worker {
-    return fork(this.opts.env)
+    return cluster.fork(this.opts.env)
   }
 
   /** @inheritdoc */
