@@ -39,8 +39,8 @@ export class ClusterWorker<
   }
 
   /** @inheritdoc */
-  public get id (): number {
-    return worker.id
+  public get id (): number | undefined {
+    return cluster.worker?.id
   }
 
   /** @inheritdoc */

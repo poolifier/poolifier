@@ -43,7 +43,7 @@ export interface IWorker {
    */
   id?: number
   threadId?: number
-  /*
+  /**
    * Register a listener to the message event.
    *
    * @param event `'message'`.
