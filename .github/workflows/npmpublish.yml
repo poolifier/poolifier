@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: '16.x'
 
       - name: Install
         run: npm ci
@@ -44,7 +44,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: '16.x'
           registry-url: https://registry.npmjs.org/
 
       - name: Read package.json version
@@ -56,9 +56,7 @@ jobs:
 
       - name: Publish Release
         if: ${{ contains(steps.package-version.outputs.version, '-') == false }}
-        run: |
-          npm login
-          npm publish
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
