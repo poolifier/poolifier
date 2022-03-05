@@ -16,8 +16,8 @@
     "coverage": "nyc report --reporter=lcov",
     "coverage:html": "nyc report --reporter=html",
     "format": "prettier --loglevel silent --write .; prettierx --write .",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint . --cache",
+    "lint:fix": "eslint . --cache --fix",
     "typedoc": "typedoc",
     "prepublishOnly": "npm run build:prod"
   },

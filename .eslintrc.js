@@ -112,7 +112,7 @@ module.exports = defineConfig({
       }
     },
     {
-      files: ['*.js'],
+      files: ['**/*.js'],
       extends: 'plugin:node/recommended',
       rules: {
         '@typescript-eslint/no-unused-vars': 'off',
