@@ -53,6 +53,7 @@ build/config.gypi
 .DS_Store
 
 # Project specifics
+.eslintcache
 .history/
 .scannerwork
 lib
