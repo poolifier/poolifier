@@ -65,7 +65,7 @@ Please consult our <a href="#general-guidance">general guidelines</a>
   <span> · </span>
   <a href="#usage">Usage</a>
   <span> · </span>
-  <a href="#node-versions">  Node versions</a>
+  <a href="#node-versions">Node versions</a>
   <span> · </span>
   <a href="#api">API</a>
   <span> · </span>
