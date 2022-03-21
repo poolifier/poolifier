@@ -23,23 +23,13 @@ module.exports = defineConfig({
   extends: [
     'standard',
     'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
-    'plugin:import/typescript',
     'plugin:promise/recommended',
     'plugin:prettierx/standardx'
   ],
   rules: {
     'no-void': 'off',
-
-    // We have some intentionally empty functions
-    '@typescript-eslint/no-empty-function': 'off',
-
-    '@typescript-eslint/no-inferrable-types': [
-      'error',
-      { ignoreProperties: true }
-    ],
 
     'sort-imports': [
       'warn',
@@ -73,9 +63,21 @@ module.exports = defineConfig({
   },
   overrides: [
     {
-      files: ['src/**/*.ts'],
-      extends: 'plugin:jsdoc/recommended',
+      files: ['**/*.ts'],
+      extends: [
+        'plugin:jsdoc/recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:import/typescript'
+      ],
       rules: {
+        // We have some intentionally empty functions
+        '@typescript-eslint/no-empty-function': 'off',
+
+        '@typescript-eslint/no-inferrable-types': [
+          'error',
+          { ignoreProperties: true }
+        ],
+
         'no-useless-constructor': 'off',
 
         'jsdoc/match-description': [
@@ -114,17 +116,14 @@ module.exports = defineConfig({
       }
     },
     {
-      files: ['*.js'],
-      extends: 'plugin:node/recommended',
-      rules: {
-        '@typescript-eslint/no-unused-vars': 'off',
-        '@typescript-eslint/no-var-requires': 'off'
-      }
+      files: ['**/*.js'],
+      extends: 'plugin:node/recommended'
     },
     {
       files: ['examples/typescript/**/*.ts'],
       rules: {
-        'import/no-unresolved': 'off'
+        'import/no-unresolved': 'off',
+        'jsdoc/require-jsdoc': 'off'
       }
     },
     {
