@@ -18,18 +18,18 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['12.x', '14.x', '16.x']
+        node: ['12.x', '14.x', '16.x']
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis. This is needed for better sonar
 
-      - name: Set node version to ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: Set node version to ${{ matrix.node }}
+        uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node }}
 
       - name: Install
         run: npm ci
@@ -49,7 +49,7 @@ jobs:
           CI: true
 
       - name: Sonar Code Analysis
-        if: "github.repository == 'poolifier/poolifier' && matrix.node-version == '16.x'"
+        if: "github.repository == 'poolifier/poolifier' && matrix.node == '16.x'"
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
