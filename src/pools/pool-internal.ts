@@ -1,4 +1,6 @@
 import EventEmitter from 'events'
+import type { WorkerUsage } from '../utility-types'
+import type { CircularArray } from '../worker/circular-array'
 import type { IWorker } from './abstract-pool'
 import type { IPool } from './pool'
 
@@ -93,4 +95,12 @@ export interface IPoolInternal<
    * @returns A worker tasks usage map entry with a free worker if there was one, otherwise `false`.
    */
   findFreeWorkerTasksUsageMapEntry(): [Worker, TasksUsage] | false
+}
+
+/**
+ * Worker usage history.
+ */
+export interface WorkerUsageHistory {
+  workerId?: number
+  usageHistory?: CircularArray<WorkerUsage>
 }

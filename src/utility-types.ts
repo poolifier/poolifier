@@ -1,4 +1,4 @@
-import type { Worker } from 'cluster'
+import type { Worker as ClusterWorker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
 import type { IWorker } from './pools/abstract-pool'
 import type { KillBehavior } from './worker/worker-options'
@@ -13,7 +13,7 @@ export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
  */
 export interface MessageValue<
   Data = unknown,
-  MainWorker extends Worker | MessagePort | unknown = unknown
+  MainWorker extends ClusterWorker | MessagePort | unknown = unknown
 > {
   /**
    * Input data that will be passed to the worker.
@@ -65,4 +65,18 @@ export interface PromiseWorkerResponseWrapper<
    * The worker that has the assigned task.
    */
   readonly worker: Worker
+}
+
+/**
+ * Worker usage.
+ */
+export interface WorkerUsage {
+  taskId: number
+  timestamp: number
+  /**
+   * Task run time in milliseconds.
+   */
+  taskRunTime: number
+  cpu: NodeJS.CpuUsage
+  memory: NodeJS.MemoryUsage
 }

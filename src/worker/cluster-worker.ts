@@ -39,6 +39,11 @@ export class ClusterWorker<
   }
 
   /** @inheritdoc */
+  public get id (): number | undefined {
+    return cluster.worker?.id
+  }
+
+  /** @inheritdoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
     this.getMainWorker().send(message)
   }

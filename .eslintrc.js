@@ -45,12 +45,14 @@ module.exports = defineConfig({
         skipWords: [
           'christopher',
           'comparator',
+          'cpu',
           'ecma',
           'enum',
           'inheritdoc',
           'jsdoc',
           'poolifier',
           'readonly',
+          'resize',
           'serializable',
           'unregister',
           'workerpool'
