@@ -22,6 +22,10 @@ export abstract class AbstractWorker<
   Response = unknown
 > extends AsyncResource {
   /**
+   * Options for the worker.
+   */
+  public readonly opts: WorkerOptions
+  /**
    * Timestamp of the last task processed by this worker.
    */
   protected lastTaskTimestamp: number
@@ -44,7 +48,7 @@ export abstract class AbstractWorker<
     isMain: boolean,
     fn: (data: Data) => Response,
     protected mainWorker: MainWorker | undefined | null,
-    public readonly opts: WorkerOptions = {
+    opts: WorkerOptions = {
       /**
        * The kill behavior option on this Worker or its default value.
        */
@@ -57,6 +61,7 @@ export abstract class AbstractWorker<
     }
   ) {
     super(type)
+    this.opts = opts
     this.checkFunctionInput(fn)
     this.checkWorkerOptions(this.opts)
     this.lastTaskTimestamp = Date.now()
