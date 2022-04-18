@@ -22,10 +22,6 @@ export abstract class AbstractWorker<
   Response = unknown
 > extends AsyncResource {
   /**
-   * Options for the worker.
-   */
-  public readonly opts: WorkerOptions
-  /**
    * Timestamp of the last task processed by this worker.
    */
   protected lastTaskTimestamp: number
@@ -33,6 +29,10 @@ export abstract class AbstractWorker<
    * Handler Id of the `aliveInterval` worker alive check.
    */
   protected readonly aliveInterval?: NodeJS.Timeout
+  /**
+   * Options for the worker.
+   */
+  public readonly opts: WorkerOptions
 
   /**
    * Constructs a new poolifier worker.
