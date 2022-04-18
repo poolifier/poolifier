@@ -66,4 +66,10 @@ export interface WorkerOptions {
    * @default KillBehaviors.SOFT
    */
   killBehavior?: KillBehavior
+  /**
+   * Enable worker usage historic.
+   *
+   * @default false
+   */
+  usage?: boolean
 }

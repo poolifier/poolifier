@@ -1,5 +1,5 @@
 import type { MessagePort } from 'worker_threads'
-import { isMainThread, parentPort } from 'worker_threads'
+import { isMainThread, parentPort, threadId } from 'worker_threads'
 import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
@@ -30,6 +30,11 @@ export class ThreadWorker<
    */
   public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
     super('worker-thread-pool:poolifier', isMainThread, fn, parentPort, opts)
+  }
+
+  /** @inheritdoc */
+  public get id (): number {
+    return threadId
   }
 
   /** @inheritdoc */

@@ -1,8 +1,9 @@
 import { AsyncResource } from 'async_hooks'
 import type { Worker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
-import type { MessageValue } from '../utility-types'
+import type { MessageValue, WorkerUsage } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
+import { CircularArray } from './circular-array'
 import type { KillBehavior, WorkerOptions } from './worker-options'
 import { KillBehaviors } from './worker-options'
 
@@ -22,6 +23,10 @@ export abstract class AbstractWorker<
   Response = unknown
 > extends AsyncResource {
   /**
+   * Id of the last task processed by this worker.
+   */
+  protected lastTaskId: number
+  /**
    * Timestamp of the last task processed by this worker.
    */
   protected lastTaskTimestamp: number
@@ -29,7 +34,14 @@ export abstract class AbstractWorker<
    * Handler Id of the `aliveInterval` worker alive check.
    */
   protected readonly aliveInterval?: NodeJS.Timeout
-
+  /**
+   * Options for the worker.
+   */
+  public readonly opts: WorkerOptions
+  /**
+   * Worker usage circular history.
+   */
+  public readonly usageHistory?: CircularArray<WorkerUsage>
   /**
    * Constructs a new poolifier worker.
    *
@@ -44,7 +56,7 @@ export abstract class AbstractWorker<
     isMain: boolean,
     fn: (data: Data) => Response,
     protected mainWorker: MainWorker | undefined | null,
-    public readonly opts: WorkerOptions = {
+    opts: WorkerOptions = {
       /**
        * The kill behavior option on this Worker or its default value.
        */
@@ -57,9 +69,14 @@ export abstract class AbstractWorker<
     }
   ) {
     super(type)
+    this.opts = opts
     this.checkFunctionInput(fn)
     this.checkWorkerOptions(this.opts)
+    this.lastTaskId = 0
     this.lastTaskTimestamp = Date.now()
+    if (this.opts.usage) {
+      this.usageHistory = new CircularArray<WorkerUsage>()
+    }
     // Keep the worker active
     if (!isMain) {
       this.aliveInterval = setInterval(
@@ -71,6 +88,7 @@ export abstract class AbstractWorker<
 
     this.mainWorker?.on('message', (value: MessageValue<Data, MainWorker>) => {
       if (value?.data && value.id) {
+        this.lastTaskId++
         // Here you will receive messages
         if (this.opts.async) {
           this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
@@ -97,6 +115,7 @@ export abstract class AbstractWorker<
      * Whether the worker is working asynchronously or not.
      */
     this.opts.async = !!opts.async
+    this.opts.usage = !!opts.usage
   }
 
   /**
@@ -107,6 +126,11 @@ export abstract class AbstractWorker<
   private checkFunctionInput (fn: (data: Data) => Response): void {
     if (!fn) throw new Error('fn parameter is mandatory')
   }
+
+  /**
+   * Worker identifier.
+   */
+  protected abstract get id (): number | undefined
 
   /**
    * Returns the main worker.
@@ -160,7 +184,9 @@ export abstract class AbstractWorker<
     value: MessageValue<Data>
   ): void {
     try {
+      const startTaskTimestamp = this.beforeRunHook()
       const res = fn(value.data)
+      this.afterRunHook(startTaskTimestamp)
       this.sendToMainWorker({ data: res, id: value.id })
     } catch (e) {
       const err = this.handleError(e as Error)
@@ -180,12 +206,11 @@ export abstract class AbstractWorker<
     fn: (data?: Data) => Promise<Response>,
     value: MessageValue<Data>
   ): void {
+    const startTaskTimestamp = this.beforeRunHook()
     fn(value.data)
       .then(res => {
-        this.sendToMainWorker({
-          data: res,
-          id: value.id
-        })
+        this.afterRunHook(startTaskTimestamp)
+        this.sendToMainWorker({ data: res, id: value.id })
         return null
       })
       .catch(e => {
@@ -199,5 +224,30 @@ export abstract class AbstractWorker<
         this.lastTaskTimestamp = Date.now()
       })
       .catch(EMPTY_FUNCTION)
+  }
+
+  private beforeRunHook (): number {
+    if (this.opts.usage) {
+      this.addUsageSample()
+      return Date.now()
+    }
+    return 0
+  }
+
+  private afterRunHook (startTaskTimestamp: number): void {
+    if (this.opts.usage) {
+      const taskRunTime = Date.now() - startTaskTimestamp
+      this.addUsageSample(taskRunTime)
+    }
+  }
+
+  private addUsageSample (taskRunTime = 0): void {
+    this.usageHistory?.push({
+      taskId: this.lastTaskId,
+      timestamp: Date.now(),
+      taskRunTime: taskRunTime,
+      cpu: process.cpuUsage(),
+      memory: process.memoryUsage()
+    })
   }
 }
