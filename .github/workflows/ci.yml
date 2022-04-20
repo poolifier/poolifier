@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        node: ['14.x', '16.x', '17.x']
+        node: ['14.x', '16.x', '18.x']
 
     steps:
       - name: Checkout
