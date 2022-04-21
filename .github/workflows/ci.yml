@@ -34,6 +34,7 @@ jobs:
       - name: Install
         if: matrix.node == '18.x'
         run: npm ci --legacy-peer-deps
+      - name: Install
         if: matrix.node != '18.x'
         run: npm ci
 
