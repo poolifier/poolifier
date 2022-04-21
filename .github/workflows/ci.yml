@@ -32,6 +32,9 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install
+        if: matrix.node == '18.x'
+        run: npm ci --legacy-peer-deps
+        if: matrix.node != '18.x'
         run: npm ci
 
       - name: Build
