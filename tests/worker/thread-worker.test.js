@@ -7,7 +7,7 @@ const postMessage = function () {
 }
 class SpyWorker extends ThreadWorker {
   getMainWorker () {
-    return { postMessage: postMessage }
+    return { postMessage }
   }
 }
 
