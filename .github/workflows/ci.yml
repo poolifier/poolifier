@@ -41,7 +41,7 @@ jobs:
         run: npm run lint
 
       - name: Tests & Coverage
-        if: matrix.node-version == '16.x'
+        if: matrix.node == '16.x'
         run: |
           npm run test
           npm run coverage

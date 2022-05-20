@@ -81,9 +81,9 @@ module.exports = defineConfig({
         'jsdoc/match-description': [
           'warn',
           {
-            mainDescription:
-              '/^[A-Z`].+?(\\.|:)(\\n\\n.*((\\n{1,2}- .+)|(_.+_)|`.+`|\\n\\n---))?$/us',
-            matchDescription: '^[A-Z`].+(\\.|`.+`)$',
+            // mainDescription:
+            //   '/^[A-Z`].+?(\\.|:)(\\n\\n.*((\\n{1,2}- .+)|(_.+_)|`.+`|\\n\\n---))?$/us',
+            // matchDescription: '^[A-Z`].+(\\.|`.+`)$',
             contexts: ['any'],
             tags: {
               param: true,
