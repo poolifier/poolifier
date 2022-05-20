@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        node: ['14.x', '16.x', '17.x']
+        node: ['14.x', '16.x', '18.x']
 
     steps:
       - name: Checkout
@@ -32,7 +32,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build
         run: npm run build --if-present
@@ -41,7 +41,7 @@ jobs:
         run: npm run lint
 
       - name: Tests & Coverage
-        if: matrix.node-version == '16.x'
+        if: matrix.node == '16.x'
         run: |
           npm run test
           npm run coverage
