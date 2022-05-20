@@ -34,7 +34,7 @@ export interface MessageValue<
   /**
    * Reference to main worker.
    *
-   * _Only for internal use_
+   * Only for internal use.
    */
   readonly parent?: MainWorker
 }
