@@ -23,8 +23,8 @@ module.exports = defineConfig({
   extends: [
     'standard',
     'eslint:recommended',
-    'plugin:import/errors',
-    'plugin:import/warnings',
+    'plugin:import/recommended',
+    'plugin:jsdoc/recommended',
     'plugin:promise/recommended',
     'plugin:prettierx/standardx'
   ],
@@ -63,7 +63,6 @@ module.exports = defineConfig({
     {
       files: ['**/*.ts'],
       extends: [
-        'plugin:jsdoc/recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:import/typescript'
       ],
@@ -118,16 +117,29 @@ module.exports = defineConfig({
       extends: 'plugin:node/recommended'
     },
     {
-      files: ['examples/typescript/**/*.ts'],
+      files: ['tests/**/*.js'],
       rules: {
-        'import/no-unresolved': 'off',
+        'jsdoc/require-jsdoc': 'off'
+      }
+    },
+    {
+      files: ['benchmarks/**/*.js'],
+      rules: {
         'jsdoc/require-jsdoc': 'off'
       }
     },
     {
       files: ['examples/**/*.js'],
       rules: {
-        'node/no-missing-require': 'off'
+        'node/no-missing-require': 'off',
+        'jsdoc/require-jsdoc': 'off'
+      }
+    },
+    {
+      files: ['examples/typescript/**/*.ts'],
+      rules: {
+        'import/no-unresolved': 'off',
+        'jsdoc/require-jsdoc': 'off'
       }
     }
   ],
