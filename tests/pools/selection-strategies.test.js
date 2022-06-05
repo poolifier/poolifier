@@ -9,6 +9,10 @@ describe('Selection strategies test suite', () => {
   it('Verify that WorkerChoiceStrategies enumeration provides string values', () => {
     expect(WorkerChoiceStrategies.ROUND_ROBIN).toBe('ROUND_ROBIN')
     expect(WorkerChoiceStrategies.LESS_RECENTLY_USED).toBe('LESS_RECENTLY_USED')
+    expect(WorkerChoiceStrategies.FAIR_SHARE).toBe('FAIR_SHARE')
+    expect(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN).toBe(
+      'WEIGHTED_ROUND_ROBIN'
+    )
   })
 
   it('Verify ROUND_ROBIN strategy is the default at pool creation', async () => {
@@ -139,6 +143,134 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
     )
     // TODO: Create a better test to cover `LessRecentlyUsedWorkerChoiceStrategy#choose`
+    const promises = []
+    for (let i = 0; i < max * 2; i++) {
+      promises.push(pool.execute({ test: 'test' }))
+    }
+    await Promise.all(promises)
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify FAIR_SHARE strategy is taken at pool creation', async () => {
+    const max = 3
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
+    )
+    expect(pool.opts.workerChoiceStrategy).toBe(
+      WorkerChoiceStrategies.FAIR_SHARE
+    )
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify FAIR_SHARE strategy can be set after pool creation', async () => {
+    const max = 3
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
+    expect(pool.opts.workerChoiceStrategy).toBe(
+      WorkerChoiceStrategies.FAIR_SHARE
+    )
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify FAIR_SHARE strategy can be run in a fixed pool', async () => {
+    const max = 3
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
+    )
+    // TODO: Create a better test to cover `FairShareChoiceStrategy#choose`
+    const promises = []
+    for (let i = 0; i < max * 2; i++) {
+      promises.push(pool.execute({ test: 'test' }))
+    }
+    await Promise.all(promises)
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify FAIR_SHARE strategy can be run in a dynamic pool', async () => {
+    const min = 0
+    const max = 3
+    const pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
+    )
+    // TODO: Create a better test to cover `FairShareChoiceStrategy#choose`
+    const promises = []
+    for (let i = 0; i < max * 2; i++) {
+      promises.push(pool.execute({ test: 'test' }))
+    }
+    await Promise.all(promises)
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify WEIGHTED_ROUND_ROBIN strategy is taken at pool creation', async () => {
+    const max = 3
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
+    )
+    expect(pool.opts.workerChoiceStrategy).toBe(
+      WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+    )
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify WEIGHTED_ROUND_ROBIN strategy can be set after pool creation', async () => {
+    const max = 3
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
+    expect(pool.opts.workerChoiceStrategy).toBe(
+      WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+    )
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify WEIGHTED_ROUND_ROBIN strategy can be run in a fixed pool', async () => {
+    const max = 3
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
+    )
+    // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
+    const promises = []
+    for (let i = 0; i < max * 2; i++) {
+      promises.push(pool.execute({ test: 'test' }))
+    }
+    await Promise.all(promises)
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify WEIGHTED_ROUND_ROBIN strategy can be run in a dynamic pool', async () => {
+    const min = 0
+    const max = 3
+    const pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
+    )
+    // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
     const promises = []
     for (let i = 0; i < max * 2; i++) {
       promises.push(pool.execute({ test: 'test' }))

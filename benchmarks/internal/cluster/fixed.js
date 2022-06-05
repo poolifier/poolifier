@@ -18,6 +18,12 @@ const fixedPoolLessRecentlyUsed = new FixedClusterPool(
   { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
 )
 
+const fixedPoolFairShare = new FixedClusterPool(
+  size,
+  './benchmarks/internal/cluster/worker.js',
+  { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
+)
+
 async function fixedClusterTest (
   { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
 ) {
@@ -30,4 +36,14 @@ async function fixedClusterTestLessRecentlyUsed (
   return runPoolifierTest(fixedPoolLessRecentlyUsed, { tasks, workerData })
 }
 
-module.exports = { fixedClusterTest, fixedClusterTestLessRecentlyUsed }
+async function fixedClusterTestFairShare (
+  { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
+) {
+  return runPoolifierTest(fixedPoolFairShare, { tasks, workerData })
+}
+
+module.exports = {
+  fixedClusterTest,
+  fixedClusterTestFairShare,
+  fixedClusterTestLessRecentlyUsed
+}

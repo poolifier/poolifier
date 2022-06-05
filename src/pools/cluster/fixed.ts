@@ -1,8 +1,8 @@
 import type { Worker } from 'cluster'
 import cluster from 'cluster'
 import type { MessageValue } from '../../utility-types'
-import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
+import type { PoolOptions } from '../pool'
 import { PoolType } from '../pool-internal'
 
 /**
@@ -59,6 +59,16 @@ export class FixedClusterPool<
   /** @inheritdoc */
   protected isMain (): boolean {
     return cluster.isPrimary
+  }
+
+  /** @inheritdoc */
+  public getWorkerRunningTasks (worker: Worker): number {
+    return this.workersTasksUsage.get(worker)?.running ?? 0
+  }
+
+  /** @inheritdoc */
+  public getWorkerAverageTasksRunTime (worker: Worker): number {
+    return this.workersTasksUsage.get(worker)?.avgRunTime ?? 0
   }
 
   /** @inheritdoc */

@@ -1,4 +1,42 @@
-import type { WorkerChoiceStrategy } from './selection-strategies'
+import type {
+  ErrorHandler,
+  ExitHandler,
+  MessageHandler,
+  OnlineHandler
+} from './pool-worker'
+import type { WorkerChoiceStrategy } from './selection-strategies/selection-strategies-types'
+
+/**
+ * Options for a poolifier pool.
+ */
+export interface PoolOptions<Worker> {
+  /**
+   * A function that will listen for message event on each worker.
+   */
+  messageHandler?: MessageHandler<Worker>
+  /**
+   * A function that will listen for error event on each worker.
+   */
+  errorHandler?: ErrorHandler<Worker>
+  /**
+   * A function that will listen for online event on each worker.
+   */
+  onlineHandler?: OnlineHandler<Worker>
+  /**
+   * A function that will listen for exit event on each worker.
+   */
+  exitHandler?: ExitHandler<Worker>
+  /**
+   * The work choice strategy to use in this pool.
+   */
+  workerChoiceStrategy?: WorkerChoiceStrategy
+  /**
+   * Pool events emission.
+   *
+   * @default true
+   */
+  enableEvents?: boolean
+}
 
 /**
  * Contract definition for a poolifier pool.

@@ -20,6 +20,13 @@ const dynamicPoolLessRecentlyUsed = new DynamicClusterPool(
   { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
 )
 
+const dynamicPoolFairShare = new DynamicClusterPool(
+  size / 2,
+  size * 3,
+  './benchmarks/internal/cluster/worker.js',
+  { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
+)
+
 async function dynamicClusterTest (
   { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
 ) {
@@ -32,7 +39,14 @@ async function dynamicClusterTestLessRecentlyUsed (
   return runPoolifierTest(dynamicPoolLessRecentlyUsed, { tasks, workerData })
 }
 
+async function dynamicClusterTestFairShare (
+  { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
+) {
+  return runPoolifierTest(dynamicPoolFairShare, { tasks, workerData })
+}
+
 module.exports = {
   dynamicClusterTest,
+  dynamicClusterTestFairShare,
   dynamicClusterTestLessRecentlyUsed
 }

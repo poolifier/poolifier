@@ -20,6 +20,13 @@ const dynamicPoolLessRecentlyUsed = new DynamicThreadPool(
   { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
 )
 
+const dynamicPoolFairShare = new DynamicThreadPool(
+  size / 2,
+  size * 3,
+  './benchmarks/internal/thread/worker.js',
+  { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
+)
+
 async function dynamicThreadTest (
   { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
 ) {
@@ -32,7 +39,14 @@ async function dynamicThreadTestLessRecentlyUsed (
   return runPoolifierTest(dynamicPoolLessRecentlyUsed, { tasks, workerData })
 }
 
+async function dynamicThreadTestFairShare (
+  { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
+) {
+  return runPoolifierTest(dynamicPoolFairShare, { tasks, workerData })
+}
+
 module.exports = {
   dynamicThreadTest,
+  dynamicThreadTestFairShare,
   dynamicThreadTestLessRecentlyUsed
 }

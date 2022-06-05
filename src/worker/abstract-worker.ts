@@ -1,8 +1,9 @@
 import { AsyncResource } from 'async_hooks'
 import type { Worker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
-import type { MessageValue } from '../utility-types'
+import type { MessageValue, WorkerUsage } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
+import { CircularArray } from './circular-array'
 import type { KillBehavior, WorkerOptions } from './worker-options'
 import { KillBehaviors } from './worker-options'
 
@@ -22,6 +23,10 @@ export abstract class AbstractWorker<
   Response = unknown
 > extends AsyncResource {
   /**
+   * Id of the last task processed by this worker.
+   */
+  protected lastTaskId: number
+  /**
    * Timestamp of the last task processed by this worker.
    */
   protected lastTaskTimestamp: number
@@ -33,7 +38,10 @@ export abstract class AbstractWorker<
    * Options for the worker.
    */
   public readonly opts: WorkerOptions
-
+  /**
+   * Worker usage circular history.
+   */
+  public readonly usageHistory?: CircularArray<WorkerUsage>
   /**
    * Constructs a new poolifier worker.
    *
@@ -64,7 +72,11 @@ export abstract class AbstractWorker<
     this.opts = opts
     this.checkFunctionInput(fn)
     this.checkWorkerOptions(this.opts)
+    this.lastTaskId = 0
     this.lastTaskTimestamp = Date.now()
+    if (this.opts.usage) {
+      this.usageHistory = new CircularArray<WorkerUsage>()
+    }
     // Keep the worker active
     if (!isMain) {
       this.aliveInterval = setInterval(
@@ -75,23 +87,34 @@ export abstract class AbstractWorker<
     }
 
     this.mainWorker?.on('message', (value: MessageValue<Data, MainWorker>) => {
-      if (value?.data && value.id) {
-        // Here you will receive messages
-        if (this.opts.async) {
-          this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
-        } else {
-          this.runInAsyncScope(this.run.bind(this), this, fn, value)
-        }
-      } else if (value.parent) {
-        // Save a reference of the main worker to communicate with it
-        // This will be received once
-        this.mainWorker = value.parent
-      } else if (value.kill) {
-        // Here is time to kill this worker, just clearing the interval
-        if (this.aliveInterval) clearInterval(this.aliveInterval)
-        this.emitDestroy()
-      }
+      this.messageListener(value, fn)
     })
+  }
+
+  protected messageListener (
+    value: MessageValue<Data, MainWorker>,
+    fn: (data: Data) => Response
+  ): void {
+    if (
+      value.data !== undefined &&
+      value.id !== undefined &&
+      value.workerId !== undefined
+    ) {
+      // Here you will receive messages
+      if (this.opts.async) {
+        this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
+      } else {
+        this.runInAsyncScope(this.run.bind(this), this, fn, value)
+      }
+    } else if (value.parent !== undefined) {
+      // Save a reference of the main worker to communicate with it
+      // This will be received once
+      this.mainWorker = value.parent
+    } else if (value.kill !== undefined) {
+      // Here is time to kill this worker, just clearing the interval
+      if (this.aliveInterval) clearInterval(this.aliveInterval)
+      this.emitDestroy()
+    }
   }
 
   private checkWorkerOptions (opts: WorkerOptions) {
@@ -102,6 +125,7 @@ export abstract class AbstractWorker<
      * Whether the worker is working asynchronously or not.
      */
     this.opts.async = !!opts.async
+    this.opts.usage = !!opts.usage
   }
 
   /**
@@ -112,6 +136,11 @@ export abstract class AbstractWorker<
   private checkFunctionInput (fn: (data: Data) => Response): void {
     if (!fn) throw new Error('fn parameter is mandatory')
   }
+
+  /**
+   * Worker identifier.
+   */
+  protected abstract get id (): number | undefined
 
   /**
    * Returns the main worker.
@@ -165,11 +194,22 @@ export abstract class AbstractWorker<
     value: MessageValue<Data>
   ): void {
     try {
+      this.beforeRunHook(value.workerId)
+      const startTaskTimestamp = Date.now()
       const res = fn(value.data)
-      this.sendToMainWorker({ data: res, id: value.id })
+      const taskRunTime = Date.now() - startTaskTimestamp
+      this.afterRunHook(value.workerId, taskRunTime)
+      this.sendToMainWorker({
+        data: res,
+        id: value.id,
+        taskRunTime: taskRunTime
+      })
     } catch (e) {
       const err = this.handleError(e as Error)
-      this.sendToMainWorker({ error: err, id: value.id })
+      this.sendToMainWorker({
+        error: err,
+        id: value.id
+      })
     } finally {
       this.lastTaskTimestamp = Date.now()
     }
@@ -185,11 +225,16 @@ export abstract class AbstractWorker<
     fn: (data?: Data) => Promise<Response>,
     value: MessageValue<Data>
   ): void {
+    this.beforeRunHook(value.workerId)
+    const startTaskTimestamp = Date.now()
     fn(value.data)
       .then(res => {
+        const taskRunTime = Date.now() - startTaskTimestamp
+        this.afterRunHook(value.workerId, taskRunTime)
         this.sendToMainWorker({
           data: res,
-          id: value.id
+          id: value.id,
+          taskRunTime: taskRunTime
         })
         return null
       })
@@ -204,5 +249,32 @@ export abstract class AbstractWorker<
         this.lastTaskTimestamp = Date.now()
       })
       .catch(EMPTY_FUNCTION)
+  }
+
+  /**
+   * Hook executed before a task is run.
+   * Can be overridden.
+   *
+   * @param workerId The worker index.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected beforeRunHook (workerId: number | undefined): void {
+    // Can be overridden
+  }
+
+  /**
+   * Hook executed after a task is run.
+   * Can be overridden.
+   *
+   * @param workerId The worker index.
+   * @param taskRunTime The task tun time.
+   */
+  protected afterRunHook (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    workerId: number | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    taskRunTime: number
+  ): void {
+    // Can be overridden
   }
 }

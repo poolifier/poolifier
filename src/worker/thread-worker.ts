@@ -1,7 +1,8 @@
 import type { MessagePort } from 'worker_threads'
-import { isMainThread, parentPort } from 'worker_threads'
+import { isMainThread, parentPort, threadId } from 'worker_threads'
 import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
+import { SharedUsage } from './shared-usage'
 import type { WorkerOptions } from './worker-options'
 
 /**
@@ -23,6 +24,11 @@ export class ThreadWorker<
   Response = unknown
 > extends AbstractWorker<MessagePort, Data, Response> {
   /**
+   * Tasks shared usage statistics.
+   */
+  private tasksSharedUsage!: SharedUsage
+
+  /**
    * Constructs a new poolifier thread worker.
    *
    * @param fn Function processed by the worker when the pool's `execution` function is invoked.
@@ -32,8 +38,64 @@ export class ThreadWorker<
     super('worker-thread-pool:poolifier', isMainThread, fn, parentPort, opts)
   }
 
+  protected messageListener (
+    value: MessageValue<Data, MessagePort>,
+    fn: (data: Data) => Response
+  ): void {
+    super.messageListener(value, fn)
+    if (
+      value.numberOfWorkers !== undefined &&
+      value.tasksSharedUsage !== undefined
+    ) {
+      if (!this.tasksSharedUsage) {
+        this.tasksSharedUsage = new SharedUsage(
+          value.numberOfWorkers,
+          value.tasksSharedUsage
+        )
+      }
+    }
+  }
+
+  /** @inheritdoc */
+  public get id (): number {
+    return threadId
+  }
+
   /** @inheritdoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
     this.getMainWorker().postMessage(message)
+  }
+
+  /** @inheritdoc */
+  protected beforeRunHook (workerId: number | undefined): void {
+    if (!this.tasksSharedUsage) {
+      console.log('UNDEFINED')
+      // this.tasksSharedUsage.consoleDump()
+    }
+    this.tasksSharedUsage[`worker${workerId}-running`]++
+    this.tasksSharedUsage.consoleDump()
+  }
+
+  /** @inheritdoc */
+  protected afterRunHook (
+    workerId: number | undefined,
+    taskRunTime: number
+  ): void {
+    this.tasksSharedUsage[`worker${workerId}-running`]--
+    this.tasksSharedUsage[`worker${workerId}-run`]++
+    // this.tasksSharedUsage.consoleDump()
+    this.updateWorkerTasksRunTime(workerId, taskRunTime)
+  }
+
+  private updateWorkerTasksRunTime (
+    workerId: number | undefined,
+    taskRunTime: number
+  ) {
+    this.tasksSharedUsage[`worker${workerId}-runTime`] += taskRunTime
+    if (this.tasksSharedUsage[`worker${workerId}-run`] !== 0) {
+      this.tasksSharedUsage[`worker${workerId}-avgRunTime`] =
+        this.tasksSharedUsage[`worker${workerId}-runTime`] /
+        this.tasksSharedUsage[`worker${workerId}-run`]
+    }
   }
 }

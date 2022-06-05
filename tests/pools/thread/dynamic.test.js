@@ -26,12 +26,13 @@ describe('Dynamic thread pool test suite', () => {
     for (let i = 0; i < max * 2; i++) {
       promises.push(pool.execute({ test: 'test' }))
     }
-    expect(pool.workers.length).toBe(max)
+    expect(pool.workers.length).toBeLessThanOrEqual(max)
+    expect(pool.workers.length).toBeGreaterThan(min)
     // The `busy` event is triggered when the number of submitted tasks at once reach the max number of workers in the dynamic pool.
     // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the dynamic pool.
     expect(poolBusy).toBe(max + 1)
-    const res = await TestUtils.waitExits(pool, max - min)
-    expect(res).toBe(max - min)
+    const numberOfExitEvents = await TestUtils.waitExits(pool, max - min)
+    expect(numberOfExitEvents).toBe(max - min)
   })
 
   it('Verify scale thread up and down is working', async () => {
@@ -51,14 +52,10 @@ describe('Dynamic thread pool test suite', () => {
   })
 
   it('Shutdown test', async () => {
-    let closedThreads = 0
-    pool.workers.forEach(w => {
-      w.on('exit', () => {
-        closedThreads++
-      })
-    })
+    const exitPromise = TestUtils.waitExits(pool, min)
     await pool.destroy()
-    expect(closedThreads).toBe(min)
+    const numberOfExitEvents = await exitPromise
+    expect(numberOfExitEvents).toBe(min)
   })
 
   it('Validation of inputs test', () => {
