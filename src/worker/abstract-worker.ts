@@ -1,9 +1,8 @@
 import { AsyncResource } from 'async_hooks'
 import type { Worker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
-import type { MessageValue, WorkerUsage } from '../utility-types'
+import type { MessageValue } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
-import { CircularArray } from './circular-array'
 import type { KillBehavior, WorkerOptions } from './worker-options'
 import { KillBehaviors } from './worker-options'
 
@@ -39,10 +38,6 @@ export abstract class AbstractWorker<
    */
   public readonly opts: WorkerOptions
   /**
-   * Worker usage circular history.
-   */
-  public readonly usageHistory?: CircularArray<WorkerUsage>
-  /**
    * Constructs a new poolifier worker.
    *
    * @param type The type of async event.
@@ -74,9 +69,6 @@ export abstract class AbstractWorker<
     this.checkWorkerOptions(this.opts)
     this.lastTaskId = 0
     this.lastTaskTimestamp = Date.now()
-    if (this.opts.usage) {
-      this.usageHistory = new CircularArray<WorkerUsage>()
-    }
     // Keep the worker active
     if (!isMain) {
       this.aliveInterval = setInterval(
@@ -125,7 +117,6 @@ export abstract class AbstractWorker<
      * Whether the worker is working asynchronously or not.
      */
     this.opts.async = !!opts.async
-    this.opts.usage = !!opts.usage
   }
 
   /**
@@ -202,7 +193,7 @@ export abstract class AbstractWorker<
       this.sendToMainWorker({
         data: res,
         id: value.id,
-        taskRunTime: taskRunTime
+        taskRunTime
       })
     } catch (e) {
       const err = this.handleError(e as Error)
@@ -234,7 +225,7 @@ export abstract class AbstractWorker<
         this.sendToMainWorker({
           data: res,
           id: value.id,
-          taskRunTime: taskRunTime
+          taskRunTime
         })
         return null
       })
@@ -267,7 +258,7 @@ export abstract class AbstractWorker<
    * Can be overridden.
    *
    * @param workerId The worker index.
-   * @param taskRunTime The task tun time.
+   * @param taskRunTime The task run time.
    */
   protected afterRunHook (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -1,6 +1,6 @@
 import type {
   MessageValue,
-  PromiseWorkerResponseWrapper,
+  PromiseWorkerResponseWrapper
 } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
@@ -207,7 +207,7 @@ export abstract class AbstractPool<
     const res = this.internalExecute(worker, messageId)
     this.checkAndEmitBusy()
     this.sendToWorker(worker, {
-      data: data,
+      data,
       id: messageId,
       workerId: this.getWorkerIndex(worker)
     })
