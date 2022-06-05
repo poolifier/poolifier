@@ -154,6 +154,7 @@ export abstract class AbstractPool<
 
   /** @inheritdoc */
   public get numberOfRunningTasks (): number {
+    // TODO: The number of running tasks calculation is not correct
     return this.promiseMap.size
   }
 
