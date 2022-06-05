@@ -1,4 +1,4 @@
-import type { IWorker } from '../abstract-pool'
+import type { AbstractPoolWorker } from '../abstract-pool-worker'
 
 /**
  * Enumeration of worker choice strategies.
@@ -15,7 +15,11 @@ export const WorkerChoiceStrategies = Object.freeze({
   /**
    * Fair share worker selection strategy.
    */
-  FAIR_SHARE: 'FAIR_SHARE'
+  FAIR_SHARE: 'FAIR_SHARE',
+  /**
+   * Weighted round robin worker selection strategy.
+   */
+  WEIGHTED_ROUND_ROBIN: 'WEIGHTED_ROUND_ROBIN'
 } as const)
 
 /**
@@ -28,7 +32,11 @@ export type WorkerChoiceStrategy = keyof typeof WorkerChoiceStrategies
  *
  * @template Worker Type of worker which manages the strategy.
  */
-export interface IWorkerChoiceStrategy<Worker extends IWorker> {
+export interface IWorkerChoiceStrategy<Worker extends AbstractPoolWorker> {
+  /**
+   * Is the pool attached to the strategy dynamic?.
+   */
+  isDynamicPool: boolean
   /**
    * Choose a worker in the pool.
    */

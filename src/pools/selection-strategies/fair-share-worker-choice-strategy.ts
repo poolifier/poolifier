@@ -1,6 +1,13 @@
-import type { IWorker } from '../abstract-pool'
-import type { IPoolInternal } from '../pool-internal'
-import type { IWorkerChoiceStrategy } from './selection-strategies-types'
+import type { AbstractPoolWorker } from '../abstract-pool-worker'
+import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
+
+/**
+ * Worker virtual task timestamp.
+ */
+interface WorkerVirtualTaskTimestamp {
+  start: number
+  end: number
+}
 
 /**
  * Selects the next worker with a fair share scheduling algorithm.
@@ -11,81 +18,56 @@ import type { IWorkerChoiceStrategy } from './selection-strategies-types'
  * @template Response Type of response of execution. This can only be serializable data.
  */
 export class FairShareWorkerChoiceStrategy<
-  Worker extends IWorker,
+  Worker extends AbstractPoolWorker,
   Data,
   Response
-> implements IWorkerChoiceStrategy<Worker> {
+> extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
   /**
-   *  Worker last virtual task execution end timestamp.
+   *  Worker last virtual task execution timestamp.
    */
-  private workerLastVirtualTaskFinishTimestamp: Map<Worker, number> = new Map<
+  private workerLastVirtualTaskTimestamp: Map<
     Worker,
-    number
-  >()
-
-  /**
-   * Constructs a worker choice strategy that selects based a fair share scheduling algorithm.
-   *
-   * @param pool The pool instance.
-   */
-  public constructor (
-    private readonly pool: IPoolInternal<Worker, Data, Response>
-  ) {}
+    WorkerVirtualTaskTimestamp
+  > = new Map<Worker, WorkerVirtualTaskTimestamp>()
 
   /** @inheritdoc */
   public choose (): Worker {
-    let minWorkerVirtualTaskFinishPredictedTimestamp = Infinity
+    this.updateWorkerLastVirtualTaskTimestamp()
+    let minWorkerVirtualTaskEndTimestamp = Infinity
     let chosenWorker!: Worker
     for (const worker of this.pool.workers) {
-      const workerLastVirtualTaskFinishPredictedTimestamp = this.getWorkerLastVirtualTaskFinishPredictedTimestamp(
-        worker
-      )
+      const workerLastVirtualTaskEndTimestamp =
+        this.workerLastVirtualTaskTimestamp.get(worker)?.end ?? 0
+      // console.log(worker.id)
+      // console.log(workerLastVirtualTaskEndTimestamp)
+      // console.log(minWorkerVirtualTaskEndTimestamp)
       if (
-        workerLastVirtualTaskFinishPredictedTimestamp <
-        minWorkerVirtualTaskFinishPredictedTimestamp
+        workerLastVirtualTaskEndTimestamp < minWorkerVirtualTaskEndTimestamp
       ) {
-        minWorkerVirtualTaskFinishPredictedTimestamp = workerLastVirtualTaskFinishPredictedTimestamp
+        minWorkerVirtualTaskEndTimestamp = workerLastVirtualTaskEndTimestamp
         chosenWorker = worker
       }
     }
-    this.setWorkerLastVirtualTaskFinishTimestamp(
-      chosenWorker,
-      minWorkerVirtualTaskFinishPredictedTimestamp
-    )
+    // console.log(chosenWorker.id)
     return chosenWorker
   }
 
   /**
-   * Get the worker last virtual task start timestamp.
-   *
-   * @param worker The worker.
-   * @returns The worker last virtual task start timestamp.
+   * Compute workers last virtual task timestamp.
    */
-  private getWorkerLastVirtualTaskStartTimestamp (worker: Worker): number {
-    return Math.max(
-      Date.now(),
-      this.workerLastVirtualTaskFinishTimestamp.get(worker) ?? 0
-    )
-  }
-
-  private getWorkerLastVirtualTaskFinishPredictedTimestamp (
-    worker: Worker
-  ): number {
-    const workerVirtualTaskStartTimestamp = this.getWorkerLastVirtualTaskStartTimestamp(
-      worker
-    )
-    const workerAvgRunTime =
-      this.pool.workerTasksUsage.get(worker)?.avgRunTime ?? 0
-    return workerAvgRunTime + workerVirtualTaskStartTimestamp
-  }
-
-  private setWorkerLastVirtualTaskFinishTimestamp (
-    worker: Worker,
-    lastVirtualTaskFinishTimestamp: number
-  ): void {
-    this.workerLastVirtualTaskFinishTimestamp.set(
-      worker,
-      lastVirtualTaskFinishTimestamp
-    )
+  private updateWorkerLastVirtualTaskTimestamp () {
+    for (const worker of this.pool.workers) {
+      const workerVirtualTaskStartTimestamp = Math.max(
+        Date.now(),
+        this.workerLastVirtualTaskTimestamp.get(worker)?.end ?? 0
+      )
+      const workerVirtualTaskEndTimestamp =
+        workerVirtualTaskStartTimestamp +
+        this.pool.getWorkerAverageTasksRunTime(worker)
+      this.workerLastVirtualTaskTimestamp.set(worker, {
+        start: workerVirtualTaskStartTimestamp,
+        end: workerVirtualTaskEndTimestamp
+      })
+    }
   }
 }

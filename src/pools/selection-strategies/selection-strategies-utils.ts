@@ -1,4 +1,4 @@
-import type { IWorker } from '../abstract-pool'
+import type { AbstractPoolWorker } from '../abstract-pool-worker'
 import type { IPoolInternal } from '../pool-internal'
 import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strategy'
 import { LessRecentlyUsedWorkerChoiceStrategy } from './less-recently-used-worker-choice-strategy'
@@ -8,6 +8,7 @@ import type {
   WorkerChoiceStrategy
 } from './selection-strategies-types'
 import { WorkerChoiceStrategies } from './selection-strategies-types'
+import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-choice-strategy'
 
 /**
  * Worker selection strategies helpers class.
@@ -21,7 +22,7 @@ export class SelectionStrategiesUtils {
    * @returns The worker choice strategy instance.
    */
   public static getWorkerChoiceStrategy<
-    Worker extends IWorker,
+    Worker extends AbstractPoolWorker,
     Data,
     Response
   > (
@@ -35,6 +36,8 @@ export class SelectionStrategiesUtils {
         return new LessRecentlyUsedWorkerChoiceStrategy(pool)
       case WorkerChoiceStrategies.FAIR_SHARE:
         return new FairShareWorkerChoiceStrategy(pool)
+      case WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN:
+        return new WeightedRoundRobinWorkerChoiceStrategy(pool)
       default:
         throw new Error(
           `Worker choice strategy '${workerChoiceStrategy}' not found`

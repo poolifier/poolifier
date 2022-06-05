@@ -1,6 +1,5 @@
-import type { IWorker } from '../abstract-pool'
-import type { IPoolInternal } from '../pool-internal'
-import type { IWorkerChoiceStrategy } from './selection-strategies-types'
+import type { AbstractPoolWorker } from '../abstract-pool-worker'
+import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 
 /**
  * Selects the next worker in a round robin fashion.
@@ -10,23 +9,14 @@ import type { IWorkerChoiceStrategy } from './selection-strategies-types'
  * @template Response Type of response of execution. This can only be serializable data.
  */
 export class RoundRobinWorkerChoiceStrategy<
-  Worker extends IWorker,
+  Worker extends AbstractPoolWorker,
   Data,
   Response
-> implements IWorkerChoiceStrategy<Worker> {
+> extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
   /**
    * Index for the next worker.
    */
   private nextWorkerIndex: number = 0
-
-  /**
-   * Constructs a worker choice strategy that selects in a round robin fashion.
-   *
-   * @param pool The pool instance.
-   */
-  public constructor (
-    private readonly pool: IPoolInternal<Worker, Data, Response>
-  ) {}
 
   /** @inheritdoc */
   public choose (): Worker {

@@ -19,7 +19,7 @@ export default {
     ...(isDevelopmentBuild && { preserveModulesRoot: 'src' }),
     ...(!isDevelopmentBuild && { plugins: [terser({ numWorkers: 2 })] })
   },
-  external: ['async_hooks', 'cluster', 'events', 'worker_threads'],
+  external: ['async_hooks', 'cluster', 'events', 'os', 'worker_threads'],
   plugins: [
     ts({
       tsconfig: isDevelopmentBuild

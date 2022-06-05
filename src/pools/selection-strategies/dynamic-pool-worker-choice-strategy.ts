@@ -1,5 +1,6 @@
-import type { IWorker } from '../abstract-pool'
+import type { AbstractPoolWorker } from '../abstract-pool-worker'
 import type { IPoolInternal } from '../pool-internal'
+import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
   WorkerChoiceStrategy
@@ -15,24 +16,25 @@ import { SelectionStrategiesUtils } from './selection-strategies-utils'
  * @template Response Type of response of execution. This can only be serializable data.
  */
 export class DynamicPoolWorkerChoiceStrategy<
-  Worker extends IWorker,
+  Worker extends AbstractPoolWorker,
   Data,
   Response
-> implements IWorkerChoiceStrategy<Worker> {
+> extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
   private workerChoiceStrategy: IWorkerChoiceStrategy<Worker>
 
   /**
-   * Constructs a worker choice strategy for dynamical pools.
+   * Constructs a worker choice strategy for dynamical pool.
    *
    * @param pool The pool instance.
    * @param createDynamicallyWorkerCallback The worker creation callback for dynamic pool.
    * @param workerChoiceStrategy The worker choice strategy when the pull is busy.
    */
   public constructor (
-    private readonly pool: IPoolInternal<Worker, Data, Response>,
+    pool: IPoolInternal<Worker, Data, Response>,
     private createDynamicallyWorkerCallback: () => Worker,
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
+    super(pool)
     this.workerChoiceStrategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(
       this.pool,
       workerChoiceStrategy
@@ -41,9 +43,9 @@ export class DynamicPoolWorkerChoiceStrategy<
 
   /** @inheritdoc */
   public choose (): Worker {
-    const freeWorkerTasksUsageMapEntry = this.pool.findFreeWorkerTasksUsageMapEntry()
-    if (freeWorkerTasksUsageMapEntry) {
-      return freeWorkerTasksUsageMapEntry[0]
+    const freeWorker = this.pool.findFreeWorker()
+    if (freeWorker) {
+      return freeWorker
     }
 
     if (this.pool.busy) {

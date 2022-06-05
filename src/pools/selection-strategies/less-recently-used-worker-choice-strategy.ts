@@ -1,7 +1,5 @@
-import type { IWorker } from '../abstract-pool'
-import type { IPoolInternal } from '../pool-internal'
-import { PoolType } from '../pool-internal'
-import type { IWorkerChoiceStrategy } from './selection-strategies-types'
+import type { AbstractPoolWorker } from '../abstract-pool-worker'
+import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 
 /**
  * Selects the less recently used worker.
@@ -11,31 +9,22 @@ import type { IWorkerChoiceStrategy } from './selection-strategies-types'
  * @template Response Type of response of execution. This can only be serializable data.
  */
 export class LessRecentlyUsedWorkerChoiceStrategy<
-  Worker extends IWorker,
+  Worker extends AbstractPoolWorker,
   Data,
   Response
-> implements IWorkerChoiceStrategy<Worker> {
-  /**
-   * Constructs a worker choice strategy that selects based on less recently used.
-   *
-   * @param pool The pool instance.
-   */
-  public constructor (
-    private readonly pool: IPoolInternal<Worker, Data, Response>
-  ) {}
-
+> extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
   /** @inheritdoc */
   public choose (): Worker {
-    const isPoolDynamic = this.pool.type === PoolType.DYNAMIC
     let minNumberOfRunningTasks = Infinity
     // A worker is always found because it picks the one with fewer tasks
     let lessRecentlyUsedWorker!: Worker
-    for (const [worker, tasksUsage] of this.pool.workerTasksUsage) {
-      if (!isPoolDynamic && tasksUsage.running === 0) {
+    for (const worker of this.pool.workers) {
+      const workerRunningTasks = this.pool.getWorkerRunningTasks(worker)
+      if (!this.isDynamicPool && workerRunningTasks === 0) {
         return worker
-      } else if (tasksUsage.running < minNumberOfRunningTasks) {
+      } else if (workerRunningTasks < minNumberOfRunningTasks) {
         lessRecentlyUsedWorker = worker
-        minNumberOfRunningTasks = tasksUsage.running
+        minNumberOfRunningTasks = workerRunningTasks
       }
     }
     return lessRecentlyUsedWorker

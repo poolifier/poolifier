@@ -1,4 +1,4 @@
-import type { IWorker } from '../abstract-pool'
+import type { AbstractPoolWorker } from '../abstract-pool-worker'
 import type { IPoolInternal } from '../pool-internal'
 import { PoolType } from '../pool-internal'
 import { DynamicPoolWorkerChoiceStrategy } from './dynamic-pool-worker-choice-strategy'
@@ -17,7 +17,7 @@ import { SelectionStrategiesUtils } from './selection-strategies-utils'
  * @template Response Type of response of execution. This can only be serializable data.
  */
 export class WorkerChoiceStrategyContext<
-  Worker extends IWorker,
+  Worker extends AbstractPoolWorker,
   Data,
   Response
 > {

@@ -1,6 +1,6 @@
 import type { Worker as ClusterWorker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
-import type { IWorker } from './pools/abstract-pool'
+import type { AbstractPoolWorker } from './pools/abstract-pool-worker'
 import type { KillBehavior } from './worker/worker-options'
 
 /**
@@ -24,6 +24,10 @@ export interface MessageValue<
    */
   readonly id?: number
   /**
+   * Id of the worker sending the message.
+   */
+  readonly workerId?: number
+  /**
    * Kill code.
    */
   readonly kill?: KillBehavior | 1
@@ -31,6 +35,18 @@ export interface MessageValue<
    * Error.
    */
   readonly error?: string
+  /**
+   * Number of workers in the pool.
+   */
+  readonly numberOfWorkers?: number
+  /**
+   * Shared array buffer for workers tasks usage statistics.
+   */
+  readonly tasksSharedUsage?: SharedArrayBuffer
+  /**
+   * Task run time.
+   */
+  readonly taskRunTime?: number
   /**
    * Reference to main worker.
    *
@@ -46,13 +62,9 @@ export interface MessageValue<
  * @template Response Type of response of execution. This can only be serializable data.
  */
 export interface PromiseWorkerResponseWrapper<
-  Worker extends IWorker,
+  Worker extends AbstractPoolWorker,
   Response = unknown
 > {
-  /**
-   * Promise timestamp.
-   */
-  readonly timestamp: number
   /**
    * Resolve callback to fulfill the promise.
    */
