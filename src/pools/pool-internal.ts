@@ -1,7 +1,5 @@
 import EventEmitter from 'events'
-import type { WorkerUsage } from '../utility-types'
-import type { CircularArray } from '../worker/circular-array'
-import type { IWorker } from './abstract-pool'
+import type { AbstractPoolWorker } from './abstract-pool-worker'
 import type { IPool } from './pool'
 
 /**
@@ -35,7 +33,7 @@ export class PoolEmitter extends EventEmitter {}
  * @template Response Type of response of execution.
  */
 export interface IPoolInternal<
-  Worker extends IWorker,
+  Worker extends AbstractPoolWorker,
   Data = unknown,
   Response = unknown
 > extends IPool<Data, Response> {
@@ -43,14 +41,6 @@ export interface IPoolInternal<
    * List of currently available workers.
    */
   readonly workers: Worker[]
-
-  /**
-   * The worker tasks usage map.
-   *
-   * - `key`: The `Worker`
-   * - `value`: Worker tasks usage statistics.
-   */
-  readonly workerTasksUsage: Map<Worker, TasksUsage>
 
   /**
    * Emitter on which events can be listened to.
@@ -86,21 +76,34 @@ export interface IPoolInternal<
   readonly numberOfRunningTasks: number
 
   /**
-   * Find a worker tasks usage map entry with a free worker based on the number of tasks the worker has applied.
+   * Find a free worker based on the number of tasks the worker has applied.
    *
-   * If an entry is found with a worker that has `0` running tasks, it is detected as free.
+   * If a worker is found with `0` running tasks, it is detected as free and returned.
    *
-   * If no worker tasks usage map entry with a free worker was found, `false` will be returned.
+   * If no free worker is found, `false` is returned.
    *
-   * @returns A worker tasks usage map entry with a free worker if there was one, otherwise `false`.
+   * @returns A free worker if there is one, otherwise `false`.
    */
-  findFreeWorkerTasksUsageMapEntry(): [Worker, TasksUsage] | false
-}
+  findFreeWorker(): Worker | false
 
-/**
- * Worker usage history.
- */
-export interface WorkerUsageHistory {
-  workerId?: number
-  usageHistory?: CircularArray<WorkerUsage>
+  /**
+   * Get worker index.
+   *
+   * @param worker The worker.
+   */
+  getWorkerIndex(worker: Worker): number
+
+  /**
+   * Get worker running tasks.
+   *
+   * @param worker The worker.
+   */
+  getWorkerRunningTasks(worker: Worker): number
+
+  /**
+   * Get worker average tasks run time.
+   *
+   * @param worker The worker.
+   */
+  getWorkerAverageTasksRunTime(worker: Worker): number
 }

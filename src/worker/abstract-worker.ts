@@ -87,24 +87,34 @@ export abstract class AbstractWorker<
     }
 
     this.mainWorker?.on('message', (value: MessageValue<Data, MainWorker>) => {
-      if (value?.data && value.id) {
-        this.lastTaskId++
-        // Here you will receive messages
-        if (this.opts.async) {
-          this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
-        } else {
-          this.runInAsyncScope(this.run.bind(this), this, fn, value)
-        }
-      } else if (value.parent) {
-        // Save a reference of the main worker to communicate with it
-        // This will be received once
-        this.mainWorker = value.parent
-      } else if (value.kill) {
-        // Here is time to kill this worker, just clearing the interval
-        if (this.aliveInterval) clearInterval(this.aliveInterval)
-        this.emitDestroy()
-      }
+      this.messageListener(value, fn)
     })
+  }
+
+  protected messageListener (
+    value: MessageValue<Data, MainWorker>,
+    fn: (data: Data) => Response
+  ): void {
+    if (
+      value.data !== undefined &&
+      value.id !== undefined &&
+      value.workerId !== undefined
+    ) {
+      // Here you will receive messages
+      if (this.opts.async) {
+        this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
+      } else {
+        this.runInAsyncScope(this.run.bind(this), this, fn, value)
+      }
+    } else if (value.parent !== undefined) {
+      // Save a reference of the main worker to communicate with it
+      // This will be received once
+      this.mainWorker = value.parent
+    } else if (value.kill !== undefined) {
+      // Here is time to kill this worker, just clearing the interval
+      if (this.aliveInterval) clearInterval(this.aliveInterval)
+      this.emitDestroy()
+    }
   }
 
   private checkWorkerOptions (opts: WorkerOptions) {
@@ -184,13 +194,22 @@ export abstract class AbstractWorker<
     value: MessageValue<Data>
   ): void {
     try {
-      const startTaskTimestamp = this.beforeRunHook()
+      this.beforeRunHook(value.workerId)
+      const startTaskTimestamp = Date.now()
       const res = fn(value.data)
-      this.afterRunHook(startTaskTimestamp)
-      this.sendToMainWorker({ data: res, id: value.id })
+      const taskRunTime = Date.now() - startTaskTimestamp
+      this.afterRunHook(value.workerId, taskRunTime)
+      this.sendToMainWorker({
+        data: res,
+        id: value.id,
+        taskRunTime: taskRunTime
+      })
     } catch (e) {
       const err = this.handleError(e as Error)
-      this.sendToMainWorker({ error: err, id: value.id })
+      this.sendToMainWorker({
+        error: err,
+        id: value.id
+      })
     } finally {
       this.lastTaskTimestamp = Date.now()
     }
@@ -206,11 +225,17 @@ export abstract class AbstractWorker<
     fn: (data?: Data) => Promise<Response>,
     value: MessageValue<Data>
   ): void {
-    const startTaskTimestamp = this.beforeRunHook()
+    this.beforeRunHook(value.workerId)
+    const startTaskTimestamp = Date.now()
     fn(value.data)
       .then(res => {
-        this.afterRunHook(startTaskTimestamp)
-        this.sendToMainWorker({ data: res, id: value.id })
+        const taskRunTime = Date.now() - startTaskTimestamp
+        this.afterRunHook(value.workerId, taskRunTime)
+        this.sendToMainWorker({
+          data: res,
+          id: value.id,
+          taskRunTime: taskRunTime
+        })
         return null
       })
       .catch(e => {
@@ -226,28 +251,30 @@ export abstract class AbstractWorker<
       .catch(EMPTY_FUNCTION)
   }
 
-  private beforeRunHook (): number {
-    if (this.opts.usage) {
-      this.addUsageSample()
-      return Date.now()
-    }
-    return 0
+  /**
+   * Hook executed before a task is run.
+   * Can be overridden.
+   *
+   * @param workerId The worker index.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected beforeRunHook (workerId: number | undefined): void {
+    // Can be overridden
   }
 
-  private afterRunHook (startTaskTimestamp: number): void {
-    if (this.opts.usage) {
-      const taskRunTime = Date.now() - startTaskTimestamp
-      this.addUsageSample(taskRunTime)
-    }
-  }
-
-  private addUsageSample (taskRunTime = 0): void {
-    this.usageHistory?.push({
-      taskId: this.lastTaskId,
-      timestamp: Date.now(),
-      taskRunTime: taskRunTime,
-      cpu: process.cpuUsage(),
-      memory: process.memoryUsage()
-    })
+  /**
+   * Hook executed after a task is run.
+   * Can be overridden.
+   *
+   * @param workerId The worker index.
+   * @param taskRunTime The task tun time.
+   */
+  protected afterRunHook (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    workerId: number | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    taskRunTime: number
+  ): void {
+    // Can be overridden
   }
 }

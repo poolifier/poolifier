@@ -1,13 +1,17 @@
 import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
 import type { Draft, MessageValue } from '../../utility-types'
-import type { PoolOptions } from '../abstract-pool'
+import { SharedUsage } from '../../worker/shared-usage'
 import { AbstractPool } from '../abstract-pool'
+import type { AbstractPoolWorker } from '../abstract-pool-worker'
+import type { PoolOptions } from '../pool'
 import { PoolType } from '../pool-internal'
 
 /**
  * A thread worker with message channels for communication between main thread and thread worker.
  */
-export type ThreadWorkerWithMessageChannel = Worker & Draft<MessageChannel>
+export type ThreadWorkerWithMessageChannel = AbstractPoolWorker &
+  Worker &
+  Draft<MessageChannel>
 
 /**
  * A thread pool with a fixed number of threads.
@@ -26,6 +30,11 @@ export class FixedThreadPool<
   Response = unknown
 > extends AbstractPool<ThreadWorkerWithMessageChannel, Data, Response> {
   /**
+   * Shared object to store workers tasks usage statistics.
+   */
+  private workersTasksSharedUsage!: SharedUsage
+
+  /**
    * Constructs a new poolifier fixed thread pool.
    *
    * @param numberOfThreads Number of threads for this pool.
@@ -38,11 +47,42 @@ export class FixedThreadPool<
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = {}
   ) {
     super(numberOfThreads, filePath, opts)
+    this.initWorkersTasksSharedUsage(numberOfThreads)
+  }
+
+  protected initWorkersTasksSharedUsage (numberOfWorkers: number): void {
+    const sharedUsageArrayBuffer = new SharedArrayBuffer(
+      (Int32Array.BYTES_PER_ELEMENT * 3 + Float64Array.BYTES_PER_ELEMENT) *
+        numberOfWorkers
+    )
+    this.workersTasksSharedUsage = new SharedUsage(
+      numberOfWorkers,
+      sharedUsageArrayBuffer
+    )
+    for (const worker of this.workers) {
+      // Send to worker shared array for workers tasks usage
+      this.sendWorkersTasksSharedUsage(worker, sharedUsageArrayBuffer)
+    }
   }
 
   /** @inheritdoc */
   protected isMain (): boolean {
     return isMainThread
+  }
+
+  /** @inheritdoc */
+  public getWorkerRunningTasks (worker: Worker): number {
+    return this.workersTasksUsage.get(worker)?.running ?? 0
+    // return this.workersTasksSharedUsage[
+    //   `worker${this.getWorkerIndex(worker)}-running`
+    // ]
+  }
+
+  /** @inheritdoc */
+  public getWorkerAverageTasksRunTime (worker: Worker): number {
+    return this.workersTasksSharedUsage[
+      `worker${this.getWorkerIndex(worker)}-avgRunTime`
+    ]
   }
 
   /** @inheritdoc */
@@ -94,5 +134,25 @@ export class FixedThreadPool<
   /** @inheritdoc */
   public get busy (): boolean {
     return this.internalGetBusyStatus()
+  }
+
+  /** @inheritdoc */
+  protected resetWorkerTasksUsage (worker: Worker): void {
+    super.resetWorkerTasksUsage(worker)
+    const workerId = this.getWorkerIndex(worker)
+    this.workersTasksSharedUsage[`worker${workerId}-run`] = 0
+    this.workersTasksSharedUsage[`worker${workerId}-running`] = 0
+    this.workersTasksSharedUsage[`worker${workerId}-runTime`] = 0
+    this.workersTasksSharedUsage[`worker${workerId}-avgRunTime`] = 0
+  }
+
+  private sendWorkersTasksSharedUsage (
+    worker: Worker,
+    sharedUsageArrayBuffer: SharedArrayBuffer
+  ) {
+    this.sendToWorker(worker, {
+      numberOfWorkers: this.numberOfWorkers,
+      tasksSharedUsage: sharedUsageArrayBuffer
+    })
   }
 }
