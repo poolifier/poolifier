@@ -7,19 +7,11 @@ module.exports = defineConfig({
     node: true,
     mocha: true
   },
-  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2020,
-    sourceType: 'module',
-    warnOnUnsupportedTypeScriptVersion: false
+    sourceType: 'module'
   },
-  plugins: [
-    '@typescript-eslint',
-    'promise',
-    'prettierx',
-    'jsdoc',
-    'spellcheck'
-  ],
+  plugins: ['promise', 'prettierx', 'jsdoc', 'spellcheck'],
   extends: [
     'standard',
     'eslint:recommended',
@@ -62,6 +54,8 @@ module.exports = defineConfig({
   overrides: [
     {
       files: ['**/*.ts'],
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint'],
       extends: [
         'plugin:@typescript-eslint/recommended',
         'plugin:import/typescript'
