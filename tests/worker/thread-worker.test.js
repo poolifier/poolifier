@@ -1,4 +1,4 @@
-const expect = require('expect')
+const { expect } = require('expect')
 const { ThreadWorker } = require('../../lib')
 
 let numberOfMessagesPosted = 0
@@ -14,7 +14,7 @@ class SpyWorker extends ThreadWorker {
 describe('Thread worker test suite', () => {
   it('Verify worker has default maxInactiveTime', () => {
     const worker = new ThreadWorker(() => {})
-    expect(worker.opts.maxInactiveTime).toEqual(60_000)
+    expect(worker.opts.maxInactiveTime).toEqual(60000)
   })
 
   it('Verify worker invoke the getMainWorker and postMessage methods', () => {

@@ -1,4 +1,4 @@
-const expect = require('expect')
+const { expect } = require('expect')
 const { FixedThreadPool } = require('../../../lib/index')
 const TestUtils = require('../../test-utils')
 const numberOfThreads = 10

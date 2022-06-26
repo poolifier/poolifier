@@ -1,10 +1,10 @@
-const expect = require('expect')
+const { expect } = require('expect')
 const { ClusterWorker } = require('../../lib')
 
 describe('Cluster worker test suite', () => {
   it('Verify worker has default maxInactiveTime', () => {
     const worker = new ClusterWorker(() => {})
-    expect(worker.opts.maxInactiveTime).toEqual(60_000)
+    expect(worker.opts.maxInactiveTime).toEqual(60000)
   })
 
   it('Verify that handleError function works properly', () => {

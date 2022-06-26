@@ -1,4 +1,4 @@
-const expect = require('expect')
+const { expect } = require('expect')
 const { ClusterWorker, KillBehaviors, ThreadWorker } = require('../../lib')
 
 class StubPoolWithIsMainWorker extends ThreadWorker {

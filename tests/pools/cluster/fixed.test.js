@@ -1,4 +1,4 @@
-const expect = require('expect')
+const { expect } = require('expect')
 const { FixedClusterPool } = require('../../../lib/index')
 const TestUtils = require('../../test-utils')
 const numberOfWorkers = 10

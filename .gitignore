@@ -57,3 +57,4 @@ build/config.gypi
 .history/
 .scannerwork
 lib
+*.bak
