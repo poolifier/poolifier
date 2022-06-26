@@ -1,4 +1,4 @@
-const expect = require('expect')
+const { expect } = require('expect')
 const { ThreadWorker } = require('../../lib')
 
 let numberOfMessagesPosted = 0
