@@ -94,7 +94,7 @@
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-ts": "^3.0.2",
     "source-map-support": "^0.5.21",
-    "typedoc": "^0.23.13",
+    "typedoc": "^0.23.14",
     "typescript": "^4.8.2"
   },
   "engines": {
