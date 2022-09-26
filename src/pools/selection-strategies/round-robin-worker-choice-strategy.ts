@@ -22,7 +22,7 @@ export class RoundRobinWorkerChoiceStrategy<
   public choose (): Worker {
     const chosenWorker = this.pool.workers[this.nextWorkerIndex]
     this.nextWorkerIndex =
-      this.pool.workers.length - 1 === this.nextWorkerIndex
+      this.nextWorkerIndex === this.pool.workers.length - 1
         ? 0
         : this.nextWorkerIndex + 1
     return chosenWorker
