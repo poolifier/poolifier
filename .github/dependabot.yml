@@ -1,6 +1,16 @@
 # Docs: https://docs.github.com/en/code-security/supply-chain-security/configuration-options-for-dependency-updates
 version: 2
 updates:
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'daily'
+    labels:
+      - 'github-actions'
+    reviewers:
+      - 'pioardi'
+      - 'Shinigami92'
+      - 'jerome-benoit'
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
