@@ -6,6 +6,7 @@
   "full-trace": true,
   "exit": true,
   "reporter": "mochawesome",
+  "enable-source-maps": true,
   "reporter-options": "reportDir=outputs/mochawesome-report,json=false",
-  "require": ["source-map-support/register", "mochawesome/register"]
+  "require": ["mochawesome/register"]
 }
