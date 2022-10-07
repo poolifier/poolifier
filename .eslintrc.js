@@ -77,9 +77,6 @@ module.exports = defineConfig({
         'jsdoc/match-description': [
           'warn',
           {
-            // mainDescription:
-            //   '/^[A-Z`].+?(\\.|:)(\\n\\n.*((\\n{1,2}- .+)|(_.+_)|`.+`|\\n\\n---))?$/us',
-            // matchDescription: '^[A-Z`].+(\\.|`.+`)$',
             contexts: ['any'],
             tags: {
               param: true,
@@ -129,13 +126,6 @@ module.exports = defineConfig({
       files: ['examples/**/*.js'],
       rules: {
         'node/no-missing-require': 'off',
-        'jsdoc/require-jsdoc': 'off'
-      }
-    },
-    {
-      files: ['examples/typescript/**/*.ts'],
-      rules: {
-        'import/no-unresolved': 'off',
         'jsdoc/require-jsdoc': 'off'
       }
     }
