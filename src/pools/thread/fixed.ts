@@ -82,7 +82,7 @@ export class FixedThreadPool<
   public getWorkerAverageTasksRunTime (worker: Worker): number {
     return this.workersTasksSharedUsage[
       `worker${this.getWorkerIndex(worker)}-avgRunTime`
-    ]
+    ] as number
   }
 
   /** @inheritdoc */

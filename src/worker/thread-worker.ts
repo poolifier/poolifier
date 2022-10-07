@@ -72,7 +72,7 @@ export class ThreadWorker<
       console.log('UNDEFINED')
       // this.tasksSharedUsage.consoleDump()
     }
-    this.tasksSharedUsage[`worker${workerId}-running`]++
+    this.tasksSharedUsage[`worker${workerId as number}-running`]++
     this.tasksSharedUsage.consoleDump()
   }
 
@@ -81,8 +81,8 @@ export class ThreadWorker<
     workerId: number | undefined,
     taskRunTime: number
   ): void {
-    this.tasksSharedUsage[`worker${workerId}-running`]--
-    this.tasksSharedUsage[`worker${workerId}-run`]++
+    this.tasksSharedUsage[`worker${workerId as number}-running`]--
+    this.tasksSharedUsage[`worker${workerId as number}-run`]++
     // this.tasksSharedUsage.consoleDump()
     this.updateWorkerTasksRunTime(workerId, taskRunTime)
   }
@@ -91,11 +91,11 @@ export class ThreadWorker<
     workerId: number | undefined,
     taskRunTime: number
   ) {
-    this.tasksSharedUsage[`worker${workerId}-runTime`] += taskRunTime
-    if (this.tasksSharedUsage[`worker${workerId}-run`] !== 0) {
-      this.tasksSharedUsage[`worker${workerId}-avgRunTime`] =
-        this.tasksSharedUsage[`worker${workerId}-runTime`] /
-        this.tasksSharedUsage[`worker${workerId}-run`]
+    this.tasksSharedUsage[`worker${workerId as number}-runTime`] += taskRunTime
+    if (this.tasksSharedUsage[`worker${workerId as number}-run`] !== 0) {
+      this.tasksSharedUsage[`worker${workerId as number}-avgRunTime`] =
+        this.tasksSharedUsage[`worker${workerId as number}-runTime`] /
+        this.tasksSharedUsage[`worker${workerId as number}-run`]
     }
   }
 }

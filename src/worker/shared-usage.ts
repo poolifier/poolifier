@@ -2,9 +2,8 @@
  * Shared object for workers tasks usage statistics.
  */
 export class SharedUsage {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private dataView: DataView;
   [key: string]: any
-  private dataView: DataView
 
   /**
    * Create a shared object for workers tasks usage statistics.
@@ -31,6 +30,7 @@ export class SharedUsage {
          * @param value Number of tasks run.
          */
         set (value: number) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
           this.dataView.setInt32(startOffset, value)
         },
         /**
@@ -39,7 +39,8 @@ export class SharedUsage {
          * @returns Number of tasks run.
          */
         get (): number {
-          return this.dataView.getInt32(startOffset)
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+          return this.dataView.getInt32(startOffset) as number
         },
         configurable: true
       })
@@ -50,6 +51,7 @@ export class SharedUsage {
          * @param value Number of tasks running.
          */
         set (value: number) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
           this.dataView.setInt32(
             startOffset + Int32Array.BYTES_PER_ELEMENT,
             value
@@ -61,9 +63,10 @@ export class SharedUsage {
          * @returns Number of tasks running.
          */
         get (): number {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
           return this.dataView.getInt32(
             startOffset + Int32Array.BYTES_PER_ELEMENT
-          )
+          ) as number
         },
         configurable: true
       })
@@ -74,6 +77,7 @@ export class SharedUsage {
          * @param value Tasks run time.
          */
         set (value: number) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
           this.dataView.setInt32(
             startOffset + 2 * Int32Array.BYTES_PER_ELEMENT,
             value
@@ -85,9 +89,10 @@ export class SharedUsage {
          * @returns Tasks run time.
          */
         get (): number {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
           return this.dataView.getInt32(
             startOffset + 2 * Int32Array.BYTES_PER_ELEMENT
-          )
+          ) as number
         },
         configurable: true
       })
@@ -98,6 +103,7 @@ export class SharedUsage {
          * @param value Average tasks run time.
          */
         set (value: number) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
           this.dataView.setFloat64(
             startOffset + 3 * Int32Array.BYTES_PER_ELEMENT,
             value
@@ -109,9 +115,10 @@ export class SharedUsage {
          * @returns Average tasks run time.
          */
         get (): number {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
           return this.dataView.getFloat64(
             startOffset + 3 * Int32Array.BYTES_PER_ELEMENT
-          )
+          ) as number
         },
         configurable: true
       })
@@ -127,9 +134,13 @@ export class SharedUsage {
    */
   public consoleDump (): void {
     for (let i = 0; i < this.numberOfWorkers; i++) {
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       console.debug(`worker${i}-run: ` + this[`worker${i}-run`])
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       console.debug(`worker${i}-running: ` + this[`worker${i}-running`])
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       console.debug(`worker${i}-runTime: ` + this[`worker${i}-runTime`])
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       console.debug(`worker${i}-avgRunTime: ` + this[`worker${i}-avgRunTime`])
     }
   }

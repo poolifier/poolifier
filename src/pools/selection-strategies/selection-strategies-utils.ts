@@ -40,6 +40,7 @@ export class SelectionStrategiesUtils {
         return new WeightedRoundRobinWorkerChoiceStrategy(pool)
       default:
         throw new Error(
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `Worker choice strategy '${workerChoiceStrategy}' not found`
         )
     }
