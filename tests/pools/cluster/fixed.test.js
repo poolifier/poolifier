@@ -130,8 +130,8 @@ describe('Fixed cluster pool test suite', () => {
   it('Shutdown test', async () => {
     const exitPromise = TestUtils.waitExits(pool, numberOfWorkers)
     await pool.destroy()
-    const res = await exitPromise
-    expect(res).toBe(numberOfWorkers)
+    const numberOfExitEvents = await exitPromise
+    expect(numberOfExitEvents).toBe(numberOfWorkers)
   })
 
   it('Should work even without opts in input', async () => {

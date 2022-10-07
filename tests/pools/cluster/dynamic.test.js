@@ -54,8 +54,8 @@ describe('Dynamic cluster pool test suite', () => {
   it('Shutdown test', async () => {
     const exitPromise = TestUtils.waitExits(pool, min)
     await pool.destroy()
-    const res = await exitPromise
-    expect(res).toBe(min)
+    const numberOfExitEvents = await exitPromise
+    expect(numberOfExitEvents).toBe(min)
   })
 
   it('Validation of inputs test', () => {

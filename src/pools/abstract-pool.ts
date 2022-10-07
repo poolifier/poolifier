@@ -190,10 +190,9 @@ export abstract class AbstractPool<
       () => {
         const workerCreated = this.createAndSetupWorker()
         this.registerWorkerMessageListener(workerCreated, message => {
-          const tasksInProgress = this.tasks.get(workerCreated)
           if (
             isKillBehavior(KillBehaviors.HARD, message.kill) ||
-            tasksInProgress === 0
+            this.tasks.get(workerCreated) === 0
           ) {
             // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
             this.destroyWorker(workerCreated) as void
@@ -281,7 +280,7 @@ export abstract class AbstractPool<
     const messageId = ++this.nextMessageId
     const res = this.internalExecute(worker, messageId)
     this.checkAndEmitBusy()
-    this.sendToWorker(worker, { data: data || ({} as Data), id: messageId })
+    this.sendToWorker(worker, { data: data ?? ({} as Data), id: messageId })
     return res
   }
 
@@ -417,7 +416,7 @@ export abstract class AbstractPool<
    * @returns New, completely set up worker.
    */
   protected createAndSetupWorker (): Worker {
-    const worker: Worker = this.createWorker()
+    const worker = this.createWorker()
 
     worker.on('message', this.opts.messageHandler ?? EMPTY_FUNCTION)
     worker.on('error', this.opts.errorHandler ?? EMPTY_FUNCTION)
@@ -438,16 +437,16 @@ export abstract class AbstractPool<
   /**
    * This function is the listener registered for each worker.
    *
-   * @returns The listener function to execute when a message is sent from a worker.
+   * @returns The listener function to execute when a message is received from a worker.
    */
   protected workerListener (): (message: MessageValue<Response>) => void {
     return message => {
-      if (message.id) {
-        const value = this.promiseMap.get(message.id)
-        if (value) {
-          this.decreaseWorkersTasks(value.worker)
-          if (message.error) value.reject(message.error)
-          else value.resolve(message.data as Response)
+      if (message.id !== undefined) {
+        const promise = this.promiseMap.get(message.id)
+        if (promise !== undefined) {
+          this.decreaseWorkersTasks(promise.worker)
+          if (message.error) promise.reject(message.error)
+          else promise.resolve(message.data as Response)
           this.promiseMap.delete(message.id)
         }
       }
