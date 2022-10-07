@@ -132,8 +132,8 @@ describe('Fixed thread pool test suite', () => {
   it('Shutdown test', async () => {
     const exitPromise = TestUtils.waitExits(pool, numberOfThreads)
     await pool.destroy()
-    const res = await exitPromise
-    expect(res).toBe(numberOfThreads)
+    const numberOfExitEvents = await exitPromise
+    expect(numberOfExitEvents).toBe(numberOfThreads)
   })
 
   it('Should work even without opts in input', async () => {

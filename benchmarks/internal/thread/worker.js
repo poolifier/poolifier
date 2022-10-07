@@ -1,13 +1,9 @@
 'use strict'
 const { ThreadWorker } = require('../../../lib/index')
+const { jsonIntegerSerialization } = require('../benchmark-utils')
 
 function yourFunction (data) {
-  for (let i = 0; i < 1000; i++) {
-    const o = {
-      a: i
-    }
-    JSON.stringify(o)
-  }
+  jsonIntegerSerialization(1000)
   // console.log('This is the main thread ' + isMainThread)
   return { ok: 1 }
 }

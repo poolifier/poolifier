@@ -16,6 +16,15 @@ async function runPoolifierTest (pool, { tasks, workerData }) {
   })
 }
 
+function jsonIntegerSerialization (n) {
+  for (let i = 0; i < n; i++) {
+    const o = {
+      a: i
+    }
+    JSON.stringify(o)
+  }
+}
+
 function generateRandomInteger (max, min = 0) {
   max = Math.floor(max)
   if (min) {
@@ -29,7 +38,7 @@ function generateRandomInteger (max, min = 0) {
  * Intentionally inefficient implementation.
  *
  * @param {*} n
- * @returns
+ * @returns {number}
  */
 function fibonacci (n) {
   if (n <= 1) return 1
@@ -42,8 +51,9 @@ const LIST_FORMATTER = new Intl.ListFormat('en-US', {
 })
 
 module.exports = {
+  runPoolifierTest,
+  jsonIntegerSerialization,
   generateRandomInteger,
-  LIST_FORMATTER,
   fibonacci,
-  runPoolifierTest
+  LIST_FORMATTER
 }
