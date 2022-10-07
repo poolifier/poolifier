@@ -4,12 +4,7 @@ const { isMainThread } = require('worker_threads')
 const TestUtils = require('../../test-utils')
 
 function test (data) {
-  // for (let i = 0; i < 50; i++) {
-  //   const o = {
-  //     a: i
-  //   }
-  //   JSON.stringify(o)
-  // }
+  // TestUtils.jsonIntegerSerialization(50)
   TestUtils.fibonacci(40)
   return isMainThread
 }
