@@ -252,6 +252,7 @@ class SelectionStrategiesUtils {
         return new LessRecentlyUsedWorkerChoiceStrategy(pool)
       default:
         throw new Error(
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `Worker choice strategy '${workerChoiceStrategy}' not found`
         )
     }

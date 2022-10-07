@@ -191,7 +191,7 @@ export abstract class AbstractWorker<
         return null
       })
       .catch(e => {
-        const err = this.handleError(e)
+        const err = this.handleError(e as Error)
         this.sendToMainWorker({ error: err, id: value.id })
       })
       .finally(() => {
