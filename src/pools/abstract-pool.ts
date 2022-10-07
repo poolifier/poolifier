@@ -280,7 +280,8 @@ export abstract class AbstractPool<
     const messageId = ++this.nextMessageId
     const res = this.internalExecute(worker, messageId)
     this.checkAndEmitBusy()
-    this.sendToWorker(worker, { data: data ?? ({} as Data), id: messageId })
+    data = data ?? ({} as Data)
+    this.sendToWorker(worker, { data, id: messageId })
     return res
   }
 

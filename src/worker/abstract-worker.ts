@@ -33,7 +33,6 @@ export abstract class AbstractWorker<
    * Options for the worker.
    */
   public readonly opts: WorkerOptions
-
   /**
    * Constructs a new poolifier worker.
    *
@@ -75,23 +74,30 @@ export abstract class AbstractWorker<
     }
 
     this.mainWorker?.on('message', (value: MessageValue<Data, MainWorker>) => {
-      if (value?.data && value.id) {
-        // Here you will receive messages
-        if (this.opts.async) {
-          this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
-        } else {
-          this.runInAsyncScope(this.run.bind(this), this, fn, value)
-        }
-      } else if (value.parent) {
-        // Save a reference of the main worker to communicate with it
-        // This will be received once
-        this.mainWorker = value.parent
-      } else if (value.kill) {
-        // Here is time to kill this worker, just clearing the interval
-        if (this.aliveInterval) clearInterval(this.aliveInterval)
-        this.emitDestroy()
-      }
+      this.messageListener(value, fn)
     })
+  }
+
+  protected messageListener (
+    value: MessageValue<Data, MainWorker>,
+    fn: (data: Data) => Response
+  ): void {
+    if (value.data !== undefined && value.id !== undefined) {
+      // Here you will receive messages
+      if (this.opts.async) {
+        this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
+      } else {
+        this.runInAsyncScope(this.run.bind(this), this, fn, value)
+      }
+    } else if (value.parent !== undefined) {
+      // Save a reference of the main worker to communicate with it
+      // This will be received once
+      this.mainWorker = value.parent
+    } else if (value.kill !== undefined) {
+      // Here is time to kill this worker, just clearing the interval
+      if (this.aliveInterval) clearInterval(this.aliveInterval)
+      this.emitDestroy()
+    }
   }
 
   private checkWorkerOptions (opts: WorkerOptions) {

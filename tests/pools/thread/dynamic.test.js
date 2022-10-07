@@ -51,14 +51,10 @@ describe('Dynamic thread pool test suite', () => {
   })
 
   it('Shutdown test', async () => {
-    let closedThreads = 0
-    pool.workers.forEach(w => {
-      w.on('exit', () => {
-        closedThreads++
-      })
-    })
+    const exitPromise = TestUtils.waitExits(pool, min)
     await pool.destroy()
-    expect(closedThreads).toBe(min)
+    const numberOfExitEvents = await exitPromise
+    expect(numberOfExitEvents).toBe(min)
   })
 
   it('Validation of inputs test', () => {
