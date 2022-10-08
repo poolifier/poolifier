@@ -71,7 +71,7 @@ export class FixedClusterPool<
     return this.workersTasksUsage.get(worker)?.avgRunTime ?? 0
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public destroyWorker (worker: Worker): void {
     this.sendToWorker(worker, { kill: 1 })
     worker.kill()

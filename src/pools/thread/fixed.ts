@@ -133,7 +133,7 @@ export class FixedThreadPool<
     return this.internalGetBusyStatus()
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   protected resetWorkerTasksUsage (worker: Worker): void {
     super.resetWorkerTasksUsage(worker)
     const workerId = this.getWorkerIndex(worker)

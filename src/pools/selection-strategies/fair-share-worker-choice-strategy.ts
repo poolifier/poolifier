@@ -30,7 +30,7 @@ export class FairShareWorkerChoiceStrategy<
     WorkerVirtualTaskTimestamp
   > = new Map<Worker, WorkerVirtualTaskTimestamp>()
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public choose (): Worker {
     this.updateWorkerLastVirtualTaskTimestamp()
     let minWorkerVirtualTaskEndTimestamp = Infinity
