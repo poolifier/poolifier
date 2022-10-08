@@ -35,6 +35,7 @@ module.exports = defineConfig({
           'comparator',
           'ecma',
           'enum',
+          'fibonacci',
           'inheritdoc',
           'jsdoc',
           'poolifier',

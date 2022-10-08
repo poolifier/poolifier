@@ -5,7 +5,8 @@
     "outDir": "lib",
     "esModuleInterop": true,
     "declaration": true,
-    "strict": true
+    "strict": true,
+    "importsNotUsedAsValues": "error"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]

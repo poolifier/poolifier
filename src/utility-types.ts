@@ -1,6 +1,6 @@
 import type { Worker as ClusterWorker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
-import type { IWorker } from './pools/abstract-pool'
+import type { AbstractPoolWorker } from './pools/abstract-pool-worker'
 import type { KillBehavior } from './worker/worker-options'
 
 /**
@@ -46,7 +46,7 @@ export interface MessageValue<
  * @template Response Type of response of execution. This can only be serializable data.
  */
 export interface PromiseWorkerResponseWrapper<
-  Worker extends IWorker,
+  Worker extends AbstractPoolWorker,
   Response = unknown
 > {
   /**

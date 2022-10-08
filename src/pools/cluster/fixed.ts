@@ -1,8 +1,8 @@
 import type { Worker } from 'cluster'
 import cluster from 'cluster'
 import type { MessageValue } from '../../utility-types'
-import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
+import type { PoolOptions } from '../pool'
 import { PoolType } from '../pool-internal'
 
 /**

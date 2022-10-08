@@ -1,7 +1,7 @@
 import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
 import type { Draft, MessageValue } from '../../utility-types'
-import type { PoolOptions } from '../abstract-pool'
 import { AbstractPool } from '../abstract-pool'
+import type { PoolOptions } from '../pool'
 import { PoolType } from '../pool-internal'
 
 /**

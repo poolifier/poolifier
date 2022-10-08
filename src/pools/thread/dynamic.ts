@@ -1,4 +1,4 @@
-import type { PoolOptions } from '../abstract-pool'
+import type { PoolOptions } from '../pool'
 import { PoolType } from '../pool-internal'
 import type { ThreadWorkerWithMessageChannel } from './fixed'
 import { FixedThreadPool } from './fixed'
