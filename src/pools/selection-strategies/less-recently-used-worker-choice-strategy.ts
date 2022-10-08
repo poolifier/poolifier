@@ -13,7 +13,7 @@ export class LessRecentlyUsedWorkerChoiceStrategy<
   Data,
   Response
 > extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
-  /** @inheritdoc */
+  /** @inheritDoc */
   public choose (): Worker {
     let minNumberOfRunningTasks = Infinity
     // A worker is always found because it picks the one with fewer tasks

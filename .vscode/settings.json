@@ -1,4 +1,7 @@
 {
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
   "cSpell.words": [
     "Alessandro",
     "Ardizio",
@@ -6,7 +9,7 @@
     "Dependabot",
     "Gitter",
     "Shinigami",
-    "inheritdoc",
+    "inheritDoc",
     "lcov",
     "loglevel",
     "markdownlint",

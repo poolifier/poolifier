@@ -56,12 +56,12 @@ export class ThreadWorker<
     }
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
     this.getMainWorker().postMessage(message)
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   protected beforeRunHook (workerId: number | undefined): void {
     if (!this.tasksSharedUsage) {
       console.log('UNDEFINED')
@@ -71,7 +71,7 @@ export class ThreadWorker<
     this.tasksSharedUsage.consoleDump()
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   protected afterRunHook (
     workerId: number | undefined,
     taskRunTime: number

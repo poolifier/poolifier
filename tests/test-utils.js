@@ -1,7 +1,7 @@
 class TestUtils {
   static async waitExits (pool, numberOfExitEventsToWait) {
     let exitEvents = 0
-    return new Promise(function (resolve, reject) {
+    return new Promise(resolve => {
       pool.workers.forEach(w => {
         w.on('exit', () => {
           exitEvents++

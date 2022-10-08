@@ -30,7 +30,7 @@ export abstract class AbstractPool<
   Data = unknown,
   Response = unknown
 > implements IPoolInternal<Worker, Data, Response> {
-  /** @inheritdoc */
+  /** @inheritDoc */
   public readonly workers: Worker[] = []
 
   /**
@@ -44,10 +44,10 @@ export abstract class AbstractPool<
     TasksUsage
   >()
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public readonly emitter?: PoolEmitter
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public readonly max?: number
 
   /**
@@ -155,27 +155,27 @@ export abstract class AbstractPool<
     this.opts.enableEvents = opts.enableEvents ?? true
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public abstract get type (): PoolType
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public get numberOfRunningTasks (): number {
     // TODO: The number of running tasks calculation is not correct
     return this.promiseMap.size
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public getWorkerIndex (worker: Worker): number {
     return this.workers.indexOf(worker)
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public abstract getWorkerRunningTasks (worker: Worker): number | undefined
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public abstract getWorkerAverageTasksRunTime (worker: Worker): number
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public setWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
@@ -185,7 +185,7 @@ export abstract class AbstractPool<
     )
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public abstract get busy (): boolean
 
   protected internalGetBusyStatus (): boolean {
@@ -195,7 +195,7 @@ export abstract class AbstractPool<
     )
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public findFreeWorker (): Worker | false {
     for (const worker of this.workers) {
       if (this.getWorkerRunningTasks(worker) === 0) {
@@ -206,7 +206,7 @@ export abstract class AbstractPool<
     return false
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public execute (data: Data): Promise<Response> {
     // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
@@ -222,7 +222,7 @@ export abstract class AbstractPool<
     return res
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public async destroy (): Promise<void> {
     await Promise.all(this.workers.map(worker => this.destroyWorker(worker)))
   }

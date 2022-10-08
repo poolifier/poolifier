@@ -26,10 +26,10 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Production Tests & Coverage
-        run: |
-          npm run test:prod
-          npm run coverage
+      # - name: Production Tests & Coverage
+      #   run: |
+      #     npm run test:prod
+      #     npm run coverage
         env:
           CI: true
 

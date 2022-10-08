@@ -62,12 +62,12 @@ export class FixedThreadPool<
     }
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   protected isMain (): boolean {
     return isMainThread
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public getWorkerRunningTasks (worker: Worker): number | undefined {
     return this.workersTasksUsage.get(worker)?.running ?? 0
     // return this.workersTasksSharedUsage[
@@ -75,14 +75,14 @@ export class FixedThreadPool<
     // ] as number
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public getWorkerAverageTasksRunTime (worker: Worker): number {
     return this.workersTasksSharedUsage[
       `worker${this.getWorkerIndex(worker)}-avgRunTime`
     ] as number
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public async destroyWorker (
     worker: ThreadWorkerWithMessageChannel
   ): Promise<void> {
@@ -90,7 +90,7 @@ export class FixedThreadPool<
     await worker.terminate()
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   protected sendToWorker (
     worker: ThreadWorkerWithMessageChannel,
     message: MessageValue<Data>
@@ -98,7 +98,7 @@ export class FixedThreadPool<
     worker.postMessage(message)
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public registerWorkerMessageListener<Message extends Data | Response> (
     messageChannel: ThreadWorkerWithMessageChannel,
     listener: (message: MessageValue<Message>) => void
@@ -106,14 +106,14 @@ export class FixedThreadPool<
     messageChannel.port2?.on('message', listener)
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   protected createWorker (): ThreadWorkerWithMessageChannel {
     return new Worker(this.filePath, {
       env: SHARE_ENV
     })
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   protected afterWorkerSetup (worker: ThreadWorkerWithMessageChannel): void {
     const { port1, port2 } = new MessageChannel()
     worker.postMessage({ parent: port1 }, [port1])
@@ -123,12 +123,12 @@ export class FixedThreadPool<
     this.registerWorkerMessageListener(worker, super.workerListener())
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public get type (): PoolType {
     return PoolType.FIXED
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public get busy (): boolean {
     return this.internalGetBusyStatus()
   }

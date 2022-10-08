@@ -38,12 +38,13 @@ module.exports = defineConfig({
           'ecma',
           'enum',
           'fibonacci',
-          'inheritdoc',
+          'inheritDoc',
           'jsdoc',
           'poolifier',
           'readonly',
           'resize',
           'serializable',
+          'sinon',
           'unregister',
           'workerpool'
         ],
@@ -117,6 +118,13 @@ module.exports = defineConfig({
     {
       files: ['tests/**/*.js'],
       rules: {
+        'jsdoc/require-jsdoc': 'off'
+      }
+    },
+    {
+      files: ['tests/pools/selection-strategies/**/*.js'],
+      rules: {
+        'node/no-missing-require': 'off',
         'jsdoc/require-jsdoc': 'off'
       }
     },

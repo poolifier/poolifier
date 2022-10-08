@@ -49,24 +49,24 @@ export class FixedClusterPool<
     super(numberOfWorkers, filePath, opts)
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   protected setupHook (): void {
     cluster.setupPrimary({
       exec: this.filePath
     })
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   protected isMain (): boolean {
     return cluster.isPrimary
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public getWorkerRunningTasks (worker: Worker): number | undefined {
     return this.workersTasksUsage.get(worker)?.running ?? 0
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public getWorkerAverageTasksRunTime (worker: Worker): number {
     return this.workersTasksUsage.get(worker)?.avgRunTime ?? 0
   }
@@ -77,12 +77,12 @@ export class FixedClusterPool<
     worker.kill()
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   protected sendToWorker (worker: Worker, message: MessageValue<Data>): void {
     worker.send(message)
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public registerWorkerMessageListener<Message extends Data | Response> (
     worker: Worker,
     listener: (message: MessageValue<Message>) => void
@@ -90,23 +90,23 @@ export class FixedClusterPool<
     worker.on('message', listener)
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   protected createWorker (): Worker {
     return cluster.fork(this.opts.env)
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   protected afterWorkerSetup (worker: Worker): void {
     // Listen worker messages.
     this.registerWorkerMessageListener(worker, super.workerListener())
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public get type (): PoolType {
     return PoolType.FIXED
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public get busy (): boolean {
     return this.internalGetBusyStatus()
   }

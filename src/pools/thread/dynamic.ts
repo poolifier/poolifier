@@ -36,12 +36,12 @@ export class DynamicThreadPool<
     this.initWorkersTasksSharedUsage(max)
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public get type (): PoolType {
     return PoolType.DYNAMIC
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public get busy (): boolean {
     return this.workers.length === this.max
   }

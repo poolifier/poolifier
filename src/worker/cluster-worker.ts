@@ -38,12 +38,12 @@ export class ClusterWorker<
     )
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
     this.getMainWorker().send(message)
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   protected handleError (e: Error | string): string {
     return e instanceof Error ? e.message : e
   }
