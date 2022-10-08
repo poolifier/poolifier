@@ -37,7 +37,7 @@ function generateRandomInteger (max, min = 0) {
 /**
  * Intentionally inefficient implementation.
  *
- * @param {*} n
+ * @param {number} n
  * @returns {number}
  */
 function fibonacci (n) {

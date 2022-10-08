@@ -1,5 +1,3 @@
-import cluster from 'cluster'
-import { threadId } from 'worker_threads'
 import type {
   ErrorHandler,
   ExitHandler,
@@ -12,18 +10,6 @@ import type {
  * Basic class that implement the minimum required for a pool worker.
  */
 export abstract class AbstractPoolWorker implements IPoolWorker {
-  /** @inheritdoc  */
-  public readonly id?: number
-  /** @inheritdoc  */
-  constructor () {
-    Object.defineProperty(this, 'id', {
-      /** @inheritdoc  */
-      get (): number {
-        return threadId ?? cluster.worker?.id
-      }
-    })
-  }
-
   /** @inheritdoc  */
   abstract on (event: 'message', handler: MessageHandler<this>): void
   /** @inheritdoc  */

@@ -129,11 +129,6 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Worker identifier.
-   */
-  protected abstract get id (): number | undefined
-
-  /**
    * Returns the main worker.
    *
    * @returns Reference to the main worker.

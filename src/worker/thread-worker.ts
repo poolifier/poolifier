@@ -1,5 +1,5 @@
 import type { MessagePort } from 'worker_threads'
-import { isMainThread, parentPort, threadId } from 'worker_threads'
+import { isMainThread, parentPort } from 'worker_threads'
 import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import { SharedUsage } from './shared-usage'
@@ -54,11 +54,6 @@ export class ThreadWorker<
         )
       }
     }
-  }
-
-  /** @inheritdoc */
-  public get id (): number {
-    return threadId
   }
 
   /** @inheritdoc */

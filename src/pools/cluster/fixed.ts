@@ -62,7 +62,7 @@ export class FixedClusterPool<
   }
 
   /** @inheritdoc */
-  public getWorkerRunningTasks (worker: Worker): number {
+  public getWorkerRunningTasks (worker: Worker): number | undefined {
     return this.workersTasksUsage.get(worker)?.running ?? 0
   }
 

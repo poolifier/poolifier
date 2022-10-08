@@ -71,7 +71,7 @@ export class FixedThreadPool<
   }
 
   /** @inheritdoc */
-  public getWorkerRunningTasks (worker: Worker): number {
+  public getWorkerRunningTasks (worker: Worker): number | undefined {
     return this.workersTasksUsage.get(worker)?.running ?? 0
     // return this.workersTasksSharedUsage[
     //   `worker${this.getWorkerIndex(worker)}-running`

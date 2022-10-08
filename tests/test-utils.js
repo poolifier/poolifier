@@ -35,7 +35,7 @@ class TestUtils {
   /**
    * Intentionally inefficient implementation.
    *
-   * @param {*} n
+   * @param {number} n
    * @returns {number}
    */
   static fibonacci (n) {
@@ -46,7 +46,7 @@ class TestUtils {
   /**
    * Intentionally inefficient implementation.
    *
-   * @param {*} n
+   * @param {number} n
    * @returns {number}
    */
   static factorial (n) {

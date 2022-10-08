@@ -90,6 +90,7 @@ export interface IPoolInternal<
    * Get worker index.
    *
    * @param worker The worker.
+   * @returns The worker index.
    */
   getWorkerIndex(worker: Worker): number
 
@@ -97,8 +98,9 @@ export interface IPoolInternal<
    * Get worker running tasks.
    *
    * @param worker The worker.
+   * @returns The number of tasks currently running on the worker.
    */
-  getWorkerRunningTasks(worker: Worker): number
+  getWorkerRunningTasks(worker: Worker): number | undefined
 
   /**
    * Get worker average tasks run time.

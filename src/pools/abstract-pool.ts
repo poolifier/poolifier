@@ -6,10 +6,16 @@ import { EMPTY_FUNCTION } from '../utils'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { AbstractPoolWorker } from './abstract-pool-worker'
 import type { PoolOptions } from './pool'
-import type { IPoolInternal, TasksUsage } from './pool-internal'
-import { PoolEmitter, PoolType } from './pool-internal'
-import type { WorkerChoiceStrategy } from './selection-strategies/selection-strategies-types'
-import { WorkerChoiceStrategies } from './selection-strategies/selection-strategies-types'
+import {
+  IPoolInternal,
+  PoolEmitter,
+  PoolType,
+  TasksUsage
+} from './pool-internal'
+import {
+  WorkerChoiceStrategies,
+  WorkerChoiceStrategy
+} from './selection-strategies/selection-strategies-types'
 import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
 
 /**
@@ -164,7 +170,7 @@ export abstract class AbstractPool<
   }
 
   /** @inheritdoc */
-  public abstract getWorkerRunningTasks (worker: Worker): number
+  public abstract getWorkerRunningTasks (worker: Worker): number | undefined
 
   /** @inheritdoc */
   public abstract getWorkerAverageTasksRunTime (worker: Worker): number
