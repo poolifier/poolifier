@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.3.0] - 2022-dd-mm
 
-### Features
+### Added
 
 - Add shared object support between workers to track worker-threads pool accurate tasks usage statistics.
 - Pool worker choice strategies:
