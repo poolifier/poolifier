@@ -1,4 +1,7 @@
 {
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
   "cSpell.words": [
     "Alessandro",
     "Ardizio",
