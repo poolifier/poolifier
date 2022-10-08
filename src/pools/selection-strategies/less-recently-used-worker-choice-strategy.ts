@@ -19,13 +19,12 @@ export class LessRecentlyUsedWorkerChoiceStrategy<
     // A worker is always found because it picks the one with fewer tasks
     let lessRecentlyUsedWorker!: Worker
     for (const worker of this.pool.workers) {
-      const workerRunningTasks = this.pool.getWorkerRunningTasks(worker)
-      if (!this.isDynamicPool && workerRunningTasks === 0) {
+      const workerRunningTasks = this.pool.getWorkerRunningTasks(
+        worker
+      ) as number
+      if (this.isDynamicPool === false && workerRunningTasks === 0) {
         return worker
-      } else if (
-        workerRunningTasks !== undefined &&
-        workerRunningTasks < minNumberOfRunningTasks
-      ) {
+      } else if (workerRunningTasks < minNumberOfRunningTasks) {
         lessRecentlyUsedWorker = worker
         minNumberOfRunningTasks = workerRunningTasks
       }

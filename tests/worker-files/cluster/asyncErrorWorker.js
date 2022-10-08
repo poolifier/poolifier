@@ -1,13 +1,14 @@
 'use strict'
 const { ClusterWorker, KillBehaviors } = require('../../../lib/index')
+const TestUtils = require('../../test-utils')
 
 async function error (data) {
-  return new Promise((resolve, reject) => {
-    setTimeout(
-      () => reject(new Error('Error Message from ClusterWorker:async')),
-      2000
-    )
-  })
+  return TestUtils.workerSleepFunction(
+    data,
+    2000,
+    true,
+    'Error Message from ClusterWorker:async'
+  )
 }
 
 module.exports = new ClusterWorker(error, {

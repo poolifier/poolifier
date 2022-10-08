@@ -21,7 +21,6 @@ export class WorkerChoiceStrategyContext<
   Data,
   Response
 > {
-  // Will be set by setter in constructor
   private workerChoiceStrategy!: IWorkerChoiceStrategy<Worker>
 
   /**
