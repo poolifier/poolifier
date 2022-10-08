@@ -36,7 +36,7 @@ module.exports = defineConfig({
           'ecma',
           'enum',
           'fibonacci',
-          'inheritdoc',
+          'inheritDoc',
           'jsdoc',
           'poolifier',
           'readonly',

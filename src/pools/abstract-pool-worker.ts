@@ -10,14 +10,14 @@ import type {
  * Basic class that implement the minimum required for a pool worker.
  */
 export abstract class AbstractPoolWorker implements IPoolWorker {
-  /** @inheritdoc  */
+  /** @inheritDoc  */
   abstract on (event: 'message', handler: MessageHandler<this>): void
-  /** @inheritdoc  */
+  /** @inheritDoc  */
   abstract on (event: 'error', handler: ErrorHandler<this>): void
-  /** @inheritdoc  */
+  /** @inheritDoc  */
   abstract on (event: 'online', handler: OnlineHandler<this>): void
-  /** @inheritdoc  */
+  /** @inheritDoc  */
   abstract on (event: 'exit', handler: ExitHandler<this>): void
-  /** @inheritdoc  */
+  /** @inheritDoc  */
   abstract once (event: 'exit', handler: ExitHandler<this>): void
 }

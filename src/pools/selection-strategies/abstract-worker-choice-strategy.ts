@@ -15,7 +15,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   Data,
   Response
 > implements IWorkerChoiceStrategy<Worker> {
-  /** @inheritdoc */
+  /** @inheritDoc */
   public isDynamicPool: boolean = this.pool.type === PoolType.DYNAMIC
 
   /**
@@ -27,6 +27,6 @@ export abstract class AbstractWorkerChoiceStrategy<
     protected readonly pool: IPoolInternal<Worker, Data, Response>
   ) {}
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public abstract choose (): Worker
 }

@@ -35,12 +35,12 @@ export class DynamicThreadPool<
     super(min, filePath, opts)
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public get type (): PoolType {
     return PoolType.DYNAMIC
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public get busy (): boolean {
     return this.workers.length === this.max
   }

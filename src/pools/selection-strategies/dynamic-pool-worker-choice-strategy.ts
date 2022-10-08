@@ -41,7 +41,7 @@ export class DynamicPoolWorkerChoiceStrategy<
     )
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public choose (): Worker {
     const freeWorker = this.pool.findFreeWorker()
     if (freeWorker) {
