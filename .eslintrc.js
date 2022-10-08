@@ -41,6 +41,7 @@ module.exports = defineConfig({
           'poolifier',
           'readonly',
           'serializable',
+          'sinon',
           'unregister',
           'workerpool'
         ],
