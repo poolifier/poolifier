@@ -17,9 +17,20 @@ class TestUtils {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
-  static async workerSleepFunction (data, ms) {
-    return new Promise(resolve => {
-      setTimeout(() => resolve(data), ms)
+  static async workerSleepFunction (
+    data,
+    ms,
+    rejection = false,
+    rejectionMessage = ''
+  ) {
+    return new Promise((resolve, reject) => {
+      setTimeout(
+        () =>
+          rejection === true
+            ? reject(new Error(rejectionMessage))
+            : resolve(data),
+        ms
+      )
     })
   }
 

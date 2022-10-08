@@ -3,7 +3,7 @@ const {
   WorkerChoiceStrategies,
   DynamicThreadPool,
   FixedThreadPool
-} = require('../../lib/index')
+} = require('../../../lib/index')
 
 describe('Selection strategies test suite', () => {
   it('Verify that WorkerChoiceStrategies enumeration provides string values', () => {
