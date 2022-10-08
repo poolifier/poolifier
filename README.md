@@ -21,8 +21,8 @@
     <img alt="Javascript Standard Style Guide" src="https://img.shields.io/badge/code_style-standard-brightgreen.svg"></a>
   <a href="https://gitter.im/poolifier/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
     <img alt="Gitter chat" src="https://badges.gitter.im/poolifier/community.svg"></a>
-  <a href="https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot">
-    <img alt="Dependabot" src="https://badgen.net/dependabot/dependabot/dependabot-core/?icon=dependabot"></a>
+  <a href="https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot">
+    <img alt="Dependabot" src="https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot"></a>
   <a href="http://makeapullrequest.com">
     <img alt="PR Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square"></a>
   <a href="https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen">
