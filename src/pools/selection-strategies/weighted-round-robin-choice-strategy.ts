@@ -59,7 +59,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   public choose (): Worker {
     const currentWorker = this.pool.workers[this.currentWorkerIndex]
     if (this.isDynamicPool) {
-      !this.workerTaskRunTime.has(currentWorker) &&
+      this.workerTaskRunTime.has(currentWorker) === false &&
         this.workerTaskRunTime.set(currentWorker, {
           weight: this.defaultWorkerWeight,
           runTime: 0
