@@ -2,16 +2,13 @@ import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
 import type { Draft, MessageValue } from '../../utility-types'
 import { SharedUsage } from '../../worker/shared-usage'
 import { AbstractPool } from '../abstract-pool'
-import type { AbstractPoolWorker } from '../abstract-pool-worker'
 import type { PoolOptions } from '../pool'
 import { PoolType } from '../pool-internal'
 
 /**
  * A thread worker with message channels for communication between main thread and thread worker.
  */
-export type ThreadWorkerWithMessageChannel = AbstractPoolWorker &
-  Worker &
-  Draft<MessageChannel>
+export type ThreadWorkerWithMessageChannel = Worker & Draft<MessageChannel>
 
 /**
  * A thread pool with a fixed number of threads.
@@ -75,7 +72,7 @@ export class FixedThreadPool<
     return this.workersTasksUsage.get(worker)?.running ?? 0
     // return this.workersTasksSharedUsage[
     //   `worker${this.getWorkerIndex(worker)}-running`
-    // ]
+    // ] as number
   }
 
   /** @inheritdoc */

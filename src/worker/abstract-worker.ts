@@ -22,10 +22,6 @@ export abstract class AbstractWorker<
   Response = unknown
 > extends AsyncResource {
   /**
-   * Id of the last task processed by this worker.
-   */
-  protected lastTaskId: number
-  /**
    * Timestamp of the last task processed by this worker.
    */
   protected lastTaskTimestamp: number
@@ -67,7 +63,6 @@ export abstract class AbstractWorker<
     this.opts = opts
     this.checkFunctionInput(fn)
     this.checkWorkerOptions(this.opts)
-    this.lastTaskId = 0
     this.lastTaskTimestamp = Date.now()
     // Keep the worker active
     if (!isMain) {
