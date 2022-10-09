@@ -412,7 +412,7 @@ export abstract class AbstractPool<
    *
    * @param worker Worker which running tasks is increased.
    */
-  protected increaseWorkerRunningTasks (worker: Worker): void {
+  private increaseWorkerRunningTasks (worker: Worker): void {
     this.stepWorkerRunningTasks(worker, 1)
   }
 
