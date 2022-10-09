@@ -1,5 +1,6 @@
 import type { AbstractPoolWorker } from '../abstract-pool-worker'
 import type { IPoolInternal } from '../pool-internal'
+import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strategy'
 import { LessRecentlyUsedWorkerChoiceStrategy } from './less-recently-used-worker-choice-strategy'
 import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy'
 import type {
@@ -33,6 +34,8 @@ export class SelectionStrategiesUtils {
         return new RoundRobinWorkerChoiceStrategy(pool)
       case WorkerChoiceStrategies.LESS_RECENTLY_USED:
         return new LessRecentlyUsedWorkerChoiceStrategy(pool)
+      case WorkerChoiceStrategies.FAIR_SHARE:
+        return new FairShareWorkerChoiceStrategy(pool)
       case WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN:
         return new WeightedRoundRobinWorkerChoiceStrategy(pool)
       default:

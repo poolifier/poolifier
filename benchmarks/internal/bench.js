@@ -1,18 +1,22 @@
 const Benchmark = require('benchmark')
 const {
   dynamicClusterTest,
+  dynamicClusterTestFairShare,
   dynamicClusterTestLessRecentlyUsed
 } = require('./cluster/dynamic')
 const {
   fixedClusterTest,
+  fixedClusterTestFairShare,
   fixedClusterTestLessRecentlyUsed
 } = require('./cluster/fixed')
 const {
   dynamicThreadTest,
+  dynamicThreadTestFairShare,
   dynamicThreadTestLessRecentlyUsed
 } = require('./thread/dynamic')
 const {
   fixedThreadTest,
+  fixedThreadTestFairShare,
   fixedThreadTestLessRecentlyUsed
 } = require('./thread/fixed')
 const { LIST_FORMATTER } = require('./benchmark-utils')
@@ -33,11 +37,17 @@ async function test () {
     .add('Poolifier:Fixed:ThreadPool:LessRecentlyUsed', async function () {
       await fixedThreadTestLessRecentlyUsed()
     })
+    .add('Poolifier:Fixed:ThreadPool:FairShare', async function () {
+      await fixedThreadTestFairShare()
+    })
     .add('Poolifier:Dynamic:ThreadPool', async function () {
       await dynamicThreadTest()
     })
     .add('Poolifier:Dynamic:ThreadPool:LessRecentlyUsed', async function () {
       await dynamicThreadTestLessRecentlyUsed()
+    })
+    .add('Poolifier:Dynamic:ThreadPool:FairShare', async function () {
+      await dynamicThreadTestFairShare()
     })
     .add('Poolifier:Fixed:ClusterPool', async function () {
       await fixedClusterTest()
@@ -45,11 +55,17 @@ async function test () {
     .add('Poolifier:Fixed:ClusterPool:LessRecentlyUsed', async function () {
       await fixedClusterTestLessRecentlyUsed()
     })
+    .add('Poolifier:Fixed:ClusterPool:FairShare', async function () {
+      await fixedClusterTestFairShare()
+    })
     .add('Poolifier:Dynamic:ClusterPool', async function () {
       await dynamicClusterTest()
     })
     .add('Poolifier:Dynamic:ClusterPool:LessRecentlyUsed', async function () {
       await dynamicClusterTestLessRecentlyUsed()
+    })
+    .add('Poolifier:Dynamic:ClusterPool:FairShare', async function () {
+      await dynamicClusterTestFairShare()
     })
     // Add listeners
     .on('cycle', function (event) {

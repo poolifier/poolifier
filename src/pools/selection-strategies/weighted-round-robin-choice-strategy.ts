@@ -45,7 +45,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   >()
 
   /**
-   * Constructs a worker choice strategy that selects based a weighted round robin scheduling algorithm.
+   * Constructs a worker choice strategy that selects with a weighted round robin scheduling algorithm.
    *
    * @param pool The pool instance.
    */

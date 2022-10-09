@@ -163,6 +163,8 @@ You can use node versions >= 12.x for thread pool, and node versions >= 16.x for
 
   - `WorkerChoiceStrategies.ROUND_ROBIN`: Submit tasks to worker in this pool in a round robbin fashion
   - `WorkerChoiceStrategies.LESS_RECENTLY_USED`: Submit tasks to the less recently used worker in the pool
+  - `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN` Submit tasks to worker using a weighted round robin scheduling algorithm based on tasks execution time for now
+  - `WorkerChoiceStrategies.FAIR_SHARE`: Submit tasks to worker using a fair share tasks scheduling algorithm
 
   Default: `WorkerChoiceStrategies.ROUND_ROBIN`
 

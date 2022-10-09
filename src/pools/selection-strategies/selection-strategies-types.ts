@@ -13,6 +13,10 @@ export const WorkerChoiceStrategies = Object.freeze({
    */
   LESS_RECENTLY_USED: 'LESS_RECENTLY_USED',
   /**
+   * Fair share worker selection strategy.
+   */
+  FAIR_SHARE: 'FAIR_SHARE',
+  /**
    * Weighted round robin worker selection strategy.
    */
   WEIGHTED_ROUND_ROBIN: 'WEIGHTED_ROUND_ROBIN'
