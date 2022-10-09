@@ -5,7 +5,7 @@ const TestUtils = require('../../test-utils')
 
 function test (data) {
   // TestUtils.jsonIntegerSerialization(100)
-  TestUtils.fibonacci(30)
+  TestUtils.fibonacci(40)
   return isMaster
 }
 
