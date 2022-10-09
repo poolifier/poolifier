@@ -11,7 +11,11 @@ export const WorkerChoiceStrategies = Object.freeze({
   /**
    * Less recently used worker selection strategy.
    */
-  LESS_RECENTLY_USED: 'LESS_RECENTLY_USED'
+  LESS_RECENTLY_USED: 'LESS_RECENTLY_USED',
+  /**
+   * Weighted round robin worker selection strategy.
+   */
+  WEIGHTED_ROUND_ROBIN: 'WEIGHTED_ROUND_ROBIN'
 } as const)
 
 /**

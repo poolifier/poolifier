@@ -7,6 +7,7 @@ import type {
   WorkerChoiceStrategy
 } from './selection-strategies-types'
 import { WorkerChoiceStrategies } from './selection-strategies-types'
+import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-choice-strategy'
 
 /**
  * Worker selection strategies helpers class.
@@ -32,6 +33,8 @@ export class SelectionStrategiesUtils {
         return new RoundRobinWorkerChoiceStrategy(pool)
       case WorkerChoiceStrategies.LESS_RECENTLY_USED:
         return new LessRecentlyUsedWorkerChoiceStrategy(pool)
+      case WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN:
+        return new WeightedRoundRobinWorkerChoiceStrategy(pool)
       default:
         throw new Error(
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
