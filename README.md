@@ -146,7 +146,7 @@ Remember that workers can only send and receive serializable data.
 
 ## Node versions
 
-You can use node versions 12.x, 13.x, 14.x, 16.x
+You can use node versions >= 12.x for thread pool, and node versions >= 16.x for cluster pool.
 
 ## API
 
