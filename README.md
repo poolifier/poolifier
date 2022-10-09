@@ -146,7 +146,7 @@ Remember that workers can only send and receive serializable data.
 
 ## Node versions
 
-You can use node versions 12.x, 13.x, 14.x, 16.x
+You can use node versions >= 12.x for thread pool, and node versions >= 16.x for cluster pool.
 
 ## API
 
@@ -246,13 +246,11 @@ But in general, **always profile your application**
 ## Contribute
 
 See guidelines [CONTRIBUTING](CONTRIBUTING.md)  
-Choose your task here [2.0.0](https://github.com/poolifier/poolifier/projects/1), propose an idea, a fix, an improvement.
+Choose your task here [2.3.0](https://github.com/orgs/poolifier/projects/1), propose an idea, a fix, an improvement.
 
 ## Team
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
 
 **Creator/Owner:**
 
