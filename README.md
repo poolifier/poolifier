@@ -99,7 +99,7 @@ You can implement a worker-threads worker in a simple way by extending the class
 'use strict'
 const { ThreadWorker } = require('poolifier')
 
-function yourFunction (data) {
+function yourFunction(data) {
   // this will be executed in the worker thread,
   // the data will be received by using the execute method
   return { ok: 1 }
@@ -194,7 +194,7 @@ This method will call the terminate method on each worker.
   The last active time of your worker unit will be updated when a task is submitted to a worker or when a worker terminate a task.  
   If `killBehavior` is set to `KillBehaviors.HARD` this value represents also the timeout for the tasks that you submit to the pool, when this timeout expires your tasks is interrupted and the worker is killed if is not part of the minimum size of the pool.  
   If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.  
-  Default: 60.000 ms
+  Default: 60000 ms
 
 - `async` - true/false, true if your function contains async pieces else false
 - `killBehavior` - Dictates if your async unit (worker/process) will be deleted in case that a task is active on it.  

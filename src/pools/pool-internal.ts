@@ -11,6 +11,16 @@ export enum PoolType {
 }
 
 /**
+ * Tasks usage statistics.
+ */
+export interface TasksUsage {
+  run: number
+  running: number
+  runTime: number
+  avgRunTime: number
+}
+
+/**
  * Internal poolifier pool emitter.
  */
 export class PoolEmitter extends EventEmitter {}
@@ -31,14 +41,6 @@ export interface IPoolInternal<
    * List of currently available workers.
    */
   readonly workers: Worker[]
-
-  /**
-   * The tasks map.
-   *
-   * - `key`: The `Worker`
-   * - `value`: Number of tasks currently in progress on the worker.
-   */
-  readonly tasks: Map<Worker, number>
 
   /**
    * Emitter on which events can be listened to.
@@ -99,4 +101,12 @@ export interface IPoolInternal<
    * @returns The number of tasks currently running on the worker.
    */
   getWorkerRunningTasks(worker: Worker): number | undefined
+
+  /**
+   * Get worker average tasks run time.
+   *
+   * @param worker The worker.
+   * @returns The average tasks run time on the worker.
+   */
+  getWorkerAverageTasksRunTime(worker: Worker): number | undefined
 }

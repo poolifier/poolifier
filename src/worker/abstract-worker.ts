@@ -171,8 +171,10 @@ export abstract class AbstractWorker<
     value: MessageValue<Data>
   ): void {
     try {
+      const startTaskTimestamp = Date.now()
       const res = fn(value.data)
-      this.sendToMainWorker({ data: res, id: value.id })
+      const taskRunTime = Date.now() - startTaskTimestamp
+      this.sendToMainWorker({ data: res, id: value.id, taskRunTime })
     } catch (e) {
       const err = this.handleError(e as Error)
       this.sendToMainWorker({ error: err, id: value.id })
@@ -191,9 +193,11 @@ export abstract class AbstractWorker<
     fn: (data?: Data) => Promise<Response>,
     value: MessageValue<Data>
   ): void {
+    const startTaskTimestamp = Date.now()
     fn(value.data)
       .then(res => {
-        this.sendToMainWorker({ data: res, id: value.id })
+        const taskRunTime = Date.now() - startTaskTimestamp
+        this.sendToMainWorker({ data: res, id: value.id, taskRunTime })
         return null
       })
       .catch(e => {

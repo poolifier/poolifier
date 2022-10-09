@@ -6,13 +6,16 @@ import { EMPTY_FUNCTION } from '../utils'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { AbstractPoolWorker } from './abstract-pool-worker'
 import type { PoolOptions } from './pool'
-import type { IPoolInternal } from './pool-internal'
+import type { IPoolInternal, TasksUsage } from './pool-internal'
 import { PoolEmitter, PoolType } from './pool-internal'
 import {
   WorkerChoiceStrategies,
   WorkerChoiceStrategy
 } from './selection-strategies/selection-strategies-types'
 import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
+
+const WORKER_NOT_FOUND_TASKS_USAGE_MAP =
+  'Worker could not be found in worker tasks usage map'
 
 /**
  * Base class containing some shared logic for all poolifier pools.
@@ -29,8 +32,16 @@ export abstract class AbstractPool<
   /** @inheritDoc */
   public readonly workers: Worker[] = []
 
-  /** @inheritDoc */
-  public readonly tasks: Map<Worker, number> = new Map<Worker, number>()
+  /**
+   * The workers tasks usage map.
+   *
+   *  `key`: The `Worker`
+   *  `value`: Worker tasks usage statistics.
+   */
+  protected workersTasksUsage: Map<Worker, TasksUsage> = new Map<
+    Worker,
+    TasksUsage
+  >()
 
   /** @inheritDoc */
   public readonly emitter?: PoolEmitter
@@ -152,13 +163,18 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public getWorkerRunningTasks (worker: Worker): number | undefined {
-    return this.tasks.get(worker)
+  public getWorkerIndex (worker: Worker): number {
+    return this.workers.indexOf(worker)
   }
 
   /** @inheritDoc */
-  public getWorkerIndex (worker: Worker): number {
-    return this.workers.indexOf(worker)
+  public getWorkerRunningTasks (worker: Worker): number | undefined {
+    return this.workersTasksUsage.get(worker)?.running
+  }
+
+  /** @inheritDoc */
+  public getWorkerAverageTasksRunTime (worker: Worker): number | undefined {
+    return this.workersTasksUsage.get(worker)?.avgRunTime
   }
 
   /** @inheritDoc */
@@ -230,36 +246,29 @@ export abstract class AbstractPool<
   protected abstract isMain (): boolean
 
   /**
-   * Increase the number of tasks that the given worker has applied.
+   * Hook executed before the worker task promise resolution.
+   * Can be overridden.
    *
-   * @param worker Worker whose tasks are increased.
+   * @param worker The worker.
    */
-  protected increaseWorkersTask (worker: Worker): void {
-    this.stepWorkerNumberOfTasks(worker, 1)
+  protected beforePromiseWorkerResponseHook (worker: Worker): void {
+    this.increaseWorkerRunningTasks(worker)
   }
 
   /**
-   * Decrease the number of tasks that the given worker has applied.
+   * Hook executed after the worker task promise resolution.
+   * Can be overridden.
    *
-   * @param worker Worker whose tasks are decreased.
+   * @param message The received message.
+   * @param promise The Promise response.
    */
-  protected decreaseWorkersTasks (worker: Worker): void {
-    this.stepWorkerNumberOfTasks(worker, -1)
-  }
-
-  /**
-   * Step the number of tasks that the given worker has applied.
-   *
-   * @param worker Worker whose tasks are set.
-   * @param step Worker number of tasks step.
-   */
-  private stepWorkerNumberOfTasks (worker: Worker, step: number): void {
-    const numberOfTasksInProgress = this.tasks.get(worker)
-    if (numberOfTasksInProgress !== undefined) {
-      this.tasks.set(worker, numberOfTasksInProgress + step)
-    } else {
-      throw Error('Worker could not be found in tasks map')
-    }
+  protected afterPromiseWorkerResponseHook (
+    message: MessageValue<Response>,
+    promise: PromiseWorkerResponseWrapper<Worker, Response>
+  ): void {
+    this.decreaseWorkerRunningTasks(promise.worker)
+    this.stepWorkerRunTasks(promise.worker, 1)
+    this.updateWorkerTasksRunTime(promise.worker, message.taskRunTime)
   }
 
   /**
@@ -270,7 +279,7 @@ export abstract class AbstractPool<
   protected removeWorker (worker: Worker): void {
     // Clean worker from data structure
     this.workers.splice(this.getWorkerIndex(worker), 1)
-    this.tasks.delete(worker)
+    this.resetWorkerTasksUsage(worker)
   }
 
   /**
@@ -309,7 +318,7 @@ export abstract class AbstractPool<
     worker: Worker,
     messageId: number
   ): Promise<Response> {
-    this.increaseWorkersTask(worker)
+    this.beforePromiseWorkerResponseHook(worker)
     return new Promise<Response>((resolve, reject) => {
       this.promiseMap.set(messageId, { resolve, reject, worker })
     })
@@ -345,8 +354,13 @@ export abstract class AbstractPool<
 
     this.workers.push(worker)
 
-    // Init tasks map
-    this.tasks.set(worker, 0)
+    // Init worker tasks usage map
+    this.workersTasksUsage.set(worker, {
+      run: 0,
+      running: 0,
+      runTime: 0,
+      avgRunTime: 0
+    })
 
     this.afterWorkerSetup(worker)
 
@@ -363,7 +377,7 @@ export abstract class AbstractPool<
       if (message.id !== undefined) {
         const promise = this.promiseMap.get(message.id)
         if (promise !== undefined) {
-          this.decreaseWorkersTasks(promise.worker)
+          this.afterPromiseWorkerResponseHook(message, promise)
           if (message.error) promise.reject(message.error)
           else promise.resolve(message.data as Response)
           this.promiseMap.delete(message.id)
@@ -376,5 +390,84 @@ export abstract class AbstractPool<
     if (this.opts.enableEvents && this.busy) {
       this.emitter?.emit('busy')
     }
+  }
+
+  /**
+   * Increase the number of tasks that the given worker has applied.
+   *
+   * @param worker Worker which running tasks is increased.
+   */
+  private increaseWorkerRunningTasks (worker: Worker): void {
+    this.stepWorkerRunningTasks(worker, 1)
+  }
+
+  /**
+   * Decrease the number of tasks that the given worker has applied.
+   *
+   * @param worker Worker which running tasks is decreased.
+   */
+  private decreaseWorkerRunningTasks (worker: Worker): void {
+    this.stepWorkerRunningTasks(worker, -1)
+  }
+
+  /**
+   * Step the number of tasks that the given worker has applied.
+   *
+   * @param worker Worker which running tasks are stepped.
+   * @param step Number of running tasks step.
+   */
+  private stepWorkerRunningTasks (worker: Worker, step: number): void {
+    const tasksUsage = this.workersTasksUsage.get(worker)
+    if (tasksUsage !== undefined) {
+      tasksUsage.running = tasksUsage.running + step
+      this.workersTasksUsage.set(worker, tasksUsage)
+    } else {
+      throw new Error(WORKER_NOT_FOUND_TASKS_USAGE_MAP)
+    }
+  }
+
+  /**
+   * Step the number of tasks that the given worker has run.
+   *
+   * @param worker Worker which has run tasks.
+   * @param step Number of run tasks step.
+   */
+  private stepWorkerRunTasks (worker: Worker, step: number) {
+    const tasksUsage = this.workersTasksUsage.get(worker)
+    if (tasksUsage !== undefined) {
+      tasksUsage.run = tasksUsage.run + step
+      this.workersTasksUsage.set(worker, tasksUsage)
+    } else {
+      throw new Error(WORKER_NOT_FOUND_TASKS_USAGE_MAP)
+    }
+  }
+
+  /**
+   * Update tasks run time for the given worker.
+   *
+   * @param worker Worker which run the task.
+   * @param taskRunTime Worker task run time.
+   */
+  private updateWorkerTasksRunTime (
+    worker: Worker,
+    taskRunTime: number | undefined
+  ) {
+    const tasksUsage = this.workersTasksUsage.get(worker)
+    if (tasksUsage !== undefined && tasksUsage.run !== 0) {
+      tasksUsage.runTime += taskRunTime ?? 0
+      tasksUsage.avgRunTime = tasksUsage.runTime / tasksUsage.run
+      this.workersTasksUsage.set(worker, tasksUsage)
+    } else {
+      throw new Error(WORKER_NOT_FOUND_TASKS_USAGE_MAP)
+    }
+  }
+
+  /**
+   * Reset worker tasks usage statistics.
+   *
+   * @param worker The worker.
+   */
+  private resetWorkerTasksUsage (worker: Worker): void {
+    this.workersTasksUsage.delete(worker)
   }
 }

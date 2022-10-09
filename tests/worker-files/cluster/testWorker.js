@@ -4,7 +4,7 @@ const { isMaster } = require('cluster')
 const TestUtils = require('../../test-utils')
 
 function test (data) {
-  TestUtils.jsonIntegerSerialization(50)
+  TestUtils.jsonIntegerSerialization(100)
   return isMaster
 }
 
