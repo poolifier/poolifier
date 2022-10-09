@@ -47,7 +47,6 @@ module.exports = defineConfig({
           'os',
           'poolifier',
           'readonly',
-          'resize',
           'serializable',
           'sinon',
           'unregister',
