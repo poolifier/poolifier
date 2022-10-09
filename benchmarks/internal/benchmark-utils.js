@@ -48,6 +48,20 @@ function fibonacci (n) {
   return fibonacci(n - 1) + fibonacci(n - 2)
 }
 
+/**
+ * Intentionally inefficient implementation.
+ *
+ * @param {number} n
+ * @returns {number}
+ */
+function factorial (n) {
+  if (n === 0) {
+    return 1
+  } else {
+    return factorial(n - 1) * n
+  }
+}
+
 const LIST_FORMATTER = new Intl.ListFormat('en-US', {
   style: 'long',
   type: 'conjunction'
@@ -58,5 +72,6 @@ module.exports = {
   jsonIntegerSerialization,
   generateRandomInteger,
   fibonacci,
+  factorial,
   LIST_FORMATTER
 }
