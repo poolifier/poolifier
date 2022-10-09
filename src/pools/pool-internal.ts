@@ -108,5 +108,5 @@ export interface IPoolInternal<
    * @param worker The worker.
    * @returns The average tasks run time on the worker.
    */
-  getWorkerAverageTasksRunTime(worker: Worker): number
+  getWorkerAverageTasksRunTime(worker: Worker): number | undefined
 }

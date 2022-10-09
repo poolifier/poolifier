@@ -18,6 +18,9 @@ import {
 } from './selection-strategies/selection-strategies-types'
 import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
 
+const WORKER_NOT_FOUND_TASKS_USAGE_MAP =
+  'Worker could not be found in worker tasks usage map'
+
 /**
  * Base class containing some shared logic for all poolifier pools.
  *
@@ -170,10 +173,14 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public abstract getWorkerRunningTasks (worker: Worker): number | undefined
+  public getWorkerRunningTasks (worker: Worker): number | undefined {
+    return this.workersTasksUsage.get(worker)?.running
+  }
 
   /** @inheritDoc */
-  public abstract getWorkerAverageTasksRunTime (worker: Worker): number
+  public getWorkerAverageTasksRunTime (worker: Worker): number | undefined {
+    return this.workersTasksUsage.get(worker)?.avgRunTime
+  }
 
   /** @inheritDoc */
   public setWorkerChoiceStrategy (
@@ -243,6 +250,11 @@ export abstract class AbstractPool<
   }
 
   /**
+   * Should return whether the worker is the main worker or not.
+   */
+  protected abstract isMain (): boolean
+
+  /**
    * Hook executed before the worker task promise resolution.
    * Can be overridden.
    *
@@ -266,20 +278,6 @@ export abstract class AbstractPool<
     this.decreaseWorkerRunningTasks(promise.worker)
     this.stepWorkerRunTasks(promise.worker, 1)
     this.updateWorkerTasksRunTime(promise.worker, message.taskRunTime)
-  }
-
-  /**
-   * Should return whether the worker is the main worker or not.
-   */
-  protected abstract isMain (): boolean
-
-  /**
-   * Reset worker tasks usage statistics.
-   *
-   * @param worker The worker.
-   */
-  protected resetWorkerTasksUsage (worker: Worker): void {
-    this.workersTasksUsage.delete(worker)
   }
 
   /**
@@ -331,11 +329,7 @@ export abstract class AbstractPool<
   ): Promise<Response> {
     this.beforePromiseWorkerResponseHook(worker)
     return new Promise<Response>((resolve, reject) => {
-      this.promiseMap.set(messageId, {
-        resolve,
-        reject,
-        worker
-      })
+      this.promiseMap.set(messageId, { resolve, reject, worker })
     })
   }
 
@@ -437,7 +431,7 @@ export abstract class AbstractPool<
       tasksUsage.running = tasksUsage.running + step
       this.workersTasksUsage.set(worker, tasksUsage)
     } else {
-      throw Error('Worker could not be found in worker tasks usage map')
+      throw new Error(WORKER_NOT_FOUND_TASKS_USAGE_MAP)
     }
   }
 
@@ -453,7 +447,7 @@ export abstract class AbstractPool<
       tasksUsage.run = tasksUsage.run + step
       this.workersTasksUsage.set(worker, tasksUsage)
     } else {
-      throw Error('Worker could not be found in worker tasks usage map')
+      throw new Error(WORKER_NOT_FOUND_TASKS_USAGE_MAP)
     }
   }
 
@@ -468,16 +462,21 @@ export abstract class AbstractPool<
     taskRunTime: number | undefined
   ) {
     const tasksUsage = this.workersTasksUsage.get(worker)
-    if (
-      tasksUsage !== undefined &&
-      taskRunTime !== undefined &&
-      tasksUsage.run !== 0
-    ) {
-      tasksUsage.runTime += taskRunTime
+    if (tasksUsage !== undefined && tasksUsage.run !== 0) {
+      tasksUsage.runTime += taskRunTime ?? 0
       tasksUsage.avgRunTime = tasksUsage.runTime / tasksUsage.run
       this.workersTasksUsage.set(worker, tasksUsage)
     } else {
-      throw Error('Worker could not be found in worker tasks usage map')
+      throw new Error(WORKER_NOT_FOUND_TASKS_USAGE_MAP)
     }
+  }
+
+  /**
+   * Reset worker tasks usage statistics.
+   *
+   * @param worker The worker.
+   */
+  private resetWorkerTasksUsage (worker: Worker): void {
+    this.workersTasksUsage.delete(worker)
   }
 }

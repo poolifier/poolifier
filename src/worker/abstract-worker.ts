@@ -180,17 +180,10 @@ export abstract class AbstractWorker<
       const res = fn(value.data)
       const taskRunTime = Date.now() - startTaskTimestamp
       this.afterRunHook(value.workerId, taskRunTime)
-      this.sendToMainWorker({
-        data: res,
-        id: value.id,
-        taskRunTime
-      })
+      this.sendToMainWorker({ data: res, id: value.id, taskRunTime })
     } catch (e) {
       const err = this.handleError(e as Error)
-      this.sendToMainWorker({
-        error: err,
-        id: value.id
-      })
+      this.sendToMainWorker({ error: err, id: value.id })
     } finally {
       this.lastTaskTimestamp = Date.now()
     }
@@ -212,19 +205,12 @@ export abstract class AbstractWorker<
       .then(res => {
         const taskRunTime = Date.now() - startTaskTimestamp
         this.afterRunHook(value.workerId, taskRunTime)
-        this.sendToMainWorker({
-          data: res,
-          id: value.id,
-          taskRunTime
-        })
+        this.sendToMainWorker({ data: res, id: value.id, taskRunTime })
         return null
       })
       .catch(e => {
         const err = this.handleError(e as Error)
-        this.sendToMainWorker({
-          error: err,
-          id: value.id
-        })
+        this.sendToMainWorker({ error: err, id: value.id })
       })
       .finally(() => {
         this.lastTaskTimestamp = Date.now()

@@ -210,8 +210,8 @@ describe('Abstract pool test suite', () => {
       expect(tasksUsage).toBeDefined()
       expect(tasksUsage.run).toBe(numberOfWorkers * 2)
       expect(tasksUsage.running).toBe(0)
-      expect(tasksUsage.runTime).toBeGreaterThan(0)
-      expect(tasksUsage.avgRunTime).toBeGreaterThan(0)
+      expect(tasksUsage.runTime).toBeGreaterThanOrEqual(0)
+      expect(tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
     }
     pool.destroy()
   })
