@@ -27,7 +27,7 @@ describe('Abstract worker test suite', () => {
     const worker = new ClusterWorker(() => {}, {
       maxInactiveTime: 6000,
       async: true,
-      killBehavior: KillBehaviors.HARD,
+      killBehavior: KillBehaviors.HARD
     })
     expect(worker.opts.maxInactiveTime).toBe(6000)
     expect(worker.opts.killBehavior).toBe(KillBehaviors.HARD)
