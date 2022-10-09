@@ -20,7 +20,6 @@ describe('Abstract worker test suite', () => {
     expect(worker.opts.maxInactiveTime).toBe(1000 * 60)
     expect(worker.opts.killBehavior).toBe(KillBehaviors.SOFT)
     expect(worker.opts.async).toBe(false)
-    expect(worker.opts.usage).toBe(false)
   })
 
   it('Verify that worker options are set at worker creation', () => {
@@ -32,7 +31,6 @@ describe('Abstract worker test suite', () => {
     expect(worker.opts.maxInactiveTime).toBe(6000)
     expect(worker.opts.killBehavior).toBe(KillBehaviors.HARD)
     expect(worker.opts.async).toBe(true)
-    expect(worker.opts.usage).toBe(true)
   })
 
   it('Verify that handleError function is working properly', () => {
