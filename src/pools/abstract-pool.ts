@@ -421,7 +421,7 @@ export abstract class AbstractPool<
    *
    * @param worker Worker which running tasks is decreased.
    */
-  protected decreaseWorkerRunningTasks (worker: Worker): void {
+  private decreaseWorkerRunningTasks (worker: Worker): void {
     this.stepWorkerRunningTasks(worker, -1)
   }
 
