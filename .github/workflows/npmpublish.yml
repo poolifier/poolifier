@@ -20,18 +20,18 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Production Build
-        run: npm run build:prod
-
       - name: Lint
         run: npm run lint
 
-      # - name: Production Tests & Coverage
-      #   run: |
-      #     npm run test:prod
-      #     npm run coverage
+      - name: Tests & Coverage
+        run: |
+          npm run test
+          npm run coverage
         env:
           CI: true
+
+      - name: Production Build
+        run: npm run build:prod
 
   publish-npm:
     needs: build
