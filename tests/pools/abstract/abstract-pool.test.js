@@ -4,19 +4,15 @@ const {
   FixedThreadPool,
   WorkerChoiceStrategies
 } = require('../../../lib/index')
-
 const numberOfWorkers = 1
-
 const workerNotFoundInTasksUsageMapError = new Error(
   'Worker could not be found in worker tasks usage map'
 )
-
 class StubPoolWithWorkerTasksUsageMapClear extends FixedThreadPool {
   removeAllWorker () {
     this.workersTasksUsage.clear()
   }
 }
-
 class StubPoolWithIsMainMethod extends FixedThreadPool {
   isMain () {
     return false
