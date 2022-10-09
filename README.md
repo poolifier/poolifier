@@ -249,8 +249,6 @@ Choose your task here [2.0.0](https://github.com/poolifier/poolifier/projects/1)
 ## Team
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
 
 **Creator/Owner:**
 
