@@ -101,10 +101,10 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
 
   private computeWorkerWeight () {
     let cpusCycleTimeWeight = 0
-    for (let cpu = 0; cpu < cpus().length; cpu++) {
+    for (const cpu of cpus()) {
       // CPU estimated cycle time
-      const numberOfDigit = cpus()[cpu].speed.toString().length - 1
-      const cpuCycleTime = 1 / (cpus()[cpu].speed / Math.pow(10, numberOfDigit))
+      const numberOfDigit = cpu.speed.toString().length - 1
+      const cpuCycleTime = 1 / (cpu.speed / Math.pow(10, numberOfDigit))
       cpusCycleTimeWeight += cpuCycleTime * Math.pow(10, numberOfDigit)
     }
     return cpusCycleTimeWeight / cpus().length
