@@ -28,7 +28,6 @@ describe('Abstract worker test suite', () => {
       maxInactiveTime: 6000,
       async: true,
       killBehavior: KillBehaviors.HARD,
-      usage: true
     })
     expect(worker.opts.maxInactiveTime).toBe(6000)
     expect(worker.opts.killBehavior).toBe(KillBehaviors.HARD)
