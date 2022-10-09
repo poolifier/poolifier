@@ -6,12 +6,8 @@ import { EMPTY_FUNCTION } from '../utils'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { AbstractPoolWorker } from './abstract-pool-worker'
 import type { PoolOptions } from './pool'
-import {
-  IPoolInternal,
-  PoolEmitter,
-  PoolType,
-  TasksUsage
-} from './pool-internal'
+import type { IPoolInternal, TasksUsage } from './pool-internal'
+import { PoolEmitter, PoolType } from './pool-internal'
 import {
   WorkerChoiceStrategies,
   WorkerChoiceStrategy

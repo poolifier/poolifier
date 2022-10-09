@@ -11,7 +11,10 @@ async function runPoolifierTest (pool, { tasks, workerData }) {
           }
           return null
         })
-        .catch(err => console.error(err))
+        .catch(err => {
+          console.error(err)
+          return reject(err)
+        })
     }
   })
 }

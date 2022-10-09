@@ -6,7 +6,7 @@ import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 /**
  * Task run time.
  */
-interface TaskRunTime {
+type TaskRunTime = {
   weight: number
   runTime: number
 }
@@ -45,7 +45,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   >()
 
   /**
-   * Constructs a worker choice strategy that selects based a weighted round robin scheduling algorithm.
+   * Constructs a worker choice strategy that selects with a weighted round robin scheduling algorithm.
    *
    * @param pool The pool instance.
    */
@@ -58,7 +58,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public choose (): Worker {
     const currentWorker = this.pool.workers[this.currentWorkerIndex]
-    if (this.isDynamicPool) {
+    if (this.isDynamicPool === true) {
       this.workerTaskRunTime.has(currentWorker) === false &&
         this.workerTaskRunTime.set(currentWorker, {
           weight: this.defaultWorkerWeight,

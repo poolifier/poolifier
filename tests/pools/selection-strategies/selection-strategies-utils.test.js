@@ -13,6 +13,12 @@ const {
 const {
   LessRecentlyUsedWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/less-recently-used-worker-choice-strategy')
+const {
+  FairShareWorkerChoiceStrategy
+} = require('../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy')
+// const {
+//   WeightedRoundRobinWorkerChoiceStrategy
+// } = require('../../../lib/pools/selection-strategies/weighted-round-robin-choice-strategy')
 
 describe('Selection strategies utils test suite', () => {
   let pool
@@ -44,6 +50,22 @@ describe('Selection strategies utils test suite', () => {
     )
     expect(strategy).toBeInstanceOf(LessRecentlyUsedWorkerChoiceStrategy)
   })
+
+  it('Verify that getWorkerChoiceStrategy() can return FAIR_SHARE strategy', () => {
+    const strategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(
+      pool,
+      WorkerChoiceStrategies.FAIR_SHARE
+    )
+    expect(strategy).toBeInstanceOf(FairShareWorkerChoiceStrategy)
+  })
+
+  // it('Verify that getWorkerChoiceStrategy() can return WEIGHTED_ROUND_ROBIN strategy', () => {
+  //   const strategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(
+  //     pool,
+  //     WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+  //   )
+  //   expect(strategy).toBeInstanceOf(WeightedRoundRobinWorkerChoiceStrategy)
+  // })
 
   it('Verify that getWorkerChoiceStrategy() throw error on unknown strategy', () => {
     expect(() => {

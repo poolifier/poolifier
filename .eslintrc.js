@@ -44,6 +44,7 @@ module.exports = defineConfig({
           'fibonacci',
           'inheritDoc',
           'jsdoc',
+          'os',
           'poolifier',
           'readonly',
           'resize',

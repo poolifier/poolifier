@@ -6,14 +6,20 @@ const {
   WorkerChoiceStrategies
 } = require('../../../lib/index')
 const {
+  WorkerChoiceStrategyContext
+} = require('../../../lib/pools/selection-strategies/worker-choice-strategy-context')
+const {
   RoundRobinWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/round-robin-worker-choice-strategy')
 const {
   LessRecentlyUsedWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/less-recently-used-worker-choice-strategy')
 const {
-  WorkerChoiceStrategyContext
-} = require('../../../lib/pools/selection-strategies/worker-choice-strategy-context')
+  FairShareWorkerChoiceStrategy
+} = require('../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy')
+// const {
+//   WeightedRoundRobinWorkerChoiceStrategy
+// } = require('../../../lib/pools/selection-strategies/weighted-round-robin-choice-strategy')
 const {
   DynamicPoolWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/dynamic-pool-worker-choice-strategy')
@@ -77,7 +83,7 @@ describe('Worker choice strategy context test suite', () => {
     )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with ROUND_ROBIN and fixed pool', () => {
+  it('Verify that setWorkerChoiceStrategy() works with ROUND_ROBIN and dynamic pool', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
@@ -101,7 +107,7 @@ describe('Worker choice strategy context test suite', () => {
     )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with LESS_RECENTLY_USED and fixed pool', () => {
+  it('Verify that setWorkerChoiceStrategy() works with LESS_RECENTLY_USED and dynamic pool', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
@@ -112,4 +118,52 @@ describe('Worker choice strategy context test suite', () => {
       DynamicPoolWorkerChoiceStrategy
     )
   })
+
+  it('Verify that setWorkerChoiceStrategy() works with FAIR_SHARE and fixed pool', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(
+      WorkerChoiceStrategies.FAIR_SHARE
+    )
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+      FairShareWorkerChoiceStrategy
+    )
+  })
+
+  it('Verify that setWorkerChoiceStrategy() works with FAIR_SHARE and dynamic pool', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      dynamicPool
+    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(
+      WorkerChoiceStrategies.FAIR_SHARE
+    )
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+      DynamicPoolWorkerChoiceStrategy
+    )
+  })
+
+  // it('Verify that setWorkerChoiceStrategy() works with WEIGHTED_ROUND_ROBIN and fixed pool', () => {
+  //   const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  //     fixedPool
+  //   )
+  //   workerChoiceStrategyContext.setWorkerChoiceStrategy(
+  //     WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+  //   )
+  //   expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+  //     WeightedRoundRobinWorkerChoiceStrategy
+  //   )
+  // })
+
+  // it('Verify that setWorkerChoiceStrategy() works with WEIGHTED_ROUND_ROBIN and dynamic pool', () => {
+  //   const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  //     dynamicPool
+  //   )
+  //   workerChoiceStrategyContext.setWorkerChoiceStrategy(
+  //     WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+  //   )
+  //   expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+  //     DynamicPoolWorkerChoiceStrategy
+  //   )
+  // })
 })

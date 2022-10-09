@@ -4,7 +4,7 @@ import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 /**
  * Worker virtual task timestamp.
  */
-interface WorkerVirtualTaskTimestamp {
+type WorkerVirtualTaskTimestamp = {
   start: number
   end: number
 }
@@ -38,9 +38,6 @@ export class FairShareWorkerChoiceStrategy<
     for (const worker of this.pool.workers) {
       const workerLastVirtualTaskEndTimestamp =
         this.workerLastVirtualTaskTimestamp.get(worker)?.end ?? 0
-      // console.log(worker.id)
-      // console.log(workerLastVirtualTaskEndTimestamp)
-      // console.log(minWorkerVirtualTaskEndTimestamp)
       if (
         workerLastVirtualTaskEndTimestamp < minWorkerVirtualTaskEndTimestamp
       ) {
@@ -48,7 +45,6 @@ export class FairShareWorkerChoiceStrategy<
         chosenWorker = worker
       }
     }
-    // console.log(chosenWorker.id)
     return chosenWorker
   }
 
