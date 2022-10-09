@@ -65,9 +65,8 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
           runTime: 0
         })
     }
-    const workerVirtualTaskRunTime = this.getWorkerVirtualTaskRunTime(
-      currentWorker
-    )
+    const workerVirtualTaskRunTime =
+      this.getWorkerVirtualTaskRunTime(currentWorker) ?? 0
     const workerTaskWeight =
       this.workerTaskRunTime.get(currentWorker)?.weight ??
       this.defaultWorkerWeight
@@ -120,7 +119,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     }
   }
 
-  private getWorkerVirtualTaskRunTime (worker: Worker): number {
+  private getWorkerVirtualTaskRunTime (worker: Worker): number | undefined {
     return this.pool.getWorkerAverageTasksRunTime(worker)
   }
 }

@@ -69,14 +69,13 @@ export class FixedThreadPool<
 
   /** @inheritDoc */
   public getWorkerRunningTasks (worker: Worker): number | undefined {
-    return this.workersTasksUsage.get(worker)?.running ?? 0
-    // return this.workersTasksSharedUsage[
-    //   `worker${this.getWorkerIndex(worker)}-running`
-    // ] as number
+    return this.workersTasksSharedUsage[
+      `worker${this.getWorkerIndex(worker)}-running`
+    ] as number
   }
 
   /** @inheritDoc */
-  public getWorkerAverageTasksRunTime (worker: Worker): number {
+  public getWorkerAverageTasksRunTime (worker: Worker): number | undefined {
     return this.workersTasksSharedUsage[
       `worker${this.getWorkerIndex(worker)}-avgRunTime`
     ] as number

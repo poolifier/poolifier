@@ -62,16 +62,6 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
-  public getWorkerRunningTasks (worker: Worker): number | undefined {
-    return this.workersTasksUsage.get(worker)?.running ?? 0
-  }
-
-  /** @inheritDoc */
-  public getWorkerAverageTasksRunTime (worker: Worker): number {
-    return this.workersTasksUsage.get(worker)?.avgRunTime ?? 0
-  }
-
-  /** @inheritDoc */
   public destroyWorker (worker: Worker): void {
     this.sendToWorker(worker, { kill: 1 })
     worker.kill()

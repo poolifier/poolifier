@@ -63,7 +63,7 @@ export class FairShareWorkerChoiceStrategy<
       )
       const workerVirtualTaskEndTimestamp =
         workerVirtualTaskStartTimestamp +
-        this.pool.getWorkerAverageTasksRunTime(worker)
+        (this.pool.getWorkerAverageTasksRunTime(worker) ?? 0)
       this.workerLastVirtualTaskTimestamp.set(worker, {
         start: workerVirtualTaskStartTimestamp,
         end: workerVirtualTaskEndTimestamp
