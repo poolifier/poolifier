@@ -2,22 +2,26 @@ const Benchmark = require('benchmark')
 const {
   dynamicClusterTest,
   dynamicClusterTestFairShare,
-  dynamicClusterTestLessRecentlyUsed
+  dynamicClusterTestLessRecentlyUsed,
+  dynamicClusterTestWeightedRoundRobin
 } = require('./cluster/dynamic')
 const {
   fixedClusterTest,
   fixedClusterTestFairShare,
-  fixedClusterTestLessRecentlyUsed
+  fixedClusterTestLessRecentlyUsed,
+  fixedClusterTestWeightedRoundRobin
 } = require('./cluster/fixed')
 const {
   dynamicThreadTest,
   dynamicThreadTestFairShare,
-  dynamicThreadTestLessRecentlyUsed
+  dynamicThreadTestLessRecentlyUsed,
+  dynamicThreadTestWeightedRoundRobin
 } = require('./thread/dynamic')
 const {
   fixedThreadTest,
   fixedThreadTestFairShare,
-  fixedThreadTestLessRecentlyUsed
+  fixedThreadTestLessRecentlyUsed,
+  fixedThreadTestWeightedRoundRobin
 } = require('./thread/fixed')
 const { LIST_FORMATTER } = require('./benchmark-utils')
 
@@ -37,6 +41,9 @@ async function test () {
     .add('Poolifier:Fixed:ThreadPool:LessRecentlyUsed', async function () {
       await fixedThreadTestLessRecentlyUsed()
     })
+    .add('Poolifier:Fixed:ThreadPool:WeightedRoundRobin', async function () {
+      await fixedThreadTestWeightedRoundRobin()
+    })
     .add('Poolifier:Fixed:ThreadPool:FairShare', async function () {
       await fixedThreadTestFairShare()
     })
@@ -45,6 +52,9 @@ async function test () {
     })
     .add('Poolifier:Dynamic:ThreadPool:LessRecentlyUsed', async function () {
       await dynamicThreadTestLessRecentlyUsed()
+    })
+    .add('Poolifier:Dynamic:ThreadPool:WeightedRoundRobin', async function () {
+      await dynamicThreadTestWeightedRoundRobin()
     })
     .add('Poolifier:Dynamic:ThreadPool:FairShare', async function () {
       await dynamicThreadTestFairShare()
@@ -55,6 +65,9 @@ async function test () {
     .add('Poolifier:Fixed:ClusterPool:LessRecentlyUsed', async function () {
       await fixedClusterTestLessRecentlyUsed()
     })
+    .add('Poolifier:Fixed:ClusterPool:WeightedRoundRobin', async function () {
+      await fixedClusterTestWeightedRoundRobin
+    })
     .add('Poolifier:Fixed:ClusterPool:FairShare', async function () {
       await fixedClusterTestFairShare()
     })
@@ -63,6 +76,9 @@ async function test () {
     })
     .add('Poolifier:Dynamic:ClusterPool:LessRecentlyUsed', async function () {
       await dynamicClusterTestLessRecentlyUsed()
+    })
+    .add('Poolifier:Dynamic:ClusterPool:WeightedRoundRobin', async function () {
+      await dynamicClusterTestWeightedRoundRobin
     })
     .add('Poolifier:Dynamic:ClusterPool:FairShare', async function () {
       await dynamicClusterTestFairShare()

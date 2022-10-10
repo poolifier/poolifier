@@ -20,6 +20,13 @@ const dynamicPoolLessRecentlyUsed = new DynamicClusterPool(
   { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
 )
 
+const dynamicPoolWeightedRoundRobin = new DynamicClusterPool(
+  size / 2,
+  size * 3,
+  './benchmarks/internal/cluster/worker.js',
+  { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
+)
+
 const dynamicPoolFairShare = new DynamicClusterPool(
   size / 2,
   size * 3,
@@ -39,6 +46,12 @@ async function dynamicClusterTestLessRecentlyUsed (
   return runPoolifierTest(dynamicPoolLessRecentlyUsed, { tasks, workerData })
 }
 
+async function dynamicClusterTestWeightedRoundRobin (
+  { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
+) {
+  return runPoolifierTest(dynamicPoolWeightedRoundRobin, { tasks, workerData })
+}
+
 async function dynamicClusterTestFairShare (
   { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
 ) {
@@ -47,6 +60,7 @@ async function dynamicClusterTestFairShare (
 
 module.exports = {
   dynamicClusterTest,
-  dynamicClusterTestFairShare,
-  dynamicClusterTestLessRecentlyUsed
+  dynamicClusterTestLessRecentlyUsed,
+  dynamicClusterTestWeightedRoundRobin,
+  dynamicClusterTestFairShare
 }
