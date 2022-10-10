@@ -61,7 +61,7 @@ export class FairShareWorkerChoiceStrategy<
     for (const worker of this.pool.workers) {
       const workerVirtualTaskStartTimestamp = Math.max(
         Date.now(),
-        this.workerLastVirtualTaskTimestamp.get(worker)?.end ?? 0
+        this.workerLastVirtualTaskTimestamp.get(worker)?.end ?? -Infinity
       )
       const workerVirtualTaskEndTimestamp =
         workerVirtualTaskStartTimestamp +
