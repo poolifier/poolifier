@@ -40,12 +40,26 @@ function generateRandomInteger (max, min = 0) {
 /**
  * Intentionally inefficient implementation.
  *
- * @param {number} n
- * @returns {number}
+ * @param {number} n - The number of fibonacci numbers to generate.
+ * @returns {number} - The nth fibonacci number.
  */
 function fibonacci (n) {
   if (n <= 1) return 1
   return fibonacci(n - 1) + fibonacci(n - 2)
+}
+
+/**
+ * Intentionally inefficient implementation.
+ *
+ * @param {number} n - The number to calculate the factorial of.
+ * @returns {number} - The factorial of n.
+ */
+function factorial (n) {
+  if (n === 0) {
+    return 1
+  } else {
+    return factorial(n - 1) * n
+  }
 }
 
 const LIST_FORMATTER = new Intl.ListFormat('en-US', {
@@ -58,5 +72,6 @@ module.exports = {
   jsonIntegerSerialization,
   generateRandomInteger,
   fibonacci,
+  factorial,
   LIST_FORMATTER
 }

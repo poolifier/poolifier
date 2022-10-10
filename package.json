@@ -18,6 +18,7 @@
     "format": "prettier --loglevel silent --write .; prettierx --write .",
     "lint": "eslint . --cache",
     "lint:fix": "eslint . --cache --fix",
+    "lint:report": "eslint . --cache --format json --output-file reports/eslint.json",
     "typedoc": "typedoc",
     "sonar:properties": "./updateSonarProps.sh",
     "prepublishOnly": "npm run build:prod"

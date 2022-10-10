@@ -45,6 +45,7 @@ jobs:
         run: |
           npm run test
           npm run coverage
+          npm run lint:report
         env:
           CI: true
 

@@ -49,6 +49,7 @@ module.exports = defineConfig({
           'readonly',
           'serializable',
           'sinon',
+          'tsconfig',
           'unregister',
           'workerpool'
         ],

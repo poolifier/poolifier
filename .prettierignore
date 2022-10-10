@@ -1,5 +1,6 @@
 .nyc_output/
 coverage/
+reports/
 docs/
 outputs/
 lib/
