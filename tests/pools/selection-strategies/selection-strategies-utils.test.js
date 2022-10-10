@@ -18,7 +18,7 @@ const {
 } = require('../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy')
 const {
   WeightedRoundRobinWorkerChoiceStrategy
-} = require('../../../lib/pools/selection-strategies/weighted-round-robin-choice-strategy')
+} = require('../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy')
 
 describe('Selection strategies utils test suite', () => {
   const max = 3

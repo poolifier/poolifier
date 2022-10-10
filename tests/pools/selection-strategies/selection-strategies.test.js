@@ -6,6 +6,9 @@ const {
 } = require('../../../lib/index')
 
 describe('Selection strategies test suite', () => {
+  const min = 0
+  const max = 3
+
   it('Verify that WorkerChoiceStrategies enumeration provides string values', () => {
     expect(WorkerChoiceStrategies.ROUND_ROBIN).toBe('ROUND_ROBIN')
     expect(WorkerChoiceStrategies.LESS_RECENTLY_USED).toBe('LESS_RECENTLY_USED')
@@ -16,8 +19,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify ROUND_ROBIN strategy is the default at pool creation', async () => {
-    const min = 0
-    const max = 3
     const pool = new DynamicThreadPool(
       min,
       max,
@@ -31,8 +32,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify ROUND_ROBIN strategy can be set after pool creation', async () => {
-    const min = 0
-    const max = 3
     const pool = new DynamicThreadPool(
       min,
       max,
@@ -47,8 +46,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify ROUND_ROBIN strategy default tasks usage statistics requirements', async () => {
-    const min = 0
-    const max = 3
     let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js'
@@ -73,7 +70,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify ROUND_ROBIN strategy can be run in a fixed pool', async () => {
-    const max = 3
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
@@ -93,8 +89,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify ROUND_ROBIN strategy can be run in a dynamic pool', async () => {
-    const min = 0
-    const max = 3
     const pool = new DynamicThreadPool(
       min,
       max,
@@ -115,7 +109,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify LESS_RECENTLY_USED strategy is taken at pool creation', async () => {
-    const max = 3
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
@@ -129,7 +122,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify LESS_RECENTLY_USED strategy can be set after pool creation', async () => {
-    const max = 3
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js'
@@ -143,8 +135,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify LESS_RECENTLY_USED strategy default tasks usage statistics requirements', async () => {
-    const min = 0
-    const max = 3
     let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js'
@@ -169,7 +159,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify LESS_RECENTLY_USED strategy can be run in a fixed pool', async () => {
-    const max = 3
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
@@ -186,8 +175,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify LESS_RECENTLY_USED strategy can be run in a dynamic pool', async () => {
-    const min = 0
-    const max = 3
     const pool = new DynamicThreadPool(
       min,
       max,
@@ -205,7 +192,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify FAIR_SHARE strategy is taken at pool creation', async () => {
-    const max = 3
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
@@ -219,7 +205,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify FAIR_SHARE strategy can be set after pool creation', async () => {
-    const max = 3
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js'
@@ -233,8 +218,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify FAIR_SHARE strategy default tasks usage statistics requirements', async () => {
-    const min = 0
-    const max = 3
     let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js'
@@ -259,7 +242,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify FAIR_SHARE strategy can be run in a fixed pool', async () => {
-    const max = 3
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
@@ -276,8 +258,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify FAIR_SHARE strategy can be run in a dynamic pool', async () => {
-    const min = 0
-    const max = 3
     const pool = new DynamicThreadPool(
       min,
       max,
@@ -295,7 +275,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify WEIGHTED_ROUND_ROBIN strategy is taken at pool creation', async () => {
-    const max = 3
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
@@ -309,7 +288,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify WEIGHTED_ROUND_ROBIN strategy can be set after pool creation', async () => {
-    const max = 3
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js'
@@ -323,8 +301,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify WEIGHTED_ROUND_ROBIN strategy default tasks usage statistics requirements', async () => {
-    const min = 0
-    const max = 3
     let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js'
@@ -349,7 +325,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify WEIGHTED_ROUND_ROBIN strategy can be run in a fixed pool', async () => {
-    const max = 3
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
@@ -366,8 +341,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify WEIGHTED_ROUND_ROBIN strategy can be run in a dynamic pool', async () => {
-    const min = 0
-    const max = 3
     const pool = new DynamicThreadPool(
       min,
       max,
@@ -385,8 +358,6 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify unknown strategies throw error', () => {
-    const min = 1
-    const max = 3
     expect(
       () =>
         new DynamicThreadPool(

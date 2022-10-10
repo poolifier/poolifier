@@ -2,18 +2,19 @@ const { expect } = require('expect')
 const { DynamicThreadPool } = require('../../../lib/index')
 const WorkerFunctions = require('../../test-types')
 const TestUtils = require('../../test-utils')
-const min = 1
-const max = 3
-const pool = new DynamicThreadPool(
-  min,
-  max,
-  './tests/worker-files/thread/testWorker.js',
-  {
-    errorHandler: e => console.error(e)
-  }
-)
 
 describe('Dynamic thread pool test suite', () => {
+  const min = 1
+  const max = 3
+  const pool = new DynamicThreadPool(
+    min,
+    max,
+    './tests/worker-files/thread/testWorker.js',
+    {
+      errorHandler: e => console.error(e)
+    }
+  )
+
   it('Verify that the function is executed in a worker thread', async () => {
     let result = await pool.execute({
       function: WorkerFunctions.fibonacci
@@ -72,8 +73,8 @@ describe('Dynamic thread pool test suite', () => {
 
   it('Should work even without opts in input', async () => {
     const pool1 = new DynamicThreadPool(
-      1,
-      1,
+      min,
+      max,
       './tests/worker-files/thread/testWorker.js'
     )
     const res = await pool1.execute()

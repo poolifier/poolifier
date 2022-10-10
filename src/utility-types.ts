@@ -44,7 +44,7 @@ export interface MessageValue<
    */
   readonly tasksSharedUsage?: SharedArrayBuffer
   /**
-   * Task run time.
+   * Task runtime.
    */
   readonly taskRunTime?: number
   /**

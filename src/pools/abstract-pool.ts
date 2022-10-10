@@ -135,7 +135,7 @@ export abstract class AbstractPool<
       throw new Error(
         'Cannot instantiate a pool without specifying the number of workers'
       )
-    } else if (!Number.isSafeInteger(numberOfWorkers)) {
+    } else if (Number.isSafeInteger(numberOfWorkers) === false) {
       throw new Error(
         'Cannot instantiate a pool with a non integer number of workers'
       )
@@ -457,10 +457,10 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Updates tasks run time for the given worker.
+   * Updates tasks runtime for the given worker.
    *
    * @param worker Worker which run the task.
-   * @param taskRunTime Worker task run time.
+   * @param taskRunTime Worker task runtime.
    */
   private updateWorkerTasksRunTime (
     worker: Worker,

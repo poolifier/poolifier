@@ -5,7 +5,7 @@ import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type { RequiredStatistics } from './selection-strategies-types'
 
 /**
- * Task run time.
+ * Virtual task runtime.
  */
 type TaskRunTime = {
   weight: number
@@ -43,9 +43,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
    */
   private defaultWorkerWeight: number
   /**
-   * Per worker task runtime map.
+   * Per worker virtual task runtime map.
    */
-  private workerTaskRunTime: Map<Worker, TaskRunTime> = new Map<
+  private workersTaskRunTime: Map<Worker, TaskRunTime> = new Map<
     Worker,
     TaskRunTime
   >()
@@ -58,41 +58,39 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   public constructor (pool: IPoolInternal<Worker, Data, Response>) {
     super(pool)
     this.defaultWorkerWeight = this.computeWorkerWeight()
-    this.initWorkerTaskRunTime()
+    this.initWorkersTaskRunTime()
   }
 
   /** @inheritDoc */
   public choose (): Worker {
     const currentWorker = this.pool.workers[this.currentWorkerIndex]
-    if (this.isDynamicPool === true) {
-      this.workerTaskRunTime.has(currentWorker) === false &&
-        this.workerTaskRunTime.set(currentWorker, {
-          weight: this.defaultWorkerWeight,
-          runTime: 0
-        })
+    if (
+      this.isDynamicPool === true &&
+      this.workersTaskRunTime.has(currentWorker) === false
+    ) {
+      this.initWorkerTaskRunTime(currentWorker)
     }
     const workerVirtualTaskRunTime =
       this.getWorkerVirtualTaskRunTime(currentWorker) ?? 0
     const workerTaskWeight =
-      this.workerTaskRunTime.get(currentWorker)?.weight ??
+      this.workersTaskRunTime.get(currentWorker)?.weight ??
       this.defaultWorkerWeight
     if (this.currentWorkerIndex === this.previousWorkerIndex) {
       const workerTaskRunTime =
-        (this.workerTaskRunTime.get(currentWorker)?.runTime ?? 0) +
+        (this.workersTaskRunTime.get(currentWorker)?.runTime ?? 0) +
         workerVirtualTaskRunTime
-      this.workerTaskRunTime.set(currentWorker, {
-        weight: workerTaskWeight,
-        runTime: workerTaskRunTime
-      })
+      this.setWorkerTaskRunTime(
+        currentWorker,
+        workerTaskWeight,
+        workerTaskRunTime
+      )
     } else {
-      this.workerTaskRunTime.set(currentWorker, {
-        weight: workerTaskWeight,
-        runTime: 0
-      })
+      this.setWorkerTaskRunTime(currentWorker, workerTaskWeight, 0)
     }
     if (
       workerVirtualTaskRunTime <
-      (this.workerTaskRunTime.get(currentWorker) ?? this.defaultWorkerWeight)
+      (this.workersTaskRunTime.get(currentWorker)?.weight ??
+        this.defaultWorkerWeight)
     ) {
       this.previousWorkerIndex = this.currentWorkerIndex
     } else {
@@ -105,7 +103,32 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     return this.pool.workers[this.currentWorkerIndex]
   }
 
-  private computeWorkerWeight () {
+  private initWorkersTaskRunTime (): void {
+    for (const worker of this.pool.workers) {
+      this.initWorkerTaskRunTime(worker)
+    }
+  }
+
+  private initWorkerTaskRunTime (worker: Worker): void {
+    this.setWorkerTaskRunTime(worker, this.defaultWorkerWeight, 0)
+  }
+
+  private setWorkerTaskRunTime (
+    worker: Worker,
+    weight: number,
+    runTime: number
+  ): void {
+    this.workersTaskRunTime.set(worker, {
+      weight,
+      runTime
+    })
+  }
+
+  private getWorkerVirtualTaskRunTime (worker: Worker): number | undefined {
+    return this.pool.getWorkerAverageTasksRunTime(worker)
+  }
+
+  private computeWorkerWeight (): number {
     let cpusCycleTimeWeight = 0
     for (const cpu of cpus()) {
       // CPU estimated cycle time
@@ -114,18 +137,5 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
       cpusCycleTimeWeight += cpuCycleTime * Math.pow(10, numberOfDigit)
     }
     return cpusCycleTimeWeight / cpus().length
-  }
-
-  private initWorkerTaskRunTime () {
-    for (const worker of this.pool.workers) {
-      this.workerTaskRunTime.set(worker, {
-        weight: this.defaultWorkerWeight,
-        runTime: 0
-      })
-    }
-  }
-
-  private getWorkerVirtualTaskRunTime (worker: Worker): number | undefined {
-    return this.pool.getWorkerAverageTasksRunTime(worker)
   }
 }

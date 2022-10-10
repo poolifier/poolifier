@@ -1,14 +1,14 @@
 const { expect } = require('expect')
 const { ClusterWorker, KillBehaviors, ThreadWorker } = require('../../lib')
 
-class StubPoolWithIsMainWorker extends ThreadWorker {
-  constructor (fn, opts) {
-    super(fn, opts)
-    this.mainWorker = false
-  }
-}
-
 describe('Abstract worker test suite', () => {
+  class StubPoolWithIsMainWorker extends ThreadWorker {
+    constructor (fn, opts) {
+      super(fn, opts)
+      this.mainWorker = false
+    }
+  }
+
   it('Verify that fn function is mandatory', () => {
     expect(() => new ClusterWorker()).toThrowError(
       new Error('fn parameter is mandatory')

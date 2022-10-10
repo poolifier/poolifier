@@ -19,7 +19,7 @@ const {
 } = require('../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy')
 const {
   WeightedRoundRobinWorkerChoiceStrategy
-} = require('../../../lib/pools/selection-strategies/weighted-round-robin-choice-strategy')
+} = require('../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy')
 const {
   DynamicPoolWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/dynamic-pool-worker-choice-strategy')
@@ -108,6 +108,9 @@ describe('Worker choice strategy context test suite', () => {
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
       DynamicPoolWorkerChoiceStrategy
     )
+    expect(
+      workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
+    ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
   })
 
   it('Verify that setWorkerChoiceStrategy() works with LESS_RECENTLY_USED and fixed pool', () => {
@@ -132,6 +135,9 @@ describe('Worker choice strategy context test suite', () => {
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
       DynamicPoolWorkerChoiceStrategy
     )
+    expect(
+      workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
+    ).toBeInstanceOf(LessRecentlyUsedWorkerChoiceStrategy)
   })
 
   it('Verify that setWorkerChoiceStrategy() works with FAIR_SHARE and fixed pool', () => {
@@ -156,6 +162,9 @@ describe('Worker choice strategy context test suite', () => {
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
       DynamicPoolWorkerChoiceStrategy
     )
+    expect(
+      workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
+    ).toBeInstanceOf(FairShareWorkerChoiceStrategy)
   })
 
   it('Verify that setWorkerChoiceStrategy() works with WEIGHTED_ROUND_ROBIN and fixed pool', () => {
@@ -180,5 +189,8 @@ describe('Worker choice strategy context test suite', () => {
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
       DynamicPoolWorkerChoiceStrategy
     )
+    expect(
+      workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
+    ).toBeInstanceOf(WeightedRoundRobinWorkerChoiceStrategy)
   })
 })
