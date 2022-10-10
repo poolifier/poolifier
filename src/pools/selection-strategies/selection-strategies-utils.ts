@@ -8,7 +8,7 @@ import type {
   WorkerChoiceStrategy
 } from './selection-strategies-types'
 import { WorkerChoiceStrategies } from './selection-strategies-types'
-import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-choice-strategy'
+import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-worker-choice-strategy'
 
 /**
  * Worker selection strategies helpers class.
