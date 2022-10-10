@@ -2,18 +2,19 @@ const { expect } = require('expect')
 const { DynamicClusterPool } = require('../../../lib/index')
 const WorkerFunctions = require('../../test-types')
 const TestUtils = require('../../test-utils')
-const min = 1
-const max = 3
-const pool = new DynamicClusterPool(
-  min,
-  max,
-  './tests/worker-files/cluster/testWorker.js',
-  {
-    errorHandler: e => console.error(e)
-  }
-)
 
 describe('Dynamic cluster pool test suite', () => {
+  const min = 1
+  const max = 3
+  const pool = new DynamicClusterPool(
+    min,
+    max,
+    './tests/worker-files/cluster/testWorker.js',
+    {
+      errorHandler: e => console.error(e)
+    }
+  )
+
   it('Verify that the function is executed in a worker cluster', async () => {
     let result = await pool.execute({
       function: WorkerFunctions.fibonacci
@@ -72,8 +73,8 @@ describe('Dynamic cluster pool test suite', () => {
 
   it('Should work even without opts in input', async () => {
     const pool1 = new DynamicClusterPool(
-      1,
-      1,
+      min,
+      max,
       './tests/worker-files/cluster/testWorker.js'
     )
     const result = await pool1.execute()
