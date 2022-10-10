@@ -40,8 +40,8 @@ function generateRandomInteger (max, min = 0) {
 /**
  * Intentionally inefficient implementation.
  *
- * @param {number} n
- * @returns {number}
+ * @param {number} n - The number of fibonacci numbers to generate.
+ * @returns {number} - The nth fibonacci number.
  */
 function fibonacci (n) {
   if (n <= 1) return 1
@@ -51,8 +51,8 @@ function fibonacci (n) {
 /**
  * Intentionally inefficient implementation.
  *
- * @param {number} n
- * @returns {number}
+ * @param {number} n - The number to calculate the factorial of.
+ * @returns {number} - The factorial of n.
  */
 function factorial (n) {
   if (n === 0) {

@@ -71,5 +71,6 @@ build/config.gypi
 .eslintcache
 .history/
 .scannerwork
-lib
 *.bak
+lib
+reports
