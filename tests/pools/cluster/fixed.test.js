@@ -1,6 +1,6 @@
 const { expect } = require('expect')
 const { FixedClusterPool } = require('../../../lib/index')
-const WorkerFunctions = require('../../test-types')
+const { WorkerFunctions } = require('../../test-types')
 const TestUtils = require('../../test-utils')
 
 describe('Fixed cluster pool test suite', () => {

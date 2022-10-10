@@ -1,6 +1,6 @@
 const { expect } = require('expect')
 const { FixedThreadPool } = require('../../../lib/index')
-const WorkerFunctions = require('../../test-types')
+const { WorkerFunctions } = require('../../test-types')
 const TestUtils = require('../../test-utils')
 
 describe('Fixed thread pool test suite', () => {

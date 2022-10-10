@@ -2,7 +2,7 @@
 const { ThreadWorker, KillBehaviors } = require('../../../lib/index')
 const { isMainThread } = require('worker_threads')
 const TestUtils = require('../../test-utils')
-const WorkerFunctions = require('../../test-types')
+const { WorkerFunctions } = require('../../test-types')
 
 function test (data) {
   data = data || {}
