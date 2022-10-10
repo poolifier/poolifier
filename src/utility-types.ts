@@ -32,7 +32,7 @@ export interface MessageValue<
    */
   readonly error?: string
   /**
-   * Task run time.
+   * Task runtime.
    */
   readonly taskRunTime?: number
   /**

@@ -443,10 +443,10 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Updates tasks run time for the given worker.
+   * Updates tasks runtime for the given worker.
    *
    * @param worker Worker which run the task.
-   * @param taskRunTime Worker task run time.
+   * @param taskRunTime Worker task runtime.
    */
   private updateWorkerTasksRunTime (
     worker: Worker,

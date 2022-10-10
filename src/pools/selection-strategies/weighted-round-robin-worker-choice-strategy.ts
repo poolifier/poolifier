@@ -5,7 +5,7 @@ import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type { RequiredStatistics } from './selection-strategies-types'
 
 /**
- * Virtual task run time.
+ * Virtual task runtime.
  */
 type TaskRunTime = {
   weight: number
