@@ -1,5 +1,6 @@
 import type { AbstractPoolWorker } from '../abstract-pool-worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
+import type { RequiredStatistics } from './selection-strategies-types'
 
 /**
  * Worker virtual task timestamp.
@@ -22,6 +23,11 @@ export class FairShareWorkerChoiceStrategy<
   Data,
   Response
 > extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
+  /** @inheritDoc */
+  public requiredStatistics: RequiredStatistics = {
+    runTime: true
+  }
+
   /**
    *  Worker last virtual task execution timestamp.
    */

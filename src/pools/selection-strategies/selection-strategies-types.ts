@@ -28,6 +28,13 @@ export const WorkerChoiceStrategies = Object.freeze({
 export type WorkerChoiceStrategy = keyof typeof WorkerChoiceStrategies
 
 /**
+ * Tasks usage statistics requirements.
+ */
+export type RequiredStatistics = {
+  runTime: boolean
+}
+
+/**
  * Worker choice strategy interface.
  *
  * @template Worker Type of worker which manages the strategy.
@@ -37,6 +44,10 @@ export interface IWorkerChoiceStrategy<Worker extends AbstractPoolWorker> {
    * Is the pool attached to the strategy dynamic?.
    */
   isDynamicPool: boolean
+  /**
+   * Required tasks usage statistics.
+   */
+  requiredStatistics: RequiredStatistics
   /**
    * Choose a worker in the pool.
    */

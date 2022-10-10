@@ -1,7 +1,10 @@
 import type { AbstractPoolWorker } from '../abstract-pool-worker'
 import type { IPoolInternal } from '../pool-internal'
 import { PoolType } from '../pool-internal'
-import type { IWorkerChoiceStrategy } from './selection-strategies-types'
+import type {
+  IWorkerChoiceStrategy,
+  RequiredStatistics
+} from './selection-strategies-types'
 
 /**
  * Abstract worker choice strategy class.
@@ -17,6 +20,10 @@ export abstract class AbstractWorkerChoiceStrategy<
 > implements IWorkerChoiceStrategy<Worker> {
   /** @inheritDoc */
   public isDynamicPool: boolean = this.pool.type === PoolType.DYNAMIC
+  /** @inheritDoc */
+  public requiredStatistics: RequiredStatistics = {
+    runTime: false
+  }
 
   /**
    * Constructs a worker choice strategy attached to the pool.

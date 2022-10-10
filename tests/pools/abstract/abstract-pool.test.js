@@ -158,11 +158,26 @@ describe('Abstract pool test suite', () => {
     pool.destroy()
   })
 
-  it('Simulate worker not found during updateWorkerTasksRunTime', () => {
+  it('Simulate worker not found during updateWorkerTasksRunTime with strategy not requiring it', () => {
     const pool = new StubPoolWithWorkerTasksUsageMapClear(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js',
       {
+        errorHandler: e => console.error(e)
+      }
+    )
+    // Simulate worker not found.
+    pool.removeAllWorker()
+    expect(() => pool.updateWorkerTasksRunTime()).not.toThrowError()
+    pool.destroy()
+  })
+
+  it('Simulate worker not found during updateWorkerTasksRunTime with strategy requiring it', () => {
+    const pool = new StubPoolWithWorkerTasksUsageMapClear(
+      numberOfWorkers,
+      './tests/worker-files/cluster/testWorker.js',
+      {
+        workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE,
         errorHandler: e => console.error(e)
       }
     )
