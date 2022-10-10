@@ -211,7 +211,7 @@ describe('Abstract pool test suite', () => {
     )
     const promises = []
     for (let i = 0; i < numberOfWorkers * 2; i++) {
-      promises.push(pool.execute({ test: 'test' }))
+      promises.push(pool.execute())
     }
     for (const tasksUsage of pool.workersTasksUsage.values()) {
       expect(tasksUsage).toBeDefined()
@@ -240,7 +240,7 @@ describe('Abstract pool test suite', () => {
     let poolBusy = 0
     pool.emitter.on('busy', () => poolBusy++)
     for (let i = 0; i < numberOfWorkers * 2; i++) {
-      promises.push(pool.execute({ test: 'test' }))
+      promises.push(pool.execute())
     }
     await Promise.all(promises)
     // The `busy` event is triggered when the number of submitted tasks at once reach the number of fixed pool workers.

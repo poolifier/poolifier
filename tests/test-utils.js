@@ -1,3 +1,5 @@
+const WorkerFunctions = require('./test-types')
+
 class TestUtils {
   static async waitExits (pool, numberOfExitEventsToWait) {
     let exitEvents = 0
@@ -17,7 +19,7 @@ class TestUtils {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
-  static async workerSleepFunction (
+  static async sleepWorkerFunction (
     data,
     ms,
     rejection = false,
@@ -65,6 +67,19 @@ class TestUtils {
       return 1
     } else {
       return TestUtils.factorial(n - 1) * n
+    }
+  }
+
+  static executeWorkerFunction (data) {
+    switch (data.function) {
+      case WorkerFunctions.jsonIntegerSerialization:
+        return TestUtils.jsonIntegerSerialization(data.n || 100)
+      case WorkerFunctions.fibonacci:
+        return TestUtils.fibonacci(data.n || 25)
+      case WorkerFunctions.factorial:
+        return TestUtils.factorial(data.n || 100)
+      default:
+        throw new Error('Unknown worker function')
     }
   }
 }

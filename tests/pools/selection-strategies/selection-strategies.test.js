@@ -85,7 +85,7 @@ describe('Selection strategies test suite', () => {
     // TODO: Create a better test to cover `RoundRobinWorkerChoiceStrategy#choose`
     const promises = []
     for (let i = 0; i < max * 2; i++) {
-      promises.push(pool.execute({ test: 'test' }))
+      promises.push(pool.execute())
     }
     await Promise.all(promises)
     // We need to clean up the resources after our test
@@ -107,7 +107,7 @@ describe('Selection strategies test suite', () => {
     // TODO: Create a better test to cover `RoundRobinWorkerChoiceStrategy#choose`
     const promises = []
     for (let i = 0; i < max * 2; i++) {
-      promises.push(pool.execute({ test: 'test' }))
+      promises.push(pool.execute())
     }
     await Promise.all(promises)
     // We need to clean up the resources after our test
@@ -178,7 +178,7 @@ describe('Selection strategies test suite', () => {
     // TODO: Create a better test to cover `LessRecentlyUsedWorkerChoiceStrategy#choose`
     const promises = []
     for (let i = 0; i < max * 2; i++) {
-      promises.push(pool.execute({ test: 'test' }))
+      promises.push(pool.execute())
     }
     await Promise.all(promises)
     // We need to clean up the resources after our test
@@ -197,7 +197,7 @@ describe('Selection strategies test suite', () => {
     // TODO: Create a better test to cover `LessRecentlyUsedWorkerChoiceStrategy#choose`
     const promises = []
     for (let i = 0; i < max * 2; i++) {
-      promises.push(pool.execute({ test: 'test' }))
+      promises.push(pool.execute())
     }
     await Promise.all(promises)
     // We need to clean up the resources after our test
@@ -268,7 +268,7 @@ describe('Selection strategies test suite', () => {
     // TODO: Create a better test to cover `FairShareChoiceStrategy#choose`
     const promises = []
     for (let i = 0; i < max * 2; i++) {
-      promises.push(pool.execute({ test: 'test' }))
+      promises.push(pool.execute())
     }
     await Promise.all(promises)
     // We need to clean up the resources after our test
@@ -287,7 +287,7 @@ describe('Selection strategies test suite', () => {
     // TODO: Create a better test to cover `FairShareChoiceStrategy#choose`
     const promises = []
     for (let i = 0; i < max * 2; i++) {
-      promises.push(pool.execute({ test: 'test' }))
+      promises.push(pool.execute())
     }
     await Promise.all(promises)
     // We need to clean up the resources after our test
@@ -358,7 +358,7 @@ describe('Selection strategies test suite', () => {
     // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
     const promises = []
     for (let i = 0; i < max * 2; i++) {
-      promises.push(pool.execute({ test: 'test' }))
+      promises.push(pool.execute())
     }
     await Promise.all(promises)
     // We need to clean up the resources after our test
@@ -377,7 +377,7 @@ describe('Selection strategies test suite', () => {
     // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
     const promises = []
     for (let i = 0; i < max * 2; i++) {
-      promises.push(pool.execute({ test: 'test' }))
+      promises.push(pool.execute())
     }
     await Promise.all(promises)
     // We need to clean up the resources after our test
