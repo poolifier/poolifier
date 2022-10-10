@@ -17,22 +17,37 @@ const {
 const {
   FairShareWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy')
-// const {
-//   WeightedRoundRobinWorkerChoiceStrategy
-// } = require('../../../lib/pools/selection-strategies/weighted-round-robin-choice-strategy')
+const {
+  WeightedRoundRobinWorkerChoiceStrategy
+} = require('../../../lib/pools/selection-strategies/weighted-round-robin-choice-strategy')
 const {
   DynamicPoolWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/dynamic-pool-worker-choice-strategy')
 
 describe('Worker choice strategy context test suite', () => {
+  const min = 1
+  const max = 3
   let fixedPool, dynamicPool
-  beforeEach(() => {
-    fixedPool = sinon.createStubInstance(FixedThreadPool)
-    dynamicPool = sinon.createStubInstance(DynamicThreadPool)
+
+  before(() => {
+    fixedPool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    dynamicPool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
   })
 
   afterEach(() => {
     sinon.restore()
+  })
+
+  after(() => {
+    fixedPool.destroy()
+    dynamicPool.destroy()
   })
 
   it('Verify that execute() return the worker chosen by the strategy with fixed pool', () => {
@@ -143,27 +158,27 @@ describe('Worker choice strategy context test suite', () => {
     )
   })
 
-  // it('Verify that setWorkerChoiceStrategy() works with WEIGHTED_ROUND_ROBIN and fixed pool', () => {
-  //   const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
-  //     fixedPool
-  //   )
-  //   workerChoiceStrategyContext.setWorkerChoiceStrategy(
-  //     WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
-  //   )
-  //   expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
-  //     WeightedRoundRobinWorkerChoiceStrategy
-  //   )
-  // })
+  it('Verify that setWorkerChoiceStrategy() works with WEIGHTED_ROUND_ROBIN and fixed pool', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(
+      WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+    )
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+      WeightedRoundRobinWorkerChoiceStrategy
+    )
+  })
 
-  // it('Verify that setWorkerChoiceStrategy() works with WEIGHTED_ROUND_ROBIN and dynamic pool', () => {
-  //   const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
-  //     dynamicPool
-  //   )
-  //   workerChoiceStrategyContext.setWorkerChoiceStrategy(
-  //     WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
-  //   )
-  //   expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
-  //     DynamicPoolWorkerChoiceStrategy
-  //   )
-  // })
+  it('Verify that setWorkerChoiceStrategy() works with WEIGHTED_ROUND_ROBIN and dynamic pool', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      dynamicPool
+    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(
+      WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+    )
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+      DynamicPoolWorkerChoiceStrategy
+    )
+  })
 })

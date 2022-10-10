@@ -1,5 +1,5 @@
 const { expect } = require('expect')
-const sinon = require('sinon')
+// const sinon = require('sinon')
 const {
   SelectionStrategiesUtils
 } = require('../../../lib/pools/selection-strategies/selection-strategies-utils')
@@ -16,18 +16,24 @@ const {
 const {
   FairShareWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy')
-// const {
-//   WeightedRoundRobinWorkerChoiceStrategy
-// } = require('../../../lib/pools/selection-strategies/weighted-round-robin-choice-strategy')
+const {
+  WeightedRoundRobinWorkerChoiceStrategy
+} = require('../../../lib/pools/selection-strategies/weighted-round-robin-choice-strategy')
 
 describe('Selection strategies utils test suite', () => {
+  const max = 3
   let pool
-  beforeEach(() => {
-    pool = sinon.createStubInstance(FixedThreadPool)
+
+  before(() => {
+    pool = new FixedThreadPool(max, './tests/worker-files/thread/testWorker.js')
   })
 
-  afterEach(() => {
-    sinon.restore()
+  // afterEach(() => {
+  //   sinon.restore()
+  // })
+
+  after(() => {
+    pool.destroy()
   })
 
   it('Verify that getWorkerChoiceStrategy() default return ROUND_ROBIN strategy', () => {
@@ -59,13 +65,13 @@ describe('Selection strategies utils test suite', () => {
     expect(strategy).toBeInstanceOf(FairShareWorkerChoiceStrategy)
   })
 
-  // it('Verify that getWorkerChoiceStrategy() can return WEIGHTED_ROUND_ROBIN strategy', () => {
-  //   const strategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(
-  //     pool,
-  //     WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
-  //   )
-  //   expect(strategy).toBeInstanceOf(WeightedRoundRobinWorkerChoiceStrategy)
-  // })
+  it('Verify that getWorkerChoiceStrategy() can return WEIGHTED_ROUND_ROBIN strategy', () => {
+    const strategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(
+      pool,
+      WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+    )
+    expect(strategy).toBeInstanceOf(WeightedRoundRobinWorkerChoiceStrategy)
+  })
 
   it('Verify that getWorkerChoiceStrategy() throw error on unknown strategy', () => {
     expect(() => {
