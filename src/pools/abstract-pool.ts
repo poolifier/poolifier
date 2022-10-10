@@ -226,7 +226,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Shut down given worker.
+   * Shutdowns given worker.
    *
    * @param worker A worker within `workers`.
    */
@@ -283,7 +283,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Choose a worker for the next task.
+   * Chooses a worker for the next task.
    *
    * The default implementation uses a round robin algorithm to distribute the load.
    *
@@ -294,7 +294,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Send a message to the given worker.
+   * Sends a message to the given worker.
    *
    * @param worker The worker which should receive the message.
    * @param message The message.
@@ -457,9 +457,11 @@ export abstract class AbstractPool<
         .requiredStatistics.runTime === true
     ) {
       const tasksUsage = this.workersTasksUsage.get(worker)
-      if (tasksUsage !== undefined && tasksUsage.run !== 0) {
+      if (tasksUsage !== undefined) {
         tasksUsage.runTime += taskRunTime ?? 0
-        tasksUsage.avgRunTime = tasksUsage.runTime / tasksUsage.run
+        if (tasksUsage.run !== 0) {
+          tasksUsage.avgRunTime = tasksUsage.runTime / tasksUsage.run
+        }
         this.workersTasksUsage.set(worker, tasksUsage)
       } else {
         throw new Error(WORKER_NOT_FOUND_TASKS_USAGE_MAP)

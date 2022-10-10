@@ -53,7 +53,7 @@ export interface IPool<Data = unknown, Response = unknown> {
    */
   execute(data: Data): Promise<Response>
   /**
-   * Shut down every current worker in this pool.
+   * Shutdowns every current worker in this pool.
    */
   destroy(): Promise<void>
   /**
