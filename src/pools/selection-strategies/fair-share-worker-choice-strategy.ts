@@ -1,5 +1,6 @@
 import type { AbstractPoolWorker } from '../abstract-pool-worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
+import type { RequiredStatistics } from './selection-strategies-types'
 
 /**
  * Worker virtual task timestamp.
@@ -22,6 +23,11 @@ export class FairShareWorkerChoiceStrategy<
   Data,
   Response
 > extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
+  /** @inheritDoc */
+  public requiredStatistics: RequiredStatistics = {
+    runTime: true
+  }
+
   /**
    *  Worker last virtual task execution timestamp.
    */
@@ -55,7 +61,7 @@ export class FairShareWorkerChoiceStrategy<
     for (const worker of this.pool.workers) {
       const workerVirtualTaskStartTimestamp = Math.max(
         Date.now(),
-        this.workerLastVirtualTaskTimestamp.get(worker)?.end ?? 0
+        this.workerLastVirtualTaskTimestamp.get(worker)?.end ?? -Infinity
       )
       const workerVirtualTaskEndTimestamp =
         workerVirtualTaskStartTimestamp +

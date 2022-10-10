@@ -2,10 +2,12 @@
 const { ClusterWorker, KillBehaviors } = require('../../../lib/index')
 const { isMaster } = require('cluster')
 const TestUtils = require('../../test-utils')
+const WorkerFunctions = require('../../test-types')
 
 function test (data) {
-  // TestUtils.jsonIntegerSerialization(100)
-  TestUtils.fibonacci(40)
+  data = data || {}
+  data.function = data.function || WorkerFunctions.jsonIntegerSerialization
+  TestUtils.executeWorkerFunction(data)
   return isMaster
 }
 

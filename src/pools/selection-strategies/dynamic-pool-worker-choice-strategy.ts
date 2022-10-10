@@ -39,6 +39,7 @@ export class DynamicPoolWorkerChoiceStrategy<
       this.pool,
       workerChoiceStrategy
     )
+    this.requiredStatistics = this.workerChoiceStrategy.requiredStatistics
   }
 
   /** @inheritDoc */

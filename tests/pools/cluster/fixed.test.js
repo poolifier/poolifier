@@ -1,5 +1,6 @@
 const { expect } = require('expect')
 const { FixedClusterPool } = require('../../../lib/index')
+const WorkerFunctions = require('../../test-types')
 const TestUtils = require('../../test-utils')
 const numberOfWorkers = 10
 const pool = new FixedClusterPool(
@@ -56,15 +57,19 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it('Verify that the function is executed in a worker cluster', async () => {
-    const result = await pool.execute({ test: 'test' })
-    expect(result).toBeDefined()
-    expect(result).toBeFalsy()
+    let result = await pool.execute({
+      function: WorkerFunctions.fibonacci
+    })
+    expect(result).toBe(false)
+    result = await pool.execute({
+      function: WorkerFunctions.factorial
+    })
+    expect(result).toBe(false)
   })
 
   it('Verify that is possible to invoke the execute method without input', async () => {
     const result = await pool.execute()
-    expect(result).toBeDefined()
-    expect(result).toBeFalsy()
+    expect(result).toBe(false)
   })
 
   it('Verify that busy event is emitted', async () => {
@@ -72,7 +77,7 @@ describe('Fixed cluster pool test suite', () => {
     let poolBusy = 0
     pool.emitter.on('busy', () => poolBusy++)
     for (let i = 0; i < numberOfWorkers * 2; i++) {
-      promises.push(pool.execute({ test: 'test' }))
+      promises.push(pool.execute())
     }
     // The `busy` event is triggered when the number of submitted tasks at once reach the number of fixed pool workers.
     // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the fixed pool.
@@ -81,14 +86,13 @@ describe('Fixed cluster pool test suite', () => {
 
   it('Verify that is possible to have a worker that return undefined', async () => {
     const result = await emptyPool.execute()
-    expect(result).toBeFalsy()
+    expect(result).toBeUndefined()
   })
 
   it('Verify that data are sent to the worker correctly', async () => {
     const data = { f: 10 }
     const result = await echoPool.execute(data)
-    expect(result).toBeTruthy()
-    expect(result.f).toBe(data.f)
+    expect(result).toEqual(data)
   })
 
   it('Verify that error handling is working properly:sync', async () => {
@@ -122,8 +126,7 @@ describe('Fixed cluster pool test suite', () => {
     const startTime = new Date().getTime()
     const result = await asyncPool.execute(data)
     const usedTime = new Date().getTime() - startTime
-    expect(result).toBeTruthy()
-    expect(result.f).toBe(data.f)
+    expect(result).toEqual(data)
     expect(usedTime).toBeGreaterThanOrEqual(2000)
   })
 
@@ -139,8 +142,8 @@ describe('Fixed cluster pool test suite', () => {
       1,
       './tests/worker-files/cluster/testWorker.js'
     )
-    const res = await pool1.execute({ test: 'test' })
-    expect(res).toBeFalsy()
+    const res = await pool1.execute()
+    expect(res).toBe(false)
     // We need to clean up the resources after our test
     await pool1.destroy()
   })

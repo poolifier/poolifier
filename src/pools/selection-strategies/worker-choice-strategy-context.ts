@@ -61,6 +61,15 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
+   * Get the worker choice strategy used in the context.
+   *
+   * @returns The worker choice strategy.
+   */
+  public getWorkerChoiceStrategy (): IWorkerChoiceStrategy<Worker> {
+    return this.workerChoiceStrategy
+  }
+
+  /**
    * Set the worker choice strategy to use in the context.
    *
    * @param workerChoiceStrategy The worker choice strategy to set.

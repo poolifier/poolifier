@@ -3,7 +3,7 @@ const { ThreadWorker, KillBehaviors } = require('../../../lib/index')
 const TestUtils = require('../../test-utils')
 
 async function error (data) {
-  return TestUtils.workerSleepFunction(
+  return TestUtils.sleepWorkerFunction(
     data,
     2000,
     true,

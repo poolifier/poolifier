@@ -158,11 +158,26 @@ describe('Abstract pool test suite', () => {
     pool.destroy()
   })
 
-  it('Simulate worker not found during updateWorkerTasksRunTime', () => {
+  it('Simulate worker not found during updateWorkerTasksRunTime with strategy not requiring it', () => {
     const pool = new StubPoolWithWorkerTasksUsageMapClear(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js',
       {
+        errorHandler: e => console.error(e)
+      }
+    )
+    // Simulate worker not found.
+    pool.removeAllWorker()
+    expect(() => pool.updateWorkerTasksRunTime()).not.toThrowError()
+    pool.destroy()
+  })
+
+  it('Simulate worker not found during updateWorkerTasksRunTime with strategy requiring it', () => {
+    const pool = new StubPoolWithWorkerTasksUsageMapClear(
+      numberOfWorkers,
+      './tests/worker-files/cluster/testWorker.js',
+      {
+        workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE,
         errorHandler: e => console.error(e)
       }
     )
@@ -196,7 +211,7 @@ describe('Abstract pool test suite', () => {
     )
     const promises = []
     for (let i = 0; i < numberOfWorkers * 2; i++) {
-      promises.push(pool.execute({ test: 'test' }))
+      promises.push(pool.execute())
     }
     for (const tasksUsage of pool.workersTasksUsage.values()) {
       expect(tasksUsage).toBeDefined()
@@ -225,7 +240,7 @@ describe('Abstract pool test suite', () => {
     let poolBusy = 0
     pool.emitter.on('busy', () => poolBusy++)
     for (let i = 0; i < numberOfWorkers * 2; i++) {
-      promises.push(pool.execute({ test: 'test' }))
+      promises.push(pool.execute())
     }
     await Promise.all(promises)
     // The `busy` event is triggered when the number of submitted tasks at once reach the number of fixed pool workers.

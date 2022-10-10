@@ -1,5 +1,6 @@
 const { expect } = require('expect')
 const { DynamicClusterPool } = require('../../../lib/index')
+const WorkerFunctions = require('../../test-types')
 const TestUtils = require('../../test-utils')
 const min = 1
 const max = 3
@@ -14,9 +15,14 @@ const pool = new DynamicClusterPool(
 
 describe('Dynamic cluster pool test suite', () => {
   it('Verify that the function is executed in a worker cluster', async () => {
-    const result = await pool.execute({ test: 'test' })
-    expect(result).toBeDefined()
-    expect(result).toBeFalsy()
+    let result = await pool.execute({
+      function: WorkerFunctions.fibonacci
+    })
+    expect(result).toBe(false)
+    result = await pool.execute({
+      function: WorkerFunctions.factorial
+    })
+    expect(result).toBe(false)
   })
 
   it('Verify that new workers are created when required, max size is not exceeded and that after a while new workers will die', async () => {
@@ -24,7 +30,7 @@ describe('Dynamic cluster pool test suite', () => {
     let poolBusy = 0
     pool.emitter.on('busy', () => poolBusy++)
     for (let i = 0; i < max * 2; i++) {
-      promises.push(pool.execute({ test: 'test' }))
+      promises.push(pool.execute())
     }
     expect(pool.workers.length).toBeLessThanOrEqual(max)
     expect(pool.workers.length).toBeGreaterThan(min)
@@ -38,13 +44,13 @@ describe('Dynamic cluster pool test suite', () => {
   it('Verify scale worker up and down is working', async () => {
     expect(pool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
-      pool.execute({ test: 'test' })
+      pool.execute()
     }
     expect(pool.workers.length).toBeGreaterThan(min)
     await TestUtils.waitExits(pool, max - min)
     expect(pool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
-      pool.execute({ test: 'test' })
+      pool.execute()
     }
     expect(pool.workers.length).toBeGreaterThan(min)
     await TestUtils.waitExits(pool, max - min)
@@ -70,9 +76,8 @@ describe('Dynamic cluster pool test suite', () => {
       1,
       './tests/worker-files/cluster/testWorker.js'
     )
-    const result = await pool1.execute({ test: 'test' })
-    expect(result).toBeDefined()
-    expect(result).toBeFalsy()
+    const result = await pool1.execute()
+    expect(result).toBe(false)
     // We need to clean up the resources after our test
     await pool1.destroy()
   })
@@ -90,7 +95,7 @@ describe('Dynamic cluster pool test suite', () => {
     )
     expect(longRunningPool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
-      longRunningPool.execute({ test: 'test' })
+      longRunningPool.execute()
     }
     expect(longRunningPool.workers.length).toBe(max)
     await TestUtils.waitExits(longRunningPool, max - min)
@@ -113,7 +118,7 @@ describe('Dynamic cluster pool test suite', () => {
     )
     expect(longRunningPool.workers.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
-      longRunningPool.execute({ test: 'test' })
+      longRunningPool.execute()
     }
     expect(longRunningPool.workers.length).toBe(max)
     await TestUtils.sleep(1500)

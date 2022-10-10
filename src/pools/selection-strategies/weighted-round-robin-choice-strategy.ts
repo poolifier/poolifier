@@ -2,6 +2,7 @@ import { cpus } from 'os'
 import type { AbstractPoolWorker } from '../abstract-pool-worker'
 import type { IPoolInternal } from '../pool-internal'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
+import type { RequiredStatistics } from './selection-strategies-types'
 
 /**
  * Task run time.
@@ -24,6 +25,11 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   Data,
   Response
 > extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
+  /** @inheritDoc */
+  public requiredStatistics: RequiredStatistics = {
+    runTime: true
+  }
+
   /**
    * Worker index where the previous task was submitted.
    */

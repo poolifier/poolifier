@@ -284,15 +284,15 @@ export abstract class AbstractPool<
   protected removeWorker (worker: Worker): void {
     // Clean worker from data structure
     this.workers.splice(this.getWorkerIndex(worker), 1)
-    this.resetWorkerTasksUsage(worker)
+    this.removeWorkerTasksUsage(worker)
   }
 
   /**
-   * Reset worker tasks usage statistics.
+   * Removes worker tasks usage statistics.
    *
    * @param worker The worker.
    */
-  protected resetWorkerTasksUsage (worker: Worker): void {
+  protected removeWorkerTasksUsage (worker: Worker): void {
     this.workersTasksUsage.delete(worker)
   }
 
@@ -407,7 +407,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Increase the number of tasks that the given worker has applied.
+   * Increases the number of tasks that the given worker has applied.
    *
    * @param worker Worker which running tasks is increased.
    */
@@ -416,7 +416,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Decrease the number of tasks that the given worker has applied.
+   * Decreases the number of tasks that the given worker has applied.
    *
    * @param worker Worker which running tasks is decreased.
    */
@@ -425,7 +425,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Step the number of tasks that the given worker has applied.
+   * Steps the number of tasks that the given worker has applied.
    *
    * @param worker Worker which running tasks are stepped.
    * @param step Number of running tasks step.
@@ -441,12 +441,12 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Step the number of tasks that the given worker has run.
+   * Steps the number of tasks that the given worker has run.
    *
    * @param worker Worker which has run tasks.
    * @param step Number of run tasks step.
    */
-  private stepWorkerRunTasks (worker: Worker, step: number) {
+  private stepWorkerRunTasks (worker: Worker, step: number): void {
     const tasksUsage = this.workersTasksUsage.get(worker)
     if (tasksUsage !== undefined) {
       tasksUsage.run = tasksUsage.run + step
@@ -457,7 +457,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Update tasks run time for the given worker.
+   * Updates tasks run time for the given worker.
    *
    * @param worker Worker which run the task.
    * @param taskRunTime Worker task run time.
@@ -465,14 +465,19 @@ export abstract class AbstractPool<
   private updateWorkerTasksRunTime (
     worker: Worker,
     taskRunTime: number | undefined
-  ) {
-    const tasksUsage = this.workersTasksUsage.get(worker)
-    if (tasksUsage !== undefined && tasksUsage.run !== 0) {
-      tasksUsage.runTime += taskRunTime ?? 0
-      tasksUsage.avgRunTime = tasksUsage.runTime / tasksUsage.run
-      this.workersTasksUsage.set(worker, tasksUsage)
-    } else {
-      throw new Error(WORKER_NOT_FOUND_TASKS_USAGE_MAP)
+  ): void {
+    if (
+      this.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .requiredStatistics.runTime === true
+    ) {
+      const tasksUsage = this.workersTasksUsage.get(worker)
+      if (tasksUsage !== undefined && tasksUsage.run !== 0) {
+        tasksUsage.runTime += taskRunTime ?? 0
+        tasksUsage.avgRunTime = tasksUsage.runTime / tasksUsage.run
+        this.workersTasksUsage.set(worker, tasksUsage)
+      } else {
+        throw new Error(WORKER_NOT_FOUND_TASKS_USAGE_MAP)
+      }
     }
   }
 }
