@@ -1,6 +1,6 @@
 const { expect } = require('expect')
 const { FixedClusterPool } = require('../../../lib/index')
-const WorkerFunctions = require('../../test-types')
+const { WorkerFunctions } = require('../../test-types')
 const TestUtils = require('../../test-utils')
 
 describe('Fixed cluster pool test suite', () => {
@@ -124,9 +124,9 @@ describe('Fixed cluster pool test suite', () => {
 
   it('Verify that async function is working properly', async () => {
     const data = { f: 10 }
-    const startTime = new Date().getTime()
+    const startTime = Date.now()
     const result = await asyncPool.execute(data)
-    const usedTime = new Date().getTime() - startTime
+    const usedTime = Date.now() - startTime
     expect(result).toStrictEqual(data)
     expect(usedTime).toBeGreaterThanOrEqual(2000)
   })

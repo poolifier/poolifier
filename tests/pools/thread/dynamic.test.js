@@ -1,6 +1,6 @@
 const { expect } = require('expect')
 const { DynamicThreadPool } = require('../../../lib/index')
-const WorkerFunctions = require('../../test-types')
+const { WorkerFunctions } = require('../../test-types')
 const TestUtils = require('../../test-utils')
 
 describe('Dynamic thread pool test suite', () => {

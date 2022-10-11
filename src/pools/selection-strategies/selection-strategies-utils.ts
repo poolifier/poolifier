@@ -1,5 +1,5 @@
-import type { AbstractPoolWorker } from '../abstract-pool-worker'
 import type { IPoolInternal } from '../pool-internal'
+import type { IPoolWorker } from '../pool-worker'
 import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strategy'
 import { LessRecentlyUsedWorkerChoiceStrategy } from './less-recently-used-worker-choice-strategy'
 import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy'
@@ -15,14 +15,14 @@ import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-w
  */
 export class SelectionStrategiesUtils {
   /**
-   * Get the worker choice strategy instance.
+   * Gets the worker choice strategy instance.
    *
    * @param pool The pool instance.
    * @param workerChoiceStrategy The worker choice strategy.
    * @returns The worker choice strategy instance.
    */
   public static getWorkerChoiceStrategy<
-    Worker extends AbstractPoolWorker,
+    Worker extends IPoolWorker,
     Data,
     Response
   > (

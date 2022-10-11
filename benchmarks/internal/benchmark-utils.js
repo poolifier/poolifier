@@ -1,3 +1,9 @@
+const WorkerFunctions = {
+  jsonIntegerSerialization: 'jsonIntegerSerialization',
+  fibonacci: 'fibonacci',
+  factorial: 'factorial'
+}
+
 async function runPoolifierTest (pool, { tasks, workerData }) {
   return new Promise((resolve, reject) => {
     let executions = 0
@@ -62,16 +68,28 @@ function factorial (n) {
   }
 }
 
+function executeWorkerFunction (data) {
+  switch (data.function) {
+    case WorkerFunctions.jsonIntegerSerialization:
+      return jsonIntegerSerialization(data.n || 1000)
+    case WorkerFunctions.fibonacci:
+      return fibonacci(data.n || 50)
+    case WorkerFunctions.factorial:
+      return factorial(data.n || 1000)
+    default:
+      throw new Error('Unknown worker function')
+  }
+}
+
 const LIST_FORMATTER = new Intl.ListFormat('en-US', {
   style: 'long',
   type: 'conjunction'
 })
 
 module.exports = {
-  runPoolifierTest,
-  jsonIntegerSerialization,
+  LIST_FORMATTER,
+  WorkerFunctions,
+  executeWorkerFunction,
   generateRandomInteger,
-  fibonacci,
-  factorial,
-  LIST_FORMATTER
+  runPoolifierTest
 }

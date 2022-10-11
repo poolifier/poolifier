@@ -1,12 +1,14 @@
 'use strict'
 const { isMainThread } = require('worker_threads')
 const { ThreadWorker } = require('../../../lib/index')
-const { jsonIntegerSerialization } = require('../benchmark-utils')
+const { WorkerFunctions, executeWorkerFunction } = require('../benchmark-utils')
 
 const debug = false
 
 function yourFunction (data) {
-  jsonIntegerSerialization(1000)
+  data = data || {}
+  data.function = data.function || WorkerFunctions.jsonIntegerSerialization
+  executeWorkerFunction(data)
   debug === true && console.debug('This is the main thread ' + isMainThread)
   return { ok: 1 }
 }

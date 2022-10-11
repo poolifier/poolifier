@@ -4,4 +4,4 @@ const WorkerFunctions = {
   factorial: 'factorial'
 }
 
-module.exports = WorkerFunctions
+module.exports = { WorkerFunctions }

@@ -1,4 +1,4 @@
-const WorkerFunctions = require('./test-types')
+const { WorkerFunctions } = require('./test-types')
 
 class TestUtils {
   static async waitExits (pool, numberOfExitEventsToWait) {

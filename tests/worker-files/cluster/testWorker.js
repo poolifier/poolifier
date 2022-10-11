@@ -2,7 +2,7 @@
 const { ClusterWorker, KillBehaviors } = require('../../../lib/index')
 const { isMaster } = require('cluster')
 const TestUtils = require('../../test-utils')
-const WorkerFunctions = require('../../test-types')
+const { WorkerFunctions } = require('../../test-types')
 
 function test (data) {
   data = data || {}

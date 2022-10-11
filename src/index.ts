@@ -6,6 +6,7 @@ export type {
   ErrorHandler,
   ExitHandler,
   IPoolWorker,
+  MessageHandler,
   OnlineHandler
 } from './pools/pool-worker'
 export { WorkerChoiceStrategies } from './pools/selection-strategies/selection-strategies-types'
