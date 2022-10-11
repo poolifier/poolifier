@@ -49,7 +49,7 @@ export interface IWorkerChoiceStrategy<Worker extends AbstractPoolWorker> {
    */
   requiredStatistics: RequiredStatistics
   /**
-   * Choose a worker in the pool.
+   * Chooses a worker in the pool.
    */
   choose(): Worker
 }

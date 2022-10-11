@@ -46,7 +46,7 @@ export interface PoolOptions<Worker> {
  */
 export interface IPool<Data = unknown, Response = unknown> {
   /**
-   * Perform the task specified in the constructor with the data parameter.
+   * Performs the task specified in the constructor with the data parameter.
    *
    * @param data The input for the specified task. This can only be serializable data.
    * @returns Promise that will be resolved when the task is successfully completed.
@@ -57,7 +57,7 @@ export interface IPool<Data = unknown, Response = unknown> {
    */
   destroy(): Promise<void>
   /**
-   * Set the worker choice strategy in this pool.
+   * Sets the worker choice strategy in this pool.
    *
    * @param workerChoiceStrategy The worker choice strategy.
    */

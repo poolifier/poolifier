@@ -305,7 +305,7 @@ export abstract class AbstractPool<
   ): void
 
   /**
-   * Register a listener callback on a given worker.
+   * Registers a listener callback on a given worker.
    *
    * @param worker A worker.
    * @param listener A message listener callback.

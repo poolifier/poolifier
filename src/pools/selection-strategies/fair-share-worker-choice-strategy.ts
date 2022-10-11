@@ -55,7 +55,7 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /**
-   * Compute workers last virtual task timestamp.
+   * Computes workers last virtual task timestamp.
    */
   private updateWorkerLastVirtualTaskTimestamp () {
     for (const worker of this.pool.workers) {

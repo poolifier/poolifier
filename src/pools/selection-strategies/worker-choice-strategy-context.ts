@@ -39,7 +39,7 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
-   * Get the worker choice strategy instance specific to the pool type.
+   * Gets the worker choice strategy instance specific to the pool type.
    *
    * @param workerChoiceStrategy The worker choice strategy.
    * @returns The worker choice strategy instance for the pool type.
@@ -61,7 +61,7 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
-   * Get the worker choice strategy used in the context.
+   * Gets the worker choice strategy used in the context.
    *
    * @returns The worker choice strategy.
    */
@@ -70,7 +70,7 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
-   * Set the worker choice strategy to use in the context.
+   * Sets the worker choice strategy to use in the context.
    *
    * @param workerChoiceStrategy The worker choice strategy to set.
    */
@@ -83,7 +83,7 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
-   * Choose a worker with the underlying selection strategy.
+   * Chooses a worker with the underlying selection strategy.
    *
    * @returns The chosen one.
    */
