@@ -1,4 +1,4 @@
-import type { AbstractPoolWorker } from '../abstract-pool-worker'
+import type { IPoolWorker } from '../pool-worker'
 
 /**
  * Enumeration of worker choice strategies.
@@ -28,7 +28,7 @@ export const WorkerChoiceStrategies = Object.freeze({
 export type WorkerChoiceStrategy = keyof typeof WorkerChoiceStrategies
 
 /**
- * Tasks usage statistics requirements.
+ * Pool tasks usage statistics requirements.
  */
 export type RequiredStatistics = {
   runTime: boolean
@@ -39,15 +39,19 @@ export type RequiredStatistics = {
  *
  * @template Worker Type of worker which manages the strategy.
  */
-export interface IWorkerChoiceStrategy<Worker extends AbstractPoolWorker> {
+export interface IWorkerChoiceStrategy<Worker extends IPoolWorker> {
   /**
    * Is the pool attached to the strategy dynamic?.
    */
-  isDynamicPool: boolean
+  readonly isDynamicPool: boolean
   /**
-   * Required tasks usage statistics.
+   * Required pool tasks usage statistics.
    */
-  requiredStatistics: RequiredStatistics
+  readonly requiredStatistics: RequiredStatistics
+  /**
+   * Resets strategy internal statistics.
+   */
+  resetStatistics(): boolean
   /**
    * Chooses a worker in the pool.
    */

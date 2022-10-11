@@ -1,6 +1,6 @@
 import { cpus } from 'os'
-import type { AbstractPoolWorker } from '../abstract-pool-worker'
 import type { IPoolInternal } from '../pool-internal'
+import type { IPoolWorker } from '../pool-worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type { RequiredStatistics } from './selection-strategies-types'
 
@@ -21,12 +21,12 @@ type TaskRunTime = {
  * @template Response Type of response of execution. This can only be serializable data.
  */
 export class WeightedRoundRobinWorkerChoiceStrategy<
-  Worker extends AbstractPoolWorker,
+  Worker extends IPoolWorker,
   Data,
   Response
 > extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
   /** @inheritDoc */
-  public requiredStatistics: RequiredStatistics = {
+  public readonly requiredStatistics: RequiredStatistics = {
     runTime: true
   }
 
@@ -45,7 +45,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   /**
    * Per worker virtual task runtime map.
    */
-  private workersTaskRunTime: Map<Worker, TaskRunTime> = new Map<
+  private readonly workersTaskRunTime: Map<Worker, TaskRunTime> = new Map<
     Worker,
     TaskRunTime
   >()
@@ -59,6 +59,13 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     super(pool)
     this.defaultWorkerWeight = this.computeWorkerWeight()
     this.initWorkersTaskRunTime()
+  }
+
+  /** @inheritDoc */
+  public resetStatistics (): boolean {
+    this.workersTaskRunTime.clear()
+    this.initWorkersTaskRunTime()
+    return true
   }
 
   /** @inheritDoc */

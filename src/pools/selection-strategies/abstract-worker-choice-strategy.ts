@@ -1,6 +1,6 @@
-import type { AbstractPoolWorker } from '../abstract-pool-worker'
 import type { IPoolInternal } from '../pool-internal'
 import { PoolType } from '../pool-internal'
+import type { IPoolWorker } from '../pool-worker'
 import type {
   IWorkerChoiceStrategy,
   RequiredStatistics
@@ -14,12 +14,12 @@ import type {
  * @template Response Type of response of execution. This can only be serializable data.
  */
 export abstract class AbstractWorkerChoiceStrategy<
-  Worker extends AbstractPoolWorker,
+  Worker extends IPoolWorker,
   Data,
   Response
 > implements IWorkerChoiceStrategy<Worker> {
   /** @inheritDoc */
-  public isDynamicPool: boolean = this.pool.type === PoolType.DYNAMIC
+  public readonly isDynamicPool: boolean = this.pool.type === PoolType.DYNAMIC
   /** @inheritDoc */
   public requiredStatistics: RequiredStatistics = {
     runTime: false
@@ -33,6 +33,9 @@ export abstract class AbstractWorkerChoiceStrategy<
   public constructor (
     protected readonly pool: IPoolInternal<Worker, Data, Response>
   ) {}
+
+  /** @inheritDoc */
+  public abstract resetStatistics (): boolean
 
   /** @inheritDoc */
   public abstract choose (): Worker

@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
-import type { AbstractPoolWorker } from './abstract-pool-worker'
 import type { IPool } from './pool'
+import type { IPoolWorker } from './pool-worker'
 
 /**
  * Pool types.
@@ -33,7 +33,7 @@ export class PoolEmitter extends EventEmitter {}
  * @template Response Type of response of execution.
  */
 export interface IPoolInternal<
-  Worker extends AbstractPoolWorker,
+  Worker extends IPoolWorker,
   Data = unknown,
   Response = unknown
 > extends IPool<Data, Response> {
@@ -41,6 +41,14 @@ export interface IPoolInternal<
    * List of currently available workers.
    */
   readonly workers: Worker[]
+
+  /**
+   * The workers tasks usage map.
+   *
+   *  `key`: The `Worker`
+   *  `value`: Worker tasks usage statistics.
+   */
+  readonly workersTasksUsage: Map<Worker, TasksUsage>
 
   /**
    * Emitter on which events can be listened to.

@@ -1,4 +1,4 @@
-import type { AbstractPoolWorker } from '../abstract-pool-worker'
+import type { IPoolWorker } from '../pool-worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 
 /**
@@ -9,7 +9,7 @@ import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
  * @template Response Type of response of execution. This can only be serializable data.
  */
 export class RoundRobinWorkerChoiceStrategy<
-  Worker extends AbstractPoolWorker,
+  Worker extends IPoolWorker,
   Data,
   Response
 > extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
@@ -17,6 +17,11 @@ export class RoundRobinWorkerChoiceStrategy<
    * Index for the next worker.
    */
   private nextWorkerIndex: number = 0
+
+  /** @inheritDoc */
+  public resetStatistics (): boolean {
+    return true
+  }
 
   /** @inheritDoc */
   public choose (): Worker {

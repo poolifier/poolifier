@@ -28,13 +28,9 @@ export type OnlineHandler<Worker> = (this: Worker) => void
 export type ExitHandler<Worker> = (this: Worker, code: number) => void
 
 /**
- * Basic interface that describes the minimum required implementation of listener events for a pool worker.
+ * Interface that describes the minimum required implementation of listener events for a pool worker.
  */
 export interface IPoolWorker {
-  /**
-   * Worker identifier.
-   */
-  readonly id?: number
   /**
    * Register a listener to the message event.
    *

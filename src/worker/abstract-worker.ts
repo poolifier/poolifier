@@ -10,7 +10,7 @@ const DEFAULT_MAX_INACTIVE_TIME = 1000 * 60
 const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
 
 /**
- * Base class containing some shared logic for all poolifier workers.
+ * Base class that implements some shared logic for all poolifier workers.
  *
  * @template MainWorker Type of main worker.
  * @template Data Type of data this worker receives from pool's execution. This can only be serializable data.

@@ -1,6 +1,6 @@
-import type { AbstractPoolWorker } from '../abstract-pool-worker'
 import type { IPoolInternal } from '../pool-internal'
 import { PoolType } from '../pool-internal'
+import type { IPoolWorker } from '../pool-worker'
 import { DynamicPoolWorkerChoiceStrategy } from './dynamic-pool-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
@@ -17,7 +17,7 @@ import { SelectionStrategiesUtils } from './selection-strategies-utils'
  * @template Response Type of response of execution. This can only be serializable data.
  */
 export class WorkerChoiceStrategyContext<
-  Worker extends AbstractPoolWorker,
+  Worker extends IPoolWorker,
   Data,
   Response
 > {
@@ -77,6 +77,7 @@ export class WorkerChoiceStrategyContext<
   public setWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
+    this.workerChoiceStrategy?.resetStatistics()
     this.workerChoiceStrategy = this.getPoolWorkerChoiceStrategy(
       workerChoiceStrategy
     )

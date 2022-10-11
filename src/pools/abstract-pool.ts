@@ -4,10 +4,10 @@ import type {
 } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
-import type { AbstractPoolWorker } from './abstract-pool-worker'
 import type { PoolOptions } from './pool'
 import type { IPoolInternal, TasksUsage } from './pool-internal'
 import { PoolEmitter, PoolType } from './pool-internal'
+import type { IPoolWorker } from './pool-worker'
 import {
   WorkerChoiceStrategies,
   WorkerChoiceStrategy
@@ -18,27 +18,22 @@ const WORKER_NOT_FOUND_TASKS_USAGE_MAP =
   'Worker could not be found in worker tasks usage map'
 
 /**
- * Base class containing some shared logic for all poolifier pools.
+ * Base class that implements some shared logic for all poolifier pools.
  *
  * @template Worker Type of worker which manages this pool.
  * @template Data Type of data sent to the worker. This can only be serializable data.
  * @template Response Type of response of execution. This can only be serializable data.
  */
 export abstract class AbstractPool<
-  Worker extends AbstractPoolWorker,
+  Worker extends IPoolWorker,
   Data = unknown,
   Response = unknown
 > implements IPoolInternal<Worker, Data, Response> {
   /** @inheritDoc */
   public readonly workers: Worker[] = []
 
-  /**
-   * The workers tasks usage map.
-   *
-   *  `key`: The `Worker`
-   *  `value`: Worker tasks usage statistics.
-   */
-  protected workersTasksUsage: Map<Worker, TasksUsage> = new Map<
+  /** @inheritDoc */
+  public readonly workersTasksUsage: Map<Worker, TasksUsage> = new Map<
     Worker,
     TasksUsage
   >()
@@ -182,6 +177,9 @@ export abstract class AbstractPool<
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
     this.opts.workerChoiceStrategy = workerChoiceStrategy
+    for (const worker of this.workers) {
+      this.resetWorkerTasksUsage(worker)
+    }
     this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
       workerChoiceStrategy
     )
@@ -355,12 +353,7 @@ export abstract class AbstractPool<
     this.workers.push(worker)
 
     // Init worker tasks usage map
-    this.workersTasksUsage.set(worker, {
-      run: 0,
-      running: 0,
-      runTime: 0,
-      avgRunTime: 0
-    })
+    this.initWorkerTasksUsage(worker)
 
     this.afterWorkerSetup(worker)
 
@@ -470,11 +463,35 @@ export abstract class AbstractPool<
   }
 
   /**
+   * Initializes tasks usage statistics.
+   *
+   * @param worker The worker.
+   */
+  initWorkerTasksUsage (worker: Worker): void {
+    this.workersTasksUsage.set(worker, {
+      run: 0,
+      running: 0,
+      runTime: 0,
+      avgRunTime: 0
+    })
+  }
+
+  /**
    * Removes worker tasks usage statistics.
    *
    * @param worker The worker.
    */
   private removeWorkerTasksUsage (worker: Worker): void {
     this.workersTasksUsage.delete(worker)
+  }
+
+  /**
+   * Resets worker tasks usage statistics.
+   *
+   * @param worker The worker.
+   */
+  private resetWorkerTasksUsage (worker: Worker): void {
+    this.removeWorkerTasksUsage(worker)
+    this.initWorkerTasksUsage(worker)
   }
 }

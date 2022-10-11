@@ -1,4 +1,4 @@
-import type { AbstractPoolWorker } from '../abstract-pool-worker'
+import type { IPoolWorker } from '../pool-worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type { RequiredStatistics } from './selection-strategies-types'
 
@@ -19,26 +19,32 @@ type WorkerVirtualTaskTimestamp = {
  * @template Response Type of response of execution. This can only be serializable data.
  */
 export class FairShareWorkerChoiceStrategy<
-  Worker extends AbstractPoolWorker,
+  Worker extends IPoolWorker,
   Data,
   Response
 > extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
   /** @inheritDoc */
-  public requiredStatistics: RequiredStatistics = {
+  public readonly requiredStatistics: RequiredStatistics = {
     runTime: true
   }
 
   /**
    *  Worker last virtual task execution timestamp.
    */
-  private workerLastVirtualTaskTimestamp: Map<
+  private readonly workerLastVirtualTaskTimestamp: Map<
     Worker,
     WorkerVirtualTaskTimestamp
   > = new Map<Worker, WorkerVirtualTaskTimestamp>()
 
   /** @inheritDoc */
+  public resetStatistics (): boolean {
+    this.workerLastVirtualTaskTimestamp.clear()
+    return true
+  }
+
+  /** @inheritDoc */
   public choose (): Worker {
-    this.updateWorkerLastVirtualTaskTimestamp()
+    this.computeWorkerLastVirtualTaskTimestamp()
     let minWorkerVirtualTaskEndTimestamp = Infinity
     let chosenWorker!: Worker
     for (const worker of this.pool.workers) {
@@ -57,7 +63,7 @@ export class FairShareWorkerChoiceStrategy<
   /**
    * Computes workers last virtual task timestamp.
    */
-  private updateWorkerLastVirtualTaskTimestamp () {
+  private computeWorkerLastVirtualTaskTimestamp () {
     for (const worker of this.pool.workers) {
       const workerVirtualTaskStartTimestamp = Math.max(
         Date.now(),
