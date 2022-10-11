@@ -27,7 +27,7 @@ export interface PoolOptions<Worker> {
    */
   exitHandler?: ExitHandler<Worker>
   /**
-   * The work choice strategy to use in this pool.
+   * The worker choice strategy to use in this pool.
    */
   workerChoiceStrategy?: WorkerChoiceStrategy
   /**
