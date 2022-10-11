@@ -1,6 +1,7 @@
 const { expect } = require('expect')
 const {
   FixedClusterPool,
+  DynamicThreadPool,
   FixedThreadPool,
   WorkerChoiceStrategies
 } = require('../../../lib/index')
@@ -233,11 +234,37 @@ describe('Abstract pool test suite', () => {
   })
 
   it('Verify that worker pool tasks usage are reset at worker choice strategy change', async () => {
-    const pool = new FixedThreadPool(
+    let pool = new FixedThreadPool(
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js'
     )
     const promises = []
+    for (let i = 0; i < numberOfWorkers * 2; i++) {
+      promises.push(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const tasksUsage of pool.workersTasksUsage.values()) {
+      expect(tasksUsage).toBeDefined()
+      expect(tasksUsage.run).toBe(numberOfWorkers * 2)
+      expect(tasksUsage.running).toBe(0)
+      expect(tasksUsage.runTime).toBeGreaterThanOrEqual(0)
+      expect(tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+    }
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
+    for (const tasksUsage of pool.workersTasksUsage.values()) {
+      expect(tasksUsage).toBeDefined()
+      expect(tasksUsage.run).toBe(0)
+      expect(tasksUsage.running).toBe(0)
+      expect(tasksUsage.runTime).toBe(0)
+      expect(tasksUsage.avgRunTime).toBe(0)
+    }
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      numberOfWorkers,
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    promises.length = 0
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.push(pool.execute())
     }
