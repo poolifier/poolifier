@@ -15,7 +15,7 @@ import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-w
  */
 export class SelectionStrategiesUtils {
   /**
-   * Get the worker choice strategy instance.
+   * Gets the worker choice strategy instance.
    *
    * @param pool The pool instance.
    * @param workerChoiceStrategy The worker choice strategy.
