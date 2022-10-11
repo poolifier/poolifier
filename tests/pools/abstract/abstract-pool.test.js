@@ -232,6 +232,34 @@ describe('Abstract pool test suite', () => {
     pool.destroy()
   })
 
+  it('Verify that worker pool tasks usage are reset at worker choice strategy change', async () => {
+    const pool = new FixedThreadPool(
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    const promises = []
+    for (let i = 0; i < numberOfWorkers * 2; i++) {
+      promises.push(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const tasksUsage of pool.workersTasksUsage.values()) {
+      expect(tasksUsage).toBeDefined()
+      expect(tasksUsage.run).toBe(numberOfWorkers * 2)
+      expect(tasksUsage.running).toBe(0)
+      expect(tasksUsage.runTime).toBeGreaterThanOrEqual(0)
+      expect(tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+    }
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
+    for (const tasksUsage of pool.workersTasksUsage.values()) {
+      expect(tasksUsage).toBeDefined()
+      expect(tasksUsage.run).toBe(0)
+      expect(tasksUsage.running).toBe(0)
+      expect(tasksUsage.runTime).toBe(0)
+      expect(tasksUsage.avgRunTime).toBe(0)
+    }
+    pool.destroy()
+  })
+
   it("Verify that pool event emitter 'busy' event can register a callback", async () => {
     const pool = new FixedThreadPool(
       numberOfWorkers,
