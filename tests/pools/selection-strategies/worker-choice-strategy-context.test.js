@@ -45,9 +45,9 @@ describe('Worker choice strategy context test suite', () => {
     sinon.restore()
   })
 
-  after(() => {
-    fixedPool.destroy()
-    dynamicPool.destroy()
+  after(async () => {
+    await fixedPool.destroy()
+    await dynamicPool.destroy()
   })
 
   it('Verify that execute() return the worker chosen by the strategy with fixed pool', () => {

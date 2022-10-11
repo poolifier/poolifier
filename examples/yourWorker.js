@@ -1,5 +1,8 @@
 'use strict'
 const { ThreadWorker } = require('poolifier')
+const { isMainThread } = require('worker_threads')
+
+const debug = false
 
 function yourFunction (data) {
   for (let i = 0; i <= 1000; i++) {
@@ -8,7 +11,7 @@ function yourFunction (data) {
     }
     JSON.stringify(o)
   }
-  // console.log('This is the main thread ' + isMainThread)
+  debug === true && console.log('This is the main thread ' + isMainThread)
   return { ok: 1 }
 }
 

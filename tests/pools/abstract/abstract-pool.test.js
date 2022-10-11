@@ -74,7 +74,7 @@ describe('Abstract pool test suite', () => {
     )
   })
 
-  it('Verify that pool options are checked', () => {
+  it('Verify that pool options are checked', async () => {
     let pool = new FixedThreadPool(
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js'
@@ -88,7 +88,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.errorHandler).toBeUndefined()
     expect(pool.opts.onlineHandler).toBeUndefined()
     expect(pool.opts.exitHandler).toBeUndefined()
-    pool.destroy()
+    await pool.destroy()
     const testHandler = () => console.log('test handler executed')
     pool = new FixedThreadPool(
       numberOfWorkers,
@@ -111,10 +111,10 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.errorHandler).toStrictEqual(testHandler)
     expect(pool.opts.onlineHandler).toStrictEqual(testHandler)
     expect(pool.opts.exitHandler).toStrictEqual(testHandler)
-    pool.destroy()
+    await pool.destroy()
   })
 
-  it('Simulate worker not found during increaseWorkerRunningTasks', () => {
+  it('Simulate worker not found during increaseWorkerRunningTasks', async () => {
     const pool = new StubPoolWithWorkerTasksUsageMapClear(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js'
@@ -124,10 +124,10 @@ describe('Abstract pool test suite', () => {
     expect(() => pool.increaseWorkerRunningTasks()).toThrowError(
       workerNotFoundInTasksUsageMapError
     )
-    pool.destroy()
+    await pool.destroy()
   })
 
-  it('Simulate worker not found during decreaseWorkerRunningTasks', () => {
+  it('Simulate worker not found during decreaseWorkerRunningTasks', async () => {
     const pool = new StubPoolWithWorkerTasksUsageMapClear(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js',
@@ -140,10 +140,10 @@ describe('Abstract pool test suite', () => {
     expect(() => pool.decreaseWorkerRunningTasks()).toThrowError(
       workerNotFoundInTasksUsageMapError
     )
-    pool.destroy()
+    await pool.destroy()
   })
 
-  it('Simulate worker not found during stepWorkerRunTasks', () => {
+  it('Simulate worker not found during stepWorkerRunTasks', async () => {
     const pool = new StubPoolWithWorkerTasksUsageMapClear(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js',
@@ -156,10 +156,10 @@ describe('Abstract pool test suite', () => {
     expect(() => pool.stepWorkerRunTasks()).toThrowError(
       workerNotFoundInTasksUsageMapError
     )
-    pool.destroy()
+    await pool.destroy()
   })
 
-  it('Simulate worker not found during updateWorkerTasksRunTime with strategy not requiring it', () => {
+  it('Simulate worker not found during updateWorkerTasksRunTime with strategy not requiring it', async () => {
     const pool = new StubPoolWithWorkerTasksUsageMapClear(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js',
@@ -170,10 +170,10 @@ describe('Abstract pool test suite', () => {
     // Simulate worker not found.
     pool.removeAllWorker()
     expect(() => pool.updateWorkerTasksRunTime()).not.toThrowError()
-    pool.destroy()
+    await pool.destroy()
   })
 
-  it('Simulate worker not found during updateWorkerTasksRunTime with strategy requiring it', () => {
+  it('Simulate worker not found during updateWorkerTasksRunTime with strategy requiring it', async () => {
     const pool = new StubPoolWithWorkerTasksUsageMapClear(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js',
@@ -187,10 +187,10 @@ describe('Abstract pool test suite', () => {
     expect(() => pool.updateWorkerTasksRunTime()).toThrowError(
       workerNotFoundInTasksUsageMapError
     )
-    pool.destroy()
+    await pool.destroy()
   })
 
-  it('Verify that worker pool tasks usage are initialized', () => {
+  it('Verify that worker pool tasks usage are initialized', async () => {
     const pool = new FixedClusterPool(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js'
@@ -202,7 +202,7 @@ describe('Abstract pool test suite', () => {
       expect(tasksUsage.runTime).toBe(0)
       expect(tasksUsage.avgRunTime).toBe(0)
     }
-    pool.destroy()
+    await pool.destroy()
   })
 
   it('Verify that worker pool tasks usage are computed', async () => {
@@ -229,7 +229,7 @@ describe('Abstract pool test suite', () => {
       expect(tasksUsage.runTime).toBeGreaterThanOrEqual(0)
       expect(tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
     }
-    pool.destroy()
+    await pool.destroy()
   })
 
   it('Verify that worker pool tasks usage are reset at worker choice strategy change', async () => {
@@ -257,7 +257,7 @@ describe('Abstract pool test suite', () => {
       expect(tasksUsage.runTime).toBe(0)
       expect(tasksUsage.avgRunTime).toBe(0)
     }
-    pool.destroy()
+    await pool.destroy()
   })
 
   it("Verify that pool event emitter 'busy' event can register a callback", async () => {
@@ -275,6 +275,6 @@ describe('Abstract pool test suite', () => {
     // The `busy` event is triggered when the number of submitted tasks at once reach the number of fixed pool workers.
     // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the fixed pool.
     expect(poolBusy).toBe(numberOfWorkers + 1)
-    pool.destroy()
+    await pool.destroy()
   })
 })

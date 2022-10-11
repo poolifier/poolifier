@@ -55,6 +55,7 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .requiredStatistics.runTime
     ).toBe(false)
+    await pool.destroy()
     pool = new DynamicThreadPool(
       min,
       max,
@@ -144,6 +145,7 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .requiredStatistics.runTime
     ).toBe(false)
+    await pool.destroy()
     pool = new DynamicThreadPool(
       min,
       max,
@@ -227,6 +229,7 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .requiredStatistics.runTime
     ).toBe(true)
+    await pool.destroy()
     pool = new DynamicThreadPool(
       min,
       max,
@@ -310,6 +313,7 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .requiredStatistics.runTime
     ).toBe(true)
+    await pool.destroy()
     pool = new DynamicThreadPool(
       min,
       max,
