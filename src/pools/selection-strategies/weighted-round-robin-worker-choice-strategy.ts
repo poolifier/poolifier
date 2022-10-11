@@ -87,11 +87,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     } else {
       this.setWorkerTaskRunTime(currentWorker, workerTaskWeight, 0)
     }
-    if (
-      workerVirtualTaskRunTime <
-      (this.workersTaskRunTime.get(currentWorker)?.weight ??
-        this.defaultWorkerWeight)
-    ) {
+    if (workerVirtualTaskRunTime < workerTaskWeight) {
       this.previousWorkerIndex = this.currentWorkerIndex
     } else {
       this.previousWorkerIndex = this.currentWorkerIndex
@@ -136,6 +132,6 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
       const cpuCycleTime = 1 / (cpu.speed / Math.pow(10, numberOfDigit))
       cpusCycleTimeWeight += cpuCycleTime * Math.pow(10, numberOfDigit)
     }
-    return cpusCycleTimeWeight / cpus().length
+    return Math.round(cpusCycleTimeWeight / cpus().length)
   }
 }
