@@ -286,15 +286,6 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Removes worker tasks usage statistics.
-   *
-   * @param worker The worker.
-   */
-  protected removeWorkerTasksUsage (worker: Worker): void {
-    this.workersTasksUsage.delete(worker)
-  }
-
-  /**
    * Resets worker tasks usage statistics.
    *
    * @param worker The worker.
@@ -498,5 +489,14 @@ export abstract class AbstractPool<
       runTime: 0,
       avgRunTime: 0
     })
+  }
+
+  /**
+   * Removes worker tasks usage statistics.
+   *
+   * @param worker The worker.
+   */
+  private removeWorkerTasksUsage (worker: Worker): void {
+    this.workersTasksUsage.delete(worker)
   }
 }
