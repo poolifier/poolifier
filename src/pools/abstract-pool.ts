@@ -295,6 +295,16 @@ export abstract class AbstractPool<
   }
 
   /**
+   * Resets worker tasks usage statistics.
+   *
+   * @param worker The worker.
+   */
+  protected resetWorkerTasksUsage (worker: Worker): void {
+    this.removeWorkerTasksUsage(worker)
+    this.initWorkerTasksUsage(worker)
+  }
+
+  /**
    * Chooses a worker for the next task.
    *
    * The default implementation uses a round robin algorithm to distribute the load.
@@ -474,5 +484,19 @@ export abstract class AbstractPool<
         throw new Error(WORKER_NOT_FOUND_TASKS_USAGE_MAP)
       }
     }
+  }
+
+  /**
+   * Initializes tasks usage statistics.
+   *
+   * @param worker The worker.
+   */
+  initWorkerTasksUsage (worker: Worker): void {
+    this.workersTasksUsage.set(worker, {
+      run: 0,
+      running: 0,
+      runTime: 0,
+      avgRunTime: 0
+    })
   }
 }

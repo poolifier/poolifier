@@ -134,7 +134,7 @@ export class FixedThreadPool<
 
   /** @inheritDoc */
   protected resetWorkerTasksUsage (worker: Worker): void {
-    super.removeWorkerTasksUsage(worker)
+    super.resetWorkerTasksUsage(worker)
     const workerId = this.getWorkerIndex(worker)
     this.workersTasksSharedUsage[`worker${workerId}-run`] = 0
     this.workersTasksSharedUsage[`worker${workerId}-running`] = 0
