@@ -65,7 +65,7 @@ export abstract class AbstractWorker<
     this.checkWorkerOptions(this.opts)
     this.lastTaskTimestamp = Date.now()
     // Keep the worker active
-    if (!isMain) {
+    if (isMain === false) {
       this.aliveInterval = setInterval(
         this.checkAlive.bind(this),
         (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) / 2
