@@ -278,7 +278,7 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify FAIR_SHARE strategy statistics are resets after setting it', async () => {
-    const pool = new FixedThreadPool(
+    let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js'
     )
@@ -295,6 +295,29 @@ describe('Selection strategies test suite', () => {
       ).toBe(0)
       expect(
         pool.workerChoiceStrategyContext.workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(
+          worker
+        ).end
+      ).toBe(0)
+    }
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
+        .workerLastVirtualTaskTimestamp
+    ).toBeUndefined()
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
+    for (const worker of pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy.workerLastVirtualTaskTimestamp.keys()) {
+      expect(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(
+          worker
+        ).start
+      ).toBe(0)
+      expect(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(
           worker
         ).end
       ).toBe(0)
@@ -388,7 +411,7 @@ describe('Selection strategies test suite', () => {
   })
 
   it('Verify WEIGHTED_ROUND_ROBIN strategy statistics are resets after setting it', async () => {
-    const pool = new FixedThreadPool(
+    let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js'
     )
@@ -399,6 +422,24 @@ describe('Selection strategies test suite', () => {
     for (const worker of pool.workerChoiceStrategyContext.workerChoiceStrategy.workersTaskRunTime.keys()) {
       expect(
         pool.workerChoiceStrategyContext.workerChoiceStrategy.workersTaskRunTime.get(
+          worker
+        ).runTime
+      ).toBe(0)
+    }
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
+        .workersTaskRunTime
+    ).toBeUndefined()
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
+    for (const worker of pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy.workersTaskRunTime.keys()) {
+      expect(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy.workersTaskRunTime.get(
           worker
         ).runTime
       ).toBe(0)
