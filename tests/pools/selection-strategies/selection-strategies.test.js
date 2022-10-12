@@ -277,6 +277,32 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
+  it('Verify FAIR_SHARE strategy statistics are resets after setting it', async () => {
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategy
+        .workerLastVirtualTaskTimestamp
+    ).toBeUndefined()
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
+    for (const worker of pool.workerChoiceStrategyContext.workerChoiceStrategy.workerLastVirtualTaskTimestamp.keys()) {
+      expect(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(
+          worker
+        ).start
+      ).toBe(0)
+      expect(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(
+          worker
+        ).end
+      ).toBe(0)
+    }
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
   it('Verify WEIGHTED_ROUND_ROBIN strategy is taken at pool creation', async () => {
     const pool = new FixedThreadPool(
       max,
@@ -357,6 +383,26 @@ describe('Selection strategies test suite', () => {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify WEIGHTED_ROUND_ROBIN strategy statistics are resets after setting it', async () => {
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategy.workersTaskRunTime
+    ).toBeUndefined()
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
+    for (const worker of pool.workerChoiceStrategyContext.workerChoiceStrategy.workersTaskRunTime.keys()) {
+      expect(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy.workersTaskRunTime.get(
+          worker
+        ).runTime
+      ).toBe(0)
+    }
     // We need to clean up the resources after our test
     await pool.destroy()
   })

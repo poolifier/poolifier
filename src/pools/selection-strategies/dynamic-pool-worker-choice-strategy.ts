@@ -54,7 +54,7 @@ export class DynamicPoolWorkerChoiceStrategy<
       return freeWorker
     }
 
-    if (this.pool.busy) {
+    if (this.pool.busy === true) {
       return this.workerChoiceStrategy.choose()
     }
 
