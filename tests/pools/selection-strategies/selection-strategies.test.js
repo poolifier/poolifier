@@ -202,6 +202,18 @@ describe('Selection strategies test suite', () => {
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.FAIR_SHARE
     )
+    for (const worker of pool.workerChoiceStrategyContext.workerChoiceStrategy.workerLastVirtualTaskTimestamp.keys()) {
+      expect(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(
+          worker
+        ).start
+      ).toBe(0)
+      expect(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(
+          worker
+        ).end
+      ).toBe(0)
+    }
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -335,6 +347,13 @@ describe('Selection strategies test suite', () => {
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     )
+    for (const worker of pool.workerChoiceStrategyContext.workerChoiceStrategy.workersTaskRunTime.keys()) {
+      expect(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy.workersTaskRunTime.get(
+          worker
+        ).runTime
+      ).toBe(0)
+    }
     // We need to clean up the resources after our test
     await pool.destroy()
   })
