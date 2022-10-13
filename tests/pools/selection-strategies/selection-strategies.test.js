@@ -31,6 +31,22 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
+  it('Verify ROUND_ROBIN strategy is taken at pool creation', async () => {
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN }
+    )
+    expect(pool.opts.workerChoiceStrategy).toBe(
+      WorkerChoiceStrategies.ROUND_ROBIN
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy().nextWorkerIndex
+    ).toBe(0)
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
   it('Verify ROUND_ROBIN strategy can be set after pool creation', async () => {
     const pool = new DynamicThreadPool(
       min,
@@ -55,6 +71,7 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .requiredStatistics.runTime
     ).toBe(false)
+    await pool.destroy()
     pool = new DynamicThreadPool(
       min,
       max,
@@ -108,6 +125,39 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
+  it('Verify ROUND_ROBIN strategy internals are resets after setting it', async () => {
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy().nextWorkerIndex
+    ).toBeUndefined()
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.ROUND_ROBIN)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy().nextWorkerIndex
+    ).toBe(0)
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.nextWorkerIndex
+    ).toBeUndefined()
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.ROUND_ROBIN)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.nextWorkerIndex
+    ).toBe(0)
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
   it('Verify LESS_RECENTLY_USED strategy is taken at pool creation', async () => {
     const pool = new FixedThreadPool(
       max,
@@ -144,6 +194,7 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .requiredStatistics.runTime
     ).toBe(false)
+    await pool.destroy()
     pool = new DynamicThreadPool(
       min,
       max,
@@ -200,6 +251,20 @@ describe('Selection strategies test suite', () => {
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.FAIR_SHARE
     )
+    for (const worker of pool.workerChoiceStrategyContext
+      .getWorkerChoiceStrategy()
+      .workerLastVirtualTaskTimestamp.keys()) {
+      expect(
+        pool.workerChoiceStrategyContext
+          .getWorkerChoiceStrategy()
+          .workerLastVirtualTaskTimestamp.get(worker).start
+      ).toBe(0)
+      expect(
+        pool.workerChoiceStrategyContext
+          .getWorkerChoiceStrategy()
+          .workerLastVirtualTaskTimestamp.get(worker).end
+      ).toBe(0)
+    }
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -227,6 +292,7 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .requiredStatistics.runTime
     ).toBe(true)
+    await pool.destroy()
     pool = new DynamicThreadPool(
       min,
       max,
@@ -274,6 +340,59 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
+  it('Verify FAIR_SHARE strategy internals are resets after setting it', async () => {
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerLastVirtualTaskTimestamp
+    ).toBeUndefined()
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
+    for (const worker of pool.workerChoiceStrategyContext
+      .getWorkerChoiceStrategy()
+      .workerLastVirtualTaskTimestamp.keys()) {
+      expect(
+        pool.workerChoiceStrategyContext
+          .getWorkerChoiceStrategy()
+          .workerLastVirtualTaskTimestamp.get(worker).start
+      ).toBe(0)
+      expect(
+        pool.workerChoiceStrategyContext
+          .getWorkerChoiceStrategy()
+          .workerLastVirtualTaskTimestamp.get(worker).end
+      ).toBe(0)
+    }
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.workerLastVirtualTaskTimestamp
+    ).toBeUndefined()
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
+    for (const worker of pool.workerChoiceStrategyContext
+      .getWorkerChoiceStrategy()
+      .workerChoiceStrategy.workerLastVirtualTaskTimestamp.keys()) {
+      expect(
+        pool.workerChoiceStrategyContext
+          .getWorkerChoiceStrategy()
+          .workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(worker).start
+      ).toBe(0)
+      expect(
+        pool.workerChoiceStrategyContext
+          .getWorkerChoiceStrategy()
+          .workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(worker).end
+      ).toBe(0)
+    }
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
   it('Verify WEIGHTED_ROUND_ROBIN strategy is taken at pool creation', async () => {
     const pool = new FixedThreadPool(
       max,
@@ -283,6 +402,32 @@ describe('Selection strategies test suite', () => {
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     )
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .previousWorkerIndex
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .currentWorkerIndex
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .defaultWorkerWeight
+    ).toBeGreaterThan(0)
+    for (const worker of pool.workerChoiceStrategyContext
+      .getWorkerChoiceStrategy()
+      .workersTaskRunTime.keys()) {
+      expect(
+        pool.workerChoiceStrategyContext
+          .getWorkerChoiceStrategy()
+          .workersTaskRunTime.get(worker).weight
+      ).toBeGreaterThan(0)
+      expect(
+        pool.workerChoiceStrategyContext
+          .getWorkerChoiceStrategy()
+          .workersTaskRunTime.get(worker).runTime
+      ).toBe(0)
+    }
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -310,6 +455,7 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .requiredStatistics.runTime
     ).toBe(true)
+    await pool.destroy()
     pool = new DynamicThreadPool(
       min,
       max,
@@ -353,6 +499,97 @@ describe('Selection strategies test suite', () => {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify WEIGHTED_ROUND_ROBIN strategy internals are resets after setting it', async () => {
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .previousWorkerIndex
+    ).toBeUndefined()
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .currentWorkerIndex
+    ).toBeUndefined()
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .defaultWorkerWeight
+    ).toBeUndefined()
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workersTaskRunTime
+    ).toBeUndefined()
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .previousWorkerIndex
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .currentWorkerIndex
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .defaultWorkerWeight
+    ).toBeGreaterThan(0)
+    for (const worker of pool.workerChoiceStrategyContext
+      .getWorkerChoiceStrategy()
+      .workersTaskRunTime.keys()) {
+      expect(
+        pool.workerChoiceStrategyContext
+          .getWorkerChoiceStrategy()
+          .workersTaskRunTime.get(worker).runTime
+      ).toBe(0)
+    }
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.previousWorkerIndex
+    ).toBeUndefined()
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.currentWorkerIndex
+    ).toBeUndefined()
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.defaultWorkerWeight
+    ).toBeUndefined()
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.workersTaskRunTime
+    ).toBeUndefined()
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.previousWorkerIndex
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.currentWorkerIndex
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.defaultWorkerWeight
+    ).toBeGreaterThan(0)
+    for (const worker of pool.workerChoiceStrategyContext
+      .getWorkerChoiceStrategy()
+      .workerChoiceStrategy.workersTaskRunTime.keys()) {
+      expect(
+        pool.workerChoiceStrategyContext
+          .getWorkerChoiceStrategy()
+          .workerChoiceStrategy.workersTaskRunTime.get(worker).runTime
+      ).toBe(0)
+    }
     // We need to clean up the resources after our test
     await pool.destroy()
   })

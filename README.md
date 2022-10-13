@@ -156,16 +156,18 @@ You can use node versions >= 12.x for thread pool, and node versions >= 16.x for
 `filePath` (mandatory) Path to a file with a worker implementation  
 `opts` (optional) An object with these properties:
 
+- `messageHandler` (optional) - A function that will listen for message event on each worker
 - `errorHandler` (optional) - A function that will listen for error event on each worker
 - `onlineHandler` (optional) - A function that will listen for online event on each worker
 - `exitHandler` (optional) - A function that will listen for exit event on each worker
-- `workerChoiceStrategy` (optional) - The work choice strategy to use in this pool:
+- `workerChoiceStrategy` (optional) - The worker choice strategy to use in this pool:
 
-  - `WorkerChoiceStrategies.ROUND_ROBIN`: Submit tasks to worker in this pool in a round robbin fashion
-  - `WorkerChoiceStrategies.LESS_RECENTLY_USED`: Submit tasks to the less recently used worker in the pool
-  - `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN` Submit tasks to worker using a weighted round robin scheduling algorithm based on tasks execution time for now
-  - `WorkerChoiceStrategies.FAIR_SHARE`: Submit tasks to worker using a fair share tasks scheduling algorithm
+  - `WorkerChoiceStrategies.ROUND_ROBIN`: Submit tasks to worker in a round robbin fashion
+  - `WorkerChoiceStrategies.LESS_RECENTLY_USED`: Submit tasks to the less recently used worker
+  - `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN` Submit tasks to worker using a weighted round robin scheduling algorithm based on tasks execution time
+  - `WorkerChoiceStrategies.FAIR_SHARE`: Submit tasks to worker using a fair share tasks scheduling algorithm based on tasks execution time
 
+  `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN` and `WorkerChoiceStrategies.FAIR_SHARE` strategies are targeted to heavy and long tasks
   Default: `WorkerChoiceStrategies.ROUND_ROBIN`
 
 - `enableEvents` (optional) - Events emission enablement in this pool. Default: true
@@ -198,7 +200,7 @@ This method will call the terminate method on each worker.
   If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.  
   Default: 60000 ms
 
-- `async` - true/false, true if your function contains async pieces else false
+- `async` - true/false, true if your function contains async code pieces, else false
 - `killBehavior` - Dictates if your async unit (worker/process) will be deleted in case that a task is active on it.  
   **KillBehaviors.SOFT**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker **won't** be deleted.  
   **KillBehaviors.HARD**: If `lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker will be deleted.  

@@ -19,7 +19,8 @@ export class RoundRobinWorkerChoiceStrategy<
   private nextWorkerIndex: number = 0
 
   /** @inheritDoc */
-  public resetStatistics (): boolean {
+  public reset (): boolean {
+    this.nextWorkerIndex = 0
     return true
   }
 

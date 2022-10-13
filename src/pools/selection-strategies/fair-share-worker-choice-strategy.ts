@@ -37,7 +37,7 @@ export class FairShareWorkerChoiceStrategy<
   > = new Map<Worker, WorkerVirtualTaskTimestamp>()
 
   /** @inheritDoc */
-  public resetStatistics (): boolean {
+  public reset (): boolean {
     this.workerLastVirtualTaskTimestamp.clear()
     return true
   }

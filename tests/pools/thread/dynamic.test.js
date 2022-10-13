@@ -27,11 +27,10 @@ describe('Dynamic thread pool test suite', () => {
   })
 
   it('Verify that new workers are created when required, max size is not exceeded and that after a while new workers will die', async () => {
-    const promises = []
     let poolBusy = 0
     pool.emitter.on('busy', () => poolBusy++)
     for (let i = 0; i < max * 2; i++) {
-      promises.push(pool.execute())
+      pool.execute()
     }
     expect(pool.workers.length).toBeLessThanOrEqual(max)
     expect(pool.workers.length).toBeGreaterThan(min)

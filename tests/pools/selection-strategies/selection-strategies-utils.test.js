@@ -32,8 +32,8 @@ describe('Selection strategies utils test suite', () => {
   //   sinon.restore()
   // })
 
-  after(() => {
-    pool.destroy()
+  after(async () => {
+    await pool.destroy()
   })
 
   it('Verify that getWorkerChoiceStrategy() default return ROUND_ROBIN strategy', () => {

@@ -14,7 +14,7 @@ export class LessRecentlyUsedWorkerChoiceStrategy<
   Response
 > extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
   /** @inheritDoc */
-  public resetStatistics (): boolean {
+  public reset (): boolean {
     return true
   }
 

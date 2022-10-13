@@ -9,7 +9,7 @@ import { WorkerChoiceStrategies } from './selection-strategies-types'
 import { SelectionStrategiesUtils } from './selection-strategies-utils'
 
 /**
- * Dynamically choose a worker.
+ * Selects the next worker for dynamic pool.
  *
  * @template Worker Type of worker which manages the strategy.
  * @template Data Type of data sent to the worker. This can only be serializable data.
@@ -23,7 +23,7 @@ export class DynamicPoolWorkerChoiceStrategy<
   private workerChoiceStrategy: IWorkerChoiceStrategy<Worker>
 
   /**
-   * Constructs a worker choice strategy for dynamical pool.
+   * Constructs a worker choice strategy for dynamic pool.
    *
    * @param pool The pool instance.
    * @param createDynamicallyWorkerCallback The worker creation callback for dynamic pool.
@@ -43,8 +43,8 @@ export class DynamicPoolWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public resetStatistics (): boolean {
-    return this.workerChoiceStrategy.resetStatistics()
+  public reset (): boolean {
+    return this.workerChoiceStrategy.reset()
   }
 
   /** @inheritDoc */
@@ -54,7 +54,7 @@ export class DynamicPoolWorkerChoiceStrategy<
       return freeWorker
     }
 
-    if (this.pool.busy) {
+    if (this.pool.busy === true) {
       return this.workerChoiceStrategy.choose()
     }
 

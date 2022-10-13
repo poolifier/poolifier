@@ -74,11 +74,10 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it('Verify that busy event is emitted', async () => {
-    const promises = []
     let poolBusy = 0
     pool.emitter.on('busy', () => poolBusy++)
     for (let i = 0; i < numberOfWorkers * 2; i++) {
-      promises.push(pool.execute())
+      pool.execute()
     }
     // The `busy` event is triggered when the number of submitted tasks at once reach the number of fixed pool workers.
     // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the fixed pool.

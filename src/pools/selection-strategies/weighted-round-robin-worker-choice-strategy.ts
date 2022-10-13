@@ -62,7 +62,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public resetStatistics (): boolean {
+  public reset (): boolean {
+    this.previousWorkerIndex = 0
+    this.currentWorkerIndex = 0
     this.workersTaskRunTime.clear()
     this.initWorkersTaskRunTime()
     return true
