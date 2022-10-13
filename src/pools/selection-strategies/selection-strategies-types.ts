@@ -49,9 +49,9 @@ export interface IWorkerChoiceStrategy<Worker extends IPoolWorker> {
    */
   readonly requiredStatistics: RequiredStatistics
   /**
-   * Resets strategy internal statistics.
+   * Resets strategy internals (counters, statistics, etc.).
    */
-  resetStatistics(): boolean
+  reset(): boolean
   /**
    * Chooses a worker in the pool.
    */

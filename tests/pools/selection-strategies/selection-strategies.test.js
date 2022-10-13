@@ -125,6 +125,32 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
+  it('Verify ROUND_ROBIN strategy internals are resets after setting it', async () => {
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
+    )
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.ROUND_ROBIN)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy().nextWorkerIndex
+    ).toBe(0)
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
+    )
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.ROUND_ROBIN)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.nextWorkerIndex
+    ).toBe(0)
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
   it('Verify LESS_RECENTLY_USED strategy is taken at pool creation', async () => {
     const pool = new FixedThreadPool(
       max,
@@ -307,7 +333,7 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify FAIR_SHARE strategy statistics are resets after setting it', async () => {
+  it('Verify FAIR_SHARE strategy internals are resets after setting it', async () => {
     let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js'
@@ -470,7 +496,7 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify WEIGHTED_ROUND_ROBIN strategy statistics are resets after setting it', async () => {
+  it('Verify WEIGHTED_ROUND_ROBIN strategy internals are resets after setting it', async () => {
     let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js'
@@ -480,6 +506,18 @@ describe('Selection strategies test suite', () => {
         .workersTaskRunTime
     ).toBeUndefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .previousWorkerIndex
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .currentWorkerIndex
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .defaultWorkerWeight
+    ).toBeGreaterThan(0)
     for (const worker of pool.workerChoiceStrategyContext
       .getWorkerChoiceStrategy()
       .workersTaskRunTime.keys()) {
@@ -500,6 +538,18 @@ describe('Selection strategies test suite', () => {
         .workerChoiceStrategy.workersTaskRunTime
     ).toBeUndefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.previousWorkerIndex
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.currentWorkerIndex
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.defaultWorkerWeight
+    ).toBeGreaterThan(0)
     for (const worker of pool.workerChoiceStrategyContext
       .getWorkerChoiceStrategy()
       .workerChoiceStrategy.workersTaskRunTime.keys()) {

@@ -35,7 +35,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   ) {}
 
   /** @inheritDoc */
-  public abstract resetStatistics (): boolean
+  public abstract reset (): boolean
 
   /** @inheritDoc */
   public abstract choose (): Worker

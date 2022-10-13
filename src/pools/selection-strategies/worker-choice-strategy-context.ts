@@ -77,7 +77,7 @@ export class WorkerChoiceStrategyContext<
   public setWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
-    this.workerChoiceStrategy?.resetStatistics()
+    this.workerChoiceStrategy?.reset()
     this.workerChoiceStrategy = this.getPoolWorkerChoiceStrategy(
       workerChoiceStrategy
     )

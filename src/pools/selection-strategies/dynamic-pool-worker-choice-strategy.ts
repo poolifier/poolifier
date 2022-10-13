@@ -43,8 +43,8 @@ export class DynamicPoolWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public resetStatistics (): boolean {
-    return this.workerChoiceStrategy.resetStatistics()
+  public reset (): boolean {
+    return this.workerChoiceStrategy.reset()
   }
 
   /** @inheritDoc */
