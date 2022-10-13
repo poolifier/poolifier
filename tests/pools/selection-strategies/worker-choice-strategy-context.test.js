@@ -63,7 +63,7 @@ describe('Worker choice strategy context test suite', () => {
     workerChoiceStrategyContext.workerChoiceStrategy = WorkerChoiceStrategyStub
     const chosenWorker = workerChoiceStrategyContext.execute()
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategy.choose.calledOnce
+      workerChoiceStrategyContext.getWorkerChoiceStrategy().choose.calledOnce
     ).toBe(true)
     expect(chosenWorker).toBe('worker')
   })
@@ -81,7 +81,7 @@ describe('Worker choice strategy context test suite', () => {
     workerChoiceStrategyContext.workerChoiceStrategy = WorkerChoiceStrategyStub
     const chosenWorker = workerChoiceStrategyContext.execute()
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategy.choose.calledOnce
+      workerChoiceStrategyContext.getWorkerChoiceStrategy().choose.calledOnce
     ).toBe(true)
     expect(chosenWorker).toBe('worker')
   })

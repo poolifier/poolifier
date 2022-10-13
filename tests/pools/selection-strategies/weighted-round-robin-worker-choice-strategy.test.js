@@ -22,7 +22,7 @@ describe('Weighted round robin strategy worker choice strategy test suite', () =
     await pool.destroy()
   })
 
-  it.only('Verify that reset() resets internals', () => {
+  it('Verify that reset() resets internals', () => {
     const strategy = new WeightedRoundRobinWorkerChoiceStrategy(pool)
     const workersTaskRunTimeClearStub = sinon
       .stub(strategy.workersTaskRunTime, 'clear')
