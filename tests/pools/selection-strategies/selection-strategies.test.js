@@ -131,6 +131,9 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
     )
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy().nextWorkerIndex
+    ).toBeUndefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.ROUND_ROBIN)
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy().nextWorkerIndex
@@ -142,6 +145,10 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
     )
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.nextWorkerIndex
+    ).toBeUndefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.ROUND_ROBIN)
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
@@ -503,6 +510,18 @@ describe('Selection strategies test suite', () => {
     )
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .previousWorkerIndex
+    ).toBeUndefined()
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .currentWorkerIndex
+    ).toBeUndefined()
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .defaultWorkerWeight
+    ).toBeUndefined()
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .workersTaskRunTime
     ).toBeUndefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
@@ -533,6 +552,18 @@ describe('Selection strategies test suite', () => {
       max,
       './tests/worker-files/thread/testWorker.js'
     )
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.previousWorkerIndex
+    ).toBeUndefined()
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.currentWorkerIndex
+    ).toBeUndefined()
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerChoiceStrategy.defaultWorkerWeight
+    ).toBeUndefined()
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .workerChoiceStrategy.workersTaskRunTime
