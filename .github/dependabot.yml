@@ -9,7 +9,6 @@ updates:
       - 'github-actions'
     reviewers:
       - 'pioardi'
-      - 'Shinigami92'
       - 'jerome-benoit'
   - package-ecosystem: 'npm'
     directory: '/'
@@ -19,7 +18,6 @@ updates:
       - 'dependencies'
     reviewers:
       - 'pioardi'
-      - 'Shinigami92'
       - 'jerome-benoit'
     versioning-strategy: increase
   - package-ecosystem: 'npm'
@@ -32,6 +30,5 @@ updates:
       - 'nocombine'
     reviewers:
       - 'pioardi'
-      - 'Shinigami92'
       - 'jerome-benoit'
     versioning-strategy: increase
