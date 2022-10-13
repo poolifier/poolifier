@@ -61,11 +61,11 @@ describe('Worker choice strategy context test suite', () => {
       }
     )
     workerChoiceStrategyContext.workerChoiceStrategy = WorkerChoiceStrategyStub
-    const worker = workerChoiceStrategyContext.execute()
+    const chosenWorker = workerChoiceStrategyContext.execute()
     expect(
       workerChoiceStrategyContext.workerChoiceStrategy.choose.calledOnce
     ).toBe(true)
-    expect(worker).toBe('worker')
+    expect(chosenWorker).toBe('worker')
   })
 
   it('Verify that execute() return the worker chosen by the strategy with dynamic pool', () => {
@@ -79,11 +79,11 @@ describe('Worker choice strategy context test suite', () => {
       }
     )
     workerChoiceStrategyContext.workerChoiceStrategy = WorkerChoiceStrategyStub
-    const worker = workerChoiceStrategyContext.execute()
+    const chosenWorker = workerChoiceStrategyContext.execute()
     expect(
       workerChoiceStrategyContext.workerChoiceStrategy.choose.calledOnce
     ).toBe(true)
-    expect(worker).toBe('worker')
+    expect(chosenWorker).toBe('worker')
   })
 
   it('Verify that setWorkerChoiceStrategy() works with ROUND_ROBIN and fixed pool', () => {
