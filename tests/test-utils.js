@@ -36,6 +36,15 @@ class TestUtils {
     })
   }
 
+  static generateRandomInteger (max, min = 0) {
+    max = Math.floor(max)
+    if (min) {
+      min = Math.ceil(min)
+      return Math.floor(Math.random() * (max - min + 1)) + min
+    }
+    return Math.floor(Math.random() * (max + 1))
+  }
+
   static jsonIntegerSerialization (n) {
     for (let i = 0; i < n; i++) {
       const o = {

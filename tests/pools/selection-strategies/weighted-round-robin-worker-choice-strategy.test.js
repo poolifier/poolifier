@@ -4,6 +4,7 @@ const { FixedThreadPool } = require('../../../lib/index')
 const {
   WeightedRoundRobinWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy')
+const TestUtils = require('../../test-utils')
 
 describe('Weighted round robin strategy worker choice strategy test suite', () => {
   // const min = 1
@@ -24,6 +25,12 @@ describe('Weighted round robin strategy worker choice strategy test suite', () =
 
   it('Verify that reset() resets internals', () => {
     const strategy = new WeightedRoundRobinWorkerChoiceStrategy(pool)
+    strategy.previousWorkerIndex = TestUtils.generateRandomInteger(
+      Number.MAX_SAFE_INTEGER
+    )
+    strategy.currentWorkerIndex = TestUtils.generateRandomInteger(
+      Number.MAX_SAFE_INTEGER
+    )
     const workersTaskRunTimeClearStub = sinon
       .stub(strategy.workersTaskRunTime, 'clear')
       .returns()
@@ -34,7 +41,6 @@ describe('Weighted round robin strategy worker choice strategy test suite', () =
     expect(resetResult).toBe(true)
     expect(strategy.previousWorkerIndex).toBe(0)
     expect(strategy.currentWorkerIndex).toBe(0)
-    expect(strategy.defaultWorkerWeight).toBeGreaterThan(0)
     expect(workersTaskRunTimeClearStub.calledOnce).toBe(true)
     expect(initWorkersTaskRunTimeStub.calledOnce).toBe(true)
   })
