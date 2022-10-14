@@ -14,10 +14,11 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.node }}
 
     strategy:
       matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
         node: ['14.x', '16.x', '18.x']
 
     steps:
