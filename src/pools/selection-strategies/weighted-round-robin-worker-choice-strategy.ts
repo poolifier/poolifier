@@ -91,7 +91,11 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
         this.currentWorkerIndex === this.pool.workers.length - 1
           ? 0
           : this.currentWorkerIndex + 1
-      this.setWorkerTaskRunTime(chosenWorker, workerTaskWeight, 0)
+      this.setWorkerTaskRunTime(
+        this.pool.workers[this.currentWorkerIndex],
+        workerTaskWeight,
+        0
+      )
     }
     return chosenWorker
   }
