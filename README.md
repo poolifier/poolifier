@@ -150,6 +150,8 @@ You can use node versions >= 12.x for thread pool, and node versions >= 16.x for
 
 ## API
 
+### [Documentation](https://poolifier.github.io/poolifier/)
+
 ### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
 
 `numberOfThreads/numberOfWorkers` (mandatory) Number of workers for this pool  
