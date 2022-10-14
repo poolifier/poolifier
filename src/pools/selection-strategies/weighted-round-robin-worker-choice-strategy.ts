@@ -67,18 +67,18 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): Worker {
-    let chosenWorker = this.pool.workers[this.currentWorkerIndex]
+    const chosenWorker = this.pool.workers[this.currentWorkerIndex]
     if (
       this.isDynamicPool === true &&
       this.workersTaskRunTime.has(chosenWorker) === false
     ) {
       this.initWorkerTaskRunTime(chosenWorker)
     }
+    const workerTaskRunTime =
+      this.workersTaskRunTime.get(chosenWorker)?.runTime ?? 0
     const workerTaskWeight =
       this.workersTaskRunTime.get(chosenWorker)?.weight ??
       this.defaultWorkerWeight
-    const workerTaskRunTime =
-      this.workersTaskRunTime.get(chosenWorker)?.runTime ?? 0
     if (workerTaskRunTime < workerTaskWeight) {
       this.setWorkerTaskRunTime(
         chosenWorker,
@@ -91,7 +91,6 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
         this.currentWorkerIndex === this.pool.workers.length - 1
           ? 0
           : this.currentWorkerIndex + 1
-      chosenWorker = this.pool.workers[this.currentWorkerIndex]
       this.setWorkerTaskRunTime(chosenWorker, workerTaskWeight, 0)
     }
     return chosenWorker
@@ -126,9 +125,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     let cpusCycleTimeWeight = 0
     for (const cpu of cpus()) {
       // CPU estimated cycle time
-      const numberOfDigit = cpu.speed.toString().length - 1
-      const cpuCycleTime = 1 / (cpu.speed / Math.pow(10, numberOfDigit))
-      cpusCycleTimeWeight += cpuCycleTime * Math.pow(10, numberOfDigit)
+      const numberOfDigits = cpu.speed.toString().length - 1
+      const cpuCycleTime = 1 / (cpu.speed / Math.pow(10, numberOfDigits))
+      cpusCycleTimeWeight += cpuCycleTime * Math.pow(10, numberOfDigits)
     }
     return Math.round(cpusCycleTimeWeight / cpus().length)
   }
