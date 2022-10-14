@@ -77,19 +77,18 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     const workerTaskWeight =
       this.workersTaskRunTime.get(chosenWorker)?.weight ??
       this.defaultWorkerWeight
-    if (
-      (this.workersTaskRunTime.get(chosenWorker)?.runTime ?? 0) <
-      workerTaskWeight
-    ) {
+    const workerTaskRunTime =
+      this.workersTaskRunTime.get(chosenWorker)?.runTime ?? 0
+    if (workerTaskRunTime < workerTaskWeight) {
       this.setWorkerTaskRunTime(
         chosenWorker,
         workerTaskWeight,
-        (this.workersTaskRunTime.get(chosenWorker)?.runTime ?? 0) +
+        workerTaskRunTime +
           (this.getWorkerVirtualTaskRunTime(chosenWorker) ?? 0)
       )
     } else {
       this.currentWorkerIndex =
-        this.pool.workers.length - 1 === this.currentWorkerIndex
+        this.currentWorkerIndex === this.pool.workers.length - 1
           ? 0
           : this.currentWorkerIndex + 1
       chosenWorker = this.pool.workers[this.currentWorkerIndex]
