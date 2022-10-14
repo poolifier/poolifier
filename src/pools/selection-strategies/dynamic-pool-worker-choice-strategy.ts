@@ -31,7 +31,7 @@ export class DynamicPoolWorkerChoiceStrategy<
    */
   public constructor (
     pool: IPoolInternal<Worker, Data, Response>,
-    private createDynamicallyWorkerCallback: () => Worker,
+    private readonly createDynamicallyWorkerCallback: () => Worker,
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     super(pool)

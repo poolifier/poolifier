@@ -39,16 +39,16 @@ Please consult our <a href="#general-guidance">general guidelines</a>
 - Performance :racehorse: [benchmarks](./benchmarks/README.md)
 - Security :bank: :cop: [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=security_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 - Easy to use :couple:
-- Easy switch from a pool to another, easy to tune :heavy_check_mark:
-- Dynamic pool size :heavy_check_mark:
-- No runtime dependencies :heavy_check_mark:
-- Proper async integration with node async hooks :heavy_check_mark:
-- Support for worker threads and cluster node modules :heavy_check_mark:
-- Support sync and async tasks :heavy_check_mark:
-- General guidance on pools to use :heavy_check_mark:
-- Widely tested :heavy_check_mark:
-- Error handling out of the box :heavy_check_mark:
-- Active community :heavy_check_mark:
+- Easy switch from a pool to another, easy to tune :white_check_mark:
+- Dynamic pool size :white_check_mark:
+- No runtime dependencies :white_check_mark:
+- Proper async integration with node async hooks :white_check_mark:
+- Support for worker threads and cluster node modules :white_check_mark:
+- Support sync and async tasks :white_check_mark:
+- General guidance on pools to use :white_check_mark:
+- Widely tested :white_check_mark:
+- Error handling out of the box :white_check_mark:
+- Active community :white_check_mark:
 - Code quality :octocat: [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=bugs)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
   [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=code_smells)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
   [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
@@ -149,6 +149,8 @@ Remember that workers can only send and receive serializable data.
 You can use node versions >= 12.x for thread pool, and node versions >= 16.x for cluster pool.
 
 ## API
+
+### [Documentation](https://poolifier.github.io/poolifier/)
 
 ### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
 
