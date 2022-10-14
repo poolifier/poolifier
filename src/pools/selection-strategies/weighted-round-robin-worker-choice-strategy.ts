@@ -31,10 +31,6 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /**
-   * Worker index where the previous task was submitted.
-   */
-  private previousWorkerIndex: number = 0
-  /**
    * Worker index where the current task will be submitted.
    */
   private currentWorkerIndex: number = 0
@@ -63,7 +59,6 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public reset (): boolean {
-    this.previousWorkerIndex = 0
     this.currentWorkerIndex = 0
     this.workersTaskRunTime.clear()
     this.initWorkersTaskRunTime()
@@ -72,40 +67,35 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): Worker {
-    const currentWorker = this.pool.workers[this.currentWorkerIndex]
+    let chosenWorker = this.pool.workers[this.currentWorkerIndex]
     if (
       this.isDynamicPool === true &&
-      this.workersTaskRunTime.has(currentWorker) === false
+      this.workersTaskRunTime.has(chosenWorker) === false
     ) {
-      this.initWorkerTaskRunTime(currentWorker)
+      this.initWorkerTaskRunTime(chosenWorker)
     }
-    const workerVirtualTaskRunTime =
-      this.getWorkerVirtualTaskRunTime(currentWorker) ?? 0
     const workerTaskWeight =
-      this.workersTaskRunTime.get(currentWorker)?.weight ??
+      this.workersTaskRunTime.get(chosenWorker)?.weight ??
       this.defaultWorkerWeight
-    if (this.currentWorkerIndex === this.previousWorkerIndex) {
-      const workerTaskRunTime =
-        (this.workersTaskRunTime.get(currentWorker)?.runTime ?? 0) +
-        workerVirtualTaskRunTime
+    if (
+      (this.workersTaskRunTime.get(chosenWorker)?.runTime ?? 0) <
+      workerTaskWeight
+    ) {
       this.setWorkerTaskRunTime(
-        currentWorker,
+        chosenWorker,
         workerTaskWeight,
-        workerTaskRunTime
+        (this.workersTaskRunTime.get(chosenWorker)?.runTime ?? 0) +
+          (this.getWorkerVirtualTaskRunTime(chosenWorker) ?? 0)
       )
     } else {
-      this.setWorkerTaskRunTime(currentWorker, workerTaskWeight, 0)
-    }
-    if (workerVirtualTaskRunTime < workerTaskWeight) {
-      this.previousWorkerIndex = this.currentWorkerIndex
-    } else {
-      this.previousWorkerIndex = this.currentWorkerIndex
       this.currentWorkerIndex =
         this.pool.workers.length - 1 === this.currentWorkerIndex
           ? 0
           : this.currentWorkerIndex + 1
+      chosenWorker = this.pool.workers[this.currentWorkerIndex]
+      this.setWorkerTaskRunTime(chosenWorker, workerTaskWeight, 0)
     }
-    return this.pool.workers[this.currentWorkerIndex]
+    return chosenWorker
   }
 
   private initWorkersTaskRunTime (): void {

@@ -272,7 +272,7 @@ export abstract class AbstractPool<
   /**
    * Removes the given worker from the pool.
    *
-   * @param worker Worker that will be removed.
+   * @param worker The worker that will be removed.
    */
   protected removeWorker (worker: Worker): void {
     // Clean worker from data structure
@@ -305,8 +305,8 @@ export abstract class AbstractPool<
   /**
    * Registers a listener callback on a given worker.
    *
-   * @param worker A worker.
-   * @param listener A message listener callback.
+   * @param worker The worker which should register a listener.
+   * @param listener The message listener callback.
    */
   protected abstract registerWorkerMessageListener<
     Message extends Data | Response

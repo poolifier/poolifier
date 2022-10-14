@@ -25,7 +25,6 @@ describe('Weighted round robin strategy worker choice strategy test suite', () =
 
   it('Verify that reset() resets internals', () => {
     const strategy = new WeightedRoundRobinWorkerChoiceStrategy(pool)
-    strategy.previousWorkerIndex = TestUtils.generateRandomInteger()
     strategy.currentWorkerIndex = TestUtils.generateRandomInteger()
     const workersTaskRunTimeClearStub = sinon
       .stub(strategy.workersTaskRunTime, 'clear')
@@ -35,7 +34,6 @@ describe('Weighted round robin strategy worker choice strategy test suite', () =
       .returns()
     const resetResult = strategy.reset()
     expect(resetResult).toBe(true)
-    expect(strategy.previousWorkerIndex).toBe(0)
     expect(strategy.currentWorkerIndex).toBe(0)
     expect(workersTaskRunTimeClearStub.calledOnce).toBe(true)
     expect(initWorkersTaskRunTimeStub.calledOnce).toBe(true)
