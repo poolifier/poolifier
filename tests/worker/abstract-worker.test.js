@@ -17,7 +17,7 @@ describe('Abstract worker test suite', () => {
 
   it('Verify worker options default values', () => {
     const worker = new ThreadWorker(() => {})
-    expect(worker.opts.maxInactiveTime).toBe(1000 * 60)
+    expect(worker.opts.maxInactiveTime).toStrictEqual(60000)
     expect(worker.opts.killBehavior).toBe(KillBehaviors.SOFT)
     expect(worker.opts.async).toBe(false)
   })
@@ -28,7 +28,7 @@ describe('Abstract worker test suite', () => {
       async: true,
       killBehavior: KillBehaviors.HARD
     })
-    expect(worker.opts.maxInactiveTime).toBe(6000)
+    expect(worker.opts.maxInactiveTime).toStrictEqual(6000)
     expect(worker.opts.killBehavior).toBe(KillBehaviors.HARD)
     expect(worker.opts.async).toBe(true)
   })

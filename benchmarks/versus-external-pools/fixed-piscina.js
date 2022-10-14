@@ -11,7 +11,7 @@ const data = {
 const piscina = new Piscina({
   filename: './workers/piscina/function-to-bench-worker.js',
   minThreads: size,
-  idleTimeout: 1000 * 60 // this is the same as poolifier default
+  idleTimeout: 60000 // this is the same as poolifier default
 })
 
 async function run () {

@@ -36,7 +36,7 @@ class TestUtils {
     })
   }
 
-  static generateRandomInteger (max, min = 0) {
+  static generateRandomInteger (max = Number.MAX_SAFE_INTEGER, min = 0) {
     max = Math.floor(max)
     if (min) {
       min = Math.ceil(min)

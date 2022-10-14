@@ -167,7 +167,7 @@ You can use node versions >= 12.x for thread pool, and node versions >= 16.x for
   - `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN` Submit tasks to worker using a weighted round robin scheduling algorithm based on tasks execution time
   - `WorkerChoiceStrategies.FAIR_SHARE`: Submit tasks to worker using a fair share tasks scheduling algorithm based on tasks execution time
 
-  `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN` and `WorkerChoiceStrategies.FAIR_SHARE` strategies are targeted to heavy and long tasks
+  `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN` and `WorkerChoiceStrategies.FAIR_SHARE` strategies are targeted to heavy and long tasks  
   Default: `WorkerChoiceStrategies.ROUND_ROBIN`
 
 - `enableEvents` (optional) - Events emission enablement in this pool. Default: true
@@ -248,7 +248,7 @@ But in general, **always profile your application**
 ## Contribute
 
 See guidelines [CONTRIBUTING](CONTRIBUTING.md)  
-Choose your task here [2.3.0](https://github.com/orgs/poolifier/projects/1), propose an idea, a fix, an improvement.
+Choose your task here [2.3.x](https://github.com/orgs/poolifier/projects/1), propose an idea, a fix, an improvement.
 
 ## Team
 
