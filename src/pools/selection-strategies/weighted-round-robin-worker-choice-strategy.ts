@@ -41,7 +41,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   /**
    * Default worker weight.
    */
-  private defaultWorkerWeight: number
+  private readonly defaultWorkerWeight: number
   /**
    * Per worker virtual task runtime map.
    */
