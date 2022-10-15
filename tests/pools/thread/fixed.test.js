@@ -49,14 +49,6 @@ describe('Fixed thread pool test suite', () => {
     await emptyPool.destroy()
   })
 
-  it('Choose worker round robin test', async () => {
-    const results = new Set()
-    for (let i = 0; i < numberOfThreads; i++) {
-      results.add(pool.chooseWorker().threadId)
-    }
-    expect(results.size).toBe(numberOfThreads)
-  })
-
   it('Verify that the function is executed in a worker thread', async () => {
     let result = await pool.execute({
       function: WorkerFunctions.fibonacci

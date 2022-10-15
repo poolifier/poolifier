@@ -49,14 +49,6 @@ describe('Fixed cluster pool test suite', () => {
     await emptyPool.destroy()
   })
 
-  it('Choose worker round robin test', async () => {
-    const results = new Set()
-    for (let i = 0; i < numberOfWorkers; i++) {
-      results.add(pool.chooseWorker().id)
-    }
-    expect(results.size).toBe(numberOfWorkers)
-  })
-
   it('Verify that the function is executed in a worker cluster', async () => {
     let result = await pool.execute({
       function: WorkerFunctions.fibonacci
