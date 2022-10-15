@@ -35,6 +35,7 @@ module.exports = defineConfig({
       'warn',
       {
         skipWords: [
+          'browserslist',
           'christopher',
           'comparator',
           'cpu',
@@ -44,12 +45,14 @@ module.exports = defineConfig({
           'fibonacci',
           'inheritDoc',
           'jsdoc',
+          'num',
           'os',
           'poolifier',
           'readonly',
           'serializable',
           'sinon',
           'tsconfig',
+          'typedoc',
           'unregister',
           'workerpool'
         ],

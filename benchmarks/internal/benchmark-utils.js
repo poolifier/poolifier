@@ -10,7 +10,7 @@ async function runPoolifierTest (pool, { tasks, workerData }) {
     for (let i = 1; i <= tasks; i++) {
       pool
         .execute(workerData)
-        .then(res => {
+        .then(() => {
           executions++
           if (executions === tasks) {
             return resolve('FINISH')
@@ -73,7 +73,7 @@ function executeWorkerFunction (data) {
     case WorkerFunctions.jsonIntegerSerialization:
       return jsonIntegerSerialization(data.n || 1000)
     case WorkerFunctions.fibonacci:
-      return fibonacci(data.n || 50)
+      return fibonacci(data.n || 1000)
     case WorkerFunctions.factorial:
       return factorial(data.n || 1000)
     default:
