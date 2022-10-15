@@ -20,13 +20,13 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Lint
-        run: npm run lint
-
       - name: Tests & Coverage
         run: |
           npm run test
           npm run coverage
+
+      - name: Lint
+        run: npm run lint
 
       - name: Production Build
         run: npm run build:prod
