@@ -44,10 +44,10 @@ export class FairShareWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): Worker {
-    this.computeWorkerLastVirtualTaskTimestamp()
     let minWorkerVirtualTaskEndTimestamp = Infinity
     let chosenWorker!: Worker
     for (const worker of this.pool.workers) {
+      this.computeWorkerLastVirtualTaskTimestamp(worker)
       const workerLastVirtualTaskEndTimestamp =
         this.workerLastVirtualTaskTimestamp.get(worker)?.end ?? 0
       if (
@@ -61,21 +61,21 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /**
-   * Computes workers last virtual task timestamp.
+   * Computes worker last virtual task timestamp.
+   *
+   * @param worker The worker.
    */
-  private computeWorkerLastVirtualTaskTimestamp () {
-    for (const worker of this.pool.workers) {
-      const workerVirtualTaskStartTimestamp = Math.max(
-        Date.now(),
-        this.workerLastVirtualTaskTimestamp.get(worker)?.end ?? -Infinity
-      )
-      const workerVirtualTaskEndTimestamp =
-        workerVirtualTaskStartTimestamp +
-        (this.pool.getWorkerAverageTasksRunTime(worker) ?? 0)
-      this.workerLastVirtualTaskTimestamp.set(worker, {
-        start: workerVirtualTaskStartTimestamp,
-        end: workerVirtualTaskEndTimestamp
-      })
-    }
+  private computeWorkerLastVirtualTaskTimestamp (worker: Worker): void {
+    const workerVirtualTaskStartTimestamp = Math.max(
+      Date.now(),
+      this.workerLastVirtualTaskTimestamp.get(worker)?.end ?? -Infinity
+    )
+    const workerVirtualTaskEndTimestamp =
+      workerVirtualTaskStartTimestamp +
+      (this.pool.getWorkerAverageTasksRunTime(worker) ?? 0)
+    this.workerLastVirtualTaskTimestamp.set(worker, {
+      start: workerVirtualTaskStartTimestamp,
+      end: workerVirtualTaskEndTimestamp
+    })
   }
 }

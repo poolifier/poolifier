@@ -84,7 +84,7 @@ export interface IPoolInternal<
   readonly numberOfRunningTasks: number
 
   /**
-   * Find a free worker based on the number of tasks the worker has applied.
+   * Finds a free worker based on the number of tasks the worker has applied.
    *
    * If a worker is found with `0` running tasks, it is detected as free and returned.
    *
@@ -95,7 +95,7 @@ export interface IPoolInternal<
   findFreeWorker(): Worker | false
 
   /**
-   * Get worker index.
+   * Gets worker index.
    *
    * @param worker The worker.
    * @returns The worker index.
@@ -103,7 +103,7 @@ export interface IPoolInternal<
   getWorkerIndex(worker: Worker): number
 
   /**
-   * Get worker running tasks.
+   * Gets worker running tasks.
    *
    * @param worker The worker.
    * @returns The number of tasks currently running on the worker.
@@ -111,7 +111,7 @@ export interface IPoolInternal<
   getWorkerRunningTasks(worker: Worker): number | undefined
 
   /**
-   * Get worker average tasks runtime.
+   * Gets worker average tasks runtime.
    *
    * @param worker The worker.
    * @returns The average tasks runtime on the worker.

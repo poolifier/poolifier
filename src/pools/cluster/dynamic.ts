@@ -23,7 +23,7 @@ export class DynamicClusterPool<
    * @param min Minimum number of workers which are always active.
    * @param max Maximum number of workers that can be created by this pool.
    * @param filePath Path to an implementation of a `ClusterWorker` file, which can be relative or absolute.
-   * @param [opts={}] Options for this dynamic cluster pool.
+   * @param opts Options for this dynamic cluster pool.
    */
   public constructor (
     min: number,

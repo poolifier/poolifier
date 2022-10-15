@@ -404,10 +404,6 @@ describe('Selection strategies test suite', () => {
     )
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .previousWorkerIndex
-    ).toBe(0)
-    expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .currentWorkerIndex
     ).toBe(0)
     expect(
@@ -510,10 +506,6 @@ describe('Selection strategies test suite', () => {
     )
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .previousWorkerIndex
-    ).toBeUndefined()
-    expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .currentWorkerIndex
     ).toBeUndefined()
     expect(
@@ -525,10 +517,6 @@ describe('Selection strategies test suite', () => {
         .workersTaskRunTime
     ).toBeUndefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
-    expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .previousWorkerIndex
-    ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .currentWorkerIndex
@@ -554,10 +542,6 @@ describe('Selection strategies test suite', () => {
     )
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .workerChoiceStrategy.previousWorkerIndex
-    ).toBeUndefined()
-    expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .workerChoiceStrategy.currentWorkerIndex
     ).toBeUndefined()
     expect(
@@ -569,10 +553,6 @@ describe('Selection strategies test suite', () => {
         .workerChoiceStrategy.workersTaskRunTime
     ).toBeUndefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
-    expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .workerChoiceStrategy.previousWorkerIndex
-    ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .workerChoiceStrategy.currentWorkerIndex

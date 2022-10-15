@@ -115,7 +115,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Check if the `fn` parameter is passed to the constructor.
+   * Checks if the `fn` parameter is passed to the constructor.
    *
    * @param fn The function that should be defined.
    */
@@ -136,7 +136,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Send a message to the main worker.
+   * Sends a message to the main worker.
    *
    * @param message The response message.
    */
@@ -155,7 +155,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Handle an error and convert it to a string so it can be sent back to the main worker.
+   * Handles an error and convert it to a string so it can be sent back to the main worker.
    *
    * @param e The error raised by the worker.
    * @returns Message of the error.
@@ -165,7 +165,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Run the given function synchronously.
+   * Runs the given function synchronously.
    *
    * @param fn Function that will be executed.
    * @param value Input data for the given function.
@@ -190,7 +190,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Run the given function asynchronously.
+   * Runs the given function asynchronously.
    *
    * @param fn Function that will be executed.
    * @param value Input data for the given function.
