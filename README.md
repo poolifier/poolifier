@@ -146,7 +146,7 @@ Remember that workers can only send and receive serializable data.
 
 ## Node versions
 
-Bode node versions >= 16.x are supported.
+Node versions >= 16.x are supported.
 
 ## API
 
