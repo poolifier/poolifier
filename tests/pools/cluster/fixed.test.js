@@ -137,6 +137,29 @@ describe('Fixed cluster pool test suite', () => {
     expect(numberOfExitEvents).toBe(numberOfWorkers)
   })
 
+  it('Verify that cluster pool options are checked', async () => {
+    const workerFilePath = './tests/worker-files/cluster/testWorker.js'
+    let pool1 = new FixedClusterPool(numberOfWorkers, workerFilePath)
+    expect(pool1.opts.env).toBeUndefined()
+    expect(pool1.opts.settings).toBeUndefined()
+    await pool1.destroy()
+    pool1 = new FixedClusterPool(numberOfWorkers, workerFilePath, {
+      env: { TEST: 'test' },
+      settings: { args: ['--use', 'http'], silent: true }
+    })
+    expect(pool1.opts.env).toStrictEqual({ TEST: 'test' })
+    expect(pool1.opts.settings).toStrictEqual({
+      args: ['--use', 'http'],
+      silent: true
+    })
+    expect({ ...pool1.opts.settings, exec: workerFilePath }).toStrictEqual({
+      args: ['--use', 'http'],
+      silent: true,
+      exec: workerFilePath
+    })
+    await pool1.destroy()
+  })
+
   it('Should work even without opts in input', async () => {
     const pool1 = new FixedClusterPool(
       numberOfWorkers,
