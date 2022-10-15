@@ -1,4 +1,4 @@
-import type { Worker } from 'cluster'
+import type { ClusterSettings, Worker } from 'cluster'
 import cluster from 'cluster'
 import type { MessageValue } from '../../utility-types'
 import { AbstractPool } from '../abstract-pool'
@@ -16,6 +16,12 @@ export interface ClusterPoolOptions extends PoolOptions<Worker> {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   env?: any
+  /**
+   * Cluster settings.
+   *
+   * @see https://nodejs.org/api/cluster.html#cluster_cluster_settings
+   */
+  settings?: ClusterSettings
 }
 
 /**
@@ -51,9 +57,7 @@ export class FixedClusterPool<
 
   /** @inheritDoc */
   protected setupHook (): void {
-    cluster.setupPrimary({
-      exec: this.filePath
-    })
+    cluster.setupPrimary({ ...this.opts.settings, exec: this.filePath })
   }
 
   /** @inheritDoc */
