@@ -1,7 +1,7 @@
 'use strict'
 const { ClusterWorker, KillBehaviors } = require('../../../lib/index')
 
-function error (data) {
+function error () {
   throw new Error('Error Message from ClusterWorker')
 }
 

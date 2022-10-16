@@ -4,5 +4,5 @@ module.exports = {
     'prettierx --write',
     'eslint --cache --fix'
   ],
-  '**/*.{json,md,yml}': ['prettier --write', 'prettierx --write']
+  '**/*.{json,md,yml,yaml}': ['prettier --write', 'prettierx --write']
 }

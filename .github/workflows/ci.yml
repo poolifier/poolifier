@@ -42,7 +42,7 @@ jobs:
         run: npm run lint
 
       - name: Tests
-        if: "matrix.os != 'windows-latest' && matrix.node != '18.x'"
+        if: "matrix.os != 'windows-latest' || matrix.node != '18.x'"
         run: npm run test
 
       - name: Coverage & Linter Reports

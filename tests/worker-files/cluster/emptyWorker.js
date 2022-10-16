@@ -1,7 +1,7 @@
 'use strict'
 const { ClusterWorker, KillBehaviors } = require('../../../lib/index')
 
-function test (data) {}
+function test () {}
 
 module.exports = new ClusterWorker(test, {
   maxInactiveTime: 500,

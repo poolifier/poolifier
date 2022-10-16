@@ -2,7 +2,8 @@ const { expect } = require('expect')
 const {
   WorkerChoiceStrategies,
   DynamicThreadPool,
-  FixedThreadPool
+  FixedThreadPool,
+  FixedClusterPool
 } = require('../../../lib/index')
 
 describe('Selection strategies test suite', () => {
@@ -122,6 +123,26 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify ROUND_ROBIN strategy runtime behavior', async () => {
+    let pool = new FixedClusterPool(
+      max,
+      './tests/worker-files/cluster/testWorker.js'
+    )
+    let results = new Set()
+    for (let i = 0; i < max; i++) {
+      results.add(pool.chooseWorker().id)
+    }
+    expect(results.size).toBe(max)
+    await pool.destroy()
+    pool = new FixedThreadPool(max, './tests/worker-files/thread/testWorker.js')
+    results = new Set()
+    for (let i = 0; i < max; i++) {
+      results.add(pool.chooseWorker().threadId)
+    }
+    expect(results.size).toBe(max)
     await pool.destroy()
   })
 
