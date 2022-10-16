@@ -16,6 +16,6 @@
     "threads": "1.6.4",
     "threadwork": "0.6.0",
     "worker-threads-pool": "2.0.0",
-    "workerpool": "6.1.4"
+    "workerpool": "6.2.1"
   }
 }
