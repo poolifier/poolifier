@@ -19,6 +19,7 @@
     "lint": "eslint . --cache",
     "lint:fix": "eslint . --cache --fix",
     "lint:report": "eslint . --cache --format json --output-file reports/eslint.json",
+    "release": "release-it",
     "typedoc": "typedoc",
     "sonar:properties": "./updateSonarProps.sh",
     "prepublishOnly": "npm run build:prod"
