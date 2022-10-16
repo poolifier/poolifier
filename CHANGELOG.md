@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Optimize fair share task scheduling algorithm implementation.
-- Update benchmarks versus external pools results.
+- Update benchmarks versus external pools results with latest version.
 
 ## [2.3.3] - 2022-15-10
 
