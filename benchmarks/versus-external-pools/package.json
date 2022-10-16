@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "microjob": "0.7.0",
-    "node-worker-threads-pool": "1.4.3",
+    "node-worker-threads-pool": "1.5.1",
     "piscina": "3.0.0",
     "poolifier": "2.0.1",
     "threads": "1.6.4",
