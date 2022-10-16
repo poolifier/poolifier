@@ -64,6 +64,7 @@
     "lib"
   ],
   "devDependencies": {
+    "@release-it/keep-a-changelog": "^3.1.0",
     "@types/node": "^18.11.0",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
@@ -89,6 +90,7 @@
     "prettier": "^2.7.1",
     "prettier-plugin-organize-imports": "^3.1.1",
     "prettierx": "^0.18.3",
+    "release-it": "^15.5.0",
     "rollup": "^3.2.1",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",
