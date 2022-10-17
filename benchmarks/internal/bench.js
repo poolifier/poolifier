@@ -23,7 +23,7 @@ const {
   fixedThreadTestLessRecentlyUsed,
   fixedThreadTestWeightedRoundRobin
 } = require('./thread/fixed')
-const { LIST_FORMATTER } = require('./benchmark-utils')
+const { LIST_FORMATTER } = require('../benchmarks-utils')
 
 const suite = new Benchmark.Suite('poolifier')
 

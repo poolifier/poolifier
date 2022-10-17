@@ -1,4 +1,9 @@
 const fs = require('fs')
+const {
+  WorkerFunctions,
+  executeWorkerFunction
+  // eslint-disable-next-line node/no-unpublished-require
+} = require('../../benchmarks-utils')
 
 const TaskTypes = {
   CPU_INTENSIVE: 'CPU_INTENSIVE',
@@ -13,12 +18,8 @@ module.exports = function (data) {
   switch (data.taskType) {
     case TaskTypes.CPU_INTENSIVE:
       // CPU intensive task
-      for (let i = 0; i < data.taskSize; i++) {
-        const o = {
-          a: i
-        }
-        JSON.stringify(o)
-      }
+      data.function = data.function || WorkerFunctions.jsonIntegerSerialization
+      executeWorkerFunction(data)
       return { ok: 1 }
     case TaskTypes.IO_INTENSIVE:
       // IO intensive task

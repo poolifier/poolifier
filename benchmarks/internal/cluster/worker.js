@@ -1,7 +1,10 @@
 'use strict'
 const { isMaster } = require('cluster')
 const { ClusterWorker } = require('../../../lib/index')
-const { WorkerFunctions, executeWorkerFunction } = require('../benchmark-utils')
+const {
+  WorkerFunctions,
+  executeWorkerFunction
+} = require('../../benchmarks-utils')
 
 const debug = false
 

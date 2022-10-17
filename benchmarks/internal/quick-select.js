@@ -1,5 +1,5 @@
 const Benchmark = require('benchmark')
-const { generateRandomInteger, LIST_FORMATTER } = require('./benchmark-utils')
+const { generateRandomInteger, LIST_FORMATTER } = require('../benchmarks-utils')
 
 const suite = new Benchmark.Suite()
 

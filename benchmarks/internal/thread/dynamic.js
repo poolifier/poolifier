@@ -2,7 +2,7 @@ const {
   DynamicThreadPool,
   WorkerChoiceStrategies
 } = require('../../../lib/index')
-const { runPoolifierTest } = require('../benchmark-utils')
+const { runPoolifierTest } = require('../../benchmarks-utils')
 
 const size = 30
 const numberOfTasks = 1
