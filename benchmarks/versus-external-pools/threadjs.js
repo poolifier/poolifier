@@ -1,5 +1,5 @@
 // IMPORT LIBRARIES
-const { spawn, Thread, Worker } = require('threads')
+const { spawn, Worker } = require('threads')
 // FINISH IMPORT LIBRARIES
 const size = Number(process.env.POOL_SIZE)
 const iterations = Number(process.env.NUM_ITERATIONS)

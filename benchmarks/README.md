@@ -4,8 +4,8 @@ Welcome to poolifier benchmarks and thanks to look into this project.
 
 ## Folder Structure
 
-The internal folder contains poolifier internal benchmarks.  
-The versus-external-pools folder contains benchmarks versus other Node.js pools.
+The [internal](./internal) folder contains poolifier internal benchmarks.  
+The [versus-external-pools](./versus-external-pools) folder contains benchmarks versus other Node.js pools.
 
 ## Poolifier vs other pools benchmark
 
@@ -19,7 +19,6 @@ External pools with which we compared the poolifier results:
 - [workerpool](https://github.com/josdejong/workerpool)
 - [threadwork](https://github.com/kevlened/threadwork)
 - [microjob](https://github.com/wilk/microjob)
-<!-- - [worker-threads-pool](https://github.com/watson/worker-threads-pool) -->
 
 Those are our results:
 
@@ -31,7 +30,7 @@ Those are our results:
 
 ### Internal
 
-To run the internal benchmark you just need to navigate to the root of poolifier project and run `npm run benchmark`
+To run the internal benchmarks, you just need to navigate to the root of poolifier project and run `npm run benchmark`
 
 ## Versus other pools
 

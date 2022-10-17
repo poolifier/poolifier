@@ -7,17 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.4] - 2022-10-17
+
+### Added
+
+- Fully automate release process with release-it.
+
 ### Changed
 
-- Optimize fair share task scheduling algorithm.
+- Optimize fair share task scheduling algorithm implementation.
+- Update benchmarks versus external pools results with latest version.
 
-## [2.3.3] - 2022-15-10
+## [2.3.3] - 2022-10-15
 
 ### Added
 
 - Add support for [cluster settings](https://nodejs.org/api/cluster.html#cluster_cluster_settings) in cluster pool options.
 
-## [2.3.2] - 2022-14-10
+## [2.3.2] - 2022-10-14
 
 ### Changed
 
@@ -27,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix WRR worker selection strategy: ensure the condition triggering the round robin can be fulfilled.
 
-## [2.3.1] - 2022-13-10
+## [2.3.1] - 2022-10-13
 
 ### Added
 
@@ -36,25 +43,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN` strategy based on weighted round robin scheduling algorithm using tasks execution time for now.
   - `WorkerChoiceStrategies.FAIR_SHARE` strategy based on fair share scheduling algorithm using tasks execution time for now.
 
-## [2.2.2] - 2022-09-10
+## [2.2.2] - 2022-10-09
 
 ### Fixed
 
 - Fixed `README.md` file.
 
-## [2.2.1] - 2022-08-10
+## [2.2.1] - 2022-10-08
 
 ### Added
 
 - Dynamic worker choice strategy change at runtime.
 
-## [2.2.0] - 2022-05-01
+## [2.2.0] - 2022-01-05
 
 ### Breaking Changes
 
 - Support only NodeJS version 16.x.x for cluster pool: upstream cluster API have changed on that version.
 
-## [2.1.0] - 2021-29-08
+## [2.1.0] - 2021-08-29
 
 ### Added
 
@@ -67,20 +74,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `AbstractWorker` class `interval` attribute have been renamed to `aliveInterval`.
 - `AbstractWorker` class cannot be instantiated without specifying the `mainWorker` argument referencing the main worker.
 
-## [2.0.2] - 2021-12-05
+## [2.0.2] - 2021-05-12
 
 ### Bug fixes
 
 - Fix `busy` event emission on fixed pool type
 
-## [2.0.1] - 2021-16-03
+## [2.0.1] - 2021-03-16
 
 ### Bug fixes
 
 - Check if pool options are properly set.
 - `busy` event is emitted on all pool types.
 
-## [2.0.0] - 2021-01-03
+## [2.0.0] - 2021-03-01
 
 ### Bug fixes
 
@@ -140,14 +147,14 @@ These methods are not intended for end users
 - `_run` => `run`
 - `_runAsync` => `runAsync`
 
-## [1.1.0] - 2020-21-05
+## [1.1.0] - 2020-05-21
 
 ### Added
 
 - ThreadWorker support async functions as option
 - Various external library patches
 
-## [1.0.0] - 2020-24-01
+## [1.0.0] - 2020-01-24
 
 ### Added
 

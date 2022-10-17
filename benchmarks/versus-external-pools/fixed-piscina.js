@@ -17,7 +17,7 @@ const piscina = new Piscina({
 async function run () {
   const promises = []
   for (let i = 0; i < iterations; i++) {
-    promises.push(piscina.runTask(data))
+    promises.push(piscina.run(data))
   }
   await Promise.all(promises)
   process.exit()

@@ -1,6 +1,6 @@
 {
   "name": "poolifier",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "description": "A fast, easy to use Node.js Worker Thread Pool and Cluster Pool implementation",
   "main": "lib/index.js",
   "scripts": {
@@ -19,6 +19,7 @@
     "lint": "eslint . --cache",
     "lint:fix": "eslint . --cache --fix",
     "lint:report": "eslint . --cache --format json --output-file reports/eslint.json",
+    "release": "release-it",
     "typedoc": "typedoc",
     "sonar:properties": "./updateSonarProps.sh",
     "prepublishOnly": "npm run build:prod"
@@ -64,6 +65,7 @@
     "lib"
   ],
   "devDependencies": {
+    "@release-it/keep-a-changelog": "^3.1.0",
     "@types/node": "^18.11.0",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
@@ -89,7 +91,8 @@
     "prettier": "^2.7.1",
     "prettier-plugin-organize-imports": "^3.1.1",
     "prettierx": "^0.18.3",
-    "rollup": "^3.2.1",
+    "release-it": "^15.5.0",
+    "rollup": "^3.2.2",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",
     "rollup-plugin-delete": "^2.0.0",
