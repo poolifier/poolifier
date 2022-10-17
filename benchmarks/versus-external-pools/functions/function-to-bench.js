@@ -6,7 +6,6 @@ const TaskTypes = {
 }
 
 module.exports = function (data) {
-  console.log('functionToBench', data)
   data = data || {}
   data.taskType = data.taskType || TaskTypes.CPU_INTENSIVE
   data.taskSize = data.taskSize || 5000
