@@ -5,7 +5,8 @@ const size = Number(process.env.POOL_SIZE)
 const iterations = Number(process.env.NUM_ITERATIONS)
 const data = {
   test: 'MYBENCH',
-  taskType: process.env['TASK_TYPE']
+  taskType: process.env.TASK_TYPE,
+  taskSize: process.env.TASK_SIZE
 }
 
 // Threads.js is not really a pool so we need to write few additional code
@@ -27,6 +28,7 @@ async function run () {
     promises.push(worker.exposedFunction(data))
   }
   await Promise.all(promises)
+  // eslint-disable-next-line no-process-exit
   process.exit()
 }
 

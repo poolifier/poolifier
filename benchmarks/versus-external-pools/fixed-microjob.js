@@ -8,7 +8,8 @@ const size = Number(process.env.POOL_SIZE)
 const iterations = Number(process.env.NUM_ITERATIONS)
 const data = {
   test: 'MYBENCH',
-  taskType: process.env['TASK_TYPE']
+  taskType: process.env.TASK_TYPE,
+  taskSize: process.env.TASK_SIZE
 }
 
 async function run () {
@@ -20,11 +21,12 @@ async function run () {
         data => {
           functionToBench(data)
         },
-        { data: data, ctx: { functionToBench } }
+        { data, ctx: { functionToBench } }
       )
     )
   }
   await Promise.all(promises)
+  // eslint-disable-next-line no-process-exit
   process.exit()
 }
 

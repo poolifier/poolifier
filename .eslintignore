@@ -1,5 +1,3 @@
-examples/typescript/**/*.ts
-benchmarks/versus-external-pools/
 docs/
 outputs/
 lib/

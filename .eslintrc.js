@@ -37,23 +37,33 @@ module.exports = defineConfig({
         skipWords: [
           'browserslist',
           'christopher',
+          'cjs',
           'comparator',
           'cpu',
           'cpus',
+          'ctx',
           'ecma',
           'enum',
           'fibonacci',
+          'fs',
           'inheritDoc',
           'jsdoc',
+          'microjob',
           'num',
           'os',
+          'piscina',
           'poolifier',
+          'poolify',
           'readonly',
           'serializable',
           'sinon',
+          'threadjs',
+          'threadwork',
           'tsconfig',
           'typedoc',
+          'unlink',
           'unregister',
+          'utf8',
           'workerpool'
         ],
         skipIfMatch: ['^@.*', '^plugin:.*']
@@ -115,6 +125,16 @@ module.exports = defineConfig({
         ],
         'jsdoc/require-param-type': 'off',
         'jsdoc/require-returns-type': 'off'
+      }
+    },
+    {
+      files: ['examples/typescript/**/*.ts'],
+      rules: {
+        'import/no-unresolved': 'off',
+        'jsdoc/require-jsdoc': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off'
       }
     },
     {

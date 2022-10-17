@@ -1,20 +1,30 @@
 #!/usr/bin/env bash
 
-### The -t argument is needed to specify the type of task that you want to benchmark.
-### Supported values are CPU_INTENSIVE
+### The -t argument permit to specify the type of task that you want to benchmark.
+### The -s argument permit to specify the size of task that you want to benchmark.
+### Supported values are CPU_INTENSIVE, IO_INTENSIVE
 
 taskType='CPU_INTENSIVE'
-while getopts t: flag
+taskSize=5000
+while getopts "t:s:h" option
 do
-  case "${flag}" in
+  case "${option}" in
     t)
       taskType=${OPTARG}
+      ;;
+    s)
+      taskSize=${OPTARG}
+      ;;
+    *|h)
+      echo "Usage: $0 [-t taskType] [-s taskSize]"
+      exit 1
       ;;
   esac
 done
 
-echo 'Running bench for task type:' $taskType
-export TASK_TYPE=$taskType
+echo 'Running benchmarks for task type:' ${taskType} 'and task size:' ${taskSize}
+export TASK_TYPE=${taskType}
+export TASK_SIZE=${taskSize}
 # Execute bench
 export NODE_ENV=production
 export POOL_SIZE=10

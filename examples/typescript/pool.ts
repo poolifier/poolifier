@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { DynamicThreadPool, FixedThreadPool } from 'poolifier'
-import { MyData, MyResponse } from './worker'
+import type { MyData, MyResponse } from './worker'
 
 export const fixedPool = new FixedThreadPool<MyData, Promise<MyResponse>>(
   8,

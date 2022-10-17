@@ -8,6 +8,6 @@
     "strict": true,
     "importsNotUsedAsValues": "error"
   },
-  "include": ["src/**/*.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules"]
 }

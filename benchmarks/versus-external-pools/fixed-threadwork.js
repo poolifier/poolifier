@@ -4,7 +4,8 @@ const threadPool = require('./pool-threadwork')
 const iterations = Number(process.env.NUM_ITERATIONS)
 const data = {
   test: 'MYBENCH',
-  taskType: process.env['TASK_TYPE']
+  taskType: process.env.TASK_TYPE,
+  taskSize: process.env.TASK_SIZE
 }
 
 async function run () {
@@ -13,6 +14,7 @@ async function run () {
     promises.push(threadPool.run(data))
   }
   await Promise.all(promises)
+  // eslint-disable-next-line no-process-exit
   process.exit()
 }
 

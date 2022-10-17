@@ -5,7 +5,8 @@ const size = Number(process.env.POOL_SIZE)
 const iterations = Number(process.env.NUM_ITERATIONS)
 const data = {
   test: 'MYBENCH',
-  taskType: process.env['TASK_TYPE']
+  taskType: process.env.TASK_TYPE,
+  taskSize: process.env.TASK_SIZE
 }
 
 const piscina = new Piscina({
@@ -21,6 +22,7 @@ async function run () {
     promises.push(piscina.run(data))
   }
   await Promise.all(promises)
+  // eslint-disable-next-line no-process-exit
   process.exit()
 }
 

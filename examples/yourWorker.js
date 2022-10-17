@@ -4,7 +4,7 @@ const { isMainThread } = require('worker_threads')
 
 const debug = false
 
-function yourFunction (data) {
+function yourFunction () {
   for (let i = 0; i <= 1000; i++) {
     const o = {
       a: i
