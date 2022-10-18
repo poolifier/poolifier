@@ -3,8 +3,8 @@
   // for the documentation about the extensions.json format
   "recommendations": [
     "dbaeumer.vscode-eslint",
+    "sonarsource.sonarlint-vscode",
     "EditorConfig.EditorConfig",
-    "streetsidesoftware.code-spell-checker",
-    "sonarsource.sonarlint-vscode"
+    "streetsidesoftware.code-spell-checker"
   ]
 }
