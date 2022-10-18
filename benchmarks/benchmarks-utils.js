@@ -71,11 +71,11 @@ function factorial (n) {
 function executeWorkerFunction (data) {
   switch (data.function) {
     case WorkerFunctions.jsonIntegerSerialization:
-      return jsonIntegerSerialization(data.n || 1000)
+      return jsonIntegerSerialization(data.taskSize || 1000)
     case WorkerFunctions.fibonacci:
-      return fibonacci(data.n || 1000)
+      return fibonacci(data.taskSize || 1000)
     case WorkerFunctions.factorial:
-      return factorial(data.n || 1000)
+      return factorial(data.taskSize || 1000)
     default:
       throw new Error('Unknown worker function')
   }

@@ -10,7 +10,7 @@ const iterations = 1000
 for (let i = 1; i <= iterations; i++) {
   pool
     .execute({})
-    .then(res => {
+    .then(() => {
       resolved++
       if (resolved === iterations) {
         return console.log('Time take is ' + (Date.now() - start))

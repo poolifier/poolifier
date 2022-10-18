@@ -15,6 +15,7 @@
     "poolifier": "2.3.3",
     "threads": "1.7.0",
     "threadwork": "0.6.0",
+    "worker-nodes": "2.4.0",
     "workerpool": "6.2.1"
   }
 }

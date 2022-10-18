@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Improve benchmarks: add IO intensive task workload, add task size option, integrate into eslint.
+
 ## [2.3.4] - 2022-10-17
 
 ### Added

@@ -1,7 +1,10 @@
 'use strict'
 const { isMainThread } = require('worker_threads')
 const { ThreadWorker } = require('../../../lib/index')
-const { WorkerFunctions, executeWorkerFunction } = require('../benchmark-utils')
+const {
+  WorkerFunctions,
+  executeWorkerFunction
+} = require('../../benchmarks-utils')
 
 const debug = false
 

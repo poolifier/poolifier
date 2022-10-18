@@ -37,23 +37,33 @@ module.exports = defineConfig({
         skipWords: [
           'browserslist',
           'christopher',
+          'cjs',
           'comparator',
           'cpu',
           'cpus',
+          'ctx',
           'ecma',
           'enum',
           'fibonacci',
+          'fs',
           'inheritDoc',
           'jsdoc',
+          'microjob',
           'num',
           'os',
+          'piscina',
           'poolifier',
+          'poolify',
           'readonly',
           'serializable',
           'sinon',
+          'threadjs',
+          'threadwork',
           'tsconfig',
           'typedoc',
+          'unlink',
           'unregister',
+          'utf8',
           'workerpool'
         ],
         skipIfMatch: ['^@.*', '^plugin:.*']
@@ -118,6 +128,16 @@ module.exports = defineConfig({
       }
     },
     {
+      files: ['examples/typescript/**/*.ts'],
+      rules: {
+        'import/no-unresolved': 'off',
+        'jsdoc/require-jsdoc': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off'
+      }
+    },
+    {
       files: ['**/*.js'],
       extends: 'plugin:node/recommended'
     },
@@ -137,6 +157,12 @@ module.exports = defineConfig({
       files: ['benchmarks/**/*.js'],
       rules: {
         'jsdoc/require-jsdoc': 'off'
+      }
+    },
+    {
+      files: ['benchmarks/versus-external-pools/**/*.js'],
+      rules: {
+        'node/no-missing-require': 'off'
       }
     },
     {
