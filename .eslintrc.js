@@ -160,6 +160,12 @@ module.exports = defineConfig({
       }
     },
     {
+      files: ['benchmarks/versus-external-pools/**/*.js'],
+      rules: {
+        'node/no-missing-require': 'off'
+      }
+    },
+    {
       files: ['examples/**/*.js'],
       rules: {
         'node/no-missing-require': 'off',
