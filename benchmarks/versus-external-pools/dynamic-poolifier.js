@@ -21,7 +21,7 @@ async function run () {
     promises.push(dynamicPool.execute(data))
   }
   await Promise.all(promises)
-  // eslint-disable-next-line no-process-exit
+  // eslint-disable-next-line n/no-process-exit
   process.exit()
 }
 

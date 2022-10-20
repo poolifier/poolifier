@@ -2,7 +2,7 @@ const fs = require('fs')
 const {
   WorkerFunctions,
   executeWorkerFunction
-  // eslint-disable-next-line node/no-unpublished-require
+  // eslint-disable-next-line n/no-unpublished-require
 } = require('../../benchmarks-utils')
 
 const TaskTypes = {

@@ -23,7 +23,7 @@ async function run () {
     promises.push(pool.exec(data))
   }
   await Promise.all(promises)
-  // eslint-disable-next-line no-process-exit
+  // eslint-disable-next-line n/no-process-exit
   process.exit()
 }
 

@@ -139,7 +139,7 @@ module.exports = defineConfig({
     },
     {
       files: ['**/*.js'],
-      extends: 'plugin:node/recommended'
+      extends: ['plugin:n/recommended']
     },
     {
       files: ['tests/**/*.js'],
@@ -150,7 +150,7 @@ module.exports = defineConfig({
     {
       files: ['tests/pools/selection-strategies/**/*.js'],
       rules: {
-        'node/no-missing-require': 'off'
+        'n/no-missing-require': 'off'
       }
     },
     {
@@ -162,13 +162,13 @@ module.exports = defineConfig({
     {
       files: ['benchmarks/versus-external-pools/**/*.js'],
       rules: {
-        'node/no-missing-require': 'off'
+        'n/no-missing-require': 'off'
       }
     },
     {
       files: ['examples/**/*.js'],
       rules: {
-        'node/no-missing-require': 'off',
+        'n/no-missing-require': 'off',
         'jsdoc/require-jsdoc': 'off'
       }
     }

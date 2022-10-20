@@ -24,7 +24,7 @@ async function run () {
     promises.push(workerNodes.call.functionToBench(data))
   }
   await Promise.all(promises)
-  // eslint-disable-next-line no-process-exit
+  // eslint-disable-next-line n/no-process-exit
   process.exit()
 }
 
