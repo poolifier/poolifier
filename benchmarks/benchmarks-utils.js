@@ -1,8 +1,4 @@
-const WorkerFunctions = {
-  jsonIntegerSerialization: 'jsonIntegerSerialization',
-  fibonacci: 'fibonacci',
-  factorial: 'factorial'
-}
+const { WorkerFunctions } = require('./benchmarks-types')
 
 async function runPoolifierTest (pool, { tasks, workerData }) {
   return new Promise((resolve, reject) => {

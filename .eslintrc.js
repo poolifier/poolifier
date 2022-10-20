@@ -36,6 +36,7 @@ module.exports = defineConfig({
       {
         skipWords: [
           'browserslist',
+          'builtins',
           'christopher',
           'cjs',
           'comparator',
