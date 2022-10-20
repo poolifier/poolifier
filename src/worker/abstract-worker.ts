@@ -84,7 +84,7 @@ export abstract class AbstractWorker<
   ): void {
     if (value.data !== undefined && value.id !== undefined) {
       // Here you will receive messages
-      if (this.opts.async) {
+      if (this.opts.async === true) {
         this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
       } else {
         this.runInAsyncScope(this.run.bind(this), this, fn, value)

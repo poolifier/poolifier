@@ -85,7 +85,7 @@ export abstract class AbstractPool<
     public readonly filePath: string,
     public readonly opts: PoolOptions<Worker>
   ) {
-    if (!this.isMain()) {
+    if (this.isMain() === false) {
       throw new Error('Cannot start a pool from a worker!')
     }
     this.checkNumberOfWorkers(this.numberOfWorkers)
@@ -97,7 +97,7 @@ export abstract class AbstractPool<
       this.createAndSetupWorker()
     }
 
-    if (this.opts.enableEvents) {
+    if (this.opts.enableEvents === true) {
       this.emitter = new PoolEmitter()
     }
     this.workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
@@ -380,7 +380,7 @@ export abstract class AbstractPool<
   }
 
   private checkAndEmitBusy (): void {
-    if (this.opts.enableEvents && this.busy) {
+    if (this.opts.enableEvents === true && this.busy === true) {
       this.emitter?.emit('busy')
     }
   }

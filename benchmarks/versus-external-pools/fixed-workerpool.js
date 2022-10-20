@@ -1,9 +1,13 @@
 // IMPORT LIBRARIES
 const workerpool = require('workerpool')
 // FINISH IMPORT LIBRARIES
-const size = Number(process.env.POOL_SIZE)
-const iterations = Number(process.env.NUM_ITERATIONS)
-const dataArray = ['MYBENCH', process.env.TASK_TYPE, process.env.TASK_SIZE]
+const size = parseInt(process.env.POOL_SIZE)
+const iterations = parseInt(process.env.NUM_ITERATIONS)
+const dataArray = [
+  'MYBENCH',
+  process.env.TASK_TYPE,
+  parseInt(process.env.TASK_SIZE)
+]
 
 const workerPool = workerpool.pool(
   './workers/workerpool/function-to-bench-worker.js',

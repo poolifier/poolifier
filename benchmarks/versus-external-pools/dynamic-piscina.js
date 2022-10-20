@@ -1,12 +1,12 @@
 // IMPORT LIBRARIES
 const Piscina = require('piscina')
 // FINISH IMPORT LIBRARIES
-const size = Number(process.env.POOL_SIZE)
-const iterations = Number(process.env.NUM_ITERATIONS)
+const size = parseInt(process.env.POOL_SIZE)
+const iterations = parseInt(process.env.NUM_ITERATIONS)
 const data = {
   test: 'MYBENCH',
   taskType: process.env.TASK_TYPE,
-  taskSize: process.env.TASK_SIZE
+  taskSize: parseInt(process.env.TASK_SIZE)
 }
 
 const piscina = new Piscina({

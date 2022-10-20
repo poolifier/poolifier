@@ -1,11 +1,11 @@
 // IMPORT LIBRARIES
 const threadPool = require('./pool-threadwork')
 // FINISH IMPORT LIBRARIES
-const iterations = Number(process.env.NUM_ITERATIONS)
+const iterations = parseInt(process.env.NUM_ITERATIONS)
 const data = {
   test: 'MYBENCH',
   taskType: process.env.TASK_TYPE,
-  taskSize: process.env.TASK_SIZE
+  taskSize: parseInt(process.env.TASK_SIZE)
 }
 
 async function run () {
