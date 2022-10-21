@@ -11,13 +11,14 @@ describe('Abstract pool test suite', () => {
   const workerNotFoundInTasksUsageMapError = new Error(
     'Worker could not be found in workers tasks usage map'
   )
-  class StubPoolWithWorkerTasksUsageMapClear extends FixedThreadPool {
+  class StubPoolWithRemoveAllWorker extends FixedThreadPool {
     removeAllWorker () {
       this.workers = []
       // this.workersTasksUsage.clear()
+      this.promiseMap.clear()
     }
   }
-  class StubPoolWithIsMainMethod extends FixedThreadPool {
+  class StubPoolWithIsMain extends FixedThreadPool {
     isMain () {
       return false
     }
@@ -26,7 +27,7 @@ describe('Abstract pool test suite', () => {
   it('Simulate pool creation from a non main thread/process', () => {
     expect(
       () =>
-        new StubPoolWithIsMainMethod(
+        new StubPoolWithIsMain(
           numberOfWorkers,
           './tests/worker-files/thread/testWorker.js',
           {
@@ -117,7 +118,7 @@ describe('Abstract pool test suite', () => {
   })
 
   it('Simulate worker not found during increaseWorkerRunningTasks', async () => {
-    const pool = new StubPoolWithWorkerTasksUsageMapClear(
+    const pool = new StubPoolWithRemoveAllWorker(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js'
     )
@@ -130,7 +131,7 @@ describe('Abstract pool test suite', () => {
   })
 
   it('Simulate worker not found during decreaseWorkerRunningTasks', async () => {
-    const pool = new StubPoolWithWorkerTasksUsageMapClear(
+    const pool = new StubPoolWithRemoveAllWorker(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js',
       {
@@ -146,7 +147,7 @@ describe('Abstract pool test suite', () => {
   })
 
   it('Simulate worker not found during stepWorkerRunTasks', async () => {
-    const pool = new StubPoolWithWorkerTasksUsageMapClear(
+    const pool = new StubPoolWithRemoveAllWorker(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js',
       {
@@ -162,7 +163,7 @@ describe('Abstract pool test suite', () => {
   })
 
   it('Simulate worker not found during updateWorkerTasksRunTime with strategy not requiring it', async () => {
-    const pool = new StubPoolWithWorkerTasksUsageMapClear(
+    const pool = new StubPoolWithRemoveAllWorker(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js',
       {
@@ -176,7 +177,7 @@ describe('Abstract pool test suite', () => {
   })
 
   it('Simulate worker not found during updateWorkerTasksRunTime with strategy requiring it', async () => {
-    const pool = new StubPoolWithWorkerTasksUsageMapClear(
+    const pool = new StubPoolWithRemoveAllWorker(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js',
       {
