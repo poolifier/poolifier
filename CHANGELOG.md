@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.5] - 2022-10-21
+
 ### Changed
 
 - Improve benchmarks: add IO intensive task workload, add task size option, integrate code into linter.
