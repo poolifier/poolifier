@@ -39,9 +39,6 @@ export abstract class AbstractPool<
   /** @inheritDoc */
   public readonly emitter?: PoolEmitter
 
-  /** @inheritDoc */
-  public readonly max?: number
-
   /**
    * The promise map.
    *
