@@ -477,7 +477,7 @@ export abstract class AbstractPool<
    *
    * @param worker The worker.
    */
-  initWorkerTasksUsage (worker: Worker): void {
+  private initWorkerTasksUsage (worker: Worker): void {
     this.workersTasksUsage.set(worker, {
       run: 0,
       running: 0,
