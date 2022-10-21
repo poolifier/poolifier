@@ -12,9 +12,17 @@ export class SharedUsage {
    * @param sharedUsageArrayBuffer Shared array buffer to use to store workers tasks usage statistics.
    */
   constructor (
-    private numberOfWorkers: number,
+    private readonly numberOfWorkers: number,
     sharedUsageArrayBuffer: SharedArrayBuffer
   ) {
+    if (Number.isSafeInteger(numberOfWorkers) === false) {
+      throw new TypeError('numberOfWorkers must be an integer')
+    }
+    if (sharedUsageArrayBuffer instanceof SharedArrayBuffer === false) {
+      throw new TypeError(
+        'sharedUsageArrayBuffer must be an instance of SharedArrayBuffer'
+      )
+    }
     this.dataView = new DataView(sharedUsageArrayBuffer)
     for (
       let i = 0, startOffset = 0;

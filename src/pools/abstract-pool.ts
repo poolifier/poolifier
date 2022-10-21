@@ -46,9 +46,14 @@ export abstract class AbstractPool<
   protected readonly max?: number
 
   /**
+   * Tasks shared usage array buffer.
+   */
+  protected workersTasksSharedUsageArrayBuffer: SharedArrayBuffer
+
+  /**
    * Tasks shared usage statistics.
    */
-  protected workersTasksSharedUsage!: SharedUsage
+  protected workersTasksSharedUsage: SharedUsage
 
   /**
    * The promise map.
@@ -99,10 +104,21 @@ export abstract class AbstractPool<
     this.checkPoolOptions(this.opts)
     this.setupHook()
 
+    this.workersTasksSharedUsageArrayBuffer = new SharedArrayBuffer(
+      (Int32Array.BYTES_PER_ELEMENT * 3 + Float64Array.BYTES_PER_ELEMENT) *
+        numberOfWorkers
+    )
+    this.workersTasksSharedUsage = new SharedUsage(
+      numberOfWorkers,
+      this.workersTasksSharedUsageArrayBuffer
+    )
+
     for (let i = 1; i <= this.numberOfWorkers; i++) {
       this.createAndSetupWorker()
     }
-    this.initWorkersTasksSharedUsage(this.max ?? this.numberOfWorkers)
+
+    // this.initWorkersTasksSharedUsage(this.max ?? this.numberOfWorkers)
+
     if (this.opts.enableEvents === true) {
       this.emitter = new PoolEmitter()
     }
@@ -137,7 +153,7 @@ export abstract class AbstractPool<
         'Cannot instantiate a pool without specifying the number of workers'
       )
     } else if (Number.isSafeInteger(numberOfWorkers) === false) {
-      throw new Error(
+      throw new TypeError(
         'Cannot instantiate a pool with a non integer number of workers'
       )
     } else if (numberOfWorkers < 0) {
@@ -155,20 +171,23 @@ export abstract class AbstractPool<
     this.opts.enableEvents = opts.enableEvents ?? true
   }
 
-  private initWorkersTasksSharedUsage (numberOfWorkers: number): void {
-    const sharedUsageArrayBuffer = new SharedArrayBuffer(
-      (Int32Array.BYTES_PER_ELEMENT * 3 + Float64Array.BYTES_PER_ELEMENT) *
-        numberOfWorkers
-    )
-    this.workersTasksSharedUsage = new SharedUsage(
-      numberOfWorkers,
-      sharedUsageArrayBuffer
-    )
-    for (const worker of this.workers) {
-      // Send to worker shared array for workers tasks usage
-      this.sendWorkerTasksSharedUsage(worker, sharedUsageArrayBuffer)
-    }
-  }
+  // private initWorkersTasksSharedUsage (numberOfWorkers: number): void {
+  //   this.workersTasksSharedUsageArrayBuffer = new SharedArrayBuffer(
+  //     (Int32Array.BYTES_PER_ELEMENT * 3 + Float64Array.BYTES_PER_ELEMENT) *
+  //       numberOfWorkers
+  //   )
+  //   this.workersTasksSharedUsage = new SharedUsage(
+  //     numberOfWorkers,
+  //     this.workersTasksSharedUsageArrayBuffer
+  //   )
+  //   for (const worker of this.workers) {
+  //     // Send to worker the shared array buffer to use for tasks shared usage statistics
+  //     this.sendWorkerTasksSharedUsage(
+  //       worker,
+  //       this.workersTasksSharedUsageArrayBuffer
+  //     )
+  //   }
+  // }
 
   /** @inheritDoc */
   public abstract get type (): PoolType
@@ -186,7 +205,7 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public getWorkerRunningTasks (worker: Worker): number | undefined {
-    this.workersTasksSharedUsage.consoleDump()
+    // this.workersTasksSharedUsage.consoleDump()
     return this.workersTasksSharedUsage[
       `worker${this.getWorkerIndex(worker)}-running`
     ] as number
@@ -194,7 +213,7 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public getWorkerAverageTasksRunTime (worker: Worker): number | undefined {
-    this.workersTasksSharedUsage.consoleDump()
+    // this.workersTasksSharedUsage.consoleDump()
     return this.workersTasksSharedUsage[
       `worker${this.getWorkerIndex(worker)}-avgRunTime`
     ] as number
@@ -399,6 +418,12 @@ export abstract class AbstractPool<
     // this.initWorkerTasksUsage(worker)
 
     this.afterWorkerSetup(worker)
+
+    // Send to worker the shared array buffer to use for tasks shared usage statistics
+    this.sendWorkerTasksSharedUsage(
+      worker,
+      this.workersTasksSharedUsageArrayBuffer
+    )
 
     return worker
   }
