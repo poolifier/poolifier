@@ -1,6 +1,5 @@
 import { isMainThread, MessageChannel, SHARE_ENV, Worker } from 'worker_threads'
 import type { Draft, MessageValue } from '../../utility-types'
-import { SharedUsage } from '../../worker/shared-usage'
 import { AbstractPool } from '../abstract-pool'
 import type { PoolOptions } from '../pool'
 import { PoolType } from '../pool-internal'
@@ -27,11 +26,6 @@ export class FixedThreadPool<
   Response = unknown
 > extends AbstractPool<ThreadWorkerWithMessageChannel, Data, Response> {
   /**
-   * Shared object to store workers tasks usage statistics.
-   */
-  private workersTasksSharedUsage!: SharedUsage
-
-  /**
    * Constructs a new poolifier fixed thread pool.
    *
    * @param numberOfThreads Number of threads for this pool.
@@ -44,22 +38,6 @@ export class FixedThreadPool<
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = {}
   ) {
     super(numberOfThreads, filePath, opts)
-    this.initWorkersTasksSharedUsage(numberOfThreads)
-  }
-
-  protected initWorkersTasksSharedUsage (numberOfWorkers: number): void {
-    const sharedUsageArrayBuffer = new SharedArrayBuffer(
-      (Int32Array.BYTES_PER_ELEMENT * 3 + Float64Array.BYTES_PER_ELEMENT) *
-        numberOfWorkers
-    )
-    this.workersTasksSharedUsage = new SharedUsage(
-      numberOfWorkers,
-      sharedUsageArrayBuffer
-    )
-    for (const worker of this.workers) {
-      // Send to worker shared array for workers tasks usage
-      this.sendWorkersTasksSharedUsage(worker, sharedUsageArrayBuffer)
-    }
   }
 
   /** @inheritDoc */
@@ -140,15 +118,5 @@ export class FixedThreadPool<
     this.workersTasksSharedUsage[`worker${workerId}-running`] = 0
     this.workersTasksSharedUsage[`worker${workerId}-runTime`] = 0
     this.workersTasksSharedUsage[`worker${workerId}-avgRunTime`] = 0
-  }
-
-  private sendWorkersTasksSharedUsage (
-    worker: Worker,
-    sharedUsageArrayBuffer: SharedArrayBuffer
-  ) {
-    this.sendToWorker(worker, {
-      numberOfWorkers: this.numberOfWorkers,
-      tasksSharedUsage: sharedUsageArrayBuffer
-    })
   }
 }

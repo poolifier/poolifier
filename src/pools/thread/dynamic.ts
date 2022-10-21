@@ -33,7 +33,6 @@ export class DynamicThreadPool<
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = {}
   ) {
     super(min, filePath, opts)
-    this.initWorkersTasksSharedUsage(max)
   }
 
   /** @inheritDoc */

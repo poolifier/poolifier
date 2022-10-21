@@ -3,6 +3,7 @@ import type {
   PromiseWorkerResponseWrapper
 } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
+import { SharedUsage } from '../worker/shared-usage'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { PoolOptions } from './pool'
 import { PoolEmitter } from './pool'
@@ -36,11 +37,13 @@ export abstract class AbstractPool<
     TasksUsage
   >()
 
-  /** @inheritDoc */
-  public readonly emitter?: PoolEmitter
+  /**
+   * Tasks shared usage statistics.
+   */
+  protected workersTasksSharedUsage!: SharedUsage
 
   /** @inheritDoc */
-  public readonly max?: number
+  public readonly emitter?: PoolEmitter
 
   /**
    * The promise map.
@@ -94,7 +97,8 @@ export abstract class AbstractPool<
     for (let i = 1; i <= this.numberOfWorkers; i++) {
       this.createAndSetupWorker()
     }
-
+    // FIXME: dynamic pool needs to use max
+    this.initWorkersTasksSharedUsage(this.numberOfWorkers)
     if (this.opts.enableEvents === true) {
       this.emitter = new PoolEmitter()
     }
@@ -145,6 +149,21 @@ export abstract class AbstractPool<
     this.opts.workerChoiceStrategy =
       opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
     this.opts.enableEvents = opts.enableEvents ?? true
+  }
+
+  private initWorkersTasksSharedUsage (numberOfWorkers: number): void {
+    const sharedUsageArrayBuffer = new SharedArrayBuffer(
+      (Int32Array.BYTES_PER_ELEMENT * 3 + Float64Array.BYTES_PER_ELEMENT) *
+        numberOfWorkers
+    )
+    this.workersTasksSharedUsage = new SharedUsage(
+      numberOfWorkers,
+      sharedUsageArrayBuffer
+    )
+    for (const worker of this.workers) {
+      // Send to worker shared array for workers tasks usage
+      this.sendWorkersTasksSharedUsage(worker, sharedUsageArrayBuffer)
+    }
   }
 
   /** @inheritDoc */
@@ -505,5 +524,15 @@ export abstract class AbstractPool<
    */
   private removeWorkerTasksUsage (worker: Worker): void {
     this.workersTasksUsage.delete(worker)
+  }
+
+  private sendWorkersTasksSharedUsage (
+    worker: Worker,
+    sharedUsageArrayBuffer: SharedArrayBuffer
+  ) {
+    this.sendToWorker(worker, {
+      numberOfWorkers: this.numberOfWorkers,
+      tasksSharedUsage: sharedUsageArrayBuffer
+    })
   }
 }

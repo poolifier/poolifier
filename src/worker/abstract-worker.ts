@@ -3,6 +3,7 @@ import type { Worker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
 import type { MessageValue } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
+import { SharedUsage } from './shared-usage'
 import type { KillBehavior, WorkerOptions } from './worker-options'
 import { KillBehaviors } from './worker-options'
 
@@ -22,7 +23,12 @@ export abstract class AbstractWorker<
   Response = unknown
 > extends AsyncResource {
   /**
+   * Tasks shared usage statistics.
+   */
+  protected tasksSharedUsage!: SharedUsage
+  /**
    * Timestamp of the last task processed by this worker.
+   * TODO: move into tasksSharedUsage.
    */
   protected lastTaskTimestamp: number
   /**
@@ -82,6 +88,19 @@ export abstract class AbstractWorker<
     value: MessageValue<Data, MainWorker>,
     fn: (data: Data) => Response
   ): void {
+    if (
+      value.numberOfWorkers !== undefined &&
+      value.tasksSharedUsage !== undefined
+    ) {
+      if (!this.tasksSharedUsage) {
+        this.tasksSharedUsage = new SharedUsage(
+          value.numberOfWorkers,
+          value.tasksSharedUsage
+        )
+      }
+    } else {
+      throw new Error('Number of workers or tasks shared usage not defined')
+    }
     if (
       value.data !== undefined &&
       value.id !== undefined &&
@@ -224,9 +243,15 @@ export abstract class AbstractWorker<
    *
    * @param workerId The worker index.
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected beforeRunHook (workerId: number | undefined): void {
-    // Can be overridden
+    if (workerId === undefined) {
+      throw new Error('Worker id not defined')
+    }
+    if (!this.tasksSharedUsage) {
+      throw new Error('Tasks shared usage not initialized')
+    }
+    this.tasksSharedUsage[`worker${workerId}-running`]++
+    this.tasksSharedUsage.consoleDump()
   }
 
   /**
@@ -237,11 +262,30 @@ export abstract class AbstractWorker<
    * @param taskRunTime The task run time.
    */
   protected afterRunHook (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     workerId: number | undefined,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     taskRunTime: number
   ): void {
-    // Can be overridden
+    if (workerId === undefined) {
+      throw new Error('Worker id not defined')
+    }
+    if (!this.tasksSharedUsage) {
+      throw new Error('Tasks shared usage not initialized')
+    }
+    this.tasksSharedUsage[`worker${workerId}-running`]--
+    this.tasksSharedUsage[`worker${workerId}-run`]++
+    this.updateWorkerTasksSharedUsageRunTime(workerId, taskRunTime)
+    this.tasksSharedUsage.consoleDump()
+  }
+
+  private updateWorkerTasksSharedUsageRunTime (
+    workerId: number | undefined,
+    taskRunTime: number
+  ) {
+    this.tasksSharedUsage[`worker${workerId as number}-runTime`] += taskRunTime
+    if (this.tasksSharedUsage[`worker${workerId as number}-run`] !== 0) {
+      this.tasksSharedUsage[`worker${workerId as number}-avgRunTime`] =
+        this.tasksSharedUsage[`worker${workerId as number}-runTime`] /
+        this.tasksSharedUsage[`worker${workerId as number}-run`]
+    }
   }
 }

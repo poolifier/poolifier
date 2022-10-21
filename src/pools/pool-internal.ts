@@ -52,11 +52,6 @@ export interface IPoolInternal<
   readonly type: PoolType
 
   /**
-   * Maximum number of workers that can be created by this pool.
-   */
-  readonly max?: number
-
-  /**
    * Whether the pool is busy or not.
    *
    * The pool busyness boolean status.
