@@ -2,7 +2,7 @@
  * Shared object for workers tasks usage statistics.
  */
 export class SharedUsage {
-  private dataView: DataView;
+  private readonly dataView: DataView;
   [key: string]: any
 
   /**
@@ -130,7 +130,7 @@ export class SharedUsage {
   }
 
   /**
-   * Dump attributes for debugging purpose.
+   * Dump shared object content for debugging purpose.
    */
   public consoleDump (): void {
     for (let i = 0; i < this.numberOfWorkers; i++) {
