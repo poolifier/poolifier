@@ -1,3 +1,4 @@
+import EventEmitter from 'events'
 import type {
   ErrorHandler,
   ExitHandler,
@@ -5,6 +6,11 @@ import type {
   OnlineHandler
 } from './pool-worker'
 import type { WorkerChoiceStrategy } from './selection-strategies/selection-strategies-types'
+
+/**
+ * Pool events emitter.
+ */
+export class PoolEmitter extends EventEmitter {}
 
 /**
  * Options for a poolifier pool.
@@ -45,6 +51,14 @@ export interface PoolOptions<Worker> {
  * @template Response Type of response of execution. This can only be serializable data.
  */
 export interface IPool<Data = unknown, Response = unknown> {
+  /**
+   * Emitter on which events can be listened to.
+   *
+   * Events that can currently be listened to:
+   *
+   * - `'busy'`
+   */
+  readonly emitter?: PoolEmitter
   /**
    * Performs the task specified in the constructor with the data parameter.
    *

@@ -14,8 +14,8 @@ import type { WorkerOptions } from './worker-options'
  * If you use a `DynamicThreadPool` the extra workers that were created will be terminated,
  * but the minimum number of workers will be guaranteed.
  *
- * @template DataType of data this worker receives from pool's execution. This can only be serializable data.
- * @template ResponseType of response the worker sends back to the main thread. This can only be serializable data.
+ * @template Data Type of data this worker receives from pool's execution. This can only be serializable data.
+ * @template Response Type of response the worker sends back to the main thread. This can only be serializable data.
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */

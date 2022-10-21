@@ -1,5 +1,6 @@
 {
-  "entryPoints": ["src/index.ts"],
+  "tsconfig": "./tsconfig.tsdoc.json",
+  "entryPoints": ["src"],
   "out": "docs",
   "readme": "none"
 }
