@@ -14,9 +14,6 @@ import {
 } from './selection-strategies/selection-strategies-types'
 import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
 
-const WORKER_NOT_FOUND_TASKS_USAGE_MAP =
-  'Worker could not be found in worker tasks usage map'
-
 /**
  * Base class that implements some shared logic for all poolifier pools.
  *
@@ -85,7 +82,7 @@ export abstract class AbstractPool<
     public readonly filePath: string,
     public readonly opts: PoolOptions<Worker>
   ) {
-    if (!this.isMain()) {
+    if (this.isMain() === false) {
       throw new Error('Cannot start a pool from a worker!')
     }
     this.checkNumberOfWorkers(this.numberOfWorkers)
@@ -97,7 +94,7 @@ export abstract class AbstractPool<
       this.createAndSetupWorker()
     }
 
-    if (this.opts.enableEvents) {
+    if (this.opts.enableEvents === true) {
       this.emitter = new PoolEmitter()
     }
     this.workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
@@ -211,15 +208,14 @@ export abstract class AbstractPool<
   public execute (data: Data): Promise<Response> {
     // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
-    const messageId = ++this.nextMessageId
-    const res = this.internalExecute(worker, messageId)
+    const res = this.internalExecute(worker, this.nextMessageId)
     this.checkAndEmitBusy()
-    data = data ?? ({} as Data)
     this.sendToWorker(worker, {
-      data,
-      id: messageId,
+      data: data ?? ({} as Data),
+      id: this.nextMessageId,
       workerId: this.getWorkerIndex(worker)
     })
+    ++this.nextMessageId
     return res
   }
 
@@ -385,9 +381,12 @@ export abstract class AbstractPool<
       if (message.id !== undefined) {
         const promise = this.promiseMap.get(message.id)
         if (promise !== undefined) {
+          if (message.error) {
+            promise.reject(message.error)
+          } else {
+            promise.resolve(message.data as Response)
+          }
           this.afterPromiseWorkerResponseHook(message, promise)
-          if (message.error) promise.reject(message.error)
-          else promise.resolve(message.data as Response)
           this.promiseMap.delete(message.id)
         }
       }
@@ -395,7 +394,7 @@ export abstract class AbstractPool<
   }
 
   private checkAndEmitBusy (): void {
-    if (this.opts.enableEvents && this.busy) {
+    if (this.opts.enableEvents === true && this.busy === true) {
       this.emitter?.emit('busy')
     }
   }
@@ -425,12 +424,10 @@ export abstract class AbstractPool<
    * @param step Number of running tasks step.
    */
   private stepWorkerRunningTasks (worker: Worker, step: number): void {
-    const tasksUsage = this.workersTasksUsage.get(worker)
-    if (tasksUsage !== undefined) {
+    if (this.checkWorkerTasksUsage(worker) === true) {
+      const tasksUsage = this.workersTasksUsage.get(worker) as TasksUsage
       tasksUsage.running = tasksUsage.running + step
       this.workersTasksUsage.set(worker, tasksUsage)
-    } else {
-      throw new Error(WORKER_NOT_FOUND_TASKS_USAGE_MAP)
     }
   }
 
@@ -441,12 +438,10 @@ export abstract class AbstractPool<
    * @param step Number of run tasks step.
    */
   private stepWorkerRunTasks (worker: Worker, step: number): void {
-    const tasksUsage = this.workersTasksUsage.get(worker)
-    if (tasksUsage !== undefined) {
+    if (this.checkWorkerTasksUsage(worker) === true) {
+      const tasksUsage = this.workersTasksUsage.get(worker) as TasksUsage
       tasksUsage.run = tasksUsage.run + step
       this.workersTasksUsage.set(worker, tasksUsage)
-    } else {
-      throw new Error(WORKER_NOT_FOUND_TASKS_USAGE_MAP)
     }
   }
 
@@ -462,19 +457,30 @@ export abstract class AbstractPool<
   ): void {
     if (
       this.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .requiredStatistics.runTime === true
+        .requiredStatistics.runTime === true &&
+      this.checkWorkerTasksUsage(worker) === true
     ) {
-      const tasksUsage = this.workersTasksUsage.get(worker)
-      if (tasksUsage !== undefined) {
-        tasksUsage.runTime += taskRunTime ?? 0
-        if (tasksUsage.run !== 0) {
-          tasksUsage.avgRunTime = tasksUsage.runTime / tasksUsage.run
-        }
-        this.workersTasksUsage.set(worker, tasksUsage)
-      } else {
-        throw new Error(WORKER_NOT_FOUND_TASKS_USAGE_MAP)
+      const tasksUsage = this.workersTasksUsage.get(worker) as TasksUsage
+      tasksUsage.runTime += taskRunTime ?? 0
+      if (tasksUsage.run !== 0) {
+        tasksUsage.avgRunTime = tasksUsage.runTime / tasksUsage.run
       }
+      this.workersTasksUsage.set(worker, tasksUsage)
     }
+  }
+
+  /**
+   * Checks if the given worker is registered in the workers tasks usage map.
+   *
+   * @param worker Worker to check.
+   * @returns `true` if the worker is registered in the workers tasks usage map. `false` otherwise.
+   */
+  private checkWorkerTasksUsage (worker: Worker): boolean {
+    const hasTasksUsage = this.workersTasksUsage.has(worker)
+    if (hasTasksUsage === false) {
+      throw new Error('Worker could not be found in workers tasks usage map')
+    }
+    return hasTasksUsage
   }
 
   /**

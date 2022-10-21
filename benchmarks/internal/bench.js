@@ -92,7 +92,7 @@ async function test () {
         'Fastest is ' +
           LIST_FORMATTER.format(this.filter('fastest').map('name'))
       )
-      // eslint-disable-next-line no-process-exit
+      // eslint-disable-next-line n/no-process-exit
       process.exit()
     })
     .run({ async: true })

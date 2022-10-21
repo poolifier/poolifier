@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Improve benchmarks: add IO intensive task workload, add task size option, integrate into eslint.
+- Improve benchmarks: add IO intensive task workload, add task size option, integrate code into linter.
+- Optimize tasks usage lookup implementation.
 
 ## [2.3.4] - 2022-10-17
 

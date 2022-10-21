@@ -9,7 +9,7 @@ const {
 describe('Abstract pool test suite', () => {
   const numberOfWorkers = 1
   const workerNotFoundInTasksUsageMapError = new Error(
-    'Worker could not be found in worker tasks usage map'
+    'Worker could not be found in workers tasks usage map'
   )
   class StubPoolWithWorkerTasksUsageMapClear extends FixedClusterPool {
     removeAllWorker () {

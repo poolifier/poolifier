@@ -4,12 +4,12 @@ const { job, start } = require('microjob')
 // IMPORT FUNCTION TO BENCH
 const functionToBench = require('./functions/function-to-bench')
 // FINISH IMPORT FUNCTION TO BENCH
-const size = Number(process.env.POOL_SIZE)
-const iterations = Number(process.env.NUM_ITERATIONS)
+const size = parseInt(process.env.POOL_SIZE)
+const iterations = parseInt(process.env.NUM_ITERATIONS)
 const data = {
   test: 'MYBENCH',
   taskType: process.env.TASK_TYPE,
-  taskSize: process.env.TASK_SIZE
+  taskSize: parseInt(process.env.TASK_SIZE)
 }
 
 async function run () {
@@ -26,7 +26,7 @@ async function run () {
     )
   }
   await Promise.all(promises)
-  // eslint-disable-next-line no-process-exit
+  // eslint-disable-next-line n/no-process-exit
   process.exit()
 }
 

@@ -2,6 +2,7 @@
 const { defineConfig } = require('eslint-define-config')
 
 module.exports = defineConfig({
+  root: true,
   env: {
     es2021: true,
     node: true,
@@ -36,6 +37,7 @@ module.exports = defineConfig({
       {
         skipWords: [
           'browserslist',
+          'builtins',
           'christopher',
           'cjs',
           'comparator',
@@ -139,7 +141,7 @@ module.exports = defineConfig({
     },
     {
       files: ['**/*.js'],
-      extends: 'plugin:node/recommended'
+      extends: ['plugin:n/recommended']
     },
     {
       files: ['tests/**/*.js'],
@@ -150,7 +152,7 @@ module.exports = defineConfig({
     {
       files: ['tests/pools/selection-strategies/**/*.js'],
       rules: {
-        'node/no-missing-require': 'off'
+        'n/no-missing-require': 'off'
       }
     },
     {
@@ -162,13 +164,13 @@ module.exports = defineConfig({
     {
       files: ['benchmarks/versus-external-pools/**/*.js'],
       rules: {
-        'node/no-missing-require': 'off'
+        'n/no-missing-require': 'off'
       }
     },
     {
       files: ['examples/**/*.js'],
       rules: {
-        'node/no-missing-require': 'off',
+        'n/no-missing-require': 'off',
         'jsdoc/require-jsdoc': 'off'
       }
     }

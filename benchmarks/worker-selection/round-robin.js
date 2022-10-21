@@ -11,13 +11,13 @@ const workers = generateWorkersArray(60)
 
 let nextWorkerIndex
 
-function chooseWorkerTernaryOffByOne () {
+function roundRobinTernaryOffByOne () {
   nextWorkerIndex =
     workers.length - 1 === nextWorkerIndex ? 0 : nextWorkerIndex + 1
   return workers[nextWorkerIndex]
 }
 
-function chooseWorkerTernaryWithNegation () {
+function roundRobinTernaryWithNegation () {
   nextWorkerIndex =
     !nextWorkerIndex || workers.length - 1 === nextWorkerIndex
       ? 0
@@ -25,14 +25,14 @@ function chooseWorkerTernaryWithNegation () {
   return workers[nextWorkerIndex]
 }
 
-function chooseWorkerTernaryWithPreChoosing () {
+function roundRobinTernaryWithPreChoosing () {
   const chosenWorker = workers[nextWorkerIndex]
   nextWorkerIndex =
     workers.length - 1 === nextWorkerIndex ? 0 : nextWorkerIndex + 1
   return chosenWorker
 }
 
-function chooseWorkerIncrementModulo () {
+function roundRobinIncrementModulo () {
   const chosenWorker = workers[nextWorkerIndex]
   nextWorkerIndex++
   nextWorkerIndex %= workers.length
@@ -42,19 +42,19 @@ function chooseWorkerIncrementModulo () {
 suite
   .add('Ternary off by one', function () {
     nextWorkerIndex = 0
-    chooseWorkerTernaryOffByOne()
+    roundRobinTernaryOffByOne()
   })
   .add('Ternary with negation', function () {
     nextWorkerIndex = 0
-    chooseWorkerTernaryWithNegation()
+    roundRobinTernaryWithNegation()
   })
   .add('Ternary with pre-choosing', function () {
     nextWorkerIndex = 0
-    chooseWorkerTernaryWithPreChoosing()
+    roundRobinTernaryWithPreChoosing()
   })
   .add('Increment+Modulo', function () {
     nextWorkerIndex = 0
-    chooseWorkerIncrementModulo()
+    roundRobinIncrementModulo()
   })
   .on('cycle', function (event) {
     console.log(event.target.toString())
@@ -63,7 +63,7 @@ suite
     console.log(
       'Fastest is ' + LIST_FORMATTER.format(this.filter('fastest').map('name'))
     )
-    // eslint-disable-next-line no-process-exit
+    // eslint-disable-next-line n/no-process-exit
     process.exit()
   })
   .run()
