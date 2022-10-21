@@ -36,13 +36,13 @@ export interface IPoolInternal<
    */
   readonly workers: Worker[]
 
-  /**
-   * The workers tasks usage map.
-   *
-   *  `key`: The `Worker`
-   *  `value`: Worker tasks usage statistics.
-   */
-  readonly workersTasksUsage: Map<Worker, TasksUsage>
+  // /**
+  //  * The workers tasks usage map.
+  //  *
+  //  *  `key`: The `Worker`
+  //  *  `value`: Worker tasks usage statistics.
+  //  */
+  // readonly workersTasksUsage: Map<Worker, TasksUsage>
 
   /**
    * Pool type.

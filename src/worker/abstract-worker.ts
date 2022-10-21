@@ -98,10 +98,7 @@ export abstract class AbstractWorker<
           value.tasksSharedUsage
         )
       }
-    } else {
-      throw new Error('Number of workers or tasks shared usage not defined')
-    }
-    if (
+    } else if (
       value.data !== undefined &&
       value.id !== undefined &&
       value.workerId !== undefined
@@ -251,7 +248,7 @@ export abstract class AbstractWorker<
       throw new Error('Tasks shared usage not initialized')
     }
     this.tasksSharedUsage[`worker${workerId}-running`]++
-    this.tasksSharedUsage.consoleDump()
+    // this.tasksSharedUsage.consoleDump()
   }
 
   /**
@@ -274,7 +271,7 @@ export abstract class AbstractWorker<
     this.tasksSharedUsage[`worker${workerId}-running`]--
     this.tasksSharedUsage[`worker${workerId}-run`]++
     this.updateWorkerTasksSharedUsageRunTime(workerId, taskRunTime)
-    this.tasksSharedUsage.consoleDump()
+    // this.tasksSharedUsage.consoleDump()
   }
 
   private updateWorkerTasksSharedUsageRunTime (
