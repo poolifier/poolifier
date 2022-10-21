@@ -1,12 +1,3 @@
-import type { Worker as ClusterWorker } from 'cluster'
-import type { Worker as WorkerThread } from 'worker_threads'
-import type { Draft } from '../utility-types'
-
-/**
- * Poolifier supported worker type.
- */
-export type WorkerType = WorkerThread & ClusterWorker & Draft<MessageChannel>
-
 /**
  * Callback invoked if the worker has received a message.
  */

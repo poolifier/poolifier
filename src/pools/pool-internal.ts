@@ -1,9 +1,8 @@
-import EventEmitter from 'events'
 import type { IPool } from './pool'
 import type { IPoolWorker } from './pool-worker'
 
 /**
- * Pool types.
+ * Internal pool types.
  */
 export enum PoolType {
   FIXED = 'fixed',
@@ -11,7 +10,7 @@ export enum PoolType {
 }
 
 /**
- * Tasks usage statistics.
+ * Internal tasks usage statistics.
  */
 export interface TasksUsage {
   run: number
@@ -19,11 +18,6 @@ export interface TasksUsage {
   runTime: number
   avgRunTime: number
 }
-
-/**
- * Internal poolifier pool emitter.
- */
-export class PoolEmitter extends EventEmitter {}
 
 /**
  * Internal contract definition for a poolifier pool.
@@ -49,15 +43,6 @@ export interface IPoolInternal<
    *  `value`: Worker tasks usage statistics.
    */
   readonly workersTasksUsage: Map<Worker, TasksUsage>
-
-  /**
-   * Emitter on which events can be listened to.
-   *
-   * Events that can currently be listened to:
-   *
-   * - `'busy'`
-   */
-  readonly emitter?: PoolEmitter
 
   /**
    * Pool type.

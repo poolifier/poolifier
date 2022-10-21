@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve benchmarks: add IO intensive task workload, add task size option, integrate code into linter.
 - Optimize tasks usage lookup implementation.
 
+### Fixed
+
+- Fix missed pool event emitter type export.
+- Fix typedoc documentation generation.
+
 ## [2.3.4] - 2022-10-17
 
 ### Added
