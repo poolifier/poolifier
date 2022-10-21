@@ -27,7 +27,7 @@ export class DynamicClusterPool<
    */
   public constructor (
     min: number,
-    public readonly max: number,
+    protected readonly max: number,
     filePath: string,
     opts: ClusterPoolOptions = {}
   ) {
