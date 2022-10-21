@@ -63,11 +63,13 @@ export class ThreadWorker<
 
   /** @inheritDoc */
   protected beforeRunHook (workerId: number | undefined): void {
-    if (!this.tasksSharedUsage) {
-      console.log('UNDEFINED')
-      // this.tasksSharedUsage.consoleDump()
+    if (workerId === undefined) {
+      throw new Error('Worker id not defined')
     }
-    this.tasksSharedUsage[`worker${workerId as number}-running`]++
+    if (!this.tasksSharedUsage) {
+      throw new Error('Tasks shared usage not initialized')
+    }
+    this.tasksSharedUsage[`worker${workerId}-running`]++
     this.tasksSharedUsage.consoleDump()
   }
 
@@ -76,13 +78,19 @@ export class ThreadWorker<
     workerId: number | undefined,
     taskRunTime: number
   ): void {
-    this.tasksSharedUsage[`worker${workerId as number}-running`]--
-    this.tasksSharedUsage[`worker${workerId as number}-run`]++
-    // this.tasksSharedUsage.consoleDump()
-    this.updateWorkerTasksRunTime(workerId, taskRunTime)
+    if (workerId === undefined) {
+      throw new Error('Worker id not defined')
+    }
+    if (!this.tasksSharedUsage) {
+      throw new Error('Tasks shared usage not initialized')
+    }
+    this.tasksSharedUsage[`worker${workerId}-running`]--
+    this.tasksSharedUsage[`worker${workerId}-run`]++
+    this.updateWorkerTasksSharedUsageRunTime(workerId, taskRunTime)
+    this.tasksSharedUsage.consoleDump()
   }
 
-  private updateWorkerTasksRunTime (
+  private updateWorkerTasksSharedUsageRunTime (
     workerId: number | undefined,
     taskRunTime: number
   ) {

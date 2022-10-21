@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add shared object support between workers to track worker-threads pool accurate tasks usage statistics.
+
 ## [2.3.5] - 2022-10-21
 
 ### Changed
@@ -50,7 +54,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add shared object support between workers to track worker-threads pool accurate tasks usage statistics.
 - Pool worker choice strategies:
   - `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN` strategy based on weighted round robin scheduling algorithm using tasks execution time for now.
   - `WorkerChoiceStrategies.FAIR_SHARE` strategy based on fair share scheduling algorithm using tasks execution time for now.
