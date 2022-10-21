@@ -82,7 +82,7 @@ export class FixedThreadPool<
     worker.postMessage({ parent: port1 }, [port1])
     worker.port1 = port1
     worker.port2 = port2
-    // Listen worker messages.
+    // Listen to worker messages.
     this.registerWorkerMessageListener(worker, super.workerListener())
   }
 

@@ -139,7 +139,7 @@ export abstract class AbstractWorker<
   protected abstract sendToMainWorker (message: MessageValue<Response>): void
 
   /**
-   * Check to see if the worker should be terminated, because its living too long.
+   * Checks if the worker should be terminated, because its living too long.
    */
   protected checkAlive (): void {
     if (

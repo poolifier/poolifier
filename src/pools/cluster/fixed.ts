@@ -91,7 +91,7 @@ export class FixedClusterPool<
 
   /** @inheritDoc */
   protected afterWorkerSetup (worker: Worker): void {
-    // Listen worker messages.
+    // Listen to worker messages.
     this.registerWorkerMessageListener(worker, super.workerListener())
   }
 
