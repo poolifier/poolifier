@@ -13,7 +13,7 @@ describe('Abstract pool test suite', () => {
   )
   class StubPoolWithWorkerTasksUsageMapClear extends FixedThreadPool {
     removeAllWorker () {
-      this.workers.length = 0
+      this.workers = []
       // this.workersTasksUsage.clear()
     }
   }
