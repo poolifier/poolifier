@@ -182,13 +182,27 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public getWorkerRunningTasks (worker: Worker): number | undefined {
-    return this.workersTasksUsage.get(worker)?.running
+    return this.workersTasksSharedUsage[
+      `worker${this.getWorkerIndex(worker)}-running`
+    ] as number
   }
 
   /** @inheritDoc */
   public getWorkerAverageTasksRunTime (worker: Worker): number | undefined {
-    return this.workersTasksUsage.get(worker)?.avgRunTime
+    return this.workersTasksSharedUsage[
+      `worker${this.getWorkerIndex(worker)}-avgRunTime`
+    ] as number
   }
+
+  // /** @inheritDoc */
+  // public getWorkerRunningTasks (worker: Worker): number | undefined {
+  //   return this.workersTasksUsage.get(worker)?.running
+  // }
+
+  // /** @inheritDoc */
+  // public getWorkerAverageTasksRunTime (worker: Worker): number | undefined {
+  //   return this.workersTasksUsage.get(worker)?.avgRunTime
+  // }
 
   /** @inheritDoc */
   public setWorkerChoiceStrategy (
@@ -299,16 +313,6 @@ export abstract class AbstractPool<
     // Clean worker from data structure
     this.workers.splice(this.getWorkerIndex(worker), 1)
     this.removeWorkerTasksUsage(worker)
-  }
-
-  /**
-   * Resets worker tasks usage statistics.
-   *
-   * @param worker The worker.
-   */
-  protected resetWorkerTasksUsage (worker: Worker): void {
-    this.removeWorkerTasksUsage(worker)
-    this.initWorkerTasksUsage(worker)
   }
 
   /**
@@ -524,6 +528,21 @@ export abstract class AbstractPool<
    */
   private removeWorkerTasksUsage (worker: Worker): void {
     this.workersTasksUsage.delete(worker)
+  }
+
+  /**
+   * Resets worker tasks usage statistics.
+   *
+   * @param worker The worker.
+   */
+  private resetWorkerTasksUsage (worker: Worker): void {
+    this.removeWorkerTasksUsage(worker)
+    this.initWorkerTasksUsage(worker)
+    const workerId = this.getWorkerIndex(worker)
+    this.workersTasksSharedUsage[`worker${workerId}-run`] = 0
+    this.workersTasksSharedUsage[`worker${workerId}-running`] = 0
+    this.workersTasksSharedUsage[`worker${workerId}-runTime`] = 0
+    this.workersTasksSharedUsage[`worker${workerId}-avgRunTime`] = 0
   }
 
   private sendWorkersTasksSharedUsage (

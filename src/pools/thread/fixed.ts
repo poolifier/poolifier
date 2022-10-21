@@ -46,20 +46,6 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
-  public getWorkerRunningTasks (worker: Worker): number | undefined {
-    return this.workersTasksSharedUsage[
-      `worker${this.getWorkerIndex(worker)}-running`
-    ] as number
-  }
-
-  /** @inheritDoc */
-  public getWorkerAverageTasksRunTime (worker: Worker): number | undefined {
-    return this.workersTasksSharedUsage[
-      `worker${this.getWorkerIndex(worker)}-avgRunTime`
-    ] as number
-  }
-
-  /** @inheritDoc */
   public async destroyWorker (
     worker: ThreadWorkerWithMessageChannel
   ): Promise<void> {
@@ -108,15 +94,5 @@ export class FixedThreadPool<
   /** @inheritDoc */
   public get busy (): boolean {
     return this.internalGetBusyStatus()
-  }
-
-  /** @inheritDoc */
-  protected resetWorkerTasksUsage (worker: Worker): void {
-    super.resetWorkerTasksUsage(worker)
-    const workerId = this.getWorkerIndex(worker)
-    this.workersTasksSharedUsage[`worker${workerId}-run`] = 0
-    this.workersTasksSharedUsage[`worker${workerId}-running`] = 0
-    this.workersTasksSharedUsage[`worker${workerId}-runTime`] = 0
-    this.workersTasksSharedUsage[`worker${workerId}-avgRunTime`] = 0
   }
 }

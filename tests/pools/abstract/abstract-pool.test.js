@@ -11,7 +11,7 @@ describe('Abstract pool test suite', () => {
   const workerNotFoundInTasksUsageMapError = new Error(
     'Worker could not be found in workers tasks usage map'
   )
-  class StubPoolWithWorkerTasksUsageMapClear extends FixedClusterPool {
+  class StubPoolWithWorkerTasksUsageMapClear extends FixedThreadPool {
     removeAllWorker () {
       this.workersTasksUsage.clear()
     }
@@ -263,9 +263,9 @@ describe('Abstract pool test suite', () => {
   })
 
   it("Verify that pool event emitter 'busy' event can register a callback", async () => {
-    const pool = new FixedClusterPool(
+    const pool = new FixedThreadPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/thread/testWorker.js'
     )
     const promises = []
     let poolBusy = 0
