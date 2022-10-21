@@ -62,7 +62,9 @@ describe('Abstract pool test suite', () => {
       () =>
         new FixedClusterPool(-1, './tests/worker-files/cluster/testWorker.js')
     ).toThrowError(
-      new Error('Cannot instantiate a pool with a negative number of workers')
+      new RangeError(
+        'Cannot instantiate a pool with a negative number of workers'
+      )
     )
   })
 
@@ -71,7 +73,7 @@ describe('Abstract pool test suite', () => {
       () =>
         new FixedThreadPool(0.25, './tests/worker-files/thread/testWorker.js')
     ).toThrowError(
-      new Error(
+      new TypeError(
         'Cannot instantiate a pool with a non integer number of workers'
       )
     )

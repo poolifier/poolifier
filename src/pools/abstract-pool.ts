@@ -157,7 +157,7 @@ export abstract class AbstractPool<
         'Cannot instantiate a pool with a non integer number of workers'
       )
     } else if (numberOfWorkers < 0) {
-      throw new Error(
+      throw new RangeError(
         'Cannot instantiate a pool with a negative number of workers'
       )
     } else if (this.type === PoolType.FIXED && numberOfWorkers === 0) {
