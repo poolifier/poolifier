@@ -23,38 +23,20 @@ export type ExitHandler<Worker> = (this: Worker, code: number) => void
  */
 export interface IPoolWorker {
   /**
-   * Register a listener to the message event.
+   * Register an event listener.
    *
-   * @param event `'message'`.
-   * @param handler The message handler.
+   * @param event The event.
+   * @param handler The event listener.
    */
-  on(event: 'message', handler: MessageHandler<this>): void
-  /**
-   * Register a listener to the error event.
-   *
-   * @param event `'error'`.
-   * @param handler The error handler.
-   */
-  on(event: 'error', handler: ErrorHandler<this>): void
-  /**
-   * Register a listener to the online event.
-   *
-   * @param event `'online'`.
-   * @param handler The online handler.
-   */
-  on(event: 'online', handler: OnlineHandler<this>): void
-  /**
-   * Register a listener to the exit event.
-   *
-   * @param event `'exit'`.
-   * @param handler The exit handler.
-   */
-  on(event: 'exit', handler: ExitHandler<this>): void
+  on: ((event: 'message', handler: MessageHandler<this>) => void) &
+  ((event: 'error', handler: ErrorHandler<this>) => void) &
+  ((event: 'online', handler: OnlineHandler<this>) => void) &
+  ((event: 'exit', handler: ExitHandler<this>) => void)
   /**
    * Register a listener to the exit event that will only performed once.
    *
    * @param event `'exit'`.
    * @param handler The exit handler.
    */
-  once(event: 'exit', handler: ExitHandler<this>): void
+  once: (event: 'exit', handler: ExitHandler<this>) => void
 }

@@ -62,7 +62,7 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
-  public registerWorkerMessageListener<Message extends Data | Response> (
+  public registerWorkerMessageListener<Message extends Data | Response>(
     messageChannel: ThreadWorkerWithMessageChannel,
     listener: (message: MessageValue<Message>) => void
   ): void {

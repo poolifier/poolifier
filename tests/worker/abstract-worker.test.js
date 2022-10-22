@@ -5,13 +5,19 @@ describe('Abstract worker test suite', () => {
   class StubPoolWithIsMainWorker extends ThreadWorker {
     constructor (fn, opts) {
       super(fn, opts)
-      this.mainWorker = false
+      this.mainWorker = undefined
     }
   }
 
-  it('Verify that fn function is mandatory', () => {
+  it('Verify that fn parameter is mandatory', () => {
     expect(() => new ClusterWorker()).toThrowError(
       new Error('fn parameter is mandatory')
+    )
+  })
+
+  it('Verify that fn parameter is a function', () => {
+    expect(() => new ClusterWorker({})).toThrowError(
+      new TypeError('fn parameter is not a function')
     )
   })
 
@@ -36,7 +42,7 @@ describe('Abstract worker test suite', () => {
   it('Verify that handleError function is working properly', () => {
     const error = new Error('My error')
     const worker = new ThreadWorker(() => {})
-    expect(worker.handleError(error)).toBe(error)
+    expect(worker.handleError(error)).toStrictEqual(error)
   })
 
   it('Verify that get main worker throw error if main worker is not set', () => {

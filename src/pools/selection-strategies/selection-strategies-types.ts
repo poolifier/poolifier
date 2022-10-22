@@ -30,7 +30,7 @@ export type WorkerChoiceStrategy = keyof typeof WorkerChoiceStrategies
 /**
  * Pool tasks usage statistics requirements.
  */
-export type RequiredStatistics = {
+export interface RequiredStatistics {
   runTime: boolean
 }
 
@@ -51,9 +51,9 @@ export interface IWorkerChoiceStrategy<Worker extends IPoolWorker> {
   /**
    * Resets strategy internals (counters, statistics, etc.).
    */
-  reset(): boolean
+  reset: () => boolean
   /**
    * Chooses a worker in the pool.
    */
-  choose(): Worker
+  choose: () => Worker
 }

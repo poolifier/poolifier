@@ -9,7 +9,8 @@
   },
   "github": {
     "release": true,
-    "releaseName": "v${version}"
+    "releaseName": "v${version}",
+    "tokenRef": "GITHUB_TOKEN_POOLIFIER"
   },
   "hooks": {
     "after:bump": "npm run sonar:properties"

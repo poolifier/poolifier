@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.7] - 2022-10-23
+
+### Changed
+
+- Switch to open collective FOSS project funding platform.
+- Switch to ts-standard linter configuration on TypeScript code.
+
+### Fixed
+
+- Fixed missing async on pool execute method.
+- Fixed typing in TypeScript example.
+- Fixed types in unit tests.
+
+## [2.3.6] - 2022-10-22
+
+### Changed
+
+- Cleanup pool attributes and methods.
+- Refine error types thrown.
+
+### Fixed
+
+- Fix continuous integration build on windows.
+- Fix code coverage reporting by using c8 instead of nyc.
+
 ## [2.3.5] - 2022-10-21
 
 ### Changed

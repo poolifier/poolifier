@@ -65,15 +65,15 @@ export interface IPool<Data = unknown, Response = unknown> {
    * @param data The input for the specified task. This can only be serializable data.
    * @returns Promise that will be resolved when the task is successfully completed.
    */
-  execute(data: Data): Promise<Response>
+  execute: (data: Data) => Promise<Response>
   /**
    * Shutdowns every current worker in this pool.
    */
-  destroy(): Promise<void>
+  destroy: () => Promise<void>
   /**
    * Sets the worker choice strategy in this pool.
    *
    * @param workerChoiceStrategy The worker choice strategy.
    */
-  setWorkerChoiceStrategy(workerChoiceStrategy: WorkerChoiceStrategy): void
+  setWorkerChoiceStrategy: (workerChoiceStrategy: WorkerChoiceStrategy) => void
 }

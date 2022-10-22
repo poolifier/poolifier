@@ -2,6 +2,5 @@
   "arrowParens": "avoid",
   "semi": false,
   "singleQuote": true,
-  "spaceBeforeFunctionParen": true,
   "trailingComma": "none"
 }

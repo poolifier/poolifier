@@ -5,7 +5,7 @@ import type { RequiredStatistics } from './selection-strategies-types'
 /**
  * Worker virtual task timestamp.
  */
-type WorkerVirtualTaskTimestamp = {
+interface WorkerVirtualTaskTimestamp {
   start: number
   end: number
 }
@@ -32,8 +32,8 @@ export class FairShareWorkerChoiceStrategy<
    *  Worker last virtual task execution timestamp.
    */
   private readonly workerLastVirtualTaskTimestamp: Map<
-    Worker,
-    WorkerVirtualTaskTimestamp
+  Worker,
+  WorkerVirtualTaskTimestamp
   > = new Map<Worker, WorkerVirtualTaskTimestamp>()
 
   /** @inheritDoc */

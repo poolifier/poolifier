@@ -77,7 +77,7 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
-  public registerWorkerMessageListener<Message extends Data | Response> (
+  public registerWorkerMessageListener<Message extends Data | Response>(
     worker: Worker,
     listener: (message: MessageValue<Message>) => void
   ): void {

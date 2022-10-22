@@ -2,7 +2,7 @@ import type {
   MessageValue,
   PromiseWorkerResponseWrapper
 } from '../utility-types'
-import { EMPTY_FUNCTION } from '../utils'
+import { EMPTY_FUNCTION, EMPTY_LITERAL } from '../utils'
 import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
 import type { PoolOptions } from './pool'
 import { PoolEmitter } from './pool'
@@ -32,8 +32,8 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public readonly workersTasksUsage: Map<Worker, TasksUsage> = new Map<
-    Worker,
-    TasksUsage
+  Worker,
+  TasksUsage
   >()
 
   /** @inheritDoc */
@@ -48,8 +48,8 @@ export abstract class AbstractPool<
    * When we receive a message from the worker we get a map entry and resolve/reject the promise based on the message.
    */
   protected promiseMap: Map<
-    number,
-    PromiseWorkerResponseWrapper<Worker, Response>
+  number,
+  PromiseWorkerResponseWrapper<Worker, Response>
   > = new Map<number, PromiseWorkerResponseWrapper<Worker, Response>>()
 
   /**
@@ -63,9 +63,9 @@ export abstract class AbstractPool<
    * Default to a strategy implementing a round robin algorithm.
    */
   protected workerChoiceStrategyContext: WorkerChoiceStrategyContext<
-    Worker,
-    Data,
-    Response
+  Worker,
+  Data,
+  Response
   >
 
   /**
@@ -80,7 +80,7 @@ export abstract class AbstractPool<
     public readonly filePath: string,
     public readonly opts: PoolOptions<Worker>
   ) {
-    if (this.isMain() === false) {
+    if (!this.isMain()) {
       throw new Error('Cannot start a pool from a worker!')
     }
     this.checkNumberOfWorkers(this.numberOfWorkers)
@@ -105,7 +105,7 @@ export abstract class AbstractPool<
             this.getWorkerRunningTasks(workerCreated) === 0
           ) {
             // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-            this.destroyWorker(workerCreated) as void
+            void (this.destroyWorker(workerCreated) as Promise<void>)
           }
         })
         return workerCreated
@@ -115,7 +115,7 @@ export abstract class AbstractPool<
   }
 
   private checkFilePath (filePath: string): void {
-    if (!filePath) {
+    if (filePath == null || filePath.length === 0) {
       throw new Error('Please specify a file with a worker implementation')
     }
   }
@@ -125,7 +125,7 @@ export abstract class AbstractPool<
       throw new Error(
         'Cannot instantiate a pool without specifying the number of workers'
       )
-    } else if (Number.isSafeInteger(numberOfWorkers) === false) {
+    } else if (!Number.isSafeInteger(numberOfWorkers)) {
       throw new TypeError(
         'Cannot instantiate a pool with a non integer number of workers'
       )
@@ -202,16 +202,17 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public execute (data: Data): Promise<Response> {
+  public async execute (data: Data): Promise<Response> {
     // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
     const res = this.internalExecute(worker, this.nextMessageId)
     this.checkAndEmitBusy()
     this.sendToWorker(worker, {
-      data: data ?? ({} as Data),
+      data: data ?? (EMPTY_LITERAL as Data),
       id: this.nextMessageId
     })
     ++this.nextMessageId
+    // eslint-disable-next-line @typescript-eslint/return-await
     return res
   }
 
@@ -307,17 +308,7 @@ export abstract class AbstractPool<
    */
   protected abstract registerWorkerMessageListener<
     Message extends Data | Response
-  > (worker: Worker, listener: (message: MessageValue<Message>) => void): void
-
-  protected internalExecute (
-    worker: Worker,
-    messageId: number
-  ): Promise<Response> {
-    this.beforePromiseWorkerResponseHook(worker)
-    return new Promise<Response>((resolve, reject) => {
-      this.promiseMap.set(messageId, { resolve, reject, worker })
-    })
-  }
+  >(worker: Worker, listener: (message: MessageValue<Message>) => void): void
 
   /**
    * Returns a newly created worker.
@@ -367,7 +358,7 @@ export abstract class AbstractPool<
       if (message.id !== undefined) {
         const promise = this.promiseMap.get(message.id)
         if (promise !== undefined) {
-          if (message.error) {
+          if (message.error != null) {
             promise.reject(message.error)
           } else {
             promise.resolve(message.data as Response)
@@ -379,8 +370,18 @@ export abstract class AbstractPool<
     }
   }
 
+  private async internalExecute (
+    worker: Worker,
+    messageId: number
+  ): Promise<Response> {
+    this.beforePromiseWorkerResponseHook(worker)
+    return await new Promise<Response>((resolve, reject) => {
+      this.promiseMap.set(messageId, { resolve, reject, worker })
+    })
+  }
+
   private checkAndEmitBusy (): void {
-    if (this.opts.enableEvents === true && this.busy === true) {
+    if (this.opts.enableEvents === true && this.busy) {
       this.emitter?.emit('busy')
     }
   }
@@ -410,7 +411,7 @@ export abstract class AbstractPool<
    * @param step Number of running tasks step.
    */
   private stepWorkerRunningTasks (worker: Worker, step: number): void {
-    if (this.checkWorkerTasksUsage(worker) === true) {
+    if (this.checkWorkerTasksUsage(worker)) {
       const tasksUsage = this.workersTasksUsage.get(worker) as TasksUsage
       tasksUsage.running = tasksUsage.running + step
       this.workersTasksUsage.set(worker, tasksUsage)
@@ -424,7 +425,7 @@ export abstract class AbstractPool<
    * @param step Number of run tasks step.
    */
   private stepWorkerRunTasks (worker: Worker, step: number): void {
-    if (this.checkWorkerTasksUsage(worker) === true) {
+    if (this.checkWorkerTasksUsage(worker)) {
       const tasksUsage = this.workersTasksUsage.get(worker) as TasksUsage
       tasksUsage.run = tasksUsage.run + step
       this.workersTasksUsage.set(worker, tasksUsage)
@@ -443,8 +444,8 @@ export abstract class AbstractPool<
   ): void {
     if (
       this.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .requiredStatistics.runTime === true &&
-      this.checkWorkerTasksUsage(worker) === true
+        .requiredStatistics.runTime &&
+      this.checkWorkerTasksUsage(worker)
     ) {
       const tasksUsage = this.workersTasksUsage.get(worker) as TasksUsage
       tasksUsage.runTime += taskRunTime ?? 0
@@ -463,7 +464,7 @@ export abstract class AbstractPool<
    */
   private checkWorkerTasksUsage (worker: Worker): boolean {
     const hasTasksUsage = this.workersTasksUsage.has(worker)
-    if (hasTasksUsage === false) {
+    if (!hasTasksUsage) {
       throw new Error('Worker could not be found in workers tasks usage map')
     }
     return hasTasksUsage

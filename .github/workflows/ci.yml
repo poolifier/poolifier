@@ -2,8 +2,7 @@ name: CI
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
@@ -27,7 +26,7 @@ jobs:
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis. This is needed for better sonar
 
-      - name: Set node version to ${{ matrix.node }}
+      - name: Setup node ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
@@ -44,11 +43,9 @@ jobs:
       - name: Tests
         run: npm run test
 
-      - name: Coverage & Linter Reports
+      - name: Coverage Report
         if: "github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '16.x'"
-        run: |
-          npm run coverage
-          npm run lint:report
+        run: npm run coverage
 
       - name: Sonar Code Analysis
         if: "github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '16.x'"
