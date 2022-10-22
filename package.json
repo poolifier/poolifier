@@ -1,6 +1,6 @@
 {
   "name": "poolifier",
-  "version": "2.3.5",
+  "version": "2.3.6",
   "description": "A fast, easy to use Node.js Worker Thread Pool and Cluster Pool implementation",
   "main": "lib/index.js",
   "scripts": {
@@ -71,7 +71,7 @@
     "@typescript-eslint/parser": "^5.40.1",
     "benchmark": "^2.1.4",
     "c8": "^7.12.0",
-    "eslint": "^8.25.0",
+    "eslint": "^8.26.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-define-config": "^1.7.0",
     "eslint-import-resolver-typescript": "^3.5.2",

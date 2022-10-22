@@ -1,4 +1,4 @@
-name: Generate TypeDoc
+name: Generate documentation
 
 on:
   workflow_dispatch:
@@ -10,16 +10,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
-          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
 
-      - name: Set node version to 16
+      - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
 
-      - name: Generate TypeDoc
+      - name: Generate documentation
         run: |
           npm ci
           npm run typedoc
@@ -29,11 +26,11 @@ jobs:
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git commit -m "Generate TypeDoc" -a
+          git commit -m "Generate documentation" -a
 
       - name: Push changes
         if: "github.repository == 'poolifier/poolifier' && github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'"
-        uses: ad-m/github-push-action@master
+        uses: CasperWA/push-protected@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN_PROTECTED }}
           branch: ${{ github.event.repository.default_branch }}
