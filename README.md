@@ -3,10 +3,10 @@
 </div>
 
 <h2 align="center">Node Thread Pool and Cluster Pool :arrow_double_up: :on:</h2>
-<h2 align="center">
+<!-- <h2 align="center">
   <a href="https://ko-fi.com/Q5Q31D6QY">
     <img alt="Ko-fi" src="https://ko-fi.com/img/githubbutton_sm.svg"></a>
-</h2>
+</h2> -->
 
 <p align="center">
   <a href="https://www.npmjs.com/package/poolifier">
