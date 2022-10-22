@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Cleanup pool attributes and methods.
+- Refine error types thrown.
+
+### Fixed
+
+- Fix continuous integration build on windows.
+- Fix code coverage reporting by using c8 instead of nyc.
+
 ## [2.3.5] - 2022-10-21
 
 ### Changed
