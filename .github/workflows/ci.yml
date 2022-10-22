@@ -44,12 +44,9 @@ jobs:
       - name: Tests
         run: npm run test
 
-      - name: Coverage & Linter Reports
+      - name: Coverage Report
         if: "github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '16.x'"
-        run: |
-          npm run coverage
-          npm run lint:report
-          sed -i 's+/home/runner/work/+/github/workspace/+g' reports/eslint.json
+        run: npm run coverage
 
       - name: Sonar Code Analysis
         if: "github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '16.x'"
