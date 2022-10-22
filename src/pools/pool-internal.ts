@@ -72,7 +72,7 @@ export interface IPoolInternal<
    *
    * @returns A free worker if there is one, otherwise `false`.
    */
-  findFreeWorker(): Worker | false
+  findFreeWorker: () => Worker | false
 
   /**
    * Gets worker index.
@@ -80,7 +80,7 @@ export interface IPoolInternal<
    * @param worker The worker.
    * @returns The worker index.
    */
-  getWorkerIndex(worker: Worker): number
+  getWorkerIndex: (worker: Worker) => number
 
   /**
    * Gets worker running tasks.
@@ -88,7 +88,7 @@ export interface IPoolInternal<
    * @param worker The worker.
    * @returns The number of tasks currently running on the worker.
    */
-  getWorkerRunningTasks(worker: Worker): number | undefined
+  getWorkerRunningTasks: (worker: Worker) => number | undefined
 
   /**
    * Gets worker average tasks runtime.
@@ -96,5 +96,5 @@ export interface IPoolInternal<
    * @param worker The worker.
    * @returns The average tasks runtime on the worker.
    */
-  getWorkerAverageTasksRunTime(worker: Worker): number | undefined
+  getWorkerAverageTasksRunTime: (worker: Worker) => number | undefined
 }

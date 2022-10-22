@@ -97,7 +97,7 @@ You can implement a worker-threads worker in a simple way by extending the class
 'use strict'
 const { ThreadWorker } = require('poolifier')
 
-function yourFunction (data) {
+function yourFunction(data) {
   // this will be executed in the worker thread,
   // the data will be received by using the execute method
   return { ok: 1 }

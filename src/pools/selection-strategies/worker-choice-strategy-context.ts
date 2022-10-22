@@ -7,7 +7,7 @@ import type {
   WorkerChoiceStrategy
 } from './selection-strategies-types'
 import { WorkerChoiceStrategies } from './selection-strategies-types'
-import { SelectionStrategiesUtils } from './selection-strategies-utils'
+import { getWorkerChoiceStrategy } from './selection-strategies-utils'
 
 /**
  * The worker choice strategy context.
@@ -32,7 +32,7 @@ export class WorkerChoiceStrategyContext<
    */
   public constructor (
     private readonly pool: IPoolInternal<Worker, Data, Response>,
-    private createDynamicallyWorkerCallback: () => Worker,
+    private readonly createDynamicallyWorkerCallback: () => Worker,
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     this.setWorkerChoiceStrategy(workerChoiceStrategy)
@@ -54,10 +54,7 @@ export class WorkerChoiceStrategyContext<
         workerChoiceStrategy
       )
     }
-    return SelectionStrategiesUtils.getWorkerChoiceStrategy(
-      this.pool,
-      workerChoiceStrategy
-    )
+    return getWorkerChoiceStrategy(this.pool, workerChoiceStrategy)
   }
 
   /**
@@ -78,9 +75,8 @@ export class WorkerChoiceStrategyContext<
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
     this.workerChoiceStrategy?.reset()
-    this.workerChoiceStrategy = this.getPoolWorkerChoiceStrategy(
-      workerChoiceStrategy
-    )
+    this.workerChoiceStrategy =
+      this.getPoolWorkerChoiceStrategy(workerChoiceStrategy)
   }
 
   /**

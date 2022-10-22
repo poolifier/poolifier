@@ -7,12 +7,10 @@ Another thing that you can do to contribute is to build something on top of ring
 
 Please ask your PR to be merged on **master** branch.
 
-**How to run tests**
-
-**Unit tests and Coverage**
+**How to run unit tests and coverage**
 
 ```bash
-  npm run test
+  npm test
   npm run coverage
 ```
 
@@ -22,10 +20,10 @@ Please ask your PR to be merged on **master** branch.
   npm run lint
 ```
 
-**How to lint and format (with prettier) your code**
+**How to lint and format to standard JS your code**
 
 ```bash
-  npm run format && npm run lint:fix
+  npm run lint:fix
 ```
 
 ### Project pillars

@@ -27,7 +27,7 @@ export class LessRecentlyUsedWorkerChoiceStrategy<
       const workerRunningTasks = this.pool.getWorkerRunningTasks(
         worker
       ) as number
-      if (this.isDynamicPool === false && workerRunningTasks === 0) {
+      if (!this.isDynamicPool && workerRunningTasks === 0) {
         return worker
       } else if (workerRunningTasks < minNumberOfRunningTasks) {
         lessRecentlyUsedWorker = worker

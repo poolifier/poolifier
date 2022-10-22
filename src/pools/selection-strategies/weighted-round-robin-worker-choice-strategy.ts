@@ -7,7 +7,7 @@ import type { RequiredStatistics } from './selection-strategies-types'
 /**
  * Virtual task runtime.
  */
-type TaskRunTime = {
+interface TaskRunTime {
   weight: number
   runTime: number
 }
@@ -42,8 +42,8 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
    * Per worker virtual task runtime map.
    */
   private readonly workersTaskRunTime: Map<Worker, TaskRunTime> = new Map<
-    Worker,
-    TaskRunTime
+  Worker,
+  TaskRunTime
   >()
 
   /**
@@ -68,10 +68,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public choose (): Worker {
     const chosenWorker = this.pool.workers[this.currentWorkerIndex]
-    if (
-      this.isDynamicPool === true &&
-      this.workersTaskRunTime.has(chosenWorker) === false
-    ) {
+    if (this.isDynamicPool && !this.workersTaskRunTime.has(chosenWorker)) {
       this.initWorkerTaskRunTime(chosenWorker)
     }
     const workerTaskRunTime =
