@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Switch to open collective FOSS project funding platform.
+
 ## [2.3.6] - 2022-10-22
 
 ### Changed
