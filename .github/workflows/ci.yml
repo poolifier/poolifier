@@ -49,6 +49,7 @@ jobs:
         run: |
           npm run coverage
           npm run lint:report
+          sed -i 's+/home/runner/work/*+/github/workspace+g' reports/eslint.json
 
       - name: Sonar Code Analysis
         if: "github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '16.x'"
