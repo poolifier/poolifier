@@ -15,6 +15,7 @@
     "test:debug": "npm run build && mocha --no-parallel --inspect 'tests/**/*.test.js'",
     "coverage": "c8 report --reporter=lcov",
     "coverage:html": "c8 report --reporter=html",
+    "format": "prettier . --write; ts-standard . --fix",
     "lint": "eslint . --cache",
     "lint:fix": "eslint . --cache --fix",
     "lint:report": "eslint . --cache --format json --output-file reports/eslint.json",
@@ -24,8 +25,13 @@
     "prepublishOnly": "npm run build:prod"
   },
   "ts-standard": {
-    "ignore": [
-      "tests/**/*.js"
+    "globals": [
+      "describe",
+      "it",
+      "before",
+      "after",
+      "beforeEach",
+      "afterEach"
     ]
   },
   "engines": {

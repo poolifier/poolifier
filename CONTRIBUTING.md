@@ -5,7 +5,7 @@ This repo use standard js style, please use it if you want to contribute
 Take tasks from todo list, develop a new feature or fix a bug and do a pull request.  
 Another thing that you can do to contribute is to build something on top of ring-election and link ring-election to your project
 
-Please ask your PR to be merged on **master** branch.
+Please do your PR on **master** branch.
 
 **How to run unit tests and coverage**
 

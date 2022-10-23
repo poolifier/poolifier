@@ -114,7 +114,9 @@ export abstract class AbstractWorker<
    */
   private checkFunctionInput (fn: (data: Data) => Response): void {
     if (fn == null) throw new Error('fn parameter is mandatory')
-    if (typeof fn !== 'function') { throw new TypeError('fn parameter is not a function') }
+    if (typeof fn !== 'function') {
+      throw new TypeError('fn parameter is not a function')
+    }
   }
 
   /**
