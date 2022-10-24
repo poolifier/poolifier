@@ -1,7 +1,6 @@
 import analyze from 'rollup-plugin-analyzer'
 import command from 'rollup-plugin-command'
 import del from 'rollup-plugin-delete'
-import istanbul from 'rollup-plugin-istanbul'
 import { terser } from 'rollup-plugin-terser'
 import ts from 'rollup-plugin-ts'
 
@@ -27,7 +26,6 @@ export default {
         : 'tsconfig.json',
       browserslist: false
     }),
-    isDevelopmentBuild && istanbul(),
     del({
       targets: ['lib/*']
     }),
