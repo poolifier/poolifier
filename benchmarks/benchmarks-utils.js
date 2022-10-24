@@ -9,7 +9,7 @@ async function runPoolifierTest (pool, { tasks, workerData }) {
         .then(() => {
           executions++
           if (executions === tasks) {
-            return resolve('FINISH')
+            return resolve({ ok: 1 })
           }
           return null
         })
@@ -77,13 +77,7 @@ function executeWorkerFunction (data) {
   }
 }
 
-const LIST_FORMATTER = new Intl.ListFormat('en-US', {
-  style: 'long',
-  type: 'conjunction'
-})
-
 module.exports = {
-  LIST_FORMATTER,
   WorkerFunctions,
   executeWorkerFunction,
   generateRandomInteger,

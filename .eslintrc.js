@@ -34,6 +34,7 @@ module.exports = defineConfig({
       'warn',
       {
         skipWords: [
+          'benny',
           'browserslist',
           'builtins',
           'christopher',
