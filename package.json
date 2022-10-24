@@ -2,6 +2,7 @@
   "name": "poolifier",
   "version": "2.3.7",
   "description": "A fast, easy to use Node.js Worker Thread Pool and Cluster Pool implementation",
+  "license": "MIT",
   "main": "lib/index.js",
   "scripts": {
     "prepare": "node prepare.js",
@@ -70,7 +71,12 @@
       "url": "https://github.com/jerome-benoit"
     }
   ],
-  "license": "MIT",
+  "funding": [
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/poolifier"
+    }
+  ],
   "bugs": {
     "url": "https://github.com/poolifier/poolifier/issues"
   },
