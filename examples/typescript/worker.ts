@@ -1,7 +1,7 @@
 import { ThreadWorker } from 'poolifier'
 
 export interface MyData {
-  ok: number
+  ok: 0 | 1
 }
 
 export interface MyResponse {
