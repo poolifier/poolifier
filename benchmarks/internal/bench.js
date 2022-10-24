@@ -101,3 +101,8 @@ Benchmark.suite(
     details: true
   })
 )
+  .then(() => {
+    // eslint-disable-next-line n/no-process-exit
+    return process.exit()
+  })
+  .catch(err => console.error(err))
