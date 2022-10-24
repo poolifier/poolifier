@@ -73,4 +73,5 @@ build/config.gypi
 .scannerwork
 *.bak
 lib
-reports
+reports/
+benchmarks/internal/results/

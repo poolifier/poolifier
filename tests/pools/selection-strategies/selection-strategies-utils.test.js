@@ -1,7 +1,7 @@
 const { expect } = require('expect')
 // const sinon = require('sinon')
 const {
-  SelectionStrategiesUtils
+  getWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/selection-strategies-utils')
 const {
   FixedThreadPool,
@@ -37,12 +37,12 @@ describe('Selection strategies utils test suite', () => {
   })
 
   it('Verify that getWorkerChoiceStrategy() default return ROUND_ROBIN strategy', () => {
-    const strategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(pool)
+    const strategy = getWorkerChoiceStrategy(pool)
     expect(strategy).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
   })
 
   it('Verify that getWorkerChoiceStrategy() can return ROUND_ROBIN strategy', () => {
-    const strategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(
+    const strategy = getWorkerChoiceStrategy(
       pool,
       WorkerChoiceStrategies.ROUND_ROBIN
     )
@@ -50,7 +50,7 @@ describe('Selection strategies utils test suite', () => {
   })
 
   it('Verify that getWorkerChoiceStrategy() can return LESS_RECENTLY_USED strategy', () => {
-    const strategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(
+    const strategy = getWorkerChoiceStrategy(
       pool,
       WorkerChoiceStrategies.LESS_RECENTLY_USED
     )
@@ -58,7 +58,7 @@ describe('Selection strategies utils test suite', () => {
   })
 
   it('Verify that getWorkerChoiceStrategy() can return FAIR_SHARE strategy', () => {
-    const strategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(
+    const strategy = getWorkerChoiceStrategy(
       pool,
       WorkerChoiceStrategies.FAIR_SHARE
     )
@@ -66,7 +66,7 @@ describe('Selection strategies utils test suite', () => {
   })
 
   it('Verify that getWorkerChoiceStrategy() can return WEIGHTED_ROUND_ROBIN strategy', () => {
-    const strategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(
+    const strategy = getWorkerChoiceStrategy(
       pool,
       WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     )
@@ -75,7 +75,7 @@ describe('Selection strategies utils test suite', () => {
 
   it('Verify that getWorkerChoiceStrategy() throw error on unknown strategy', () => {
     expect(() => {
-      SelectionStrategiesUtils.getWorkerChoiceStrategy(pool, 'UNKNOWN_STRATEGY')
+      getWorkerChoiceStrategy(pool, 'UNKNOWN_STRATEGY')
     }).toThrowError(
       new Error("Worker choice strategy 'UNKNOWN_STRATEGY' not found")
     )

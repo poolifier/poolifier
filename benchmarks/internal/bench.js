@@ -1,4 +1,4 @@
-const Benchmark = require('benchmark')
+const Benchmark = require('benny')
 const {
   dynamicClusterTest,
   dynamicClusterTestFairShare,
@@ -23,77 +23,86 @@ const {
   fixedThreadTestLessRecentlyUsed,
   fixedThreadTestWeightedRoundRobin
 } = require('./thread/fixed')
-const { LIST_FORMATTER } = require('../benchmarks-utils')
 
-const suite = new Benchmark.Suite('poolifier')
+const resultsFile = 'poolifier'
+const resultsFolder = 'benchmarks/internal/results'
 
-// Wait some seconds before start, pools need to load threads !!!
-setTimeout(async () => {
-  test()
-}, 3000)
-
-async function test () {
-  // Add tests
-  suite
-    .add('Poolifier:Fixed:ThreadPool', async function () {
-      await fixedThreadTest()
-    })
-    .add('Poolifier:Fixed:ThreadPool:LessRecentlyUsed', async function () {
-      await fixedThreadTestLessRecentlyUsed()
-    })
-    .add('Poolifier:Fixed:ThreadPool:WeightedRoundRobin', async function () {
-      await fixedThreadTestWeightedRoundRobin()
-    })
-    .add('Poolifier:Fixed:ThreadPool:FairShare', async function () {
-      await fixedThreadTestFairShare()
-    })
-    .add('Poolifier:Dynamic:ThreadPool', async function () {
-      await dynamicThreadTest()
-    })
-    .add('Poolifier:Dynamic:ThreadPool:LessRecentlyUsed', async function () {
-      await dynamicThreadTestLessRecentlyUsed()
-    })
-    .add('Poolifier:Dynamic:ThreadPool:WeightedRoundRobin', async function () {
-      await dynamicThreadTestWeightedRoundRobin()
-    })
-    .add('Poolifier:Dynamic:ThreadPool:FairShare', async function () {
-      await dynamicThreadTestFairShare()
-    })
-    .add('Poolifier:Fixed:ClusterPool', async function () {
-      await fixedClusterTest()
-    })
-    .add('Poolifier:Fixed:ClusterPool:LessRecentlyUsed', async function () {
-      await fixedClusterTestLessRecentlyUsed()
-    })
-    .add('Poolifier:Fixed:ClusterPool:WeightedRoundRobin', async function () {
-      await fixedClusterTestWeightedRoundRobin
-    })
-    .add('Poolifier:Fixed:ClusterPool:FairShare', async function () {
-      await fixedClusterTestFairShare()
-    })
-    .add('Poolifier:Dynamic:ClusterPool', async function () {
-      await dynamicClusterTest()
-    })
-    .add('Poolifier:Dynamic:ClusterPool:LessRecentlyUsed', async function () {
-      await dynamicClusterTestLessRecentlyUsed()
-    })
-    .add('Poolifier:Dynamic:ClusterPool:WeightedRoundRobin', async function () {
+Benchmark.suite(
+  'Poolifier',
+  Benchmark.add('Poolifier:Fixed:ThreadPool', async () => {
+    await fixedThreadTest()
+  }),
+  Benchmark.add('Poolifier:Fixed:ThreadPool:LessRecentlyUsed', async () => {
+    await fixedThreadTestLessRecentlyUsed()
+  }),
+  Benchmark.add('Poolifier:Fixed:ThreadPool:WeightedRoundRobin', async () => {
+    await fixedThreadTestWeightedRoundRobin()
+  }),
+  Benchmark.add('Poolifier:Fixed:ThreadPool:FairShare', async () => {
+    await fixedThreadTestFairShare()
+  }),
+  Benchmark.add('Poolifier:Dynamic:ThreadPool', async () => {
+    await dynamicThreadTest()
+  }),
+  Benchmark.add('Poolifier:Dynamic:ThreadPool:LessRecentlyUsed', async () => {
+    await dynamicThreadTestLessRecentlyUsed()
+  }),
+  Benchmark.add('Poolifier:Dynamic:ThreadPool:WeightedRoundRobin', async () => {
+    await dynamicThreadTestWeightedRoundRobin()
+  }),
+  Benchmark.add('Poolifier:Dynamic:ThreadPool:FairShare', async () => {
+    await dynamicThreadTestFairShare()
+  }),
+  Benchmark.add('Poolifier:Fixed:ClusterPool', async () => {
+    await fixedClusterTest()
+  }),
+  Benchmark.add('Poolifier:Fixed:ClusterPool:LessRecentlyUsed', async () => {
+    await fixedClusterTestLessRecentlyUsed()
+  }),
+  Benchmark.add('Poolifier:Fixed:ClusterPool:WeightedRoundRobin', async () => {
+    await fixedClusterTestWeightedRoundRobin
+  }),
+  Benchmark.add('Poolifier:Fixed:ClusterPool:FairShare', async () => {
+    await fixedClusterTestFairShare()
+  }),
+  Benchmark.add('Poolifier:Dynamic:ClusterPool', async () => {
+    await dynamicClusterTest()
+  }),
+  Benchmark.add('Poolifier:Dynamic:ClusterPool:LessRecentlyUsed', async () => {
+    await dynamicClusterTestLessRecentlyUsed()
+  }),
+  Benchmark.add(
+    'Poolifier:Dynamic:ClusterPool:WeightedRoundRobin',
+    async () => {
       await dynamicClusterTestWeightedRoundRobin
-    })
-    .add('Poolifier:Dynamic:ClusterPool:FairShare', async function () {
-      await dynamicClusterTestFairShare()
-    })
-    // Add listeners
-    .on('cycle', function (event) {
-      console.log(event.target.toString())
-    })
-    .on('complete', function () {
-      console.log(
-        'Fastest is ' +
-          LIST_FORMATTER.format(this.filter('fastest').map('name'))
-      )
-      // eslint-disable-next-line n/no-process-exit
-      process.exit()
-    })
-    .run({ async: true })
-}
+    }
+  ),
+  Benchmark.add('Poolifier:Dynamic:ClusterPool:FairShare', async () => {
+    await dynamicClusterTestFairShare()
+  }),
+  Benchmark.cycle(),
+  Benchmark.complete(),
+  Benchmark.save({
+    file: resultsFile,
+    folder: resultsFolder,
+    format: 'json',
+    details: true
+  }),
+  Benchmark.save({
+    file: resultsFile,
+    folder: resultsFolder,
+    format: 'chart.html',
+    details: true
+  }),
+  Benchmark.save({
+    file: resultsFile,
+    folder: resultsFolder,
+    format: 'table.html',
+    details: true
+  })
+)
+  .then(() => {
+    // eslint-disable-next-line n/no-process-exit
+    return process.exit()
+  })
+  .catch(err => console.error(err))

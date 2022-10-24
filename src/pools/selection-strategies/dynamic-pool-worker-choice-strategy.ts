@@ -6,7 +6,7 @@ import type {
   WorkerChoiceStrategy
 } from './selection-strategies-types'
 import { WorkerChoiceStrategies } from './selection-strategies-types'
-import { SelectionStrategiesUtils } from './selection-strategies-utils'
+import { getWorkerChoiceStrategy } from './selection-strategies-utils'
 
 /**
  * Selects the next worker for dynamic pool.
@@ -20,7 +20,7 @@ export class DynamicPoolWorkerChoiceStrategy<
   Data,
   Response
 > extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
-  private workerChoiceStrategy: IWorkerChoiceStrategy<Worker>
+  private readonly workerChoiceStrategy: IWorkerChoiceStrategy<Worker>
 
   /**
    * Constructs a worker choice strategy for dynamic pool.
@@ -35,7 +35,7 @@ export class DynamicPoolWorkerChoiceStrategy<
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     super(pool)
-    this.workerChoiceStrategy = SelectionStrategiesUtils.getWorkerChoiceStrategy(
+    this.workerChoiceStrategy = getWorkerChoiceStrategy(
       this.pool,
       workerChoiceStrategy
     )
@@ -50,11 +50,11 @@ export class DynamicPoolWorkerChoiceStrategy<
   /** @inheritDoc */
   public choose (): Worker {
     const freeWorker = this.pool.findFreeWorker()
-    if (freeWorker) {
+    if (freeWorker !== false) {
       return freeWorker
     }
 
-    if (this.pool.busy === true) {
+    if (this.pool.busy) {
       return this.workerChoiceStrategy.choose()
     }
 

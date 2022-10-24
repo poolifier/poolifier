@@ -71,7 +71,7 @@ export abstract class AbstractWorker<
     this.checkWorkerOptions(this.opts)
     this.lastTaskTimestamp = Date.now()
     // Keep the worker active
-    if (isMain === false) {
+    if (!isMain) {
       this.aliveInterval = setInterval(
         this.checkAlive.bind(this),
         (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) / 2
@@ -92,7 +92,7 @@ export abstract class AbstractWorker<
       value.numberOfWorkers !== undefined &&
       value.tasksSharedUsage !== undefined
     ) {
-      if (!this.tasksSharedUsage) {
+      if (this.tasksSharedUsage != null) {
         this.tasksSharedUsage = new SharedUsage(
           value.numberOfWorkers,
           value.tasksSharedUsage
@@ -115,16 +115,16 @@ export abstract class AbstractWorker<
       this.mainWorker = value.parent
     } else if (value.kill !== undefined) {
       // Here is time to kill this worker, just clearing the interval
-      if (this.aliveInterval) clearInterval(this.aliveInterval)
+      if (this.aliveInterval != null) clearInterval(this.aliveInterval)
       this.emitDestroy()
     }
   }
 
-  private checkWorkerOptions (opts: WorkerOptions) {
+  private checkWorkerOptions (opts: WorkerOptions): void {
     this.opts.killBehavior = opts.killBehavior ?? DEFAULT_KILL_BEHAVIOR
     this.opts.maxInactiveTime =
       opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME
-    this.opts.async = !!opts.async
+    this.opts.async = opts.async ?? false
   }
 
   /**
@@ -133,7 +133,10 @@ export abstract class AbstractWorker<
    * @param fn The function that should be defined.
    */
   private checkFunctionInput (fn: (data: Data) => Response): void {
-    if (!fn) throw new Error('fn parameter is mandatory')
+    if (fn == null) throw new Error('fn parameter is mandatory')
+    if (typeof fn !== 'function') {
+      throw new TypeError('fn parameter is not a function')
+    }
   }
 
   /**
@@ -142,7 +145,7 @@ export abstract class AbstractWorker<
    * @returns Reference to the main worker.
    */
   protected getMainWorker (): MainWorker {
-    if (!this.mainWorker) {
+    if (this.mainWorker == null) {
       throw new Error('Main worker was not set')
     }
     return this.mainWorker
@@ -241,7 +244,7 @@ export abstract class AbstractWorker<
     if (workerId === undefined) {
       throw new Error('Worker id not defined')
     }
-    if (!this.tasksSharedUsage) {
+    if (this.tasksSharedUsage != null) {
       throw new Error('Tasks shared usage not initialized')
     }
     this.tasksSharedUsage[`worker${workerId}-running`]++
@@ -262,7 +265,7 @@ export abstract class AbstractWorker<
     if (workerId === undefined) {
       throw new Error('Worker id not defined')
     }
-    if (!this.tasksSharedUsage) {
+    if (this.tasksSharedUsage != null) {
       throw new Error('Tasks shared usage not initialized')
     }
     this.tasksSharedUsage[`worker${workerId}-running`]--
@@ -274,8 +277,9 @@ export abstract class AbstractWorker<
   private updateWorkerTasksSharedUsageRunTime (
     workerId: number | undefined,
     taskRunTime: number
-  ) {
-    this.tasksSharedUsage[`worker${workerId as number}-runTime`] += taskRunTime
+  ): void {
+    (this.tasksSharedUsage[`worker${workerId as number}-runTime`] as number) +=
+      taskRunTime
     if (this.tasksSharedUsage[`worker${workerId as number}-run`] !== 0) {
       this.tasksSharedUsage[`worker${workerId as number}-avgRunTime`] =
         this.tasksSharedUsage[`worker${workerId as number}-runTime`] /

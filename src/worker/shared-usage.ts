@@ -15,10 +15,10 @@ export class SharedUsage {
     private readonly numberOfWorkers: number,
     sharedUsageArrayBuffer: SharedArrayBuffer
   ) {
-    if (Number.isSafeInteger(numberOfWorkers) === false) {
+    if (!Number.isSafeInteger(numberOfWorkers)) {
       throw new TypeError('numberOfWorkers must be an integer')
     }
-    if (sharedUsageArrayBuffer instanceof SharedArrayBuffer === false) {
+    if (!(sharedUsageArrayBuffer instanceof SharedArrayBuffer)) {
       throw new TypeError(
         'sharedUsageArrayBuffer must be an instance of SharedArrayBuffer'
       )
@@ -28,7 +28,7 @@ export class SharedUsage {
       let i = 0, startOffset = 0;
       i < this.numberOfWorkers;
       i++,
-        startOffset +=
+      startOffset +=
           3 * Int32Array.BYTES_PER_ELEMENT + Float64Array.BYTES_PER_ELEMENT
     ) {
       Object.defineProperty(this, `worker${i}-run`, {

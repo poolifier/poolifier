@@ -12,14 +12,12 @@ module.exports = defineConfig({
     ecmaVersion: 2021,
     sourceType: 'module'
   },
-  plugins: ['promise', 'prettierx', 'jsdoc', 'spellcheck'],
+  plugins: ['promise', 'jsdoc', 'spellcheck'],
   extends: [
-    'standard',
     'eslint:recommended',
     'plugin:import/recommended',
     'plugin:jsdoc/recommended',
-    'plugin:promise/recommended',
-    'plugin:prettierx/standardx'
+    'plugin:promise/recommended'
   ],
   rules: {
     'no-void': 'off',
@@ -36,6 +34,7 @@ module.exports = defineConfig({
       'warn',
       {
         skipWords: [
+          'benny',
           'browserslist',
           'builtins',
           'christopher',
@@ -84,6 +83,7 @@ module.exports = defineConfig({
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
+        'standard-with-typescript',
         'plugin:import/typescript'
       ],
       rules: {
@@ -141,7 +141,7 @@ module.exports = defineConfig({
     },
     {
       files: ['**/*.js'],
-      extends: ['plugin:n/recommended']
+      extends: ['plugin:n/recommended', 'standard']
     },
     {
       files: ['tests/**/*.js'],

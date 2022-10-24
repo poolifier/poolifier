@@ -3,10 +3,6 @@
 </div>
 
 <h2 align="center">Node Thread Pool and Cluster Pool :arrow_double_up: :on:</h2>
-<h2 align="center">
-  <a href="https://ko-fi.com/Q5Q31D6QY">
-    <img alt="Ko-fi" src="https://ko-fi.com/img/githubbutton_sm.svg"></a>
-</h2>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/poolifier">
@@ -16,11 +12,13 @@
   <a href="https://sonarcloud.io/dashboard?id=pioardi_poolifier">
     <img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=alert_status"></a>
   <a href="https://sonarcloud.io/component_measures/metric/coverage/list?id=pioardi_poolifier">
-    <img alt="Code coverage" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=coverage"></a>
+    <img alt="Code Coverage" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=coverage"></a>
   <a href="https://standardjs.com">
     <img alt="Javascript Standard Style Guide" src="https://img.shields.io/badge/code_style-standard-brightgreen.svg"></a>
   <a href="https://gitter.im/poolifier/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
     <img alt="Gitter chat" src="https://badges.gitter.im/poolifier/community.svg"></a>
+  <a href="https://opencollective.com/poolifier">
+    <img alt="Open Collective" src="https://opencollective.com/poolifier/tiers/badge.svg"></a>
   <a href="https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot">
     <img alt="Dependabot" src="https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot"></a>
   <a href="http://makeapullrequest.com">
@@ -99,7 +97,7 @@ You can implement a worker-threads worker in a simple way by extending the class
 'use strict'
 const { ThreadWorker } = require('poolifier')
 
-function yourFunction (data) {
+function yourFunction(data) {
   // this will be executed in the worker thread,
   // the data will be received by using the execute method
   return { ok: 1 }

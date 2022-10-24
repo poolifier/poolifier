@@ -9,7 +9,7 @@ async function runPoolifierTest (pool, { tasks, workerData }) {
         .then(() => {
           executions++
           if (executions === tasks) {
-            return resolve('FINISH')
+            return resolve({ ok: 1 })
           }
           return null
         })
@@ -31,8 +31,11 @@ function jsonIntegerSerialization (n) {
 }
 
 function generateRandomInteger (max = Number.MAX_SAFE_INTEGER, min = 0) {
+  if (max < min || max < 0 || min < 0) {
+    throw new RangeError('Invalid interval')
+  }
   max = Math.floor(max)
-  if (min) {
+  if (min != null && min !== 0) {
     min = Math.ceil(min)
     return Math.floor(Math.random() * (max - min + 1)) + min
   }
@@ -77,13 +80,7 @@ function executeWorkerFunction (data) {
   }
 }
 
-const LIST_FORMATTER = new Intl.ListFormat('en-US', {
-  style: 'long',
-  type: 'conjunction'
-})
-
 module.exports = {
-  LIST_FORMATTER,
   WorkerFunctions,
   executeWorkerFunction,
   generateRandomInteger,

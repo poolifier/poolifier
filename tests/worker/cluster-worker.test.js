@@ -10,6 +10,6 @@ describe('Cluster worker test suite', () => {
   it('Verify that handleError function works properly', () => {
     const errorMessage = 'Error as a string'
     const worker = new ClusterWorker(() => {})
-    expect(worker.handleError(errorMessage)).toBe(errorMessage)
+    expect(worker.handleError(errorMessage)).toStrictEqual(errorMessage)
   })
 })

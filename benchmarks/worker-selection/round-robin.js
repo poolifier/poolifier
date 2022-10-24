@@ -1,7 +1,4 @@
-const Benchmark = require('benchmark')
-const { LIST_FORMATTER } = require('../benchmarks-utils')
-
-const suite = new Benchmark.Suite()
+const Benchmark = require('benny')
 
 function generateWorkersArray (numberOfWorkers) {
   return [...Array(numberOfWorkers).keys()]
@@ -39,31 +36,24 @@ function roundRobinIncrementModulo () {
   return chosenWorker
 }
 
-suite
-  .add('Ternary off by one', function () {
+Benchmark.suite(
+  'Less recently used',
+  Benchmark.add('Ternary off by one', () => {
     nextWorkerIndex = 0
     roundRobinTernaryOffByOne()
-  })
-  .add('Ternary with negation', function () {
+  }),
+  Benchmark.add('Ternary with negation', () => {
     nextWorkerIndex = 0
     roundRobinTernaryWithNegation()
-  })
-  .add('Ternary with pre-choosing', function () {
+  }),
+  Benchmark.add('Ternary with pre-choosing', () => {
     nextWorkerIndex = 0
     roundRobinTernaryWithPreChoosing()
-  })
-  .add('Increment+Modulo', function () {
+  }),
+  Benchmark.add('Increment+Modulo', () => {
     nextWorkerIndex = 0
     roundRobinIncrementModulo()
-  })
-  .on('cycle', function (event) {
-    console.log(event.target.toString())
-  })
-  .on('complete', function () {
-    console.log(
-      'Fastest is ' + LIST_FORMATTER.format(this.filter('fastest').map('name'))
-    )
-    // eslint-disable-next-line n/no-process-exit
-    process.exit()
-  })
-  .run()
+  }),
+  Benchmark.cycle(),
+  Benchmark.complete()
+)
