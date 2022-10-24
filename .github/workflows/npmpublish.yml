@@ -46,8 +46,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Read package.json version
-        uses: tyankatsu0105/read-package-version-actions@v1
         id: package-version
+        uses: jaywcjlove/github-action-package@main
 
       - name: Install
         run: npm ci

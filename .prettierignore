@@ -1,6 +1,7 @@
 .nyc_output/
 coverage/
 reports/
+benchmarks/internal/results/
 docs/
 outputs/
 lib/
