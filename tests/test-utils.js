@@ -38,7 +38,7 @@ class TestUtils {
 
   static generateRandomInteger (max = Number.MAX_SAFE_INTEGER, min = 0) {
     max = Math.floor(max)
-    if (min) {
+    if (min != null || min !== 0) {
       min = Math.ceil(min)
       return Math.floor(Math.random() * (max - min + 1)) + min
     }

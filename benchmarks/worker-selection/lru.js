@@ -50,7 +50,7 @@ const defaultPivotIndexSelect = (leftIndex, rightIndex) => {
 }
 
 const randomPivotIndexSelect = (leftIndex, rightIndex) => {
-  return generateRandomInteger(leftIndex, rightIndex)
+  return generateRandomInteger(rightIndex, leftIndex)
 }
 
 function swap (array, index1, index2) {
