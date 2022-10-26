@@ -22,7 +22,6 @@
     "lint:report": "eslint . --cache --format json --output-file reports/eslint.json",
     "release": "release-it",
     "typedoc": "typedoc",
-    "sonar:properties": "./updateSonarProps.sh",
     "prepublishOnly": "npm run build:prod"
   },
   "ts-standard": {
@@ -85,6 +84,7 @@
     "lib"
   ],
   "devDependencies": {
+    "@release-it/bumper": "^4.0.0",
     "@release-it/keep-a-changelog": "^3.1.0",
     "@types/node": "^18.11.5",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
