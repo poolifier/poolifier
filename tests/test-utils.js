@@ -2,8 +2,8 @@ const { WorkerFunctions } = require('./test-types')
 
 class TestUtils {
   static async waitExits (pool, numberOfExitEventsToWait) {
-    let exitEvents = 0
     return new Promise(resolve => {
+      let exitEvents = 0
       pool.workers.forEach(w => {
         w.on('exit', () => {
           exitEvents++
