@@ -12,10 +12,10 @@
     "releaseName": "v${version}",
     "tokenRef": "GITHUB_TOKEN_POOLIFIER"
   },
-  "hooks": {
-    "after:bump": "npm run sonar:properties"
-  },
   "plugins": {
+    "@release-it/bumper": {
+      "out": ["sonar-project.properties"]
+    },
     "@release-it/keep-a-changelog": {
       "filename": "CHANGELOG.md",
       "addUnreleased": true
