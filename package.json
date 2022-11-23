@@ -100,7 +100,7 @@
     "eslint-plugin-jsdoc": "^39.6.2",
     "eslint-plugin-n": "^15.5.1",
     "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-spellcheck": "^0.0.19",
+    "eslint-plugin-spellcheck": "^0.0.20",
     "expect": "^29.3.1",
     "husky": "^8.0.2",
     "lint-staged": "^13.0.3",
