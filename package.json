@@ -103,7 +103,7 @@
     "eslint-plugin-spellcheck": "^0.0.20",
     "expect": "^29.3.1",
     "husky": "^8.0.2",
-    "lint-staged": "^13.0.3",
+    "lint-staged": "^13.0.4",
     "microtime": "^3.1.1",
     "mocha": "^10.1.0",
     "mochawesome": "^7.1.3",
