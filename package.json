@@ -97,7 +97,7 @@
     "eslint-define-config": "^1.12.0",
     "eslint-import-resolver-typescript": "^3.5.2",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jsdoc": "^39.6.3",
+    "eslint-plugin-jsdoc": "^39.6.4",
     "eslint-plugin-n": "^15.5.1",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-spellcheck": "^0.0.20",
