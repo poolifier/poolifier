@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 
 ### The -t argument permit to specify the type of task that you want to benchmark.
-### The -s argument permit to specify the size of task that you want to benchmark.
 ### Supported values are CPU_INTENSIVE, IO_INTENSIVE
+### The -s argument permit to specify the size of task that you want to benchmark.
+
+usage() {
+    echo "Usage: $0 [-t <CPU_INTENSIVE|IO_INTENSIVE>] [-s <number of tasks>]" 1>&2
+    exit 1
+}
 
 taskType='CPU_INTENSIVE'
 taskSize=5000
@@ -15,9 +20,17 @@ do
     s)
       taskSize=${OPTARG}
       ;;
+    :)
+      echo "Error: Missing option argument for '-${OPTARG}'" >&2;
+      usage
+      ;;
+    \?)
+      # Invalid option
+      echo "Error: Unknown or invalid option for '-${OPTARG}'" >&2;
+      usage
+      ;;
     *|h)
-      echo "Usage: $0 [-t taskType] [-s taskSize]"
-      exit 1
+      usage
       ;;
   esac
 done
