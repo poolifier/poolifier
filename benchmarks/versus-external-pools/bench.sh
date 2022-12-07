@@ -9,8 +9,6 @@ usage() {
     exit 1
 }
 
-taskType='CPU_INTENSIVE'
-taskSize=5000
 while getopts "t:s:h" option
 do
   case "${option}" in
@@ -34,6 +32,9 @@ do
       ;;
   esac
 done
+
+taskType=${taskType:-'CPU_INTENSIVE'}
+taskSize=${taskSize:-5000}
 
 echo 'Running benchmarks for task type:' ${taskType} 'and task size:' ${taskSize}
 export TASK_TYPE=${taskType}
