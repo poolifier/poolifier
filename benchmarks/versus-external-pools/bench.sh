@@ -41,7 +41,6 @@ poolSize=${poolSize:-10}
 iterations=${iterations:-100000}
 
 echo 'Running benchmarks with pool size:' ${poolSize}', number of iterations:' ${iterations}', task type:' ${taskType} 'and task size:' ${taskSize}
-exit 1
 export NODE_ENV=production
 export TASK_TYPE=${taskType}
 export TASK_SIZE=${taskSize}
