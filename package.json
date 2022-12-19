@@ -119,7 +119,7 @@
     "sinon": "^15.0.1",
     "source-map-support": "^0.5.21",
     "ts-standard": "^12.0.1",
-    "typedoc": "^0.23.22",
+    "typedoc": "^0.23.23",
     "typescript": "^4.9.4"
   }
 }
