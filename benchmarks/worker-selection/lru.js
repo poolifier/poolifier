@@ -168,7 +168,7 @@ function quickSelectRecursionRandomPivot (tasksMap) {
 }
 
 Benchmark.suite(
-  'Tasks selection',
+  'Less used worker tasks distribution',
   Benchmark.add('Loop select', () => {
     loopSelect(tasksMap)
   }),

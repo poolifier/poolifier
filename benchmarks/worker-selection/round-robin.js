@@ -37,7 +37,7 @@ function roundRobinIncrementModulo () {
 }
 
 Benchmark.suite(
-  'Less recently used',
+  'Round robin tasks distribution',
   Benchmark.add('Ternary off by one', () => {
     nextWorkerIndex = 0
     roundRobinTernaryOffByOne()
