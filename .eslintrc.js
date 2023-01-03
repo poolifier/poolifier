@@ -97,7 +97,7 @@ module.exports = defineConfig({
 
         'no-useless-constructor': 'off',
 
-        'tsdoc/syntax': 'warn'
+        'tsdoc/syntax': 'error'
       }
     },
     {
