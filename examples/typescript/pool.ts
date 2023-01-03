@@ -6,8 +6,12 @@ export const fixedPool = new FixedThreadPool<MyData, Promise<MyResponse>>(
   8,
   join(__dirname, 'worker.js'),
   {
-    errorHandler: (e: Error) => console.error(e),
-    onlineHandler: () => console.log('Worker is online')
+    errorHandler: (e: Error) => {
+      console.error(e)
+    },
+    onlineHandler: () => {
+      console.log('Worker is online')
+    }
   }
 )
 
@@ -16,7 +20,11 @@ export const dynamicPool = new DynamicThreadPool<MyData, Promise<MyResponse>>(
   8,
   join(__dirname, 'worker.js'),
   {
-    errorHandler: (e: Error) => console.error(e),
-    onlineHandler: () => console.log('Worker is online')
+    errorHandler: (e: Error) => {
+      console.error(e)
+    },
+    onlineHandler: () => {
+      console.log('Worker is online')
+    }
   }
 )

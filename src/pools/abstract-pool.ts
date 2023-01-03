@@ -336,7 +336,9 @@ export abstract class AbstractPool<
     worker.on('error', this.opts.errorHandler ?? EMPTY_FUNCTION)
     worker.on('online', this.opts.onlineHandler ?? EMPTY_FUNCTION)
     worker.on('exit', this.opts.exitHandler ?? EMPTY_FUNCTION)
-    worker.once('exit', () => this.removeWorker(worker))
+    worker.once('exit', () => {
+      this.removeWorker(worker)
+    })
 
     this.workers.push(worker)
 
