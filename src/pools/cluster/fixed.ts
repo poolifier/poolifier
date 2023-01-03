@@ -31,8 +31,8 @@ export interface ClusterPoolOptions extends PoolOptions<Worker> {
  *
  * This pool selects the workers in a round robin fashion.
  *
- * @template Data Type of data sent to the worker. This can only be serializable data.
- * @template Response Type of response of execution. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Response - Type of response of execution. This can only be serializable data.
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
  */
@@ -43,9 +43,9 @@ export class FixedClusterPool<
   /**
    * Constructs a new poolifier fixed cluster pool.
    *
-   * @param numberOfWorkers Number of workers for this pool.
-   * @param filePath Path to an implementation of a `ClusterWorker` file, which can be relative or absolute.
-   * @param opts Options for this fixed cluster pool.
+   * @param numberOfWorkers - Number of workers for this pool.
+   * @param filePath - Path to an implementation of a `ClusterWorker` file, which can be relative or absolute.
+   * @param opts - Options for this fixed cluster pool.
    */
   public constructor (
     numberOfWorkers: number,
@@ -55,28 +55,28 @@ export class FixedClusterPool<
     super(numberOfWorkers, filePath, opts)
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   protected setupHook (): void {
     cluster.setupPrimary({ ...this.opts.settings, exec: this.filePath })
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   protected isMain (): boolean {
     return cluster.isPrimary
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public destroyWorker (worker: Worker): void {
     this.sendToWorker(worker, { kill: 1 })
     worker.kill()
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   protected sendToWorker (worker: Worker, message: MessageValue<Data>): void {
     worker.send(message)
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public registerWorkerMessageListener<Message extends Data | Response>(
     worker: Worker,
     listener: (message: MessageValue<Message>) => void
@@ -84,23 +84,23 @@ export class FixedClusterPool<
     worker.on('message', listener)
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   protected createWorker (): Worker {
     return cluster.fork(this.opts.env)
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   protected afterWorkerSetup (worker: Worker): void {
     // Listen to worker messages.
     this.registerWorkerMessageListener(worker, super.workerListener())
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public get type (): PoolType {
     return PoolType.FIXED
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public get busy (): boolean {
     return this.internalGetBusyStatus()
   }

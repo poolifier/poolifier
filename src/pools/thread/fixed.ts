@@ -16,8 +16,8 @@ export type ThreadWorkerWithMessageChannel = Worker & Draft<MessageChannel>
  *
  * This pool selects the threads in a round robin fashion.
  *
- * @template Data Type of data sent to the worker. This can only be serializable data.
- * @template Response Type of response of execution. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Response - Type of response of execution. This can only be serializable data.
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
@@ -28,9 +28,9 @@ export class FixedThreadPool<
   /**
    * Constructs a new poolifier fixed thread pool.
    *
-   * @param numberOfThreads Number of threads for this pool.
-   * @param filePath Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
-   * @param opts Options for this fixed thread pool.
+   * @param numberOfThreads - Number of threads for this pool.
+   * @param filePath - Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
+   * @param opts - Options for this fixed thread pool.
    */
   public constructor (
     numberOfThreads: number,
@@ -40,12 +40,12 @@ export class FixedThreadPool<
     super(numberOfThreads, filePath, opts)
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   protected isMain (): boolean {
     return isMainThread
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public async destroyWorker (
     worker: ThreadWorkerWithMessageChannel
   ): Promise<void> {
@@ -53,7 +53,7 @@ export class FixedThreadPool<
     await worker.terminate()
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   protected sendToWorker (
     worker: ThreadWorkerWithMessageChannel,
     message: MessageValue<Data>
@@ -61,7 +61,7 @@ export class FixedThreadPool<
     worker.postMessage(message)
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public registerWorkerMessageListener<Message extends Data | Response>(
     messageChannel: ThreadWorkerWithMessageChannel,
     listener: (message: MessageValue<Message>) => void
@@ -69,14 +69,14 @@ export class FixedThreadPool<
     messageChannel.port2?.on('message', listener)
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   protected createWorker (): ThreadWorkerWithMessageChannel {
     return new Worker(this.filePath, {
       env: SHARE_ENV
     })
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   protected afterWorkerSetup (worker: ThreadWorkerWithMessageChannel): void {
     const { port1, port2 } = new MessageChannel()
     worker.postMessage({ parent: port1 }, [port1])
@@ -86,12 +86,12 @@ export class FixedThreadPool<
     this.registerWorkerMessageListener(worker, super.workerListener())
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public get type (): PoolType {
     return PoolType.FIXED
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public get busy (): boolean {
     return this.internalGetBusyStatus()
   }

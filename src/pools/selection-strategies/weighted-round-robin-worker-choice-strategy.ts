@@ -16,16 +16,16 @@ interface TaskRunTime {
  * Selects the next worker with a weighted round robin scheduling algorithm.
  * Loosely modeled after the weighted round robin queueing algorithm: https://en.wikipedia.org/wiki/Weighted_round_robin.
  *
- * @template Worker Type of worker which manages the strategy.
- * @template Data Type of data sent to the worker. This can only be serializable data.
- * @template Response Type of response of execution. This can only be serializable data.
+ * @typeParam Worker - Type of worker which manages the strategy.
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class WeightedRoundRobinWorkerChoiceStrategy<
   Worker extends IPoolWorker,
   Data,
   Response
 > extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public readonly requiredStatistics: RequiredStatistics = {
     runTime: true
   }
@@ -49,7 +49,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   /**
    * Constructs a worker choice strategy that selects with a weighted round robin scheduling algorithm.
    *
-   * @param pool The pool instance.
+   * @param pool - The pool instance.
    */
   public constructor (pool: IPoolInternal<Worker, Data, Response>) {
     super(pool)
@@ -57,7 +57,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     this.initWorkersTaskRunTime()
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public reset (): boolean {
     this.currentWorkerIndex = 0
     this.workersTaskRunTime.clear()
@@ -65,7 +65,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     return true
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public choose (): Worker {
     const chosenWorker = this.pool.workers[this.currentWorkerIndex]
     if (this.isDynamicPool && !this.workersTaskRunTime.has(chosenWorker)) {

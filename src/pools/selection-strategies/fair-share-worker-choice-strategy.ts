@@ -14,16 +14,16 @@ interface WorkerVirtualTaskTimestamp {
  * Selects the next worker with a fair share scheduling algorithm.
  * Loosely modeled after the fair queueing algorithm: https://en.wikipedia.org/wiki/Fair_queuing.
  *
- * @template Worker Type of worker which manages the strategy.
- * @template Data Type of data sent to the worker. This can only be serializable data.
- * @template Response Type of response of execution. This can only be serializable data.
+ * @typeParam Worker - Type of worker which manages the strategy.
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class FairShareWorkerChoiceStrategy<
   Worker extends IPoolWorker,
   Data,
   Response
 > extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public readonly requiredStatistics: RequiredStatistics = {
     runTime: true
   }
@@ -36,13 +36,13 @@ export class FairShareWorkerChoiceStrategy<
   WorkerVirtualTaskTimestamp
   > = new Map<Worker, WorkerVirtualTaskTimestamp>()
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public reset (): boolean {
     this.workerLastVirtualTaskTimestamp.clear()
     return true
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public choose (): Worker {
     let minWorkerVirtualTaskEndTimestamp = Infinity
     let chosenWorker!: Worker
@@ -63,7 +63,7 @@ export class FairShareWorkerChoiceStrategy<
   /**
    * Computes worker last virtual task timestamp.
    *
-   * @param worker The worker.
+   * @param worker - The worker.
    */
   private computeWorkerLastVirtualTaskTimestamp (worker: Worker): void {
     const workerVirtualTaskStartTimestamp = Math.max(

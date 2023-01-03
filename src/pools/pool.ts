@@ -39,7 +39,7 @@ export interface PoolOptions<Worker> {
   /**
    * Pool events emission.
    *
-   * @default true
+   * @defaultValue true
    */
   enableEvents?: boolean
 }
@@ -47,8 +47,8 @@ export interface PoolOptions<Worker> {
 /**
  * Contract definition for a poolifier pool.
  *
- * @template Data Type of data sent to the worker. This can only be serializable data.
- * @template Response Type of response of execution. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export interface IPool<Data = unknown, Response = unknown> {
   /**
@@ -62,7 +62,7 @@ export interface IPool<Data = unknown, Response = unknown> {
   /**
    * Performs the task specified in the constructor with the data parameter.
    *
-   * @param data The input for the specified task. This can only be serializable data.
+   * @param data - The input for the specified task. This can only be serializable data.
    * @returns Promise that will be resolved when the task is successfully completed.
    */
   execute: (data: Data) => Promise<Response>
@@ -73,7 +73,7 @@ export interface IPool<Data = unknown, Response = unknown> {
   /**
    * Sets the worker choice strategy in this pool.
    *
-   * @param workerChoiceStrategy The worker choice strategy.
+   * @param workerChoiceStrategy - The worker choice strategy.
    */
   setWorkerChoiceStrategy: (workerChoiceStrategy: WorkerChoiceStrategy) => void
 }

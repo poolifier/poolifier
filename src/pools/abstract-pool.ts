@@ -18,25 +18,25 @@ import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choic
 /**
  * Base class that implements some shared logic for all poolifier pools.
  *
- * @template Worker Type of worker which manages this pool.
- * @template Data Type of data sent to the worker. This can only be serializable data.
- * @template Response Type of response of execution. This can only be serializable data.
+ * @typeParam Worker - Type of worker which manages this pool.
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export abstract class AbstractPool<
   Worker extends IPoolWorker,
   Data = unknown,
   Response = unknown
 > implements IPoolInternal<Worker, Data, Response> {
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public readonly workers: Worker[] = []
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public readonly workersTasksUsage: Map<Worker, TasksUsage> = new Map<
   Worker,
   TasksUsage
   >()
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public readonly emitter?: PoolEmitter
 
   /**
@@ -71,9 +71,9 @@ export abstract class AbstractPool<
   /**
    * Constructs a new poolifier pool.
    *
-   * @param numberOfWorkers Number of workers that this pool should manage.
-   * @param filePath Path to the worker-file.
-   * @param opts Options for the pool.
+   * @param numberOfWorkers - Number of workers that this pool should manage.
+   * @param filePath - Path to the worker-file.
+   * @param opts - Options for the pool.
    */
   public constructor (
     public readonly numberOfWorkers: number,
@@ -144,30 +144,30 @@ export abstract class AbstractPool<
     this.opts.enableEvents = opts.enableEvents ?? true
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public abstract get type (): PoolType
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public get numberOfRunningTasks (): number {
     return this.promiseMap.size
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public getWorkerIndex (worker: Worker): number {
     return this.workers.indexOf(worker)
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public getWorkerRunningTasks (worker: Worker): number | undefined {
     return this.workersTasksUsage.get(worker)?.running
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public getWorkerAverageTasksRunTime (worker: Worker): number | undefined {
     return this.workersTasksUsage.get(worker)?.avgRunTime
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public setWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
@@ -180,7 +180,7 @@ export abstract class AbstractPool<
     )
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public abstract get busy (): boolean
 
   protected internalGetBusyStatus (): boolean {
@@ -190,7 +190,7 @@ export abstract class AbstractPool<
     )
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public findFreeWorker (): Worker | false {
     for (const worker of this.workers) {
       if (this.getWorkerRunningTasks(worker) === 0) {
@@ -201,7 +201,7 @@ export abstract class AbstractPool<
     return false
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public async execute (data: Data): Promise<Response> {
     // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
@@ -216,7 +216,7 @@ export abstract class AbstractPool<
     return res
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public async destroy (): Promise<void> {
     await Promise.all(this.workers.map(worker => this.destroyWorker(worker)))
   }
@@ -224,7 +224,7 @@ export abstract class AbstractPool<
   /**
    * Shutdowns given worker.
    *
-   * @param worker A worker within `workers`.
+   * @param worker - A worker within `workers`.
    */
   protected abstract destroyWorker (worker: Worker): void | Promise<void>
 
@@ -245,7 +245,7 @@ export abstract class AbstractPool<
    * Hook executed before the worker task promise resolution.
    * Can be overridden.
    *
-   * @param worker The worker.
+   * @param worker - The worker.
    */
   protected beforePromiseWorkerResponseHook (worker: Worker): void {
     this.increaseWorkerRunningTasks(worker)
@@ -255,8 +255,8 @@ export abstract class AbstractPool<
    * Hook executed after the worker task promise resolution.
    * Can be overridden.
    *
-   * @param message The received message.
-   * @param promise The Promise response.
+   * @param message - The received message.
+   * @param promise - The Promise response.
    */
   protected afterPromiseWorkerResponseHook (
     message: MessageValue<Response>,
@@ -270,7 +270,7 @@ export abstract class AbstractPool<
   /**
    * Removes the given worker from the pool.
    *
-   * @param worker The worker that will be removed.
+   * @param worker - The worker that will be removed.
    */
   protected removeWorker (worker: Worker): void {
     // Clean worker from data structure
@@ -292,8 +292,8 @@ export abstract class AbstractPool<
   /**
    * Sends a message to the given worker.
    *
-   * @param worker The worker which should receive the message.
-   * @param message The message.
+   * @param worker - The worker which should receive the message.
+   * @param message - The message.
    */
   protected abstract sendToWorker (
     worker: Worker,
@@ -303,8 +303,8 @@ export abstract class AbstractPool<
   /**
    * Registers a listener callback on a given worker.
    *
-   * @param worker The worker which should register a listener.
-   * @param listener The message listener callback.
+   * @param worker - The worker which should register a listener.
+   * @param listener - The message listener callback.
    */
   protected abstract registerWorkerMessageListener<
     Message extends Data | Response
@@ -318,9 +318,9 @@ export abstract class AbstractPool<
   /**
    * Function that can be hooked up when a worker has been newly created and moved to the workers registry.
    *
-   * Can be used to update the `maxListeners` or binding the `main-worker`<->`worker` connection if not bind by default.
+   * Can be used to update the `maxListeners` or binding the `main-worker`\<-\>`worker` connection if not bind by default.
    *
-   * @param worker The newly created worker.
+   * @param worker - The newly created worker.
    */
   protected abstract afterWorkerSetup (worker: Worker): void
 
@@ -389,7 +389,7 @@ export abstract class AbstractPool<
   /**
    * Increases the number of tasks that the given worker has applied.
    *
-   * @param worker Worker which running tasks is increased.
+   * @param worker - Worker which running tasks is increased.
    */
   private increaseWorkerRunningTasks (worker: Worker): void {
     this.stepWorkerRunningTasks(worker, 1)
@@ -398,7 +398,7 @@ export abstract class AbstractPool<
   /**
    * Decreases the number of tasks that the given worker has applied.
    *
-   * @param worker Worker which running tasks is decreased.
+   * @param worker - Worker which running tasks is decreased.
    */
   private decreaseWorkerRunningTasks (worker: Worker): void {
     this.stepWorkerRunningTasks(worker, -1)
@@ -407,8 +407,8 @@ export abstract class AbstractPool<
   /**
    * Steps the number of tasks that the given worker has applied.
    *
-   * @param worker Worker which running tasks are stepped.
-   * @param step Number of running tasks step.
+   * @param worker - Worker which running tasks are stepped.
+   * @param step - Number of running tasks step.
    */
   private stepWorkerRunningTasks (worker: Worker, step: number): void {
     if (this.checkWorkerTasksUsage(worker)) {
@@ -421,8 +421,8 @@ export abstract class AbstractPool<
   /**
    * Steps the number of tasks that the given worker has run.
    *
-   * @param worker Worker which has run tasks.
-   * @param step Number of run tasks step.
+   * @param worker - Worker which has run tasks.
+   * @param step - Number of run tasks step.
    */
   private stepWorkerRunTasks (worker: Worker, step: number): void {
     if (this.checkWorkerTasksUsage(worker)) {
@@ -435,8 +435,8 @@ export abstract class AbstractPool<
   /**
    * Updates tasks runtime for the given worker.
    *
-   * @param worker Worker which run the task.
-   * @param taskRunTime Worker task runtime.
+   * @param worker - Worker which run the task.
+   * @param taskRunTime - Worker task runtime.
    */
   private updateWorkerTasksRunTime (
     worker: Worker,
@@ -459,7 +459,7 @@ export abstract class AbstractPool<
   /**
    * Checks if the given worker is registered in the workers tasks usage map.
    *
-   * @param worker Worker to check.
+   * @param worker - Worker to check.
    * @returns `true` if the worker is registered in the workers tasks usage map. `false` otherwise.
    */
   private checkWorkerTasksUsage (worker: Worker): boolean {
@@ -473,7 +473,7 @@ export abstract class AbstractPool<
   /**
    * Initializes tasks usage statistics.
    *
-   * @param worker The worker.
+   * @param worker - The worker.
    */
   private initWorkerTasksUsage (worker: Worker): void {
     this.workersTasksUsage.set(worker, {
@@ -487,7 +487,7 @@ export abstract class AbstractPool<
   /**
    * Removes worker tasks usage statistics.
    *
-   * @param worker The worker.
+   * @param worker - The worker.
    */
   private removeWorkerTasksUsage (worker: Worker): void {
     this.workersTasksUsage.delete(worker)
@@ -496,7 +496,7 @@ export abstract class AbstractPool<
   /**
    * Resets worker tasks usage statistics.
    *
-   * @param worker The worker.
+   * @param worker - The worker.
    */
   private resetWorkerTasksUsage (worker: Worker): void {
     this.removeWorkerTasksUsage(worker)

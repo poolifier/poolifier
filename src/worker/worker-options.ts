@@ -20,9 +20,9 @@ export type KillBehavior = keyof typeof KillBehaviors
 /**
  * Detects whether the given value is a kill behavior or not.
  *
- * @template KB Which specific KillBehavior to test against.
- * @param killBehavior Which kind of kill behavior to detect.
- * @param value Any value.
+ * @typeParam KB - Which specific KillBehavior to test against.
+ * @param killBehavior - Which kind of kill behavior to detect.
+ * @param value - Any value.
  * @returns `true` if `value` was strictly equals to `killBehavior`, otherwise `false`.
  */
 export function isKillBehavior<KB extends KillBehavior> (
@@ -46,13 +46,13 @@ export interface WorkerOptions {
    *   when this timeout expires your tasks is interrupted and the worker is killed if is not part of the minimum size of the pool.
    * - If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.
    *
-   * @default 60000 ms
+   * @defaultValue 60000 ms
    */
   maxInactiveTime?: number
   /**
    * Whether your worker will perform asynchronous or not.
    *
-   * @default false
+   * @defaultValue false
    */
   async?: boolean
   /**
@@ -63,7 +63,7 @@ export interface WorkerOptions {
    *
    * This option only apply to the newly created workers.
    *
-   * @default KillBehaviors.SOFT
+   * @defaultValue KillBehaviors.SOFT
    */
   killBehavior?: KillBehavior
 }

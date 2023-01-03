@@ -37,7 +37,7 @@ export interface RequiredStatistics {
 /**
  * Worker choice strategy interface.
  *
- * @template Worker Type of worker which manages the strategy.
+ * @typeParam Worker - Type of worker which manages the strategy.
  */
 export interface IWorkerChoiceStrategy<Worker extends IPoolWorker> {
   /**

@@ -11,9 +11,9 @@ import { getWorkerChoiceStrategy } from './selection-strategies-utils'
 /**
  * Selects the next worker for dynamic pool.
  *
- * @template Worker Type of worker which manages the strategy.
- * @template Data Type of data sent to the worker. This can only be serializable data.
- * @template Response Type of response of execution. This can only be serializable data.
+ * @typeParam Worker - Type of worker which manages the strategy.
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class DynamicPoolWorkerChoiceStrategy<
   Worker extends IPoolWorker,
@@ -25,9 +25,9 @@ export class DynamicPoolWorkerChoiceStrategy<
   /**
    * Constructs a worker choice strategy for dynamic pool.
    *
-   * @param pool The pool instance.
-   * @param createDynamicallyWorkerCallback The worker creation callback for dynamic pool.
-   * @param workerChoiceStrategy The worker choice strategy when the pull is busy.
+   * @param pool - The pool instance.
+   * @param createDynamicallyWorkerCallback - The worker creation callback for dynamic pool.
+   * @param workerChoiceStrategy - The worker choice strategy when the pull is busy.
    */
   public constructor (
     pool: IPoolInternal<Worker, Data, Response>,
@@ -42,12 +42,12 @@ export class DynamicPoolWorkerChoiceStrategy<
     this.requiredStatistics = this.workerChoiceStrategy.requiredStatistics
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public reset (): boolean {
     return this.workerChoiceStrategy.reset()
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public choose (): Worker {
     const freeWorker = this.pool.findFreeWorker()
     if (freeWorker !== false) {

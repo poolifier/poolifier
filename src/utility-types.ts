@@ -46,8 +46,8 @@ export interface MessageValue<
 /**
  * An object holding the worker that will be used to resolve/rejects the promise later on.
  *
- * @template Worker Type of worker.
- * @template Response Type of response of execution. This can only be serializable data.
+ * @typeParam Worker - Type of worker.
+ * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export interface PromiseWorkerResponseWrapper<
   Worker extends IPoolWorker,

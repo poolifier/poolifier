@@ -12,9 +12,9 @@ import { getWorkerChoiceStrategy } from './selection-strategies-utils'
 /**
  * The worker choice strategy context.
  *
- * @template Worker Type of worker.
- * @template Data Type of data sent to the worker. This can only be serializable data.
- * @template Response Type of response of execution. This can only be serializable data.
+ * @typeParam Worker - Type of worker.
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class WorkerChoiceStrategyContext<
   Worker extends IPoolWorker,
@@ -26,9 +26,9 @@ export class WorkerChoiceStrategyContext<
   /**
    * Worker choice strategy context constructor.
    *
-   * @param pool The pool instance.
-   * @param createDynamicallyWorkerCallback The worker creation callback for dynamic pool.
-   * @param workerChoiceStrategy The worker choice strategy.
+   * @param pool - The pool instance.
+   * @param createDynamicallyWorkerCallback - The worker creation callback for dynamic pool.
+   * @param workerChoiceStrategy - The worker choice strategy.
    */
   public constructor (
     private readonly pool: IPoolInternal<Worker, Data, Response>,
@@ -41,7 +41,7 @@ export class WorkerChoiceStrategyContext<
   /**
    * Gets the worker choice strategy instance specific to the pool type.
    *
-   * @param workerChoiceStrategy The worker choice strategy.
+   * @param workerChoiceStrategy - The worker choice strategy.
    * @returns The worker choice strategy instance for the pool type.
    */
   private getPoolWorkerChoiceStrategy (
@@ -69,7 +69,7 @@ export class WorkerChoiceStrategyContext<
   /**
    * Sets the worker choice strategy to use in the context.
    *
-   * @param workerChoiceStrategy The worker choice strategy to set.
+   * @param workerChoiceStrategy - The worker choice strategy to set.
    */
   public setWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy

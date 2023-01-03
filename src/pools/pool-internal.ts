@@ -22,9 +22,9 @@ export interface TasksUsage {
 /**
  * Internal contract definition for a poolifier pool.
  *
- * @template Worker Type of worker which manages this pool.
- * @template Data Type of data sent to the worker.
- * @template Response Type of response of execution.
+ * @typeParam Worker - Type of worker which manages this pool.
+ * @typeParam Data - Type of data sent to the worker.
+ * @typeParam Response - Type of response of execution.
  */
 export interface IPoolInternal<
   Worker extends IPoolWorker,
@@ -77,7 +77,7 @@ export interface IPoolInternal<
   /**
    * Gets worker index.
    *
-   * @param worker The worker.
+   * @param worker - The worker.
    * @returns The worker index.
    */
   getWorkerIndex: (worker: Worker) => number
@@ -85,7 +85,7 @@ export interface IPoolInternal<
   /**
    * Gets worker running tasks.
    *
-   * @param worker The worker.
+   * @param worker - The worker.
    * @returns The number of tasks currently running on the worker.
    */
   getWorkerRunningTasks: (worker: Worker) => number | undefined
@@ -93,7 +93,7 @@ export interface IPoolInternal<
   /**
    * Gets worker average tasks runtime.
    *
-   * @param worker The worker.
+   * @param worker - The worker.
    * @returns The average tasks runtime on the worker.
    */
   getWorkerAverageTasksRunTime: (worker: Worker) => number | undefined

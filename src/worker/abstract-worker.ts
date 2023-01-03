@@ -12,9 +12,9 @@ const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
 /**
  * Base class that implements some shared logic for all poolifier workers.
  *
- * @template MainWorker Type of main worker.
- * @template Data Type of data this worker receives from pool's execution. This can only be serializable data.
- * @template Response Type of response the worker sends back to the main worker. This can only be serializable data.
+ * @typeParam MainWorker - Type of main worker.
+ * @typeParam Data - Type of data this worker receives from pool's execution. This can only be serializable data.
+ * @typeParam Response - Type of response the worker sends back to the main worker. This can only be serializable data.
  */
 export abstract class AbstractWorker<
   MainWorker extends Worker | MessagePort,
@@ -36,11 +36,11 @@ export abstract class AbstractWorker<
   /**
    * Constructs a new poolifier worker.
    *
-   * @param type The type of async event.
-   * @param isMain Whether this is the main worker or not.
-   * @param fn Function processed by the worker when the pool's `execution` function is invoked.
-   * @param mainWorker Reference to main worker.
-   * @param opts Options for the worker.
+   * @param type - The type of async event.
+   * @param isMain - Whether this is the main worker or not.
+   * @param fn - Function processed by the worker when the pool's `execution` function is invoked.
+   * @param mainWorker - Reference to main worker.
+   * @param opts - Options for the worker.
    */
   public constructor (
     type: string,
@@ -110,7 +110,7 @@ export abstract class AbstractWorker<
   /**
    * Checks if the `fn` parameter is passed to the constructor.
    *
-   * @param fn The function that should be defined.
+   * @param fn - The function that should be defined.
    */
   private checkFunctionInput (fn: (data: Data) => Response): void {
     if (fn == null) throw new Error('fn parameter is mandatory')
@@ -134,7 +134,7 @@ export abstract class AbstractWorker<
   /**
    * Sends a message to the main worker.
    *
-   * @param message The response message.
+   * @param message - The response message.
    */
   protected abstract sendToMainWorker (message: MessageValue<Response>): void
 
@@ -153,7 +153,7 @@ export abstract class AbstractWorker<
   /**
    * Handles an error and convert it to a string so it can be sent back to the main worker.
    *
-   * @param e The error raised by the worker.
+   * @param e - The error raised by the worker.
    * @returns Message of the error.
    */
   protected handleError (e: Error | string): string {
@@ -163,8 +163,8 @@ export abstract class AbstractWorker<
   /**
    * Runs the given function synchronously.
    *
-   * @param fn Function that will be executed.
-   * @param value Input data for the given function.
+   * @param fn - Function that will be executed.
+   * @param value - Input data for the given function.
    */
   protected run (
     fn: (data?: Data) => Response,
@@ -186,8 +186,8 @@ export abstract class AbstractWorker<
   /**
    * Runs the given function asynchronously.
    *
-   * @param fn Function that will be executed.
-   * @param value Input data for the given function.
+   * @param fn - Function that will be executed.
+   * @param value - Input data for the given function.
    */
   protected runAsync (
     fn: (data?: Data) => Promise<Response>,

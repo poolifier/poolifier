@@ -4,9 +4,9 @@ import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 /**
  * Selects the next worker in a round robin fashion.
  *
- * @template Worker Type of worker which manages the strategy.
- * @template Data Type of data sent to the worker. This can only be serializable data.
- * @template Response Type of response of execution. This can only be serializable data.
+ * @typeParam Worker - Type of worker which manages the strategy.
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class RoundRobinWorkerChoiceStrategy<
   Worker extends IPoolWorker,
@@ -18,13 +18,13 @@ export class RoundRobinWorkerChoiceStrategy<
    */
   private nextWorkerIndex: number = 0
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public reset (): boolean {
     this.nextWorkerIndex = 0
     return true
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public choose (): Worker {
     const chosenWorker = this.pool.workers[this.nextWorkerIndex]
     this.nextWorkerIndex =

@@ -12,11 +12,10 @@ module.exports = defineConfig({
     ecmaVersion: 2021,
     sourceType: 'module'
   },
-  plugins: ['promise', 'jsdoc', 'spellcheck'],
+  plugins: ['promise', 'spellcheck'],
   extends: [
     'eslint:recommended',
     'plugin:import/recommended',
-    'plugin:jsdoc/recommended',
     'plugin:promise/recommended'
   ],
   rules: {
@@ -61,6 +60,7 @@ module.exports = defineConfig({
           'threadjs',
           'threadwork',
           'tsconfig',
+          'tsdoc',
           'typedoc',
           'unlink',
           'unregister',
@@ -74,11 +74,11 @@ module.exports = defineConfig({
   overrides: [
     {
       files: ['**/*.ts'],
+      plugins: ['@typescript-eslint', 'eslint-plugin-tsdoc'],
       parser: '@typescript-eslint/parser',
       parserOptions: {
         project: './tsconfig.json'
       },
-      plugins: ['@typescript-eslint'],
       extends: [
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended',
@@ -97,43 +97,13 @@ module.exports = defineConfig({
 
         'no-useless-constructor': 'off',
 
-        'jsdoc/match-description': [
-          'warn',
-          {
-            contexts: ['any'],
-            tags: {
-              param: true,
-              returns: true
-            }
-          }
-        ],
-        'jsdoc/no-types': 'error',
-        'jsdoc/require-jsdoc': [
-          'warn',
-          {
-            contexts: [
-              'ClassDeclaration',
-              'ClassProperty:not([accessibility=/(private|protected)/])',
-              'ExportNamedDeclaration:has(VariableDeclaration)',
-              'FunctionExpression',
-              'MethodDefinition:not([accessibility=/(private|protected)/]) > FunctionExpression',
-              'TSEnumDeclaration',
-              'TSInterfaceDeclaration',
-              'TSMethodSignature',
-              // 'TSPropertySignature',
-              'TSTypeAliasDeclaration'
-            ]
-          }
-        ],
-        'jsdoc/require-param-type': 'off',
-        'jsdoc/require-returns-type': 'off'
+        'tsdoc/syntax': 'warn'
       }
     },
     {
       files: ['examples/typescript/**/*.ts'],
       rules: {
         'import/no-unresolved': 'off',
-        'jsdoc/require-jsdoc': 'off',
         '@typescript-eslint/no-unsafe-argument': 'off',
         '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off'
@@ -141,7 +111,8 @@ module.exports = defineConfig({
     },
     {
       files: ['**/*.js'],
-      extends: ['plugin:n/recommended', 'standard']
+      plugins: ['jsdoc'],
+      extends: ['plugin:n/recommended', 'standard', 'plugin:jsdoc/recommended']
     },
     {
       files: ['tests/**/*.js'],
@@ -174,10 +145,5 @@ module.exports = defineConfig({
         'jsdoc/require-jsdoc': 'off'
       }
     }
-  ],
-  settings: {
-    jsdoc: {
-      mode: 'typescript'
-    }
-  }
+  ]
 })

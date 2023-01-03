@@ -30,6 +30,7 @@
     "suchmokuo",
     "threadjs",
     "threadwork",
+    "tsdoc",
     "workerpool"
   ],
   "sonarlint.connectedMode.project": {

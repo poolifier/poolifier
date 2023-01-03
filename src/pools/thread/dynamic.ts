@@ -9,8 +9,8 @@ import { FixedThreadPool } from './fixed'
  * This thread pool creates new threads when the others are busy, up to the maximum number of threads.
  * When the maximum number of threads is reached, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
  *
- * @template Data Type of data sent to the worker. This can only be serializable data.
- * @template Response Type of response of execution. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Response - Type of response of execution. This can only be serializable data.
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
@@ -21,10 +21,10 @@ export class DynamicThreadPool<
   /**
    * Constructs a new poolifier dynamic thread pool.
    *
-   * @param min Minimum number of threads which are always active.
-   * @param max Maximum number of threads that can be created by this pool.
-   * @param filePath Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
-   * @param opts Options for this dynamic thread pool.
+   * @param min - Minimum number of threads which are always active.
+   * @param max - Maximum number of threads that can be created by this pool.
+   * @param filePath - Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
+   * @param opts - Options for this dynamic thread pool.
    */
   public constructor (
     min: number,
@@ -35,12 +35,12 @@ export class DynamicThreadPool<
     super(min, filePath, opts)
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public get type (): PoolType {
     return PoolType.DYNAMIC
   }
 
-  /** @inheritDoc */
+  /** {@inheritDoc} */
   public get busy (): boolean {
     return this.workers.length === this.max
   }
