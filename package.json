@@ -87,7 +87,7 @@
     "@release-it/bumper": "^4.0.2",
     "@release-it/keep-a-changelog": "^3.1.0",
     "@types/node": "^18.11.18",
-    "@typescript-eslint/eslint-plugin": "^5.48.1",
+    "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.1",
     "benny": "^3.7.1",
     "c8": "^7.12.0",
