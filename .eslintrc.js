@@ -81,20 +81,14 @@ module.exports = defineConfig({
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
-        'standard-with-typescript',
-        'plugin:import/typescript'
+        'plugin:import/typescript',
+        'standard-with-typescript'
       ],
       rules: {
-        // We have some intentionally empty functions
-        '@typescript-eslint/no-empty-function': 'off',
-
         '@typescript-eslint/no-inferrable-types': [
           'error',
           { ignoreProperties: true }
         ],
-
-        'no-useless-constructor': 'off',
-
         'tsdoc/syntax': 'error'
       }
     },
@@ -110,7 +104,7 @@ module.exports = defineConfig({
     {
       files: ['**/*.js'],
       plugins: ['jsdoc'],
-      extends: ['plugin:n/recommended', 'standard', 'plugin:jsdoc/recommended']
+      extends: ['plugin:n/recommended', 'plugin:jsdoc/recommended', 'standard']
     },
     {
       files: ['tests/**/*.js'],
