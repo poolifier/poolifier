@@ -19,8 +19,6 @@ module.exports = defineConfig({
     'plugin:promise/recommended'
   ],
   rules: {
-    'no-void': 'off',
-
     'sort-imports': [
       'warn',
       {
