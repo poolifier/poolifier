@@ -11,7 +11,7 @@ import { PoolType } from './pool-internal'
 import type { IPoolWorker } from './pool-worker'
 import {
   WorkerChoiceStrategies,
-  WorkerChoiceStrategy
+  type WorkerChoiceStrategy
 } from './selection-strategies/selection-strategies-types'
 import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
 
