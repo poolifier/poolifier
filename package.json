@@ -87,8 +87,8 @@
     "@release-it/bumper": "^4.0.2",
     "@release-it/keep-a-changelog": "^3.1.0",
     "@types/node": "^18.11.18",
-    "@typescript-eslint/eslint-plugin": "^5.49.0",
-    "@typescript-eslint/parser": "^5.49.0",
+    "@typescript-eslint/eslint-plugin": "^5.50.0",
+    "@typescript-eslint/parser": "^5.50.0",
     "benny": "^3.7.1",
     "c8": "^7.12.0",
     "eslint": "^8.33.0",
@@ -97,7 +97,7 @@
     "eslint-define-config": "^1.14.0",
     "eslint-import-resolver-typescript": "^3.5.3",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-jsdoc": "^39.7.4",
+    "eslint-plugin-jsdoc": "^39.7.5",
     "eslint-plugin-n": "^15.6.1",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-spellcheck": "^0.0.20",
@@ -121,6 +121,6 @@
     "source-map-support": "^0.5.21",
     "ts-standard": "^12.0.2",
     "typedoc": "^0.23.24",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.5"
   }
 }
