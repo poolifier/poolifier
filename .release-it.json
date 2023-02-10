@@ -1,6 +1,6 @@
 {
   "git": {
-    "commitMessage": "v${version}",
+    "commitMessage": "chore: v${version}",
     "tagAnnotation": "v${version}",
     "pushRepo": "upstream"
   },
