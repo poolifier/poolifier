@@ -93,7 +93,7 @@
     "@typescript-eslint/parser": "^5.51.0",
     "benny": "^3.7.1",
     "c8": "^7.12.0",
-    "eslint": "^8.33.0",
+    "eslint": "^8.34.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-config-standard-with-typescript": "^34.0.0",
     "eslint-define-config": "^1.15.0",
