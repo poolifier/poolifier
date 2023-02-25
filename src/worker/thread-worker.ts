@@ -1,6 +1,7 @@
 import type { MessagePort } from 'worker_threads'
 import { isMainThread, parentPort } from 'worker_threads'
 import type { MessageValue } from '../utility-types'
+import { EMPTY_OBJECT_LITERAL } from '../utils'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
@@ -28,7 +29,10 @@ export class ThreadWorker<
    * @param fn - Function processed by the worker when the pool's `execution` function is invoked.
    * @param opts - Options for the worker.
    */
-  public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
+  public constructor (
+    fn: (data: Data) => Response,
+    opts: WorkerOptions = EMPTY_OBJECT_LITERAL
+  ) {
     super('worker-thread-pool:poolifier', isMainThread, fn, parentPort, opts)
   }
 

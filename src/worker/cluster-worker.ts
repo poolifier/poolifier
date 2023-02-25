@@ -1,6 +1,7 @@
 import type { Worker } from 'cluster'
 import cluster from 'cluster'
 import type { MessageValue } from '../utility-types'
+import { EMPTY_OBJECT_LITERAL } from '../utils'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
@@ -28,7 +29,10 @@ export class ClusterWorker<
    * @param fn - Function processed by the worker when the pool's `execution` function is invoked.
    * @param opts - Options for the worker.
    */
-  public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
+  public constructor (
+    fn: (data: Data) => Response,
+    opts: WorkerOptions = EMPTY_OBJECT_LITERAL
+  ) {
     super(
       'worker-cluster-pool:poolifier',
       cluster.isPrimary,
