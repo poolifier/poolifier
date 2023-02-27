@@ -88,12 +88,12 @@
     "@commitlint/config-conventional": "^17.4.4",
     "@release-it/bumper": "^4.0.2",
     "@release-it/keep-a-changelog": "^3.1.0",
-    "@types/node": "^18.14.1",
+    "@types/node": "^18.14.2",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",
     "benny": "^3.7.1",
     "c8": "^7.13.0",
-    "eslint": "^8.34.0",
+    "eslint": "^8.35.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-config-standard-with-typescript": "^34.0.0",
     "eslint-define-config": "^1.15.0",
@@ -113,7 +113,7 @@
     "prettier": "^2.8.4",
     "prettier-plugin-organize-imports": "^3.2.2",
     "release-it": "^15.6.0",
-    "rollup": "^3.17.2",
+    "rollup": "^3.17.3",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",
     "rollup-plugin-delete": "^2.0.0",
@@ -122,7 +122,7 @@
     "sinon": "^15.0.1",
     "source-map-support": "^0.5.21",
     "ts-standard": "^12.0.2",
-    "typedoc": "^0.23.25",
+    "typedoc": "^0.23.26",
     "typescript": "^4.9.5"
   }
 }
