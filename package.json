@@ -88,7 +88,7 @@
     "@commitlint/config-conventional": "^17.4.4",
     "@release-it/bumper": "^4.0.2",
     "@release-it/keep-a-changelog": "^3.1.0",
-    "@types/node": "^18.14.2",
+    "@types/node": "^18.14.4",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",
     "benny": "^3.7.1",
