@@ -19,7 +19,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   Response
 > implements IWorkerChoiceStrategy<Worker> {
   /** {@inheritDoc} */
-  public readonly isDynamicPool: boolean = this.pool.type === PoolType.DYNAMIC
+  public readonly isDynamicPool: boolean
   /** {@inheritDoc} */
   public requiredStatistics: RequiredStatistics = {
     runTime: false
@@ -32,7 +32,9 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   public constructor (
     protected readonly pool: IPoolInternal<Worker, Data, Response>
-  ) {}
+  ) {
+    this.isDynamicPool = this.pool.type === PoolType.DYNAMIC
+  }
 
   /** {@inheritDoc} */
   public abstract reset (): boolean
