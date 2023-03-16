@@ -6,7 +6,7 @@
     "esModuleInterop": true,
     "declaration": true,
     "strict": true,
-    "importsNotUsedAsValues": "error"
+    "verbatimModuleSyntax": true
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "lib"]
