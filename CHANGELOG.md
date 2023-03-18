@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Introduce ESM module support along with CommonJS one.
+
+### Fixed
+
+- Fix brown paper bag bug referencing the same object literal.
+
 ## [2.3.8] - 2023-03-18
 
 ### Changed
@@ -14,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switch internal benchmarking code to benny.
 - Switch to TypeScript 5.x.x.
 - Switch rollup bundler plugins to core ones.
+- Switch to TSDoc syntax.
 - Enforce conventional commits.
 
 ### Fixed

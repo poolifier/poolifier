@@ -2,7 +2,7 @@ import type {
   MessageValue,
   PromiseWorkerResponseWrapper
 } from '../utility-types'
-import { EMPTY_FUNCTION, EMPTY_OBJECT_LITERAL } from '../utils'
+import { EMPTY_FUNCTION } from '../utils'
 import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
 import type { PoolOptions } from './pool'
 import { PoolEmitter } from './pool'
@@ -208,7 +208,7 @@ export abstract class AbstractPool<
     const res = this.internalExecute(worker, this.nextMessageId)
     this.checkAndEmitBusy()
     this.sendToWorker(worker, {
-      data: data ?? (EMPTY_OBJECT_LITERAL as Data),
+      data,
       id: this.nextMessageId
     })
     ++this.nextMessageId

@@ -1,4 +1,3 @@
-import { EMPTY_OBJECT_LITERAL } from '../../utils'
 import { PoolType } from '../pool-internal'
 import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
@@ -30,7 +29,7 @@ export class DynamicClusterPool<
     min: number,
     protected readonly max: number,
     filePath: string,
-    opts: ClusterPoolOptions = EMPTY_OBJECT_LITERAL
+    opts: ClusterPoolOptions = {}
   ) {
     super(min, filePath, opts)
   }

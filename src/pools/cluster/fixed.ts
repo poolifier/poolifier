@@ -1,7 +1,6 @@
 import type { ClusterSettings, Worker } from 'cluster'
 import cluster from 'cluster'
 import type { MessageValue } from '../../utility-types'
-import { EMPTY_OBJECT_LITERAL } from '../../utils'
 import { AbstractPool } from '../abstract-pool'
 import type { PoolOptions } from '../pool'
 import { PoolType } from '../pool-internal'
@@ -51,7 +50,7 @@ export class FixedClusterPool<
   public constructor (
     numberOfWorkers: number,
     filePath: string,
-    public readonly opts: ClusterPoolOptions = EMPTY_OBJECT_LITERAL
+    public readonly opts: ClusterPoolOptions = {}
   ) {
     super(numberOfWorkers, filePath, opts)
   }
