@@ -10,10 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Switch internal benchmarking code to benny.
+- Switch to TypeScript 5.x.x.
+- Switch rollup bundler plugins to core ones.
+- Enforce conventional commits.
 
 ### Fixed
 
 - Fix random integer generator.
+- Fix worker choice strategy pool type identification at initialization.
 
 ## [2.3.7] - 2022-10-23
 
