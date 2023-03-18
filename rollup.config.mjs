@@ -23,7 +23,7 @@ export default {
     typescript({
       tsconfig: isDevelopmentBuild
         ? 'tsconfig.development.json'
-        : 'tsconfig.json'
+        : 'tsconfig.production.json'
     }),
     del({
       targets: ['lib/*']

@@ -1,5 +1,5 @@
 {
-  "tsconfig": "./tsconfig.tsdoc.json",
+  "tsconfig": "./tsconfig.production.json",
   "entryPoints": ["src"],
   "out": "docs",
   "readme": "none"
