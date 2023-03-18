@@ -58,8 +58,14 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish Beta
-        if: ${{ contains(steps.package-version.outputs.version, 'beta') }}
-        run: npm publish --tag beta
+      - name: Publish Pre-Release
+        if: ${{ contains(steps.package-version.outputs.version, '-') == true }}
+        run: npm publish --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # - name: Publish Beta Release
+      #   if: ${{ contains(steps.package-version.outputs.version, 'beta') == true }}
+      #   run: npm publish --tag beta
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
