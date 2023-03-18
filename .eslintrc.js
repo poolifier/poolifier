@@ -42,6 +42,7 @@ module.exports = defineConfig({
           'ctx',
           'ecma',
           'enum',
+          'esm',
           'fibonacci',
           'fs',
           'inheritDoc',

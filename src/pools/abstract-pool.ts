@@ -208,7 +208,8 @@ export abstract class AbstractPool<
     const res = this.internalExecute(worker, this.nextMessageId)
     this.checkAndEmitBusy()
     this.sendToWorker(worker, {
-      data,
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      data: data ?? ({} as Data),
       id: this.nextMessageId
     })
     ++this.nextMessageId
