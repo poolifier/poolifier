@@ -3,7 +3,7 @@ import type {
   PromiseWorkerResponseWrapper
 } from '../utility-types'
 import { EMPTY_FUNCTION, EMPTY_OBJECT_LITERAL } from '../utils'
-import { isKillBehavior, KillBehaviors } from '../worker/worker-options'
+import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
 import type { PoolOptions } from './pool'
 import { PoolEmitter } from './pool'
 import type { IPoolInternal, TasksUsage } from './pool-internal'

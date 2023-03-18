@@ -3,7 +3,10 @@
   "version": "2.3.8",
   "description": "A fast, easy to use Node.js Worker Thread Pool and Cluster Pool implementation",
   "license": "MIT",
-  "main": "lib/index.js",
+  "exports": [
+    "lib/index.js",
+    "lib/index.mjs"
+  ],
   "scripts": {
     "prepare": "node prepare.js",
     "build": "rollup --config --environment BUILD:development",

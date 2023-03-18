@@ -10,14 +10,30 @@ const isDocumentation = process.env.DOCUMENTATION
 
 export default {
   input: 'src/index.ts',
-  output: {
-    ...(isDevelopmentBuild ? { dir: 'lib' } : { file: 'lib/index.js' }),
-    format: 'cjs',
-    sourcemap: !!isDevelopmentBuild,
-    ...(isDevelopmentBuild && { preserveModules: true }),
-    ...(isDevelopmentBuild && { preserveModulesRoot: 'src' }),
-    ...(!isDevelopmentBuild && { plugins: [terser({ maxWorkers: 2 })] })
-  },
+  output: [
+    {
+      ...(isDevelopmentBuild ? { dir: 'lib' } : { file: 'lib/index.js' }),
+      format: 'cjs',
+      sourcemap: !!isDevelopmentBuild,
+      ...(isDevelopmentBuild && {
+        preserveModules: true,
+        preserveModulesRoot: 'src'
+      }),
+      ...(!isDevelopmentBuild && { plugins: [terser({ maxWorkers: 2 })] })
+    },
+    {
+      ...(isDevelopmentBuild ? { dir: 'lib' } : { file: 'lib/index.mjs' }),
+      format: 'esm',
+      sourcemap: !!isDevelopmentBuild,
+
+      ...(isDevelopmentBuild && {
+        entryFileNames: '[name].mjs',
+        preserveModules: true,
+        preserveModulesRoot: 'src'
+      }),
+      ...(!isDevelopmentBuild && { plugins: [terser({ maxWorkers: 2 })] })
+    }
+  ],
   external: ['async_hooks', 'cluster', 'events', 'os', 'worker_threads'],
   plugins: [
     typescript({
