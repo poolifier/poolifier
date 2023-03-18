@@ -3,10 +3,13 @@
   "version": "2.3.9",
   "description": "A fast, easy to use Node.js Worker Thread Pool and Cluster Pool implementation",
   "license": "MIT",
-  "exports": [
-    "lib/index.js",
-    "lib/index.mjs"
-  ],
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "require": "lib/index.js",
+      "import": "lib/index.mjs"
+    }
+  },
   "scripts": {
     "prepare": "node prepare.js",
     "build": "rollup --config --environment BUILD:development",

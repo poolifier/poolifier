@@ -48,6 +48,7 @@ module.exports = defineConfig({
           'inheritDoc',
           'jsdoc',
           'microjob',
+          'mjs',
           'num',
           'os',
           'piscina',
