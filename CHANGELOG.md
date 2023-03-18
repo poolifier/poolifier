@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Permit SemVer pre-release publication.
 
+## [2.3.10-2] - 2023-03-18
+
 ### Fixed
 
 - Fix `exports` syntax for ESM and CommonJS.
