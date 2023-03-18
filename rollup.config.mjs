@@ -10,6 +10,7 @@ const isDocumentation = process.env.DOCUMENTATION
 
 export default {
   input: 'src/index.ts',
+  strictDeprecations: true,
   output: [
     {
       ...(isDevelopmentBuild ? { dir: 'lib' } : { file: 'lib/index.js' }),
