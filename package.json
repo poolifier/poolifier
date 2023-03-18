@@ -3,11 +3,11 @@
   "version": "2.3.10-1",
   "description": "A fast, easy to use Node.js Worker Thread Pool and Cluster Pool implementation",
   "license": "MIT",
-  "main": "lib/index.js",
+  "main": "./lib/index.js",
   "exports": {
     ".": {
-      "require": "lib/index.js",
-      "import": "lib/index.mjs"
+      "require": "./lib/index.js",
+      "import": "./lib/index.mjs"
     }
   },
   "scripts": {
