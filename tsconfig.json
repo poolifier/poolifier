@@ -8,5 +8,6 @@
     "strict": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["src/**/*.ts"]
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "lib"]
 }
