@@ -26,7 +26,6 @@ export default {
       ...(isDevelopmentBuild ? { dir: 'lib' } : { file: 'lib/index.mjs' }),
       format: 'esm',
       sourcemap: !!isDevelopmentBuild,
-
       ...(isDevelopmentBuild && {
         entryFileNames: '[name].mjs',
         preserveModules: true,
