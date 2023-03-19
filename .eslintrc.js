@@ -40,6 +40,7 @@ module.exports = defineConfig({
           'cpu',
           'cpus',
           'ctx',
+          'deprecations',
           'ecma',
           'enum',
           'esm',
@@ -104,7 +105,7 @@ module.exports = defineConfig({
       }
     },
     {
-      files: ['**/*.js'],
+      files: ['**/*.js', '**/*.mjs'],
       plugins: ['jsdoc'],
       extends: ['plugin:n/recommended', 'plugin:jsdoc/recommended', 'standard']
     },
