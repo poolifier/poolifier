@@ -67,6 +67,9 @@ build/config.gypi
 # Mac
 .DS_Store
 
+# pnpm
+package-lock.json
+
 # Project specifics
 .eslintcache
 .history/

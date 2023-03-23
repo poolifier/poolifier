@@ -9,8 +9,8 @@
       "request": "launch",
       "name": "Launch Tests Debug",
       "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run-script", "test:debug"],
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "test:debug"],
       "skipFiles": ["<node_internals>/**"],
       "stopOnEntry": true
     },
@@ -19,8 +19,8 @@
       "request": "launch",
       "name": "Launch Benchmarks Debug",
       "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run-script", "benchmark:debug"],
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "benchmark:debug"],
       "skipFiles": ["<node_internals>/**"],
       "stopOnEntry": true
     }

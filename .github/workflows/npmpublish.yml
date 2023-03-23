@@ -18,20 +18,22 @@ jobs:
           node-version: '18.x'
 
       - name: Install
-        run: npm ci
+        run: |
+          corepack enable
+          pnpm install
 
       - name: Tests & Coverage
         run: |
-          npm run test
-          npm run coverage
+          pnpm run test
+          pnpm run coverage
 
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Production Build
-        run: npm run build:prod
+        run: pnpm run build:prod
 
-  publish-npm:
+  publish:
     needs: build
     runs-on: ubuntu-latest
 
@@ -50,22 +52,22 @@ jobs:
         uses: jaywcjlove/github-action-package@main
 
       - name: Install
-        run: npm ci
+        run: pnpm install
 
       - name: Publish Release
         if: ${{ contains(steps.package-version.outputs.version, '-') == false }}
-        run: npm publish
+        run: pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish Pre-Release
         if: ${{ contains(steps.package-version.outputs.version, '-') == true }}
-        run: npm publish --tag next
+        run: pnpm publish --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # - name: Publish Beta Release
       #   if: ${{ contains(steps.package-version.outputs.version, 'beta') == true }}
-      #   run: npm publish --tag beta
+      #   run: pnpm publish --tag beta
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

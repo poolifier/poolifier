@@ -34,20 +34,22 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install
-        run: npm ci
+        run: |
+          corepack enable
+          pnpm install
 
       - name: Build
-        run: npm run build --if-present
+        run: pnpm run build --if-present
 
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Tests
-        run: npm run test
+        run: pnpm run test
 
       - name: Coverage Report
         if: "github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x'"
-        run: npm run coverage
+        run: pnpm run coverage
 
       - name: Sonar Code Analysis
         if: "github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x'"
@@ -58,4 +60,4 @@ jobs:
 
       - name: Benchmark
         if: github.event.inputs.withBenchmark
-        run: npm run benchmark
+        run: pnpm run benchmark

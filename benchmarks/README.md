@@ -30,7 +30,7 @@ Those are our results:
 
 ### Internal
 
-To run the internal benchmarks, you just need to navigate to the root of poolifier project and run `npm run benchmark`
+To run the internal benchmarks, you just need to navigate to the root of poolifier project and run `pnpm run benchmark`
 
 ## Versus other pools
 
