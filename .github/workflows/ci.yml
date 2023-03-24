@@ -39,7 +39,7 @@ jobs:
           pnpm install
 
       - name: Build
-        run: pnpm run build --if-present
+        run: pnpm run build
 
       - name: Lint
         run: pnpm run lint
