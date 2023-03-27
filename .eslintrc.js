@@ -53,6 +53,7 @@ module.exports = defineConfig({
           'num',
           'os',
           'piscina',
+          'pnpm',
           'poolifier',
           'poolify',
           'readonly',
