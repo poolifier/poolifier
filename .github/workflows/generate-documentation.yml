@@ -19,6 +19,7 @@ jobs:
       - name: Generate documentation
         run: |
           corepack enable
+          corepack prepare pnpm@latest --activate
           pnpm install
           pnpm run typedoc
 
