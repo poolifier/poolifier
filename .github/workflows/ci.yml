@@ -36,6 +36,7 @@ jobs:
       - name: Install
         run: |
           corepack enable
+          corepack prepare pnpm@latest --activate
           pnpm install
 
       - name: Build
