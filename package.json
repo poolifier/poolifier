@@ -80,6 +80,10 @@
     {
       "type": "opencollective",
       "url": "https://opencollective.com/poolifier"
+    },
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/poolifier"
     }
   ],
   "bugs": {
