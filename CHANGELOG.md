@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Optimize worker alive status check.
+
 ## [2.3.10] - 2023-03-18
 
 ### Fixed
