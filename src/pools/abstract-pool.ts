@@ -105,7 +105,7 @@ export abstract class AbstractPool<
             this.getWorkerRunningTasks(workerCreated) === 0
           ) {
             // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-            void (this.destroyWorker(workerCreated) as Promise<void>)
+            void this.destroyWorker(workerCreated)
           }
         })
         return workerCreated

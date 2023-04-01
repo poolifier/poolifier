@@ -3,7 +3,11 @@ import type { Worker } from 'cluster'
 import type { MessagePort } from 'worker_threads'
 import type { MessageValue } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
-import type { KillBehavior, WorkerOptions } from './worker-options'
+import {
+  isKillBehavior,
+  type KillBehavior,
+  type WorkerOptions
+} from './worker-options'
 import { KillBehaviors } from './worker-options'
 
 const DEFAULT_MAX_INACTIVE_TIME = 60000
@@ -24,7 +28,7 @@ export abstract class AbstractWorker<
   /**
    * Timestamp of the last task processed by this worker.
    */
-  protected lastTaskTimestamp: number
+  protected lastTaskTimestamp!: number
   /**
    * Handler Id of the `aliveInterval` worker alive check.
    */
@@ -63,9 +67,8 @@ export abstract class AbstractWorker<
     this.opts = opts
     this.checkFunctionInput(fn)
     this.checkWorkerOptions(this.opts)
-    this.lastTaskTimestamp = Date.now()
-    // Keep the worker active
-    if (!isMain) {
+    if (!isMain && isKillBehavior(KillBehaviors.HARD, this.opts.killBehavior)) {
+      this.lastTaskTimestamp = Date.now()
       this.aliveInterval = setInterval(
         this.checkAlive.bind(this),
         (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) / 2
@@ -179,7 +182,8 @@ export abstract class AbstractWorker<
       const err = this.handleError(e as Error)
       this.sendToMainWorker({ error: err, id: value.id })
     } finally {
-      this.lastTaskTimestamp = Date.now()
+      isKillBehavior(KillBehaviors.HARD, this.opts.killBehavior) &&
+        (this.lastTaskTimestamp = Date.now())
     }
   }
 
@@ -205,7 +209,8 @@ export abstract class AbstractWorker<
         this.sendToMainWorker({ error: err, id: value.id })
       })
       .finally(() => {
-        this.lastTaskTimestamp = Date.now()
+        isKillBehavior(KillBehaviors.HARD, this.opts.killBehavior) &&
+          (this.lastTaskTimestamp = Date.now())
       })
       .catch(EMPTY_FUNCTION)
   }
