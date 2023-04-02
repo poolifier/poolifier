@@ -17,7 +17,7 @@ const dynamicPoolLessRecentlyUsed = new DynamicThreadPool(
   size / 2,
   size * 3,
   './benchmarks/internal/thread/worker.js',
-  { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
+  { workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED }
 )
 
 const dynamicPoolWeightedRoundRobin = new DynamicThreadPool(

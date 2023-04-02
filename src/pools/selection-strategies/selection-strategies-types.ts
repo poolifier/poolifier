@@ -9,9 +9,9 @@ export const WorkerChoiceStrategies = Object.freeze({
    */
   ROUND_ROBIN: 'ROUND_ROBIN',
   /**
-   * Less recently used worker selection strategy.
+   * Less used worker selection strategy.
    */
-  LESS_RECENTLY_USED: 'LESS_RECENTLY_USED',
+  LESS_USED: 'LESS_USED',
   /**
    * Fair share worker selection strategy.
    */

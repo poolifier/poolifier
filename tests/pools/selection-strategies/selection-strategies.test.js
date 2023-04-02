@@ -12,7 +12,7 @@ describe('Selection strategies test suite', () => {
 
   it('Verify that WorkerChoiceStrategies enumeration provides string values', () => {
     expect(WorkerChoiceStrategies.ROUND_ROBIN).toBe('ROUND_ROBIN')
-    expect(WorkerChoiceStrategies.LESS_RECENTLY_USED).toBe('LESS_RECENTLY_USED')
+    expect(WorkerChoiceStrategies.LESS_USED).toBe('LESS_USED')
     expect(WorkerChoiceStrategies.FAIR_SHARE).toBe('FAIR_SHARE')
     expect(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN).toBe(
       'WEIGHTED_ROUND_ROBIN'
@@ -179,38 +179,38 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify LESS_RECENTLY_USED strategy is taken at pool creation', async () => {
+  it('Verify LESS_USED strategy is taken at pool creation', async () => {
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
-      { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
+      { workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED }
     )
     expect(pool.opts.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.LESS_RECENTLY_USED
+      WorkerChoiceStrategies.LESS_USED
     )
     // We need to clean up the resources after our test
     await pool.destroy()
   })
 
-  it('Verify LESS_RECENTLY_USED strategy can be set after pool creation', async () => {
+  it('Verify LESS_USED strategy can be set after pool creation', async () => {
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js'
     )
-    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.LESS_RECENTLY_USED)
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.LESS_USED)
     expect(pool.opts.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.LESS_RECENTLY_USED
+      WorkerChoiceStrategies.LESS_USED
     )
     // We need to clean up the resources after our test
     await pool.destroy()
   })
 
-  it('Verify LESS_RECENTLY_USED strategy default tasks usage statistics requirements', async () => {
+  it('Verify LESS_USED strategy default tasks usage statistics requirements', async () => {
     let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js'
     )
-    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.LESS_RECENTLY_USED)
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.LESS_USED)
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .requiredStatistics.runTime
@@ -221,7 +221,7 @@ describe('Selection strategies test suite', () => {
       max,
       './tests/worker-files/thread/testWorker.js'
     )
-    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.LESS_RECENTLY_USED)
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.LESS_USED)
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .requiredStatistics.runTime
@@ -230,11 +230,11 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify LESS_RECENTLY_USED strategy can be run in a fixed pool', async () => {
+  it('Verify LESS_USED strategy can be run in a fixed pool', async () => {
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
-      { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
+      { workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED }
     )
     // TODO: Create a better test to cover `LessRecentlyUsedWorkerChoiceStrategy#choose`
     const promises = []
@@ -246,12 +246,12 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify LESS_RECENTLY_USED strategy can be run in a dynamic pool', async () => {
+  it('Verify LESS_USED strategy can be run in a dynamic pool', async () => {
     const pool = new DynamicThreadPool(
       min,
       max,
       './tests/worker-files/thread/testWorker.js',
-      { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
+      { workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED }
     )
     // TODO: Create a better test to cover `LessRecentlyUsedWorkerChoiceStrategy#choose`
     const promises = []

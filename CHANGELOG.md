@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Optimize worker storage in pool.
 - Optimize worker alive status check.
-- Optimize `LESS_RECENTLY_USED` worker choice strategy.
+- Rename worker choice strategy `LESS_RECENTLY_USED to `LESS_USED` .
+- Optimize `LESS_USED` worker choice strategy.
 
 ### Fixed
 

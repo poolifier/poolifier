@@ -163,7 +163,7 @@ Node versions >= 16.x are supported.
 - `workerChoiceStrategy` (optional) - The worker choice strategy to use in this pool:
 
   - `WorkerChoiceStrategies.ROUND_ROBIN`: Submit tasks to worker in a round robbin fashion
-  - `WorkerChoiceStrategies.LESS_RECENTLY_USED`: Submit tasks to the less recently used worker
+  - `WorkerChoiceStrategies.LESS_USED`: Submit tasks to the less used worker
   - `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN` Submit tasks to worker using a weighted round robin scheduling algorithm based on tasks execution time
   - `WorkerChoiceStrategies.FAIR_SHARE`: Submit tasks to worker using a fair share tasks scheduling algorithm based on tasks execution time
 

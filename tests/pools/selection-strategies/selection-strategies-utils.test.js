@@ -11,8 +11,8 @@ const {
   RoundRobinWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/round-robin-worker-choice-strategy')
 const {
-  LessRecentlyUsedWorkerChoiceStrategy
-} = require('../../../lib/pools/selection-strategies/less-recently-used-worker-choice-strategy')
+  LessUsedWorkerChoiceStrategy
+} = require('../../../lib/pools/selection-strategies/less-used-worker-choice-strategy')
 const {
   FairShareWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy')
@@ -49,12 +49,12 @@ describe('Selection strategies utils test suite', () => {
     expect(strategy).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
   })
 
-  it('Verify that getWorkerChoiceStrategy() can return LESS_RECENTLY_USED strategy', () => {
+  it('Verify that getWorkerChoiceStrategy() can return LESS_USED strategy', () => {
     const strategy = getWorkerChoiceStrategy(
       pool,
-      WorkerChoiceStrategies.LESS_RECENTLY_USED
+      WorkerChoiceStrategies.LESS_USED
     )
-    expect(strategy).toBeInstanceOf(LessRecentlyUsedWorkerChoiceStrategy)
+    expect(strategy).toBeInstanceOf(LessUsedWorkerChoiceStrategy)
   })
 
   it('Verify that getWorkerChoiceStrategy() can return FAIR_SHARE strategy', () => {

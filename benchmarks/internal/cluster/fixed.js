@@ -15,7 +15,7 @@ const fixedPool = new FixedClusterPool(
 const fixedPoolLessRecentlyUsed = new FixedClusterPool(
   size,
   './benchmarks/internal/cluster/worker.js',
-  { workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED }
+  { workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED }
 )
 
 const fixedPoolWeightedRoundRobin = new FixedClusterPool(

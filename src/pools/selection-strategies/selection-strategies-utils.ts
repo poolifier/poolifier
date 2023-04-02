@@ -1,7 +1,7 @@
 import type { IPoolInternal } from '../pool-internal'
 import type { IPoolWorker } from '../pool-worker'
 import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strategy'
-import { LessRecentlyUsedWorkerChoiceStrategy } from './less-recently-used-worker-choice-strategy'
+import { LessUsedWorkerChoiceStrategy } from './less-used-worker-choice-strategy'
 import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
@@ -28,8 +28,8 @@ export function getWorkerChoiceStrategy<
   switch (workerChoiceStrategy) {
     case WorkerChoiceStrategies.ROUND_ROBIN:
       return new RoundRobinWorkerChoiceStrategy(pool)
-    case WorkerChoiceStrategies.LESS_RECENTLY_USED:
-      return new LessRecentlyUsedWorkerChoiceStrategy(pool)
+    case WorkerChoiceStrategies.LESS_USED:
+      return new LessUsedWorkerChoiceStrategy(pool)
     case WorkerChoiceStrategies.FAIR_SHARE:
       return new FairShareWorkerChoiceStrategy(pool)
     case WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN:

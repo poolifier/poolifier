@@ -98,7 +98,7 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js',
       {
-        workerChoiceStrategy: WorkerChoiceStrategies.LESS_RECENTLY_USED,
+        workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED,
         enableEvents: false,
         messageHandler: testHandler,
         errorHandler: testHandler,
@@ -109,7 +109,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.enableEvents).toBe(false)
     expect(pool.emitter).toBeUndefined()
     expect(pool.opts.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.LESS_RECENTLY_USED
+      WorkerChoiceStrategies.LESS_USED
     )
     expect(pool.opts.messageHandler).toStrictEqual(testHandler)
     expect(pool.opts.errorHandler).toStrictEqual(testHandler)

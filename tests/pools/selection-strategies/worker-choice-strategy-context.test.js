@@ -12,8 +12,8 @@ const {
   RoundRobinWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/round-robin-worker-choice-strategy')
 const {
-  LessRecentlyUsedWorkerChoiceStrategy
-} = require('../../../lib/pools/selection-strategies/less-recently-used-worker-choice-strategy')
+  LessUsedWorkerChoiceStrategy
+} = require('../../../lib/pools/selection-strategies/less-used-worker-choice-strategy')
 const {
   FairShareWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy')
@@ -113,31 +113,31 @@ describe('Worker choice strategy context test suite', () => {
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with LESS_RECENTLY_USED and fixed pool', () => {
+  it('Verify that setWorkerChoiceStrategy() works with LESS_USED and fixed pool', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      WorkerChoiceStrategies.LESS_RECENTLY_USED
+      WorkerChoiceStrategies.LESS_USED
     )
     expect(
       workerChoiceStrategyContext.getWorkerChoiceStrategy()
-    ).toBeInstanceOf(LessRecentlyUsedWorkerChoiceStrategy)
+    ).toBeInstanceOf(LessUsedWorkerChoiceStrategy)
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with LESS_RECENTLY_USED and dynamic pool', () => {
+  it('Verify that setWorkerChoiceStrategy() works with LESS_USED and dynamic pool', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      WorkerChoiceStrategies.LESS_RECENTLY_USED
+      WorkerChoiceStrategies.LESS_USED
     )
     expect(
       workerChoiceStrategyContext.getWorkerChoiceStrategy()
     ).toBeInstanceOf(DynamicPoolWorkerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.getWorkerChoiceStrategy().workerChoiceStrategy
-    ).toBeInstanceOf(LessRecentlyUsedWorkerChoiceStrategy)
+    ).toBeInstanceOf(LessUsedWorkerChoiceStrategy)
   })
 
   it('Verify that setWorkerChoiceStrategy() works with FAIR_SHARE and fixed pool', () => {
