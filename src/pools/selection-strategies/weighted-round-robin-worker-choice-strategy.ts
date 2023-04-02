@@ -120,7 +120,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   private getWorkerVirtualTaskRunTime (worker: Worker): number | undefined {
-    return this.pool.getWorkerAverageTasksRunTime(worker)
+    return this.pool.getWorkerTasksUsage(worker)?.avgRunTime
   }
 
   private computeWorkerWeight (): number {

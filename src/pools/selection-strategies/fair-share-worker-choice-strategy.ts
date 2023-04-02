@@ -75,7 +75,7 @@ export class FairShareWorkerChoiceStrategy<
       start: workerVirtualTaskStartTimestamp,
       end:
         workerVirtualTaskStartTimestamp +
-        (this.pool.getWorkerAverageTasksRunTime(worker) ?? 0)
+        (this.pool.getWorkerTasksUsage(worker)?.avgRunTime ?? 0)
     })
   }
 }

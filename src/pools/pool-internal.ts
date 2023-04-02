@@ -77,26 +77,10 @@ export interface IPoolInternal<
   findFreeWorker: () => Worker | false
 
   /**
-   * Gets worker running tasks.
+   * Gets worker tasks usage.
    *
    * @param worker - The worker.
-   * @returns The number of tasks currently running on the worker.
+   * @returns The tasks usage on the worker.
    */
-  getWorkerRunningTasks: (worker: Worker) => number | undefined
-
-  /**
-   * Gets worker run tasks.
-   *
-   * @param worker - The worker.
-   * @returns The number of tasks run on the worker.
-   */
-  getWorkerRunTasks: (worker: Worker) => number | undefined
-
-  /**
-   * Gets worker average tasks runtime.
-   *
-   * @param worker - The worker.
-   * @returns The average tasks runtime on the worker.
-   */
-  getWorkerAverageTasksRunTime: (worker: Worker) => number | undefined
+  getWorkerTasksUsage: (worker: Worker) => TasksUsage | undefined
 }

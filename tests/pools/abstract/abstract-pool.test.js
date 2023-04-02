@@ -8,7 +8,7 @@ const {
 
 describe('Abstract pool test suite', () => {
   const numberOfWorkers = 1
-  const workerNotFoundInTasksUsageMapError = new Error(
+  const workerNotFoundInPoolError = new Error(
     'Worker could not be found in the pool'
   )
   class StubPoolWithRemoveAllWorker extends FixedThreadPool {
@@ -118,20 +118,7 @@ describe('Abstract pool test suite', () => {
     await pool.destroy()
   })
 
-  it('Simulate worker not found during increaseWorkerRunningTasks', async () => {
-    const pool = new StubPoolWithRemoveAllWorker(
-      numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
-    )
-    // Simulate worker not found.
-    pool.removeAllWorker()
-    expect(() => pool.increaseWorkerRunningTasks()).toThrowError(
-      workerNotFoundInTasksUsageMapError
-    )
-    await pool.destroy()
-  })
-
-  it('Simulate worker not found during decreaseWorkerRunningTasks', async () => {
+  it('Simulate worker not found during getWorkerTasksUsage', async () => {
     const pool = new StubPoolWithRemoveAllWorker(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js',
@@ -141,55 +128,8 @@ describe('Abstract pool test suite', () => {
     )
     // Simulate worker not found.
     pool.removeAllWorker()
-    expect(() => pool.decreaseWorkerRunningTasks()).toThrowError(
-      workerNotFoundInTasksUsageMapError
-    )
-    await pool.destroy()
-  })
-
-  it('Simulate worker not found during stepWorkerRunTasks', async () => {
-    const pool = new StubPoolWithRemoveAllWorker(
-      numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js',
-      {
-        errorHandler: e => console.error(e)
-      }
-    )
-    // Simulate worker not found.
-    pool.removeAllWorker()
-    expect(() => pool.stepWorkerRunTasks()).toThrowError(
-      workerNotFoundInTasksUsageMapError
-    )
-    await pool.destroy()
-  })
-
-  it('Simulate worker not found during updateWorkerTasksRunTime with strategy not requiring it', async () => {
-    const pool = new StubPoolWithRemoveAllWorker(
-      numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js',
-      {
-        errorHandler: e => console.error(e)
-      }
-    )
-    // Simulate worker not found.
-    pool.removeAllWorker()
-    expect(() => pool.updateWorkerTasksRunTime()).not.toThrowError()
-    await pool.destroy()
-  })
-
-  it('Simulate worker not found during updateWorkerTasksRunTime with strategy requiring it', async () => {
-    const pool = new StubPoolWithRemoveAllWorker(
-      numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js',
-      {
-        workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE,
-        errorHandler: e => console.error(e)
-      }
-    )
-    // Simulate worker not found.
-    pool.removeAllWorker()
-    expect(() => pool.updateWorkerTasksRunTime()).toThrowError(
-      workerNotFoundInTasksUsageMapError
+    expect(() => pool.getWorkerTasksUsage()).toThrowError(
+      workerNotFoundInPoolError
     )
     await pool.destroy()
   })

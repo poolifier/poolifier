@@ -100,7 +100,7 @@ export abstract class AbstractPool<
         this.registerWorkerMessageListener(workerCreated, message => {
           if (
             isKillBehavior(KillBehaviors.HARD, message.kill) ||
-            this.getWorkerRunningTasks(workerCreated) === 0
+            this.getWorkerTasksUsage(workerCreated)?.running === 0
           ) {
             // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
             void this.destroyWorker(workerCreated)
@@ -161,21 +161,6 @@ export abstract class AbstractPool<
    */
   private getWorkerKey (worker: Worker): number | undefined {
     return [...this.workers].find(([, value]) => value.worker === worker)?.[0]
-  }
-
-  /** {@inheritDoc} */
-  public getWorkerRunningTasks (worker: Worker): number | undefined {
-    return this.getWorkerTasksUsage(worker)?.running
-  }
-
-  /** {@inheritDoc} */
-  public getWorkerRunTasks (worker: Worker): number | undefined {
-    return this.getWorkerTasksUsage(worker)?.run
-  }
-
-  /** {@inheritDoc} */
-  public getWorkerAverageTasksRunTime (worker: Worker): number | undefined {
-    return this.getWorkerTasksUsage(worker)?.avgRunTime
   }
 
   /** {@inheritDoc} */
@@ -268,7 +253,7 @@ export abstract class AbstractPool<
    * @param worker - The worker.
    */
   protected beforePromiseWorkerResponseHook (worker: Worker): void {
-    this.increaseWorkerRunningTasks(worker)
+    ++(this.getWorkerTasksUsage(worker) as TasksUsage).running
   }
 
   /**
@@ -282,9 +267,21 @@ export abstract class AbstractPool<
     message: MessageValue<Response>,
     promise: PromiseWorkerResponseWrapper<Worker, Response>
   ): void {
-    this.decreaseWorkerRunningTasks(promise.worker)
-    this.stepWorkerRunTasks(promise.worker, 1)
-    this.updateWorkerTasksRunTime(promise.worker, message.taskRunTime)
+    const workerTasksUsage = this.getWorkerTasksUsage(
+      promise.worker
+    ) as TasksUsage
+    --workerTasksUsage.running
+    ++workerTasksUsage.run
+    if (
+      this.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .requiredStatistics.runTime
+    ) {
+      workerTasksUsage.runTime += message.taskRunTime ?? 0
+      if (workerTasksUsage.run !== 0) {
+        workerTasksUsage.avgRunTime =
+          workerTasksUsage.runTime / workerTasksUsage.run
+      }
+    }
   }
 
   /**
@@ -410,80 +407,14 @@ export abstract class AbstractPool<
     }
   }
 
-  /**
-   * Increases the number of tasks that the given worker has applied.
-   *
-   * @param worker - Worker which running tasks is increased.
-   */
-  private increaseWorkerRunningTasks (worker: Worker): void {
-    this.stepWorkerRunningTasks(worker, 1)
-  }
-
-  /**
-   * Decreases the number of tasks that the given worker has applied.
-   *
-   * @param worker - Worker which running tasks is decreased.
-   */
-  private decreaseWorkerRunningTasks (worker: Worker): void {
-    this.stepWorkerRunningTasks(worker, -1)
-  }
-
-  /**
-   * Gets tasks usage of the given worker.
-   *
-   * @param worker - Worker which tasks usage is returned.
-   */
-  private getWorkerTasksUsage (worker: Worker): TasksUsage | undefined {
-    if (this.checkWorker(worker)) {
-      const workerKey = this.getWorkerKey(worker) as number
+  /** {@inheritDoc} */
+  public getWorkerTasksUsage (worker: Worker): TasksUsage | undefined {
+    const workerKey = this.getWorkerKey(worker)
+    if (workerKey !== undefined) {
       const workerEntry = this.workers.get(workerKey) as WorkerType<Worker>
       return workerEntry.tasksUsage
     }
-  }
-
-  /**
-   * Steps the number of tasks that the given worker has applied.
-   *
-   * @param worker - Worker which running tasks are stepped.
-   * @param step - Number of running tasks step.
-   */
-  private stepWorkerRunningTasks (worker: Worker, step: number): void {
-    // prettier-ignore
-    (this.getWorkerTasksUsage(worker) as TasksUsage).running += step
-  }
-
-  /**
-   * Steps the number of tasks that the given worker has run.
-   *
-   * @param worker - Worker which has run tasks.
-   * @param step - Number of run tasks step.
-   */
-  private stepWorkerRunTasks (worker: Worker, step: number): void {
-    // prettier-ignore
-    (this.getWorkerTasksUsage(worker) as TasksUsage).run += step
-  }
-
-  /**
-   * Updates tasks runtime for the given worker.
-   *
-   * @param worker - Worker which run the task.
-   * @param taskRunTime - Worker task runtime.
-   */
-  private updateWorkerTasksRunTime (
-    worker: Worker,
-    taskRunTime: number | undefined
-  ): void {
-    if (
-      this.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .requiredStatistics.runTime
-    ) {
-      const workerTasksUsage = this.getWorkerTasksUsage(worker) as TasksUsage
-      workerTasksUsage.runTime += taskRunTime ?? 0
-      if (workerTasksUsage.run !== 0) {
-        workerTasksUsage.avgRunTime =
-          workerTasksUsage.runTime / workerTasksUsage.run
-      }
-    }
+    throw new Error('Worker could not be found in the pool')
   }
 
   /**
@@ -502,18 +433,5 @@ export abstract class AbstractPool<
       worker,
       tasksUsage
     })
-  }
-
-  /**
-   * Checks if the given worker is registered in the pool.
-   *
-   * @param worker - Worker to check.
-   * @returns `true` if the worker is registered in the pool.
-   */
-  private checkWorker (worker: Worker): boolean {
-    if (this.getWorkerKey(worker) == null) {
-      throw new Error('Worker could not be found in the pool')
-    }
-    return true
   }
 }
