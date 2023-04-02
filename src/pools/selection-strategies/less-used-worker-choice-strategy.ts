@@ -22,8 +22,8 @@ export class LessUsedWorkerChoiceStrategy<
   public choose (): Worker {
     let minNumberOfTasks = Infinity
     let lessUsedWorker!: Worker
-    for (const value of this.pool.workers.values()) {
-      const worker = value.worker
+    for (const workerItem of this.pool.workers) {
+      const worker = workerItem.worker
       const tasksUsage = this.pool.getWorkerTasksUsage(worker)
       const workerTasks =
         (tasksUsage?.run as number) + (tasksUsage?.running as number)

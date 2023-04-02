@@ -28,8 +28,8 @@ export class LessBusyWorkerChoiceStrategy<
   public choose (): Worker {
     let minRunTime = Infinity
     let lessBusyWorker!: Worker
-    for (const value of this.pool.workers.values()) {
-      const worker = value.worker
+    for (const workerItem of this.pool.workers) {
+      const worker = workerItem.worker
       const workerRunTime = this.pool.getWorkerTasksUsage(worker)
         ?.runTime as number
       if (!this.isDynamicPool && workerRunTime === 0) {

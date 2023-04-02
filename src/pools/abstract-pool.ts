@@ -29,18 +29,10 @@ export abstract class AbstractPool<
   Response = unknown
 > implements IPoolInternal<Worker, Data, Response> {
   /** {@inheritDoc} */
-  public readonly workers: Map<number, WorkerType<Worker>> = new Map<
-  number,
-  WorkerType<Worker>
-  >()
+  public readonly workers: Array<WorkerType<Worker>> = []
 
   /** {@inheritDoc} */
   public readonly emitter?: PoolEmitter
-
-  /**
-   * Id of the next worker.
-   */
-  protected nextWorkerId: number = 0
 
   /**
    * The promise map.
@@ -159,8 +151,8 @@ export abstract class AbstractPool<
    * @param worker - The worker.
    * @returns The worker key.
    */
-  private getWorkerKey (worker: Worker): number | undefined {
-    return [...this.workers].find(([, value]) => value.worker === worker)?.[0]
+  private getWorkerKey (worker: Worker): number {
+    return this.workers.findIndex(workerItem => workerItem.worker === worker)
   }
 
   /** {@inheritDoc} */
@@ -168,8 +160,8 @@ export abstract class AbstractPool<
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
     this.opts.workerChoiceStrategy = workerChoiceStrategy
-    for (const [key, value] of this.workers) {
-      this.setWorker(key, value.worker, {
+    for (const workerItem of this.workers) {
+      this.setWorker(workerItem.worker, {
         run: 0,
         running: 0,
         runTime: 0,
@@ -193,10 +185,10 @@ export abstract class AbstractPool<
 
   /** {@inheritDoc} */
   public findFreeWorker (): Worker | false {
-    for (const value of this.workers.values()) {
-      if (value.tasksUsage.running === 0) {
+    for (const workerItem of this.workers) {
+      if (workerItem.tasksUsage.running === 0) {
         // A worker is free, return the matching worker
-        return value.worker
+        return workerItem.worker
       }
     }
     return false
@@ -220,8 +212,8 @@ export abstract class AbstractPool<
   /** {@inheritDoc} */
   public async destroy (): Promise<void> {
     await Promise.all(
-      [...this.workers].map(async ([, value]) => {
-        await this.destroyWorker(value.worker)
+      this.workers.map(async workerItem => {
+        await this.destroyWorker(workerItem.worker)
       })
     )
   }
@@ -290,8 +282,7 @@ export abstract class AbstractPool<
    * @param worker - The worker that will be removed.
    */
   protected removeWorker (worker: Worker): void {
-    this.workers.delete(this.getWorkerKey(worker) as number)
-    --this.nextWorkerId
+    this.workers.splice(this.getWorkerKey(worker), 1)
   }
 
   /**
@@ -356,13 +347,12 @@ export abstract class AbstractPool<
       this.removeWorker(worker)
     })
 
-    this.setWorker(this.nextWorkerId, worker, {
+    this.setWorker(worker, {
       run: 0,
       running: 0,
       runTime: 0,
       avgRunTime: 0
     })
-    ++this.nextWorkerId
 
     this.afterWorkerSetup(worker)
 
@@ -410,8 +400,8 @@ export abstract class AbstractPool<
   /** {@inheritDoc} */
   public getWorkerTasksUsage (worker: Worker): TasksUsage | undefined {
     const workerKey = this.getWorkerKey(worker)
-    if (workerKey !== undefined) {
-      return (this.workers.get(workerKey) as WorkerType<Worker>).tasksUsage
+    if (workerKey !== -1) {
+      return this.workers[workerKey].tasksUsage
     }
     throw new Error('Worker could not be found in the pool')
   }
@@ -419,16 +409,11 @@ export abstract class AbstractPool<
   /**
    * Sets the given worker.
    *
-   * @param workerKey - The worker key.
    * @param worker - The worker.
    * @param tasksUsage - The worker tasks usage.
    */
-  private setWorker (
-    workerKey: number,
-    worker: Worker,
-    tasksUsage: TasksUsage
-  ): void {
-    this.workers.set(workerKey, {
+  private setWorker (worker: Worker, tasksUsage: TasksUsage): void {
+    this.workers.push({
       worker,
       tasksUsage
     })

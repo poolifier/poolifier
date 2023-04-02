@@ -42,9 +42,9 @@ export interface IPoolInternal<
   Response = unknown
 > extends IPool<Data, Response> {
   /**
-   * Pool workers map.
+   * Pool workers item array.
    */
-  readonly workers: Map<number, WorkerType<Worker>>
+  readonly workers: Array<WorkerType<Worker>>
 
   /**
    * Pool type.

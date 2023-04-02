@@ -46,8 +46,8 @@ export class FairShareWorkerChoiceStrategy<
   public choose (): Worker {
     let minWorkerVirtualTaskEndTimestamp = Infinity
     let chosenWorker!: Worker
-    for (const value of this.pool.workers.values()) {
-      const worker = value.worker
+    for (const workerItem of this.pool.workers) {
+      const worker = workerItem.worker
       this.computeWorkerLastVirtualTaskTimestamp(worker)
       const workerLastVirtualTaskEndTimestamp =
         this.workerLastVirtualTaskTimestamp.get(worker)?.end ?? 0

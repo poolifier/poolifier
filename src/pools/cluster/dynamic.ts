@@ -41,6 +41,6 @@ export class DynamicClusterPool<
 
   /** {@inheritDoc} */
   public get busy (): boolean {
-    return this.workers.size === this.max
+    return this.workers.length === this.max
   }
 }

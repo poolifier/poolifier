@@ -26,10 +26,9 @@ export class RoundRobinWorkerChoiceStrategy<
 
   /** {@inheritDoc} */
   public choose (): Worker {
-    const chosenWorker = this.pool.workers.get(this.nextWorkerId)
-      ?.worker as Worker
+    const chosenWorker = this.pool.workers[this.nextWorkerId]?.worker
     this.nextWorkerId =
-      this.nextWorkerId === this.pool.workers.size - 1
+      this.nextWorkerId === this.pool.workers.length - 1
         ? 0
         : this.nextWorkerId + 1
     return chosenWorker
