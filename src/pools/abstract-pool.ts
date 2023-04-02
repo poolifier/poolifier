@@ -50,14 +50,9 @@ export abstract class AbstractPool<
    * When we receive a message from the worker we get a map entry and resolve/reject the promise based on the message.
    */
   protected promiseMap: Map<
-  number,
+  string,
   PromiseWorkerResponseWrapper<Worker, Response>
-  > = new Map<number, PromiseWorkerResponseWrapper<Worker, Response>>()
-
-  /**
-   * Id of the next message.
-   */
-  protected nextMessageId: number = 0
+  > = new Map<string, PromiseWorkerResponseWrapper<Worker, Response>>()
 
   /**
    * Worker choice strategy instance implementing the worker choice algorithm.
@@ -158,7 +153,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Gets worker key.
+   * Gets the given worker key.
    *
    * @param worker - The worker.
    * @returns The worker key.
@@ -220,16 +215,15 @@ export abstract class AbstractPool<
 
   /** {@inheritDoc} */
   public async execute (data: Data): Promise<Response> {
-    // Configure worker to handle message with the specified task
     const worker = this.chooseWorker()
-    const res = this.internalExecute(worker, this.nextMessageId)
+    const messageId = crypto.randomUUID()
+    const res = this.internalExecute(worker, messageId)
     this.checkAndEmitBusy()
     this.sendToWorker(worker, {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       data: data ?? ({} as Data),
-      id: this.nextMessageId
+      id: messageId
     })
-    ++this.nextMessageId
     // eslint-disable-next-line @typescript-eslint/return-await
     return res
   }
@@ -398,7 +392,7 @@ export abstract class AbstractPool<
 
   private async internalExecute (
     worker: Worker,
-    messageId: number
+    messageId: string
   ): Promise<Response> {
     this.beforePromiseWorkerResponseHook(worker)
     return await new Promise<Response>((resolve, reject) => {
@@ -431,7 +425,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Get tasks usage of the given worker.
+   * Gets tasks usage of the given worker.
    *
    * @param worker - Worker which tasks usage is returned.
    */

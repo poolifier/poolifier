@@ -22,7 +22,7 @@ export interface MessageValue<
   /**
    * Id of the message.
    */
-  readonly id?: number
+  readonly id?: string
   /**
    * Kill code.
    */
