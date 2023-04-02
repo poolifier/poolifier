@@ -1,4 +1,4 @@
-import { cpus } from 'os'
+import { cpus } from 'node:os'
 import type { IPoolInternal } from '../pool-internal'
 import type { IPoolWorker } from '../pool-worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'

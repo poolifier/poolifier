@@ -34,7 +34,14 @@ export default {
       ...(!isDevelopmentBuild && { plugins: [terser({ maxWorkers: 2 })] })
     }
   ],
-  external: ['async_hooks', 'cluster', 'events', 'os', 'worker_threads'],
+  external: [
+    'node:async_hooks',
+    'node:cluster',
+    'node:crypto',
+    'node:events',
+    'node:os',
+    'node:worker_threads'
+  ],
   plugins: [
     typescript({
       tsconfig: isDevelopmentBuild

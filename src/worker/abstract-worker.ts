@@ -1,6 +1,6 @@
-import { AsyncResource } from 'async_hooks'
-import type { Worker } from 'cluster'
-import type { MessagePort } from 'worker_threads'
+import { AsyncResource } from 'node:async_hooks'
+import type { Worker } from 'node:cluster'
+import type { MessagePort } from 'node:worker_threads'
 import type { MessageValue } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
 import {

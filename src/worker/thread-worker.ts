@@ -1,5 +1,5 @@
-import type { MessagePort } from 'worker_threads'
-import { isMainThread, parentPort } from 'worker_threads'
+import type { MessagePort } from 'node:worker_threads'
+import { isMainThread, parentPort } from 'node:worker_threads'
 import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'

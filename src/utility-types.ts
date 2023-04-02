@@ -1,5 +1,5 @@
-import type { Worker as ClusterWorker } from 'cluster'
-import type { MessagePort } from 'worker_threads'
+import type { Worker as ClusterWorker } from 'node:cluster'
+import type { MessagePort } from 'node:worker_threads'
 import type { IPoolWorker } from './pools/pool-worker'
 import type { KillBehavior } from './worker/worker-options'
 

@@ -1,5 +1,5 @@
-import type { Worker } from 'cluster'
-import cluster from 'cluster'
+import type { Worker } from 'node:cluster'
+import cluster from 'node:cluster'
 import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'

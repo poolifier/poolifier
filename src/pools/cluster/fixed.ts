@@ -1,5 +1,5 @@
-import type { ClusterSettings, Worker } from 'cluster'
-import cluster from 'cluster'
+import type { ClusterSettings, Worker } from 'node:cluster'
+import cluster from 'node:cluster'
 import type { MessageValue } from '../../utility-types'
 import { AbstractPool } from '../abstract-pool'
 import type { PoolOptions } from '../pool'
