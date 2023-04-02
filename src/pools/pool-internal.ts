@@ -42,7 +42,7 @@ export interface IPoolInternal<
   Response = unknown
 > extends IPool<Data, Response> {
   /**
-   * Map of workers.
+   * Pool workers map.
    */
   readonly workers: Map<number, WorkerType<Worker>>
 
@@ -83,6 +83,14 @@ export interface IPoolInternal<
    * @returns The number of tasks currently running on the worker.
    */
   getWorkerRunningTasks: (worker: Worker) => number | undefined
+
+  /**
+   * Gets worker run tasks.
+   *
+   * @param worker - The worker.
+   * @returns The number of tasks run on the worker.
+   */
+  getWorkerRunTasks: (worker: Worker) => number | undefined
 
   /**
    * Gets worker average tasks runtime.

@@ -165,14 +165,17 @@ export abstract class AbstractPool<
 
   /** {@inheritDoc} */
   public getWorkerRunningTasks (worker: Worker): number | undefined {
-    return this.workers.get(this.getWorkerKey(worker) as number)?.tasksUsage
-      ?.running
+    return this.getWorkerTasksUsage(worker)?.running
+  }
+
+  /** {@inheritDoc} */
+  public getWorkerRunTasks (worker: Worker): number | undefined {
+    return this.getWorkerTasksUsage(worker)?.run
   }
 
   /** {@inheritDoc} */
   public getWorkerAverageTasksRunTime (worker: Worker): number | undefined {
-    return this.workers.get(this.getWorkerKey(worker) as number)?.tasksUsage
-      ?.avgRunTime
+    return this.getWorkerTasksUsage(worker)?.avgRunTime
   }
 
   /** {@inheritDoc} */
