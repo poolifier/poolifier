@@ -411,8 +411,7 @@ export abstract class AbstractPool<
   public getWorkerTasksUsage (worker: Worker): TasksUsage | undefined {
     const workerKey = this.getWorkerKey(worker)
     if (workerKey !== undefined) {
-      const workerEntry = this.workers.get(workerKey) as WorkerType<Worker>
-      return workerEntry.tasksUsage
+      return (this.workers.get(workerKey) as WorkerType<Worker>).tasksUsage
     }
     throw new Error('Worker could not be found in the pool')
   }
