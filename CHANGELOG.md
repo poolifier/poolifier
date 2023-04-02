@@ -9,7 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Optimize worker storage in pool.
 - Optimize worker alive status check.
+
+### Fixed
+
+- Ensure trimmable characters are checked at pool initialization.
 
 ## [2.3.10] - 2023-03-18
 

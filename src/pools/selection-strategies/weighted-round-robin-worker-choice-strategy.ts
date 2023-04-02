@@ -31,9 +31,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /**
-   * Worker index where the current task will be submitted.
+   * Worker id where the current task will be submitted.
    */
-  private currentWorkerIndex: number = 0
+  private currentWorkerId: number = 0
   /**
    * Default worker weight.
    */
@@ -59,7 +59,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
 
   /** {@inheritDoc} */
   public reset (): boolean {
-    this.currentWorkerIndex = 0
+    this.currentWorkerId = 0
     this.workersTaskRunTime.clear()
     this.initWorkersTaskRunTime()
     return true
@@ -67,7 +67,8 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
 
   /** {@inheritDoc} */
   public choose (): Worker {
-    const chosenWorker = this.pool.workers[this.currentWorkerIndex]
+    const chosenWorker = this.pool.workers.get(this.currentWorkerId)
+      ?.worker as Worker
     if (this.isDynamicPool && !this.workersTaskRunTime.has(chosenWorker)) {
       this.initWorkerTaskRunTime(chosenWorker)
     }
@@ -84,12 +85,12 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
           (this.getWorkerVirtualTaskRunTime(chosenWorker) ?? 0)
       )
     } else {
-      this.currentWorkerIndex =
-        this.currentWorkerIndex === this.pool.workers.length - 1
+      this.currentWorkerId =
+        this.currentWorkerId === this.pool.workers.size - 1
           ? 0
-          : this.currentWorkerIndex + 1
+          : this.currentWorkerId + 1
       this.setWorkerTaskRunTime(
-        this.pool.workers[this.currentWorkerIndex],
+        this.pool.workers.get(this.currentWorkerId)?.worker as Worker,
         workerTaskWeight,
         0
       )
@@ -98,8 +99,8 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   private initWorkersTaskRunTime (): void {
-    for (const worker of this.pool.workers) {
-      this.initWorkerTaskRunTime(worker)
+    for (const value of this.pool.workers.values()) {
+      this.initWorkerTaskRunTime(value.worker)
     }
   }
 

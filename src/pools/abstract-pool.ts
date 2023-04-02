@@ -6,7 +6,7 @@ import { EMPTY_FUNCTION } from '../utils'
 import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
 import type { PoolOptions } from './pool'
 import { PoolEmitter } from './pool'
-import type { IPoolInternal, TasksUsage } from './pool-internal'
+import type { IPoolInternal, TasksUsage, WorkerType } from './pool-internal'
 import { PoolType } from './pool-internal'
 import type { IPoolWorker } from './pool-worker'
 import {
@@ -28,21 +28,23 @@ export abstract class AbstractPool<
   Response = unknown
 > implements IPoolInternal<Worker, Data, Response> {
   /** {@inheritDoc} */
-  public readonly workers: Worker[] = []
-
-  /** {@inheritDoc} */
-  public readonly workersTasksUsage: Map<Worker, TasksUsage> = new Map<
-  Worker,
-  TasksUsage
+  public readonly workers: Map<number, WorkerType<Worker>> = new Map<
+  number,
+  WorkerType<Worker>
   >()
 
   /** {@inheritDoc} */
   public readonly emitter?: PoolEmitter
 
   /**
+   * Id of the next worker.
+   */
+  protected nextWorkerId: number = 0
+
+  /**
    * The promise map.
    *
-   * - `key`: This is the message Id of each submitted task.
+   * - `key`: This is the message id of each submitted task.
    * - `value`: An object that contains the worker, the resolve function and the reject function.
    *
    * When we receive a message from the worker we get a map entry and resolve/reject the promise based on the message.
@@ -115,7 +117,10 @@ export abstract class AbstractPool<
   }
 
   private checkFilePath (filePath: string): void {
-    if (filePath == null || filePath.length === 0) {
+    if (
+      filePath == null ||
+      (typeof filePath === 'string' && filePath.trim().length === 0)
+    ) {
       throw new Error('Please specify a file with a worker implementation')
     }
   }
@@ -152,19 +157,26 @@ export abstract class AbstractPool<
     return this.promiseMap.size
   }
 
-  /** {@inheritDoc} */
-  public getWorkerIndex (worker: Worker): number {
-    return this.workers.indexOf(worker)
+  /**
+   * Gets worker key.
+   *
+   * @param worker - The worker.
+   * @returns The worker key.
+   */
+  private getWorkerKey (worker: Worker): number | undefined {
+    return [...this.workers].find(([, value]) => value.worker === worker)?.[0]
   }
 
   /** {@inheritDoc} */
   public getWorkerRunningTasks (worker: Worker): number | undefined {
-    return this.workersTasksUsage.get(worker)?.running
+    return this.workers.get(this.getWorkerKey(worker) as number)?.tasksUsage
+      ?.running
   }
 
   /** {@inheritDoc} */
   public getWorkerAverageTasksRunTime (worker: Worker): number | undefined {
-    return this.workersTasksUsage.get(worker)?.avgRunTime
+    return this.workers.get(this.getWorkerKey(worker) as number)?.tasksUsage
+      ?.avgRunTime
   }
 
   /** {@inheritDoc} */
@@ -172,8 +184,13 @@ export abstract class AbstractPool<
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
     this.opts.workerChoiceStrategy = workerChoiceStrategy
-    for (const worker of this.workers) {
-      this.resetWorkerTasksUsage(worker)
+    for (const [key, value] of this.workers) {
+      this.setWorker(key, value.worker, {
+        run: 0,
+        running: 0,
+        runTime: 0,
+        avgRunTime: 0
+      })
     }
     this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
       workerChoiceStrategy
@@ -192,10 +209,10 @@ export abstract class AbstractPool<
 
   /** {@inheritDoc} */
   public findFreeWorker (): Worker | false {
-    for (const worker of this.workers) {
-      if (this.getWorkerRunningTasks(worker) === 0) {
+    for (const value of this.workers.values()) {
+      if (value.tasksUsage.running === 0) {
         // A worker is free, return the matching worker
-        return worker
+        return value.worker
       }
     }
     return false
@@ -220,8 +237,8 @@ export abstract class AbstractPool<
   /** {@inheritDoc} */
   public async destroy (): Promise<void> {
     await Promise.all(
-      this.workers.map(async worker => {
-        await this.destroyWorker(worker)
+      [...this.workers].map(async ([, value]) => {
+        await this.destroyWorker(value.worker)
       })
     )
   }
@@ -278,9 +295,8 @@ export abstract class AbstractPool<
    * @param worker - The worker that will be removed.
    */
   protected removeWorker (worker: Worker): void {
-    // Clean worker from data structure
-    this.workers.splice(this.getWorkerIndex(worker), 1)
-    this.removeWorkerTasksUsage(worker)
+    this.workers.delete(this.getWorkerKey(worker) as number)
+    --this.nextWorkerId
   }
 
   /**
@@ -345,10 +361,13 @@ export abstract class AbstractPool<
       this.removeWorker(worker)
     })
 
-    this.workers.push(worker)
-
-    // Init worker tasks usage map
-    this.initWorkerTasksUsage(worker)
+    this.setWorker(this.nextWorkerId, worker, {
+      run: 0,
+      running: 0,
+      runTime: 0,
+      avgRunTime: 0
+    })
+    ++this.nextWorkerId
 
     this.afterWorkerSetup(worker)
 
@@ -412,17 +431,27 @@ export abstract class AbstractPool<
   }
 
   /**
+   * Get tasks usage of the given worker.
+   *
+   * @param worker - Worker which tasks usage is returned.
+   */
+  private getWorkerTasksUsage (worker: Worker): TasksUsage | undefined {
+    if (this.checkWorker(worker)) {
+      const workerKey = this.getWorkerKey(worker) as number
+      const workerEntry = this.workers.get(workerKey) as WorkerType<Worker>
+      return workerEntry.tasksUsage
+    }
+  }
+
+  /**
    * Steps the number of tasks that the given worker has applied.
    *
    * @param worker - Worker which running tasks are stepped.
    * @param step - Number of running tasks step.
    */
   private stepWorkerRunningTasks (worker: Worker, step: number): void {
-    if (this.checkWorkerTasksUsage(worker)) {
-      const tasksUsage = this.workersTasksUsage.get(worker) as TasksUsage
-      tasksUsage.running = tasksUsage.running + step
-      this.workersTasksUsage.set(worker, tasksUsage)
-    }
+    // prettier-ignore
+    (this.getWorkerTasksUsage(worker) as TasksUsage).running += step
   }
 
   /**
@@ -432,11 +461,8 @@ export abstract class AbstractPool<
    * @param step - Number of run tasks step.
    */
   private stepWorkerRunTasks (worker: Worker, step: number): void {
-    if (this.checkWorkerTasksUsage(worker)) {
-      const tasksUsage = this.workersTasksUsage.get(worker) as TasksUsage
-      tasksUsage.run = tasksUsage.run + step
-      this.workersTasksUsage.set(worker, tasksUsage)
-    }
+    // prettier-ignore
+    (this.getWorkerTasksUsage(worker) as TasksUsage).run += step
   }
 
   /**
@@ -451,62 +477,45 @@ export abstract class AbstractPool<
   ): void {
     if (
       this.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .requiredStatistics.runTime &&
-      this.checkWorkerTasksUsage(worker)
+        .requiredStatistics.runTime
     ) {
-      const tasksUsage = this.workersTasksUsage.get(worker) as TasksUsage
-      tasksUsage.runTime += taskRunTime ?? 0
-      if (tasksUsage.run !== 0) {
-        tasksUsage.avgRunTime = tasksUsage.runTime / tasksUsage.run
+      const workerTasksUsage = this.getWorkerTasksUsage(worker) as TasksUsage
+      workerTasksUsage.runTime += taskRunTime ?? 0
+      if (workerTasksUsage.run !== 0) {
+        workerTasksUsage.avgRunTime =
+          workerTasksUsage.runTime / workerTasksUsage.run
       }
-      this.workersTasksUsage.set(worker, tasksUsage)
     }
   }
 
   /**
-   * Checks if the given worker is registered in the workers tasks usage map.
+   * Sets the given worker.
    *
-   * @param worker - Worker to check.
-   * @returns `true` if the worker is registered in the workers tasks usage map. `false` otherwise.
-   */
-  private checkWorkerTasksUsage (worker: Worker): boolean {
-    const hasTasksUsage = this.workersTasksUsage.has(worker)
-    if (!hasTasksUsage) {
-      throw new Error('Worker could not be found in workers tasks usage map')
-    }
-    return hasTasksUsage
-  }
-
-  /**
-   * Initializes tasks usage statistics.
-   *
+   * @param workerKey - The worker key.
    * @param worker - The worker.
+   * @param tasksUsage - The worker tasks usage.
    */
-  private initWorkerTasksUsage (worker: Worker): void {
-    this.workersTasksUsage.set(worker, {
-      run: 0,
-      running: 0,
-      runTime: 0,
-      avgRunTime: 0
+  private setWorker (
+    workerKey: number,
+    worker: Worker,
+    tasksUsage: TasksUsage
+  ): void {
+    this.workers.set(workerKey, {
+      worker,
+      tasksUsage
     })
   }
 
   /**
-   * Removes worker tasks usage statistics.
+   * Checks if the given worker is registered in the pool.
    *
-   * @param worker - The worker.
+   * @param worker - Worker to check.
+   * @returns `true` if the worker is registered in the pool.
    */
-  private removeWorkerTasksUsage (worker: Worker): void {
-    this.workersTasksUsage.delete(worker)
-  }
-
-  /**
-   * Resets worker tasks usage statistics.
-   *
-   * @param worker - The worker.
-   */
-  private resetWorkerTasksUsage (worker: Worker): void {
-    this.removeWorkerTasksUsage(worker)
-    this.initWorkerTasksUsage(worker)
+  private checkWorker (worker: Worker): boolean {
+    if (this.getWorkerKey(worker) == null) {
+      throw new Error('Worker could not be found in the pool')
+    }
+    return true
   }
 }

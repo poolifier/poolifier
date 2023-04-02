@@ -67,7 +67,7 @@ describe('Fixed thread pool test suite', () => {
 
   it('Verify that busy event is emitted', async () => {
     let poolBusy = 0
-    pool.emitter.on('busy', () => poolBusy++)
+    pool.emitter.on('busy', () => ++poolBusy)
     for (let i = 0; i < numberOfThreads * 2; i++) {
       pool.execute()
     }

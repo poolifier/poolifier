@@ -20,6 +20,16 @@ export interface TasksUsage {
 }
 
 /**
+ * Internal worker type.
+ *
+ * @typeParam Worker - Type of worker which manages this pool.
+ */
+export interface WorkerType<Worker extends IPoolWorker> {
+  worker: Worker
+  tasksUsage: TasksUsage
+}
+
+/**
  * Internal contract definition for a poolifier pool.
  *
  * @typeParam Worker - Type of worker which manages this pool.
@@ -32,17 +42,9 @@ export interface IPoolInternal<
   Response = unknown
 > extends IPool<Data, Response> {
   /**
-   * List of currently available workers.
+   * Map of workers.
    */
-  readonly workers: Worker[]
-
-  /**
-   * The workers tasks usage map.
-   *
-   *  `key`: The `Worker`
-   *  `value`: Worker tasks usage statistics.
-   */
-  readonly workersTasksUsage: Map<Worker, TasksUsage>
+  readonly workers: Map<number, WorkerType<Worker>>
 
   /**
    * Pool type.
@@ -73,14 +75,6 @@ export interface IPoolInternal<
    * @returns A free worker if there is one, otherwise `false`.
    */
   findFreeWorker: () => Worker | false
-
-  /**
-   * Gets worker index.
-   *
-   * @param worker - The worker.
-   * @returns The worker index.
-   */
-  getWorkerIndex: (worker: Worker) => number
 
   /**
    * Gets worker running tasks.

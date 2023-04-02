@@ -14,23 +14,24 @@ export class RoundRobinWorkerChoiceStrategy<
   Response
 > extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
   /**
-   * Index for the next worker.
+   * Id of the next worker.
    */
-  private nextWorkerIndex: number = 0
+  private nextWorkerId: number = 0
 
   /** {@inheritDoc} */
   public reset (): boolean {
-    this.nextWorkerIndex = 0
+    this.nextWorkerId = 0
     return true
   }
 
   /** {@inheritDoc} */
   public choose (): Worker {
-    const chosenWorker = this.pool.workers[this.nextWorkerIndex]
-    this.nextWorkerIndex =
-      this.nextWorkerIndex === this.pool.workers.length - 1
+    const chosenWorker = this.pool.workers.get(this.nextWorkerId)
+      ?.worker as Worker
+    this.nextWorkerId =
+      this.nextWorkerId === this.pool.workers.size - 1
         ? 0
-        : this.nextWorkerIndex + 1
+        : this.nextWorkerId + 1
     return chosenWorker
   }
 }

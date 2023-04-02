@@ -9,12 +9,11 @@ const {
 describe('Abstract pool test suite', () => {
   const numberOfWorkers = 1
   const workerNotFoundInTasksUsageMapError = new Error(
-    'Worker could not be found in workers tasks usage map'
+    'Worker could not be found in the pool'
   )
   class StubPoolWithRemoveAllWorker extends FixedThreadPool {
     removeAllWorker () {
-      this.workers = []
-      this.workersTasksUsage.clear()
+      this.workers = new Map()
       this.promiseMap.clear()
     }
   }
@@ -200,12 +199,12 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js'
     )
-    for (const tasksUsage of pool.workersTasksUsage.values()) {
-      expect(tasksUsage).toBeDefined()
-      expect(tasksUsage.run).toBe(0)
-      expect(tasksUsage.running).toBe(0)
-      expect(tasksUsage.runTime).toBe(0)
-      expect(tasksUsage.avgRunTime).toBe(0)
+    for (const value of pool.workers.values()) {
+      expect(value.tasksUsage).toBeDefined()
+      expect(value.tasksUsage.run).toBe(0)
+      expect(value.tasksUsage.running).toBe(0)
+      expect(value.tasksUsage.runTime).toBe(0)
+      expect(value.tasksUsage.avgRunTime).toBe(0)
     }
     await pool.destroy()
   })
@@ -219,20 +218,20 @@ describe('Abstract pool test suite', () => {
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.push(pool.execute())
     }
-    for (const tasksUsage of pool.workersTasksUsage.values()) {
-      expect(tasksUsage).toBeDefined()
-      expect(tasksUsage.run).toBe(0)
-      expect(tasksUsage.running).toBe(numberOfWorkers * 2)
-      expect(tasksUsage.runTime).toBe(0)
-      expect(tasksUsage.avgRunTime).toBe(0)
+    for (const value of pool.workers.values()) {
+      expect(value.tasksUsage).toBeDefined()
+      expect(value.tasksUsage.run).toBe(0)
+      expect(value.tasksUsage.running).toBe(numberOfWorkers * 2)
+      expect(value.tasksUsage.runTime).toBe(0)
+      expect(value.tasksUsage.avgRunTime).toBe(0)
     }
     await Promise.all(promises)
-    for (const tasksUsage of pool.workersTasksUsage.values()) {
-      expect(tasksUsage).toBeDefined()
-      expect(tasksUsage.run).toBe(numberOfWorkers * 2)
-      expect(tasksUsage.running).toBe(0)
-      expect(tasksUsage.runTime).toBeGreaterThanOrEqual(0)
-      expect(tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+    for (const value of pool.workers.values()) {
+      expect(value.tasksUsage).toBeDefined()
+      expect(value.tasksUsage.run).toBe(numberOfWorkers * 2)
+      expect(value.tasksUsage.running).toBe(0)
+      expect(value.tasksUsage.runTime).toBeGreaterThanOrEqual(0)
+      expect(value.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
     }
     await pool.destroy()
   })
@@ -248,20 +247,20 @@ describe('Abstract pool test suite', () => {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
-    for (const tasksUsage of pool.workersTasksUsage.values()) {
-      expect(tasksUsage).toBeDefined()
-      expect(tasksUsage.run).toBe(numberOfWorkers * 2)
-      expect(tasksUsage.running).toBe(0)
-      expect(tasksUsage.runTime).toBeGreaterThanOrEqual(0)
-      expect(tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+    for (const value of pool.workers.values()) {
+      expect(value.tasksUsage).toBeDefined()
+      expect(value.tasksUsage.run).toBe(numberOfWorkers * 2)
+      expect(value.tasksUsage.running).toBe(0)
+      expect(value.tasksUsage.runTime).toBeGreaterThanOrEqual(0)
+      expect(value.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
     }
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
-    for (const tasksUsage of pool.workersTasksUsage.values()) {
-      expect(tasksUsage).toBeDefined()
-      expect(tasksUsage.run).toBe(0)
-      expect(tasksUsage.running).toBe(0)
-      expect(tasksUsage.runTime).toBe(0)
-      expect(tasksUsage.avgRunTime).toBe(0)
+    for (const value of pool.workers.values()) {
+      expect(value.tasksUsage).toBeDefined()
+      expect(value.tasksUsage.run).toBe(0)
+      expect(value.tasksUsage.running).toBe(0)
+      expect(value.tasksUsage.runTime).toBe(0)
+      expect(value.tasksUsage.avgRunTime).toBe(0)
     }
     await pool.destroy()
   })

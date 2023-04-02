@@ -42,7 +42,7 @@ describe('Selection strategies test suite', () => {
       WorkerChoiceStrategies.ROUND_ROBIN
     )
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy().nextWorkerIndex
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy().nextWorkerId
     ).toBe(0)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -153,11 +153,11 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
     )
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy().nextWorkerIndex
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy().nextWorkerId
     ).toBeUndefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.ROUND_ROBIN)
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy().nextWorkerIndex
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy().nextWorkerId
     ).toBe(0)
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -168,12 +168,12 @@ describe('Selection strategies test suite', () => {
     )
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .workerChoiceStrategy.nextWorkerIndex
+        .workerChoiceStrategy.nextWorkerId
     ).toBeUndefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.ROUND_ROBIN)
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .workerChoiceStrategy.nextWorkerIndex
+        .workerChoiceStrategy.nextWorkerId
     ).toBe(0)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -424,8 +424,7 @@ describe('Selection strategies test suite', () => {
       WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     )
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .currentWorkerIndex
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy().currentWorkerId
     ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
@@ -526,8 +525,7 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js'
     )
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .currentWorkerIndex
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy().currentWorkerId
     ).toBeUndefined()
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
@@ -539,8 +537,7 @@ describe('Selection strategies test suite', () => {
     ).toBeUndefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .currentWorkerIndex
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy().currentWorkerId
     ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
@@ -563,7 +560,7 @@ describe('Selection strategies test suite', () => {
     )
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .workerChoiceStrategy.currentWorkerIndex
+        .workerChoiceStrategy.currentWorkerId
     ).toBeUndefined()
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
@@ -576,7 +573,7 @@ describe('Selection strategies test suite', () => {
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .workerChoiceStrategy.currentWorkerIndex
+        .workerChoiceStrategy.currentWorkerId
     ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()

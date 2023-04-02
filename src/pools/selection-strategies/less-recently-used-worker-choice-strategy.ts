@@ -23,7 +23,8 @@ export class LessRecentlyUsedWorkerChoiceStrategy<
     let minNumberOfRunningTasks = Infinity
     // A worker is always found because it picks the one with fewer tasks
     let lessRecentlyUsedWorker!: Worker
-    for (const worker of this.pool.workers) {
+    for (const value of this.pool.workers.values()) {
+      const worker = value.worker
       const workerRunningTasks = this.pool.getWorkerRunningTasks(
         worker
       ) as number

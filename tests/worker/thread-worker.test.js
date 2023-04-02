@@ -4,7 +4,7 @@ const { ThreadWorker } = require('../../lib')
 describe('Thread worker test suite', () => {
   let numberOfMessagesPosted = 0
   const postMessage = function () {
-    numberOfMessagesPosted++
+    ++numberOfMessagesPosted
   }
   class SpyWorker extends ThreadWorker {
     getMainWorker () {
