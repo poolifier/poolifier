@@ -12,7 +12,7 @@ const fixedPool = new FixedThreadPool(
   './benchmarks/internal/thread/worker.js'
 )
 
-const fixedPoolLessRecentlyUsed = new FixedThreadPool(
+const fixedPoolLessUsed = new FixedThreadPool(
   size,
   './benchmarks/internal/thread/worker.js',
   { workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED }
@@ -36,10 +36,10 @@ async function fixedThreadTest (
   return runPoolifierTest(fixedPool, { tasks, workerData })
 }
 
-async function fixedThreadTestLessRecentlyUsed (
+async function fixedThreadTestLessUsed (
   { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
 ) {
-  return runPoolifierTest(fixedPoolLessRecentlyUsed, { tasks, workerData })
+  return runPoolifierTest(fixedPoolLessUsed, { tasks, workerData })
 }
 
 async function fixedThreadTestWeightedRoundRobin (
@@ -56,7 +56,7 @@ async function fixedThreadTestFairShare (
 
 module.exports = {
   fixedThreadTest,
-  fixedThreadTestLessRecentlyUsed,
+  fixedThreadTestLessUsed,
   fixedThreadTestWeightedRoundRobin,
   fixedThreadTestFairShare
 }

@@ -13,6 +13,7 @@ describe('Selection strategies test suite', () => {
   it('Verify that WorkerChoiceStrategies enumeration provides string values', () => {
     expect(WorkerChoiceStrategies.ROUND_ROBIN).toBe('ROUND_ROBIN')
     expect(WorkerChoiceStrategies.LESS_USED).toBe('LESS_USED')
+    expect(WorkerChoiceStrategies.LESS_BUSY).toBe('LESS_BUSY')
     expect(WorkerChoiceStrategies.FAIR_SHARE).toBe('FAIR_SHARE')
     expect(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN).toBe(
       'WEIGHTED_ROUND_ROBIN'
@@ -236,7 +237,7 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED }
     )
-    // TODO: Create a better test to cover `LessRecentlyUsedWorkerChoiceStrategy#choose`
+    // TODO: Create a better test to cover `LessUsedWorkerChoiceStrategy#choose`
     const promises = []
     for (let i = 0; i < max * 2; i++) {
       promises.push(pool.execute())
@@ -253,7 +254,91 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED }
     )
-    // TODO: Create a better test to cover `LessRecentlyUsedWorkerChoiceStrategy#choose`
+    // TODO: Create a better test to cover `LessUsedWorkerChoiceStrategy#choose`
+    const promises = []
+    for (let i = 0; i < max * 2; i++) {
+      promises.push(pool.execute())
+    }
+    await Promise.all(promises)
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LESS_BUSY strategy is taken at pool creation', async () => {
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.LESS_BUSY }
+    )
+    expect(pool.opts.workerChoiceStrategy).toBe(
+      WorkerChoiceStrategies.LESS_BUSY
+    )
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LESS_BUSY strategy can be set after pool creation', async () => {
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.LESS_BUSY)
+    expect(pool.opts.workerChoiceStrategy).toBe(
+      WorkerChoiceStrategies.LESS_BUSY
+    )
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LESS_BUSY strategy default tasks usage statistics requirements', async () => {
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.LESS_BUSY)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .requiredStatistics.runTime
+    ).toBe(true)
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.LESS_BUSY)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .requiredStatistics.runTime
+    ).toBe(true)
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LESS_BUSY strategy can be run in a fixed pool', async () => {
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.LESS_BUSY }
+    )
+    // TODO: Create a better test to cover `LessBusyWorkerChoiceStrategy#choose`
+    const promises = []
+    for (let i = 0; i < max * 2; i++) {
+      promises.push(pool.execute())
+    }
+    await Promise.all(promises)
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LESS_BUSY strategy can be run in a dynamic pool', async () => {
+    const pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.LESS_BUSY }
+    )
+    // TODO: Create a better test to cover `LessBusyWorkerChoiceStrategy#choose`
     const promises = []
     for (let i = 0; i < max * 2; i++) {
       promises.push(pool.execute())

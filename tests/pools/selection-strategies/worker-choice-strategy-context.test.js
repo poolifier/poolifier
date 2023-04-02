@@ -15,6 +15,9 @@ const {
   LessUsedWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/less-used-worker-choice-strategy')
 const {
+  LessBusyWorkerChoiceStrategy
+} = require('../../../lib/pools/selection-strategies/less-busy-worker-choice-strategy')
+const {
   FairShareWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy')
 const {
@@ -138,6 +141,33 @@ describe('Worker choice strategy context test suite', () => {
     expect(
       workerChoiceStrategyContext.getWorkerChoiceStrategy().workerChoiceStrategy
     ).toBeInstanceOf(LessUsedWorkerChoiceStrategy)
+  })
+
+  it('Verify that setWorkerChoiceStrategy() works with LESS_BUSY and fixed pool', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(
+      WorkerChoiceStrategies.LESS_BUSY
+    )
+    expect(
+      workerChoiceStrategyContext.getWorkerChoiceStrategy()
+    ).toBeInstanceOf(LessBusyWorkerChoiceStrategy)
+  })
+
+  it('Verify that setWorkerChoiceStrategy() works with LESS_BUSY and dynamic pool', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      dynamicPool
+    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(
+      WorkerChoiceStrategies.LESS_BUSY
+    )
+    expect(
+      workerChoiceStrategyContext.getWorkerChoiceStrategy()
+    ).toBeInstanceOf(DynamicPoolWorkerChoiceStrategy)
+    expect(
+      workerChoiceStrategyContext.getWorkerChoiceStrategy().workerChoiceStrategy
+    ).toBeInstanceOf(LessBusyWorkerChoiceStrategy)
   })
 
   it('Verify that setWorkerChoiceStrategy() works with FAIR_SHARE and fixed pool', () => {

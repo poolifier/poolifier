@@ -14,6 +14,9 @@ const {
   LessUsedWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/less-used-worker-choice-strategy')
 const {
+  LessBusyWorkerChoiceStrategy
+} = require('../../../lib/pools/selection-strategies/less-busy-worker-choice-strategy')
+const {
   FairShareWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy')
 const {
@@ -55,6 +58,14 @@ describe('Selection strategies utils test suite', () => {
       WorkerChoiceStrategies.LESS_USED
     )
     expect(strategy).toBeInstanceOf(LessUsedWorkerChoiceStrategy)
+  })
+
+  it('Verify that getWorkerChoiceStrategy() can return LESS_BUSY strategy', () => {
+    const strategy = getWorkerChoiceStrategy(
+      pool,
+      WorkerChoiceStrategies.LESS_BUSY
+    )
+    expect(strategy).toBeInstanceOf(LessBusyWorkerChoiceStrategy)
   })
 
   it('Verify that getWorkerChoiceStrategy() can return FAIR_SHARE strategy', () => {

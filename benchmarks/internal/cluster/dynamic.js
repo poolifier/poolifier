@@ -13,7 +13,7 @@ const dynamicPool = new DynamicClusterPool(
   './benchmarks/internal/cluster/worker.js'
 )
 
-const dynamicPoolLessRecentlyUsed = new DynamicClusterPool(
+const dynamicPoolLessUsed = new DynamicClusterPool(
   size / 2,
   size * 3,
   './benchmarks/internal/cluster/worker.js',
@@ -40,10 +40,10 @@ async function dynamicClusterTest (
   return runPoolifierTest(dynamicPool, { tasks, workerData })
 }
 
-async function dynamicClusterTestLessRecentlyUsed (
+async function dynamicClusterTestLessUsed (
   { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
 ) {
-  return runPoolifierTest(dynamicPoolLessRecentlyUsed, { tasks, workerData })
+  return runPoolifierTest(dynamicPoolLessUsed, { tasks, workerData })
 }
 
 async function dynamicClusterTestWeightedRoundRobin (
@@ -60,7 +60,7 @@ async function dynamicClusterTestFairShare (
 
 module.exports = {
   dynamicClusterTest,
-  dynamicClusterTestLessRecentlyUsed,
+  dynamicClusterTestLessUsed,
   dynamicClusterTestWeightedRoundRobin,
   dynamicClusterTestFairShare
 }

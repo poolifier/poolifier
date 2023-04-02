@@ -2,25 +2,25 @@ const Benchmark = require('benny')
 const {
   dynamicClusterTest,
   dynamicClusterTestFairShare,
-  dynamicClusterTestLessRecentlyUsed,
+  dynamicClusterTestLessUsed,
   dynamicClusterTestWeightedRoundRobin
 } = require('./cluster/dynamic')
 const {
   fixedClusterTest,
   fixedClusterTestFairShare,
-  fixedClusterTestLessRecentlyUsed,
+  fixedClusterTestLessUsed,
   fixedClusterTestWeightedRoundRobin
 } = require('./cluster/fixed')
 const {
   dynamicThreadTest,
   dynamicThreadTestFairShare,
-  dynamicThreadTestLessRecentlyUsed,
+  dynamicThreadTestLessUsed,
   dynamicThreadTestWeightedRoundRobin
 } = require('./thread/dynamic')
 const {
   fixedThreadTest,
   fixedThreadTestFairShare,
-  fixedThreadTestLessRecentlyUsed,
+  fixedThreadTestLessUsed,
   fixedThreadTestWeightedRoundRobin
 } = require('./thread/fixed')
 
@@ -32,8 +32,8 @@ Benchmark.suite(
   Benchmark.add('Poolifier:Fixed:ThreadPool', async () => {
     await fixedThreadTest()
   }),
-  Benchmark.add('Poolifier:Fixed:ThreadPool:LessRecentlyUsed', async () => {
-    await fixedThreadTestLessRecentlyUsed()
+  Benchmark.add('Poolifier:Fixed:ThreadPool:LessUsed', async () => {
+    await fixedThreadTestLessUsed()
   }),
   Benchmark.add('Poolifier:Fixed:ThreadPool:WeightedRoundRobin', async () => {
     await fixedThreadTestWeightedRoundRobin()
@@ -44,8 +44,8 @@ Benchmark.suite(
   Benchmark.add('Poolifier:Dynamic:ThreadPool', async () => {
     await dynamicThreadTest()
   }),
-  Benchmark.add('Poolifier:Dynamic:ThreadPool:LessRecentlyUsed', async () => {
-    await dynamicThreadTestLessRecentlyUsed()
+  Benchmark.add('Poolifier:Dynamic:ThreadPool:LessUsed', async () => {
+    await dynamicThreadTestLessUsed()
   }),
   Benchmark.add('Poolifier:Dynamic:ThreadPool:WeightedRoundRobin', async () => {
     await dynamicThreadTestWeightedRoundRobin()
@@ -56,8 +56,8 @@ Benchmark.suite(
   Benchmark.add('Poolifier:Fixed:ClusterPool', async () => {
     await fixedClusterTest()
   }),
-  Benchmark.add('Poolifier:Fixed:ClusterPool:LessRecentlyUsed', async () => {
-    await fixedClusterTestLessRecentlyUsed()
+  Benchmark.add('Poolifier:Fixed:ClusterPool:LessUsed', async () => {
+    await fixedClusterTestLessUsed()
   }),
   Benchmark.add('Poolifier:Fixed:ClusterPool:WeightedRoundRobin', async () => {
     await fixedClusterTestWeightedRoundRobin
@@ -68,8 +68,8 @@ Benchmark.suite(
   Benchmark.add('Poolifier:Dynamic:ClusterPool', async () => {
     await dynamicClusterTest()
   }),
-  Benchmark.add('Poolifier:Dynamic:ClusterPool:LessRecentlyUsed', async () => {
-    await dynamicClusterTestLessRecentlyUsed()
+  Benchmark.add('Poolifier:Dynamic:ClusterPool:LessUsed', async () => {
+    await dynamicClusterTestLessUsed()
   }),
   Benchmark.add(
     'Poolifier:Dynamic:ClusterPool:WeightedRoundRobin',

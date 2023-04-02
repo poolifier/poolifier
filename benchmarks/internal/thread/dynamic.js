@@ -13,7 +13,7 @@ const dynamicPool = new DynamicThreadPool(
   './benchmarks/internal/thread/worker.js'
 )
 
-const dynamicPoolLessRecentlyUsed = new DynamicThreadPool(
+const dynamicPoolLessUsed = new DynamicThreadPool(
   size / 2,
   size * 3,
   './benchmarks/internal/thread/worker.js',
@@ -40,10 +40,10 @@ async function dynamicThreadTest (
   return runPoolifierTest(dynamicPool, { tasks, workerData })
 }
 
-async function dynamicThreadTestLessRecentlyUsed (
+async function dynamicThreadTestLessUsed (
   { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
 ) {
-  return runPoolifierTest(dynamicPoolLessRecentlyUsed, { tasks, workerData })
+  return runPoolifierTest(dynamicPoolLessUsed, { tasks, workerData })
 }
 
 async function dynamicThreadTestWeightedRoundRobin (
@@ -60,7 +60,7 @@ async function dynamicThreadTestFairShare (
 
 module.exports = {
   dynamicThreadTest,
-  dynamicThreadTestLessRecentlyUsed,
+  dynamicThreadTestLessUsed,
   dynamicThreadTestWeightedRoundRobin,
   dynamicThreadTestFairShare
 }
