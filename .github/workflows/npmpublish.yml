@@ -72,6 +72,6 @@ jobs:
 
       # - name: Publish Beta Release
       #   if: ${{ contains(steps.package-version.outputs.version, 'beta') == true }}
-      #   run: pnpm publish --tag beta
+      #   run: pnpm publish --no-git-checks --tag beta
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
