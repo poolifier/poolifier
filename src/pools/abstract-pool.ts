@@ -146,7 +146,7 @@ export abstract class AbstractPool<
    * Gets the given worker key.
    *
    * @param worker - The worker.
-   * @returns The worker key.
+   * @returns The worker key if the worker is found in the pool, `-1` otherwise.
    */
   private getWorkerKey (worker: Worker): number {
     return this.workers.findIndex(workerItem => workerItem.worker === worker)
