@@ -432,7 +432,7 @@ describe('Selection strategies test suite', () => {
     )
     // TODO: Create a better test to cover `FairShareChoiceStrategy#choose`
     const promises = []
-    const maxMultiplier = 50
+    const maxMultiplier = 1000
     for (let i = 0; i < max * maxMultiplier; i++) {
       promises.push(pool.execute())
     }
