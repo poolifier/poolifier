@@ -1,6 +1,5 @@
 import type { Worker as ClusterWorker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
-import type { IPoolWorker } from './pools/pool-worker'
 import type { KillBehavior } from './worker/worker-options'
 
 /**
@@ -44,15 +43,11 @@ export interface MessageValue<
 }
 
 /**
- * An object holding the worker that will be used to resolve/rejects the promise later on.
+ * An object holding the execution response promise resolve/reject callbacks.
  *
- * @typeParam Worker - Type of worker.
- * @typeParam Response - Type of response of execution. This can only be serializable data.
+ * @typeParam Response - Type of execution response. This can only be serializable data.
  */
-export interface PromiseWorkerResponseWrapper<
-  Worker extends IPoolWorker,
-  Response = unknown
-> {
+export interface PromiseResponseWrapper<Response = unknown> {
   /**
    * Resolve callback to fulfill the promise.
    */
@@ -62,7 +57,7 @@ export interface PromiseWorkerResponseWrapper<
    */
   readonly reject: (reason?: string) => void
   /**
-   * The worker that has the assigned task.
+   * The worker handling the promise key .
    */
-  readonly worker: Worker
+  readonly workerKey: number
 }

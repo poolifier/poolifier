@@ -1,8 +1,5 @@
 import crypto from 'node:crypto'
-import type {
-  MessageValue,
-  PromiseWorkerResponseWrapper
-} from '../utility-types'
+import type { MessageValue, PromiseResponseWrapper } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
 import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
 import type { PoolOptions } from './pool'
@@ -35,17 +32,15 @@ export abstract class AbstractPool<
   public readonly emitter?: PoolEmitter
 
   /**
-   * The promise map.
+   * The promise response map.
    *
-   * - `key`: This is the message id of each submitted task.
-   * - `value`: An object that contains the worker, the resolve function and the reject function.
+   * - `key`: The message id of each submitted task.
+   * - `value`: An object that contains the worker key, the promise resolve and reject callbacks.
    *
-   * When we receive a message from the worker we get a map entry and resolve/reject the promise based on the message.
+   * When we receive a message from the worker we get a map entry with the promise resolve/reject bound to the message.
    */
-  protected promiseMap: Map<
-  string,
-  PromiseWorkerResponseWrapper<Worker, Response>
-  > = new Map<string, PromiseWorkerResponseWrapper<Worker, Response>>()
+  protected promiseResponseMap: Map<string, PromiseResponseWrapper<Response>> =
+    new Map<string, PromiseResponseWrapper<Response>>()
 
   /**
    * Worker choice strategy instance implementing the worker choice algorithm.
@@ -142,7 +137,7 @@ export abstract class AbstractPool<
 
   /** {@inheritDoc} */
   public get numberOfRunningTasks (): number {
-    return this.promiseMap.size
+    return this.promiseResponseMap.size
   }
 
   /**
@@ -165,7 +160,8 @@ export abstract class AbstractPool<
         run: 0,
         running: 0,
         runTime: 0,
-        avgRunTime: 0
+        avgRunTime: 0,
+        error: 0
       })
     }
     this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
@@ -198,7 +194,7 @@ export abstract class AbstractPool<
   public async execute (data: Data): Promise<Response> {
     const worker = this.chooseWorker()
     const messageId = crypto.randomUUID()
-    const res = this.internalExecute(worker, messageId)
+    const res = this.internalExecute(this.getWorkerKey(worker), messageId)
     this.checkAndEmitBusy()
     this.sendToWorker(worker, {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -242,28 +238,29 @@ export abstract class AbstractPool<
    * Hook executed before the worker task promise resolution.
    * Can be overridden.
    *
-   * @param worker - The worker.
+   * @param workerKey - The worker key.
    */
-  protected beforePromiseWorkerResponseHook (worker: Worker): void {
-    ++(this.getWorkerTasksUsage(worker) as TasksUsage).running
+  protected beforePromiseResponseHook (workerKey: number): void {
+    ++this.workers[workerKey].tasksUsage.running
   }
 
   /**
    * Hook executed after the worker task promise resolution.
    * Can be overridden.
    *
+   * @param workerKey - The worker key.
    * @param message - The received message.
-   * @param promise - The Promise response.
    */
-  protected afterPromiseWorkerResponseHook (
-    message: MessageValue<Response>,
-    promise: PromiseWorkerResponseWrapper<Worker, Response>
+  protected afterPromiseResponseHook (
+    workerKey: number,
+    message: MessageValue<Response>
   ): void {
-    const workerTasksUsage = this.getWorkerTasksUsage(
-      promise.worker
-    ) as TasksUsage
+    const workerTasksUsage = this.workers[workerKey].tasksUsage
     --workerTasksUsage.running
     ++workerTasksUsage.run
+    if (message.error != null) {
+      ++workerTasksUsage.error
+    }
     if (
       this.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .requiredStatistics.runTime
@@ -351,7 +348,8 @@ export abstract class AbstractPool<
       run: 0,
       running: 0,
       runTime: 0,
-      avgRunTime: 0
+      avgRunTime: 0,
+      error: 0
     })
 
     this.afterWorkerSetup(worker)
@@ -367,27 +365,27 @@ export abstract class AbstractPool<
   protected workerListener (): (message: MessageValue<Response>) => void {
     return message => {
       if (message.id !== undefined) {
-        const promise = this.promiseMap.get(message.id)
-        if (promise !== undefined) {
+        const promiseResponse = this.promiseResponseMap.get(message.id)
+        if (promiseResponse !== undefined) {
           if (message.error != null) {
-            promise.reject(message.error)
+            promiseResponse.reject(message.error)
           } else {
-            promise.resolve(message.data as Response)
+            promiseResponse.resolve(message.data as Response)
           }
-          this.afterPromiseWorkerResponseHook(message, promise)
-          this.promiseMap.delete(message.id)
+          this.afterPromiseResponseHook(promiseResponse.workerKey, message)
+          this.promiseResponseMap.delete(message.id)
         }
       }
     }
   }
 
   private async internalExecute (
-    worker: Worker,
+    workerKey: number,
     messageId: string
   ): Promise<Response> {
-    this.beforePromiseWorkerResponseHook(worker)
+    this.beforePromiseResponseHook(workerKey)
     return await new Promise<Response>((resolve, reject) => {
-      this.promiseMap.set(messageId, { resolve, reject, worker })
+      this.promiseResponseMap.set(messageId, { resolve, reject, workerKey })
     })
   }
 

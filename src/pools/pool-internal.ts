@@ -17,6 +17,7 @@ export interface TasksUsage {
   running: number
   runTime: number
   avgRunTime: number
+  error: number
 }
 
 /**
