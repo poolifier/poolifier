@@ -59,16 +59,6 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
-   * Gets the worker choice strategy used in the context.
-   *
-   * @returns The worker choice strategy.
-   * @deprecated Scheduled removal.
-   */
-  public getWorkerChoiceStrategy (): IWorkerChoiceStrategy {
-    return this.workerChoiceStrategy
-  }
-
-  /**
    * Gets the worker choice strategy required statistics.
    *
    * @returns The required statistics.

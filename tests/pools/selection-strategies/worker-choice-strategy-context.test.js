@@ -66,7 +66,7 @@ describe('Worker choice strategy context test suite', () => {
     workerChoiceStrategyContext.workerChoiceStrategy = WorkerChoiceStrategyStub
     const chosenWorkerKey = workerChoiceStrategyContext.execute()
     expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy().choose.calledOnce
+      workerChoiceStrategyContext.workerChoiceStrategy.choose.calledOnce
     ).toBe(true)
     expect(chosenWorkerKey).toBe(0)
   })
@@ -84,7 +84,7 @@ describe('Worker choice strategy context test suite', () => {
     workerChoiceStrategyContext.workerChoiceStrategy = WorkerChoiceStrategyStub
     const chosenWorkerKey = workerChoiceStrategyContext.execute()
     expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy().choose.calledOnce
+      workerChoiceStrategyContext.workerChoiceStrategy.choose.calledOnce
     ).toBe(true)
     expect(chosenWorkerKey).toBe(0)
   })
@@ -96,9 +96,9 @@ describe('Worker choice strategy context test suite', () => {
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
-    expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy()
-    ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+      RoundRobinWorkerChoiceStrategy
+    )
   })
 
   it('Verify that setWorkerChoiceStrategy() works with ROUND_ROBIN and dynamic pool', () => {
@@ -108,11 +108,11 @@ describe('Worker choice strategy context test suite', () => {
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+      DynamicPoolWorkerChoiceStrategy
+    )
     expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy()
-    ).toBeInstanceOf(DynamicPoolWorkerChoiceStrategy)
-    expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy().workerChoiceStrategy
+      workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
   })
 
@@ -123,9 +123,9 @@ describe('Worker choice strategy context test suite', () => {
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
       WorkerChoiceStrategies.LESS_USED
     )
-    expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy()
-    ).toBeInstanceOf(LessUsedWorkerChoiceStrategy)
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+      LessUsedWorkerChoiceStrategy
+    )
   })
 
   it('Verify that setWorkerChoiceStrategy() works with LESS_USED and dynamic pool', () => {
@@ -135,11 +135,11 @@ describe('Worker choice strategy context test suite', () => {
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
       WorkerChoiceStrategies.LESS_USED
     )
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+      DynamicPoolWorkerChoiceStrategy
+    )
     expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy()
-    ).toBeInstanceOf(DynamicPoolWorkerChoiceStrategy)
-    expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy().workerChoiceStrategy
+      workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
     ).toBeInstanceOf(LessUsedWorkerChoiceStrategy)
   })
 
@@ -150,9 +150,9 @@ describe('Worker choice strategy context test suite', () => {
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
       WorkerChoiceStrategies.LESS_BUSY
     )
-    expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy()
-    ).toBeInstanceOf(LessBusyWorkerChoiceStrategy)
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+      LessBusyWorkerChoiceStrategy
+    )
   })
 
   it('Verify that setWorkerChoiceStrategy() works with LESS_BUSY and dynamic pool', () => {
@@ -162,11 +162,11 @@ describe('Worker choice strategy context test suite', () => {
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
       WorkerChoiceStrategies.LESS_BUSY
     )
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+      DynamicPoolWorkerChoiceStrategy
+    )
     expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy()
-    ).toBeInstanceOf(DynamicPoolWorkerChoiceStrategy)
-    expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy().workerChoiceStrategy
+      workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
     ).toBeInstanceOf(LessBusyWorkerChoiceStrategy)
   })
 
@@ -177,9 +177,9 @@ describe('Worker choice strategy context test suite', () => {
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
       WorkerChoiceStrategies.FAIR_SHARE
     )
-    expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy()
-    ).toBeInstanceOf(FairShareWorkerChoiceStrategy)
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+      FairShareWorkerChoiceStrategy
+    )
   })
 
   it('Verify that setWorkerChoiceStrategy() works with FAIR_SHARE and dynamic pool', () => {
@@ -189,11 +189,11 @@ describe('Worker choice strategy context test suite', () => {
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
       WorkerChoiceStrategies.FAIR_SHARE
     )
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+      DynamicPoolWorkerChoiceStrategy
+    )
     expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy()
-    ).toBeInstanceOf(DynamicPoolWorkerChoiceStrategy)
-    expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy().workerChoiceStrategy
+      workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
     ).toBeInstanceOf(FairShareWorkerChoiceStrategy)
   })
 
@@ -204,9 +204,9 @@ describe('Worker choice strategy context test suite', () => {
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
       WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     )
-    expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy()
-    ).toBeInstanceOf(WeightedRoundRobinWorkerChoiceStrategy)
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+      WeightedRoundRobinWorkerChoiceStrategy
+    )
   })
 
   it('Verify that setWorkerChoiceStrategy() works with WEIGHTED_ROUND_ROBIN and dynamic pool', () => {
@@ -216,11 +216,11 @@ describe('Worker choice strategy context test suite', () => {
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
       WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     )
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBeInstanceOf(
+      DynamicPoolWorkerChoiceStrategy
+    )
     expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy()
-    ).toBeInstanceOf(DynamicPoolWorkerChoiceStrategy)
-    expect(
-      workerChoiceStrategyContext.getWorkerChoiceStrategy().workerChoiceStrategy
+      workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
     ).toBeInstanceOf(WeightedRoundRobinWorkerChoiceStrategy)
   })
 })
