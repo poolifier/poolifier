@@ -4,6 +4,7 @@ import type { IPoolWorker } from '../pool-worker'
 import { DynamicPoolWorkerChoiceStrategy } from './dynamic-pool-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
+  RequiredStatistics,
   WorkerChoiceStrategy
 } from './selection-strategies-types'
 import { WorkerChoiceStrategies } from './selection-strategies-types'
@@ -61,9 +62,19 @@ export class WorkerChoiceStrategyContext<
    * Gets the worker choice strategy used in the context.
    *
    * @returns The worker choice strategy.
+   * @deprecated Scheduled removal.
    */
   public getWorkerChoiceStrategy (): IWorkerChoiceStrategy {
     return this.workerChoiceStrategy
+  }
+
+  /**
+   * Gets the worker choice strategy required statistics.
+   *
+   * @returns The required statistics.
+   */
+  public getRequiredStatistics (): RequiredStatistics {
+    return this.workerChoiceStrategy.requiredStatistics
   }
 
   /**
@@ -86,5 +97,15 @@ export class WorkerChoiceStrategyContext<
    */
   public execute (): number {
     return this.workerChoiceStrategy.choose()
+  }
+
+  /**
+   * Removes a worker in the underlying selection strategy internals.
+   *
+   * @param workerKey - The key of the worker to remove.
+   * @returns `true` if the removal is successful, `false` otherwise.
+   */
+  public remove (workerKey: number): boolean {
+    return this.workerChoiceStrategy.remove(workerKey)
   }
 }

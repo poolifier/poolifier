@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ensure trimmable characters are checked at pool initialization.
 - Fix message id integer overflow.
+- Fix pool worker removal in worker choice strategy internals.
 
 ## [2.3.10] - 2023-03-18
 

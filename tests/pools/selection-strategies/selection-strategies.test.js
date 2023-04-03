@@ -70,8 +70,7 @@ describe('Selection strategies test suite', () => {
     )
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.ROUND_ROBIN)
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .requiredStatistics.runTime
+      pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(false)
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -81,8 +80,7 @@ describe('Selection strategies test suite', () => {
     )
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.ROUND_ROBIN)
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .requiredStatistics.runTime
+      pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(false)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -213,8 +211,7 @@ describe('Selection strategies test suite', () => {
     )
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.LESS_USED)
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .requiredStatistics.runTime
+      pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(false)
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -224,8 +221,7 @@ describe('Selection strategies test suite', () => {
     )
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.LESS_USED)
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .requiredStatistics.runTime
+      pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(false)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -297,8 +293,7 @@ describe('Selection strategies test suite', () => {
     )
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.LESS_BUSY)
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .requiredStatistics.runTime
+      pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(true)
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -308,8 +303,7 @@ describe('Selection strategies test suite', () => {
     )
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.LESS_BUSY)
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .requiredStatistics.runTime
+      pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(true)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -395,8 +389,7 @@ describe('Selection strategies test suite', () => {
     )
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .requiredStatistics.runTime
+      pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(true)
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -406,8 +399,7 @@ describe('Selection strategies test suite', () => {
     )
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .requiredStatistics.runTime
+      pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(true)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -425,6 +417,10 @@ describe('Selection strategies test suite', () => {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workerLastVirtualTaskTimestamp.size
+    ).toBe(pool.workers.length)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -442,6 +438,10 @@ describe('Selection strategies test suite', () => {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
+    // expect(
+    //   pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+    //     .workerChoiceStrategy.workerLastVirtualTaskTimestamp.size
+    // ).toBe(pool.workers.length)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -555,8 +555,7 @@ describe('Selection strategies test suite', () => {
     )
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .requiredStatistics.runTime
+      pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(true)
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -566,8 +565,7 @@ describe('Selection strategies test suite', () => {
     )
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
     expect(
-      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .requiredStatistics.runTime
+      pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(true)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -585,6 +583,10 @@ describe('Selection strategies test suite', () => {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
+    expect(
+      pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+        .workersTaskRunTime.size
+    ).toBe(pool.workers.length)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -602,6 +604,10 @@ describe('Selection strategies test suite', () => {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
+    // expect(
+    //   pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
+    //     .workerChoiceStrategy.workersTaskRunTime.size
+    // ).toBe(pool.workers.length)
     // We need to clean up the resources after our test
     await pool.destroy()
   })

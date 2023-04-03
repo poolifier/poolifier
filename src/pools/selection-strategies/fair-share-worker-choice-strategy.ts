@@ -60,6 +60,17 @@ export class FairShareWorkerChoiceStrategy<
     return chosenWorkerKey
   }
 
+  /** {@inheritDoc} */
+  public remove (workerKey: number): boolean {
+    const workerDeleted = this.workerLastVirtualTaskTimestamp.delete(workerKey)
+    for (const [key, value] of this.workerLastVirtualTaskTimestamp.entries()) {
+      if (key > workerKey) {
+        this.workerLastVirtualTaskTimestamp.set(key - 1, value)
+      }
+    }
+    return workerDeleted
+  }
+
   /**
    * Computes worker last virtual task timestamp.
    *

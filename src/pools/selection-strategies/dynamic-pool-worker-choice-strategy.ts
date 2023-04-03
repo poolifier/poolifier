@@ -61,4 +61,9 @@ export class DynamicPoolWorkerChoiceStrategy<
     // All workers are busy, create a new worker
     return this.createWorkerCallback()
   }
+
+  /** {@inheritDoc} */
+  public remove (workerKey: number): boolean {
+    return this.workerChoiceStrategy.remove(workerKey)
+  }
 }

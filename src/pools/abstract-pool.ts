@@ -260,10 +260,7 @@ export abstract class AbstractPool<
     if (message.error != null) {
       ++workerTasksUsage.error
     }
-    if (
-      this.workerChoiceStrategyContext.getWorkerChoiceStrategy()
-        .requiredStatistics.runTime
-    ) {
+    if (this.workerChoiceStrategyContext.getRequiredStatistics().runTime) {
       workerTasksUsage.runTime += message.taskRunTime ?? 0
       if (workerTasksUsage.run !== 0) {
         workerTasksUsage.avgRunTime =
@@ -278,7 +275,9 @@ export abstract class AbstractPool<
    * @param worker - The worker that will be removed.
    */
   protected removeWorker (worker: Worker): void {
-    this.workers.splice(this.getWorkerKey(worker), 1)
+    const workerKey = this.getWorkerKey(worker)
+    this.workers.splice(workerKey, 1)
+    this.workerChoiceStrategyContext.remove(workerKey)
   }
 
   /**

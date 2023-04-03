@@ -93,6 +93,23 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     return chosenWorkerKey
   }
 
+  /** {@inheritDoc} */
+  public remove (workerKey: number): boolean {
+    if (this.currentWorkerId === workerKey) {
+      this.currentWorkerId =
+        this.currentWorkerId > this.pool.workers.length - 1
+          ? this.pool.workers.length - 1
+          : this.currentWorkerId
+    }
+    const workerDeleted = this.workersTaskRunTime.delete(workerKey)
+    for (const [key, value] of this.workersTaskRunTime) {
+      if (key > workerKey) {
+        this.workersTaskRunTime.set(key - 1, value)
+      }
+    }
+    return workerDeleted
+  }
+
   private initWorkersTaskRunTime (): void {
     for (const [index] of this.pool.workers.entries()) {
       this.initWorkerTaskRunTime(index)

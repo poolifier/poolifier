@@ -33,4 +33,15 @@ export class RoundRobinWorkerChoiceStrategy<
         : this.nextWorkerId + 1
     return chosenWorkerKey
   }
+
+  /** {@inheritDoc} */
+  public remove (workerKey: number): boolean {
+    if (this.nextWorkerId === workerKey) {
+      this.nextWorkerId =
+        this.nextWorkerId > this.pool.workers.length - 1
+          ? this.pool.workers.length - 1
+          : this.nextWorkerId
+    }
+    return true
+  }
 }

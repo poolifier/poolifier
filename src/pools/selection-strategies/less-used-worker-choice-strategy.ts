@@ -34,4 +34,9 @@ export class LessUsedWorkerChoiceStrategy<
     }
     return lessUsedWorkerKey
   }
+
+  /** {@inheritDoc} */
+  public remove (workerKey: number): boolean {
+    return true
+  }
 }

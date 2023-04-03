@@ -56,4 +56,10 @@ export interface IWorkerChoiceStrategy {
    * Chooses a worker in the pool and returns its key.
    */
   choose: () => number
+  /**
+   * Removes a worker reference from strategy internals.
+   *
+   * @param workerKey - The worker key.
+   */
+  remove: (workerKey: number) => boolean
 }

@@ -41,4 +41,7 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /** {@inheritDoc} */
   public abstract choose (): number
+
+  /** {@inheritDoc} */
+  public abstract remove (workerKey: number): boolean
 }
