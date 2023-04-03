@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `LESS_BUSY` worker choice strategy.
+
+### Changed
+
+- Optimize worker storage in pool.
+- Optimize worker alive status check.
+- BREAKING CHANGE: Rename worker choice strategy `LESS_RECENTLY_USED` to `LESS_USED`.
+- Optimize `LESS_USED` worker choice strategy.
+
+### Fixed
+
+- Ensure trimmable characters are checked at pool initialization.
+- Fix message id integer overflow.
+- Fix pool worker removal in worker choice strategy internals.
+
 ## [2.4.0-0] - 2023-04-03
 
 ### Added
