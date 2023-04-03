@@ -26,6 +26,10 @@ export class LessBusyWorkerChoiceStrategy<
 
   /** {@inheritDoc} */
   public choose (): number {
+    const freeWorkerKey = this.pool.findFreeWorkerKey()
+    if (!this.isDynamicPool && freeWorkerKey !== false) {
+      return freeWorkerKey
+    }
     let minRunTime = Infinity
     let lessBusyWorkerKey!: number
     for (const [index, workerItem] of this.pool.workers.entries()) {
