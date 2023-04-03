@@ -67,7 +67,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
 
   /** {@inheritDoc} */
   public choose (): Worker {
-    const chosenWorker = this.pool.workers[this.currentWorkerId]?.worker
+    const chosenWorker = this.pool.workers[this.currentWorkerId].worker
     if (this.isDynamicPool && !this.workersTaskRunTime.has(chosenWorker)) {
       this.initWorkerTaskRunTime(chosenWorker)
     }
@@ -89,7 +89,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
           ? 0
           : this.currentWorkerId + 1
       this.setWorkerTaskRunTime(
-        this.pool.workers[this.currentWorkerId]?.worker,
+        this.pool.workers[this.currentWorkerId].worker,
         workerTaskWeight,
         0
       )
