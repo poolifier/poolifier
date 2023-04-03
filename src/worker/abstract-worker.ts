@@ -98,7 +98,7 @@ export abstract class AbstractWorker<
       this.mainWorker = value.parent
     } else if (value.kill !== undefined) {
       // Here is time to kill this worker, just clearing the interval
-      if (this.aliveInterval != null) clearInterval(this.aliveInterval)
+      this.aliveInterval != null && clearInterval(this.aliveInterval)
       this.emitDestroy()
     }
   }
