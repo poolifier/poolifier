@@ -41,8 +41,8 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   /**
    * Per worker virtual task runtime map.
    */
-  private readonly workersTaskRunTime: Map<Worker, TaskRunTime> = new Map<
-  Worker,
+  private readonly workersTaskRunTime: Map<number, TaskRunTime> = new Map<
+  number,
   TaskRunTime
   >()
 
@@ -66,60 +66,56 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** {@inheritDoc} */
-  public choose (): Worker {
-    const chosenWorker = this.pool.workers[this.currentWorkerId].worker
-    if (this.isDynamicPool && !this.workersTaskRunTime.has(chosenWorker)) {
-      this.initWorkerTaskRunTime(chosenWorker)
+  public choose (): number {
+    const chosenWorkerKey = this.currentWorkerId
+    if (this.isDynamicPool && !this.workersTaskRunTime.has(chosenWorkerKey)) {
+      this.initWorkerTaskRunTime(chosenWorkerKey)
     }
     const workerTaskRunTime =
-      this.workersTaskRunTime.get(chosenWorker)?.runTime ?? 0
+      this.workersTaskRunTime.get(chosenWorkerKey)?.runTime ?? 0
     const workerTaskWeight =
-      this.workersTaskRunTime.get(chosenWorker)?.weight ??
+      this.workersTaskRunTime.get(chosenWorkerKey)?.weight ??
       this.defaultWorkerWeight
     if (workerTaskRunTime < workerTaskWeight) {
       this.setWorkerTaskRunTime(
-        chosenWorker,
+        chosenWorkerKey,
         workerTaskWeight,
         workerTaskRunTime +
-          (this.getWorkerVirtualTaskRunTime(chosenWorker) ?? 0)
+          (this.getWorkerVirtualTaskRunTime(chosenWorkerKey) ?? 0)
       )
     } else {
       this.currentWorkerId =
         this.currentWorkerId === this.pool.workers.length - 1
           ? 0
           : this.currentWorkerId + 1
-      this.setWorkerTaskRunTime(
-        this.pool.workers[this.currentWorkerId].worker,
-        workerTaskWeight,
-        0
-      )
+      this.setWorkerTaskRunTime(this.currentWorkerId, workerTaskWeight, 0)
     }
-    return chosenWorker
+    return chosenWorkerKey
   }
 
   private initWorkersTaskRunTime (): void {
-    for (const workerItem of this.pool.workers) {
-      this.initWorkerTaskRunTime(workerItem.worker)
+    for (const [index] of this.pool.workers.entries()) {
+      this.initWorkerTaskRunTime(index)
     }
   }
 
-  private initWorkerTaskRunTime (worker: Worker): void {
-    this.setWorkerTaskRunTime(worker, this.defaultWorkerWeight, 0)
+  private initWorkerTaskRunTime (workerKey: number): void {
+    this.setWorkerTaskRunTime(workerKey, this.defaultWorkerWeight, 0)
   }
 
   private setWorkerTaskRunTime (
-    worker: Worker,
+    workerKey: number,
     weight: number,
     runTime: number
   ): void {
-    this.workersTaskRunTime.set(worker, {
+    this.workersTaskRunTime.set(workerKey, {
       weight,
       runTime
     })
   }
 
-  private getWorkerVirtualTaskRunTime (worker: Worker): number | undefined {
-    return this.pool.getWorkerTasksUsage(worker)?.avgRunTime
+  private getWorkerVirtualTaskRunTime (workerKey: number): number {
+    return this.pool.workers[workerKey].tasksUsage.avgRunTime
   }
 
   private computeWorkerWeight (): number {

@@ -25,18 +25,20 @@ export function getWorkerChoiceStrategy<
 > (
   pool: IPoolInternal<Worker, Data, Response>,
   workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
-): IWorkerChoiceStrategy<Worker> {
+): IWorkerChoiceStrategy {
   switch (workerChoiceStrategy) {
     case WorkerChoiceStrategies.ROUND_ROBIN:
-      return new RoundRobinWorkerChoiceStrategy(pool)
+      return new RoundRobinWorkerChoiceStrategy<Worker, Data, Response>(pool)
     case WorkerChoiceStrategies.LESS_USED:
-      return new LessUsedWorkerChoiceStrategy(pool)
+      return new LessUsedWorkerChoiceStrategy<Worker, Data, Response>(pool)
     case WorkerChoiceStrategies.LESS_BUSY:
-      return new LessBusyWorkerChoiceStrategy(pool)
+      return new LessBusyWorkerChoiceStrategy<Worker, Data, Response>(pool)
     case WorkerChoiceStrategies.FAIR_SHARE:
-      return new FairShareWorkerChoiceStrategy(pool)
+      return new FairShareWorkerChoiceStrategy<Worker, Data, Response>(pool)
     case WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN:
-      return new WeightedRoundRobinWorkerChoiceStrategy(pool)
+      return new WeightedRoundRobinWorkerChoiceStrategy<Worker, Data, Response>(
+        pool
+      )
     default:
       throw new Error(
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions

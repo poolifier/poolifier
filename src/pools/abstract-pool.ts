@@ -35,12 +35,14 @@ export abstract class AbstractPool<
    * The promise response map.
    *
    * - `key`: The message id of each submitted task.
-   * - `value`: An object that contains the worker key, the promise resolve and reject callbacks.
+   * - `value`: An object that contains the worker, the promise resolve and reject callbacks.
    *
    * When we receive a message from the worker we get a map entry with the promise resolve/reject bound to the message.
    */
-  protected promiseResponseMap: Map<string, PromiseResponseWrapper<Response>> =
-    new Map<string, PromiseResponseWrapper<Response>>()
+  protected promiseResponseMap: Map<
+  string,
+  PromiseResponseWrapper<Worker, Response>
+  > = new Map<string, PromiseResponseWrapper<Worker, Response>>()
 
   /**
    * Worker choice strategy instance implementing the worker choice algorithm.
@@ -83,17 +85,17 @@ export abstract class AbstractPool<
     this.workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       this,
       () => {
-        const workerCreated = this.createAndSetupWorker()
-        this.registerWorkerMessageListener(workerCreated, message => {
+        const createdWorker = this.createAndSetupWorker()
+        this.registerWorkerMessageListener(createdWorker, message => {
           if (
             isKillBehavior(KillBehaviors.HARD, message.kill) ||
-            this.getWorkerTasksUsage(workerCreated)?.running === 0
+            this.getWorkerTasksUsage(createdWorker)?.running === 0
           ) {
             // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-            void this.destroyWorker(workerCreated)
+            void this.destroyWorker(createdWorker)
           }
         })
-        return workerCreated
+        return this.getWorkerKey(createdWorker)
       },
       this.opts.workerChoiceStrategy
     )
@@ -155,8 +157,8 @@ export abstract class AbstractPool<
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
     this.opts.workerChoiceStrategy = workerChoiceStrategy
-    for (const workerItem of this.workers) {
-      this.setWorker(workerItem.worker, {
+    for (const [index, workerItem] of this.workers.entries()) {
+      this.setWorker(index, workerItem.worker, {
         run: 0,
         running: 0,
         runTime: 0,
@@ -175,26 +177,23 @@ export abstract class AbstractPool<
   protected internalGetBusyStatus (): boolean {
     return (
       this.numberOfRunningTasks >= this.numberOfWorkers &&
-      this.findFreeWorker() === false
+      this.findFreeWorkerKey() === false
     )
   }
 
   /** {@inheritDoc} */
-  public findFreeWorker (): Worker | false {
-    for (const workerItem of this.workers) {
-      if (workerItem.tasksUsage.running === 0) {
-        // A worker is free, return the matching worker
-        return workerItem.worker
-      }
-    }
-    return false
+  public findFreeWorkerKey (): number | false {
+    const freeWorkerKey = this.workers.findIndex(workerItem => {
+      return workerItem.tasksUsage.running === 0
+    })
+    return freeWorkerKey !== -1 ? freeWorkerKey : false
   }
 
   /** {@inheritDoc} */
   public async execute (data: Data): Promise<Response> {
-    const worker = this.chooseWorker()
+    const [workerKey, worker] = this.chooseWorker()
     const messageId = crypto.randomUUID()
-    const res = this.internalExecute(this.getWorkerKey(worker), messageId)
+    const res = this.internalExecute(workerKey, worker, messageId)
     this.checkAndEmitBusy()
     this.sendToWorker(worker, {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -248,14 +247,14 @@ export abstract class AbstractPool<
    * Hook executed after the worker task promise resolution.
    * Can be overridden.
    *
-   * @param workerKey - The worker key.
+   * @param worker - The worker.
    * @param message - The received message.
    */
   protected afterPromiseResponseHook (
-    workerKey: number,
+    worker: Worker,
     message: MessageValue<Response>
   ): void {
-    const workerTasksUsage = this.workers[workerKey].tasksUsage
+    const workerTasksUsage = this.getWorkerTasksUsage(worker) as TasksUsage
     --workerTasksUsage.running
     ++workerTasksUsage.run
     if (message.error != null) {
@@ -287,10 +286,11 @@ export abstract class AbstractPool<
    *
    * The default implementation uses a round robin algorithm to distribute the load.
    *
-   * @returns Worker.
+   * @returns [worker key, worker].
    */
-  protected chooseWorker (): Worker {
-    return this.workerChoiceStrategyContext.execute()
+  protected chooseWorker (): [number, Worker] {
+    const workerKey = this.workerChoiceStrategyContext.execute()
+    return [workerKey, this.workers[workerKey].worker]
   }
 
   /**
@@ -344,7 +344,7 @@ export abstract class AbstractPool<
       this.removeWorker(worker)
     })
 
-    this.setWorker(worker, {
+    this.pushWorker(worker, {
       run: 0,
       running: 0,
       runTime: 0,
@@ -372,7 +372,7 @@ export abstract class AbstractPool<
           } else {
             promiseResponse.resolve(message.data as Response)
           }
-          this.afterPromiseResponseHook(promiseResponse.workerKey, message)
+          this.afterPromiseResponseHook(promiseResponse.worker, message)
           this.promiseResponseMap.delete(message.id)
         }
       }
@@ -381,11 +381,12 @@ export abstract class AbstractPool<
 
   private async internalExecute (
     workerKey: number,
+    worker: Worker,
     messageId: string
   ): Promise<Response> {
     this.beforePromiseResponseHook(workerKey)
     return await new Promise<Response>((resolve, reject) => {
-      this.promiseResponseMap.set(messageId, { resolve, reject, workerKey })
+      this.promiseResponseMap.set(messageId, { resolve, reject, worker })
     })
   }
 
@@ -395,8 +396,13 @@ export abstract class AbstractPool<
     }
   }
 
-  /** {@inheritDoc} */
-  public getWorkerTasksUsage (worker: Worker): TasksUsage | undefined {
+  /**
+   * Gets worker tasks usage.
+   *
+   * @param worker - The worker.
+   * @returns The worker tasks usage.
+   */
+  private getWorkerTasksUsage (worker: Worker): TasksUsage | undefined {
     const workerKey = this.getWorkerKey(worker)
     if (workerKey !== -1) {
       return this.workers[workerKey].tasksUsage
@@ -405,15 +411,33 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Sets the given worker.
+   * Pushes the given worker.
    *
    * @param worker - The worker.
    * @param tasksUsage - The worker tasks usage.
    */
-  private setWorker (worker: Worker, tasksUsage: TasksUsage): void {
+  private pushWorker (worker: Worker, tasksUsage: TasksUsage): void {
     this.workers.push({
       worker,
       tasksUsage
     })
+  }
+
+  /**
+   * Sets the given worker.
+   *
+   * @param workerKey - The worker key.
+   * @param worker - The worker.
+   * @param tasksUsage - The worker tasks usage.
+   */
+  private setWorker (
+    workerKey: number,
+    worker: Worker,
+    tasksUsage: TasksUsage
+  ): void {
+    this.workers[workerKey] = {
+      worker,
+      tasksUsage
+    }
   }
 }

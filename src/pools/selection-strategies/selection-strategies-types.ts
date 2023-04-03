@@ -1,5 +1,3 @@
-import type { IPoolWorker } from '../pool-worker'
-
 /**
  * Enumeration of worker choice strategies.
  */
@@ -40,10 +38,8 @@ export interface RequiredStatistics {
 
 /**
  * Worker choice strategy interface.
- *
- * @typeParam Worker - Type of worker which manages the strategy.
  */
-export interface IWorkerChoiceStrategy<Worker extends IPoolWorker> {
+export interface IWorkerChoiceStrategy {
   /**
    * Is the pool attached to the strategy dynamic?.
    */
@@ -57,7 +53,7 @@ export interface IWorkerChoiceStrategy<Worker extends IPoolWorker> {
    */
   reset: () => boolean
   /**
-   * Chooses a worker in the pool.
+   * Chooses a worker in the pool and returns its key.
    */
-  choose: () => Worker
+  choose: () => number
 }

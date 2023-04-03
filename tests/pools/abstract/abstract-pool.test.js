@@ -14,7 +14,7 @@ describe('Abstract pool test suite', () => {
   class StubPoolWithRemoveAllWorker extends FixedThreadPool {
     removeAllWorker () {
       this.workers = []
-      this.promiseMap.clear()
+      this.promiseResponseMap.clear()
     }
   }
   class StubPoolWithIsMain extends FixedThreadPool {
@@ -145,6 +145,7 @@ describe('Abstract pool test suite', () => {
       expect(workerItem.tasksUsage.running).toBe(0)
       expect(workerItem.tasksUsage.runTime).toBe(0)
       expect(workerItem.tasksUsage.avgRunTime).toBe(0)
+      expect(workerItem.tasksUsage.error).toBe(0)
     }
     await pool.destroy()
   })
@@ -164,6 +165,7 @@ describe('Abstract pool test suite', () => {
       expect(workerItem.tasksUsage.running).toBe(numberOfWorkers * 2)
       expect(workerItem.tasksUsage.runTime).toBe(0)
       expect(workerItem.tasksUsage.avgRunTime).toBe(0)
+      expect(workerItem.tasksUsage.error).toBe(0)
     }
     await Promise.all(promises)
     for (const workerItem of pool.workers) {
@@ -172,6 +174,7 @@ describe('Abstract pool test suite', () => {
       expect(workerItem.tasksUsage.running).toBe(0)
       expect(workerItem.tasksUsage.runTime).toBeGreaterThanOrEqual(0)
       expect(workerItem.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerItem.tasksUsage.error).toBe(0)
     }
     await pool.destroy()
   })
@@ -193,6 +196,7 @@ describe('Abstract pool test suite', () => {
       expect(workerItem.tasksUsage.running).toBe(0)
       expect(workerItem.tasksUsage.runTime).toBeGreaterThanOrEqual(0)
       expect(workerItem.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerItem.tasksUsage.error).toBe(0)
     }
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
     for (const workerItem of pool.workers) {
@@ -201,6 +205,7 @@ describe('Abstract pool test suite', () => {
       expect(workerItem.tasksUsage.running).toBe(0)
       expect(workerItem.tasksUsage.runTime).toBe(0)
       expect(workerItem.tasksUsage.avgRunTime).toBe(0)
+      expect(workerItem.tasksUsage.error).toBe(0)
     }
     await pool.destroy()
   })

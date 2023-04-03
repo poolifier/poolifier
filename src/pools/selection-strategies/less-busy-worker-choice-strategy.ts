@@ -25,20 +25,18 @@ export class LessBusyWorkerChoiceStrategy<
   }
 
   /** {@inheritDoc} */
-  public choose (): Worker {
+  public choose (): number {
     let minRunTime = Infinity
-    let lessBusyWorker!: Worker
-    for (const workerItem of this.pool.workers) {
-      const worker = workerItem.worker
-      const workerRunTime = this.pool.getWorkerTasksUsage(worker)
-        ?.runTime as number
+    let lessBusyWorkerKey!: number
+    for (const [index, workerItem] of this.pool.workers.entries()) {
+      const workerRunTime = workerItem.tasksUsage.runTime
       if (!this.isDynamicPool && workerRunTime === 0) {
-        return worker
+        return index
       } else if (workerRunTime < minRunTime) {
         minRunTime = workerRunTime
-        lessBusyWorker = worker
+        lessBusyWorkerKey = index
       }
     }
-    return lessBusyWorker
+    return lessBusyWorkerKey
   }
 }

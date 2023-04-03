@@ -20,18 +20,18 @@ export class DynamicPoolWorkerChoiceStrategy<
   Data,
   Response
 > extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
-  private readonly workerChoiceStrategy: IWorkerChoiceStrategy<Worker>
+  private readonly workerChoiceStrategy: IWorkerChoiceStrategy
 
   /**
    * Constructs a worker choice strategy for dynamic pool.
    *
    * @param pool - The pool instance.
-   * @param createDynamicallyWorkerCallback - The worker creation callback for dynamic pool.
-   * @param workerChoiceStrategy - The worker choice strategy when the pull is busy.
+   * @param createWorkerCallback - The worker creation callback for dynamic pool.
+   * @param workerChoiceStrategy - The worker choice strategy when the pool is busy.
    */
   public constructor (
     pool: IPoolInternal<Worker, Data, Response>,
-    private readonly createDynamicallyWorkerCallback: () => Worker,
+    private readonly createWorkerCallback: () => number,
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     super(pool)
@@ -48,10 +48,10 @@ export class DynamicPoolWorkerChoiceStrategy<
   }
 
   /** {@inheritDoc} */
-  public choose (): Worker {
-    const freeWorker = this.pool.findFreeWorker()
-    if (freeWorker !== false) {
-      return freeWorker
+  public choose (): number {
+    const freeWorkerKey = this.pool.findFreeWorkerKey()
+    if (freeWorkerKey !== false) {
+      return freeWorkerKey
     }
 
     if (this.pool.busy) {
@@ -59,6 +59,6 @@ export class DynamicPoolWorkerChoiceStrategy<
     }
 
     // All workers are busy, create a new worker
-    return this.createDynamicallyWorkerCallback()
+    return this.createWorkerCallback()
   }
 }

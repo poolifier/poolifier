@@ -32,9 +32,9 @@ export class FairShareWorkerChoiceStrategy<
    *  Worker last virtual task execution timestamp.
    */
   private readonly workerLastVirtualTaskTimestamp: Map<
-  Worker,
+  number,
   WorkerVirtualTaskTimestamp
-  > = new Map<Worker, WorkerVirtualTaskTimestamp>()
+  > = new Map<number, WorkerVirtualTaskTimestamp>()
 
   /** {@inheritDoc} */
   public reset (): boolean {
@@ -43,39 +43,38 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /** {@inheritDoc} */
-  public choose (): Worker {
+  public choose (): number {
     let minWorkerVirtualTaskEndTimestamp = Infinity
-    let chosenWorker!: Worker
-    for (const workerItem of this.pool.workers) {
-      const worker = workerItem.worker
-      this.computeWorkerLastVirtualTaskTimestamp(worker)
+    let chosenWorkerKey!: number
+    for (const [index] of this.pool.workers.entries()) {
+      this.computeWorkerLastVirtualTaskTimestamp(index)
       const workerLastVirtualTaskEndTimestamp =
-        this.workerLastVirtualTaskTimestamp.get(worker)?.end ?? 0
+        this.workerLastVirtualTaskTimestamp.get(index)?.end ?? 0
       if (
         workerLastVirtualTaskEndTimestamp < minWorkerVirtualTaskEndTimestamp
       ) {
         minWorkerVirtualTaskEndTimestamp = workerLastVirtualTaskEndTimestamp
-        chosenWorker = worker
+        chosenWorkerKey = index
       }
     }
-    return chosenWorker
+    return chosenWorkerKey
   }
 
   /**
    * Computes worker last virtual task timestamp.
    *
-   * @param worker - The worker.
+   * @param workerKey - The worker key.
    */
-  private computeWorkerLastVirtualTaskTimestamp (worker: Worker): void {
+  private computeWorkerLastVirtualTaskTimestamp (workerKey: number): void {
     const workerVirtualTaskStartTimestamp = Math.max(
       Date.now(),
-      this.workerLastVirtualTaskTimestamp.get(worker)?.end ?? -Infinity
+      this.workerLastVirtualTaskTimestamp.get(workerKey)?.end ?? -Infinity
     )
-    this.workerLastVirtualTaskTimestamp.set(worker, {
+    this.workerLastVirtualTaskTimestamp.set(workerKey, {
       start: workerVirtualTaskStartTimestamp,
       end:
         workerVirtualTaskStartTimestamp +
-        (this.pool.getWorkerTasksUsage(worker)?.avgRunTime ?? 0)
+        (this.pool.workers[workerKey].tasksUsage.avgRunTime ?? 0)
     })
   }
 }

@@ -21,18 +21,18 @@ export class WorkerChoiceStrategyContext<
   Data,
   Response
 > {
-  private workerChoiceStrategy!: IWorkerChoiceStrategy<Worker>
+  private workerChoiceStrategy!: IWorkerChoiceStrategy
 
   /**
    * Worker choice strategy context constructor.
    *
    * @param pool - The pool instance.
-   * @param createDynamicallyWorkerCallback - The worker creation callback for dynamic pool.
+   * @param createWorkerCallback - The worker creation callback for dynamic pool.
    * @param workerChoiceStrategy - The worker choice strategy.
    */
   public constructor (
     private readonly pool: IPoolInternal<Worker, Data, Response>,
-    private readonly createDynamicallyWorkerCallback: () => Worker,
+    private readonly createWorkerCallback: () => number,
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     this.setWorkerChoiceStrategy(workerChoiceStrategy)
@@ -46,11 +46,11 @@ export class WorkerChoiceStrategyContext<
    */
   private getPoolWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
-  ): IWorkerChoiceStrategy<Worker> {
+  ): IWorkerChoiceStrategy {
     if (this.pool.type === PoolType.DYNAMIC) {
       return new DynamicPoolWorkerChoiceStrategy(
         this.pool,
-        this.createDynamicallyWorkerCallback,
+        this.createWorkerCallback,
         workerChoiceStrategy
       )
     }
@@ -62,7 +62,7 @@ export class WorkerChoiceStrategyContext<
    *
    * @returns The worker choice strategy.
    */
-  public getWorkerChoiceStrategy (): IWorkerChoiceStrategy<Worker> {
+  public getWorkerChoiceStrategy (): IWorkerChoiceStrategy {
     return this.workerChoiceStrategy
   }
 
@@ -82,9 +82,9 @@ export class WorkerChoiceStrategyContext<
   /**
    * Chooses a worker with the underlying selection strategy.
    *
-   * @returns The chosen one.
+   * @returns The key of the chosen one.
    */
-  public execute (): Worker {
+  public execute (): number {
     return this.workerChoiceStrategy.choose()
   }
 }

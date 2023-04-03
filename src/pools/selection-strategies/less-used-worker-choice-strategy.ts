@@ -19,21 +19,19 @@ export class LessUsedWorkerChoiceStrategy<
   }
 
   /** {@inheritDoc} */
-  public choose (): Worker {
+  public choose (): number {
     let minNumberOfTasks = Infinity
-    let lessUsedWorker!: Worker
-    for (const workerItem of this.pool.workers) {
-      const worker = workerItem.worker
-      const tasksUsage = this.pool.getWorkerTasksUsage(worker)
-      const workerTasks =
-        (tasksUsage?.run as number) + (tasksUsage?.running as number)
+    let lessUsedWorkerKey!: number
+    for (const [index, workerItem] of this.pool.workers.entries()) {
+      const tasksUsage = workerItem.tasksUsage
+      const workerTasks = tasksUsage?.run + tasksUsage?.running
       if (!this.isDynamicPool && workerTasks === 0) {
-        return worker
+        return index
       } else if (workerTasks < minNumberOfTasks) {
         minNumberOfTasks = workerTasks
-        lessUsedWorker = worker
+        lessUsedWorkerKey = index
       }
     }
-    return lessUsedWorker
+    return lessUsedWorkerKey
   }
 }

@@ -67,21 +67,13 @@ export interface IPoolInternal<
   readonly numberOfRunningTasks: number
 
   /**
-   * Finds a free worker based on the number of tasks the worker has applied.
+   * Finds a free worker key based on the number of tasks the worker has applied.
    *
-   * If a worker is found with `0` running tasks, it is detected as free and returned.
+   * If a worker is found with `0` running tasks, it is detected as free and its key is returned.
    *
    * If no free worker is found, `false` is returned.
    *
-   * @returns A free worker if there is one, otherwise `false`.
+   * @returns A worker key if there is one, otherwise `false`.
    */
-  findFreeWorker: () => Worker | false
-
-  /**
-   * Gets worker tasks usage.
-   *
-   * @param worker - The worker.
-   * @returns The tasks usage on the worker.
-   */
-  getWorkerTasksUsage: (worker: Worker) => TasksUsage | undefined
+  findFreeWorkerKey: () => number | false
 }

@@ -1,6 +1,7 @@
 import type { Worker as ClusterWorker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
 import type { KillBehavior } from './worker/worker-options'
+import type { IPoolWorker } from './pools/pool-worker'
 
 /**
  * Make all properties in T non-readonly.
@@ -47,7 +48,10 @@ export interface MessageValue<
  *
  * @typeParam Response - Type of execution response. This can only be serializable data.
  */
-export interface PromiseResponseWrapper<Response = unknown> {
+export interface PromiseResponseWrapper<
+  Worker extends IPoolWorker,
+  Response = unknown
+> {
   /**
    * Resolve callback to fulfill the promise.
    */
@@ -57,7 +61,7 @@ export interface PromiseResponseWrapper<Response = unknown> {
    */
   readonly reject: (reason?: string) => void
   /**
-   * The worker handling the promise key .
+   * The worker handling the promise.
    */
-  readonly workerKey: number
+  readonly worker: Worker
 }

@@ -134,14 +134,14 @@ describe('Selection strategies test suite', () => {
     )
     let results = new Set()
     for (let i = 0; i < max; i++) {
-      results.add(pool.chooseWorker().id)
+      results.add(pool.chooseWorker()[1].id)
     }
     expect(results.size).toBe(max)
     await pool.destroy()
     pool = new FixedThreadPool(max, './tests/worker-files/thread/testWorker.js')
     results = new Set()
     for (let i = 0; i < max; i++) {
-      results.add(pool.chooseWorker().threadId)
+      results.add(pool.chooseWorker()[1].threadId)
     }
     expect(results.size).toBe(max)
     await pool.destroy()
@@ -357,18 +357,18 @@ describe('Selection strategies test suite', () => {
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.FAIR_SHARE
     )
-    for (const worker of pool.workerChoiceStrategyContext
+    for (const workerKey of pool.workerChoiceStrategyContext
       .getWorkerChoiceStrategy()
       .workerLastVirtualTaskTimestamp.keys()) {
       expect(
         pool.workerChoiceStrategyContext
           .getWorkerChoiceStrategy()
-          .workerLastVirtualTaskTimestamp.get(worker).start
+          .workerLastVirtualTaskTimestamp.get(workerKey).start
       ).toBe(0)
       expect(
         pool.workerChoiceStrategyContext
           .getWorkerChoiceStrategy()
-          .workerLastVirtualTaskTimestamp.get(worker).end
+          .workerLastVirtualTaskTimestamp.get(workerKey).end
       ).toBe(0)
     }
     // We need to clean up the resources after our test
@@ -456,18 +456,18 @@ describe('Selection strategies test suite', () => {
         .workerLastVirtualTaskTimestamp
     ).toBeUndefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
-    for (const worker of pool.workerChoiceStrategyContext
+    for (const workerKey of pool.workerChoiceStrategyContext
       .getWorkerChoiceStrategy()
       .workerLastVirtualTaskTimestamp.keys()) {
       expect(
         pool.workerChoiceStrategyContext
           .getWorkerChoiceStrategy()
-          .workerLastVirtualTaskTimestamp.get(worker).start
+          .workerLastVirtualTaskTimestamp.get(workerKey).start
       ).toBe(0)
       expect(
         pool.workerChoiceStrategyContext
           .getWorkerChoiceStrategy()
-          .workerLastVirtualTaskTimestamp.get(worker).end
+          .workerLastVirtualTaskTimestamp.get(workerKey).end
       ).toBe(0)
     }
     await pool.destroy()
@@ -481,18 +481,20 @@ describe('Selection strategies test suite', () => {
         .workerChoiceStrategy.workerLastVirtualTaskTimestamp
     ).toBeUndefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
-    for (const worker of pool.workerChoiceStrategyContext
+    for (const workerKey of pool.workerChoiceStrategyContext
       .getWorkerChoiceStrategy()
       .workerChoiceStrategy.workerLastVirtualTaskTimestamp.keys()) {
       expect(
         pool.workerChoiceStrategyContext
           .getWorkerChoiceStrategy()
-          .workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(worker).start
+          .workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(workerKey)
+          .start
       ).toBe(0)
       expect(
         pool.workerChoiceStrategyContext
           .getWorkerChoiceStrategy()
-          .workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(worker).end
+          .workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(workerKey)
+          .end
       ).toBe(0)
     }
     // We need to clean up the resources after our test
@@ -515,18 +517,18 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .defaultWorkerWeight
     ).toBeGreaterThan(0)
-    for (const worker of pool.workerChoiceStrategyContext
+    for (const workerKey of pool.workerChoiceStrategyContext
       .getWorkerChoiceStrategy()
       .workersTaskRunTime.keys()) {
       expect(
         pool.workerChoiceStrategyContext
           .getWorkerChoiceStrategy()
-          .workersTaskRunTime.get(worker).weight
+          .workersTaskRunTime.get(workerKey).weight
       ).toBeGreaterThan(0)
       expect(
         pool.workerChoiceStrategyContext
           .getWorkerChoiceStrategy()
-          .workersTaskRunTime.get(worker).runTime
+          .workersTaskRunTime.get(workerKey).runTime
       ).toBe(0)
     }
     // We need to clean up the resources after our test
@@ -628,13 +630,13 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .defaultWorkerWeight
     ).toBeGreaterThan(0)
-    for (const worker of pool.workerChoiceStrategyContext
+    for (const workerKey of pool.workerChoiceStrategyContext
       .getWorkerChoiceStrategy()
       .workersTaskRunTime.keys()) {
       expect(
         pool.workerChoiceStrategyContext
           .getWorkerChoiceStrategy()
-          .workersTaskRunTime.get(worker).runTime
+          .workersTaskRunTime.get(workerKey).runTime
       ).toBe(0)
     }
     await pool.destroy()
@@ -664,13 +666,13 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.getWorkerChoiceStrategy()
         .workerChoiceStrategy.defaultWorkerWeight
     ).toBeGreaterThan(0)
-    for (const worker of pool.workerChoiceStrategyContext
+    for (const workerKey of pool.workerChoiceStrategyContext
       .getWorkerChoiceStrategy()
       .workerChoiceStrategy.workersTaskRunTime.keys()) {
       expect(
         pool.workerChoiceStrategyContext
           .getWorkerChoiceStrategy()
-          .workerChoiceStrategy.workersTaskRunTime.get(worker).runTime
+          .workerChoiceStrategy.workersTaskRunTime.get(workerKey).runTime
       ).toBe(0)
     }
     // We need to clean up the resources after our test

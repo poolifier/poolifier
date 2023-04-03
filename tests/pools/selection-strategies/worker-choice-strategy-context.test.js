@@ -60,15 +60,15 @@ describe('Worker choice strategy context test suite', () => {
     const WorkerChoiceStrategyStub = sinon.createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
-        choose: sinon.stub().returns('worker')
+        choose: sinon.stub().returns(0)
       }
     )
     workerChoiceStrategyContext.workerChoiceStrategy = WorkerChoiceStrategyStub
-    const chosenWorker = workerChoiceStrategyContext.execute()
+    const chosenWorkerKey = workerChoiceStrategyContext.execute()
     expect(
       workerChoiceStrategyContext.getWorkerChoiceStrategy().choose.calledOnce
     ).toBe(true)
-    expect(chosenWorker).toBe('worker')
+    expect(chosenWorkerKey).toBe(0)
   })
 
   it('Verify that execute() return the worker chosen by the strategy with dynamic pool', () => {
@@ -78,15 +78,15 @@ describe('Worker choice strategy context test suite', () => {
     const WorkerChoiceStrategyStub = sinon.createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
-        choose: sinon.stub().returns('worker')
+        choose: sinon.stub().returns(0)
       }
     )
     workerChoiceStrategyContext.workerChoiceStrategy = WorkerChoiceStrategyStub
-    const chosenWorker = workerChoiceStrategyContext.execute()
+    const chosenWorkerKey = workerChoiceStrategyContext.execute()
     expect(
       workerChoiceStrategyContext.getWorkerChoiceStrategy().choose.calledOnce
     ).toBe(true)
-    expect(chosenWorker).toBe('worker')
+    expect(chosenWorkerKey).toBe(0)
   })
 
   it('Verify that setWorkerChoiceStrategy() works with ROUND_ROBIN and fixed pool', () => {
