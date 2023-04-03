@@ -4133,8 +4133,8 @@ packages:
       brace-expansion: 2.0.1
     dev: true
 
-  /minimatch@7.4.3:
-    resolution: {integrity: sha512-5UB4yYusDtkRPbRiy1cqZ1IpGNcJCGlEMG17RKzPddpyiPKoCdwohbED8g4QXT0ewCt8LTkQXuljsUfQ3FKM4A==}
+  /minimatch@7.4.4:
+    resolution: {integrity: sha512-T+8B3kNrLP7jDb5eaC4rUIp6DKoeTSb6f9SwF2phcY2gxJUA0GEf1i29/FHxBMEfx0ppWlr434/D0P+6jb8bOQ==}
     engines: {node: '>=10'}
     dependencies:
       brace-expansion: 2.0.1
@@ -5827,7 +5827,7 @@ packages:
     dependencies:
       lunr: 2.3.9
       marked: 4.3.0
-      minimatch: 7.4.3
+      minimatch: 7.4.4
       shiki: 0.14.1
       typescript: 5.0.3
     dev: true
