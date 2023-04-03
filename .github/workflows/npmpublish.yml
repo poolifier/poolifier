@@ -60,13 +60,13 @@ jobs:
 
       - name: Publish Release
         if: ${{ contains(steps.package-version.outputs.version, '-') == false }}
-        run: pnpm publish
+        run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish Pre-Release
         if: ${{ contains(steps.package-version.outputs.version, '-') == true }}
-        run: pnpm publish --tag next
+        run: pnpm publish --no-git-checks --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
