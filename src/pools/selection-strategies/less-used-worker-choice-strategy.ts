@@ -25,7 +25,7 @@ export class LessUsedWorkerChoiceStrategy<
     for (const [index, workerItem] of this.pool.workers.entries()) {
       const tasksUsage = workerItem.tasksUsage
       const workerTasks = tasksUsage?.run + tasksUsage?.running
-      if (!this.isDynamicPool && workerTasks === 0) {
+      if (workerTasks === 0) {
         return index
       } else if (workerTasks < minNumberOfTasks) {
         minNumberOfTasks = workerTasks

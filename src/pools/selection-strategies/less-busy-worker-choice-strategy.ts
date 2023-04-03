@@ -30,7 +30,7 @@ export class LessBusyWorkerChoiceStrategy<
     let lessBusyWorkerKey!: number
     for (const [index, workerItem] of this.pool.workers.entries()) {
       const workerRunTime = workerItem.tasksUsage.runTime
-      if (!this.isDynamicPool && workerRunTime === 0) {
+      if (workerRunTime === 0) {
         return index
       } else if (workerRunTime < minRunTime) {
         minRunTime = workerRunTime
