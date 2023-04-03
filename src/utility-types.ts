@@ -46,6 +46,7 @@ export interface MessageValue<
 /**
  * An object holding the execution response promise resolve/reject callbacks.
  *
+ * @typeParam Worker - Type of worker.
  * @typeParam Response - Type of execution response. This can only be serializable data.
  */
 export interface PromiseResponseWrapper<
