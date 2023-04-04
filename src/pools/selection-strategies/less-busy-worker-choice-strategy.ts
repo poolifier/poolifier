@@ -1,6 +1,9 @@
 import type { IPoolWorker } from '../pool-worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
-import type { RequiredStatistics } from './selection-strategies-types'
+import type {
+  IWorkerChoiceStrategy,
+  RequiredStatistics
+} from './selection-strategies-types'
 
 /**
  * Selects the less busy worker.
@@ -10,10 +13,12 @@ import type { RequiredStatistics } from './selection-strategies-types'
  * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class LessBusyWorkerChoiceStrategy<
-  Worker extends IPoolWorker,
-  Data,
-  Response
-> extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
+    Worker extends IPoolWorker,
+    Data,
+    Response
+  >
+  extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
+  implements IWorkerChoiceStrategy {
   /** {@inheritDoc} */
   public readonly requiredStatistics: RequiredStatistics = {
     runTime: true
@@ -27,7 +32,7 @@ export class LessBusyWorkerChoiceStrategy<
   /** {@inheritDoc} */
   public choose (): number {
     const freeWorkerKey = this.pool.findFreeWorkerKey()
-    if (!this.isDynamicPool && freeWorkerKey !== false) {
+    if (!this.isDynamicPool && freeWorkerKey !== -1) {
       return freeWorkerKey
     }
     let minRunTime = Infinity

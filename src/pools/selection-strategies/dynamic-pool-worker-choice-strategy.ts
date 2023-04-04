@@ -16,10 +16,12 @@ import { getWorkerChoiceStrategy } from './selection-strategies-utils'
  * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class DynamicPoolWorkerChoiceStrategy<
-  Worker extends IPoolWorker,
-  Data,
-  Response
-> extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
+    Worker extends IPoolWorker,
+    Data,
+    Response
+  >
+  extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
+  implements IWorkerChoiceStrategy {
   private readonly workerChoiceStrategy: IWorkerChoiceStrategy
 
   /**
@@ -50,7 +52,7 @@ export class DynamicPoolWorkerChoiceStrategy<
   /** {@inheritDoc} */
   public choose (): number {
     const freeWorkerKey = this.pool.findFreeWorkerKey()
-    if (freeWorkerKey !== false) {
+    if (freeWorkerKey !== -1) {
       return freeWorkerKey
     }
 

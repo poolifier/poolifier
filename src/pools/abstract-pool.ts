@@ -177,16 +177,15 @@ export abstract class AbstractPool<
   protected internalGetBusyStatus (): boolean {
     return (
       this.numberOfRunningTasks >= this.numberOfWorkers &&
-      this.findFreeWorkerKey() === false
+      this.findFreeWorkerKey() === -1
     )
   }
 
   /** {@inheritDoc} */
-  public findFreeWorkerKey (): number | false {
-    const freeWorkerKey = this.workers.findIndex(workerItem => {
+  public findFreeWorkerKey (): number {
+    return this.workers.findIndex(workerItem => {
       return workerItem.tasksUsage.running === 0
     })
-    return freeWorkerKey !== -1 ? freeWorkerKey : false
   }
 
   /** {@inheritDoc} */

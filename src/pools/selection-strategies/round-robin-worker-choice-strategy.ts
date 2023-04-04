@@ -1,5 +1,6 @@
 import type { IPoolWorker } from '../pool-worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
+import type { IWorkerChoiceStrategy } from './selection-strategies-types'
 
 /**
  * Selects the next worker in a round robin fashion.
@@ -9,10 +10,12 @@ import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
  * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class RoundRobinWorkerChoiceStrategy<
-  Worker extends IPoolWorker,
-  Data,
-  Response
-> extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
+    Worker extends IPoolWorker,
+    Data,
+    Response
+  >
+  extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
+  implements IWorkerChoiceStrategy {
   /**
    * Id of the next worker.
    */

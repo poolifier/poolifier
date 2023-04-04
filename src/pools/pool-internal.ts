@@ -73,7 +73,7 @@ export interface IPoolInternal<
    *
    * If no free worker is found, `false` is returned.
    *
-   * @returns A worker key if there is one, otherwise `false`.
+   * @returns A worker key if there is one, `-1` otherwise.
    */
-  findFreeWorkerKey: () => number | false
+  findFreeWorkerKey: () => number
 }

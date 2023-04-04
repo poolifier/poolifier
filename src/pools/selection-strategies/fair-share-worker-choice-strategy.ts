@@ -1,6 +1,9 @@
 import type { IPoolWorker } from '../pool-worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
-import type { RequiredStatistics } from './selection-strategies-types'
+import type {
+  IWorkerChoiceStrategy,
+  RequiredStatistics
+} from './selection-strategies-types'
 
 /**
  * Worker virtual task timestamp.
@@ -19,10 +22,12 @@ interface WorkerVirtualTaskTimestamp {
  * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class FairShareWorkerChoiceStrategy<
-  Worker extends IPoolWorker,
-  Data,
-  Response
-> extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
+    Worker extends IPoolWorker,
+    Data,
+    Response
+  >
+  extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
+  implements IWorkerChoiceStrategy {
   /** {@inheritDoc} */
   public readonly requiredStatistics: RequiredStatistics = {
     runTime: true

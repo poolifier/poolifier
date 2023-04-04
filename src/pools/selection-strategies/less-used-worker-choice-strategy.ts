@@ -1,5 +1,6 @@
 import type { IPoolWorker } from '../pool-worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
+import type { IWorkerChoiceStrategy } from './selection-strategies-types'
 
 /**
  * Selects the less used worker.
@@ -9,10 +10,12 @@ import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
  * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class LessUsedWorkerChoiceStrategy<
-  Worker extends IPoolWorker,
-  Data,
-  Response
-> extends AbstractWorkerChoiceStrategy<Worker, Data, Response> {
+    Worker extends IPoolWorker,
+    Data,
+    Response
+  >
+  extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
+  implements IWorkerChoiceStrategy {
   /** {@inheritDoc} */
   public reset (): boolean {
     return true
@@ -21,7 +24,7 @@ export class LessUsedWorkerChoiceStrategy<
   /** {@inheritDoc} */
   public choose (): number {
     const freeWorkerKey = this.pool.findFreeWorkerKey()
-    if (!this.isDynamicPool && freeWorkerKey !== false) {
+    if (!this.isDynamicPool && freeWorkerKey !== -1) {
       return freeWorkerKey
     }
     let minNumberOfTasks = Infinity
