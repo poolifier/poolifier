@@ -51,17 +51,14 @@ export class DynamicPoolWorkerChoiceStrategy<
 
   /** {@inheritDoc} */
   public choose (): number {
-    const freeWorkerKey = this.pool.findFreeWorkerKey()
-    if (freeWorkerKey !== -1) {
-      return freeWorkerKey
-    }
-
     if (this.pool.busy) {
       return this.workerChoiceStrategy.choose()
     }
-
-    // All workers are busy, create a new worker
-    return this.createWorkerCallback()
+    const freeWorkerKey = this.pool.findFreeWorkerKey()
+    if (freeWorkerKey === -1) {
+      return this.createWorkerCallback()
+    }
+    return this.workerChoiceStrategy.choose()
   }
 
   /** {@inheritDoc} */

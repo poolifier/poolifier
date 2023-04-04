@@ -33,7 +33,7 @@ export class LessBusyWorkerChoiceStrategy<
   /** {@inheritDoc} */
   public choose (): number {
     const freeWorkerKey = this.pool.findFreeWorkerKey()
-    if (!this.isDynamicPool && freeWorkerKey !== -1) {
+    if (freeWorkerKey !== -1) {
       return freeWorkerKey
     }
     let minRunTime = Infinity
