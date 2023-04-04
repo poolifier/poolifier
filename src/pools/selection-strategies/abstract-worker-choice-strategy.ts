@@ -35,6 +35,7 @@ export abstract class AbstractWorkerChoiceStrategy<
     protected readonly pool: IPoolInternal<Worker, Data, Response>
   ) {
     this.isDynamicPool = this.pool.type === PoolType.DYNAMIC
+    this.choose.bind(this)
   }
 
   /** {@inheritDoc} */

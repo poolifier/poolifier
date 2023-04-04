@@ -73,6 +73,12 @@ export abstract class AbstractPool<
     this.checkNumberOfWorkers(this.numberOfWorkers)
     this.checkFilePath(this.filePath)
     this.checkPoolOptions(this.opts)
+
+    this.chooseWorker.bind(this)
+    this.internalExecute.bind(this)
+    this.checkAndEmitBusy.bind(this)
+    this.sendToWorker.bind(this)
+
     this.setupHook()
 
     for (let i = 1; i <= this.numberOfWorkers; i++) {

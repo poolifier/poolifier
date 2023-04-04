@@ -76,5 +76,6 @@ package-lock.json
 .scannerwork
 *.bak
 lib
+dist
 reports/
 benchmarks/internal/results/

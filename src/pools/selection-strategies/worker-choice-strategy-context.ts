@@ -36,6 +36,7 @@ export class WorkerChoiceStrategyContext<
     private readonly createWorkerCallback: () => number,
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
+    this.execute.bind(this)
     this.setWorkerChoiceStrategy(workerChoiceStrategy)
   }
 
