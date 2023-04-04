@@ -13,4 +13,4 @@ pool
   .then(res => console.log(res))
   .catch(err => console.error(err))
 
-setTimeout(pool.destroy(pool), 3000)
+setTimeout(pool.destroy(), 3000)
