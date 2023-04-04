@@ -21,7 +21,8 @@ export class LessBusyWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** {@inheritDoc} */
   public readonly requiredStatistics: RequiredStatistics = {
-    runTime: true
+    runTime: true,
+    avgRunTime: false
   }
 
   /** {@inheritDoc} */

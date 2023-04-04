@@ -72,6 +72,9 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(false)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
+    ).toBe(false)
     await pool.destroy()
     pool = new DynamicThreadPool(
       min,
@@ -81,6 +84,9 @@ describe('Selection strategies test suite', () => {
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.ROUND_ROBIN)
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
+    ).toBe(false)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
     ).toBe(false)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -213,6 +219,9 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(false)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
+    ).toBe(false)
     await pool.destroy()
     pool = new DynamicThreadPool(
       min,
@@ -222,6 +231,9 @@ describe('Selection strategies test suite', () => {
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.LESS_USED)
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
+    ).toBe(false)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
     ).toBe(false)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -295,6 +307,9 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(true)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
+    ).toBe(false)
     await pool.destroy()
     pool = new DynamicThreadPool(
       min,
@@ -305,6 +320,9 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(true)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
+    ).toBe(false)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -389,6 +407,9 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(true)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
+    ).toBe(true)
     await pool.destroy()
     pool = new DynamicThreadPool(
       min,
@@ -398,6 +419,9 @@ describe('Selection strategies test suite', () => {
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
+    ).toBe(true)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
     ).toBe(true)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -549,6 +573,9 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
     ).toBe(true)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
+    ).toBe(true)
     await pool.destroy()
     pool = new DynamicThreadPool(
       min,
@@ -558,6 +585,9 @@ describe('Selection strategies test suite', () => {
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().runTime
+    ).toBe(true)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
     ).toBe(true)
     // We need to clean up the resources after our test
     await pool.destroy()

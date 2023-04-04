@@ -32,7 +32,8 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** {@inheritDoc} */
   public readonly requiredStatistics: RequiredStatistics = {
-    runTime: true
+    runTime: true,
+    avgRunTime: true
   }
 
   /**

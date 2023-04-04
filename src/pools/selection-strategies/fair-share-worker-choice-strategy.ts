@@ -30,7 +30,8 @@ export class FairShareWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** {@inheritDoc} */
   public readonly requiredStatistics: RequiredStatistics = {
-    runTime: true
+    runTime: true,
+    avgRunTime: true
   }
 
   /**

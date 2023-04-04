@@ -261,7 +261,10 @@ export abstract class AbstractPool<
     }
     if (this.workerChoiceStrategyContext.getRequiredStatistics().runTime) {
       workerTasksUsage.runTime += message.taskRunTime ?? 0
-      if (workerTasksUsage.run !== 0) {
+      if (
+        this.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime &&
+        workerTasksUsage.run !== 0
+      ) {
         workerTasksUsage.avgRunTime =
           workerTasksUsage.runTime / workerTasksUsage.run
       }

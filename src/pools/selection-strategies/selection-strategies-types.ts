@@ -34,6 +34,7 @@ export type WorkerChoiceStrategy = keyof typeof WorkerChoiceStrategies
  */
 export interface RequiredStatistics {
   runTime: boolean
+  avgRunTime: boolean
 }
 
 /**

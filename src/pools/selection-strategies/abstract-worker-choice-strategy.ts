@@ -22,7 +22,8 @@ export abstract class AbstractWorkerChoiceStrategy<
   public readonly isDynamicPool: boolean
   /** {@inheritDoc} */
   public requiredStatistics: RequiredStatistics = {
-    runTime: false
+    runTime: false,
+    avgRunTime: false
   }
 
   /**
