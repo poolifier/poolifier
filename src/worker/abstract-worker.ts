@@ -3,11 +3,7 @@ import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
 import type { MessageValue } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
-import {
-  isKillBehavior,
-  type KillBehavior,
-  type WorkerOptions
-} from './worker-options'
+import { type KillBehavior, type WorkerOptions } from './worker-options'
 import { KillBehaviors } from './worker-options'
 
 const DEFAULT_MAX_INACTIVE_TIME = 60000
@@ -48,7 +44,7 @@ export abstract class AbstractWorker<
    */
   public constructor (
     type: string,
-    isMain: boolean,
+    protected isMain: boolean,
     fn: (data: Data) => Response,
     protected mainWorker: MainWorker | undefined | null,
     opts: WorkerOptions = {
@@ -67,7 +63,7 @@ export abstract class AbstractWorker<
     this.opts = opts
     this.checkFunctionInput(fn)
     this.checkWorkerOptions(this.opts)
-    if (!isMain && isKillBehavior(KillBehaviors.HARD, this.opts.killBehavior)) {
+    if (!this.isMain) {
       this.lastTaskTimestamp = Date.now()
       this.aliveInterval = setInterval(
         this.checkAlive.bind(this),
@@ -182,8 +178,7 @@ export abstract class AbstractWorker<
       const err = this.handleError(e as Error)
       this.sendToMainWorker({ error: err, id: value.id })
     } finally {
-      isKillBehavior(KillBehaviors.HARD, this.opts.killBehavior) &&
-        (this.lastTaskTimestamp = Date.now())
+      !this.isMain && (this.lastTaskTimestamp = Date.now())
     }
   }
 
@@ -209,8 +204,7 @@ export abstract class AbstractWorker<
         this.sendToMainWorker({ error: err, id: value.id })
       })
       .finally(() => {
-        isKillBehavior(KillBehaviors.HARD, this.opts.killBehavior) &&
-          (this.lastTaskTimestamp = Date.now())
+        !this.isMain && (this.lastTaskTimestamp = Date.now())
       })
       .catch(EMPTY_FUNCTION)
   }
