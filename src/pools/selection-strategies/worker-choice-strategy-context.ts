@@ -1,5 +1,4 @@
 import type { IPoolInternal } from '../pool-internal'
-import { PoolType } from '../pool-internal'
 import type { IPoolWorker } from '../pool-worker'
 import type {
   IWorkerChoiceStrategy,
@@ -70,7 +69,7 @@ export class WorkerChoiceStrategyContext<
    */
   public execute (): number {
     if (
-      this.pool.type === PoolType.DYNAMIC &&
+      this.workerChoiceStrategy.isDynamicPool &&
       !this.pool.full &&
       this.pool.findFreeWorkerKey() === -1
     ) {
