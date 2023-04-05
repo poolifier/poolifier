@@ -24,7 +24,10 @@ export class WorkerChoiceStrategyContext<
   Data = unknown,
   Response = unknown
 > {
-  private workerChoiceStrategy: IWorkerChoiceStrategy<Worker, Data, Response>
+  private readonly workerChoiceStrategies = new Map<
+  WorkerChoiceStrategy,
+  IWorkerChoiceStrategy<Worker, Data, Response>
+  >()
 
   /**
    * Worker choice strategy context constructor.
@@ -39,10 +42,7 @@ export class WorkerChoiceStrategyContext<
     private workerChoiceStrategyType: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     this.execute.bind(this)
-    this.workerChoiceStrategy = this.getWorkerChoiceStrategy(
-      pool,
-      this.workerChoiceStrategyType
-    )
+    this.registerWorkerChoiceStrategy(pool, workerChoiceStrategyType)
   }
 
   /**
@@ -51,7 +51,11 @@ export class WorkerChoiceStrategyContext<
    * @returns The required statistics.
    */
   public getRequiredStatistics (): RequiredStatistics {
-    return this.workerChoiceStrategy.requiredStatistics
+    return (
+      this.workerChoiceStrategies.get(
+        this.workerChoiceStrategyType
+      ) as IWorkerChoiceStrategy<Worker, Data, Response>
+    ).requiredStatistics
   }
 
   /**
@@ -64,13 +68,10 @@ export class WorkerChoiceStrategyContext<
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
     if (this.workerChoiceStrategyType === workerChoiceStrategy) {
-      this.workerChoiceStrategy?.reset()
+      this.workerChoiceStrategies.get(workerChoiceStrategy)?.reset()
     } else {
       this.workerChoiceStrategyType = workerChoiceStrategy
-      this.workerChoiceStrategy = this.getWorkerChoiceStrategy(
-        pool,
-        this.workerChoiceStrategyType
-      )
+      this.registerWorkerChoiceStrategy(pool, workerChoiceStrategy)
     }
   }
 
@@ -80,14 +81,17 @@ export class WorkerChoiceStrategyContext<
    * @returns The key of the chosen one.
    */
   public execute (): number {
+    const workerChoiceStrategy = this.workerChoiceStrategies.get(
+      this.workerChoiceStrategyType
+    ) as IWorkerChoiceStrategy<Worker, Data, Response>
     if (
-      this.workerChoiceStrategy.isDynamicPool &&
-      !this.workerChoiceStrategy.pool.full &&
-      this.workerChoiceStrategy.pool.findFreeWorkerKey() === -1
+      workerChoiceStrategy.isDynamicPool &&
+      !workerChoiceStrategy.pool.full &&
+      workerChoiceStrategy.pool.findFreeWorkerKey() === -1
     ) {
       return this.createWorkerCallback()
     }
-    return this.workerChoiceStrategy.choose()
+    return workerChoiceStrategy.choose()
   }
 
   /**
@@ -97,7 +101,23 @@ export class WorkerChoiceStrategyContext<
    * @returns `true` if the removal is successful, `false` otherwise.
    */
   public remove (workerKey: number): boolean {
-    return this.workerChoiceStrategy.remove(workerKey)
+    return (
+      this.workerChoiceStrategies.get(
+        this.workerChoiceStrategyType
+      ) as IWorkerChoiceStrategy<Worker, Data, Response>
+    ).remove(workerKey)
+  }
+
+  private registerWorkerChoiceStrategy (
+    pool: IPoolInternal<Worker, Data, Response>,
+    workerChoiceStrategy: WorkerChoiceStrategy
+  ): void {
+    if (!this.workerChoiceStrategies.has(workerChoiceStrategy)) {
+      this.workerChoiceStrategies.set(
+        workerChoiceStrategy,
+        this.getWorkerChoiceStrategy(pool, workerChoiceStrategy)
+      )
+    }
   }
 
   /**
