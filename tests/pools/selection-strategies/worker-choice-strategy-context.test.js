@@ -257,4 +257,82 @@ describe('Worker choice strategy context test suite', () => {
       WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     )
   })
+
+  it('Verify that getWorkerChoiceStrategy() default return ROUND_ROBIN strategy', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    const strategy =
+      workerChoiceStrategyContext.getWorkerChoiceStrategy(fixedPool)
+    expect(strategy).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
+  })
+
+  it('Verify that getWorkerChoiceStrategy() can return ROUND_ROBIN strategy', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    const strategy = workerChoiceStrategyContext.getWorkerChoiceStrategy(
+      fixedPool,
+      WorkerChoiceStrategies.ROUND_ROBIN
+    )
+    expect(strategy).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
+  })
+
+  it('Verify that getWorkerChoiceStrategy() can return LESS_USED strategy', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    const strategy = workerChoiceStrategyContext.getWorkerChoiceStrategy(
+      fixedPool,
+      WorkerChoiceStrategies.LESS_USED
+    )
+    expect(strategy).toBeInstanceOf(LessUsedWorkerChoiceStrategy)
+  })
+
+  it('Verify that getWorkerChoiceStrategy() can return LESS_BUSY strategy', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    const strategy = workerChoiceStrategyContext.getWorkerChoiceStrategy(
+      fixedPool,
+      WorkerChoiceStrategies.LESS_BUSY
+    )
+    expect(strategy).toBeInstanceOf(LessBusyWorkerChoiceStrategy)
+  })
+
+  it('Verify that getWorkerChoiceStrategy() can return FAIR_SHARE strategy', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    const strategy = workerChoiceStrategyContext.getWorkerChoiceStrategy(
+      fixedPool,
+      WorkerChoiceStrategies.FAIR_SHARE
+    )
+    expect(strategy).toBeInstanceOf(FairShareWorkerChoiceStrategy)
+  })
+
+  it('Verify that getWorkerChoiceStrategy() can return WEIGHTED_ROUND_ROBIN strategy', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    const strategy = workerChoiceStrategyContext.getWorkerChoiceStrategy(
+      fixedPool,
+      WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+    )
+    expect(strategy).toBeInstanceOf(WeightedRoundRobinWorkerChoiceStrategy)
+  })
+
+  it('Verify that getWorkerChoiceStrategy() throw error on unknown strategy', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    expect(() => {
+      workerChoiceStrategyContext.getWorkerChoiceStrategy(
+        fixedPool,
+        'UNKNOWN_STRATEGY'
+      )
+    }).toThrowError(
+      new Error("Worker choice strategy 'UNKNOWN_STRATEGY' not found")
+    )
+  })
 })

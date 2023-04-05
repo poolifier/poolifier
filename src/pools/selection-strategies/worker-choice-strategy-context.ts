@@ -1,12 +1,16 @@
 import type { IPoolInternal } from '../pool-internal'
 import type { IPoolWorker } from '../pool-worker'
+import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strategy'
+import { LessBusyWorkerChoiceStrategy } from './less-busy-worker-choice-strategy'
+import { LessUsedWorkerChoiceStrategy } from './less-used-worker-choice-strategy'
+import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
   RequiredStatistics,
   WorkerChoiceStrategy
 } from './selection-strategies-types'
 import { WorkerChoiceStrategies } from './selection-strategies-types'
-import { getWorkerChoiceStrategy } from './selection-strategies-utils'
+import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-worker-choice-strategy'
 
 /**
  * The worker choice strategy context.
@@ -35,14 +39,14 @@ export class WorkerChoiceStrategyContext<
     private workerChoiceStrategyType: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     this.execute.bind(this)
-    this.workerChoiceStrategy = getWorkerChoiceStrategy<Worker, Data, Response>(
+    this.workerChoiceStrategy = this.getWorkerChoiceStrategy(
       pool,
       this.workerChoiceStrategyType
     )
   }
 
   /**
-   * Gets the worker choice strategy required statistics.
+   * Gets the worker choice strategy in the context required statistics.
    *
    * @returns The required statistics.
    */
@@ -63,16 +67,15 @@ export class WorkerChoiceStrategyContext<
       this.workerChoiceStrategy?.reset()
     } else {
       this.workerChoiceStrategyType = workerChoiceStrategy
-      this.workerChoiceStrategy = getWorkerChoiceStrategy<
-      Worker,
-      Data,
-      Response
-      >(pool, this.workerChoiceStrategyType)
+      this.workerChoiceStrategy = this.getWorkerChoiceStrategy(
+        pool,
+        this.workerChoiceStrategyType
+      )
     }
   }
 
   /**
-   * Chooses a worker with the worker choice strategy.
+   * Executes the worker choice strategy algorithm in the context.
    *
    * @returns The key of the chosen one.
    */
@@ -88,12 +91,46 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
-   * Removes a worker in the worker choice strategy internals.
+   * Removes a worker from the worker choice strategy in the context.
    *
    * @param workerKey - The key of the worker to remove.
    * @returns `true` if the removal is successful, `false` otherwise.
    */
   public remove (workerKey: number): boolean {
     return this.workerChoiceStrategy.remove(workerKey)
+  }
+
+  /**
+   * Gets the worker choice strategy instance.
+   *
+   * @param pool - The pool instance.
+   * @param workerChoiceStrategy - The worker choice strategy.
+   * @returns The worker choice strategy instance.
+   */
+  private getWorkerChoiceStrategy (
+    pool: IPoolInternal<Worker, Data, Response>,
+    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
+  ): IWorkerChoiceStrategy<Worker, Data, Response> {
+    switch (workerChoiceStrategy) {
+      case WorkerChoiceStrategies.ROUND_ROBIN:
+        return new RoundRobinWorkerChoiceStrategy<Worker, Data, Response>(pool)
+      case WorkerChoiceStrategies.LESS_USED:
+        return new LessUsedWorkerChoiceStrategy<Worker, Data, Response>(pool)
+      case WorkerChoiceStrategies.LESS_BUSY:
+        return new LessBusyWorkerChoiceStrategy<Worker, Data, Response>(pool)
+      case WorkerChoiceStrategies.FAIR_SHARE:
+        return new FairShareWorkerChoiceStrategy<Worker, Data, Response>(pool)
+      case WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN:
+        return new WeightedRoundRobinWorkerChoiceStrategy<
+        Worker,
+        Data,
+        Response
+        >(pool)
+      default:
+        throw new Error(
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `Worker choice strategy '${workerChoiceStrategy}' not found`
+        )
+    }
   }
 }

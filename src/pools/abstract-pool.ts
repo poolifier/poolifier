@@ -45,9 +45,9 @@ export abstract class AbstractPool<
   > = new Map<string, PromiseResponseWrapper<Worker, Response>>()
 
   /**
-   * Worker choice strategy instance implementing the worker choice algorithm.
+   * Worker choice strategy context referencing a worker choice algorithm implementation.
    *
-   * Default to a strategy implementing a round robin algorithm.
+   * Default to a round robin algorithm.
    */
   protected workerChoiceStrategyContext: WorkerChoiceStrategyContext<
   Worker,
@@ -149,7 +149,7 @@ export abstract class AbstractPool<
   public abstract get type (): PoolType
 
   /**
-   * Number of tasks concurrently running.
+   * Number of tasks concurrently running in the pool.
    */
   private get numberOfRunningTasks (): number {
     return this.promiseResponseMap.size
@@ -290,20 +290,9 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Removes the given worker from the pool.
-   *
-   * @param worker - The worker that will be removed.
-   */
-  protected removeWorker (worker: Worker): void {
-    const workerKey = this.getWorkerKey(worker)
-    this.workers.splice(workerKey, 1)
-    this.workerChoiceStrategyContext.remove(workerKey)
-  }
-
-  /**
    * Chooses a worker for the next task.
    *
-   * The default implementation uses a round robin algorithm to distribute the load.
+   * The default uses a round robin algorithm to distribute the load.
    *
    * @returns [worker key, worker].
    */
@@ -440,7 +429,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Pushes the given worker.
+   * Pushes the given worker in the pool.
    *
    * @param worker - The worker.
    * @param tasksUsage - The worker tasks usage.
@@ -453,7 +442,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Sets the given worker.
+   * Sets the given worker in the pool.
    *
    * @param workerKey - The worker key.
    * @param worker - The worker.
@@ -468,5 +457,16 @@ export abstract class AbstractPool<
       worker,
       tasksUsage
     }
+  }
+
+  /**
+   * Removes the given worker from the pool.
+   *
+   * @param worker - The worker that will be removed.
+   */
+  protected removeWorker (worker: Worker): void {
+    const workerKey = this.getWorkerKey(worker)
+    this.workers.splice(workerKey, 1)
+    this.workerChoiceStrategyContext.remove(workerKey)
   }
 }
