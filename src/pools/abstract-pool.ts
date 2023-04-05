@@ -76,6 +76,7 @@ export abstract class AbstractPool<
 
     this.chooseWorker.bind(this)
     this.internalExecute.bind(this)
+    this.checkAndEmitFull.bind(this)
     this.checkAndEmitBusy.bind(this)
     this.sendToWorker.bind(this)
 
@@ -209,6 +210,7 @@ export abstract class AbstractPool<
     const [workerKey, worker] = this.chooseWorker()
     const messageId = crypto.randomUUID()
     const res = this.internalExecute(workerKey, worker, messageId)
+    this.checkAndEmitFull()
     this.checkAndEmitBusy()
     this.sendToWorker(worker, {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -410,6 +412,16 @@ export abstract class AbstractPool<
   private checkAndEmitBusy (): void {
     if (this.opts.enableEvents === true && this.busy) {
       this.emitter?.emit('busy')
+    }
+  }
+
+  private checkAndEmitFull (): void {
+    if (
+      this.type === PoolType.DYNAMIC &&
+      this.opts.enableEvents === true &&
+      this.full
+    ) {
+      this.emitter?.emit('full')
     }
   }
 

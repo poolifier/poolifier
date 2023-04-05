@@ -210,6 +210,25 @@ describe('Abstract pool test suite', () => {
     await pool.destroy()
   })
 
+  it("Verify that pool event emitter 'full' event can register a callback", async () => {
+    const pool = new DynamicThreadPool(
+      numberOfWorkers,
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    const promises = []
+    let poolFull = 0
+    pool.emitter.on('full', () => ++poolFull)
+    for (let i = 0; i < numberOfWorkers * 2; i++) {
+      promises.push(pool.execute())
+    }
+    await Promise.all(promises)
+    // The `full` event is triggered when the number of submitted tasks at once reach the number of dynamic pool workers.
+    // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the dynamic pool.
+    expect(poolFull).toBe(numberOfWorkers + 1)
+    await pool.destroy()
+  })
+
   it("Verify that pool event emitter 'busy' event can register a callback", async () => {
     const pool = new FixedThreadPool(
       numberOfWorkers,
@@ -217,7 +236,7 @@ describe('Abstract pool test suite', () => {
     )
     const promises = []
     let poolBusy = 0
-    pool.emitter.on('busy', () => poolBusy++)
+    pool.emitter.on('busy', () => ++poolBusy)
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.push(pool.execute())
     }

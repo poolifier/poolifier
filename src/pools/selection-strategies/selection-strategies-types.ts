@@ -50,17 +50,14 @@ export interface IWorkerChoiceStrategy<
 > {
   /**
    * The pool instance.
-   * @readonly
    */
   readonly pool: IPoolInternal<Worker, Data, Response>
   /**
    * Is the pool attached to the strategy dynamic?.
-   * @readonly
    */
   readonly isDynamicPool: boolean
   /**
    * Required pool tasks usage statistics.
-   * @readonly
    */
   readonly requiredStatistics: RequiredStatistics
   /**

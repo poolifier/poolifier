@@ -56,7 +56,8 @@ export interface IPool<Data = unknown, Response = unknown> {
    *
    * Events that can currently be listened to:
    *
-   * - `'busy'`
+   * - `'full'`: Emitted when the pool is dynamic and full.
+   * - `'busy'`: Emitted when the pool is busy.
    */
   readonly emitter?: PoolEmitter
   /**

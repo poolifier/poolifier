@@ -120,11 +120,14 @@ const pool = new FixedThreadPool(15,
   './yourWorker.js',
   { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
 
+pool.emitter.on('busy', () => console.log('Pool is busy'))
+
 // or a dynamic worker-threads pool
 const pool = new DynamicThreadPool(10, 100,
   './yourWorker.js',
   { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
 
+pool.emitter.on('full', () => console.log('Pool is full'))
 pool.emitter.on('busy', () => console.log('Pool is busy'))
 
 // the execute method signature is the same for both implementations,
