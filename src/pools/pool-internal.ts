@@ -23,7 +23,7 @@ export interface TasksUsage {
 /**
  * Internal worker type.
  *
- * @typeParam Worker - Type of worker which manages this pool.
+ * @typeParam Worker - Type of worker type items which manages this pool.
  */
 export interface WorkerType<Worker extends IPoolWorker> {
   worker: Worker
