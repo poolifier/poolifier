@@ -109,7 +109,7 @@
     "eslint-config-standard": "^17.0.0",
     "eslint-config-standard-with-typescript": "^34.0.1",
     "eslint-define-config": "^1.17.0",
-    "eslint-import-resolver-typescript": "^3.5.4",
+    "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jsdoc": "^40.1.1",
     "eslint-plugin-n": "^15.7.0",
