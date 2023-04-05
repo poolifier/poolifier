@@ -27,7 +27,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /**
-   * Constructs a worker choice strategy attached to the pool.
+   * Constructs a worker choice strategy bound to the pool.
    *
    * @param pool - The pool instance.
    */

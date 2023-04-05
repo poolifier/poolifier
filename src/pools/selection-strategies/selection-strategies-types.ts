@@ -53,7 +53,7 @@ export interface IWorkerChoiceStrategy<
    */
   readonly pool: IPoolInternal<Worker, Data, Response>
   /**
-   * Is the pool attached to the strategy dynamic?.
+   * Is the pool bound to the strategy dynamic?.
    */
   readonly isDynamicPool: boolean
   /**
