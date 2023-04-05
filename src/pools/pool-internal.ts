@@ -43,7 +43,7 @@ export interface IPoolInternal<
   Response = unknown
 > extends IPool<Data, Response> {
   /**
-   * Pool workers item array.
+   * Pool worker type items array.
    */
   readonly workers: Array<WorkerType<Worker>>
 
@@ -55,16 +55,18 @@ export interface IPoolInternal<
   readonly type: PoolType
 
   /**
+   * Whether the pool is full or not.
+   *
+   * The pool filling boolean status.
+   */
+  readonly full: boolean
+
+  /**
    * Whether the pool is busy or not.
    *
    * The pool busyness boolean status.
    */
   readonly busy: boolean
-
-  /**
-   * Number of tasks currently concurrently running.
-   */
-  readonly numberOfRunningTasks: number
 
   /**
    * Finds a free worker key based on the number of tasks the worker has applied.

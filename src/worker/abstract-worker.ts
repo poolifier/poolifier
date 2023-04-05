@@ -44,7 +44,7 @@ export abstract class AbstractWorker<
    */
   public constructor (
     type: string,
-    protected isMain: boolean,
+    protected readonly isMain: boolean,
     fn: (data: Data) => Response,
     protected mainWorker: MainWorker | undefined | null,
     opts: WorkerOptions = {

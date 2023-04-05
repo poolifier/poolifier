@@ -97,7 +97,12 @@ export class FixedThreadPool<
   }
 
   /** {@inheritDoc} */
+  public get full (): boolean {
+    return this.workers.length === this.numberOfWorkers
+  }
+
+  /** {@inheritDoc} */
   public get busy (): boolean {
-    return this.internalGetBusyStatus()
+    return this.internalBusy()
   }
 }

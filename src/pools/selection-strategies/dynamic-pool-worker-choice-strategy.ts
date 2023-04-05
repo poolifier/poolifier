@@ -54,8 +54,7 @@ export class DynamicPoolWorkerChoiceStrategy<
     if (this.pool.busy) {
       return this.workerChoiceStrategy.choose()
     }
-    const freeWorkerKey = this.pool.findFreeWorkerKey()
-    if (freeWorkerKey === -1) {
+    if (!this.pool.full && this.pool.findFreeWorkerKey() === -1) {
       return this.createWorkerCallback()
     }
     return this.workerChoiceStrategy.choose()

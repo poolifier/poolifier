@@ -28,7 +28,7 @@ export class DynamicThreadPool<
    */
   public constructor (
     min: number,
-    protected readonly max: number,
+    private readonly max: number,
     filePath: string,
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = {}
   ) {
@@ -41,7 +41,12 @@ export class DynamicThreadPool<
   }
 
   /** {@inheritDoc} */
-  public get busy (): boolean {
+  public get full (): boolean {
     return this.workers.length === this.max
+  }
+
+  /** {@inheritDoc} */
+  public get busy (): boolean {
+    return this.full && this.findFreeWorkerKey() === -1
   }
 }
