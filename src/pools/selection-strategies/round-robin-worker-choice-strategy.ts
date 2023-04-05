@@ -40,10 +40,14 @@ export class RoundRobinWorkerChoiceStrategy<
   /** {@inheritDoc} */
   public remove (workerKey: number): boolean {
     if (this.nextWorkerId === workerKey) {
-      this.nextWorkerId =
-        this.nextWorkerId > this.pool.workers.length - 1
-          ? this.pool.workers.length - 1
-          : this.nextWorkerId
+      if (this.pool.workers.length === 0) {
+        this.nextWorkerId = 0
+      } else {
+        this.nextWorkerId =
+          this.nextWorkerId > this.pool.workers.length - 1
+            ? this.pool.workers.length - 1
+            : this.nextWorkerId
+      }
     }
     return true
   }

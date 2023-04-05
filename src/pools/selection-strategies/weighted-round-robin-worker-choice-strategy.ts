@@ -102,10 +102,14 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   /** {@inheritDoc} */
   public remove (workerKey: number): boolean {
     if (this.currentWorkerId === workerKey) {
-      this.currentWorkerId =
-        this.currentWorkerId > this.pool.workers.length - 1
-          ? this.pool.workers.length - 1
-          : this.currentWorkerId
+      if (this.pool.workers.length === 0) {
+        this.currentWorkerId = 0
+      } else {
+        this.currentWorkerId =
+          this.currentWorkerId > this.pool.workers.length - 1
+            ? this.pool.workers.length - 1
+            : this.currentWorkerId
+      }
     }
     const workerDeleted = this.workersTaskRunTime.delete(workerKey)
     for (const [key, value] of this.workersTaskRunTime) {

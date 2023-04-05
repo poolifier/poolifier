@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `full` event to dynamic pool.
 - Keep worker choice strategy usage in memory for conditional reuse.
 
+### Fixed
+
+- Fix possible negative worker key at worker removal in worker choice strategies.
+
 ## [2.4.1] - 2023-04-05
 
 ### Changed
