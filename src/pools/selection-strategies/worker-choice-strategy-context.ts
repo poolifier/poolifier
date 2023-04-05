@@ -37,7 +37,7 @@ export class WorkerChoiceStrategyContext<
     this.execute.bind(this)
     this.workerChoiceStrategy = getWorkerChoiceStrategy<Worker, Data, Response>(
       pool,
-      workerChoiceStrategyType
+      this.workerChoiceStrategyType
     )
   }
 
