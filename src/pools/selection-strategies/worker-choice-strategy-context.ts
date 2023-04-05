@@ -20,7 +20,7 @@ export class WorkerChoiceStrategyContext<
   Data,
   Response
 > {
-  private workerChoiceStrategy!: IWorkerChoiceStrategy
+  private workerChoiceStrategy: IWorkerChoiceStrategy<Worker, Data, Response>
 
   /**
    * Worker choice strategy context constructor.
@@ -30,12 +30,15 @@ export class WorkerChoiceStrategyContext<
    * @param workerChoiceStrategy - The worker choice strategy.
    */
   public constructor (
-    private readonly pool: IPoolInternal<Worker, Data, Response>,
+    pool: IPoolInternal<Worker, Data, Response>,
     private readonly createWorkerCallback: () => number,
     workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     this.execute.bind(this)
-    this.setWorkerChoiceStrategy(workerChoiceStrategy)
+    this.workerChoiceStrategy = getWorkerChoiceStrategy<Worker, Data, Response>(
+      pool,
+      workerChoiceStrategy
+    )
   }
 
   /**
@@ -53,11 +56,12 @@ export class WorkerChoiceStrategyContext<
    * @param workerChoiceStrategy - The worker choice strategy to set.
    */
   public setWorkerChoiceStrategy (
+    pool: IPoolInternal<Worker, Data, Response>,
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
     this.workerChoiceStrategy?.reset()
     this.workerChoiceStrategy = getWorkerChoiceStrategy<Worker, Data, Response>(
-      this.pool,
+      pool,
       workerChoiceStrategy
     )
   }
@@ -70,8 +74,8 @@ export class WorkerChoiceStrategyContext<
   public execute (): number {
     if (
       this.workerChoiceStrategy.isDynamicPool &&
-      !this.pool.full &&
-      this.pool.findFreeWorkerKey() === -1
+      !this.workerChoiceStrategy.pool.full &&
+      this.workerChoiceStrategy.pool.findFreeWorkerKey() === -1
     ) {
       return this.createWorkerCallback()
     }

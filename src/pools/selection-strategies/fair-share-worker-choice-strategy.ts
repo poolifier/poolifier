@@ -27,7 +27,7 @@ export class FairShareWorkerChoiceStrategy<
     Response
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
-  implements IWorkerChoiceStrategy {
+  implements IWorkerChoiceStrategy<Worker, Data, Response> {
   /** {@inheritDoc} */
   public readonly requiredStatistics: RequiredStatistics = {
     runTime: true,

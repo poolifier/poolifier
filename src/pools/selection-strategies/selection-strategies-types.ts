@@ -1,3 +1,6 @@
+import type { IPoolInternal } from '../pool-internal'
+import type { IPoolWorker } from '../pool-worker'
+
 /**
  * Enumeration of worker choice strategies.
  */
@@ -40,13 +43,24 @@ export interface RequiredStatistics {
 /**
  * Worker choice strategy interface.
  */
-export interface IWorkerChoiceStrategy {
+export interface IWorkerChoiceStrategy<
+  Worker extends IPoolWorker,
+  Data = unknown,
+  Response = unknown
+> {
+  /**
+   * The pool instance.
+   * @readonly
+   */
+  readonly pool: IPoolInternal<Worker, Data, Response>
   /**
    * Is the pool attached to the strategy dynamic?.
+   * @readonly
    */
   readonly isDynamicPool: boolean
   /**
    * Required pool tasks usage statistics.
+   * @readonly
    */
   readonly requiredStatistics: RequiredStatistics
   /**

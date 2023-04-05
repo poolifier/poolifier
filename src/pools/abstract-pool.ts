@@ -179,6 +179,7 @@ export abstract class AbstractPool<
       })
     }
     this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
+      this,
       workerChoiceStrategy
     )
   }

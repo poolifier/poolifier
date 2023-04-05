@@ -15,7 +15,7 @@ export class RoundRobinWorkerChoiceStrategy<
     Response
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
-  implements IWorkerChoiceStrategy {
+  implements IWorkerChoiceStrategy<Worker, Data, Response> {
   /**
    * Id of the next worker.
    */

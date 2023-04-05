@@ -25,7 +25,7 @@ export function getWorkerChoiceStrategy<
 > (
   pool: IPoolInternal<Worker, Data, Response>,
   workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
-): IWorkerChoiceStrategy {
+): IWorkerChoiceStrategy<Worker, Data, Response> {
   switch (workerChoiceStrategy) {
     case WorkerChoiceStrategies.ROUND_ROBIN:
       return new RoundRobinWorkerChoiceStrategy<Worker, Data, Response>(pool)
