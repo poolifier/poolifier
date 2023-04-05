@@ -7,7 +7,7 @@ async function runPoolifierTest (pool, { tasks, workerData }) {
       pool
         .execute(workerData)
         .then(() => {
-          executions++
+          ++executions
           if (executions === tasks) {
             return resolve({ ok: 1 })
           }

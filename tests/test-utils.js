@@ -77,9 +77,8 @@ class TestUtils {
   static factorial (n) {
     if (n === 0) {
       return 1
-    } else {
-      return TestUtils.factorial(n - 1) * n
     }
+    return TestUtils.factorial(n - 1) * n
   }
 
   static executeWorkerFunction (data) {
