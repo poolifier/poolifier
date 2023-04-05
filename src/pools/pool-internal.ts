@@ -34,8 +34,8 @@ export interface WorkerType<Worker extends IPoolWorker> {
  * Internal contract definition for a poolifier pool.
  *
  * @typeParam Worker - Type of worker which manages this pool.
- * @typeParam Data - Type of data sent to the worker.
- * @typeParam Response - Type of response of execution.
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export interface IPoolInternal<
   Worker extends IPoolWorker,

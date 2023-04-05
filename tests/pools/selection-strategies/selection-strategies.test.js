@@ -172,13 +172,11 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
     )
     expect(
-      pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
-        .nextWorkerId
+      pool.workerChoiceStrategyContext.workerChoiceStrategy.nextWorkerId
     ).toBeUndefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.ROUND_ROBIN)
     expect(
-      pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
-        .nextWorkerId
+      pool.workerChoiceStrategyContext.workerChoiceStrategy.nextWorkerId
     ).toBe(0)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -464,7 +462,7 @@ describe('Selection strategies test suite', () => {
     // if (process.platform !== 'win32') {
     //   expect(
     //     pool.workerChoiceStrategyContext.workerChoiceStrategy
-    //       .workerChoiceStrategy.workerLastVirtualTaskTimestamp.size
+    //       .workerLastVirtualTaskTimestamp.size
     //   ).toBe(pool.workers.length)
     // }
     // We need to clean up the resources after our test
@@ -500,18 +498,18 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js'
     )
     expect(
-      pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
+      pool.workerChoiceStrategyContext.workerChoiceStrategy
         .workerLastVirtualTaskTimestamp
     ).toBeUndefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
-    for (const workerKey of pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy.workerLastVirtualTaskTimestamp.keys()) {
+    for (const workerKey of pool.workerChoiceStrategyContext.workerChoiceStrategy.workerLastVirtualTaskTimestamp.keys()) {
       expect(
-        pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(
           workerKey
         ).start
       ).toBe(0)
       expect(
-        pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy.workerLastVirtualTaskTimestamp.get(
           workerKey
         ).end
       ).toBe(0)
@@ -623,7 +621,7 @@ describe('Selection strategies test suite', () => {
     // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
     const promises = []
     const maxMultiplier =
-      pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
+      pool.workerChoiceStrategyContext.workerChoiceStrategy
         .defaultWorkerWeight * 2
     for (let i = 0; i < max * maxMultiplier; i++) {
       promises.push(pool.execute())
@@ -631,8 +629,8 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     if (process.platform !== 'win32') {
       expect(
-        pool.workerChoiceStrategyContext.workerChoiceStrategy
-          .workerChoiceStrategy.workersTaskRunTime.size
+        pool.workerChoiceStrategyContext.workerChoiceStrategy.workersTaskRunTime
+          .size
       ).toBe(pool.workers.length)
     }
     // We need to clean up the resources after our test
@@ -674,29 +672,24 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js'
     )
     expect(
-      pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
-        .currentWorkerId
+      pool.workerChoiceStrategyContext.workerChoiceStrategy.currentWorkerId
     ).toBeUndefined()
     expect(
-      pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
-        .defaultWorkerWeight
+      pool.workerChoiceStrategyContext.workerChoiceStrategy.defaultWorkerWeight
     ).toBeUndefined()
     expect(
-      pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
-        .workersTaskRunTime
+      pool.workerChoiceStrategyContext.workerChoiceStrategy.workersTaskRunTime
     ).toBeUndefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
     expect(
-      pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
-        .currentWorkerId
+      pool.workerChoiceStrategyContext.workerChoiceStrategy.currentWorkerId
     ).toBe(0)
     expect(
-      pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy
-        .defaultWorkerWeight
+      pool.workerChoiceStrategyContext.workerChoiceStrategy.defaultWorkerWeight
     ).toBeGreaterThan(0)
-    for (const workerKey of pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy.workersTaskRunTime.keys()) {
+    for (const workerKey of pool.workerChoiceStrategyContext.workerChoiceStrategy.workersTaskRunTime.keys()) {
       expect(
-        pool.workerChoiceStrategyContext.workerChoiceStrategy.workerChoiceStrategy.workersTaskRunTime.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy.workersTaskRunTime.get(
           workerKey
         ).runTime
       ).toBe(0)

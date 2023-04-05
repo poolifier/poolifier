@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Optimize worker choice strategy for dynamic pool.
+
 ### Fixed
 
 - Ensure dynamic pool does not alter worker choice strategy expected behavior.

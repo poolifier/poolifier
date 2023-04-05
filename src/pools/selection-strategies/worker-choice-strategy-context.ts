@@ -1,7 +1,6 @@
 import type { IPoolInternal } from '../pool-internal'
 import { PoolType } from '../pool-internal'
 import type { IPoolWorker } from '../pool-worker'
-import { DynamicPoolWorkerChoiceStrategy } from './dynamic-pool-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
   RequiredStatistics,
@@ -41,25 +40,6 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
-   * Gets the worker choice strategy instance specific to the pool type.
-   *
-   * @param workerChoiceStrategy - The worker choice strategy.
-   * @returns The worker choice strategy instance for the pool type.
-   */
-  private getPoolWorkerChoiceStrategy (
-    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
-  ): IWorkerChoiceStrategy {
-    if (this.pool.type === PoolType.DYNAMIC) {
-      return new DynamicPoolWorkerChoiceStrategy(
-        this.pool,
-        this.createWorkerCallback,
-        workerChoiceStrategy
-      )
-    }
-    return getWorkerChoiceStrategy(this.pool, workerChoiceStrategy)
-  }
-
-  /**
    * Gets the worker choice strategy required statistics.
    *
    * @returns The required statistics.
@@ -77,21 +57,30 @@ export class WorkerChoiceStrategyContext<
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
     this.workerChoiceStrategy?.reset()
-    this.workerChoiceStrategy =
-      this.getPoolWorkerChoiceStrategy(workerChoiceStrategy)
+    this.workerChoiceStrategy = getWorkerChoiceStrategy(
+      this.pool,
+      workerChoiceStrategy
+    )
   }
 
   /**
-   * Chooses a worker with the underlying selection strategy.
+   * Chooses a worker with the worker choice strategy.
    *
    * @returns The key of the chosen one.
    */
   public execute (): number {
+    if (
+      this.pool.type === PoolType.DYNAMIC &&
+      !this.pool.full &&
+      this.pool.findFreeWorkerKey() === -1
+    ) {
+      return this.createWorkerCallback()
+    }
     return this.workerChoiceStrategy.choose()
   }
 
   /**
-   * Removes a worker in the underlying selection strategy internals.
+   * Removes a worker in the worker choice strategy internals.
    *
    * @param workerKey - The key of the worker to remove.
    * @returns `true` if the removal is successful, `false` otherwise.

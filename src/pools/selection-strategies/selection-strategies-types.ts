@@ -30,7 +30,7 @@ export const WorkerChoiceStrategies = Object.freeze({
 export type WorkerChoiceStrategy = keyof typeof WorkerChoiceStrategies
 
 /**
- * Pool tasks usage statistics requirements.
+ * Pool worker tasks usage statistics requirements.
  */
 export interface RequiredStatistics {
   runTime: boolean

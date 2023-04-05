@@ -7,7 +7,7 @@ import { FixedThreadPool } from './fixed'
  * A thread pool with a dynamic number of threads, but a guaranteed minimum number of threads.
  *
  * This thread pool creates new threads when the others are busy, up to the maximum number of threads.
- * When the maximum number of threads is reached, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
+ * When the maximum number of threads is reached and workers are busy, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
  *
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
  * @typeParam Response - Type of response of execution. This can only be serializable data.

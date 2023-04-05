@@ -7,7 +7,7 @@ import type {
 } from './selection-strategies-types'
 
 /**
- * Abstract worker choice strategy class.
+ * Worker choice strategy abstract base class.
  *
  * @typeParam Worker - Type of worker which manages the strategy.
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.

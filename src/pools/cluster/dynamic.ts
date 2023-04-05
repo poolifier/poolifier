@@ -6,7 +6,7 @@ import { FixedClusterPool } from './fixed'
  * A cluster pool with a dynamic number of workers, but a guaranteed minimum number of workers.
  *
  * This cluster pool creates new workers when the others are busy, up to the maximum number of workers.
- * When the maximum number of workers is reached, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
+ * When the maximum number of workers is reached and workers are busy, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
  *
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
  * @typeParam Response - Type of response of execution. This can only be serializable data.
