@@ -8,7 +8,7 @@ trim_trailing_whitespace = true
 insert_final_newline = true
 end_of_line = lf
 
-[*.{js,jsx,ts,tsx}]
+[*.{js,jsx,cjs,mjs,ts,tsx}]
 quote_type = single
 
 [*.{md,MD}]
