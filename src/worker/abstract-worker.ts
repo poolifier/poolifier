@@ -3,7 +3,7 @@ import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
 import type { MessageValue } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
-import { type KillBehavior, type WorkerOptions } from './worker-options'
+import type { KillBehavior, WorkerOptions } from './worker-options'
 import { KillBehaviors } from './worker-options'
 
 const DEFAULT_MAX_INACTIVE_TIME = 60000
