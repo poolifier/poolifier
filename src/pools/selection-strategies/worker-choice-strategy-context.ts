@@ -17,8 +17,8 @@ import { getWorkerChoiceStrategy } from './selection-strategies-utils'
  */
 export class WorkerChoiceStrategyContext<
   Worker extends IPoolWorker,
-  Data,
-  Response
+  Data = unknown,
+  Response = unknown
 > {
   private workerChoiceStrategy: IWorkerChoiceStrategy<Worker, Data, Response>
 
@@ -32,12 +32,12 @@ export class WorkerChoiceStrategyContext<
   public constructor (
     pool: IPoolInternal<Worker, Data, Response>,
     private readonly createWorkerCallback: () => number,
-    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
+    private workerChoiceStrategyType: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     this.execute.bind(this)
     this.workerChoiceStrategy = getWorkerChoiceStrategy<Worker, Data, Response>(
       pool,
-      workerChoiceStrategy
+      workerChoiceStrategyType
     )
   }
 
@@ -59,11 +59,16 @@ export class WorkerChoiceStrategyContext<
     pool: IPoolInternal<Worker, Data, Response>,
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
-    this.workerChoiceStrategy?.reset()
-    this.workerChoiceStrategy = getWorkerChoiceStrategy<Worker, Data, Response>(
-      pool,
-      workerChoiceStrategy
-    )
+    if (this.workerChoiceStrategyType === workerChoiceStrategy) {
+      this.workerChoiceStrategy?.reset()
+    } else {
+      this.workerChoiceStrategyType = workerChoiceStrategy
+      this.workerChoiceStrategy = getWorkerChoiceStrategy<
+      Worker,
+      Data,
+      Response
+      >(pool, this.workerChoiceStrategyType)
+    }
   }
 
   /**

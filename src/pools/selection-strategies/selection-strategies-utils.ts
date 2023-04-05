@@ -20,8 +20,8 @@ import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-w
  */
 export function getWorkerChoiceStrategy<
   Worker extends IPoolWorker,
-  Data,
-  Response
+  Data = unknown,
+  Response = unknown
 > (
   pool: IPoolInternal<Worker, Data, Response>,
   workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN

@@ -23,8 +23,8 @@ interface WorkerVirtualTaskTimestamp {
  */
 export class FairShareWorkerChoiceStrategy<
     Worker extends IPoolWorker,
-    Data,
-    Response
+    Data = unknown,
+    Response = unknown
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy<Worker, Data, Response> {
