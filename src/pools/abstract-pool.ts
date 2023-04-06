@@ -142,6 +142,15 @@ export abstract class AbstractPool<
   private checkPoolOptions (opts: PoolOptions<Worker>): void {
     this.opts.workerChoiceStrategy =
       opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
+    if (
+      !Object.values(WorkerChoiceStrategies).includes(
+        this.opts.workerChoiceStrategy
+      )
+    ) {
+      throw new Error(
+        `Invalid worker choice strategy '${this.opts.workerChoiceStrategy}'`
+      )
+    }
     this.opts.enableEvents = opts.enableEvents ?? true
   }
 

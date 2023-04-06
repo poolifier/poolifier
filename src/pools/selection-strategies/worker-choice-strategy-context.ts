@@ -24,10 +24,10 @@ export class WorkerChoiceStrategyContext<
   Data = unknown,
   Response = unknown
 > {
-  private readonly workerChoiceStrategies = new Map<
+  private readonly workerChoiceStrategies: Map<
   WorkerChoiceStrategy,
   IWorkerChoiceStrategy<Worker, Data, Response>
-  >()
+  >
 
   /**
    * Worker choice strategy context constructor.
@@ -42,7 +42,31 @@ export class WorkerChoiceStrategyContext<
     private workerChoiceStrategyType: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     this.execute.bind(this)
-    this.registerWorkerChoiceStrategy(pool, workerChoiceStrategyType)
+    this.workerChoiceStrategies = new Map<
+    WorkerChoiceStrategy,
+    IWorkerChoiceStrategy<Worker, Data, Response>
+    >([
+      [
+        WorkerChoiceStrategies.ROUND_ROBIN,
+        new RoundRobinWorkerChoiceStrategy<Worker, Data, Response>(pool)
+      ],
+      [
+        WorkerChoiceStrategies.LESS_USED,
+        new LessUsedWorkerChoiceStrategy<Worker, Data, Response>(pool)
+      ],
+      [
+        WorkerChoiceStrategies.LESS_BUSY,
+        new LessBusyWorkerChoiceStrategy<Worker, Data, Response>(pool)
+      ],
+      [
+        WorkerChoiceStrategies.FAIR_SHARE,
+        new FairShareWorkerChoiceStrategy<Worker, Data, Response>(pool)
+      ],
+      [
+        WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN,
+        new WeightedRoundRobinWorkerChoiceStrategy<Worker, Data, Response>(pool)
+      ]
+    ])
   }
 
   /**
@@ -71,7 +95,6 @@ export class WorkerChoiceStrategyContext<
       this.workerChoiceStrategies.get(workerChoiceStrategy)?.reset()
     } else {
       this.workerChoiceStrategyType = workerChoiceStrategy
-      this.registerWorkerChoiceStrategy(pool, workerChoiceStrategy)
     }
   }
 
@@ -106,51 +129,5 @@ export class WorkerChoiceStrategyContext<
         this.workerChoiceStrategyType
       ) as IWorkerChoiceStrategy<Worker, Data, Response>
     ).remove(workerKey)
-  }
-
-  private registerWorkerChoiceStrategy (
-    pool: IPoolInternal<Worker, Data, Response>,
-    workerChoiceStrategy: WorkerChoiceStrategy
-  ): void {
-    if (!this.workerChoiceStrategies.has(workerChoiceStrategy)) {
-      this.workerChoiceStrategies.set(
-        workerChoiceStrategy,
-        this.getWorkerChoiceStrategy(pool, workerChoiceStrategy)
-      )
-    }
-  }
-
-  /**
-   * Gets the worker choice strategy instance.
-   *
-   * @param pool - The pool instance.
-   * @param workerChoiceStrategy - The worker choice strategy.
-   * @returns The worker choice strategy instance.
-   */
-  private getWorkerChoiceStrategy (
-    pool: IPoolInternal<Worker, Data, Response>,
-    workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
-  ): IWorkerChoiceStrategy<Worker, Data, Response> {
-    switch (workerChoiceStrategy) {
-      case WorkerChoiceStrategies.ROUND_ROBIN:
-        return new RoundRobinWorkerChoiceStrategy<Worker, Data, Response>(pool)
-      case WorkerChoiceStrategies.LESS_USED:
-        return new LessUsedWorkerChoiceStrategy<Worker, Data, Response>(pool)
-      case WorkerChoiceStrategies.LESS_BUSY:
-        return new LessBusyWorkerChoiceStrategy<Worker, Data, Response>(pool)
-      case WorkerChoiceStrategies.FAIR_SHARE:
-        return new FairShareWorkerChoiceStrategy<Worker, Data, Response>(pool)
-      case WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN:
-        return new WeightedRoundRobinWorkerChoiceStrategy<
-        Worker,
-        Data,
-        Response
-        >(pool)
-      default:
-        throw new Error(
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          `Worker choice strategy '${workerChoiceStrategy}' not found`
-        )
-    }
   }
 }

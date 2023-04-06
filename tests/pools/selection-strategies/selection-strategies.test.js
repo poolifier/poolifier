@@ -162,8 +162,8 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         WorkerChoiceStrategies.ROUND_ROBIN
-      )?.nextWorkerId
-    ).toBeUndefined()
+      ).nextWorkerId
+    ).toBeDefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.ROUND_ROBIN)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -180,8 +180,8 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         WorkerChoiceStrategies.ROUND_ROBIN
-      )?.nextWorkerId
-    ).toBeUndefined()
+      ).nextWorkerId
+    ).toBeDefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.ROUND_ROBIN)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -491,8 +491,8 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         WorkerChoiceStrategies.FAIR_SHARE
-      )?.workerLastVirtualTaskTimestamp
-    ).toBeUndefined()
+      ).workerLastVirtualTaskTimestamp
+    ).toBeDefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
     for (const workerKey of pool.workerChoiceStrategyContext.workerChoiceStrategies
       .get(WorkerChoiceStrategies.FAIR_SHARE)
@@ -517,8 +517,8 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         WorkerChoiceStrategies.FAIR_SHARE
-      )?.workerLastVirtualTaskTimestamp
-    ).toBeUndefined()
+      ).workerLastVirtualTaskTimestamp
+    ).toBeDefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
     for (const workerKey of pool.workerChoiceStrategyContext.workerChoiceStrategies
       .get(WorkerChoiceStrategies.FAIR_SHARE)
@@ -674,18 +674,18 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
-      )?.currentWorkerId
-    ).toBeUndefined()
+      ).currentWorkerId
+    ).toBeDefined()
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
-      )?.defaultWorkerWeight
-    ).toBeUndefined()
+      ).defaultWorkerWeight
+    ).toBeDefined()
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
-      )?.workersTaskRunTime
-    ).toBeUndefined()
+      ).workersTaskRunTime
+    ).toBeDefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -715,18 +715,18 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
-      )?.currentWorkerId
-    ).toBeUndefined()
+      ).currentWorkerId
+    ).toBeDefined()
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
-      )?.defaultWorkerWeight
-    ).toBeUndefined()
+      ).defaultWorkerWeight
+    ).toBeDefined()
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
-      )?.workersTaskRunTime
-    ).toBeUndefined()
+      ).workersTaskRunTime
+    ).toBeDefined()
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -761,7 +761,7 @@ describe('Selection strategies test suite', () => {
           { workerChoiceStrategy: 'UNKNOWN_STRATEGY' }
         )
     ).toThrowError(
-      new Error("Worker choice strategy 'UNKNOWN_STRATEGY' not found")
+      new Error("Invalid worker choice strategy 'UNKNOWN_STRATEGY'")
     )
   })
 })
