@@ -88,7 +88,6 @@ export class WorkerChoiceStrategyContext<
    * @param workerChoiceStrategy - The worker choice strategy to set.
    */
   public setWorkerChoiceStrategy (
-    pool: IPoolInternal<Worker, Data, Response>,
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
     if (this.workerChoiceStrategyType === workerChoiceStrategy) {

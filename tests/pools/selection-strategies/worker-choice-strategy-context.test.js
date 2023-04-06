@@ -115,7 +115,6 @@ describe('Worker choice strategy context test suite', () => {
       WorkerChoiceStrategies.ROUND_ROBIN
     )
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      fixedPool,
       WorkerChoiceStrategies.ROUND_ROBIN
     )
     expect(
@@ -141,7 +140,6 @@ describe('Worker choice strategy context test suite', () => {
       WorkerChoiceStrategies.ROUND_ROBIN
     )
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      dynamicPool,
       WorkerChoiceStrategies.ROUND_ROBIN
     )
     expect(
@@ -159,7 +157,6 @@ describe('Worker choice strategy context test suite', () => {
       fixedPool
     )
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      fixedPool,
       WorkerChoiceStrategies.LESS_USED
     )
     expect(
@@ -177,7 +174,6 @@ describe('Worker choice strategy context test suite', () => {
       dynamicPool
     )
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      dynamicPool,
       WorkerChoiceStrategies.LESS_USED
     )
     expect(
@@ -195,7 +191,6 @@ describe('Worker choice strategy context test suite', () => {
       fixedPool
     )
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      fixedPool,
       WorkerChoiceStrategies.LESS_BUSY
     )
     expect(
@@ -213,7 +208,6 @@ describe('Worker choice strategy context test suite', () => {
       dynamicPool
     )
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      dynamicPool,
       WorkerChoiceStrategies.LESS_BUSY
     )
     expect(
@@ -231,7 +225,6 @@ describe('Worker choice strategy context test suite', () => {
       fixedPool
     )
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      fixedPool,
       WorkerChoiceStrategies.FAIR_SHARE
     )
     expect(
@@ -249,7 +242,6 @@ describe('Worker choice strategy context test suite', () => {
       dynamicPool
     )
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      dynamicPool,
       WorkerChoiceStrategies.FAIR_SHARE
     )
     expect(
@@ -267,7 +259,6 @@ describe('Worker choice strategy context test suite', () => {
       fixedPool
     )
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      fixedPool,
       WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     )
     expect(
@@ -285,7 +276,6 @@ describe('Worker choice strategy context test suite', () => {
       dynamicPool
     )
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      dynamicPool,
       WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     )
     expect(
