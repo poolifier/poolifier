@@ -31,7 +31,7 @@ export class LessUsedWorkerChoiceStrategy<
     let lessUsedWorkerKey!: number
     for (const [index, workerItem] of this.pool.workers.entries()) {
       const tasksUsage = workerItem.tasksUsage
-      const workerTasks = tasksUsage?.run + tasksUsage?.running
+      const workerTasks = tasksUsage.run + tasksUsage.running
       if (workerTasks === 0) {
         return index
       } else if (workerTasks < minNumberOfTasks) {
