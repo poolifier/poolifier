@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- fix: destroy worker only on check alive.
+
 ## [2.4.3] - 2023-04-07
 
 ### Fixed
