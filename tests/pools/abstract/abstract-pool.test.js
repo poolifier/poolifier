@@ -1,8 +1,9 @@
 const { expect } = require('expect')
 const {
-  FixedClusterPool,
   DynamicThreadPool,
+  FixedClusterPool,
   FixedThreadPool,
+  PoolEvents,
   WorkerChoiceStrategies
 } = require('../../../lib/index')
 
@@ -218,7 +219,7 @@ describe('Abstract pool test suite', () => {
     )
     const promises = []
     let poolFull = 0
-    pool.emitter.on('full', () => ++poolFull)
+    pool.emitter.on(PoolEvents.full, () => ++poolFull)
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.push(pool.execute())
     }
@@ -236,7 +237,7 @@ describe('Abstract pool test suite', () => {
     )
     const promises = []
     let poolBusy = 0
-    pool.emitter.on('busy', () => ++poolBusy)
+    pool.emitter.on(PoolEvents.busy, () => ++poolBusy)
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.push(pool.execute())
     }

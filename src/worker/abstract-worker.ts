@@ -26,7 +26,7 @@ export abstract class AbstractWorker<
    */
   protected lastTaskTimestamp!: number
   /**
-   * Handler Id of the `aliveInterval` worker alive check.
+   * Handler id of the `aliveInterval` worker alive check.
    */
   protected readonly aliveInterval?: NodeJS.Timeout
   /**
@@ -45,7 +45,7 @@ export abstract class AbstractWorker<
     protected mainWorker: MainWorker | undefined | null,
     protected readonly opts: WorkerOptions = {
       /**
-       * The kill behavior option on this Worker or its default value.
+       * The kill behavior option on this worker or its default value.
        */
       killBehavior: DEFAULT_KILL_BEHAVIOR,
       /**
@@ -67,28 +67,36 @@ export abstract class AbstractWorker<
       this.checkAlive.bind(this)()
     }
 
-    this.mainWorker?.on('message', (value: MessageValue<Data, MainWorker>) => {
-      this.messageListener(value, fn)
-    })
+    this.mainWorker?.on(
+      'message',
+      (message: MessageValue<Data, MainWorker>) => {
+        this.messageListener(message, fn)
+      }
+    )
   }
 
+  /**
+   * Worker message listener.
+   *
+   * @param message - Message received.
+   * @param fn - Function processed by the worker when the pool's `execution` function is invoked.
+   */
   protected messageListener (
-    value: MessageValue<Data, MainWorker>,
+    message: MessageValue<Data, MainWorker>,
     fn: (data: Data) => Response
   ): void {
-    if (value.data != null && value.id != null) {
-      // Here you will receive messages
+    if (message.data != null && message.id != null) {
+      // Task message received
       if (this.opts.async === true) {
-        this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
+        this.runInAsyncScope(this.runAsync.bind(this), this, fn, message)
       } else {
-        this.runInAsyncScope(this.run.bind(this), this, fn, value)
+        this.runInAsyncScope(this.run.bind(this), this, fn, message)
       }
-    } else if (value.parent != null) {
-      // Save a reference of the main worker to communicate with it
-      // This will be received once
-      this.mainWorker = value.parent
-    } else if (value.kill != null) {
-      // Here is time to kill this worker, just clearing the interval
+    } else if (message.parent != null) {
+      // Main worker reference message received
+      this.mainWorker = message.parent
+    } else if (message.kill != null) {
+      // Kill message received
       this.aliveInterval != null && clearInterval(this.aliveInterval)
       this.emitDestroy()
     }
@@ -158,20 +166,20 @@ export abstract class AbstractWorker<
    * Runs the given function synchronously.
    *
    * @param fn - Function that will be executed.
-   * @param value - Input data for the given function.
+   * @param message - Input data for the given function.
    */
   protected run (
     fn: (data?: Data) => Response,
-    value: MessageValue<Data>
+    message: MessageValue<Data>
   ): void {
     try {
-      const startTaskTimestamp = Date.now()
-      const res = fn(value.data)
-      const taskRunTime = Date.now() - startTaskTimestamp
-      this.sendToMainWorker({ data: res, id: value.id, taskRunTime })
+      const startTimestamp = Date.now()
+      const res = fn(message.data)
+      const runTime = Date.now() - startTimestamp
+      this.sendToMainWorker({ data: res, id: message.id, runTime })
     } catch (e) {
       const err = this.handleError(e as Error)
-      this.sendToMainWorker({ error: err, id: value.id })
+      this.sendToMainWorker({ error: err, id: message.id })
     } finally {
       !this.isMain && (this.lastTaskTimestamp = Date.now())
     }
@@ -181,22 +189,22 @@ export abstract class AbstractWorker<
    * Runs the given function asynchronously.
    *
    * @param fn - Function that will be executed.
-   * @param value - Input data for the given function.
+   * @param message - Input data for the given function.
    */
   protected runAsync (
     fn: (data?: Data) => Promise<Response>,
-    value: MessageValue<Data>
+    message: MessageValue<Data>
   ): void {
-    const startTaskTimestamp = Date.now()
-    fn(value.data)
+    const startTimestamp = Date.now()
+    fn(message.data)
       .then(res => {
-        const taskRunTime = Date.now() - startTaskTimestamp
-        this.sendToMainWorker({ data: res, id: value.id, taskRunTime })
+        const runTime = Date.now() - startTimestamp
+        this.sendToMainWorker({ data: res, id: message.id, runTime })
         return null
       })
       .catch(e => {
         const err = this.handleError(e as Error)
-        this.sendToMainWorker({ error: err, id: value.id })
+        this.sendToMainWorker({ error: err, id: message.id })
       })
       .finally(() => {
         !this.isMain && (this.lastTaskTimestamp = Date.now())

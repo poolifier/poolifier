@@ -13,6 +13,19 @@ import type { WorkerChoiceStrategy } from './selection-strategies/selection-stra
 export class PoolEmitter extends EventEmitter {}
 
 /**
+ * Enumeration of pool events.
+ */
+export const PoolEvents = Object.freeze({
+  full: 'full',
+  busy: 'busy'
+} as const)
+
+/**
+ * Pool event.
+ */
+export type PoolEvent = keyof typeof PoolEvents
+
+/**
  * Options for a poolifier pool.
  */
 export interface PoolOptions<Worker> {

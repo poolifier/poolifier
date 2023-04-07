@@ -1,5 +1,5 @@
 const { expect } = require('expect')
-const { FixedThreadPool } = require('../../../lib/index')
+const { FixedThreadPool, PoolEvents } = require('../../../lib/index')
 const { WorkerFunctions } = require('../../test-types')
 const TestUtils = require('../../test-utils')
 
@@ -65,9 +65,9 @@ describe('Fixed thread pool test suite', () => {
     expect(result).toBe(false)
   })
 
-  it('Verify that busy event is emitted', async () => {
+  it("Verify that 'busy' event is emitted", async () => {
     let poolBusy = 0
-    pool.emitter.on('busy', () => ++poolBusy)
+    pool.emitter.on(PoolEvents.busy, () => ++poolBusy)
     for (let i = 0; i < numberOfThreads * 2; i++) {
       pool.execute()
     }

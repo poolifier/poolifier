@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `PoolEvents` enumeration and `PoolEvent` type.
+
 ### Fixed
 
-- fix: destroy worker only on check alive.
+- fix: destroy worker only on alive check.
 
 ## [2.4.3] - 2023-04-07
 

@@ -1,4 +1,4 @@
-const { DynamicThreadPool } = require('poolifier')
+const { DynamicThreadPool, PoolEvents } = require('poolifier')
 let resolved = 0
 let poolFull = 0
 let poolBusy = 0
@@ -6,8 +6,8 @@ const pool = new DynamicThreadPool(10, 20, './yourWorker.js', {
   errorHandler: e => console.error(e),
   onlineHandler: () => console.log('worker is online')
 })
-pool.emitter.on('full', () => poolFull++)
-pool.emitter.on('busy', () => poolBusy++)
+pool.emitter.on(PoolEvents.full, () => poolFull++)
+pool.emitter.on(PoolEvents.busy, () => poolBusy++)
 
 const start = Date.now()
 const iterations = 1000

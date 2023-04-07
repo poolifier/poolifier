@@ -1,11 +1,11 @@
-const { FixedThreadPool } = require('poolifier')
+const { FixedThreadPool, PoolEvents } = require('poolifier')
 let resolved = 0
 let poolBusy = 0
 const pool = new FixedThreadPool(15, './yourWorker.js', {
   errorHandler: e => console.error(e),
   onlineHandler: () => console.log('worker is online')
 })
-pool.emitter.on('busy', () => poolBusy++)
+pool.emitter.on(PoolEvents.busy, () => poolBusy++)
 
 const start = Date.now()
 const iterations = 1000

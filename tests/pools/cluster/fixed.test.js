@@ -1,5 +1,5 @@
 const { expect } = require('expect')
-const { FixedClusterPool } = require('../../../lib/index')
+const { FixedClusterPool, PoolEvents } = require('../../../lib/index')
 const { WorkerFunctions } = require('../../test-types')
 const TestUtils = require('../../test-utils')
 
@@ -65,9 +65,9 @@ describe('Fixed cluster pool test suite', () => {
     expect(result).toBe(false)
   })
 
-  it('Verify that busy event is emitted', async () => {
+  it("Verify that 'busy' event is emitted", async () => {
     let poolBusy = 0
-    pool.emitter.on('busy', () => ++poolBusy)
+    pool.emitter.on(PoolEvents.busy, () => ++poolBusy)
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       pool.execute()
     }

@@ -2,7 +2,7 @@ import crypto from 'node:crypto'
 import type { MessageValue, PromiseResponseWrapper } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
 import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
-import type { PoolOptions } from './pool'
+import { PoolEvents, type PoolOptions } from './pool'
 import { PoolEmitter } from './pool'
 import type { IPoolInternal, TasksUsage, WorkerType } from './pool-internal'
 import { PoolType } from './pool-internal'
@@ -126,16 +126,18 @@ export abstract class AbstractPool<
   private checkPoolOptions (opts: PoolOptions<Worker>): void {
     this.opts.workerChoiceStrategy =
       opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
-    if (
-      !Object.values(WorkerChoiceStrategies).includes(
-        this.opts.workerChoiceStrategy
-      )
-    ) {
+    this.checkValidWorkerChoiceStrategy(this.opts.workerChoiceStrategy)
+    this.opts.enableEvents = opts.enableEvents ?? true
+  }
+
+  private checkValidWorkerChoiceStrategy (
+    workerChoiceStrategy: WorkerChoiceStrategy
+  ): void {
+    if (!Object.values(WorkerChoiceStrategies).includes(workerChoiceStrategy)) {
       throw new Error(
-        `Invalid worker choice strategy '${this.opts.workerChoiceStrategy}'`
+        `Invalid worker choice strategy '${workerChoiceStrategy}'`
       )
     }
-    this.opts.enableEvents = opts.enableEvents ?? true
   }
 
   /** @inheritDoc */
@@ -162,6 +164,7 @@ export abstract class AbstractPool<
   public setWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
+    this.checkValidWorkerChoiceStrategy(workerChoiceStrategy)
     this.opts.workerChoiceStrategy = workerChoiceStrategy
     for (const [index, workerItem] of this.workers.entries()) {
       this.setWorker(index, workerItem.worker, {
@@ -273,7 +276,7 @@ export abstract class AbstractPool<
       ++workerTasksUsage.error
     }
     if (this.workerChoiceStrategyContext.getRequiredStatistics().runTime) {
-      workerTasksUsage.runTime += message.taskRunTime ?? 0
+      workerTasksUsage.runTime += message.runTime ?? 0
       if (
         this.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime &&
         workerTasksUsage.run !== 0
@@ -305,7 +308,7 @@ export abstract class AbstractPool<
           (message.kill != null &&
             this.getWorkerTasksUsage(createdWorker)?.running === 0)
         ) {
-          // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
+          // Kill message received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
           void this.destroyWorker(createdWorker)
         }
       })
@@ -389,6 +392,7 @@ export abstract class AbstractPool<
   protected workerListener (): (message: MessageValue<Response>) => void {
     return message => {
       if (message.id != null) {
+        // Task response received
         const promiseResponse = this.promiseResponseMap.get(message.id)
         if (promiseResponse != null) {
           if (message.error != null) {
@@ -416,7 +420,7 @@ export abstract class AbstractPool<
 
   private checkAndEmitBusy (): void {
     if (this.opts.enableEvents === true && this.busy) {
-      this.emitter?.emit('busy')
+      this.emitter?.emit(PoolEvents.busy)
     }
   }
 
@@ -426,7 +430,7 @@ export abstract class AbstractPool<
       this.opts.enableEvents === true &&
       this.full
     ) {
-      this.emitter?.emit('full')
+      this.emitter?.emit(PoolEvents.full)
     }
   }
 

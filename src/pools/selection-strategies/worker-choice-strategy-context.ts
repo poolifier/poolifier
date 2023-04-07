@@ -89,11 +89,10 @@ export class WorkerChoiceStrategyContext<
   public setWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
-    if (this.workerChoiceStrategyType === workerChoiceStrategy) {
-      this.workerChoiceStrategies.get(workerChoiceStrategy)?.reset()
-    } else {
+    if (this.workerChoiceStrategyType !== workerChoiceStrategy) {
       this.workerChoiceStrategyType = workerChoiceStrategy
     }
+    this.workerChoiceStrategies.get(this.workerChoiceStrategyType)?.reset()
   }
 
   /**

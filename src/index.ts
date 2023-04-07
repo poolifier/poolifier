@@ -1,7 +1,8 @@
 export { DynamicClusterPool } from './pools/cluster/dynamic'
 export { FixedClusterPool } from './pools/cluster/fixed'
 export type { ClusterPoolOptions } from './pools/cluster/fixed'
-export type { IPool, PoolEmitter, PoolOptions } from './pools/pool'
+export { PoolEvents } from './pools/pool'
+export type { IPool, PoolEmitter, PoolOptions, PoolEvent } from './pools/pool'
 export type {
   ErrorHandler,
   ExitHandler,
