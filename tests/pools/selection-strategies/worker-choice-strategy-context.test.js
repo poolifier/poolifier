@@ -50,6 +50,15 @@ describe('Worker choice strategy context test suite', () => {
     await dynamicPool.destroy()
   })
 
+  it('Verify that constructor() initializes the context with all the available worker choice strategies', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    expect(workerChoiceStrategyContext.workerChoiceStrategies.size).toBe(
+      Object.keys(WorkerChoiceStrategies).length
+    )
+  })
+
   it('Verify that execute() return the worker chosen by the strategy with fixed pool', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
