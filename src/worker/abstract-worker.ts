@@ -30,10 +30,6 @@ export abstract class AbstractWorker<
    */
   protected readonly aliveInterval?: NodeJS.Timeout
   /**
-   * Options for the worker.
-   */
-  public readonly opts: WorkerOptions
-  /**
    * Constructs a new poolifier worker.
    *
    * @param type - The type of async event.
@@ -47,7 +43,7 @@ export abstract class AbstractWorker<
     protected readonly isMain: boolean,
     fn: (data: Data) => Response,
     protected mainWorker: MainWorker | undefined | null,
-    opts: WorkerOptions = {
+    protected readonly opts: WorkerOptions = {
       /**
        * The kill behavior option on this Worker or its default value.
        */
@@ -60,7 +56,6 @@ export abstract class AbstractWorker<
     }
   ) {
     super(type)
-    this.opts = opts
     this.checkFunctionInput(fn)
     this.checkWorkerOptions(this.opts)
     if (!this.isMain) {

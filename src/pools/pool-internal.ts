@@ -3,6 +3,8 @@ import type { IPoolWorker } from './pool-worker'
 
 /**
  * Internal pool types.
+ *
+ * @enum
  */
 export enum PoolType {
   FIXED = 'fixed',

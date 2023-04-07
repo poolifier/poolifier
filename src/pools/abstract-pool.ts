@@ -248,11 +248,12 @@ export abstract class AbstractPool<
   /**
    * Setup hook that can be overridden by a Poolifier pool implementation
    * to run code before workers are created in the abstract constructor.
+   * Can be overridden
    *
    * @virtual
    */
   protected setupHook (): void {
-    // Can be overridden
+    // Intentionally empty
   }
 
   /**
