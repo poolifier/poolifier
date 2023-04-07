@@ -75,7 +75,7 @@ export interface IPoolInternal<
    *
    * If a worker is found with `0` running tasks, it is detected as free and its key is returned.
    *
-   * If no free worker is found, `false` is returned.
+   * If no free worker is found, `-1` is returned.
    *
    * @returns A worker key if there is one, `-1` otherwise.
    */
