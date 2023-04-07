@@ -650,7 +650,7 @@ describe('Selection strategies test suite', () => {
     const maxMultiplier =
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
-      ).defaultWorkerWeight * 2
+      ).defaultWorkerWeight * 50
     for (let i = 0; i < max * maxMultiplier; i++) {
       promises.push(pool.execute())
     }
