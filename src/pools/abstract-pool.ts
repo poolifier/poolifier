@@ -380,9 +380,9 @@ export abstract class AbstractPool<
    */
   protected workerListener (): (message: MessageValue<Response>) => void {
     return message => {
-      if (message.id !== undefined) {
+      if (message.id != null) {
         const promiseResponse = this.promiseResponseMap.get(message.id)
-        if (promiseResponse !== undefined) {
+        if (promiseResponse != null) {
           if (message.error != null) {
             promiseResponse.reject(message.error)
           } else {

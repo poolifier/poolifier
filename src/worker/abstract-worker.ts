@@ -81,18 +81,18 @@ export abstract class AbstractWorker<
     value: MessageValue<Data, MainWorker>,
     fn: (data: Data) => Response
   ): void {
-    if (value.data !== undefined && value.id !== undefined) {
+    if (value.data != null && value.id != null) {
       // Here you will receive messages
       if (this.opts.async === true) {
         this.runInAsyncScope(this.runAsync.bind(this), this, fn, value)
       } else {
         this.runInAsyncScope(this.run.bind(this), this, fn, value)
       }
-    } else if (value.parent !== undefined) {
+    } else if (value.parent != null) {
       // Save a reference of the main worker to communicate with it
       // This will be received once
       this.mainWorker = value.parent
-    } else if (value.kill !== undefined) {
+    } else if (value.kill != null) {
       // Here is time to kill this worker, just clearing the interval
       this.aliveInterval != null && clearInterval(this.aliveInterval)
       this.emitDestroy()
