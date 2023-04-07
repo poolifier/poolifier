@@ -302,7 +302,8 @@ export abstract class AbstractPool<
       this.registerWorkerMessageListener(createdWorker, message => {
         if (
           isKillBehavior(KillBehaviors.HARD, message.kill) ||
-          this.getWorkerTasksUsage(createdWorker)?.running === 0
+          (message.kill != null &&
+            this.getWorkerTasksUsage(createdWorker)?.running === 0)
         ) {
           // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
           void this.destroyWorker(createdWorker)

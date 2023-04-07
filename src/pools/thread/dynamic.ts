@@ -28,7 +28,7 @@ export class DynamicThreadPool<
    */
   public constructor (
     min: number,
-    private readonly max: number,
+    public readonly max: number,
     filePath: string,
     opts: PoolOptions<ThreadWorkerWithMessageChannel> = {}
   ) {
