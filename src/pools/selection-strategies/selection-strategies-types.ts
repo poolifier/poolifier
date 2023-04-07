@@ -42,10 +42,6 @@ export interface RequiredStatistics {
  */
 export interface IWorkerChoiceStrategy {
   /**
-   * Is the pool bound to the strategy dynamic?.
-   */
-  readonly isDynamicPool: boolean
-  /**
    * Required pool tasks usage statistics.
    */
   readonly requiredStatistics: RequiredStatistics
