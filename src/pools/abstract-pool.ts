@@ -93,23 +93,7 @@ export abstract class AbstractPool<
     Worker,
     Data,
     Response
-    >(
-      this,
-      () => {
-        const createdWorker = this.createAndSetupWorker()
-        this.registerWorkerMessageListener(createdWorker, message => {
-          if (
-            isKillBehavior(KillBehaviors.HARD, message.kill) ||
-            this.getWorkerTasksUsage(createdWorker)?.running === 0
-          ) {
-            // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-            void this.destroyWorker(createdWorker)
-          }
-        })
-        return this.getWorkerKey(createdWorker)
-      },
-      this.opts.workerChoiceStrategy
-    )
+    >(this, this.opts.workerChoiceStrategy)
   }
 
   private checkFilePath (filePath: string): void {
@@ -308,7 +292,26 @@ export abstract class AbstractPool<
    * @returns [worker key, worker].
    */
   protected chooseWorker (): [number, Worker] {
-    const workerKey = this.workerChoiceStrategyContext.execute()
+    let workerKey: number
+    if (
+      this.type === PoolType.DYNAMIC &&
+      !this.full &&
+      this.findFreeWorkerKey() === -1
+    ) {
+      const createdWorker = this.createAndSetupWorker()
+      this.registerWorkerMessageListener(createdWorker, message => {
+        if (
+          isKillBehavior(KillBehaviors.HARD, message.kill) ||
+          this.getWorkerTasksUsage(createdWorker)?.running === 0
+        ) {
+          // Kill received from the worker, means that no new tasks are submitted to that worker for a while ( > maxInactiveTime)
+          void this.destroyWorker(createdWorker)
+        }
+      })
+      workerKey = this.getWorkerKey(createdWorker)
+    } else {
+      workerKey = this.workerChoiceStrategyContext.execute()
+    }
     return [workerKey, this.workers[workerKey].worker]
   }
 

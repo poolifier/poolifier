@@ -17,7 +17,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   Worker extends IPoolWorker,
   Data = unknown,
   Response = unknown
-> implements IWorkerChoiceStrategy<Worker, Data, Response> {
+> implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public readonly isDynamicPool: boolean
   /** @inheritDoc */

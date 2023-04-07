@@ -26,7 +26,7 @@ export class WorkerChoiceStrategyContext<
 > {
   private readonly workerChoiceStrategies: Map<
   WorkerChoiceStrategy,
-  IWorkerChoiceStrategy<Worker, Data, Response>
+  IWorkerChoiceStrategy
   >
 
   /**
@@ -38,13 +38,12 @@ export class WorkerChoiceStrategyContext<
    */
   public constructor (
     pool: IPoolInternal<Worker, Data, Response>,
-    private readonly createWorkerCallback: () => number,
     private workerChoiceStrategyType: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
   ) {
     this.execute.bind(this)
     this.workerChoiceStrategies = new Map<
     WorkerChoiceStrategy,
-    IWorkerChoiceStrategy<Worker, Data, Response>
+    IWorkerChoiceStrategy
     >([
       [
         WorkerChoiceStrategies.ROUND_ROBIN,
@@ -78,7 +77,7 @@ export class WorkerChoiceStrategyContext<
     return (
       this.workerChoiceStrategies.get(
         this.workerChoiceStrategyType
-      ) as IWorkerChoiceStrategy<Worker, Data, Response>
+      ) as IWorkerChoiceStrategy
     ).requiredStatistics
   }
 
@@ -103,17 +102,11 @@ export class WorkerChoiceStrategyContext<
    * @returns The key of the chosen one.
    */
   public execute (): number {
-    const workerChoiceStrategy = this.workerChoiceStrategies.get(
-      this.workerChoiceStrategyType
-    ) as IWorkerChoiceStrategy<Worker, Data, Response>
-    if (
-      workerChoiceStrategy.isDynamicPool &&
-      !workerChoiceStrategy.pool.full &&
-      workerChoiceStrategy.pool.findFreeWorkerKey() === -1
-    ) {
-      return this.createWorkerCallback()
-    }
-    return workerChoiceStrategy.choose()
+    return (
+      this.workerChoiceStrategies.get(
+        this.workerChoiceStrategyType
+      ) as IWorkerChoiceStrategy
+    ).choose()
   }
 
   /**
@@ -126,7 +119,7 @@ export class WorkerChoiceStrategyContext<
     return (
       this.workerChoiceStrategies.get(
         this.workerChoiceStrategyType
-      ) as IWorkerChoiceStrategy<Worker, Data, Response>
+      ) as IWorkerChoiceStrategy
     ).remove(workerKey)
   }
 }

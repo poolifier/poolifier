@@ -15,7 +15,7 @@ export class LessUsedWorkerChoiceStrategy<
     Response = unknown
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
-  implements IWorkerChoiceStrategy<Worker, Data, Response> {
+  implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public reset (): boolean {
     return true

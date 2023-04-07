@@ -18,7 +18,7 @@ export class LessBusyWorkerChoiceStrategy<
     Response = unknown
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
-  implements IWorkerChoiceStrategy<Worker, Data, Response> {
+  implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public readonly requiredStatistics: RequiredStatistics = {
     runTime: true,
