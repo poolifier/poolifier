@@ -25,10 +25,10 @@ export abstract class AbstractPool<
   Data = unknown,
   Response = unknown
 > implements IPoolInternal<Worker, Data, Response> {
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public readonly workers: Array<WorkerType<Worker>> = []
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public readonly emitter?: PoolEmitter
 
   /**
@@ -154,7 +154,7 @@ export abstract class AbstractPool<
     this.opts.enableEvents = opts.enableEvents ?? true
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public abstract get type (): PoolType
 
   /**
@@ -174,7 +174,7 @@ export abstract class AbstractPool<
     return this.workers.findIndex(workerItem => workerItem.worker === worker)
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public setWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
@@ -193,10 +193,10 @@ export abstract class AbstractPool<
     )
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public abstract get full (): boolean
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public abstract get busy (): boolean
 
   protected internalBusy (): boolean {
@@ -206,14 +206,14 @@ export abstract class AbstractPool<
     )
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public findFreeWorkerKey (): number {
     return this.workers.findIndex(workerItem => {
       return workerItem.tasksUsage.running === 0
     })
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public async execute (data: Data): Promise<Response> {
     const [workerKey, worker] = this.chooseWorker()
     const messageId = crypto.randomUUID()
@@ -229,7 +229,7 @@ export abstract class AbstractPool<
     return res
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public async destroy (): Promise<void> {
     await Promise.all(
       this.workers.map(async workerItem => {
@@ -239,7 +239,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Shutdowns given worker.
+   * Shutdowns given worker in the pool.
    *
    * @param worker - A worker within `workers`.
    */
@@ -248,6 +248,8 @@ export abstract class AbstractPool<
   /**
    * Setup hook that can be overridden by a Poolifier pool implementation
    * to run code before workers are created in the abstract constructor.
+   *
+   * @virtual
    */
   protected setupHook (): void {
     // Can be overridden
@@ -341,6 +343,7 @@ export abstract class AbstractPool<
    * Can be used to update the `maxListeners` or binding the `main-worker`\<-\>`worker` connection if not bind by default.
    *
    * @param worker - The newly created worker.
+   * @virtual
    */
   protected abstract afterWorkerSetup (worker: Worker): void
 
@@ -423,7 +426,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Gets worker tasks usage.
+   * Gets the given worker tasks usage in the pool.
    *
    * @param worker - The worker.
    * @returns The worker tasks usage.

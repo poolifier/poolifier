@@ -21,13 +21,13 @@ export class RoundRobinWorkerChoiceStrategy<
    */
   private nextWorkerId: number = 0
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public reset (): boolean {
     this.nextWorkerId = 0
     return true
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public choose (): number {
     const chosenWorkerKey = this.nextWorkerId
     this.nextWorkerId =
@@ -37,7 +37,7 @@ export class RoundRobinWorkerChoiceStrategy<
     return chosenWorkerKey
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public remove (workerKey: number): boolean {
     if (this.nextWorkerId === workerKey) {
       if (this.pool.workers.length === 0) {

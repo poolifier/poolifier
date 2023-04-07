@@ -35,17 +35,17 @@ export class DynamicThreadPool<
     super(min, filePath, opts)
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public get type (): PoolType {
     return PoolType.DYNAMIC
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public get full (): boolean {
     return this.workers.length === this.max
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public get busy (): boolean {
     return this.full && this.findFreeWorkerKey() === -1
   }

@@ -28,7 +28,7 @@ export class FairShareWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy<Worker, Data, Response> {
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public readonly requiredStatistics: RequiredStatistics = {
     runTime: true,
     avgRunTime: true
@@ -42,13 +42,13 @@ export class FairShareWorkerChoiceStrategy<
   WorkerVirtualTaskTimestamp
   > = new Map<number, WorkerVirtualTaskTimestamp>()
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public reset (): boolean {
     this.workerLastVirtualTaskTimestamp.clear()
     return true
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public choose (): number {
     let minWorkerVirtualTaskEndTimestamp = Infinity
     let chosenWorkerKey!: number
@@ -66,7 +66,7 @@ export class FairShareWorkerChoiceStrategy<
     return chosenWorkerKey
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public remove (workerKey: number): boolean {
     const workerDeleted = this.workerLastVirtualTaskTimestamp.delete(workerKey)
     for (const [key, value] of this.workerLastVirtualTaskTimestamp.entries()) {

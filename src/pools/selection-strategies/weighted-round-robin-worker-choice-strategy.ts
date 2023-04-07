@@ -30,7 +30,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy<Worker, Data, Response> {
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public readonly requiredStatistics: RequiredStatistics = {
     runTime: true,
     avgRunTime: true
@@ -63,7 +63,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     this.initWorkersTaskRunTime()
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public reset (): boolean {
     this.currentWorkerId = 0
     this.workersTaskRunTime.clear()
@@ -71,7 +71,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     return true
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public choose (): number {
     const chosenWorkerKey = this.currentWorkerId
     if (this.isDynamicPool && !this.workersTaskRunTime.has(chosenWorkerKey)) {
@@ -99,7 +99,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     return chosenWorkerKey
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public remove (workerKey: number): boolean {
     if (this.currentWorkerId === workerKey) {
       if (this.pool.workers.length === 0) {

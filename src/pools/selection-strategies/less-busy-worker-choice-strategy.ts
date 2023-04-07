@@ -19,18 +19,18 @@ export class LessBusyWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy<Worker, Data, Response> {
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public readonly requiredStatistics: RequiredStatistics = {
     runTime: true,
     avgRunTime: false
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public reset (): boolean {
     return true
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public choose (): number {
     const freeWorkerKey = this.pool.findFreeWorkerKey()
     if (freeWorkerKey !== -1) {
@@ -50,7 +50,7 @@ export class LessBusyWorkerChoiceStrategy<
     return lessBusyWorkerKey
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public remove (workerKey: number): boolean {
     return true
   }

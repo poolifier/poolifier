@@ -18,9 +18,9 @@ export abstract class AbstractWorkerChoiceStrategy<
   Data = unknown,
   Response = unknown
 > implements IWorkerChoiceStrategy<Worker, Data, Response> {
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public readonly isDynamicPool: boolean
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public requiredStatistics: RequiredStatistics = {
     runTime: false,
     avgRunTime: false
@@ -38,12 +38,12 @@ export abstract class AbstractWorkerChoiceStrategy<
     this.choose.bind(this)
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public abstract reset (): boolean
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public abstract choose (): number
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public abstract remove (workerKey: number): boolean
 }

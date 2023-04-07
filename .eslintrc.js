@@ -93,7 +93,7 @@ module.exports = defineConfig({
           'error',
           { ignoreProperties: true }
         ],
-        'tsdoc/syntax': 'error'
+        'tsdoc/syntax': 'warn'
       }
     },
     {

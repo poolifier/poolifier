@@ -16,12 +16,12 @@ export class LessUsedWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy<Worker, Data, Response> {
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public reset (): boolean {
     return true
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public choose (): number {
     const freeWorkerKey = this.pool.findFreeWorkerKey()
     if (freeWorkerKey !== -1) {
@@ -42,7 +42,7 @@ export class LessUsedWorkerChoiceStrategy<
     return lessUsedWorkerKey
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public remove (workerKey: number): boolean {
     return true
   }

@@ -32,7 +32,7 @@ export class ThreadWorker<
     super('worker-thread-pool:poolifier', isMainThread, fn, parentPort, opts)
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
     this.getMainWorker().postMessage(message)
   }

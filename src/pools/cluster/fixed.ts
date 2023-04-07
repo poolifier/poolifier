@@ -55,28 +55,28 @@ export class FixedClusterPool<
     super(numberOfWorkers, filePath, opts)
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   protected setupHook (): void {
     cluster.setupPrimary({ ...this.opts.settings, exec: this.filePath })
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   protected isMain (): boolean {
     return cluster.isPrimary
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public destroyWorker (worker: Worker): void {
     this.sendToWorker(worker, { kill: 1 })
     worker.kill()
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   protected sendToWorker (worker: Worker, message: MessageValue<Data>): void {
     worker.send(message)
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public registerWorkerMessageListener<Message extends Data | Response>(
     worker: Worker,
     listener: (message: MessageValue<Message>) => void
@@ -84,28 +84,28 @@ export class FixedClusterPool<
     worker.on('message', listener)
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   protected createWorker (): Worker {
     return cluster.fork(this.opts.env)
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   protected afterWorkerSetup (worker: Worker): void {
     // Listen to worker messages.
     this.registerWorkerMessageListener(worker, super.workerListener())
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public get type (): PoolType {
     return PoolType.FIXED
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public get full (): boolean {
     return this.workers.length === this.numberOfWorkers
   }
 
-  /** {@inheritDoc} */
+  /** @inheritDoc */
   public get busy (): boolean {
     return this.internalBusy()
   }
