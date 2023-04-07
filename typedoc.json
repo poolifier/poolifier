@@ -1,4 +1,5 @@
 {
+  "$schema": "https://typedoc.org/schema.json",
   "tsconfig": "./tsconfig.production.json",
   "entryPoints": ["src"],
   "out": "docs",
