@@ -33,7 +33,8 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public readonly requiredStatistics: RequiredStatistics = {
     runTime: true,
-    avgRunTime: true
+    avgRunTime: true,
+    medRunTime: false
   }
 
   /**

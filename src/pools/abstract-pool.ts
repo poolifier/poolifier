@@ -1,6 +1,6 @@
 import crypto from 'node:crypto'
 import type { MessageValue, PromiseResponseWrapper } from '../utility-types'
-import { EMPTY_FUNCTION } from '../utils'
+import { EMPTY_FUNCTION, median } from '../utils'
 import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
 import { PoolEvents, type PoolOptions } from './pool'
 import { PoolEmitter } from './pool'
@@ -12,6 +12,7 @@ import {
   type WorkerChoiceStrategy
 } from './selection-strategies/selection-strategies-types'
 import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
+import { CircularArray } from '../circular-array'
 
 /**
  * Base class that implements some shared logic for all poolifier pools.
@@ -171,7 +172,9 @@ export abstract class AbstractPool<
         run: 0,
         running: 0,
         runTime: 0,
+        runTimeHistory: new CircularArray(),
         avgRunTime: 0,
+        medRunTime: 0,
         error: 0
       })
     }
@@ -284,6 +287,10 @@ export abstract class AbstractPool<
         workerTasksUsage.avgRunTime =
           workerTasksUsage.runTime / workerTasksUsage.run
       }
+      if (this.workerChoiceStrategyContext.getRequiredStatistics().medRunTime) {
+        workerTasksUsage.runTimeHistory.push(message.runTime ?? 0)
+        workerTasksUsage.medRunTime = median(workerTasksUsage.runTimeHistory)
+      }
     }
   }
 
@@ -375,7 +382,9 @@ export abstract class AbstractPool<
       run: 0,
       running: 0,
       runTime: 0,
+      runTimeHistory: new CircularArray(),
       avgRunTime: 0,
+      medRunTime: 0,
       error: 0
     })
 

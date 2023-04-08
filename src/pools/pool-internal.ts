@@ -1,3 +1,4 @@
+import type { CircularArray } from '../circular-array'
 import type { IPool } from './pool'
 import type { IPoolWorker } from './pool-worker'
 
@@ -18,7 +19,9 @@ export interface TasksUsage {
   run: number
   running: number
   runTime: number
+  runTimeHistory: CircularArray<number>
   avgRunTime: number
+  medRunTime: number
   error: number
 }
 

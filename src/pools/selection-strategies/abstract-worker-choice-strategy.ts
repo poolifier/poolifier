@@ -23,7 +23,8 @@ export abstract class AbstractWorkerChoiceStrategy<
   /** @inheritDoc */
   public requiredStatistics: RequiredStatistics = {
     runTime: false,
-    avgRunTime: false
+    avgRunTime: false,
+    medRunTime: false
   }
 
   /**

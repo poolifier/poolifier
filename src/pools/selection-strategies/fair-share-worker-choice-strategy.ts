@@ -31,7 +31,8 @@ export class FairShareWorkerChoiceStrategy<
   /** @inheritDoc */
   public readonly requiredStatistics: RequiredStatistics = {
     runTime: true,
-    avgRunTime: true
+    avgRunTime: true,
+    medRunTime: false
   }
 
   /**

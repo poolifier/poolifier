@@ -77,6 +77,9 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
     ).toBe(false)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().medRunTime
+    ).toBe(false)
     await pool.destroy()
     pool = new DynamicThreadPool(
       min,
@@ -89,6 +92,9 @@ describe('Selection strategies test suite', () => {
     ).toBe(false)
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
+    ).toBe(false)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().medRunTime
     ).toBe(false)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -230,6 +236,9 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
     ).toBe(false)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().medRunTime
+    ).toBe(false)
     await pool.destroy()
     pool = new DynamicThreadPool(
       min,
@@ -242,6 +251,9 @@ describe('Selection strategies test suite', () => {
     ).toBe(false)
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
+    ).toBe(false)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().medRunTime
     ).toBe(false)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -318,6 +330,9 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
     ).toBe(false)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().medRunTime
+    ).toBe(false)
     await pool.destroy()
     pool = new DynamicThreadPool(
       min,
@@ -330,6 +345,9 @@ describe('Selection strategies test suite', () => {
     ).toBe(true)
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
+    ).toBe(false)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().medRunTime
     ).toBe(false)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -420,6 +438,9 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
     ).toBe(true)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().medRunTime
+    ).toBe(false)
     await pool.destroy()
     pool = new DynamicThreadPool(
       min,
@@ -433,6 +454,9 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
     ).toBe(true)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().medRunTime
+    ).toBe(false)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -600,6 +624,9 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
     ).toBe(true)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().medRunTime
+    ).toBe(false)
     await pool.destroy()
     pool = new DynamicThreadPool(
       min,
@@ -613,6 +640,9 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime
     ).toBe(true)
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics().medRunTime
+    ).toBe(false)
     // We need to clean up the resources after our test
     await pool.destroy()
   })

@@ -6,6 +6,7 @@ const {
   PoolEvents,
   WorkerChoiceStrategies
 } = require('../../../lib/index')
+const { CircularArray } = require('../../../lib/circular-array')
 
 describe('Abstract pool test suite', () => {
   const numberOfWorkers = 1
@@ -145,7 +146,9 @@ describe('Abstract pool test suite', () => {
       expect(workerItem.tasksUsage.run).toBe(0)
       expect(workerItem.tasksUsage.running).toBe(0)
       expect(workerItem.tasksUsage.runTime).toBe(0)
+      expect(workerItem.tasksUsage.runTimeHistory).toBeInstanceOf(CircularArray)
       expect(workerItem.tasksUsage.avgRunTime).toBe(0)
+      expect(workerItem.tasksUsage.medRunTime).toBe(0)
       expect(workerItem.tasksUsage.error).toBe(0)
     }
     await pool.destroy()
@@ -165,7 +168,9 @@ describe('Abstract pool test suite', () => {
       expect(workerItem.tasksUsage.run).toBe(0)
       expect(workerItem.tasksUsage.running).toBe(numberOfWorkers * 2)
       expect(workerItem.tasksUsage.runTime).toBe(0)
+      expect(workerItem.tasksUsage.runTimeHistory).toBeInstanceOf(CircularArray)
       expect(workerItem.tasksUsage.avgRunTime).toBe(0)
+      expect(workerItem.tasksUsage.medRunTime).toBe(0)
       expect(workerItem.tasksUsage.error).toBe(0)
     }
     await Promise.all(promises)
@@ -174,7 +179,9 @@ describe('Abstract pool test suite', () => {
       expect(workerItem.tasksUsage.run).toBe(numberOfWorkers * 2)
       expect(workerItem.tasksUsage.running).toBe(0)
       expect(workerItem.tasksUsage.runTime).toBeGreaterThanOrEqual(0)
+      expect(workerItem.tasksUsage.runTimeHistory).toBeInstanceOf(CircularArray)
       expect(workerItem.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerItem.tasksUsage.medRunTime).toBe(0)
       expect(workerItem.tasksUsage.error).toBe(0)
     }
     await pool.destroy()
@@ -196,7 +203,9 @@ describe('Abstract pool test suite', () => {
       expect(workerItem.tasksUsage.run).toBe(numberOfWorkers * 2)
       expect(workerItem.tasksUsage.running).toBe(0)
       expect(workerItem.tasksUsage.runTime).toBeGreaterThanOrEqual(0)
+      expect(workerItem.tasksUsage.runTimeHistory).toBeInstanceOf(CircularArray)
       expect(workerItem.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerItem.tasksUsage.medRunTime).toBe(0)
       expect(workerItem.tasksUsage.error).toBe(0)
     }
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
@@ -205,7 +214,9 @@ describe('Abstract pool test suite', () => {
       expect(workerItem.tasksUsage.run).toBe(0)
       expect(workerItem.tasksUsage.running).toBe(0)
       expect(workerItem.tasksUsage.runTime).toBe(0)
+      expect(workerItem.tasksUsage.runTimeHistory).toBeInstanceOf(CircularArray)
       expect(workerItem.tasksUsage.avgRunTime).toBe(0)
+      expect(workerItem.tasksUsage.medRunTime).toBe(0)
       expect(workerItem.tasksUsage.error).toBe(0)
     }
     await pool.destroy()

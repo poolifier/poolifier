@@ -22,7 +22,8 @@ export class LessBusyWorkerChoiceStrategy<
   /** @inheritDoc */
   public readonly requiredStatistics: RequiredStatistics = {
     runTime: true,
-    avgRunTime: false
+    avgRunTime: false,
+    medRunTime: false
   }
 
   /** @inheritDoc */
