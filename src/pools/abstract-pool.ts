@@ -220,7 +220,7 @@ export abstract class AbstractPool<
     }
     const res = this.internalExecute(workerNodeKey, workerNode, submittedTask)
     let currentTask: Task<Data>
-    // FIXME: Add sensible conditions to start tasks queuing on the worker node.
+    // FIXME: Add sensible conditions to start tasks queuing on the worker node
     if (this.tasksQueueLength(workerNodeKey) > 0) {
       currentTask = this.dequeueTask(workerNodeKey) as Task<Data>
       this.enqueueTask(workerNodeKey, submittedTask)
