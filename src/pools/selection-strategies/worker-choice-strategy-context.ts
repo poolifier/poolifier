@@ -33,8 +33,7 @@ export class WorkerChoiceStrategyContext<
    * Worker choice strategy context constructor.
    *
    * @param pool - The pool instance.
-   * @param createWorkerCallback - The worker creation callback for dynamic pool.
-   * @param workerChoiceStrategy - The worker choice strategy.
+   * @param workerChoiceStrategyType - The worker choice strategy.
    */
   public constructor (
     pool: IPoolInternal<Worker, Data, Response>,
