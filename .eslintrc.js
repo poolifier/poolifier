@@ -31,6 +31,7 @@ module.exports = defineConfig({
       'warn',
       {
         skipWords: [
+          'Benoit',
           'benny',
           'browserslist',
           'builtins',
@@ -58,6 +59,7 @@ module.exports = defineConfig({
           'poolifier',
           'poolify',
           'readonly',
+          'resize',
           'serializable',
           'sinon',
           'threadjs',
