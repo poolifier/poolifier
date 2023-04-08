@@ -115,9 +115,9 @@ describe('Fixed cluster pool test suite', () => {
 
   it('Verify that async function is working properly', async () => {
     const data = { f: 10 }
-    const startTime = Date.now()
+    const startTime = performance.now()
     const result = await asyncPool.execute(data)
-    const usedTime = Date.now() - startTime
+    const usedTime = performance.now() - startTime
     expect(result).toStrictEqual(data)
     expect(usedTime).toBeGreaterThanOrEqual(2000)
   })

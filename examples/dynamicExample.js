@@ -9,7 +9,7 @@ const pool = new DynamicThreadPool(10, 20, './yourWorker.js', {
 pool.emitter.on(PoolEvents.full, () => poolFull++)
 pool.emitter.on(PoolEvents.busy, () => poolBusy++)
 
-const start = Date.now()
+const start = performance.now()
 const iterations = 1000
 for (let i = 1; i <= iterations; i++) {
   pool
@@ -17,7 +17,7 @@ for (let i = 1; i <= iterations; i++) {
     .then(() => {
       resolved++
       if (resolved === iterations) {
-        console.log('Time taken is ' + (Date.now() - start))
+        console.log('Time taken is ' + (performance.now() - start))
         console.log('The pool was full for ' + poolFull + ' times')
         return console.log('The pool was busy for ' + poolBusy + ' times')
       }
