@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Use monotonic high resolution timer for worker tasks run time.
+- Add worker tasks median run time to statistics.
+
 ## [2.4.4] - 2023-04-07
 
 ### Added

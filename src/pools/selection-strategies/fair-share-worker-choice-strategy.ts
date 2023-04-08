@@ -85,7 +85,7 @@ export class FairShareWorkerChoiceStrategy<
    */
   private computeWorkerLastVirtualTaskTimestamp (workerKey: number): void {
     const workerVirtualTaskStartTimestamp = Math.max(
-      Date.now(),
+      performance.now(),
       this.workerLastVirtualTaskTimestamp.get(workerKey)?.end ?? -Infinity
     )
     this.workerLastVirtualTaskTimestamp.set(workerKey, {

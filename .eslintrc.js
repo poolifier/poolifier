@@ -46,6 +46,7 @@ module.exports = defineConfig({
           'esm',
           'fibonacci',
           'fs',
+          'hrtime',
           'inheritDoc',
           'jsdoc',
           'microjob',

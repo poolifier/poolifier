@@ -59,7 +59,7 @@ export abstract class AbstractWorker<
     this.checkFunctionInput(fn)
     this.checkWorkerOptions(this.opts)
     if (!this.isMain) {
-      this.lastTaskTimestamp = Date.now()
+      this.lastTaskTimestamp = performance.now()
       this.aliveInterval = setInterval(
         this.checkAlive.bind(this),
         (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) / 2
@@ -145,7 +145,7 @@ export abstract class AbstractWorker<
    */
   protected checkAlive (): void {
     if (
-      Date.now() - this.lastTaskTimestamp >
+      performance.now() - this.lastTaskTimestamp >
       (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME)
     ) {
       this.sendToMainWorker({ kill: this.opts.killBehavior })
@@ -173,15 +173,19 @@ export abstract class AbstractWorker<
     message: MessageValue<Data>
   ): void {
     try {
-      const startTimestamp = Date.now()
+      const startTimestamp = performance.now()
       const res = fn(message.data)
-      const runTime = Date.now() - startTimestamp
-      this.sendToMainWorker({ data: res, id: message.id, runTime })
+      const runTime = performance.now() - startTimestamp
+      this.sendToMainWorker({
+        data: res,
+        id: message.id,
+        runTime
+      })
     } catch (e) {
       const err = this.handleError(e as Error)
       this.sendToMainWorker({ error: err, id: message.id })
     } finally {
-      !this.isMain && (this.lastTaskTimestamp = Date.now())
+      !this.isMain && (this.lastTaskTimestamp = performance.now())
     }
   }
 
@@ -195,11 +199,15 @@ export abstract class AbstractWorker<
     fn: (data?: Data) => Promise<Response>,
     message: MessageValue<Data>
   ): void {
-    const startTimestamp = Date.now()
+    const startTimestamp = performance.now()
     fn(message.data)
       .then(res => {
-        const runTime = Date.now() - startTimestamp
-        this.sendToMainWorker({ data: res, id: message.id, runTime })
+        const runTime = performance.now() - startTimestamp
+        this.sendToMainWorker({
+          data: res,
+          id: message.id,
+          runTime
+        })
         return null
       })
       .catch(e => {
@@ -207,7 +215,7 @@ export abstract class AbstractWorker<
         this.sendToMainWorker({ error: err, id: message.id })
       })
       .finally(() => {
-        !this.isMain && (this.lastTaskTimestamp = Date.now())
+        !this.isMain && (this.lastTaskTimestamp = performance.now())
       })
       .catch(EMPTY_FUNCTION)
   }
