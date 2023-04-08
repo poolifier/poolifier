@@ -146,14 +146,14 @@ describe('Selection strategies test suite', () => {
     )
     let results = new Set()
     for (let i = 0; i < max; i++) {
-      results.add(pool.chooseWorker()[1].id)
+      results.add(pool.chooseWorkerNode()[1].worker.id)
     }
     expect(results.size).toBe(max)
     await pool.destroy()
     pool = new FixedThreadPool(max, './tests/worker-files/thread/testWorker.js')
     results = new Set()
     for (let i = 0; i < max; i++) {
-      results.add(pool.chooseWorker()[1].threadId)
+      results.add(pool.chooseWorkerNode()[1].worker.threadId)
     }
     expect(results.size).toBe(max)
     await pool.destroy()
