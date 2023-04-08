@@ -4,8 +4,8 @@ class TestUtils {
   static async waitExits (pool, numberOfExitEventsToWait) {
     return new Promise(resolve => {
       let exitEvents = 0
-      for (const workerItem of pool.workers) {
-        workerItem.worker.on('exit', () => {
+      for (const workerNode of pool.workerNodes) {
+        workerNode.worker.on('exit', () => {
           ++exitEvents
           if (exitEvents === numberOfExitEventsToWait) {
             resolve(exitEvents)

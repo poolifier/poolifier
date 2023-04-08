@@ -34,7 +34,7 @@ describe('Weighted round robin strategy worker choice strategy test suite', () =
       .returns()
     const resetResult = strategy.reset()
     expect(resetResult).toBe(true)
-    expect(strategy.currentWorkerId).toBe(0)
+    expect(strategy.currentWorkerNodeId).toBe(0)
     expect(workersTaskRunTimeClearStub.calledOnce).toBe(true)
     expect(initWorkersTaskRunTimeStub.calledOnce).toBe(true)
   })

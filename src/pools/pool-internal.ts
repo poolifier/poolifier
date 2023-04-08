@@ -1,6 +1,5 @@
-import type { CircularArray } from '../circular-array'
 import type { IPool } from './pool'
-import type { IPoolWorker } from './pool-worker'
+import type { IWorker, WorkerNode } from './worker'
 
 /**
  * Internal pool types.
@@ -13,29 +12,6 @@ export enum PoolType {
 }
 
 /**
- * Internal tasks usage statistics.
- */
-export interface TasksUsage {
-  run: number
-  running: number
-  runTime: number
-  runTimeHistory: CircularArray<number>
-  avgRunTime: number
-  medRunTime: number
-  error: number
-}
-
-/**
- * Internal worker type.
- *
- * @typeParam Worker - Type of worker type items which manages this pool.
- */
-export interface WorkerType<Worker extends IPoolWorker> {
-  worker: Worker
-  tasksUsage: TasksUsage
-}
-
-/**
  * Internal contract definition for a poolifier pool.
  *
  * @typeParam Worker - Type of worker which manages this pool.
@@ -43,14 +19,14 @@ export interface WorkerType<Worker extends IPoolWorker> {
  * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export interface IPoolInternal<
-  Worker extends IPoolWorker,
+  Worker extends IWorker,
   Data = unknown,
   Response = unknown
 > extends IPool<Data, Response> {
   /**
-   * Pool worker type items array.
+   * Pool worker nodes.
    */
-  readonly workers: Array<WorkerType<Worker>>
+  readonly workerNodes: Array<WorkerNode<Worker, Data>>
 
   /**
    * Pool type.
@@ -74,13 +50,13 @@ export interface IPoolInternal<
   readonly busy: boolean
 
   /**
-   * Finds a free worker key based on the number of tasks the worker has applied.
+   * Finds a free worker node key based on the number of tasks the worker has applied.
    *
-   * If a worker is found with `0` running tasks, it is detected as free and its key is returned.
+   * If a worker is found with `0` running tasks, it is detected as free and its worker node key is returned.
    *
    * If no free worker is found, `-1` is returned.
    *
-   * @returns A worker key if there is one, `-1` otherwise.
+   * @returns A worker node key if there is one, `-1` otherwise.
    */
-  findFreeWorkerKey: () => number
+  findFreeWorkerNodeKey: () => number
 }

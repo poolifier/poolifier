@@ -1,6 +1,6 @@
 import { cpus } from 'node:os'
 import type { IPoolInternal } from '../pool-internal'
-import type { IPoolWorker } from '../pool-worker'
+import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
@@ -24,7 +24,7 @@ interface TaskRunTime {
  * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class WeightedRoundRobinWorkerChoiceStrategy<
-    Worker extends IPoolWorker,
+    Worker extends IWorker,
     Data = unknown,
     Response = unknown
   >
@@ -38,15 +38,15 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /**
-   * Worker id where the current task will be submitted.
+   * Worker node id where the current task will be submitted.
    */
-  private currentWorkerId: number = 0
+  private currentWorkerNodeId: number = 0
   /**
    * Default worker weight.
    */
   private readonly defaultWorkerWeight: number
   /**
-   * Per worker virtual task runtime map.
+   * Workers' virtual task runtime.
    */
   private readonly workersTaskRunTime: Map<number, TaskRunTime> = new Map<
   number,
@@ -66,7 +66,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public reset (): boolean {
-    this.currentWorkerId = 0
+    this.currentWorkerNodeId = 0
     this.workersTaskRunTime.clear()
     this.initWorkersTaskRunTime()
     return true
@@ -74,76 +74,79 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number {
-    const chosenWorkerKey = this.currentWorkerId
-    if (this.isDynamicPool && !this.workersTaskRunTime.has(chosenWorkerKey)) {
-      this.initWorkerTaskRunTime(chosenWorkerKey)
+    const chosenWorkerNodeKey = this.currentWorkerNodeId
+    if (
+      this.isDynamicPool &&
+      !this.workersTaskRunTime.has(chosenWorkerNodeKey)
+    ) {
+      this.initWorkerTaskRunTime(chosenWorkerNodeKey)
     }
     const workerTaskRunTime =
-      this.workersTaskRunTime.get(chosenWorkerKey)?.runTime ?? 0
+      this.workersTaskRunTime.get(chosenWorkerNodeKey)?.runTime ?? 0
     const workerTaskWeight =
-      this.workersTaskRunTime.get(chosenWorkerKey)?.weight ??
+      this.workersTaskRunTime.get(chosenWorkerNodeKey)?.weight ??
       this.defaultWorkerWeight
     if (workerTaskRunTime < workerTaskWeight) {
       this.setWorkerTaskRunTime(
-        chosenWorkerKey,
+        chosenWorkerNodeKey,
         workerTaskWeight,
         workerTaskRunTime +
-          (this.getWorkerVirtualTaskRunTime(chosenWorkerKey) ?? 0)
+          (this.getWorkerVirtualTaskRunTime(chosenWorkerNodeKey) ?? 0)
       )
     } else {
-      this.currentWorkerId =
-        this.currentWorkerId === this.pool.workers.length - 1
+      this.currentWorkerNodeId =
+        this.currentWorkerNodeId === this.pool.workerNodes.length - 1
           ? 0
-          : this.currentWorkerId + 1
-      this.setWorkerTaskRunTime(this.currentWorkerId, workerTaskWeight, 0)
+          : this.currentWorkerNodeId + 1
+      this.setWorkerTaskRunTime(this.currentWorkerNodeId, workerTaskWeight, 0)
     }
-    return chosenWorkerKey
+    return chosenWorkerNodeKey
   }
 
   /** @inheritDoc */
-  public remove (workerKey: number): boolean {
-    if (this.currentWorkerId === workerKey) {
-      if (this.pool.workers.length === 0) {
-        this.currentWorkerId = 0
+  public remove (workerNodeKey: number): boolean {
+    if (this.currentWorkerNodeId === workerNodeKey) {
+      if (this.pool.workerNodes.length === 0) {
+        this.currentWorkerNodeId = 0
       } else {
-        this.currentWorkerId =
-          this.currentWorkerId > this.pool.workers.length - 1
-            ? this.pool.workers.length - 1
-            : this.currentWorkerId
+        this.currentWorkerNodeId =
+          this.currentWorkerNodeId > this.pool.workerNodes.length - 1
+            ? this.pool.workerNodes.length - 1
+            : this.currentWorkerNodeId
       }
     }
-    const workerDeleted = this.workersTaskRunTime.delete(workerKey)
+    const deleted = this.workersTaskRunTime.delete(workerNodeKey)
     for (const [key, value] of this.workersTaskRunTime) {
-      if (key > workerKey) {
+      if (key > workerNodeKey) {
         this.workersTaskRunTime.set(key - 1, value)
       }
     }
-    return workerDeleted
+    return deleted
   }
 
   private initWorkersTaskRunTime (): void {
-    for (const [index] of this.pool.workers.entries()) {
+    for (const [index] of this.pool.workerNodes.entries()) {
       this.initWorkerTaskRunTime(index)
     }
   }
 
-  private initWorkerTaskRunTime (workerKey: number): void {
-    this.setWorkerTaskRunTime(workerKey, this.defaultWorkerWeight, 0)
+  private initWorkerTaskRunTime (workerNodeKey: number): void {
+    this.setWorkerTaskRunTime(workerNodeKey, this.defaultWorkerWeight, 0)
   }
 
   private setWorkerTaskRunTime (
-    workerKey: number,
+    workerNodeKey: number,
     weight: number,
     runTime: number
   ): void {
-    this.workersTaskRunTime.set(workerKey, {
+    this.workersTaskRunTime.set(workerNodeKey, {
       weight,
       runTime
     })
   }
 
-  private getWorkerVirtualTaskRunTime (workerKey: number): number {
-    return this.pool.workers[workerKey].tasksUsage.avgRunTime
+  private getWorkerVirtualTaskRunTime (workerNodeKey: number): number {
+    return this.pool.workerNodes[workerNodeKey].tasksUsage.avgRunTime
   }
 
   private computeWorkerWeight (): number {

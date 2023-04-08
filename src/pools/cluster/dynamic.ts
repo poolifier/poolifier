@@ -41,11 +41,11 @@ export class DynamicClusterPool<
 
   /** @inheritDoc */
   public get full (): boolean {
-    return this.workers.length === this.max
+    return this.workerNodes.length === this.max
   }
 
   /** @inheritDoc */
   public get busy (): boolean {
-    return this.full && this.findFreeWorkerKey() === -1
+    return this.full && this.findFreeWorkerNodeKey() === -1
   }
 }

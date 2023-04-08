@@ -4,7 +4,7 @@ import type {
   ExitHandler,
   MessageHandler,
   OnlineHandler
-} from './pool-worker'
+} from './worker'
 import type { WorkerChoiceStrategy } from './selection-strategies/selection-strategies-types'
 
 /**

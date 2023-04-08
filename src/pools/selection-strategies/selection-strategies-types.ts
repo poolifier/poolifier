@@ -43,7 +43,7 @@ export interface RequiredStatistics {
  */
 export interface IWorkerChoiceStrategy {
   /**
-   * Required pool tasks usage statistics.
+   * Required tasks usage statistics.
    */
   readonly requiredStatistics: RequiredStatistics
   /**
@@ -51,13 +51,13 @@ export interface IWorkerChoiceStrategy {
    */
   reset: () => boolean
   /**
-   * Chooses a worker in the pool and returns its key.
+   * Chooses a worker node in the pool and returns its key.
    */
   choose: () => number
   /**
-   * Removes a worker reference from strategy internals.
+   * Removes a worker node key from strategy internals.
    *
-   * @param workerKey - The worker key.
+   * @param workerNodeKey - The worker node key.
    */
-  remove: (workerKey: number) => boolean
+  remove: (workerNodeKey: number) => boolean
 }

@@ -8,7 +8,7 @@ export type {
   ExitHandler,
   MessageHandler,
   OnlineHandler
-} from './pools/pool-worker'
+} from './pools/worker'
 export { WorkerChoiceStrategies } from './pools/selection-strategies/selection-strategies-types'
 export type { WorkerChoiceStrategy } from './pools/selection-strategies/selection-strategies-types'
 export { DynamicThreadPool } from './pools/thread/dynamic'

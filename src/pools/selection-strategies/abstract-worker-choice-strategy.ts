@@ -1,6 +1,6 @@
 import type { IPoolInternal } from '../pool-internal'
 import { PoolType } from '../pool-internal'
-import type { IPoolWorker } from '../pool-worker'
+import type { IWorker } from '../worker'
 import type {
   IWorkerChoiceStrategy,
   RequiredStatistics
@@ -14,7 +14,7 @@ import type {
  * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export abstract class AbstractWorkerChoiceStrategy<
-  Worker extends IPoolWorker,
+  Worker extends IWorker,
   Data = unknown,
   Response = unknown
 > implements IWorkerChoiceStrategy {
@@ -46,5 +46,5 @@ export abstract class AbstractWorkerChoiceStrategy<
   public abstract choose (): number
 
   /** @inheritDoc */
-  public abstract remove (workerKey: number): boolean
+  public abstract remove (workerNodeKey: number): boolean
 }

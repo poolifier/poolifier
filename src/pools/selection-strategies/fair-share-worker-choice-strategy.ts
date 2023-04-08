@@ -1,4 +1,4 @@
-import type { IPoolWorker } from '../pool-worker'
+import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
@@ -22,7 +22,7 @@ interface WorkerVirtualTaskTimestamp {
  * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class FairShareWorkerChoiceStrategy<
-    Worker extends IPoolWorker,
+    Worker extends IWorker,
     Data = unknown,
     Response = unknown
   >
@@ -36,7 +36,7 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /**
-   *  Worker last virtual task execution timestamp.
+   * Worker last virtual task execution timestamp.
    */
   private readonly workerLastVirtualTaskTimestamp: Map<
   number,
@@ -52,8 +52,8 @@ export class FairShareWorkerChoiceStrategy<
   /** @inheritDoc */
   public choose (): number {
     let minWorkerVirtualTaskEndTimestamp = Infinity
-    let chosenWorkerKey!: number
-    for (const [index] of this.pool.workers.entries()) {
+    let chosenWorkerNodeKey!: number
+    for (const [index] of this.pool.workerNodes.entries()) {
       this.computeWorkerLastVirtualTaskTimestamp(index)
       const workerLastVirtualTaskEndTimestamp =
         this.workerLastVirtualTaskTimestamp.get(index)?.end ?? 0
@@ -61,38 +61,38 @@ export class FairShareWorkerChoiceStrategy<
         workerLastVirtualTaskEndTimestamp < minWorkerVirtualTaskEndTimestamp
       ) {
         minWorkerVirtualTaskEndTimestamp = workerLastVirtualTaskEndTimestamp
-        chosenWorkerKey = index
+        chosenWorkerNodeKey = index
       }
     }
-    return chosenWorkerKey
+    return chosenWorkerNodeKey
   }
 
   /** @inheritDoc */
-  public remove (workerKey: number): boolean {
-    const workerDeleted = this.workerLastVirtualTaskTimestamp.delete(workerKey)
+  public remove (workerNodeKey: number): boolean {
+    const deleted = this.workerLastVirtualTaskTimestamp.delete(workerNodeKey)
     for (const [key, value] of this.workerLastVirtualTaskTimestamp.entries()) {
-      if (key > workerKey) {
+      if (key > workerNodeKey) {
         this.workerLastVirtualTaskTimestamp.set(key - 1, value)
       }
     }
-    return workerDeleted
+    return deleted
   }
 
   /**
    * Computes worker last virtual task timestamp.
    *
-   * @param workerKey - The worker key.
+   * @param workerNodeKey - The worker node key.
    */
-  private computeWorkerLastVirtualTaskTimestamp (workerKey: number): void {
+  private computeWorkerLastVirtualTaskTimestamp (workerNodeKey: number): void {
     const workerVirtualTaskStartTimestamp = Math.max(
       performance.now(),
-      this.workerLastVirtualTaskTimestamp.get(workerKey)?.end ?? -Infinity
+      this.workerLastVirtualTaskTimestamp.get(workerNodeKey)?.end ?? -Infinity
     )
-    this.workerLastVirtualTaskTimestamp.set(workerKey, {
+    this.workerLastVirtualTaskTimestamp.set(workerNodeKey, {
       start: workerVirtualTaskStartTimestamp,
       end:
         workerVirtualTaskStartTimestamp +
-        (this.pool.workers[workerKey].tasksUsage.avgRunTime ?? 0)
+        (this.pool.workerNodes[workerNodeKey].tasksUsage.avgRunTime ?? 0)
     })
   }
 }

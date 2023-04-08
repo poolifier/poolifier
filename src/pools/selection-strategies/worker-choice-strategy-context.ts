@@ -1,5 +1,5 @@
 import type { IPoolInternal } from '../pool-internal'
-import type { IPoolWorker } from '../pool-worker'
+import type { IWorker } from '../worker'
 import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strategy'
 import { LessBusyWorkerChoiceStrategy } from './less-busy-worker-choice-strategy'
 import { LessUsedWorkerChoiceStrategy } from './less-used-worker-choice-strategy'
@@ -20,7 +20,7 @@ import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-w
  * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class WorkerChoiceStrategyContext<
-  Worker extends IPoolWorker,
+  Worker extends IWorker,
   Data = unknown,
   Response = unknown
 > {
@@ -97,7 +97,7 @@ export class WorkerChoiceStrategyContext<
   /**
    * Executes the worker choice strategy algorithm in the context.
    *
-   * @returns The key of the chosen one.
+   * @returns The key of the worker node.
    */
   public execute (): number {
     return (
@@ -108,16 +108,16 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
-   * Removes a worker from the worker choice strategy in the context.
+   * Removes a worker node key from the worker choice strategy in the context.
    *
-   * @param workerKey - The key of the worker to remove.
+   * @param workerNodeKey - The key of the worker node.
    * @returns `true` if the removal is successful, `false` otherwise.
    */
-  public remove (workerKey: number): boolean {
+  public remove (workerNodeKey: number): boolean {
     return (
       this.workerChoiceStrategies.get(
         this.workerChoiceStrategyType
       ) as IWorkerChoiceStrategy
-    ).remove(workerKey)
+    ).remove(workerNodeKey)
   }
 }

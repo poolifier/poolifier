@@ -32,8 +32,8 @@ describe('Dynamic thread pool test suite', () => {
     for (let i = 0; i < max * 2; i++) {
       pool.execute()
     }
-    expect(pool.workers.length).toBeLessThanOrEqual(max)
-    expect(pool.workers.length).toBeGreaterThan(min)
+    expect(pool.workerNodes.length).toBeLessThanOrEqual(max)
+    expect(pool.workerNodes.length).toBeGreaterThan(min)
     // The `busy` event is triggered when the number of submitted tasks at once reach the max number of workers in the dynamic pool.
     // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the dynamic pool.
     expect(poolBusy).toBe(max + 1)
@@ -42,19 +42,19 @@ describe('Dynamic thread pool test suite', () => {
   })
 
   it('Verify scale thread up and down is working', async () => {
-    expect(pool.workers.length).toBe(min)
+    expect(pool.workerNodes.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
       pool.execute()
     }
-    expect(pool.workers.length).toBe(max)
+    expect(pool.workerNodes.length).toBe(max)
     await TestUtils.waitExits(pool, max - min)
-    expect(pool.workers.length).toBe(min)
+    expect(pool.workerNodes.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
       pool.execute()
     }
-    expect(pool.workers.length).toBe(max)
+    expect(pool.workerNodes.length).toBe(max)
     await TestUtils.waitExits(pool, max - min)
-    expect(pool.workers.length).toBe(min)
+    expect(pool.workerNodes.length).toBe(min)
   })
 
   it('Shutdown test', async () => {
@@ -93,13 +93,13 @@ describe('Dynamic thread pool test suite', () => {
         exitHandler: () => console.log('long running worker exited')
       }
     )
-    expect(longRunningPool.workers.length).toBe(min)
+    expect(longRunningPool.workerNodes.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
       longRunningPool.execute()
     }
-    expect(longRunningPool.workers.length).toBe(max)
+    expect(longRunningPool.workerNodes.length).toBe(max)
     await TestUtils.waitExits(longRunningPool, max - min)
-    expect(longRunningPool.workers.length).toBe(min)
+    expect(longRunningPool.workerNodes.length).toBe(min)
     // We need to clean up the resources after our test
     await longRunningPool.destroy()
   })
@@ -115,14 +115,14 @@ describe('Dynamic thread pool test suite', () => {
         exitHandler: () => console.log('long running worker exited')
       }
     )
-    expect(longRunningPool.workers.length).toBe(min)
+    expect(longRunningPool.workerNodes.length).toBe(min)
     for (let i = 0; i < max * 10; i++) {
       longRunningPool.execute()
     }
-    expect(longRunningPool.workers.length).toBe(max)
+    expect(longRunningPool.workerNodes.length).toBe(max)
     await TestUtils.sleep(1500)
-    // Here we expect the workers to be at the max size since the task is still running
-    expect(longRunningPool.workers.length).toBe(max)
+    // Here we expect the workerNodes to be at the max size since the task is still running
+    expect(longRunningPool.workerNodes.length).toBe(max)
     // We need to clean up the resources after our test
     await longRunningPool.destroy()
   })

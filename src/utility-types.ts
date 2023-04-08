@@ -1,7 +1,7 @@
 import type { Worker as ClusterWorker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
 import type { KillBehavior } from './worker/worker-options'
-import type { IPoolWorker } from './pools/pool-worker'
+import type { IWorker } from './pools/worker'
 
 /**
  * Make all properties in T non-readonly.
@@ -50,7 +50,7 @@ export interface MessageValue<
  * @typeParam Response - Type of execution response. This can only be serializable data.
  */
 export interface PromiseResponseWrapper<
-  Worker extends IPoolWorker,
+  Worker extends IWorker,
   Response = unknown
 > {
   /**

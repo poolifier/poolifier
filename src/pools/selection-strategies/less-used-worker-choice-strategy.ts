@@ -1,4 +1,4 @@
-import type { IPoolWorker } from '../pool-worker'
+import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type { IWorkerChoiceStrategy } from './selection-strategies-types'
 
@@ -10,7 +10,7 @@ import type { IWorkerChoiceStrategy } from './selection-strategies-types'
  * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class LessUsedWorkerChoiceStrategy<
-    Worker extends IPoolWorker,
+    Worker extends IWorker,
     Data = unknown,
     Response = unknown
   >
@@ -23,27 +23,27 @@ export class LessUsedWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number {
-    const freeWorkerKey = this.pool.findFreeWorkerKey()
-    if (freeWorkerKey !== -1) {
-      return freeWorkerKey
+    const freeWorkerNodeKey = this.pool.findFreeWorkerNodeKey()
+    if (freeWorkerNodeKey !== -1) {
+      return freeWorkerNodeKey
     }
     let minNumberOfTasks = Infinity
-    let lessUsedWorkerKey!: number
-    for (const [index, workerItem] of this.pool.workers.entries()) {
-      const tasksUsage = workerItem.tasksUsage
+    let lessUsedWorkerNodeKey!: number
+    for (const [index, workerNode] of this.pool.workerNodes.entries()) {
+      const tasksUsage = workerNode.tasksUsage
       const workerTasks = tasksUsage.run + tasksUsage.running
       if (workerTasks === 0) {
         return index
       } else if (workerTasks < minNumberOfTasks) {
         minNumberOfTasks = workerTasks
-        lessUsedWorkerKey = index
+        lessUsedWorkerNodeKey = index
       }
     }
-    return lessUsedWorkerKey
+    return lessUsedWorkerNodeKey
   }
 
   /** @inheritDoc */
-  public remove (workerKey: number): boolean {
+  public remove (workerNodeKey: number): boolean {
     return true
   }
 }

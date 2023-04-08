@@ -1,4 +1,4 @@
-import type { IPoolWorker } from '../pool-worker'
+import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
@@ -13,7 +13,7 @@ import type {
  * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class LessBusyWorkerChoiceStrategy<
-    Worker extends IPoolWorker,
+    Worker extends IWorker,
     Data = unknown,
     Response = unknown
   >
@@ -33,26 +33,26 @@ export class LessBusyWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number {
-    const freeWorkerKey = this.pool.findFreeWorkerKey()
-    if (freeWorkerKey !== -1) {
-      return freeWorkerKey
+    const freeWorkerNodeKey = this.pool.findFreeWorkerNodeKey()
+    if (freeWorkerNodeKey !== -1) {
+      return freeWorkerNodeKey
     }
     let minRunTime = Infinity
-    let lessBusyWorkerKey!: number
-    for (const [index, workerItem] of this.pool.workers.entries()) {
-      const workerRunTime = workerItem.tasksUsage.runTime
+    let lessBusyWorkerNodeKey!: number
+    for (const [index, workerNode] of this.pool.workerNodes.entries()) {
+      const workerRunTime = workerNode.tasksUsage.runTime
       if (workerRunTime === 0) {
         return index
       } else if (workerRunTime < minRunTime) {
         minRunTime = workerRunTime
-        lessBusyWorkerKey = index
+        lessBusyWorkerNodeKey = index
       }
     }
-    return lessBusyWorkerKey
+    return lessBusyWorkerNodeKey
   }
 
   /** @inheritDoc */
-  public remove (workerKey: number): boolean {
+  public remove (workerNodeKey: number): boolean {
     return true
   }
 }

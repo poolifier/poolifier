@@ -1,4 +1,4 @@
-import type { IPoolWorker } from '../pool-worker'
+import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type { IWorkerChoiceStrategy } from './selection-strategies-types'
 
@@ -10,43 +10,43 @@ import type { IWorkerChoiceStrategy } from './selection-strategies-types'
  * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
 export class RoundRobinWorkerChoiceStrategy<
-    Worker extends IPoolWorker,
+    Worker extends IWorker,
     Data = unknown,
     Response = unknown
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
   /**
-   * Id of the next worker.
+   * Id of the next worker node.
    */
-  private nextWorkerId: number = 0
+  private nextWorkerNodeId: number = 0
 
   /** @inheritDoc */
   public reset (): boolean {
-    this.nextWorkerId = 0
+    this.nextWorkerNodeId = 0
     return true
   }
 
   /** @inheritDoc */
   public choose (): number {
-    const chosenWorkerKey = this.nextWorkerId
-    this.nextWorkerId =
-      this.nextWorkerId === this.pool.workers.length - 1
+    const chosenWorkerNodeKey = this.nextWorkerNodeId
+    this.nextWorkerNodeId =
+      this.nextWorkerNodeId === this.pool.workerNodes.length - 1
         ? 0
-        : this.nextWorkerId + 1
-    return chosenWorkerKey
+        : this.nextWorkerNodeId + 1
+    return chosenWorkerNodeKey
   }
 
   /** @inheritDoc */
-  public remove (workerKey: number): boolean {
-    if (this.nextWorkerId === workerKey) {
-      if (this.pool.workers.length === 0) {
-        this.nextWorkerId = 0
+  public remove (workerNodeKey: number): boolean {
+    if (this.nextWorkerNodeId === workerNodeKey) {
+      if (this.pool.workerNodes.length === 0) {
+        this.nextWorkerNodeId = 0
       } else {
-        this.nextWorkerId =
-          this.nextWorkerId > this.pool.workers.length - 1
-            ? this.pool.workers.length - 1
-            : this.nextWorkerId
+        this.nextWorkerNodeId =
+          this.nextWorkerNodeId > this.pool.workerNodes.length - 1
+            ? this.pool.workerNodes.length - 1
+            : this.nextWorkerNodeId
       }
     }
     return true

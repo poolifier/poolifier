@@ -11,7 +11,7 @@ const { CircularArray } = require('../../../lib/circular-array')
 describe('Abstract pool test suite', () => {
   const numberOfWorkers = 1
   const workerNotFoundInPoolError = new Error(
-    'Worker could not be found in the pool'
+    'Worker could not be found in the pool worker nodes'
   )
   class StubPoolWithRemoveAllWorker extends FixedThreadPool {
     removeAllWorker () {
@@ -141,15 +141,29 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js'
     )
-    for (const workerItem of pool.workers) {
-      expect(workerItem.tasksUsage).toBeDefined()
-      expect(workerItem.tasksUsage.run).toBe(0)
-      expect(workerItem.tasksUsage.running).toBe(0)
-      expect(workerItem.tasksUsage.runTime).toBe(0)
-      expect(workerItem.tasksUsage.runTimeHistory).toBeInstanceOf(CircularArray)
-      expect(workerItem.tasksUsage.avgRunTime).toBe(0)
-      expect(workerItem.tasksUsage.medRunTime).toBe(0)
-      expect(workerItem.tasksUsage.error).toBe(0)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage).toBeDefined()
+      expect(workerNode.tasksUsage.run).toBe(0)
+      expect(workerNode.tasksUsage.running).toBe(0)
+      expect(workerNode.tasksUsage.runTime).toBe(0)
+      expect(workerNode.tasksUsage.runTimeHistory).toBeInstanceOf(CircularArray)
+      expect(workerNode.tasksUsage.runTimeHistory.length).toBe(0)
+      expect(workerNode.tasksUsage.avgRunTime).toBe(0)
+      expect(workerNode.tasksUsage.medRunTime).toBe(0)
+      expect(workerNode.tasksUsage.error).toBe(0)
+    }
+    await pool.destroy()
+  })
+
+  it('Verify that worker pool tasks queue are initialized', async () => {
+    const pool = new FixedClusterPool(
+      numberOfWorkers,
+      './tests/worker-files/cluster/testWorker.js'
+    )
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksQueue).toBeDefined()
+      expect(workerNode.tasksQueue).toBeInstanceOf(Array)
+      expect(workerNode.tasksQueue.length).toBe(0)
     }
     await pool.destroy()
   })
@@ -163,26 +177,28 @@ describe('Abstract pool test suite', () => {
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.push(pool.execute())
     }
-    for (const workerItem of pool.workers) {
-      expect(workerItem.tasksUsage).toBeDefined()
-      expect(workerItem.tasksUsage.run).toBe(0)
-      expect(workerItem.tasksUsage.running).toBe(numberOfWorkers * 2)
-      expect(workerItem.tasksUsage.runTime).toBe(0)
-      expect(workerItem.tasksUsage.runTimeHistory).toBeInstanceOf(CircularArray)
-      expect(workerItem.tasksUsage.avgRunTime).toBe(0)
-      expect(workerItem.tasksUsage.medRunTime).toBe(0)
-      expect(workerItem.tasksUsage.error).toBe(0)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage).toBeDefined()
+      expect(workerNode.tasksUsage.run).toBe(0)
+      expect(workerNode.tasksUsage.running).toBe(numberOfWorkers * 2)
+      expect(workerNode.tasksUsage.runTime).toBe(0)
+      expect(workerNode.tasksUsage.runTimeHistory).toBeInstanceOf(CircularArray)
+      expect(workerNode.tasksUsage.runTimeHistory.length).toBe(0)
+      expect(workerNode.tasksUsage.avgRunTime).toBe(0)
+      expect(workerNode.tasksUsage.medRunTime).toBe(0)
+      expect(workerNode.tasksUsage.error).toBe(0)
     }
     await Promise.all(promises)
-    for (const workerItem of pool.workers) {
-      expect(workerItem.tasksUsage).toBeDefined()
-      expect(workerItem.tasksUsage.run).toBe(numberOfWorkers * 2)
-      expect(workerItem.tasksUsage.running).toBe(0)
-      expect(workerItem.tasksUsage.runTime).toBeGreaterThanOrEqual(0)
-      expect(workerItem.tasksUsage.runTimeHistory).toBeInstanceOf(CircularArray)
-      expect(workerItem.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
-      expect(workerItem.tasksUsage.medRunTime).toBe(0)
-      expect(workerItem.tasksUsage.error).toBe(0)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage).toBeDefined()
+      expect(workerNode.tasksUsage.run).toBe(numberOfWorkers * 2)
+      expect(workerNode.tasksUsage.running).toBe(0)
+      expect(workerNode.tasksUsage.runTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.tasksUsage.runTimeHistory).toBeInstanceOf(CircularArray)
+      expect(workerNode.tasksUsage.runTimeHistory.length).toBe(0)
+      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.tasksUsage.medRunTime).toBe(0)
+      expect(workerNode.tasksUsage.error).toBe(0)
     }
     await pool.destroy()
   })
@@ -198,26 +214,28 @@ describe('Abstract pool test suite', () => {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
-    for (const workerItem of pool.workers) {
-      expect(workerItem.tasksUsage).toBeDefined()
-      expect(workerItem.tasksUsage.run).toBe(numberOfWorkers * 2)
-      expect(workerItem.tasksUsage.running).toBe(0)
-      expect(workerItem.tasksUsage.runTime).toBeGreaterThanOrEqual(0)
-      expect(workerItem.tasksUsage.runTimeHistory).toBeInstanceOf(CircularArray)
-      expect(workerItem.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
-      expect(workerItem.tasksUsage.medRunTime).toBe(0)
-      expect(workerItem.tasksUsage.error).toBe(0)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage).toBeDefined()
+      expect(workerNode.tasksUsage.run).toBe(numberOfWorkers * 2)
+      expect(workerNode.tasksUsage.running).toBe(0)
+      expect(workerNode.tasksUsage.runTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.tasksUsage.runTimeHistory).toBeInstanceOf(CircularArray)
+      expect(workerNode.tasksUsage.runTimeHistory.length).toBe(0)
+      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.tasksUsage.medRunTime).toBe(0)
+      expect(workerNode.tasksUsage.error).toBe(0)
     }
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
-    for (const workerItem of pool.workers) {
-      expect(workerItem.tasksUsage).toBeDefined()
-      expect(workerItem.tasksUsage.run).toBe(0)
-      expect(workerItem.tasksUsage.running).toBe(0)
-      expect(workerItem.tasksUsage.runTime).toBe(0)
-      expect(workerItem.tasksUsage.runTimeHistory).toBeInstanceOf(CircularArray)
-      expect(workerItem.tasksUsage.avgRunTime).toBe(0)
-      expect(workerItem.tasksUsage.medRunTime).toBe(0)
-      expect(workerItem.tasksUsage.error).toBe(0)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage).toBeDefined()
+      expect(workerNode.tasksUsage.run).toBe(0)
+      expect(workerNode.tasksUsage.running).toBe(0)
+      expect(workerNode.tasksUsage.runTime).toBe(0)
+      expect(workerNode.tasksUsage.runTimeHistory).toBeInstanceOf(CircularArray)
+      expect(workerNode.tasksUsage.runTimeHistory.length).toBe(0)
+      expect(workerNode.tasksUsage.avgRunTime).toBe(0)
+      expect(workerNode.tasksUsage.medRunTime).toBe(0)
+      expect(workerNode.tasksUsage.error).toBe(0)
     }
     await pool.destroy()
   })

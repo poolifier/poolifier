@@ -1,3 +1,5 @@
+import type { CircularArray } from '../circular-array'
+
 /**
  * Callback invoked if the worker has received a message.
  */
@@ -19,9 +21,30 @@ export type OnlineHandler<Worker> = (this: Worker) => void
 export type ExitHandler<Worker> = (this: Worker, code: number) => void
 
 /**
- * Interface that describes the minimum required implementation of listener events for a pool worker.
+ * Worker task interface.
  */
-export interface IPoolWorker {
+export interface Task<Data = unknown> {
+  data: Data
+  id: string
+}
+
+/**
+ * Worker tasks usage statistics.
+ */
+export interface TasksUsage {
+  run: number
+  running: number
+  runTime: number
+  runTimeHistory: CircularArray<number>
+  avgRunTime: number
+  medRunTime: number
+  error: number
+}
+
+/**
+ * Worker interface.
+ */
+export interface IWorker {
   /**
    * Register an event listener.
    *
@@ -39,4 +62,13 @@ export interface IPoolWorker {
    * @param handler - The exit handler.
    */
   once: (event: 'exit', handler: ExitHandler<this>) => void
+}
+
+/**
+ * Worker node interface.
+ */
+export interface WorkerNode<Worker extends IWorker, Data = unknown> {
+  worker: Worker
+  tasksUsage: TasksUsage
+  tasksQueue: Array<Task<Data>>
 }
