@@ -11,8 +11,8 @@ dependencies:
     specifier: 3.2.0
     version: 3.2.0
   poolifier:
-    specifier: 2.4.4
-    version: 2.4.4
+    specifier: 2.4.5
+    version: 2.4.5
   threads:
     specifier: 1.7.0
     version: 1.7.0
@@ -173,8 +173,8 @@ packages:
       find-up: 5.0.0
     dev: false
 
-  /poolifier@2.4.4:
-    resolution: {integrity: sha512-kPzCuva//h+gW9pdpGzdqG5Y8WoueXxQkJ0J1YiIuAKRljCjuMJ/XCYpLOyp0rHTKvXT5mrA5m+fEuVlT2EESg==}
+  /poolifier@2.4.5:
+    resolution: {integrity: sha512-SPpsYF6aXNJm3LHM26HaEwmE64uMSUlsqAeGxLLsGec5STaRRm0Su0mwsF57llLEI8EpM7f4AmrkbGosrc7ikA==}
     engines: {node: '>=16.0.0'}
     requiresBuild: true
     dev: false
