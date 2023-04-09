@@ -76,9 +76,9 @@ export abstract class AbstractPool<
     this.checkPoolOptions(this.opts)
 
     this.chooseWorkerNode.bind(this)
-    this.internalExecute.bind(this)
+    this.executeTask.bind(this)
+    this.enqueueTask.bind(this)
     this.checkAndEmitEvents.bind(this)
-    this.sendToWorker.bind(this)
 
     this.setupHook()
 
@@ -235,14 +235,20 @@ export abstract class AbstractPool<
       data: data ?? ({} as Data),
       id: crypto.randomUUID()
     }
-    const res = this.internalExecute(workerNodeKey, workerNode, submittedTask)
+    const res = new Promise<Response>((resolve, reject) => {
+      this.promiseResponseMap.set(submittedTask.id, {
+        resolve,
+        reject,
+        worker: workerNode.worker
+      })
+    })
     if (
       this.opts.enableTasksQueue === true &&
       (this.busy || this.workerNodes[workerNodeKey].tasksUsage.running > 0)
     ) {
       this.enqueueTask(workerNodeKey, submittedTask)
     } else {
-      this.sendToWorker(workerNode.worker, submittedTask)
+      this.executeTask(workerNodeKey, submittedTask)
     }
     this.checkAndEmitEvents()
     // eslint-disable-next-line @typescript-eslint/return-await
@@ -267,7 +273,7 @@ export abstract class AbstractPool<
   protected abstract destroyWorker (worker: Worker): void | Promise<void>
 
   /**
-   * Setup hook to run code before worker node are created in the abstract constructor.
+   * Setup hook to execute code before worker node are created in the abstract constructor.
    * Can be overridden
    *
    * @virtual
@@ -282,23 +288,23 @@ export abstract class AbstractPool<
   protected abstract isMain (): boolean
 
   /**
-   * Hook executed before the worker task promise resolution.
+   * Hook executed before the worker task execution.
    * Can be overridden.
    *
    * @param workerNodeKey - The worker node key.
    */
-  protected beforePromiseResponseHook (workerNodeKey: number): void {
+  protected beforeTaskExecutionHook (workerNodeKey: number): void {
     ++this.workerNodes[workerNodeKey].tasksUsage.running
   }
 
   /**
-   * Hook executed after the worker task promise resolution.
+   * Hook executed after the worker task execution.
    * Can be overridden.
    *
    * @param worker - The worker.
    * @param message - The received message.
    */
-  protected afterPromiseResponseHook (
+  protected afterTaskExecutionHook (
     worker: Worker,
     message: MessageValue<Response>
   ): void {
@@ -431,36 +437,21 @@ export abstract class AbstractPool<
           } else {
             promiseResponse.resolve(message.data as Response)
           }
-          this.afterPromiseResponseHook(promiseResponse.worker, message)
+          this.afterTaskExecutionHook(promiseResponse.worker, message)
           this.promiseResponseMap.delete(message.id)
           const workerNodeKey = this.getWorkerNodeKey(promiseResponse.worker)
           if (
             this.opts.enableTasksQueue === true &&
             this.tasksQueueSize(workerNodeKey) > 0
           ) {
-            this.sendToWorker(
-              promiseResponse.worker,
+            this.executeTask(
+              workerNodeKey,
               this.dequeueTask(workerNodeKey) as Task<Data>
             )
           }
         }
       }
     }
-  }
-
-  private async internalExecute (
-    workerNodeKey: number,
-    workerNode: WorkerNode<Worker, Data>,
-    task: Task<Data>
-  ): Promise<Response> {
-    this.beforePromiseResponseHook(workerNodeKey)
-    return await new Promise<Response>((resolve, reject) => {
-      this.promiseResponseMap.set(task.id, {
-        resolve,
-        reject,
-        worker: workerNode.worker
-      })
-    })
   }
 
   private checkAndEmitEvents (): void {
@@ -555,6 +546,11 @@ export abstract class AbstractPool<
     this.workerChoiceStrategyContext.remove(workerNodeKey)
   }
 
+  private executeTask (workerNodeKey: number, task: Task<Data>): void {
+    this.beforeTaskExecutionHook(workerNodeKey)
+    this.sendToWorker(this.workerNodes[workerNodeKey].worker, task)
+  }
+
   private enqueueTask (workerNodeKey: number, task: Task<Data>): void {
     this.workerNodes[workerNodeKey].tasksQueue.push(task)
   }
@@ -570,7 +566,7 @@ export abstract class AbstractPool<
   private flushTasksQueue (workerNodeKey: number): void {
     if (this.tasksQueueSize(workerNodeKey) > 0) {
       for (const task of this.workerNodes[workerNodeKey].tasksQueue) {
-        this.sendToWorker(this.workerNodes[workerNodeKey].worker, task)
+        this.executeTask(workerNodeKey, task)
       }
       this.workerNodes[workerNodeKey].tasksQueue = []
     }
