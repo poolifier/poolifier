@@ -568,7 +568,6 @@ export abstract class AbstractPool<
       for (const task of this.workerNodes[workerNodeKey].tasksQueue) {
         this.executeTask(workerNodeKey, task)
       }
-      this.workerNodes[workerNodeKey].tasksQueue = []
     }
   }
 

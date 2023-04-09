@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Ensure one task at a time is executed per worker with tasks queueing enabled.
+- Properly count worker running tasks with tasks queueing enabled.
 
 ## [2.4.5] - 2023-04-09
 
