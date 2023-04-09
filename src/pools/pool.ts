@@ -55,6 +55,13 @@ export interface PoolOptions<Worker> {
    * @defaultValue true
    */
   enableEvents?: boolean
+  /**
+   * Pool worker tasks queue.
+   *
+   * @experimental
+   * @defaultValue false
+   */
+  enableTasksQueue?: boolean
 }
 
 /**

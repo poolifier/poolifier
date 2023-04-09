@@ -30,6 +30,13 @@ export const WorkerChoiceStrategies = Object.freeze({
 export type WorkerChoiceStrategy = keyof typeof WorkerChoiceStrategies
 
 /**
+ * Worker choice strategy options.
+ */
+export interface WorkerChoiceStrategyOptions {
+  medRunTime?: boolean
+}
+
+/**
  * Pool worker tasks usage statistics requirements.
  */
 export interface RequiredStatistics {

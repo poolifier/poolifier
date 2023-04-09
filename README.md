@@ -175,6 +175,7 @@ Node versions >= 16.x are supported.
   Default: `WorkerChoiceStrategies.ROUND_ROBIN`
 
 - `enableEvents` (optional) - Events emission enablement in this pool. Default: true
+- `enableTasksQueue` (optional, experimental) - Tasks queue per worker enablement in this pool. Default: false
 
 ### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
 

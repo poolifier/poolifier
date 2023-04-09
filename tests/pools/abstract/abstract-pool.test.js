@@ -87,6 +87,7 @@ describe('Abstract pool test suite', () => {
     )
     expect(pool.opts.enableEvents).toBe(true)
     expect(pool.emitter).toBeDefined()
+    expect(pool.opts.enableTasksQueue).toBe(false)
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
@@ -102,6 +103,7 @@ describe('Abstract pool test suite', () => {
       {
         workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED,
         enableEvents: false,
+        enableTasksQueue: true,
         messageHandler: testHandler,
         errorHandler: testHandler,
         onlineHandler: testHandler,
@@ -110,6 +112,7 @@ describe('Abstract pool test suite', () => {
     )
     expect(pool.opts.enableEvents).toBe(false)
     expect(pool.emitter).toBeUndefined()
+    expect(pool.opts.enableTasksQueue).toBe(true)
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.LESS_USED
     )
