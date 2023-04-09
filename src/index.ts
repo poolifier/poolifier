@@ -10,7 +10,10 @@ export type {
   OnlineHandler
 } from './pools/worker'
 export { WorkerChoiceStrategies } from './pools/selection-strategies/selection-strategies-types'
-export type { WorkerChoiceStrategy } from './pools/selection-strategies/selection-strategies-types'
+export type {
+  WorkerChoiceStrategy,
+  WorkerChoiceStrategyOptions
+} from './pools/selection-strategies/selection-strategies-types'
 export { DynamicThreadPool } from './pools/thread/dynamic'
 export { FixedThreadPool } from './pools/thread/fixed'
 export type { ThreadWorkerWithMessageChannel } from './pools/thread/fixed'
