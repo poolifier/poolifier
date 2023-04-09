@@ -191,21 +191,16 @@ export abstract class AbstractPool<
   ): void {
     this.checkValidWorkerChoiceStrategy(workerChoiceStrategy)
     this.opts.workerChoiceStrategy = workerChoiceStrategy
-    for (const [index, workerNode] of this.workerNodes.entries()) {
-      this.setWorkerNode(
-        index,
-        workerNode.worker,
-        {
-          run: 0,
-          running: 0,
-          runTime: 0,
-          runTimeHistory: new CircularArray(),
-          avgRunTime: 0,
-          medRunTime: 0,
-          error: 0
-        },
-        workerNode.tasksQueue
-      )
+    for (const workerNode of this.workerNodes) {
+      this.setWorkerNodeTasksUsage(workerNode, {
+        run: 0,
+        running: 0,
+        runTime: 0,
+        runTimeHistory: new CircularArray(),
+        avgRunTime: 0,
+        medRunTime: 0,
+        error: 0
+      })
     }
     this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
       workerChoiceStrategy
@@ -480,6 +475,19 @@ export abstract class AbstractPool<
         this.emitter?.emit(PoolEvents.full)
       }
     }
+  }
+
+  /**
+   * Sets the given worker node its tasks usage in the pool.
+   *
+   * @param workerNode - The worker node.
+   * @param tasksUsage - The worker node tasks usage.
+   */
+  private setWorkerNodeTasksUsage (
+    workerNode: WorkerNode<Worker, Data>,
+    tasksUsage: TasksUsage
+  ): void {
+    workerNode.tasksUsage = tasksUsage
   }
 
   /**
