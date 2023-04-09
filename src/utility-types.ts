@@ -62,7 +62,7 @@ export interface PromiseResponseWrapper<
    */
   readonly reject: (reason?: string) => void
   /**
-   * The worker handling the promise.
+   * The worker handling the execution.
    */
   readonly worker: Worker
 }

@@ -33,12 +33,12 @@ export abstract class AbstractPool<
   public readonly emitter?: PoolEmitter
 
   /**
-   * The promise response map.
+   * The execution response promise map.
    *
    * - `key`: The message id of each submitted task.
-   * - `value`: An object that contains the worker, the promise resolve and reject callbacks.
+   * - `value`: An object that contains the worker, the execution response promise resolve and reject callbacks.
    *
-   * When we receive a message from the worker we get a map entry with the promise resolve/reject bound to the message.
+   * When we receive a message from the worker, we get a map entry with the promise resolve/reject bound to the message id.
    */
   protected promiseResponseMap: Map<
   string,
@@ -431,7 +431,7 @@ export abstract class AbstractPool<
   protected workerListener (): (message: MessageValue<Response>) => void {
     return message => {
       if (message.id != null) {
-        // Task response received
+        // Task execution response received
         const promiseResponse = this.promiseResponseMap.get(message.id)
         if (promiseResponse != null) {
           if (message.error != null) {
