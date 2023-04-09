@@ -236,17 +236,14 @@ export abstract class AbstractPool<
       id: crypto.randomUUID()
     }
     const res = this.internalExecute(workerNodeKey, workerNode, submittedTask)
-    let currentTask: Task<Data> = submittedTask
     if (
       this.opts.enableTasksQueue === true &&
-      (this.busy || this.tasksQueueSize(workerNodeKey) > 0)
+      (this.busy || this.workerNodes[workerNodeKey].tasksUsage.running > 0)
     ) {
-      currentTask = this.enqueueDequeueTask(
-        workerNodeKey,
-        submittedTask
-      ) as Task<Data>
+      this.enqueueTask(workerNodeKey, submittedTask)
+    } else {
+      this.sendToWorker(workerNode.worker, submittedTask)
     }
-    this.sendToWorker(workerNode.worker, currentTask)
     this.checkAndEmitEvents()
     // eslint-disable-next-line @typescript-eslint/return-await
     return res
@@ -556,14 +553,6 @@ export abstract class AbstractPool<
     const workerNodeKey = this.getWorkerNodeKey(worker)
     this.workerNodes.splice(workerNodeKey, 1)
     this.workerChoiceStrategyContext.remove(workerNodeKey)
-  }
-
-  private enqueueDequeueTask (
-    workerNodeKey: number,
-    task: Task<Data>
-  ): Task<Data> | undefined {
-    this.enqueueTask(workerNodeKey, task)
-    return this.dequeueTask(workerNodeKey)
   }
 
   private enqueueTask (workerNodeKey: number, task: Task<Data>): void {
