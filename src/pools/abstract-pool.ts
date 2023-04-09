@@ -244,10 +244,12 @@ export abstract class AbstractPool<
     let currentTask: Task<Data> = submittedTask
     if (
       this.opts.enableTasksQueue === true &&
-      (this.busy || this.tasksQueueLength(workerNodeKey) > 0)
+      (this.busy || this.tasksQueueSize(workerNodeKey) > 0)
     ) {
-      this.enqueueTask(workerNodeKey, submittedTask)
-      currentTask = this.dequeueTask(workerNodeKey) as Task<Data>
+      currentTask = this.enqueueDequeueTask(
+        workerNodeKey,
+        submittedTask
+      ) as Task<Data>
     }
     this.sendToWorker(workerNode.worker, currentTask)
     this.checkAndEmitEvents()
@@ -442,7 +444,7 @@ export abstract class AbstractPool<
           const workerNodeKey = this.getWorkerNodeKey(promiseResponse.worker)
           if (
             this.opts.enableTasksQueue === true &&
-            this.tasksQueueLength(workerNodeKey) > 0
+            this.tasksQueueSize(workerNodeKey) > 0
           ) {
             this.sendToWorker(
               promiseResponse.worker,
@@ -542,26 +544,34 @@ export abstract class AbstractPool<
    *
    * @param worker - The worker.
    */
-  protected removeWorkerNode (worker: Worker): void {
+  private removeWorkerNode (worker: Worker): void {
     const workerNodeKey = this.getWorkerNodeKey(worker)
     this.workerNodes.splice(workerNodeKey, 1)
     this.workerChoiceStrategyContext.remove(workerNodeKey)
   }
 
-  protected enqueueTask (workerNodeKey: number, task: Task<Data>): void {
+  private enqueueDequeueTask (
+    workerNodeKey: number,
+    task: Task<Data>
+  ): Task<Data> | undefined {
+    this.enqueueTask(workerNodeKey, task)
+    return this.dequeueTask(workerNodeKey)
+  }
+
+  private enqueueTask (workerNodeKey: number, task: Task<Data>): void {
     this.workerNodes[workerNodeKey].tasksQueue.push(task)
   }
 
-  protected dequeueTask (workerNodeKey: number): Task<Data> | undefined {
+  private dequeueTask (workerNodeKey: number): Task<Data> | undefined {
     return this.workerNodes[workerNodeKey].tasksQueue.shift()
   }
 
-  protected tasksQueueLength (workerNodeKey: number): number {
+  private tasksQueueSize (workerNodeKey: number): number {
     return this.workerNodes[workerNodeKey].tasksQueue.length
   }
 
-  protected flushTasksQueue (workerNodeKey: number): void {
-    if (this.tasksQueueLength(workerNodeKey) > 0) {
+  private flushTasksQueue (workerNodeKey: number): void {
+    if (this.tasksQueueSize(workerNodeKey) > 0) {
       for (const task of this.workerNodes[workerNodeKey].tasksQueue) {
         this.sendToWorker(this.workerNodes[workerNodeKey].worker, task)
       }
@@ -569,7 +579,7 @@ export abstract class AbstractPool<
     }
   }
 
-  protected flushTasksQueueByWorker (worker: Worker): void {
+  private flushTasksQueueByWorker (worker: Worker): void {
     const workerNodeKey = this.getWorkerNodeKey(worker)
     this.flushTasksQueue(workerNodeKey)
   }
