@@ -88,11 +88,12 @@ export class FairShareWorkerChoiceStrategy<
       performance.now(),
       this.workerLastVirtualTaskTimestamp.get(workerNodeKey)?.end ?? -Infinity
     )
+    const workerVirtualTaskTRunTime = this.requiredStatistics.medRunTime
+      ? this.pool.workerNodes[workerNodeKey].tasksUsage.medRunTime
+      : this.pool.workerNodes[workerNodeKey].tasksUsage.avgRunTime
     this.workerLastVirtualTaskTimestamp.set(workerNodeKey, {
       start: workerVirtualTaskStartTimestamp,
-      end:
-        workerVirtualTaskStartTimestamp +
-        (this.pool.workerNodes[workerNodeKey].tasksUsage.avgRunTime ?? 0)
+      end: workerVirtualTaskStartTimestamp + (workerVirtualTaskTRunTime ?? 0)
     })
   }
 }

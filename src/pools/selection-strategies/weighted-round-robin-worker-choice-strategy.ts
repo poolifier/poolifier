@@ -4,7 +4,8 @@ import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
-  RequiredStatistics
+  RequiredStatistics,
+  WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
 /**
@@ -57,9 +58,13 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
    * Constructs a worker choice strategy that selects with a weighted round robin scheduling algorithm.
    *
    * @param pool - The pool instance.
+   * @param opts - The worker choice strategy options.
    */
-  public constructor (pool: IPoolInternal<Worker, Data, Response>) {
-    super(pool)
+  public constructor (
+    pool: IPoolInternal<Worker, Data, Response>,
+    opts?: WorkerChoiceStrategyOptions
+  ) {
+    super(pool, opts)
     this.defaultWorkerWeight = this.computeWorkerWeight()
     this.initWorkersTaskRunTime()
   }
@@ -146,7 +151,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   private getWorkerVirtualTaskRunTime (workerNodeKey: number): number {
-    return this.pool.workerNodes[workerNodeKey].tasksUsage.avgRunTime
+    return this.requiredStatistics.medRunTime
+      ? this.pool.workerNodes[workerNodeKey].tasksUsage.medRunTime
+      : this.pool.workerNodes[workerNodeKey].tasksUsage.avgRunTime
   }
 
   private computeWorkerWeight (): number {

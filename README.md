@@ -174,6 +174,12 @@ Node versions >= 16.x are supported.
   `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN` and `WorkerChoiceStrategies.FAIR_SHARE` strategies are targeted to heavy and long tasks  
   Default: `WorkerChoiceStrategies.ROUND_ROBIN`
 
+- `workerChoiceStrategyOptions` (optional) - The worker choice strategy options object to use in this pool.  
+  Properties:
+
+  - `medRunTime` (optional) - Use the tasks median run time instead of the tasks average run time in worker choice strategies.
+    Default: { medRunTime: false }
+
 - `enableEvents` (optional) - Events emission enablement in this pool. Default: true
 - `enableTasksQueue` (optional, experimental) - Tasks queue per worker enablement in this pool. Default: false
 

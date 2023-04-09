@@ -5,7 +5,10 @@ import type {
   MessageHandler,
   OnlineHandler
 } from './worker'
-import type { WorkerChoiceStrategy } from './selection-strategies/selection-strategies-types'
+import type {
+  WorkerChoiceStrategy,
+  WorkerChoiceStrategyOptions
+} from './selection-strategies/selection-strategies-types'
 
 /**
  * Pool events emitter.
@@ -49,6 +52,10 @@ export interface PoolOptions<Worker> {
    * The worker choice strategy to use in this pool.
    */
   workerChoiceStrategy?: WorkerChoiceStrategy
+  /**
+   * The worker choice strategy options.
+   */
+  workerChoiceStrategyOptions?: WorkerChoiceStrategyOptions
   /**
    * Pool events emission.
    *

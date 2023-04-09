@@ -91,6 +91,9 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
+    expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
+      medRunTime: false
+    })
     expect(pool.opts.messageHandler).toBeUndefined()
     expect(pool.opts.errorHandler).toBeUndefined()
     expect(pool.opts.onlineHandler).toBeUndefined()
@@ -102,6 +105,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       {
         workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED,
+        workerChoiceStrategyOptions: { medRunTime: true },
         enableEvents: false,
         enableTasksQueue: true,
         messageHandler: testHandler,
@@ -116,6 +120,9 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.LESS_USED
     )
+    expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
+      medRunTime: true
+    })
     expect(pool.opts.messageHandler).toStrictEqual(testHandler)
     expect(pool.opts.errorHandler).toStrictEqual(testHandler)
     expect(pool.opts.onlineHandler).toStrictEqual(testHandler)

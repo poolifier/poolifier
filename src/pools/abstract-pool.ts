@@ -93,7 +93,11 @@ export abstract class AbstractPool<
     Worker,
     Data,
     Response
-    >(this, this.opts.workerChoiceStrategy)
+    >(
+      this,
+      this.opts.workerChoiceStrategy,
+      this.opts.workerChoiceStrategyOptions
+    )
   }
 
   private checkFilePath (filePath: string): void {
@@ -127,6 +131,8 @@ export abstract class AbstractPool<
     this.opts.workerChoiceStrategy =
       opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
     this.checkValidWorkerChoiceStrategy(this.opts.workerChoiceStrategy)
+    this.opts.workerChoiceStrategyOptions =
+      opts.workerChoiceStrategyOptions ?? { medRunTime: false }
     this.opts.enableEvents = opts.enableEvents ?? true
     this.opts.enableTasksQueue = opts.enableTasksQueue ?? false
   }

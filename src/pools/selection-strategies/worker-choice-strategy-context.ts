@@ -7,7 +7,8 @@ import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-stra
 import type {
   IWorkerChoiceStrategy,
   RequiredStatistics,
-  WorkerChoiceStrategy
+  WorkerChoiceStrategy,
+  WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 import { WorkerChoiceStrategies } from './selection-strategies-types'
 import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-worker-choice-strategy'
@@ -34,10 +35,12 @@ export class WorkerChoiceStrategyContext<
    *
    * @param pool - The pool instance.
    * @param workerChoiceStrategyType - The worker choice strategy.
+   * @param opts - The worker choice strategy options.
    */
   public constructor (
     pool: IPoolInternal<Worker, Data, Response>,
-    private workerChoiceStrategyType: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
+    private workerChoiceStrategyType: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN,
+    opts: WorkerChoiceStrategyOptions = { medRunTime: false }
   ) {
     this.execute.bind(this)
     this.workerChoiceStrategies = new Map<
@@ -46,23 +49,26 @@ export class WorkerChoiceStrategyContext<
     >([
       [
         WorkerChoiceStrategies.ROUND_ROBIN,
-        new RoundRobinWorkerChoiceStrategy<Worker, Data, Response>(pool)
+        new RoundRobinWorkerChoiceStrategy<Worker, Data, Response>(pool, opts)
       ],
       [
         WorkerChoiceStrategies.LESS_USED,
-        new LessUsedWorkerChoiceStrategy<Worker, Data, Response>(pool)
+        new LessUsedWorkerChoiceStrategy<Worker, Data, Response>(pool, opts)
       ],
       [
         WorkerChoiceStrategies.LESS_BUSY,
-        new LessBusyWorkerChoiceStrategy<Worker, Data, Response>(pool)
+        new LessBusyWorkerChoiceStrategy<Worker, Data, Response>(pool, opts)
       ],
       [
         WorkerChoiceStrategies.FAIR_SHARE,
-        new FairShareWorkerChoiceStrategy<Worker, Data, Response>(pool)
+        new FairShareWorkerChoiceStrategy<Worker, Data, Response>(pool, opts)
       ],
       [
         WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN,
-        new WeightedRoundRobinWorkerChoiceStrategy<Worker, Data, Response>(pool)
+        new WeightedRoundRobinWorkerChoiceStrategy<Worker, Data, Response>(
+          pool,
+          opts
+        )
       ]
     ])
   }

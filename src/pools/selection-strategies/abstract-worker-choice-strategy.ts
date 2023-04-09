@@ -3,7 +3,8 @@ import { PoolType } from '../pool-internal'
 import type { IWorker } from '../worker'
 import type {
   IWorkerChoiceStrategy,
-  RequiredStatistics
+  RequiredStatistics,
+  WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
 /**
@@ -21,7 +22,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   /** @inheritDoc */
   protected readonly isDynamicPool: boolean
   /** @inheritDoc */
-  public requiredStatistics: RequiredStatistics = {
+  public readonly requiredStatistics: RequiredStatistics = {
     runTime: false,
     avgRunTime: false,
     medRunTime: false
@@ -31,12 +32,21 @@ export abstract class AbstractWorkerChoiceStrategy<
    * Constructs a worker choice strategy bound to the pool.
    *
    * @param pool - The pool instance.
+   * @param opts - The worker choice strategy options.
    */
   public constructor (
-    protected readonly pool: IPoolInternal<Worker, Data, Response>
+    protected readonly pool: IPoolInternal<Worker, Data, Response>,
+    protected readonly opts: WorkerChoiceStrategyOptions = { medRunTime: false }
   ) {
+    this.checkOptions()
     this.isDynamicPool = this.pool.type === PoolType.DYNAMIC
     this.choose.bind(this)
+  }
+
+  private checkOptions (): void {
+    if (this.requiredStatistics.avgRunTime && this.opts.medRunTime === true) {
+      this.requiredStatistics.medRunTime = true
+    }
   }
 
   /** @inheritDoc */
