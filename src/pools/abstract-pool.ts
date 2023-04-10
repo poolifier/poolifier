@@ -336,11 +336,7 @@ export abstract class AbstractPool<
    */
   protected chooseWorkerNode (): [number, WorkerNode<Worker, Data>] {
     let workerNodeKey: number
-    if (
-      this.type === PoolType.DYNAMIC &&
-      !this.full &&
-      this.findFreeWorkerNodeKey() === -1
-    ) {
+    if (this.type === PoolType.DYNAMIC && !this.full && this.internalBusy()) {
       const workerCreated = this.createAndSetupWorker()
       this.registerWorkerMessageListener(workerCreated, message => {
         if (

@@ -47,6 +47,6 @@ export class DynamicThreadPool<
 
   /** @inheritDoc */
   public get busy (): boolean {
-    return this.full && this.findFreeWorkerNodeKey() === -1
+    return this.full && this.internalBusy()
   }
 }
