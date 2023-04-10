@@ -3,22 +3,31 @@ import type { CircularArray } from '../circular-array'
 /**
  * Callback invoked if the worker has received a message.
  */
-export type MessageHandler<Worker> = (this: Worker, m: unknown) => void
+export type MessageHandler<Worker extends IWorker> = (
+  this: Worker,
+  m: unknown
+) => void
 
 /**
  * Callback invoked if the worker raised an error.
  */
-export type ErrorHandler<Worker> = (this: Worker, e: Error) => void
+export type ErrorHandler<Worker extends IWorker> = (
+  this: Worker,
+  e: Error
+) => void
 
 /**
  * Callback invoked when the worker has started successfully.
  */
-export type OnlineHandler<Worker> = (this: Worker) => void
+export type OnlineHandler<Worker extends IWorker> = (this: Worker) => void
 
 /**
  * Callback invoked when the worker exits successfully.
  */
-export type ExitHandler<Worker> = (this: Worker, code: number) => void
+export type ExitHandler<Worker extends IWorker> = (
+  this: Worker,
+  code: number
+) => void
 
 /**
  * Worker task interface.
