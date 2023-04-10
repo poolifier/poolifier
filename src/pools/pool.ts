@@ -2,6 +2,7 @@ import EventEmitter from 'node:events'
 import type {
   ErrorHandler,
   ExitHandler,
+  IWorker,
   MessageHandler,
   OnlineHandler
 } from './worker'
@@ -31,7 +32,7 @@ export type PoolEvent = keyof typeof PoolEvents
 /**
  * Options for a poolifier pool.
  */
-export interface PoolOptions<Worker> {
+export interface PoolOptions<Worker extends IWorker> {
   /**
    * A function that will listen for message event on each worker.
    */
