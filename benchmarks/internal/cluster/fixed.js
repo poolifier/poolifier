@@ -12,6 +12,12 @@ const fixedPool = new FixedClusterPool(
   './benchmarks/internal/cluster/worker.js'
 )
 
+const fixedPoolTasksQueue = new FixedClusterPool(
+  size,
+  './benchmarks/internal/cluster/worker.js',
+  { enableTasksQueue: true }
+)
+
 const fixedPoolLessUsed = new FixedClusterPool(
   size,
   './benchmarks/internal/cluster/worker.js',
@@ -42,6 +48,12 @@ async function fixedClusterTest (
   return runPoolifierTest(fixedPool, { tasks, workerData })
 }
 
+async function fixedClusterTasksQueueTest (
+  { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
+) {
+  return runPoolifierTest(fixedPoolTasksQueue, { tasks, workerData })
+}
+
 async function fixedClusterTestLessUsed (
   { tasks, workerData } = { tasks: numberOfTasks, workerData: { proof: 'ok' } }
 ) {
@@ -68,6 +80,7 @@ async function fixedClusterTestFairShare (
 
 module.exports = {
   fixedClusterTest,
+  fixedClusterTasksQueueTest,
   fixedClusterTestLessUsed,
   fixedClusterTestLessBusy,
   fixedClusterTestWeightedRoundRobin,
