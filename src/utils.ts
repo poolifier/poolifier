@@ -1,3 +1,5 @@
+import type { WorkerChoiceStrategyOptions } from './pools/selection-strategies/selection-strategies-types'
+
 /**
  * An intentional empty function.
  */
@@ -6,7 +8,15 @@ export const EMPTY_FUNCTION: () => void = Object.freeze(() => {
 })
 
 /**
- * Returns the median of the given data set.
+ * Default worker choice strategy options.
+ */
+export const DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS: WorkerChoiceStrategyOptions =
+  {
+    medRunTime: false
+  }
+
+/**
+ * Compute the median of the given data set.
  *
  * @param dataSet - Data set.
  * @returns The median of the given data set.

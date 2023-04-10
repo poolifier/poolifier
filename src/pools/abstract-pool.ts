@@ -1,6 +1,10 @@
 import crypto from 'node:crypto'
 import type { MessageValue, PromiseResponseWrapper } from '../utility-types'
-import { EMPTY_FUNCTION, median } from '../utils'
+import {
+  DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
+  EMPTY_FUNCTION,
+  median
+} from '../utils'
 import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
 import { PoolEvents, type PoolOptions } from './pool'
 import { PoolEmitter } from './pool'
@@ -132,7 +136,7 @@ export abstract class AbstractPool<
       opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
     this.checkValidWorkerChoiceStrategy(this.opts.workerChoiceStrategy)
     this.opts.workerChoiceStrategyOptions =
-      opts.workerChoiceStrategyOptions ?? { medRunTime: false }
+      opts.workerChoiceStrategyOptions ?? DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
     this.opts.enableEvents = opts.enableEvents ?? true
     this.opts.enableTasksQueue = opts.enableTasksQueue ?? false
   }

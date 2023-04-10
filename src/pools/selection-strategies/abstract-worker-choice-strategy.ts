@@ -1,3 +1,4 @@
+import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 import type { IPoolInternal } from '../pool-internal'
 import { PoolType } from '../pool-internal'
 import type { IWorker } from '../worker'
@@ -36,7 +37,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   public constructor (
     protected readonly pool: IPoolInternal<Worker, Data, Response>,
-    protected readonly opts: WorkerChoiceStrategyOptions = { medRunTime: false }
+    protected readonly opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     this.checkOptions(this.opts)
     this.isDynamicPool = this.pool.type === PoolType.DYNAMIC

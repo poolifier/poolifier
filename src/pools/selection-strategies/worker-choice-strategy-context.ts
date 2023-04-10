@@ -1,3 +1,4 @@
+import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 import type { IPoolInternal } from '../pool-internal'
 import type { IWorker } from '../worker'
 import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strategy'
@@ -40,7 +41,7 @@ export class WorkerChoiceStrategyContext<
   public constructor (
     pool: IPoolInternal<Worker, Data, Response>,
     private workerChoiceStrategyType: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN,
-    opts: WorkerChoiceStrategyOptions = { medRunTime: false }
+    opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     this.execute.bind(this)
     this.workerChoiceStrategies = new Map<
