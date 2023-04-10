@@ -142,7 +142,7 @@ export abstract class AbstractPool<
     if (this.opts.enableTasksQueue) {
       if ((opts.tasksQueueOptions?.concurrency as number) <= 0) {
         throw new Error(
-          `Invalid tasks queue concurrency '${
+          `Invalid worker tasks concurrency '${
             (opts.tasksQueueOptions as TasksQueueOptions).concurrency as number
           }'`
         )

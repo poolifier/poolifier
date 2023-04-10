@@ -43,8 +43,17 @@ export interface WorkerChoiceStrategyOptions {
  * Pool worker tasks usage statistics requirements.
  */
 export interface RequiredStatistics {
+  /**
+   * Require tasks run time.
+   */
   runTime: boolean
+  /**
+   * Require tasks average run time.
+   */
   avgRunTime: boolean
+  /**
+   * Require tasks median run time.
+   */
   medRunTime: boolean
 }
 

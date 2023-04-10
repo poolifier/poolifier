@@ -7,7 +7,13 @@ import type { IWorker, WorkerNode } from './worker'
  * @enum
  */
 export enum PoolType {
+  /**
+   * Fixed pool type.
+   */
   FIXED = 'fixed',
+  /**
+   * Dynamic pool type.
+   */
   DYNAMIC = 'dynamic'
 }
 
