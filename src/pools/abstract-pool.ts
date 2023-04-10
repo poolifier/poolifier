@@ -258,8 +258,8 @@ export abstract class AbstractPool<
   /** @inheritDoc */
   public async destroy (): Promise<void> {
     await Promise.all(
-      this.workerNodes.map(async workerNode => {
-        this.flushTasksQueueByWorker(workerNode.worker)
+      this.workerNodes.map(async (workerNode, workerNodeKey) => {
+        this.flushTasksQueue(workerNodeKey)
         await this.destroyWorker(workerNode.worker)
       })
     )
