@@ -214,10 +214,7 @@ export abstract class AbstractPool<
   public abstract get busy (): boolean
 
   protected internalBusy (): boolean {
-    return (
-      this.numberOfRunningTasks >= this.numberOfWorkers &&
-      this.findFreeWorkerNodeKey() === -1
-    )
+    return this.findFreeWorkerNodeKey() === -1
   }
 
   /** @inheritDoc */
