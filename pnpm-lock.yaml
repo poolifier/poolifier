@@ -14,8 +14,8 @@ devDependencies:
     specifier: ^3.1.0
     version: 3.1.0(release-it@15.10.1)
   '@rollup/plugin-terser':
-    specifier: ^0.4.0
-    version: 0.4.0(rollup@3.20.2)
+    specifier: ^0.4.1
+    version: 0.4.1(rollup@3.20.2)
   '@rollup/plugin-typescript':
     specifier: ^11.1.0
     version: 11.1.0(rollup@3.20.2)(typescript@5.0.4)
@@ -719,8 +719,8 @@ packages:
       string-template: 1.0.0
     dev: true
 
-  /@rollup/plugin-terser@0.4.0(rollup@3.20.2):
-    resolution: {integrity: sha512-Ipcf3LPNerey1q9ZMjiaWHlNPEHNU/B5/uh9zXLltfEQ1lVSLLeZSgAtTPWGyw8Ip1guOeq+mDtdOlEj/wNxQw==}
+  /@rollup/plugin-terser@0.4.1(rollup@3.20.2):
+    resolution: {integrity: sha512-aKS32sw5a7hy+fEXVy+5T95aDIwjpGHCTv833HXVtyKMDoVS7pBr5K3L9hEQoNqbJFjfANPrNpIXlTQ7is00eA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^2.x || ^3.x
@@ -4146,8 +4146,8 @@ packages:
       brace-expansion: 2.0.1
     dev: true
 
-  /minimatch@7.4.5:
-    resolution: {integrity: sha512-OzOamaOmNBJZUv2qqY1OSWa+++4YPpOkLgkc0w30Oov5ufKlWWXnFUl0l4dgmSv5Shq/zRVkEOXAe2NaqO4l5Q==}
+  /minimatch@7.4.6:
+    resolution: {integrity: sha512-sBz8G/YjVniEz6lKPNpKxXwazJe4c19fEfV2GDMX6AjFz+MX9uDWIZW8XreVhkFW3fkIdTv/gxWr/Kks5FFAVw==}
     engines: {node: '>=10'}
     dependencies:
       brace-expansion: 2.0.1
@@ -5840,7 +5840,7 @@ packages:
     dependencies:
       lunr: 2.3.9
       marked: 4.3.0
-      minimatch: 7.4.5
+      minimatch: 7.4.6
       shiki: 0.14.1
       typescript: 5.0.4
     dev: true
