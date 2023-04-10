@@ -544,8 +544,8 @@ export abstract class AbstractPool<
     this.sendToWorker(this.workerNodes[workerNodeKey].worker, task)
   }
 
-  private enqueueTask (workerNodeKey: number, task: Task<Data>): void {
-    this.workerNodes[workerNodeKey].tasksQueue.push(task)
+  private enqueueTask (workerNodeKey: number, task: Task<Data>): number {
+    return this.workerNodes[workerNodeKey].tasksQueue.push(task)
   }
 
   private dequeueTask (workerNodeKey: number): Task<Data> | undefined {

@@ -38,13 +38,13 @@ export abstract class AbstractWorkerChoiceStrategy<
     protected readonly pool: IPoolInternal<Worker, Data, Response>,
     protected readonly opts: WorkerChoiceStrategyOptions = { medRunTime: false }
   ) {
-    this.checkOptions()
+    this.checkOptions(this.opts)
     this.isDynamicPool = this.pool.type === PoolType.DYNAMIC
     this.choose.bind(this)
   }
 
-  private checkOptions (): void {
-    if (this.requiredStatistics.avgRunTime && this.opts.medRunTime === true) {
+  private checkOptions (opts: WorkerChoiceStrategyOptions): void {
+    if (this.requiredStatistics.avgRunTime && opts.medRunTime === true) {
       this.requiredStatistics.medRunTime = true
     }
   }
