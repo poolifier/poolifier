@@ -178,10 +178,18 @@ Node versions >= 16.x are supported.
   Properties:
 
   - `medRunTime` (optional) - Use the tasks median run time instead of the tasks average run time in worker choice strategies.
-    Default: { medRunTime: false }
+
+  Default: { medRunTime: false }
 
 - `enableEvents` (optional) - Events emission enablement in this pool. Default: true
 - `enableTasksQueue` (optional, experimental) - Tasks queue per worker enablement in this pool. Default: false
+
+- `tasksQueueOptions` (optional, experimental) - The worker tasks queue options object to use in this pool.  
+  Properties:
+
+  - `concurrency` (optional) - The maximum number of tasks that can be executed concurrently on a worker.
+
+  Default: { concurrency: 1 }
 
 ### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
 

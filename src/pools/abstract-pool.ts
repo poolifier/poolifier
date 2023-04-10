@@ -6,7 +6,7 @@ import {
   median
 } from '../utils'
 import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
-import { PoolEvents, type PoolOptions } from './pool'
+import { PoolEvents, type PoolOptions, type TasksQueueOptions } from './pool'
 import { PoolEmitter } from './pool'
 import type { IPoolInternal } from './pool-internal'
 import { PoolType } from './pool-internal'
@@ -139,6 +139,18 @@ export abstract class AbstractPool<
       opts.workerChoiceStrategyOptions ?? DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
     this.opts.enableEvents = opts.enableEvents ?? true
     this.opts.enableTasksQueue = opts.enableTasksQueue ?? false
+    if (this.opts.enableTasksQueue) {
+      if ((opts.tasksQueueOptions?.concurrency as number) <= 0) {
+        throw new Error(
+          `Invalid tasks queue concurrency '${
+            (opts.tasksQueueOptions as TasksQueueOptions).concurrency as number
+          }'`
+        )
+      }
+      this.opts.tasksQueueOptions = {
+        concurrency: opts.tasksQueueOptions?.concurrency ?? 1
+      }
+    }
   }
 
   private checkValidWorkerChoiceStrategy (
@@ -245,7 +257,11 @@ export abstract class AbstractPool<
     })
     if (
       this.opts.enableTasksQueue === true &&
-      (this.busy || this.workerNodes[workerNodeKey].tasksUsage.running > 0)
+      (this.busy ||
+        this.workerNodes[workerNodeKey].tasksUsage.running >
+          ((this.opts.tasksQueueOptions as TasksQueueOptions)
+            .concurrency as number) -
+            1)
     ) {
       this.enqueueTask(workerNodeKey, submittedTask)
     } else {

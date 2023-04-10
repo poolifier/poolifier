@@ -30,6 +30,18 @@ export const PoolEvents = Object.freeze({
 export type PoolEvent = keyof typeof PoolEvents
 
 /**
+ * Worker tasks queue options.
+ */
+export interface TasksQueueOptions {
+  /**
+   * Maximum number of tasks that can be executed concurrently on a worker.
+   *
+   * @defaultValue 1
+   */
+  concurrency?: number
+}
+
+/**
  * Options for a poolifier pool.
  */
 export interface PoolOptions<Worker extends IWorker> {
@@ -70,6 +82,13 @@ export interface PoolOptions<Worker extends IWorker> {
    * @defaultValue false
    */
   enableTasksQueue?: boolean
+  /**
+   * Pool worker tasks queue options.
+   *
+   * @experimental
+   * @defaultValue \{ concurrency: 1 \}
+   */
+  tasksQueueOptions?: TasksQueueOptions
 }
 
 /**
