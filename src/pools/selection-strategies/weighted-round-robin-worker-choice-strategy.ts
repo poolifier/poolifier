@@ -1,5 +1,4 @@
 import { cpus } from 'node:os'
-import type { IPoolInternal } from '../pool-internal'
 import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
@@ -7,6 +6,7 @@ import type {
   RequiredStatistics,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
+import type { IPool } from '../pool'
 
 /**
  * Virtual task runtime.
@@ -61,7 +61,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
    * @param opts - The worker choice strategy options.
    */
   public constructor (
-    pool: IPoolInternal<Worker, Data, Response>,
+    pool: IPool<Worker, Data, Response>,
     opts?: WorkerChoiceStrategyOptions
   ) {
     super(pool, opts)

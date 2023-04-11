@@ -1,4 +1,4 @@
-import { PoolType } from '../pool-internal'
+import { PoolType } from '../pool'
 import type { ClusterPoolOptions } from './fixed'
 import { FixedClusterPool } from './fixed'
 

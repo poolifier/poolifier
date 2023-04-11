@@ -4,12 +4,29 @@ import type {
   ExitHandler,
   IWorker,
   MessageHandler,
-  OnlineHandler
+  OnlineHandler,
+  WorkerNode
 } from './worker'
 import type {
   WorkerChoiceStrategy,
   WorkerChoiceStrategyOptions
 } from './selection-strategies/selection-strategies-types'
+
+/**
+ * Pool types.
+ *
+ * @enum
+ */
+export enum PoolType {
+  /**
+   * Fixed pool type.
+   */
+  FIXED = 'fixed',
+  /**
+   * Dynamic pool type.
+   */
+  DYNAMIC = 'dynamic'
+}
 
 /**
  * Pool events emitter.
@@ -93,10 +110,25 @@ export interface PoolOptions<Worker extends IWorker> {
 /**
  * Contract definition for a poolifier pool.
  *
+ * @typeParam Worker - Type of worker which manages this pool.
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
  * @typeParam Response - Type of response of execution. This can only be serializable data.
  */
-export interface IPool<Data = unknown, Response = unknown> {
+export interface IPool<
+  Worker extends IWorker,
+  Data = unknown,
+  Response = unknown
+> {
+  /**
+   * Pool type.
+   *
+   * If it is `'dynamic'`, it provides the `max` property.
+   */
+  readonly type: PoolType
+  /**
+   * Pool worker nodes.
+   */
+  readonly workerNodes: Array<WorkerNode<Worker, Data>>
   /**
    * Emitter on which events can be listened to.
    *
@@ -106,6 +138,28 @@ export interface IPool<Data = unknown, Response = unknown> {
    * - `'busy'`: Emitted when the pool is busy.
    */
   readonly emitter?: PoolEmitter
+  /**
+   * Whether the pool is full or not.
+   *
+   * The pool filling boolean status.
+   */
+  readonly full: boolean
+  /**
+   * Whether the pool is busy or not.
+   *
+   * The pool busyness boolean status.
+   */
+  readonly busy: boolean
+  /**
+   * Finds a free worker node key based on the number of tasks the worker has applied.
+   *
+   * If a worker is found with `0` running tasks, it is detected as free and its worker node key is returned.
+   *
+   * If no free worker is found, `-1` is returned.
+   *
+   * @returns A worker node key if there is one, `-1` otherwise.
+   */
+  findFreeWorkerNodeKey: () => number
   /**
    * Performs the task specified in the constructor with the data parameter.
    *

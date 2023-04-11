@@ -6,10 +6,14 @@ import {
   median
 } from '../utils'
 import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
-import { PoolEvents, type PoolOptions, type TasksQueueOptions } from './pool'
+import {
+  PoolEvents,
+  type IPool,
+  type PoolOptions,
+  type TasksQueueOptions,
+  PoolType
+} from './pool'
 import { PoolEmitter } from './pool'
-import type { IPoolInternal } from './pool-internal'
-import { PoolType } from './pool-internal'
 import type { IWorker, Task, TasksUsage, WorkerNode } from './worker'
 import {
   WorkerChoiceStrategies,
@@ -29,7 +33,7 @@ export abstract class AbstractPool<
   Worker extends IWorker,
   Data = unknown,
   Response = unknown
-> implements IPoolInternal<Worker, Data, Response> {
+> implements IPool<Worker, Data, Response> {
   /** @inheritDoc */
   public readonly workerNodes: Array<WorkerNode<Worker, Data>> = []
 

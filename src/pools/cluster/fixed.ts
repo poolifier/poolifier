@@ -3,7 +3,7 @@ import cluster from 'node:cluster'
 import type { MessageValue } from '../../utility-types'
 import { AbstractPool } from '../abstract-pool'
 import type { PoolOptions } from '../pool'
-import { PoolType } from '../pool-internal'
+import { PoolType } from '../pool'
 
 /**
  * Options for a poolifier cluster pool.

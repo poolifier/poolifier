@@ -7,7 +7,7 @@ import {
 import type { Draft, MessageValue } from '../../utility-types'
 import { AbstractPool } from '../abstract-pool'
 import type { PoolOptions } from '../pool'
-import { PoolType } from '../pool-internal'
+import { PoolType } from '../pool'
 
 /**
  * A thread worker with message channels for communication between main thread and thread worker.

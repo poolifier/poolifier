@@ -1,6 +1,5 @@
 import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
-import type { IPoolInternal } from '../pool-internal'
-import { PoolType } from '../pool-internal'
+import { PoolType, type IPool } from '../pool'
 import type { IWorker } from '../worker'
 import type {
   IWorkerChoiceStrategy,
@@ -36,7 +35,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @param opts - The worker choice strategy options.
    */
   public constructor (
-    protected readonly pool: IPoolInternal<Worker, Data, Response>,
+    protected readonly pool: IPool<Worker, Data, Response>,
     protected readonly opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     this.checkOptions(this.opts)
