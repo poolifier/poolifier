@@ -61,7 +61,7 @@ export interface TasksQueueOptions {
 /**
  * Options for a poolifier pool.
  *
- * @typeParam Worker - The worker type.
+ * @typeParam Worker - Type of worker.
  */
 export interface PoolOptions<Worker extends IWorker> {
   /**
