@@ -51,7 +51,7 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
-  public async destroyWorker (
+  protected async destroyWorker (
     worker: ThreadWorkerWithMessageChannel
   ): Promise<void> {
     this.sendToWorker(worker, { kill: 1 })

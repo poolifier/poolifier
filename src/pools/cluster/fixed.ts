@@ -66,7 +66,7 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
-  public destroyWorker (worker: Worker): void {
+  protected destroyWorker (worker: Worker): void {
     this.sendToWorker(worker, { kill: 1 })
     worker.kill()
   }
