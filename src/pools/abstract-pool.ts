@@ -258,10 +258,9 @@ export abstract class AbstractPool<
     if (
       this.opts.enableTasksQueue === true &&
       (this.busy ||
-        this.workerNodes[workerNodeKey].tasksUsage.running >
+        this.workerNodes[workerNodeKey].tasksUsage.running >=
           ((this.opts.tasksQueueOptions as TasksQueueOptions)
-            .concurrency as number) -
-            1)
+            .concurrency as number))
     ) {
       this.enqueueTask(workerNodeKey, submittedTask)
     } else {
