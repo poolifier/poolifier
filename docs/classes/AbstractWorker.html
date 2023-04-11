@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>ClusterWorker | poolifier</title><meta name="description" content="Documentation for poolifier"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>AbstractWorker | poolifier</title><meta name="description" content="Documentation for poolifier"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -13,22 +13,18 @@
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
 <li><a href="../index.html">poolifier</a></li>
-<li><a href="ClusterWorker.html">ClusterWorker</a></li></ul>
-<h1>Class ClusterWorker&lt;Data, Response&gt;</h1></div>
+<li><a href="AbstractWorker.html">AbstractWorker</a></li></ul>
+<h1>Class AbstractWorker&lt;MainWorker, Data, Response&gt;<code class="tsd-tag ts-flagAbstract">Abstract</code> </h1></div>
 <section class="tsd-panel tsd-comment">
-<div class="tsd-comment tsd-typography"><p>A cluster worker used by a poolifier <code>ClusterPool</code>.</p>
-<p>When this worker is inactive for more than the given <code>maxInactiveTime</code>,
-it will send a termination request to its main worker.</p>
-<p>If you use a <code>DynamicClusterPool</code> the extra workers that were created will be terminated,
-but the minimum number of workers will be guaranteed.</p>
-
-<h3>Author</h3><p><a href="https://github.com/Shinigami92">Christopher Quadflieg</a></p>
-
-<h3>Since</h3><p>2.0.0</p>
+<div class="tsd-comment tsd-typography"><p>Base class that implements some shared logic for all poolifier workers.</p>
 </div></section> 
 <section class="tsd-panel tsd-type-parameters">
 <h4>Type Parameters</h4>
 <ul class="tsd-type-parameters">
+<li>
+<h4>MainWorker<span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">Worker</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">MessagePort</span></h4>
+<div class="tsd-comment tsd-typography"><p>Type of main worker.</p>
+</div></li>
 <li>
 <h4>Data = <span class="tsd-signature-type">unknown</span></h4>
 <div class="tsd-comment tsd-typography"><p>Type of data this worker receives from pool&#39;s execution. This can only be serializable data.</p>
@@ -40,11 +36,14 @@ but the minimum number of workers will be guaranteed.</p>
 <section class="tsd-panel tsd-hierarchy">
 <h4>Hierarchy</h4>
 <ul class="tsd-hierarchy">
-<li><a href="AbstractWorker.html" class="tsd-signature-type" data-tsd-kind="Class">AbstractWorker</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Worker</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span>
+<li><span class="tsd-signature-type">AsyncResource</span>
 <ul class="tsd-hierarchy">
-<li><span class="target">ClusterWorker</span></li></ul></li></ul></section><aside class="tsd-sources">
+<li><span class="target">AbstractWorker</span>
+<ul class="tsd-hierarchy">
+<li><a href="ClusterWorker.html" class="tsd-signature-type" data-tsd-kind="Class">ClusterWorker</a></li>
+<li><a href="ThreadWorker.html" class="tsd-signature-type" data-tsd-kind="Class">ThreadWorker</a></li></ul></li></ul></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/cluster-worker.ts#L21">src/worker/cluster-worker.ts:21</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L19">src/worker/abstract-worker.ts:19</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -52,44 +51,48 @@ but the minimum number of workers will be guaranteed.</p>
 <div class="tsd-accordion-details">
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Constructors</h3>
-<div class="tsd-index-list"><a href="ClusterWorker.html#constructor" class="tsd-index-link tsd-kind-constructor tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#4D7FFF" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-512-path"></rect><path d="M11.898 16.1201C11.098 16.1201 10.466 15.8961 10.002 15.4481C9.53803 15.0001 9.30603 14.3841 9.30603 13.6001V9.64012C9.30603 8.85612 9.53803 8.24012 10.002 7.79212C10.466 7.34412 11.098 7.12012 11.898 7.12012C12.682 7.12012 13.306 7.34812 13.77 7.80412C14.234 8.25212 14.466 8.86412 14.466 9.64012H13.386C13.386 9.14412 13.254 8.76412 12.99 8.50012C12.734 8.22812 12.37 8.09212 11.898 8.09212C11.426 8.09212 11.054 8.22412 10.782 8.48812C10.518 8.75212 10.386 9.13212 10.386 9.62812V13.6001C10.386 14.0961 10.518 14.4801 10.782 14.7521C11.054 15.0161 11.426 15.1481 11.898 15.1481C12.37 15.1481 12.734 15.0161 12.99 14.7521C13.254 14.4801 13.386 14.0961 13.386 13.6001H14.466C14.466 14.3761 14.234 14.9921 13.77 15.4481C13.306 15.8961 12.682 16.1201 11.898 16.1201Z" fill="var(--color-text)" id="icon-512-text"></path></svg><span>constructor</span></a>
+<div class="tsd-index-list"><a href="AbstractWorker.html#constructor" class="tsd-index-link tsd-kind-constructor tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#4D7FFF" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-512-path"></rect><path d="M11.898 16.1201C11.098 16.1201 10.466 15.8961 10.002 15.4481C9.53803 15.0001 9.30603 14.3841 9.30603 13.6001V9.64012C9.30603 8.85612 9.53803 8.24012 10.002 7.79212C10.466 7.34412 11.098 7.12012 11.898 7.12012C12.682 7.12012 13.306 7.34812 13.77 7.80412C14.234 8.25212 14.466 8.86412 14.466 9.64012H13.386C13.386 9.14412 13.254 8.76412 12.99 8.50012C12.734 8.22812 12.37 8.09212 11.898 8.09212C11.426 8.09212 11.054 8.22412 10.782 8.48812C10.518 8.75212 10.386 9.13212 10.386 9.62812V13.6001C10.386 14.0961 10.518 14.4801 10.782 14.7521C11.054 15.0161 11.426 15.1481 11.898 15.1481C12.37 15.1481 12.734 15.0161 12.99 14.7521C13.254 14.4801 13.386 14.0961 13.386 13.6001H14.466C14.466 14.3761 14.234 14.9921 13.77 15.4481C13.306 15.8961 12.682 16.1201 11.898 16.1201Z" fill="var(--color-text)" id="icon-512-text"></path></svg><span>constructor</span></a>
 </div></section>
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Properties</h3>
-<div class="tsd-index-list"><a href="ClusterWorker.html#aliveInterval" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF984D" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-1024-path"></rect><path d="M9.354 16V7.24H12.174C12.99 7.24 13.638 7.476 14.118 7.948C14.606 8.412 14.85 9.036 14.85 9.82C14.85 10.604 14.606 11.232 14.118 11.704C13.638 12.168 12.99 12.4 12.174 12.4H10.434V16H9.354ZM10.434 11.428H12.174C12.646 11.428 13.022 11.284 13.302 10.996C13.59 10.7 13.734 10.308 13.734 9.82C13.734 9.324 13.59 8.932 13.302 8.644C13.022 8.356 12.646 8.212 12.174 8.212H10.434V11.428Z" fill="var(--color-text)" id="icon-1024-text"></path></svg><span>alive<wbr/>Interval?</span></a>
-<a href="ClusterWorker.html#isMain" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>is<wbr/>Main</span></a>
-<a href="ClusterWorker.html#lastTaskTimestamp" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>last<wbr/>Task<wbr/>Timestamp</span></a>
-<a href="ClusterWorker.html#mainWorker" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>main<wbr/>Worker</span></a>
-<a href="ClusterWorker.html#opts" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>opts</span></a>
+<div class="tsd-index-list"><a href="AbstractWorker.html#aliveInterval" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF984D" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-1024-path"></rect><path d="M9.354 16V7.24H12.174C12.99 7.24 13.638 7.476 14.118 7.948C14.606 8.412 14.85 9.036 14.85 9.82C14.85 10.604 14.606 11.232 14.118 11.704C13.638 12.168 12.99 12.4 12.174 12.4H10.434V16H9.354ZM10.434 11.428H12.174C12.646 11.428 13.022 11.284 13.302 10.996C13.59 10.7 13.734 10.308 13.734 9.82C13.734 9.324 13.59 8.932 13.302 8.644C13.022 8.356 12.646 8.212 12.174 8.212H10.434V11.428Z" fill="var(--color-text)" id="icon-1024-text"></path></svg><span>alive<wbr/>Interval?</span></a>
+<a href="AbstractWorker.html#isMain" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>is<wbr/>Main</span></a>
+<a href="AbstractWorker.html#lastTaskTimestamp" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>last<wbr/>Task<wbr/>Timestamp</span></a>
+<a href="AbstractWorker.html#mainWorker" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>main<wbr/>Worker</span></a>
+<a href="AbstractWorker.html#opts" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>opts</span></a>
 </div></section>
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Methods</h3>
-<div class="tsd-index-list"><a href="ClusterWorker.html#asyncId" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF4DB8" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-2048-path"></rect><path d="M9.162 16V7.24H10.578L11.514 10.072C11.602 10.328 11.674 10.584 11.73 10.84C11.794 11.088 11.842 11.28 11.874 11.416C11.906 11.28 11.954 11.088 12.018 10.84C12.082 10.584 12.154 10.324 12.234 10.06L13.122 7.24H14.538V16H13.482V12.82C13.482 12.468 13.49 12.068 13.506 11.62C13.53 11.172 13.558 10.716 13.59 10.252C13.622 9.78 13.654 9.332 13.686 8.908C13.726 8.476 13.762 8.1 13.794 7.78L12.366 12.16H11.334L9.894 7.78C9.934 8.092 9.97 8.456 10.002 8.872C10.042 9.28 10.078 9.716 10.11 10.18C10.142 10.636 10.166 11.092 10.182 11.548C10.206 12.004 10.218 12.428 10.218 12.82V16H9.162Z" fill="var(--color-text)" id="icon-2048-text"></path></svg><span>async<wbr/>Id</span></a>
-<a href="ClusterWorker.html#bind" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>bind</span></a>
-<a href="ClusterWorker.html#checkAlive" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>check<wbr/>Alive</span></a>
-<a href="ClusterWorker.html#emitDestroy" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>emit<wbr/>Destroy</span></a>
-<a href="ClusterWorker.html#getMainWorker" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>get<wbr/>Main<wbr/>Worker</span></a>
-<a href="ClusterWorker.html#handleError" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>handle<wbr/>Error</span></a>
-<a href="ClusterWorker.html#messageListener" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>message<wbr/>Listener</span></a>
-<a href="ClusterWorker.html#run" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>run</span></a>
-<a href="ClusterWorker.html#runAsync" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>run<wbr/>Async</span></a>
-<a href="ClusterWorker.html#runInAsyncScope" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>run<wbr/>In<wbr/>Async<wbr/>Scope</span></a>
-<a href="ClusterWorker.html#sendToMainWorker" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>send<wbr/>To<wbr/>Main<wbr/>Worker</span></a>
-<a href="ClusterWorker.html#triggerAsyncId" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>trigger<wbr/>Async<wbr/>Id</span></a>
-<a href="ClusterWorker.html#bind-2" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>bind</span></a>
+<div class="tsd-index-list"><a href="AbstractWorker.html#asyncId" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF4DB8" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-2048-path"></rect><path d="M9.162 16V7.24H10.578L11.514 10.072C11.602 10.328 11.674 10.584 11.73 10.84C11.794 11.088 11.842 11.28 11.874 11.416C11.906 11.28 11.954 11.088 12.018 10.84C12.082 10.584 12.154 10.324 12.234 10.06L13.122 7.24H14.538V16H13.482V12.82C13.482 12.468 13.49 12.068 13.506 11.62C13.53 11.172 13.558 10.716 13.59 10.252C13.622 9.78 13.654 9.332 13.686 8.908C13.726 8.476 13.762 8.1 13.794 7.78L12.366 12.16H11.334L9.894 7.78C9.934 8.092 9.97 8.456 10.002 8.872C10.042 9.28 10.078 9.716 10.11 10.18C10.142 10.636 10.166 11.092 10.182 11.548C10.206 12.004 10.218 12.428 10.218 12.82V16H9.162Z" fill="var(--color-text)" id="icon-2048-text"></path></svg><span>async<wbr/>Id</span></a>
+<a href="AbstractWorker.html#bind" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>bind</span></a>
+<a href="AbstractWorker.html#checkAlive" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>check<wbr/>Alive</span></a>
+<a href="AbstractWorker.html#checkFunctionInput" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>check<wbr/>Function<wbr/>Input</span></a>
+<a href="AbstractWorker.html#checkWorkerOptions" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>check<wbr/>Worker<wbr/>Options</span></a>
+<a href="AbstractWorker.html#emitDestroy" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>emit<wbr/>Destroy</span></a>
+<a href="AbstractWorker.html#getMainWorker" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>get<wbr/>Main<wbr/>Worker</span></a>
+<a href="AbstractWorker.html#handleError" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>handle<wbr/>Error</span></a>
+<a href="AbstractWorker.html#messageListener" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>message<wbr/>Listener</span></a>
+<a href="AbstractWorker.html#run" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>run</span></a>
+<a href="AbstractWorker.html#runAsync" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>run<wbr/>Async</span></a>
+<a href="AbstractWorker.html#runInAsyncScope" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>run<wbr/>In<wbr/>Async<wbr/>Scope</span></a>
+<a href="AbstractWorker.html#sendToMainWorker" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>send<wbr/>To<wbr/>Main<wbr/>Worker</span></a>
+<a href="AbstractWorker.html#triggerAsyncId" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>trigger<wbr/>Async<wbr/>Id</span></a>
+<a href="AbstractWorker.html#bind-2" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>bind</span></a>
 </div></section></div></details></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Constructors</h2>
 <section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class"><a id="constructor" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>constructor</span><a href="#constructor" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" id="icon-anchor-a"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" id="icon-anchor-b"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" id="icon-anchor-c"></path></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="constructor.new_ClusterWorker">new <wbr/>Cluster<wbr/>Worker<span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type" data-tsd-kind="Type parameter">Response</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span>fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">)</span>, opts<span class="tsd-signature-symbol">?: </span><a href="../interfaces/WorkerOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">WorkerOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ClusterWorker.html" class="tsd-signature-type" data-tsd-kind="Class">ClusterWorker</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span><a href="#constructor.new_ClusterWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="constructor.new_AbstractWorker">new <wbr/>Abstract<wbr/>Worker<span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">MainWorker</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type" data-tsd-kind="Type parameter">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type" data-tsd-kind="Type parameter">Response</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, isMain<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">)</span>, mainWorker<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">MainWorker</span>, opts<span class="tsd-signature-symbol">?: </span><a href="../interfaces/WorkerOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">WorkerOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="AbstractWorker.html" class="tsd-signature-type" data-tsd-kind="Class">AbstractWorker</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">MainWorker</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span><a href="#constructor.new_AbstractWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Constructs a new poolifier cluster worker.</p>
+<div class="tsd-comment tsd-typography"><p>Constructs a new poolifier worker.</p>
 </div>
 <section class="tsd-panel tsd-type-parameters">
 <h4>Type Parameters</h4>
 <ul class="tsd-type-parameters">
+<li>
+<h4>MainWorker<span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">Worker</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">MessagePort</span></h4></li>
 <li>
 <h4>Data = <span class="tsd-signature-type">unknown</span></h4></li>
 <li>
@@ -97,6 +100,14 @@ but the minimum number of workers will be guaranteed.</p>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
+<li>
+<h5>type: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The type of async event.</p>
+</div></li>
+<li>
+<h5>isMain: <span class="tsd-signature-type">boolean</span></h5>
+<div class="tsd-comment tsd-typography"><p>Whether this is the main worker or not.</p>
+</div></li>
 <li>
 <h5>fn: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">)</span></h5>
 <div class="tsd-comment tsd-typography"><p>Function processed by the worker when the pool&#39;s <code>execution</code> function is invoked.</p>
@@ -113,53 +124,52 @@ but the minimum number of workers will be guaranteed.</p>
 <h5>data: <span class="tsd-signature-type">Data</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Response</span></h4></li></ul></li></ul></li>
 <li>
-<h5>opts: <a href="../interfaces/WorkerOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">WorkerOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
+<h5>mainWorker: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">MainWorker</span></h5>
+<div class="tsd-comment tsd-typography"><p>Reference to main worker.</p>
+</div></li>
+<li>
+<h5>opts: <a href="../interfaces/WorkerOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">WorkerOptions</a><span class="tsd-signature-symbol"> = ...</span></h5>
 <div class="tsd-comment tsd-typography"><p>Options for the worker.</p>
 </div></li></ul></div>
-<h4 class="tsd-returns-title">Returns <a href="ClusterWorker.html" class="tsd-signature-type" data-tsd-kind="Class">ClusterWorker</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<p>Overrides <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#constructor">constructor</a></p>
+<h4 class="tsd-returns-title">Returns <a href="AbstractWorker.html" class="tsd-signature-type" data-tsd-kind="Class">AbstractWorker</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">MainWorker</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Overrides AsyncResource.constructor</p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/cluster-worker.ts#L31">src/worker/cluster-worker.ts:31</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L41">src/worker/abstract-worker.ts:41</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
-<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="aliveInterval" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a id="aliveInterval" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagOptional">Optional</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>alive<wbr/>Interval</span><a href="#aliveInterval" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">alive<wbr/>Interval<span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">Timeout</span></div>
 <div class="tsd-comment tsd-typography"><p>Handler id of the <code>aliveInterval</code> worker alive check.</p>
 </div><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#aliveInterval">aliveInterval</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L31">src/worker/abstract-worker.ts:31</a></li></ul></aside></section>
-<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="isMain" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a id="isMain" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>is<wbr/>Main</span><a href="#isMain" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">is<wbr/>Main<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 <div class="tsd-comment tsd-typography"><p>Whether this is the main worker or not.</p>
 </div><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#isMain">isMain</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L43">src/worker/abstract-worker.ts:43</a></li></ul></aside></section>
-<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="lastTaskTimestamp" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a id="lastTaskTimestamp" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>last<wbr/>Task<wbr/>Timestamp</span><a href="#lastTaskTimestamp" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">last<wbr/>Task<wbr/>Timestamp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Timestamp of the last task processed by this worker.</p>
 </div><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#lastTaskTimestamp">lastTaskTimestamp</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L27">src/worker/abstract-worker.ts:27</a></li></ul></aside></section>
-<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="mainWorker" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a id="mainWorker" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>main<wbr/>Worker</span><a href="#mainWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">main<wbr/>Worker<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Worker</span></div>
+<div class="tsd-signature">main<wbr/>Worker<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">MainWorker</span></div>
 <div class="tsd-comment tsd-typography"><p>Reference to main worker.</p>
 </div><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#mainWorker">mainWorker</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L45">src/worker/abstract-worker.ts:45</a></li></ul></aside></section>
-<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="opts" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a id="opts" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>opts</span><a href="#opts" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">opts<span class="tsd-signature-symbol">:</span> <a href="../interfaces/WorkerOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">WorkerOptions</a><span class="tsd-signature-symbol"> = ...</span></div>
 <div class="tsd-comment tsd-typography"><p>Options for the worker.</p>
 </div><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#opts">opts</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L46">src/worker/abstract-worker.ts:46</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
@@ -173,7 +183,7 @@ but the minimum number of workers will be guaranteed.</p>
 <h3>Returns</h3><p>The unique <code>asyncId</code> assigned to the resource.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#asyncId">asyncId</a></p>
+<p>Inherited from AsyncResource.asyncId</p>
 <ul>
 <li>Defined in node_modules/.pnpm/@types+node@18.15.11/node_modules/@types/node/async_hooks.d.ts:315</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><a id="bind" class="tsd-anchor"></a>
@@ -200,24 +210,64 @@ the <code>AsyncResource</code> to which the function is bound.</p>
 <div class="tsd-comment tsd-typography"><p>The function to bind to the current <code>AsyncResource</code>.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Func</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>asyncResource<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AsyncResource</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#bind">bind</a></p>
+<p>Inherited from AsyncResource.bind</p>
 <ul>
 <li>Defined in node_modules/.pnpm/@types+node@18.15.11/node_modules/@types/node/async_hooks.d.ts:288</li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="checkAlive" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a id="checkAlive" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>check<wbr/>Alive</span><a href="#checkAlive" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 <li class="tsd-signature tsd-anchor-link" id="checkAlive.checkAlive-1">check<wbr/>Alive<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#checkAlive.checkAlive-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Checks if the worker should be terminated, because its living too long.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#checkAlive">checkAlive</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L146">src/worker/abstract-worker.ts:146</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="checkFunctionInput" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>check<wbr/>Function<wbr/>Input</span><a href="#checkFunctionInput" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+<li class="tsd-signature tsd-anchor-link" id="checkFunctionInput.checkFunctionInput-1">check<wbr/>Function<wbr/>Input<span class="tsd-signature-symbol">(</span>fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#checkFunctionInput.checkFunctionInput-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Checks if the <code>fn</code> parameter is passed to the constructor.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>fn: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">)</span></h5>
+<div class="tsd-comment tsd-typography"><p>The function that should be defined.</p>
+</div>
+<ul class="tsd-parameters">
+<li class="tsd-parameter-signature">
+<ul class="tsd-signatures tsd-kind-type-literal">
+<li class="tsd-signature"><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Response</span></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">Data</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Response</span></h4></li></ul></li></ul></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L117">src/worker/abstract-worker.ts:117</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="checkWorkerOptions" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>check<wbr/>Worker<wbr/>Options</span><a href="#checkWorkerOptions" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+<li class="tsd-signature tsd-anchor-link" id="checkWorkerOptions.checkWorkerOptions-1">check<wbr/>Worker<wbr/>Options<span class="tsd-signature-symbol">(</span>opts<span class="tsd-signature-symbol">: </span><a href="../interfaces/WorkerOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">WorkerOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#checkWorkerOptions.checkWorkerOptions-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>opts: <a href="../interfaces/WorkerOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">WorkerOptions</a></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L105">src/worker/abstract-worker.ts:105</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><a id="emitDestroy" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>emit<wbr/>Destroy</span><a href="#emitDestroy" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external">
-<li class="tsd-signature tsd-anchor-link" id="emitDestroy.emitDestroy-1">emit<wbr/>Destroy<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ClusterWorker.html" class="tsd-signature-type" data-tsd-kind="Class">ClusterWorker</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span><a href="#emitDestroy.emitDestroy-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="emitDestroy.emitDestroy-1">emit<wbr/>Destroy<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="AbstractWorker.html" class="tsd-signature-type" data-tsd-kind="Class">AbstractWorker</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">MainWorker</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span><a href="#emitDestroy.emitDestroy-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Call all <code>destroy</code> hooks. This should only ever be called once. An error will
 be thrown if it is called more than once. This <strong>must</strong> be manually called. If
@@ -226,21 +276,20 @@ never be called.</p>
 
 <h3>Returns</h3><p>A reference to <code>asyncResource</code>.</p>
 </div>
-<h4 class="tsd-returns-title">Returns <a href="ClusterWorker.html" class="tsd-signature-type" data-tsd-kind="Class">ClusterWorker</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#emitDestroy">emitDestroy</a></p>
+<h4 class="tsd-returns-title">Returns <a href="AbstractWorker.html" class="tsd-signature-type" data-tsd-kind="Class">AbstractWorker</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">MainWorker</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<p>Inherited from AsyncResource.emitDestroy</p>
 <ul>
 <li>Defined in node_modules/.pnpm/@types+node@18.15.11/node_modules/@types/node/async_hooks.d.ts:311</li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="getMainWorker" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a id="getMainWorker" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>get<wbr/>Main<wbr/>Worker</span><a href="#getMainWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
-<li class="tsd-signature tsd-anchor-link" id="getMainWorker.getMainWorker-1">get<wbr/>Main<wbr/>Worker<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Worker</span><a href="#getMainWorker.getMainWorker-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+<li class="tsd-signature tsd-anchor-link" id="getMainWorker.getMainWorker-1">get<wbr/>Main<wbr/>Worker<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MainWorker</span><a href="#getMainWorker.getMainWorker-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Returns the main worker.</p>
 
 <h3>Returns</h3><p>Reference to the main worker.</p>
 </div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Worker</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#getMainWorker">getMainWorker</a></p>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">MainWorker</span></h4><aside class="tsd-sources">
 <ul>
 <li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L129">src/worker/abstract-worker.ts:129</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a id="handleError" class="tsd-anchor"></a>
@@ -260,13 +309,12 @@ never be called.</p>
 <div class="tsd-comment tsd-typography"><p>The error raised by the worker.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4><aside class="tsd-sources">
-<p>Overrides <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#handleError">handleError</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/cluster-worker.ts#L47">src/worker/cluster-worker.ts:47</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="messageListener" class="tsd-anchor"></a>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L161">src/worker/abstract-worker.ts:161</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a id="messageListener" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>message<wbr/>Listener</span><a href="#messageListener" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
-<li class="tsd-signature tsd-anchor-link" id="messageListener.messageListener-1">message<wbr/>Listener<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><a href="../interfaces/MessageValue.html" class="tsd-signature-type" data-tsd-kind="Interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Worker</span><span class="tsd-signature-symbol">&gt;</span>, fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#messageListener.messageListener-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+<li class="tsd-signature tsd-anchor-link" id="messageListener.messageListener-1">message<wbr/>Listener<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><a href="../interfaces/MessageValue.html" class="tsd-signature-type" data-tsd-kind="Interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">MainWorker</span><span class="tsd-signature-symbol">&gt;</span>, fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#messageListener.messageListener-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Worker message listener.</p>
 </div>
@@ -274,7 +322,7 @@ never be called.</p>
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>message: <a href="../interfaces/MessageValue.html" class="tsd-signature-type" data-tsd-kind="Interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Worker</span><span class="tsd-signature-symbol">&gt;</span></h5>
+<h5>message: <a href="../interfaces/MessageValue.html" class="tsd-signature-type" data-tsd-kind="Interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">MainWorker</span><span class="tsd-signature-symbol">&gt;</span></h5>
 <div class="tsd-comment tsd-typography"><p>Message received.</p>
 </div></li>
 <li>
@@ -293,12 +341,11 @@ never be called.</p>
 <h5>data: <span class="tsd-signature-type">Data</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Response</span></h4></li></ul></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#messageListener">messageListener</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L84">src/worker/abstract-worker.ts:84</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="run" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a id="run" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>run</span><a href="#run" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 <li class="tsd-signature tsd-anchor-link" id="run.run-1">run<span class="tsd-signature-symbol">(</span>fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">)</span>, message<span class="tsd-signature-symbol">: </span><a href="../interfaces/MessageValue.html" class="tsd-signature-type" data-tsd-kind="Interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#run.run-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Runs the given function synchronously.</p>
@@ -326,12 +373,11 @@ never be called.</p>
 <div class="tsd-comment tsd-typography"><p>Input data for the given function.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#run">run</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L171">src/worker/abstract-worker.ts:171</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="runAsync" class="tsd-anchor"></a>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a id="runAsync" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>run<wbr/>Async</span><a href="#runAsync" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 <li class="tsd-signature tsd-anchor-link" id="runAsync.runAsync-1">run<wbr/>Async<span class="tsd-signature-symbol">(</span>fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span>, message<span class="tsd-signature-symbol">: </span><a href="../interfaces/MessageValue.html" class="tsd-signature-type" data-tsd-kind="Interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#runAsync.runAsync-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Runs the given function asynchronously.</p>
@@ -359,7 +405,6 @@ never be called.</p>
 <div class="tsd-comment tsd-typography"><p>Input data for the given function.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#runAsync">runAsync</a></p>
 <ul>
 <li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L198">src/worker/abstract-worker.ts:198</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><a id="runInAsyncScope" class="tsd-anchor"></a>
@@ -410,11 +455,11 @@ then restore the original execution context.</p>
 <div class="tsd-comment tsd-typography"><p>Optional arguments to pass to the function.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Result</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#runInAsyncScope">runInAsyncScope</a></p>
+<p>Inherited from AsyncResource.runInAsyncScope</p>
 <ul>
 <li>Defined in node_modules/.pnpm/@types+node@18.15.11/node_modules/@types/node/async_hooks.d.ts:303</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a id="sendToMainWorker" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>send<wbr/>To<wbr/>Main<wbr/>Worker</span><a href="#sendToMainWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagAbstract">Abstract</code> <span>send<wbr/>To<wbr/>Main<wbr/>Worker</span><a href="#sendToMainWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 <li class="tsd-signature tsd-anchor-link" id="sendToMainWorker.sendToMainWorker-1">send<wbr/>To<wbr/>Main<wbr/>Worker<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><a href="../interfaces/MessageValue.html" class="tsd-signature-type" data-tsd-kind="Interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#sendToMainWorker.sendToMainWorker-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
@@ -428,9 +473,8 @@ then restore the original execution context.</p>
 <div class="tsd-comment tsd-typography"><p>The response message.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Overrides <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#sendToMainWorker">sendToMainWorker</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/cluster-worker.ts#L42">src/worker/cluster-worker.ts:42</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bb3f9b6/src/worker/abstract-worker.ts#L141">src/worker/abstract-worker.ts:141</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><a id="triggerAsyncId" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>trigger<wbr/>Async<wbr/>Id</span><a href="#triggerAsyncId" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external">
@@ -440,7 +484,7 @@ then restore the original execution context.</p>
 <h3>Returns</h3><p>The same <code>triggerAsyncId</code> that is passed to the <code>AsyncResource</code> constructor.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#triggerAsyncId">triggerAsyncId</a></p>
+<p>Inherited from AsyncResource.triggerAsyncId</p>
 <ul>
 <li>Defined in node_modules/.pnpm/@types+node@18.15.11/node_modules/@types/node/async_hooks.d.ts:320</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><a id="bind-2" class="tsd-anchor"></a>
@@ -475,7 +519,7 @@ the <code>AsyncResource</code> to which the function is bound.</p>
 <li>
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> thisArg: <span class="tsd-signature-type">ThisArg</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Func</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>asyncResource<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AsyncResource</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="AbstractWorker.html">AbstractWorker</a>.<a href="AbstractWorker.html#bind-2">bind</a></p>
+<p>Inherited from AsyncResource.bind</p>
 <ul>
 <li>Defined in node_modules/.pnpm/@types+node@18.15.11/node_modules/@types/node/async_hooks.d.ts:273</li></ul></aside></li></ul></section></section></div>
 <div class="col-sidebar">
@@ -498,20 +542,22 @@ the <code>AsyncResource</code> to which the function is bound.</p>
 <div class="tsd-accordion-details">
 <ul>
 <li><a href="#constructor" class="tsd-kind-constructor tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-512-path"></use><use href="#icon-512-text"></use></svg><span>constructor</span></a></li>
-<li><a href="#aliveInterval" class="tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>alive<wbr/>Interval</span></a></li>
-<li><a href="#isMain" class="tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>is<wbr/>Main</span></a></li>
-<li><a href="#lastTaskTimestamp" class="tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>last<wbr/>Task<wbr/>Timestamp</span></a></li>
-<li><a href="#mainWorker" class="tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>main<wbr/>Worker</span></a></li>
-<li><a href="#opts" class="tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>opts</span></a></li>
+<li><a href="#aliveInterval" class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>alive<wbr/>Interval</span></a></li>
+<li><a href="#isMain" class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>is<wbr/>Main</span></a></li>
+<li><a href="#lastTaskTimestamp" class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>last<wbr/>Task<wbr/>Timestamp</span></a></li>
+<li><a href="#mainWorker" class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>main<wbr/>Worker</span></a></li>
+<li><a href="#opts" class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>opts</span></a></li>
 <li><a href="#asyncId" class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>async<wbr/>Id</span></a></li>
 <li><a href="#bind" class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>bind</span></a></li>
-<li><a href="#checkAlive" class="tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>check<wbr/>Alive</span></a></li>
+<li><a href="#checkAlive" class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>check<wbr/>Alive</span></a></li>
+<li><a href="#checkFunctionInput" class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>check<wbr/>Function<wbr/>Input</span></a></li>
+<li><a href="#checkWorkerOptions" class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>check<wbr/>Worker<wbr/>Options</span></a></li>
 <li><a href="#emitDestroy" class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>emit<wbr/>Destroy</span></a></li>
-<li><a href="#getMainWorker" class="tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>get<wbr/>Main<wbr/>Worker</span></a></li>
+<li><a href="#getMainWorker" class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>get<wbr/>Main<wbr/>Worker</span></a></li>
 <li><a href="#handleError" class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>handle<wbr/>Error</span></a></li>
-<li><a href="#messageListener" class="tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>message<wbr/>Listener</span></a></li>
-<li><a href="#run" class="tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>run</span></a></li>
-<li><a href="#runAsync" class="tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>run<wbr/>Async</span></a></li>
+<li><a href="#messageListener" class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>message<wbr/>Listener</span></a></li>
+<li><a href="#run" class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>run</span></a></li>
+<li><a href="#runAsync" class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>run<wbr/>Async</span></a></li>
 <li><a href="#runInAsyncScope" class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>run<wbr/>In<wbr/>Async<wbr/>Scope</span></a></li>
 <li><a href="#sendToMainWorker" class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>send<wbr/>To<wbr/>Main<wbr/>Worker</span></a></li>
 <li><a href="#triggerAsyncId" class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>trigger<wbr/>Async<wbr/>Id</span></a></li>
@@ -520,8 +566,8 @@ the <code>AsyncResource</code> to which the function is bound.</p>
 <nav class="tsd-navigation"><a href="../index.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-namespace)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-4-path"></rect><path d="M9.33 16V7.24H10.77L13.446 14.74C13.43 14.54 13.41 14.296 13.386 14.008C13.37 13.712 13.354 13.404 13.338 13.084C13.33 12.756 13.326 12.448 13.326 12.16V7.24H14.37V16H12.93L10.266 8.5C10.282 8.692 10.298 8.936 10.314 9.232C10.33 9.52 10.342 9.828 10.35 10.156C10.366 10.476 10.374 10.784 10.374 11.08V16H9.33Z" fill="var(--color-text)" id="icon-4-text"></path></svg><span>poolifier</span></a>
 <ul class="tsd-small-nested-navigation">
 <li><a href="AbstractPool.html" class="tsd-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-class)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-128-path"></rect><path d="M11.898 16.1201C11.098 16.1201 10.466 15.8961 10.002 15.4481C9.53803 15.0001 9.30603 14.3841 9.30603 13.6001V9.64012C9.30603 8.85612 9.53803 8.24012 10.002 7.79212C10.466 7.34412 11.098 7.12012 11.898 7.12012C12.682 7.12012 13.306 7.34812 13.77 7.80412C14.234 8.25212 14.466 8.86412 14.466 9.64012H13.386C13.386 9.14412 13.254 8.76412 12.99 8.50012C12.734 8.22812 12.37 8.09212 11.898 8.09212C11.426 8.09212 11.054 8.22412 10.782 8.48812C10.518 8.75212 10.386 9.13212 10.386 9.62812V13.6001C10.386 14.0961 10.518 14.4801 10.782 14.7521C11.054 15.0161 11.426 15.1481 11.898 15.1481C12.37 15.1481 12.734 15.0161 12.99 14.7521C13.254 14.4801 13.386 14.0961 13.386 13.6001H14.466C14.466 14.3761 14.234 14.9921 13.77 15.4481C13.306 15.8961 12.682 16.1201 11.898 16.1201Z" fill="var(--color-text)" id="icon-128-text"></path></svg><span>Abstract<wbr/>Pool</span></a></li>
-<li><a href="AbstractWorker.html" class="tsd-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Abstract<wbr/>Worker</span></a></li>
-<li><a href="ClusterWorker.html" class="current tsd-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Cluster<wbr/>Worker</span></a></li>
+<li><a href="AbstractWorker.html" class="current tsd-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Abstract<wbr/>Worker</span></a></li>
+<li><a href="ClusterWorker.html" class="tsd-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Cluster<wbr/>Worker</span></a></li>
 <li><a href="DynamicClusterPool.html" class="tsd-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Dynamic<wbr/>Cluster<wbr/>Pool</span></a></li>
 <li><a href="DynamicThreadPool.html" class="tsd-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Dynamic<wbr/>Thread<wbr/>Pool</span></a></li>
 <li><a href="FixedClusterPool.html" class="tsd-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-128-path"></use><use href="#icon-128-text"></use></svg><span>Fixed<wbr/>Cluster<wbr/>Pool</span></a></li>
