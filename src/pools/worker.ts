@@ -33,7 +33,13 @@ export type ExitHandler<Worker extends IWorker> = (
  * Worker task interface.
  */
 export interface Task<Data = unknown> {
+  /**
+   * Worker task data.
+   */
   data: Data
+  /**
+   * Task UUID.
+   */
   id: string
 }
 

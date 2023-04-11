@@ -86,7 +86,6 @@ export interface PoolOptions<Worker extends IWorker> {
    * Pool worker tasks queue options.
    *
    * @experimental
-   * @defaultValue \{ concurrency: 1 \}
    */
   tasksQueueOptions?: TasksQueueOptions
 }
