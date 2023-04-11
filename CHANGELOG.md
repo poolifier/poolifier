@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add worker tasks queue options to pool options.
 
+### Fixed
+
+- Fix missing documentation.
+
 ## [2.4.6] - 2023-04-10
 
 ### Fixed

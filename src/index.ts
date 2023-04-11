@@ -8,6 +8,7 @@ export type {
   PoolEmitter,
   PoolOptions,
   PoolEvent,
+  PoolType,
   TasksQueueOptions
 } from './pools/pool'
 export type {
@@ -16,11 +17,14 @@ export type {
   IWorker,
   MessageHandler,
   OnlineHandler,
+  Task,
+  TasksUsage,
   WorkerNode
 } from './pools/worker'
 export { WorkerChoiceStrategies } from './pools/selection-strategies/selection-strategies-types'
 export type {
   IWorkerChoiceStrategy,
+  RequiredStatistics,
   WorkerChoiceStrategy,
   WorkerChoiceStrategyOptions
 } from './pools/selection-strategies/selection-strategies-types'
@@ -33,4 +37,8 @@ export { ClusterWorker } from './worker/cluster-worker'
 export { ThreadWorker } from './worker/thread-worker'
 export { KillBehaviors } from './worker/worker-options'
 export type { KillBehavior, WorkerOptions } from './worker/worker-options'
-export type { Draft, MessageValue } from './utility-types'
+export type {
+  Draft,
+  PromiseResponseWrapper,
+  MessageValue
+} from './utility-types'
