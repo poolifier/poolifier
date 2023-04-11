@@ -227,11 +227,19 @@ export abstract class AbstractPool<
     )
   }
 
-  /** @inheritDoc */
-  public abstract get full (): boolean
+  /**
+   * Whether the pool is full or not.
+   *
+   * The pool filling boolean status.
+   */
+  protected abstract get full (): boolean
 
-  /** @inheritDoc */
-  public abstract get busy (): boolean
+  /**
+   * Whether the pool is busy or not.
+   *
+   * The pool busyness boolean status.
+   */
+  protected abstract get busy (): boolean
 
   protected internalBusy (): boolean {
     return this.findFreeWorkerNodeKey() === -1

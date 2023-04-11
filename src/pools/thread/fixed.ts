@@ -67,7 +67,7 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
-  public registerWorkerMessageListener<Message extends Data | Response>(
+  protected registerWorkerMessageListener<Message extends Data | Response>(
     messageChannel: ThreadWorkerWithMessageChannel,
     listener: (message: MessageValue<Message>) => void
   ): void {
@@ -97,12 +97,12 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
-  public get full (): boolean {
+  protected get full (): boolean {
     return this.workerNodes.length === this.numberOfWorkers
   }
 
   /** @inheritDoc */
-  public get busy (): boolean {
+  protected get busy (): boolean {
     return this.internalBusy()
   }
 }

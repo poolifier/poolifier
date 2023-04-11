@@ -41,12 +41,12 @@ export class DynamicThreadPool<
   }
 
   /** @inheritDoc */
-  public get full (): boolean {
+  protected get full (): boolean {
     return this.workerNodes.length === this.max
   }
 
   /** @inheritDoc */
-  public get busy (): boolean {
+  protected get busy (): boolean {
     return this.full && this.internalBusy()
   }
 }

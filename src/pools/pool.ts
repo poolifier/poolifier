@@ -60,6 +60,8 @@ export interface TasksQueueOptions {
 
 /**
  * Options for a poolifier pool.
+ *
+ * @typeParam Worker - The worker type.
  */
 export interface PoolOptions<Worker extends IWorker> {
   /**
@@ -138,18 +140,6 @@ export interface IPool<
    * - `'busy'`: Emitted when the pool is busy.
    */
   readonly emitter?: PoolEmitter
-  /**
-   * Whether the pool is full or not.
-   *
-   * The pool filling boolean status.
-   */
-  readonly full: boolean
-  /**
-   * Whether the pool is busy or not.
-   *
-   * The pool busyness boolean status.
-   */
-  readonly busy: boolean
   /**
    * Finds a free worker node key based on the number of tasks the worker has applied.
    *

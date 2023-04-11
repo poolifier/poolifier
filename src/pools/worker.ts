@@ -31,6 +31,9 @@ export type ExitHandler<Worker extends IWorker> = (
 
 /**
  * Worker task interface.
+ *
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @internal
  */
 export interface Task<Data = unknown> {
   /**
@@ -81,9 +84,22 @@ export interface IWorker {
 
 /**
  * Worker node interface.
+ *
+ * @typeParam Worker - Type of worker.
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @internal
  */
 export interface WorkerNode<Worker extends IWorker, Data = unknown> {
+  /**
+   * Worker node worker.
+   */
   worker: Worker
+  /**
+   * Worker node tasks usage statistics.
+   */
   tasksUsage: TasksUsage
+  /**
+   * Worker node tasks queue.
+   */
   tasksQueue: Array<Task<Data>>
 }

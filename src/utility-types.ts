@@ -10,6 +10,9 @@ export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 
 /**
  * Message object that is passed between worker and main worker.
+ *
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam MainWorker - Type of main worker.
  */
 export interface MessageValue<
   Data = unknown,
@@ -49,6 +52,7 @@ export interface MessageValue<
  *
  * @typeParam Worker - Type of worker.
  * @typeParam Response - Type of execution response. This can only be serializable data.
+ * @internal
  */
 export interface PromiseResponseWrapper<
   Worker extends IWorker,
