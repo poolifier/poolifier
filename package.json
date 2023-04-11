@@ -101,8 +101,8 @@
     "@rollup/plugin-terser": "^0.4.1",
     "@rollup/plugin-typescript": "^11.1.0",
     "@types/node": "^18.15.11",
-    "@typescript-eslint/eslint-plugin": "^5.57.1",
-    "@typescript-eslint/parser": "^5.57.1",
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
     "benny": "^3.7.1",
     "c8": "^7.13.0",
     "eslint": "^8.38.0",
@@ -111,7 +111,7 @@
     "eslint-define-config": "^1.17.0",
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-jsdoc": "^40.1.2",
+    "eslint-plugin-jsdoc": "^41.1.1",
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-spellcheck": "^0.0.20",
@@ -132,7 +132,7 @@
     "sinon": "^15.0.3",
     "source-map-support": "^0.5.21",
     "ts-standard": "^12.0.2",
-    "typedoc": "^0.23.28",
+    "typedoc": "^0.24.1",
     "typescript": "^5.0.4"
   }
 }
