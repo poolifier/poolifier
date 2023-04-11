@@ -42,3 +42,4 @@ export type {
   PromiseResponseWrapper,
   MessageValue
 } from './utility-types'
+export type { CircularArray } from './circular-array'
