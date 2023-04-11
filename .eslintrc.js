@@ -46,6 +46,7 @@ module.exports = defineConfig({
           'ecma',
           'enqueue',
           'enum',
+          'errored',
           'esm',
           'fibonacci',
           'fs',

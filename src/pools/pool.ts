@@ -114,7 +114,7 @@ export interface PoolOptions<Worker extends IWorker> {
  *
  * @typeParam Worker - Type of worker which manages this pool.
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of response of execution. This can only be serializable data.
+ * @typeParam Response - Type of execution response. This can only be serializable data.
  */
 export interface IPool<
   Worker extends IWorker,

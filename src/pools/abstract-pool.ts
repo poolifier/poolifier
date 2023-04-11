@@ -27,7 +27,7 @@ import { CircularArray } from '../circular-array'
  *
  * @typeParam Worker - Type of worker which manages this pool.
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of response of execution. This can only be serializable data.
+ * @typeParam Response - Type of execution response. This can only be serializable data.
  */
 export abstract class AbstractPool<
   Worker extends IWorker,
@@ -261,7 +261,7 @@ export abstract class AbstractPool<
       id: crypto.randomUUID()
     }
     const res = new Promise<Response>((resolve, reject) => {
-      this.promiseResponseMap.set(submittedTask.id, {
+      this.promiseResponseMap.set(submittedTask.id as string, {
         resolve,
         reject,
         worker: workerNode.worker

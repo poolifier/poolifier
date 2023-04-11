@@ -30,32 +30,53 @@ export type ExitHandler<Worker extends IWorker> = (
 ) => void
 
 /**
- * Worker task interface.
+ * Message object that is passed as a task between main worker and worker.
  *
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
  * @internal
  */
 export interface Task<Data = unknown> {
   /**
-   * Worker task data.
+   * Input data that will be passed to the worker.
    */
-  data: Data
+  readonly data?: Data
   /**
-   * Task UUID.
+   * UUID of the message.
    */
-  id: string
+  readonly id?: string
 }
 
 /**
  * Worker tasks usage statistics.
  */
 export interface TasksUsage {
+  /**
+   * Number of tasks executed.
+   */
   run: number
+  /**
+   * Number of tasks running.
+   */
   running: number
+  /**
+   * Tasks runtime.
+   */
   runTime: number
+  /**
+   * Tasks runtime history.
+   */
   runTimeHistory: CircularArray<number>
+  /**
+   * Average tasks runtime.
+   */
   avgRunTime: number
+  /**
+   * Median tasks runtime.
+   */
   medRunTime: number
+  /**
+   * Number of tasks errored.
+   */
   error: number
 }
 
@@ -93,7 +114,7 @@ export interface WorkerNode<Worker extends IWorker, Data = unknown> {
   /**
    * Worker node worker.
    */
-  worker: Worker
+  readonly worker: Worker
   /**
    * Worker node tasks usage statistics.
    */
@@ -101,5 +122,5 @@ export interface WorkerNode<Worker extends IWorker, Data = unknown> {
   /**
    * Worker node tasks queue.
    */
-  tasksQueue: Array<Task<Data>>
+  readonly tasksQueue: Array<Task<Data>>
 }
