@@ -13,6 +13,7 @@ export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
  *
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
  * @typeParam MainWorker - Type of main worker.
+ * @internal
  */
 export interface MessageValue<
   Data = unknown,

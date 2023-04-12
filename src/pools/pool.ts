@@ -16,6 +16,7 @@ import type {
  * Pool types.
  *
  * @enum
+ * @internal
  */
 export enum PoolType {
   /**
