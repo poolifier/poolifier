@@ -22,7 +22,7 @@ export type ThreadWorkerWithMessageChannel = Worker & Draft<MessageChannel>
  * This pool selects the threads in a round robin fashion.
  *
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of response of execution. This can only be serializable data.
+ * @typeParam Response - Type of execution response. This can only be serializable data.
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */

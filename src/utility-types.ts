@@ -1,7 +1,7 @@
 import type { Worker as ClusterWorker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
 import type { KillBehavior } from './worker/worker-options'
-import type { IWorker } from './pools/worker'
+import type { IWorker, Task } from './pools/worker'
 
 /**
  * Make all properties in T non-readonly.
@@ -9,7 +9,7 @@ import type { IWorker } from './pools/worker'
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 
 /**
- * Message object that is passed between worker and main worker.
+ * Message object that is passed between main worker and worker.
  *
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
  * @typeParam MainWorker - Type of main worker.
@@ -17,15 +17,7 @@ export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 export interface MessageValue<
   Data = unknown,
   MainWorker extends ClusterWorker | MessagePort | unknown = unknown
-> {
-  /**
-   * Input data that will be passed to the worker.
-   */
-  readonly data?: Data
-  /**
-   * Id of the message.
-   */
-  readonly id?: string
+> extends Task<Data> {
   /**
    * Kill code.
    */
