@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.8] - 2023-04-12
+
 ### Fixed
 
 - Fix message between main worker and worker type definition for tasks.
