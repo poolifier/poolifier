@@ -48,6 +48,8 @@ export interface Task<Data = unknown> {
 
 /**
  * Worker tasks usage statistics.
+ *
+ * @internal
  */
 export interface TasksUsage {
   /**

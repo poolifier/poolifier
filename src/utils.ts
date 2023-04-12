@@ -1,4 +1,6 @@
+import { CircularArray } from './circular-array'
 import type { WorkerChoiceStrategyOptions } from './pools/selection-strategies/selection-strategies-types'
+import type { TasksUsage } from './pools/worker'
 
 /**
  * An intentional empty function.
@@ -6,6 +8,19 @@ import type { WorkerChoiceStrategyOptions } from './pools/selection-strategies/s
 export const EMPTY_FUNCTION: () => void = Object.freeze(() => {
   /* Intentionally empty */
 })
+
+/**
+ * Initial tasks usage statistics.
+ */
+export const INITIAL_TASKS_USAGE: TasksUsage = {
+  run: 0,
+  running: 0,
+  runTime: 0,
+  runTimeHistory: new CircularArray(),
+  avgRunTime: 0,
+  medRunTime: 0,
+  error: 0
+}
 
 /**
  * Default worker choice strategy options.

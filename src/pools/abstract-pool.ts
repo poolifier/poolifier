@@ -3,6 +3,7 @@ import type { MessageValue, PromiseResponseWrapper } from '../utility-types'
 import {
   DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
   EMPTY_FUNCTION,
+  INITIAL_TASKS_USAGE,
   median
 } from '../utils'
 import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
@@ -20,7 +21,6 @@ import {
   type WorkerChoiceStrategy
 } from './selection-strategies/selection-strategies-types'
 import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
-import { CircularArray } from '../circular-array'
 
 /**
  * Base class that implements some shared logic for all poolifier pools.
@@ -212,15 +212,7 @@ export abstract class AbstractPool<
     this.checkValidWorkerChoiceStrategy(workerChoiceStrategy)
     this.opts.workerChoiceStrategy = workerChoiceStrategy
     for (const workerNode of this.workerNodes) {
-      this.setWorkerNodeTasksUsage(workerNode, {
-        run: 0,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: new CircularArray(),
-        avgRunTime: 0,
-        medRunTime: 0,
-        error: 0
-      })
+      this.setWorkerNodeTasksUsage(workerNode, INITIAL_TASKS_USAGE)
     }
     this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
       workerChoiceStrategy
@@ -526,15 +518,7 @@ export abstract class AbstractPool<
   private pushWorkerNode (worker: Worker): number {
     return this.workerNodes.push({
       worker,
-      tasksUsage: {
-        run: 0,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: new CircularArray(),
-        avgRunTime: 0,
-        medRunTime: 0,
-        error: 0
-      },
+      tasksUsage: INITIAL_TASKS_USAGE,
       tasksQueue: []
     })
   }
