@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-hyperfine --export-markdown BENCH-100000.md --min-runs 10 \
+/home/linuxbrew/.linuxbrew/bin/hyperfine --export-markdown BENCH-100000.md --min-runs 10 \
   --prepare 'sleep 15' \
   'node dynamic-poolifier.js' \
   'node fixed-poolifier.js' \
