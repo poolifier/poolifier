@@ -5,6 +5,8 @@ import type { IWorker, Task } from './pools/worker'
 
 /**
  * Make all properties in T non-readonly.
+ *
+ * @typeParam T - Type in which properties will be non-readonly.
  */
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 
@@ -33,9 +35,6 @@ export interface MessageValue<
   readonly runTime?: number
   /**
    * Reference to main worker.
-   *
-   * Only for internal use.
-   * @internal
    */
   readonly parent?: MainWorker
 }
