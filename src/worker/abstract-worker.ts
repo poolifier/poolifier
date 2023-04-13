@@ -85,7 +85,7 @@ export abstract class AbstractWorker<
     message: MessageValue<Data, MainWorker>,
     fn: (data: Data) => Response
   ): void {
-    if (message.data != null && message.id != null) {
+    if (message.id != null && message.data != null) {
       // Task message received
       if (this.opts.async === true) {
         this.runInAsyncScope(this.runAsync.bind(this), this, fn, message)
