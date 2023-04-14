@@ -53,8 +53,7 @@ describe('Selection strategies test suite', () => {
       const pool = new DynamicThreadPool(
         min,
         max,
-        './tests/worker-files/thread/testWorker.js',
-        { workerChoiceStrategy }
+        './tests/worker-files/thread/testWorker.js'
       )
       pool.setWorkerChoiceStrategy(workerChoiceStrategy)
       expect(pool.opts.workerChoiceStrategy).toBe(workerChoiceStrategy)
