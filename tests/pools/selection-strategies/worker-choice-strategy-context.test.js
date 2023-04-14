@@ -69,17 +69,17 @@ describe('Worker choice strategy context test suite', () => {
         choose: sinon.stub().returns(0)
       }
     )
-    expect(workerChoiceStrategyContext.workerChoiceStrategyType).toBe(
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
     workerChoiceStrategyContext.workerChoiceStrategies.set(
-      workerChoiceStrategyContext.workerChoiceStrategyType,
+      workerChoiceStrategyContext.workerChoiceStrategy,
       WorkerChoiceStrategyStub
     )
     const chosenWorkerKey = workerChoiceStrategyContext.execute()
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategyContext.workerChoiceStrategyType
+        workerChoiceStrategyContext.workerChoiceStrategy
       ).choose.calledOnce
     ).toBe(true)
     expect(chosenWorkerKey).toBe(0)
@@ -95,17 +95,17 @@ describe('Worker choice strategy context test suite', () => {
         choose: sinon.stub().returns(0)
       }
     )
-    expect(workerChoiceStrategyContext.workerChoiceStrategyType).toBe(
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
     workerChoiceStrategyContext.workerChoiceStrategies.set(
-      workerChoiceStrategyContext.workerChoiceStrategyType,
+      workerChoiceStrategyContext.workerChoiceStrategy,
       WorkerChoiceStrategyStub
     )
     const chosenWorkerKey = workerChoiceStrategyContext.execute()
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategyContext.workerChoiceStrategyType
+        workerChoiceStrategyContext.workerChoiceStrategy
       ).choose.calledOnce
     ).toBe(true)
     expect(chosenWorkerKey).toBe(0)
@@ -125,7 +125,7 @@ describe('Worker choice strategy context test suite', () => {
         WorkerChoiceStrategies.ROUND_ROBIN
       )
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategyType).toBe(
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
@@ -136,7 +136,7 @@ describe('Worker choice strategy context test suite', () => {
         WorkerChoiceStrategies.ROUND_ROBIN
       )
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategyType).toBe(
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
   })
@@ -155,7 +155,7 @@ describe('Worker choice strategy context test suite', () => {
         WorkerChoiceStrategies.ROUND_ROBIN
       )
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategyType).toBe(
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
     workerChoiceStrategyContext.setWorkerChoiceStrategy(
@@ -166,7 +166,7 @@ describe('Worker choice strategy context test suite', () => {
         WorkerChoiceStrategies.ROUND_ROBIN
       )
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategyType).toBe(
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
   })
@@ -188,7 +188,7 @@ describe('Worker choice strategy context test suite', () => {
         WorkerChoiceStrategies.LESS_USED
       )
     ).toBeInstanceOf(LessUsedWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategyType).toBe(
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.LESS_USED
     )
   })
@@ -210,7 +210,7 @@ describe('Worker choice strategy context test suite', () => {
         WorkerChoiceStrategies.LESS_USED
       )
     ).toBeInstanceOf(LessUsedWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategyType).toBe(
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.LESS_USED
     )
   })
@@ -232,7 +232,7 @@ describe('Worker choice strategy context test suite', () => {
         WorkerChoiceStrategies.LESS_BUSY
       )
     ).toBeInstanceOf(LessBusyWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategyType).toBe(
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.LESS_BUSY
     )
   })
@@ -254,7 +254,7 @@ describe('Worker choice strategy context test suite', () => {
         WorkerChoiceStrategies.LESS_BUSY
       )
     ).toBeInstanceOf(LessBusyWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategyType).toBe(
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.LESS_BUSY
     )
   })
@@ -276,7 +276,7 @@ describe('Worker choice strategy context test suite', () => {
         WorkerChoiceStrategies.FAIR_SHARE
       )
     ).toBeInstanceOf(FairShareWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategyType).toBe(
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.FAIR_SHARE
     )
   })
@@ -298,7 +298,7 @@ describe('Worker choice strategy context test suite', () => {
         WorkerChoiceStrategies.FAIR_SHARE
       )
     ).toBeInstanceOf(FairShareWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategyType).toBe(
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.FAIR_SHARE
     )
   })
@@ -320,7 +320,7 @@ describe('Worker choice strategy context test suite', () => {
         WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
       )
     ).toBeInstanceOf(WeightedRoundRobinWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategyType).toBe(
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     )
   })
@@ -342,7 +342,7 @@ describe('Worker choice strategy context test suite', () => {
         WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
       )
     ).toBeInstanceOf(WeightedRoundRobinWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategyType).toBe(
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     )
   })

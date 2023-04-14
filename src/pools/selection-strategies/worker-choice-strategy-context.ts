@@ -35,12 +35,12 @@ export class WorkerChoiceStrategyContext<
    * Worker choice strategy context constructor.
    *
    * @param pool - The pool instance.
-   * @param workerChoiceStrategyType - The worker choice strategy.
+   * @param workerChoiceStrategy - The worker choice strategy.
    * @param opts - The worker choice strategy options.
    */
   public constructor (
     pool: IPool<Worker, Data, Response>,
-    private workerChoiceStrategyType: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN,
+    private workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN,
     opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     this.execute.bind(this)
@@ -82,7 +82,7 @@ export class WorkerChoiceStrategyContext<
   public getRequiredStatistics (): RequiredStatistics {
     return (
       this.workerChoiceStrategies.get(
-        this.workerChoiceStrategyType
+        this.workerChoiceStrategy
       ) as IWorkerChoiceStrategy
     ).requiredStatistics
   }
@@ -95,10 +95,10 @@ export class WorkerChoiceStrategyContext<
   public setWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
-    if (this.workerChoiceStrategyType !== workerChoiceStrategy) {
-      this.workerChoiceStrategyType = workerChoiceStrategy
+    if (this.workerChoiceStrategy !== workerChoiceStrategy) {
+      this.workerChoiceStrategy = workerChoiceStrategy
     }
-    this.workerChoiceStrategies.get(this.workerChoiceStrategyType)?.reset()
+    this.workerChoiceStrategies.get(this.workerChoiceStrategy)?.reset()
   }
 
   /**
@@ -109,7 +109,7 @@ export class WorkerChoiceStrategyContext<
   public execute (): number {
     return (
       this.workerChoiceStrategies.get(
-        this.workerChoiceStrategyType
+        this.workerChoiceStrategy
       ) as IWorkerChoiceStrategy
     ).choose()
   }
@@ -123,7 +123,7 @@ export class WorkerChoiceStrategyContext<
   public remove (workerNodeKey: number): boolean {
     return (
       this.workerChoiceStrategies.get(
-        this.workerChoiceStrategyType
+        this.workerChoiceStrategy
       ) as IWorkerChoiceStrategy
     ).remove(workerNodeKey)
   }
