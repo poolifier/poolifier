@@ -28,7 +28,10 @@ export class ThreadWorker<
    * @param fn - Function processed by the worker when the pool's `execution` function is invoked.
    * @param opts - Options for the worker.
    */
-  public constructor (fn: (data: Data) => Response, opts: WorkerOptions = {}) {
+  public constructor (
+    fn: (data: Data) => Response | Promise<Response>,
+    opts: WorkerOptions = {}
+  ) {
     super('worker-thread-pool:poolifier', isMainThread, fn, parentPort, opts)
   }
 

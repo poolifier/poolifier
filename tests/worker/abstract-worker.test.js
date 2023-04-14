@@ -9,18 +9,6 @@ describe('Abstract worker test suite', () => {
     }
   }
 
-  it('Verify that fn parameter is mandatory', () => {
-    expect(() => new ClusterWorker()).toThrowError(
-      new Error('fn parameter is mandatory')
-    )
-  })
-
-  it('Verify that fn parameter is a function', () => {
-    expect(() => new ClusterWorker({})).toThrowError(
-      new TypeError('fn parameter is not a function')
-    )
-  })
-
   it('Verify worker options default values', () => {
     const worker = new ThreadWorker(() => {})
     expect(worker.opts.maxInactiveTime).toStrictEqual(60000)
@@ -39,6 +27,28 @@ describe('Abstract worker test suite', () => {
     expect(worker.opts.async).toBe(true)
   })
 
+  it('Verify that fn parameter is mandatory', () => {
+    expect(() => new ClusterWorker()).toThrowError('fn parameter is mandatory')
+  })
+
+  it('Verify that fn parameter is a function', () => {
+    expect(() => new ClusterWorker({})).toThrowError(
+      new TypeError('fn parameter is not a function')
+    )
+    expect(() => new ClusterWorker('')).toThrowError(
+      new TypeError('fn parameter is not a function')
+    )
+  })
+
+  it('Verify that async fn parameter without async option throw error', () => {
+    const fn = async () => {
+      return new Promise()
+    }
+    expect(() => new ClusterWorker(fn)).toThrowError(
+      'fn parameter is an async function, please set the async option to true'
+    )
+  })
+
   it('Verify that handleError function is working properly', () => {
     const error = new Error('My error')
     const worker = new ThreadWorker(() => {})
@@ -48,6 +58,6 @@ describe('Abstract worker test suite', () => {
   it('Verify that get main worker throw error if main worker is not set', () => {
     expect(() =>
       new StubPoolWithIsMainWorker(() => {}).getMainWorker()
-    ).toThrowError(new Error('Main worker was not set'))
+    ).toThrowError('Main worker was not set')
   })
 })

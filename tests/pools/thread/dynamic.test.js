@@ -66,7 +66,7 @@ describe('Dynamic thread pool test suite', () => {
 
   it('Validation of inputs test', () => {
     expect(() => new DynamicThreadPool(min)).toThrowError(
-      new Error('Please specify a file with a worker implementation')
+      'Please specify a file with a worker implementation'
     )
   })
 

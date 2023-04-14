@@ -15,7 +15,7 @@ describe('Abstract pool test suite', () => {
   )
   class StubPoolWithRemoveAllWorker extends FixedThreadPool {
     removeAllWorker () {
-      this.workers = []
+      this.workerNodes = []
       this.promiseResponseMap.clear()
     }
   }
@@ -35,7 +35,7 @@ describe('Abstract pool test suite', () => {
             errorHandler: e => console.error(e)
           }
         )
-    ).toThrowError(new Error('Cannot start a pool from a worker!'))
+    ).toThrowError('Cannot start a pool from a worker!')
   })
 
   it('Verify that filePath is checked', () => {
@@ -52,9 +52,7 @@ describe('Abstract pool test suite', () => {
 
   it('Verify that numberOfWorkers is checked', () => {
     expect(() => new FixedThreadPool()).toThrowError(
-      new Error(
-        'Cannot instantiate a pool without specifying the number of workers'
-      )
+      'Cannot instantiate a pool without specifying the number of workers'
     )
   })
 
@@ -88,6 +86,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.enableEvents).toBe(true)
     expect(pool.emitter).toBeDefined()
     expect(pool.opts.enableTasksQueue).toBe(false)
+    expect(pool.opts.tasksQueueOptions).toBeUndefined()
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
@@ -108,6 +107,7 @@ describe('Abstract pool test suite', () => {
         workerChoiceStrategyOptions: { medRunTime: true },
         enableEvents: false,
         enableTasksQueue: true,
+        tasksQueueOptions: { concurrency: 2 },
         messageHandler: testHandler,
         errorHandler: testHandler,
         onlineHandler: testHandler,
@@ -117,6 +117,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.enableEvents).toBe(false)
     expect(pool.emitter).toBeUndefined()
     expect(pool.opts.enableTasksQueue).toBe(true)
+    expect(pool.opts.tasksQueueOptions).toStrictEqual({ concurrency: 2 })
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.LESS_USED
     )
@@ -130,7 +131,31 @@ describe('Abstract pool test suite', () => {
     await pool.destroy()
   })
 
-  it('Simulate worker not found during getWorkerTasksUsage', async () => {
+  it('Verify that pool options are valid', async () => {
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.js',
+          {
+            enableTasksQueue: true,
+            tasksQueueOptions: { concurrency: 0 }
+          }
+        )
+    ).toThrowError("Invalid worker tasks concurrency '0'")
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.js',
+          {
+            workerChoiceStrategy: 'invalidStrategy'
+          }
+        )
+    ).toThrowError("Invalid worker choice strategy 'invalidStrategy'")
+  })
+
+  it('Simulate worker not found at getWorkerTasksUsage()', async () => {
     const pool = new StubPoolWithRemoveAllWorker(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js',
@@ -138,8 +163,10 @@ describe('Abstract pool test suite', () => {
         errorHandler: e => console.error(e)
       }
     )
+    expect(pool.workerNodes.length).toBe(numberOfWorkers)
     // Simulate worker not found.
     pool.removeAllWorker()
+    expect(pool.workerNodes.length).toBe(0)
     expect(() => pool.getWorkerTasksUsage()).toThrowError(
       workerNotFoundInPoolError
     )

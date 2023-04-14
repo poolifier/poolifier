@@ -41,7 +41,7 @@ export abstract class AbstractWorker<
   public constructor (
     type: string,
     protected readonly isMain: boolean,
-    fn: (data: Data) => Response,
+    fn: (data: Data) => Response | Promise<Response>,
     protected mainWorker: MainWorker | undefined | null,
     protected readonly opts: WorkerOptions = {
       /**
@@ -56,8 +56,8 @@ export abstract class AbstractWorker<
     }
   ) {
     super(type)
-    this.checkFunctionInput(fn)
     this.checkWorkerOptions(this.opts)
+    this.checkFunctionInput(fn)
     if (!this.isMain) {
       this.lastTaskTimestamp = performance.now()
       this.aliveInterval = setInterval(
@@ -83,7 +83,7 @@ export abstract class AbstractWorker<
    */
   protected messageListener (
     message: MessageValue<Data, MainWorker>,
-    fn: (data: Data) => Response
+    fn: (data: Data) => Response | Promise<Response>
   ): void {
     if (message.id != null && message.data != null) {
       // Task message received
@@ -114,10 +114,17 @@ export abstract class AbstractWorker<
    *
    * @param fn - The function that should be defined.
    */
-  private checkFunctionInput (fn: (data: Data) => Response): void {
+  private checkFunctionInput (
+    fn: (data: Data) => Response | Promise<Response>
+  ): void {
     if (fn == null) throw new Error('fn parameter is mandatory')
     if (typeof fn !== 'function') {
       throw new TypeError('fn parameter is not a function')
+    }
+    if (fn.constructor.name === 'AsyncFunction' && this.opts.async === false) {
+      throw new Error(
+        'fn parameter is an async function, please set the async option to true'
+      )
     }
   }
 

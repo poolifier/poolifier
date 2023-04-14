@@ -206,6 +206,6 @@ describe('Fixed cluster pool test suite', () => {
     expect(
       () =>
         new FixedClusterPool(0, './tests/worker-files/cluster/testWorker.js')
-    ).toThrowError(new Error('Cannot instantiate a fixed pool with no worker'))
+    ).toThrowError('Cannot instantiate a fixed pool with no worker')
   })
 })

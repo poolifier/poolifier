@@ -714,8 +714,6 @@ describe('Selection strategies test suite', () => {
           './tests/worker-files/thread/testWorker.js',
           { workerChoiceStrategy: 'UNKNOWN_STRATEGY' }
         )
-    ).toThrowError(
-      new Error("Invalid worker choice strategy 'UNKNOWN_STRATEGY'")
-    )
+    ).toThrowError("Invalid worker choice strategy 'UNKNOWN_STRATEGY'")
   })
 })
