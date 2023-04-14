@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix worker function type definition and validation.
+- Fix worker choice strategy options handling.
 
 ## [2.4.8] - 2023-04-12
 

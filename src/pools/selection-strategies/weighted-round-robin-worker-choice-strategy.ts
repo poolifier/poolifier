@@ -7,6 +7,7 @@ import type {
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 import type { IPool } from '../pool'
+import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 
 /**
  * Virtual task runtime.
@@ -54,17 +55,13 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   TaskRunTime
   >()
 
-  /**
-   * Constructs a worker choice strategy that selects with a weighted round robin scheduling algorithm.
-   *
-   * @param pool - The pool instance.
-   * @param opts - The worker choice strategy options.
-   */
+  /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
-    opts?: WorkerChoiceStrategyOptions
+    opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     super(pool, opts)
+    this.checkOptions(opts)
     this.defaultWorkerWeight = this.computeWorkerWeight()
     this.initWorkersTaskRunTime()
   }

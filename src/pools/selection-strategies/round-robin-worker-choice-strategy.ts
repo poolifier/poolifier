@@ -1,6 +1,11 @@
+import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
+import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
-import type { IWorkerChoiceStrategy } from './selection-strategies-types'
+import type {
+  IWorkerChoiceStrategy,
+  WorkerChoiceStrategyOptions
+} from './selection-strategies-types'
 
 /**
  * Selects the next worker in a round robin fashion.
@@ -20,6 +25,15 @@ export class RoundRobinWorkerChoiceStrategy<
    * Id of the next worker node.
    */
   private nextWorkerNodeId: number = 0
+
+  /** @inheritDoc */
+  public constructor (
+    pool: IPool<Worker, Data, Response>,
+    opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+  ) {
+    super(pool, opts)
+    this.checkOptions(opts)
+  }
 
   /** @inheritDoc */
   public reset (): boolean {

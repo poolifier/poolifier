@@ -1,8 +1,11 @@
+import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
+import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
-  RequiredStatistics
+  RequiredStatistics,
+  WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
 /**
@@ -24,6 +27,15 @@ export class LessBusyWorkerChoiceStrategy<
     runTime: true,
     avgRunTime: false,
     medRunTime: false
+  }
+
+  /** @inheritDoc */
+  public constructor (
+    pool: IPool<Worker, Data, Response>,
+    opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+  ) {
+    super(pool, opts)
+    this.checkOptions(opts)
   }
 
   /** @inheritDoc */

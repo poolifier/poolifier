@@ -336,4 +336,61 @@ describe('Worker choice strategy context test suite', () => {
       workerChoiceStrategy
     )
   })
+
+  it.only('Verify that worker choice strategy options enable median run time pool statistics', () => {
+    const wwrWorkerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+    let workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool,
+      wwrWorkerChoiceStrategy,
+      {
+        medRunTime: true
+      }
+    )
+    expect(workerChoiceStrategyContext.getRequiredStatistics().avgRunTime).toBe(
+      false
+    )
+    expect(workerChoiceStrategyContext.getRequiredStatistics().medRunTime).toBe(
+      true
+    )
+    workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      dynamicPool,
+      wwrWorkerChoiceStrategy,
+      {
+        medRunTime: true
+      }
+    )
+    expect(workerChoiceStrategyContext.getRequiredStatistics().avgRunTime).toBe(
+      false
+    )
+    expect(workerChoiceStrategyContext.getRequiredStatistics().medRunTime).toBe(
+      true
+    )
+    const fsWorkerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
+    workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool,
+      fsWorkerChoiceStrategy,
+      {
+        medRunTime: true
+      }
+    )
+    expect(workerChoiceStrategyContext.getRequiredStatistics().avgRunTime).toBe(
+      false
+    )
+    expect(workerChoiceStrategyContext.getRequiredStatistics().medRunTime).toBe(
+      true
+    )
+    workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      dynamicPool,
+      fsWorkerChoiceStrategy,
+      {
+        medRunTime: true
+      }
+    )
+    expect(workerChoiceStrategyContext.getRequiredStatistics().avgRunTime).toBe(
+      false
+    )
+    expect(workerChoiceStrategyContext.getRequiredStatistics().medRunTime).toBe(
+      true
+    )
+  })
 })

@@ -72,7 +72,8 @@ module.exports = defineConfig({
           'unlink',
           'unregister',
           'utf8',
-          'workerpool'
+          'workerpool',
+          'wwr'
         ],
         skipIfMatch: ['^@.*', '^plugin:.*']
       }
