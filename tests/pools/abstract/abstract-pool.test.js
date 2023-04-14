@@ -263,7 +263,7 @@ describe('Abstract pool test suite', () => {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
-    // The `full` event is triggered when the number of submitted tasks at once reach the number of dynamic pool workers.
+    // The `full` event is triggered when the number of submitted tasks at once reach the max number of workers in the dynamic pool.
     // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the dynamic pool.
     expect(poolFull).toBe(numberOfWorkers + 1)
     await pool.destroy()

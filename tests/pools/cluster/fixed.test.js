@@ -12,6 +12,17 @@ describe('Fixed cluster pool test suite', () => {
       errorHandler: e => console.error(e)
     }
   )
+  const queuePool = new FixedClusterPool(
+    numberOfWorkers,
+    './tests/worker-files/cluster/testWorker.js',
+    {
+      enableTasksQueue: true,
+      tasksQueueOptions: {
+        concurrency: 2
+      },
+      errorHandler: e => console.error(e)
+    }
+  )
   const emptyPool = new FixedClusterPool(
     numberOfWorkers,
     './tests/worker-files/cluster/emptyWorker.js',
@@ -47,6 +58,7 @@ describe('Fixed cluster pool test suite', () => {
     await errorPool.destroy()
     await asyncErrorPool.destroy()
     await emptyPool.destroy()
+    await queuePool.destroy()
   })
 
   it('Verify that the function is executed in a worker cluster', async () => {
@@ -74,6 +86,31 @@ describe('Fixed cluster pool test suite', () => {
     // The `busy` event is triggered when the number of submitted tasks at once reach the number of fixed pool workers.
     // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the fixed pool.
     expect(poolBusy).toBe(numberOfWorkers + 1)
+  })
+
+  it('Verify that tasks queuing is working', async () => {
+    const maxMultiplier = 10
+    for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
+      queuePool.execute()
+    }
+    for (const workerNode of queuePool.workerNodes) {
+      expect(workerNode.tasksUsage.running).toBeLessThanOrEqual(
+        queuePool.opts.tasksQueueOptions.concurrency
+      )
+      expect(workerNode.tasksUsage.run).toBe(0)
+      expect(workerNode.tasksQueue.length).toBeGreaterThan(0)
+    }
+    // FIXME: wait for ongoing tasks to be executed
+    const promises = []
+    for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
+      promises.push(queuePool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of queuePool.workerNodes) {
+      expect(workerNode.tasksUsage.running).toBe(0)
+      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
+      expect(workerNode.tasksQueue.length).toBe(0)
+    }
   })
 
   it('Verify that is possible to have a worker that return undefined', async () => {

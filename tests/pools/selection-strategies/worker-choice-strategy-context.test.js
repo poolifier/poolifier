@@ -112,238 +112,228 @@ describe('Worker choice strategy context test suite', () => {
   })
 
   it('Verify that setWorkerChoiceStrategy() works with ROUND_ROBIN and fixed pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.ROUND_ROBIN
+        workerChoiceStrategy
       ).isDynamicPool
     ).toBe(false)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.ROUND_ROBIN
+        workerChoiceStrategy
       )
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.ROUND_ROBIN
+      workerChoiceStrategy
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      WorkerChoiceStrategies.ROUND_ROBIN
-    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.ROUND_ROBIN
+        workerChoiceStrategy
       )
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.ROUND_ROBIN
+      workerChoiceStrategy
     )
   })
 
   it('Verify that setWorkerChoiceStrategy() works with ROUND_ROBIN and dynamic pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.ROUND_ROBIN
+        workerChoiceStrategy
       ).isDynamicPool
     ).toBe(true)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.ROUND_ROBIN
+        workerChoiceStrategy
       )
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.ROUND_ROBIN
+      workerChoiceStrategy
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      WorkerChoiceStrategies.ROUND_ROBIN
-    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.ROUND_ROBIN
+        workerChoiceStrategy
       )
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.ROUND_ROBIN
+      workerChoiceStrategy
     )
   })
 
   it('Verify that setWorkerChoiceStrategy() works with LESS_USED and fixed pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LESS_USED
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.LESS_USED
+        workerChoiceStrategy
       ).isDynamicPool
     ).toBe(false)
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      WorkerChoiceStrategies.LESS_USED
-    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.LESS_USED
+        workerChoiceStrategy
       )
     ).toBeInstanceOf(LessUsedWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.LESS_USED
+      workerChoiceStrategy
     )
   })
 
   it('Verify that setWorkerChoiceStrategy() works with LESS_USED and dynamic pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LESS_USED
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.LESS_USED
+        workerChoiceStrategy
       ).isDynamicPool
     ).toBe(true)
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      WorkerChoiceStrategies.LESS_USED
-    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.LESS_USED
+        workerChoiceStrategy
       )
     ).toBeInstanceOf(LessUsedWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.LESS_USED
+      workerChoiceStrategy
     )
   })
 
   it('Verify that setWorkerChoiceStrategy() works with LESS_BUSY and fixed pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LESS_BUSY
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.LESS_BUSY
+        workerChoiceStrategy
       ).isDynamicPool
     ).toBe(false)
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      WorkerChoiceStrategies.LESS_BUSY
-    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.LESS_BUSY
+        workerChoiceStrategy
       )
     ).toBeInstanceOf(LessBusyWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.LESS_BUSY
+      workerChoiceStrategy
     )
   })
 
   it('Verify that setWorkerChoiceStrategy() works with LESS_BUSY and dynamic pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LESS_BUSY
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.LESS_BUSY
+        workerChoiceStrategy
       ).isDynamicPool
     ).toBe(true)
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      WorkerChoiceStrategies.LESS_BUSY
-    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.LESS_BUSY
+        workerChoiceStrategy
       )
     ).toBeInstanceOf(LessBusyWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.LESS_BUSY
+      workerChoiceStrategy
     )
   })
 
   it('Verify that setWorkerChoiceStrategy() works with FAIR_SHARE and fixed pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.FAIR_SHARE
+        workerChoiceStrategy
       ).isDynamicPool
     ).toBe(false)
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      WorkerChoiceStrategies.FAIR_SHARE
-    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.FAIR_SHARE
+        workerChoiceStrategy
       )
     ).toBeInstanceOf(FairShareWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.FAIR_SHARE
+      workerChoiceStrategy
     )
   })
 
   it('Verify that setWorkerChoiceStrategy() works with FAIR_SHARE and dynamic pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.FAIR_SHARE
+        workerChoiceStrategy
       ).isDynamicPool
     ).toBe(true)
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      WorkerChoiceStrategies.FAIR_SHARE
-    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.FAIR_SHARE
+        workerChoiceStrategy
       )
     ).toBeInstanceOf(FairShareWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.FAIR_SHARE
+      workerChoiceStrategy
     )
   })
 
   it('Verify that setWorkerChoiceStrategy() works with WEIGHTED_ROUND_ROBIN and fixed pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+        workerChoiceStrategy
       ).isDynamicPool
     ).toBe(false)
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
-    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+        workerChoiceStrategy
       )
     ).toBeInstanceOf(WeightedRoundRobinWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+      workerChoiceStrategy
     )
   })
 
   it('Verify that setWorkerChoiceStrategy() works with WEIGHTED_ROUND_ROBIN and dynamic pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+        workerChoiceStrategy
       ).isDynamicPool
     ).toBe(true)
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
-    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
-        WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+        workerChoiceStrategy
       )
     ).toBeInstanceOf(WeightedRoundRobinWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+      workerChoiceStrategy
     )
   })
 })
