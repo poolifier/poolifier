@@ -17,7 +17,7 @@ describe('Thread worker test suite', () => {
     expect(worker.opts.maxInactiveTime).toStrictEqual(60000)
   })
 
-  it('Verify worker invoke the getMainWorker and postMessage methods', () => {
+  it('Verify worker invoke the getMainWorker() and postMessage() methods', () => {
     const worker = new SpyWorker(() => {})
     worker.sendToMainWorker({ ok: 1 })
     expect(numberOfMessagesPosted).toBe(1)

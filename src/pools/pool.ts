@@ -152,7 +152,7 @@ export interface IPool<
    */
   findFreeWorkerNodeKey: () => number
   /**
-   * Performs the task specified in the constructor with the data parameter.
+   * Execute the function specified in the constructor with the task data parameter.
    *
    * @param data - The input for the specified task. This can only be serializable data.
    * @returns Promise that will be resolved when the task is successfully completed.

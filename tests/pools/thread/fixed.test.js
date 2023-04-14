@@ -72,7 +72,7 @@ describe('Fixed thread pool test suite', () => {
     expect(result).toBe(false)
   })
 
-  it('Verify that is possible to invoke the execute method without input', async () => {
+  it('Verify that is possible to invoke the execute() method without input', async () => {
     const result = await pool.execute()
     expect(result).toBe(false)
   })

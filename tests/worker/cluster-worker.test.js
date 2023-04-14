@@ -7,7 +7,7 @@ describe('Cluster worker test suite', () => {
     expect(worker.opts.maxInactiveTime).toStrictEqual(60000)
   })
 
-  it('Verify that handleError function works properly', () => {
+  it('Verify that handleError() method works properly', () => {
     const errorMessage = 'Error as a string'
     const worker = new ClusterWorker(() => {})
     expect(worker.handleError(errorMessage)).toStrictEqual(errorMessage)
