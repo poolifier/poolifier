@@ -90,9 +90,11 @@ describe('Fixed cluster pool test suite', () => {
 
   it('Verify that tasks queuing is working', async () => {
     const maxMultiplier = 10
+    const promises = new Set()
     for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
-      queuePool.execute()
+      promises.add(queuePool.execute())
     }
+    expect(promises.size).toBe(numberOfWorkers * maxMultiplier)
     for (const workerNode of queuePool.workerNodes) {
       expect(workerNode.tasksUsage.running).toBeLessThanOrEqual(
         queuePool.opts.tasksQueueOptions.concurrency
@@ -100,17 +102,17 @@ describe('Fixed cluster pool test suite', () => {
       expect(workerNode.tasksUsage.run).toBe(0)
       expect(workerNode.tasksQueue.length).toBeGreaterThan(0)
     }
-    // FIXME: wait for ongoing tasks to be executed
-    const promises = []
-    for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
-      promises.push(queuePool.execute())
-    }
+    expect(queuePool.numberOfRunningTasks).toBe(numberOfWorkers)
+    expect(queuePool.numberOfQueuedTasks).toBe(
+      numberOfWorkers * maxMultiplier - numberOfWorkers
+    )
     await Promise.all(promises)
     for (const workerNode of queuePool.workerNodes) {
       expect(workerNode.tasksUsage.running).toBe(0)
       expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
       expect(workerNode.tasksQueue.length).toBe(0)
     }
+    promises.clear()
   })
 
   it('Verify that is possible to have a worker that return undefined', async () => {
