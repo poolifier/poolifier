@@ -478,6 +478,42 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
+  it('Verify FAIR_SHARE strategy can be run in a dynamic pool with median run time statistic', async () => {
+    const pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      {
+        workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE,
+        workerChoiceStrategyOptions: {
+          medRunTime: true
+        }
+      }
+    )
+    // TODO: Create a better test to cover `FairShareChoiceStrategy#choose`
+    const promises = []
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
+      promises.push(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage.avgRunTime).toBeDefined()
+      expect(workerNode.tasksUsage.avgRunTime).toBe(0)
+      expect(workerNode.tasksUsage.medRunTime).toBeDefined()
+      expect(workerNode.tasksUsage.medRunTime).toBeGreaterThan(0)
+    }
+    // if (process.platform !== 'win32') {
+    //   expect(
+    //     pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+    //       pool.workerChoiceStrategyContext.workerChoiceStrategy
+    //     ).workerLastVirtualTaskTimestamp.size
+    //   ).toBe(pool.workerNodes.length)
+    // }
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
   it('Verify FAIR_SHARE strategy internals are resets after setting it', async () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
     let pool = new FixedThreadPool(
@@ -615,6 +651,42 @@ describe('Selection strategies test suite', () => {
         ).workersTaskRunTime.size
       ).toBe(pool.workerNodes.length)
     }
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify WEIGHTED_ROUND_ROBIN strategy can be run in a dynamic pool with median run time statistic', async () => {
+    const pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      {
+        workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN,
+        workerChoiceStrategyOptions: {
+          medRunTime: true
+        }
+      }
+    )
+    // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
+    const promises = []
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
+      promises.push(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage.avgRunTime).toBeDefined()
+      expect(workerNode.tasksUsage.avgRunTime).toBe(0)
+      expect(workerNode.tasksUsage.medRunTime).toBeDefined()
+      expect(workerNode.tasksUsage.medRunTime).toBeGreaterThan(0)
+    }
+    // if (process.platform !== 'win32') {
+    //   expect(
+    //     pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+    //       pool.workerChoiceStrategyContext.workerChoiceStrategy
+    //     ).workersTaskRunTime.size
+    //   ).toBe(pool.workerNodes.length)
+    // }
     // We need to clean up the resources after our test
     await pool.destroy()
   })
