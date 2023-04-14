@@ -705,7 +705,7 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify unknown strategies throw error', () => {
+  it('Verify unknown strategy throw error', () => {
     expect(
       () =>
         new DynamicThreadPool(
