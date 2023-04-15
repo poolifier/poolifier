@@ -171,7 +171,7 @@ Node versions >= 16.x are supported.
   - `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN`: Submit tasks to worker using a weighted round robin scheduling algorithm based on tasks execution time
   - `WorkerChoiceStrategies.FAIR_SHARE`: Submit tasks to worker using a fair share tasks scheduling algorithm based on tasks execution time
 
-  `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN` and `WorkerChoiceStrategies.FAIR_SHARE` strategies are targeted to heavy and long tasks  
+  `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN` and `WorkerChoiceStrategies.FAIR_SHARE` strategies are targeted to heavy and long tasks.  
   Default: `WorkerChoiceStrategies.ROUND_ROBIN`
 
 - `workerChoiceStrategyOptions` (optional) - The worker choice strategy options object to use in this pool.  
@@ -179,17 +179,19 @@ Node versions >= 16.x are supported.
 
   - `medRunTime` (optional) - Use the tasks median run time instead of the tasks average run time in worker choice strategies.
 
-  Default: { medRunTime: false }
+  Default: `{ medRunTime: false }`
 
-- `enableEvents` (optional) - Events emission enablement in this pool. Default: true
-- `enableTasksQueue` (optional) - Tasks queue per worker enablement in this pool. Default: false
+- `enableEvents` (optional) - Events emission enablement in this pool.  
+  Default: true
+- `enableTasksQueue` (optional) - Tasks queue per worker enablement in this pool.  
+  Default: false
 
 - `tasksQueueOptions` (optional) - The worker tasks queue options object to use in this pool.  
   Properties:
 
   - `concurrency` (optional) - The maximum number of tasks that can be executed concurrently on a worker.
 
-  Default: { concurrency: 1 }
+  Default: `{ concurrency: 1 }`
 
 ### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
 
@@ -201,7 +203,7 @@ Node versions >= 16.x are supported.
 ### `pool.execute(data)`
 
 Execute method is available on both pool implementations (return type: Promise):  
-`data` (mandatory) An object that you want to pass to your worker implementation
+`data` (optional) An object that you want to pass to your worker implementation
 
 ### `pool.destroy()`
 
@@ -213,14 +215,15 @@ This method will call the terminate method on each worker.
 `fn` (mandatory) The function that you want to execute on the worker  
 `opts` (optional) An object with these properties:
 
-- `maxInactiveTime` - Max time to wait tasks to work on (in ms), after this period the new worker will die.  
+- `maxInactiveTime` (optional) - Max time to wait tasks to work on in milliseconds, after this period the new worker will die.  
   The last active time of your worker unit will be updated when a task is submitted to a worker or when a worker terminate a task.  
   If `killBehavior` is set to `KillBehaviors.HARD` this value represents also the timeout for the tasks that you submit to the pool, when this timeout expires your tasks is interrupted and the worker is killed if is not part of the minimum size of the pool.  
   If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.  
-  Default: 60000 ms
+  Default: 60000
 
-- `async` - true/false, true if your function contains async code pieces, else false
-- `killBehavior` - Dictates if your async unit (worker/process) will be deleted in case that a task is active on it.  
+- `async` (optional) - true/false. Set to true if your function contains async code pieces, else false.  
+  Default: false
+- `killBehavior` (optional) - Dictates if your async unit (worker/process) will be deleted in case that a task is active on it.  
   **KillBehaviors.SOFT**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker **won't** be deleted.  
   **KillBehaviors.HARD**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker will be deleted.  
   This option only apply to the newly created workers.  
