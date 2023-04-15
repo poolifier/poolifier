@@ -182,9 +182,9 @@ Node versions >= 16.x are supported.
   Default: { medRunTime: false }
 
 - `enableEvents` (optional) - Events emission enablement in this pool. Default: true
-- `enableTasksQueue` (optional, experimental) - Tasks queue per worker enablement in this pool. Default: false
+- `enableTasksQueue` (optional) - Tasks queue per worker enablement in this pool. Default: false
 
-- `tasksQueueOptions` (optional, experimental) - The worker tasks queue options object to use in this pool.  
+- `tasksQueueOptions` (optional) - The worker tasks queue options object to use in this pool.  
   Properties:
 
   - `concurrency` (optional) - The maximum number of tasks that can be executed concurrently on a worker.
