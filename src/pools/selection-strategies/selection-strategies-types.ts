@@ -35,6 +35,8 @@ export type WorkerChoiceStrategy = keyof typeof WorkerChoiceStrategies
 export interface WorkerChoiceStrategyOptions {
   /**
    * Use tasks median run time instead of average run time.
+   *
+   * @defaultValue false
    */
   medRunTime?: boolean
 }
