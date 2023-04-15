@@ -39,7 +39,7 @@ export abstract class AbstractWorkerChoiceStrategy<
     protected opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     this.isDynamicPool = this.pool.type === PoolType.DYNAMIC
-    this.choose.bind(this)
+    this.choose = this.choose.bind(this)
   }
 
   protected checkOptions (opts: WorkerChoiceStrategyOptions): void {

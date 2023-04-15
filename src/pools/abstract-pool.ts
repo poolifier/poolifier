@@ -84,10 +84,10 @@ export abstract class AbstractPool<
     this.checkFilePath(this.filePath)
     this.checkPoolOptions(this.opts)
 
-    this.chooseWorkerNode.bind(this)
-    this.executeTask.bind(this)
-    this.enqueueTask.bind(this)
-    this.checkAndEmitEvents.bind(this)
+    this.chooseWorkerNode = this.chooseWorkerNode.bind(this)
+    this.executeTask = this.executeTask.bind(this)
+    this.enqueueTask = this.enqueueTask.bind(this)
+    this.checkAndEmitEvents = this.checkAndEmitEvents.bind(this)
 
     this.setupHook()
 

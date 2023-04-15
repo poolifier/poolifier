@@ -43,33 +43,46 @@ export class WorkerChoiceStrategyContext<
     private workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN,
     opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
-    this.execute.bind(this)
+    this.execute = this.execute.bind(this)
     this.workerChoiceStrategies = new Map<
     WorkerChoiceStrategy,
     IWorkerChoiceStrategy
     >([
       [
         WorkerChoiceStrategies.ROUND_ROBIN,
-        new RoundRobinWorkerChoiceStrategy<Worker, Data, Response>(pool, opts)
-      ],
-      [
-        WorkerChoiceStrategies.LESS_USED,
-        new LessUsedWorkerChoiceStrategy<Worker, Data, Response>(pool, opts)
-      ],
-      [
-        WorkerChoiceStrategies.LESS_BUSY,
-        new LessBusyWorkerChoiceStrategy<Worker, Data, Response>(pool, opts)
-      ],
-      [
-        WorkerChoiceStrategies.FAIR_SHARE,
-        new FairShareWorkerChoiceStrategy<Worker, Data, Response>(pool, opts)
-      ],
-      [
-        WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN,
-        new WeightedRoundRobinWorkerChoiceStrategy<Worker, Data, Response>(
+        new (RoundRobinWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
           pool,
           opts
         )
+      ],
+      [
+        WorkerChoiceStrategies.LESS_USED,
+        new (LessUsedWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
+          pool,
+          opts
+        )
+      ],
+      [
+        WorkerChoiceStrategies.LESS_BUSY,
+        new (LessBusyWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
+          pool,
+          opts
+        )
+      ],
+      [
+        WorkerChoiceStrategies.FAIR_SHARE,
+        new (FairShareWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
+          pool,
+          opts
+        )
+      ],
+      [
+        WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN,
+        new (WeightedRoundRobinWorkerChoiceStrategy.bind(this))<
+        Worker,
+        Data,
+        Response
+        >(pool, opts)
       ]
     ])
   }
