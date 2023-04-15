@@ -104,8 +104,7 @@ function yourFunction(data) {
 }
 
 module.exports = new ThreadWorker(yourFunction, {
-  maxInactiveTime: 60000,
-  async: false
+  maxInactiveTime: 60000
 })
 ```
 

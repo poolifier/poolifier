@@ -7,6 +7,5 @@ function error () {
 
 module.exports = new ClusterWorker(error, {
   maxInactiveTime: 500,
-  async: false,
   killBehavior: KillBehaviors.HARD
 })
