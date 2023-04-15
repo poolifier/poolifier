@@ -46,7 +46,7 @@ export interface WorkerOptions {
    *   when this timeout expires your tasks is interrupted and the worker is killed if is not part of the minimum size of the pool.
    * - If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.
    *
-   * @defaultValue 60000 ms
+   * @defaultValue 60000
    */
   maxInactiveTime?: number
   /**
