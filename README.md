@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./images/logo.png" width="340px" height="266px"/>
+  <img src="./images/logo.png" width="340px" height="266px"/>
 </div>
 
 <h2 align="center">Node Thread Pool and Cluster Pool :arrow_double_up: :on:</h2>
@@ -32,7 +32,7 @@
 Poolifier is used to perform CPU intensive and I/O intensive tasks on nodejs servers, it implements worker pools (yes, more worker pool implementations, so you can choose which one fit better for you) using [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) and cluster pools using [Node.js cluster](https://nodejs.org/api/cluster.html) modules.  
 With poolifier you can improve your **performance** and resolve problems related to the event loop.  
 Moreover you can execute your tasks using an API designed to improve the **developer experience**.  
-Please consult our <a href="#general-guidance">general guidelines</a>
+Please consult our [general guidelines](#general-guidance).
 
 - Performance :racehorse: [benchmarks](./benchmarks/README.md)
 - Security :bank: :cop: [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=security_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
@@ -81,7 +81,7 @@ Please consult our <a href="#general-guidance">general guidelines</a>
 Node pool contains two [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads)/[cluster worker](https://nodejs.org/api/cluster.html#cluster_class_worker) pool implementations, you don't have to deal with worker-threads/cluster worker complexity.  
 The first implementation is a static worker pool, with a defined number of workers that are started at creation time and will be reused.  
 The second implementation is a dynamic worker pool with a number of worker started at creation time (these workers will be always active and reused) and other workers created when the load will increase (with an upper limit, these workers will be reused when active), the new created workers will be stopped after a configurable period of inactivity.  
-You have to implement your worker extending the ThreadWorker or ClusterWorker class
+You have to implement your worker extending the ThreadWorker or ClusterWorker class.
 
 ## Installation
 
@@ -109,7 +109,7 @@ module.exports = new ThreadWorker(yourFunction, {
 })
 ```
 
-Instantiate your pool based on your needed :
+Instantiate your pool based on your needs :
 
 ```js
 'use strict'
@@ -140,7 +140,7 @@ pool.execute({}).then(res => {
 
 You can do the same with the classes ClusterWorker, FixedClusterPool and DynamicClusterPool.
 
-**See examples folder for more details (in particular if you want to use a pool for [multiple functions](./examples/multiFunctionExample.js)).**  
+**See examples folder for more details (in particular if you want to use a pool for [multiple functions](./examples/multiFunctionExample.js))**.  
 **Now TypeScript is also supported, find how to use it into the example folder**.
 
 Remember that workers can only send and receive serializable data.
@@ -200,8 +200,8 @@ Node versions >= 16.x are supported.
 
 ### `pool.execute(data)`
 
-Execute method is available on both pool implementations (return type: Promise):  
-`data` (optional) An object that you want to pass to your worker implementation
+`data` (optional) An object that you want to pass to your worker implementation  
+This method is available on both pool implementations and returns a promise.
 
 ### `pool.destroy()`
 
@@ -239,11 +239,11 @@ Please take a look at [which tasks run on the libuv thread pool](https://nodejs.
 
 **If your task runs on libuv thread pool**, you can try to:
 
-- Tune the libuv thread pool size setting the [UV_THREADPOOL_SIZE](https://nodejs.org/api/cli.html#cli_uv_threadpool_size_size)
+- Tune the libuv thread pool size setting the [UV_THREADPOOL_SIZE](https://nodejs.org/api/cli.html#cli_uv_threadpool_size_size).
 
 and/or
 
-- Use poolifier cluster pool that spawning child processes will also increase the number of libuv threads since that any new child process comes with a separated libuv thread pool. **More threads does not mean more fast, so please tune your application.**
+- Use poolifier cluster pool that spawning child processes will also increase the number of libuv threads since that any new child process comes with a separated libuv thread pool. **More threads does not mean more fast, so please tune your application**.
 
 ### Cluster vs Threads worker pools
 
@@ -255,7 +255,7 @@ Consider that by default Node.js already has great performance for I/O tasks (as
 Cluster pools are built on top of Node.js [cluster](https://nodejs.org/api/cluster.html) module.
 
 If your task contains code that runs on libuv plus code that is CPU intensive or I/O intensive you either split it either combine more strategies (i.e. tune the number of libuv threads and use cluster/thread pools).  
-But in general, **always profile your application**
+But in general, **always profile your application**.
 
 ### Fixed vs Dynamic pools
 
@@ -263,12 +263,13 @@ To choose your pool consider that with a FixedThreadPool/FixedClusterPool or a D
 Increasing the memory footprint, your application will be ready to accept more tasks, but during idle time your application will consume more memory.  
 One good choose from my point of view is to profile your application using Fixed/Dynamic worker pool, and to see your application metrics when you increase/decrease the num of workers.  
 For example you could keep the memory footprint low choosing a DynamicThreadPool/DynamicClusterPool with 5 workers, and allow to create new workers until 50/100 when needed, this is the advantage to use the DynamicThreadPool/DynamicClusterPool.  
-But in general, **always profile your application**
+But in general, **always profile your application**.
 
 ## Contribute
 
-See guidelines [CONTRIBUTING](CONTRIBUTING.md)  
 Choose your task here [2.4.x](https://github.com/orgs/poolifier/projects/1), propose an idea, a fix, an improvement.
+
+See [CONTRIBUTING](CONTRIBUTING.md) guidelines.
 
 ## Team
 
