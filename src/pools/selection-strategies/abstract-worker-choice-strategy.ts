@@ -64,6 +64,7 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public setOptions (opts: WorkerChoiceStrategyOptions): void {
+    opts = opts ?? DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
     this.checkOptions(opts)
     this.opts = opts
   }
