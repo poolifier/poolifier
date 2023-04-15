@@ -251,21 +251,25 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public enableTasksQueue (enable: boolean, opts?: TasksQueueOptions): void {
+  public enableTasksQueue (
+    enable: boolean,
+    tasksQueueOptions?: TasksQueueOptions
+  ): void {
     if (this.opts.enableTasksQueue === true && !enable) {
       for (const [workerNodeKey] of this.workerNodes.entries()) {
         this.flushTasksQueue(workerNodeKey)
       }
     }
     this.opts.enableTasksQueue = enable
-    this.setTasksQueueOptions(opts as TasksQueueOptions)
+    this.setTasksQueueOptions(tasksQueueOptions as TasksQueueOptions)
   }
 
   /** @inheritDoc */
-  public setTasksQueueOptions (opts: TasksQueueOptions): void {
+  public setTasksQueueOptions (tasksQueueOptions: TasksQueueOptions): void {
     if (this.opts.enableTasksQueue === true) {
-      this.checkValidTasksQueueOptions(opts)
-      this.opts.tasksQueueOptions = this.buildTasksQueueOptions(opts)
+      this.checkValidTasksQueueOptions(tasksQueueOptions)
+      this.opts.tasksQueueOptions =
+        this.buildTasksQueueOptions(tasksQueueOptions)
     } else {
       delete this.opts.tasksQueueOptions
     }

@@ -183,7 +183,10 @@ export interface IPool<
    * @param enable - Whether to enable or disable the worker tasks queue.
    * @param tasksQueueOptions - The worker tasks queue options.
    */
-  enableTasksQueue: (enable: boolean, opts?: TasksQueueOptions) => void
+  enableTasksQueue: (
+    enable: boolean,
+    tasksQueueOptions?: TasksQueueOptions
+  ) => void
   /**
    * Sets the worker tasks queue options in this pool.
    *
