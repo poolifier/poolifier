@@ -69,7 +69,7 @@ export abstract class AbstractPool<
    * Constructs a new poolifier pool.
    *
    * @param numberOfWorkers - Number of workers that this pool should manage.
-   * @param filePath - Path to the worker-file.
+   * @param filePath - Path to the worker file.
    * @param opts - Options for the pool.
    */
   public constructor (
