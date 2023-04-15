@@ -167,7 +167,8 @@ describe('Selection strategies test suite', () => {
     )
     // TODO: Create a better test to cover `RoundRobinWorkerChoiceStrategy#choose`
     const promises = []
-    for (let i = 0; i < max * 2; i++) {
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
@@ -184,7 +185,8 @@ describe('Selection strategies test suite', () => {
     )
     // TODO: Create a better test to cover `RoundRobinWorkerChoiceStrategy#choose`
     const promises = []
-    for (let i = 0; i < max * 2; i++) {
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
@@ -302,7 +304,8 @@ describe('Selection strategies test suite', () => {
     )
     // TODO: Create a better test to cover `LessUsedWorkerChoiceStrategy#choose`
     const promises = []
-    for (let i = 0; i < max * 2; i++) {
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
@@ -319,7 +322,8 @@ describe('Selection strategies test suite', () => {
     )
     // TODO: Create a better test to cover `LessUsedWorkerChoiceStrategy#choose`
     const promises = []
-    for (let i = 0; i < max * 2; i++) {
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
@@ -371,7 +375,8 @@ describe('Selection strategies test suite', () => {
     )
     // TODO: Create a better test to cover `LessBusyWorkerChoiceStrategy#choose`
     const promises = []
-    for (let i = 0; i < max * 2; i++) {
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
@@ -388,7 +393,8 @@ describe('Selection strategies test suite', () => {
     )
     // TODO: Create a better test to cover `LessBusyWorkerChoiceStrategy#choose`
     const promises = []
-    for (let i = 0; i < max * 2; i++) {
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
@@ -440,7 +446,8 @@ describe('Selection strategies test suite', () => {
     )
     // TODO: Create a better test to cover `FairShareChoiceStrategy#choose`
     const promises = []
-    for (let i = 0; i < max * 2; i++) {
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
@@ -614,7 +621,8 @@ describe('Selection strategies test suite', () => {
     )
     // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
     const promises = []
-    for (let i = 0; i < max * 2; i++) {
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
       promises.push(pool.execute())
     }
     await Promise.all(promises)

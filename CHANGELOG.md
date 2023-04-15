@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add tasks queue enablement runtime setter to pool.
+- Add tasks queue options runtime setter to pool.
+- Add worker choice strategy options runtime setter to pool.
+
+### Changed
+
+- Remove the tasks queuing experimental status.
+
 ### Fixed
 
 - Fix worker function type definition and validation.

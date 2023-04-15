@@ -127,4 +127,15 @@ export class WorkerChoiceStrategyContext<
       ) as IWorkerChoiceStrategy
     ).remove(workerNodeKey)
   }
+
+  /**
+   * Sets the worker choice strategies in the context options.
+   *
+   * @param opts - The worker choice strategy options.
+   */
+  public setOptions (opts: WorkerChoiceStrategyOptions): void {
+    this.workerChoiceStrategies.forEach(workerChoiceStrategy => {
+      workerChoiceStrategy.setOptions(opts)
+    })
+  }
 }

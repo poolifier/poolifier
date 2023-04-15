@@ -81,4 +81,10 @@ export interface IWorkerChoiceStrategy {
    * @param workerNodeKey - The worker node key.
    */
   remove: (workerNodeKey: number) => boolean
+  /**
+   * Sets the worker choice strategy options.
+   *
+   * @param opts - The worker choice strategy options.
+   */
+  setOptions: (opts: WorkerChoiceStrategyOptions) => void
 }

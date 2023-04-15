@@ -36,7 +36,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   public constructor (
     protected readonly pool: IPool<Worker, Data, Response>,
-    protected readonly opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+    protected opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     this.isDynamicPool = this.pool.type === PoolType.DYNAMIC
     this.choose.bind(this)
@@ -45,6 +45,10 @@ export abstract class AbstractWorkerChoiceStrategy<
   protected checkOptions (opts: WorkerChoiceStrategyOptions): void {
     if (this.requiredStatistics.avgRunTime && opts.medRunTime === true) {
       this.requiredStatistics.avgRunTime = false
+      this.requiredStatistics.medRunTime = opts.medRunTime as boolean
+    }
+    if (this.requiredStatistics.medRunTime && opts.medRunTime === false) {
+      this.requiredStatistics.avgRunTime = true
       this.requiredStatistics.medRunTime = opts.medRunTime as boolean
     }
   }
@@ -57,4 +61,10 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public abstract remove (workerNodeKey: number): boolean
+
+  /** @inheritDoc */
+  public setOptions (opts: WorkerChoiceStrategyOptions): void {
+    this.checkOptions(opts)
+    this.opts = opts
+  }
 }

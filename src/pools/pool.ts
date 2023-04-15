@@ -98,14 +98,11 @@ export interface PoolOptions<Worker extends IWorker> {
   /**
    * Pool worker tasks queue.
    *
-   * @experimental
    * @defaultValue false
    */
   enableTasksQueue?: boolean
   /**
    * Pool worker tasks queue options.
-   *
-   * @experimental
    */
   tasksQueueOptions?: TasksQueueOptions
 }
@@ -168,4 +165,25 @@ export interface IPool<
    * @param workerChoiceStrategy - The worker choice strategy.
    */
   setWorkerChoiceStrategy: (workerChoiceStrategy: WorkerChoiceStrategy) => void
+  /**
+   * Sets the worker choice strategy options in this pool.
+   *
+   * @param workerChoiceStrategyOptions - The worker choice strategy options.
+   */
+  setWorkerChoiceStrategyOptions: (
+    workerChoiceStrategyOptions: WorkerChoiceStrategyOptions
+  ) => void
+  /**
+   * Enables/disables the worker tasks queue in this pool.
+   *
+   * @param enable - Whether to enable or disable the worker tasks queue.
+   * @param tasksQueueOptions - The worker tasks queue options.
+   */
+  enableTasksQueue: (enable: boolean, opts?: TasksQueueOptions) => void
+  /**
+   * Sets the worker tasks queue options in this pool.
+   *
+   * @param tasksQueueOptions - The worker tasks queue options.
+   */
+  setTasksQueueOptions: (tasksQueueOptions: TasksQueueOptions) => void
 }

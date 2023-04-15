@@ -52,7 +52,7 @@ export class FairShareWorkerChoiceStrategy<
     opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     super(pool, opts)
-    this.checkOptions(opts)
+    this.checkOptions(this.opts)
   }
 
   /** @inheritDoc */

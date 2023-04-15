@@ -17,7 +17,8 @@ import { PoolEmitter } from './pool'
 import type { IWorker, Task, TasksUsage, WorkerNode } from './worker'
 import {
   WorkerChoiceStrategies,
-  type WorkerChoiceStrategy
+  type WorkerChoiceStrategy,
+  type WorkerChoiceStrategyOptions
 } from './selection-strategies/selection-strategies-types'
 import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
 import { CircularArray } from '../circular-array'
@@ -144,16 +145,12 @@ export abstract class AbstractPool<
     this.opts.enableEvents = opts.enableEvents ?? true
     this.opts.enableTasksQueue = opts.enableTasksQueue ?? false
     if (this.opts.enableTasksQueue) {
-      if ((opts.tasksQueueOptions?.concurrency as number) <= 0) {
-        throw new Error(
-          `Invalid worker tasks concurrency '${
-            (opts.tasksQueueOptions as TasksQueueOptions).concurrency as number
-          }'`
-        )
-      }
-      this.opts.tasksQueueOptions = {
-        concurrency: opts.tasksQueueOptions?.concurrency ?? 1
-      }
+      this.checkValidTasksQueueOptions(
+        opts.tasksQueueOptions as TasksQueueOptions
+      )
+      this.opts.tasksQueueOptions = this.buildTasksQueueOptions(
+        opts.tasksQueueOptions as TasksQueueOptions
+      )
     }
   }
 
@@ -163,6 +160,18 @@ export abstract class AbstractPool<
     if (!Object.values(WorkerChoiceStrategies).includes(workerChoiceStrategy)) {
       throw new Error(
         `Invalid worker choice strategy '${workerChoiceStrategy}'`
+      )
+    }
+  }
+
+  private checkValidTasksQueueOptions (
+    tasksQueueOptions: TasksQueueOptions
+  ): void {
+    if ((tasksQueueOptions?.concurrency as number) <= 0) {
+      throw new Error(
+        `Invalid worker tasks concurrency '${
+          tasksQueueOptions.concurrency as number
+        }'`
       )
     }
   }
@@ -223,8 +232,47 @@ export abstract class AbstractPool<
       })
     }
     this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      workerChoiceStrategy
+      this.opts.workerChoiceStrategy
     )
+  }
+
+  /** @inheritDoc */
+  public setWorkerChoiceStrategyOptions (
+    workerChoiceStrategyOptions: WorkerChoiceStrategyOptions
+  ): void {
+    this.opts.workerChoiceStrategyOptions = workerChoiceStrategyOptions
+    this.workerChoiceStrategyContext.setOptions(
+      this.opts.workerChoiceStrategyOptions
+    )
+  }
+
+  /** @inheritDoc */
+  public enableTasksQueue (enable: boolean, opts?: TasksQueueOptions): void {
+    if (this.opts.enableTasksQueue === true && !enable) {
+      for (const [workerNodeKey] of this.workerNodes.entries()) {
+        this.flushTasksQueue(workerNodeKey)
+      }
+    }
+    this.opts.enableTasksQueue = enable
+    this.setTasksQueueOptions(opts as TasksQueueOptions)
+  }
+
+  /** @inheritDoc */
+  public setTasksQueueOptions (opts: TasksQueueOptions): void {
+    if (this.opts.enableTasksQueue === true) {
+      this.checkValidTasksQueueOptions(opts)
+      this.opts.tasksQueueOptions = this.buildTasksQueueOptions(opts)
+    } else {
+      delete this.opts.tasksQueueOptions
+    }
+  }
+
+  private buildTasksQueueOptions (
+    tasksQueueOptions: TasksQueueOptions
+  ): TasksQueueOptions {
+    return {
+      concurrency: tasksQueueOptions?.concurrency ?? 1
+    }
   }
 
   /**
