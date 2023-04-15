@@ -84,7 +84,7 @@ export interface PoolOptions<Worker extends IWorker> {
   /**
    * The worker choice strategy to use in this pool.
    *
-   * @defaultValue 'ROUND_ROBIN'
+   * @defaultValue WorkerChoiceStrategies.ROUND_ROBIN
    */
   workerChoiceStrategy?: WorkerChoiceStrategy
   /**
