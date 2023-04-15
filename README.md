@@ -149,9 +149,7 @@ Remember that workers can only send and receive serializable data.
 
 Node versions >= 16.x are supported.
 
-## API
-
-### [Documentation](https://poolifier.github.io/poolifier/)
+## [API](https://poolifier.github.io/poolifier/)
 
 ### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
 
