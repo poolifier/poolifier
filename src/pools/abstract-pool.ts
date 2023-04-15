@@ -216,7 +216,8 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public setWorkerChoiceStrategy (
-    workerChoiceStrategy: WorkerChoiceStrategy
+    workerChoiceStrategy: WorkerChoiceStrategy,
+    workerChoiceStrategyOptions?: WorkerChoiceStrategyOptions
   ): void {
     this.checkValidWorkerChoiceStrategy(workerChoiceStrategy)
     this.opts.workerChoiceStrategy = workerChoiceStrategy
@@ -234,6 +235,9 @@ export abstract class AbstractPool<
     this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
       this.opts.workerChoiceStrategy
     )
+    if (workerChoiceStrategyOptions != null) {
+      this.setWorkerChoiceStrategyOptions(workerChoiceStrategyOptions)
+    }
   }
 
   /** @inheritDoc */

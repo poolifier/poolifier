@@ -163,8 +163,12 @@ export interface IPool<
    * Sets the worker choice strategy in this pool.
    *
    * @param workerChoiceStrategy - The worker choice strategy.
+   * @param workerChoiceStrategyOptions - The worker choice strategy options.
    */
-  setWorkerChoiceStrategy: (workerChoiceStrategy: WorkerChoiceStrategy) => void
+  setWorkerChoiceStrategy: (
+    workerChoiceStrategy: WorkerChoiceStrategy,
+    workerChoiceStrategyOptions?: WorkerChoiceStrategyOptions
+  ) => void
   /**
    * Sets the worker choice strategy options in this pool.
    *
