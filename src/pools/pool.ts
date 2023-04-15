@@ -151,12 +151,12 @@ export interface IPool<
    */
   findFreeWorkerNodeKey: () => number
   /**
-   * Executes the function specified in the constructor with the task data input parameter.
+   * Executes the function specified in the worker constructor with the task data input parameter.
    *
-   * @param data - The task input data for the specified function. This can only be serializable data.
-   * @returns Promise that will be resolved when the task is successfully completed.
+   * @param data - The task input data for the specified worker function. This can only be serializable data.
+   * @returns Promise that will be fulfilled when the task is completed.
    */
-  execute: (data: Data) => Promise<Response>
+  execute: (data?: Data) => Promise<Response>
   /**
    * Shutdowns every current worker in this pool.
    */

@@ -68,10 +68,10 @@ export class FixedThreadPool<
 
   /** @inheritDoc */
   protected registerWorkerMessageListener<Message extends Data | Response>(
-    messageChannel: ThreadWorkerWithMessageChannel,
+    worker: ThreadWorkerWithMessageChannel,
     listener: (message: MessageValue<Message>) => void
   ): void {
-    messageChannel.port2?.on('message', listener)
+    worker.port2?.on('message', listener)
   }
 
   /** @inheritDoc */

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix typescript type definition for worker function: ensure the input data is optional.
+- Fix typescript type definition for pool execute(): ensure the input data is optional.
+
 ## [2.4.9] - 2023-04-15
 
 ### Added

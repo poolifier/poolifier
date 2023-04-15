@@ -256,9 +256,7 @@ export abstract class AbstractPool<
     tasksQueueOptions?: TasksQueueOptions
   ): void {
     if (this.opts.enableTasksQueue === true && !enable) {
-      for (const [workerNodeKey] of this.workerNodes.entries()) {
-        this.flushTasksQueue(workerNodeKey)
-      }
+      this.flushTasksQueues()
     }
     this.opts.enableTasksQueue = enable
     this.setTasksQueueOptions(tasksQueueOptions as TasksQueueOptions)
@@ -309,7 +307,7 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public async execute (data: Data): Promise<Response> {
+  public async execute (data?: Data): Promise<Response> {
     const [workerNodeKey, workerNode] = this.chooseWorkerNode()
     const submittedTask: Task<Data> = {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -655,5 +653,11 @@ export abstract class AbstractPool<
   private flushTasksQueueByWorker (worker: Worker): void {
     const workerNodeKey = this.getWorkerNodeKey(worker)
     this.flushTasksQueue(workerNodeKey)
+  }
+
+  private flushTasksQueues (): void {
+    for (const [workerNodeKey] of this.workerNodes.entries()) {
+      this.flushTasksQueue(workerNodeKey)
+    }
   }
 }
