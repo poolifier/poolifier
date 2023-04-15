@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.10] - 2023-04-15
+
 ### Fixed
 
 - Fix typescript type definition for worker function: ensure the input data is optional.
