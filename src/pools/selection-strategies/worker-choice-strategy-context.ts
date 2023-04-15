@@ -40,9 +40,6 @@ export class WorkerChoiceStrategyContext<
    */
   public constructor (
     pool: IPool<Worker, Data, Response>,
-    /**
-     * @defaultValue WorkerChoiceStrategies.ROUND_ROBIN
-     */
     private workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN,
     opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
