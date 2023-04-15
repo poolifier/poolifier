@@ -40,6 +40,19 @@ export interface MessageValue<
 }
 
 /**
+ * Worker function that can be executed types.
+ */
+export type WorkerSyncFunction<Data = unknown, Response = unknown> = (
+  data?: Data
+) => Response
+export type WorkerAsyncFunction<Data = unknown, Response = unknown> = (
+  data?: Data
+) => Promise<Response>
+export type WorkerFunction<Data = unknown, Response = unknown> =
+  | WorkerSyncFunction<Data, Response>
+  | WorkerAsyncFunction<Data, Response>
+
+/**
  * An object holding the execution response promise resolve/reject callbacks.
  *
  * @typeParam Worker - Type of worker.

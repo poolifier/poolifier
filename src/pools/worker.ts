@@ -90,7 +90,7 @@ export interface IWorker {
    * Register an event listener.
    *
    * @param event - The event.
-   * @param handler - The event listener.
+   * @param handler - The event handler.
    */
   on: ((event: 'message', handler: MessageHandler<this>) => void) &
   ((event: 'error', handler: ErrorHandler<this>) => void) &

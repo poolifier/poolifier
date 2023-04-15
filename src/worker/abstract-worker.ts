@@ -1,7 +1,12 @@
 import { AsyncResource } from 'node:async_hooks'
 import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
-import type { MessageValue } from '../utility-types'
+import type {
+  MessageValue,
+  WorkerAsyncFunction,
+  WorkerFunction,
+  WorkerSyncFunction
+} from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
 import type { KillBehavior, WorkerOptions } from './worker-options'
 import { KillBehaviors } from './worker-options'
@@ -41,7 +46,7 @@ export abstract class AbstractWorker<
   public constructor (
     type: string,
     protected readonly isMain: boolean,
-    fn: (data: Data) => Response | Promise<Response>,
+    fn: WorkerFunction<Data, Response>,
     protected mainWorker: MainWorker | undefined | null,
     protected readonly opts: WorkerOptions = {
       /**
@@ -83,7 +88,7 @@ export abstract class AbstractWorker<
    */
   protected messageListener (
     message: MessageValue<Data, MainWorker>,
-    fn: (data: Data) => Response | Promise<Response>
+    fn: WorkerFunction<Data, Response>
   ): void {
     if (message.id != null && message.data != null) {
       // Task message received
@@ -114,9 +119,7 @@ export abstract class AbstractWorker<
    *
    * @param fn - The function that should be defined.
    */
-  private checkFunctionInput (
-    fn: (data: Data) => Response | Promise<Response>
-  ): void {
+  private checkFunctionInput (fn: WorkerFunction<Data, Response>): void {
     if (fn == null) throw new Error('fn parameter is mandatory')
     if (typeof fn !== 'function') {
       throw new TypeError('fn parameter is not a function')
@@ -176,7 +179,7 @@ export abstract class AbstractWorker<
    * @param message - Input data for the given function.
    */
   protected run (
-    fn: (data?: Data) => Response,
+    fn: WorkerSyncFunction<Data, Response>,
     message: MessageValue<Data>
   ): void {
     try {
@@ -203,7 +206,7 @@ export abstract class AbstractWorker<
    * @param message - Input data for the given function.
    */
   protected runAsync (
-    fn: (data?: Data) => Promise<Response>,
+    fn: WorkerAsyncFunction<Data, Response>,
     message: MessageValue<Data>
   ): void {
     const startTimestamp = performance.now()

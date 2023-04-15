@@ -40,6 +40,9 @@ export type { KillBehavior, WorkerOptions } from './worker/worker-options'
 export type {
   Draft,
   PromiseResponseWrapper,
-  MessageValue
+  MessageValue,
+  WorkerAsyncFunction,
+  WorkerFunction,
+  WorkerSyncFunction
 } from './utility-types'
 export type { CircularArray } from './circular-array'
