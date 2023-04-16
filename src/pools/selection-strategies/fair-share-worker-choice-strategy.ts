@@ -82,7 +82,7 @@ export class FairShareWorkerChoiceStrategy<
   /** @inheritDoc */
   public remove (workerNodeKey: number): boolean {
     const deleted = this.workerLastVirtualTaskTimestamp.delete(workerNodeKey)
-    for (const [key, value] of this.workerLastVirtualTaskTimestamp.entries()) {
+    for (const [key, value] of this.workerLastVirtualTaskTimestamp) {
       if (key > workerNodeKey) {
         this.workerLastVirtualTaskTimestamp.set(key - 1, value)
       }
