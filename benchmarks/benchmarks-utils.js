@@ -1,3 +1,4 @@
+const crypto = require('crypto')
 const fs = require('fs')
 const {
   PoolTypes,
@@ -77,11 +78,16 @@ function factorial (n) {
   return factorial(n - 1) * n
 }
 
-function readWriteFiles (n) {
-  const baseDirectory = '/tmp/poolifier-benchmarks'
-  if (fs.existsSync(baseDirectory) === false) {
-    fs.mkdirSync(baseDirectory, { recursive: true })
+function readWriteFiles (
+  n,
+  baseDirectory = `/tmp/poolifier-benchmarks/${crypto.randomInt(
+    281474976710655
+  )}`
+) {
+  if (fs.existsSync(baseDirectory) === true) {
+    fs.rmSync(baseDirectory, { recursive: true })
   }
+  fs.mkdirSync(baseDirectory, { recursive: true })
   for (let i = 0; i < n; i++) {
     const filePath = `${baseDirectory}/${i}`
     fs.writeFileSync(filePath, i.toString(), {
@@ -90,6 +96,7 @@ function readWriteFiles (n) {
     })
     fs.readFileSync(filePath, 'utf8')
   }
+  fs.rmSync(baseDirectory, { recursive: true })
 }
 
 function executeWorkerFunction (data) {

@@ -6,6 +6,7 @@
  * @returns {*} The result.
  */
 function functionToBench (data) {
+  const crypto = require('crypto')
   const fs = require('fs')
   const TaskTypes = {
     CPU_INTENSIVE: 'CPU_INTENSIVE',
@@ -14,7 +15,9 @@ function functionToBench (data) {
   data = data || {}
   data.taskType = data.taskType || TaskTypes.CPU_INTENSIVE
   data.taskSize = data.taskSize || 5000
-  const baseDirectory = '/tmp/poolifier-benchmarks'
+  const baseDirectory = `/tmp/poolifier-benchmarks/${crypto.randomInt(
+    281474976710655
+  )}`
   switch (data.taskType) {
     case TaskTypes.CPU_INTENSIVE:
       // CPU intensive task
@@ -27,9 +30,10 @@ function functionToBench (data) {
       return { ok: 1 }
     case TaskTypes.IO_INTENSIVE:
       // IO intensive task
-      if (fs.existsSync(baseDirectory) === false) {
-        fs.mkdirSync(baseDirectory, { recursive: true })
+      if (fs.existsSync(baseDirectory) === true) {
+        fs.rmSync(baseDirectory, { recursive: true })
       }
+      fs.mkdirSync(baseDirectory, { recursive: true })
       for (let i = 0; i < data.taskSize; i++) {
         const filePath = `${baseDirectory}/${i}`
         fs.writeFileSync(filePath, i.toString(), {
@@ -38,6 +42,7 @@ function functionToBench (data) {
         })
         fs.readFileSync(filePath, 'utf8')
       }
+      fs.rmSync(baseDirectory, { recursive: true })
       return { ok: 1 }
     default:
       throw new Error(`Unknown task type: ${data.taskType}`)
