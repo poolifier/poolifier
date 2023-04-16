@@ -15,10 +15,10 @@ devDependencies:
     version: 3.1.0(release-it@15.10.1)
   '@rollup/plugin-terser':
     specifier: ^0.4.1
-    version: 0.4.1(rollup@3.20.2)
+    version: 0.4.1(rollup@3.20.3)
   '@rollup/plugin-typescript':
     specifier: ^11.1.0
-    version: 11.1.0(rollup@3.20.2)(typescript@5.0.4)
+    version: 11.1.0(rollup@3.20.3)(typescript@5.0.4)
   '@types/node':
     specifier: ^18.15.11
     version: 18.15.11
@@ -95,8 +95,8 @@ devDependencies:
     specifier: ^15.10.1
     version: 15.10.1
   rollup:
-    specifier: ^3.20.2
-    version: 3.20.2
+    specifier: ^3.20.3
+    version: 3.20.3
   rollup-plugin-analyzer:
     specifier: ^4.0.0
     version: 4.0.0
@@ -719,7 +719,7 @@ packages:
       string-template: 1.0.0
     dev: true
 
-  /@rollup/plugin-terser@0.4.1(rollup@3.20.2):
+  /@rollup/plugin-terser@0.4.1(rollup@3.20.3):
     resolution: {integrity: sha512-aKS32sw5a7hy+fEXVy+5T95aDIwjpGHCTv833HXVtyKMDoVS7pBr5K3L9hEQoNqbJFjfANPrNpIXlTQ7is00eA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -728,13 +728,13 @@ packages:
       rollup:
         optional: true
     dependencies:
-      rollup: 3.20.2
+      rollup: 3.20.3
       serialize-javascript: 6.0.1
       smob: 0.0.6
       terser: 5.16.9
     dev: true
 
-  /@rollup/plugin-typescript@11.1.0(rollup@3.20.2)(typescript@5.0.4):
+  /@rollup/plugin-typescript@11.1.0(rollup@3.20.3)(typescript@5.0.4):
     resolution: {integrity: sha512-86flrfE+bSHB69znnTV6kVjkncs2LBMhcTCyxWgRxLyfXfQrxg4UwlAqENnjrrxnSNS/XKCDJCl8EkdFJVHOxw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -747,13 +747,13 @@ packages:
       tslib:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.2(rollup@3.20.2)
+      '@rollup/pluginutils': 5.0.2(rollup@3.20.3)
       resolve: 1.22.3
-      rollup: 3.20.2
+      rollup: 3.20.3
       typescript: 5.0.4
     dev: true
 
-  /@rollup/pluginutils@5.0.2(rollup@3.20.2):
+  /@rollup/pluginutils@5.0.2(rollup@3.20.3):
     resolution: {integrity: sha512-pTd9rIsP92h+B6wWwFbW8RkZv4hiR/xKsqre4SIuAOaOEQRxi0lqLke9k2/7WegC85GgUs9pjmOjCUi3In4vwA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -765,7 +765,7 @@ packages:
       '@types/estree': 1.0.0
       estree-walker: 2.0.2
       picomatch: 2.3.1
-      rollup: 3.20.2
+      rollup: 3.20.3
     dev: true
 
   /@sinclair/typebox@0.25.24:
@@ -5154,8 +5154,8 @@ packages:
       del: 5.1.0
     dev: true
 
-  /rollup@3.20.2:
-    resolution: {integrity: sha512-3zwkBQl7Ai7MFYQE0y1MeQ15+9jsi7XxfrqwTb/9EK8D9C9+//EBR4M+CuA1KODRaNbFez/lWxA5vhEGZp4MUg==}
+  /rollup@3.20.3:
+    resolution: {integrity: sha512-u6/O1X42CAZ79rbk+smyONJQLTpwFBL7InpRa/AVWia5lq60w5J/PUsVHCOgSolN0X9R2GjQ41fZm3x28Hk1lA==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
