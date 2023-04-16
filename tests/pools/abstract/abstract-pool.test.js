@@ -5,7 +5,7 @@ const {
   FixedThreadPool,
   PoolEvents,
   WorkerChoiceStrategies
-} = require('../../../lib/index')
+} = require('../../../lib')
 const { CircularArray } = require('../../../lib/circular-array')
 
 describe('Abstract pool test suite', () => {

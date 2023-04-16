@@ -1,5 +1,5 @@
 'use strict'
-const { ThreadWorker, KillBehaviors } = require('../../../lib/index')
+const { ThreadWorker, KillBehaviors } = require('../../../lib')
 
 function echo (data) {
   return data

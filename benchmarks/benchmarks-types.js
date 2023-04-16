@@ -1,7 +1,18 @@
 const WorkerFunctions = {
   jsonIntegerSerialization: 'jsonIntegerSerialization',
   fibonacci: 'fibonacci',
-  factorial: 'factorial'
+  factorial: 'factorial',
+  readWriteFiles: 'readWriteFiles'
 }
 
-module.exports = { WorkerFunctions }
+const PoolTypes = {
+  FIXED: 'fixed',
+  DYNAMIC: 'dynamic'
+}
+
+const WorkerTypes = {
+  THREAD: 'thread',
+  CLUSTER: 'cluster'
+}
+
+module.exports = { PoolTypes, WorkerFunctions, WorkerTypes }

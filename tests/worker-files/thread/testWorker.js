@@ -1,5 +1,5 @@
 'use strict'
-const { ThreadWorker, KillBehaviors } = require('../../../lib/index')
+const { ThreadWorker, KillBehaviors } = require('../../../lib')
 const { isMainThread } = require('worker_threads')
 const TestUtils = require('../../test-utils')
 const { WorkerFunctions } = require('../../test-types')

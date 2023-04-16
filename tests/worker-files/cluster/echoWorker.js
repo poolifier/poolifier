@@ -1,5 +1,5 @@
 'use strict'
-const { ClusterWorker, KillBehaviors } = require('../../../lib/index')
+const { ClusterWorker, KillBehaviors } = require('../../../lib')
 
 function echo (data) {
   return data

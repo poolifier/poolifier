@@ -1,5 +1,5 @@
 'use strict'
-const { ClusterWorker, KillBehaviors } = require('../../../lib/index')
+const { ClusterWorker, KillBehaviors } = require('../../../lib')
 const { isMaster } = require('cluster')
 const TestUtils = require('../../test-utils')
 const { WorkerFunctions } = require('../../test-types')

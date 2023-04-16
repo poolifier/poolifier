@@ -1,5 +1,5 @@
 'use strict'
-const { ThreadWorker, KillBehaviors } = require('../../../lib/index')
+const { ThreadWorker, KillBehaviors } = require('../../../lib')
 
 function error () {
   throw new Error('Error Message from ThreadWorker')

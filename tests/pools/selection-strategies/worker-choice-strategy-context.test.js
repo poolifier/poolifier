@@ -4,7 +4,7 @@ const {
   FixedThreadPool,
   DynamicThreadPool,
   WorkerChoiceStrategies
-} = require('../../../lib/index')
+} = require('../../../lib')
 const {
   WorkerChoiceStrategyContext
 } = require('../../../lib/pools/selection-strategies/worker-choice-strategy-context')

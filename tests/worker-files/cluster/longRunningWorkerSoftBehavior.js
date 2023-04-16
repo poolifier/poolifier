@@ -1,5 +1,5 @@
 'use strict'
-const { ClusterWorker } = require('../../../lib/index')
+const { ClusterWorker } = require('../../../lib')
 const TestUtils = require('../../test-utils')
 
 async function sleep (data) {

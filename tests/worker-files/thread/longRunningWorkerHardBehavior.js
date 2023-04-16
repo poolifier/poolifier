@@ -1,5 +1,5 @@
 'use strict'
-const { ThreadWorker, KillBehaviors } = require('../../../lib/index')
+const { ThreadWorker, KillBehaviors } = require('../../../lib')
 const TestUtils = require('../../test-utils')
 
 async function sleep (data) {

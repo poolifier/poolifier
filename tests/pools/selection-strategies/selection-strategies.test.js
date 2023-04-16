@@ -4,7 +4,7 @@ const {
   DynamicThreadPool,
   FixedThreadPool,
   FixedClusterPool
-} = require('../../../lib/index')
+} = require('../../../lib')
 
 describe('Selection strategies test suite', () => {
   const min = 0

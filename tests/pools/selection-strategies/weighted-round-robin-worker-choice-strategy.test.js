@@ -1,6 +1,6 @@
 const { expect } = require('expect')
 const sinon = require('sinon')
-const { FixedThreadPool } = require('../../../lib/index')
+const { FixedThreadPool } = require('../../../lib')
 const {
   WeightedRoundRobinWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy')

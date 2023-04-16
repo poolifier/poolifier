@@ -1,5 +1,5 @@
 const { expect } = require('expect')
-const { DynamicThreadPool, PoolEvents } = require('../../../lib/index')
+const { DynamicThreadPool, PoolEvents } = require('../../../lib')
 const { WorkerFunctions } = require('../../test-types')
 const TestUtils = require('../../test-utils')
 
