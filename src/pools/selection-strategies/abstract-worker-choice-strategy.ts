@@ -112,7 +112,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @returns A worker node key if there is one, `-1` otherwise.
    */
   private findLastFreeWorkerNodeKey (): number {
-    // It requires node >= 18.0.0
+    // It requires node >= 18.0.0:
     // return this.workerNodes.findLastIndex(workerNode => {
     //   return workerNode.tasksUsage?.running === 0
     // })
