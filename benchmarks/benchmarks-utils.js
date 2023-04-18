@@ -56,7 +56,6 @@ function jsonIntegerSerialization (n) {
 
 /**
  * Intentionally inefficient implementation.
- *
  * @param {number} n - The number of fibonacci numbers to generate.
  * @returns {number} - The nth fibonacci number.
  */
@@ -67,7 +66,6 @@ function fibonacci (n) {
 
 /**
  * Intentionally inefficient implementation.
- *
  * @param {number} n - The number to calculate the factorial of.
  * @returns {number} - The factorial of n.
  */
@@ -114,7 +112,7 @@ function executeWorkerFunction (data) {
   }
 }
 
-function buildPool (poolType, poolSize, workerType, poolOptions) {
+function buildPool (workerType, poolType, poolSize, poolOptions) {
   switch (poolType) {
     case PoolTypes.FIXED:
       switch (workerType) {

@@ -31,156 +31,156 @@ const workerChoiceStrategyFairSharePoolOption = {
 }
 
 const fixedThreadPoolRoundRobin = buildPool(
+  WorkerTypes.THREAD,
   PoolTypes.FIXED,
   poolSize,
-  WorkerTypes.THREAD,
   workerChoiceStrategyRoundRobinPoolOption
 )
 
 const fixedThreadPoolRoundRobinTasksQueue = buildPool(
+  WorkerTypes.THREAD,
   PoolTypes.FIXED,
   poolSize,
-  WorkerTypes.THREAD,
   { ...workerChoiceStrategyRoundRobinPoolOption, ...tasksQueuePoolOption }
 )
 
 const fixedThreadPoolLessUsed = buildPool(
+  WorkerTypes.THREAD,
   PoolTypes.FIXED,
   poolSize,
-  WorkerTypes.THREAD,
   workerChoiceStrategyLessUsedPoolOption
 )
 
 const fixedThreadPoolLessBusy = buildPool(
+  WorkerTypes.THREAD,
   PoolTypes.FIXED,
   poolSize,
-  WorkerTypes.THREAD,
   workerChoiceStrategyLessBusyPoolOption
 )
 
 const fixedThreadPoolWeightedRoundRobin = buildPool(
+  WorkerTypes.THREAD,
   PoolTypes.FIXED,
   poolSize,
-  WorkerTypes.THREAD,
   workerChoiceStrategyWeightedRoundRobinPoolOption
 )
 
 const fixedThreadPoolFairShare = buildPool(
+  WorkerTypes.THREAD,
   PoolTypes.FIXED,
   poolSize,
-  WorkerTypes.THREAD,
   workerChoiceStrategyFairSharePoolOption
 )
 
 const dynamicThreadPoolRoundRobin = buildPool(
+  WorkerTypes.THREAD,
   PoolTypes.DYNAMIC,
   poolSize,
-  WorkerTypes.THREAD,
   workerChoiceStrategyRoundRobinPoolOption
 )
 
 const dynamicThreadPoolLessUsed = buildPool(
+  WorkerTypes.THREAD,
   PoolTypes.DYNAMIC,
   poolSize,
-  WorkerTypes.THREAD,
   workerChoiceStrategyLessUsedPoolOption
 )
 
 const dynamicThreadPoolLessBusy = buildPool(
+  WorkerTypes.THREAD,
   PoolTypes.DYNAMIC,
   poolSize,
-  WorkerTypes.THREAD,
   workerChoiceStrategyLessBusyPoolOption
 )
 
 const dynamicThreadPoolWeightedRoundRobin = buildPool(
+  WorkerTypes.THREAD,
   PoolTypes.DYNAMIC,
   poolSize,
-  WorkerTypes.THREAD,
   workerChoiceStrategyWeightedRoundRobinPoolOption
 )
 
 const dynamicThreadPoolFairShare = buildPool(
+  WorkerTypes.THREAD,
   PoolTypes.DYNAMIC,
   poolSize,
-  WorkerTypes.THREAD,
   workerChoiceStrategyFairSharePoolOption
 )
 
 const fixedClusterPoolRoundRobin = buildPool(
+  WorkerTypes.CLUSTER,
   PoolTypes.FIXED,
   poolSize,
-  WorkerTypes.CLUSTER,
   workerChoiceStrategyRoundRobinPoolOption
 )
 
 const fixedClusterPoolRoundRobinTasksQueue = buildPool(
+  WorkerTypes.CLUSTER,
   PoolTypes.FIXED,
   poolSize,
-  WorkerTypes.CLUSTER,
   { ...workerChoiceStrategyRoundRobinPoolOption, ...tasksQueuePoolOption }
 )
 
 const fixedClusterPoolLessUsed = buildPool(
+  WorkerTypes.CLUSTER,
   PoolTypes.FIXED,
   poolSize,
-  WorkerTypes.CLUSTER,
   workerChoiceStrategyLessUsedPoolOption
 )
 
 const fixedClusterPoolLessBusy = buildPool(
+  WorkerTypes.CLUSTER,
   PoolTypes.FIXED,
   poolSize,
-  WorkerTypes.CLUSTER,
   workerChoiceStrategyLessBusyPoolOption
 )
 
 const fixedClusterPoolWeightedRoundRobin = buildPool(
+  WorkerTypes.CLUSTER,
   PoolTypes.FIXED,
   poolSize,
-  WorkerTypes.CLUSTER,
   workerChoiceStrategyWeightedRoundRobinPoolOption
 )
 
 const fixedClusterPoolFairShare = buildPool(
+  WorkerTypes.CLUSTER,
   PoolTypes.FIXED,
   poolSize,
-  WorkerTypes.CLUSTER,
   workerChoiceStrategyFairSharePoolOption
 )
 
 const dynamicClusterPoolRoundRobin = buildPool(
+  WorkerTypes.CLUSTER,
   PoolTypes.DYNAMIC,
   poolSize,
-  WorkerTypes.CLUSTER,
   workerChoiceStrategyRoundRobinPoolOption
 )
 
 const dynamicClusterPoolLessUsed = buildPool(
+  WorkerTypes.CLUSTER,
   PoolTypes.DYNAMIC,
   poolSize,
-  WorkerTypes.CLUSTER,
   workerChoiceStrategyLessUsedPoolOption
 )
 
 const dynamicClusterPoolLessBusy = buildPool(
+  WorkerTypes.CLUSTER,
   PoolTypes.DYNAMIC,
   poolSize,
-  WorkerTypes.CLUSTER,
   workerChoiceStrategyLessBusyPoolOption
 )
 
 const dynamicClusterPoolWeightedRoundRobin = buildPool(
+  WorkerTypes.CLUSTER,
   PoolTypes.DYNAMIC,
   poolSize,
-  WorkerTypes.CLUSTER,
   workerChoiceStrategyWeightedRoundRobinPoolOption
 )
 
 const dynamicClusterPoolFairShare = buildPool(
+  WorkerTypes.CLUSTER,
   PoolTypes.DYNAMIC,
   poolSize,
-  WorkerTypes.CLUSTER,
   workerChoiceStrategyFairSharePoolOption
 )
 
