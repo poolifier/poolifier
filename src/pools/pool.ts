@@ -141,26 +141,6 @@ export interface IPool<
    */
   readonly emitter?: PoolEmitter
   /**
-   * Finds the first free worker node key based on the number of tasks the worker has applied.
-   *
-   * If a worker is found with `0` running tasks, it is detected as free and its worker node key is returned.
-   *
-   * If no free worker is found, `-1` is returned.
-   *
-   * @returns A worker node key if there is one, `-1` otherwise.
-   */
-  findFreeWorkerNodeKey: () => number
-  /**
-   * Finds the last free worker node key based on the number of tasks the worker has applied.
-   *
-   * If a worker is found with `0` running tasks, it is detected as free and its worker node key is returned.
-   *
-   * If no free worker is found, `-1` is returned.
-   *
-   * @returns A worker node key if there is one, `-1` otherwise.
-   */
-  findLastFreeWorkerNodeKey: () => number
-  /**
    * Executes the function specified in the worker constructor with the task data input parameter.
    *
    * @param data - The task input data for the specified worker function. This can only be serializable data.

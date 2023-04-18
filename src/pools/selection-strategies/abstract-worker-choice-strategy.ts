@@ -81,9 +81,46 @@ export abstract class AbstractWorkerChoiceStrategy<
   protected findFreeWorkerNodeKey (): number {
     if (this.toggleFindLastFreeWorkerNodeKey) {
       this.toggleFindLastFreeWorkerNodeKey = false
-      return this.pool.findLastFreeWorkerNodeKey()
+      return this.findLastFreeWorkerNodeKey()
     }
     this.toggleFindLastFreeWorkerNodeKey = true
-    return this.pool.findFreeWorkerNodeKey()
+    return this.findFirstFreeWorkerNodeKey()
+  }
+
+  /**
+   * Finds the first free worker node key based on the number of tasks the worker has applied.
+   *
+   * If a worker is found with `0` running tasks, it is detected as free and its worker node key is returned.
+   *
+   * If no free worker is found, `-1` is returned.
+   *
+   * @returns A worker node key if there is one, `-1` otherwise.
+   */
+  private findFirstFreeWorkerNodeKey (): number {
+    return this.pool.workerNodes.findIndex(workerNode => {
+      return workerNode.tasksUsage?.running === 0
+    })
+  }
+
+  /**
+   * Finds the last free worker node key based on the number of tasks the worker has applied.
+   *
+   * If a worker is found with `0` running tasks, it is detected as free and its worker node key is returned.
+   *
+   * If no free worker is found, `-1` is returned.
+   *
+   * @returns A worker node key if there is one, `-1` otherwise.
+   */
+  private findLastFreeWorkerNodeKey (): number {
+    // It requires node >= 18.0.0
+    // return this.workerNodes.findLastIndex(workerNode => {
+    //   return workerNode.tasksUsage?.running === 0
+    // })
+    for (let i = this.pool.workerNodes.length - 1; i >= 0; i--) {
+      if (this.pool.workerNodes[i].tasksUsage?.running === 0) {
+        return i
+      }
+    }
+    return -1
   }
 }

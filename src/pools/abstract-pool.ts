@@ -296,28 +296,11 @@ export abstract class AbstractPool<
   protected abstract get busy (): boolean
 
   protected internalBusy (): boolean {
-    return this.findFreeWorkerNodeKey() === -1
-  }
-
-  /** @inheritDoc */
-  public findFreeWorkerNodeKey (): number {
-    return this.workerNodes.findIndex(workerNode => {
-      return workerNode.tasksUsage?.running === 0
-    })
-  }
-
-  /** @inheritDoc */
-  public findLastFreeWorkerNodeKey (): number {
-    // It requires node >= 18.0.0
-    // return this.workerNodes.findLastIndex(workerNode => {
-    //   return workerNode.tasksUsage?.running === 0
-    // })
-    for (let i = this.workerNodes.length - 1; i >= 0; i--) {
-      if (this.workerNodes[i].tasksUsage?.running === 0) {
-        return i
-      }
-    }
-    return -1
+    return (
+      this.workerNodes.findIndex(workerNode => {
+        return workerNode.tasksUsage?.running === 0
+      }) === -1
+    )
   }
 
   /** @inheritDoc */
