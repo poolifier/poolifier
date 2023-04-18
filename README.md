@@ -11,7 +11,7 @@
     <img alt="Actions Status" src="https://github.com/poolifier/poolifier/workflows/NodeCI/badge.svg"></a>
   <a href="https://sonarcloud.io/dashboard?id=pioardi_poolifier">
     <img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=alert_status"></a>
-  <a href="https://sonarcloud.io/component_measures/metric/coverage/list?id=pioardi_poolifier">
+  <a href="https://sonarcloud.io/dashboard?id=pioardi_poolifier">
     <img alt="Code Coverage" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=coverage"></a>
   <a href="https://standardjs.com">
     <img alt="Javascript Standard Style Guide" src="https://img.shields.io/badge/code_style-standard-brightgreen.svg"></a>
