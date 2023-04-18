@@ -387,7 +387,7 @@ export abstract class AbstractPool<
     worker: Worker,
     message: MessageValue<Response>
   ): void {
-    const workerTasksUsage = this.getWorkerTasksUsage(worker) as TasksUsage
+    const workerTasksUsage = this.getWorkerTasksUsage(worker)
     --workerTasksUsage.running
     ++workerTasksUsage.run
     if (message.error != null) {
@@ -560,7 +560,7 @@ export abstract class AbstractPool<
    * @throws Error if the worker is not found in the pool worker nodes.
    * @returns The worker tasks usage.
    */
-  private getWorkerTasksUsage (worker: Worker): TasksUsage | undefined {
+  private getWorkerTasksUsage (worker: Worker): TasksUsage {
     const workerNodeKey = this.getWorkerNodeKey(worker)
     if (workerNodeKey !== -1) {
       return this.workerNodes[workerNodeKey].tasksUsage
