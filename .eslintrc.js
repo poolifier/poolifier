@@ -85,7 +85,7 @@ module.exports = defineConfig({
       plugins: ['@typescript-eslint', 'eslint-plugin-tsdoc'],
       parser: '@typescript-eslint/parser',
       parserOptions: {
-        project: './tsconfig.json'
+        project: './tsconfig.eslint.json'
       },
       extends: [
         'plugin:@typescript-eslint/eslint-recommended',
