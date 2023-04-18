@@ -19,6 +19,10 @@ export abstract class AbstractWorkerChoiceStrategy<
   Data = unknown,
   Response = unknown
 > implements IWorkerChoiceStrategy {
+  /**
+   * Toggles finding the last free worker node key.
+   */
+  private toggleFindLastFreeWorkerNodeKey: boolean = false
   /** @inheritDoc */
   protected readonly isDynamicPool: boolean
   /** @inheritDoc */
@@ -67,5 +71,19 @@ export abstract class AbstractWorkerChoiceStrategy<
     opts = opts ?? DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
     this.checkOptions(opts)
     this.opts = opts
+  }
+
+  /**
+   * Finds a free worker node key.
+   *
+   * @returns The free worker node key or `-1` if there is no free worker node.
+   */
+  protected findFreeWorkerNodeKey (): number {
+    if (this.toggleFindLastFreeWorkerNodeKey) {
+      this.toggleFindLastFreeWorkerNodeKey = false
+      return this.pool.findLastFreeWorkerNodeKey()
+    }
+    this.toggleFindLastFreeWorkerNodeKey = true
+    return this.pool.findFreeWorkerNodeKey()
   }
 }

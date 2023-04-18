@@ -15,10 +15,10 @@ devDependencies:
     version: 3.1.0(release-it@15.10.1)
   '@rollup/plugin-terser':
     specifier: ^0.4.1
-    version: 0.4.1(rollup@3.20.4)
+    version: 0.4.1(rollup@3.20.6)
   '@rollup/plugin-typescript':
     specifier: ^11.1.0
-    version: 11.1.0(rollup@3.20.4)(typescript@5.0.4)
+    version: 11.1.0(rollup@3.20.6)(typescript@5.0.4)
   '@types/node':
     specifier: ^18.15.11
     version: 18.15.11
@@ -53,8 +53,8 @@ devDependencies:
     specifier: ^2.27.5
     version: 2.27.5(@typescript-eslint/parser@5.59.0)(eslint-import-resolver-typescript@3.5.5)(eslint@8.38.0)
   eslint-plugin-jsdoc:
-    specifier: ^41.1.2
-    version: 41.1.2(eslint@8.38.0)
+    specifier: ^43.0.3
+    version: 43.0.3(eslint@8.38.0)
   eslint-plugin-n:
     specifier: ^15.7.0
     version: 15.7.0(eslint@8.38.0)
@@ -95,8 +95,8 @@ devDependencies:
     specifier: ^15.10.1
     version: 15.10.1
   rollup:
-    specifier: ^3.20.4
-    version: 3.20.4
+    specifier: ^3.20.6
+    version: 3.20.6
   rollup-plugin-analyzer:
     specifier: ^4.0.0
     version: 4.0.0
@@ -719,7 +719,7 @@ packages:
       string-template: 1.0.0
     dev: true
 
-  /@rollup/plugin-terser@0.4.1(rollup@3.20.4):
+  /@rollup/plugin-terser@0.4.1(rollup@3.20.6):
     resolution: {integrity: sha512-aKS32sw5a7hy+fEXVy+5T95aDIwjpGHCTv833HXVtyKMDoVS7pBr5K3L9hEQoNqbJFjfANPrNpIXlTQ7is00eA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -728,13 +728,13 @@ packages:
       rollup:
         optional: true
     dependencies:
-      rollup: 3.20.4
+      rollup: 3.20.6
       serialize-javascript: 6.0.1
       smob: 0.0.6
-      terser: 5.16.9
+      terser: 5.17.0
     dev: true
 
-  /@rollup/plugin-typescript@11.1.0(rollup@3.20.4)(typescript@5.0.4):
+  /@rollup/plugin-typescript@11.1.0(rollup@3.20.6)(typescript@5.0.4):
     resolution: {integrity: sha512-86flrfE+bSHB69znnTV6kVjkncs2LBMhcTCyxWgRxLyfXfQrxg4UwlAqENnjrrxnSNS/XKCDJCl8EkdFJVHOxw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -747,13 +747,13 @@ packages:
       tslib:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.2(rollup@3.20.4)
+      '@rollup/pluginutils': 5.0.2(rollup@3.20.6)
       resolve: 1.22.2
-      rollup: 3.20.4
+      rollup: 3.20.6
       typescript: 5.0.4
     dev: true
 
-  /@rollup/pluginutils@5.0.2(rollup@3.20.4):
+  /@rollup/pluginutils@5.0.2(rollup@3.20.6):
     resolution: {integrity: sha512-pTd9rIsP92h+B6wWwFbW8RkZv4hiR/xKsqre4SIuAOaOEQRxi0lqLke9k2/7WegC85GgUs9pjmOjCUi3In4vwA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -765,7 +765,7 @@ packages:
       '@types/estree': 1.0.0
       estree-walker: 2.0.2
       picomatch: 2.3.1
-      rollup: 3.20.4
+      rollup: 3.20.6
     dev: true
 
   /@sinclair/typebox@0.25.24:
@@ -2316,8 +2316,8 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-plugin-jsdoc@41.1.2(eslint@8.38.0):
-    resolution: {integrity: sha512-MePJXdGiPW7AG06CU5GbKzYtKpoHwTq1lKijjq+RwL/cQkZtBZ59Zbv5Ep0RVxSMnq6242249/n+w4XrTZ1Afg==}
+  /eslint-plugin-jsdoc@43.0.3(eslint@8.38.0):
+    resolution: {integrity: sha512-tHlpaUqB8ih2IhQw7Es/R3Z3anQZVfPUb33nUAVOgIcMugVYyD1ZE/KXjjN8HxykZsV1IXqrKZkKpUBrEi3G9Q==}
     engines: {node: ^14 || ^16 || ^17 || ^18 || ^19}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0
@@ -5154,8 +5154,8 @@ packages:
       del: 5.1.0
     dev: true
 
-  /rollup@3.20.4:
-    resolution: {integrity: sha512-n7J4tuctZXUErM9Uc916httwqmTc63zzCr2+TLCiSCpfO/Xuk3g/marGN1IlRJZi+QF3XMYx75PxXRfZDVgaRw==}
+  /rollup@3.20.6:
+    resolution: {integrity: sha512-2yEB3nQXp/tBQDN0hJScJQheXdvU2wFhh6ld7K/aiZ1vYcak6N/BKjY1QrU6BvO2JWYS8bEs14FRaxXosxy2zw==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
@@ -5615,8 +5615,8 @@ packages:
     resolution: {integrity: sha512-di2Hd1DB2Zfw6StGv861JoAF5h/uQVu/QJp2g8KVbtfKnoHdBQl5M32YWq6mnSYBQ1vFFrns5B1haWJL7rKaOQ==}
     dev: true
 
-  /terser@5.16.9:
-    resolution: {integrity: sha512-HPa/FdTB9XGI2H1/keLFZHxl6WNvAI4YalHGtDQTlMnJcoqSab1UwL4l1hGEhs6/GmLHBZIg/YgB++jcbzoOEg==}
+  /terser@5.17.0:
+    resolution: {integrity: sha512-3die3+pYW4mta4xF6K8Wtf7id8+oYyfqtAhjwzqY01+CfDSDMx/VA1Sp8sXWs5AVNIoAKoUfmp/gnPqRjBxuDA==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:

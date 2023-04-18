@@ -307,6 +307,20 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
+  public findLastFreeWorkerNodeKey (): number {
+    // It requires node >= 18.0.0
+    // return this.workerNodes.findLastIndex(workerNode => {
+    //   return workerNode.tasksUsage?.running === 0
+    // })
+    for (let i = this.workerNodes.length - 1; i >= 0; i--) {
+      if (this.workerNodes[i].tasksUsage?.running === 0) {
+        return i
+      }
+    }
+    return -1
+  }
+
+  /** @inheritDoc */
   public async execute (data?: Data): Promise<Response> {
     const [workerNodeKey, workerNode] = this.chooseWorkerNode()
     const submittedTask: Task<Data> = {

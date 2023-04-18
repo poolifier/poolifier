@@ -45,7 +45,7 @@ export class LessBusyWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number {
-    const freeWorkerNodeKey = this.pool.findFreeWorkerNodeKey()
+    const freeWorkerNodeKey = this.findFreeWorkerNodeKey()
     if (freeWorkerNodeKey !== -1) {
       return freeWorkerNodeKey
     }
