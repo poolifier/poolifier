@@ -7,13 +7,13 @@ import {
 } from '../utils'
 import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
 import {
+  PoolEmitter,
   PoolEvents,
   type IPool,
   type PoolOptions,
   type TasksQueueOptions,
   PoolType
 } from './pool'
-import { PoolEmitter } from './pool'
 import type { IWorker, Task, TasksUsage, WorkerNode } from './worker'
 import {
   WorkerChoiceStrategies,
@@ -428,7 +428,7 @@ export abstract class AbstractPool<
         ) {
           // Kill message received from the worker: no new tasks are submitted to that worker for a while ( > maxInactiveTime)
           this.flushTasksQueueByWorker(workerCreated)
-          void this.destroyWorker(workerCreated)
+          void (this.destroyWorker(workerCreated) as Promise<void>)
         }
       })
       workerNodeKey = this.getWorkerNodeKey(workerCreated)
