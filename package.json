@@ -11,7 +11,7 @@
     }
   },
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
+    "preinstall": "npx --yes only-allow pnpm",
     "prepare": "node prepare.js",
     "build": "rollup --config --environment BUILD:development",
     "build:typedoc": "rollup --config --environment BUILD:development --environment DOCUMENTATION",
