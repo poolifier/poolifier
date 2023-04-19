@@ -59,7 +59,6 @@ class TestUtils {
 
   /**
    * Intentionally inefficient implementation.
-   *
    * @param {number} n - The number of fibonacci numbers to generate.
    * @returns {number} - The nth fibonacci number.
    */
@@ -70,7 +69,6 @@ class TestUtils {
 
   /**
    * Intentionally inefficient implementation.
-   *
    * @param {number} n - The number to calculate the factorial of.
    * @returns {number} - The factorial of n.
    */
