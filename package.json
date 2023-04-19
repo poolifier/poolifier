@@ -44,6 +44,9 @@
   "engines": {
     "node": ">=16.0.0"
   },
+  "volta": {
+    "node": "20.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/poolifier/poolifier.git"
