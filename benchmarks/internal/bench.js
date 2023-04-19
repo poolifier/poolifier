@@ -72,6 +72,13 @@ const fixedThreadPoolFairShare = buildPool(
   workerChoiceStrategyFairSharePoolOption
 )
 
+const fixedThreadPoolFairShareTasksQueue = buildPool(
+  WorkerTypes.THREAD,
+  PoolTypes.FIXED,
+  poolSize,
+  { ...workerChoiceStrategyFairSharePoolOption, ...tasksQueuePoolOption }
+)
+
 const dynamicThreadPoolRoundRobin = buildPool(
   WorkerTypes.THREAD,
   PoolTypes.DYNAMIC,
@@ -147,6 +154,13 @@ const fixedClusterPoolFairShare = buildPool(
   PoolTypes.FIXED,
   poolSize,
   workerChoiceStrategyFairSharePoolOption
+)
+
+const fixedClusterPoolFairShareTaskQueue = buildPool(
+  WorkerTypes.CLUSTER,
+  PoolTypes.FIXED,
+  poolSize,
+  { ...workerChoiceStrategyFairSharePoolOption, ...tasksQueuePoolOption }
 )
 
 const dynamicClusterPoolRoundRobin = buildPool(
@@ -228,6 +242,15 @@ Benchmark.suite(
       workerData
     })
   }),
+  Benchmark.add(
+    'Fixed:ThreadPool:FairShare:{ enableTasksQueue: true }',
+    async () => {
+      await runTest(fixedThreadPoolFairShareTasksQueue, {
+        taskExecutions,
+        workerData
+      })
+    }
+  ),
   Benchmark.add('Dynamic:ThreadPool:RoundRobin', async () => {
     await runTest(dynamicThreadPoolRoundRobin, {
       taskExecutions,
@@ -297,6 +320,15 @@ Benchmark.suite(
       workerData
     })
   }),
+  Benchmark.add(
+    'Fixed:ClusterPool:FairShare:{ enableTasksQueue: true }',
+    async () => {
+      await runTest(fixedClusterPoolFairShareTaskQueue, {
+        taskExecutions,
+        workerData
+      })
+    }
+  ),
   Benchmark.add('Dynamic:ClusterPool:RoundRobin', async () => {
     await runTest(dynamicClusterPoolRoundRobin, {
       taskExecutions,
