@@ -28,29 +28,32 @@ jobs:
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis. This is needed for better sonar
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Setup node ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
+          cache: 'pnpm'
 
       - name: Install
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
-          pnpm install
+        run: pnpm install
 
       - name: Build
-        run: pnpm run build
+        run: pnpm build
 
       - name: Lint
-        run: pnpm run lint
+        run: pnpm lint
 
       - name: Tests
-        run: pnpm run test
+        run: pnpm test
 
       - name: Coverage Report
         if: "github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x'"
-        run: pnpm run coverage
+        run: pnpm coverage
 
       - name: Sonar Code Analysis
         if: "github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x'"
@@ -61,4 +64,4 @@ jobs:
 
       - name: Benchmark
         if: github.event.inputs.withBenchmark
-        run: pnpm run benchmark
+        run: pnpm benchmark

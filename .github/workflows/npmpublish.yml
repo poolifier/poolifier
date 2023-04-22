@@ -12,27 +12,30 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
+          cache: 'pnpm'
 
       - name: Install
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
-          pnpm install
+        run: pnpm install
 
       - name: Tests & Coverage
         run: |
-          pnpm run test
-          pnpm run coverage
+          pnpm test
+          pnpm coverage
 
       - name: Lint
-        run: pnpm run lint
+        run: pnpm lint
 
       - name: Production Build
-        run: pnpm run build:prod
+        run: pnpm build:prod
 
   publish:
     needs: build
@@ -42,21 +45,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
           registry-url: https://registry.npmjs.org/
+          cache: 'pnpm'
 
       - name: Read package.json version
         id: package-version
         uses: jaywcjlove/github-action-package@main
 
       - name: Install
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
-          pnpm install
+        run: pnpm install
 
       - name: Publish Release
         if: ${{ contains(steps.package-version.outputs.version, '-') == false }}
