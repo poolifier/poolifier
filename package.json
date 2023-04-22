@@ -16,11 +16,11 @@
     "build": "rollup --config --environment BUILD:development",
     "build:typedoc": "rollup --config --environment BUILD:development --environment DOCUMENTATION",
     "build:prod": "rollup --config",
-    "benchmark": "pnpm run build && node -r source-map-support/register benchmarks/internal/bench.js",
-    "benchmark:debug": "pnpm run build && node -r source-map-support/register --inspect benchmarks/internal/bench.js",
-    "benchmark:prod": "pnpm run build:prod && node -r source-map-support/register benchmarks/internal/bench.js",
-    "test": "pnpm run build && c8 mocha 'tests/**/*.test.js'",
-    "test:debug": "pnpm run build && mocha --no-parallel --inspect 'tests/**/*.test.js'",
+    "benchmark": "pnpm build && node -r source-map-support/register benchmarks/internal/bench.js",
+    "benchmark:debug": "pnpm build && node -r source-map-support/register --inspect benchmarks/internal/bench.js",
+    "benchmark:prod": "pnpm build:prod && node -r source-map-support/register benchmarks/internal/bench.js",
+    "test": "pnpm build && c8 mocha 'tests/**/*.test.js'",
+    "test:debug": "pnpm build && mocha --no-parallel --inspect 'tests/**/*.test.js'",
     "coverage": "c8 report --reporter=lcov",
     "coverage:html": "c8 report --reporter=html",
     "format": "prettier . --cache --write; ts-standard . --fix",
@@ -29,7 +29,7 @@
     "lint:report": "eslint . --cache --format json --output-file reports/eslint.json",
     "release": "release-it",
     "typedoc": "typedoc",
-    "prepublishOnly": "pnpm run build:prod"
+    "prepublishOnly": "pnpm build:prod"
   },
   "ts-standard": {
     "globals": [

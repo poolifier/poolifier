@@ -52,6 +52,6 @@ export default {
       targets: ['lib/*']
     }),
     isAnalyze && analyze(),
-    isDocumentation && command('pnpm run typedoc')
+    isDocumentation && command('pnpm typedoc')
   ]
 }
