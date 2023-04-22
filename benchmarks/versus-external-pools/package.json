@@ -6,7 +6,8 @@
   "main": "index.js",
   "author": "pioardi",
   "engines": {
-    "node": ">=14.14.0"
+    "node": ">=14.14.0",
+    "pnpm": ">= 8.0.0"
   },
   "volta": {
     "node": "18.16.0"
