@@ -80,6 +80,30 @@ export abstract class AbstractWorker<
     )
   }
 
+  private checkWorkerOptions (opts: WorkerOptions): void {
+    this.opts.killBehavior = opts.killBehavior ?? DEFAULT_KILL_BEHAVIOR
+    this.opts.maxInactiveTime =
+      opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME
+    this.opts.async = opts.async ?? false
+  }
+
+  /**
+   * Checks if the `fn` parameter is passed to the constructor.
+   *
+   * @param fn - The function that should be defined.
+   */
+  private checkFunctionInput (fn: WorkerFunction<Data, Response>): void {
+    if (fn == null) throw new Error('fn parameter is mandatory')
+    if (typeof fn !== 'function') {
+      throw new TypeError('fn parameter is not a function')
+    }
+    if (fn.constructor.name === 'AsyncFunction' && this.opts.async === false) {
+      throw new Error(
+        'fn parameter is an async function, please set the async option to true'
+      )
+    }
+  }
+
   /**
    * Worker message listener.
    *
@@ -104,30 +128,6 @@ export abstract class AbstractWorker<
       // Kill message received
       this.aliveInterval != null && clearInterval(this.aliveInterval)
       this.emitDestroy()
-    }
-  }
-
-  private checkWorkerOptions (opts: WorkerOptions): void {
-    this.opts.killBehavior = opts.killBehavior ?? DEFAULT_KILL_BEHAVIOR
-    this.opts.maxInactiveTime =
-      opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME
-    this.opts.async = opts.async ?? false
-  }
-
-  /**
-   * Checks if the `fn` parameter is passed to the constructor.
-   *
-   * @param fn - The function that should be defined.
-   */
-  private checkFunctionInput (fn: WorkerFunction<Data, Response>): void {
-    if (fn == null) throw new Error('fn parameter is mandatory')
-    if (typeof fn !== 'function') {
-      throw new TypeError('fn parameter is not a function')
-    }
-    if (fn.constructor.name === 'AsyncFunction' && this.opts.async === false) {
-      throw new Error(
-        'fn parameter is an async function, please set the async option to true'
-      )
     }
   }
 

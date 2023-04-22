@@ -17,6 +17,7 @@ export class CircularArray<T> extends Array<T> {
     }
   }
 
+  /** @inheritdoc */
   public push (...items: T[]): number {
     const length = super.push(...items)
     if (length > this.size) {
@@ -25,6 +26,7 @@ export class CircularArray<T> extends Array<T> {
     return this.length
   }
 
+  /** @inheritdoc */
   public unshift (...items: T[]): number {
     const length = super.unshift(...items)
     if (length > this.size) {
@@ -33,6 +35,7 @@ export class CircularArray<T> extends Array<T> {
     return this.length
   }
 
+  /** @inheritdoc */
   public concat (...items: Array<T | ConcatArray<T>>): CircularArray<T> {
     const concatenatedCircularArray = super.concat(
       items as T[]
@@ -47,6 +50,7 @@ export class CircularArray<T> extends Array<T> {
     return concatenatedCircularArray
   }
 
+  /** @inheritdoc */
   public splice (start: number, deleteCount?: number, ...items: T[]): T[] {
     let itemsRemoved: T[]
     if (arguments.length >= 3 && deleteCount !== undefined) {
