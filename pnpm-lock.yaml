@@ -545,7 +545,7 @@ packages:
     resolution: {integrity: sha512-/aFM2M4HVDBT/jjDBa84sJniv1t9Gm/rLkalaz9htOm+L+8JMj1k9w0CkUdcxNyNxZPlTxKPVko+m1VlM58ZVA==}
     engines: {node: '>= 14'}
     dependencies:
-      '@octokit/types': 9.1.1
+      '@octokit/types': 9.1.2
     dev: true
 
   /@octokit/core@4.2.0:
@@ -556,7 +556,7 @@ packages:
       '@octokit/graphql': 5.0.5
       '@octokit/request': 6.2.3
       '@octokit/request-error': 3.0.3
-      '@octokit/types': 9.1.1
+      '@octokit/types': 9.1.2
       before-after-hook: 2.2.3
       universal-user-agent: 6.0.0
     transitivePeerDependencies:
@@ -567,7 +567,7 @@ packages:
     resolution: {integrity: sha512-LG4o4HMY1Xoaec87IqQ41TQ+glvIeTKqfjkCEmt5AIwDZJwQeVZFIEYXrYY6yLwK+pAScb9Gj4q+Nz2qSw1roA==}
     engines: {node: '>= 14'}
     dependencies:
-      '@octokit/types': 9.1.1
+      '@octokit/types': 9.1.2
       is-plain-object: 5.0.0
       universal-user-agent: 6.0.0
     dev: true
@@ -577,7 +577,7 @@ packages:
     engines: {node: '>= 14'}
     dependencies:
       '@octokit/request': 6.2.3
-      '@octokit/types': 9.1.1
+      '@octokit/types': 9.1.2
       universal-user-agent: 6.0.0
     transitivePeerDependencies:
       - encoding
@@ -594,7 +594,7 @@ packages:
       '@octokit/core': '>=4'
     dependencies:
       '@octokit/core': 4.2.0
-      '@octokit/types': 9.1.1
+      '@octokit/types': 9.1.2
     dev: true
 
   /@octokit/plugin-request-log@1.0.4(@octokit/core@4.2.0):
@@ -612,7 +612,7 @@ packages:
       '@octokit/core': '>=3'
     dependencies:
       '@octokit/core': 4.2.0
-      '@octokit/types': 9.1.1
+      '@octokit/types': 9.1.2
       deprecation: 2.3.1
     dev: true
 
@@ -620,7 +620,7 @@ packages:
     resolution: {integrity: sha512-crqw3V5Iy2uOU5Np+8M/YexTlT8zxCfI+qu+LxUB7SZpje4Qmx3mub5DfEKSO8Ylyk0aogi6TYdf6kxzh2BguQ==}
     engines: {node: '>= 14'}
     dependencies:
-      '@octokit/types': 9.1.1
+      '@octokit/types': 9.1.2
       deprecation: 2.3.1
       once: 1.4.0
     dev: true
@@ -631,7 +631,7 @@ packages:
     dependencies:
       '@octokit/endpoint': 7.0.5
       '@octokit/request-error': 3.0.3
-      '@octokit/types': 9.1.1
+      '@octokit/types': 9.1.2
       is-plain-object: 5.0.0
       node-fetch: 2.6.9
       universal-user-agent: 6.0.0
@@ -651,8 +651,8 @@ packages:
       - encoding
     dev: true
 
-  /@octokit/types@9.1.1:
-    resolution: {integrity: sha512-hFheiHJEZzE5qn/u4R2IeMLXqUzXgd1vSokHS5x4oq+klHhXNFLL69kanAtrlTqj3K9Dps9XhOqOtDhDmPdlxQ==}
+  /@octokit/types@9.1.2:
+    resolution: {integrity: sha512-LPbJIuu1WNoRHbN4UMysEdlissRFpTCWyoKT7kHPufI8T+XX33/qilfMWJo3mCOjNIKu0+43oSQPf+HJa0+TTQ==}
     dependencies:
       '@octokit/openapi-types': 17.0.0
     dev: true
