@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/mocharc",
   "parallel": true,
   "diff": true,
   "package": "./package.json",
