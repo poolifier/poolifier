@@ -116,8 +116,8 @@ devDependencies:
     specifier: ^12.0.2
     version: 12.0.2(eslint-import-resolver-typescript@3.5.5)(typescript@5.0.4)
   typedoc:
-    specifier: ^0.24.5
-    version: 0.24.5(typescript@5.0.4)
+    specifier: ^0.24.6
+    version: 0.24.6(typescript@5.0.4)
   typescript:
     specifier: ^5.0.4
     version: 5.0.4
@@ -5856,8 +5856,8 @@ packages:
       is-typedarray: 1.0.0
     dev: true
 
-  /typedoc@0.24.5(typescript@5.0.4):
-    resolution: {integrity: sha512-tE1YDRxOTwJ33HltVazKiADqy/CasUmd2UVMnGOS2kX5Oj7q4rDVsIlcC0j03K1h3lEkGtvEyusBF7Psz4F4kA==}
+  /typedoc@0.24.6(typescript@5.0.4):
+    resolution: {integrity: sha512-c3y3h45xJv3qYwKDAwU6Cl+26CjT0ZvblHzfHJ+SjQDM4p1mZxtgHky4lhmG0+nNarRht8kADfZlbspJWdZarQ==}
     engines: {node: '>= 14.14'}
     hasBin: true
     peerDependencies:
