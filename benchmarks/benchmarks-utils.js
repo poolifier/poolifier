@@ -1,16 +1,16 @@
 const crypto = require('crypto')
 const fs = require('fs')
 const {
-  PoolTypes,
-  WorkerFunctions,
-  WorkerTypes
-} = require('./benchmarks-types')
-const {
   DynamicClusterPool,
   DynamicThreadPool,
   FixedClusterPool,
   FixedThreadPool
 } = require('../lib')
+const {
+  PoolTypes,
+  WorkerFunctions,
+  WorkerTypes
+} = require('./benchmarks-types')
 
 async function runTest (pool, { taskExecutions, workerData }) {
   return new Promise((resolve, reject) => {

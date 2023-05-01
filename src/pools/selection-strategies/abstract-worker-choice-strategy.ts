@@ -1,5 +1,5 @@
 import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
-import { PoolType, type IPool } from '../pool'
+import { type IPool, PoolType } from '../pool'
 import type { IWorker } from '../worker'
 import type {
   IWorkerChoiceStrategy,

@@ -1,8 +1,8 @@
 import {
-  isMainThread,
   MessageChannel,
   SHARE_ENV,
-  Worker
+  Worker,
+  isMainThread
 } from 'node:worker_threads'
 import type { Draft, MessageValue } from '../../utility-types'
 import { AbstractPool } from '../abstract-pool'

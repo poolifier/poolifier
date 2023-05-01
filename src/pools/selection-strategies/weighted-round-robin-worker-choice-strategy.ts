@@ -1,13 +1,13 @@
 import { cpus } from 'node:os'
 import type { IWorker } from '../worker'
+import type { IPool } from '../pool'
+import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
   RequiredStatistics,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
-import type { IPool } from '../pool'
-import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 
 /**
  * Virtual task runtime.

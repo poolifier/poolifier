@@ -19,12 +19,12 @@ module.exports = defineConfig({
   ],
   rules: {
     'sort-imports': [
-      'warn',
+      'error',
       {
-        ignoreMemberSort: true,
         ignoreDeclarationSort: true
       }
     ],
+    'import/order': 'error',
 
     'spellcheck/spell-checker': [
       'warn',

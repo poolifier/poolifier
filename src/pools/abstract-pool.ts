@@ -6,13 +6,14 @@ import {
   median
 } from '../utils'
 import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
+import { CircularArray } from '../circular-array'
 import {
+  type IPool,
   PoolEmitter,
   PoolEvents,
-  type IPool,
   type PoolOptions,
-  type TasksQueueOptions,
-  PoolType
+  PoolType,
+  type TasksQueueOptions
 } from './pool'
 import type { IWorker, Task, TasksUsage, WorkerNode } from './worker'
 import {
@@ -21,7 +22,6 @@ import {
   type WorkerChoiceStrategyOptions
 } from './selection-strategies/selection-strategies-types'
 import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
-import { CircularArray } from '../circular-array'
 
 /**
  * Base class that implements some shared logic for all poolifier pools.
