@@ -17,6 +17,13 @@ module.exports = defineConfig({
     'plugin:import/recommended',
     'plugin:promise/recommended'
   ],
+  settings: {
+    'import/resolver': {
+      typescript: {
+        project: './tsconfig.eslint.json'
+      }
+    }
+  },
   rules: {
     'sort-imports': [
       'error',
@@ -104,7 +111,6 @@ module.exports = defineConfig({
     {
       files: ['examples/typescript/**/*.ts'],
       rules: {
-        'import/no-unresolved': 'off',
         '@typescript-eslint/no-unsafe-argument': 'off',
         '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off'
