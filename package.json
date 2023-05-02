@@ -47,7 +47,7 @@
   },
   "volta": {
     "node": "20.0.0",
-    "pnpm": "8.3.1"
+    "pnpm": "8.4.0"
   },
   "repository": {
     "type": "git",
@@ -128,8 +128,8 @@
     "mocha": "^10.2.0",
     "mochawesome": "^7.1.3",
     "prettier": "^2.8.8",
-    "release-it": "^15.10.2",
-    "rollup": "^3.21.2",
+    "release-it": "^15.10.3",
+    "rollup": "^3.21.3",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",
     "rollup-plugin-delete": "^2.0.0",
