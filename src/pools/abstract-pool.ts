@@ -198,7 +198,7 @@ export abstract class AbstractPool<
       return 0
     }
     return this.workerNodes.reduce(
-      (accumulator, workerNode) => accumulator + workerNode.tasksQueue.size(),
+      (accumulator, workerNode) => accumulator + workerNode.tasksQueue.size,
       0
     )
   }
@@ -637,7 +637,7 @@ export abstract class AbstractPool<
   }
 
   private tasksQueueSize (workerNodeKey: number): number {
-    return this.workerNodes[workerNodeKey].tasksQueue.size()
+    return this.workerNodes[workerNodeKey].tasksQueue.size
   }
 
   private flushTasksQueue (workerNodeKey: number): void {

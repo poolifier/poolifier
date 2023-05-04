@@ -100,7 +100,7 @@ describe('Fixed thread pool test suite', () => {
         queuePool.opts.tasksQueueOptions.concurrency
       )
       expect(workerNode.tasksUsage.run).toBe(0)
-      expect(workerNode.tasksQueue.size()).toBeGreaterThan(0)
+      expect(workerNode.tasksQueue.size).toBeGreaterThan(0)
     }
     expect(queuePool.numberOfRunningTasks).toBe(numberOfThreads)
     expect(queuePool.numberOfQueuedTasks).toBe(
@@ -110,7 +110,7 @@ describe('Fixed thread pool test suite', () => {
     for (const workerNode of queuePool.workerNodes) {
       expect(workerNode.tasksUsage.running).toBe(0)
       expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
-      expect(workerNode.tasksQueue.size()).toBe(0)
+      expect(workerNode.tasksQueue.size).toBe(0)
     }
     promises.clear()
   })
