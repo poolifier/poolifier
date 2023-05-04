@@ -47,3 +47,4 @@ export type {
   WorkerSyncFunction
 } from './utility-types'
 export type { CircularArray } from './circular-array'
+export type { Queue } from './queue'
