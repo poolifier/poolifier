@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Use O(1) queue implementation for tasks queueing.
+
 ## [2.4.11] - 2023-04-23
 
 ### Changed
