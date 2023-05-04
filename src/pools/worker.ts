@@ -1,4 +1,5 @@
 import type { CircularArray } from '../circular-array'
+import type { Queue } from '../queue'
 
 /**
  * Callback invoked if the worker has received a message.
@@ -128,5 +129,5 @@ export interface WorkerNode<Worker extends IWorker, Data = unknown> {
   /**
    * Worker node tasks queue.
    */
-  readonly tasksQueue: Array<Task<Data>>
+  readonly tasksQueue: Queue<Task<Data>>
 }

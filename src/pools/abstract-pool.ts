@@ -7,6 +7,7 @@ import {
 } from '../utils'
 import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
 import { CircularArray } from '../circular-array'
+import { Queue } from '../queue'
 import {
   type IPool,
   PoolEmitter,
@@ -197,7 +198,7 @@ export abstract class AbstractPool<
       return 0
     }
     return this.workerNodes.reduce(
-      (accumulator, workerNode) => accumulator + workerNode.tasksQueue.length,
+      (accumulator, workerNode) => accumulator + workerNode.tasksQueue.size,
       0
     )
   }
@@ -587,7 +588,7 @@ export abstract class AbstractPool<
         medRunTime: 0,
         error: 0
       },
-      tasksQueue: []
+      tasksQueue: new Queue<Task<Data>>()
     })
   }
 
@@ -603,7 +604,7 @@ export abstract class AbstractPool<
     workerNodeKey: number,
     worker: Worker,
     tasksUsage: TasksUsage,
-    tasksQueue: Array<Task<Data>>
+    tasksQueue: Queue<Task<Data>>
   ): void {
     this.workerNodes[workerNodeKey] = {
       worker,
@@ -629,21 +630,24 @@ export abstract class AbstractPool<
   }
 
   private enqueueTask (workerNodeKey: number, task: Task<Data>): number {
-    return this.workerNodes[workerNodeKey].tasksQueue.push(task)
+    return this.workerNodes[workerNodeKey].tasksQueue.enqueue(task)
   }
 
   private dequeueTask (workerNodeKey: number): Task<Data> | undefined {
-    return this.workerNodes[workerNodeKey].tasksQueue.shift()
+    return this.workerNodes[workerNodeKey].tasksQueue.dequeue()
   }
 
   private tasksQueueSize (workerNodeKey: number): number {
-    return this.workerNodes[workerNodeKey].tasksQueue.length
+    return this.workerNodes[workerNodeKey].tasksQueue.size
   }
 
   private flushTasksQueue (workerNodeKey: number): void {
     if (this.tasksQueueSize(workerNodeKey) > 0) {
-      for (const task of this.workerNodes[workerNodeKey].tasksQueue) {
-        this.executeTask(workerNodeKey, task)
+      for (let i = 0; i < this.tasksQueueSize(workerNodeKey); i++) {
+        this.executeTask(
+          workerNodeKey,
+          this.dequeueTask(workerNodeKey) as Task<Data>
+        )
       }
     }
   }

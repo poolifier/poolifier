@@ -7,6 +7,7 @@ const {
   WorkerChoiceStrategies
 } = require('../../../lib')
 const { CircularArray } = require('../../../lib/circular-array')
+const { Queue } = require('../../../lib/queue')
 
 describe('Abstract pool test suite', () => {
   const numberOfWorkers = 1
@@ -283,8 +284,8 @@ describe('Abstract pool test suite', () => {
     )
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksQueue).toBeDefined()
-      expect(workerNode.tasksQueue).toBeInstanceOf(Array)
-      expect(workerNode.tasksQueue.length).toBe(0)
+      expect(workerNode.tasksQueue).toBeInstanceOf(Queue)
+      expect(workerNode.tasksQueue.size).toBe(0)
     }
     await pool.destroy()
   })
