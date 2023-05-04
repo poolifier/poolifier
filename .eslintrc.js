@@ -49,6 +49,7 @@ module.exports = defineConfig({
           'ctx',
           'deprecations',
           'dequeue',
+          'dequeued',
           'ecma',
           'enqueue',
           'enum',
