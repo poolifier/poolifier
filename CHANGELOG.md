@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Support multiple task functions per worker.
+
 ## [2.4.11] - 2023-04-23
 
 ### Changed

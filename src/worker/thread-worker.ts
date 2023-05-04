@@ -1,6 +1,10 @@
 import type { MessagePort } from 'node:worker_threads'
 import { isMainThread, parentPort } from 'node:worker_threads'
-import type { MessageValue, WorkerFunction } from '../utility-types'
+import type {
+  MessageValue,
+  TaskFunctions,
+  WorkerFunction
+} from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
@@ -29,7 +33,7 @@ export class ThreadWorker<
    * @param opts - Options for the worker.
    */
   public constructor (
-    fn: WorkerFunction<Data, Response>,
+    fn: WorkerFunction<Data, Response> | TaskFunctions<Data, Response>,
     opts: WorkerOptions = {}
   ) {
     super('worker-thread-pool:poolifier', isMainThread, fn, parentPort, opts)

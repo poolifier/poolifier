@@ -1,11 +1,12 @@
 import { AsyncResource } from 'node:async_hooks'
 import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
-import type {
-  MessageValue,
-  WorkerAsyncFunction,
-  WorkerFunction,
-  WorkerSyncFunction
+import {
+  type MessageValue,
+  type TaskFunctions,
+  type WorkerAsyncFunction,
+  type WorkerFunction,
+  type WorkerSyncFunction
 } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
 import type { KillBehavior, WorkerOptions } from './worker-options'
@@ -27,6 +28,10 @@ export abstract class AbstractWorker<
   Response = unknown
 > extends AsyncResource {
   /**
+   * Task function(s) processed by the worker when the pool's `execution` function is invoked.
+   */
+  protected taskFunctions!: Map<string, WorkerFunction<Data, Response>>
+  /**
    * Timestamp of the last task processed by this worker.
    */
   protected lastTaskTimestamp!: number
@@ -39,14 +44,16 @@ export abstract class AbstractWorker<
    *
    * @param type - The type of async event.
    * @param isMain - Whether this is the main worker or not.
-   * @param fn - Function processed by the worker when the pool's `execution` function is invoked.
+   * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked.
    * @param mainWorker - Reference to main worker.
    * @param opts - Options for the worker.
    */
   public constructor (
     type: string,
     protected readonly isMain: boolean,
-    fn: WorkerFunction<Data, Response>,
+    taskFunctions:
+    | WorkerFunction<Data, Response>
+    | TaskFunctions<Data, Response>,
     protected mainWorker: MainWorker | undefined | null,
     protected readonly opts: WorkerOptions = {
       /**
@@ -62,7 +69,7 @@ export abstract class AbstractWorker<
   ) {
     super(type)
     this.checkWorkerOptions(this.opts)
-    this.checkFunctionInput(fn)
+    this.checkTaskFunctions(taskFunctions)
     if (!this.isMain) {
       this.lastTaskTimestamp = performance.now()
       this.aliveInterval = setInterval(
@@ -75,7 +82,7 @@ export abstract class AbstractWorker<
     this.mainWorker?.on(
       'message',
       (message: MessageValue<Data, MainWorker>) => {
-        this.messageListener(message, fn)
+        this.messageListener(message)
       }
     )
   }
@@ -88,19 +95,41 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Checks if the `fn` parameter is passed to the constructor.
+   * Checks if the `taskFunctions` parameter is passed to the constructor.
    *
-   * @param fn - The function that should be defined.
+   * @param taskFunctions - The task function(s) that should be defined.
    */
-  private checkFunctionInput (fn: WorkerFunction<Data, Response>): void {
-    if (fn == null) throw new Error('fn parameter is mandatory')
-    if (typeof fn !== 'function') {
-      throw new TypeError('fn parameter is not a function')
+  private checkTaskFunctions (
+    taskFunctions:
+    | WorkerFunction<Data, Response>
+    | TaskFunctions<Data, Response>
+  ): void {
+    if (taskFunctions == null) { throw new Error('taskFunctions parameter is mandatory') }
+    if (
+      typeof taskFunctions !== 'function' &&
+      typeof taskFunctions !== 'object'
+    ) {
+      throw new Error('taskFunctions parameter is not a function or an object')
     }
-    if (fn.constructor.name === 'AsyncFunction' && this.opts.async === false) {
-      throw new Error(
-        'fn parameter is an async function, please set the async option to true'
-      )
+    if (
+      typeof taskFunctions === 'object' &&
+      taskFunctions.constructor !== Object &&
+      Object.prototype.toString.call(taskFunctions) !== '[object Object]'
+    ) {
+      throw new Error('taskFunctions parameter is not an object literal')
+    }
+    this.taskFunctions = new Map<string, WorkerFunction<Data, Response>>()
+    if (typeof taskFunctions !== 'function') {
+      for (const [name, fn] of Object.entries(taskFunctions)) {
+        if (typeof fn !== 'function') {
+          throw new Error(
+            'A taskFunctions parameter object value is not a function'
+          )
+        }
+        this.taskFunctions.set(name, fn.bind(this))
+      }
+    } else {
+      this.taskFunctions.set('default', taskFunctions.bind(this))
     }
   }
 
@@ -108,15 +137,17 @@ export abstract class AbstractWorker<
    * Worker message listener.
    *
    * @param message - Message received.
-   * @param fn - Function processed by the worker when the pool's `execution` function is invoked.
    */
-  protected messageListener (
-    message: MessageValue<Data, MainWorker>,
-    fn: WorkerFunction<Data, Response>
-  ): void {
+  protected messageListener (message: MessageValue<Data, MainWorker>): void {
     if (message.id != null && message.data != null) {
+      let fn: WorkerFunction<Data, Response> | undefined
+      if (message.name == null) {
+        fn = this.taskFunctions.get('default')
+      } else {
+        fn = this.taskFunctions.get(message.name)
+      }
       // Task message received
-      if (this.opts.async === true) {
+      if (fn?.constructor.name === 'AsyncFunction') {
         this.runInAsyncScope(this.runAsync.bind(this), this, fn, message)
       } else {
         this.runInAsyncScope(this.run.bind(this), this, fn, message)

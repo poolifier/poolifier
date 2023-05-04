@@ -68,6 +68,19 @@ export type WorkerAsyncFunction<Data = unknown, Response = unknown> = (
 export type WorkerFunction<Data = unknown, Response = unknown> =
   | WorkerSyncFunction<Data, Response>
   | WorkerAsyncFunction<Data, Response>
+/**
+ * Worker functions object that can be executed.
+ * This object can contain synchronous or asynchronous functions.
+ * The key is the name of the function.
+ * The value is the function itself.
+ *
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Response - Type of execution response. This can only be serializable data.
+ */
+export type TaskFunctions<Data = unknown, Response = unknown> = Record<
+string,
+WorkerFunction<Data, Response>
+>
 
 /**
  * An object holding the execution response promise resolve/reject callbacks.

@@ -27,26 +27,52 @@ describe('Abstract worker test suite', () => {
     expect(worker.opts.async).toBe(true)
   })
 
-  it('Verify that fn parameter is mandatory', () => {
-    expect(() => new ClusterWorker()).toThrowError('fn parameter is mandatory')
+  it('Verify that taskFunctions parameter is mandatory', () => {
+    expect(() => new ClusterWorker()).toThrowError(
+      'taskFunctions parameter is mandatory'
+    )
   })
 
-  it('Verify that fn parameter is a function', () => {
-    expect(() => new ClusterWorker({})).toThrowError(
-      new TypeError('fn parameter is not a function')
+  it('Verify that taskFunctions parameter is a function or an object', () => {
+    expect(() => new ClusterWorker(0)).toThrowError(
+      new TypeError('taskFunctions parameter is not a function or an object')
     )
     expect(() => new ClusterWorker('')).toThrowError(
-      new TypeError('fn parameter is not a function')
+      new TypeError('taskFunctions parameter is not a function or an object')
+    )
+    expect(() => new ClusterWorker(true)).toThrowError(
+      new TypeError('taskFunctions parameter is not a function or an object')
     )
   })
 
-  it('Verify that async fn parameter without async option throw error', () => {
-    const fn = async () => {
-      return new Promise()
-    }
-    expect(() => new ClusterWorker(fn)).toThrowError(
-      'fn parameter is an async function, please set the async option to true'
+  it('Verify that taskFunctions parameter is an object literal', () => {
+    expect(() => new ClusterWorker([])).toThrowError(
+      new TypeError('taskFunctions parameter is not an object literal')
     )
+    expect(() => new ClusterWorker(new Map())).toThrowError(
+      new TypeError('taskFunctions parameter is not an object literal')
+    )
+    expect(() => new ClusterWorker(new Set())).toThrowError(
+      new TypeError('taskFunctions parameter is not an object literal')
+    )
+    expect(() => new ClusterWorker(new WeakMap())).toThrowError(
+      new TypeError('taskFunctions parameter is not an object literal')
+    )
+    expect(() => new ClusterWorker(new WeakSet())).toThrowError(
+      new TypeError('taskFunctions parameter is not an object literal')
+    )
+  })
+
+  it('Verify that taskFunctions parameter with multiple task functions is taken', () => {
+    const fn1 = () => {
+      return 1
+    }
+    const fn2 = () => {
+      return 2
+    }
+    const worker = new ClusterWorker({ fn1, fn2 })
+    expect(typeof worker.taskFunctions.get('fn1') === 'function').toBe(true)
+    expect(typeof worker.taskFunctions.get('fn2') === 'function').toBe(true)
   })
 
   it('Verify that handleError() method is working properly', () => {
