@@ -41,8 +41,7 @@ export class Queue<T> {
   /**
    * Dequeue an item.
    *
-   * @returns The dequeued item.
-   * @returns `undefined` if the queue is empty.
+   * @returns The dequeued item or `undefined` if the queue is empty.
    */
   public dequeue (): T | undefined {
     if (this.size <= 0) return undefined
