@@ -69,7 +69,7 @@ export type WorkerFunction<Data = unknown, Response = unknown> =
   | WorkerSyncFunction<Data, Response>
   | WorkerAsyncFunction<Data, Response>
 /**
- * Worker functions object that can be executed.
+ * Worker functions that can be executed object.
  * This object can contain synchronous or asynchronous functions.
  * The key is the name of the function.
  * The value is the function itself.

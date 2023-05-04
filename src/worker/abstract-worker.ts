@@ -143,8 +143,8 @@ export abstract class AbstractWorker<
    */
   protected messageListener (message: MessageValue<Data, MainWorker>): void {
     if (message.id != null && message.data != null) {
-      const fn = this.getTaskFunction(message.name)
       // Task message received
+      const fn = this.getTaskFunction(message.name)
       if (fn?.constructor.name === 'AsyncFunction') {
         this.runInAsyncScope(this.runAsync.bind(this), this, fn, message)
       } else {
