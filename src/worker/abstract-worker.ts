@@ -12,6 +12,7 @@ import { EMPTY_FUNCTION } from '../utils'
 import type { KillBehavior, WorkerOptions } from './worker-options'
 import { KillBehaviors } from './worker-options'
 
+const DEFAULT_FUNCTION_NAME = 'default'
 const DEFAULT_MAX_INACTIVE_TIME = 60000
 const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
 
@@ -104,7 +105,9 @@ export abstract class AbstractWorker<
     | WorkerFunction<Data, Response>
     | TaskFunctions<Data, Response>
   ): void {
-    if (taskFunctions == null) { throw new Error('taskFunctions parameter is mandatory') }
+    if (taskFunctions == null) {
+      throw new Error('taskFunctions parameter is mandatory')
+    }
     if (
       typeof taskFunctions !== 'function' &&
       typeof taskFunctions !== 'object'
@@ -129,7 +132,7 @@ export abstract class AbstractWorker<
         this.taskFunctions.set(name, fn.bind(this))
       }
     } else {
-      this.taskFunctions.set('default', taskFunctions.bind(this))
+      this.taskFunctions.set(DEFAULT_FUNCTION_NAME, taskFunctions.bind(this))
     }
   }
 
@@ -140,12 +143,7 @@ export abstract class AbstractWorker<
    */
   protected messageListener (message: MessageValue<Data, MainWorker>): void {
     if (message.id != null && message.data != null) {
-      let fn: WorkerFunction<Data, Response> | undefined
-      if (message.name == null) {
-        fn = this.taskFunctions.get('default')
-      } else {
-        fn = this.taskFunctions.get(message.name)
-      }
+      const fn = this.getTaskFunction(message.name)
       // Task message received
       if (fn?.constructor.name === 'AsyncFunction') {
         this.runInAsyncScope(this.runAsync.bind(this), this, fn, message)
@@ -259,5 +257,14 @@ export abstract class AbstractWorker<
         !this.isMain && (this.lastTaskTimestamp = performance.now())
       })
       .catch(EMPTY_FUNCTION)
+  }
+
+  private getTaskFunction (name?: string): WorkerFunction<Data, Response> {
+    name = name ?? DEFAULT_FUNCTION_NAME
+    const fn = this.taskFunctions.get(name)
+    if (fn == null) {
+      throw new Error(`Task function "${name}" not found`)
+    }
+    return fn
   }
 }
