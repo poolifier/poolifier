@@ -1,12 +1,12 @@
 import { AsyncResource } from 'node:async_hooks'
 import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
-import {
-  type MessageValue,
-  type TaskFunctions,
-  type WorkerAsyncFunction,
-  type WorkerFunction,
-  type WorkerSyncFunction
+import type {
+  MessageValue,
+  TaskFunctions,
+  WorkerAsyncFunction,
+  WorkerFunction,
+  WorkerSyncFunction
 } from '../utility-types'
 import { EMPTY_FUNCTION } from '../utils'
 import type { KillBehavior, WorkerOptions } from './worker-options'
