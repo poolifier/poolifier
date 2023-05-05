@@ -64,12 +64,10 @@ export class FairShareWorkerChoiceStrategy<
     let chosenWorkerNodeKey!: number
     for (const [workerNodeKey] of this.pool.workerNodes.entries()) {
       this.computeWorkerVirtualTaskTimestamp(workerNodeKey)
-      const workerLastVirtualTaskEndTimestamp =
+      const workerVirtualTaskEndTimestamp =
         this.workersVirtualTaskTimestamp[workerNodeKey]?.end ?? 0
-      if (
-        workerLastVirtualTaskEndTimestamp < minWorkerVirtualTaskEndTimestamp
-      ) {
-        minWorkerVirtualTaskEndTimestamp = workerLastVirtualTaskEndTimestamp
+      if (workerVirtualTaskEndTimestamp < minWorkerVirtualTaskEndTimestamp) {
+        minWorkerVirtualTaskEndTimestamp = workerVirtualTaskEndTimestamp
         chosenWorkerNodeKey = workerNodeKey
       }
     }

@@ -3,6 +3,7 @@ import type { MessageValue, PromiseResponseWrapper } from '../utility-types'
 import {
   DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
   EMPTY_FUNCTION,
+  isPlainObject,
   median
 } from '../utils'
 import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
@@ -126,7 +127,7 @@ export abstract class AbstractPool<
       )
     } else if (!Number.isSafeInteger(numberOfWorkers)) {
       throw new TypeError(
-        'Cannot instantiate a pool with a non integer number of workers'
+        'Cannot instantiate a pool with a non safe integer number of workers'
       )
     } else if (numberOfWorkers < 0) {
       throw new RangeError(
@@ -138,20 +139,25 @@ export abstract class AbstractPool<
   }
 
   private checkPoolOptions (opts: PoolOptions<Worker>): void {
-    this.opts.workerChoiceStrategy =
-      opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
-    this.checkValidWorkerChoiceStrategy(this.opts.workerChoiceStrategy)
-    this.opts.workerChoiceStrategyOptions =
-      opts.workerChoiceStrategyOptions ?? DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
-    this.opts.enableEvents = opts.enableEvents ?? true
-    this.opts.enableTasksQueue = opts.enableTasksQueue ?? false
-    if (this.opts.enableTasksQueue) {
-      this.checkValidTasksQueueOptions(
-        opts.tasksQueueOptions as TasksQueueOptions
-      )
-      this.opts.tasksQueueOptions = this.buildTasksQueueOptions(
-        opts.tasksQueueOptions as TasksQueueOptions
-      )
+    if (isPlainObject(opts)) {
+      this.opts.workerChoiceStrategy =
+        opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
+      this.checkValidWorkerChoiceStrategy(this.opts.workerChoiceStrategy)
+      this.opts.workerChoiceStrategyOptions =
+        opts.workerChoiceStrategyOptions ??
+        DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+      this.opts.enableEvents = opts.enableEvents ?? true
+      this.opts.enableTasksQueue = opts.enableTasksQueue ?? false
+      if (this.opts.enableTasksQueue) {
+        this.checkValidTasksQueueOptions(
+          opts.tasksQueueOptions as TasksQueueOptions
+        )
+        this.opts.tasksQueueOptions = this.buildTasksQueueOptions(
+          opts.tasksQueueOptions as TasksQueueOptions
+        )
+      }
+    } else {
+      throw new TypeError('Invalid pool options: must be a plain object')
     }
   }
 
@@ -165,9 +171,22 @@ export abstract class AbstractPool<
     }
   }
 
+  private checkValidWorkerChoiceStrategyOptions (
+    workerChoiceStrategyOptions: WorkerChoiceStrategyOptions
+  ): void {
+    if (!isPlainObject(workerChoiceStrategyOptions)) {
+      throw new TypeError(
+        'Invalid worker choice strategy options: must be a plain object'
+      )
+    }
+  }
+
   private checkValidTasksQueueOptions (
     tasksQueueOptions: TasksQueueOptions
   ): void {
+    if (tasksQueueOptions != null && !isPlainObject(tasksQueueOptions)) {
+      throw new TypeError('Invalid tasks queue options: must be a plain object')
+    }
     if ((tasksQueueOptions?.concurrency as number) <= 0) {
       throw new Error(
         `Invalid worker tasks concurrency '${
@@ -248,6 +267,7 @@ export abstract class AbstractPool<
   public setWorkerChoiceStrategyOptions (
     workerChoiceStrategyOptions: WorkerChoiceStrategyOptions
   ): void {
+    this.checkValidWorkerChoiceStrategyOptions(workerChoiceStrategyOptions)
     this.opts.workerChoiceStrategyOptions = workerChoiceStrategyOptions
     this.workerChoiceStrategyContext.setOptions(
       this.opts.workerChoiceStrategyOptions

@@ -32,3 +32,9 @@ export const median = (dataSet: number[]): number => {
   }
   return (sortedDataSet[middleIndex - 1] + sortedDataSet[middleIndex]) / 2
 }
+
+export const isPlainObject = (obj: unknown): boolean =>
+  typeof obj === 'object' &&
+  obj !== null &&
+  obj?.constructor === Object &&
+  Object.prototype.toString.call(obj) === '[object Object]'

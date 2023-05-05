@@ -8,7 +8,7 @@ import type {
   WorkerFunction,
   WorkerSyncFunction
 } from '../utility-types'
-import { EMPTY_FUNCTION } from '../utils'
+import { EMPTY_FUNCTION, isPlainObject } from '../utils'
 import type { KillBehavior, WorkerOptions } from './worker-options'
 import { KillBehaviors } from './worker-options'
 
@@ -107,21 +107,18 @@ export abstract class AbstractWorker<
       typeof taskFunctions !== 'function' &&
       typeof taskFunctions !== 'object'
     ) {
-      throw new Error('taskFunctions parameter is not a function or an object')
-    }
-    if (
-      typeof taskFunctions === 'object' &&
-      taskFunctions.constructor !== Object &&
-      Object.prototype.toString.call(taskFunctions) !== '[object Object]'
-    ) {
-      throw new Error('taskFunctions parameter is not an object literal')
+      throw new TypeError(
+        'taskFunctions parameter is not a function or an object'
+      )
     }
     this.taskFunctions = new Map<string, WorkerFunction<Data, Response>>()
-    if (typeof taskFunctions !== 'function') {
+    if (typeof taskFunctions === 'function') {
+      this.taskFunctions.set(DEFAULT_FUNCTION_NAME, taskFunctions.bind(this))
+    } else if (isPlainObject(taskFunctions)) {
       let firstEntry = true
       for (const [name, fn] of Object.entries(taskFunctions)) {
         if (typeof fn !== 'function') {
-          throw new Error(
+          throw new TypeError(
             'A taskFunctions parameter object value is not a function'
           )
         }
@@ -135,7 +132,7 @@ export abstract class AbstractWorker<
         throw new Error('taskFunctions parameter object is empty')
       }
     } else {
-      this.taskFunctions.set(DEFAULT_FUNCTION_NAME, taskFunctions.bind(this))
+      throw new TypeError('taskFunctions parameter is not an object literal')
     }
   }
 

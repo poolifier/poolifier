@@ -75,7 +75,7 @@ describe('Abstract pool test suite', () => {
         new FixedThreadPool(0.25, './tests/worker-files/thread/testWorker.js')
     ).toThrowError(
       new TypeError(
-        'Cannot instantiate a pool with a non integer number of workers'
+        'Cannot instantiate a pool with a non safe integer number of workers'
       )
     )
   })

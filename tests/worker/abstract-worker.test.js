@@ -62,7 +62,7 @@ describe('Abstract worker test suite', () => {
       new TypeError('taskFunctions parameter is not an object literal')
     )
     expect(() => new ClusterWorker({})).toThrowError(
-      new TypeError('taskFunctions parameter object is empty')
+      new Error('taskFunctions parameter object is empty')
     )
   })
 

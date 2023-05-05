@@ -64,12 +64,12 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public choose (): number {
     const chosenWorkerNodeKey = this.currentWorkerNodeId
-    const workerTaskRunTime = this.workerVirtualTaskRunTime ?? 0
+    const workerVirtualTaskRunTime = this.workerVirtualTaskRunTime ?? 0
     const workerTaskWeight =
       this.opts.weights?.[chosenWorkerNodeKey] ?? this.defaultWorkerWeight
-    if (workerTaskRunTime < workerTaskWeight) {
+    if (workerVirtualTaskRunTime < workerTaskWeight) {
       this.workerVirtualTaskRunTime =
-        workerTaskRunTime +
+        workerVirtualTaskRunTime +
         (this.getWorkerVirtualTaskRunTime(chosenWorkerNodeKey) ?? 0)
     } else {
       this.currentWorkerNodeId =
