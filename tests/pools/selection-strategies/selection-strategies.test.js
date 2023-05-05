@@ -461,13 +461,11 @@ describe('Selection strategies test suite', () => {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
-    if (process.platform !== 'win32') {
-      expect(
-        pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
-          pool.workerChoiceStrategyContext.workerChoiceStrategy
-        ).workersVirtualTaskTimestamp.length
-      ).toBe(pool.workerNodes.length)
-    }
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).workersVirtualTaskTimestamp.length
+    ).toBe(pool.workerNodes.length)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -497,13 +495,11 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.tasksUsage.medRunTime).toBeDefined()
       expect(workerNode.tasksUsage.medRunTime).toBeGreaterThan(0)
     }
-    if (process.platform !== 'win32') {
-      expect(
-        pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
-          pool.workerChoiceStrategyContext.workerChoiceStrategy
-        ).workersVirtualTaskTimestamp.length
-      ).toBe(pool.workerNodes.length)
-    }
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).workersVirtualTaskTimestamp.length
+    ).toBe(pool.workerNodes.length)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -524,12 +520,6 @@ describe('Selection strategies test suite', () => {
         workerChoiceStrategy
       ).workersVirtualTaskTimestamp.length
     ).toBe(0)
-    pool.setWorkerChoiceStrategy(workerChoiceStrategy)
-    expect(
-      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
-      ).workersVirtualTaskTimestamp
-    ).toBeInstanceOf(Array)
     pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
       workerChoiceStrategy
     ).workersVirtualTaskTimestamp[0] = 0
@@ -538,6 +528,17 @@ describe('Selection strategies test suite', () => {
         workerChoiceStrategy
       ).workersVirtualTaskTimestamp.length
     ).toBe(1)
+    pool.setWorkerChoiceStrategy(workerChoiceStrategy)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      ).workersVirtualTaskTimestamp
+    ).toBeInstanceOf(Array)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      ).workersVirtualTaskTimestamp.length
+    ).toBe(0)
     await pool.destroy()
     pool = new DynamicThreadPool(
       min,
@@ -549,6 +550,11 @@ describe('Selection strategies test suite', () => {
         workerChoiceStrategy
       ).workersVirtualTaskTimestamp
     ).toBeInstanceOf(Array)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      ).workersVirtualTaskTimestamp.length
+    ).toBe(0)
     pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
       workerChoiceStrategy
     ).workersVirtualTaskTimestamp[0] = 0
@@ -652,18 +658,16 @@ describe('Selection strategies test suite', () => {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
-    if (process.platform !== 'win32') {
-      expect(
-        pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
-          pool.workerChoiceStrategyContext.workerChoiceStrategy
-        ).defaultWorkerWeight
-      ).toBeGreaterThan(0)
-      expect(
-        pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
-          pool.workerChoiceStrategyContext.workerChoiceStrategy
-        ).workerVirtualTaskRunTime
-      ).toBeGreaterThanOrEqual(0)
-    }
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).defaultWorkerWeight
+    ).toBeGreaterThan(0)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).workerVirtualTaskRunTime
+    ).toBeGreaterThanOrEqual(0)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
