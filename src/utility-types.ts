@@ -48,6 +48,7 @@ export interface MessageValue<
 export type WorkerSyncFunction<Data = unknown, Response = unknown> = (
   data?: Data
 ) => Response
+
 /**
  * Worker asynchronous function that can be executed.
  * This function must return a promise.
@@ -58,6 +59,7 @@ export type WorkerSyncFunction<Data = unknown, Response = unknown> = (
 export type WorkerAsyncFunction<Data = unknown, Response = unknown> = (
   data?: Data
 ) => Promise<Response>
+
 /**
  * Worker function that can be executed.
  * This function can be synchronous or asynchronous.
@@ -68,8 +70,9 @@ export type WorkerAsyncFunction<Data = unknown, Response = unknown> = (
 export type WorkerFunction<Data = unknown, Response = unknown> =
   | WorkerSyncFunction<Data, Response>
   | WorkerAsyncFunction<Data, Response>
+
 /**
- * Worker functions that can be executed object.
+ * Worker functions that can be executed.
  * This object can contain synchronous or asynchronous functions.
  * The key is the name of the function.
  * The value is the function itself.

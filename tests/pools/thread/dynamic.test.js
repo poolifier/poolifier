@@ -19,11 +19,11 @@ describe('Dynamic thread pool test suite', () => {
     let result = await pool.execute({
       function: WorkerFunctions.fibonacci
     })
-    expect(result).toBe(false)
+    expect(result).toBe(121393)
     result = await pool.execute({
       function: WorkerFunctions.factorial
     })
-    expect(result).toBe(false)
+    expect(result).toBe(9.33262154439441e157)
   })
 
   it('Verify that new workers are created when required, max size is not exceeded and that after a while new workers will die', async () => {

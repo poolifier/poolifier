@@ -65,11 +65,11 @@ describe('Fixed thread pool test suite', () => {
     let result = await pool.execute({
       function: WorkerFunctions.fibonacci
     })
-    expect(result).toBe(false)
+    expect(result).toBe(121393)
     result = await pool.execute({
       function: WorkerFunctions.factorial
     })
-    expect(result).toBe(false)
+    expect(result).toBe(9.33262154439441e157)
   })
 
   it('Verify that is possible to invoke the execute() method without input', async () => {

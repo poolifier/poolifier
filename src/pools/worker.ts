@@ -46,7 +46,7 @@ export interface Task<Data = unknown> {
    */
   readonly data?: Data
   /**
-   * UUID of the message.
+   * Message UUID.
    */
   readonly id?: string
 }

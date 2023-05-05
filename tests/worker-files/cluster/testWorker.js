@@ -7,8 +7,11 @@ const { WorkerFunctions } = require('../../test-types')
 function test (data) {
   data = data || {}
   data.function = data.function || WorkerFunctions.jsonIntegerSerialization
-  TestUtils.executeWorkerFunction(data)
-  return isMaster
+  const result = TestUtils.executeWorkerFunction(data)
+  if (result == null) {
+    return isMaster
+  }
+  return result
 }
 
 module.exports = new ClusterWorker(test, {

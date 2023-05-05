@@ -148,7 +148,7 @@ export abstract class AbstractWorker<
       if (fn?.constructor.name === 'AsyncFunction') {
         this.runInAsyncScope(this.runAsync.bind(this), this, fn, message)
       } else {
-        this.runInAsyncScope(this.run.bind(this), this, fn, message)
+        this.runInAsyncScope(this.runSync.bind(this), this, fn, message)
       }
     } else if (message.parent != null) {
       // Main worker reference message received
@@ -207,7 +207,7 @@ export abstract class AbstractWorker<
    * @param fn - Function that will be executed.
    * @param message - Input data for the given function.
    */
-  protected run (
+  protected runSync (
     fn: WorkerSyncFunction<Data, Response>,
     message: MessageValue<Data>
   ): void {
