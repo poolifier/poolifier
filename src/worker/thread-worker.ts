@@ -29,14 +29,22 @@ export class ThreadWorker<
   /**
    * Constructs a new poolifier thread worker.
    *
-   * @param fn - Function processed by the worker when the pool's `execution` function is invoked.
+   * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked.
    * @param opts - Options for the worker.
    */
   public constructor (
-    fn: WorkerFunction<Data, Response> | TaskFunctions<Data, Response>,
+    taskFunctions:
+    | WorkerFunction<Data, Response>
+    | TaskFunctions<Data, Response>,
     opts: WorkerOptions = {}
   ) {
-    super('worker-thread-pool:poolifier', isMainThread, fn, parentPort, opts)
+    super(
+      'worker-thread-pool:poolifier',
+      isMainThread,
+      taskFunctions,
+      parentPort,
+      opts
+    )
   }
 
   /** @inheritDoc */

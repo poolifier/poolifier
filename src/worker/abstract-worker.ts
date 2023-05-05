@@ -45,7 +45,7 @@ export abstract class AbstractWorker<
    *
    * @param type - The type of async event.
    * @param isMain - Whether this is the main worker or not.
-   * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked.
+   * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked. The first function is the default function.
    * @param mainWorker - Reference to main worker.
    * @param opts - Options for the worker.
    */
@@ -80,12 +80,7 @@ export abstract class AbstractWorker<
       this.checkAlive.bind(this)()
     }
 
-    this.mainWorker?.on(
-      'message',
-      (message: MessageValue<Data, MainWorker>) => {
-        this.messageListener(message)
-      }
-    )
+    this.mainWorker?.on('message', this.messageListener.bind(this))
   }
 
   private checkWorkerOptions (opts: WorkerOptions): void {
@@ -98,7 +93,7 @@ export abstract class AbstractWorker<
   /**
    * Checks if the `taskFunctions` parameter is passed to the constructor.
    *
-   * @param taskFunctions - The task function(s) that should be defined.
+   * @param taskFunctions - The task function(s) parameter that should be checked.
    */
   private checkTaskFunctions (
     taskFunctions:
@@ -123,6 +118,7 @@ export abstract class AbstractWorker<
     }
     this.taskFunctions = new Map<string, WorkerFunction<Data, Response>>()
     if (typeof taskFunctions !== 'function') {
+      let firstEntry = true
       for (const [name, fn] of Object.entries(taskFunctions)) {
         if (typeof fn !== 'function') {
           throw new Error(
@@ -130,6 +126,10 @@ export abstract class AbstractWorker<
           )
         }
         this.taskFunctions.set(name, fn.bind(this))
+        if (firstEntry) {
+          this.taskFunctions.set(DEFAULT_FUNCTION_NAME, fn.bind(this))
+          firstEntry = false
+        }
       }
     } else {
       this.taskFunctions.set(DEFAULT_FUNCTION_NAME, taskFunctions.bind(this))
@@ -259,6 +259,11 @@ export abstract class AbstractWorker<
       .catch(EMPTY_FUNCTION)
   }
 
+  /**
+   * Gets the task function in the given scope.
+   *
+   * @param name - Name of the function that will be returned.
+   */
   private getTaskFunction (name?: string): WorkerFunction<Data, Response> {
     name = name ?? DEFAULT_FUNCTION_NAME
     const fn = this.taskFunctions.get(name)

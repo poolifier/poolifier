@@ -407,6 +407,8 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/cluster/testMultiTasksWorker.js'
     )
     const data = { n: 10 }
+    const result0 = await pool.execute(data)
+    expect(result0).toBe(false)
     const result1 = await pool.execute(data, 'jsonIntegerSerialization')
     expect(result1).toBe(false)
     const result2 = await pool.execute(data, 'factorial')

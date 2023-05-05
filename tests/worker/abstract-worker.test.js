@@ -71,6 +71,7 @@ describe('Abstract worker test suite', () => {
       return 2
     }
     const worker = new ClusterWorker({ fn1, fn2 })
+    expect(typeof worker.taskFunctions.get('default') === 'function').toBe(true)
     expect(typeof worker.taskFunctions.get('fn1') === 'function').toBe(true)
     expect(typeof worker.taskFunctions.get('fn2') === 'function').toBe(true)
   })
