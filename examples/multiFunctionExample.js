@@ -5,11 +5,11 @@ const pool = new FixedThreadPool(15, './multiFunctionWorker.js', {
 })
 
 pool
-  .execute({ functionName: 'fn0', input: 'hello' })
+  .execute({ text: 'hello' }, 'fn0')
   .then(res => console.log(res))
   .catch(err => console.error(err))
 pool
-  .execute({ functionName: 'fn1', input: 'multiple functions' })
+  .execute({ text: 'multiple functions' }, 'fn1')
   .then(res => console.log(res))
   .catch(err => console.error(err))
 

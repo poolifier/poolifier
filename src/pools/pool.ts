@@ -144,9 +144,10 @@ export interface IPool<
    * Executes the function specified in the worker constructor with the task data input parameter.
    *
    * @param data - The task input data for the specified worker function. This can only be serializable data.
+   * @param name - The name of the worker function to execute. If not specified, the default worker function will be executed.
    * @returns Promise that will be fulfilled when the task is completed.
    */
-  execute: (data?: Data) => Promise<Response>
+  execute: (data?: Data, name?: string) => Promise<Response>
   /**
    * Shutdowns every current worker in this pool.
    */

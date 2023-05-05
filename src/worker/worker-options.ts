@@ -53,6 +53,7 @@ export interface WorkerOptions {
    * Whether your worker will perform asynchronous or not.
    *
    * @defaultValue false
+   * @deprecated This option will be removed in the next major version.
    */
   async?: boolean
   /**

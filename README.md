@@ -139,7 +139,7 @@ pool.execute({}).then(res => {
 
 You can do the same with the classes ClusterWorker, FixedClusterPool and DynamicClusterPool.
 
-**See examples folder for more details (in particular if you want to use a pool for [multiple functions](./examples/multiFunctionExample.js))**.  
+**See examples folder for more details (in particular if you want to use a pool with [multiple worker functions](./examples/multiFunctionExample.js))**.  
 **Now TypeScript is also supported, find how to use it into the example folder**.
 
 Remember that workers can only send and receive serializable data.
@@ -209,7 +209,7 @@ This method will call the terminate method on each worker.
 
 ### `class YourWorker extends ThreadWorker/ClusterWorker`
 
-`fn` (mandatory) The function that you want to execute on the worker  
+`taskFunctions` (mandatory) The task function(s) that you want to execute on the worker  
 `opts` (optional) An object with these properties:
 
 - `maxInactiveTime` (optional) - Max time to wait tasks to work on in milliseconds, after this period the new worker will die.  

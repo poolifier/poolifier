@@ -1,14 +1,14 @@
 'use strict'
 const { ThreadWorker } = require('poolifier')
 
-function yourFunction (data) {
-  if (data.functionName === 'fn0') {
-    console.log('Executing function 0')
-    return { data: '0 your input was' + data.input }
-  } else if (data.functionName === 'fn1') {
-    console.log('Executing function 1')
-    return { data: '1 your input was' + data.input }
-  }
+function fn0 (data) {
+  console.log('Executing function 0')
+  return { data: 'fn0 your input text was' + data.text }
 }
 
-module.exports = new ThreadWorker(yourFunction)
+function fn1 (data) {
+  console.log('Executing function 1')
+  return { data: 'fn1 your input text was' + data.text }
+}
+
+module.exports = new ThreadWorker({ fn0, fn1 })

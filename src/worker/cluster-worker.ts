@@ -1,6 +1,10 @@
 import type { Worker } from 'node:cluster'
 import cluster from 'node:cluster'
-import type { MessageValue, WorkerFunction } from '../utility-types'
+import type {
+  MessageValue,
+  TaskFunctions,
+  WorkerFunction
+} from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
 
@@ -25,17 +29,19 @@ export class ClusterWorker<
   /**
    * Constructs a new poolifier cluster worker.
    *
-   * @param fn - Function processed by the worker when the pool's `execution` function is invoked.
+   * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked.
    * @param opts - Options for the worker.
    */
   public constructor (
-    fn: WorkerFunction<Data, Response>,
+    taskFunctions:
+    | WorkerFunction<Data, Response>
+    | TaskFunctions<Data, Response>,
     opts: WorkerOptions = {}
   ) {
     super(
       'worker-cluster-pool:poolifier',
       cluster.isPrimary,
-      fn,
+      taskFunctions,
       cluster.worker,
       opts
     )

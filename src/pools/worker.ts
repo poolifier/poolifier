@@ -38,11 +38,15 @@ export type ExitHandler<Worker extends IWorker> = (
  */
 export interface Task<Data = unknown> {
   /**
+   * Task name.
+   */
+  readonly name?: string
+  /**
    * Task input data that will be passed to the worker.
    */
   readonly data?: Data
   /**
-   * UUID of the message.
+   * Message UUID.
    */
   readonly id?: string
 }

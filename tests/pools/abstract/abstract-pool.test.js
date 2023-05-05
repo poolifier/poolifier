@@ -1,5 +1,6 @@
 const { expect } = require('expect')
 const {
+  DynamicClusterPool,
   DynamicThreadPool,
   FixedClusterPool,
   FixedThreadPool,
@@ -397,5 +398,22 @@ describe('Abstract pool test suite', () => {
     // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the fixed pool.
     expect(poolBusy).toBe(numberOfWorkers + 1)
     await pool.destroy()
+  })
+
+  it('Verify that multiple tasks worker is working', async () => {
+    const pool = new DynamicClusterPool(
+      numberOfWorkers,
+      numberOfWorkers * 2,
+      './tests/worker-files/cluster/testMultiTasksWorker.js'
+    )
+    const data = { n: 10 }
+    const result0 = await pool.execute(data)
+    expect(result0).toBe(false)
+    const result1 = await pool.execute(data, 'jsonIntegerSerialization')
+    expect(result1).toBe(false)
+    const result2 = await pool.execute(data, 'factorial')
+    expect(result2).toBe(3628800)
+    const result3 = await pool.execute(data, 'fibonacci')
+    expect(result3).toBe(89)
   })
 })

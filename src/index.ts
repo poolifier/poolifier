@@ -6,8 +6,8 @@ export { PoolEvents } from './pools/pool'
 export type {
   IPool,
   PoolEmitter,
-  PoolOptions,
   PoolEvent,
+  PoolOptions,
   PoolType,
   TasksQueueOptions
 } from './pools/pool'
@@ -39,8 +39,9 @@ export { KillBehaviors } from './worker/worker-options'
 export type { KillBehavior, WorkerOptions } from './worker/worker-options'
 export type {
   Draft,
-  PromiseResponseWrapper,
   MessageValue,
+  PromiseResponseWrapper,
+  TaskFunctions,
   WorkerAsyncFunction,
   WorkerFunction,
   WorkerSyncFunction
