@@ -45,7 +45,7 @@ describe('Abstract worker test suite', () => {
     )
   })
 
-  it('Verify that taskFunctions parameter is an object literal', () => {
+  it('Verify that taskFunctions parameter is not an empty object literal', () => {
     expect(() => new ClusterWorker([])).toThrowError(
       new TypeError('taskFunctions parameter is not an object literal')
     )
@@ -60,6 +60,9 @@ describe('Abstract worker test suite', () => {
     )
     expect(() => new ClusterWorker(new WeakSet())).toThrowError(
       new TypeError('taskFunctions parameter is not an object literal')
+    )
+    expect(() => new ClusterWorker({})).toThrowError(
+      new TypeError('taskFunctions parameter object is empty')
     )
   })
 

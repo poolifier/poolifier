@@ -131,6 +131,9 @@ export abstract class AbstractWorker<
           firstEntry = false
         }
       }
+      if (firstEntry) {
+        throw new Error('taskFunctions parameter object is empty')
+      }
     } else {
       this.taskFunctions.set(DEFAULT_FUNCTION_NAME, taskFunctions.bind(this))
     }
