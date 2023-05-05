@@ -1,5 +1,5 @@
 import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
-import { type IPool, PoolType } from '../pool'
+import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import type {
   IWorkerChoiceStrategy,
@@ -24,8 +24,6 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   private toggleFindLastFreeWorkerNodeKey: boolean = false
   /** @inheritDoc */
-  protected readonly isDynamicPool: boolean
-  /** @inheritDoc */
   public readonly requiredStatistics: RequiredStatistics = {
     runTime: false,
     avgRunTime: false,
@@ -42,7 +40,6 @@ export abstract class AbstractWorkerChoiceStrategy<
     protected readonly pool: IPool<Worker, Data, Response>,
     protected opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
-    this.isDynamicPool = this.pool.type === PoolType.DYNAMIC
     this.choose = this.choose.bind(this)
   }
 
@@ -54,6 +51,14 @@ export abstract class AbstractWorkerChoiceStrategy<
     if (this.requiredStatistics.medRunTime && opts.medRunTime === false) {
       this.requiredStatistics.avgRunTime = true
       this.requiredStatistics.medRunTime = opts.medRunTime as boolean
+    }
+    if (
+      opts.weights != null &&
+      Object.keys(opts.weights).length < this.pool.size
+    ) {
+      throw new Error(
+        'Worker choice strategy options must have a weight for each worker node.'
+      )
     }
   }
 

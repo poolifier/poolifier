@@ -128,6 +128,10 @@ export interface IPool<
    */
   readonly type: PoolType
   /**
+   * Pool maximum size.
+   */
+  readonly size: number
+  /**
    * Pool worker nodes.
    */
   readonly workerNodes: Array<WorkerNode<Worker, Data>>

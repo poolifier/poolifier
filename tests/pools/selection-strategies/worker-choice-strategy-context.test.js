@@ -119,11 +119,6 @@ describe('Worker choice strategy context test suite', () => {
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategy
-      ).isDynamicPool
-    ).toBe(false)
-    expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
       )
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
@@ -148,11 +143,6 @@ describe('Worker choice strategy context test suite', () => {
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategy
-      ).isDynamicPool
-    ).toBe(true)
-    expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
       )
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
@@ -174,11 +164,6 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
-    expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
-      ).isDynamicPool
-    ).toBe(false)
     workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -195,11 +180,6 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
-    expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
-      ).isDynamicPool
-    ).toBe(true)
     workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -216,11 +196,6 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
-    expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
-      ).isDynamicPool
-    ).toBe(false)
     workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -237,11 +212,6 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
-    expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
-      ).isDynamicPool
-    ).toBe(true)
     workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -258,11 +228,6 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
-    expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
-      ).isDynamicPool
-    ).toBe(false)
     workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -279,11 +244,6 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
-    expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
-      ).isDynamicPool
-    ).toBe(true)
     workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -300,11 +260,6 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
-    expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
-      ).isDynamicPool
-    ).toBe(false)
     workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -321,11 +276,6 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
-    expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
-      ).isDynamicPool
-    ).toBe(true)
     workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(

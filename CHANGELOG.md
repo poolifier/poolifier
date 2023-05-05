@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Support multiple task functions per worker.
+- Add custom worker weights support to worker choice strategies options.
 
 ### Changed
 

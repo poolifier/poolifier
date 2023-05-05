@@ -97,6 +97,11 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
+  public get size (): number {
+    return this.numberOfWorkers
+  }
+
+  /** @inheritDoc */
   protected get full (): boolean {
     return this.workerNodes.length === this.numberOfWorkers
   }

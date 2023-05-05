@@ -43,14 +43,14 @@ export class LessUsedWorkerChoiceStrategy<
     }
     let minNumberOfTasks = Infinity
     let lessUsedWorkerNodeKey!: number
-    for (const [index, workerNode] of this.pool.workerNodes.entries()) {
+    for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const tasksUsage = workerNode.tasksUsage
       const workerTasks = tasksUsage.run + tasksUsage.running
       if (workerTasks === 0) {
-        return index
+        return workerNodeKey
       } else if (workerTasks < minNumberOfTasks) {
         minNumberOfTasks = workerTasks
-        lessUsedWorkerNodeKey = index
+        lessUsedWorkerNodeKey = workerNodeKey
       }
     }
     return lessUsedWorkerNodeKey

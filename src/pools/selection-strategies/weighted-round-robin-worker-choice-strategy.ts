@@ -10,14 +10,6 @@ import type {
 } from './selection-strategies-types'
 
 /**
- * Virtual task runtime.
- */
-interface TaskRunTime {
-  weight: number
-  runTime: number
-}
-
-/**
  * Selects the next worker with a weighted round robin scheduling algorithm.
  * Loosely modeled after the weighted round robin queueing algorithm: https://en.wikipedia.org/wiki/Weighted_round_robin.
  *
@@ -48,12 +40,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
    */
   private readonly defaultWorkerWeight: number
   /**
-   * Workers' virtual task runtime.
+   * Worker virtual task runtime.
    */
-  private readonly workersTaskRunTime: Map<number, TaskRunTime> = new Map<
-  number,
-  TaskRunTime
-  >()
+  private workerVirtualTaskRunTime: number = 0
 
   /** @inheritDoc */
   public constructor (
@@ -62,45 +51,32 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   ) {
     super(pool, opts)
     this.checkOptions(this.opts)
-    this.defaultWorkerWeight = this.computeWorkerWeight()
-    this.initWorkersTaskRunTime()
+    this.defaultWorkerWeight = this.computeDefaultWorkerWeight()
   }
 
   /** @inheritDoc */
   public reset (): boolean {
     this.currentWorkerNodeId = 0
-    this.workersTaskRunTime.clear()
-    this.initWorkersTaskRunTime()
+    this.workerVirtualTaskRunTime = 0
     return true
   }
 
   /** @inheritDoc */
   public choose (): number {
     const chosenWorkerNodeKey = this.currentWorkerNodeId
-    if (
-      this.isDynamicPool &&
-      !this.workersTaskRunTime.has(chosenWorkerNodeKey)
-    ) {
-      this.initWorkerTaskRunTime(chosenWorkerNodeKey)
-    }
-    const workerTaskRunTime =
-      this.workersTaskRunTime.get(chosenWorkerNodeKey)?.runTime ?? 0
+    const workerTaskRunTime = this.workerVirtualTaskRunTime ?? 0
     const workerTaskWeight =
-      this.workersTaskRunTime.get(chosenWorkerNodeKey)?.weight ??
-      this.defaultWorkerWeight
+      this.opts.weights?.[chosenWorkerNodeKey] ?? this.defaultWorkerWeight
     if (workerTaskRunTime < workerTaskWeight) {
-      this.setWorkerTaskRunTime(
-        chosenWorkerNodeKey,
-        workerTaskWeight,
+      this.workerVirtualTaskRunTime =
         workerTaskRunTime +
-          (this.getWorkerVirtualTaskRunTime(chosenWorkerNodeKey) ?? 0)
-      )
+        (this.getWorkerVirtualTaskRunTime(chosenWorkerNodeKey) ?? 0)
     } else {
       this.currentWorkerNodeId =
         this.currentWorkerNodeId === this.pool.workerNodes.length - 1
           ? 0
           : this.currentWorkerNodeId + 1
-      this.setWorkerTaskRunTime(this.currentWorkerNodeId, workerTaskWeight, 0)
+      this.workerVirtualTaskRunTime = 0
     }
     return chosenWorkerNodeKey
   }
@@ -116,35 +92,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
             ? this.pool.workerNodes.length - 1
             : this.currentWorkerNodeId
       }
+      this.workerVirtualTaskRunTime = 0
     }
-    const deleted = this.workersTaskRunTime.delete(workerNodeKey)
-    for (const [key, value] of this.workersTaskRunTime) {
-      if (key > workerNodeKey) {
-        this.workersTaskRunTime.set(key - 1, value)
-      }
-    }
-    return deleted
-  }
-
-  private initWorkersTaskRunTime (): void {
-    for (const [index] of this.pool.workerNodes.entries()) {
-      this.initWorkerTaskRunTime(index)
-    }
-  }
-
-  private initWorkerTaskRunTime (workerNodeKey: number): void {
-    this.setWorkerTaskRunTime(workerNodeKey, this.defaultWorkerWeight, 0)
-  }
-
-  private setWorkerTaskRunTime (
-    workerNodeKey: number,
-    weight: number,
-    runTime: number
-  ): void {
-    this.workersTaskRunTime.set(workerNodeKey, {
-      weight,
-      runTime
-    })
+    return true
   }
 
   private getWorkerVirtualTaskRunTime (workerNodeKey: number): number {
@@ -153,7 +103,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
       : this.pool.workerNodes[workerNodeKey].tasksUsage.avgRunTime
   }
 
-  private computeWorkerWeight (): number {
+  private computeDefaultWorkerWeight (): number {
     let cpusCycleTimeWeight = 0
     for (const cpu of cpus()) {
       // CPU estimated cycle time

@@ -51,13 +51,13 @@ export class LessBusyWorkerChoiceStrategy<
     }
     let minRunTime = Infinity
     let lessBusyWorkerNodeKey!: number
-    for (const [index, workerNode] of this.pool.workerNodes.entries()) {
+    for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerRunTime = workerNode.tasksUsage.runTime
       if (workerRunTime === 0) {
-        return index
+        return workerNodeKey
       } else if (workerRunTime < minRunTime) {
         minRunTime = workerRunTime
-        lessBusyWorkerNodeKey = index
+        lessBusyWorkerNodeKey = workerNodeKey
       }
     }
     return lessBusyWorkerNodeKey

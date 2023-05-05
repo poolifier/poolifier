@@ -180,6 +180,9 @@ export abstract class AbstractPool<
   /** @inheritDoc */
   public abstract get type (): PoolType
 
+  /** @inheritDoc */
+  public abstract get size (): number
+
   /**
    * Number of tasks running in the pool.
    */

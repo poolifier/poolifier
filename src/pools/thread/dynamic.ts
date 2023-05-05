@@ -46,6 +46,11 @@ export class DynamicThreadPool<
   }
 
   /** @inheritDoc */
+  public get size (): number {
+    return this.max
+  }
+
+  /** @inheritDoc */
   protected get busy (): boolean {
     return this.full && this.internalBusy()
   }

@@ -39,6 +39,13 @@ export interface WorkerChoiceStrategyOptions {
    * @defaultValue false
    */
   medRunTime?: boolean
+  /**
+   * Worker weights to use for weighted round robin worker selection strategy.
+   * Weight is the tasks maximum average or median runtime in milliseconds.
+   *
+   * @defaultValue Computed worker weights automatically given the CPU performance.
+   */
+  weights?: Record<number, number>
 }
 
 /**
