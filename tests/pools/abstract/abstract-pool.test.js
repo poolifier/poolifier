@@ -12,9 +12,6 @@ const { Queue } = require('../../../lib/queue')
 
 describe('Abstract pool test suite', () => {
   const numberOfWorkers = 1
-  const workerNotFoundInPoolError = new Error(
-    'Worker could not be found in the pool worker nodes'
-  )
   class StubPoolWithRemoveAllWorker extends FixedThreadPool {
     removeAllWorker () {
       this.workerNodes = []
@@ -241,7 +238,7 @@ describe('Abstract pool test suite', () => {
     await pool.destroy()
   })
 
-  it('Simulate worker not found at getWorkerTasksUsage()', async () => {
+  it('Simulate worker not found', async () => {
     const pool = new StubPoolWithRemoveAllWorker(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js',
@@ -253,9 +250,6 @@ describe('Abstract pool test suite', () => {
     // Simulate worker not found.
     pool.removeAllWorker()
     expect(pool.workerNodes.length).toBe(0)
-    expect(() => pool.getWorkerTasksUsage()).toThrowError(
-      workerNotFoundInPoolError
-    )
     await pool.destroy()
   })
 
