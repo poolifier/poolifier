@@ -52,11 +52,11 @@ jobs:
         run: pnpm test
 
       - name: Coverage Report
-        if: "github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x'"
+        if: ${{ github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x' }}
         run: pnpm coverage
 
       - name: Sonar Code Analysis
-        if: "github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x'"
+        if: ${{ github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x' }}
         uses: sonarsource/sonarcloud-github-action@v1.9.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
