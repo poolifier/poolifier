@@ -139,8 +139,7 @@ pool.execute({}).then(res => {
 
 You can do the same with the classes ClusterWorker, FixedClusterPool and DynamicClusterPool.
 
-**See examples folder for more details (in particular if you want to use a pool with [multiple worker functions](./examples/multiFunctionExample.js))**.  
-**Now TypeScript is also supported, find how to use it into the example folder**.
+**See examples folder for more details (in particular if you want to use a pool with [multiple worker functions](./examples/multiFunctionExample.js))**.
 
 Remember that workers can only send and receive serializable data.
 
@@ -175,6 +174,7 @@ Node versions >= 16.x are supported.
   Properties:
 
   - `medRunTime` (optional) - Use the tasks median run time instead of the tasks average run time in worker choice strategies.
+  - `weights` (optional) - The weights to use in the weighted round robin worker choice strategy: `{ workerNodeKey: weight, ...}`
 
   Default: `{ medRunTime: false }`
 
