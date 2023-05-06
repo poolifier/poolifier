@@ -42,6 +42,11 @@ export class RoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
+  public update (): boolean {
+    return true
+  }
+
+  /** @inheritDoc */
   public choose (): number {
     const chosenWorkerNodeKey = this.nextWorkerNodeId
     this.nextWorkerNodeId =

@@ -66,6 +66,9 @@ export abstract class AbstractWorkerChoiceStrategy<
   public abstract reset (): boolean
 
   /** @inheritDoc */
+  public abstract update (): boolean
+
+  /** @inheritDoc */
   public abstract choose (): number
 
   /** @inheritDoc */

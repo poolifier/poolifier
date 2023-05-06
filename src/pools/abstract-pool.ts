@@ -432,6 +432,7 @@ export abstract class AbstractPool<
         workerTasksUsage.medRunTime = median(workerTasksUsage.runTimeHistory)
       }
     }
+    this.workerChoiceStrategyContext.update()
   }
 
   /**

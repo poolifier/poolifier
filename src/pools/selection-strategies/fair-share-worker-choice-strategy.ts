@@ -59,11 +59,18 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
+  public update (): boolean {
+    for (const [workerNodeKey] of this.pool.workerNodes.entries()) {
+      this.computeWorkerVirtualTaskTimestamp(workerNodeKey)
+    }
+    return true
+  }
+
+  /** @inheritDoc */
   public choose (): number {
     let minWorkerVirtualTaskEndTimestamp = Infinity
     let chosenWorkerNodeKey!: number
     for (const [workerNodeKey] of this.pool.workerNodes.entries()) {
-      this.computeWorkerVirtualTaskTimestamp(workerNodeKey)
       const workerVirtualTaskEndTimestamp =
         this.workersVirtualTaskTimestamp[workerNodeKey]?.end ?? 0
       if (workerVirtualTaskEndTimestamp < minWorkerVirtualTaskEndTimestamp) {
@@ -95,7 +102,7 @@ export class FairShareWorkerChoiceStrategy<
       : this.pool.workerNodes[workerNodeKey].tasksUsage.avgRunTime
     this.workersVirtualTaskTimestamp[workerNodeKey] = {
       start: workerVirtualTaskStartTimestamp,
-      end: workerVirtualTaskStartTimestamp + (workerVirtualTaskTRunTime ?? 0)
+      end: workerVirtualTaskStartTimestamp + workerVirtualTaskTRunTime
     }
   }
 }

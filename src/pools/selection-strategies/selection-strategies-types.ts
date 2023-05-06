@@ -77,9 +77,15 @@ export interface IWorkerChoiceStrategy {
    */
   readonly requiredStatistics: RequiredStatistics
   /**
-   * Resets strategy internals (counters, statistics, etc.).
+   * Resets strategy internals.
    */
   reset: () => boolean
+  /**
+   * Updates strategy internals.
+   *
+   * @returns `true` if the update is successful, `false` otherwise.
+   */
+  update: () => boolean
   /**
    * Chooses a worker node in the pool and returns its key.
    */
@@ -88,6 +94,7 @@ export interface IWorkerChoiceStrategy {
    * Removes a worker node key from strategy internals.
    *
    * @param workerNodeKey - The worker node key.
+   * @returns `true` if the worker node key is removed, `false` otherwise.
    */
   remove: (workerNodeKey: number) => boolean
   /**

@@ -115,6 +115,19 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
+   * Updates the worker choice strategy internals in the context.
+   *
+   * @returns `true` if the update is successful, `false` otherwise.
+   */
+  public update (): boolean {
+    return (
+      this.workerChoiceStrategies.get(
+        this.workerChoiceStrategy
+      ) as IWorkerChoiceStrategy
+    ).update()
+  }
+
+  /**
    * Executes the worker choice strategy algorithm in the context.
    *
    * @returns The key of the worker node.

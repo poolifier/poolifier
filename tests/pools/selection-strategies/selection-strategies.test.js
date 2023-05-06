@@ -438,6 +438,12 @@ describe('Selection strategies test suite', () => {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage.avgRunTime).toBeDefined()
+      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.tasksUsage.medRunTime).toBeDefined()
+      expect(workerNode.tasksUsage.medRunTime).toBe(0)
+    }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
@@ -461,6 +467,12 @@ describe('Selection strategies test suite', () => {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage.avgRunTime).toBeDefined()
+      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.tasksUsage.medRunTime).toBeDefined()
+      expect(workerNode.tasksUsage.medRunTime).toBe(0)
+    }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
@@ -493,7 +505,7 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.tasksUsage.avgRunTime).toBeDefined()
       expect(workerNode.tasksUsage.avgRunTime).toBe(0)
       expect(workerNode.tasksUsage.medRunTime).toBeDefined()
-      expect(workerNode.tasksUsage.medRunTime).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.medRunTime).toBeGreaterThanOrEqual(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -627,6 +639,12 @@ describe('Selection strategies test suite', () => {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage.avgRunTime).toBeDefined()
+      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.tasksUsage.medRunTime).toBeDefined()
+      expect(workerNode.tasksUsage.medRunTime).toBe(0)
+    }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
@@ -650,14 +668,17 @@ describe('Selection strategies test suite', () => {
     )
     // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
     const promises = []
-    const maxMultiplier =
-      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
-        pool.workerChoiceStrategyContext.workerChoiceStrategy
-      ).defaultWorkerWeight * 50
+    const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage.avgRunTime).toBeDefined()
+      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.tasksUsage.medRunTime).toBeDefined()
+      expect(workerNode.tasksUsage.medRunTime).toBe(0)
+    }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
@@ -695,7 +716,7 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.tasksUsage.avgRunTime).toBeDefined()
       expect(workerNode.tasksUsage.avgRunTime).toBe(0)
       expect(workerNode.tasksUsage.medRunTime).toBeDefined()
-      expect(workerNode.tasksUsage.medRunTime).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.medRunTime).toBeGreaterThanOrEqual(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(

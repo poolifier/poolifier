@@ -44,6 +44,11 @@ export class LessBusyWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
+  public update (): boolean {
+    return true
+  }
+
+  /** @inheritDoc */
   public choose (): number {
     const freeWorkerNodeKey = this.findFreeWorkerNodeKey()
     if (freeWorkerNodeKey !== -1) {

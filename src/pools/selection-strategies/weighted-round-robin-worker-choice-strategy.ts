@@ -62,15 +62,20 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
+  public update (): boolean {
+    return true
+  }
+
+  /** @inheritDoc */
   public choose (): number {
     const chosenWorkerNodeKey = this.currentWorkerNodeId
-    const workerVirtualTaskRunTime = this.workerVirtualTaskRunTime ?? 0
-    const workerTaskWeight =
+    const workerVirtualTaskRunTime = this.workerVirtualTaskRunTime
+    const workerWeight =
       this.opts.weights?.[chosenWorkerNodeKey] ?? this.defaultWorkerWeight
-    if (workerVirtualTaskRunTime < workerTaskWeight) {
+    if (workerVirtualTaskRunTime < workerWeight) {
       this.workerVirtualTaskRunTime =
         workerVirtualTaskRunTime +
-        (this.getWorkerVirtualTaskRunTime(chosenWorkerNodeKey) ?? 0)
+        this.getWorkerVirtualTaskRunTime(chosenWorkerNodeKey)
     } else {
       this.currentWorkerNodeId =
         this.currentWorkerNodeId === this.pool.workerNodes.length - 1
