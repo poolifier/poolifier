@@ -124,9 +124,13 @@ export abstract class AbstractWorkerChoiceStrategy<
     // return this.workerNodes.findLastIndex(workerNode => {
     //   return workerNode.tasksUsage.running === 0
     // })
-    for (let i = this.pool.workerNodes.length - 1; i >= 0; i--) {
-      if (this.pool.workerNodes[i].tasksUsage.running === 0) {
-        return i
+    for (
+      let workerNodeKey = this.pool.workerNodes.length - 1;
+      workerNodeKey >= 0;
+      workerNodeKey--
+    ) {
+      if (this.pool.workerNodes[workerNodeKey].tasksUsage.running === 0) {
+        return workerNodeKey
       }
     }
     return -1
