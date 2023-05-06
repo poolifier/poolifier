@@ -83,7 +83,7 @@ export interface IWorkerChoiceStrategy {
    */
   reset: () => boolean
   /**
-   * Updates worker node strategy internals.
+   * Updates the worker node key strategy internals.
    *
    * @returns `true` if the update is successful, `false` otherwise.
    */
@@ -95,7 +95,7 @@ export interface IWorkerChoiceStrategy {
    */
   choose: () => number
   /**
-   * Removes a worker node key from strategy internals.
+   * Removes the worker node key from strategy internals.
    *
    * @param workerNodeKey - The worker node key.
    * @returns `true` if the worker node key is removed, `false` otherwise.

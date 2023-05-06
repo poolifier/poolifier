@@ -115,7 +115,7 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
-   * Updates the worker choice strategy internals in the context.
+   * Updates the worker node key in the worker choice strategy internals in the context.
    *
    * @returns `true` if the update is successful, `false` otherwise.
    */
@@ -141,7 +141,7 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
-   * Removes a worker node key from the worker choice strategy in the context.
+   * Removes the worker node key from the worker choice strategy in the context.
    *
    * @param workerNodeKey - The key of the worker node.
    * @returns `true` if the removal is successful, `false` otherwise.
