@@ -174,7 +174,7 @@ Node versions >= 16.x are supported.
   Properties:
 
   - `medRunTime` (optional) - Use the tasks median run time instead of the tasks average run time in worker choice strategies.
-  - `weights` (optional) - The weights to use in the weighted round robin worker choice strategy: `{ workerNodeKey: weight, ...}`
+  - `weights` (optional) - The worker weights to use in the weighted round robin worker choice strategy: `{ 0: 200, 1: 300, ..., n: 100 }`
 
   Default: `{ medRunTime: false }`
 

@@ -19,7 +19,7 @@ export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
  */
 export interface MessageValue<
   Data = unknown,
-  MainWorker extends ClusterWorker | MessagePort | unknown = unknown
+  MainWorker extends ClusterWorker | MessagePort = ClusterWorker | MessagePort
 > extends Task<Data> {
   /**
    * Kill code.
