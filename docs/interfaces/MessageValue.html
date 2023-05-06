@@ -26,7 +26,7 @@
 <div class="tsd-comment tsd-typography"><p>Type of data sent to the worker. This can only be serializable data.</p>
 </div></li>
 <li>
-<h4><span class="tsd-kind-type-parameter">MainWorker</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type ">ClusterWorker</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">MessagePort</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">unknown</span> = <span class="tsd-signature-type">unknown</span></h4>
+<h4><span class="tsd-kind-type-parameter">MainWorker</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type ">ClusterWorker</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">MessagePort</span> = <span class="tsd-signature-type ">ClusterWorker</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">MessagePort</span></h4>
 <div class="tsd-comment tsd-typography"><p>Type of main worker.</p>
 </div></li></ul></section> 
 <section class="tsd-panel tsd-hierarchy">
@@ -36,7 +36,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">MessageValue</span></li></ul></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bf4dcb9/src/utility-types.ts#L20">src/utility-types.ts:20</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/c7e196b/src/utility-types.ts#L20">src/utility-types.ts:20</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -48,6 +48,7 @@
 <a href="MessageValue.html#error" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>error?</span></a>
 <a href="MessageValue.html#id" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>id?</span></a>
 <a href="MessageValue.html#kill" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>kill?</span></a>
+<a href="MessageValue.html#name" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>name?</span></a>
 <a href="MessageValue.html#parent" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>parent?</span></a>
 <a href="MessageValue.html#runTime" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>run<wbr/>Time?</span></a>
 </div></section></div></details></section></section>
@@ -60,43 +61,51 @@
 </div><aside class="tsd-sources">
 <p>Inherited from <a href="Task.html">Task</a>.<a href="Task.html#data">data</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bf4dcb9/src/pools/worker.ts#L43">src/pools/worker.ts:43</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/c7e196b/src/pools/worker.ts#L47">src/pools/worker.ts:47</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="error" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>error</span><a href="#error" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">error</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span></div>
 <div class="tsd-comment tsd-typography"><p>Error.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bf4dcb9/src/utility-types.ts#L31">src/utility-types.ts:31</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/c7e196b/src/utility-types.ts#L31">src/utility-types.ts:31</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="id" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>id</span><a href="#id" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">id</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span></div>
-<div class="tsd-comment tsd-typography"><p>UUID of the message.</p>
+<div class="tsd-comment tsd-typography"><p>Message UUID.</p>
 </div><aside class="tsd-sources">
 <p>Inherited from <a href="Task.html">Task</a>.<a href="Task.html#id">id</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bf4dcb9/src/pools/worker.ts#L47">src/pools/worker.ts:47</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/c7e196b/src/pools/worker.ts#L51">src/pools/worker.ts:51</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="kill" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>kill</span><a href="#kill" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">kill</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">1</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;SOFT&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;HARD&quot;</span></div>
 <div class="tsd-comment tsd-typography"><p>Kill code.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bf4dcb9/src/utility-types.ts#L27">src/utility-types.ts:27</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/c7e196b/src/utility-types.ts#L27">src/utility-types.ts:27</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-is-inherited"><a id="name" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>name</span><a href="#name" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">name</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span></div>
+<div class="tsd-comment tsd-typography"><p>Task name.</p>
+</div><aside class="tsd-sources">
+<p>Inherited from <a href="Task.html">Task</a>.<a href="Task.html#name">name</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/c7e196b/src/pools/worker.ts#L43">src/pools/worker.ts:43</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="parent" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>parent</span><a href="#parent" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">parent</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type tsd-kind-type-parameter">MainWorker</span></div>
 <div class="tsd-comment tsd-typography"><p>Reference to main worker.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bf4dcb9/src/utility-types.ts#L39">src/utility-types.ts:39</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/c7e196b/src/utility-types.ts#L39">src/utility-types.ts:39</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="runTime" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>run<wbr/>Time</span><a href="#runTime" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">run<wbr/>Time</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Runtime.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/bf4dcb9/src/utility-types.ts#L35">src/utility-types.ts:35</a></li></ul></aside></section></section></div>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/c7e196b/src/utility-types.ts#L35">src/utility-types.ts:35</a></li></ul></aside></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -120,6 +129,7 @@
 <li><a href="#error" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>error</span></a></li>
 <li><a href="#id" class="tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>id</span></a></li>
 <li><a href="#kill" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>kill</span></a></li>
+<li><a href="#name" class="tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>name</span></a></li>
 <li><a href="#parent" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>parent</span></a></li>
 <li><a href="#runTime" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>run<wbr/>Time</span></a></li></ul></div></details></div>
 <div class="site-menu">
@@ -159,6 +169,7 @@
 <li><a href="../types/MessageHandler.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-4194304-path"></use><use href="#icon-4194304-text"></use></svg><span>Message<wbr/>Handler</span></a></li>
 <li><a href="../types/OnlineHandler.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-4194304-path"></use><use href="#icon-4194304-text"></use></svg><span>Online<wbr/>Handler</span></a></li>
 <li><a href="../types/PoolEvent.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-4194304-path"></use><use href="#icon-4194304-text"></use></svg><span>Pool<wbr/>Event</span></a></li>
+<li><a href="../types/TaskFunctions.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-4194304-path"></use><use href="#icon-4194304-text"></use></svg><span>Task<wbr/>Functions</span></a></li>
 <li><a href="../types/ThreadWorkerWithMessageChannel.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-4194304-path"></use><use href="#icon-4194304-text"></use></svg><span>Thread<wbr/>Worker<wbr/>With<wbr/>Message<wbr/>Channel</span></a></li>
 <li><a href="../types/WorkerAsyncFunction.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-4194304-path"></use><use href="#icon-4194304-text"></use></svg><span>Worker<wbr/>Async<wbr/>Function</span></a></li>
 <li><a href="../types/WorkerChoiceStrategy.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-4194304-path"></use><use href="#icon-4194304-text"></use></svg><span>Worker<wbr/>Choice<wbr/>Strategy</span></a></li>
