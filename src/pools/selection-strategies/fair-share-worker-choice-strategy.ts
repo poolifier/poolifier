@@ -13,7 +13,7 @@ import type {
  */
 interface WorkerVirtualTaskTimestamp {
   start: number
-  end: number
+  end?: number
 }
 
 /**
@@ -59,10 +59,8 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public update (): boolean {
-    for (const [workerNodeKey] of this.pool.workerNodes.entries()) {
-      this.computeWorkerVirtualTaskTimestamp(workerNodeKey)
-    }
+  public update (workerNodeKey: number): boolean {
+    this.computeWorkerVirtualTaskTimestamp(workerNodeKey)
     return true
   }
 

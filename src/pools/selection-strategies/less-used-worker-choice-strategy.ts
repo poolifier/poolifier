@@ -62,7 +62,7 @@ export class LessUsedWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public remove (workerNodeKey: number): boolean {
+  public remove (): boolean {
     return true
   }
 }

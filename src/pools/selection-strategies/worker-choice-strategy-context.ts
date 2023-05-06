@@ -119,12 +119,12 @@ export class WorkerChoiceStrategyContext<
    *
    * @returns `true` if the update is successful, `false` otherwise.
    */
-  public update (): boolean {
+  public update (workerNodeKey: number): boolean {
     return (
       this.workerChoiceStrategies.get(
         this.workerChoiceStrategy
       ) as IWorkerChoiceStrategy
-    ).update()
+    ).update(workerNodeKey)
   }
 
   /**

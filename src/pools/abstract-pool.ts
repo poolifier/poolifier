@@ -322,7 +322,7 @@ export abstract class AbstractPool<
   protected internalBusy (): boolean {
     return (
       this.workerNodes.findIndex(workerNode => {
-        return workerNode.tasksUsage?.running === 0
+        return workerNode.tasksUsage.running === 0
       }) === -1
     )
   }
@@ -412,7 +412,8 @@ export abstract class AbstractPool<
     worker: Worker,
     message: MessageValue<Response>
   ): void {
-    const workerTasksUsage = this.getWorkerTasksUsage(worker)
+    const workerNodeKey = this.getWorkerNodeKey(worker)
+    const workerTasksUsage = this.workerNodes[workerNodeKey].tasksUsage
     --workerTasksUsage.running
     ++workerTasksUsage.run
     if (message.error != null) {
@@ -432,7 +433,7 @@ export abstract class AbstractPool<
         workerTasksUsage.medRunTime = median(workerTasksUsage.runTimeHistory)
       }
     }
-    this.workerChoiceStrategyContext.update()
+    this.workerChoiceStrategyContext.update(workerNodeKey)
   }
 
   /**
@@ -447,13 +448,14 @@ export abstract class AbstractPool<
     if (this.type === PoolType.DYNAMIC && !this.full && this.internalBusy()) {
       const workerCreated = this.createAndSetupWorker()
       this.registerWorkerMessageListener(workerCreated, message => {
+        const currentWorkerNodeKey = this.getWorkerNodeKey(workerCreated)
         if (
           isKillBehavior(KillBehaviors.HARD, message.kill) ||
           (message.kill != null &&
-            this.getWorkerTasksUsage(workerCreated)?.running === 0)
+            this.workerNodes[currentWorkerNodeKey].tasksUsage.running === 0)
         ) {
           // Kill message received from the worker: no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-          this.flushTasksQueueByWorker(workerCreated)
+          this.flushTasksQueue(currentWorkerNodeKey)
           void (this.destroyWorker(workerCreated) as Promise<void>)
         }
       })
@@ -580,21 +582,6 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Gets the given worker its tasks usage in the pool.
-   *
-   * @param worker - The worker.
-   * @throws Error if the worker is not found in the pool worker nodes.
-   * @returns The worker tasks usage.
-   */
-  private getWorkerTasksUsage (worker: Worker): TasksUsage {
-    const workerNodeKey = this.getWorkerNodeKey(worker)
-    if (workerNodeKey !== -1) {
-      return this.workerNodes[workerNodeKey].tasksUsage
-    }
-    throw new Error('Worker could not be found in the pool worker nodes')
-  }
-
-  /**
    * Pushes the given worker in the pool worker nodes.
    *
    * @param worker - The worker.
@@ -674,11 +661,6 @@ export abstract class AbstractPool<
         )
       }
     }
-  }
-
-  private flushTasksQueueByWorker (worker: Worker): void {
-    const workerNodeKey = this.getWorkerNodeKey(worker)
-    this.flushTasksQueue(workerNodeKey)
   }
 
   private flushTasksQueues (): void {

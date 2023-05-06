@@ -153,12 +153,10 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN }
     )
     // TODO: Create a better test to cover `RoundRobinWorkerChoiceStrategy#choose`
-    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      promises.push(pool.execute())
+      await pool.execute()
     }
-    await Promise.all(promises)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -171,12 +169,10 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN }
     )
     // TODO: Create a better test to cover `RoundRobinWorkerChoiceStrategy#choose`
-    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      promises.push(pool.execute())
+      await pool.execute()
     }
-    await Promise.all(promises)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -290,12 +286,10 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED }
     )
     // TODO: Create a better test to cover `LessUsedWorkerChoiceStrategy#choose`
-    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      promises.push(pool.execute())
+      await pool.execute()
     }
-    await Promise.all(promises)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -308,12 +302,10 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED }
     )
     // TODO: Create a better test to cover `LessUsedWorkerChoiceStrategy#choose`
-    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      promises.push(pool.execute())
+      await pool.execute()
     }
-    await Promise.all(promises)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -361,12 +353,10 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.LESS_BUSY }
     )
     // TODO: Create a better test to cover `LessBusyWorkerChoiceStrategy#choose`
-    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      promises.push(pool.execute())
+      await pool.execute()
     }
-    await Promise.all(promises)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -379,12 +369,10 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.LESS_BUSY }
     )
     // TODO: Create a better test to cover `LessBusyWorkerChoiceStrategy#choose`
-    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      promises.push(pool.execute())
+      await pool.execute()
     }
-    await Promise.all(promises)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -432,12 +420,10 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
     )
     // TODO: Create a better test to cover `FairShareChoiceStrategy#choose`
-    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      promises.push(pool.execute())
+      await pool.execute()
     }
-    await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage.avgRunTime).toBeDefined()
       expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
@@ -461,12 +447,10 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
     )
     // TODO: Create a better test to cover `FairShareChoiceStrategy#choose`
-    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      promises.push(pool.execute())
+      await pool.execute()
     }
-    await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage.avgRunTime).toBeDefined()
       expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
@@ -495,12 +479,10 @@ describe('Selection strategies test suite', () => {
       }
     )
     // TODO: Create a better test to cover `FairShareChoiceStrategy#choose`
-    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      promises.push(pool.execute())
+      await pool.execute()
     }
-    await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage.avgRunTime).toBeDefined()
       expect(workerNode.tasksUsage.avgRunTime).toBe(0)
@@ -633,12 +615,10 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
     )
     // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
-    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      promises.push(pool.execute())
+      await pool.execute()
     }
-    await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage.avgRunTime).toBeDefined()
       expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
@@ -667,12 +647,10 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
     )
     // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
-    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      promises.push(pool.execute())
+      await pool.execute()
     }
-    await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage.avgRunTime).toBeDefined()
       expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
@@ -706,12 +684,10 @@ describe('Selection strategies test suite', () => {
       }
     )
     // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
-    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      promises.push(pool.execute())
+      await pool.execute()
     }
-    await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage.avgRunTime).toBeDefined()
       expect(workerNode.tasksUsage.avgRunTime).toBe(0)

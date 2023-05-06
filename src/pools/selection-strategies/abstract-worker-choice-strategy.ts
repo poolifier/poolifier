@@ -66,7 +66,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   public abstract reset (): boolean
 
   /** @inheritDoc */
-  public abstract update (): boolean
+  public abstract update (workerNodeKey: number): boolean
 
   /** @inheritDoc */
   public abstract choose (): number
@@ -106,7 +106,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   private findFirstFreeWorkerNodeKey (): number {
     return this.pool.workerNodes.findIndex(workerNode => {
-      return workerNode.tasksUsage?.running === 0
+      return workerNode.tasksUsage.running === 0
     })
   }
 
@@ -122,10 +122,10 @@ export abstract class AbstractWorkerChoiceStrategy<
   private findLastFreeWorkerNodeKey (): number {
     // It requires node >= 18.0.0:
     // return this.workerNodes.findLastIndex(workerNode => {
-    //   return workerNode.tasksUsage?.running === 0
+    //   return workerNode.tasksUsage.running === 0
     // })
     for (let i = this.pool.workerNodes.length - 1; i >= 0; i--) {
-      if (this.pool.workerNodes[i].tasksUsage?.running === 0) {
+      if (this.pool.workerNodes[i].tasksUsage.running === 0) {
         return i
       }
     }
