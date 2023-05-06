@@ -33,36 +33,62 @@ describe('Abstract worker test suite', () => {
     )
   })
 
-  it('Verify that taskFunctions parameter is a function or an object', () => {
+  it('Verify that taskFunctions parameter is a function or a plain object', () => {
     expect(() => new ClusterWorker(0)).toThrowError(
-      new TypeError('taskFunctions parameter is not a function or an object')
+      new TypeError(
+        'taskFunctions parameter is not a function or a plain object'
+      )
     )
     expect(() => new ClusterWorker('')).toThrowError(
-      new TypeError('taskFunctions parameter is not a function or an object')
+      new TypeError(
+        'taskFunctions parameter is not a function or a plain object'
+      )
     )
     expect(() => new ClusterWorker(true)).toThrowError(
-      new TypeError('taskFunctions parameter is not a function or an object')
+      new TypeError(
+        'taskFunctions parameter is not a function or a plain object'
+      )
+    )
+    expect(() => new ClusterWorker([])).toThrowError(
+      new TypeError(
+        'taskFunctions parameter is not a function or a plain object'
+      )
+    )
+    expect(() => new ClusterWorker(new Map())).toThrowError(
+      new TypeError(
+        'taskFunctions parameter is not a function or a plain object'
+      )
+    )
+    expect(() => new ClusterWorker(new Set())).toThrowError(
+      new TypeError(
+        'taskFunctions parameter is not a function or a plain object'
+      )
+    )
+    expect(() => new ClusterWorker(new WeakMap())).toThrowError(
+      new TypeError(
+        'taskFunctions parameter is not a function or a plain object'
+      )
+    )
+    expect(() => new ClusterWorker(new WeakSet())).toThrowError(
+      new TypeError(
+        'taskFunctions parameter is not a function or a plain object'
+      )
     )
   })
 
-  it('Verify that taskFunctions parameter is not an empty object literal', () => {
-    expect(() => new ClusterWorker([])).toThrowError(
-      new TypeError('taskFunctions parameter is not an object literal')
-    )
-    expect(() => new ClusterWorker(new Map())).toThrowError(
-      new TypeError('taskFunctions parameter is not an object literal')
-    )
-    expect(() => new ClusterWorker(new Set())).toThrowError(
-      new TypeError('taskFunctions parameter is not an object literal')
-    )
-    expect(() => new ClusterWorker(new WeakMap())).toThrowError(
-      new TypeError('taskFunctions parameter is not an object literal')
-    )
-    expect(() => new ClusterWorker(new WeakSet())).toThrowError(
-      new TypeError('taskFunctions parameter is not an object literal')
-    )
+  it('Verify that taskFunctions parameter is not an empty object', () => {
     expect(() => new ClusterWorker({})).toThrowError(
       new Error('taskFunctions parameter object is empty')
+    )
+  })
+
+  it('Verify that taskFunctions parameter with multiple task functions contains function', () => {
+    const fn1 = () => {
+      return 1
+    }
+    const fn2 = ''
+    expect(() => new ThreadWorker({ fn1, fn2 })).toThrowError(
+      new TypeError('A taskFunctions parameter object value is not a function')
     )
   })
 
