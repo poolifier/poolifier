@@ -5,7 +5,6 @@ import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
-  RequiredStatistics,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
@@ -23,13 +22,6 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
-  /** @inheritDoc */
-  public readonly requiredStatistics: RequiredStatistics = {
-    runTime: true,
-    avgRunTime: true,
-    medRunTime: false
-  }
-
   /**
    * Worker node id where the current task will be submitted.
    */
