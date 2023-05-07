@@ -73,46 +73,38 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number {
-    let chosenWorkerNodeKey: number
-    const workerWeight =
-      this.opts.weights?.[this.currentWorkerNodeId] ?? this.defaultWorkerWeight
-    if (workerWeight >= this.roundWeights[this.currentRoundId]) {
-      chosenWorkerNodeKey = this.currentWorkerNodeId
-      this.currentWorkerNodeId =
-        this.currentWorkerNodeId === this.pool.workerNodes.length - 1
-          ? 0
-          : this.currentWorkerNodeId + 1
-      if (this.currentWorkerNodeId === this.pool.workerNodes.length - 1) {
-        this.currentRoundId =
-          this.currentRoundId === this.roundWeights.length - 1
-            ? 0
-            : this.currentRoundId + 1
-      }
-    } else {
-      let roundId: number | undefined
-      let workerNodeId: number | undefined
+    let roundId: number | undefined
+    let workerNodeId: number | undefined
+    for (
+      let round = this.currentRoundId;
+      round < this.roundWeights.length;
+      round++
+    ) {
       for (
-        let round = this.currentRoundId;
-        round < this.roundWeights.length;
-        round++
+        let workerNodeKey = this.currentWorkerNodeId;
+        workerNodeKey < this.pool.workerNodes.length;
+        workerNodeKey++
       ) {
-        for (
-          let workerNodeKey = this.currentWorkerNodeId + 1;
-          workerNodeKey < this.pool.workerNodes.length;
-          workerNodeKey++
-        ) {
-          const workerWeight =
-            this.opts.weights?.[workerNodeKey] ?? this.defaultWorkerWeight
-          if (workerWeight >= this.roundWeights[round]) {
-            roundId = round
-            workerNodeId = workerNodeKey
-            break
-          }
+        const workerWeight =
+          this.opts.weights?.[workerNodeKey] ?? this.defaultWorkerWeight
+        if (workerWeight >= this.roundWeights[round]) {
+          roundId = round
+          workerNodeId = workerNodeKey
+          break
         }
       }
-      this.currentRoundId = roundId ?? 0
-      this.currentWorkerNodeId = workerNodeId ?? 0
-      chosenWorkerNodeKey = this.currentWorkerNodeId
+    }
+    this.currentRoundId = roundId ?? 0
+    this.currentWorkerNodeId = workerNodeId ?? 0
+    const chosenWorkerNodeKey = this.currentWorkerNodeId
+    if (this.currentWorkerNodeId === this.pool.workerNodes.length - 1) {
+      this.currentWorkerNodeId = 0
+      this.currentRoundId =
+        this.currentRoundId === this.roundWeights.length - 1
+          ? 0
+          : this.currentRoundId + 1
+    } else {
+      this.currentWorkerNodeId = this.currentWorkerNodeId + 1
     }
     return chosenWorkerNodeKey
   }
