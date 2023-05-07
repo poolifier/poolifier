@@ -18,6 +18,9 @@ describe('Selection strategies test suite', () => {
     expect(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN).toBe(
       'WEIGHTED_ROUND_ROBIN'
     )
+    expect(WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN).toBe(
+      'INTERLEAVED_WEIGHTED_ROUND_ROBIN'
+    )
   })
 
   it('Verify ROUND_ROBIN strategy is the default at pool creation', async () => {

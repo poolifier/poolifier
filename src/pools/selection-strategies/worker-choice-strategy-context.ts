@@ -2,6 +2,7 @@ import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strategy'
+import { InterleavedWeightedRoundRobinWorkerChoiceStrategy } from './interleaved-weighted-round-robin-worker-choice-strategy'
 import { LessBusyWorkerChoiceStrategy } from './less-busy-worker-choice-strategy'
 import { LessUsedWorkerChoiceStrategy } from './less-used-worker-choice-strategy'
 import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy'
@@ -79,6 +80,14 @@ export class WorkerChoiceStrategyContext<
       [
         WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN,
         new (WeightedRoundRobinWorkerChoiceStrategy.bind(this))<
+        Worker,
+        Data,
+        Response
+        >(pool, opts)
+      ],
+      [
+        WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN,
+        new (InterleavedWeightedRoundRobinWorkerChoiceStrategy.bind(this))<
         Worker,
         Data,
         Response
