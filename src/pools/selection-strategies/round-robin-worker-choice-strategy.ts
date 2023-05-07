@@ -61,11 +61,8 @@ export class RoundRobinWorkerChoiceStrategy<
     if (this.nextWorkerNodeId === workerNodeKey) {
       if (this.pool.workerNodes.length === 0) {
         this.nextWorkerNodeId = 0
-      } else {
-        this.nextWorkerNodeId =
-          this.nextWorkerNodeId > this.pool.workerNodes.length - 1
-            ? this.pool.workerNodes.length - 1
-            : this.nextWorkerNodeId
+      } else if (this.nextWorkerNodeId > this.pool.workerNodes.length - 1) {
+        this.nextWorkerNodeId = this.pool.workerNodes.length - 1
       }
     }
     return true
