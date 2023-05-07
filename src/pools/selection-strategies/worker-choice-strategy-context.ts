@@ -131,13 +131,18 @@ export class WorkerChoiceStrategyContext<
    * Executes the worker choice strategy algorithm in the context.
    *
    * @returns The key of the worker node.
+   * @throws {@link Error} If the worker node key is null or undefined.
    */
   public execute (): number {
-    return (
+    const workerNodeKey = (
       this.workerChoiceStrategies.get(
         this.workerChoiceStrategy
       ) as IWorkerChoiceStrategy
     ).choose()
+    if (workerNodeKey == null) {
+      throw new Error('Worker node key chosen is null or undefined')
+    }
+    return workerNodeKey
   }
 
   /**

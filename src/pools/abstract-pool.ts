@@ -354,6 +354,7 @@ export abstract class AbstractPool<
     } else {
       this.executeTask(workerNodeKey, submittedTask)
     }
+    this.workerChoiceStrategyContext.update(workerNodeKey)
     this.checkAndEmitEvents()
     // eslint-disable-next-line @typescript-eslint/return-await
     return res
@@ -433,7 +434,6 @@ export abstract class AbstractPool<
         workerTasksUsage.medRunTime = median(workerTasksUsage.runTimeHistory)
       }
     }
-    this.workerChoiceStrategyContext.update(workerNodeKey)
   }
 
   /**

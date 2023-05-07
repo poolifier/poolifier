@@ -9,14 +9,6 @@ import type {
 } from './selection-strategies-types'
 
 /**
- * Worker virtual task timestamp.
- */
-interface WorkerVirtualTaskTimestamp {
-  start: number
-  end?: number
-}
-
-/**
  * Selects the next worker with a fair share scheduling algorithm.
  * Loosely modeled after the fair queueing algorithm: https://en.wikipedia.org/wiki/Fair_queuing.
  *
@@ -39,9 +31,9 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /**
-   * Workers' virtual task execution timestamp.
+   * Workers' virtual task end execution timestamp.
    */
-  private workersVirtualTaskTimestamp: WorkerVirtualTaskTimestamp[] = []
+  private workersVirtualTaskEndTimestamp: number[] = []
 
   /** @inheritDoc */
   public constructor (
@@ -54,13 +46,13 @@ export class FairShareWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public reset (): boolean {
-    this.workersVirtualTaskTimestamp = []
+    this.workersVirtualTaskEndTimestamp = []
     return true
   }
 
   /** @inheritDoc */
   public update (workerNodeKey: number): boolean {
-    this.computeWorkerVirtualTaskTimestamp(workerNodeKey)
+    this.computeWorkerVirtualTaskEndTimestamp(workerNodeKey)
     return true
   }
 
@@ -69,8 +61,11 @@ export class FairShareWorkerChoiceStrategy<
     let minWorkerVirtualTaskEndTimestamp = Infinity
     let chosenWorkerNodeKey!: number
     for (const [workerNodeKey] of this.pool.workerNodes.entries()) {
+      if (this.workersVirtualTaskEndTimestamp[workerNodeKey] == null) {
+        this.computeWorkerVirtualTaskEndTimestamp(workerNodeKey)
+      }
       const workerVirtualTaskEndTimestamp =
-        this.workersVirtualTaskTimestamp[workerNodeKey]?.end ?? 0
+        this.workersVirtualTaskEndTimestamp[workerNodeKey]
       if (workerVirtualTaskEndTimestamp < minWorkerVirtualTaskEndTimestamp) {
         minWorkerVirtualTaskEndTimestamp = workerVirtualTaskEndTimestamp
         chosenWorkerNodeKey = workerNodeKey
@@ -81,26 +76,37 @@ export class FairShareWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public remove (workerNodeKey: number): boolean {
-    this.workersVirtualTaskTimestamp.splice(workerNodeKey, 1)
+    this.workersVirtualTaskEndTimestamp.splice(workerNodeKey, 1)
     return true
   }
 
   /**
-   * Computes worker virtual task timestamp.
+   * Computes the worker node key virtual task end timestamp.
    *
    * @param workerNodeKey - The worker node key.
    */
-  private computeWorkerVirtualTaskTimestamp (workerNodeKey: number): void {
-    const workerVirtualTaskStartTimestamp = Math.max(
-      performance.now(),
-      this.workersVirtualTaskTimestamp[workerNodeKey]?.end ?? -Infinity
-    )
-    const workerVirtualTaskTRunTime = this.requiredStatistics.medRunTime
+  private computeWorkerVirtualTaskEndTimestamp (workerNodeKey: number): void {
+    this.workersVirtualTaskEndTimestamp[workerNodeKey] =
+      this.getWorkerVirtualTaskEndTimestamp(
+        workerNodeKey,
+        this.getWorkerVirtualTaskStartTimestamp(workerNodeKey)
+      )
+  }
+
+  private getWorkerVirtualTaskEndTimestamp (
+    workerNodeKey: number,
+    workerVirtualTaskStartTimestamp: number
+  ): number {
+    const workerVirtualTaskRunTime = this.requiredStatistics.medRunTime
       ? this.pool.workerNodes[workerNodeKey].tasksUsage.medRunTime
       : this.pool.workerNodes[workerNodeKey].tasksUsage.avgRunTime
-    this.workersVirtualTaskTimestamp[workerNodeKey] = {
-      start: workerVirtualTaskStartTimestamp,
-      end: workerVirtualTaskStartTimestamp + workerVirtualTaskTRunTime
-    }
+    return workerVirtualTaskStartTimestamp + workerVirtualTaskRunTime
+  }
+
+  private getWorkerVirtualTaskStartTimestamp (workerNodeKey: number): number {
+    return Math.max(
+      performance.now(),
+      this.workersVirtualTaskEndTimestamp[workerNodeKey] ?? -Infinity
+    )
   }
 }
