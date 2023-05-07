@@ -42,7 +42,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   /**
    * Round weights.
    */
-  private readonly roundWeights: number[]
+  private roundWeights: number[]
   /**
    * Default worker weight.
    */
@@ -130,6 +130,12 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
       }
     }
     return true
+  }
+
+  /** @inheritDoc */
+  public setOptions (opts: WorkerChoiceStrategyOptions): void {
+    super.setOptions(opts)
+    this.roundWeights = this.getRoundWeights()
   }
 
   private computeDefaultWorkerWeight (): number {
