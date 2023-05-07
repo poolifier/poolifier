@@ -24,6 +24,8 @@ export const WorkerChoiceStrategies = Object.freeze({
   WEIGHTED_ROUND_ROBIN: 'WEIGHTED_ROUND_ROBIN',
   /**
    * Interleaved weighted round robin worker selection strategy.
+   *
+   * @experimental
    */
   INTERLEAVED_WEIGHTED_ROUND_ROBIN: 'INTERLEAVED_WEIGHTED_ROUND_ROBIN'
 } as const)

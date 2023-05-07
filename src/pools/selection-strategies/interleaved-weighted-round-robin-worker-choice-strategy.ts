@@ -76,9 +76,9 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
     let roundId: number | undefined
     let workerNodeId: number | undefined
     for (
-      let round = this.currentRoundId;
-      round < this.roundWeights.length;
-      round++
+      let roundIndex = this.currentRoundId;
+      roundIndex < this.roundWeights.length;
+      roundIndex++
     ) {
       for (
         let workerNodeKey = this.currentWorkerNodeId;
@@ -87,8 +87,8 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
       ) {
         const workerWeight =
           this.opts.weights?.[workerNodeKey] ?? this.defaultWorkerWeight
-        if (workerWeight >= this.roundWeights[round]) {
-          roundId = round
+        if (workerWeight >= this.roundWeights[roundIndex]) {
+          roundId = roundIndex
           workerNodeId = workerNodeKey
           break
         }
