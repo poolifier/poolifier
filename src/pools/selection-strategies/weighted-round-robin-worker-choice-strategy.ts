@@ -91,11 +91,8 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     if (this.currentWorkerNodeId === workerNodeKey) {
       if (this.pool.workerNodes.length === 0) {
         this.currentWorkerNodeId = 0
-      } else {
-        this.currentWorkerNodeId =
-          this.currentWorkerNodeId > this.pool.workerNodes.length - 1
-            ? this.pool.workerNodes.length - 1
-            : this.currentWorkerNodeId
+      } else if (this.currentWorkerNodeId > this.pool.workerNodes.length - 1) {
+        this.currentWorkerNodeId = this.pool.workerNodes.length - 1
       }
       this.workerVirtualTaskRunTime = 0
     }
