@@ -145,7 +145,7 @@ export interface IPool<
    */
   readonly emitter?: PoolEmitter
   /**
-   * Executes the function specified in the worker constructor with the task data input parameter.
+   * Executes the specified function in the worker constructor with the task data input parameter.
    *
    * @param data - The task input data for the specified worker function. This can only be serializable data.
    * @param name - The name of the worker function to execute. If not specified, the default worker function will be executed.
