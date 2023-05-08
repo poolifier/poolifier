@@ -137,6 +137,11 @@ describe('Fixed cluster pool test suite', () => {
     expect(inError).toBeDefined()
     expect(typeof inError === 'string').toBe(true)
     expect(inError).toBe('Error Message from ClusterWorker')
+    expect(
+      errorPool.workerNodes.some(
+        workerNode => workerNode.tasksUsage.error === 1
+      )
+    ).toBe(true)
   })
 
   it('Verify that error handling is working properly:async', async () => {
@@ -150,6 +155,11 @@ describe('Fixed cluster pool test suite', () => {
     expect(inError).toBeDefined()
     expect(typeof inError === 'string').toBe(true)
     expect(inError).toBe('Error Message from ClusterWorker:async')
+    expect(
+      asyncErrorPool.workerNodes.some(
+        workerNode => workerNode.tasksUsage.error === 1
+      )
+    ).toBe(true)
   })
 
   it('Verify that async function is working properly', async () => {
