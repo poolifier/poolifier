@@ -22,6 +22,9 @@ export const DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS: WorkerChoiceStrategyOptions
  * @returns The median of the given data set.
  */
 export const median = (dataSet: number[]): number => {
+  if (Array.isArray(dataSet) && dataSet.length === 0) {
+    return 0
+  }
   if (Array.isArray(dataSet) && dataSet.length === 1) {
     return dataSet[0]
   }
