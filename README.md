@@ -8,7 +8,7 @@
   <a href="https://www.npmjs.com/package/poolifier">
     <img alt="Weekly Downloads" src="https://img.shields.io/npm/dw/poolifier"></a>
   <a href="https://github.com/poolifier/poolifier/actions">
-    <img alt="Actions Status" src="https://github.com/poolifier/poolifier/workflows/ci.yml/badge.svg"></a>
+    <img alt="Actions Status" src="https://github.com/poolifier/poolifier/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://sonarcloud.io/dashboard?id=pioardi_poolifier">
     <img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=alert_status"></a>
   <a href="https://sonarcloud.io/dashboard?id=pioardi_poolifier">
