@@ -25,7 +25,7 @@ export const median = (dataSet: number[]): number => {
   if (Array.isArray(dataSet) && dataSet.length === 1) {
     return dataSet[0]
   }
-  dataSet = [...dataSet].slice().sort((a, b) => a - b)
+  dataSet = dataSet.slice().sort((a, b) => a - b)
   return (dataSet[(dataSet.length - 1) >> 1] + dataSet[dataSet.length >> 1]) / 2
 }
 
