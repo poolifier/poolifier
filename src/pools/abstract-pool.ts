@@ -440,8 +440,11 @@ export abstract class AbstractPool<
         workerTasksUsage.avgRunTime =
           workerTasksUsage.runTime / workerTasksUsage.run
       }
-      if (this.workerChoiceStrategyContext.getRequiredStatistics().medRunTime) {
-        workerTasksUsage.runTimeHistory.push(message.runTime ?? 0)
+      if (
+        this.workerChoiceStrategyContext.getRequiredStatistics().medRunTime &&
+        message.runTime != null
+      ) {
+        workerTasksUsage.runTimeHistory.push(message.runTime)
         workerTasksUsage.medRunTime = median(workerTasksUsage.runTimeHistory)
       }
     }
