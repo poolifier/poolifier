@@ -85,6 +85,41 @@ describe('Worker choice strategy context test suite', () => {
     expect(chosenWorkerKey).toBe(0)
   })
 
+  it('Verify that execute() throws error if null or undefined is returned', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    const WorkerChoiceStrategyUndefinedStub = sinon.createStubInstance(
+      RoundRobinWorkerChoiceStrategy,
+      {
+        choose: sinon.stub().returns(undefined)
+      }
+    )
+    const WorkerChoiceStrategyNullStub = sinon.createStubInstance(
+      RoundRobinWorkerChoiceStrategy,
+      {
+        choose: sinon.stub().returns(null)
+      }
+    )
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
+      WorkerChoiceStrategies.ROUND_ROBIN
+    )
+    workerChoiceStrategyContext.workerChoiceStrategies.set(
+      workerChoiceStrategyContext.workerChoiceStrategy,
+      WorkerChoiceStrategyUndefinedStub
+    )
+    expect(() => workerChoiceStrategyContext.execute()).toThrowError(
+      new Error('Worker node key chosen is null or undefined')
+    )
+    workerChoiceStrategyContext.workerChoiceStrategies.set(
+      workerChoiceStrategyContext.workerChoiceStrategy,
+      WorkerChoiceStrategyNullStub
+    )
+    expect(() => workerChoiceStrategyContext.execute()).toThrowError(
+      new Error('Worker node key chosen is null or undefined')
+    )
+  })
+
   it('Verify that execute() return the worker chosen by the strategy with dynamic pool', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
