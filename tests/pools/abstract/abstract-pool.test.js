@@ -103,7 +103,10 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       {
         workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED,
-        workerChoiceStrategyOptions: { medRunTime: true },
+        workerChoiceStrategyOptions: {
+          medRunTime: true,
+          weights: { 0: 300 }
+        },
         enableEvents: false,
         enableTasksQueue: true,
         tasksQueueOptions: { concurrency: 2 },
@@ -121,7 +124,8 @@ describe('Abstract pool test suite', () => {
       WorkerChoiceStrategies.LESS_USED
     )
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      medRunTime: true
+      medRunTime: true,
+      weights: { 0: 300 }
     })
     expect(pool.opts.messageHandler).toStrictEqual(testHandler)
     expect(pool.opts.errorHandler).toStrictEqual(testHandler)
@@ -152,6 +156,18 @@ describe('Abstract pool test suite', () => {
           }
         )
     ).toThrowError("Invalid worker choice strategy 'invalidStrategy'")
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.js',
+          {
+            workerChoiceStrategyOptions: { weights: {} }
+          }
+        )
+    ).toThrowError(
+      'Invalid worker choice strategy options: must have a weight for each worker node'
+    )
   })
 
   it('Verify that worker choice strategy options can be set', async () => {

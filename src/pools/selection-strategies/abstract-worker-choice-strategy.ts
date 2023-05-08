@@ -43,7 +43,7 @@ export abstract class AbstractWorkerChoiceStrategy<
     this.choose = this.choose.bind(this)
   }
 
-  protected checkOptions (opts: WorkerChoiceStrategyOptions): void {
+  protected setRequiredStatistics (opts: WorkerChoiceStrategyOptions): void {
     if (this.requiredStatistics.avgRunTime && opts.medRunTime === true) {
       this.requiredStatistics.avgRunTime = false
       this.requiredStatistics.medRunTime = opts.medRunTime as boolean
@@ -51,14 +51,6 @@ export abstract class AbstractWorkerChoiceStrategy<
     if (this.requiredStatistics.medRunTime && opts.medRunTime === false) {
       this.requiredStatistics.avgRunTime = true
       this.requiredStatistics.medRunTime = opts.medRunTime as boolean
-    }
-    if (
-      opts.weights != null &&
-      Object.keys(opts.weights).length < this.pool.size
-    ) {
-      throw new Error(
-        'Worker choice strategy options must have a weight for each worker node.'
-      )
     }
   }
 
@@ -77,7 +69,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   /** @inheritDoc */
   public setOptions (opts: WorkerChoiceStrategyOptions): void {
     opts = opts ?? DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
-    this.checkOptions(opts)
+    this.setRequiredStatistics(opts)
     this.opts = opts
   }
 

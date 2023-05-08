@@ -146,6 +146,9 @@ export abstract class AbstractPool<
       this.opts.workerChoiceStrategyOptions =
         opts.workerChoiceStrategyOptions ??
         DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+      this.checkValidWorkerChoiceStrategyOptions(
+        this.opts.workerChoiceStrategyOptions
+      )
       this.opts.enableEvents = opts.enableEvents ?? true
       this.opts.enableTasksQueue = opts.enableTasksQueue ?? false
       if (this.opts.enableTasksQueue) {
@@ -177,6 +180,14 @@ export abstract class AbstractPool<
     if (!isPlainObject(workerChoiceStrategyOptions)) {
       throw new TypeError(
         'Invalid worker choice strategy options: must be a plain object'
+      )
+    }
+    if (
+      workerChoiceStrategyOptions.weights != null &&
+      Object.keys(workerChoiceStrategyOptions.weights).length !== this.size
+    ) {
+      throw new Error(
+        'Invalid worker choice strategy options: must have a weight for each worker node'
       )
     }
   }

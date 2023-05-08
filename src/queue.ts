@@ -55,4 +55,12 @@ export class Queue<T> {
     }
     return item
   }
+
+  /**
+   * Peek at the first item.
+   */
+  public peek (): T | undefined {
+    if (this.size <= 0) return undefined
+    return this.items[this.head]
+  }
 }
