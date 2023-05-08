@@ -139,6 +139,11 @@ describe('Fixed thread pool test suite', () => {
     expect(inError.message).toBeDefined()
     expect(typeof inError.message === 'string').toBe(true)
     expect(inError.message).toBe('Error Message from ThreadWorker')
+    expect(
+      errorPool.workerNodes.some(
+        workerNode => workerNode.tasksUsage.error === 1
+      )
+    ).toBe(true)
   })
 
   it('Verify that error handling is working properly:async', async () => {
@@ -154,6 +159,11 @@ describe('Fixed thread pool test suite', () => {
     expect(inError.message).toBeDefined()
     expect(typeof inError.message === 'string').toBe(true)
     expect(inError.message).toBe('Error Message from ThreadWorker:async')
+    expect(
+      asyncErrorPool.workerNodes.some(
+        workerNode => workerNode.tasksUsage.error === 1
+      )
+    ).toBe(true)
   })
 
   it('Verify that async function is working properly', async () => {
