@@ -25,12 +25,8 @@ export const median = (dataSet: number[]): number => {
   if (Array.isArray(dataSet) && dataSet.length === 1) {
     return dataSet[0]
   }
-  const sortedDataSet = dataSet.slice().sort((a, b) => a - b)
-  const middleIndex = Math.floor(sortedDataSet.length / 2)
-  if (sortedDataSet.length % 2 === 0) {
-    return sortedDataSet[middleIndex]
-  }
-  return (sortedDataSet[middleIndex - 1] + sortedDataSet[middleIndex]) / 2
+  dataSet = [...dataSet].slice().sort((a, b) => a - b)
+  return (dataSet[(dataSet.length - 1) >> 1] + dataSet[dataSet.length >> 1]) / 2
 }
 
 export const isPlainObject = (obj: unknown): boolean =>

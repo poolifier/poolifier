@@ -4,7 +4,7 @@ const { isPlainObject, median } = require('../lib/utils')
 describe('Utils test suite', () => {
   it('Verify median computation', () => {
     const array = [0.25, 4.75, 3.05, 6.04, 1.01, 2.02, 5.03]
-    expect(median(array)).toBe(2.535)
+    expect(median(array)).toBe(3.05)
   })
 
   it('Verify isPlainObject() behavior', () => {
