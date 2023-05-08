@@ -46,7 +46,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
     opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     super(pool, opts)
-    this.checkOptions(this.opts)
+    this.setRequiredStatistics(this.opts)
     this.defaultWorkerWeight = this.computeDefaultWorkerWeight()
     this.roundWeights = this.getRoundWeights()
   }
