@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fix worker choice strategy options validation.
 - Fix fair share worker choice strategy internals update: ensure virtual task end timestamp is computed at task submission.
 
 ## [2.4.12] - 2023-05-06
