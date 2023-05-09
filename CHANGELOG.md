@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ensure no undefined task runtime can land in the tasks history.
 - Fix median computation implementation once again.
 
+### Added
+
+- Unit tests for median and queue implementations.
+
 ## [2.4.13] - 2023-05-08
 
 ### Fixed
