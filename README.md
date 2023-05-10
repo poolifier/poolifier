@@ -7,8 +7,8 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/poolifier">
     <img alt="Weekly Downloads" src="https://img.shields.io/npm/dw/poolifier"></a>
-  <a href="https://github.com/poolifier/poolifier/actions">
-    <img alt="Actions Status" src="https://github.com/poolifier/poolifier/workflows/NodeCI/badge.svg"></a>
+  <a href="https://github.com/poolifier/poolifier/actions/workflows/ci.yml">
+    <img alt="Actions Status" src="https://github.com/poolifier/poolifier/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://sonarcloud.io/dashboard?id=pioardi_poolifier">
     <img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=alert_status"></a>
   <a href="https://sonarcloud.io/dashboard?id=pioardi_poolifier">
@@ -37,8 +37,8 @@ Please consult our [general guidelines](#general-guidance).
 - Performance :racehorse: [benchmarks](./benchmarks/README.md)
 - Security :bank: :cop: [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=security_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 - Easy to use :couple:
-- Easy switch from a pool to another, easy to tune :white_check_mark:
 - Dynamic pool size :white_check_mark:
+- Easy switch from a pool to another :white_check_mark:
 - No runtime dependencies :white_check_mark:
 - Proper async integration with node async hooks :white_check_mark:
 - Support for worker threads and cluster node modules :white_check_mark:
