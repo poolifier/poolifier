@@ -340,7 +340,7 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public async execute (data?: Data, name?: string): Promise<Response> {
-    const [workerNodeKey, workerNode] = this.chooseWorkerNode()
+    const workerNodeKey = this.chooseWorkerNode()
     const submittedTask: Task<Data> = {
       name,
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -351,7 +351,7 @@ export abstract class AbstractPool<
       this.promiseResponseMap.set(submittedTask.id as string, {
         resolve,
         reject,
-        worker: workerNode.worker
+        worker: this.workerNodes[workerNodeKey].worker
       })
     })
     if (
@@ -453,11 +453,11 @@ export abstract class AbstractPool<
   /**
    * Chooses a worker node for the next task.
    *
-   * The default uses a round robin algorithm to distribute the load.
+   * The default worker choice strategy uses a round robin algorithm to distribute the load.
    *
-   * @returns [worker node key, worker node].
+   * @returns The worker node key
    */
-  protected chooseWorkerNode (): [number, WorkerNode<Worker, Data>] {
+  protected chooseWorkerNode (): number {
     let workerNodeKey: number
     if (this.type === PoolType.DYNAMIC && !this.full && this.internalBusy()) {
       const workerCreated = this.createAndSetupWorker()
@@ -477,7 +477,7 @@ export abstract class AbstractPool<
     } else {
       workerNodeKey = this.workerChoiceStrategyContext.execute()
     }
-    return [workerNodeKey, this.workerNodes[workerNodeKey]]
+    return workerNodeKey
   }
 
   /**

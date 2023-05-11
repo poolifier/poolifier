@@ -186,7 +186,7 @@ describe('Selection strategies test suite', () => {
     )
     let results = new Set()
     for (let i = 0; i < max; i++) {
-      results.add(pool.chooseWorkerNode()[1].worker.id)
+      results.add(pool.workerNodes[pool.chooseWorkerNode()].worker.id)
     }
     expect(results.size).toBe(max)
     await pool.destroy()
@@ -197,7 +197,7 @@ describe('Selection strategies test suite', () => {
     )
     results = new Set()
     for (let i = 0; i < max; i++) {
-      results.add(pool.chooseWorkerNode()[1].worker.threadId)
+      results.add(pool.workerNodes[pool.chooseWorkerNode()].worker.threadId)
     }
     expect(results.size).toBe(max)
     await pool.destroy()
