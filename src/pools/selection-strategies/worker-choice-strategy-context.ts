@@ -174,8 +174,8 @@ export class WorkerChoiceStrategyContext<
    * @param opts - The worker choice strategy options.
    */
   public setOptions (opts: WorkerChoiceStrategyOptions): void {
-    this.workerChoiceStrategies.forEach(workerChoiceStrategy => {
+    for (const workerChoiceStrategy of this.workerChoiceStrategies.values()) {
       workerChoiceStrategy.setOptions(opts)
-    })
+    }
   }
 }
