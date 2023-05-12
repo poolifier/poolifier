@@ -36,6 +36,12 @@ export const median = (dataSet: number[]): number => {
   )
 }
 
+/**
+ * Is the given object a plain object?
+ *
+ * @param obj - The object to check.
+ * @returns `true` if the given object is a plain object, `false` otherwise.
+ */
 export const isPlainObject = (obj: unknown): boolean =>
   typeof obj === 'object' &&
   obj !== null &&
