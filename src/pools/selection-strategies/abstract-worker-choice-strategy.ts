@@ -88,6 +88,20 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /**
+   * Gets the worker task run time.
+   * If the required statistics are `avgRunTime`, the average run time is returned.
+   * If the required statistics are `medRunTime`, the median run time is returned.
+   *
+   * @param workerNodeKey - The worker node key.
+   * @returns The worker task run time.
+   */
+  protected getWorkerTaskRunTime (workerNodeKey: number): number {
+    return this.requiredStatistics.medRunTime
+      ? this.pool.workerNodes[workerNodeKey].tasksUsage.medRunTime
+      : this.pool.workerNodes[workerNodeKey].tasksUsage.avgRunTime
+  }
+
+  /**
    * Finds the first free worker node key based on the number of tasks the worker has applied.
    *
    * If a worker is found with `0` running tasks, it is detected as free and its worker node key is returned.

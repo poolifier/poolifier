@@ -75,7 +75,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     if (workerVirtualTaskRunTime < workerWeight) {
       this.workerVirtualTaskRunTime =
         workerVirtualTaskRunTime +
-        this.getWorkerVirtualTaskRunTime(chosenWorkerNodeKey)
+        this.getWorkerTaskRunTime(chosenWorkerNodeKey)
     } else {
       this.currentWorkerNodeId =
         this.currentWorkerNodeId === this.pool.workerNodes.length - 1
@@ -97,12 +97,6 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
       this.workerVirtualTaskRunTime = 0
     }
     return true
-  }
-
-  private getWorkerVirtualTaskRunTime (workerNodeKey: number): number {
-    return this.requiredStatistics.medRunTime
-      ? this.pool.workerNodes[workerNodeKey].tasksUsage.medRunTime
-      : this.pool.workerNodes[workerNodeKey].tasksUsage.avgRunTime
   }
 
   private computeDefaultWorkerWeight (): number {

@@ -97,10 +97,9 @@ export class FairShareWorkerChoiceStrategy<
     workerNodeKey: number,
     workerVirtualTaskStartTimestamp: number
   ): number {
-    const workerVirtualTaskRunTime = this.requiredStatistics.medRunTime
-      ? this.pool.workerNodes[workerNodeKey].tasksUsage.medRunTime
-      : this.pool.workerNodes[workerNodeKey].tasksUsage.avgRunTime
-    return workerVirtualTaskStartTimestamp + workerVirtualTaskRunTime
+    return (
+      workerVirtualTaskStartTimestamp + this.getWorkerTaskRunTime(workerNodeKey)
+    )
   }
 
   private getWorkerVirtualTaskStartTimestamp (workerNodeKey: number): number {
