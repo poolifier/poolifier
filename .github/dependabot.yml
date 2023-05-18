@@ -24,6 +24,8 @@ updates:
     directory: '/benchmarks/versus-external-pools'
     schedule:
       interval: 'daily'
+    commit-message:
+      prefix: '[benchmarks]'
     labels:
       - 'dependencies'
       - 'benchmarks'
