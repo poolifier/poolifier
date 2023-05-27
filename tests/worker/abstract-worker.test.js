@@ -13,7 +13,7 @@ describe('Abstract worker test suite', () => {
     const worker = new ThreadWorker(() => {})
     expect(worker.opts.maxInactiveTime).toStrictEqual(60000)
     expect(worker.opts.killBehavior).toBe(KillBehaviors.SOFT)
-    expect(worker.opts.async).toBe(false)
+    expect(worker.opts.async).toBe(undefined)
   })
 
   it('Verify that worker options are set at worker creation', () => {
@@ -24,7 +24,7 @@ describe('Abstract worker test suite', () => {
     })
     expect(worker.opts.maxInactiveTime).toStrictEqual(6000)
     expect(worker.opts.killBehavior).toBe(KillBehaviors.HARD)
-    expect(worker.opts.async).toBe(true)
+    expect(worker.opts.async).toBe(undefined)
   })
 
   it('Verify that taskFunctions parameter is mandatory', () => {

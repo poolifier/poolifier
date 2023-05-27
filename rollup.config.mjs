@@ -5,8 +5,8 @@ import command from 'rollup-plugin-command'
 import del from 'rollup-plugin-delete'
 
 const isDevelopmentBuild = process.env.BUILD === 'development'
-const isAnalyze = process.env.ANALYZE
-const isDocumentation = process.env.DOCUMENTATION
+const isAnalyzeBuild = process.env.ANALYZE
+const isDocumentationBuild = process.env.DOCUMENTATION
 
 export default {
   input: 'src/index.ts',
@@ -51,7 +51,7 @@ export default {
     del({
       targets: ['lib/*']
     }),
-    isAnalyze && analyze(),
-    isDocumentation && command('pnpm typedoc')
+    isAnalyzeBuild && analyze(),
+    isDocumentationBuild && command('pnpm typedoc')
   ]
 }

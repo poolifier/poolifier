@@ -87,7 +87,7 @@ export abstract class AbstractWorker<
     this.opts.killBehavior = opts.killBehavior ?? DEFAULT_KILL_BEHAVIOR
     this.opts.maxInactiveTime =
       opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME
-    this.opts.async = opts.async ?? false
+    delete this.opts.async
   }
 
   /**
