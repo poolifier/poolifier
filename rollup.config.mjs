@@ -1,3 +1,4 @@
+import os from 'os'
 import terser from '@rollup/plugin-terser'
 import typescript from '@rollup/plugin-typescript'
 import analyze from 'rollup-plugin-analyzer'
@@ -8,30 +9,38 @@ const isDevelopmentBuild = process.env.BUILD === 'development'
 const isAnalyzeBuild = process.env.ANALYZE
 const isDocumentationBuild = process.env.DOCUMENTATION
 
+const maxWorkers = os.cpus().length / 2
+
 export default {
   input: 'src/index.ts',
   strictDeprecations: true,
   output: [
     {
-      ...(isDevelopmentBuild ? { dir: 'lib' } : { file: 'lib/index.js' }),
       format: 'cjs',
       sourcemap: !!isDevelopmentBuild,
       ...(isDevelopmentBuild && {
+        dir: 'lib',
         preserveModules: true,
         preserveModulesRoot: 'src'
       }),
-      ...(!isDevelopmentBuild && { plugins: [terser({ maxWorkers: 2 })] })
+      ...(!isDevelopmentBuild && {
+        file: 'lib/index.js',
+        plugins: [terser({ maxWorkers })]
+      })
     },
     {
-      ...(isDevelopmentBuild ? { dir: 'lib' } : { file: 'lib/index.mjs' }),
       format: 'esm',
       sourcemap: !!isDevelopmentBuild,
       ...(isDevelopmentBuild && {
+        dir: 'lib',
         entryFileNames: '[name].mjs',
         preserveModules: true,
         preserveModulesRoot: 'src'
       }),
-      ...(!isDevelopmentBuild && { plugins: [terser({ maxWorkers: 2 })] })
+      ...(!isDevelopmentBuild && {
+        file: 'lib/index.mjs',
+        plugins: [terser({ maxWorkers })]
+      })
     }
   ],
   external: [
