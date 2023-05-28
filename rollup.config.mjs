@@ -1,4 +1,4 @@
-import os from 'os'
+import { cpus } from 'node:os'
 import terser from '@rollup/plugin-terser'
 import typescript from '@rollup/plugin-typescript'
 import analyze from 'rollup-plugin-analyzer'
@@ -9,7 +9,7 @@ const isDevelopmentBuild = process.env.BUILD === 'development'
 const isAnalyzeBuild = process.env.ANALYZE
 const isDocumentationBuild = process.env.DOCUMENTATION
 
-const maxWorkers = os.cpus().length / 2
+const maxWorkers = cpus().length / 2
 
 export default {
   input: 'src/index.ts',
