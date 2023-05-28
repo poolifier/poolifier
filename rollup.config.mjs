@@ -13,25 +13,31 @@ export default {
   strictDeprecations: true,
   output: [
     {
-      ...(isDevelopmentBuild ? { dir: 'lib' } : { file: 'lib/index.js' }),
       format: 'cjs',
       sourcemap: !!isDevelopmentBuild,
       ...(isDevelopmentBuild && {
+        dir: 'lib',
         preserveModules: true,
         preserveModulesRoot: 'src'
       }),
-      ...(!isDevelopmentBuild && { plugins: [terser({ maxWorkers: 2 })] })
+      ...(!isDevelopmentBuild && {
+        file: 'lib/index.js',
+        plugins: [terser({ maxWorkers: 2 })]
+      })
     },
     {
-      ...(isDevelopmentBuild ? { dir: 'lib' } : { file: 'lib/index.mjs' }),
       format: 'esm',
       sourcemap: !!isDevelopmentBuild,
       ...(isDevelopmentBuild && {
+        dir: 'lib',
         entryFileNames: '[name].mjs',
         preserveModules: true,
         preserveModulesRoot: 'src'
       }),
-      ...(!isDevelopmentBuild && { plugins: [terser({ maxWorkers: 2 })] })
+      ...(!isDevelopmentBuild && {
+        file: 'lib/index.mjs',
+        plugins: [terser({ maxWorkers: 2 })]
+      })
     }
   ],
   external: [
