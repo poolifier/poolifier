@@ -7,11 +7,11 @@
   "author": "pioardi",
   "engines": {
     "node": ">=14.14.0",
-    "pnpm": ">=8.0.0"
+    "pnpm": ">=8.6.0"
   },
   "volta": {
     "node": "18.16.0",
-    "pnpm": "8.5.1"
+    "pnpm": "8.6.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

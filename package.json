@@ -44,11 +44,11 @@
   },
   "engines": {
     "node": ">=16.0.0",
-    "pnpm": ">=8.0.0"
+    "pnpm": ">=8.6.0"
   },
   "volta": {
     "node": "20.2.0",
-    "pnpm": "8.5.1"
+    "pnpm": "8.6.0"
   },
   "repository": {
     "type": "git",
