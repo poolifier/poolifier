@@ -1,3 +1,4 @@
+import os from 'os'
 import terser from '@rollup/plugin-terser'
 import typescript from '@rollup/plugin-typescript'
 import analyze from 'rollup-plugin-analyzer'
@@ -7,6 +8,8 @@ import del from 'rollup-plugin-delete'
 const isDevelopmentBuild = process.env.BUILD === 'development'
 const isAnalyzeBuild = process.env.ANALYZE
 const isDocumentationBuild = process.env.DOCUMENTATION
+
+const maxWorkers = os.cpus().length / 2
 
 export default {
   input: 'src/index.ts',
@@ -22,7 +25,7 @@ export default {
       }),
       ...(!isDevelopmentBuild && {
         file: 'lib/index.js',
-        plugins: [terser({ maxWorkers: 2 })]
+        plugins: [terser({ maxWorkers })]
       })
     },
     {
@@ -36,7 +39,7 @@ export default {
       }),
       ...(!isDevelopmentBuild && {
         file: 'lib/index.mjs',
-        plugins: [terser({ maxWorkers: 2 })]
+        plugins: [terser({ maxWorkers })]
       })
     }
   ],
