@@ -415,10 +415,7 @@ export abstract class AbstractPool<
    *
    * @param workerNodeKey - The worker node key.
    */
-  protected beforeTaskExecutionHook (
-    workerNodeKey: number,
-    task: Task<Data>
-  ): void {
+  protected beforeTaskExecutionHook (workerNodeKey: number): void {
     ++this.workerNodes[workerNodeKey].tasksUsage.running
   }
 
