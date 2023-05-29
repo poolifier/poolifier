@@ -677,7 +677,7 @@ export abstract class AbstractPool<
   }
 
   private executeTask (workerNodeKey: number, task: Task<Data>): void {
-    this.beforeTaskExecutionHook(workerNodeKey, task)
+    this.beforeTaskExecutionHook(workerNodeKey)
     this.sendToWorker(this.workerNodes[workerNodeKey].worker, task)
   }
 
