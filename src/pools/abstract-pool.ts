@@ -263,6 +263,10 @@ export abstract class AbstractPool<
         runTimeHistory: new CircularArray(),
         avgRunTime: 0,
         medRunTime: 0,
+        waitTime: 0,
+        waitTimeHistory: new CircularArray(),
+        avgWaitTime: 0,
+        medWaitTime: 0,
         error: 0
       })
     }
@@ -340,11 +344,13 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public async execute (data?: Data, name?: string): Promise<Response> {
+    const submissionTimestamp = performance.now()
     const workerNodeKey = this.chooseWorkerNode()
     const submittedTask: Task<Data> = {
       name,
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       data: data ?? ({} as Data),
+      submissionTimestamp,
       id: crypto.randomUUID()
     }
     const res = new Promise<Response>((resolve, reject) => {
@@ -409,8 +415,22 @@ export abstract class AbstractPool<
    *
    * @param workerNodeKey - The worker node key.
    */
-  protected beforeTaskExecutionHook (workerNodeKey: number): void {
-    ++this.workerNodes[workerNodeKey].tasksUsage.running
+  protected beforeTaskExecutionHook (
+    workerNodeKey: number,
+    task: Task<Data>
+  ): void {
+    const workerTasksUsage = this.workerNodes[workerNodeKey].tasksUsage
+    ++workerTasksUsage.running
+    if (this.workerChoiceStrategyContext.getRequiredStatistics().waitTime) {
+      const waitTime = performance.now() - (task.submissionTimestamp ?? 0)
+      workerTasksUsage.waitTime += waitTime
+      if (
+        this.workerChoiceStrategyContext.getRequiredStatistics().medWaitTime
+      ) {
+        workerTasksUsage.waitTimeHistory.push(waitTime)
+        workerTasksUsage.medWaitTime = median(workerTasksUsage.waitTimeHistory)
+      }
+    }
   }
 
   /**
@@ -447,6 +467,14 @@ export abstract class AbstractPool<
         workerTasksUsage.runTimeHistory.push(message.runTime)
         workerTasksUsage.medRunTime = median(workerTasksUsage.runTimeHistory)
       }
+    }
+    if (
+      this.workerChoiceStrategyContext.getRequiredStatistics().waitTime &&
+      this.workerChoiceStrategyContext.getRequiredStatistics().avgWaitTime &&
+      workerTasksUsage.run !== 0
+    ) {
+      workerTasksUsage.avgWaitTime =
+        workerTasksUsage.waitTime / workerTasksUsage.run
     }
   }
 
@@ -611,6 +639,10 @@ export abstract class AbstractPool<
         runTimeHistory: new CircularArray(),
         avgRunTime: 0,
         medRunTime: 0,
+        waitTime: 0,
+        waitTimeHistory: new CircularArray(),
+        avgWaitTime: 0,
+        medWaitTime: 0,
         error: 0
       },
       tasksQueue: new Queue<Task<Data>>()
@@ -650,7 +682,7 @@ export abstract class AbstractPool<
   }
 
   private executeTask (workerNodeKey: number, task: Task<Data>): void {
-    this.beforeTaskExecutionHook(workerNodeKey)
+    this.beforeTaskExecutionHook(workerNodeKey, task)
     this.sendToWorker(this.workerNodes[workerNodeKey].worker, task)
   }
 

@@ -145,7 +145,7 @@ Remember that workers can only send and receive serializable data.
 
 ## Node versions
 
-Node versions >= 16.x are supported.
+Node versions >= 16.14.x are supported.
 
 ## [API](https://poolifier.github.io/poolifier/)
 

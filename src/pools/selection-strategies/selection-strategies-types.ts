@@ -40,6 +40,12 @@ export interface WorkerChoiceStrategyOptions {
    */
   medRunTime?: boolean
   /**
+   * Use tasks median wait time instead of average run time.
+   *
+   * @defaultValue false
+   */
+  medWaitTime?: boolean
+  /**
    * Worker weights to use for weighted round robin worker selection strategy.
    * Weight is the tasks maximum average or median runtime in milliseconds.
    *
@@ -66,6 +72,18 @@ export interface RequiredStatistics {
    * Require tasks median run time.
    */
   medRunTime: boolean
+  /**
+   * Require tasks wait time.
+   */
+  waitTime: boolean
+  /**
+   * Require tasks average wait time.
+   */
+  avgWaitTime: boolean
+  /**
+   * Require tasks median wait time.
+   */
+  medWaitTime: boolean
 }
 
 /**

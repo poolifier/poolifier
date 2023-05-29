@@ -1,4 +1,4 @@
-import EventEmitter from 'node:events'
+import EventEmitterAsyncResource from 'node:events'
 import type {
   ErrorHandler,
   ExitHandler,
@@ -32,7 +32,7 @@ export enum PoolType {
 /**
  * Pool events emitter.
  */
-export class PoolEmitter extends EventEmitter {}
+export class PoolEmitter extends EventEmitterAsyncResource {}
 
 /**
  * Enumeration of pool events.

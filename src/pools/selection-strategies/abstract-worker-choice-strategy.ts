@@ -27,7 +27,10 @@ export abstract class AbstractWorkerChoiceStrategy<
   public readonly requiredStatistics: RequiredStatistics = {
     runTime: false,
     avgRunTime: false,
-    medRunTime: false
+    medRunTime: false,
+    waitTime: false,
+    avgWaitTime: false,
+    medWaitTime: false
   }
 
   /**
@@ -51,6 +54,14 @@ export abstract class AbstractWorkerChoiceStrategy<
     if (this.requiredStatistics.medRunTime && opts.medRunTime === false) {
       this.requiredStatistics.avgRunTime = true
       this.requiredStatistics.medRunTime = opts.medRunTime as boolean
+    }
+    if (this.requiredStatistics.avgWaitTime && opts.medWaitTime === true) {
+      this.requiredStatistics.avgWaitTime = false
+      this.requiredStatistics.medWaitTime = opts.medWaitTime as boolean
+    }
+    if (this.requiredStatistics.medWaitTime && opts.medWaitTime === false) {
+      this.requiredStatistics.avgWaitTime = true
+      this.requiredStatistics.medWaitTime = opts.medWaitTime as boolean
     }
   }
 
