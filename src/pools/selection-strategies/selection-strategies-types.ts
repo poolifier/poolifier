@@ -55,15 +55,15 @@ export interface WorkerChoiceStrategyOptions {
  */
 export interface RequiredStatistics {
   /**
-   * Require tasks run time.
+   * Require tasks runtime.
    */
   runTime: boolean
   /**
-   * Require tasks average run time.
+   * Require tasks average runtime.
    */
   avgRunTime: boolean
   /**
-   * Require tasks median run time.
+   * Require tasks median runtime.
    */
   medRunTime: boolean
 }
