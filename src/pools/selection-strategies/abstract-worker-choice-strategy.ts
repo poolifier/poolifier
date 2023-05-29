@@ -88,12 +88,12 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /**
-   * Gets the worker task run time.
-   * If the required statistics are `avgRunTime`, the average run time is returned.
-   * If the required statistics are `medRunTime`, the median run time is returned.
+   * Gets the worker task runtime.
+   * If the required statistics are `avgRunTime`, the average runtime is returned.
+   * If the required statistics are `medRunTime`, the median runtime is returned.
    *
    * @param workerNodeKey - The worker node key.
-   * @returns The worker task run time.
+   * @returns The worker task runtime.
    */
   protected getWorkerTaskRunTime (workerNodeKey: number): number {
     return this.requiredStatistics.medRunTime

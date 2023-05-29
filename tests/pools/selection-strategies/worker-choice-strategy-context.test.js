@@ -322,7 +322,7 @@ describe('Worker choice strategy context test suite', () => {
     )
   })
 
-  it('Verify that worker choice strategy options enable median run time pool statistics', () => {
+  it('Verify that worker choice strategy options enable median runtime pool statistics', () => {
     const wwrWorkerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     let workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool,
