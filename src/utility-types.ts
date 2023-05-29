@@ -34,6 +34,10 @@ export interface MessageValue<
    */
   readonly runTime?: number
   /**
+   * Wait time.
+   */
+  readonly waitTime?: number
+  /**
    * Reference to main worker.
    */
   readonly parent?: MainWorker

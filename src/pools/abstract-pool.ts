@@ -419,18 +419,7 @@ export abstract class AbstractPool<
     workerNodeKey: number,
     task: Task<Data>
   ): void {
-    const workerTasksUsage = this.workerNodes[workerNodeKey].tasksUsage
-    ++workerTasksUsage.running
-    if (this.workerChoiceStrategyContext.getRequiredStatistics().waitTime) {
-      const waitTime = performance.now() - (task.submissionTimestamp ?? 0)
-      workerTasksUsage.waitTime += waitTime
-      if (
-        this.workerChoiceStrategyContext.getRequiredStatistics().medWaitTime
-      ) {
-        workerTasksUsage.waitTimeHistory.push(waitTime)
-        workerTasksUsage.medWaitTime = median(workerTasksUsage.waitTimeHistory)
-      }
-    }
+    ++this.workerNodes[workerNodeKey].tasksUsage.running
   }
 
   /**
@@ -468,13 +457,22 @@ export abstract class AbstractPool<
         workerTasksUsage.medRunTime = median(workerTasksUsage.runTimeHistory)
       }
     }
-    if (
-      this.workerChoiceStrategyContext.getRequiredStatistics().waitTime &&
-      this.workerChoiceStrategyContext.getRequiredStatistics().avgWaitTime &&
-      workerTasksUsage.run !== 0
-    ) {
-      workerTasksUsage.avgWaitTime =
-        workerTasksUsage.waitTime / workerTasksUsage.run
+    if (this.workerChoiceStrategyContext.getRequiredStatistics().waitTime) {
+      workerTasksUsage.waitTime += message.waitTime ?? 0
+      if (
+        this.workerChoiceStrategyContext.getRequiredStatistics().avgWaitTime &&
+        workerTasksUsage.run !== 0
+      ) {
+        workerTasksUsage.avgWaitTime =
+          workerTasksUsage.waitTime / workerTasksUsage.run
+      }
+      if (
+        this.workerChoiceStrategyContext.getRequiredStatistics().medWaitTime &&
+        message.waitTime != null
+      ) {
+        workerTasksUsage.waitTimeHistory.push(message.waitTime)
+        workerTasksUsage.medWaitTime = median(workerTasksUsage.waitTimeHistory)
+      }
     }
   }
 

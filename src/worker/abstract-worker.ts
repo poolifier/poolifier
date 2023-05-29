@@ -207,12 +207,14 @@ export abstract class AbstractWorker<
   ): void {
     try {
       const startTimestamp = performance.now()
+      const waitTime = startTimestamp - (message.submissionTimestamp ?? 0)
       const res = fn(message.data)
       const runTime = performance.now() - startTimestamp
       this.sendToMainWorker({
         data: res,
         id: message.id,
-        runTime
+        runTime,
+        waitTime
       })
     } catch (e) {
       const err = this.handleError(e as Error)
@@ -233,13 +235,15 @@ export abstract class AbstractWorker<
     message: MessageValue<Data>
   ): void {
     const startTimestamp = performance.now()
+    const waitTime = startTimestamp - (message.submissionTimestamp ?? 0)
     fn(message.data)
       .then(res => {
         const runTime = performance.now() - startTimestamp
         this.sendToMainWorker({
           data: res,
           id: message.id,
-          runTime
+          runTime,
+          waitTime
         })
         return null
       })
