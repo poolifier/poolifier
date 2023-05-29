@@ -466,7 +466,7 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify FAIR_SHARE strategy can be run in a dynamic pool with median run time statistic', async () => {
+  it('Verify FAIR_SHARE strategy can be run in a dynamic pool with median runtime statistic', async () => {
     const pool = new DynamicThreadPool(
       min,
       max,
@@ -671,7 +671,7 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify WEIGHTED_ROUND_ROBIN strategy can be run in a dynamic pool with median run time statistic', async () => {
+  it('Verify WEIGHTED_ROUND_ROBIN strategy can be run in a dynamic pool with median runtime statistic', async () => {
     const pool = new DynamicThreadPool(
       min,
       max,

@@ -34,13 +34,13 @@ export type WorkerChoiceStrategy = keyof typeof WorkerChoiceStrategies
  */
 export interface WorkerChoiceStrategyOptions {
   /**
-   * Use tasks median run time instead of average run time.
+   * Use tasks median runtime instead of average runtime.
    *
    * @defaultValue false
    */
   medRunTime?: boolean
   /**
-   * Use tasks median wait time instead of average run time.
+   * Use tasks median wait time instead of average runtime.
    *
    * @defaultValue false
    */
@@ -61,15 +61,15 @@ export interface WorkerChoiceStrategyOptions {
  */
 export interface RequiredStatistics {
   /**
-   * Require tasks run time.
+   * Require tasks runtime.
    */
   runTime: boolean
   /**
-   * Require tasks average run time.
+   * Require tasks average runtime.
    */
   avgRunTime: boolean
   /**
-   * Require tasks median run time.
+   * Require tasks median runtime.
    */
   medRunTime: boolean
   /**

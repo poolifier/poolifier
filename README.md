@@ -173,7 +173,7 @@ Node versions >= 16.14.x are supported.
 - `workerChoiceStrategyOptions` (optional) - The worker choice strategy options object to use in this pool.  
   Properties:
 
-  - `medRunTime` (optional) - Use the tasks median run time instead of the tasks average run time in worker choice strategies.
+  - `medRunTime` (optional) - Use the tasks median runtime instead of the tasks average runtime in worker choice strategies.
   - `weights` (optional) - The worker weights to use in the weighted round robin worker choice strategy: `{ 0: 200, 1: 300, ..., n: 100 }`
 
   Default: `{ medRunTime: false }`
