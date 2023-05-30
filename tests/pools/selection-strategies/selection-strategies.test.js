@@ -992,6 +992,45 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
+  it('Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy default tasks usage statistics requirements', async () => {
+    const workerChoiceStrategy =
+      WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics()
+    ).toStrictEqual({
+      runTime: false,
+      avgRunTime: false,
+      medRunTime: false,
+      waitTime: false,
+      avgWaitTime: false,
+      medWaitTime: false
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getRequiredStatistics()
+    ).toStrictEqual({
+      runTime: false,
+      avgRunTime: false,
+      medRunTime: false,
+      waitTime: false,
+      avgWaitTime: false,
+      medWaitTime: false
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
   it('Verify unknown strategy throw error', () => {
     expect(
       () =>
