@@ -27,7 +27,10 @@ export class FairShareWorkerChoiceStrategy<
   public readonly requiredStatistics: RequiredStatistics = {
     runTime: true,
     avgRunTime: true,
-    medRunTime: false
+    medRunTime: false,
+    waitTime: false,
+    avgWaitTime: false,
+    medWaitTime: false
   }
 
   /**

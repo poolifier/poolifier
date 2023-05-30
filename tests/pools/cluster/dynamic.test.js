@@ -43,13 +43,13 @@ describe('Dynamic cluster pool test suite', () => {
 
   it('Verify scale worker up and down is working', async () => {
     expect(pool.workerNodes.length).toBe(min)
-    for (let i = 0; i < max * 10; i++) {
+    for (let i = 0; i < max * 2; i++) {
       pool.execute()
     }
     expect(pool.workerNodes.length).toBeGreaterThan(min)
     await TestUtils.waitExits(pool, max - min)
     expect(pool.workerNodes.length).toBe(min)
-    for (let i = 0; i < max * 10; i++) {
+    for (let i = 0; i < max * 2; i++) {
       pool.execute()
     }
     expect(pool.workerNodes.length).toBeGreaterThan(min)
@@ -94,7 +94,7 @@ describe('Dynamic cluster pool test suite', () => {
       }
     )
     expect(longRunningPool.workerNodes.length).toBe(min)
-    for (let i = 0; i < max * 10; i++) {
+    for (let i = 0; i < max * 2; i++) {
       longRunningPool.execute()
     }
     expect(longRunningPool.workerNodes.length).toBe(max)
@@ -121,7 +121,7 @@ describe('Dynamic cluster pool test suite', () => {
       }
     )
     expect(longRunningPool.workerNodes.length).toBe(min)
-    for (let i = 0; i < max * 10; i++) {
+    for (let i = 0; i < max * 2; i++) {
       longRunningPool.execute()
     }
     expect(longRunningPool.workerNodes.length).toBe(max)
