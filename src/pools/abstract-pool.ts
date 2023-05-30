@@ -430,13 +430,21 @@ export abstract class AbstractPool<
     worker: Worker,
     message: MessageValue<Response>
   ): void {
-    const workerNodeKey = this.getWorkerNodeKey(worker)
-    const workerTasksUsage = this.workerNodes[workerNodeKey].tasksUsage
+    const workerTasksUsage =
+      this.workerNodes[this.getWorkerNodeKey(worker)].tasksUsage
     --workerTasksUsage.running
     ++workerTasksUsage.run
     if (message.error != null) {
       ++workerTasksUsage.error
     }
+    this.updateRunTimeTasksUsage(workerTasksUsage, message)
+    this.updateWaitTasksUsage(workerTasksUsage, message)
+  }
+
+  private updateRunTimeTasksUsage (
+    workerTasksUsage: TasksUsage,
+    message: MessageValue<Response>
+  ): void {
     if (this.workerChoiceStrategyContext.getRequiredStatistics().runTime) {
       workerTasksUsage.runTime += message.runTime ?? 0
       if (
@@ -454,6 +462,12 @@ export abstract class AbstractPool<
         workerTasksUsage.medRunTime = median(workerTasksUsage.runTimeHistory)
       }
     }
+  }
+
+  private updateWaitTasksUsage (
+    workerTasksUsage: TasksUsage,
+    message: MessageValue<Response>
+  ): void {
     if (this.workerChoiceStrategyContext.getRequiredStatistics().waitTime) {
       workerTasksUsage.waitTime += message.waitTime ?? 0
       if (
