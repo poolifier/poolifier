@@ -8,13 +8,13 @@ import type {
 } from './selection-strategies-types'
 
 /**
- * Selects the less used worker.
+ * Selects the least used worker.
  *
  * @typeParam Worker - Type of worker which manages the strategy.
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
  * @typeParam Response - Type of execution response. This can only be serializable data.
  */
-export class LessUsedWorkerChoiceStrategy<
+export class LeastUsedWorkerChoiceStrategy<
     Worker extends IWorker,
     Data = unknown,
     Response = unknown
@@ -47,7 +47,7 @@ export class LessUsedWorkerChoiceStrategy<
       return freeWorkerNodeKey
     }
     let minNumberOfTasks = Infinity
-    let lessUsedWorkerNodeKey!: number
+    let leastUsedWorkerNodeKey!: number
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const tasksUsage = workerNode.tasksUsage
       const workerTasks = tasksUsage.run + tasksUsage.running
@@ -55,10 +55,10 @@ export class LessUsedWorkerChoiceStrategy<
         return workerNodeKey
       } else if (workerTasks < minNumberOfTasks) {
         minNumberOfTasks = workerTasks
-        lessUsedWorkerNodeKey = workerNodeKey
+        leastUsedWorkerNodeKey = workerNodeKey
       }
     }
-    return lessUsedWorkerNodeKey
+    return leastUsedWorkerNodeKey
   }
 
   /** @inheritDoc */

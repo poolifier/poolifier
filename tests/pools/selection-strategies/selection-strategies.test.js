@@ -12,8 +12,8 @@ describe('Selection strategies test suite', () => {
 
   it('Verify that WorkerChoiceStrategies enumeration provides string values', () => {
     expect(WorkerChoiceStrategies.ROUND_ROBIN).toBe('ROUND_ROBIN')
-    expect(WorkerChoiceStrategies.LESS_USED).toBe('LESS_USED')
-    expect(WorkerChoiceStrategies.LESS_BUSY).toBe('LESS_BUSY')
+    expect(WorkerChoiceStrategies.LEAST_USED).toBe('LEAST_USED')
+    expect(WorkerChoiceStrategies.LEAST_BUSY).toBe('LEAST_BUSY')
     expect(WorkerChoiceStrategies.FAIR_SHARE).toBe('FAIR_SHARE')
     expect(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN).toBe(
       'WEIGHTED_ROUND_ROBIN'
@@ -243,8 +243,8 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify LESS_USED strategy default tasks usage statistics requirements', async () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.LESS_USED
+  it('Verify LEAST_USED strategy default tasks usage statistics requirements', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_USED
     let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
@@ -279,13 +279,13 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify LESS_USED strategy can be run in a fixed pool', async () => {
+  it('Verify LEAST_USED strategy can be run in a fixed pool', async () => {
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
-      { workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED }
+      { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED }
     )
-    // TODO: Create a better test to cover `LessUsedWorkerChoiceStrategy#choose`
+    // TODO: Create a better test to cover `LeastUsedWorkerChoiceStrategy#choose`
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
       await pool.execute()
@@ -294,14 +294,14 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify LESS_USED strategy can be run in a dynamic pool', async () => {
+  it('Verify LEAST_USED strategy can be run in a dynamic pool', async () => {
     const pool = new DynamicThreadPool(
       min,
       max,
       './tests/worker-files/thread/testWorker.js',
-      { workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED }
+      { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED }
     )
-    // TODO: Create a better test to cover `LessUsedWorkerChoiceStrategy#choose`
+    // TODO: Create a better test to cover `LeastUsedWorkerChoiceStrategy#choose`
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
       await pool.execute()
@@ -310,8 +310,8 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify LESS_BUSY strategy default tasks usage statistics requirements', async () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.LESS_BUSY
+  it('Verify LEAST_BUSY strategy default tasks usage statistics requirements', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_BUSY
     let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
@@ -346,13 +346,13 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify LESS_BUSY strategy can be run in a fixed pool', async () => {
+  it('Verify LEAST_BUSY strategy can be run in a fixed pool', async () => {
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
-      { workerChoiceStrategy: WorkerChoiceStrategies.LESS_BUSY }
+      { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_BUSY }
     )
-    // TODO: Create a better test to cover `LessBusyWorkerChoiceStrategy#choose`
+    // TODO: Create a better test to cover `LeastBusyWorkerChoiceStrategy#choose`
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
       await pool.execute()
@@ -361,14 +361,14 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify LESS_BUSY strategy can be run in a dynamic pool', async () => {
+  it('Verify LEAST_BUSY strategy can be run in a dynamic pool', async () => {
     const pool = new DynamicThreadPool(
       min,
       max,
       './tests/worker-files/thread/testWorker.js',
-      { workerChoiceStrategy: WorkerChoiceStrategies.LESS_BUSY }
+      { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_BUSY }
     )
-    // TODO: Create a better test to cover `LessBusyWorkerChoiceStrategy#choose`
+    // TODO: Create a better test to cover `LeastBusyWorkerChoiceStrategy#choose`
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
       await pool.execute()

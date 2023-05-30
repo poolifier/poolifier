@@ -9,13 +9,13 @@ import type {
 } from './selection-strategies-types'
 
 /**
- * Selects the less busy worker.
+ * Selects the least busy worker.
  *
  * @typeParam Worker - Type of worker which manages the strategy.
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
  * @typeParam Response - Type of execution response. This can only be serializable data.
  */
-export class LessBusyWorkerChoiceStrategy<
+export class LeastBusyWorkerChoiceStrategy<
     Worker extends IWorker,
     Data = unknown,
     Response = unknown
@@ -58,17 +58,17 @@ export class LessBusyWorkerChoiceStrategy<
       return freeWorkerNodeKey
     }
     let minRunTime = Infinity
-    let lessBusyWorkerNodeKey!: number
+    let leastBusyWorkerNodeKey!: number
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerRunTime = workerNode.tasksUsage.runTime
       if (workerRunTime === 0) {
         return workerNodeKey
       } else if (workerRunTime < minRunTime) {
         minRunTime = workerRunTime
-        lessBusyWorkerNodeKey = workerNodeKey
+        leastBusyWorkerNodeKey = workerNodeKey
       }
     }
-    return lessBusyWorkerNodeKey
+    return leastBusyWorkerNodeKey
   }
 
   /** @inheritDoc */

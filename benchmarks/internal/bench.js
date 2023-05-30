@@ -17,11 +17,11 @@ const tasksQueuePoolOption = { enableTasksQueue: true }
 const workerChoiceStrategyRoundRobinPoolOption = {
   workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN
 }
-const workerChoiceStrategyLessUsedPoolOption = {
-  workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED
+const workerChoiceStrategyLeastUsedPoolOption = {
+  workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED
 }
-const workerChoiceStrategyLessBusyPoolOption = {
-  workerChoiceStrategy: WorkerChoiceStrategies.LESS_BUSY
+const workerChoiceStrategyLeastBusyPoolOption = {
+  workerChoiceStrategy: WorkerChoiceStrategies.LEAST_BUSY
 }
 const workerChoiceStrategyWeightedRoundRobinPoolOption = {
   workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
@@ -44,18 +44,18 @@ const fixedThreadPoolRoundRobinTasksQueue = buildPool(
   { ...workerChoiceStrategyRoundRobinPoolOption, ...tasksQueuePoolOption }
 )
 
-const fixedThreadPoolLessUsed = buildPool(
+const fixedThreadPoolLeastUsed = buildPool(
   WorkerTypes.THREAD,
   PoolTypes.FIXED,
   poolSize,
-  workerChoiceStrategyLessUsedPoolOption
+  workerChoiceStrategyLeastUsedPoolOption
 )
 
-const fixedThreadPoolLessBusy = buildPool(
+const fixedThreadPoolLeastBusy = buildPool(
   WorkerTypes.THREAD,
   PoolTypes.FIXED,
   poolSize,
-  workerChoiceStrategyLessBusyPoolOption
+  workerChoiceStrategyLeastBusyPoolOption
 )
 
 const fixedThreadPoolWeightedRoundRobin = buildPool(
@@ -86,18 +86,18 @@ const dynamicThreadPoolRoundRobin = buildPool(
   workerChoiceStrategyRoundRobinPoolOption
 )
 
-const dynamicThreadPoolLessUsed = buildPool(
+const dynamicThreadPoolLeastUsed = buildPool(
   WorkerTypes.THREAD,
   PoolTypes.DYNAMIC,
   poolSize,
-  workerChoiceStrategyLessUsedPoolOption
+  workerChoiceStrategyLeastUsedPoolOption
 )
 
-const dynamicThreadPoolLessBusy = buildPool(
+const dynamicThreadPoolLeastBusy = buildPool(
   WorkerTypes.THREAD,
   PoolTypes.DYNAMIC,
   poolSize,
-  workerChoiceStrategyLessBusyPoolOption
+  workerChoiceStrategyLeastBusyPoolOption
 )
 
 const dynamicThreadPoolWeightedRoundRobin = buildPool(
@@ -128,18 +128,18 @@ const fixedClusterPoolRoundRobinTasksQueue = buildPool(
   { ...workerChoiceStrategyRoundRobinPoolOption, ...tasksQueuePoolOption }
 )
 
-const fixedClusterPoolLessUsed = buildPool(
+const fixedClusterPoolLeastUsed = buildPool(
   WorkerTypes.CLUSTER,
   PoolTypes.FIXED,
   poolSize,
-  workerChoiceStrategyLessUsedPoolOption
+  workerChoiceStrategyLeastUsedPoolOption
 )
 
-const fixedClusterPoolLessBusy = buildPool(
+const fixedClusterPoolLeastBusy = buildPool(
   WorkerTypes.CLUSTER,
   PoolTypes.FIXED,
   poolSize,
-  workerChoiceStrategyLessBusyPoolOption
+  workerChoiceStrategyLeastBusyPoolOption
 )
 
 const fixedClusterPoolWeightedRoundRobin = buildPool(
@@ -170,18 +170,18 @@ const dynamicClusterPoolRoundRobin = buildPool(
   workerChoiceStrategyRoundRobinPoolOption
 )
 
-const dynamicClusterPoolLessUsed = buildPool(
+const dynamicClusterPoolLeastUsed = buildPool(
   WorkerTypes.CLUSTER,
   PoolTypes.DYNAMIC,
   poolSize,
-  workerChoiceStrategyLessUsedPoolOption
+  workerChoiceStrategyLeastUsedPoolOption
 )
 
-const dynamicClusterPoolLessBusy = buildPool(
+const dynamicClusterPoolLeastBusy = buildPool(
   WorkerTypes.CLUSTER,
   PoolTypes.DYNAMIC,
   poolSize,
-  workerChoiceStrategyLessBusyPoolOption
+  workerChoiceStrategyLeastBusyPoolOption
 )
 
 const dynamicClusterPoolWeightedRoundRobin = buildPool(
@@ -218,14 +218,14 @@ Benchmark.suite(
       })
     }
   ),
-  Benchmark.add('Fixed:ThreadPool:LessUsed', async () => {
-    await runTest(fixedThreadPoolLessUsed, {
+  Benchmark.add('Fixed:ThreadPool:LeastUsed', async () => {
+    await runTest(fixedThreadPoolLeastUsed, {
       taskExecutions,
       workerData
     })
   }),
-  Benchmark.add('Fixed:ThreadPool:LessBusy', async () => {
-    await runTest(fixedThreadPoolLessBusy, {
+  Benchmark.add('Fixed:ThreadPool:LeastBusy', async () => {
+    await runTest(fixedThreadPoolLeastBusy, {
       taskExecutions,
       workerData
     })
@@ -257,14 +257,14 @@ Benchmark.suite(
       workerData
     })
   }),
-  Benchmark.add('Dynamic:ThreadPool:LessUsed', async () => {
-    await runTest(dynamicThreadPoolLessUsed, {
+  Benchmark.add('Dynamic:ThreadPool:LeastUsed', async () => {
+    await runTest(dynamicThreadPoolLeastUsed, {
       taskExecutions,
       workerData
     })
   }),
-  Benchmark.add('Dynamic:ThreadPool:LessBusy', async () => {
-    await runTest(dynamicThreadPoolLessBusy, {
+  Benchmark.add('Dynamic:ThreadPool:LeastBusy', async () => {
+    await runTest(dynamicThreadPoolLeastBusy, {
       taskExecutions,
       workerData
     })
@@ -296,14 +296,14 @@ Benchmark.suite(
       })
     }
   ),
-  Benchmark.add('Fixed:ClusterPool:LessUsed', async () => {
-    await runTest(fixedClusterPoolLessUsed, {
+  Benchmark.add('Fixed:ClusterPool:LeastUsed', async () => {
+    await runTest(fixedClusterPoolLeastUsed, {
       taskExecutions,
       workerData
     })
   }),
-  Benchmark.add('Fixed:ClusterPool:LessBusy', async () => {
-    await runTest(fixedClusterPoolLessBusy, {
+  Benchmark.add('Fixed:ClusterPool:LeastBusy', async () => {
+    await runTest(fixedClusterPoolLeastBusy, {
       taskExecutions,
       workerData
     })
@@ -335,14 +335,14 @@ Benchmark.suite(
       workerData
     })
   }),
-  Benchmark.add('Dynamic:ClusterPool:LessUsed', async () => {
-    await runTest(dynamicClusterPoolLessUsed, {
+  Benchmark.add('Dynamic:ClusterPool:LeastUsed', async () => {
+    await runTest(dynamicClusterPoolLeastUsed, {
       taskExecutions,
       workerData
     })
   }),
-  Benchmark.add('Dynamic:ClusterPool:LessBusy', async () => {
-    await runTest(dynamicClusterPoolLessBusy, {
+  Benchmark.add('Dynamic:ClusterPool:LeastBusy', async () => {
+    await runTest(dynamicClusterPoolLeastBusy, {
       taskExecutions,
       workerData
     })

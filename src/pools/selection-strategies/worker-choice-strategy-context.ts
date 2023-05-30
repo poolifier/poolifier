@@ -2,8 +2,8 @@ import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strategy'
-import { LessBusyWorkerChoiceStrategy } from './less-busy-worker-choice-strategy'
-import { LessUsedWorkerChoiceStrategy } from './less-used-worker-choice-strategy'
+import { LeastBusyWorkerChoiceStrategy } from './least-busy-worker-choice-strategy'
+import { LeastUsedWorkerChoiceStrategy } from './least-used-worker-choice-strategy'
 import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
@@ -56,15 +56,15 @@ export class WorkerChoiceStrategyContext<
         )
       ],
       [
-        WorkerChoiceStrategies.LESS_USED,
-        new (LessUsedWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
+        WorkerChoiceStrategies.LEAST_USED,
+        new (LeastUsedWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
           pool,
           opts
         )
       ],
       [
-        WorkerChoiceStrategies.LESS_BUSY,
-        new (LessBusyWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
+        WorkerChoiceStrategies.LEAST_BUSY,
+        new (LeastBusyWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
           pool,
           opts
         )
