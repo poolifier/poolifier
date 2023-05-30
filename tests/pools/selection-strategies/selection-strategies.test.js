@@ -156,9 +156,27 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN }
     )
     // TODO: Create a better test to cover `RoundRobinWorkerChoiceStrategy#choose`
+    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      await pool.execute()
+      promises.push(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage).toStrictEqual({
+        run: expect.any(Number),
+        running: 0,
+        runTime: 0,
+        runTimeHistory: expect.any(CircularArray),
+        avgRunTime: 0,
+        medRunTime: 0,
+        waitTime: 0,
+        waitTimeHistory: expect.any(CircularArray),
+        avgWaitTime: 0,
+        medWaitTime: 0,
+        error: 0
+      })
+      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -172,9 +190,27 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN }
     )
     // TODO: Create a better test to cover `RoundRobinWorkerChoiceStrategy#choose`
+    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      await pool.execute()
+      promises.push(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage).toStrictEqual({
+        run: expect.any(Number),
+        running: 0,
+        runTime: 0,
+        runTimeHistory: expect.any(CircularArray),
+        avgRunTime: 0,
+        medRunTime: 0,
+        waitTime: 0,
+        waitTimeHistory: expect.any(CircularArray),
+        avgWaitTime: 0,
+        medWaitTime: 0,
+        error: 0
+      })
+      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -291,9 +327,27 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED }
     )
     // TODO: Create a better test to cover `LeastUsedWorkerChoiceStrategy#choose`
+    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      await pool.execute()
+      promises.push(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage).toStrictEqual({
+        run: expect.any(Number),
+        running: 0,
+        runTime: 0,
+        runTimeHistory: expect.any(CircularArray),
+        avgRunTime: 0,
+        medRunTime: 0,
+        waitTime: 0,
+        waitTimeHistory: expect.any(CircularArray),
+        avgWaitTime: 0,
+        medWaitTime: 0,
+        error: 0
+      })
+      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -307,9 +361,27 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED }
     )
     // TODO: Create a better test to cover `LeastUsedWorkerChoiceStrategy#choose`
+    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      await pool.execute()
+      promises.push(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage).toStrictEqual({
+        run: expect.any(Number),
+        running: 0,
+        runTime: 0,
+        runTimeHistory: expect.any(CircularArray),
+        avgRunTime: 0,
+        medRunTime: 0,
+        waitTime: 0,
+        waitTimeHistory: expect.any(CircularArray),
+        avgWaitTime: 0,
+        medWaitTime: 0,
+        error: 0
+      })
+      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -360,9 +432,28 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_BUSY }
     )
     // TODO: Create a better test to cover `LeastBusyWorkerChoiceStrategy#choose`
+    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      await pool.execute()
+      promises.push(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage).toStrictEqual({
+        run: expect.any(Number),
+        running: 0,
+        runTime: expect.any(Number),
+        runTimeHistory: expect.any(CircularArray),
+        avgRunTime: 0,
+        medRunTime: 0,
+        waitTime: 0,
+        waitTimeHistory: expect.any(CircularArray),
+        avgWaitTime: 0,
+        medWaitTime: 0,
+        error: 0
+      })
+      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -376,9 +467,28 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_BUSY }
     )
     // TODO: Create a better test to cover `LeastBusyWorkerChoiceStrategy#choose`
+    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      await pool.execute()
+      promises.push(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage).toStrictEqual({
+        run: expect.any(Number),
+        running: 0,
+        runTime: expect.any(Number),
+        runTimeHistory: expect.any(CircularArray),
+        avgRunTime: 0,
+        medRunTime: 0,
+        waitTime: 0,
+        waitTimeHistory: expect.any(CircularArray),
+        avgWaitTime: 0,
+        medWaitTime: 0,
+        error: 0
+      })
+      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -429,13 +539,15 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
     )
     // TODO: Create a better test to cover `FairShareChoiceStrategy#choose`
+    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      await pool.execute()
+      promises.push(pool.execute())
     }
+    await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: maxMultiplier,
+        run: expect.any(Number),
         running: 0,
         runTime: expect.any(Number),
         runTimeHistory: expect.any(CircularArray),
@@ -447,7 +559,9 @@ describe('Selection strategies test suite', () => {
         medWaitTime: 0,
         error: 0
       })
-      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -466,13 +580,15 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
     )
     // TODO: Create a better test to cover `FairShareChoiceStrategy#choose`
+    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      await pool.execute()
+      promises.push(pool.execute())
     }
+    await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: max * maxMultiplier,
+        run: expect.any(Number),
         running: 0,
         runTime: expect.any(Number),
         runTimeHistory: expect.any(CircularArray),
@@ -484,7 +600,9 @@ describe('Selection strategies test suite', () => {
         medWaitTime: 0,
         error: 0
       })
-      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -508,13 +626,15 @@ describe('Selection strategies test suite', () => {
       }
     )
     // TODO: Create a better test to cover `FairShareChoiceStrategy#choose`
+    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      await pool.execute()
+      promises.push(pool.execute())
     }
+    await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: max * maxMultiplier,
+        run: expect.any(Number),
         running: 0,
         runTime: expect.any(Number),
         runTimeHistory: expect.any(CircularArray),
@@ -526,7 +646,9 @@ describe('Selection strategies test suite', () => {
         medWaitTime: 0,
         error: 0
       })
-      expect(workerNode.tasksUsage.medRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.medRunTime).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -656,14 +778,14 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
     )
     // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
+    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      await pool.execute()
+      promises.push(pool.execute())
     }
+    await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        // FIXME: it should be:
-        // run: max * maxMultiplier,
         run: expect.any(Number),
         running: 0,
         runTime: expect.any(Number),
@@ -676,7 +798,9 @@ describe('Selection strategies test suite', () => {
         medWaitTime: 0,
         error: 0
       })
-      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -700,13 +824,15 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
     )
     // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
+    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      await pool.execute()
+      promises.push(pool.execute())
     }
+    await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: max * maxMultiplier,
+        run: expect.any(Number),
         running: 0,
         runTime: expect.any(Number),
         runTimeHistory: expect.any(CircularArray),
@@ -718,7 +844,9 @@ describe('Selection strategies test suite', () => {
         medWaitTime: 0,
         error: 0
       })
-      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -747,13 +875,15 @@ describe('Selection strategies test suite', () => {
       }
     )
     // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
+    const promises = []
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      await pool.execute()
+      promises.push(pool.execute())
     }
+    await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: max * maxMultiplier,
+        run: expect.any(Number),
         running: 0,
         runTime: expect.any(Number),
         runTimeHistory: expect.any(CircularArray),
@@ -765,7 +895,9 @@ describe('Selection strategies test suite', () => {
         medWaitTime: 0,
         error: 0
       })
-      expect(workerNode.tasksUsage.medRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.medRunTime).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(

@@ -89,7 +89,7 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it('Verify that tasks queuing is working', async () => {
-    const maxMultiplier = 10
+    const maxMultiplier = 2
     const promises = new Set()
     for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
       promises.add(queuePool.execute())

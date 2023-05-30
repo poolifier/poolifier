@@ -38,10 +38,6 @@ module.exports = defineConfig({
       {
         skipWords: [
           'Benoit',
-          'Uint8',
-          'Uint16',
-          'Uint32',
-          'Uint64',
           'benny',
           'browserslist',
           'builtins',
