@@ -4,23 +4,31 @@ import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
+  RequiredStatistics,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
 /**
- * Selects the less used worker.
+ * Selects the least busy worker.
  *
  * @typeParam Worker - Type of worker which manages the strategy.
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
  * @typeParam Response - Type of execution response. This can only be serializable data.
  */
-export class LessUsedWorkerChoiceStrategy<
+export class LeastBusyWorkerChoiceStrategy<
     Worker extends IWorker,
     Data = unknown,
     Response = unknown
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
+  /** @inheritDoc */
+  public readonly requiredStatistics: RequiredStatistics = {
+    runTime: true,
+    avgRunTime: false,
+    medRunTime: false
+  }
+
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
@@ -46,19 +54,18 @@ export class LessUsedWorkerChoiceStrategy<
     if (freeWorkerNodeKey !== -1) {
       return freeWorkerNodeKey
     }
-    let minNumberOfTasks = Infinity
-    let lessUsedWorkerNodeKey!: number
+    let minRunTime = Infinity
+    let leastBusyWorkerNodeKey!: number
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
-      const tasksUsage = workerNode.tasksUsage
-      const workerTasks = tasksUsage.run + tasksUsage.running
-      if (workerTasks === 0) {
+      const workerRunTime = workerNode.tasksUsage.runTime
+      if (workerRunTime === 0) {
         return workerNodeKey
-      } else if (workerTasks < minNumberOfTasks) {
-        minNumberOfTasks = workerTasks
-        lessUsedWorkerNodeKey = workerNodeKey
+      } else if (workerRunTime < minRunTime) {
+        minRunTime = workerRunTime
+        leastBusyWorkerNodeKey = workerNodeKey
       }
     }
-    return lessUsedWorkerNodeKey
+    return leastBusyWorkerNodeKey
   }
 
   /** @inheritDoc */

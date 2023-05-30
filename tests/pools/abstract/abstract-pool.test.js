@@ -102,7 +102,7 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js',
       {
-        workerChoiceStrategy: WorkerChoiceStrategies.LESS_USED,
+        workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
         workerChoiceStrategyOptions: {
           medRunTime: true,
           weights: { 0: 300 }
@@ -121,7 +121,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.enableTasksQueue).toBe(true)
     expect(pool.opts.tasksQueueOptions).toStrictEqual({ concurrency: 2 })
     expect(pool.opts.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.LESS_USED
+      WorkerChoiceStrategies.LEAST_USED
     )
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
       medRunTime: true,
