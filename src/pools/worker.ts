@@ -46,6 +46,10 @@ export interface Task<Data = unknown> {
    */
   readonly data?: Data
   /**
+   * Submission timestamp.
+   */
+  readonly submissionTimestamp?: number
+  /**
    * Message UUID.
    */
   readonly id?: string
@@ -81,6 +85,22 @@ export interface TasksUsage {
    * Median tasks runtime.
    */
   medRunTime: number
+  /**
+   * Tasks wait time.
+   */
+  waitTime: number
+  /**
+   * Tasks wait time history.
+   */
+  waitTimeHistory: CircularArray<number>
+  /**
+   * Average tasks wait time.
+   */
+  avgWaitTime: number
+  /**
+   * Median tasks wait time.
+   */
+  medWaitTime: number
   /**
    * Number of tasks errored.
    */
