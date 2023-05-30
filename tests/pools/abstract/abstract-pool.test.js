@@ -372,15 +372,16 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.js'
     )
     const promises = []
-    for (let i = 0; i < numberOfWorkers * 2; i++) {
+    const maxMultiplier = 2
+    for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
       promises.push(pool.execute())
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: numberOfWorkers * 2,
+        run: numberOfWorkers * maxMultiplier,
         running: 0,
-        runTime: expect.any(Number),
+        runTime: 0,
         runTimeHistory: expect.any(CircularArray),
         avgRunTime: 0,
         medRunTime: 0,
@@ -390,12 +391,9 @@ describe('Abstract pool test suite', () => {
         medWaitTime: 0,
         error: 0
       })
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThanOrEqual(0)
-      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
     }
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toBeDefined()
       expect(workerNode.tasksUsage).toStrictEqual({
         run: 0,
         running: 0,
@@ -410,6 +408,7 @@ describe('Abstract pool test suite', () => {
         error: 0
       })
       expect(workerNode.tasksUsage.runTimeHistory.length).toBe(0)
+      expect(workerNode.tasksUsage.waitTimeHistory.length).toBe(0)
     }
     await pool.destroy()
   })

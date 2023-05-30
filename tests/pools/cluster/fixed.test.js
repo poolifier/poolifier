@@ -89,8 +89,8 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it('Verify that tasks queuing is working', async () => {
-    const maxMultiplier = 2
     const promises = new Set()
+    const maxMultiplier = 2
     for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
       promises.add(queuePool.execute())
     }
@@ -110,6 +110,9 @@ describe('Fixed cluster pool test suite', () => {
     for (const workerNode of queuePool.workerNodes) {
       expect(workerNode.tasksUsage.running).toBe(0)
       expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.run).toBeLessThanOrEqual(
+        numberOfWorkers * maxMultiplier
+      )
       expect(workerNode.tasksQueue.size).toBe(0)
     }
     promises.clear()
