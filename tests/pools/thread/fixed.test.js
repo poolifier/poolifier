@@ -110,9 +110,7 @@ describe('Fixed thread pool test suite', () => {
     for (const workerNode of queuePool.workerNodes) {
       expect(workerNode.tasksUsage.running).toBe(0)
       expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.run).toBeLessThanOrEqual(
-        numberOfThreads * maxMultiplier
-      )
+      expect(workerNode.tasksUsage.run).toBeLessThanOrEqual(maxMultiplier)
       expect(workerNode.tasksQueue.size).toBe(0)
     }
     promises.clear()

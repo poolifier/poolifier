@@ -164,7 +164,7 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: expect.any(Number),
+        run: maxMultiplier,
         running: 0,
         runTime: 0,
         runTimeHistory: expect.any(CircularArray),
@@ -176,8 +176,6 @@ describe('Selection strategies test suite', () => {
         medWaitTime: 0,
         error: 0
       })
-      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.run).toBeLessThanOrEqual(max * maxMultiplier)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -199,7 +197,7 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: expect.any(Number),
+        run: maxMultiplier,
         running: 0,
         runTime: 0,
         runTimeHistory: expect.any(CircularArray),
@@ -211,8 +209,6 @@ describe('Selection strategies test suite', () => {
         medWaitTime: 0,
         error: 0
       })
-      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.run).toBeLessThanOrEqual(max * maxMultiplier)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -337,7 +333,7 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: expect.any(Number),
+        run: maxMultiplier,
         running: 0,
         runTime: 0,
         runTimeHistory: expect.any(CircularArray),
@@ -349,8 +345,6 @@ describe('Selection strategies test suite', () => {
         medWaitTime: 0,
         error: 0
       })
-      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.run).toBeLessThanOrEqual(max * maxMultiplier)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -372,7 +366,7 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: expect.any(Number),
+        run: maxMultiplier,
         running: 0,
         runTime: 0,
         runTimeHistory: expect.any(CircularArray),
@@ -384,8 +378,6 @@ describe('Selection strategies test suite', () => {
         medWaitTime: 0,
         error: 0
       })
-      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.run).toBeLessThanOrEqual(max * maxMultiplier)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -553,7 +545,7 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: expect.any(Number),
+        run: maxMultiplier,
         running: 0,
         runTime: expect.any(Number),
         runTimeHistory: expect.any(CircularArray),
@@ -565,8 +557,6 @@ describe('Selection strategies test suite', () => {
         medWaitTime: 0,
         error: 0
       })
-      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.run).toBeLessThanOrEqual(max * maxMultiplier)
       expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
       expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThan(0)
     }
@@ -595,7 +585,7 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: expect.any(Number),
+        run: maxMultiplier,
         running: 0,
         runTime: expect.any(Number),
         runTimeHistory: expect.any(CircularArray),
@@ -607,8 +597,6 @@ describe('Selection strategies test suite', () => {
         medWaitTime: 0,
         error: 0
       })
-      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.run).toBeLessThanOrEqual(max * maxMultiplier)
       expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
       expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThan(0)
     }
@@ -642,7 +630,7 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: expect.any(Number),
+        run: maxMultiplier,
         running: 0,
         runTime: expect.any(Number),
         runTimeHistory: expect.any(CircularArray),
@@ -654,8 +642,6 @@ describe('Selection strategies test suite', () => {
         medWaitTime: 0,
         error: 0
       })
-      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.run).toBeLessThanOrEqual(max * maxMultiplier)
       expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
       expect(workerNode.tasksUsage.medRunTime).toBeGreaterThan(0)
     }

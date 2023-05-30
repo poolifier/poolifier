@@ -11,7 +11,7 @@ const { CircularArray } = require('../../../lib/circular-array')
 const { Queue } = require('../../../lib/queue')
 
 describe('Abstract pool test suite', () => {
-  const numberOfWorkers = 1
+  const numberOfWorkers = 2
   class StubPoolWithRemoveAllWorker extends FixedThreadPool {
     removeAllWorker () {
       this.workerNodes = []
@@ -106,7 +106,7 @@ describe('Abstract pool test suite', () => {
         workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
         workerChoiceStrategyOptions: {
           medRunTime: true,
-          weights: { 0: 300 }
+          weights: { 0: 300, 1: 200 }
         },
         enableEvents: false,
         enableTasksQueue: true,
@@ -126,7 +126,7 @@ describe('Abstract pool test suite', () => {
     )
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
       medRunTime: true,
-      weights: { 0: 300 }
+      weights: { 0: 300, 1: 200 }
     })
     expect(pool.opts.messageHandler).toStrictEqual(testHandler)
     expect(pool.opts.errorHandler).toStrictEqual(testHandler)
@@ -328,13 +328,14 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/cluster/testWorker.js'
     )
     const promises = []
-    for (let i = 0; i < numberOfWorkers * 2; i++) {
+    const maxMultiplier = 2
+    for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
       promises.push(pool.execute())
     }
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
         run: 0,
-        running: numberOfWorkers * 2,
+        running: maxMultiplier,
         runTime: 0,
         runTimeHistory: expect.any(CircularArray),
         avgRunTime: 0,
@@ -349,7 +350,7 @@ describe('Abstract pool test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: numberOfWorkers * 2,
+        run: maxMultiplier,
         running: 0,
         runTime: 0,
         runTimeHistory: expect.any(CircularArray),
@@ -368,7 +369,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that worker pool tasks usage are reset at worker choice strategy change', async () => {
     const pool = new DynamicThreadPool(
       numberOfWorkers,
-      numberOfWorkers,
+      numberOfWorkers * 2,
       './tests/worker-files/thread/testWorker.js'
     )
     const promises = []
@@ -379,7 +380,7 @@ describe('Abstract pool test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: numberOfWorkers * maxMultiplier,
+        run: expect.any(Number),
         running: 0,
         runTime: 0,
         runTimeHistory: expect.any(CircularArray),
@@ -391,6 +392,8 @@ describe('Abstract pool test suite', () => {
         medWaitTime: 0,
         error: 0
       })
+      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.run).toBeLessThanOrEqual(maxMultiplier)
     }
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
     for (const workerNode of pool.workerNodes) {
@@ -427,8 +430,8 @@ describe('Abstract pool test suite', () => {
     }
     await Promise.all(promises)
     // The `full` event is triggered when the number of submitted tasks at once reach the max number of workers in the dynamic pool.
-    // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the dynamic pool.
-    expect(poolFull).toBe(numberOfWorkers + 1)
+    // So in total numberOfWorkers * 2 times for a loop submitting up to numberOfWorkers * 2 tasks to the dynamic pool with min = max = numberOfWorkers.
+    expect(poolFull).toBe(numberOfWorkers * 2)
     await pool.destroy()
   })
 
