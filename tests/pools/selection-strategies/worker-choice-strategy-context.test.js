@@ -12,11 +12,11 @@ const {
   RoundRobinWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/round-robin-worker-choice-strategy')
 const {
-  LessUsedWorkerChoiceStrategy
-} = require('../../../lib/pools/selection-strategies/less-used-worker-choice-strategy')
+  LeastUsedWorkerChoiceStrategy
+} = require('../../../lib/pools/selection-strategies/least-used-worker-choice-strategy')
 const {
-  LessBusyWorkerChoiceStrategy
-} = require('../../../lib/pools/selection-strategies/less-busy-worker-choice-strategy')
+  LeastBusyWorkerChoiceStrategy
+} = require('../../../lib/pools/selection-strategies/least-busy-worker-choice-strategy')
 const {
   FairShareWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy')
@@ -194,8 +194,8 @@ describe('Worker choice strategy context test suite', () => {
     )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with LESS_USED and fixed pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.LESS_USED
+  it('Verify that setWorkerChoiceStrategy() works with LEAST_USED and fixed pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_USED
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
@@ -204,14 +204,14 @@ describe('Worker choice strategy context test suite', () => {
       workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategy
       )
-    ).toBeInstanceOf(LessUsedWorkerChoiceStrategy)
+    ).toBeInstanceOf(LeastUsedWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       workerChoiceStrategy
     )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with LESS_USED and dynamic pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.LESS_USED
+  it('Verify that setWorkerChoiceStrategy() works with LEAST_USED and dynamic pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_USED
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
@@ -220,14 +220,14 @@ describe('Worker choice strategy context test suite', () => {
       workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategy
       )
-    ).toBeInstanceOf(LessUsedWorkerChoiceStrategy)
+    ).toBeInstanceOf(LeastUsedWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       workerChoiceStrategy
     )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with LESS_BUSY and fixed pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.LESS_BUSY
+  it('Verify that setWorkerChoiceStrategy() works with LEAST_BUSY and fixed pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_BUSY
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
@@ -236,14 +236,14 @@ describe('Worker choice strategy context test suite', () => {
       workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategy
       )
-    ).toBeInstanceOf(LessBusyWorkerChoiceStrategy)
+    ).toBeInstanceOf(LeastBusyWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       workerChoiceStrategy
     )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with LESS_BUSY and dynamic pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.LESS_BUSY
+  it('Verify that setWorkerChoiceStrategy() works with LEAST_BUSY and dynamic pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_BUSY
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
@@ -252,7 +252,7 @@ describe('Worker choice strategy context test suite', () => {
       workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategy
       )
-    ).toBeInstanceOf(LessBusyWorkerChoiceStrategy)
+    ).toBeInstanceOf(LeastBusyWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       workerChoiceStrategy
     )

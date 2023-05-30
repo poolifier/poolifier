@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Switch pool event emitter to `EventEmitterAsyncResource`.
+
+### Changed
+
+- Renamed worker choice strategy `LESS_BUSY` to `LEAST_BUSY` and `LESS_USED` to `LEAST_USED`.
+
 ## [2.4.14] - 2023-05-09
 
 ### Fixed
