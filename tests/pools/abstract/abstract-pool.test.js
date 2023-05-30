@@ -369,7 +369,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that worker pool tasks usage are reset at worker choice strategy change', async () => {
     const pool = new DynamicThreadPool(
       numberOfWorkers,
-      numberOfWorkers * 2,
+      numberOfWorkers,
       './tests/worker-files/thread/testWorker.js'
     )
     const promises = []
