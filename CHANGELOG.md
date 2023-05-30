@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Switch pool event emitter to `EventEmitterAsyncResource`.
+- Add tasks wait time accounting in per worker tasks usage.
 
 ### Changed
 
