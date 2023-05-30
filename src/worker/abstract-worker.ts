@@ -266,7 +266,7 @@ export abstract class AbstractWorker<
     name = name ?? DEFAULT_FUNCTION_NAME
     const fn = this.taskFunctions.get(name)
     if (fn == null) {
-      throw new Error(`Task function "${name}" not found`)
+      throw new Error(`Task function '${name}' not found`)
     }
     return fn
   }
