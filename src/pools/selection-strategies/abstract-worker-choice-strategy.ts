@@ -113,6 +113,20 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /**
+   * Gets the worker task wait time.
+   * If the required statistics are `avgWaitTime`, the average wait time is returned.
+   * If the required statistics are `medWaitTime`, the median wait time is returned.
+   *
+   * @param workerNodeKey - The worker node key.
+   * @returns The worker task wait time.
+   */
+  protected getWorkerWaitTime (workerNodeKey: number): number {
+    return this.requiredStatistics.medWaitTime
+      ? this.pool.workerNodes[workerNodeKey].tasksUsage.medWaitTime
+      : this.pool.workerNodes[workerNodeKey].tasksUsage.avgWaitTime
+  }
+
+  /**
    * Finds the first free worker node key based on the number of tasks the worker has applied.
    *
    * If a worker is found with `0` running tasks, it is detected as free and its worker node key is returned.
