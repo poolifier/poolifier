@@ -1031,6 +1031,125 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
+  it('Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy can be run in a fixed pool', async () => {
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      {
+        workerChoiceStrategy:
+          WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
+      }
+    )
+    // TODO: Create a better test to cover `InterleavedWeightedRoundRobinWorkerChoiceStrategy#choose`
+    const promises = new Set()
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
+      promises.add(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage).toStrictEqual({
+        run: maxMultiplier,
+        running: 0,
+        runTime: 0,
+        runTimeHistory: expect.any(CircularArray),
+        avgRunTime: 0,
+        medRunTime: 0,
+        waitTime: 0,
+        waitTimeHistory: expect.any(CircularArray),
+        avgWaitTime: 0,
+        medWaitTime: 0,
+        error: 0
+      })
+    }
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).defaultWorkerWeight
+    ).toBeGreaterThan(0)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).currentRoundId
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).currentWorkerNodeId
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).roundWeights
+    ).toStrictEqual([
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).defaultWorkerWeight
+    ])
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy can be run in a dynamic pool', async () => {
+    const pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      {
+        workerChoiceStrategy:
+          WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
+      }
+    )
+    // TODO: Create a better test to cover `InterleavedWeightedRoundRobinWorkerChoiceStrategy#choose`
+    const promises = new Set()
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
+      promises.add(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksUsage).toStrictEqual({
+        run: maxMultiplier,
+        running: 0,
+        runTime: 0,
+        runTimeHistory: expect.any(CircularArray),
+        avgRunTime: 0,
+        medRunTime: 0,
+        waitTime: 0,
+        waitTimeHistory: expect.any(CircularArray),
+        avgWaitTime: 0,
+        medWaitTime: 0,
+        error: 0
+      })
+    }
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).defaultWorkerWeight
+    ).toBeGreaterThan(0)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).currentRoundId
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).currentWorkerNodeId
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).roundWeights
+    ).toStrictEqual([
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).defaultWorkerWeight
+    ])
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
   it('Verify unknown strategy throw error', () => {
     expect(
       () =>
