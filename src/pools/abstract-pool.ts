@@ -438,7 +438,7 @@ export abstract class AbstractPool<
       ++workerTasksUsage.error
     }
     this.updateRunTimeTasksUsage(workerTasksUsage, message)
-    this.updateWaitTasksUsage(workerTasksUsage, message)
+    this.updateWaitTimeTasksUsage(workerTasksUsage, message)
   }
 
   private updateRunTimeTasksUsage (
@@ -464,7 +464,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private updateWaitTasksUsage (
+  private updateWaitTimeTasksUsage (
     workerTasksUsage: TasksUsage,
     message: MessageValue<Response>
   ): void {
