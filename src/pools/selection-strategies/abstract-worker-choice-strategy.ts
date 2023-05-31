@@ -1,3 +1,4 @@
+import { cpus } from 'node:os'
 import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
@@ -124,6 +125,17 @@ export abstract class AbstractWorkerChoiceStrategy<
     return this.requiredStatistics.medWaitTime
       ? this.pool.workerNodes[workerNodeKey].tasksUsage.medWaitTime
       : this.pool.workerNodes[workerNodeKey].tasksUsage.avgWaitTime
+  }
+
+  protected computeDefaultWorkerWeight (): number {
+    let cpusCycleTimeWeight = 0
+    for (const cpu of cpus()) {
+      // CPU estimated cycle time
+      const numberOfDigits = cpu.speed.toString().length - 1
+      const cpuCycleTime = 1 / (cpu.speed / Math.pow(10, numberOfDigits))
+      cpusCycleTimeWeight += cpuCycleTime * Math.pow(10, numberOfDigits)
+    }
+    return Math.round(cpusCycleTimeWeight / cpus().length)
   }
 
   /**
