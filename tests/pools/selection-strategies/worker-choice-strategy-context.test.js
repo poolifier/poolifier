@@ -23,6 +23,9 @@ const {
 const {
   WeightedRoundRobinWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy')
+const {
+  InterleavedWeightedRoundRobinWorkerChoiceStrategy
+} = require('../../../lib/pools/selection-strategies/interleaved-weighted-round-robin-worker-choice-strategy')
 
 describe('Worker choice strategy context test suite', () => {
   const min = 1
@@ -322,6 +325,40 @@ describe('Worker choice strategy context test suite', () => {
     )
   })
 
+  it('Verify that setWorkerChoiceStrategy() works with INTERLEAVED_WEIGHTED_ROUND_ROBIN and fixed pool', () => {
+    const workerChoiceStrategy =
+      WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    expect(
+      workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      )
+    ).toBeInstanceOf(InterleavedWeightedRoundRobinWorkerChoiceStrategy)
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
+      workerChoiceStrategy
+    )
+  })
+
+  it('Verify that setWorkerChoiceStrategy() works with INTERLEAVED_WEIGHTED_ROUND_ROBIN and dynamic pool', () => {
+    const workerChoiceStrategy =
+      WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      dynamicPool
+    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    expect(
+      workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      )
+    ).toBeInstanceOf(InterleavedWeightedRoundRobinWorkerChoiceStrategy)
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
+      workerChoiceStrategy
+    )
+  })
+
   it('Verify that worker choice strategy options enable median runtime pool statistics', () => {
     const wwrWorkerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     let workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
@@ -377,5 +414,62 @@ describe('Worker choice strategy context test suite', () => {
     expect(workerChoiceStrategyContext.getRequiredStatistics().medRunTime).toBe(
       true
     )
+  })
+
+  it('Verify that worker choice strategy options enable median wait time pool statistics', () => {
+    const wwrWorkerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+    let workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool,
+      wwrWorkerChoiceStrategy,
+      {
+        medWaitTime: true
+      }
+    )
+    expect(
+      workerChoiceStrategyContext.getRequiredStatistics().avgWaitTime
+    ).toBe(false)
+    expect(
+      workerChoiceStrategyContext.getRequiredStatistics().medWaitTime
+    ).toBe(true)
+    workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      dynamicPool,
+      wwrWorkerChoiceStrategy,
+      {
+        medWaitTime: true
+      }
+    )
+    expect(
+      workerChoiceStrategyContext.getRequiredStatistics().avgWaitTime
+    ).toBe(false)
+    expect(
+      workerChoiceStrategyContext.getRequiredStatistics().medWaitTime
+    ).toBe(true)
+    const fsWorkerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
+    workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool,
+      fsWorkerChoiceStrategy,
+      {
+        medWaitTime: true
+      }
+    )
+    expect(
+      workerChoiceStrategyContext.getRequiredStatistics().avgWaitTime
+    ).toBe(false)
+    expect(
+      workerChoiceStrategyContext.getRequiredStatistics().medWaitTime
+    ).toBe(true)
+    workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      dynamicPool,
+      fsWorkerChoiceStrategy,
+      {
+        medWaitTime: true
+      }
+    )
+    expect(
+      workerChoiceStrategyContext.getRequiredStatistics().avgWaitTime
+    ).toBe(false)
+    expect(
+      workerChoiceStrategyContext.getRequiredStatistics().medWaitTime
+    ).toBe(true)
   })
 })
