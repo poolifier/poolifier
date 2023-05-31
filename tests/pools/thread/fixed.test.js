@@ -113,7 +113,6 @@ describe('Fixed thread pool test suite', () => {
       expect(workerNode.tasksUsage.run).toBeLessThanOrEqual(maxMultiplier)
       expect(workerNode.tasksQueue.size).toBe(0)
     }
-    promises.clear()
   })
 
   it('Verify that is possible to have a worker that return undefined', async () => {

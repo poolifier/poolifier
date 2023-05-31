@@ -327,10 +327,10 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js'
     )
-    const promises = []
+    const promises = new Set()
     const maxMultiplier = 2
     for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
-      promises.push(pool.execute())
+      promises.add(pool.execute())
     }
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
@@ -372,10 +372,10 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js'
     )
-    const promises = []
+    const promises = new Set()
     const maxMultiplier = 2
     for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
-      promises.push(pool.execute())
+      promises.add(pool.execute())
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
@@ -422,7 +422,7 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js'
     )
-    const promises = []
+    const promises = new Set()
     let poolFull = 0
     pool.emitter.on(PoolEvents.full, () => ++poolFull)
     for (let i = 0; i < numberOfWorkers * 2; i++) {
@@ -440,7 +440,7 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js'
     )
-    const promises = []
+    const promises = new Set()
     let poolBusy = 0
     pool.emitter.on(PoolEvents.busy, () => ++poolBusy)
     for (let i = 0; i < numberOfWorkers * 2; i++) {
