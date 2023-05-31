@@ -23,6 +23,9 @@ const {
 const {
   WeightedRoundRobinWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy')
+const {
+  InterleavedWeightedRoundRobinWorkerChoiceStrategy
+} = require('../../../lib/pools/selection-strategies/interleaved-weighted-round-robin-worker-choice-strategy')
 
 describe('Worker choice strategy context test suite', () => {
   const min = 1
@@ -317,6 +320,40 @@ describe('Worker choice strategy context test suite', () => {
         workerChoiceStrategy
       )
     ).toBeInstanceOf(WeightedRoundRobinWorkerChoiceStrategy)
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
+      workerChoiceStrategy
+    )
+  })
+
+  it('Verify that setWorkerChoiceStrategy() works with INTERLEAVED_WEIGHTED_ROUND_ROBIN and fixed pool', () => {
+    const workerChoiceStrategy =
+      WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    expect(
+      workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      )
+    ).toBeInstanceOf(InterleavedWeightedRoundRobinWorkerChoiceStrategy)
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
+      workerChoiceStrategy
+    )
+  })
+
+  it('Verify that setWorkerChoiceStrategy() works with INTERLEAVED_WEIGHTED_ROUND_ROBIN and dynamic pool', () => {
+    const workerChoiceStrategy =
+      WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      dynamicPool
+    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    expect(
+      workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      )
+    ).toBeInstanceOf(InterleavedWeightedRoundRobinWorkerChoiceStrategy)
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
       workerChoiceStrategy
     )
