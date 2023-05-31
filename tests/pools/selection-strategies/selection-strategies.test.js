@@ -1160,6 +1160,108 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
+  it('Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy internals are resets after setting it', async () => {
+    const workerChoiceStrategy =
+      WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      ).currentRoundId
+    ).toBeDefined()
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      ).currentWorkerNodeId
+    ).toBeDefined()
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      ).defaultWorkerWeight
+    ).toBeDefined()
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      ).roundWeights
+    ).toBeDefined()
+    pool.setWorkerChoiceStrategy(workerChoiceStrategy)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      ).currentRoundId
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).currentWorkerNodeId
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).defaultWorkerWeight
+    ).toBeGreaterThan(0)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      ).roundWeights
+    ).toStrictEqual([
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).defaultWorkerWeight
+    ])
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      ).currentRoundId
+    ).toBeDefined()
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      ).currentWorkerNodeId
+    ).toBeDefined()
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      ).defaultWorkerWeight
+    ).toBeDefined()
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      ).roundWeights
+    ).toBeDefined()
+    pool.setWorkerChoiceStrategy(workerChoiceStrategy)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).currentWorkerNodeId
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).defaultWorkerWeight
+    ).toBeGreaterThan(0)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      ).roundWeights
+    ).toStrictEqual([
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).defaultWorkerWeight
+    ])
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
   it('Verify unknown strategy throw error', () => {
     expect(
       () =>
