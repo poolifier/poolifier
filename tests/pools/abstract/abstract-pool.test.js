@@ -426,7 +426,7 @@ describe('Abstract pool test suite', () => {
     let poolFull = 0
     pool.emitter.on(PoolEvents.full, () => ++poolFull)
     for (let i = 0; i < numberOfWorkers * 2; i++) {
-      promises.push(pool.execute())
+      promises.add(pool.execute())
     }
     await Promise.all(promises)
     // The `full` event is triggered when the number of submitted tasks at once reach the max number of workers in the dynamic pool.
@@ -444,7 +444,7 @@ describe('Abstract pool test suite', () => {
     let poolBusy = 0
     pool.emitter.on(PoolEvents.busy, () => ++poolBusy)
     for (let i = 0; i < numberOfWorkers * 2; i++) {
-      promises.push(pool.execute())
+      promises.add(pool.execute())
     }
     await Promise.all(promises)
     // The `busy` event is triggered when the number of submitted tasks at once reach the number of fixed pool workers.
