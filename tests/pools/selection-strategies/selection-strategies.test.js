@@ -180,6 +180,11 @@ describe('Selection strategies test suite', () => {
         error: 0
       })
     }
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        WorkerChoiceStrategies.ROUND_ROBIN
+      ).nextWorkerNodeId
+    ).toBe(0)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -213,6 +218,11 @@ describe('Selection strategies test suite', () => {
         error: 0
       })
     }
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        WorkerChoiceStrategies.ROUND_ROBIN
+      ).nextWorkerNodeId
+    ).toBe(0)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
