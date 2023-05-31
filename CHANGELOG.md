@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Switch pool event emitter to `EventEmitterAsyncResource`.
 - Add tasks wait time accounting in per worker tasks usage.
+- Add interleaved weighted round robin worker choice strategy (experimental).
 
 ### Changed
 
