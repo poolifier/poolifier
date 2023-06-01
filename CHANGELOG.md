@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.1] - 2023-06-01
+
 ### Added
 
 - Add pool option `restartWorkerOnError` to restart worker on uncaught error. Default to `true`.
