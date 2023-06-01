@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Allow to disable tasks timeout check in worker.
+
 ## [2.5.0] - 2023-05-31
 
 ### Added
