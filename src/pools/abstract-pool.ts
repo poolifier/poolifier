@@ -149,6 +149,7 @@ export abstract class AbstractPool<
       this.checkValidWorkerChoiceStrategyOptions(
         this.opts.workerChoiceStrategyOptions
       )
+      this.opts.restartWorkerOnError = opts.restartWorkerOnError ?? true
       this.opts.enableEvents = opts.enableEvents ?? true
       this.opts.enableTasksQueue = opts.enableTasksQueue ?? false
       if (this.opts.enableTasksQueue) {
@@ -562,6 +563,16 @@ export abstract class AbstractPool<
 
     worker.on('message', this.opts.messageHandler ?? EMPTY_FUNCTION)
     worker.on('error', this.opts.errorHandler ?? EMPTY_FUNCTION)
+    worker.on('error', error => {
+      if (this.emitter != null) {
+        this.emitter.emit(PoolEvents.error, error)
+      }
+    })
+    if (this.opts.restartWorkerOnError === true) {
+      worker.on('error', () => {
+        this.createAndSetupWorker()
+      })
+    }
     worker.on('online', this.opts.onlineHandler ?? EMPTY_FUNCTION)
     worker.on('exit', this.opts.exitHandler ?? EMPTY_FUNCTION)
     worker.once('exit', () => {
@@ -609,7 +620,7 @@ export abstract class AbstractPool<
   }
 
   private checkAndEmitEvents (): void {
-    if (this.opts.enableEvents === true) {
+    if (this.emitter != null) {
       if (this.busy) {
         this.emitter?.emit(PoolEvents.busy)
       }
@@ -686,8 +697,10 @@ export abstract class AbstractPool<
    */
   private removeWorkerNode (worker: Worker): void {
     const workerNodeKey = this.getWorkerNodeKey(worker)
-    this.workerNodes.splice(workerNodeKey, 1)
-    this.workerChoiceStrategyContext.remove(workerNodeKey)
+    if (workerNodeKey !== -1) {
+      this.workerNodes.splice(workerNodeKey, 1)
+      this.workerChoiceStrategyContext.remove(workerNodeKey)
+    }
   }
 
   private executeTask (workerNodeKey: number, task: Task<Data>): void {

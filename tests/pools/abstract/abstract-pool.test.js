@@ -82,8 +82,9 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js'
     )
-    expect(pool.opts.enableEvents).toBe(true)
     expect(pool.emitter).toBeDefined()
+    expect(pool.opts.enableEvents).toBe(true)
+    expect(pool.opts.restartWorkerOnError).toBe(true)
     expect(pool.opts.enableTasksQueue).toBe(false)
     expect(pool.opts.tasksQueueOptions).toBeUndefined()
     expect(pool.opts.workerChoiceStrategy).toBe(
@@ -109,6 +110,7 @@ describe('Abstract pool test suite', () => {
           weights: { 0: 300, 1: 200 }
         },
         enableEvents: false,
+        restartWorkerOnError: false,
         enableTasksQueue: true,
         tasksQueueOptions: { concurrency: 2 },
         messageHandler: testHandler,
@@ -117,8 +119,9 @@ describe('Abstract pool test suite', () => {
         exitHandler: testHandler
       }
     )
-    expect(pool.opts.enableEvents).toBe(false)
     expect(pool.emitter).toBeUndefined()
+    expect(pool.opts.enableEvents).toBe(false)
+    expect(pool.opts.restartWorkerOnError).toBe(false)
     expect(pool.opts.enableTasksQueue).toBe(true)
     expect(pool.opts.tasksQueueOptions).toStrictEqual({ concurrency: 2 })
     expect(pool.opts.workerChoiceStrategy).toBe(

@@ -2,7 +2,7 @@ const { expect } = require('expect')
 const { ClusterWorker, KillBehaviors, ThreadWorker } = require('../../lib')
 
 describe('Abstract worker test suite', () => {
-  class StubPoolWithIsMainWorker extends ThreadWorker {
+  class StubWorkerWithMainWorker extends ThreadWorker {
     constructor (fn, opts) {
       super(fn, opts)
       this.mainWorker = undefined
@@ -113,7 +113,7 @@ describe('Abstract worker test suite', () => {
 
   it('Verify that getMainWorker() throw error if main worker is not set', () => {
     expect(() =>
-      new StubPoolWithIsMainWorker(() => {}).getMainWorker()
+      new StubWorkerWithMainWorker(() => {}).getMainWorker()
     ).toThrowError('Main worker was not set')
   })
 })

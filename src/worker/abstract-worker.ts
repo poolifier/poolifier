@@ -71,10 +71,7 @@ export abstract class AbstractWorker<
     super(type)
     this.checkWorkerOptions(this.opts)
     this.checkTaskFunctions(taskFunctions)
-    if (
-      !this.isMain &&
-      (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) > 0
-    ) {
+    if (!this.isMain) {
       this.lastTaskTimestamp = performance.now()
       this.aliveInterval = setInterval(
         this.checkAlive.bind(this),

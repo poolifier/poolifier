@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Allow to disable tasks timeout check in worker.
+- Add pool option `restartWorkerOnError` to restart worker on uncaught error. Default to `true`.
 
 ## [2.5.0] - 2023-05-31
 

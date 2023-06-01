@@ -103,7 +103,7 @@ export class FixedThreadPool<
 
   /** @inheritDoc */
   protected get full (): boolean {
-    return this.workerNodes.length === this.numberOfWorkers
+    return this.workerNodes.length >= this.numberOfWorkers
   }
 
   /** @inheritDoc */

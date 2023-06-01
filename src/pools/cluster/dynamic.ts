@@ -46,7 +46,7 @@ export class DynamicClusterPool<
 
   /** @inheritDoc */
   protected get full (): boolean {
-    return this.workerNodes.length === this.max
+    return this.workerNodes.length >= this.max
   }
 
   /** @inheritDoc */

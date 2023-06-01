@@ -39,7 +39,8 @@ export class PoolEmitter extends EventEmitterAsyncResource {}
  */
 export const PoolEvents = Object.freeze({
   full: 'full',
-  busy: 'busy'
+  busy: 'busy',
+  error: 'error'
 } as const)
 
 /**
@@ -92,6 +93,10 @@ export interface PoolOptions<Worker extends IWorker> {
    */
   workerChoiceStrategyOptions?: WorkerChoiceStrategyOptions
   /**
+   * Restart worker on error.
+   */
+  restartWorkerOnError?: boolean
+  /**
    * Pool events emission.
    *
    * @defaultValue true
@@ -142,6 +147,7 @@ export interface IPool<
    *
    * - `'full'`: Emitted when the pool is dynamic and full.
    * - `'busy'`: Emitted when the pool is busy.
+   * - `'error'`: Emitted when an error occurs.
    */
   readonly emitter?: PoolEmitter
   /**
