@@ -20,7 +20,7 @@
     "microjob": "0.7.0",
     "node-worker-threads-pool": "1.5.1",
     "piscina": "3.2.0",
-    "poolifier": "2.4.14",
+    "poolifier": "2.5.1",
     "threads": "1.7.0",
     "threadwork": "0.6.0",
     "worker-nodes": "2.4.0",
