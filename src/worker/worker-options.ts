@@ -25,10 +25,10 @@ export type KillBehavior = keyof typeof KillBehaviors
  * @param value - Any value.
  * @returns `true` if `value` was strictly equals to `killBehavior`, otherwise `false`.
  */
-export function isKillBehavior<KB extends KillBehavior> (
+export const isKillBehavior = <KB extends KillBehavior>(
   killBehavior: KB,
   value: unknown
-): value is KB {
+): value is KB => {
   return value === killBehavior
 }
 
