@@ -40,7 +40,8 @@ export class PoolEmitter extends EventEmitterAsyncResource {}
 export const PoolEvents = Object.freeze({
   full: 'full',
   busy: 'busy',
-  error: 'error'
+  error: 'error',
+  taskError: 'taskError'
 } as const)
 
 /**
@@ -147,7 +148,8 @@ export interface IPool<
    *
    * - `'full'`: Emitted when the pool is dynamic and full.
    * - `'busy'`: Emitted when the pool is busy.
-   * - `'error'`: Emitted when an error occurs.
+   * - `'error'`: Emitted when an uncaught error occurs.
+   * - `'taskError'`: Emitted when an error occurs while executing a task.
    */
   readonly emitter?: PoolEmitter
   /**

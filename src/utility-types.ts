@@ -26,9 +26,13 @@ export interface MessageValue<
    */
   readonly kill?: KillBehavior | 1
   /**
-   * Error.
+   * Task error.
    */
   readonly error?: string
+  /**
+   * Task data triggering task error.
+   */
+  readonly errorData?: unknown
   /**
    * Runtime.
    */

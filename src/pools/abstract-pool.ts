@@ -599,6 +599,12 @@ export abstract class AbstractPool<
         if (promiseResponse != null) {
           if (message.error != null) {
             promiseResponse.reject(message.error)
+            if (this.emitter != null) {
+              this.emitter.emit(PoolEvents.taskError, {
+                error: message.error,
+                errorData: message.errorData
+              })
+            }
           } else {
             promiseResponse.resolve(message.data as Response)
           }
@@ -621,11 +627,17 @@ export abstract class AbstractPool<
 
   private checkAndEmitEvents (): void {
     if (this.emitter != null) {
+      const poolInfo = {
+        size: this.size,
+        workerNodes: this.workerNodes.length,
+        runningTasks: this.numberOfRunningTasks,
+        queuedTasks: this.numberOfQueuedTasks
+      }
       if (this.busy) {
-        this.emitter?.emit(PoolEvents.busy)
+        this.emitter?.emit(PoolEvents.busy, poolInfo)
       }
       if (this.type === PoolType.DYNAMIC && this.full) {
-        this.emitter?.emit(PoolEvents.full)
+        this.emitter?.emit(PoolEvents.full, poolInfo)
       }
     }
   }

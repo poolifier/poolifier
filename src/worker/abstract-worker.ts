@@ -212,13 +212,17 @@ export abstract class AbstractWorker<
       const runTime = performance.now() - startTimestamp
       this.sendToMainWorker({
         data: res,
-        id: message.id,
         runTime,
-        waitTime
+        waitTime,
+        id: message.id
       })
     } catch (e) {
       const err = this.handleError(e as Error)
-      this.sendToMainWorker({ error: err, id: message.id })
+      this.sendToMainWorker({
+        error: err,
+        errorData: message.data,
+        id: message.id
+      })
     } finally {
       !this.isMain && (this.lastTaskTimestamp = performance.now())
     }
@@ -241,15 +245,19 @@ export abstract class AbstractWorker<
         const runTime = performance.now() - startTimestamp
         this.sendToMainWorker({
           data: res,
-          id: message.id,
           runTime,
-          waitTime
+          waitTime,
+          id: message.id
         })
         return null
       })
       .catch(e => {
         const err = this.handleError(e as Error)
-        this.sendToMainWorker({ error: err, id: message.id })
+        this.sendToMainWorker({
+          error: err,
+          errorData: message.data,
+          id: message.id
+        })
       })
       .finally(() => {
         !this.isMain && (this.lastTaskTimestamp = performance.now())

@@ -7,11 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `taskError` pool event for task execution error.
+- Emit pool information on `busy` and `full` pool events.
+
 ## [2.5.1] - 2023-06-01
 
 ### Added
 
 - Add pool option `restartWorkerOnError` to restart worker on uncaught error. Default to `true`.
+- Add `error` pool event for uncaught worker error.
 
 ## [2.5.0] - 2023-05-31
 
