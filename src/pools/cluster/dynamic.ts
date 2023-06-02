@@ -1,6 +1,5 @@
-import { PoolType } from '../pool'
-import type { ClusterPoolOptions } from './fixed'
-import { FixedClusterPool } from './fixed'
+import { type PoolType, PoolTypes } from '../pool'
+import { type ClusterPoolOptions, FixedClusterPool } from './fixed'
 
 /**
  * A cluster pool with a dynamic number of workers, but a guaranteed minimum number of workers.
@@ -36,11 +35,11 @@ export class DynamicClusterPool<
 
   /** @inheritDoc */
   public get type (): PoolType {
-    return PoolType.DYNAMIC
+    return PoolTypes.dynamic
   }
 
   /** @inheritDoc */
-  public get size (): number {
+  protected get maxSize (): number {
     return this.max
   }
 

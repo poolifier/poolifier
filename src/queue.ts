@@ -9,11 +9,13 @@ export class Queue<T> {
   private items: Record<number, T>
   private head: number
   private tail: number
+  private max: number
 
   public constructor () {
     this.items = {}
     this.head = 0
     this.tail = 0
+    this.max = 0
   }
 
   /**
@@ -27,6 +29,16 @@ export class Queue<T> {
   }
 
   /**
+   * Get the maximum size of the queue.
+   *
+   * @returns The maximum size of the queue.
+   * @readonly
+   */
+  public get maxSize (): number {
+    return this.max
+  }
+
+  /**
    * Enqueue an item.
    *
    * @param item - Item to enqueue.
@@ -35,6 +47,7 @@ export class Queue<T> {
   public enqueue (item: T): number {
     this.items[this.tail] = item
     this.tail++
+    if (this.size > this.max) this.max = this.size
     return this.size
   }
 

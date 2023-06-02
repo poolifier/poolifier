@@ -102,8 +102,11 @@ describe('Fixed cluster pool test suite', () => {
       expect(workerNode.tasksUsage.run).toBe(0)
       expect(workerNode.tasksQueue.size).toBeGreaterThan(0)
     }
-    expect(queuePool.numberOfRunningTasks).toBe(numberOfWorkers)
-    expect(queuePool.numberOfQueuedTasks).toBe(
+    expect(queuePool.info.runningTasks).toBe(numberOfWorkers)
+    expect(queuePool.info.queuedTasks).toBe(
+      numberOfWorkers * maxMultiplier - numberOfWorkers
+    )
+    expect(queuePool.info.maxQueuedTasks).toBe(
       numberOfWorkers * maxMultiplier - numberOfWorkers
     )
     await Promise.all(promises)

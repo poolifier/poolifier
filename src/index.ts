@@ -2,11 +2,12 @@ export { DynamicClusterPool } from './pools/cluster/dynamic'
 export { FixedClusterPool } from './pools/cluster/fixed'
 export type { ClusterPoolOptions } from './pools/cluster/fixed'
 export type { AbstractPool } from './pools/abstract-pool'
-export { PoolEvents } from './pools/pool'
+export { PoolEvents, PoolTypes } from './pools/pool'
 export type {
   IPool,
   PoolEmitter,
   PoolEvent,
+  PoolInfo,
   PoolOptions,
   PoolType,
   TasksQueueOptions

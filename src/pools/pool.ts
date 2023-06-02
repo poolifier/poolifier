@@ -13,21 +13,23 @@ import type {
 } from './selection-strategies/selection-strategies-types'
 
 /**
- * Pool types.
- *
- * @enum
- * @internal
+ * Enumeration of pool types.
  */
-export enum PoolType {
+export const PoolTypes = Object.freeze({
   /**
    * Fixed pool type.
    */
-  FIXED = 'fixed',
+  fixed: 'fixed',
   /**
    * Dynamic pool type.
    */
-  DYNAMIC = 'dynamic'
-}
+  dynamic: 'dynamic'
+} as const)
+
+/**
+ * Pool type.
+ */
+export type PoolType = keyof typeof PoolTypes
 
 /**
  * Pool events emitter.
@@ -48,6 +50,21 @@ export const PoolEvents = Object.freeze({
  * Pool event.
  */
 export type PoolEvent = keyof typeof PoolEvents
+
+/**
+ * Pool information.
+ */
+export interface PoolInfo {
+  type: PoolType
+  minSize: number
+  maxSize: number
+  workerNodes: number
+  idleWorkerNodes: number
+  busyWorkerNodes: number
+  runningTasks: number
+  queuedTasks: number
+  maxQueuedTasks: number
+}
 
 /**
  * Worker tasks queue options.
@@ -134,9 +151,9 @@ export interface IPool<
    */
   readonly type: PoolType
   /**
-   * Pool maximum size.
+   * Pool information.
    */
-  readonly size: number
+  readonly info: PoolInfo
   /**
    * Pool worker nodes.
    */

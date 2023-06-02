@@ -5,7 +5,8 @@ const {
   FixedClusterPool,
   FixedThreadPool,
   PoolEvents,
-  WorkerChoiceStrategies
+  WorkerChoiceStrategies,
+  PoolTypes
 } = require('../../../lib')
 const { CircularArray } = require('../../../lib/circular-array')
 const { Queue } = require('../../../lib/queue')
@@ -271,6 +272,42 @@ describe('Abstract pool test suite', () => {
     expect(() => pool.setTasksQueueOptions({ concurrency: 0 })).toThrowError(
       "Invalid worker tasks concurrency '0'"
     )
+    await pool.destroy()
+  })
+
+  it('Verify that pool info is set', async () => {
+    let pool = new FixedThreadPool(
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(pool.info).toStrictEqual({
+      type: PoolTypes.fixed,
+      minSize: numberOfWorkers,
+      maxSize: numberOfWorkers,
+      workerNodes: numberOfWorkers,
+      idleWorkerNodes: numberOfWorkers,
+      busyWorkerNodes: 0,
+      runningTasks: 0,
+      queuedTasks: 0,
+      maxQueuedTasks: 0
+    })
+    await pool.destroy()
+    pool = new DynamicClusterPool(
+      numberOfWorkers,
+      numberOfWorkers * 2,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(pool.info).toStrictEqual({
+      type: PoolTypes.dynamic,
+      minSize: numberOfWorkers,
+      maxSize: numberOfWorkers * 2,
+      workerNodes: numberOfWorkers,
+      idleWorkerNodes: numberOfWorkers,
+      busyWorkerNodes: 0,
+      runningTasks: 0,
+      queuedTasks: 0,
+      maxQueuedTasks: 0
+    })
     await pool.destroy()
   })
 

@@ -1,7 +1,5 @@
-import type { PoolOptions } from '../pool'
-import { PoolType } from '../pool'
-import type { ThreadWorkerWithMessageChannel } from './fixed'
-import { FixedThreadPool } from './fixed'
+import { type PoolOptions, type PoolType, PoolTypes } from '../pool'
+import { FixedThreadPool, type ThreadWorkerWithMessageChannel } from './fixed'
 
 /**
  * A thread pool with a dynamic number of threads, but a guaranteed minimum number of threads.
@@ -37,7 +35,7 @@ export class DynamicThreadPool<
 
   /** @inheritDoc */
   public get type (): PoolType {
-    return PoolType.DYNAMIC
+    return PoolTypes.dynamic
   }
 
   /** @inheritDoc */
@@ -46,7 +44,7 @@ export class DynamicThreadPool<
   }
 
   /** @inheritDoc */
-  public get size (): number {
+  protected get maxSize (): number {
     return this.max
   }
 

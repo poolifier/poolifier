@@ -13,8 +13,10 @@ import {
   type IPool,
   PoolEmitter,
   PoolEvents,
+  type PoolInfo,
   type PoolOptions,
-  PoolType,
+  type PoolType,
+  PoolTypes,
   type TasksQueueOptions
 } from './pool'
 import type { IWorker, Task, TasksUsage, WorkerNode } from './worker'
@@ -133,7 +135,7 @@ export abstract class AbstractPool<
       throw new RangeError(
         'Cannot instantiate a pool with a negative number of workers'
       )
-    } else if (this.type === PoolType.FIXED && numberOfWorkers === 0) {
+    } else if (this.type === PoolTypes.fixed && numberOfWorkers === 0) {
       throw new Error('Cannot instantiate a fixed pool with no worker')
     }
   }
@@ -185,7 +187,7 @@ export abstract class AbstractPool<
     }
     if (
       workerChoiceStrategyOptions.weights != null &&
-      Object.keys(workerChoiceStrategyOptions.weights).length !== this.size
+      Object.keys(workerChoiceStrategyOptions.weights).length !== this.maxSize
     ) {
       throw new Error(
         'Invalid worker choice strategy options: must have a weight for each worker node'
@@ -212,30 +214,48 @@ export abstract class AbstractPool<
   public abstract get type (): PoolType
 
   /** @inheritDoc */
-  public abstract get size (): number
-
-  /**
-   * Number of tasks running in the pool.
-   */
-  private get numberOfRunningTasks (): number {
-    return this.workerNodes.reduce(
-      (accumulator, workerNode) => accumulator + workerNode.tasksUsage.running,
-      0
-    )
-  }
-
-  /**
-   * Number of tasks queued in the pool.
-   */
-  private get numberOfQueuedTasks (): number {
-    if (this.opts.enableTasksQueue === false) {
-      return 0
+  public get info (): PoolInfo {
+    return {
+      type: this.type,
+      minSize: this.minSize,
+      maxSize: this.maxSize,
+      workerNodes: this.workerNodes.length,
+      idleWorkerNodes: this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          workerNode.tasksUsage.running === 0 ? accumulator + 1 : accumulator,
+        0
+      ),
+      busyWorkerNodes: this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          workerNode.tasksUsage.running > 0 ? accumulator + 1 : accumulator,
+        0
+      ),
+      runningTasks: this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          accumulator + workerNode.tasksUsage.running,
+        0
+      ),
+      queuedTasks: this.workerNodes.reduce(
+        (accumulator, workerNode) => accumulator + workerNode.tasksQueue.size,
+        0
+      ),
+      maxQueuedTasks: this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          accumulator + workerNode.tasksQueue.maxSize,
+        0
+      )
     }
-    return this.workerNodes.reduce(
-      (accumulator, workerNode) => accumulator + workerNode.tasksQueue.size,
-      0
-    )
   }
+
+  /**
+   * Pool minimum size.
+   */
+  protected abstract get minSize (): number
+
+  /**
+   * Pool maximum size.
+   */
+  protected abstract get maxSize (): number
 
   /**
    * Gets the given worker its worker node key.
@@ -497,7 +517,7 @@ export abstract class AbstractPool<
    */
   protected chooseWorkerNode (): number {
     let workerNodeKey: number
-    if (this.type === PoolType.DYNAMIC && !this.full && this.internalBusy()) {
+    if (this.type === PoolTypes.dynamic && !this.full && this.internalBusy()) {
       const workerCreated = this.createAndSetupWorker()
       this.registerWorkerMessageListener(workerCreated, message => {
         const currentWorkerNodeKey = this.getWorkerNodeKey(workerCreated)
@@ -627,17 +647,11 @@ export abstract class AbstractPool<
 
   private checkAndEmitEvents (): void {
     if (this.emitter != null) {
-      const poolInfo = {
-        size: this.size,
-        workerNodes: this.workerNodes.length,
-        runningTasks: this.numberOfRunningTasks,
-        queuedTasks: this.numberOfQueuedTasks
-      }
       if (this.busy) {
-        this.emitter?.emit(PoolEvents.busy, poolInfo)
+        this.emitter?.emit(PoolEvents.busy, this.info)
       }
-      if (this.type === PoolType.DYNAMIC && this.full) {
-        this.emitter?.emit(PoolEvents.full, poolInfo)
+      if (this.type === PoolTypes.dynamic && this.full) {
+        this.emitter?.emit(PoolEvents.full, this.info)
       }
     }
   }
