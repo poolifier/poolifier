@@ -6,7 +6,13 @@ import {
 } from 'node:worker_threads'
 import type { Draft, MessageValue } from '../../utility-types'
 import { AbstractPool } from '../abstract-pool'
-import { type PoolOptions, type PoolType, PoolTypes } from '../pool'
+import {
+  type PoolOptions,
+  type PoolType,
+  PoolTypes,
+  type WorkerType,
+  WorkerTypes
+} from '../pool'
 
 /**
  * A thread worker with message channels for communication between main thread and thread worker.
@@ -93,6 +99,11 @@ export class FixedThreadPool<
   /** @inheritDoc */
   public get type (): PoolType {
     return PoolTypes.fixed
+  }
+
+  /** @inheritDoc */
+  protected get worker (): WorkerType {
+    return WorkerTypes.thread
   }
 
   /** @inheritDoc */

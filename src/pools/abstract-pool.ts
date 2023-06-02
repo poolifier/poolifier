@@ -17,7 +17,8 @@ import {
   type PoolOptions,
   type PoolType,
   PoolTypes,
-  type TasksQueueOptions
+  type TasksQueueOptions,
+  type WorkerType
 } from './pool'
 import type { IWorker, Task, TasksUsage, WorkerNode } from './worker'
 import {
@@ -217,6 +218,7 @@ export abstract class AbstractPool<
   public get info (): PoolInfo {
     return {
       type: this.type,
+      worker: this.worker,
       minSize: this.minSize,
       maxSize: this.maxSize,
       workerNodes: this.workerNodes.length,
@@ -246,6 +248,11 @@ export abstract class AbstractPool<
       )
     }
   }
+
+  /**
+   * Gets the worker type.
+   */
+  protected abstract get worker (): WorkerType
 
   /**
    * Pool minimum size.

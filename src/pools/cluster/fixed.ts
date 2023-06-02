@@ -2,7 +2,13 @@ import type { ClusterSettings, Worker } from 'node:cluster'
 import cluster from 'node:cluster'
 import type { MessageValue } from '../../utility-types'
 import { AbstractPool } from '../abstract-pool'
-import { type PoolOptions, type PoolType, PoolTypes } from '../pool'
+import {
+  type PoolOptions,
+  type PoolType,
+  PoolTypes,
+  type WorkerType,
+  WorkerTypes
+} from '../pool'
 
 /**
  * Options for a poolifier cluster pool.
@@ -97,6 +103,11 @@ export class FixedClusterPool<
   /** @inheritDoc */
   public get type (): PoolType {
     return PoolTypes.fixed
+  }
+
+  /** @inheritDoc */
+  protected get worker (): WorkerType {
+    return WorkerTypes.cluster
   }
 
   /** @inheritDoc */

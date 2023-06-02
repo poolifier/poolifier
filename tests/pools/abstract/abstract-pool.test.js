@@ -6,7 +6,8 @@ const {
   FixedThreadPool,
   PoolEvents,
   WorkerChoiceStrategies,
-  PoolTypes
+  PoolTypes,
+  WorkerTypes
 } = require('../../../lib')
 const { CircularArray } = require('../../../lib/circular-array')
 const { Queue } = require('../../../lib/queue')
@@ -282,6 +283,7 @@ describe('Abstract pool test suite', () => {
     )
     expect(pool.info).toStrictEqual({
       type: PoolTypes.fixed,
+      worker: WorkerTypes.thread,
       minSize: numberOfWorkers,
       maxSize: numberOfWorkers,
       workerNodes: numberOfWorkers,
@@ -299,6 +301,7 @@ describe('Abstract pool test suite', () => {
     )
     expect(pool.info).toStrictEqual({
       type: PoolTypes.dynamic,
+      worker: WorkerTypes.cluster,
       minSize: numberOfWorkers,
       maxSize: numberOfWorkers * 2,
       workerNodes: numberOfWorkers,

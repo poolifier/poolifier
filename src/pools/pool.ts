@@ -32,6 +32,19 @@ export const PoolTypes = Object.freeze({
 export type PoolType = keyof typeof PoolTypes
 
 /**
+ * Enumeration of worker types.
+ */
+export const WorkerTypes = Object.freeze({
+  cluster: 'cluster',
+  thread: 'thread'
+} as const)
+
+/**
+ * Worker type.
+ */
+export type WorkerType = keyof typeof WorkerTypes
+
+/**
  * Pool events emitter.
  */
 export class PoolEmitter extends EventEmitterAsyncResource {}
@@ -56,6 +69,7 @@ export type PoolEvent = keyof typeof PoolEvents
  */
 export interface PoolInfo {
   type: PoolType
+  worker: WorkerType
   minSize: number
   maxSize: number
   workerNodes: number
