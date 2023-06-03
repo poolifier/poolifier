@@ -9,8 +9,11 @@ import type {
   WorkerSyncFunction
 } from '../utility-types'
 import { EMPTY_FUNCTION, isPlainObject } from '../utils'
-import type { KillBehavior, WorkerOptions } from './worker-options'
-import { KillBehaviors } from './worker-options'
+import {
+  type KillBehavior,
+  KillBehaviors,
+  type WorkerOptions
+} from './worker-options'
 
 const DEFAULT_FUNCTION_NAME = 'default'
 const DEFAULT_MAX_INACTIVE_TIME = 60000
