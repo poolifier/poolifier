@@ -410,6 +410,7 @@ export abstract class AbstractPool<
     await Promise.all(
       this.workerNodes.map(async (workerNode, workerNodeKey) => {
         this.flushTasksQueue(workerNodeKey)
+        // FIXME: wait for tasks to be finished
         await this.destroyWorker(workerNode.worker)
       })
     )
@@ -535,6 +536,7 @@ export abstract class AbstractPool<
         ) {
           // Kill message received from the worker: no new tasks are submitted to that worker for a while ( > maxInactiveTime)
           this.flushTasksQueue(currentWorkerNodeKey)
+          // FIXME: wait for tasks to be finished
           void (this.destroyWorker(workerCreated) as Promise<void>)
         }
       })

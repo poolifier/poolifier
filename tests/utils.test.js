@@ -1,5 +1,9 @@
 const { expect } = require('expect')
 const { isPlainObject, median } = require('../lib/utils')
+const {
+  isKillBehavior,
+  KillBehaviors
+} = require('../lib/worker/worker-options')
 
 describe('Utils test suite', () => {
   it('Verify median computation', () => {
@@ -44,5 +48,16 @@ describe('Utils test suite', () => {
     expect(isPlainObject(new DataView(new ArrayBuffer()))).toBe(false)
     expect(isPlainObject({})).toBe(true)
     expect(isPlainObject({ a: 1 })).toBe(true)
+  })
+
+  it('Verify isKillBehavior() behavior', () => {
+    expect(isKillBehavior(KillBehaviors.SOFT, KillBehaviors.SOFT)).toBe(true)
+    expect(isKillBehavior(KillBehaviors.SOFT, KillBehaviors.HARD)).toBe(false)
+    expect(isKillBehavior(KillBehaviors.HARD, KillBehaviors.HARD)).toBe(true)
+    expect(isKillBehavior(KillBehaviors.HARD, KillBehaviors.SOFT)).toBe(false)
+    expect(isKillBehavior(KillBehaviors.SOFT)).toBe(false)
+    expect(isKillBehavior(KillBehaviors.HARD)).toBe(false)
+    expect(isKillBehavior(KillBehaviors.HARD, null)).toBe(false)
+    expect(isKillBehavior(KillBehaviors.SOFT, 'unknown')).toBe(false)
   })
 })
