@@ -114,15 +114,15 @@ function executeWorkerFunction (data) {
 
 function buildPool (workerType, poolType, poolSize, poolOptions) {
   switch (poolType) {
-    case PoolTypes.FIXED:
+    case PoolTypes.fixed:
       switch (workerType) {
-        case WorkerTypes.THREAD:
+        case WorkerTypes.thread:
           return new FixedThreadPool(
             poolSize,
             './benchmarks/internal/thread-worker.js',
             poolOptions
           )
-        case WorkerTypes.CLUSTER:
+        case WorkerTypes.cluster:
           return new FixedClusterPool(
             poolSize,
             './benchmarks/internal/cluster-worker.js',
@@ -130,16 +130,16 @@ function buildPool (workerType, poolType, poolSize, poolOptions) {
           )
       }
       break
-    case PoolTypes.DYNAMIC:
+    case PoolTypes.dynamic:
       switch (workerType) {
-        case WorkerTypes.THREAD:
+        case WorkerTypes.thread:
           return new DynamicThreadPool(
             poolSize / 2,
             poolSize * 3,
             './benchmarks/internal/thread-worker.js',
             poolOptions
           )
-        case WorkerTypes.CLUSTER:
+        case WorkerTypes.cluster:
           return new DynamicClusterPool(
             poolSize / 2,
             poolSize * 3,

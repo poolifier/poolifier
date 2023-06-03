@@ -6,7 +6,7 @@ const {
 } = require('../lib/worker/worker-options')
 
 describe('Utils test suite', () => {
-  it('Verify median computation', () => {
+  it('Verify median() computation', () => {
     expect(median([])).toBe(0)
     expect(median([0.08])).toBe(0.08)
     expect(median([0.25, 4.75, 3.05, 6.04, 1.01, 2.02, 5.03])).toBe(3.05)

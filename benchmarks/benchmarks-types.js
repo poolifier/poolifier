@@ -6,13 +6,13 @@ const WorkerFunctions = {
 }
 
 const PoolTypes = {
-  FIXED: 'fixed',
-  DYNAMIC: 'dynamic'
+  fixed: 'fixed',
+  dynamic: 'dynamic'
 }
 
 const WorkerTypes = {
-  THREAD: 'thread',
-  CLUSTER: 'cluster'
+  thread: 'thread',
+  cluster: 'cluster'
 }
 
 module.exports = { PoolTypes, WorkerFunctions, WorkerTypes }
