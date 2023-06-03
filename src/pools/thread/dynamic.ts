@@ -39,13 +39,13 @@ export class DynamicThreadPool<
   }
 
   /** @inheritDoc */
-  protected get full (): boolean {
-    return this.workerNodes.length >= this.max
+  protected get maxSize (): number {
+    return this.max
   }
 
   /** @inheritDoc */
-  protected get maxSize (): number {
-    return this.max
+  protected get full (): boolean {
+    return this.workerNodes.length >= this.max
   }
 
   /** @inheritDoc */
