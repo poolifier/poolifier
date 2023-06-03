@@ -1,5 +1,4 @@
-import type { Worker } from 'node:cluster'
-import cluster from 'node:cluster'
+import cluster, { type Worker } from 'node:cluster'
 import type {
   MessageValue,
   TaskFunctions,

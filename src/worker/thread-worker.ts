@@ -1,5 +1,4 @@
-import type { MessagePort } from 'node:worker_threads'
-import { isMainThread, parentPort } from 'node:worker_threads'
+import { type MessagePort, isMainThread, parentPort } from 'node:worker_threads'
 import type {
   MessageValue,
   TaskFunctions,
