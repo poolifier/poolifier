@@ -43,6 +43,7 @@ Please consult our [general guidelines](#general-guidance).
 - Proper async integration with node async hooks :white_check_mark:
 - Support for worker threads and cluster node modules :white_check_mark:
 - Support sync and async tasks :white_check_mark:
+- Tasks distribution strategies :white_check_mark:
 - General guidance on pools to use :white_check_mark:
 - Widely tested :white_check_mark:
 - Error handling out of the box :white_check_mark:

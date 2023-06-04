@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Refine pool information content.
+
 ## [2.5.2] - 2023-06-02
 
 ### Added
