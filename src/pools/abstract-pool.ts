@@ -212,9 +212,6 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public abstract get type (): PoolType
-
-  /** @inheritDoc */
   public get info (): PoolInfo {
     return {
       type: this.type,
@@ -248,6 +245,13 @@ export abstract class AbstractPool<
       )
     }
   }
+
+  /**
+   * Pool type.
+   *
+   * If it is `'dynamic'`, it provides the `max` property.
+   */
+  protected abstract get type (): PoolType
 
   /**
    * Gets the worker type.

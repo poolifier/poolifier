@@ -34,7 +34,7 @@ export class DynamicThreadPool<
   }
 
   /** @inheritDoc */
-  public get type (): PoolType {
+  protected get type (): PoolType {
     return PoolTypes.dynamic
   }
 

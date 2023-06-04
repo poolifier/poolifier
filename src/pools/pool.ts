@@ -159,12 +159,6 @@ export interface IPool<
   Response = unknown
 > {
   /**
-   * Pool type.
-   *
-   * If it is `'dynamic'`, it provides the `max` property.
-   */
-  readonly type: PoolType
-  /**
    * Pool information.
    */
   readonly info: PoolInfo

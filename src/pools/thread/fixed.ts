@@ -97,7 +97,7 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
-  public get type (): PoolType {
+  protected get type (): PoolType {
     return PoolTypes.fixed
   }
 
