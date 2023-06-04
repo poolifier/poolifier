@@ -357,7 +357,9 @@ export abstract class AbstractPool<
    *
    * The pool filling boolean status.
    */
-  protected abstract get full (): boolean
+  protected get full (): boolean {
+    return this.workerNodes.length >= this.maxSize
+  }
 
   /**
    * Whether the pool is busy or not.

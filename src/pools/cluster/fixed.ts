@@ -54,7 +54,7 @@ export class FixedClusterPool<
   public constructor (
     numberOfWorkers: number,
     filePath: string,
-    public readonly opts: ClusterPoolOptions = {}
+    protected readonly opts: ClusterPoolOptions = {}
   ) {
     super(numberOfWorkers, filePath, opts)
   }
@@ -117,11 +117,6 @@ export class FixedClusterPool<
   /** @inheritDoc */
   protected get maxSize (): number {
     return this.numberOfWorkers
-  }
-
-  /** @inheritDoc */
-  protected get full (): boolean {
-    return this.workerNodes.length >= this.numberOfWorkers
   }
 
   /** @inheritDoc */
