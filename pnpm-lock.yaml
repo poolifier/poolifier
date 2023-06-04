@@ -57,8 +57,8 @@ devDependencies:
     specifier: ^2.27.5
     version: 2.27.5(@typescript-eslint/parser@5.59.8)(eslint-import-resolver-typescript@3.5.5)(eslint@8.42.0)
   eslint-plugin-jsdoc:
-    specifier: ^46.2.2
-    version: 46.2.2(eslint@8.42.0)
+    specifier: ^46.2.3
+    version: 46.2.3(eslint@8.42.0)
   eslint-plugin-n:
     specifier: ^16.0.0
     version: 16.0.0(eslint@8.42.0)
@@ -2351,8 +2351,8 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-plugin-jsdoc@46.2.2(eslint@8.42.0):
-    resolution: {integrity: sha512-s85g93FT54emQX/h+Aoh1+SFrIz/C327gn+t8YS4md82/iNFWNp+qjT88MNH9XwD0rrhUqxE39xh46+RTGRyYw==}
+  /eslint-plugin-jsdoc@46.2.3(eslint@8.42.0):
+    resolution: {integrity: sha512-06s2RmIyichD2+CYQzSq4DH5YAaXdYm6WPe6C8daf7vr6MxzJiYJYOKxNYLDdQRTRE2JAW1kfU1OYRxvAxDzjA==}
     engines: {node: '>=16'}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0
