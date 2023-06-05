@@ -268,7 +268,7 @@ But in general, **always profile your application**.
 
 ## Contribute
 
-Choose your task here [2.4.x](https://github.com/orgs/poolifier/projects/1), propose an idea, a fix, an improvement.
+Choose your task here [2.5.x](https://github.com/orgs/poolifier/projects/1), propose an idea, a fix, an improvement.
 
 See [CONTRIBUTING](CONTRIBUTING.md) guidelines.
 
