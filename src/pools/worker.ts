@@ -64,7 +64,7 @@ export interface TasksUsage {
   /**
    * Number of tasks executed.
    */
-  run: number
+  ran: number
   /**
    * Number of tasks running.
    */

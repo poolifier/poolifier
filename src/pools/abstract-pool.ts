@@ -289,7 +289,7 @@ export abstract class AbstractPool<
     this.opts.workerChoiceStrategy = workerChoiceStrategy
     for (const workerNode of this.workerNodes) {
       this.setWorkerNodeTasksUsage(workerNode, {
-        run: 0,
+        ran: 0,
         running: 0,
         runTime: 0,
         runTimeHistory: new CircularArray(),
@@ -468,7 +468,7 @@ export abstract class AbstractPool<
     const workerTasksUsage =
       this.workerNodes[this.getWorkerNodeKey(worker)].tasksUsage
     --workerTasksUsage.running
-    ++workerTasksUsage.run
+    ++workerTasksUsage.ran
     if (message.error != null) {
       ++workerTasksUsage.error
     }
@@ -484,10 +484,10 @@ export abstract class AbstractPool<
       workerTasksUsage.runTime += message.runTime ?? 0
       if (
         this.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime &&
-        workerTasksUsage.run !== 0
+        workerTasksUsage.ran !== 0
       ) {
         workerTasksUsage.avgRunTime =
-          workerTasksUsage.runTime / workerTasksUsage.run
+          workerTasksUsage.runTime / workerTasksUsage.ran
       }
       if (
         this.workerChoiceStrategyContext.getRequiredStatistics().medRunTime &&
@@ -507,10 +507,10 @@ export abstract class AbstractPool<
       workerTasksUsage.waitTime += message.waitTime ?? 0
       if (
         this.workerChoiceStrategyContext.getRequiredStatistics().avgWaitTime &&
-        workerTasksUsage.run !== 0
+        workerTasksUsage.ran !== 0
       ) {
         workerTasksUsage.avgWaitTime =
-          workerTasksUsage.waitTime / workerTasksUsage.run
+          workerTasksUsage.waitTime / workerTasksUsage.ran
       }
       if (
         this.workerChoiceStrategyContext.getRequiredStatistics().medWaitTime &&
@@ -694,7 +694,7 @@ export abstract class AbstractPool<
     return this.workerNodes.push({
       worker,
       tasksUsage: {
-        run: 0,
+        ran: 0,
         running: 0,
         runTime: 0,
         runTimeHistory: new CircularArray(),
