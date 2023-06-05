@@ -1,5 +1,6 @@
 import type { Worker as ClusterWorker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
+import type { EventLoopUtilization } from 'node:perf_hooks'
 import type { KillBehavior } from './worker/worker-options'
 import type { IWorker, Task } from './pools/worker'
 
@@ -41,6 +42,10 @@ export interface MessageValue<
    * Wait time.
    */
   readonly waitTime?: number
+  /**
+   * Event loop utilization.
+   */
+  readonly elu?: EventLoopUtilization
   /**
    * Reference to main worker.
    */

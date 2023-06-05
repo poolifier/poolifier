@@ -90,6 +90,10 @@ export interface RequiredStatistics {
    * Require tasks median wait time.
    */
   medWaitTime: boolean
+  /**
+   * Event loop utilization.
+   */
+  elu: boolean
 }
 
 /**

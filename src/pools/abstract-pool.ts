@@ -1,4 +1,5 @@
 import crypto from 'node:crypto'
+import { performance } from 'node:perf_hooks'
 import type { MessageValue, PromiseResponseWrapper } from '../utility-types'
 import {
   DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
@@ -299,7 +300,8 @@ export abstract class AbstractPool<
         waitTimeHistory: new CircularArray(),
         avgWaitTime: 0,
         medWaitTime: 0,
-        error: 0
+        error: 0,
+        elu: undefined
       })
     }
     this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
@@ -474,6 +476,7 @@ export abstract class AbstractPool<
     }
     this.updateRunTimeTasksUsage(workerTasksUsage, message)
     this.updateWaitTimeTasksUsage(workerTasksUsage, message)
+    this.updateEluTasksUsage(workerTasksUsage, message)
   }
 
   private updateRunTimeTasksUsage (
@@ -518,6 +521,25 @@ export abstract class AbstractPool<
       ) {
         workerTasksUsage.waitTimeHistory.push(message.waitTime)
         workerTasksUsage.medWaitTime = median(workerTasksUsage.waitTimeHistory)
+      }
+    }
+  }
+
+  private updateEluTasksUsage (
+    workerTasksUsage: TasksUsage,
+    message: MessageValue<Response>
+  ): void {
+    if (this.workerChoiceStrategyContext.getRequiredStatistics().elu) {
+      if (workerTasksUsage.elu != null && message.elu != null) {
+        // TODO: cumulative or delta?
+        workerTasksUsage.elu = {
+          idle: workerTasksUsage.elu.idle + message.elu.idle,
+          active: workerTasksUsage.elu.active + message.elu.active,
+          utilization:
+            workerTasksUsage.elu.utilization + message.elu.utilization
+        }
+      } else if (message.elu != null) {
+        workerTasksUsage.elu = message.elu
       }
     }
   }
@@ -704,7 +726,8 @@ export abstract class AbstractPool<
         waitTimeHistory: new CircularArray(),
         avgWaitTime: 0,
         medWaitTime: 0,
-        error: 0
+        error: 0,
+        elu: undefined
       },
       tasksQueue: new Queue<Task<Data>>()
     })

@@ -30,7 +30,8 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     medRunTime: false,
     waitTime: false,
     avgWaitTime: false,
-    medWaitTime: false
+    medWaitTime: false,
+    elu: false
   }
 
   /**

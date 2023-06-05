@@ -31,7 +31,8 @@ export abstract class AbstractWorkerChoiceStrategy<
     medRunTime: false,
     waitTime: false,
     avgWaitTime: false,
-    medWaitTime: false
+    medWaitTime: false,
+    elu: false
   }
 
   /**

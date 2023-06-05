@@ -1,6 +1,7 @@
 import { AsyncResource } from 'node:async_hooks'
 import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
+import { type EventLoopUtilization, performance } from 'node:perf_hooks'
 import type {
   MessageValue,
   TaskFunctions,
@@ -18,6 +19,13 @@ import {
 const DEFAULT_FUNCTION_NAME = 'default'
 const DEFAULT_MAX_INACTIVE_TIME = 60000
 const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
+
+interface TaskPerformance {
+  timestamp: number
+  waitTime: number
+  runTime?: number
+  elu: EventLoopUtilization
+}
 
 /**
  * Base class that implements some shared logic for all poolifier workers.
@@ -209,14 +217,14 @@ export abstract class AbstractWorker<
     message: MessageValue<Data>
   ): void {
     try {
-      const startTimestamp = performance.now()
-      const waitTime = startTimestamp - (message.submissionTimestamp ?? 0)
+      const taskPerformance = this.beforeTaskRunHook(message)
       const res = fn(message.data)
-      const runTime = performance.now() - startTimestamp
+      const { runTime, waitTime, elu } = this.afterTaskRunHook(taskPerformance)
       this.sendToMainWorker({
         data: res,
         runTime,
         waitTime,
+        elu,
         id: message.id
       })
     } catch (e) {
@@ -241,15 +249,16 @@ export abstract class AbstractWorker<
     fn: WorkerAsyncFunction<Data, Response>,
     message: MessageValue<Data>
   ): void {
-    const startTimestamp = performance.now()
-    const waitTime = startTimestamp - (message.submissionTimestamp ?? 0)
+    const taskPerformance = this.beforeTaskRunHook(message)
     fn(message.data)
       .then(res => {
-        const runTime = performance.now() - startTimestamp
+        const { runTime, waitTime, elu } =
+          this.afterTaskRunHook(taskPerformance)
         this.sendToMainWorker({
           data: res,
           runTime,
           waitTime,
+          elu,
           id: message.id
         })
         return null
@@ -280,5 +289,25 @@ export abstract class AbstractWorker<
       throw new Error(`Task function '${name}' not found`)
     }
     return fn
+  }
+
+  private beforeTaskRunHook (message: MessageValue<Data>): TaskPerformance {
+    // TODO: conditional accounting
+    const timestamp = performance.now()
+    return {
+      timestamp,
+      waitTime: timestamp - (message.submissionTimestamp ?? 0),
+      elu: performance.eventLoopUtilization()
+    }
+  }
+
+  private afterTaskRunHook (taskPerformance: TaskPerformance): TaskPerformance {
+    return {
+      ...taskPerformance,
+      ...{
+        runTime: performance.now() - taskPerformance.timestamp,
+        elu: performance.eventLoopUtilization(taskPerformance.elu)
+      }
+    }
   }
 }
