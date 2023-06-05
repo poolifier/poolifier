@@ -336,7 +336,7 @@ describe('Abstract pool test suite', () => {
     )
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: 0,
+        ran: 0,
         running: 0,
         runTime: 0,
         runTimeHistory: expect.any(CircularArray),
@@ -377,7 +377,7 @@ describe('Abstract pool test suite', () => {
     }
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: 0,
+        ran: 0,
         running: maxMultiplier,
         runTime: 0,
         runTimeHistory: expect.any(CircularArray),
@@ -393,7 +393,7 @@ describe('Abstract pool test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: maxMultiplier,
+        ran: maxMultiplier,
         running: 0,
         runTime: 0,
         runTimeHistory: expect.any(CircularArray),
@@ -423,7 +423,7 @@ describe('Abstract pool test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: expect.any(Number),
+        ran: expect.any(Number),
         running: 0,
         runTime: 0,
         runTimeHistory: expect.any(CircularArray),
@@ -435,13 +435,13 @@ describe('Abstract pool test suite', () => {
         medWaitTime: 0,
         error: 0
       })
-      expect(workerNode.tasksUsage.run).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.run).toBeLessThanOrEqual(maxMultiplier)
+      expect(workerNode.tasksUsage.ran).toBeGreaterThan(0)
+      expect(workerNode.tasksUsage.ran).toBeLessThanOrEqual(maxMultiplier)
     }
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksUsage).toStrictEqual({
-        run: 0,
+        ran: 0,
         running: 0,
         runTime: 0,
         runTimeHistory: expect.any(CircularArray),

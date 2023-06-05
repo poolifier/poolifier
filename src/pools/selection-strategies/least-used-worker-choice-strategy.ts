@@ -50,7 +50,7 @@ export class LeastUsedWorkerChoiceStrategy<
     let leastUsedWorkerNodeKey!: number
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const tasksUsage = workerNode.tasksUsage
-      const workerTasks = tasksUsage.run + tasksUsage.running
+      const workerTasks = tasksUsage.ran + tasksUsage.running
       if (workerTasks === 0) {
         return workerNodeKey
       } else if (workerTasks < minNumberOfTasks) {
