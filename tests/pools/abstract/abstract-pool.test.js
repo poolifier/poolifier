@@ -201,7 +201,8 @@ describe('Abstract pool test suite', () => {
       medRunTime: false,
       waitTime: false,
       avgWaitTime: false,
-      medWaitTime: false
+      medWaitTime: false,
+      elu: false
     })
     pool.setWorkerChoiceStrategyOptions({ medRunTime: true })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
@@ -219,7 +220,8 @@ describe('Abstract pool test suite', () => {
       medRunTime: true,
       waitTime: false,
       avgWaitTime: false,
-      medWaitTime: false
+      medWaitTime: false,
+      elu: false
     })
     pool.setWorkerChoiceStrategyOptions({ medRunTime: false })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
@@ -237,7 +239,8 @@ describe('Abstract pool test suite', () => {
       medRunTime: false,
       waitTime: false,
       avgWaitTime: false,
-      medWaitTime: false
+      medWaitTime: false,
+      elu: false
     })
     await pool.destroy()
   })
@@ -346,7 +349,8 @@ describe('Abstract pool test suite', () => {
         waitTimeHistory: expect.any(CircularArray),
         avgWaitTime: 0,
         medWaitTime: 0,
-        error: 0
+        error: 0,
+        elu: undefined
       })
     }
     await pool.destroy()
@@ -387,7 +391,8 @@ describe('Abstract pool test suite', () => {
         waitTimeHistory: expect.any(CircularArray),
         avgWaitTime: 0,
         medWaitTime: 0,
-        error: 0
+        error: 0,
+        elu: undefined
       })
     }
     await Promise.all(promises)
@@ -403,7 +408,8 @@ describe('Abstract pool test suite', () => {
         waitTimeHistory: expect.any(CircularArray),
         avgWaitTime: 0,
         medWaitTime: 0,
-        error: 0
+        error: 0,
+        elu: undefined
       })
     }
     await pool.destroy()
@@ -433,7 +439,8 @@ describe('Abstract pool test suite', () => {
         waitTimeHistory: expect.any(CircularArray),
         avgWaitTime: 0,
         medWaitTime: 0,
-        error: 0
+        error: 0,
+        elu: undefined
       })
       expect(workerNode.tasksUsage.ran).toBeGreaterThan(0)
       expect(workerNode.tasksUsage.ran).toBeLessThanOrEqual(maxMultiplier)
@@ -451,7 +458,8 @@ describe('Abstract pool test suite', () => {
         waitTimeHistory: expect.any(CircularArray),
         avgWaitTime: 0,
         medWaitTime: 0,
-        error: 0
+        error: 0,
+        elu: undefined
       })
       expect(workerNode.tasksUsage.runTimeHistory.length).toBe(0)
       expect(workerNode.tasksUsage.waitTimeHistory.length).toBe(0)
