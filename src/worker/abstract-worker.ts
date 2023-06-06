@@ -2,29 +2,32 @@ import { AsyncResource } from 'node:async_hooks'
 import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
 import { type EventLoopUtilization, performance } from 'node:perf_hooks'
-import type {
-  MessageValue,
-  TaskFunctions,
-  WorkerAsyncFunction,
-  WorkerFunction,
-  WorkerSyncFunction
-} from '../utility-types'
+import type { MessageValue, WorkerStatistics } from '../utility-types'
 import { EMPTY_FUNCTION, isPlainObject } from '../utils'
 import {
   type KillBehavior,
   KillBehaviors,
   type WorkerOptions
 } from './worker-options'
+import type {
+  TaskFunctions,
+  WorkerAsyncFunction,
+  WorkerFunction,
+  WorkerSyncFunction
+} from './worker-functions'
 
 const DEFAULT_FUNCTION_NAME = 'default'
 const DEFAULT_MAX_INACTIVE_TIME = 60000
 const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
 
+/**
+ * Task performance.
+ */
 interface TaskPerformance {
   timestamp: number
-  waitTime: number
+  waitTime?: number
   runTime?: number
-  elu: EventLoopUtilization
+  elu?: EventLoopUtilization
 }
 
 /**
@@ -47,6 +50,10 @@ export abstract class AbstractWorker<
    * Timestamp of the last task processed by this worker.
    */
   protected lastTaskTimestamp!: number
+  /**
+   * Performance statistics computation.
+   */
+  protected statistics!: WorkerStatistics
   /**
    * Handler id of the `aliveInterval` worker alive check.
    */
@@ -90,7 +97,6 @@ export abstract class AbstractWorker<
       )
       this.checkAlive.bind(this)()
     }
-
     this.mainWorker?.on('message', this.messageListener.bind(this))
   }
 
@@ -162,6 +168,9 @@ export abstract class AbstractWorker<
       // Kill message received
       this.aliveInterval != null && clearInterval(this.aliveInterval)
       this.emitDestroy()
+    } else if (message.statistics != null) {
+      // Statistics message received
+      this.statistics = message.statistics
     }
   }
 
@@ -292,22 +301,25 @@ export abstract class AbstractWorker<
   }
 
   private beforeTaskRunHook (message: MessageValue<Data>): TaskPerformance {
-    // TODO: conditional accounting
     const timestamp = performance.now()
     return {
       timestamp,
-      waitTime: timestamp - (message.submissionTimestamp ?? 0),
-      elu: performance.eventLoopUtilization()
+      ...(this.statistics.waitTime && {
+        waitTime: timestamp - (message.timestamp ?? timestamp)
+      }),
+      ...(this.statistics.elu && { elu: performance.eventLoopUtilization() })
     }
   }
 
   private afterTaskRunHook (taskPerformance: TaskPerformance): TaskPerformance {
     return {
       ...taskPerformance,
-      ...{
-        runTime: performance.now() - taskPerformance.timestamp,
+      ...(this.statistics.runTime && {
+        runTime: performance.now() - taskPerformance.timestamp
+      }),
+      ...(this.statistics.elu && {
         elu: performance.eventLoopUtilization(taskPerformance.elu)
-      }
+      })
     }
   }
 }

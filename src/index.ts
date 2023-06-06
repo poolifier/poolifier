@@ -26,7 +26,7 @@ export type {
 export { WorkerChoiceStrategies } from './pools/selection-strategies/selection-strategies-types'
 export type {
   IWorkerChoiceStrategy,
-  RequiredStatistics,
+  TaskStatistics,
   WorkerChoiceStrategy,
   WorkerChoiceStrategyOptions
 } from './pools/selection-strategies/selection-strategies-types'
@@ -40,13 +40,15 @@ export { ThreadWorker } from './worker/thread-worker'
 export { KillBehaviors } from './worker/worker-options'
 export type { KillBehavior, WorkerOptions } from './worker/worker-options'
 export type {
-  Draft,
-  MessageValue,
-  PromiseResponseWrapper,
   TaskFunctions,
   WorkerAsyncFunction,
   WorkerFunction,
   WorkerSyncFunction
+} from './worker/worker-functions'
+export type {
+  Draft,
+  MessageValue,
+  PromiseResponseWrapper
 } from './utility-types'
 export type { CircularArray } from './circular-array'
 export type { Queue } from './queue'

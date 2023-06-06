@@ -368,10 +368,10 @@ describe('Worker choice strategy context test suite', () => {
         medRunTime: true
       }
     )
-    expect(workerChoiceStrategyContext.getRequiredStatistics().avgRunTime).toBe(
+    expect(workerChoiceStrategyContext.getTaskStatistics().avgRunTime).toBe(
       false
     )
-    expect(workerChoiceStrategyContext.getRequiredStatistics().medRunTime).toBe(
+    expect(workerChoiceStrategyContext.getTaskStatistics().medRunTime).toBe(
       true
     )
     workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
@@ -381,10 +381,10 @@ describe('Worker choice strategy context test suite', () => {
         medRunTime: true
       }
     )
-    expect(workerChoiceStrategyContext.getRequiredStatistics().avgRunTime).toBe(
+    expect(workerChoiceStrategyContext.getTaskStatistics().avgRunTime).toBe(
       false
     )
-    expect(workerChoiceStrategyContext.getRequiredStatistics().medRunTime).toBe(
+    expect(workerChoiceStrategyContext.getTaskStatistics().medRunTime).toBe(
       true
     )
     const fsWorkerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
@@ -395,10 +395,10 @@ describe('Worker choice strategy context test suite', () => {
         medRunTime: true
       }
     )
-    expect(workerChoiceStrategyContext.getRequiredStatistics().avgRunTime).toBe(
+    expect(workerChoiceStrategyContext.getTaskStatistics().avgRunTime).toBe(
       false
     )
-    expect(workerChoiceStrategyContext.getRequiredStatistics().medRunTime).toBe(
+    expect(workerChoiceStrategyContext.getTaskStatistics().medRunTime).toBe(
       true
     )
     workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
@@ -408,10 +408,10 @@ describe('Worker choice strategy context test suite', () => {
         medRunTime: true
       }
     )
-    expect(workerChoiceStrategyContext.getRequiredStatistics().avgRunTime).toBe(
+    expect(workerChoiceStrategyContext.getTaskStatistics().avgRunTime).toBe(
       false
     )
-    expect(workerChoiceStrategyContext.getRequiredStatistics().medRunTime).toBe(
+    expect(workerChoiceStrategyContext.getTaskStatistics().medRunTime).toBe(
       true
     )
   })

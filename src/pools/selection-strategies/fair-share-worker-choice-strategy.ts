@@ -4,7 +4,7 @@ import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
-  RequiredStatistics,
+  TaskStatistics,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
@@ -24,7 +24,7 @@ export class FairShareWorkerChoiceStrategy<
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
-  public readonly requiredStatistics: RequiredStatistics = {
+  public readonly taskStatistics: TaskStatistics = {
     runTime: true,
     avgRunTime: true,
     medRunTime: false,
@@ -45,7 +45,7 @@ export class FairShareWorkerChoiceStrategy<
     opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     super(pool, opts)
-    this.setRequiredStatistics(this.opts)
+    this.setTaskStatistics(this.opts)
   }
 
   /** @inheritDoc */

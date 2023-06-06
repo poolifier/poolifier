@@ -32,7 +32,7 @@ export class RoundRobinWorkerChoiceStrategy<
     opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     super(pool, opts)
-    this.setRequiredStatistics(this.opts)
+    this.setTaskStatistics(this.opts)
   }
 
   /** @inheritDoc */
