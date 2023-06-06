@@ -54,10 +54,6 @@ export class LeastBusyWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number {
-    // const freeWorkerNodeKey = this.findFreeWorkerNodeKey()
-    // if (freeWorkerNodeKey !== -1) {
-    //   return freeWorkerNodeKey
-    // }
     let minRunTime = Infinity
     let leastBusyWorkerNodeKey!: number
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
