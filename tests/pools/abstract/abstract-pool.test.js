@@ -469,7 +469,11 @@ describe('Abstract pool test suite', () => {
     )
     const promises = new Set()
     let poolFull = 0
-    pool.emitter.on(PoolEvents.full, () => ++poolFull)
+    let poolInfo
+    pool.emitter.on(PoolEvents.full, info => {
+      ++poolFull
+      poolInfo = info
+    })
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.add(pool.execute())
     }
@@ -477,6 +481,18 @@ describe('Abstract pool test suite', () => {
     // The `full` event is triggered when the number of submitted tasks at once reach the max number of workers in the dynamic pool.
     // So in total numberOfWorkers * 2 times for a loop submitting up to numberOfWorkers * 2 tasks to the dynamic pool with min = max = numberOfWorkers.
     expect(poolFull).toBe(numberOfWorkers * 2)
+    expect(poolInfo).toStrictEqual({
+      type: PoolTypes.dynamic,
+      worker: WorkerTypes.thread,
+      minSize: expect.any(Number),
+      maxSize: expect.any(Number),
+      workerNodes: expect.any(Number),
+      idleWorkerNodes: expect.any(Number),
+      busyWorkerNodes: expect.any(Number),
+      runningTasks: expect.any(Number),
+      queuedTasks: expect.any(Number),
+      maxQueuedTasks: expect.any(Number)
+    })
     await pool.destroy()
   })
 
@@ -487,7 +503,11 @@ describe('Abstract pool test suite', () => {
     )
     const promises = new Set()
     let poolBusy = 0
-    pool.emitter.on(PoolEvents.busy, () => ++poolBusy)
+    let poolInfo
+    pool.emitter.on(PoolEvents.busy, info => {
+      ++poolBusy
+      poolInfo = info
+    })
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.add(pool.execute())
     }
@@ -495,6 +515,18 @@ describe('Abstract pool test suite', () => {
     // The `busy` event is triggered when the number of submitted tasks at once reach the number of fixed pool workers.
     // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the fixed pool.
     expect(poolBusy).toBe(numberOfWorkers + 1)
+    expect(poolInfo).toStrictEqual({
+      type: PoolTypes.fixed,
+      worker: WorkerTypes.thread,
+      minSize: expect.any(Number),
+      maxSize: expect.any(Number),
+      workerNodes: expect.any(Number),
+      idleWorkerNodes: expect.any(Number),
+      busyWorkerNodes: expect.any(Number),
+      runningTasks: expect.any(Number),
+      queuedTasks: expect.any(Number),
+      maxQueuedTasks: expect.any(Number)
+    })
     await pool.destroy()
   })
 
