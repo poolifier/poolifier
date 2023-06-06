@@ -226,9 +226,10 @@ export abstract class AbstractWorker<
     message: MessageValue<Data>
   ): void {
     try {
-      const taskPerformance = this.beforeTaskRunHook(message)
+      const taskPerformance = this.beginTaskPerformance(message)
       const res = fn(message.data)
-      const { runTime, waitTime, elu } = this.afterTaskRunHook(taskPerformance)
+      const { runTime, waitTime, elu } =
+        this.endTaskPerformance(taskPerformance)
       this.sendToMainWorker({
         data: res,
         runTime,
@@ -258,11 +259,11 @@ export abstract class AbstractWorker<
     fn: WorkerAsyncFunction<Data, Response>,
     message: MessageValue<Data>
   ): void {
-    const taskPerformance = this.beforeTaskRunHook(message)
+    const taskPerformance = this.beginTaskPerformance(message)
     fn(message.data)
       .then(res => {
         const { runTime, waitTime, elu } =
-          this.afterTaskRunHook(taskPerformance)
+          this.endTaskPerformance(taskPerformance)
         this.sendToMainWorker({
           data: res,
           runTime,
@@ -300,7 +301,7 @@ export abstract class AbstractWorker<
     return fn
   }
 
-  private beforeTaskRunHook (message: MessageValue<Data>): TaskPerformance {
+  private beginTaskPerformance (message: MessageValue<Data>): TaskPerformance {
     const timestamp = performance.now()
     return {
       timestamp,
@@ -311,7 +312,9 @@ export abstract class AbstractWorker<
     }
   }
 
-  private afterTaskRunHook (taskPerformance: TaskPerformance): TaskPerformance {
+  private endTaskPerformance (
+    taskPerformance: TaskPerformance
+  ): TaskPerformance {
     return {
       ...taskPerformance,
       ...(this.statistics.runTime && {
