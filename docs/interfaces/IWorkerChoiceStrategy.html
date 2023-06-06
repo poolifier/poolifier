@@ -24,7 +24,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">IWorkerChoiceStrategy</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/1659c4c/src/pools/selection-strategies/selection-strategies-types.ts#L98">src/pools/selection-strategies/selection-strategies-types.ts:98</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/a788de3/src/pools/selection-strategies/selection-strategies-types.ts#L102">src/pools/selection-strategies/selection-strategies-types.ts:102</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -34,9 +34,9 @@
 <h3 class="tsd-index-heading">Properties</h3>
 <div class="tsd-index-list"><a href="IWorkerChoiceStrategy.html#choose" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-1024"><rect fill="var(--color-icon-background)" stroke="#FF984D" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12"></rect><path d="M9.354 16V7.24H12.174C12.99 7.24 13.638 7.476 14.118 7.948C14.606 8.412 14.85 9.036 14.85 9.82C14.85 10.604 14.606 11.232 14.118 11.704C13.638 12.168 12.99 12.4 12.174 12.4H10.434V16H9.354ZM10.434 11.428H12.174C12.646 11.428 13.022 11.284 13.302 10.996C13.59 10.7 13.734 10.308 13.734 9.82C13.734 9.324 13.59 8.932 13.302 8.644C13.022 8.356 12.646 8.212 12.174 8.212H10.434V11.428Z" fill="var(--color-text)"></path></g></svg><span>choose</span></a>
 <a href="IWorkerChoiceStrategy.html#remove" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>remove</span></a>
-<a href="IWorkerChoiceStrategy.html#requiredStatistics" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>required<wbr/>Statistics</span></a>
 <a href="IWorkerChoiceStrategy.html#reset" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>reset</span></a>
 <a href="IWorkerChoiceStrategy.html#setOptions" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>set<wbr/>Options</span></a>
+<a href="IWorkerChoiceStrategy.html#taskStatistics" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>task<wbr/>Statistics</span></a>
 <a href="IWorkerChoiceStrategy.html#update" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>update</span></a>
 </div></section></div></details></section></section>
 <section class="tsd-panel-group tsd-member-group">
@@ -57,7 +57,7 @@
 
 <div class="tsd-comment tsd-typography"></div></li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/1659c4c/src/pools/selection-strategies/selection-strategies-types.ts#L120">src/pools/selection-strategies/selection-strategies-types.ts:120</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/a788de3/src/pools/selection-strategies/selection-strategies-types.ts#L124">src/pools/selection-strategies/selection-strategies-types.ts:124</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="remove" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>remove</span><a href="#remove" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">remove</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">workerNodeKey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span></div>
@@ -82,15 +82,7 @@
 
 <div class="tsd-comment tsd-typography"></div></li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/1659c4c/src/pools/selection-strategies/selection-strategies-types.ts#L127">src/pools/selection-strategies/selection-strategies-types.ts:127</a></li></ul></aside></section>
-<section class="tsd-panel tsd-member"><a id="requiredStatistics" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>required<wbr/>Statistics</span><a href="#requiredStatistics" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<div class="tsd-signature"><span class="tsd-kind-property">required<wbr/>Statistics</span><span class="tsd-signature-symbol">:</span> <a href="RequiredStatistics.html" class="tsd-signature-type tsd-kind-interface">RequiredStatistics</a></div>
-<div class="tsd-comment tsd-typography"><p>Required tasks usage statistics.</p>
-</div>
-<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
-<ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/1659c4c/src/pools/selection-strategies/selection-strategies-types.ts#L102">src/pools/selection-strategies/selection-strategies-types.ts:102</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/a788de3/src/pools/selection-strategies/selection-strategies-types.ts#L131">src/pools/selection-strategies/selection-strategies-types.ts:131</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="reset" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>reset</span><a href="#reset" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">reset</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span></div>
@@ -107,7 +99,7 @@
 
 <div class="tsd-comment tsd-typography"></div></li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/1659c4c/src/pools/selection-strategies/selection-strategies-types.ts#L108">src/pools/selection-strategies/selection-strategies-types.ts:108</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/a788de3/src/pools/selection-strategies/selection-strategies-types.ts#L112">src/pools/selection-strategies/selection-strategies-types.ts:112</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="setOptions" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Options</span><a href="#setOptions" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">set<wbr/>Options</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">opts</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span></div>
@@ -131,7 +123,15 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 <div class="tsd-comment tsd-typography"></div></li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/1659c4c/src/pools/selection-strategies/selection-strategies-types.ts#L133">src/pools/selection-strategies/selection-strategies-types.ts:133</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/a788de3/src/pools/selection-strategies/selection-strategies-types.ts#L137">src/pools/selection-strategies/selection-strategies-types.ts:137</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="taskStatistics" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>task<wbr/>Statistics</span><a href="#taskStatistics" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">task<wbr/>Statistics</span><span class="tsd-signature-symbol">:</span> <a href="TaskStatistics.html" class="tsd-signature-type tsd-kind-interface">TaskStatistics</a></div>
+<div class="tsd-comment tsd-typography"><p>Required tasks statistics.</p>
+</div>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/a788de3/src/pools/selection-strategies/selection-strategies-types.ts#L106">src/pools/selection-strategies/selection-strategies-types.ts:106</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="update" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>update</span><a href="#update" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">update</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">workerNodeKey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span></div>
@@ -153,7 +153,7 @@
 
 <div class="tsd-comment tsd-typography"></div></li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/1659c4c/src/pools/selection-strategies/selection-strategies-types.ts#L114">src/pools/selection-strategies/selection-strategies-types.ts:114</a></li></ul></aside></section></section></div>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/a788de3/src/pools/selection-strategies/selection-strategies-types.ts#L118">src/pools/selection-strategies/selection-strategies-types.ts:118</a></li></ul></aside></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -175,9 +175,9 @@
 <ul>
 <li><a href="#choose" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>choose</span></a></li>
 <li><a href="#remove" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>remove</span></a></li>
-<li><a href="#requiredStatistics" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>required<wbr/>Statistics</span></a></li>
 <li><a href="#reset" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>reset</span></a></li>
 <li><a href="#setOptions" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>set<wbr/>Options</span></a></li>
+<li><a href="#taskStatistics" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>task<wbr/>Statistics</span></a></li>
 <li><a href="#update" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>update</span></a></li></ul></div></details></div>
 <div class="site-menu">
 <nav class="tsd-navigation"><a href="../index.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-4"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-namespace)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M9.33 16V7.24H10.77L13.446 14.74C13.43 14.54 13.41 14.296 13.386 14.008C13.37 13.712 13.354 13.404 13.338 13.084C13.33 12.756 13.326 12.448 13.326 12.16V7.24H14.37V16H12.93L10.266 8.5C10.282 8.692 10.298 8.936 10.314 9.232C10.33 9.52 10.342 9.828 10.35 10.156C10.366 10.476 10.374 10.784 10.374 11.08V16H9.33Z" fill="var(--color-text)"></path></g></svg><span>poolifier</span></a>
@@ -202,8 +202,8 @@
 <li><a href="PoolInfo.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Pool<wbr/>Info</span></a></li>
 <li><a href="PoolOptions.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Pool<wbr/>Options</span></a></li>
 <li><a href="PromiseResponseWrapper.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Promise<wbr/>Response<wbr/>Wrapper</span></a></li>
-<li><a href="RequiredStatistics.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Required<wbr/>Statistics</span></a></li>
 <li><a href="Task.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Task</span></a></li>
+<li><a href="TaskStatistics.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Task<wbr/>Statistics</span></a></li>
 <li><a href="TasksQueueOptions.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Tasks<wbr/>Queue<wbr/>Options</span></a></li>
 <li><a href="TasksUsage.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Tasks<wbr/>Usage</span></a></li>
 <li><a href="WorkerChoiceStrategyOptions.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Worker<wbr/>Choice<wbr/>Strategy<wbr/>Options</span></a></li>
