@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Compute statistics at the worker level only if needed.
 
+### Fixed
+
+- Make the `LEAST_BUSY` strategy only relies on task runtime.
+
 ## [2.5.3] - 2023-06-04
 
 ### Changed
