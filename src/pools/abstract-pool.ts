@@ -536,7 +536,7 @@ export abstract class AbstractPool<
           idle: workerTasksUsage.elu.idle + message.elu.idle,
           active: workerTasksUsage.elu.active + message.elu.active,
           utilization:
-            workerTasksUsage.elu.utilization + message.elu.utilization
+            (workerTasksUsage.elu.utilization + message.elu.utilization) / 2
         }
       } else if (message.elu != null) {
         workerTasksUsage.elu = message.elu
