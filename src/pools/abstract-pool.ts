@@ -342,7 +342,7 @@ export abstract class AbstractPool<
       this.checkValidTasksQueueOptions(tasksQueueOptions)
       this.opts.tasksQueueOptions =
         this.buildTasksQueueOptions(tasksQueueOptions)
-    } else {
+    } else if (this.opts.tasksQueueOptions != null) {
       delete this.opts.tasksQueueOptions
     }
   }
@@ -625,11 +625,11 @@ export abstract class AbstractPool<
         this.emitter.emit(PoolEvents.error, error)
       }
     })
-    if (this.opts.restartWorkerOnError === true) {
-      worker.on('error', () => {
+    worker.on('error', () => {
+      if (this.opts.restartWorkerOnError === true) {
         this.createAndSetupWorker()
-      })
-    }
+      }
+    })
     worker.on('online', this.opts.onlineHandler ?? EMPTY_FUNCTION)
     worker.on('exit', this.opts.exitHandler ?? EMPTY_FUNCTION)
     worker.once('exit', () => {
