@@ -1,7 +1,7 @@
 const { WorkerFunctions } = require('./test-types')
 
 class TestUtils {
-  static async waitExits (pool, numberOfExitEventsToWait) {
+  static async waitWorkerExits (pool, numberOfExitEventsToWait) {
     return new Promise(resolve => {
       let exitEvents = 0
       if (numberOfExitEventsToWait === 0) {
@@ -15,6 +15,21 @@ class TestUtils {
           }
         })
       }
+    })
+  }
+
+  static async waitPoolEvents (pool, poolEvent, numberOfEventsToWait) {
+    return new Promise(resolve => {
+      let events = 0
+      if (numberOfEventsToWait === 0) {
+        resolve(events)
+      }
+      pool.emitter.on(poolEvent, () => {
+        ++events
+        if (events === numberOfEventsToWait) {
+          resolve(events)
+        }
+      })
     })
   }
 
