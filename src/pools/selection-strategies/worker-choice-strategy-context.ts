@@ -5,6 +5,7 @@ import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strate
 import { InterleavedWeightedRoundRobinWorkerChoiceStrategy } from './interleaved-weighted-round-robin-worker-choice-strategy'
 import { LeastBusyWorkerChoiceStrategy } from './least-busy-worker-choice-strategy'
 import { LeastUsedWorkerChoiceStrategy } from './least-used-worker-choice-strategy'
+import { LeastEluWorkerChoiceStrategy } from './least-elu-worker-choice-strategy'
 import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
@@ -66,6 +67,13 @@ export class WorkerChoiceStrategyContext<
       [
         WorkerChoiceStrategies.LEAST_BUSY,
         new (LeastBusyWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
+          pool,
+          opts
+        )
+      ],
+      [
+        WorkerChoiceStrategies.LEAST_ELU,
+        new (LeastEluWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
           pool,
           opts
         )
