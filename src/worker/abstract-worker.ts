@@ -1,23 +1,34 @@
 import { AsyncResource } from 'node:async_hooks'
 import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
-import type {
-  MessageValue,
-  TaskFunctions,
-  WorkerAsyncFunction,
-  WorkerFunction,
-  WorkerSyncFunction
-} from '../utility-types'
+import { type EventLoopUtilization, performance } from 'node:perf_hooks'
+import type { MessageValue, WorkerStatistics } from '../utility-types'
 import { EMPTY_FUNCTION, isPlainObject } from '../utils'
 import {
   type KillBehavior,
   KillBehaviors,
   type WorkerOptions
 } from './worker-options'
+import type {
+  TaskFunctions,
+  WorkerAsyncFunction,
+  WorkerFunction,
+  WorkerSyncFunction
+} from './worker-functions'
 
 const DEFAULT_FUNCTION_NAME = 'default'
 const DEFAULT_MAX_INACTIVE_TIME = 60000
 const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
+
+/**
+ * Task performance.
+ */
+interface TaskPerformance {
+  timestamp: number
+  waitTime?: number
+  runTime?: number
+  elu?: EventLoopUtilization
+}
 
 /**
  * Base class that implements some shared logic for all poolifier workers.
@@ -39,6 +50,10 @@ export abstract class AbstractWorker<
    * Timestamp of the last task processed by this worker.
    */
   protected lastTaskTimestamp!: number
+  /**
+   * Performance statistics computation.
+   */
+  protected statistics!: WorkerStatistics
   /**
    * Handler id of the `aliveInterval` worker alive check.
    */
@@ -82,7 +97,6 @@ export abstract class AbstractWorker<
       )
       this.checkAlive.bind(this)()
     }
-
     this.mainWorker?.on('message', this.messageListener.bind(this))
   }
 
@@ -154,6 +168,9 @@ export abstract class AbstractWorker<
       // Kill message received
       this.aliveInterval != null && clearInterval(this.aliveInterval)
       this.emitDestroy()
+    } else if (message.statistics != null) {
+      // Statistics message received
+      this.statistics = message.statistics
     }
   }
 
@@ -209,14 +226,15 @@ export abstract class AbstractWorker<
     message: MessageValue<Data>
   ): void {
     try {
-      const startTimestamp = performance.now()
-      const waitTime = startTimestamp - (message.submissionTimestamp ?? 0)
+      const taskPerformance = this.beginTaskPerformance(message)
       const res = fn(message.data)
-      const runTime = performance.now() - startTimestamp
+      const { runTime, waitTime, elu } =
+        this.endTaskPerformance(taskPerformance)
       this.sendToMainWorker({
         data: res,
         runTime,
         waitTime,
+        elu,
         id: message.id
       })
     } catch (e) {
@@ -241,15 +259,16 @@ export abstract class AbstractWorker<
     fn: WorkerAsyncFunction<Data, Response>,
     message: MessageValue<Data>
   ): void {
-    const startTimestamp = performance.now()
-    const waitTime = startTimestamp - (message.submissionTimestamp ?? 0)
+    const taskPerformance = this.beginTaskPerformance(message)
     fn(message.data)
       .then(res => {
-        const runTime = performance.now() - startTimestamp
+        const { runTime, waitTime, elu } =
+          this.endTaskPerformance(taskPerformance)
         this.sendToMainWorker({
           data: res,
           runTime,
           waitTime,
+          elu,
           id: message.id
         })
         return null
@@ -280,5 +299,30 @@ export abstract class AbstractWorker<
       throw new Error(`Task function '${name}' not found`)
     }
     return fn
+  }
+
+  private beginTaskPerformance (message: MessageValue<Data>): TaskPerformance {
+    const timestamp = performance.now()
+    return {
+      timestamp,
+      ...(this.statistics.waitTime && {
+        waitTime: timestamp - (message.timestamp ?? timestamp)
+      }),
+      ...(this.statistics.elu && { elu: performance.eventLoopUtilization() })
+    }
+  }
+
+  private endTaskPerformance (
+    taskPerformance: TaskPerformance
+  ): TaskPerformance {
+    return {
+      ...taskPerformance,
+      ...(this.statistics.runTime && {
+        runTime: performance.now() - taskPerformance.timestamp
+      }),
+      ...(this.statistics.elu && {
+        elu: performance.eventLoopUtilization(taskPerformance.elu)
+      })
+    }
   }
 }

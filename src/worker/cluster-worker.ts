@@ -1,11 +1,8 @@
 import cluster, { type Worker } from 'node:cluster'
-import type {
-  MessageValue,
-  TaskFunctions,
-  WorkerFunction
-} from '../utility-types'
+import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
+import type { TaskFunctions, WorkerFunction } from './worker-functions'
 
 /**
  * A cluster worker used by a poolifier `ClusterPool`.

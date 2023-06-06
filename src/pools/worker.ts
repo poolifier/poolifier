@@ -1,3 +1,4 @@
+import type { EventLoopUtilization } from 'node:perf_hooks'
 import type { CircularArray } from '../circular-array'
 import type { Queue } from '../queue'
 
@@ -46,9 +47,9 @@ export interface Task<Data = unknown> {
    */
   readonly data?: Data
   /**
-   * Submission timestamp.
+   * Timestamp.
    */
-  readonly submissionTimestamp?: number
+  readonly timestamp?: number
   /**
    * Message UUID.
    */
@@ -105,6 +106,10 @@ export interface TasksUsage {
    * Number of tasks errored.
    */
   error: number
+  /**
+   * Event loop utilization.
+   */
+  elu: EventLoopUtilization | undefined
 }
 
 /**

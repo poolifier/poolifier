@@ -49,6 +49,7 @@ export default {
     'node:crypto',
     'node:events',
     'node:os',
+    'node:perf_hooks',
     'node:worker_threads'
   ],
   plugins: [

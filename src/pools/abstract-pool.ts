@@ -1,4 +1,5 @@
 import crypto from 'node:crypto'
+import { performance } from 'node:perf_hooks'
 import type { MessageValue, PromiseResponseWrapper } from '../utility-types'
 import {
   DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
@@ -94,12 +95,6 @@ export abstract class AbstractPool<
     this.enqueueTask = this.enqueueTask.bind(this)
     this.checkAndEmitEvents = this.checkAndEmitEvents.bind(this)
 
-    this.setupHook()
-
-    for (let i = 1; i <= this.numberOfWorkers; i++) {
-      this.createAndSetupWorker()
-    }
-
     if (this.opts.enableEvents === true) {
       this.emitter = new PoolEmitter()
     }
@@ -112,6 +107,12 @@ export abstract class AbstractPool<
       this.opts.workerChoiceStrategy,
       this.opts.workerChoiceStrategyOptions
     )
+
+    this.setupHook()
+
+    for (let i = 1; i <= this.numberOfWorkers; i++) {
+      this.createAndSetupWorker()
+    }
   }
 
   private checkFilePath (filePath: string): void {
@@ -287,6 +288,12 @@ export abstract class AbstractPool<
   ): void {
     this.checkValidWorkerChoiceStrategy(workerChoiceStrategy)
     this.opts.workerChoiceStrategy = workerChoiceStrategy
+    this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
+      this.opts.workerChoiceStrategy
+    )
+    if (workerChoiceStrategyOptions != null) {
+      this.setWorkerChoiceStrategyOptions(workerChoiceStrategyOptions)
+    }
     for (const workerNode of this.workerNodes) {
       this.setWorkerNodeTasksUsage(workerNode, {
         ran: 0,
@@ -299,14 +306,10 @@ export abstract class AbstractPool<
         waitTimeHistory: new CircularArray(),
         avgWaitTime: 0,
         medWaitTime: 0,
-        error: 0
+        error: 0,
+        elu: undefined
       })
-    }
-    this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
-      this.opts.workerChoiceStrategy
-    )
-    if (workerChoiceStrategyOptions != null) {
-      this.setWorkerChoiceStrategyOptions(workerChoiceStrategyOptions)
+      this.setWorkerStatistics(workerNode.worker)
     }
   }
 
@@ -339,7 +342,7 @@ export abstract class AbstractPool<
       this.checkValidTasksQueueOptions(tasksQueueOptions)
       this.opts.tasksQueueOptions =
         this.buildTasksQueueOptions(tasksQueueOptions)
-    } else {
+    } else if (this.opts.tasksQueueOptions != null) {
       delete this.opts.tasksQueueOptions
     }
   }
@@ -378,13 +381,13 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public async execute (data?: Data, name?: string): Promise<Response> {
-    const submissionTimestamp = performance.now()
+    const timestamp = performance.now()
     const workerNodeKey = this.chooseWorkerNode()
     const submittedTask: Task<Data> = {
       name,
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       data: data ?? ({} as Data),
-      submissionTimestamp,
+      timestamp,
       id: crypto.randomUUID()
     }
     const res = new Promise<Response>((resolve, reject) => {
@@ -474,23 +477,24 @@ export abstract class AbstractPool<
     }
     this.updateRunTimeTasksUsage(workerTasksUsage, message)
     this.updateWaitTimeTasksUsage(workerTasksUsage, message)
+    this.updateEluTasksUsage(workerTasksUsage, message)
   }
 
   private updateRunTimeTasksUsage (
     workerTasksUsage: TasksUsage,
     message: MessageValue<Response>
   ): void {
-    if (this.workerChoiceStrategyContext.getRequiredStatistics().runTime) {
+    if (this.workerChoiceStrategyContext.getTaskStatistics().runTime) {
       workerTasksUsage.runTime += message.runTime ?? 0
       if (
-        this.workerChoiceStrategyContext.getRequiredStatistics().avgRunTime &&
+        this.workerChoiceStrategyContext.getTaskStatistics().avgRunTime &&
         workerTasksUsage.ran !== 0
       ) {
         workerTasksUsage.avgRunTime =
           workerTasksUsage.runTime / workerTasksUsage.ran
       }
       if (
-        this.workerChoiceStrategyContext.getRequiredStatistics().medRunTime &&
+        this.workerChoiceStrategyContext.getTaskStatistics().medRunTime &&
         message.runTime != null
       ) {
         workerTasksUsage.runTimeHistory.push(message.runTime)
@@ -503,21 +507,39 @@ export abstract class AbstractPool<
     workerTasksUsage: TasksUsage,
     message: MessageValue<Response>
   ): void {
-    if (this.workerChoiceStrategyContext.getRequiredStatistics().waitTime) {
+    if (this.workerChoiceStrategyContext.getTaskStatistics().waitTime) {
       workerTasksUsage.waitTime += message.waitTime ?? 0
       if (
-        this.workerChoiceStrategyContext.getRequiredStatistics().avgWaitTime &&
+        this.workerChoiceStrategyContext.getTaskStatistics().avgWaitTime &&
         workerTasksUsage.ran !== 0
       ) {
         workerTasksUsage.avgWaitTime =
           workerTasksUsage.waitTime / workerTasksUsage.ran
       }
       if (
-        this.workerChoiceStrategyContext.getRequiredStatistics().medWaitTime &&
+        this.workerChoiceStrategyContext.getTaskStatistics().medWaitTime &&
         message.waitTime != null
       ) {
         workerTasksUsage.waitTimeHistory.push(message.waitTime)
         workerTasksUsage.medWaitTime = median(workerTasksUsage.waitTimeHistory)
+      }
+    }
+  }
+
+  private updateEluTasksUsage (
+    workerTasksUsage: TasksUsage,
+    message: MessageValue<Response>
+  ): void {
+    if (this.workerChoiceStrategyContext.getTaskStatistics().elu) {
+      if (workerTasksUsage.elu != null && message.elu != null) {
+        workerTasksUsage.elu = {
+          idle: workerTasksUsage.elu.idle + message.elu.idle,
+          active: workerTasksUsage.elu.active + message.elu.active,
+          utilization:
+            workerTasksUsage.elu.utilization + message.elu.utilization
+        }
+      } else if (message.elu != null) {
+        workerTasksUsage.elu = message.elu
       }
     }
   }
@@ -603,11 +625,11 @@ export abstract class AbstractPool<
         this.emitter.emit(PoolEvents.error, error)
       }
     })
-    if (this.opts.restartWorkerOnError === true) {
-      worker.on('error', () => {
+    worker.on('error', () => {
+      if (this.opts.restartWorkerOnError === true) {
         this.createAndSetupWorker()
-      })
-    }
+      }
+    })
     worker.on('online', this.opts.onlineHandler ?? EMPTY_FUNCTION)
     worker.on('exit', this.opts.exitHandler ?? EMPTY_FUNCTION)
     worker.once('exit', () => {
@@ -615,6 +637,8 @@ export abstract class AbstractPool<
     })
 
     this.pushWorkerNode(worker)
+
+    this.setWorkerStatistics(worker)
 
     this.afterWorkerSetup(worker)
 
@@ -704,7 +728,8 @@ export abstract class AbstractPool<
         waitTimeHistory: new CircularArray(),
         avgWaitTime: 0,
         medWaitTime: 0,
-        error: 0
+        error: 0,
+        elu: undefined
       },
       tasksQueue: new Queue<Task<Data>>()
     })
@@ -776,5 +801,15 @@ export abstract class AbstractPool<
     for (const [workerNodeKey] of this.workerNodes.entries()) {
       this.flushTasksQueue(workerNodeKey)
     }
+  }
+
+  private setWorkerStatistics (worker: Worker): void {
+    this.sendToWorker(worker, {
+      statistics: {
+        runTime: this.workerChoiceStrategyContext.getTaskStatistics().runTime,
+        waitTime: this.workerChoiceStrategyContext.getTaskStatistics().waitTime,
+        elu: this.workerChoiceStrategyContext.getTaskStatistics().elu
+      }
+    })
   }
 }

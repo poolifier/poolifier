@@ -4,7 +4,7 @@ import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import type {
   IWorkerChoiceStrategy,
-  RequiredStatistics,
+  TaskStatistics,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
@@ -25,13 +25,14 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   private toggleFindLastFreeWorkerNodeKey: boolean = false
   /** @inheritDoc */
-  public readonly requiredStatistics: RequiredStatistics = {
+  public readonly taskStatistics: TaskStatistics = {
     runTime: false,
     avgRunTime: false,
     medRunTime: false,
     waitTime: false,
     avgWaitTime: false,
-    medWaitTime: false
+    medWaitTime: false,
+    elu: false
   }
 
   /**
@@ -47,22 +48,22 @@ export abstract class AbstractWorkerChoiceStrategy<
     this.choose = this.choose.bind(this)
   }
 
-  protected setRequiredStatistics (opts: WorkerChoiceStrategyOptions): void {
-    if (this.requiredStatistics.avgRunTime && opts.medRunTime === true) {
-      this.requiredStatistics.avgRunTime = false
-      this.requiredStatistics.medRunTime = opts.medRunTime as boolean
+  protected setTaskStatistics (opts: WorkerChoiceStrategyOptions): void {
+    if (this.taskStatistics.avgRunTime && opts.medRunTime === true) {
+      this.taskStatistics.avgRunTime = false
+      this.taskStatistics.medRunTime = opts.medRunTime as boolean
     }
-    if (this.requiredStatistics.medRunTime && opts.medRunTime === false) {
-      this.requiredStatistics.avgRunTime = true
-      this.requiredStatistics.medRunTime = opts.medRunTime as boolean
+    if (this.taskStatistics.medRunTime && opts.medRunTime === false) {
+      this.taskStatistics.avgRunTime = true
+      this.taskStatistics.medRunTime = opts.medRunTime as boolean
     }
-    if (this.requiredStatistics.avgWaitTime && opts.medWaitTime === true) {
-      this.requiredStatistics.avgWaitTime = false
-      this.requiredStatistics.medWaitTime = opts.medWaitTime as boolean
+    if (this.taskStatistics.avgWaitTime && opts.medWaitTime === true) {
+      this.taskStatistics.avgWaitTime = false
+      this.taskStatistics.medWaitTime = opts.medWaitTime as boolean
     }
-    if (this.requiredStatistics.medWaitTime && opts.medWaitTime === false) {
-      this.requiredStatistics.avgWaitTime = true
-      this.requiredStatistics.medWaitTime = opts.medWaitTime as boolean
+    if (this.taskStatistics.medWaitTime && opts.medWaitTime === false) {
+      this.taskStatistics.avgWaitTime = true
+      this.taskStatistics.medWaitTime = opts.medWaitTime as boolean
     }
   }
 
@@ -81,7 +82,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   /** @inheritDoc */
   public setOptions (opts: WorkerChoiceStrategyOptions): void {
     opts = opts ?? DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
-    this.setRequiredStatistics(opts)
+    this.setTaskStatistics(opts)
     this.opts = opts
   }
 
@@ -108,7 +109,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @returns The worker task runtime.
    */
   protected getWorkerTaskRunTime (workerNodeKey: number): number {
-    return this.requiredStatistics.medRunTime
+    return this.taskStatistics.medRunTime
       ? this.pool.workerNodes[workerNodeKey].tasksUsage.medRunTime
       : this.pool.workerNodes[workerNodeKey].tasksUsage.avgRunTime
   }
@@ -122,7 +123,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @returns The worker task wait time.
    */
   protected getWorkerWaitTime (workerNodeKey: number): number {
-    return this.requiredStatistics.medWaitTime
+    return this.taskStatistics.medWaitTime
       ? this.pool.workerNodes[workerNodeKey].tasksUsage.medWaitTime
       : this.pool.workerNodes[workerNodeKey].tasksUsage.avgWaitTime
   }

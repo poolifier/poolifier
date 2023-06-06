@@ -65,7 +65,7 @@ export interface WorkerChoiceStrategyOptions {
  *
  * @internal
  */
-export interface RequiredStatistics {
+export interface TaskStatistics {
   /**
    * Require tasks runtime.
    */
@@ -90,6 +90,10 @@ export interface RequiredStatistics {
    * Require tasks median wait time.
    */
   medWaitTime: boolean
+  /**
+   * Event loop utilization.
+   */
+  elu: boolean
 }
 
 /**
@@ -97,9 +101,9 @@ export interface RequiredStatistics {
  */
 export interface IWorkerChoiceStrategy {
   /**
-   * Required tasks usage statistics.
+   * Required tasks statistics.
    */
-  readonly requiredStatistics: RequiredStatistics
+  readonly taskStatistics: TaskStatistics
   /**
    * Resets strategy internals.
    *

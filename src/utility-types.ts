@@ -1,5 +1,6 @@
 import type { Worker as ClusterWorker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
+import type { EventLoopUtilization } from 'node:perf_hooks'
 import type { KillBehavior } from './worker/worker-options'
 import type { IWorker, Task } from './pools/worker'
 
@@ -9,6 +10,15 @@ import type { IWorker, Task } from './pools/worker'
  * @typeParam T - Type in which properties will be non-readonly.
  */
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
+
+/**
+ * Performance statistics computation.
+ */
+export interface WorkerStatistics {
+  runTime: boolean
+  waitTime: boolean
+  elu: boolean
+}
 
 /**
  * Message object that is passed between main worker and worker.
@@ -42,56 +52,18 @@ export interface MessageValue<
    */
   readonly waitTime?: number
   /**
+   * Event loop utilization.
+   */
+  readonly elu?: EventLoopUtilization
+  /**
    * Reference to main worker.
    */
   readonly parent?: MainWorker
+  /**
+   * Whether to compute the given statistics or not.
+   */
+  readonly statistics?: WorkerStatistics
 }
-
-/**
- * Worker synchronous function that can be executed.
- *
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of execution response. This can only be serializable data.
- */
-export type WorkerSyncFunction<Data = unknown, Response = unknown> = (
-  data?: Data
-) => Response
-
-/**
- * Worker asynchronous function that can be executed.
- * This function must return a promise.
- *
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of execution response. This can only be serializable data.
- */
-export type WorkerAsyncFunction<Data = unknown, Response = unknown> = (
-  data?: Data
-) => Promise<Response>
-
-/**
- * Worker function that can be executed.
- * This function can be synchronous or asynchronous.
- *
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of execution response. This can only be serializable data.
- */
-export type WorkerFunction<Data = unknown, Response = unknown> =
-  | WorkerSyncFunction<Data, Response>
-  | WorkerAsyncFunction<Data, Response>
-
-/**
- * Worker functions that can be executed.
- * This object can contain synchronous or asynchronous functions.
- * The key is the name of the function.
- * The value is the function itself.
- *
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of execution response. This can only be serializable data.
- */
-export type TaskFunctions<Data = unknown, Response = unknown> = Record<
-string,
-WorkerFunction<Data, Response>
->
 
 /**
  * An object holding the execution response promise resolve/reject callbacks.
