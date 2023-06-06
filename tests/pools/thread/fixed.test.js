@@ -159,10 +159,10 @@ describe('Fixed thread pool test suite', () => {
 
   it('Verify that error handling is working properly:async', async () => {
     const data = { f: 10 }
-    // let taskError
-    // errorPool.emitter.on(PoolEvents.taskError, e => {
-    //   taskError = e
-    // })
+    let taskError
+    asyncErrorPool.emitter.on(PoolEvents.taskError, e => {
+      taskError = e
+    })
     let inError
     try {
       await asyncErrorPool.execute(data)
@@ -174,10 +174,10 @@ describe('Fixed thread pool test suite', () => {
     expect(inError.message).toBeDefined()
     expect(typeof inError.message === 'string').toBe(true)
     expect(inError.message).toBe('Error Message from ThreadWorker:async')
-    // expect(taskError).toStrictEqual({
-    //   error: new Error('Error Message from ThreadWorker:async'),
-    //   errorData: data
-    // })
+    expect(taskError).toStrictEqual({
+      error: new Error('Error Message from ThreadWorker:async'),
+      errorData: data
+    })
     expect(
       asyncErrorPool.workerNodes.some(
         workerNode => workerNode.tasksUsage.error === 1
@@ -195,7 +195,7 @@ describe('Fixed thread pool test suite', () => {
   })
 
   it('Shutdown test', async () => {
-    const exitPromise = TestUtils.waitExits(pool, numberOfThreads)
+    const exitPromise = TestUtils.waitWorkerExits(pool, numberOfThreads)
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
     expect(numberOfExitEvents).toBe(numberOfThreads)
