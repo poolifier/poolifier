@@ -150,11 +150,9 @@ Node versions >= 16.14.x are supported.
 
 ## [API](https://poolifier.github.io/poolifier/)
 
-### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
+### Pool options
 
-`numberOfThreads/numberOfWorkers` (mandatory) Number of workers for this pool  
-`filePath` (mandatory) Path to a file with a worker implementation  
-`opts` (optional) An object with these properties:
+An object with these properties:
 
 - `messageHandler` (optional) - A function that will listen for message event on each worker
 - `errorHandler` (optional) - A function that will listen for error event on each worker
@@ -194,17 +192,34 @@ Node versions >= 16.14.x are supported.
 
   Default: `{ concurrency: 1 }`
 
+  #### Thread pool specific options
+
+  - `workerOptions` (optional) - An object with the worker options. See [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_new_worker_filename_options) for more details.
+
+  #### Cluster pool specific options
+
+  - `env` (optional) - An object with the environment variables to pass to the worker. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_fork_env) for more details.
+
+  - `settings` (optional) - An object with the cluster settings. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_settings) for more details.
+
+### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
+
+`numberOfThreads/numberOfWorkers` (mandatory) Number of workers for this pool  
+`filePath` (mandatory) Path to a file with a worker implementation  
+`opts` (optional) An object with the pool options properties described above
+
 ### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
 
 `min` (mandatory) Same as FixedThreadPool/FixedClusterPool numberOfThreads/numberOfWorkers, this number of workers will be always active  
 `max` (mandatory) Max number of workers that this pool can contain, the new created workers will die after a threshold (default is 1 minute, you can override it in your worker implementation).  
-`filePath` (mandatory) Same as FixedThreadPool/FixedClusterPool  
-`opts` (optional) Same as FixedThreadPool/FixedClusterPool
+`filePath` (mandatory) Path to a file with a worker implementation  
+`opts` (optional) An object with the pool options properties described above
 
-### `pool.execute(data)`
+### `pool.execute(data, name)`
 
 `data` (optional) An object that you want to pass to your worker implementation  
 This method is available on both pool implementations and returns a promise.
+`name` (optional) A string with the task function name that you want to execute on the worker. Default: `default`
 
 ### `pool.destroy()`
 
@@ -213,7 +228,7 @@ This method will call the terminate method on each worker.
 
 ### `class YourWorker extends ThreadWorker/ClusterWorker`
 
-`taskFunctions` (mandatory) The task function(s) that you want to execute on the worker  
+`taskFunctions` (mandatory) The task function or task functions object that you want to execute on the worker  
 `opts` (optional) An object with these properties:
 
 - `maxInactiveTime` (optional) - Max time to wait tasks to work on in milliseconds, after this period the new worker will die.  
