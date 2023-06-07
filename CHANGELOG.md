@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.4] - 2023-06-07
+
 ### Added
 
 - Add Event Loop Utilization (ELU) statistics to worker tasks usage.
