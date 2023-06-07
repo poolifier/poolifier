@@ -218,8 +218,8 @@ An object with these properties:
 ### `pool.execute(data, name)`
 
 `data` (optional) An object that you want to pass to your worker implementation  
+`name` (optional) A string with the task function name that you want to execute on the worker. Default: `default`  
 This method is available on both pool implementations and returns a promise.
-`name` (optional) A string with the task function name that you want to execute on the worker. Default: `default`
 
 ### `pool.destroy()`
 
