@@ -11,6 +11,17 @@ import type { IWorker, Task } from './pools/worker'
  */
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 
+export interface TaskError<Data = unknown> {
+  /**
+   * Error message.
+   */
+  message: string
+  /**
+   * Data passed to the worker triggering the error.
+   */
+  data?: Data
+}
+
 /**
  * Task performance.
  */
@@ -51,6 +62,7 @@ export interface WorkerStatistics {
  */
 export interface MessageValue<
   Data = unknown,
+  ErrorData = unknown,
   MainWorker extends ClusterWorker | MessagePort = ClusterWorker | MessagePort
 > extends Task<Data> {
   /**
@@ -60,11 +72,7 @@ export interface MessageValue<
   /**
    * Task error.
    */
-  readonly error?: string
-  /**
-   * Task data triggering task error.
-   */
-  readonly errorData?: unknown
+  readonly taskError?: TaskError<ErrorData>
   /**
    * Task performance.
    */

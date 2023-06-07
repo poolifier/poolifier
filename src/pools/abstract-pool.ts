@@ -472,7 +472,7 @@ export abstract class AbstractPool<
       this.workerNodes[this.getWorkerNodeKey(worker)].tasksUsage
     --workerTasksUsage.running
     ++workerTasksUsage.ran
-    if (message.error != null) {
+    if (message.taskError != null) {
       ++workerTasksUsage.error
     }
     this.updateRunTimeTasksUsage(workerTasksUsage, message)
@@ -662,13 +662,10 @@ export abstract class AbstractPool<
         // Task execution response received
         const promiseResponse = this.promiseResponseMap.get(message.id)
         if (promiseResponse != null) {
-          if (message.error != null) {
-            promiseResponse.reject(message.error)
+          if (message.taskError != null) {
+            promiseResponse.reject(message.taskError.message)
             if (this.emitter != null) {
-              this.emitter.emit(PoolEvents.taskError, {
-                error: message.error,
-                errorData: message.errorData
-              })
+              this.emitter.emit(PoolEvents.taskError, message.taskError)
             }
           } else {
             promiseResponse.resolve(message.data as Response)

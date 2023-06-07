@@ -146,7 +146,9 @@ export abstract class AbstractWorker<
    *
    * @param message - Message received.
    */
-  protected messageListener (message: MessageValue<Data, MainWorker>): void {
+  protected messageListener (
+    message: MessageValue<Data, Data, MainWorker>
+  ): void {
     if (message.id != null && message.data != null) {
       // Task message received
       const fn = this.getTaskFunction(message.name)
@@ -185,7 +187,9 @@ export abstract class AbstractWorker<
    *
    * @param message - The response message.
    */
-  protected abstract sendToMainWorker (message: MessageValue<Response>): void
+  protected abstract sendToMainWorker (
+    message: MessageValue<Response, Data>
+  ): void
 
   /**
    * Checks if the worker should be terminated, because its living too long.
@@ -231,8 +235,10 @@ export abstract class AbstractWorker<
     } catch (e) {
       const err = this.handleError(e as Error)
       this.sendToMainWorker({
-        error: err,
-        errorData: message.data,
+        taskError: {
+          message: err,
+          data: message.data
+        },
         id: message.id
       })
     } finally {
@@ -264,8 +270,10 @@ export abstract class AbstractWorker<
       .catch(e => {
         const err = this.handleError(e as Error)
         this.sendToMainWorker({
-          error: err,
-          errorData: message.data,
+          taskError: {
+            message: err,
+            data: message.data
+          },
           id: message.id
         })
       })
