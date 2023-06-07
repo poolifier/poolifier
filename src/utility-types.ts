@@ -56,15 +56,16 @@ export interface WorkerStatistics {
 /**
  * Message object that is passed between main worker and worker.
  *
+ * @typeParam MessageData - Type of data sent to and/or from the worker. This can only be serializable data.
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
  * @typeParam MainWorker - Type of main worker.
  * @internal
  */
 export interface MessageValue<
+  MessageData = unknown,
   Data = unknown,
-  ErrorData = unknown,
   MainWorker extends ClusterWorker | MessagePort = ClusterWorker | MessagePort
-> extends Task<Data> {
+> extends Task<MessageData> {
   /**
    * Kill code.
    */
@@ -72,7 +73,7 @@ export interface MessageValue<
   /**
    * Task error.
    */
-  readonly taskError?: TaskError<ErrorData>
+  readonly taskError?: TaskError<Data>
   /**
    * Task performance.
    */
