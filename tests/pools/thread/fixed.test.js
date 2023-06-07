@@ -201,6 +201,24 @@ describe('Fixed thread pool test suite', () => {
     expect(numberOfExitEvents).toBe(numberOfThreads)
   })
 
+  it('Verify that thread pool options are checked', async () => {
+    const workerFilePath = './tests/worker-files/cluster/testWorker.js'
+    let pool1 = new FixedThreadPool(numberOfThreads, workerFilePath)
+    expect(pool1.opts.workerOptions).toBeUndefined()
+    await pool1.destroy()
+    pool1 = new FixedThreadPool(numberOfThreads, workerFilePath, {
+      workerOptions: {
+        env: { TEST: 'test' },
+        name: 'test'
+      }
+    })
+    expect(pool1.opts.workerOptions).toStrictEqual({
+      env: { TEST: 'test' },
+      name: 'test'
+    })
+    await pool1.destroy()
+  })
+
   it('Should work even without opts in input', async () => {
     const pool1 = new FixedThreadPool(
       numberOfThreads,

@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Compute statistics at the worker level only if needed.
+- Add `worker-threads` options to thread pool options.
 
 ### Fixed
 
