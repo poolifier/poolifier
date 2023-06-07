@@ -192,15 +192,15 @@ An object with these properties:
 
   Default: `{ concurrency: 1 }`
 
-  #### Thread pool specific options
+#### Thread pool specific options
 
-  - `workerOptions` (optional) - An object with the worker options. See [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_new_worker_filename_options) for more details.
+- `workerOptions` (optional) - An object with the worker options. See [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_new_worker_filename_options) for more details.
 
-  #### Cluster pool specific options
+#### Cluster pool specific options
 
-  - `env` (optional) - An object with the environment variables to pass to the worker. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_fork_env) for more details.
+- `env` (optional) - An object with the environment variables to pass to the worker. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_fork_env) for more details.
 
-  - `settings` (optional) - An object with the cluster settings. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_settings) for more details.
+- `settings` (optional) - An object with the cluster settings. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_settings) for more details.
 
 ### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
 
