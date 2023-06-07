@@ -39,7 +39,7 @@ export {
   type ThreadPoolOptions,
   type ThreadWorkerWithMessageChannel
 } from './pools/thread/fixed'
-export type { AbstractWorker, TaskPerformance } from './worker/abstract-worker'
+export type { AbstractWorker } from './worker/abstract-worker'
 export { ClusterWorker } from './worker/cluster-worker'
 export { ThreadWorker } from './worker/thread-worker'
 export { KillBehaviors } from './worker/worker-options'
@@ -54,6 +54,7 @@ export type {
   Draft,
   MessageValue,
   PromiseResponseWrapper,
+  TaskPerformance,
   WorkerStatistics
 } from './utility-types'
 export type { CircularArray } from './circular-array'

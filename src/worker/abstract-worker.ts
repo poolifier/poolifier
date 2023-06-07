@@ -1,8 +1,12 @@
 import { AsyncResource } from 'node:async_hooks'
 import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
-import { type EventLoopUtilization, performance } from 'node:perf_hooks'
-import type { MessageValue, WorkerStatistics } from '../utility-types'
+import { performance } from 'node:perf_hooks'
+import type {
+  MessageValue,
+  TaskPerformance,
+  WorkerStatistics
+} from '../utility-types'
 import { EMPTY_FUNCTION, isPlainObject } from '../utils'
 import {
   type KillBehavior,
@@ -19,16 +23,6 @@ import type {
 const DEFAULT_FUNCTION_NAME = 'default'
 const DEFAULT_MAX_INACTIVE_TIME = 60000
 const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
-
-/**
- * Task performance.
- */
-export interface TaskPerformance {
-  timestamp: number
-  waitTime?: number
-  runTime?: number
-  elu?: EventLoopUtilization
-}
 
 /**
  * Base class that implements some shared logic for all poolifier workers.
@@ -226,15 +220,12 @@ export abstract class AbstractWorker<
     message: MessageValue<Data>
   ): void {
     try {
-      const taskPerformance = this.beginTaskPerformance(message)
+      let taskPerformance = this.beginTaskPerformance(message)
       const res = fn(message.data)
-      const { runTime, waitTime, elu } =
-        this.endTaskPerformance(taskPerformance)
+      taskPerformance = this.endTaskPerformance(taskPerformance)
       this.sendToMainWorker({
         data: res,
-        runTime,
-        waitTime,
-        elu,
+        taskPerformance,
         id: message.id
       })
     } catch (e) {
@@ -259,16 +250,13 @@ export abstract class AbstractWorker<
     fn: WorkerAsyncFunction<Data, Response>,
     message: MessageValue<Data>
   ): void {
-    const taskPerformance = this.beginTaskPerformance(message)
+    let taskPerformance = this.beginTaskPerformance(message)
     fn(message.data)
       .then(res => {
-        const { runTime, waitTime, elu } =
-          this.endTaskPerformance(taskPerformance)
+        taskPerformance = this.endTaskPerformance(taskPerformance)
         this.sendToMainWorker({
           data: res,
-          runTime,
-          waitTime,
-          elu,
+          taskPerformance,
           id: message.id
         })
         return null

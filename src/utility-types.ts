@@ -12,6 +12,28 @@ import type { IWorker, Task } from './pools/worker'
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 
 /**
+ * Task performance.
+ */
+export interface TaskPerformance {
+  /**
+   * Task performance timestamp.
+   */
+  timestamp: number
+  /**
+   * Task runtime.
+   */
+  runTime?: number
+  /**
+   * Task wait time.
+   */
+  waitTime?: number
+  /**
+   * Task event loop utilization.
+   */
+  elu?: EventLoopUtilization
+}
+
+/**
  * Performance statistics computation.
  */
 export interface WorkerStatistics {
@@ -44,17 +66,9 @@ export interface MessageValue<
    */
   readonly errorData?: unknown
   /**
-   * Runtime.
+   * Task performance.
    */
-  readonly runTime?: number
-  /**
-   * Wait time.
-   */
-  readonly waitTime?: number
-  /**
-   * Event loop utilization.
-   */
-  readonly elu?: EventLoopUtilization
+  readonly taskPerformance?: TaskPerformance
   /**
    * Reference to main worker.
    */
