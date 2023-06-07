@@ -179,11 +179,11 @@ An object with these properties:
   Default: `{ medRunTime: false }`
 
 - `restartWorkerOnError` (optional) - Restart worker on uncaught error in this pool.  
-  Default: true
+  Default: `true`
 - `enableEvents` (optional) - Events emission enablement in this pool.  
-  Default: true
+  Default: `true`
 - `enableTasksQueue` (optional) - Tasks queue per worker enablement in this pool.  
-  Default: false
+  Default: `false`
 
 - `tasksQueueOptions` (optional) - The worker tasks queue options object to use in this pool.  
   Properties:
@@ -218,7 +218,7 @@ An object with these properties:
 ### `pool.execute(data, name)`
 
 `data` (optional) An object that you want to pass to your worker implementation  
-`name` (optional) A string with the task function name that you want to execute on the worker. Default: `default`  
+`name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
 This method is available on both pool implementations and returns a promise.
 
 ### `pool.destroy()`
@@ -235,7 +235,7 @@ This method will call the terminate method on each worker.
   The last active time of your worker unit will be updated when a task is submitted to a worker or when a worker terminate a task.  
   If `killBehavior` is set to `KillBehaviors.HARD` this value represents also the timeout for the tasks that you submit to the pool, when this timeout expires your tasks is interrupted and the worker is killed if is not part of the minimum size of the pool.  
   If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.  
-  Default: 60000
+  Default: `60000`
 
 - `killBehavior` (optional) - Dictates if your async unit (worker/process) will be deleted in case that a task is active on it.  
   **KillBehaviors.SOFT**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker **won't** be deleted.  
