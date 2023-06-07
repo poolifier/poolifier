@@ -11,6 +11,11 @@ import type { IWorker, Task } from './pools/worker'
  */
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 
+/**
+ * Task error.
+ *
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ */
 export interface TaskError<Data = unknown> {
   /**
    * Error message.
