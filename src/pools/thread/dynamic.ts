@@ -1,5 +1,5 @@
-import { type PoolOptions, type PoolType, PoolTypes } from '../pool'
-import { FixedThreadPool, type ThreadWorkerWithMessageChannel } from './fixed'
+import { type PoolType, PoolTypes } from '../pool'
+import { FixedThreadPool, type ThreadPoolOptions } from './fixed'
 
 /**
  * A thread pool with a dynamic number of threads, but a guaranteed minimum number of threads.
@@ -28,7 +28,7 @@ export class DynamicThreadPool<
     min: number,
     protected readonly max: number,
     filePath: string,
-    opts: PoolOptions<ThreadWorkerWithMessageChannel> = {}
+    opts: ThreadPoolOptions = {}
   ) {
     super(min, filePath, opts)
   }
