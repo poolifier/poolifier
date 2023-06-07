@@ -23,7 +23,7 @@ const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
 /**
  * Task performance.
  */
-interface TaskPerformance {
+export interface TaskPerformance {
   timestamp: number
   waitTime?: number
   runTime?: number
