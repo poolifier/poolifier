@@ -57,25 +57,25 @@ export interface Task<Data = unknown> {
 }
 
 /**
- * Measure statistics.
+ * Measurement statistics.
  *
  * @internal
  */
-export interface MeasureStatistics {
+export interface MeasurementStatistics {
   /**
-   * Measure aggregation.
+   * Measurement aggregation.
    */
   aggregation: number
   /**
-   * Measure average.
+   * Measurement average.
    */
   average: number
   /**
-   * Measure median.
+   * Measurement median.
    */
   median: number
   /**
-   * Measure history.
+   * Measurement history.
    */
   history: CircularArray<number>
 }
@@ -85,7 +85,6 @@ export interface MeasureStatistics {
  *
  * @internal
  */
-
 export interface TaskStatistics {
   /**
    * Number of tasks executed.
@@ -118,11 +117,11 @@ export interface WorkerUsage {
   /**
    * Tasks runtime statistics.
    */
-  runTime: MeasureStatistics
+  runTime: MeasurementStatistics
   /**
    * Tasks wait time statistics.
    */
-  waitTime: MeasureStatistics
+  waitTime: MeasurementStatistics
   /**
    * Event loop utilization.
    */
