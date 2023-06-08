@@ -54,15 +54,15 @@ export class LeastEluWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number {
-    let minTasksElu = Infinity
+    let minWorkerElu = Infinity
     let leastEluWorkerNodeKey!: number
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
-      const tasksUsage = workerNode.tasksUsage
-      const tasksElu = tasksUsage.elu?.utilization ?? 0
-      if (tasksElu === 0) {
+      const workerUsage = workerNode.workerUsage
+      const workerElu = workerUsage.elu?.utilization ?? 0
+      if (workerElu === 0) {
         return workerNodeKey
-      } else if (tasksElu < minTasksElu) {
-        minTasksElu = tasksElu
+      } else if (workerElu < minWorkerElu) {
+        minWorkerElu = workerElu
         leastEluWorkerNodeKey = workerNodeKey
       }
     }

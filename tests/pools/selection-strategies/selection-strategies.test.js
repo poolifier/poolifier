@@ -14,6 +14,7 @@ describe('Selection strategies test suite', () => {
   it('Verify that WorkerChoiceStrategies enumeration provides string values', () => {
     expect(WorkerChoiceStrategies.ROUND_ROBIN).toBe('ROUND_ROBIN')
     expect(WorkerChoiceStrategies.LEAST_USED).toBe('LEAST_USED')
+    expect(WorkerChoiceStrategies.LEAST_ELU).toBe('LEAST_ELU')
     expect(WorkerChoiceStrategies.LEAST_BUSY).toBe('LEAST_BUSY')
     expect(WorkerChoiceStrategies.FAIR_SHARE).toBe('FAIR_SHARE')
     expect(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN).toBe(
