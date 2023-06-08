@@ -611,7 +611,7 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it.only('Verify LEAST_ELU strategy can be run in a fixed pool', async () => {
+  it('Verify LEAST_ELU strategy can be run in a fixed pool', async () => {
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
