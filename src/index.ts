@@ -19,16 +19,18 @@ export type {
   ErrorHandler,
   ExitHandler,
   IWorker,
+  MeasurementStatistics,
   MessageHandler,
   OnlineHandler,
   Task,
-  WorkerUsage,
-  WorkerNode
+  TaskStatistics,
+  WorkerNode,
+  WorkerUsage
 } from './pools/worker'
 export { WorkerChoiceStrategies } from './pools/selection-strategies/selection-strategies-types'
 export type {
   IWorkerChoiceStrategy,
-  TaskStatistics,
+  TaskStatisticsRequirements,
   WorkerChoiceStrategy,
   WorkerChoiceStrategyOptions
 } from './pools/selection-strategies/selection-strategies-types'
@@ -54,6 +56,7 @@ export type {
   Draft,
   MessageValue,
   PromiseResponseWrapper,
+  TaskError,
   TaskPerformance,
   WorkerStatistics
 } from './utility-types'

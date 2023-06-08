@@ -8,7 +8,7 @@ import { LeastUsedWorkerChoiceStrategy } from './least-used-worker-choice-strate
 import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
-  TaskStatistics,
+  TaskStatisticsRequirements,
   WorkerChoiceStrategy,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
@@ -97,16 +97,16 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
-   * Gets the worker choice strategy task statistics in the context.
+   * Gets the worker choice strategy task statistics requirements in the context.
    *
-   * @returns The task statistics.
+   * @returns The task statistics requirements.
    */
-  public getTaskStatistics (): TaskStatistics {
+  public getTaskStatisticsRequirements (): TaskStatisticsRequirements {
     return (
       this.workerChoiceStrategies.get(
         this.workerChoiceStrategy
       ) as IWorkerChoiceStrategy
-    ).taskStatistics
+    ).taskStatisticsRequirements
   }
 
   /**

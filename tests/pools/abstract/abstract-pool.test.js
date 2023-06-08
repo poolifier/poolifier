@@ -193,7 +193,9 @@ describe('Abstract pool test suite', () => {
         medWaitTime: false
       })
     }
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
       runTime: true,
       avgRunTime: true,
       medRunTime: false,
@@ -210,7 +212,9 @@ describe('Abstract pool test suite', () => {
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({ medRunTime: true })
     }
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
       runTime: true,
       avgRunTime: false,
       medRunTime: true,
@@ -227,7 +231,9 @@ describe('Abstract pool test suite', () => {
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({ medRunTime: false })
     }
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
       runTime: true,
       avgRunTime: true,
       medRunTime: false,
