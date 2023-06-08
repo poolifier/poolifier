@@ -154,7 +154,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   /**
    * Finds the first free worker node key based on the number of tasks the worker has applied.
    *
-   * If a worker is found with `0` running tasks, it is detected as free and its worker node key is returned.
+   * If a worker is found with `0` executing tasks, it is detected as free and its worker node key is returned.
    *
    * If no free worker is found, `-1` is returned.
    *
@@ -169,7 +169,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   /**
    * Finds the last free worker node key based on the number of tasks the worker has applied.
    *
-   * If a worker is found with `0` running tasks, it is detected as free and its worker node key is returned.
+   * If a worker is found with `0` executing tasks, it is detected as free and its worker node key is returned.
    *
    * If no free worker is found, `-1` is returned.
    *

@@ -51,7 +51,9 @@ export class LeastUsedWorkerChoiceStrategy<
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerTaskStatistics = workerNode.workerUsage.tasks
       const workerTasks =
-        workerTaskStatistics.executed + workerTaskStatistics.executing
+        workerTaskStatistics.executed +
+        workerTaskStatistics.executing +
+        workerTaskStatistics.queued
       if (workerTasks === 0) {
         return workerNodeKey
       } else if (workerTasks < minNumberOfTasks) {
