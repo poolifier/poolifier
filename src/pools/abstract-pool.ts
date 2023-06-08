@@ -311,8 +311,8 @@ export abstract class AbstractPool<
     for (const workerNode of this.workerNodes) {
       this.setWorkerNodeTasksUsage(workerNode, {
         tasks: {
-          executing: 0,
           executed: 0,
+          executing: 0,
           queued:
             this.opts.enableTasksQueue === true
               ? workerNode.tasksQueue.size
