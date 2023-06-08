@@ -145,8 +145,8 @@ describe('Fixed cluster pool test suite', () => {
     expect(typeof inError === 'string').toBe(true)
     expect(inError).toBe('Error Message from ClusterWorker')
     expect(taskError).toStrictEqual({
-      error: 'Error Message from ClusterWorker',
-      errorData: data
+      message: 'Error Message from ClusterWorker',
+      data
     })
     expect(
       errorPool.workerNodes.some(
@@ -171,8 +171,8 @@ describe('Fixed cluster pool test suite', () => {
     expect(typeof inError === 'string').toBe(true)
     expect(inError).toBe('Error Message from ClusterWorker:async')
     expect(taskError).toStrictEqual({
-      error: 'Error Message from ClusterWorker:async',
-      errorData: data
+      message: 'Error Message from ClusterWorker:async',
+      data
     })
     expect(
       asyncErrorPool.workerNodes.some(

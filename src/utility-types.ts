@@ -12,6 +12,44 @@ import type { IWorker, Task } from './pools/worker'
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 
 /**
+ * Task error.
+ *
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ */
+export interface TaskError<Data = unknown> {
+  /**
+   * Error message.
+   */
+  message: string
+  /**
+   * Data passed to the worker triggering the error.
+   */
+  data?: Data
+}
+
+/**
+ * Task performance.
+ */
+export interface TaskPerformance {
+  /**
+   * Task performance timestamp.
+   */
+  timestamp: number
+  /**
+   * Task runtime.
+   */
+  runTime?: number
+  /**
+   * Task wait time.
+   */
+  waitTime?: number
+  /**
+   * Task event loop utilization.
+   */
+  elu?: EventLoopUtilization
+}
+
+/**
  * Performance statistics computation.
  */
 export interface WorkerStatistics {
@@ -23,14 +61,16 @@ export interface WorkerStatistics {
 /**
  * Message object that is passed between main worker and worker.
  *
+ * @typeParam MessageData - Type of data sent to and/or from the worker. This can only be serializable data.
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
  * @typeParam MainWorker - Type of main worker.
  * @internal
  */
 export interface MessageValue<
+  MessageData = unknown,
   Data = unknown,
   MainWorker extends ClusterWorker | MessagePort = ClusterWorker | MessagePort
-> extends Task<Data> {
+> extends Task<MessageData> {
   /**
    * Kill code.
    */
@@ -38,23 +78,11 @@ export interface MessageValue<
   /**
    * Task error.
    */
-  readonly error?: string
+  readonly taskError?: TaskError<Data>
   /**
-   * Task data triggering task error.
+   * Task performance.
    */
-  readonly errorData?: unknown
-  /**
-   * Runtime.
-   */
-  readonly runTime?: number
-  /**
-   * Wait time.
-   */
-  readonly waitTime?: number
-  /**
-   * Event loop utilization.
-   */
-  readonly elu?: EventLoopUtilization
+  readonly taskPerformance?: TaskPerformance
   /**
    * Reference to main worker.
    */

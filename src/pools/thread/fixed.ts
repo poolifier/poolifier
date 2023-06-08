@@ -2,6 +2,7 @@ import {
   MessageChannel,
   SHARE_ENV,
   Worker,
+  type WorkerOptions,
   isMainThread
 } from 'node:worker_threads'
 import type { Draft, MessageValue } from '../../utility-types'
@@ -13,6 +14,18 @@ import {
   type WorkerType,
   WorkerTypes
 } from '../pool'
+
+/**
+ * Options for a poolifier thread pool.
+ */
+export interface ThreadPoolOptions extends PoolOptions<Worker> {
+  /**
+   * Worker options.
+   *
+   * @see https://nodejs.org/api/worker_threads.html#new-workerfilename-options
+   */
+  workerOptions?: WorkerOptions
+}
 
 /**
  * A thread worker with message channels for communication between main thread and thread worker.
@@ -45,7 +58,7 @@ export class FixedThreadPool<
   public constructor (
     numberOfThreads: number,
     filePath: string,
-    opts: PoolOptions<ThreadWorkerWithMessageChannel> = {}
+    protected readonly opts: ThreadPoolOptions = {}
   ) {
     super(numberOfThreads, filePath, opts)
   }
@@ -82,7 +95,8 @@ export class FixedThreadPool<
   /** @inheritDoc */
   protected createWorker (): ThreadWorkerWithMessageChannel {
     return new Worker(this.filePath, {
-      env: SHARE_ENV
+      env: SHARE_ENV,
+      ...this.opts.workerOptions
     })
   }
 

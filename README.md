@@ -150,11 +150,9 @@ Node versions >= 16.14.x are supported.
 
 ## [API](https://poolifier.github.io/poolifier/)
 
-### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
+### Pool options
 
-`numberOfThreads/numberOfWorkers` (mandatory) Number of workers for this pool  
-`filePath` (mandatory) Path to a file with a worker implementation  
-`opts` (optional) An object with these properties:
+An object with these properties:
 
 - `messageHandler` (optional) - A function that will listen for message event on each worker
 - `errorHandler` (optional) - A function that will listen for error event on each worker
@@ -181,11 +179,11 @@ Node versions >= 16.14.x are supported.
   Default: `{ medRunTime: false }`
 
 - `restartWorkerOnError` (optional) - Restart worker on uncaught error in this pool.  
-  Default: true
+  Default: `true`
 - `enableEvents` (optional) - Events emission enablement in this pool.  
-  Default: true
+  Default: `true`
 - `enableTasksQueue` (optional) - Tasks queue per worker enablement in this pool.  
-  Default: false
+  Default: `false`
 
 - `tasksQueueOptions` (optional) - The worker tasks queue options object to use in this pool.  
   Properties:
@@ -194,16 +192,33 @@ Node versions >= 16.14.x are supported.
 
   Default: `{ concurrency: 1 }`
 
+#### Thread pool specific options
+
+- `workerOptions` (optional) - An object with the worker options. See [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_new_worker_filename_options) for more details.
+
+#### Cluster pool specific options
+
+- `env` (optional) - An object with the environment variables to pass to the worker. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_fork_env) for more details.
+
+- `settings` (optional) - An object with the cluster settings. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_settings) for more details.
+
+### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
+
+`numberOfThreads/numberOfWorkers` (mandatory) Number of workers for this pool  
+`filePath` (mandatory) Path to a file with a worker implementation  
+`opts` (optional) An object with the pool options properties described above
+
 ### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
 
 `min` (mandatory) Same as FixedThreadPool/FixedClusterPool numberOfThreads/numberOfWorkers, this number of workers will be always active  
 `max` (mandatory) Max number of workers that this pool can contain, the new created workers will die after a threshold (default is 1 minute, you can override it in your worker implementation).  
-`filePath` (mandatory) Same as FixedThreadPool/FixedClusterPool  
-`opts` (optional) Same as FixedThreadPool/FixedClusterPool
+`filePath` (mandatory) Path to a file with a worker implementation  
+`opts` (optional) An object with the pool options properties described above
 
-### `pool.execute(data)`
+### `pool.execute(data, name)`
 
 `data` (optional) An object that you want to pass to your worker implementation  
+`name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
 This method is available on both pool implementations and returns a promise.
 
 ### `pool.destroy()`
@@ -213,14 +228,14 @@ This method will call the terminate method on each worker.
 
 ### `class YourWorker extends ThreadWorker/ClusterWorker`
 
-`taskFunctions` (mandatory) The task function(s) that you want to execute on the worker  
+`taskFunctions` (mandatory) The task function or task functions object that you want to execute on the worker  
 `opts` (optional) An object with these properties:
 
 - `maxInactiveTime` (optional) - Max time to wait tasks to work on in milliseconds, after this period the new worker will die.  
   The last active time of your worker unit will be updated when a task is submitted to a worker or when a worker terminate a task.  
   If `killBehavior` is set to `KillBehaviors.HARD` this value represents also the timeout for the tasks that you submit to the pool, when this timeout expires your tasks is interrupted and the worker is killed if is not part of the minimum size of the pool.  
   If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.  
-  Default: 60000
+  Default: `60000`
 
 - `killBehavior` (optional) - Dictates if your async unit (worker/process) will be deleted in case that a task is active on it.  
   **KillBehaviors.SOFT**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still running, then the worker **won't** be deleted.  

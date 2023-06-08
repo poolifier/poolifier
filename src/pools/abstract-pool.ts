@@ -472,7 +472,7 @@ export abstract class AbstractPool<
       this.workerNodes[this.getWorkerNodeKey(worker)].tasksUsage
     --workerTasksUsage.running
     ++workerTasksUsage.ran
-    if (message.error != null) {
+    if (message.taskError != null) {
       ++workerTasksUsage.error
     }
     this.updateRunTimeTasksUsage(workerTasksUsage, message)
@@ -485,7 +485,7 @@ export abstract class AbstractPool<
     message: MessageValue<Response>
   ): void {
     if (this.workerChoiceStrategyContext.getTaskStatistics().runTime) {
-      workerTasksUsage.runTime += message.runTime ?? 0
+      workerTasksUsage.runTime += message.taskPerformance?.runTime ?? 0
       if (
         this.workerChoiceStrategyContext.getTaskStatistics().avgRunTime &&
         workerTasksUsage.ran !== 0
@@ -495,9 +495,9 @@ export abstract class AbstractPool<
       }
       if (
         this.workerChoiceStrategyContext.getTaskStatistics().medRunTime &&
-        message.runTime != null
+        message.taskPerformance?.runTime != null
       ) {
-        workerTasksUsage.runTimeHistory.push(message.runTime)
+        workerTasksUsage.runTimeHistory.push(message.taskPerformance.runTime)
         workerTasksUsage.medRunTime = median(workerTasksUsage.runTimeHistory)
       }
     }
@@ -508,7 +508,7 @@ export abstract class AbstractPool<
     message: MessageValue<Response>
   ): void {
     if (this.workerChoiceStrategyContext.getTaskStatistics().waitTime) {
-      workerTasksUsage.waitTime += message.waitTime ?? 0
+      workerTasksUsage.waitTime += message.taskPerformance?.waitTime ?? 0
       if (
         this.workerChoiceStrategyContext.getTaskStatistics().avgWaitTime &&
         workerTasksUsage.ran !== 0
@@ -518,9 +518,9 @@ export abstract class AbstractPool<
       }
       if (
         this.workerChoiceStrategyContext.getTaskStatistics().medWaitTime &&
-        message.waitTime != null
+        message.taskPerformance?.waitTime != null
       ) {
-        workerTasksUsage.waitTimeHistory.push(message.waitTime)
+        workerTasksUsage.waitTimeHistory.push(message.taskPerformance.waitTime)
         workerTasksUsage.medWaitTime = median(workerTasksUsage.waitTimeHistory)
       }
     }
@@ -531,15 +531,21 @@ export abstract class AbstractPool<
     message: MessageValue<Response>
   ): void {
     if (this.workerChoiceStrategyContext.getTaskStatistics().elu) {
-      if (workerTasksUsage.elu != null && message.elu != null) {
+      if (
+        workerTasksUsage.elu != null &&
+        message.taskPerformance?.elu != null
+      ) {
         workerTasksUsage.elu = {
-          idle: workerTasksUsage.elu.idle + message.elu.idle,
-          active: workerTasksUsage.elu.active + message.elu.active,
+          idle: workerTasksUsage.elu.idle + message.taskPerformance.elu.idle,
+          active:
+            workerTasksUsage.elu.active + message.taskPerformance.elu.active,
           utilization:
-            (workerTasksUsage.elu.utilization + message.elu.utilization) / 2
+            (workerTasksUsage.elu.utilization +
+              message.taskPerformance.elu.utilization) /
+            2
         }
-      } else if (message.elu != null) {
-        workerTasksUsage.elu = message.elu
+      } else if (message.taskPerformance?.elu != null) {
+        workerTasksUsage.elu = message.taskPerformance.elu
       }
     }
   }
@@ -656,13 +662,10 @@ export abstract class AbstractPool<
         // Task execution response received
         const promiseResponse = this.promiseResponseMap.get(message.id)
         if (promiseResponse != null) {
-          if (message.error != null) {
-            promiseResponse.reject(message.error)
+          if (message.taskError != null) {
+            promiseResponse.reject(message.taskError.message)
             if (this.emitter != null) {
-              this.emitter.emit(PoolEvents.taskError, {
-                error: message.error,
-                errorData: message.errorData
-              })
+              this.emitter.emit(PoolEvents.taskError, message.taskError)
             }
           } else {
             promiseResponse.resolve(message.data as Response)

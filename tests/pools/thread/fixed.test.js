@@ -147,8 +147,8 @@ describe('Fixed thread pool test suite', () => {
     expect(typeof inError.message === 'string').toBe(true)
     expect(inError.message).toBe('Error Message from ThreadWorker')
     expect(taskError).toStrictEqual({
-      error: new Error('Error Message from ThreadWorker'),
-      errorData: data
+      message: new Error('Error Message from ThreadWorker'),
+      data
     })
     expect(
       errorPool.workerNodes.some(
@@ -175,8 +175,8 @@ describe('Fixed thread pool test suite', () => {
     expect(typeof inError.message === 'string').toBe(true)
     expect(inError.message).toBe('Error Message from ThreadWorker:async')
     expect(taskError).toStrictEqual({
-      error: new Error('Error Message from ThreadWorker:async'),
-      errorData: data
+      message: new Error('Error Message from ThreadWorker:async'),
+      data
     })
     expect(
       asyncErrorPool.workerNodes.some(
@@ -199,6 +199,24 @@ describe('Fixed thread pool test suite', () => {
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
     expect(numberOfExitEvents).toBe(numberOfThreads)
+  })
+
+  it('Verify that thread pool options are checked', async () => {
+    const workerFilePath = './tests/worker-files/cluster/testWorker.js'
+    let pool1 = new FixedThreadPool(numberOfThreads, workerFilePath)
+    expect(pool1.opts.workerOptions).toBeUndefined()
+    await pool1.destroy()
+    pool1 = new FixedThreadPool(numberOfThreads, workerFilePath, {
+      workerOptions: {
+        env: { TEST: 'test' },
+        name: 'test'
+      }
+    })
+    expect(pool1.opts.workerOptions).toStrictEqual({
+      env: { TEST: 'test' },
+      name: 'test'
+    })
+    await pool1.destroy()
   })
 
   it('Should work even without opts in input', async () => {

@@ -18,8 +18,7 @@ export interface ClusterPoolOptions extends PoolOptions<Worker> {
    *
    * @see https://nodejs.org/api/cluster.html#cluster_cluster_fork_env
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  env?: any
+  env?: Record<string, unknown>
   /**
    * Cluster settings.
    *
