@@ -87,19 +87,19 @@ export interface MeasurementStatistics {
  */
 export interface TaskStatistics {
   /**
-   * Number of tasks executed.
+   * Number of executed tasks.
    */
   executed: number
   /**
-   * Number of tasks executing.
+   * Number of executing tasks.
    */
   executing: number
   /**
-   * Number of tasks queued.
+   * Number of queued tasks.
    */
   readonly queued: number
   /**
-   * Number of tasks failed.
+   * Number of failed tasks.
    */
   failed: number
 }
