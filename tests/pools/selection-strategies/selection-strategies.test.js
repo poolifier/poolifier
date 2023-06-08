@@ -164,18 +164,25 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
         elu: undefined
       })
     }
@@ -203,18 +210,25 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
         elu: undefined
       })
     }
@@ -343,18 +357,25 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
         elu: undefined
       })
     }
@@ -377,18 +398,26 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+
         elu: undefined
       })
     }
@@ -446,23 +475,34 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: expect.any(Number),
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregation: expect.any(Number),
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
         elu: undefined
       })
-      expect(workerNode.tasksUsage.ran).toBeGreaterThanOrEqual(0)
-      expect(workerNode.tasksUsage.ran).toBeLessThanOrEqual(max * maxMultiplier)
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThanOrEqual(
+        0
+      )
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -483,23 +523,32 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: expect.any(Number),
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregation: expect.any(Number),
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
         elu: undefined
       })
-      expect(workerNode.tasksUsage.ran).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.ran).toBeLessThanOrEqual(max * maxMultiplier)
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThan(0)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -555,22 +604,29 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: expect.any(Number),
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregation: expect.any(Number),
+          average: expect.any(Number),
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
         elu: undefined
       })
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -596,22 +652,29 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: expect.any(Number),
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregation: expect.any(Number),
+          average: expect.any(Number),
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
         elu: undefined
       })
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -642,22 +705,29 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: expect.any(Number),
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregation: expect.any(Number),
+          average: 0,
+          median: expect.any(Number),
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
         elu: undefined
       })
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.medRunTime).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.median).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -792,24 +862,35 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: expect.any(Number),
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: expect.any(Number),
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregation: expect.any(Number),
+          average: expect.any(Number),
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
         elu: undefined
       })
-      expect(workerNode.tasksUsage.ran).toBeGreaterThanOrEqual(0)
-      expect(workerNode.tasksUsage.ran).toBeLessThanOrEqual(max * maxMultiplier)
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThanOrEqual(0)
-      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThanOrEqual(
+        0
+      )
+      expect(workerNode.workerUsage.runTime.average).toBeGreaterThanOrEqual(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -840,24 +921,33 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: expect.any(Number),
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: expect.any(Number),
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregation: expect.any(Number),
+          average: expect.any(Number),
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
         elu: undefined
       })
-      expect(workerNode.tasksUsage.ran).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.ran).toBeLessThanOrEqual(max * maxMultiplier)
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -893,24 +983,33 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: expect.any(Number),
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: expect.any(Number),
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregation: expect.any(Number),
+          average: 0,
+          median: expect.any(Number),
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
         elu: undefined
       })
-      expect(workerNode.tasksUsage.ran).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.ran).toBeLessThanOrEqual(max * maxMultiplier)
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.medRunTime).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.median).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1058,18 +1157,25 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
         elu: undefined
       })
     }
@@ -1119,18 +1225,25 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
         elu: undefined
       })
     }

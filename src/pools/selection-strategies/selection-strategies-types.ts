@@ -67,7 +67,7 @@ export interface WorkerChoiceStrategyOptions {
 }
 
 /**
- * Pool worker tasks usage statistics requirements.
+ * Pool worker node worker usage statistics requirements.
  *
  * @internal
  */

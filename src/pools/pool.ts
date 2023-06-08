@@ -75,9 +75,11 @@ export interface PoolInfo {
   workerNodes: number
   idleWorkerNodes: number
   busyWorkerNodes: number
-  runningTasks: number
+  executedTasks: number
+  executingTasks: number
   queuedTasks: number
   maxQueuedTasks: number
+  failedTasks: number
 }
 
 /**
