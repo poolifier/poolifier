@@ -368,12 +368,12 @@ describe('Worker choice strategy context test suite', () => {
         medRunTime: true
       }
     )
-    expect(workerChoiceStrategyContext.getTaskStatistics().avgRunTime).toBe(
-      false
-    )
-    expect(workerChoiceStrategyContext.getTaskStatistics().medRunTime).toBe(
-      true
-    )
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().avgRunTime
+    ).toBe(false)
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().medRunTime
+    ).toBe(true)
     workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool,
       wwrWorkerChoiceStrategy,
@@ -381,12 +381,12 @@ describe('Worker choice strategy context test suite', () => {
         medRunTime: true
       }
     )
-    expect(workerChoiceStrategyContext.getTaskStatistics().avgRunTime).toBe(
-      false
-    )
-    expect(workerChoiceStrategyContext.getTaskStatistics().medRunTime).toBe(
-      true
-    )
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().avgRunTime
+    ).toBe(false)
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().medRunTime
+    ).toBe(true)
     const fsWorkerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
     workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool,
@@ -395,12 +395,12 @@ describe('Worker choice strategy context test suite', () => {
         medRunTime: true
       }
     )
-    expect(workerChoiceStrategyContext.getTaskStatistics().avgRunTime).toBe(
-      false
-    )
-    expect(workerChoiceStrategyContext.getTaskStatistics().medRunTime).toBe(
-      true
-    )
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().avgRunTime
+    ).toBe(false)
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().medRunTime
+    ).toBe(true)
     workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool,
       fsWorkerChoiceStrategy,
@@ -408,11 +408,11 @@ describe('Worker choice strategy context test suite', () => {
         medRunTime: true
       }
     )
-    expect(workerChoiceStrategyContext.getTaskStatistics().avgRunTime).toBe(
-      false
-    )
-    expect(workerChoiceStrategyContext.getTaskStatistics().medRunTime).toBe(
-      true
-    )
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().avgRunTime
+    ).toBe(false)
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().medRunTime
+    ).toBe(true)
   })
 })

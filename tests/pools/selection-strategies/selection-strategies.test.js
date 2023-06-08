@@ -122,7 +122,9 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
       runTime: false,
       avgRunTime: false,
       medRunTime: false,
@@ -138,7 +140,9 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
       runTime: false,
       avgRunTime: false,
       medRunTime: false,
@@ -315,7 +319,9 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
       runTime: false,
       avgRunTime: false,
       medRunTime: false,
@@ -331,7 +337,9 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
       runTime: false,
       avgRunTime: false,
       medRunTime: false,
@@ -433,7 +441,9 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
       runTime: true,
       avgRunTime: false,
       medRunTime: false,
@@ -449,7 +459,9 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
       runTime: true,
       avgRunTime: false,
       medRunTime: false,
@@ -598,7 +610,9 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
       runTime: true,
       avgRunTime: true,
       medRunTime: false,
@@ -614,7 +628,9 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
       runTime: true,
       avgRunTime: true,
       medRunTime: false,
@@ -856,7 +872,9 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
       runTime: true,
       avgRunTime: true,
       medRunTime: false,
@@ -872,7 +890,9 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
       runTime: true,
       avgRunTime: true,
       medRunTime: false,
@@ -1148,7 +1168,9 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
       runTime: false,
       avgRunTime: false,
       medRunTime: false,
@@ -1164,7 +1186,9 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
       runTime: false,
       avgRunTime: false,
       medRunTime: false,

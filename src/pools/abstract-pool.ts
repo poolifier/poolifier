@@ -514,17 +514,21 @@ export abstract class AbstractPool<
     workerUsage: WorkerUsage,
     message: MessageValue<Response>
   ): void {
-    if (this.workerChoiceStrategyContext.getTaskStatistics().runTime) {
+    if (
+      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
+    ) {
       workerUsage.runTime.aggregation += message.taskPerformance?.runTime ?? 0
       if (
-        this.workerChoiceStrategyContext.getTaskStatistics().avgRunTime &&
+        this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+          .avgRunTime &&
         workerUsage.tasks.executed !== 0
       ) {
         workerUsage.runTime.average =
           workerUsage.runTime.aggregation / workerUsage.tasks.executed
       }
       if (
-        this.workerChoiceStrategyContext.getTaskStatistics().medRunTime &&
+        this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+          .medRunTime &&
         message.taskPerformance?.runTime != null
       ) {
         workerUsage.runTime.history.push(message.taskPerformance.runTime)
@@ -537,17 +541,21 @@ export abstract class AbstractPool<
     workerUsage: WorkerUsage,
     message: MessageValue<Response>
   ): void {
-    if (this.workerChoiceStrategyContext.getTaskStatistics().waitTime) {
+    if (
+      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().waitTime
+    ) {
       workerUsage.waitTime.aggregation += message.taskPerformance?.waitTime ?? 0
       if (
-        this.workerChoiceStrategyContext.getTaskStatistics().avgWaitTime &&
+        this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+          .avgWaitTime &&
         workerUsage.tasks.executed !== 0
       ) {
         workerUsage.waitTime.average =
           workerUsage.waitTime.aggregation / workerUsage.tasks.executed
       }
       if (
-        this.workerChoiceStrategyContext.getTaskStatistics().medWaitTime &&
+        this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+          .medWaitTime &&
         message.taskPerformance?.waitTime != null
       ) {
         workerUsage.waitTime.history.push(message.taskPerformance.waitTime)
@@ -560,7 +568,7 @@ export abstract class AbstractPool<
     workerTasksUsage: WorkerUsage,
     message: MessageValue<Response>
   ): void {
-    if (this.workerChoiceStrategyContext.getTaskStatistics().elu) {
+    if (this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu) {
       if (
         workerTasksUsage.elu != null &&
         message.taskPerformance?.elu != null
@@ -848,9 +856,14 @@ export abstract class AbstractPool<
   private setWorkerStatistics (worker: Worker): void {
     this.sendToWorker(worker, {
       statistics: {
-        runTime: this.workerChoiceStrategyContext.getTaskStatistics().runTime,
-        waitTime: this.workerChoiceStrategyContext.getTaskStatistics().waitTime,
-        elu: this.workerChoiceStrategyContext.getTaskStatistics().elu
+        runTime:
+          this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+            .runTime,
+        waitTime:
+          this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+            .waitTime,
+        elu: this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+          .elu
       }
     })
   }
