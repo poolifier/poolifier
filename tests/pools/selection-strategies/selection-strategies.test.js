@@ -14,8 +14,8 @@ describe('Selection strategies test suite', () => {
   it('Verify that WorkerChoiceStrategies enumeration provides string values', () => {
     expect(WorkerChoiceStrategies.ROUND_ROBIN).toBe('ROUND_ROBIN')
     expect(WorkerChoiceStrategies.LEAST_USED).toBe('LEAST_USED')
-    expect(WorkerChoiceStrategies.LEAST_ELU).toBe('LEAST_ELU')
     expect(WorkerChoiceStrategies.LEAST_BUSY).toBe('LEAST_BUSY')
+    expect(WorkerChoiceStrategies.LEAST_ELU).toBe('LEAST_ELU')
     expect(WorkerChoiceStrategies.FAIR_SHARE).toBe('FAIR_SHARE')
     expect(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN).toBe(
       'WEIGHTED_ROUND_ROBIN'
@@ -551,6 +551,42 @@ describe('Selection strategies test suite', () => {
       )
       expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThan(0)
     }
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LEAST_ELU strategy default tasks usage statistics requirements', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_ELU
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+      runTime: false,
+      avgRunTime: false,
+      medRunTime: false,
+      waitTime: false,
+      avgWaitTime: false,
+      medWaitTime: false,
+      elu: true
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
+      runTime: false,
+      avgRunTime: false,
+      medRunTime: false,
+      waitTime: false,
+      avgWaitTime: false,
+      medWaitTime: false,
+      elu: true
+    })
     // We need to clean up the resources after our test
     await pool.destroy()
   })

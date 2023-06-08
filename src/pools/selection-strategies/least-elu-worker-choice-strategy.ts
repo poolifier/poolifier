@@ -25,7 +25,7 @@ export class LeastEluWorkerChoiceStrategy<
   /** @inheritDoc */
   public readonly taskStatistics: TaskStatistics = {
     runTime: false,
-    avgRunTime: true,
+    avgRunTime: false,
     medRunTime: false,
     waitTime: false,
     avgWaitTime: false,
