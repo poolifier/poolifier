@@ -97,7 +97,7 @@ export interface TaskStatistics {
   /**
    * Number of tasks queued.
    */
-  queued: number
+  readonly queued: number
   /**
    * Number of tasks failed.
    */
