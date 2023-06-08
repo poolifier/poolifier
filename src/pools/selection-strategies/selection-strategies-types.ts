@@ -71,7 +71,7 @@ export interface WorkerChoiceStrategyOptions {
  *
  * @internal
  */
-export interface TaskStatistics {
+export interface TaskStatisticsRequirements {
   /**
    * Require tasks runtime.
    */
@@ -107,9 +107,9 @@ export interface TaskStatistics {
  */
 export interface IWorkerChoiceStrategy {
   /**
-   * Required tasks statistics.
+   * Tasks statistics requirements.
    */
-  readonly taskStatistics: TaskStatistics
+  readonly taskStatisticsRequirements: TaskStatisticsRequirements
   /**
    * Resets strategy internals.
    *
