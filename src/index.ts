@@ -22,7 +22,7 @@ export type {
   MessageHandler,
   OnlineHandler,
   Task,
-  TasksUsage,
+  WorkerUsage,
   WorkerNode
 } from './pools/worker'
 export { WorkerChoiceStrategies } from './pools/selection-strategies/selection-strategies-types'

@@ -96,13 +96,13 @@ describe('Fixed thread pool test suite', () => {
     }
     expect(promises.size).toBe(numberOfThreads * maxMultiplier)
     for (const workerNode of queuePool.workerNodes) {
-      expect(workerNode.tasksUsage.running).toBeLessThanOrEqual(
+      expect(workerNode.workerUsage.tasks.executing).toBeLessThanOrEqual(
         queuePool.opts.tasksQueueOptions.concurrency
       )
-      expect(workerNode.tasksUsage.ran).toBe(0)
+      expect(workerNode.workerUsage.tasks.executed).toBe(0)
       expect(workerNode.tasksQueue.size).toBeGreaterThan(0)
     }
-    expect(queuePool.info.runningTasks).toBe(numberOfThreads)
+    expect(queuePool.info.executingTasks).toBe(numberOfThreads)
     expect(queuePool.info.queuedTasks).toBe(
       numberOfThreads * maxMultiplier - numberOfThreads
     )
@@ -111,9 +111,11 @@ describe('Fixed thread pool test suite', () => {
     )
     await Promise.all(promises)
     for (const workerNode of queuePool.workerNodes) {
-      expect(workerNode.tasksUsage.running).toBe(0)
-      expect(workerNode.tasksUsage.ran).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.ran).toBeLessThanOrEqual(maxMultiplier)
+      expect(workerNode.workerUsage.tasks.executing).toBe(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        maxMultiplier
+      )
       expect(workerNode.tasksQueue.size).toBe(0)
     }
   })
@@ -152,7 +154,7 @@ describe('Fixed thread pool test suite', () => {
     })
     expect(
       errorPool.workerNodes.some(
-        workerNode => workerNode.tasksUsage.error === 1
+        workerNode => workerNode.workerUsage.tasks.failed === 1
       )
     ).toBe(true)
   })
@@ -180,7 +182,7 @@ describe('Fixed thread pool test suite', () => {
     })
     expect(
       asyncErrorPool.workerNodes.some(
-        workerNode => workerNode.tasksUsage.error === 1
+        workerNode => workerNode.workerUsage.tasks.failed === 1
       )
     ).toBe(true)
   })

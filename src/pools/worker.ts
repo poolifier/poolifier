@@ -57,55 +57,72 @@ export interface Task<Data = unknown> {
 }
 
 /**
- * Worker tasks usage statistics.
+ * Measure statistics.
  *
  * @internal
  */
-export interface TasksUsage {
+export interface MeasureStatistics {
+  /**
+   * Measure aggregation.
+   */
+  aggregation: number
+  /**
+   * Measure average.
+   */
+  average: number
+  /**
+   * Measure median.
+   */
+  median: number
+  /**
+   * Measure history.
+   */
+  history: CircularArray<number>
+}
+
+/**
+ * Task statistics.
+ *
+ * @internal
+ */
+
+export interface TaskStatistics {
   /**
    * Number of tasks executed.
    */
-  ran: number
+  executed: number
   /**
-   * Number of tasks running.
+   * Number of tasks executing.
    */
-  running: number
+  executing: number
   /**
-   * Tasks runtime.
+   * Number of tasks queued.
    */
-  runTime: number
+  queued: number
   /**
-   * Tasks runtime history.
+   * Number of tasks failed.
    */
-  runTimeHistory: CircularArray<number>
+  failed: number
+}
+
+/**
+ * Worker usage statistics.
+ *
+ * @internal
+ */
+export interface WorkerUsage {
   /**
-   * Average tasks runtime.
+   * Tasks statistics.
    */
-  avgRunTime: number
+  tasks: TaskStatistics
   /**
-   * Median tasks runtime.
+   * Tasks runtime statistics.
    */
-  medRunTime: number
+  runTime: MeasureStatistics
   /**
-   * Tasks wait time.
+   * Tasks wait time statistics.
    */
-  waitTime: number
-  /**
-   * Tasks wait time history.
-   */
-  waitTimeHistory: CircularArray<number>
-  /**
-   * Average tasks wait time.
-   */
-  avgWaitTime: number
-  /**
-   * Median tasks wait time.
-   */
-  medWaitTime: number
-  /**
-   * Number of tasks errored.
-   */
-  error: number
+  waitTime: MeasureStatistics
   /**
    * Event loop utilization.
    */
@@ -148,9 +165,9 @@ export interface WorkerNode<Worker extends IWorker, Data = unknown> {
    */
   readonly worker: Worker
   /**
-   * Worker node tasks usage statistics.
+   * Worker node worker usage statistics.
    */
-  tasksUsage: TasksUsage
+  workerUsage: WorkerUsage
   /**
    * Worker node tasks queue.
    */

@@ -102,30 +102,30 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /**
    * Gets the worker task runtime.
-   * If the required statistics are `avgRunTime`, the average runtime is returned.
-   * If the required statistics are `medRunTime`, the median runtime is returned.
+   * If the task statistics wants `avgRunTime`, the average runtime is returned.
+   * If the task statistics wants `medRunTime`, the median runtime is returned.
    *
    * @param workerNodeKey - The worker node key.
    * @returns The worker task runtime.
    */
   protected getWorkerTaskRunTime (workerNodeKey: number): number {
     return this.taskStatistics.medRunTime
-      ? this.pool.workerNodes[workerNodeKey].tasksUsage.medRunTime
-      : this.pool.workerNodes[workerNodeKey].tasksUsage.avgRunTime
+      ? this.pool.workerNodes[workerNodeKey].workerUsage.runTime.median
+      : this.pool.workerNodes[workerNodeKey].workerUsage.runTime.average
   }
 
   /**
    * Gets the worker task wait time.
-   * If the required statistics are `avgWaitTime`, the average wait time is returned.
-   * If the required statistics are `medWaitTime`, the median wait time is returned.
+   * If the task statistics wants `avgWaitTime`, the average wait time is returned.
+   * If the task statistics wants `medWaitTime`, the median wait time is returned.
    *
    * @param workerNodeKey - The worker node key.
    * @returns The worker task wait time.
    */
   protected getWorkerWaitTime (workerNodeKey: number): number {
     return this.taskStatistics.medWaitTime
-      ? this.pool.workerNodes[workerNodeKey].tasksUsage.medWaitTime
-      : this.pool.workerNodes[workerNodeKey].tasksUsage.avgWaitTime
+      ? this.pool.workerNodes[workerNodeKey].workerUsage.runTime.median
+      : this.pool.workerNodes[workerNodeKey].workerUsage.runTime.average
   }
 
   protected computeDefaultWorkerWeight (): number {
@@ -150,7 +150,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   private findFirstFreeWorkerNodeKey (): number {
     return this.pool.workerNodes.findIndex(workerNode => {
-      return workerNode.tasksUsage.running === 0
+      return workerNode.workerUsage.tasks.executing === 0
     })
   }
 
@@ -166,14 +166,16 @@ export abstract class AbstractWorkerChoiceStrategy<
   private findLastFreeWorkerNodeKey (): number {
     // It requires node >= 18.0.0:
     // return this.workerNodes.findLastIndex(workerNode => {
-    //   return workerNode.tasksUsage.running === 0
+    //   return workerNode.workerUsage.tasks.executing === 0
     // })
     for (
       let workerNodeKey = this.pool.workerNodes.length - 1;
       workerNodeKey >= 0;
       workerNodeKey--
     ) {
-      if (this.pool.workerNodes[workerNodeKey].tasksUsage.running === 0) {
+      if (
+        this.pool.workerNodes[workerNodeKey].workerUsage.tasks.executing === 0
+      ) {
         return workerNodeKey
       }
     }

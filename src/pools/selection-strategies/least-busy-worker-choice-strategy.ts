@@ -57,7 +57,7 @@ export class LeastBusyWorkerChoiceStrategy<
     let minRunTime = Infinity
     let leastBusyWorkerNodeKey!: number
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
-      const workerRunTime = workerNode.tasksUsage.runTime
+      const workerRunTime = workerNode.workerUsage.runTime.aggregation
       if (workerRunTime === 0) {
         return workerNodeKey
       } else if (workerRunTime < minRunTime) {
