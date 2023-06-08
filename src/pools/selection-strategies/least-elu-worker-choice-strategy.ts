@@ -4,7 +4,7 @@ import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
-  TaskStatistics,
+  TaskStatisticsRequirements,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
@@ -23,7 +23,7 @@ export class LeastEluWorkerChoiceStrategy<
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
-  public readonly taskStatistics: TaskStatistics = {
+  public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
     runTime: false,
     avgRunTime: false,
     medRunTime: false,
