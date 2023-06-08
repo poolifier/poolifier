@@ -611,6 +611,64 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
+  it.only('Verify LEAST_ELU strategy can be run in a fixed pool', async () => {
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_ELU }
+    )
+    // TODO: Create a better test to cover `LeastEluWorkerChoiceStrategy#choose`
+    const promises = new Set()
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
+      promises.add(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      const expectedWorkerUsage = {
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregation: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        }
+      }
+      if (workerNode.workerUsage.elu === undefined) {
+        expect(workerNode.workerUsage).toStrictEqual({
+          ...expectedWorkerUsage,
+          elu: undefined
+        })
+      } else {
+        expect(workerNode.workerUsage).toStrictEqual({
+          ...expectedWorkerUsage,
+          elu: {
+            active: expect.any(Number),
+            idle: 0,
+            utilization: 1
+          }
+        })
+      }
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+    }
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
   it('Verify FAIR_SHARE strategy default tasks usage statistics requirements', async () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
     let pool = new FixedThreadPool(
