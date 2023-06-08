@@ -40,10 +40,6 @@ export interface TaskPerformance {
    */
   runTime?: number
   /**
-   * Task wait time.
-   */
-  waitTime?: number
-  /**
    * Task event loop utilization.
    */
   elu?: EventLoopUtilization
@@ -54,7 +50,6 @@ export interface TaskPerformance {
  */
 export interface WorkerStatistics {
   runTime: boolean
-  waitTime: boolean
   elu: boolean
 }
 

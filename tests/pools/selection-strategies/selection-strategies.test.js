@@ -446,7 +446,7 @@ describe('Selection strategies test suite', () => {
       runTime: true,
       avgRunTime: false,
       medRunTime: false,
-      waitTime: false,
+      waitTime: true,
       avgWaitTime: false,
       medWaitTime: false,
       elu: false
@@ -464,7 +464,7 @@ describe('Selection strategies test suite', () => {
       runTime: true,
       avgRunTime: false,
       medRunTime: false,
-      waitTime: false,
+      waitTime: true,
       avgWaitTime: false,
       medWaitTime: false,
       elu: false
@@ -501,7 +501,7 @@ describe('Selection strategies test suite', () => {
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregation: expect.any(Number),
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -515,6 +515,9 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThanOrEqual(
         0
       )
+      expect(
+        workerNode.workerUsage.waitTime.aggregation
+      ).toBeGreaterThanOrEqual(0)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -549,7 +552,7 @@ describe('Selection strategies test suite', () => {
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregation: expect.any(Number),
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -561,6 +564,7 @@ describe('Selection strategies test suite', () => {
         max * maxMultiplier
       )
       expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.waitTime.aggregation).toBeGreaterThan(0)
     }
     // We need to clean up the resources after our test
     await pool.destroy()

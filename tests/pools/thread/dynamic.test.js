@@ -82,15 +82,15 @@ describe('Dynamic thread pool test suite', () => {
     await pool1.destroy()
   })
 
-  it('Verify scale thread up and down is working when long running task is used:hard', async () => {
+  it('Verify scale thread up and down is working when long executing task is used:hard', async () => {
     const longRunningPool = new DynamicThreadPool(
       min,
       max,
       './tests/worker-files/thread/longRunningWorkerHardBehavior.js',
       {
         errorHandler: e => console.error(e),
-        onlineHandler: () => console.log('long running worker is online'),
-        exitHandler: () => console.log('long running worker exited')
+        onlineHandler: () => console.log('long executing worker is online'),
+        exitHandler: () => console.log('long executing worker exited')
       }
     )
     expect(longRunningPool.workerNodes.length).toBe(min)
@@ -109,15 +109,15 @@ describe('Dynamic thread pool test suite', () => {
     await longRunningPool.destroy()
   })
 
-  it('Verify scale thread up and down is working when long running task is used:soft', async () => {
+  it('Verify scale thread up and down is working when long executing task is used:soft', async () => {
     const longRunningPool = new DynamicThreadPool(
       min,
       max,
       './tests/worker-files/thread/longRunningWorkerSoftBehavior.js',
       {
         errorHandler: e => console.error(e),
-        onlineHandler: () => console.log('long running worker is online'),
-        exitHandler: () => console.log('long running worker exited')
+        onlineHandler: () => console.log('long executing worker is online'),
+        exitHandler: () => console.log('long executing worker exited')
       }
     )
     expect(longRunningPool.workerNodes.length).toBe(min)
@@ -126,7 +126,7 @@ describe('Dynamic thread pool test suite', () => {
     }
     expect(longRunningPool.workerNodes.length).toBe(max)
     await TestUtils.sleep(1500)
-    // Here we expect the workerNodes to be at the max size since the task is still running
+    // Here we expect the workerNodes to be at the max size since the task is still executing
     expect(longRunningPool.workerNodes.length).toBe(max)
     // We need to clean up the resources after our test
     await longRunningPool.destroy()

@@ -27,7 +27,7 @@ export class LeastBusyWorkerChoiceStrategy<
     runTime: true,
     avgRunTime: false,
     medRunTime: false,
-    waitTime: false,
+    waitTime: true,
     avgWaitTime: false,
     medWaitTime: false,
     elu: false
@@ -54,14 +54,16 @@ export class LeastBusyWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number {
-    let minRunTime = Infinity
+    let minTime = Infinity
     let leastBusyWorkerNodeKey!: number
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
-      const workerRunTime = workerNode.workerUsage.runTime.aggregation
-      if (workerRunTime === 0) {
+      const workerTime =
+        workerNode.workerUsage.runTime.aggregation +
+        workerNode.workerUsage.waitTime.aggregation
+      if (workerTime === 0) {
         return workerNodeKey
-      } else if (workerRunTime < minRunTime) {
-        minRunTime = workerRunTime
+      } else if (workerTime < minTime) {
+        minTime = workerTime
         leastBusyWorkerNodeKey = workerNodeKey
       }
     }

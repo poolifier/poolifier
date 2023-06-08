@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Refactor pool worker node usage internals.
+
+### Fixed
+
+- Fix wait time accounting.
+- Ensure worker choice strategy `LEAST_BUSY` accounts also tasks wait time.
+- Ensure worker choice strategy `LEAST_USED` accounts also queued tasks.
+
 ## [2.5.4] - 2023-06-07
 
 ### Added
@@ -142,7 +152,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Ensure one task at a time is executed per worker with tasks queueing enabled.
-- Properly count worker running tasks with tasks queueing enabled.
+- Properly count worker executing tasks with tasks queueing enabled.
 
 ## [2.4.5] - 2023-04-09
 
