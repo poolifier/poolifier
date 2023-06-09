@@ -32,8 +32,6 @@ export interface ClusterPoolOptions extends PoolOptions<Worker> {
  *
  * It is possible to perform tasks in sync or asynchronous mode as you prefer.
  *
- * This pool selects the workers in a round robin fashion.
- *
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
  * @typeParam Response - Type of execution response. This can only be serializable data.
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)

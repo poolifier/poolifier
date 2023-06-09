@@ -68,8 +68,6 @@ export abstract class AbstractPool<
 
   /**
    * Worker choice strategy context referencing a worker choice algorithm implementation.
-   *
-   * Default to a round robin algorithm.
    */
   protected workerChoiceStrategyContext: WorkerChoiceStrategyContext<
   Worker,

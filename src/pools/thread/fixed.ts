@@ -37,8 +37,6 @@ export type ThreadWorkerWithMessageChannel = Worker & Draft<MessageChannel>
  *
  * It is possible to perform tasks in sync or asynchronous mode as you prefer.
  *
- * This pool selects the threads in a round robin fashion.
- *
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
  * @typeParam Response - Type of execution response. This can only be serializable data.
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
