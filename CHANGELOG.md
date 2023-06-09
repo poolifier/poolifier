@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `LEAST_ELU` worker choice strategy.
+- Add `LEAST_ELU` worker choice strategy (experimental).
 
 ### Changed
 
@@ -66,7 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Switch pool event emitter to `EventEmitterAsyncResource`.
 - Add tasks wait time accounting in per worker tasks usage.
-- Add interleaved weighted round robin worker choice strategy (experimental).
+- Add interleaved weighted round robin `INTERLEAVED_WEIGHTED_ROUND_ROBIN` worker choice strategy (experimental).
 
 ### Changed
 
