@@ -62,7 +62,7 @@ export class LeastEluWorkerChoiceStrategy<
     let leastEluWorkerNodeKey!: number
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerUsage = workerNode.workerUsage
-      const workerElu = workerUsage.elu?.utilization ?? 0
+      const workerElu = workerUsage.elu?.active ?? 0
       if (workerElu === 0) {
         return workerNodeKey
       } else if (workerElu < minWorkerElu) {
