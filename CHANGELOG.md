@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `LEST_ELU` worker choice strategy.
+- Add `LEAST_ELU` worker choice strategy.
 
 ### Changed
 
