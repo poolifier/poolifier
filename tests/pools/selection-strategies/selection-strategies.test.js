@@ -15,6 +15,7 @@ describe('Selection strategies test suite', () => {
     expect(WorkerChoiceStrategies.ROUND_ROBIN).toBe('ROUND_ROBIN')
     expect(WorkerChoiceStrategies.LEAST_USED).toBe('LEAST_USED')
     expect(WorkerChoiceStrategies.LEAST_BUSY).toBe('LEAST_BUSY')
+    expect(WorkerChoiceStrategies.LEAST_ELU).toBe('LEAST_ELU')
     expect(WorkerChoiceStrategies.FAIR_SHARE).toBe('FAIR_SHARE')
     expect(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN).toBe(
       'WEIGHTED_ROUND_ROBIN'
@@ -587,6 +588,171 @@ describe('Selection strategies test suite', () => {
       )
       expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
       expect(workerNode.workerUsage.waitTime.aggregate).toBeGreaterThan(0)
+    }
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LEAST_ELU strategy default tasks usage statistics requirements', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_ELU
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: true
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: true
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LEAST_ELU strategy can be run in a fixed pool', async () => {
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_ELU }
+    )
+    // TODO: Create a better test to cover `LeastEluWorkerChoiceStrategy#choose`
+    const promises = new Set()
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
+      promises.add(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      const expectedWorkerUsage = {
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        }
+      }
+      if (workerNode.workerUsage.elu === undefined) {
+        expect(workerNode.workerUsage).toStrictEqual({
+          ...expectedWorkerUsage,
+          elu: undefined
+        })
+      } else {
+        expect(workerNode.workerUsage).toStrictEqual({
+          ...expectedWorkerUsage,
+          elu: {
+            active: expect.any(Number),
+            idle: 0,
+            utilization: 1
+          }
+        })
+      }
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+    }
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LEAST_ELU strategy can be run in a dynamic pool', async () => {
+    const pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_ELU }
+    )
+    // TODO: Create a better test to cover `LeastEluWorkerChoiceStrategy#choose`
+    const promises = new Set()
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
+      promises.add(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      const expectedWorkerUsage = {
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        }
+      }
+      if (workerNode.workerUsage.elu === undefined) {
+        expect(workerNode.workerUsage).toStrictEqual({
+          ...expectedWorkerUsage,
+          elu: undefined
+        })
+      } else {
+        expect(workerNode.workerUsage).toStrictEqual({
+          ...expectedWorkerUsage,
+          elu: {
+            active: expect.any(Number),
+            idle: 0,
+            utilization: 1
+          }
+        })
+      }
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
     }
     // We need to clean up the resources after our test
     await pool.destroy()

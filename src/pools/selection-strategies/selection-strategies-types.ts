@@ -15,6 +15,12 @@ export const WorkerChoiceStrategies = Object.freeze({
    */
   LEAST_BUSY: 'LEAST_BUSY',
   /**
+   * Least ELU worker selection strategy.
+   *
+   * @experimental
+   */
+  LEAST_ELU: 'LEAST_ELU',
+  /**
    * Fair share worker selection strategy.
    */
   FAIR_SHARE: 'FAIR_SHARE',
