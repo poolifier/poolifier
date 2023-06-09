@@ -604,12 +604,16 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: false,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
       elu: true
     })
     await pool.destroy()
@@ -622,12 +626,16 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: false,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
       elu: true
     })
     // We need to clean up the resources after our test
@@ -655,13 +663,13 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
