@@ -34,7 +34,11 @@ export class LeastBusyWorkerChoiceStrategy<
       average: false,
       median: false
     },
-    elu: false
+    elu: {
+      aggregate: false,
+      average: false,
+      median: false
+    }
   }
 
   /** @inheritDoc */

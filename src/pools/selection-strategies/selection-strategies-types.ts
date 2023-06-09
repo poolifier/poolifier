@@ -68,6 +68,12 @@ export interface WorkerChoiceStrategyOptions {
    */
   waitTime?: MeasurementOptions
   /**
+   * Event loop utilization options.
+   *
+   * @defaultValue \{ median: false \}
+   */
+  elu?: MeasurementOptions
+  /**
    * Worker weights to use for weighted round robin worker selection strategy.
    * Weight is the tasks maximum average or median runtime in milliseconds.
    *
@@ -111,9 +117,9 @@ export interface TaskStatisticsRequirements {
    */
   waitTime: MeasurementStatisticsRequirements
   /**
-   * Event loop utilization.
+   * Tasks event loop utilization requirements.
    */
-  elu: boolean
+  elu: MeasurementStatisticsRequirements
 }
 
 /**

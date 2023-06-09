@@ -94,7 +94,8 @@ describe('Abstract pool test suite', () => {
     )
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
       runTime: { median: false },
-      waitTime: { median: false }
+      waitTime: { median: false },
+      elu: { median: false }
     })
     expect(pool.opts.messageHandler).toBeUndefined()
     expect(pool.opts.errorHandler).toBeUndefined()
@@ -184,13 +185,15 @@ describe('Abstract pool test suite', () => {
     )
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
       runTime: { median: false },
-      waitTime: { median: false }
+      waitTime: { median: false },
+      elu: { median: false }
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
         runTime: { median: false },
-        waitTime: { median: false }
+        waitTime: { median: false },
+        elu: { median: false }
       })
     }
     expect(
@@ -206,7 +209,11 @@ describe('Abstract pool test suite', () => {
         average: false,
         median: false
       },
-      elu: false
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     pool.setWorkerChoiceStrategyOptions({ runTime: { median: true } })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
@@ -231,7 +238,11 @@ describe('Abstract pool test suite', () => {
         average: false,
         median: false
       },
-      elu: false
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     pool.setWorkerChoiceStrategyOptions({ runTime: { median: false } })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
@@ -256,7 +267,11 @@ describe('Abstract pool test suite', () => {
         average: false,
         median: false
       },
-      elu: false
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     await pool.destroy()
   })
@@ -377,7 +392,21 @@ describe('Abstract pool test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     await pool.destroy()
@@ -426,7 +455,21 @@ describe('Abstract pool test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     await Promise.all(promises)
@@ -450,7 +493,21 @@ describe('Abstract pool test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     await pool.destroy()
@@ -488,7 +545,21 @@ describe('Abstract pool test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
       expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
@@ -516,7 +587,21 @@ describe('Abstract pool test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
       expect(workerNode.workerUsage.runTime.history.length).toBe(0)
       expect(workerNode.workerUsage.waitTime.history.length).toBe(0)

@@ -1,4 +1,3 @@
-import type { EventLoopUtilization } from 'node:perf_hooks'
 import type { CircularArray } from '../circular-array'
 import type { Queue } from '../queue'
 
@@ -81,6 +80,17 @@ export interface MeasurementStatistics {
 }
 
 /**
+ * Event loop utilization measurement statistics.
+ *
+ * @internal
+ */
+export interface EventLoopUtilizationMeasurementStatistics {
+  idle: MeasurementStatistics
+  active: MeasurementStatistics
+  utilization: number
+}
+
+/**
  * Task statistics.
  *
  * @internal
@@ -123,9 +133,9 @@ export interface WorkerUsage {
    */
   waitTime: MeasurementStatistics
   /**
-   * Event loop utilization.
+   * Tasks event loop utilization statistics.
    */
-  elu: EventLoopUtilization | undefined
+  elu: EventLoopUtilizationMeasurementStatistics
 }
 
 /**

@@ -555,25 +555,46 @@ export abstract class AbstractPool<
   }
 
   private updateEluWorkerUsage (
-    workerTasksUsage: WorkerUsage,
+    workerUsage: WorkerUsage,
     message: MessageValue<Response>
   ): void {
-    if (this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu) {
+    if (
+      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
+        .aggregate
+    ) {
+      if (workerUsage.elu != null && message.taskPerformance?.elu != null) {
+        workerUsage.elu.idle.aggregate =
+          workerUsage.elu.idle.aggregate + message.taskPerformance.elu.idle
+        workerUsage.elu.active.aggregate =
+          workerUsage.elu.active.aggregate + message.taskPerformance.elu.active
+        workerUsage.elu.utilization =
+          (workerUsage.elu.utilization +
+            message.taskPerformance.elu.utilization) /
+          2
+      } else if (message.taskPerformance?.elu != null) {
+        workerUsage.elu.idle.aggregate = message.taskPerformance.elu.idle
+        workerUsage.elu.active.aggregate = message.taskPerformance.elu.active
+        workerUsage.elu.utilization = message.taskPerformance.elu.utilization
+      }
       if (
-        workerTasksUsage.elu != null &&
+        this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
+          .average &&
+        workerUsage.tasks.executed !== 0
+      ) {
+        workerUsage.elu.idle.average =
+          workerUsage.elu.idle.aggregate / workerUsage.tasks.executed
+        workerUsage.elu.active.average =
+          workerUsage.elu.active.aggregate / workerUsage.tasks.executed
+      }
+      if (
+        this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
+          .median &&
         message.taskPerformance?.elu != null
       ) {
-        workerTasksUsage.elu = {
-          idle: workerTasksUsage.elu.idle + message.taskPerformance.elu.idle,
-          active:
-            workerTasksUsage.elu.active + message.taskPerformance.elu.active,
-          utilization:
-            (workerTasksUsage.elu.utilization +
-              message.taskPerformance.elu.utilization) /
-            2
-        }
-      } else if (message.taskPerformance?.elu != null) {
-        workerTasksUsage.elu = message.taskPerformance.elu
+        workerUsage.elu.idle.history.push(message.taskPerformance.elu.idle)
+        workerUsage.elu.active.history.push(message.taskPerformance.elu.active)
+        workerUsage.elu.idle.median = median(workerUsage.elu.idle.history)
+        workerUsage.elu.active.median = median(workerUsage.elu.active.history)
       }
     }
   }
@@ -829,7 +850,7 @@ export abstract class AbstractPool<
           this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
             .runTime.aggregate,
         elu: this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
-          .elu
+          .elu.aggregate
       }
     })
   }
@@ -849,7 +870,21 @@ export abstract class AbstractPool<
         median: 0,
         history: new CircularArray()
       },
-      elu: undefined
+      elu: {
+        idle: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: new CircularArray()
+        },
+        active: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: new CircularArray()
+        },
+        utilization: 0
+      }
     }
   }
 

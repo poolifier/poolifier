@@ -135,7 +135,11 @@ describe('Selection strategies test suite', () => {
         average: false,
         median: false
       },
-      elu: false
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -157,7 +161,11 @@ describe('Selection strategies test suite', () => {
         average: false,
         median: false
       },
-      elu: false
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -196,7 +204,21 @@ describe('Selection strategies test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     expect(
@@ -242,7 +264,21 @@ describe('Selection strategies test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     expect(
@@ -340,7 +376,11 @@ describe('Selection strategies test suite', () => {
         average: false,
         median: false
       },
-      elu: false
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -362,7 +402,11 @@ describe('Selection strategies test suite', () => {
         average: false,
         median: false
       },
-      elu: false
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -401,7 +445,21 @@ describe('Selection strategies test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     // We need to clean up the resources after our test
@@ -442,8 +500,21 @@ describe('Selection strategies test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     // We need to clean up the resources after our test
@@ -470,7 +541,11 @@ describe('Selection strategies test suite', () => {
         average: false,
         median: false
       },
-      elu: false
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -492,7 +567,11 @@ describe('Selection strategies test suite', () => {
         average: false,
         median: false
       },
-      elu: false
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -531,7 +610,21 @@ describe('Selection strategies test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
       expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
@@ -580,7 +673,21 @@ describe('Selection strategies test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
       expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
@@ -613,7 +720,11 @@ describe('Selection strategies test suite', () => {
         average: false,
         median: false
       },
-      elu: true
+      elu: {
+        aggregate: true,
+        average: false,
+        median: false
+      }
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -635,7 +746,11 @@ describe('Selection strategies test suite', () => {
         average: false,
         median: false
       },
-      elu: true
+      elu: {
+        aggregate: true,
+        average: false,
+        median: false
+      }
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -655,7 +770,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      const expectedWorkerUsage = {
+      expect(workerNode.workerUsage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -673,27 +788,29 @@ describe('Selection strategies test suite', () => {
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: expect.any(Number),
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: expect.any(Number)
         }
-      }
-      if (workerNode.workerUsage.elu === undefined) {
-        expect(workerNode.workerUsage).toStrictEqual({
-          ...expectedWorkerUsage,
-          elu: undefined
-        })
-      } else {
-        expect(workerNode.workerUsage).toStrictEqual({
-          ...expectedWorkerUsage,
-          elu: {
-            active: expect.any(Number),
-            idle: 0,
-            utilization: 1
-          }
-        })
-      }
+      })
       expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
+      expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -714,7 +831,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      const expectedWorkerUsage = {
+      expect(workerNode.workerUsage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -732,27 +849,29 @@ describe('Selection strategies test suite', () => {
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: expect.any(Number),
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: expect.any(Number)
         }
-      }
-      if (workerNode.workerUsage.elu === undefined) {
-        expect(workerNode.workerUsage).toStrictEqual({
-          ...expectedWorkerUsage,
-          elu: undefined
-        })
-      } else {
-        expect(workerNode.workerUsage).toStrictEqual({
-          ...expectedWorkerUsage,
-          elu: {
-            active: expect.any(Number),
-            idle: 0,
-            utilization: 1
-          }
-        })
-      }
+      })
       expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
+      expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -778,7 +897,11 @@ describe('Selection strategies test suite', () => {
         average: false,
         median: false
       },
-      elu: false
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -800,7 +923,11 @@ describe('Selection strategies test suite', () => {
         average: false,
         median: false
       },
-      elu: false
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -839,7 +966,21 @@ describe('Selection strategies test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
       expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
       expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
@@ -887,7 +1028,21 @@ describe('Selection strategies test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
       expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
       expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
@@ -940,7 +1095,21 @@ describe('Selection strategies test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
       expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
       expect(workerNode.workerUsage.runTime.median).toBeGreaterThan(0)
@@ -1048,7 +1217,11 @@ describe('Selection strategies test suite', () => {
         average: false,
         median: false
       },
-      elu: false
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -1070,7 +1243,11 @@ describe('Selection strategies test suite', () => {
         average: false,
         median: false
       },
-      elu: false
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -1109,7 +1286,21 @@ describe('Selection strategies test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
       expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
@@ -1166,7 +1357,21 @@ describe('Selection strategies test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
       expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
@@ -1228,7 +1433,21 @@ describe('Selection strategies test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
       expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
@@ -1350,7 +1569,11 @@ describe('Selection strategies test suite', () => {
         average: false,
         median: false
       },
-      elu: false
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -1372,7 +1595,11 @@ describe('Selection strategies test suite', () => {
         average: false,
         median: false
       },
-      elu: false
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -1414,7 +1641,21 @@ describe('Selection strategies test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     expect(
@@ -1482,7 +1723,21 @@ describe('Selection strategies test suite', () => {
           median: 0,
           history: expect.any(CircularArray)
         },
-        elu: undefined
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     expect(

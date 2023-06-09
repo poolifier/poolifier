@@ -34,7 +34,11 @@ export class LeastEluWorkerChoiceStrategy<
       average: false,
       median: false
     },
-    elu: true
+    elu: {
+      aggregate: true,
+      average: false,
+      median: false
+    }
   }
 
   /** @inheritDoc */
@@ -62,7 +66,7 @@ export class LeastEluWorkerChoiceStrategy<
     let leastEluWorkerNodeKey!: number
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerUsage = workerNode.workerUsage
-      const workerElu = workerUsage.elu?.active ?? 0
+      const workerElu = workerUsage.elu?.active.aggregate ?? 0
       if (workerElu === 0) {
         return workerNodeKey
       } else if (workerElu < minWorkerElu) {

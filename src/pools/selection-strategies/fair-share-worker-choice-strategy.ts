@@ -35,7 +35,11 @@ export class FairShareWorkerChoiceStrategy<
       average: false,
       median: false
     },
-    elu: false
+    elu: {
+      aggregate: false,
+      average: false,
+      median: false
+    }
   }
 
   /**

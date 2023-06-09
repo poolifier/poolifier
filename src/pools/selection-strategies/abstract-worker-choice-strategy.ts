@@ -36,7 +36,11 @@ export abstract class AbstractWorkerChoiceStrategy<
       average: false,
       median: false
     },
-    elu: false
+    elu: {
+      aggregate: false,
+      average: false,
+      median: false
+    }
   }
 
   /**
@@ -86,6 +90,20 @@ export abstract class AbstractWorkerChoiceStrategy<
       this.taskStatisticsRequirements.waitTime.average = true
       this.taskStatisticsRequirements.waitTime.median = opts.waitTime
         .median as boolean
+    }
+    if (
+      this.taskStatisticsRequirements.elu.average &&
+      opts.elu?.median === true
+    ) {
+      this.taskStatisticsRequirements.elu.average = false
+      this.taskStatisticsRequirements.elu.median = opts.elu.median as boolean
+    }
+    if (
+      this.taskStatisticsRequirements.elu.median &&
+      opts.elu?.median === false
+    ) {
+      this.taskStatisticsRequirements.elu.average = true
+      this.taskStatisticsRequirements.elu.median = opts.elu.median as boolean
     }
   }
 
@@ -144,10 +162,24 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @param workerNodeKey - The worker node key.
    * @returns The worker task wait time.
    */
-  protected getWorkerWaitTime (workerNodeKey: number): number {
+  protected getWorkerTaskWaitTime (workerNodeKey: number): number {
     return this.taskStatisticsRequirements.waitTime.median
       ? this.pool.workerNodes[workerNodeKey].workerUsage.runTime.median
       : this.pool.workerNodes[workerNodeKey].workerUsage.runTime.average
+  }
+
+  /**
+   * Gets the worker task ELU.
+   * If the task statistics require the ELU, the average ELU is returned.
+   * If the task statistics require the ELU, the median ELU is returned.
+   *
+   * @param workerNodeKey - The worker node key.
+   * @returns The worker task ELU.
+   */
+  protected getWorkerTaskElu (workerNodeKey: number): number {
+    return this.taskStatisticsRequirements.elu.median
+      ? this.pool.workerNodes[workerNodeKey].workerUsage.elu.active.median
+      : this.pool.workerNodes[workerNodeKey].workerUsage.elu.active.average
   }
 
   protected computeDefaultWorkerWeight (): number {
