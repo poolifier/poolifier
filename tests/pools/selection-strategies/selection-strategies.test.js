@@ -6,6 +6,7 @@ const {
   FixedClusterPool
 } = require('../../../lib')
 const { CircularArray } = require('../../../lib/circular-array')
+const TestUtils = require('../../test-utils')
 
 describe('Selection strategies test suite', () => {
   const min = 0
@@ -618,12 +619,11 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_ELU }
     )
     // TODO: Create a better test to cover `LeastEluWorkerChoiceStrategy#choose`
-    const promises = new Set()
     const maxMultiplier = 2
     for (let i = 0; i < max * maxMultiplier; i++) {
-      promises.add(pool.execute())
+      await pool.execute()
+      if (i !== max * maxMultiplier - 1) await TestUtils.sleep(500)
     }
-    await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       const expectedWorkerUsage = {
         tasks: {
