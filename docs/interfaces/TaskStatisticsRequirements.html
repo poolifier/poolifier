@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>WorkerOptions | poolifier</title><meta name="description" content="Documentation for poolifier"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>TaskStatisticsRequirements | poolifier</title><meta name="description" content="Documentation for poolifier"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -13,18 +13,18 @@
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
 <li><a href="../index.html">poolifier</a></li>
-<li><a href="WorkerOptions.html">WorkerOptions</a></li></ul>
-<h1>Interface WorkerOptions</h1></div>
+<li><a href="TaskStatisticsRequirements.html">TaskStatisticsRequirements</a></li></ul>
+<h1>Interface TaskStatisticsRequirements<code class="tsd-tag ts-flagInternal">Internal</code> </h1></div>
 <section class="tsd-panel tsd-comment">
-<div class="tsd-comment tsd-typography"><p>Options for workers.</p>
+<div class="tsd-comment tsd-typography"><p>Pool worker node worker usage statistics requirements.</p>
 </div>
 <div class="tsd-comment tsd-typography"></div></section>
 <section class="tsd-panel tsd-hierarchy">
 <h4>Hierarchy</h4>
 <ul class="tsd-hierarchy">
-<li><span class="target">WorkerOptions</span></li></ul></section><aside class="tsd-sources">
+<li><span class="target">TaskStatisticsRequirements</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/9adcefa/src/worker/worker-options.ts#L38">src/worker/worker-options.ts:38</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/9adcefa/src/pools/selection-strategies/selection-strategies-types.ts#L128">src/pools/selection-strategies/selection-strategies-types.ts:128</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -32,56 +32,36 @@
 <div class="tsd-accordion-details">
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Properties</h3>
-<div class="tsd-index-list"><a href="WorkerOptions.html#async" class="tsd-index-link deprecated"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-1024"><rect fill="var(--color-icon-background)" stroke="#FF984D" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12"></rect><path d="M9.354 16V7.24H12.174C12.99 7.24 13.638 7.476 14.118 7.948C14.606 8.412 14.85 9.036 14.85 9.82C14.85 10.604 14.606 11.232 14.118 11.704C13.638 12.168 12.99 12.4 12.174 12.4H10.434V16H9.354ZM10.434 11.428H12.174C12.646 11.428 13.022 11.284 13.302 10.996C13.59 10.7 13.734 10.308 13.734 9.82C13.734 9.324 13.59 8.932 13.302 8.644C13.022 8.356 12.646 8.212 12.174 8.212H10.434V11.428Z" fill="var(--color-text)"></path></g></svg><span>async?</span></a>
-<a href="WorkerOptions.html#killBehavior" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>kill<wbr/>Behavior?</span></a>
-<a href="WorkerOptions.html#maxInactiveTime" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>max<wbr/>Inactive<wbr/>Time?</span></a>
+<div class="tsd-index-list"><a href="TaskStatisticsRequirements.html#elu" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-1024"><rect fill="var(--color-icon-background)" stroke="#FF984D" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12"></rect><path d="M9.354 16V7.24H12.174C12.99 7.24 13.638 7.476 14.118 7.948C14.606 8.412 14.85 9.036 14.85 9.82C14.85 10.604 14.606 11.232 14.118 11.704C13.638 12.168 12.99 12.4 12.174 12.4H10.434V16H9.354ZM10.434 11.428H12.174C12.646 11.428 13.022 11.284 13.302 10.996C13.59 10.7 13.734 10.308 13.734 9.82C13.734 9.324 13.59 8.932 13.302 8.644C13.022 8.356 12.646 8.212 12.174 8.212H10.434V11.428Z" fill="var(--color-text)"></path></g></svg><span>elu</span></a>
+<a href="TaskStatisticsRequirements.html#runTime" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>run<wbr/>Time</span></a>
+<a href="TaskStatisticsRequirements.html#waitTime" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>wait<wbr/>Time</span></a>
 </div></section></div></details></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
-<section class="tsd-panel tsd-member"><a id="async" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span class="deprecated">async</span><a href="#async" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><g stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" id="icon-anchor"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5"></path></g></svg></a></h3>
-<div class="tsd-signature"><span class="tsd-kind-property">async</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span></div>
-<div class="tsd-comment tsd-typography"><p>Whether your worker will perform asynchronous or not.</p>
+<section class="tsd-panel tsd-member"><a id="elu" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>elu</span><a href="#elu" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><g stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" id="icon-anchor"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5"></path></g></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">elu</span><span class="tsd-signature-symbol">:</span> <a href="MeasurementStatisticsRequirements.html" class="tsd-signature-type tsd-kind-interface">MeasurementStatisticsRequirements</a></div>
+<div class="tsd-comment tsd-typography"><p>Tasks event loop utilization requirements.</p>
 </div>
-<div class="tsd-comment tsd-typography">
-<h4>Default Value</h4><p>false</p>
-
-<h4>Deprecated</h4><p>This option will be removed in the next major version.</p>
-</div><aside class="tsd-sources">
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/9adcefa/src/worker/worker-options.ts#L58">src/worker/worker-options.ts:58</a></li></ul></aside></section>
-<section class="tsd-panel tsd-member"><a id="killBehavior" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>kill<wbr/>Behavior</span><a href="#killBehavior" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<div class="tsd-signature"><span class="tsd-kind-property">kill<wbr/>Behavior</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">&quot;SOFT&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;HARD&quot;</span></div>
-<div class="tsd-comment tsd-typography"><p><code>killBehavior</code> dictates if your async unit (worker/process) will be deleted in case that a task is active on it.</p>
-<ul>
-<li>SOFT: If <code>currentTime - lastActiveTime</code> is greater than <code>maxInactiveTime</code> but a task is still executing, then the worker <strong>won&#39;t</strong> be deleted.</li>
-<li>HARD: If <code>currentTime - lastActiveTime</code> is greater than <code>maxInactiveTime</code> but a task is still executing, then the worker will be deleted.</li>
-</ul>
-<p>This option only apply to the newly created workers.</p>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/9adcefa/src/pools/selection-strategies/selection-strategies-types.ts#L140">src/pools/selection-strategies/selection-strategies-types.ts:140</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="runTime" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>run<wbr/>Time</span><a href="#runTime" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">run<wbr/>Time</span><span class="tsd-signature-symbol">:</span> <a href="MeasurementStatisticsRequirements.html" class="tsd-signature-type tsd-kind-interface">MeasurementStatisticsRequirements</a></div>
+<div class="tsd-comment tsd-typography"><p>Tasks runtime requirements.</p>
 </div>
-<div class="tsd-comment tsd-typography">
-<h4>Default Value</h4><p>KillBehaviors.SOFT</p>
-</div><aside class="tsd-sources">
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/9adcefa/src/worker/worker-options.ts#L69">src/worker/worker-options.ts:69</a></li></ul></aside></section>
-<section class="tsd-panel tsd-member"><a id="maxInactiveTime" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>max<wbr/>Inactive<wbr/>Time</span><a href="#maxInactiveTime" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<div class="tsd-signature"><span class="tsd-kind-property">max<wbr/>Inactive<wbr/>Time</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span></div>
-<div class="tsd-comment tsd-typography"><p>Maximum waiting time in milliseconds for tasks.</p>
-<p>After this time, newly created workers will be terminated.
-The last active time of your worker unit will be updated when a task is submitted to a worker or when a worker terminate a task.</p>
-<ul>
-<li>If <code>killBehavior</code> is set to <code>KillBehaviors.HARD</code> this value represents also the timeout for the tasks that you submit to the pool,
-when this timeout expires your tasks is interrupted and the worker is killed if is not part of the minimum size of the pool.</li>
-<li>If <code>killBehavior</code> is set to <code>KillBehaviors.SOFT</code> your tasks have no timeout and your workers will not be terminated until your task is completed.</li>
-</ul>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/9adcefa/src/pools/selection-strategies/selection-strategies-types.ts#L132">src/pools/selection-strategies/selection-strategies-types.ts:132</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="waitTime" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>wait<wbr/>Time</span><a href="#waitTime" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">wait<wbr/>Time</span><span class="tsd-signature-symbol">:</span> <a href="MeasurementStatisticsRequirements.html" class="tsd-signature-type tsd-kind-interface">MeasurementStatisticsRequirements</a></div>
+<div class="tsd-comment tsd-typography"><p>Tasks wait time requirements.</p>
 </div>
-<div class="tsd-comment tsd-typography">
-<h4>Default Value</h4><p>60000</p>
-</div><aside class="tsd-sources">
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/9adcefa/src/worker/worker-options.ts#L51">src/worker/worker-options.ts:51</a></li></ul></aside></section></section></div>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/9adcefa/src/pools/selection-strategies/selection-strategies-types.ts#L136">src/pools/selection-strategies/selection-strategies-types.ts:136</a></li></ul></aside></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -101,9 +81,9 @@ when this timeout expires your tasks is interrupted and the worker is killed if 
 <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="#icon-chevronDown"></use></svg>On This Page</h3></summary>
 <div class="tsd-accordion-details">
 <ul>
-<li><a href="#async" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>async</span></a></li>
-<li><a href="#killBehavior" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>kill<wbr/>Behavior</span></a></li>
-<li><a href="#maxInactiveTime" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>max<wbr/>Inactive<wbr/>Time</span></a></li></ul></div></details></div>
+<li><a href="#elu" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>elu</span></a></li>
+<li><a href="#runTime" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>run<wbr/>Time</span></a></li>
+<li><a href="#waitTime" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>wait<wbr/>Time</span></a></li></ul></div></details></div>
 <div class="site-menu">
 <nav class="tsd-navigation"><a href="../index.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-4"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-namespace)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M9.33 16V7.24H10.77L13.446 14.74C13.43 14.54 13.41 14.296 13.386 14.008C13.37 13.712 13.354 13.404 13.338 13.084C13.33 12.756 13.326 12.448 13.326 12.16V7.24H14.37V16H12.93L10.266 8.5C10.282 8.692 10.298 8.936 10.314 9.232C10.33 9.52 10.342 9.828 10.35 10.156C10.366 10.476 10.374 10.784 10.374 11.08V16H9.33Z" fill="var(--color-text)"></path></g></svg><span>poolifier</span></a>
 <ul class="tsd-small-nested-navigation">
@@ -135,12 +115,12 @@ when this timeout expires your tasks is interrupted and the worker is killed if 
 <li><a href="TaskError.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Task<wbr/>Error</span></a></li>
 <li><a href="TaskPerformance.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Task<wbr/>Performance</span></a></li>
 <li><a href="TaskStatistics.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Task<wbr/>Statistics</span></a></li>
-<li><a href="TaskStatisticsRequirements.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Task<wbr/>Statistics<wbr/>Requirements</span></a></li>
+<li><a href="TaskStatisticsRequirements.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Task<wbr/>Statistics<wbr/>Requirements</span></a></li>
 <li><a href="TasksQueueOptions.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Tasks<wbr/>Queue<wbr/>Options</span></a></li>
 <li><a href="ThreadPoolOptions.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Thread<wbr/>Pool<wbr/>Options</span></a></li>
 <li><a href="WorkerChoiceStrategyOptions.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Worker<wbr/>Choice<wbr/>Strategy<wbr/>Options</span></a></li>
 <li><a href="WorkerNode.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Worker<wbr/>Node</span></a></li>
-<li><a href="WorkerOptions.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Worker<wbr/>Options</span></a></li>
+<li><a href="WorkerOptions.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Worker<wbr/>Options</span></a></li>
 <li><a href="WorkerStatistics.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Worker<wbr/>Statistics</span></a></li>
 <li><a href="WorkerUsage.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Worker<wbr/>Usage</span></a></li>
 <li><a href="../types/Draft.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-4194304"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-type-alias)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)"></path></g></svg><span>Draft</span></a></li>
