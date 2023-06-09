@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Refactor pool worker node usage internals.
+- Refactor worker choice strategy statistics requirements.
 
 ### Fixed
 

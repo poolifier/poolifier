@@ -63,9 +63,9 @@ export interface Task<Data = unknown> {
  */
 export interface MeasurementStatistics {
   /**
-   * Measurement aggregation.
+   * Measurement aggregate.
    */
-  aggregation: number
+  aggregate: number
   /**
    * Measurement average.
    */

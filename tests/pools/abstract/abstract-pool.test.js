@@ -93,8 +93,8 @@ describe('Abstract pool test suite', () => {
       WorkerChoiceStrategies.ROUND_ROBIN
     )
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      medRunTime: false,
-      medWaitTime: false
+      runTime: { median: false },
+      waitTime: { median: false }
     })
     expect(pool.opts.messageHandler).toBeUndefined()
     expect(pool.opts.errorHandler).toBeUndefined()
@@ -108,7 +108,7 @@ describe('Abstract pool test suite', () => {
       {
         workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
         workerChoiceStrategyOptions: {
-          medRunTime: true,
+          runTime: { median: true },
           weights: { 0: 300, 1: 200 }
         },
         enableEvents: false,
@@ -130,7 +130,7 @@ describe('Abstract pool test suite', () => {
       WorkerChoiceStrategies.LEAST_USED
     )
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      medRunTime: true,
+      runTime: { median: true },
       weights: { 0: 300, 1: 200 }
     })
     expect(pool.opts.messageHandler).toStrictEqual(testHandler)
@@ -183,63 +183,79 @@ describe('Abstract pool test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
     )
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      medRunTime: false,
-      medWaitTime: false
+      runTime: { median: false },
+      waitTime: { median: false }
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        medRunTime: false,
-        medWaitTime: false
+        runTime: { median: false },
+        waitTime: { median: false }
       })
     }
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: true,
-      avgRunTime: true,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: true,
+        average: true,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
       elu: false
     })
-    pool.setWorkerChoiceStrategyOptions({ medRunTime: true })
+    pool.setWorkerChoiceStrategyOptions({ runTime: { median: true } })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      medRunTime: true
+      runTime: { median: true }
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
-      expect(workerChoiceStrategy.opts).toStrictEqual({ medRunTime: true })
+      expect(workerChoiceStrategy.opts).toStrictEqual({
+        runTime: { median: true }
+      })
     }
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: true,
-      avgRunTime: false,
-      medRunTime: true,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: true,
+        average: false,
+        median: true
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
       elu: false
     })
-    pool.setWorkerChoiceStrategyOptions({ medRunTime: false })
+    pool.setWorkerChoiceStrategyOptions({ runTime: { median: false } })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      medRunTime: false
+      runTime: { median: false }
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
-      expect(workerChoiceStrategy.opts).toStrictEqual({ medRunTime: false })
+      expect(workerChoiceStrategy.opts).toStrictEqual({
+        runTime: { median: false }
+      })
     }
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: true,
-      avgRunTime: true,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: true,
+        average: true,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
       elu: false
     })
     await pool.destroy()
@@ -350,13 +366,13 @@ describe('Abstract pool test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -399,13 +415,13 @@ describe('Abstract pool test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -423,13 +439,13 @@ describe('Abstract pool test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -461,13 +477,13 @@ describe('Abstract pool test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -489,13 +505,13 @@ describe('Abstract pool test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
