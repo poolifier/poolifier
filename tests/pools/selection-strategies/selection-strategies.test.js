@@ -699,6 +699,64 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
+  it('Verify LEAST_ELU strategy can be run in a dynamic pool', async () => {
+    const pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_ELU }
+    )
+    // TODO: Create a better test to cover `LeastEluWorkerChoiceStrategy#choose`
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
+      await pool.execute()
+      if (i !== max * maxMultiplier - 1) await TestUtils.sleep(500)
+    }
+    for (const workerNode of pool.workerNodes) {
+      const expectedWorkerUsage = {
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        }
+      }
+      if (workerNode.workerUsage.elu === undefined) {
+        expect(workerNode.workerUsage).toStrictEqual({
+          ...expectedWorkerUsage,
+          elu: undefined
+        })
+      } else {
+        expect(workerNode.workerUsage).toStrictEqual({
+          ...expectedWorkerUsage,
+          elu: {
+            active: expect.any(Number),
+            idle: 0,
+            utilization: 1
+          }
+        })
+      }
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+    }
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
   it('Verify FAIR_SHARE strategy default tasks usage statistics requirements', async () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
     let pool = new FixedThreadPool(
