@@ -36,21 +36,31 @@ export const WorkerChoiceStrategies = Object.freeze({
 export type WorkerChoiceStrategy = keyof typeof WorkerChoiceStrategies
 
 /**
+ * Measurement options.
+ */
+interface MeasurementOptions {
+  /**
+   * Set measurement median.
+   */
+  median: boolean
+}
+
+/**
  * Worker choice strategy options.
  */
 export interface WorkerChoiceStrategyOptions {
   /**
-   * Use tasks median runtime instead of average runtime.
+   * Runtime options.
    *
-   * @defaultValue false
+   * @defaultValue \{ median: false \}
    */
-  medRunTime?: boolean
+  runTime?: MeasurementOptions
   /**
-   * Use tasks median wait time instead of average runtime.
+   * Wait time options.
    *
-   * @defaultValue false
+   * @defaultValue \{ median: false \}
    */
-  medWaitTime?: boolean
+  waitTime?: MeasurementOptions
   /**
    * Worker weights to use for weighted round robin worker selection strategy.
    * Weight is the tasks maximum average or median runtime in milliseconds.
@@ -61,35 +71,39 @@ export interface WorkerChoiceStrategyOptions {
 }
 
 /**
+ * Measurement statistics requirements.
+ *
+ * @internal
+ */
+interface MeasurementStatisticsRequirements {
+  /**
+   * Require measurement aggregate.
+   */
+  aggregate: boolean
+  /**
+   * Require measurement average.
+   */
+  average: boolean
+  /**
+   * Require measurement median.
+   */
+  median: boolean
+}
+
+/**
  * Pool worker node worker usage statistics requirements.
  *
  * @internal
  */
 export interface TaskStatisticsRequirements {
   /**
-   * Require tasks runtime.
+   * Tasks runtime requirements.
    */
-  runTime: boolean
+  runTime: MeasurementStatisticsRequirements
   /**
-   * Require tasks average runtime.
+   * Tasks wait time requirements.
    */
-  avgRunTime: boolean
-  /**
-   * Require tasks median runtime.
-   */
-  medRunTime: boolean
-  /**
-   * Require tasks wait time.
-   */
-  waitTime: boolean
-  /**
-   * Require tasks average wait time.
-   */
-  avgWaitTime: boolean
-  /**
-   * Require tasks median wait time.
-   */
-  medWaitTime: boolean
+  waitTime: MeasurementStatisticsRequirements
   /**
    * Event loop utilization.
    */

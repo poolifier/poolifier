@@ -502,19 +502,20 @@ export abstract class AbstractPool<
   ): void {
     if (
       this.workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
+        .aggregate
     ) {
-      workerUsage.runTime.aggregation += message.taskPerformance?.runTime ?? 0
+      workerUsage.runTime.aggregate += message.taskPerformance?.runTime ?? 0
       if (
-        this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
-          .avgRunTime &&
+        this.workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
+          .average &&
         workerUsage.tasks.executed !== 0
       ) {
         workerUsage.runTime.average =
-          workerUsage.runTime.aggregation / workerUsage.tasks.executed
+          workerUsage.runTime.aggregate / workerUsage.tasks.executed
       }
       if (
-        this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
-          .medRunTime &&
+        this.workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
+          .median &&
         message.taskPerformance?.runTime != null
       ) {
         workerUsage.runTime.history.push(message.taskPerformance.runTime)
@@ -531,19 +532,20 @@ export abstract class AbstractPool<
     const taskWaitTime = timestamp - (task.timestamp ?? timestamp)
     if (
       this.workerChoiceStrategyContext.getTaskStatisticsRequirements().waitTime
+        .aggregate
     ) {
-      workerUsage.waitTime.aggregation += taskWaitTime ?? 0
+      workerUsage.waitTime.aggregate += taskWaitTime ?? 0
       if (
         this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
-          .avgWaitTime &&
+          .waitTime.average &&
         workerUsage.tasks.executed !== 0
       ) {
         workerUsage.waitTime.average =
-          workerUsage.waitTime.aggregation / workerUsage.tasks.executed
+          workerUsage.waitTime.aggregate / workerUsage.tasks.executed
       }
       if (
         this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
-          .medWaitTime &&
+          .waitTime.median &&
         taskWaitTime != null
       ) {
         workerUsage.waitTime.history.push(taskWaitTime)
@@ -825,7 +827,7 @@ export abstract class AbstractPool<
       statistics: {
         runTime:
           this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
-            .runTime,
+            .runTime.aggregate,
         elu: this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
           .elu
       }
@@ -836,13 +838,13 @@ export abstract class AbstractPool<
     return {
       tasks: this.getTaskStatistics(worker),
       runTime: {
-        aggregation: 0,
+        aggregate: 0,
         average: 0,
         median: 0,
         history: new CircularArray()
       },
       waitTime: {
-        aggregation: 0,
+        aggregate: 0,
         average: 0,
         median: 0,
         history: new CircularArray()

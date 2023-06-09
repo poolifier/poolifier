@@ -124,12 +124,16 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: false,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
       elu: false
     })
     await pool.destroy()
@@ -142,12 +146,16 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: false,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
       elu: false
     })
     // We need to clean up the resources after our test
@@ -176,13 +184,13 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -222,13 +230,13 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -321,12 +329,16 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: false,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
       elu: false
     })
     await pool.destroy()
@@ -339,12 +351,16 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: false,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
       elu: false
     })
     // We need to clean up the resources after our test
@@ -373,13 +389,13 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -414,13 +430,13 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -443,12 +459,16 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: true,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: true,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: true,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: true,
+        average: false,
+        median: false
+      },
       elu: false
     })
     await pool.destroy()
@@ -461,12 +481,16 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: true,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: true,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: true,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: true,
+        average: false,
+        median: false
+      },
       elu: false
     })
     // We need to clean up the resources after our test
@@ -495,13 +519,13 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: expect.any(Number),
+          aggregate: expect.any(Number),
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: expect.any(Number),
+          aggregate: expect.any(Number),
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -512,12 +536,10 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThanOrEqual(
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.waitTime.aggregate).toBeGreaterThanOrEqual(
         0
       )
-      expect(
-        workerNode.workerUsage.waitTime.aggregation
-      ).toBeGreaterThanOrEqual(0)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -546,13 +568,13 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: expect.any(Number),
+          aggregate: expect.any(Number),
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: expect.any(Number),
+          aggregate: expect.any(Number),
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -563,8 +585,8 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThan(0)
-      expect(workerNode.workerUsage.waitTime.aggregation).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.waitTime.aggregate).toBeGreaterThan(0)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -580,12 +602,16 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: true,
-      avgRunTime: true,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: true,
+        average: true,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
       elu: false
     })
     await pool.destroy()
@@ -598,12 +624,16 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: true,
-      avgRunTime: true,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: true,
+        average: true,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
       elu: false
     })
     // We need to clean up the resources after our test
@@ -632,20 +662,20 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: expect.any(Number),
+          aggregate: expect.any(Number),
           average: expect.any(Number),
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         elu: undefined
       })
-      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
       expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
     }
     expect(
@@ -680,20 +710,20 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: expect.any(Number),
+          aggregate: expect.any(Number),
           average: expect.any(Number),
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         elu: undefined
       })
-      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
       expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
     }
     expect(
@@ -713,7 +743,7 @@ describe('Selection strategies test suite', () => {
       {
         workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE,
         workerChoiceStrategyOptions: {
-          medRunTime: true
+          runTime: { median: true }
         }
       }
     )
@@ -733,20 +763,20 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: expect.any(Number),
+          aggregate: expect.any(Number),
           average: 0,
           median: expect.any(Number),
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         elu: undefined
       })
-      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
       expect(workerNode.workerUsage.runTime.median).toBeGreaterThan(0)
     }
     expect(
@@ -842,12 +872,16 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: true,
-      avgRunTime: true,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: true,
+        average: true,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
       elu: false
     })
     await pool.destroy()
@@ -860,12 +894,16 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: true,
-      avgRunTime: true,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: true,
+        average: true,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
       elu: false
     })
     // We need to clean up the resources after our test
@@ -894,13 +932,13 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: expect.any(Number),
+          aggregate: expect.any(Number),
           average: expect.any(Number),
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -911,9 +949,7 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThanOrEqual(
-        0
-      )
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThanOrEqual(0)
       expect(workerNode.workerUsage.runTime.average).toBeGreaterThanOrEqual(0)
     }
     expect(
@@ -953,13 +989,13 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: expect.any(Number),
+          aggregate: expect.any(Number),
           average: expect.any(Number),
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -970,7 +1006,7 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
       expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
     }
     expect(
@@ -995,7 +1031,7 @@ describe('Selection strategies test suite', () => {
       {
         workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN,
         workerChoiceStrategyOptions: {
-          medRunTime: true
+          runTime: { median: true }
         }
       }
     )
@@ -1015,13 +1051,13 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: expect.any(Number),
+          aggregate: expect.any(Number),
           average: 0,
           median: expect.any(Number),
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -1032,7 +1068,7 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.runTime.aggregation).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
       expect(workerNode.workerUsage.runTime.median).toBeGreaterThan(0)
     }
     expect(
@@ -1138,12 +1174,16 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: false,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
       elu: false
     })
     await pool.destroy()
@@ -1156,12 +1196,16 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
-      runTime: false,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
       elu: false
     })
     // We need to clean up the resources after our test
@@ -1193,13 +1237,13 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -1261,13 +1305,13 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregation: 0,
+          aggregate: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)

@@ -24,12 +24,16 @@ export class LeastBusyWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
-    runTime: true,
-    avgRunTime: false,
-    medRunTime: false,
-    waitTime: true,
-    avgWaitTime: false,
-    medWaitTime: false,
+    runTime: {
+      aggregate: true,
+      average: false,
+      median: false
+    },
+    waitTime: {
+      aggregate: true,
+      average: false,
+      median: false
+    },
     elu: false
   }
 
@@ -39,7 +43,7 @@ export class LeastBusyWorkerChoiceStrategy<
     opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     super(pool, opts)
-    this.setTaskStatistics(this.opts)
+    this.setTaskStatisticsRequirements(this.opts)
   }
 
   /** @inheritDoc */
@@ -58,8 +62,8 @@ export class LeastBusyWorkerChoiceStrategy<
     let leastBusyWorkerNodeKey!: number
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerTime =
-        workerNode.workerUsage.runTime.aggregation +
-        workerNode.workerUsage.waitTime.aggregation
+        workerNode.workerUsage.runTime.aggregate +
+        workerNode.workerUsage.waitTime.aggregate
       if (workerTime === 0) {
         return workerNodeKey
       } else if (workerTime < minTime) {

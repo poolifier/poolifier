@@ -27,7 +27,7 @@ export class LeastUsedWorkerChoiceStrategy<
     opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     super(pool, opts)
-    this.setTaskStatistics(this.opts)
+    this.setTaskStatisticsRequirements(this.opts)
   }
 
   /** @inheritDoc */

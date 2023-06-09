@@ -173,10 +173,11 @@ An object with these properties:
 - `workerChoiceStrategyOptions` (optional) - The worker choice strategy options object to use in this pool.  
   Properties:
 
-  - `medRunTime` (optional) - Use the tasks median runtime instead of the tasks average runtime in worker choice strategies.
+  - `runTime` (optional) - Use the tasks median runtime instead of the tasks average runtime in worker choice strategies.
+  - `waitTime` (optional) - Use the tasks median wait time instead of the tasks average wait time in worker choice strategies.
   - `weights` (optional) - The worker weights to use in the weighted round robin worker choice strategy: `{ 0: 200, 1: 300, ..., n: 100 }`
 
-  Default: `{ medRunTime: false }`
+  Default: `{ runTime: { median: false }, waitTime: { median: false } }`
 
 - `restartWorkerOnError` (optional) - Restart worker on uncaught error in this pool.  
   Default: `true`

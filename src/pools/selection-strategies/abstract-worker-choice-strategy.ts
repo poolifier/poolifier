@@ -26,12 +26,16 @@ export abstract class AbstractWorkerChoiceStrategy<
   private toggleFindLastFreeWorkerNodeKey: boolean = false
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
-    runTime: false,
-    avgRunTime: false,
-    medRunTime: false,
-    waitTime: false,
-    avgWaitTime: false,
-    medWaitTime: false,
+    runTime: {
+      aggregate: false,
+      average: false,
+      median: false
+    },
+    waitTime: {
+      aggregate: false,
+      average: false,
+      median: false
+    },
     elu: false
   }
 
@@ -48,34 +52,40 @@ export abstract class AbstractWorkerChoiceStrategy<
     this.choose = this.choose.bind(this)
   }
 
-  protected setTaskStatistics (opts: WorkerChoiceStrategyOptions): void {
+  protected setTaskStatisticsRequirements (
+    opts: WorkerChoiceStrategyOptions
+  ): void {
     if (
-      this.taskStatisticsRequirements.avgRunTime &&
-      opts.medRunTime === true
+      this.taskStatisticsRequirements.runTime.average &&
+      opts.runTime?.median === true
     ) {
-      this.taskStatisticsRequirements.avgRunTime = false
-      this.taskStatisticsRequirements.medRunTime = opts.medRunTime as boolean
+      this.taskStatisticsRequirements.runTime.average = false
+      this.taskStatisticsRequirements.runTime.median = opts.runTime
+        .median as boolean
     }
     if (
-      this.taskStatisticsRequirements.medRunTime &&
-      opts.medRunTime === false
+      this.taskStatisticsRequirements.runTime.median &&
+      opts.runTime?.median === false
     ) {
-      this.taskStatisticsRequirements.avgRunTime = true
-      this.taskStatisticsRequirements.medRunTime = opts.medRunTime as boolean
+      this.taskStatisticsRequirements.runTime.average = true
+      this.taskStatisticsRequirements.runTime.median = opts.runTime
+        .median as boolean
     }
     if (
-      this.taskStatisticsRequirements.avgWaitTime &&
-      opts.medWaitTime === true
+      this.taskStatisticsRequirements.waitTime.average &&
+      opts.waitTime?.median === true
     ) {
-      this.taskStatisticsRequirements.avgWaitTime = false
-      this.taskStatisticsRequirements.medWaitTime = opts.medWaitTime as boolean
+      this.taskStatisticsRequirements.waitTime.average = false
+      this.taskStatisticsRequirements.waitTime.median = opts.waitTime
+        .median as boolean
     }
     if (
-      this.taskStatisticsRequirements.medWaitTime &&
-      opts.medWaitTime === false
+      this.taskStatisticsRequirements.waitTime.median &&
+      opts.waitTime?.median === false
     ) {
-      this.taskStatisticsRequirements.avgWaitTime = true
-      this.taskStatisticsRequirements.medWaitTime = opts.medWaitTime as boolean
+      this.taskStatisticsRequirements.waitTime.average = true
+      this.taskStatisticsRequirements.waitTime.median = opts.waitTime
+        .median as boolean
     }
   }
 
@@ -94,7 +104,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   /** @inheritDoc */
   public setOptions (opts: WorkerChoiceStrategyOptions): void {
     opts = opts ?? DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
-    this.setTaskStatistics(opts)
+    this.setTaskStatisticsRequirements(opts)
     this.opts = opts
   }
 
@@ -114,28 +124,28 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /**
    * Gets the worker task runtime.
-   * If the task statistics require `avgRunTime`, the average runtime is returned.
-   * If the task statistics require `medRunTime`, the median runtime is returned.
+   * If the task statistics require the average runtime, the average runtime is returned.
+   * If the task statistics require the median runtime , the median runtime is returned.
    *
    * @param workerNodeKey - The worker node key.
    * @returns The worker task runtime.
    */
   protected getWorkerTaskRunTime (workerNodeKey: number): number {
-    return this.taskStatisticsRequirements.medRunTime
+    return this.taskStatisticsRequirements.runTime.median
       ? this.pool.workerNodes[workerNodeKey].workerUsage.runTime.median
       : this.pool.workerNodes[workerNodeKey].workerUsage.runTime.average
   }
 
   /**
    * Gets the worker task wait time.
-   * If the task statistics require `avgWaitTime`, the average wait time is returned.
-   * If the task statistics require `medWaitTime`, the median wait time is returned.
+   * If the task statistics require the average wait time, the average wait time is returned.
+   * If the task statistics require the median wait time, the median wait time is returned.
    *
    * @param workerNodeKey - The worker node key.
    * @returns The worker task wait time.
    */
   protected getWorkerWaitTime (workerNodeKey: number): number {
-    return this.taskStatisticsRequirements.medWaitTime
+    return this.taskStatisticsRequirements.waitTime.median
       ? this.pool.workerNodes[workerNodeKey].workerUsage.runTime.median
       : this.pool.workerNodes[workerNodeKey].workerUsage.runTime.average
   }

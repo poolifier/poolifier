@@ -25,12 +25,16 @@ export class FairShareWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
-    runTime: true,
-    avgRunTime: true,
-    medRunTime: false,
-    waitTime: false,
-    avgWaitTime: false,
-    medWaitTime: false,
+    runTime: {
+      aggregate: true,
+      average: true,
+      median: false
+    },
+    waitTime: {
+      aggregate: false,
+      average: false,
+      median: false
+    },
     elu: false
   }
 
@@ -45,7 +49,7 @@ export class FairShareWorkerChoiceStrategy<
     opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     super(pool, opts)
-    this.setTaskStatistics(this.opts)
+    this.setTaskStatisticsRequirements(this.opts)
   }
 
   /** @inheritDoc */
