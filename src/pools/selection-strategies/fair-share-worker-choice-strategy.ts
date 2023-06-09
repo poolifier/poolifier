@@ -2,10 +2,11 @@ import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
-import type {
-  IWorkerChoiceStrategy,
-  TaskStatisticsRequirements,
-  WorkerChoiceStrategyOptions
+import {
+  type IWorkerChoiceStrategy,
+  Measurements,
+  type TaskStatisticsRequirements,
+  type WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
 /**
@@ -36,8 +37,8 @@ export class FairShareWorkerChoiceStrategy<
       median: false
     },
     elu: {
-      aggregate: false,
-      average: false,
+      aggregate: true,
+      average: true,
       median: false
     }
   }
@@ -109,9 +110,11 @@ export class FairShareWorkerChoiceStrategy<
     workerNodeKey: number,
     workerVirtualTaskStartTimestamp: number
   ): number {
-    return (
-      workerVirtualTaskStartTimestamp + this.getWorkerTaskRunTime(workerNodeKey)
-    )
+    const workerTaskRunTime =
+      this.opts.measurement === Measurements.elu
+        ? this.getWorkerTaskElu(workerNodeKey)
+        : this.getWorkerTaskRunTime(workerNodeKey)
+    return workerVirtualTaskStartTimestamp + workerTaskRunTime
   }
 
   private getWorkerVirtualTaskStartTimestamp (workerNodeKey: number): number {

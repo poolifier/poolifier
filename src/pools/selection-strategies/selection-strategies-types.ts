@@ -42,9 +42,23 @@ export const WorkerChoiceStrategies = Object.freeze({
 export type WorkerChoiceStrategy = keyof typeof WorkerChoiceStrategies
 
 /**
+ * Enumeration of measurements.
+ */
+export const Measurements = Object.freeze({
+  runTime: 'runTime',
+  waitTime: 'waitTime',
+  elu: 'elu'
+} as const)
+
+/**
+ * Measurement.
+ */
+export type Measurement = keyof typeof Measurements
+
+/**
  * Measurement options.
  */
-interface MeasurementOptions {
+export interface MeasurementOptions {
   /**
    * Set measurement median.
    */
@@ -55,6 +69,10 @@ interface MeasurementOptions {
  * Worker choice strategy options.
  */
 export interface WorkerChoiceStrategyOptions {
+  /**
+   * Measurement to use for worker choice strategy.
+   */
+  measurement?: Measurement
   /**
    * Runtime options.
    *
@@ -87,7 +105,7 @@ export interface WorkerChoiceStrategyOptions {
  *
  * @internal
  */
-interface MeasurementStatisticsRequirements {
+export interface MeasurementStatisticsRequirements {
   /**
    * Require measurement aggregate.
    */

@@ -17,6 +17,7 @@ export type {
 } from './pools/pool'
 export type {
   ErrorHandler,
+  EventLoopUtilizationMeasurementStatistics,
   ExitHandler,
   IWorker,
   MeasurementStatistics,
@@ -27,9 +28,15 @@ export type {
   WorkerNode,
   WorkerUsage
 } from './pools/worker'
-export { WorkerChoiceStrategies } from './pools/selection-strategies/selection-strategies-types'
+export {
+  Measurements,
+  WorkerChoiceStrategies
+} from './pools/selection-strategies/selection-strategies-types'
 export type {
   IWorkerChoiceStrategy,
+  Measurement,
+  MeasurementOptions,
+  MeasurementStatisticsRequirements,
   TaskStatisticsRequirements,
   WorkerChoiceStrategy,
   WorkerChoiceStrategyOptions

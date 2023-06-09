@@ -170,8 +170,8 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /**
    * Gets the worker task ELU.
-   * If the task statistics require the ELU, the average ELU is returned.
-   * If the task statistics require the ELU, the median ELU is returned.
+   * If the task statistics require the average ELU, the average ELU is returned.
+   * If the task statistics require the median ELU, the median ELU is returned.
    *
    * @param workerNodeKey - The worker node key.
    * @returns The worker task ELU.

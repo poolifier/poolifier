@@ -563,10 +563,8 @@ export abstract class AbstractPool<
         .aggregate
     ) {
       if (workerUsage.elu != null && message.taskPerformance?.elu != null) {
-        workerUsage.elu.idle.aggregate =
-          workerUsage.elu.idle.aggregate + message.taskPerformance.elu.idle
-        workerUsage.elu.active.aggregate =
-          workerUsage.elu.active.aggregate + message.taskPerformance.elu.active
+        workerUsage.elu.idle.aggregate += message.taskPerformance.elu.idle
+        workerUsage.elu.active.aggregate += message.taskPerformance.elu.active
         workerUsage.elu.utilization =
           (workerUsage.elu.utilization +
             message.taskPerformance.elu.utilization) /

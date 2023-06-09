@@ -210,19 +210,24 @@ describe('Abstract pool test suite', () => {
         median: false
       },
       elu: {
-        aggregate: false,
-        average: false,
+        aggregate: true,
+        average: true,
         median: false
       }
     })
-    pool.setWorkerChoiceStrategyOptions({ runTime: { median: true } })
+    pool.setWorkerChoiceStrategyOptions({
+      runTime: { median: true },
+      elu: { median: true }
+    })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      runTime: { median: true }
+      runTime: { median: true },
+      elu: { median: true }
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        runTime: { median: true }
+        runTime: { median: true },
+        elu: { median: true }
       })
     }
     expect(
@@ -239,19 +244,24 @@ describe('Abstract pool test suite', () => {
         median: false
       },
       elu: {
-        aggregate: false,
+        aggregate: true,
         average: false,
-        median: false
+        median: true
       }
     })
-    pool.setWorkerChoiceStrategyOptions({ runTime: { median: false } })
+    pool.setWorkerChoiceStrategyOptions({
+      runTime: { median: false },
+      elu: { median: false }
+    })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      runTime: { median: false }
+      runTime: { median: false },
+      elu: { median: false }
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        runTime: { median: false }
+        runTime: { median: false },
+        elu: { median: false }
       })
     }
     expect(
@@ -268,8 +278,8 @@ describe('Abstract pool test suite', () => {
         median: false
       },
       elu: {
-        aggregate: false,
-        average: false,
+        aggregate: true,
+        average: true,
         median: false
       }
     })

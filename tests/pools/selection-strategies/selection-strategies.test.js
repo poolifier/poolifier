@@ -898,8 +898,8 @@ describe('Selection strategies test suite', () => {
         median: false
       },
       elu: {
-        aggregate: false,
-        average: false,
+        aggregate: true,
+        average: true,
         median: false
       }
     })
@@ -924,8 +924,8 @@ describe('Selection strategies test suite', () => {
         median: false
       },
       elu: {
-        aggregate: false,
-        average: false,
+        aggregate: true,
+        average: true,
         median: false
       }
     })
@@ -974,16 +974,18 @@ describe('Selection strategies test suite', () => {
             history: expect.any(CircularArray)
           },
           active: {
-            aggregate: 0,
-            average: 0,
+            aggregate: expect.any(Number),
+            average: expect.any(Number),
             median: 0,
             history: expect.any(CircularArray)
           },
-          utilization: 0
+          utilization: expect.any(Number)
         }
       })
       expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
       expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1036,16 +1038,18 @@ describe('Selection strategies test suite', () => {
             history: expect.any(CircularArray)
           },
           active: {
-            aggregate: 0,
-            average: 0,
+            aggregate: expect.any(Number),
+            average: expect.any(Number),
             median: 0,
             history: expect.any(CircularArray)
           },
-          utilization: 0
+          utilization: expect.any(Number)
         }
       })
       expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
       expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1103,16 +1107,18 @@ describe('Selection strategies test suite', () => {
             history: expect.any(CircularArray)
           },
           active: {
-            aggregate: 0,
-            average: 0,
+            aggregate: expect.any(Number),
+            average: expect.any(Number),
             median: 0,
             history: expect.any(CircularArray)
           },
-          utilization: 0
+          utilization: expect.any(Number)
         }
       })
       expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
       expect(workerNode.workerUsage.runTime.median).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
