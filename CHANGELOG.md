@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Refactor pool worker node usage internals.
 - Breaking change: refactor worker choice strategy statistics requirements: the syntax of the worker choice strategy options has changed.
-- Breaking change: pool information `info` property object fields have been renamed and added.
+- Breaking change: pool information `info` property object fields have been renamed.
 
 ### Fixed
 
