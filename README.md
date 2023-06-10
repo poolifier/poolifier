@@ -150,7 +150,7 @@ Node versions >= 16.14.x are supported.
 
 ## [API](https://poolifier.github.io/poolifier/)
 
-### Pool options
+### `PoolOptions`
 
 An object with these properties:
 
@@ -196,11 +196,11 @@ An object with these properties:
 
   Default: `{ concurrency: 1 }`
 
-#### Thread pool specific options
+#### `ThreadPoolOptions`
 
 - `workerOptions` (optional) - An object with the worker options. See [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_new_worker_filename_options) for more details.
 
-#### Cluster pool specific options
+#### `ClusterPoolOptions`
 
 - `env` (optional) - An object with the environment variables to pass to the worker. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_fork_env) for more details.
 
