@@ -165,8 +165,8 @@ An object with these properties:
   - `WorkerChoiceStrategies.LEAST_BUSY`: Submit tasks to the worker with the minimum tasks total execution and wait time
   - `WorkerChoiceStrategies.LEAST_ELU`: Submit tasks to the worker with the minimum event loop utilization (ELU) (experimental)
   - `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN`: Submit tasks to worker by using a [weighted round robin scheduling algorithm](./src/pools/selection-strategies/README.md#weighted-round-robin) based on tasks execution time
-  - `WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN`: Submit tasks to worker by using an [interleaved weighted round robin scheduling algorithm](./src/pools/selection-strategies/README.md#interleaved-weighted-round-robin) based on tasks execution time (experimental)
-  - `WorkerChoiceStrategies.FAIR_SHARE`: Submit tasks to worker by using a [fair share scheduling algorithm](./src/pools/selection-strategies/README.md#fair-share) based on tasks execution time or ELU active time
+  - `WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN`: Submit tasks to worker by using an [interleaved weighted round robin scheduling algorithm](./src/pools/selection-strategies/README.md#interleaved-weighted-round-robin) based on tasks execution time(experimental)
+  - `WorkerChoiceStrategies.FAIR_SHARE`: Submit tasks to worker by using a [fair share scheduling algorithm](./src/pools/selection-strategies/README.md#fair-share) based on tasks execution time (the default) or ELU active time
 
   `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN`, `WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN` and `WorkerChoiceStrategies.FAIR_SHARE` strategies are targeted to heavy and long tasks.  
   Default: `WorkerChoiceStrategies.ROUND_ROBIN`
@@ -178,7 +178,7 @@ An object with these properties:
   - `runTime` (optional) - Use the tasks [median](./src/pools/selection-strategies/README.md#median) runtime instead of the tasks average runtime in worker choice strategies.
   - `waitTime` (optional) - Use the tasks [median](./src/pools/selection-strategies/README.md#median) wait time instead of the tasks average wait time in worker choice strategies.
   - `elu` (optional) - Use the tasks [median](./src/pools/selection-strategies/README.md#median) ELU instead of the tasks average ELU in worker choice strategies.
-  - `weights` (optional) - The worker weights to use in the weighted round robin worker choice strategy: `{ 0: 200, 1: 300, ..., n: 100 }`.
+  - `weights` (optional) - The worker weights to use in weighted round robin worker choice strategies: `{ 0: 200, 1: 300, ..., n: 100 }`.
 
   Default: `{ runTime: { median: false }, waitTime: { median: false }, elu: { median: false } }`
 
@@ -198,11 +198,11 @@ An object with these properties:
 
 #### `ThreadPoolOptions extends PoolOptions`
 
-- `workerOptions` (optional) - An object with the worker options. See [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_new_worker_filename_options) for more details.
+- `workerOptions` (optional) - An object with the worker options to pass to worker. See [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_new_worker_filename_options) for more details.
 
 #### `ClusterPoolOptions extends PoolOptions`
 
-- `env` (optional) - An object with the environment variables to pass to the worker. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_fork_env) for more details.
+- `env` (optional) - An object with the environment variables to pass to worker. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_fork_env) for more details.
 
 - `settings` (optional) - An object with the cluster settings. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_settings) for more details.
 
