@@ -9,9 +9,13 @@ By default, the strategy uses the average task execution time for each worker bu
 
 ### Weighted round robin
 
+The strategy assigns the next task using a robin round algorithm. The worker weights are maximum tasks execution time, once the worker has reached its maximum tasks execution time, the next task is assigned to the next worker.
+
 ### Interleaved weighted round robin
 
 ## Statistics
+
+Worker choice strategies enable only the statistics that are needed to choose the next worker to avoid unnecessary overhead.
 
 ### Median
 

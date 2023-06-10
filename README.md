@@ -281,7 +281,7 @@ But in general, **always profile your application**.
 
 To choose your pool consider that with a FixedThreadPool/FixedClusterPool or a DynamicThreadPool/DynamicClusterPool (in this case is important the min parameter passed to the constructor) your application memory footprint will increase.  
 Increasing the memory footprint, your application will be ready to accept more tasks, but during idle time your application will consume more memory.  
-One good choose from my point of view is to profile your application using Fixed/Dynamic worker pool, and to see your application metrics when you increase/decrease the num of workers.  
+One good choice from poolifier team point of view is to profile your application using fixed or dynamic worker pool, and to see your application metrics when you increase/decrease the num of workers.  
 For example you could keep the memory footprint low choosing a DynamicThreadPool/DynamicClusterPool with 5 workers, and allow to create new workers until 50/100 when needed, this is the advantage to use the DynamicThreadPool/DynamicClusterPool.  
 But in general, **always profile your application**.
 
