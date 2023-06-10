@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add worker choice strategy documentation: [README.md](./src/pools/selection-strategies/README.md).
+
 ### Fixed
 
 - Fix average statistics computation: ensure failed tasks are not accounted.
