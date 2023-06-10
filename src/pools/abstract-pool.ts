@@ -484,14 +484,21 @@ export abstract class AbstractPool<
   ): void {
     const workerUsage =
       this.workerNodes[this.getWorkerNodeKey(worker)].workerUsage
+    this.updateTaskStatisticsWorkerUsage(workerUsage, message)
+    this.updateRunTimeWorkerUsage(workerUsage, message)
+    this.updateEluWorkerUsage(workerUsage, message)
+  }
+
+  private updateTaskStatisticsWorkerUsage (
+    workerUsage: WorkerUsage,
+    message: MessageValue<Response>
+  ): void {
     const workerTaskStatistics = workerUsage.tasks
     --workerTaskStatistics.executing
     ++workerTaskStatistics.executed
     if (message.taskError != null) {
       ++workerTaskStatistics.failed
     }
-    this.updateRunTimeWorkerUsage(workerUsage, message)
-    this.updateEluWorkerUsage(workerUsage, message)
   }
 
   private updateRunTimeWorkerUsage (
@@ -509,7 +516,8 @@ export abstract class AbstractPool<
         workerUsage.tasks.executed !== 0
       ) {
         workerUsage.runTime.average =
-          workerUsage.runTime.aggregate / workerUsage.tasks.executed
+          workerUsage.runTime.aggregate /
+          (workerUsage.tasks.executed - workerUsage.tasks.failed)
       }
       if (
         this.workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
@@ -539,7 +547,8 @@ export abstract class AbstractPool<
         workerUsage.tasks.executed !== 0
       ) {
         workerUsage.waitTime.average =
-          workerUsage.waitTime.aggregate / workerUsage.tasks.executed
+          workerUsage.waitTime.aggregate /
+          (workerUsage.tasks.executed - workerUsage.tasks.failed)
       }
       if (
         this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
@@ -577,10 +586,12 @@ export abstract class AbstractPool<
           .average &&
         workerUsage.tasks.executed !== 0
       ) {
+        const executedTasks =
+          workerUsage.tasks.executed - workerUsage.tasks.failed
         workerUsage.elu.idle.average =
-          workerUsage.elu.idle.aggregate / workerUsage.tasks.executed
+          workerUsage.elu.idle.aggregate / executedTasks
         workerUsage.elu.active.average =
-          workerUsage.elu.active.aggregate / workerUsage.tasks.executed
+          workerUsage.elu.active.aggregate / executedTasks
       }
       if (
         this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
