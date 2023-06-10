@@ -9,7 +9,7 @@ By default, the strategy uses the average task execution time for each worker bu
 
 ### Weighted round robin
 
-The strategy assigns the next task using a robin round algorithm. The worker weights are maximum tasks execution time, once the worker has reached its maximum tasks execution time, the next task is assigned to the next worker.
+The worker weights are maximum tasks execution time, once the worker has reached its maximum tasks execution time, the next task is assigned to the next worker. The default worker weights are the same for all workers and is computed given the CPU cores speed and theirs numbers.
 
 ### Interleaved weighted round robin
 
