@@ -687,8 +687,6 @@ export abstract class AbstractPool<
       if (this.emitter != null) {
         this.emitter.emit(PoolEvents.error, error)
       }
-    })
-    worker.on('error', () => {
       if (this.opts.restartWorkerOnError === true) {
         this.createAndSetupWorker()
       }
