@@ -5,10 +5,12 @@ import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strate
 import { InterleavedWeightedRoundRobinWorkerChoiceStrategy } from './interleaved-weighted-round-robin-worker-choice-strategy'
 import { LeastBusyWorkerChoiceStrategy } from './least-busy-worker-choice-strategy'
 import { LeastUsedWorkerChoiceStrategy } from './least-used-worker-choice-strategy'
+import { LeastEluWorkerChoiceStrategy } from './least-elu-worker-choice-strategy'
 import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
-  TaskStatistics,
+  StrategyPolicy,
+  TaskStatisticsRequirements,
   WorkerChoiceStrategy,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
@@ -71,6 +73,13 @@ export class WorkerChoiceStrategyContext<
         )
       ],
       [
+        WorkerChoiceStrategies.LEAST_ELU,
+        new (LeastEluWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
+          pool,
+          opts
+        )
+      ],
+      [
         WorkerChoiceStrategies.FAIR_SHARE,
         new (FairShareWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
           pool,
@@ -97,16 +106,29 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
-   * Gets the worker choice strategy task statistics in the context.
+   * Gets the strategy policy in the context.
    *
-   * @returns The task statistics.
+   * @returns The strategy policy.
    */
-  public getTaskStatistics (): TaskStatistics {
+  public getStrategyPolicy (): StrategyPolicy {
     return (
       this.workerChoiceStrategies.get(
         this.workerChoiceStrategy
       ) as IWorkerChoiceStrategy
-    ).taskStatistics
+    ).strategyPolicy
+  }
+
+  /**
+   * Gets the worker choice strategy task statistics requirements in the context.
+   *
+   * @returns The task statistics requirements.
+   */
+  public getTaskStatisticsRequirements (): TaskStatisticsRequirements {
+    return (
+      this.workerChoiceStrategies.get(
+        this.workerChoiceStrategy
+      ) as IWorkerChoiceStrategy
+    ).taskStatisticsRequirements
   }
 
   /**

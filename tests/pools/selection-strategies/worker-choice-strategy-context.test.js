@@ -18,6 +18,9 @@ const {
   LeastBusyWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/least-busy-worker-choice-strategy')
 const {
+  LeastEluWorkerChoiceStrategy
+} = require('../../../lib/pools/selection-strategies/least-elu-worker-choice-strategy')
+const {
   FairShareWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy')
 const {
@@ -261,6 +264,38 @@ describe('Worker choice strategy context test suite', () => {
     )
   })
 
+  it('Verify that setWorkerChoiceStrategy() works with LEAST_ELU and fixed pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_ELU
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    expect(
+      workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      )
+    ).toBeInstanceOf(LeastEluWorkerChoiceStrategy)
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
+      workerChoiceStrategy
+    )
+  })
+
+  it('Verify that setWorkerChoiceStrategy() works with LEAST_ELU and dynamic pool', () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_ELU
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      dynamicPool
+    )
+    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    expect(
+      workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategy
+      )
+    ).toBeInstanceOf(LeastEluWorkerChoiceStrategy)
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
+      workerChoiceStrategy
+    )
+  })
+
   it('Verify that setWorkerChoiceStrategy() works with FAIR_SHARE and fixed pool', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
@@ -365,54 +400,58 @@ describe('Worker choice strategy context test suite', () => {
       fixedPool,
       wwrWorkerChoiceStrategy,
       {
-        medRunTime: true
+        runTime: { median: true }
       }
     )
-    expect(workerChoiceStrategyContext.getTaskStatistics().avgRunTime).toBe(
-      false
-    )
-    expect(workerChoiceStrategyContext.getTaskStatistics().medRunTime).toBe(
-      true
-    )
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
+        .average
+    ).toBe(false)
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime.median
+    ).toBe(true)
     workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool,
       wwrWorkerChoiceStrategy,
       {
-        medRunTime: true
+        runTime: { median: true }
       }
     )
-    expect(workerChoiceStrategyContext.getTaskStatistics().avgRunTime).toBe(
-      false
-    )
-    expect(workerChoiceStrategyContext.getTaskStatistics().medRunTime).toBe(
-      true
-    )
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
+        .average
+    ).toBe(false)
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime.median
+    ).toBe(true)
     const fsWorkerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
     workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool,
       fsWorkerChoiceStrategy,
       {
-        medRunTime: true
+        runTime: { median: true }
       }
     )
-    expect(workerChoiceStrategyContext.getTaskStatistics().avgRunTime).toBe(
-      false
-    )
-    expect(workerChoiceStrategyContext.getTaskStatistics().medRunTime).toBe(
-      true
-    )
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
+        .average
+    ).toBe(false)
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime.median
+    ).toBe(true)
     workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool,
       fsWorkerChoiceStrategy,
       {
-        medRunTime: true
+        runTime: { median: true }
       }
     )
-    expect(workerChoiceStrategyContext.getTaskStatistics().avgRunTime).toBe(
-      false
-    )
-    expect(workerChoiceStrategyContext.getTaskStatistics().medRunTime).toBe(
-      true
-    )
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
+        .average
+    ).toBe(false)
+    expect(
+      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime.median
+    ).toBe(true)
   })
 })

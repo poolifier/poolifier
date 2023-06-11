@@ -2,10 +2,11 @@ import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
-import type {
-  IWorkerChoiceStrategy,
-  TaskStatistics,
-  WorkerChoiceStrategyOptions
+import {
+  type IWorkerChoiceStrategy,
+  Measurements,
+  type TaskStatisticsRequirements,
+  type WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
 /**
@@ -24,14 +25,22 @@ export class FairShareWorkerChoiceStrategy<
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
-  public readonly taskStatistics: TaskStatistics = {
-    runTime: true,
-    avgRunTime: true,
-    medRunTime: false,
-    waitTime: false,
-    avgWaitTime: false,
-    medWaitTime: false,
-    elu: false
+  public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
+    runTime: {
+      aggregate: true,
+      average: true,
+      median: false
+    },
+    waitTime: {
+      aggregate: false,
+      average: false,
+      median: false
+    },
+    elu: {
+      aggregate: true,
+      average: true,
+      median: false
+    }
   }
 
   /**
@@ -45,7 +54,7 @@ export class FairShareWorkerChoiceStrategy<
     opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     super(pool, opts)
-    this.setTaskStatistics(this.opts)
+    this.setTaskStatisticsRequirements(this.opts)
   }
 
   /** @inheritDoc */
@@ -101,9 +110,11 @@ export class FairShareWorkerChoiceStrategy<
     workerNodeKey: number,
     workerVirtualTaskStartTimestamp: number
   ): number {
-    return (
-      workerVirtualTaskStartTimestamp + this.getWorkerTaskRunTime(workerNodeKey)
-    )
+    const workerTaskRunTime =
+      this.opts.measurement === Measurements.elu
+        ? this.getWorkerTaskElu(workerNodeKey)
+        : this.getWorkerTaskRunTime(workerNodeKey)
+    return workerVirtualTaskStartTimestamp + workerTaskRunTime
   }
 
   private getWorkerVirtualTaskStartTimestamp (workerNodeKey: number): number {

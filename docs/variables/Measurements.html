@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Draft | poolifier</title><meta name="description" content="Documentation for poolifier"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Measurements | poolifier</title><meta name="description" content="Documentation for poolifier"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -13,22 +13,23 @@
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
 <li><a href="../index.html">poolifier</a></li>
-<li><a href="Draft.html">Draft</a></li></ul>
-<h1>Type alias Draft&lt;T&gt;</h1></div>
-<div class="tsd-signature"><span class="tsd-kind-type-alias">Draft</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{</span><br/><span>    </span><span class="tsd-signature-symbol">-readonly </span><span class="tsd-signature-symbol">[</span><span class="tsd-kind-type-parameter">P</span><span class="tsd-signature-symbol"> in </span><span class="tsd-signature-symbol">keyof </span><span class="tsd-signature-type tsd-kind-type-parameter">T</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type tsd-kind-type-parameter">T</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type tsd-kind-type-parameter">P</span><span class="tsd-signature-symbol">]</span><br/><span class="tsd-signature-symbol">}</span></div>
-<div class="tsd-comment tsd-typography"><p>Make all properties in T non-readonly.</p>
+<li><a href="Measurements.html">Measurements</a></li></ul>
+<h1>Variable Measurements<code class="tsd-tag ts-flagConst">Const</code> </h1></div>
+<div class="tsd-signature"><span class="tsd-kind-variable">Measurements</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type ">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">elu</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;elu&quot;</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">runTime</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;runTime&quot;</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">waitTime</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;waitTime&quot;</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
+<div class="tsd-comment tsd-typography"><p>Enumeration of measurements.</p>
 </div>
-<section class="tsd-panel">
-<h4>Type Parameters</h4>
-<ul class="tsd-type-parameter-list">
-<li>
-<h4><span class="tsd-kind-type-parameter">T</span></h4>
-<div class="tsd-comment tsd-typography"><p>Type in which properties will be non-readonly.</p>
-</div>
-<div class="tsd-comment tsd-typography"></div></li></ul></section>
+<div class="tsd-type-declaration">
+<h4>Type declaration</h4>
+<ul class="tsd-parameters">
+<li class="tsd-parameter">
+<h5><code class="tsd-tag ts-flagReadonly">Readonly</code> <span class="tsd-kind-property">elu</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;elu&quot;</span></h5></li>
+<li class="tsd-parameter">
+<h5><code class="tsd-tag ts-flagReadonly">Readonly</code> <span class="tsd-kind-property">run<wbr/>Time</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;runTime&quot;</span></h5></li>
+<li class="tsd-parameter">
+<h5><code class="tsd-tag ts-flagReadonly">Readonly</code> <span class="tsd-kind-property">wait<wbr/>Time</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;waitTime&quot;</span></h5></li></ul></div>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/utility-types.ts#L12">src/utility-types.ts:12</a></li></ul></aside></div>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/selection-strategies/selection-strategies-types.ts#L47">src/pools/selection-strategies/selection-strategies-types.ts:47</a></li></ul></aside></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -83,28 +84,28 @@
 <li><a href="../interfaces/WorkerOptions.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Worker<wbr/>Options</span></a></li>
 <li><a href="../interfaces/WorkerStatistics.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Worker<wbr/>Statistics</span></a></li>
 <li><a href="../interfaces/WorkerUsage.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Worker<wbr/>Usage</span></a></li>
-<li><a href="Draft.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-4194304"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-type-alias)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)"></path></g></svg><span>Draft</span></a></li>
-<li><a href="ErrorHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Error<wbr/>Handler</span></a></li>
-<li><a href="ExitHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Exit<wbr/>Handler</span></a></li>
-<li><a href="KillBehavior.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Kill<wbr/>Behavior</span></a></li>
-<li><a href="Measurement.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Measurement</span></a></li>
-<li><a href="MessageHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Message<wbr/>Handler</span></a></li>
-<li><a href="OnlineHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Online<wbr/>Handler</span></a></li>
-<li><a href="PoolEvent.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Pool<wbr/>Event</span></a></li>
-<li><a href="PoolType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Pool<wbr/>Type</span></a></li>
-<li><a href="TaskFunctions.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Task<wbr/>Functions</span></a></li>
-<li><a href="ThreadWorkerWithMessageChannel.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Thread<wbr/>Worker<wbr/>With<wbr/>Message<wbr/>Channel</span></a></li>
-<li><a href="WorkerAsyncFunction.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Worker<wbr/>Async<wbr/>Function</span></a></li>
-<li><a href="WorkerChoiceStrategy.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Worker<wbr/>Choice<wbr/>Strategy</span></a></li>
-<li><a href="WorkerFunction.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Worker<wbr/>Function</span></a></li>
-<li><a href="WorkerSyncFunction.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Worker<wbr/>Sync<wbr/>Function</span></a></li>
-<li><a href="WorkerType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Worker<wbr/>Type</span></a></li>
-<li><a href="../variables/KillBehaviors.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-32"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-variable)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M11.106 16L8.85 7.24H9.966L11.454 13.192C11.558 13.608 11.646 13.996 11.718 14.356C11.79 14.708 11.842 14.976 11.874 15.16C11.906 14.976 11.954 14.708 12.018 14.356C12.09 13.996 12.178 13.608 12.282 13.192L13.758 7.24H14.85L12.582 16H11.106Z" fill="var(--color-text)"></path></g></svg><span>Kill<wbr/>Behaviors</span></a></li>
-<li><a href="../variables/Measurements.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg><span>Measurements</span></a></li>
-<li><a href="../variables/PoolEvents.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg><span>Pool<wbr/>Events</span></a></li>
-<li><a href="../variables/PoolTypes.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg><span>Pool<wbr/>Types</span></a></li>
-<li><a href="../variables/WorkerChoiceStrategies.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg><span>Worker<wbr/>Choice<wbr/>Strategies</span></a></li>
-<li><a href="../variables/WorkerTypes.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg><span>Worker<wbr/>Types</span></a></li></ul></nav></div></div></div>
+<li><a href="../types/Draft.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-4194304"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-type-alias)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)"></path></g></svg><span>Draft</span></a></li>
+<li><a href="../types/ErrorHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Error<wbr/>Handler</span></a></li>
+<li><a href="../types/ExitHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Exit<wbr/>Handler</span></a></li>
+<li><a href="../types/KillBehavior.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Kill<wbr/>Behavior</span></a></li>
+<li><a href="../types/Measurement.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Measurement</span></a></li>
+<li><a href="../types/MessageHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Message<wbr/>Handler</span></a></li>
+<li><a href="../types/OnlineHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Online<wbr/>Handler</span></a></li>
+<li><a href="../types/PoolEvent.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Pool<wbr/>Event</span></a></li>
+<li><a href="../types/PoolType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Pool<wbr/>Type</span></a></li>
+<li><a href="../types/TaskFunctions.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Task<wbr/>Functions</span></a></li>
+<li><a href="../types/ThreadWorkerWithMessageChannel.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Thread<wbr/>Worker<wbr/>With<wbr/>Message<wbr/>Channel</span></a></li>
+<li><a href="../types/WorkerAsyncFunction.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Worker<wbr/>Async<wbr/>Function</span></a></li>
+<li><a href="../types/WorkerChoiceStrategy.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Worker<wbr/>Choice<wbr/>Strategy</span></a></li>
+<li><a href="../types/WorkerFunction.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Worker<wbr/>Function</span></a></li>
+<li><a href="../types/WorkerSyncFunction.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Worker<wbr/>Sync<wbr/>Function</span></a></li>
+<li><a href="../types/WorkerType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Worker<wbr/>Type</span></a></li>
+<li><a href="KillBehaviors.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-32"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-variable)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M11.106 16L8.85 7.24H9.966L11.454 13.192C11.558 13.608 11.646 13.996 11.718 14.356C11.79 14.708 11.842 14.976 11.874 15.16C11.906 14.976 11.954 14.708 12.018 14.356C12.09 13.996 12.178 13.608 12.282 13.192L13.758 7.24H14.85L12.582 16H11.106Z" fill="var(--color-text)"></path></g></svg><span>Kill<wbr/>Behaviors</span></a></li>
+<li><a href="Measurements.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg><span>Measurements</span></a></li>
+<li><a href="PoolEvents.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg><span>Pool<wbr/>Events</span></a></li>
+<li><a href="PoolTypes.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg><span>Pool<wbr/>Types</span></a></li>
+<li><a href="WorkerChoiceStrategies.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg><span>Worker<wbr/>Choice<wbr/>Strategies</span></a></li>
+<li><a href="WorkerTypes.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg><span>Worker<wbr/>Types</span></a></li></ul></nav></div></div></div>
 <div class="tsd-generator">
 <p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div>
 <div class="overlay"></div></body></html>

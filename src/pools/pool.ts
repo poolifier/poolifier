@@ -75,9 +75,11 @@ export interface PoolInfo {
   workerNodes: number
   idleWorkerNodes: number
   busyWorkerNodes: number
-  runningTasks: number
+  executedTasks: number
+  executingTasks: number
   queuedTasks: number
   maxQueuedTasks: number
+  failedTasks: number
 }
 
 /**
@@ -186,7 +188,7 @@ export interface IPool<
    */
   execute: (data?: Data, name?: string) => Promise<Response>
   /**
-   * Shutdowns every current worker in this pool.
+   * Terminate every current worker in this pool.
    */
   destroy: () => Promise<void>
   /**

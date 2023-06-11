@@ -15,6 +15,12 @@ export const WorkerChoiceStrategies = Object.freeze({
    */
   LEAST_BUSY: 'LEAST_BUSY',
   /**
+   * Least ELU worker selection strategy.
+   *
+   * @experimental
+   */
+  LEAST_ELU: 'LEAST_ELU',
+  /**
    * Fair share worker selection strategy.
    */
   FAIR_SHARE: 'FAIR_SHARE',
@@ -36,21 +42,55 @@ export const WorkerChoiceStrategies = Object.freeze({
 export type WorkerChoiceStrategy = keyof typeof WorkerChoiceStrategies
 
 /**
+ * Enumeration of measurements.
+ */
+export const Measurements = Object.freeze({
+  runTime: 'runTime',
+  waitTime: 'waitTime',
+  elu: 'elu'
+} as const)
+
+/**
+ * Measurement.
+ */
+export type Measurement = keyof typeof Measurements
+
+/**
+ * Measurement options.
+ */
+export interface MeasurementOptions {
+  /**
+   * Set measurement median.
+   */
+  median: boolean
+}
+
+/**
  * Worker choice strategy options.
  */
 export interface WorkerChoiceStrategyOptions {
   /**
-   * Use tasks median runtime instead of average runtime.
-   *
-   * @defaultValue false
+   * Measurement to use for worker choice strategy.
    */
-  medRunTime?: boolean
+  measurement?: Measurement
   /**
-   * Use tasks median wait time instead of average runtime.
+   * Runtime options.
    *
-   * @defaultValue false
+   * @defaultValue \{ median: false \}
    */
-  medWaitTime?: boolean
+  runTime?: MeasurementOptions
+  /**
+   * Wait time options.
+   *
+   * @defaultValue \{ median: false \}
+   */
+  waitTime?: MeasurementOptions
+  /**
+   * Event loop utilization options.
+   *
+   * @defaultValue \{ median: false \}
+   */
+  elu?: MeasurementOptions
   /**
    * Worker weights to use for weighted round robin worker selection strategy.
    * Weight is the tasks maximum average or median runtime in milliseconds.
@@ -61,39 +101,55 @@ export interface WorkerChoiceStrategyOptions {
 }
 
 /**
- * Pool worker tasks usage statistics requirements.
+ * Measurement statistics requirements.
  *
  * @internal
  */
-export interface TaskStatistics {
+export interface MeasurementStatisticsRequirements {
   /**
-   * Require tasks runtime.
+   * Require measurement aggregate.
    */
-  runTime: boolean
+  aggregate: boolean
   /**
-   * Require tasks average runtime.
+   * Require measurement average.
    */
-  avgRunTime: boolean
+  average: boolean
   /**
-   * Require tasks median runtime.
+   * Require measurement median.
    */
-  medRunTime: boolean
+  median: boolean
+}
+
+/**
+ * Pool worker node worker usage statistics requirements.
+ *
+ * @internal
+ */
+export interface TaskStatisticsRequirements {
   /**
-   * Require tasks wait time.
+   * Tasks runtime requirements.
    */
-  waitTime: boolean
+  runTime: MeasurementStatisticsRequirements
   /**
-   * Require tasks average wait time.
+   * Tasks wait time requirements.
    */
-  avgWaitTime: boolean
+  waitTime: MeasurementStatisticsRequirements
   /**
-   * Require tasks median wait time.
+   * Tasks event loop utilization requirements.
    */
-  medWaitTime: boolean
+  elu: MeasurementStatisticsRequirements
+}
+
+/**
+ * Strategy policy.
+ *
+ * @internal
+ */
+export interface StrategyPolicy {
   /**
-   * Event loop utilization.
+   * Expect direct usage of dynamic worker.
    */
-  elu: boolean
+  useDynamicWorker: boolean
 }
 
 /**
@@ -101,9 +157,13 @@ export interface TaskStatistics {
  */
 export interface IWorkerChoiceStrategy {
   /**
-   * Required tasks statistics.
+   * Strategy policy.
    */
-  readonly taskStatistics: TaskStatistics
+  readonly strategyPolicy: StrategyPolicy
+  /**
+   * Tasks statistics requirements.
+   */
+  readonly taskStatisticsRequirements: TaskStatisticsRequirements
   /**
    * Resets strategy internals.
    *

@@ -17,18 +17,27 @@ export type {
 } from './pools/pool'
 export type {
   ErrorHandler,
+  EventLoopUtilizationMeasurementStatistics,
   ExitHandler,
   IWorker,
+  MeasurementStatistics,
   MessageHandler,
   OnlineHandler,
   Task,
-  TasksUsage,
-  WorkerNode
+  TaskStatistics,
+  WorkerNode,
+  WorkerUsage
 } from './pools/worker'
-export { WorkerChoiceStrategies } from './pools/selection-strategies/selection-strategies-types'
+export {
+  Measurements,
+  WorkerChoiceStrategies
+} from './pools/selection-strategies/selection-strategies-types'
 export type {
   IWorkerChoiceStrategy,
-  TaskStatistics,
+  Measurement,
+  MeasurementOptions,
+  MeasurementStatisticsRequirements,
+  TaskStatisticsRequirements,
   WorkerChoiceStrategy,
   WorkerChoiceStrategyOptions
 } from './pools/selection-strategies/selection-strategies-types'
@@ -54,6 +63,7 @@ export type {
   Draft,
   MessageValue,
   PromiseResponseWrapper,
+  TaskError,
   TaskPerformance,
   WorkerStatistics
 } from './utility-types'

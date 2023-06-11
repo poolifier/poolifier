@@ -4,7 +4,8 @@ import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
-  TaskStatistics,
+  StrategyPolicy,
+  TaskStatisticsRequirements,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
@@ -24,14 +25,27 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
-  public readonly taskStatistics: TaskStatistics = {
-    runTime: true,
-    avgRunTime: true,
-    medRunTime: false,
-    waitTime: false,
-    avgWaitTime: false,
-    medWaitTime: false,
-    elu: false
+  public readonly strategyPolicy: StrategyPolicy = {
+    useDynamicWorker: true
+  }
+
+  /** @inheritDoc */
+  public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
+    runTime: {
+      aggregate: true,
+      average: true,
+      median: false
+    },
+    waitTime: {
+      aggregate: false,
+      average: false,
+      median: false
+    },
+    elu: {
+      aggregate: false,
+      average: false,
+      median: false
+    }
   }
 
   /**
@@ -53,7 +67,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     super(pool, opts)
-    this.setTaskStatistics(this.opts)
+    this.setTaskStatisticsRequirements(this.opts)
     this.defaultWorkerWeight = this.computeDefaultWorkerWeight()
   }
 

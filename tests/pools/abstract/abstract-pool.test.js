@@ -93,8 +93,9 @@ describe('Abstract pool test suite', () => {
       WorkerChoiceStrategies.ROUND_ROBIN
     )
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      medRunTime: false,
-      medWaitTime: false
+      runTime: { median: false },
+      waitTime: { median: false },
+      elu: { median: false }
     })
     expect(pool.opts.messageHandler).toBeUndefined()
     expect(pool.opts.errorHandler).toBeUndefined()
@@ -108,7 +109,7 @@ describe('Abstract pool test suite', () => {
       {
         workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
         workerChoiceStrategyOptions: {
-          medRunTime: true,
+          runTime: { median: true },
           weights: { 0: 300, 1: 200 }
         },
         enableEvents: false,
@@ -130,7 +131,7 @@ describe('Abstract pool test suite', () => {
       WorkerChoiceStrategies.LEAST_USED
     )
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      medRunTime: true,
+      runTime: { median: true },
       weights: { 0: 300, 1: 200 }
     })
     expect(pool.opts.messageHandler).toStrictEqual(testHandler)
@@ -183,58 +184,104 @@ describe('Abstract pool test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
     )
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      medRunTime: false,
-      medWaitTime: false
+      runTime: { median: false },
+      waitTime: { median: false },
+      elu: { median: false }
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        medRunTime: false,
-        medWaitTime: false
+        runTime: { median: false },
+        waitTime: { median: false },
+        elu: { median: false }
       })
     }
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
-      runTime: true,
-      avgRunTime: true,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
-      elu: false
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: true,
+        average: true,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: true,
+        average: true,
+        median: false
+      }
     })
-    pool.setWorkerChoiceStrategyOptions({ medRunTime: true })
+    pool.setWorkerChoiceStrategyOptions({
+      runTime: { median: true },
+      elu: { median: true }
+    })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      medRunTime: true
+      runTime: { median: true },
+      elu: { median: true }
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
-      expect(workerChoiceStrategy.opts).toStrictEqual({ medRunTime: true })
+      expect(workerChoiceStrategy.opts).toStrictEqual({
+        runTime: { median: true },
+        elu: { median: true }
+      })
     }
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
-      runTime: true,
-      avgRunTime: false,
-      medRunTime: true,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
-      elu: false
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: true,
+        average: false,
+        median: true
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: true,
+        average: false,
+        median: true
+      }
     })
-    pool.setWorkerChoiceStrategyOptions({ medRunTime: false })
+    pool.setWorkerChoiceStrategyOptions({
+      runTime: { median: false },
+      elu: { median: false }
+    })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      medRunTime: false
+      runTime: { median: false },
+      elu: { median: false }
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
-      expect(workerChoiceStrategy.opts).toStrictEqual({ medRunTime: false })
+      expect(workerChoiceStrategy.opts).toStrictEqual({
+        runTime: { median: false },
+        elu: { median: false }
+      })
     }
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
-      runTime: true,
-      avgRunTime: true,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
-      elu: false
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: true,
+        average: true,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: true,
+        average: true,
+        median: false
+      }
     })
     await pool.destroy()
   })
@@ -286,9 +333,11 @@ describe('Abstract pool test suite', () => {
       workerNodes: numberOfWorkers,
       idleWorkerNodes: numberOfWorkers,
       busyWorkerNodes: 0,
-      runningTasks: 0,
+      executedTasks: 0,
+      executingTasks: 0,
       queuedTasks: 0,
-      maxQueuedTasks: 0
+      maxQueuedTasks: 0,
+      failedTasks: 0
     })
     await pool.destroy()
     pool = new DynamicClusterPool(
@@ -304,9 +353,11 @@ describe('Abstract pool test suite', () => {
       workerNodes: numberOfWorkers,
       idleWorkerNodes: numberOfWorkers,
       busyWorkerNodes: 0,
-      runningTasks: 0,
+      executedTasks: 0,
+      executingTasks: 0,
       queuedTasks: 0,
-      maxQueuedTasks: 0
+      maxQueuedTasks: 0,
+      failedTasks: 0
     })
     await pool.destroy()
   })
@@ -332,19 +383,40 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/cluster/testWorker.js'
     )
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: 0,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: 0,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     await pool.destroy()
@@ -374,36 +446,78 @@ describe('Abstract pool test suite', () => {
       promises.add(pool.execute())
     }
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: 0,
-        running: maxMultiplier,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: 0,
+          executing: maxMultiplier,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     await pool.destroy()
@@ -422,41 +536,85 @@ describe('Abstract pool test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: expect.any(Number),
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
-      expect(workerNode.tasksUsage.ran).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.ran).toBeLessThanOrEqual(maxMultiplier)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        maxMultiplier
+      )
     }
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: 0,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: 0,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
-      expect(workerNode.tasksUsage.runTimeHistory.length).toBe(0)
-      expect(workerNode.tasksUsage.waitTimeHistory.length).toBe(0)
+      expect(workerNode.workerUsage.runTime.history.length).toBe(0)
+      expect(workerNode.workerUsage.waitTime.history.length).toBe(0)
     }
     await pool.destroy()
   })
@@ -489,9 +647,11 @@ describe('Abstract pool test suite', () => {
       workerNodes: expect.any(Number),
       idleWorkerNodes: expect.any(Number),
       busyWorkerNodes: expect.any(Number),
-      runningTasks: expect.any(Number),
+      executedTasks: expect.any(Number),
+      executingTasks: expect.any(Number),
       queuedTasks: expect.any(Number),
-      maxQueuedTasks: expect.any(Number)
+      maxQueuedTasks: expect.any(Number),
+      failedTasks: expect.any(Number)
     })
     await pool.destroy()
   })
@@ -523,9 +683,11 @@ describe('Abstract pool test suite', () => {
       workerNodes: expect.any(Number),
       idleWorkerNodes: expect.any(Number),
       busyWorkerNodes: expect.any(Number),
-      runningTasks: expect.any(Number),
+      executedTasks: expect.any(Number),
+      executingTasks: expect.any(Number),
       queuedTasks: expect.any(Number),
-      maxQueuedTasks: expect.any(Number)
+      maxQueuedTasks: expect.any(Number),
+      failedTasks: expect.any(Number)
     })
     await pool.destroy()
   })

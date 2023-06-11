@@ -11,6 +11,11 @@ import type { IWorker, Task } from './pools/worker'
  */
 export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
 
+/**
+ * Task error.
+ *
+ * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ */
 export interface TaskError<Data = unknown> {
   /**
    * Error message.
@@ -35,10 +40,6 @@ export interface TaskPerformance {
    */
   runTime?: number
   /**
-   * Task wait time.
-   */
-  waitTime?: number
-  /**
    * Task event loop utilization.
    */
   elu?: EventLoopUtilization
@@ -49,22 +50,22 @@ export interface TaskPerformance {
  */
 export interface WorkerStatistics {
   runTime: boolean
-  waitTime: boolean
   elu: boolean
 }
 
 /**
  * Message object that is passed between main worker and worker.
  *
+ * @typeParam MessageData - Type of data sent to and/or from the worker. This can only be serializable data.
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
  * @typeParam MainWorker - Type of main worker.
  * @internal
  */
 export interface MessageValue<
+  MessageData = unknown,
   Data = unknown,
-  ErrorData = unknown,
   MainWorker extends ClusterWorker | MessagePort = ClusterWorker | MessagePort
-> extends Task<Data> {
+> extends Task<MessageData> {
   /**
    * Kill code.
    */
@@ -72,7 +73,7 @@ export interface MessageValue<
   /**
    * Task error.
    */
-  readonly taskError?: TaskError<ErrorData>
+  readonly taskError?: TaskError<Data>
   /**
    * Task performance.
    */

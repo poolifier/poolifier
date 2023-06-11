@@ -4,23 +4,43 @@ import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
+  TaskStatisticsRequirements,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
 /**
- * Selects the least used worker.
+ * Selects the worker with the least ELU.
  *
  * @typeParam Worker - Type of worker which manages the strategy.
  * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
  * @typeParam Response - Type of execution response. This can only be serializable data.
  */
-export class LeastUsedWorkerChoiceStrategy<
+export class LeastEluWorkerChoiceStrategy<
     Worker extends IWorker,
     Data = unknown,
     Response = unknown
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
+  /** @inheritDoc */
+  public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
+    runTime: {
+      aggregate: false,
+      average: false,
+      median: false
+    },
+    waitTime: {
+      aggregate: false,
+      average: false,
+      median: false
+    },
+    elu: {
+      aggregate: true,
+      average: false,
+      median: false
+    }
+  }
+
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
@@ -42,26 +62,19 @@ export class LeastUsedWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number {
-    const freeWorkerNodeKey = this.findFreeWorkerNodeKey()
-    if (freeWorkerNodeKey !== -1) {
-      return freeWorkerNodeKey
-    }
-    let minNumberOfTasks = Infinity
-    let leastUsedWorkerNodeKey!: number
+    let minWorkerElu = Infinity
+    let leastEluWorkerNodeKey!: number
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
-      const workerTaskStatistics = workerNode.workerUsage.tasks
-      const workerTasks =
-        workerTaskStatistics.executed +
-        workerTaskStatistics.executing +
-        workerTaskStatistics.queued
-      if (workerTasks === 0) {
+      const workerUsage = workerNode.workerUsage
+      const workerElu = workerUsage.elu?.active.aggregate ?? 0
+      if (workerElu === 0) {
         return workerNodeKey
-      } else if (workerTasks < minNumberOfTasks) {
-        minNumberOfTasks = workerTasks
-        leastUsedWorkerNodeKey = workerNodeKey
+      } else if (workerElu < minWorkerElu) {
+        minWorkerElu = workerElu
+        leastEluWorkerNodeKey = workerNodeKey
       }
     }
-    return leastUsedWorkerNodeKey
+    return leastEluWorkerNodeKey
   }
 
   /** @inheritDoc */

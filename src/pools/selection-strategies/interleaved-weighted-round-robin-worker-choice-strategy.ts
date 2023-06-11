@@ -4,6 +4,7 @@ import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
+  StrategyPolicy,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
@@ -21,6 +22,11 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
+  /** @inheritDoc */
+  public readonly strategyPolicy: StrategyPolicy = {
+    useDynamicWorker: true
+  }
+
   /**
    * Worker node id where the current task will be submitted.
    */
@@ -45,7 +51,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
     opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     super(pool, opts)
-    this.setTaskStatistics(this.opts)
+    this.setTaskStatisticsRequirements(this.opts)
     this.defaultWorkerWeight = this.computeDefaultWorkerWeight()
     this.roundWeights = this.getRoundWeights()
   }

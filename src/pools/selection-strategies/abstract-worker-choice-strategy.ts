@@ -4,7 +4,8 @@ import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import type {
   IWorkerChoiceStrategy,
-  TaskStatistics,
+  StrategyPolicy,
+  TaskStatisticsRequirements,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
@@ -24,15 +25,29 @@ export abstract class AbstractWorkerChoiceStrategy<
    * Toggles finding the last free worker node key.
    */
   private toggleFindLastFreeWorkerNodeKey: boolean = false
+
   /** @inheritDoc */
-  public readonly taskStatistics: TaskStatistics = {
-    runTime: false,
-    avgRunTime: false,
-    medRunTime: false,
-    waitTime: false,
-    avgWaitTime: false,
-    medWaitTime: false,
-    elu: false
+  public readonly strategyPolicy: StrategyPolicy = {
+    useDynamicWorker: false
+  }
+
+  /** @inheritDoc */
+  public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
+    runTime: {
+      aggregate: false,
+      average: false,
+      median: false
+    },
+    waitTime: {
+      aggregate: false,
+      average: false,
+      median: false
+    },
+    elu: {
+      aggregate: false,
+      average: false,
+      median: false
+    }
   }
 
   /**
@@ -48,22 +63,54 @@ export abstract class AbstractWorkerChoiceStrategy<
     this.choose = this.choose.bind(this)
   }
 
-  protected setTaskStatistics (opts: WorkerChoiceStrategyOptions): void {
-    if (this.taskStatistics.avgRunTime && opts.medRunTime === true) {
-      this.taskStatistics.avgRunTime = false
-      this.taskStatistics.medRunTime = opts.medRunTime as boolean
+  protected setTaskStatisticsRequirements (
+    opts: WorkerChoiceStrategyOptions
+  ): void {
+    if (
+      this.taskStatisticsRequirements.runTime.average &&
+      opts.runTime?.median === true
+    ) {
+      this.taskStatisticsRequirements.runTime.average = false
+      this.taskStatisticsRequirements.runTime.median = opts.runTime
+        .median as boolean
     }
-    if (this.taskStatistics.medRunTime && opts.medRunTime === false) {
-      this.taskStatistics.avgRunTime = true
-      this.taskStatistics.medRunTime = opts.medRunTime as boolean
+    if (
+      this.taskStatisticsRequirements.runTime.median &&
+      opts.runTime?.median === false
+    ) {
+      this.taskStatisticsRequirements.runTime.average = true
+      this.taskStatisticsRequirements.runTime.median = opts.runTime
+        .median as boolean
     }
-    if (this.taskStatistics.avgWaitTime && opts.medWaitTime === true) {
-      this.taskStatistics.avgWaitTime = false
-      this.taskStatistics.medWaitTime = opts.medWaitTime as boolean
+    if (
+      this.taskStatisticsRequirements.waitTime.average &&
+      opts.waitTime?.median === true
+    ) {
+      this.taskStatisticsRequirements.waitTime.average = false
+      this.taskStatisticsRequirements.waitTime.median = opts.waitTime
+        .median as boolean
     }
-    if (this.taskStatistics.medWaitTime && opts.medWaitTime === false) {
-      this.taskStatistics.avgWaitTime = true
-      this.taskStatistics.medWaitTime = opts.medWaitTime as boolean
+    if (
+      this.taskStatisticsRequirements.waitTime.median &&
+      opts.waitTime?.median === false
+    ) {
+      this.taskStatisticsRequirements.waitTime.average = true
+      this.taskStatisticsRequirements.waitTime.median = opts.waitTime
+        .median as boolean
+    }
+    if (
+      this.taskStatisticsRequirements.elu.average &&
+      opts.elu?.median === true
+    ) {
+      this.taskStatisticsRequirements.elu.average = false
+      this.taskStatisticsRequirements.elu.median = opts.elu.median as boolean
+    }
+    if (
+      this.taskStatisticsRequirements.elu.median &&
+      opts.elu?.median === false
+    ) {
+      this.taskStatisticsRequirements.elu.average = true
+      this.taskStatisticsRequirements.elu.median = opts.elu.median as boolean
     }
   }
 
@@ -82,7 +129,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   /** @inheritDoc */
   public setOptions (opts: WorkerChoiceStrategyOptions): void {
     opts = opts ?? DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
-    this.setTaskStatistics(opts)
+    this.setTaskStatisticsRequirements(opts)
     this.opts = opts
   }
 
@@ -102,30 +149,44 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /**
    * Gets the worker task runtime.
-   * If the required statistics are `avgRunTime`, the average runtime is returned.
-   * If the required statistics are `medRunTime`, the median runtime is returned.
+   * If the task statistics require the average runtime, the average runtime is returned.
+   * If the task statistics require the median runtime , the median runtime is returned.
    *
    * @param workerNodeKey - The worker node key.
    * @returns The worker task runtime.
    */
   protected getWorkerTaskRunTime (workerNodeKey: number): number {
-    return this.taskStatistics.medRunTime
-      ? this.pool.workerNodes[workerNodeKey].tasksUsage.medRunTime
-      : this.pool.workerNodes[workerNodeKey].tasksUsage.avgRunTime
+    return this.taskStatisticsRequirements.runTime.median
+      ? this.pool.workerNodes[workerNodeKey].workerUsage.runTime.median
+      : this.pool.workerNodes[workerNodeKey].workerUsage.runTime.average
   }
 
   /**
    * Gets the worker task wait time.
-   * If the required statistics are `avgWaitTime`, the average wait time is returned.
-   * If the required statistics are `medWaitTime`, the median wait time is returned.
+   * If the task statistics require the average wait time, the average wait time is returned.
+   * If the task statistics require the median wait time, the median wait time is returned.
    *
    * @param workerNodeKey - The worker node key.
    * @returns The worker task wait time.
    */
-  protected getWorkerWaitTime (workerNodeKey: number): number {
-    return this.taskStatistics.medWaitTime
-      ? this.pool.workerNodes[workerNodeKey].tasksUsage.medWaitTime
-      : this.pool.workerNodes[workerNodeKey].tasksUsage.avgWaitTime
+  protected getWorkerTaskWaitTime (workerNodeKey: number): number {
+    return this.taskStatisticsRequirements.waitTime.median
+      ? this.pool.workerNodes[workerNodeKey].workerUsage.runTime.median
+      : this.pool.workerNodes[workerNodeKey].workerUsage.runTime.average
+  }
+
+  /**
+   * Gets the worker task ELU.
+   * If the task statistics require the average ELU, the average ELU is returned.
+   * If the task statistics require the median ELU, the median ELU is returned.
+   *
+   * @param workerNodeKey - The worker node key.
+   * @returns The worker task ELU.
+   */
+  protected getWorkerTaskElu (workerNodeKey: number): number {
+    return this.taskStatisticsRequirements.elu.median
+      ? this.pool.workerNodes[workerNodeKey].workerUsage.elu.active.median
+      : this.pool.workerNodes[workerNodeKey].workerUsage.elu.active.average
   }
 
   protected computeDefaultWorkerWeight (): number {
@@ -142,7 +203,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   /**
    * Finds the first free worker node key based on the number of tasks the worker has applied.
    *
-   * If a worker is found with `0` running tasks, it is detected as free and its worker node key is returned.
+   * If a worker is found with `0` executing tasks, it is detected as free and its worker node key is returned.
    *
    * If no free worker is found, `-1` is returned.
    *
@@ -150,14 +211,14 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   private findFirstFreeWorkerNodeKey (): number {
     return this.pool.workerNodes.findIndex(workerNode => {
-      return workerNode.tasksUsage.running === 0
+      return workerNode.workerUsage.tasks.executing === 0
     })
   }
 
   /**
    * Finds the last free worker node key based on the number of tasks the worker has applied.
    *
-   * If a worker is found with `0` running tasks, it is detected as free and its worker node key is returned.
+   * If a worker is found with `0` executing tasks, it is detected as free and its worker node key is returned.
    *
    * If no free worker is found, `-1` is returned.
    *
@@ -166,14 +227,16 @@ export abstract class AbstractWorkerChoiceStrategy<
   private findLastFreeWorkerNodeKey (): number {
     // It requires node >= 18.0.0:
     // return this.workerNodes.findLastIndex(workerNode => {
-    //   return workerNode.tasksUsage.running === 0
+    //   return workerNode.workerUsage.tasks.executing === 0
     // })
     for (
       let workerNodeKey = this.pool.workerNodes.length - 1;
       workerNodeKey >= 0;
       workerNodeKey--
     ) {
-      if (this.pool.workerNodes[workerNodeKey].tasksUsage.running === 0) {
+      if (
+        this.pool.workerNodes[workerNodeKey].workerUsage.tasks.executing === 0
+      ) {
         return workerNodeKey
       }
     }

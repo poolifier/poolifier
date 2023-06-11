@@ -4,7 +4,7 @@ import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
-  TaskStatistics,
+  TaskStatisticsRequirements,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
@@ -23,14 +23,22 @@ export class LeastBusyWorkerChoiceStrategy<
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
-  public readonly taskStatistics: TaskStatistics = {
-    runTime: true,
-    avgRunTime: false,
-    medRunTime: false,
-    waitTime: false,
-    avgWaitTime: false,
-    medWaitTime: false,
-    elu: false
+  public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
+    runTime: {
+      aggregate: true,
+      average: false,
+      median: false
+    },
+    waitTime: {
+      aggregate: true,
+      average: false,
+      median: false
+    },
+    elu: {
+      aggregate: false,
+      average: false,
+      median: false
+    }
   }
 
   /** @inheritDoc */
@@ -39,7 +47,7 @@ export class LeastBusyWorkerChoiceStrategy<
     opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
     super(pool, opts)
-    this.setTaskStatistics(this.opts)
+    this.setTaskStatisticsRequirements(this.opts)
   }
 
   /** @inheritDoc */
@@ -54,14 +62,16 @@ export class LeastBusyWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number {
-    let minRunTime = Infinity
+    let minTime = Infinity
     let leastBusyWorkerNodeKey!: number
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
-      const workerRunTime = workerNode.tasksUsage.runTime
-      if (workerRunTime === 0) {
+      const workerTime =
+        workerNode.workerUsage.runTime.aggregate +
+        workerNode.workerUsage.waitTime.aggregate
+      if (workerTime === 0) {
         return workerNodeKey
-      } else if (workerRunTime < minRunTime) {
-        minRunTime = workerRunTime
+      } else if (workerTime < minTime) {
+        minTime = workerTime
         leastBusyWorkerNodeKey = workerNodeKey
       }
     }

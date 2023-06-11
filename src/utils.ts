@@ -12,8 +12,9 @@ export const EMPTY_FUNCTION: () => void = Object.freeze(() => {
  */
 export const DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS: WorkerChoiceStrategyOptions =
   {
-    medRunTime: false,
-    medWaitTime: false
+    runTime: { median: false },
+    waitTime: { median: false },
+    elu: { median: false }
   }
 
 /**

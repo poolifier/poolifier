@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix new worker use after creation in dynamic pool given the current worker choice strategy.
+
+## [2.6.1] - 2023-06-10
+
+### Added
+
+- Add worker choice strategy documentation: [README.md](./src/pools/selection-strategies/README.md).
+
+### Fixed
+
+- Fix average statistics computation: ensure failed tasks are not accounted.
+
+## [2.6.0] - 2023-06-09
+
+### Added
+
+- Add `LEAST_ELU` worker choice strategy (experimental).
+- Add tasks ELU instead of runtime support to `FAIR_SHARE` worker choice strategy.
+
+### Changed
+
+- Refactor pool worker node usage internals.
+- Breaking change: refactor worker choice strategy statistics requirements: the syntax of the worker choice strategy options has changed.
+- Breaking change: pool information `info` property object fields have been renamed.
+
+### Fixed
+
+- Fix wait time accounting.
+- Ensure worker choice strategy `LEAST_BUSY` accounts also tasks wait time.
+- Ensure worker choice strategy `LEAST_USED` accounts also queued tasks.
+
 ## [2.5.4] - 2023-06-07
 
 ### Added
@@ -50,7 +83,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Switch pool event emitter to `EventEmitterAsyncResource`.
 - Add tasks wait time accounting in per worker tasks usage.
-- Add interleaved weighted round robin worker choice strategy (experimental).
+- Add interleaved weighted round robin `INTERLEAVED_WEIGHTED_ROUND_ROBIN` worker choice strategy (experimental).
 
 ### Changed
 
@@ -142,7 +175,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Ensure one task at a time is executed per worker with tasks queueing enabled.
-- Properly count worker running tasks with tasks queueing enabled.
+- Properly count worker executing tasks with tasks queueing enabled.
 
 ## [2.4.5] - 2023-04-09
 

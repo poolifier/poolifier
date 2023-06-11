@@ -224,7 +224,7 @@ export abstract class AbstractWorker<
     message: MessageValue<Data>
   ): void {
     try {
-      let taskPerformance = this.beginTaskPerformance(message)
+      let taskPerformance = this.beginTaskPerformance()
       const res = fn(message.data)
       taskPerformance = this.endTaskPerformance(taskPerformance)
       this.sendToMainWorker({
@@ -256,7 +256,7 @@ export abstract class AbstractWorker<
     fn: WorkerAsyncFunction<Data, Response>,
     message: MessageValue<Data>
   ): void {
-    let taskPerformance = this.beginTaskPerformance(message)
+    let taskPerformance = this.beginTaskPerformance()
     fn(message.data)
       .then(res => {
         taskPerformance = this.endTaskPerformance(taskPerformance)
@@ -297,13 +297,9 @@ export abstract class AbstractWorker<
     return fn
   }
 
-  private beginTaskPerformance (message: MessageValue<Data>): TaskPerformance {
-    const timestamp = performance.now()
+  private beginTaskPerformance (): TaskPerformance {
     return {
-      timestamp,
-      ...(this.statistics.waitTime && {
-        waitTime: timestamp - (message.timestamp ?? timestamp)
-      }),
+      timestamp: performance.now(),
       ...(this.statistics.elu && { elu: performance.eventLoopUtilization() })
     }
   }

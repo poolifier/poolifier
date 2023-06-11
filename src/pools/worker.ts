@@ -1,4 +1,3 @@
-import type { EventLoopUtilization } from 'node:perf_hooks'
 import type { CircularArray } from '../circular-array'
 import type { Queue } from '../queue'
 
@@ -57,59 +56,86 @@ export interface Task<Data = unknown> {
 }
 
 /**
- * Worker tasks usage statistics.
+ * Measurement statistics.
  *
  * @internal
  */
-export interface TasksUsage {
+export interface MeasurementStatistics {
   /**
-   * Number of tasks executed.
+   * Measurement aggregate.
    */
-  ran: number
+  aggregate: number
   /**
-   * Number of tasks running.
+   * Measurement average.
    */
-  running: number
+  average: number
   /**
-   * Tasks runtime.
+   * Measurement median.
    */
-  runTime: number
+  median: number
   /**
-   * Tasks runtime history.
+   * Measurement history.
    */
-  runTimeHistory: CircularArray<number>
+  history: CircularArray<number>
+}
+
+/**
+ * Event loop utilization measurement statistics.
+ *
+ * @internal
+ */
+export interface EventLoopUtilizationMeasurementStatistics {
+  idle: MeasurementStatistics
+  active: MeasurementStatistics
+  utilization: number
+}
+
+/**
+ * Task statistics.
+ *
+ * @internal
+ */
+export interface TaskStatistics {
   /**
-   * Average tasks runtime.
+   * Number of executed tasks.
    */
-  avgRunTime: number
+  executed: number
   /**
-   * Median tasks runtime.
+   * Number of executing tasks.
    */
-  medRunTime: number
+  executing: number
   /**
-   * Tasks wait time.
+   * Number of queued tasks.
    */
-  waitTime: number
+  readonly queued: number
   /**
-   * Tasks wait time history.
+   * Number of failed tasks.
    */
-  waitTimeHistory: CircularArray<number>
+  failed: number
+}
+
+/**
+ * Worker usage statistics.
+ *
+ * @internal
+ */
+export interface WorkerUsage {
   /**
-   * Average tasks wait time.
+   * Tasks statistics.
    */
-  avgWaitTime: number
+  tasks: TaskStatistics
   /**
-   * Median tasks wait time.
+   * Tasks runtime statistics.
    */
-  medWaitTime: number
+  runTime: MeasurementStatistics
   /**
-   * Number of tasks errored.
+   * Tasks wait time statistics.
    */
-  error: number
+  waitTime: MeasurementStatistics
   /**
-   * Event loop utilization.
+   * Tasks event loop utilization statistics.
    */
-  elu: EventLoopUtilization | undefined
+  elu: EventLoopUtilizationMeasurementStatistics
 }
 
 /**
@@ -148,9 +174,9 @@ export interface WorkerNode<Worker extends IWorker, Data = unknown> {
    */
   readonly worker: Worker
   /**
-   * Worker node tasks usage statistics.
+   * Worker node worker usage statistics.
    */
-  tasksUsage: TasksUsage
+  workerUsage: WorkerUsage
   /**
    * Worker node tasks queue.
    */

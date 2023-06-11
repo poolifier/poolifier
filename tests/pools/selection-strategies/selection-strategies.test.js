@@ -15,6 +15,7 @@ describe('Selection strategies test suite', () => {
     expect(WorkerChoiceStrategies.ROUND_ROBIN).toBe('ROUND_ROBIN')
     expect(WorkerChoiceStrategies.LEAST_USED).toBe('LEAST_USED')
     expect(WorkerChoiceStrategies.LEAST_BUSY).toBe('LEAST_BUSY')
+    expect(WorkerChoiceStrategies.LEAST_ELU).toBe('LEAST_ELU')
     expect(WorkerChoiceStrategies.FAIR_SHARE).toBe('FAIR_SHARE')
     expect(WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN).toBe(
       'WEIGHTED_ROUND_ROBIN'
@@ -114,21 +115,15 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify ROUND_ROBIN strategy default tasks usage statistics requirements', async () => {
+  it('Verify ROUND_ROBIN strategy default policy', async () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
     let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
-      runTime: false,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
-      elu: false
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: true
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -137,14 +132,64 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
-      runTime: false,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
-      elu: false
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: true
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify ROUND_ROBIN strategy default tasks statistics requirements', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -164,19 +209,40 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     expect(
@@ -203,19 +269,40 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     expect(
@@ -293,21 +380,15 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify LEAST_USED strategy default tasks usage statistics requirements', async () => {
+  it('Verify LEAST_USED strategy default policy', async () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_USED
     let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
-      runTime: false,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
-      elu: false
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -316,14 +397,64 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
-      runTime: false,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
-      elu: false
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LEAST_USED strategy default tasks statistics requirements', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_USED
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -343,19 +474,40 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     // We need to clean up the resources after our test
@@ -377,40 +529,55 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     // We need to clean up the resources after our test
     await pool.destroy()
   })
 
-  it('Verify LEAST_BUSY strategy default tasks usage statistics requirements', async () => {
+  it('Verify LEAST_BUSY strategy default policy', async () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_BUSY
     let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
-      runTime: true,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
-      elu: false
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -419,14 +586,64 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
-      runTime: true,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
-      elu: false
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LEAST_BUSY strategy default tasks statistics requirements', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_BUSY
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: true,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: true,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: true,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: true,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -446,23 +663,49 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: expect.any(Number),
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: expect.any(Number),
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: expect.any(Number),
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
-      expect(workerNode.tasksUsage.ran).toBeGreaterThanOrEqual(0)
-      expect(workerNode.tasksUsage.ran).toBeLessThanOrEqual(max * maxMultiplier)
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.waitTime.aggregate).toBeGreaterThanOrEqual(
+        0
+      )
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -483,43 +726,61 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: expect.any(Number),
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: expect.any(Number),
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: expect.any(Number),
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
-      expect(workerNode.tasksUsage.ran).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.ran).toBeLessThanOrEqual(max * maxMultiplier)
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.waitTime.aggregate).toBeGreaterThan(0)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
   })
 
-  it('Verify FAIR_SHARE strategy default tasks usage statistics requirements', async () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
+  it('Verify LEAST_ELU strategy default policy', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_ELU
     let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
-      runTime: true,
-      avgRunTime: true,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
-      elu: false
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -528,14 +789,265 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
-      runTime: true,
-      avgRunTime: true,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
-      elu: false
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LEAST_ELU strategy default tasks statistics requirements', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_ELU
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: true,
+        average: false,
+        median: false
+      }
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: true,
+        average: false,
+        median: false
+      }
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LEAST_ELU strategy can be run in a fixed pool', async () => {
+    const pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_ELU }
+    )
+    // TODO: Create a better test to cover `LeastEluWorkerChoiceStrategy#choose`
+    const promises = new Set()
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
+      promises.add(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: expect.any(Number),
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: expect.any(Number)
+        }
+      })
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+      expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
+    }
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LEAST_ELU strategy can be run in a dynamic pool', async () => {
+    const pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_ELU }
+    )
+    // TODO: Create a better test to cover `LeastEluWorkerChoiceStrategy#choose`
+    const promises = new Set()
+    const maxMultiplier = 2
+    for (let i = 0; i < max * maxMultiplier; i++) {
+      promises.add(pool.execute())
+    }
+    await Promise.all(promises)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: expect.any(Number),
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: expect.any(Number)
+        }
+      })
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+      expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
+    }
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify FAIR_SHARE strategy default policy', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify FAIR_SHARE strategy default tasks statistics requirements', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: true,
+        average: true,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: true,
+        average: true,
+        median: false
+      }
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: true,
+        average: true,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: true,
+        average: true,
+        median: false
+      }
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -555,22 +1067,45 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: expect.any(Number),
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: expect.any(Number),
+          average: expect.any(Number),
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: expect.any(Number),
+            average: expect.any(Number),
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: expect.any(Number)
+        }
       })
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -596,22 +1131,49 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: expect.any(Number),
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: expect.any(Number),
+          average: expect.any(Number),
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: expect.any(Number),
+            average: expect.any(Number),
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: expect.any(Number)
+        }
       })
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -630,7 +1192,7 @@ describe('Selection strategies test suite', () => {
       {
         workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE,
         workerChoiceStrategyOptions: {
-          medRunTime: true
+          runTime: { median: true }
         }
       }
     )
@@ -642,22 +1204,49 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: expect.any(Number),
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: expect.any(Number),
+          average: 0,
+          median: expect.any(Number),
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: expect.any(Number),
+            average: expect.any(Number),
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: expect.any(Number)
+        }
       })
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.medRunTime).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.median).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -742,21 +1331,15 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify WEIGHTED_ROUND_ROBIN strategy default tasks usage statistics requirements', async () => {
+  it('Verify WEIGHTED_ROUND_ROBIN strategy default policy', async () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
-      runTime: true,
-      avgRunTime: true,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
-      elu: false
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: true
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -765,14 +1348,64 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
-      runTime: true,
-      avgRunTime: true,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
-      elu: false
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: true
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify WEIGHTED_ROUND_ROBIN strategy default tasks statistics requirements', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: true,
+        average: true,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: true,
+        average: true,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -792,24 +1425,47 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: expect.any(Number),
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: expect.any(Number),
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: expect.any(Number),
+          average: expect.any(Number),
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
-      expect(workerNode.tasksUsage.ran).toBeGreaterThanOrEqual(0)
-      expect(workerNode.tasksUsage.ran).toBeLessThanOrEqual(max * maxMultiplier)
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThanOrEqual(0)
-      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.runTime.average).toBeGreaterThanOrEqual(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -840,24 +1496,47 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: expect.any(Number),
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: expect.any(Number),
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: expect.any(Number),
+          average: expect.any(Number),
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
-      expect(workerNode.tasksUsage.ran).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.ran).toBeLessThanOrEqual(max * maxMultiplier)
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.avgRunTime).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -881,7 +1560,7 @@ describe('Selection strategies test suite', () => {
       {
         workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN,
         workerChoiceStrategyOptions: {
-          medRunTime: true
+          runTime: { median: true }
         }
       }
     )
@@ -893,24 +1572,47 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: expect.any(Number),
-        running: 0,
-        runTime: expect.any(Number),
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: expect.any(Number),
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: expect.any(Number),
+          average: 0,
+          median: expect.any(Number),
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
-      expect(workerNode.tasksUsage.ran).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.ran).toBeLessThanOrEqual(max * maxMultiplier)
-      expect(workerNode.tasksUsage.runTime).toBeGreaterThan(0)
-      expect(workerNode.tasksUsage.medRunTime).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.median).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1004,7 +1706,7 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy default tasks usage statistics requirements', async () => {
+  it('Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy default policy', async () => {
     const workerChoiceStrategy =
       WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
     let pool = new FixedThreadPool(
@@ -1012,14 +1714,8 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
-      runTime: false,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
-      elu: false
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: true
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -1028,14 +1724,65 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy }
     )
-    expect(pool.workerChoiceStrategyContext.getTaskStatistics()).toStrictEqual({
-      runTime: false,
-      avgRunTime: false,
-      medRunTime: false,
-      waitTime: false,
-      avgWaitTime: false,
-      medWaitTime: false,
-      elu: false
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: true
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy default tasks statistics requirements', async () => {
+    const workerChoiceStrategy =
+      WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(
+      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+    ).toStrictEqual({
+      runTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      waitTime: {
+        aggregate: false,
+        average: false,
+        median: false
+      },
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false
+      }
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -1058,19 +1805,40 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     expect(
@@ -1119,19 +1887,40 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksUsage).toStrictEqual({
-        ran: maxMultiplier,
-        running: 0,
-        runTime: 0,
-        runTimeHistory: expect.any(CircularArray),
-        avgRunTime: 0,
-        medRunTime: 0,
-        waitTime: 0,
-        waitTimeHistory: expect.any(CircularArray),
-        avgWaitTime: 0,
-        medWaitTime: 0,
-        error: 0,
-        elu: undefined
+      expect(workerNode.workerUsage).toStrictEqual({
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          queued: 0,
+          failed: 0
+        },
+        runTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        waitTime: {
+          aggregate: 0,
+          average: 0,
+          median: 0,
+          history: expect.any(CircularArray)
+        },
+        elu: {
+          idle: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          active: {
+            aggregate: 0,
+            average: 0,
+            median: 0,
+            history: expect.any(CircularArray)
+          },
+          utilization: 0
+        }
       })
     }
     expect(
