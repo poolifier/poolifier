@@ -614,28 +614,14 @@ export abstract class AbstractPool<
    * @returns The worker node key
    */
   protected chooseWorkerNode (): number {
-    let workerNodeKey: number
-    if (this.type === PoolTypes.dynamic && !this.full && this.internalBusy()) {
-      const workerCreated = this.createAndSetupWorker()
-      this.registerWorkerMessageListener(workerCreated, message => {
-        const currentWorkerNodeKey = this.getWorkerNodeKey(workerCreated)
-        if (
-          isKillBehavior(KillBehaviors.HARD, message.kill) ||
-          (message.kill != null &&
-            this.workerNodes[currentWorkerNodeKey].workerUsage.tasks
-              .executing === 0)
-        ) {
-          // Kill message received from the worker: no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-          this.flushTasksQueue(currentWorkerNodeKey)
-          // FIXME: wait for tasks to be finished
-          void (this.destroyWorker(workerCreated) as Promise<void>)
-        }
-      })
-      workerNodeKey = this.getWorkerNodeKey(workerCreated)
-    } else {
-      workerNodeKey = this.workerChoiceStrategyContext.execute()
+    if (this.shallCreateDynamicWorker()) {
+      return this.getWorkerNodeKey(this.createAndSetupDynamicWorker())
     }
-    return workerNodeKey
+    return this.workerChoiceStrategyContext.execute()
+  }
+
+  protected shallCreateDynamicWorker (): boolean {
+    return this.type === PoolTypes.dynamic && !this.full && this.internalBusy()
   }
 
   /**
@@ -703,6 +689,30 @@ export abstract class AbstractPool<
 
     this.afterWorkerSetup(worker)
 
+    return worker
+  }
+
+  /**
+   * Creates a new dynamic worker and sets it up completely in the pool worker nodes.
+   *
+   * @returns New, completely set up dynamic worker.
+   */
+  protected createAndSetupDynamicWorker (): Worker {
+    const worker = this.createAndSetupWorker()
+    this.registerWorkerMessageListener(worker, message => {
+      const currentWorkerNodeKey = this.getWorkerNodeKey(worker)
+      if (
+        isKillBehavior(KillBehaviors.HARD, message.kill) ||
+        (message.kill != null &&
+          this.workerNodes[currentWorkerNodeKey].workerUsage.tasks.executing ===
+            0)
+      ) {
+        // Kill message received from the worker: no new tasks are submitted to that worker for a while ( > maxInactiveTime)
+        this.flushTasksQueue(currentWorkerNodeKey)
+        // FIXME: wait for tasks to be finished
+        void (this.destroyWorker(worker) as Promise<void>)
+      }
+    })
     return worker
   }
 
