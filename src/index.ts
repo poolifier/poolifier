@@ -37,6 +37,7 @@ export type {
   Measurement,
   MeasurementOptions,
   MeasurementStatisticsRequirements,
+  StrategyPolicy,
   TaskStatisticsRequirements,
   WorkerChoiceStrategy,
   WorkerChoiceStrategyOptions
