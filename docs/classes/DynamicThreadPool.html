@@ -45,7 +45,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <ul class="tsd-hierarchy">
 <li><span class="target">DynamicThreadPool</span></li></ul></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/thread/dynamic.ts#L15">src/pools/thread/dynamic.ts:15</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/thread/dynamic.ts#L15">src/pools/thread/dynamic.ts:15</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -81,7 +81,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-index-list"><a href="DynamicThreadPool.html#afterTaskExecutionHook" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-2048"><rect fill="var(--color-icon-background)" stroke="#FF4DB8" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12"></rect><path d="M9.162 16V7.24H10.578L11.514 10.072C11.602 10.328 11.674 10.584 11.73 10.84C11.794 11.088 11.842 11.28 11.874 11.416C11.906 11.28 11.954 11.088 12.018 10.84C12.082 10.584 12.154 10.324 12.234 10.06L13.122 7.24H14.538V16H13.482V12.82C13.482 12.468 13.49 12.068 13.506 11.62C13.53 11.172 13.558 10.716 13.59 10.252C13.622 9.78 13.654 9.332 13.686 8.908C13.726 8.476 13.762 8.1 13.794 7.78L12.366 12.16H11.334L9.894 7.78C9.934 8.092 9.97 8.456 10.002 8.872C10.042 9.28 10.078 9.716 10.11 10.18C10.142 10.636 10.166 11.092 10.182 11.548C10.206 12.004 10.218 12.428 10.218 12.82V16H9.162Z" fill="var(--color-text)"></path></g></svg><span>after<wbr/>Task<wbr/>Execution<wbr/>Hook</span></a>
 <a href="DynamicThreadPool.html#afterWorkerSetup" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>after<wbr/>Worker<wbr/>Setup</span></a>
 <a href="DynamicThreadPool.html#beforeTaskExecutionHook" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>before<wbr/>Task<wbr/>Execution<wbr/>Hook</span></a>
-<a href="DynamicThreadPool.html#chooseWorkerNode" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>choose<wbr/>Worker<wbr/>Node</span></a>
+<a href="DynamicThreadPool.html#createAndSetupDynamicWorker" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>create<wbr/>And<wbr/>Setup<wbr/>Dynamic<wbr/>Worker</span></a>
 <a href="DynamicThreadPool.html#createAndSetupWorker" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>create<wbr/>And<wbr/>Setup<wbr/>Worker</span></a>
 <a href="DynamicThreadPool.html#createWorker" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>create<wbr/>Worker</span></a>
 <a href="DynamicThreadPool.html#destroy" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>destroy</span></a>
@@ -141,7 +141,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Overrides <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#constructor">constructor</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/thread/dynamic.ts#L27">src/pools/thread/dynamic.ts:27</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/thread/dynamic.ts#L27">src/pools/thread/dynamic.ts:27</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="emitter" class="tsd-anchor"></a>
@@ -159,7 +159,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#emitter">emitter</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L54">src/pools/abstract-pool.ts:54</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L54">src/pools/abstract-pool.ts:54</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="filePath" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>file<wbr/>Path</span><a href="#filePath" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">file<wbr/>Path</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
@@ -168,7 +168,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#filePath">filePath</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L87">src/pools/abstract-pool.ts:87</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L87">src/pools/abstract-pool.ts:87</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="max" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>max</span><a href="#max" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">max</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
@@ -176,7 +176,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 </div>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/thread/dynamic.ts#L29">src/pools/thread/dynamic.ts:29</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/thread/dynamic.ts#L29">src/pools/thread/dynamic.ts:29</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="numberOfWorkers" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>number<wbr/>Of<wbr/>Workers</span><a href="#numberOfWorkers" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">number<wbr/>Of<wbr/>Workers</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
@@ -185,7 +185,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#numberOfWorkers">numberOfWorkers</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L86">src/pools/abstract-pool.ts:86</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L86">src/pools/abstract-pool.ts:86</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="opts" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>opts</span><a href="#opts" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">opts</span><span class="tsd-signature-symbol">:</span> <a href="../interfaces/ThreadPoolOptions.html" class="tsd-signature-type tsd-kind-interface">ThreadPoolOptions</a><span class="tsd-signature-symbol"> = {}</span></div>
@@ -194,7 +194,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#opts">opts</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/thread/fixed.ts#L59">src/pools/thread/fixed.ts:59</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/thread/fixed.ts#L59">src/pools/thread/fixed.ts:59</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="promiseResponseMap" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>promise<wbr/>Response<wbr/>Map</span><a href="#promiseResponseMap" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">promise<wbr/>Response<wbr/>Map</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type ">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/PromiseResponseWrapper.html" class="tsd-signature-type tsd-kind-interface">PromiseResponseWrapper</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/ThreadWorkerWithMessageChannel.html" class="tsd-signature-type tsd-kind-type-alias">ThreadWorkerWithMessageChannel</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
@@ -208,7 +208,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#promiseResponseMap">promiseResponseMap</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L64">src/pools/abstract-pool.ts:64</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L64">src/pools/abstract-pool.ts:64</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="workerChoiceStrategyContext" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>worker<wbr/>Choice<wbr/>Strategy<wbr/>Context</span><a href="#workerChoiceStrategyContext" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">worker<wbr/>Choice<wbr/>Strategy<wbr/>Context</span><span class="tsd-signature-symbol">:</span> <a href="WorkerChoiceStrategyContext.html" class="tsd-signature-type tsd-kind-class">WorkerChoiceStrategyContext</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/ThreadWorkerWithMessageChannel.html" class="tsd-signature-type tsd-kind-type-alias">ThreadWorkerWithMessageChannel</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type tsd-kind-type-parameter">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">&gt;</span></div>
@@ -217,7 +217,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#workerChoiceStrategyContext">workerChoiceStrategyContext</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L72">src/pools/abstract-pool.ts:72</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L72">src/pools/abstract-pool.ts:72</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="workerNodes" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>worker<wbr/>Nodes</span><a href="#workerNodes" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">worker<wbr/>Nodes</span><span class="tsd-signature-symbol">:</span> <a href="../interfaces/WorkerNode.html" class="tsd-signature-type tsd-kind-interface">WorkerNode</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/ThreadWorkerWithMessageChannel.html" class="tsd-signature-type tsd-kind-type-alias">ThreadWorkerWithMessageChannel</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type tsd-kind-type-parameter">Data</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
@@ -226,7 +226,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#workerNodes">workerNodes</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L51">src/pools/abstract-pool.ts:51</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L51">src/pools/abstract-pool.ts:51</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Accessors</h2>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="busy" class="tsd-anchor"></a>
@@ -241,7 +241,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Overrides FixedThreadPool.busy</p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/thread/dynamic.ts#L47">src/pools/thread/dynamic.ts:47</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/thread/dynamic.ts#L47">src/pools/thread/dynamic.ts:47</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="full" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>full</span><a href="#full" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -254,7 +254,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from FixedThreadPool.full</p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L371">src/pools/abstract-pool.ts:371</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L371">src/pools/abstract-pool.ts:371</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="info" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>info</span><a href="#info" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
@@ -266,7 +266,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from FixedThreadPool.info</p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L220">src/pools/abstract-pool.ts:220</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L220">src/pools/abstract-pool.ts:220</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="maxSize" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>max<wbr/>Size</span><a href="#maxSize" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -278,7 +278,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Overrides FixedThreadPool.maxSize</p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/thread/dynamic.ts#L42">src/pools/thread/dynamic.ts:42</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/thread/dynamic.ts#L42">src/pools/thread/dynamic.ts:42</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="minSize" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>min<wbr/>Size</span><a href="#minSize" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -290,7 +290,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from FixedThreadPool.minSize</p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/thread/fixed.ts#L122">src/pools/thread/fixed.ts:122</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/thread/fixed.ts#L122">src/pools/thread/fixed.ts:122</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="type" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>type</span><a href="#type" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -303,7 +303,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Overrides FixedThreadPool.type</p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/thread/dynamic.ts#L37">src/pools/thread/dynamic.ts:37</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/thread/dynamic.ts#L37">src/pools/thread/dynamic.ts:37</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="worker" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>worker</span><a href="#worker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -315,7 +315,7 @@ When the maximum number of threads is reached and workers are busy, an event is 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from FixedThreadPool.worker</p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/thread/fixed.ts#L117">src/pools/thread/fixed.ts:117</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/thread/fixed.ts#L117">src/pools/thread/fixed.ts:117</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="afterTaskExecutionHook" class="tsd-anchor"></a>
@@ -343,7 +343,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#afterTaskExecutionHook">afterTaskExecutionHook</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L481">src/pools/abstract-pool.ts:481</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L486">src/pools/abstract-pool.ts:486</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="afterWorkerSetup" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>after<wbr/>Worker<wbr/>Setup</span><a href="#afterWorkerSetup" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -364,7 +364,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#afterWorkerSetup">afterWorkerSetup</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/thread/fixed.ts#L102">src/pools/thread/fixed.ts:102</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/thread/fixed.ts#L102">src/pools/thread/fixed.ts:102</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="beforeTaskExecutionHook" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>before<wbr/>Task<wbr/>Execution<wbr/>Hook</span><a href="#beforeTaskExecutionHook" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -390,21 +390,20 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#beforeTaskExecutionHook">beforeTaskExecutionHook</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L465">src/pools/abstract-pool.ts:465</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="chooseWorkerNode" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>choose<wbr/>Worker<wbr/>Node</span><a href="#chooseWorkerNode" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L470">src/pools/abstract-pool.ts:470</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="createAndSetupDynamicWorker" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>create<wbr/>And<wbr/>Setup<wbr/>Dynamic<wbr/>Worker</span><a href="#createAndSetupDynamicWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
-<li class="tsd-signature tsd-anchor-link" id="chooseWorkerNode.chooseWorkerNode-1"><span class="tsd-kind-call-signature">choose<wbr/>Worker<wbr/>Node</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><a href="#chooseWorkerNode.chooseWorkerNode-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="createAndSetupDynamicWorker.createAndSetupDynamicWorker-1"><span class="tsd-kind-call-signature">create<wbr/>And<wbr/>Setup<wbr/>Dynamic<wbr/>Worker</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../types/ThreadWorkerWithMessageChannel.html" class="tsd-signature-type tsd-kind-type-alias">ThreadWorkerWithMessageChannel</a><a href="#createAndSetupDynamicWorker.createAndSetupDynamicWorker-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Chooses a worker node for the next task.</p>
-<p>The default worker choice strategy uses a round robin algorithm to distribute the load.</p>
+<div class="tsd-comment tsd-typography"><p>Creates a new dynamic worker and sets it up completely in the pool worker nodes.</p>
 </div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4><p>The worker node key</p>
+<h4 class="tsd-returns-title">Returns <a href="../types/ThreadWorkerWithMessageChannel.html" class="tsd-signature-type tsd-kind-type-alias">ThreadWorkerWithMessageChannel</a></h4><p>New, completely set up dynamic worker.</p>
 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
-<p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#chooseWorkerNode">chooseWorkerNode</a></p>
+<p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#createAndSetupDynamicWorker">createAndSetupDynamicWorker</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L616">src/pools/abstract-pool.ts:616</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L717">src/pools/abstract-pool.ts:717</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="createAndSetupWorker" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>create<wbr/>And<wbr/>Setup<wbr/>Worker</span><a href="#createAndSetupWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -417,37 +416,38 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#createAndSetupWorker">createAndSetupWorker</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L681">src/pools/abstract-pool.ts:681</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L684">src/pools/abstract-pool.ts:684</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="createWorker" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>create<wbr/>Worker</span><a href="#createWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="createWorker.createWorker-1"><span class="tsd-kind-call-signature">create<wbr/>Worker</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../types/ThreadWorkerWithMessageChannel.html" class="tsd-signature-type tsd-kind-type-alias">ThreadWorkerWithMessageChannel</a><a href="#createWorker.createWorker-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Returns a newly created worker.</p>
+<div class="tsd-comment tsd-typography"><p>Creates a new worker.</p>
 </div>
-<h4 class="tsd-returns-title">Returns <a href="../types/ThreadWorkerWithMessageChannel.html" class="tsd-signature-type tsd-kind-type-alias">ThreadWorkerWithMessageChannel</a></h4>
+<h4 class="tsd-returns-title">Returns <a href="../types/ThreadWorkerWithMessageChannel.html" class="tsd-signature-type tsd-kind-type-alias">ThreadWorkerWithMessageChannel</a></h4><p>Newly created worker.</p>
+
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#createWorker">createWorker</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/thread/fixed.ts#L94">src/pools/thread/fixed.ts:94</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/thread/fixed.ts#L94">src/pools/thread/fixed.ts:94</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="destroy" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>destroy</span><a href="#destroy" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="destroy.destroy-1"><span class="tsd-kind-call-signature">destroy</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#destroy.destroy-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Shutdowns every current worker in this pool.</p>
+<div class="tsd-comment tsd-typography"><p>Terminate every current worker in this pool.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#destroy">destroy</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L426">src/pools/abstract-pool.ts:426</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L431">src/pools/abstract-pool.ts:431</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="destroyWorker" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>destroy<wbr/>Worker</span><a href="#destroyWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="destroyWorker.destroyWorker-1"><span class="tsd-kind-call-signature">destroy<wbr/>Worker</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">worker</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#destroyWorker.destroyWorker-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Shutdowns the given worker.</p>
+<div class="tsd-comment tsd-typography"><p>Terminates the given worker.</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
@@ -461,7 +461,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#destroyWorker">destroyWorker</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/thread/fixed.ts#L70">src/pools/thread/fixed.ts:70</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/thread/fixed.ts#L70">src/pools/thread/fixed.ts:70</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="enableTasksQueue" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>enable<wbr/>Tasks<wbr/>Queue</span><a href="#enableTasksQueue" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
@@ -486,7 +486,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#enableTasksQueue">enableTasksQueue</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L336">src/pools/abstract-pool.ts:336</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L336">src/pools/abstract-pool.ts:336</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="execute" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>execute</span><a href="#execute" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
@@ -512,16 +512,20 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#execute">execute</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L391">src/pools/abstract-pool.ts:391</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L396">src/pools/abstract-pool.ts:396</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="internalBusy" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>internal<wbr/>Busy</span><a href="#internalBusy" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="internalBusy.internalBusy-1"><span class="tsd-kind-call-signature">internal<wbr/>Busy</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><a href="#internalBusy.internalBusy-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
+<div class="tsd-comment tsd-typography"><p>Whether worker nodes are executing at least one task.</p>
+</div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><p>Worker nodes busyness boolean status.</p>
+
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#internalBusy">internalBusy</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L382">src/pools/abstract-pool.ts:382</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L387">src/pools/abstract-pool.ts:387</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="isMain" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>is<wbr/>Main</span><a href="#isMain" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -533,7 +537,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#isMain">isMain</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/thread/fixed.ts#L65">src/pools/thread/fixed.ts:65</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/thread/fixed.ts#L65">src/pools/thread/fixed.ts:65</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="registerWorkerMessageListener" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>register<wbr/>Worker<wbr/>Message<wbr/>Listener</span><a href="#registerWorkerMessageListener" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -574,7 +578,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#registerWorkerMessageListener">registerWorkerMessageListener</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/thread/fixed.ts#L86">src/pools/thread/fixed.ts:86</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/thread/fixed.ts#L86">src/pools/thread/fixed.ts:86</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="sendToWorker" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>send<wbr/>To<wbr/>Worker</span><a href="#sendToWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -599,7 +603,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#sendToWorker">sendToWorker</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/thread/fixed.ts#L78">src/pools/thread/fixed.ts:78</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/thread/fixed.ts#L78">src/pools/thread/fixed.ts:78</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="setTasksQueueOptions" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Tasks<wbr/>Queue<wbr/>Options</span><a href="#setTasksQueueOptions" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
@@ -619,7 +623,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#setTasksQueueOptions">setTasksQueueOptions</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L348">src/pools/abstract-pool.ts:348</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L348">src/pools/abstract-pool.ts:348</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="setWorkerChoiceStrategy" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Worker<wbr/>Choice<wbr/>Strategy</span><a href="#setWorkerChoiceStrategy" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
@@ -644,7 +648,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#setWorkerChoiceStrategy">setWorkerChoiceStrategy</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L303">src/pools/abstract-pool.ts:303</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L303">src/pools/abstract-pool.ts:303</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="setWorkerChoiceStrategyOptions" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Worker<wbr/>Choice<wbr/>Strategy<wbr/>Options</span><a href="#setWorkerChoiceStrategyOptions" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
@@ -664,7 +668,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#setWorkerChoiceStrategyOptions">setWorkerChoiceStrategyOptions</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L325">src/pools/abstract-pool.ts:325</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L325">src/pools/abstract-pool.ts:325</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="setupHook" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>setup<wbr/>Hook</span><a href="#setupHook" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -677,7 +681,7 @@ Can be overridden</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#setupHook">setupHook</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L449">src/pools/abstract-pool.ts:449</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L454">src/pools/abstract-pool.ts:454</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="workerListener" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>worker<wbr/>Listener</span><a href="#workerListener" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -705,7 +709,7 @@ Can be overridden</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Inherited from <a href="FixedThreadPool.html">FixedThreadPool</a>.<a href="FixedThreadPool.html#workerListener">workerListener</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/8a11bce/src/pools/abstract-pool.ts#L716">src/pools/abstract-pool.ts:716</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/247ce01/src/pools/abstract-pool.ts#L741">src/pools/abstract-pool.ts:741</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -744,7 +748,7 @@ Can be overridden</p>
 <li><a href="#afterTaskExecutionHook" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>after<wbr/>Task<wbr/>Execution<wbr/>Hook</span></a></li>
 <li><a href="#afterWorkerSetup" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>after<wbr/>Worker<wbr/>Setup</span></a></li>
 <li><a href="#beforeTaskExecutionHook" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>before<wbr/>Task<wbr/>Execution<wbr/>Hook</span></a></li>
-<li><a href="#chooseWorkerNode" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>choose<wbr/>Worker<wbr/>Node</span></a></li>
+<li><a href="#createAndSetupDynamicWorker" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>create<wbr/>And<wbr/>Setup<wbr/>Dynamic<wbr/>Worker</span></a></li>
 <li><a href="#createAndSetupWorker" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>create<wbr/>And<wbr/>Setup<wbr/>Worker</span></a></li>
 <li><a href="#createWorker" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>create<wbr/>Worker</span></a></li>
 <li><a href="#destroy" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>destroy</span></a></li>
