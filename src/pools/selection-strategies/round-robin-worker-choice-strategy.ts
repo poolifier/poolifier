@@ -4,6 +4,7 @@ import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
+  StrategyPolicy,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
@@ -21,6 +22,11 @@ export class RoundRobinWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
+  /** @inheritDoc */
+  public readonly strategyPolicy: StrategyPolicy = {
+    useDynamicWorker: true
+  }
+
   /**
    * Id of the next worker node.
    */

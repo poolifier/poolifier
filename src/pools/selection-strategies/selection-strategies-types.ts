@@ -141,9 +141,23 @@ export interface TaskStatisticsRequirements {
 }
 
 /**
+ * Strategy policy.
+ */
+export interface StrategyPolicy {
+  /**
+   * Expect direct usage of dynamic worker.
+   */
+  useDynamicWorker: boolean
+}
+
+/**
  * Worker choice strategy interface.
  */
 export interface IWorkerChoiceStrategy {
+  /**
+   * Strategy policy.
+   */
+  readonly strategyPolicy: StrategyPolicy
   /**
    * Tasks statistics requirements.
    */

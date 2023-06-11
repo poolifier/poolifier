@@ -188,7 +188,7 @@ export interface IPool<
    */
   execute: (data?: Data, name?: string) => Promise<Response>
   /**
-   * Shutdowns every current worker in this pool.
+   * Terminate every current worker in this pool.
    */
   destroy: () => Promise<void>
   /**

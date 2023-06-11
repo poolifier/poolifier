@@ -9,6 +9,7 @@ import { LeastEluWorkerChoiceStrategy } from './least-elu-worker-choice-strategy
 import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
+  StrategyPolicy,
   TaskStatisticsRequirements,
   WorkerChoiceStrategy,
   WorkerChoiceStrategyOptions
@@ -102,6 +103,19 @@ export class WorkerChoiceStrategyContext<
         >(pool, opts)
       ]
     ])
+  }
+
+  /**
+   * Gets the strategy policy in the context.
+   *
+   * @returns The strategy policy.
+   */
+  public getStrategyPolicy (): StrategyPolicy {
+    return (
+      this.workerChoiceStrategies.get(
+        this.workerChoiceStrategy
+      ) as IWorkerChoiceStrategy
+    ).strategyPolicy
   }
 
   /**

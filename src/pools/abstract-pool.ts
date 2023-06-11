@@ -379,6 +379,11 @@ export abstract class AbstractPool<
    */
   protected abstract get busy (): boolean
 
+  /**
+   * Whether worker nodes are executing at least one task.
+   *
+   * @returns Worker nodes busyness boolean status.
+   */
   protected internalBusy (): boolean {
     return (
       this.workerNodes.findIndex(workerNode => {
@@ -434,7 +439,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Shutdowns the given worker.
+   * Terminates the given worker.
    *
    * @param worker - A worker within `workerNodes`.
    */
@@ -609,18 +614,28 @@ export abstract class AbstractPool<
   /**
    * Chooses a worker node for the next task.
    *
-   * The default worker choice strategy uses a round robin algorithm to distribute the load.
+   * The default worker choice strategy uses a round robin algorithm to distribute the tasks.
    *
    * @returns The worker node key
    */
-  protected chooseWorkerNode (): number {
+  private chooseWorkerNode (): number {
     if (this.shallCreateDynamicWorker()) {
-      return this.getWorkerNodeKey(this.createAndSetupDynamicWorker())
+      const worker = this.createAndSetupDynamicWorker()
+      if (
+        this.workerChoiceStrategyContext.getStrategyPolicy().useDynamicWorker
+      ) {
+        return this.getWorkerNodeKey(worker)
+      }
     }
     return this.workerChoiceStrategyContext.execute()
   }
 
-  protected shallCreateDynamicWorker (): boolean {
+  /**
+   * Conditions for dynamic worker creation.
+   *
+   * @returns Whether to create a dynamic worker or not.
+   */
+  private shallCreateDynamicWorker (): boolean {
     return this.type === PoolTypes.dynamic && !this.full && this.internalBusy()
   }
 
@@ -646,7 +661,9 @@ export abstract class AbstractPool<
   >(worker: Worker, listener: (message: MessageValue<Message>) => void): void
 
   /**
-   * Returns a newly created worker.
+   * Creates a newly worker.
+   *
+   * @returns Newly created worker.
    */
   protected abstract createWorker (): Worker
 

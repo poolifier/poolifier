@@ -4,6 +4,7 @@ import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
+  StrategyPolicy,
   TaskStatisticsRequirements,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
@@ -23,6 +24,11 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
+  /** @inheritDoc */
+  public readonly strategyPolicy: StrategyPolicy = {
+    useDynamicWorker: true
+  }
+
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
     runTime: {

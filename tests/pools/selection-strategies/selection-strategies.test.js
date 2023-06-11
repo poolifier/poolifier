@@ -115,7 +115,31 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify ROUND_ROBIN strategy default tasks usage statistics requirements', async () => {
+  it('Verify ROUND_ROBIN strategy default policy', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: true
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: true
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify ROUND_ROBIN strategy default tasks statistics requirements', async () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
     let pool = new FixedThreadPool(
       max,
@@ -356,7 +380,31 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify LEAST_USED strategy default tasks usage statistics requirements', async () => {
+  it('Verify LEAST_USED strategy default policy', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_USED
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LEAST_USED strategy default tasks statistics requirements', async () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_USED
     let pool = new FixedThreadPool(
       max,
@@ -521,7 +569,31 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify LEAST_BUSY strategy default tasks usage statistics requirements', async () => {
+  it('Verify LEAST_BUSY strategy default policy', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_BUSY
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LEAST_BUSY strategy default tasks statistics requirements', async () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_BUSY
     let pool = new FixedThreadPool(
       max,
@@ -626,7 +698,7 @@ describe('Selection strategies test suite', () => {
           utilization: 0
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
@@ -700,7 +772,31 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify LEAST_ELU strategy default tasks usage statistics requirements', async () => {
+  it('Verify LEAST_ELU strategy default policy', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_ELU
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify LEAST_ELU strategy default tasks statistics requirements', async () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_ELU
     let pool = new FixedThreadPool(
       max,
@@ -877,7 +973,31 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify FAIR_SHARE strategy default tasks usage statistics requirements', async () => {
+  it('Verify FAIR_SHARE strategy default policy', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: false
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify FAIR_SHARE strategy default tasks statistics requirements', async () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
     let pool = new FixedThreadPool(
       max,
@@ -1013,7 +1133,7 @@ describe('Selection strategies test suite', () => {
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.workerUsage).toStrictEqual({
         tasks: {
-          executed: maxMultiplier,
+          executed: expect.any(Number),
           executing: 0,
           queued: 0,
           failed: 0
@@ -1046,6 +1166,10 @@ describe('Selection strategies test suite', () => {
           utilization: expect.any(Number)
         }
       })
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
       expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
       expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
       expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
@@ -1082,7 +1206,7 @@ describe('Selection strategies test suite', () => {
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.workerUsage).toStrictEqual({
         tasks: {
-          executed: maxMultiplier,
+          executed: expect.any(Number),
           executing: 0,
           queued: 0,
           failed: 0
@@ -1115,6 +1239,10 @@ describe('Selection strategies test suite', () => {
           utilization: expect.any(Number)
         }
       })
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
       expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
       expect(workerNode.workerUsage.runTime.median).toBeGreaterThan(0)
       expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
@@ -1203,7 +1331,31 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify WEIGHTED_ROUND_ROBIN strategy default tasks usage statistics requirements', async () => {
+  it('Verify WEIGHTED_ROUND_ROBIN strategy default policy', async () => {
+    const workerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: true
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: true
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify WEIGHTED_ROUND_ROBIN strategy default tasks statistics requirements', async () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     let pool = new FixedThreadPool(
       max,
@@ -1379,7 +1531,7 @@ describe('Selection strategies test suite', () => {
           utilization: 0
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
@@ -1455,7 +1607,7 @@ describe('Selection strategies test suite', () => {
           utilization: 0
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
@@ -1554,7 +1706,32 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy default tasks usage statistics requirements', async () => {
+  it('Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy default policy', async () => {
+    const workerChoiceStrategy =
+      WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
+    let pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: true
+    })
+    await pool.destroy()
+    pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.js',
+      { workerChoiceStrategy }
+    )
+    expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
+      useDynamicWorker: true
+    })
+    // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy default tasks statistics requirements', async () => {
     const workerChoiceStrategy =
       WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
     let pool = new FixedThreadPool(

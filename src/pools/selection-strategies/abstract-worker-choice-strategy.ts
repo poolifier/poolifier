@@ -4,6 +4,7 @@ import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import type {
   IWorkerChoiceStrategy,
+  StrategyPolicy,
   TaskStatisticsRequirements,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
@@ -24,6 +25,12 @@ export abstract class AbstractWorkerChoiceStrategy<
    * Toggles finding the last free worker node key.
    */
   private toggleFindLastFreeWorkerNodeKey: boolean = false
+
+  /** @inheritDoc */
+  public readonly strategyPolicy: StrategyPolicy = {
+    useDynamicWorker: false
+  }
+
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
     runTime: {
