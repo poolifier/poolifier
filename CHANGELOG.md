@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix new worker use after creation in dynamic pool given the current worker choice strategy.
+
 ## [2.6.1] - 2023-06-10
 
 ### Added
