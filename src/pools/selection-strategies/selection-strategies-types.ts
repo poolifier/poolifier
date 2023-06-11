@@ -142,6 +142,8 @@ export interface TaskStatisticsRequirements {
 
 /**
  * Strategy policy.
+ *
+ * @internal
  */
 export interface StrategyPolicy {
   /**
