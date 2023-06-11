@@ -661,7 +661,7 @@ export abstract class AbstractPool<
   >(worker: Worker, listener: (message: MessageValue<Message>) => void): void
 
   /**
-   * Creates a newly worker.
+   * Creates a new worker.
    *
    * @returns Newly created worker.
    */
