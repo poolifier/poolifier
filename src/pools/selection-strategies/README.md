@@ -1,5 +1,7 @@
 # Worker choice strategies
 
+All duration or timestamp are expressed in milliseconds.
+
 ## Strategies
 
 ### Fair share
@@ -23,4 +25,4 @@ Worker choice strategies enable only the statistics that are needed to choose th
 
 ### Median
 
-Strategies using the average task execution time for each worker can use the median instead. Median is more robust to outliers and can be used to avoid assigning tasks to workers that are currently overloaded. Median usage introduces a small overhead: measurement history must be kept for each worker and the median must be recomputed each time a new task has finished.
+Strategies using the average task execution time for each worker can use the median instead. Median is more robust to outliers and can be used to avoid assigning tasks to workers that are currently overloaded. Median usage introduces a small overhead: measurement history must be kept for each worker and the median must be recomputed each time a task has finished.
