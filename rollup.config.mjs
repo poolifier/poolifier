@@ -17,9 +17,9 @@ export default {
   output: [
     {
       format: 'cjs',
-      sourcemap: !!isDevelopmentBuild,
       ...(isDevelopmentBuild && {
         dir: 'lib',
+        sourcemap: true,
         preserveModules: true,
         preserveModulesRoot: 'src'
       }),
@@ -30,9 +30,9 @@ export default {
     },
     {
       format: 'esm',
-      sourcemap: !!isDevelopmentBuild,
       ...(isDevelopmentBuild && {
         dir: 'lib',
+        sourcemap: true,
         entryFileNames: '[name].mjs',
         preserveModules: true,
         preserveModulesRoot: 'src'
