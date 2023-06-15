@@ -6,36 +6,18 @@
  * @typeParam T - Type of queue items.
  */
 export class Queue<T> {
-  private items: Record<number, T>
-  private head: number
-  private tail: number
-  private max: number
+  private items: T[]
+  private offset: number
+  public size: number
+  public maxSize: number
 
   public constructor () {
-    this.items = {}
-    this.head = 0
-    this.tail = 0
-    this.max = 0
-  }
-
-  /**
-   * Get the size of the queue.
-   *
-   * @returns The size of the queue.
-   * @readonly
-   */
-  public get size (): number {
-    return this.tail - this.head
-  }
-
-  /**
-   * Get the maximum size of the queue.
-   *
-   * @returns The maximum size of the queue.
-   * @readonly
-   */
-  public get maxSize (): number {
-    return this.max
+    this.items = []
+    /** The size of the queue. */
+    this.size = 0
+    this.offset = 0
+    /** The maximum size of the queue. */
+    this.maxSize = 0
   }
 
   /**
@@ -45,9 +27,11 @@ export class Queue<T> {
    * @returns The new size of the queue.
    */
   public enqueue (item: T): number {
-    this.items[this.tail] = item
-    this.tail++
-    if (this.size > this.max) this.max = this.size
+    this.items.push(item)
+    ++this.size
+    if (this.size > this.maxSize) {
+      this.maxSize = this.size
+    }
     return this.size
   }
 
@@ -57,23 +41,27 @@ export class Queue<T> {
    * @returns The dequeued item or `undefined` if the queue is empty.
    */
   public dequeue (): T | undefined {
-    if (this.size <= 0) return undefined
-    const item = this.items[this.head]
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete this.items[this.head]
-    this.head++
-    if (this.head === this.tail) {
-      this.head = 0
-      this.tail = 0
+    if (this.size <= 0) {
+      return undefined
     }
+    const item = this.items[this.offset]
+    if (++this.offset * 2 >= this.items.length) {
+      this.items = this.items.slice(this.offset)
+      this.offset = 0
+    }
+    --this.size
     return item
   }
 
   /**
    * Peek at the first item.
+   *
+   * @returns The first item or `undefined` if the queue is empty.
    */
   public peek (): T | undefined {
-    if (this.size <= 0) return undefined
-    return this.items[this.head]
+    if (this.size <= 0) {
+      return undefined
+    }
+    return this.items[this.offset]
   }
 }
