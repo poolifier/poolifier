@@ -293,8 +293,6 @@ See [CONTRIBUTING](CONTRIBUTING.md) guidelines.
 
 ## Team
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-
 **Creator/Owner:**
 
 - [**Alessandro Pio Ardizio**](https://github.com/pioardi)
