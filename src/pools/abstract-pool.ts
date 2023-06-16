@@ -766,6 +766,7 @@ export abstract class AbstractPool<
               workerNodeKey,
               this.dequeueTask(workerNodeKey) as Task<Data>
             )
+            this.workerChoiceStrategyContext.update(workerNodeKey)
           }
         }
       }
