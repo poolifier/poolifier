@@ -717,17 +717,17 @@ export abstract class AbstractPool<
   protected createAndSetupDynamicWorker (): Worker {
     const worker = this.createAndSetupWorker()
     this.registerWorkerMessageListener(worker, message => {
-      const currentWorkerNodeKey = this.getWorkerNodeKey(worker)
+      const workerNodeKey = this.getWorkerNodeKey(worker)
       if (
         isKillBehavior(KillBehaviors.HARD, message.kill) ||
         (message.kill != null &&
           ((this.opts.enableTasksQueue === false &&
-            this.workerNodes[currentWorkerNodeKey].workerUsage.tasks
-              .executing === 0) ||
+            this.workerNodes[workerNodeKey].workerUsage.tasks.executing ===
+              0) ||
             (this.opts.enableTasksQueue === true &&
-              this.workerNodes[currentWorkerNodeKey].workerUsage.tasks
-                .executing === 0 &&
-              this.tasksQueueSize(currentWorkerNodeKey) === 0)))
+              this.workerNodes[workerNodeKey].workerUsage.tasks.executing ===
+                0 &&
+              this.tasksQueueSize(workerNodeKey) === 0)))
       ) {
         // Kill message received from the worker: no new tasks are submitted to that worker for a while ( > maxInactiveTime)
         void (this.destroyWorker(worker) as Promise<void>)
