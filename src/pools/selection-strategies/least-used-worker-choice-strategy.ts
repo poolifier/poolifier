@@ -46,7 +46,7 @@ export class LeastUsedWorkerChoiceStrategy<
         workerTaskStatistics.queued
       if (workerTasks === 0) {
         this.nextWorkerNodeId = workerNodeKey
-        return true
+        break
       } else if (workerTasks < minNumberOfTasks) {
         minNumberOfTasks = workerTasks
         this.nextWorkerNodeId = workerNodeKey

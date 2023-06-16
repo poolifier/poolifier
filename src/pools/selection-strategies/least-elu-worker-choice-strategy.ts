@@ -63,7 +63,7 @@ export class LeastEluWorkerChoiceStrategy<
       const workerElu = workerUsage.elu?.active.aggregate ?? 0
       if (workerElu === 0) {
         this.nextWorkerNodeId = workerNodeKey
-        return true
+        break
       } else if (workerElu < minWorkerElu) {
         minWorkerElu = workerElu
         this.nextWorkerNodeId = workerNodeKey

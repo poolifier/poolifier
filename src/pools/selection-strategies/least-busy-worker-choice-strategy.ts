@@ -64,7 +64,7 @@ export class LeastBusyWorkerChoiceStrategy<
         workerNode.workerUsage.waitTime.aggregate
       if (workerTime === 0) {
         this.nextWorkerNodeId = workerNodeKey
-        return true
+        break
       } else if (workerTime < minTime) {
         minTime = workerTime
         this.nextWorkerNodeId = workerNodeKey
