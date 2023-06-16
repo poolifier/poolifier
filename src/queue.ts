@@ -13,9 +13,9 @@ export class Queue<T> {
 
   public constructor () {
     this.items = []
+    this.offset = 0
     /** The size of the queue. */
     this.size = 0
-    this.offset = 0
     /** The maximum size of the queue. */
     this.maxSize = 0
   }
