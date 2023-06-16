@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ensure no tasks are queued when trying to soft kill a dynamic worker.
 
+### Changed
+
+- Optimize O(1) queue implementation.
+
 ## [2.6.2] - 2023-06-12
 
 ### Fixed
