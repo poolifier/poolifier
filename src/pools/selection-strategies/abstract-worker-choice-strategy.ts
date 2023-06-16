@@ -26,6 +26,11 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   private toggleFindLastFreeWorkerNodeKey: boolean = false
 
+  /**
+   * Id of the next worker node.
+   */
+  protected nextWorkerNodeId: number = 0
+
   /** @inheritDoc */
   public readonly strategyPolicy: StrategyPolicy = {
     useDynamicWorker: false

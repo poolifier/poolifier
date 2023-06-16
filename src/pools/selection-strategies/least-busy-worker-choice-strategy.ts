@@ -57,25 +57,25 @@ export class LeastBusyWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public update (): boolean {
-    return true
-  }
-
-  /** @inheritDoc */
-  public choose (): number {
     let minTime = Infinity
-    let leastBusyWorkerNodeKey!: number
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerTime =
         workerNode.workerUsage.runTime.aggregate +
         workerNode.workerUsage.waitTime.aggregate
       if (workerTime === 0) {
-        return workerNodeKey
+        this.nextWorkerNodeId = workerNodeKey
+        return true
       } else if (workerTime < minTime) {
         minTime = workerTime
-        leastBusyWorkerNodeKey = workerNodeKey
+        this.nextWorkerNodeId = workerNodeKey
       }
     }
-    return leastBusyWorkerNodeKey
+    return true
+  }
+
+  /** @inheritDoc */
+  public choose (): number {
+    return this.nextWorkerNodeId
   }
 
   /** @inheritDoc */

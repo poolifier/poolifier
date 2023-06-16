@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Optimize O(1) queue implementation.
+- Optimize worker choice strategies: pre-choose the worker node key by executing the choice algorithm after tasks submission.
 
 ## [2.6.2] - 2023-06-12
 

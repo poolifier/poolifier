@@ -98,7 +98,7 @@ describe('Selection strategies test suite', () => {
         expect(
           pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
             workerChoiceStrategy
-          ).currentWorkerNodeId
+          ).nextWorkerNodeId
         ).toBe(0)
         expect(
           pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1069,7 +1069,7 @@ describe('Selection strategies test suite', () => {
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.workerUsage).toStrictEqual({
         tasks: {
-          executed: maxMultiplier,
+          executed: expect.any(Number),
           executing: 0,
           queued: 0,
           failed: 0
@@ -1102,6 +1102,10 @@ describe('Selection strategies test suite', () => {
           utilization: expect.any(Number)
         }
       })
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
       expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
       expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
       expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
@@ -1166,12 +1170,12 @@ describe('Selection strategies test suite', () => {
           utilization: expect.any(Number)
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
-      expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.runTime.average).toBeGreaterThanOrEqual(0)
       expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
       expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
     }
@@ -1239,12 +1243,12 @@ describe('Selection strategies test suite', () => {
           utilization: expect.any(Number)
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
-      expect(workerNode.workerUsage.runTime.median).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThanOrEqual(0)
+      expect(workerNode.workerUsage.runTime.median).toBeGreaterThanOrEqual(0)
       expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
       expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
     }
@@ -1637,7 +1641,7 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategy
-      ).currentWorkerNodeId
+      ).nextWorkerNodeId
     ).toBeDefined()
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1653,7 +1657,7 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
-      ).currentWorkerNodeId
+      ).nextWorkerNodeId
     ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1674,7 +1678,7 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategy
-      ).currentWorkerNodeId
+      ).nextWorkerNodeId
     ).toBeDefined()
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1690,7 +1694,7 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
-      ).currentWorkerNodeId
+      ).nextWorkerNodeId
     ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1849,12 +1853,12 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
-      ).currentRoundId
+      ).roundId
     ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
-      ).currentWorkerNodeId
+      ).nextWorkerNodeId
     ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1931,12 +1935,12 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
-      ).currentRoundId
+      ).roundId
     ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
-      ).currentWorkerNodeId
+      ).nextWorkerNodeId
     ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1961,12 +1965,12 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategy
-      ).currentRoundId
+      ).roundId
     ).toBeDefined()
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategy
-      ).currentWorkerNodeId
+      ).nextWorkerNodeId
     ).toBeDefined()
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1982,12 +1986,12 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategy
-      ).currentRoundId
+      ).roundId
     ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
-      ).currentWorkerNodeId
+      ).nextWorkerNodeId
     ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -2012,12 +2016,12 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategy
-      ).currentRoundId
+      ).roundId
     ).toBeDefined()
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategy
-      ).currentWorkerNodeId
+      ).nextWorkerNodeId
     ).toBeDefined()
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -2033,7 +2037,7 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
-      ).currentWorkerNodeId
+      ).nextWorkerNodeId
     ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(

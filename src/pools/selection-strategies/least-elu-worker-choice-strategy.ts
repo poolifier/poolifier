@@ -57,24 +57,24 @@ export class LeastEluWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public update (): boolean {
+    let minWorkerElu = Infinity
+    for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
+      const workerUsage = workerNode.workerUsage
+      const workerElu = workerUsage.elu?.active.aggregate ?? 0
+      if (workerElu === 0) {
+        this.nextWorkerNodeId = workerNodeKey
+        return true
+      } else if (workerElu < minWorkerElu) {
+        minWorkerElu = workerElu
+        this.nextWorkerNodeId = workerNodeKey
+      }
+    }
     return true
   }
 
   /** @inheritDoc */
   public choose (): number {
-    let minWorkerElu = Infinity
-    let leastEluWorkerNodeKey!: number
-    for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
-      const workerUsage = workerNode.workerUsage
-      const workerElu = workerUsage.elu?.active.aggregate ?? 0
-      if (workerElu === 0) {
-        return workerNodeKey
-      } else if (workerElu < minWorkerElu) {
-        minWorkerElu = workerElu
-        leastEluWorkerNodeKey = workerNodeKey
-      }
-    }
-    return leastEluWorkerNodeKey
+    return this.nextWorkerNodeId
   }
 
   /** @inheritDoc */

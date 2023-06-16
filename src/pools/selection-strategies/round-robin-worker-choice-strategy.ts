@@ -27,11 +27,6 @@ export class RoundRobinWorkerChoiceStrategy<
     useDynamicWorker: true
   }
 
-  /**
-   * Id of the next worker node.
-   */
-  private nextWorkerNodeId: number = 0
-
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
