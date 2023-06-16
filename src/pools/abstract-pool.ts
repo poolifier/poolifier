@@ -720,13 +720,17 @@ export abstract class AbstractPool<
       const currentWorkerNodeKey = this.getWorkerNodeKey(worker)
       if (
         isKillBehavior(KillBehaviors.HARD, message.kill) ||
-        (message.kill != null &&
+        (this.opts.enableTasksQueue === false &&
+          message.kill != null &&
           this.workerNodes[currentWorkerNodeKey].workerUsage.tasks.executing ===
-            0)
+            0) ||
+        (this.opts.enableTasksQueue === true &&
+          message.kill != null &&
+          this.workerNodes[currentWorkerNodeKey].workerUsage.tasks.executing ===
+            0 &&
+          this.tasksQueueSize(currentWorkerNodeKey) === 0)
       ) {
         // Kill message received from the worker: no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-        this.flushTasksQueue(currentWorkerNodeKey)
-        // FIXME: wait for tasks to be finished
         void (this.destroyWorker(worker) as Promise<void>)
       }
     })

@@ -242,8 +242,8 @@ This method will call the terminate method on each worker.
   Default: `60000`
 
 - `killBehavior` (optional) - Dictates if your async unit (worker/process) will be deleted in case that a task is active on it.  
-  **KillBehaviors.SOFT**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing, then the worker **won't** be deleted.  
-  **KillBehaviors.HARD**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing, then the worker will be deleted.  
+  **KillBehaviors.SOFT**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker **won't** be deleted.  
+  **KillBehaviors.HARD**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker will be deleted.  
   This option only apply to the newly created workers.  
   Default: `KillBehaviors.SOFT`
 
