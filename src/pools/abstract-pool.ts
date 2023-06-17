@@ -421,7 +421,6 @@ export abstract class AbstractPool<
     } else {
       this.executeTask(workerNodeKey, submittedTask)
     }
-    this.workerChoiceStrategyContext.update(workerNodeKey)
     this.checkAndEmitEvents()
     // eslint-disable-next-line @typescript-eslint/return-await
     return res
