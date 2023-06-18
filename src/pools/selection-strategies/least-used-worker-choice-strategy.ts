@@ -37,6 +37,11 @@ export class LeastUsedWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public update (): boolean {
+    return true
+  }
+
+  /** @inheritDoc */
+  public choose (): number {
     let minNumberOfTasks = Infinity
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerTaskStatistics = workerNode.workerUsage.tasks
@@ -52,11 +57,6 @@ export class LeastUsedWorkerChoiceStrategy<
         this.nextWorkerNodeId = workerNodeKey
       }
     }
-    return true
-  }
-
-  /** @inheritDoc */
-  public choose (): number {
     return this.nextWorkerNodeId
   }
 

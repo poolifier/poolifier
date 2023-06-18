@@ -57,6 +57,11 @@ export class LeastEluWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public update (): boolean {
+    return true
+  }
+
+  /** @inheritDoc */
+  public choose (): number {
     let minWorkerElu = Infinity
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerUsage = workerNode.workerUsage
@@ -69,11 +74,6 @@ export class LeastEluWorkerChoiceStrategy<
         this.nextWorkerNodeId = workerNodeKey
       }
     }
-    return true
-  }
-
-  /** @inheritDoc */
-  public choose (): number {
     return this.nextWorkerNodeId
   }
 
