@@ -151,7 +151,8 @@ module.exports = defineConfig({
     {
       files: ['benchmarks/versus-external-pools/**/*.mjs'],
       rules: {
-        'n/no-missing-import': 'off'
+        'n/no-missing-import': 'off',
+        'import/no-unresolved': 'off'
       }
     },
     {
