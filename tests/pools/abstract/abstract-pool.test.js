@@ -329,6 +329,21 @@ describe('Abstract pool test suite', () => {
         median: false
       }
     })
+    expect(() =>
+      pool.setWorkerChoiceStrategyOptions('invalidWorkerChoiceStrategyOptions')
+    ).toThrowError(
+      'Invalid worker choice strategy options: must be a plain object'
+    )
+    expect(() =>
+      pool.setWorkerChoiceStrategyOptions({ weights: {} })
+    ).toThrowError(
+      'Invalid worker choice strategy options: must have a weight for each worker node'
+    )
+    expect(() =>
+      pool.setWorkerChoiceStrategyOptions({ measurement: 'invalidMeasurement' })
+    ).toThrowError(
+      "Invalid worker choice strategy options: invalid measurement 'invalidMeasurement'"
+    )
     await pool.destroy()
   })
 
