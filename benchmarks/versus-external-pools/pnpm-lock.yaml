@@ -12,11 +12,11 @@ dependencies:
     specifier: 1.5.1
     version: 1.5.1
   piscina:
-    specifier: 3.2.0
-    version: 3.2.0
+    specifier: 4.0.0
+    version: 4.0.0
   poolifier:
-    specifier: 2.6.1
-    version: 2.6.1
+    specifier: 2.6.2
+    version: 2.6.2
   threads:
     specifier: 1.7.0
     version: 1.7.0
@@ -24,8 +24,8 @@ dependencies:
     specifier: 0.6.0
     version: 0.6.0
   worker-nodes:
-    specifier: 2.4.0
-    version: 2.4.0
+    specifier: 2.5.0
+    version: 2.5.0
   workerpool:
     specifier: 6.4.0
     version: 6.4.0
@@ -160,8 +160,8 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /piscina@3.2.0:
-    resolution: {integrity: sha512-yn/jMdHRw+q2ZJhFhyqsmANcbF6V2QwmD84c6xRau+QpQOmtrBCoRGdvTfeuFDYXB5W2m6MfLkjkvQa9lUSmIA==}
+  /piscina@4.0.0:
+    resolution: {integrity: sha512-641nAmJS4k4iqpNUqfggqUBUMmlw0ZoM5VZKdQkV2e970Inn3Tk9kroCc1wpsYLD07vCwpys5iY0d3xI/9WkTg==}
     dependencies:
       eventemitter-asyncresource: 1.0.0
       hdr-histogram-js: 2.0.3
@@ -177,8 +177,8 @@ packages:
       find-up: 5.0.0
     dev: false
 
-  /poolifier@2.6.1:
-    resolution: {integrity: sha512-9ir1PklqI/exULw9UDzLb9lAQC8yfJ9NvIRKAYDWKHU/9f3RXrciOeMP6RtedEcZ3RXO8cMNyR1L+p3caYo4YQ==}
+  /poolifier@2.6.2:
+    resolution: {integrity: sha512-3/bYzHdoFwJ+LCWlgVELuD9kEN1jho3RH4kG/YOo+2IX0ASVQD9SogGJ2YEW7+y9GD6vMuv9rcCkoTf2LxgaoQ==}
     engines: {node: '>=16.14.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
@@ -212,8 +212,8 @@ packages:
     dev: false
     optional: true
 
-  /worker-nodes@2.4.0:
-    resolution: {integrity: sha512-s32ziQpiWkWbB/ziFKiudpm5/mreSnwpTtKzPxgcPXpl+kXpesiibjM/2Z8i/lDO8kDCUio7wQFXtndopgfsUg==}
+  /worker-nodes@2.5.0:
+    resolution: {integrity: sha512-0hPZfN21PkMMeljxvFa2+MqOAItvwWnQYMUG6HGhM0X1rTlXPAgVFY+IH4UQC/TmSi/3qMIDdrxArRR8dEdQcQ==}
     engines: {node: '>=11.7.0'}
     dev: false
 
