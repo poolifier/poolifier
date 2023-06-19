@@ -29,6 +29,7 @@ import type {
   WorkerUsage
 } from './worker'
 import {
+  Measurements,
   WorkerChoiceStrategies,
   type WorkerChoiceStrategy,
   type WorkerChoiceStrategyOptions
@@ -199,6 +200,16 @@ export abstract class AbstractPool<
         'Invalid worker choice strategy options: must have a weight for each worker node'
       )
     }
+    if (
+      workerChoiceStrategyOptions.measurement != null &&
+      !Object.values(Measurements).includes(
+        workerChoiceStrategyOptions.measurement
+      )
+    ) {
+      throw new Error(
+        `Invalid worker choice strategy options: invalid measurement '${workerChoiceStrategyOptions.measurement}'`
+      )
+    }
   }
 
   private checkValidTasksQueueOptions (
@@ -207,11 +218,20 @@ export abstract class AbstractPool<
     if (tasksQueueOptions != null && !isPlainObject(tasksQueueOptions)) {
       throw new TypeError('Invalid tasks queue options: must be a plain object')
     }
-    if ((tasksQueueOptions?.concurrency as number) <= 0) {
+    if (
+      tasksQueueOptions?.concurrency != null &&
+      !Number.isSafeInteger(tasksQueueOptions.concurrency)
+    ) {
+      throw new TypeError(
+        'Invalid worker tasks concurrency: must be an integer'
+      )
+    }
+    if (
+      tasksQueueOptions?.concurrency != null &&
+      tasksQueueOptions.concurrency <= 0
+    ) {
       throw new Error(
-        `Invalid worker tasks concurrency '${
-          tasksQueueOptions.concurrency as number
-        }'`
+        `Invalid worker tasks concurrency '${tasksQueueOptions.concurrency}'`
       )
     }
   }

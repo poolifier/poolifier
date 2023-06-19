@@ -148,21 +148,22 @@ describe('Abstract pool test suite', () => {
           numberOfWorkers,
           './tests/worker-files/thread/testWorker.js',
           {
-            enableTasksQueue: true,
-            tasksQueueOptions: { concurrency: 0 }
+            workerChoiceStrategy: 'invalidStrategy'
           }
         )
-    ).toThrowError("Invalid worker tasks concurrency '0'")
+    ).toThrowError("Invalid worker choice strategy 'invalidStrategy'")
     expect(
       () =>
         new FixedThreadPool(
           numberOfWorkers,
           './tests/worker-files/thread/testWorker.js',
           {
-            workerChoiceStrategy: 'invalidStrategy'
+            workerChoiceStrategyOptions: 'invalidOptions'
           }
         )
-    ).toThrowError("Invalid worker choice strategy 'invalidStrategy'")
+    ).toThrowError(
+      'Invalid worker choice strategy options: must be a plain object'
+    )
     expect(
       () =>
         new FixedThreadPool(
@@ -175,6 +176,51 @@ describe('Abstract pool test suite', () => {
     ).toThrowError(
       'Invalid worker choice strategy options: must have a weight for each worker node'
     )
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.js',
+          {
+            workerChoiceStrategyOptions: { measurement: 'invalidMeasurement' }
+          }
+        )
+    ).toThrowError(
+      "Invalid worker choice strategy options: invalid measurement 'invalidMeasurement'"
+    )
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.js',
+          {
+            enableTasksQueue: true,
+            tasksQueueOptions: { concurrency: 0 }
+          }
+        )
+    ).toThrowError("Invalid worker tasks concurrency '0'")
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.js',
+          {
+            enableTasksQueue: true,
+            tasksQueueOptions: 'invalidTasksQueueOptions'
+          }
+        )
+    ).toThrowError('Invalid tasks queue options: must be a plain object')
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.js',
+          {
+            enableTasksQueue: true,
+            tasksQueueOptions: { concurrency: 0.2 }
+          }
+        )
+    ).toThrowError('Invalid worker tasks concurrency: must be an integer')
   })
 
   it('Verify that worker choice strategy options can be set', async () => {
@@ -314,8 +360,14 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.tasksQueueOptions).toStrictEqual({ concurrency: 1 })
     pool.setTasksQueueOptions({ concurrency: 2 })
     expect(pool.opts.tasksQueueOptions).toStrictEqual({ concurrency: 2 })
+    expect(() =>
+      pool.setTasksQueueOptions('invalidTasksQueueOptions')
+    ).toThrowError('Invalid tasks queue options: must be a plain object')
     expect(() => pool.setTasksQueueOptions({ concurrency: 0 })).toThrowError(
       "Invalid worker tasks concurrency '0'"
+    )
+    expect(() => pool.setTasksQueueOptions({ concurrency: 0.2 })).toThrowError(
+      'Invalid worker tasks concurrency: must be an integer'
     )
     await pool.destroy()
   })

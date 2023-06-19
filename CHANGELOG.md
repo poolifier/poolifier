@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Ensure no tasks are queued when trying to soft kill a dynamic worker.
+- Update strategies internals after statistics computation.
 
 ### Changed
 
