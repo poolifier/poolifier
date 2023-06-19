@@ -23,17 +23,17 @@
 <ul class="tsd-parameters">
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagReadonly">Readonly</code> <span class="tsd-kind-property">HARD</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;HARD&quot;</span></h5>
-<div class="tsd-comment tsd-typography"><p>If <code>currentTime - lastActiveTime</code> is greater than <code>maxInactiveTime</code> but a task is still executing, then the worker will be deleted.</p>
+<div class="tsd-comment tsd-typography"><p>If <code>currentTime - lastActiveTime</code> is greater than <code>maxInactiveTime</code> but a task is still executing or queued, then the worker will be deleted.</p>
 </div>
 <div class="tsd-comment tsd-typography"></div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagReadonly">Readonly</code> <span class="tsd-kind-property">SOFT</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;SOFT&quot;</span></h5>
-<div class="tsd-comment tsd-typography"><p>If <code>currentTime - lastActiveTime</code> is greater than <code>maxInactiveTime</code> but a task is still executing, then the worker <strong>wont</strong> be deleted.</p>
+<div class="tsd-comment tsd-typography"><p>If <code>currentTime - lastActiveTime</code> is greater than <code>maxInactiveTime</code> but a task is still executing or queued, then the worker <strong>wont</strong> be deleted.</p>
 </div>
 <div class="tsd-comment tsd-typography"></div></li></ul></div>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/4a1fe3d/src/worker/worker-options.ts#L4">src/worker/worker-options.ts:4</a></li></ul></aside></div>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/worker/worker-options.ts#L4">src/worker/worker-options.ts:4</a></li></ul></aside></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
