@@ -137,7 +137,7 @@ module.exports = defineConfig({
       }
     },
     {
-      files: ['benchmarks/**/*.js'],
+      files: ['benchmarks/**/*.js', 'benchmarks/**/*.mjs'],
       rules: {
         'jsdoc/require-jsdoc': 'off'
       }
@@ -146,6 +146,12 @@ module.exports = defineConfig({
       files: ['benchmarks/versus-external-pools/**/*.js'],
       rules: {
         'n/no-missing-require': 'off'
+      }
+    },
+    {
+      files: ['benchmarks/versus-external-pools/**/*.mjs'],
+      rules: {
+        'n/no-missing-import': 'off'
       }
     },
     {

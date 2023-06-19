@@ -16,9 +16,6 @@ const tinypool = new Tinypool({
   idleTimeout: 60000 // this is the same as poolifier default
 })
 
-/**
- *
- */
 async function run () {
   const promises = []
   for (let i = 0; i < iterations; i++) {
