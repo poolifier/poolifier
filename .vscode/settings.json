@@ -41,6 +41,7 @@
     "threadjs",
     "THREADPOOL",
     "threadwork",
+    "tinypool",
     "trimmable",
     "tsdoc",
     "typedoc",

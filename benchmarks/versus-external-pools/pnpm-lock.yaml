@@ -23,6 +23,9 @@ dependencies:
   threadwork:
     specifier: 0.6.0
     version: 0.6.0
+  tinypool:
+    specifier: 0.5.0
+    version: 0.5.0
   worker-nodes:
     specifier: 2.5.0
     version: 2.5.0
@@ -211,6 +214,11 @@ packages:
       esm: 3.2.25
     dev: false
     optional: true
+
+  /tinypool@0.5.0:
+    resolution: {integrity: sha512-paHQtnrlS1QZYKF/GnLoOM/DN9fqaGOFbCbxzAhwniySnzl9Ebk8w73/dd34DAhe/obUbPAOldTyYXQZxnPBPQ==}
+    engines: {node: '>=14.0.0'}
+    dev: false
 
   /worker-nodes@2.5.0:
     resolution: {integrity: sha512-0hPZfN21PkMMeljxvFa2+MqOAItvwWnQYMUG6HGhM0X1rTlXPAgVFY+IH4UQC/TmSi/3qMIDdrxArRR8dEdQcQ==}
