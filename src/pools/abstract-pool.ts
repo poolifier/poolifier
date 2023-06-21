@@ -767,10 +767,10 @@ export abstract class AbstractPool<
         const promiseResponse = this.promiseResponseMap.get(message.id)
         if (promiseResponse != null) {
           if (message.taskError != null) {
-            promiseResponse.reject(message.taskError.message)
             if (this.emitter != null) {
               this.emitter.emit(PoolEvents.taskError, message.taskError)
             }
+            promiseResponse.reject(message.taskError.message)
           } else {
             promiseResponse.resolve(message.data as Response)
           }
