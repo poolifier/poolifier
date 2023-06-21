@@ -14,6 +14,7 @@ We chose to use this tool because it allows to run isolated Node.js processes so
 External pools with which we compared the poolifier results:
 
 - [piscina](https://github.com/piscinajs/piscina)
+- [tinypool](https://github.com/tinylibs/tinypool)
 - [SUCHMOKUO/node-worker-threads-pool](https://github.com/SUCHMOKUO/node-worker-threads-pool)
 - [threads.js](https://github.com/andywer/threads.js/)
 - [workerpool](https://github.com/josdejong/workerpool)
