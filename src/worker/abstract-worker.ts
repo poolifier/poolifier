@@ -160,13 +160,13 @@ export abstract class AbstractWorker<
     } else if (message.parent != null) {
       // Main worker reference message received
       this.mainWorker = message.parent
+    } else if (message.statistics != null) {
+      // Statistics message received
+      this.statistics = message.statistics
     } else if (message.kill != null) {
       // Kill message received
       this.aliveInterval != null && clearInterval(this.aliveInterval)
       this.emitDestroy()
-    } else if (message.statistics != null) {
-      // Statistics message received
-      this.statistics = message.statistics
     }
   }
 

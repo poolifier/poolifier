@@ -176,8 +176,8 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected getWorkerTaskWaitTime (workerNodeKey: number): number {
     return this.taskStatisticsRequirements.waitTime.median
-      ? this.pool.workerNodes[workerNodeKey].workerUsage.runTime.median
-      : this.pool.workerNodes[workerNodeKey].workerUsage.runTime.average
+      ? this.pool.workerNodes[workerNodeKey].workerUsage.waitTime.median
+      : this.pool.workerNodes[workerNodeKey].workerUsage.waitTime.average
   }
 
   /**
