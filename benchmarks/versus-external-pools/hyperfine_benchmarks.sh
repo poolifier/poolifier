@@ -9,8 +9,8 @@ hyperfine --export-markdown BENCH-100000.md --min-runs 20 --prepare 'sleep 2' --
   'node dynamic-tinypool.mjs' \
   'node dynamic-workerpool.js' \
   'node fixed-workerpool.js' \
-  'node dynamic-suchmokuo-node-worker-threads-pool.js' \
-  'node static-suchmokuo-node-worker-threads-pool.js' \
+  'node dynamic-node-worker-threads-pool.js' \
+  'node static-node-worker-threads-pool.js' \
   'node threadjs.js' \
   'node fixed-threadwork.js' \
   'node fixed-microjob.js' \

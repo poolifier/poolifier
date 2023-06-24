@@ -15,9 +15,10 @@ External pools with which we compared the poolifier results:
 
 - [piscina](https://github.com/piscinajs/piscina)
 - [tinypool](https://github.com/tinylibs/tinypool)
-- [SUCHMOKUO/node-worker-threads-pool](https://github.com/SUCHMOKUO/node-worker-threads-pool)
-- [threads.js](https://github.com/andywer/threads.js/)
+- [node-worker-threads-pool](https://github.com/SUCHMOKUO/node-worker-threads-pool)
 - [workerpool](https://github.com/josdejong/workerpool)
+- [worker-nodes](https://github.com/allegro/node-worker-nodes)
+- [threads.js](https://github.com/andywer/threads.js/)
 - [threadwork](https://github.com/kevlened/threadwork)
 - [microjob](https://github.com/wilk/microjob)
 
