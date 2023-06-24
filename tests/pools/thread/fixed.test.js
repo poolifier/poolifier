@@ -197,7 +197,11 @@ describe('Fixed thread pool test suite', () => {
   })
 
   it('Shutdown test', async () => {
-    const exitPromise = TestUtils.waitWorkerExits(pool, numberOfThreads)
+    const exitPromise = TestUtils.waitWorkerEvents(
+      pool,
+      'exit',
+      numberOfThreads
+    )
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
     expect(numberOfExitEvents).toBe(numberOfThreads)

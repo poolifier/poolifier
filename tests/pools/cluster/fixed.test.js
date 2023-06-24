@@ -193,7 +193,11 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it('Shutdown test', async () => {
-    const exitPromise = TestUtils.waitWorkerExits(pool, numberOfWorkers)
+    const exitPromise = TestUtils.waitWorkerEvents(
+      pool,
+      'exit',
+      numberOfWorkers
+    )
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
     expect(numberOfExitEvents).toBe(numberOfWorkers)

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Ensure cluster pool destroy() gracefully shutdowns worker's server.
+- Ensure pool event is emitted before task error promise rejection.
+
 ## [2.6.3] - 2023-06-19
 
 ### Fixed

@@ -37,7 +37,11 @@ describe('Dynamic thread pool test suite', () => {
     // The `busy` event is triggered when the number of submitted tasks at once reach the max number of workers in the dynamic pool.
     // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the dynamic pool.
     expect(poolBusy).toBe(max + 1)
-    const numberOfExitEvents = await TestUtils.waitWorkerExits(pool, max - min)
+    const numberOfExitEvents = await TestUtils.waitWorkerEvents(
+      pool,
+      'exit',
+      max - min
+    )
     expect(numberOfExitEvents).toBe(max - min)
   })
 
@@ -47,18 +51,18 @@ describe('Dynamic thread pool test suite', () => {
       pool.execute()
     }
     expect(pool.workerNodes.length).toBe(max)
-    await TestUtils.waitWorkerExits(pool, max - min)
+    await TestUtils.waitWorkerEvents(pool, 'exit', max - min)
     expect(pool.workerNodes.length).toBe(min)
     for (let i = 0; i < max * 2; i++) {
       pool.execute()
     }
     expect(pool.workerNodes.length).toBe(max)
-    await TestUtils.waitWorkerExits(pool, max - min)
+    await TestUtils.waitWorkerEvents(pool, 'exit', max - min)
     expect(pool.workerNodes.length).toBe(min)
   })
 
   it('Shutdown test', async () => {
-    const exitPromise = TestUtils.waitWorkerExits(pool, min)
+    const exitPromise = TestUtils.waitWorkerEvents(pool, 'exit', min)
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
     expect(numberOfExitEvents).toBe(min)
@@ -98,7 +102,7 @@ describe('Dynamic thread pool test suite', () => {
       longRunningPool.execute()
     }
     expect(longRunningPool.workerNodes.length).toBe(max)
-    await TestUtils.waitWorkerExits(longRunningPool, max - min)
+    await TestUtils.waitWorkerEvents(longRunningPool, 'exit', max - min)
     expect(longRunningPool.workerNodes.length).toBe(min)
     expect(
       longRunningPool.workerChoiceStrategyContext.workerChoiceStrategies.get(
