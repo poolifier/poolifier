@@ -75,6 +75,7 @@ module.exports = defineConfig({
           'sinon',
           'threadjs',
           'threadwork',
+          'tinypool',
           'tsconfig',
           'tsdoc',
           'typedoc',

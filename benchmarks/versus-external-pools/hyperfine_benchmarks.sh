@@ -14,6 +14,5 @@ hyperfine --export-markdown BENCH-100000.md --min-runs 20 --prepare 'sleep 2' --
   'node threadjs.js' \
   'node fixed-threadwork.js' \
   'node fixed-microjob.js' \
-  # Seems to have scalability issues, disabled for now
-  # 'node dynamic-worker-nodes.js' \
-  # 'node fixed-worker-nodes.js'
+  'node dynamic-worker-nodes.js' \
+  'node fixed-worker-nodes.js'
