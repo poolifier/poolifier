@@ -133,9 +133,8 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public setOptions (opts: WorkerChoiceStrategyOptions): void {
-    opts = opts ?? DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
-    this.setTaskStatisticsRequirements(opts)
-    this.opts = opts
+    this.opts = opts ?? DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+    this.setTaskStatisticsRequirements(this.opts)
   }
 
   // /**
