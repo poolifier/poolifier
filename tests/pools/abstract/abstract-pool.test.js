@@ -498,6 +498,7 @@ describe('Abstract pool test suite', () => {
       expect(workerNode.tasksQueue).toBeDefined()
       expect(workerNode.tasksQueue).toBeInstanceOf(Queue)
       expect(workerNode.tasksQueue.size).toBe(0)
+      expect(workerNode.tasksQueue.maxSize).toBe(0)
     }
     await pool.destroy()
   })

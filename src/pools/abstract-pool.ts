@@ -21,13 +21,7 @@ import {
   type TasksQueueOptions,
   type WorkerType
 } from './pool'
-import type {
-  IWorker,
-  Task,
-  TaskStatistics,
-  WorkerNode,
-  WorkerUsage
-} from './worker'
+import type { IWorker, Task, WorkerNode, WorkerUsage } from './worker'
 import {
   Measurements,
   WorkerChoiceStrategies,
@@ -332,10 +326,10 @@ export abstract class AbstractPool<
     if (workerChoiceStrategyOptions != null) {
       this.setWorkerChoiceStrategyOptions(workerChoiceStrategyOptions)
     }
-    for (const workerNode of this.workerNodes) {
+    for (const [workerNodeKey, workerNode] of this.workerNodes.entries()) {
       this.setWorkerNodeTasksUsage(
         workerNode,
-        this.getWorkerUsage(workerNode.worker)
+        this.getWorkerUsage(workerNodeKey)
       )
       this.setWorkerStatistics(workerNode.worker)
     }
@@ -823,11 +817,17 @@ export abstract class AbstractPool<
    * @returns The worker nodes length.
    */
   private pushWorkerNode (worker: Worker): number {
-    return this.workerNodes.push({
+    this.workerNodes.push({
       worker,
-      workerUsage: this.getWorkerUsage(worker),
+      workerUsage: this.getWorkerUsage(),
       tasksQueue: new Queue<Task<Data>>()
     })
+    const workerNodeKey = this.getWorkerNodeKey(worker)
+    this.setWorkerNodeTasksUsage(
+      this.workerNodes[workerNodeKey],
+      this.getWorkerUsage(workerNodeKey)
+    )
+    return this.workerNodes.length
   }
 
   // /**
@@ -910,9 +910,19 @@ export abstract class AbstractPool<
     })
   }
 
-  private getWorkerUsage (worker: Worker): WorkerUsage {
+  private getWorkerUsage (workerNodeKey?: number): WorkerUsage {
+    const getQueueSize = (workerNodeKey: number): number => {
+      return this.tasksQueueSize(workerNodeKey)
+    }
     return {
-      tasks: this.getTaskStatistics(worker),
+      tasks: {
+        executed: 0,
+        executing: 0,
+        get queued (): number {
+          return workerNodeKey == null ? 0 : getQueueSize(workerNodeKey)
+        },
+        failed: 0
+      },
       runTime: {
         aggregate: 0,
         average: 0,
@@ -940,19 +950,6 @@ export abstract class AbstractPool<
         },
         utilization: 0
       }
-    }
-  }
-
-  private getTaskStatistics (worker: Worker): TaskStatistics {
-    const queueSize =
-      this.workerNodes[this.getWorkerNodeKey(worker)]?.tasksQueue?.size
-    return {
-      executed: 0,
-      executing: 0,
-      get queued (): number {
-        return queueSize ?? 0
-      },
-      failed: 0
     }
   }
 }
