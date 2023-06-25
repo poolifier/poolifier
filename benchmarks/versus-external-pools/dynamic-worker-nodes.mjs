@@ -1,5 +1,4 @@
 // IMPORT LIBRARIES
-import { resolve } from 'path'
 import WorkerNodes from 'worker-nodes'
 // FINISH IMPORT LIBRARIES
 const size = parseInt(process.env.POOL_SIZE)
@@ -11,7 +10,7 @@ const data = {
 }
 
 const workerNodes = new WorkerNodes(
-  resolve('./workers/worker-nodes/function-to-bench-worker'),
+  import.meta.resolve('./workers/worker-nodes/function-to-bench-worker'),
   {
     minWorkers: size,
     maxWorkers: size * 3,
