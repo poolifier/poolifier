@@ -15,8 +15,8 @@ dependencies:
     specifier: 4.0.0
     version: 4.0.0
   poolifier:
-    specifier: 2.6.2
-    version: 2.6.2
+    specifier: 2.6.3
+    version: 2.6.3
   threads:
     specifier: 1.7.0
     version: 1.7.0
@@ -27,8 +27,8 @@ dependencies:
     specifier: 0.5.0
     version: 0.5.0
   worker-nodes:
-    specifier: 2.5.0
-    version: 2.5.0
+    specifier: 2.6.0
+    version: 2.6.0
   workerpool:
     specifier: 6.4.0
     version: 6.4.0
@@ -66,6 +66,10 @@ packages:
     dev: false
     optional: true
 
+  /event-lite@0.1.3:
+    resolution: {integrity: sha512-8qz9nOz5VeD2z96elrEKD2U433+L3DWdUdDkOINLGOJvx1GsMBbMn0aCeu28y8/e85A6mCigBiFlYMnTBEGlSw==}
+    dev: false
+
   /eventemitter-asyncresource@1.0.0:
     resolution: {integrity: sha512-39F7TBIV0G7gTelxwbEqnwhp90eqCPON1k0NwNfwhgKn4Co4ybUbj2pECcXT0B3ztRKZ7Pw1JujUUgmQJHcVAQ==}
     dev: false
@@ -90,9 +94,21 @@ packages:
     resolution: {integrity: sha512-7kIufnBqdsBGcSZLPJwqHT3yhk1QTsSlFsVD3kx5ixH/AlgBs9yM1q6DPhXZ8f8gtdqgh7N7/5btRLpQsS2gHw==}
     dev: false
 
+  /ieee754@1.2.1:
+    resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
+    dev: false
+
+  /int64-buffer@0.1.10:
+    resolution: {integrity: sha512-v7cSY1J8ydZ0GyjUHqF+1bshJ6cnEVLo9EnjB8p+4HDRPZc9N5jjmvUV7NvEsqQOKyH0pmIBFWXVQbiS0+OBbA==}
+    dev: false
+
   /is-observable@2.1.0:
     resolution: {integrity: sha512-DailKdLb0WU+xX8K5w7VsJhapwHLZ9jjmazqCJq4X12CTgqq73TKnbRcnSLuXYPOoLQgV5IrD7ePiX/h1vnkBw==}
     engines: {node: '>=8'}
+    dev: false
+
+  /isarray@1.0.0:
+    resolution: {integrity: sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==}
     dev: false
 
   /locate-path@6.0.0:
@@ -109,6 +125,16 @@ packages:
 
   /ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
+    dev: false
+
+  /msgpack-lite@0.1.26:
+    resolution: {integrity: sha512-SZ2IxeqZ1oRFGo0xFGbvBJWMp3yLIY9rlIJyxy8CGrwZn1f0ZK4r6jV/AM1r0FZMDUkWkglOk/eeKIL9g77Nxw==}
+    hasBin: true
+    dependencies:
+      event-lite: 0.1.3
+      ieee754: 1.2.1
+      int64-buffer: 0.1.10
+      isarray: 1.0.0
     dev: false
 
   /nice-napi@1.0.2:
@@ -180,8 +206,8 @@ packages:
       find-up: 5.0.0
     dev: false
 
-  /poolifier@2.6.2:
-    resolution: {integrity: sha512-3/bYzHdoFwJ+LCWlgVELuD9kEN1jho3RH4kG/YOo+2IX0ASVQD9SogGJ2YEW7+y9GD6vMuv9rcCkoTf2LxgaoQ==}
+  /poolifier@2.6.3:
+    resolution: {integrity: sha512-5kQjBXqeW8dbzlmDxKRvlC6Vi2zBrpiviVb53rupdQWIsivB6waApeJT4ayhVVLqKGrvLVr9HAeBMHBJaNUDVA==}
     engines: {node: '>=16.14.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
@@ -220,9 +246,11 @@ packages:
     engines: {node: '>=14.0.0'}
     dev: false
 
-  /worker-nodes@2.5.0:
-    resolution: {integrity: sha512-0hPZfN21PkMMeljxvFa2+MqOAItvwWnQYMUG6HGhM0X1rTlXPAgVFY+IH4UQC/TmSi/3qMIDdrxArRR8dEdQcQ==}
+  /worker-nodes@2.6.0:
+    resolution: {integrity: sha512-mL4PR1fktwqYQFfzsH613MdHcfi9GeXuwvl2lWIrNvr3JMmrtBBfbbhc/qSK3oZDAQ2gTd7qZbAJktto+3ZeFw==}
     engines: {node: '>=11.7.0'}
+    dependencies:
+      msgpack-lite: 0.1.26
     dev: false
 
   /workerpool@6.4.0:
