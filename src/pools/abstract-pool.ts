@@ -911,15 +911,15 @@ export abstract class AbstractPool<
   }
 
   private getWorkerUsage (workerNodeKey?: number): WorkerUsage {
-    const getQueueSize = (workerNodeKey: number): number => {
-      return this.tasksQueueSize(workerNodeKey)
+    const getTasksQueueSize = (workerNodeKey?: number): number => {
+      return workerNodeKey != null ? this.tasksQueueSize(workerNodeKey) : 0
     }
     return {
       tasks: {
         executed: 0,
         executing: 0,
         get queued (): number {
-          return workerNodeKey == null ? 0 : getQueueSize(workerNodeKey)
+          return getTasksQueueSize(workerNodeKey)
         },
         failed: 0
       },
