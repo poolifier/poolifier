@@ -1,7 +1,7 @@
 import { isMainThread } from 'worker_threads'
 import { ThreadWorker } from '../../lib/index.mjs'
-import { executeWorkerFunction } from '../benchmarks-utils.js'
-import { WorkerFunctions } from '../benchmarks-types.js'
+import { executeWorkerFunction } from '../benchmarks-utils.mjs'
+import { WorkerFunctions } from '../benchmarks-types.mjs'
 
 const debug = false
 

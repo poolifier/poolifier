@@ -15,4 +15,4 @@ const WorkerTypes = {
   cluster: 'cluster'
 }
 
-module.exports = { PoolTypes, WorkerFunctions, WorkerTypes }
+export { PoolTypes, WorkerFunctions, WorkerTypes }

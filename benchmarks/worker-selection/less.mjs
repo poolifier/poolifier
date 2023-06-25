@@ -1,5 +1,5 @@
-const Benchmark = require('benny')
-const { generateRandomInteger } = require('../benchmarks-utils')
+import Benchmark from 'benny'
+import { generateRandomInteger } from '../benchmarks-utils.mjs'
 
 function generateRandomTasksMap (
   numberOfWorkers,

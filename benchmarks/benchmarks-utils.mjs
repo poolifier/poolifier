@@ -1,16 +1,12 @@
-const crypto = require('crypto')
-const fs = require('fs')
-const {
+import crypto from 'crypto'
+import fs from 'fs'
+import {
   DynamicClusterPool,
   DynamicThreadPool,
   FixedClusterPool,
   FixedThreadPool
-} = require('../lib')
-const {
-  PoolTypes,
-  WorkerFunctions,
-  WorkerTypes
-} = require('./benchmarks-types')
+} from '../lib/index.mjs'
+import { PoolTypes, WorkerFunctions, WorkerTypes } from './benchmarks-types.mjs'
 
 async function runTest (pool, { taskExecutions, workerData }) {
   return new Promise((resolve, reject) => {
@@ -151,7 +147,7 @@ function buildPool (workerType, poolType, poolSize, poolOptions) {
   }
 }
 
-module.exports = {
+export {
   WorkerFunctions,
   buildPool,
   executeWorkerFunction,

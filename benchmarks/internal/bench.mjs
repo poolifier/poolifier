@@ -1,7 +1,11 @@
 import Benchmark from 'benny'
 import { WorkerChoiceStrategies } from '../../lib/index.mjs'
-import { PoolTypes, WorkerFunctions, WorkerTypes } from '../benchmarks-types.js'
-import { buildPool, runTest } from '../benchmarks-utils.js'
+import {
+  PoolTypes,
+  WorkerFunctions,
+  WorkerTypes
+} from '../benchmarks-types.mjs'
+import { buildPool, runTest } from '../benchmarks-utils.mjs'
 
 const poolSize = 30
 const taskExecutions = 1
