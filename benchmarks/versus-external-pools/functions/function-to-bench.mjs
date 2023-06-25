@@ -4,9 +4,9 @@
  * @param {*} data The worker data.
  * @returns {*} The result.
  */
-export default function functionToBench (data) {
-  const crypto = import('crypto')
-  const fs = import('fs')
+export default async function functionToBench (data) {
+  const { default: crypto } = await import('crypto')
+  const { default: fs } = await import('fs')
   const TaskTypes = {
     CPU_INTENSIVE: 'CPU_INTENSIVE',
     IO_INTENSIVE: 'IO_INTENSIVE'
