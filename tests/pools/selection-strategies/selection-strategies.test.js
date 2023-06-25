@@ -214,6 +214,7 @@ describe('Selection strategies test suite', () => {
           executed: maxMultiplier,
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -274,6 +275,7 @@ describe('Selection strategies test suite', () => {
           executed: maxMultiplier,
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -479,6 +481,7 @@ describe('Selection strategies test suite', () => {
           executed: expect.any(Number),
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -538,6 +541,7 @@ describe('Selection strategies test suite', () => {
           executed: expect.any(Number),
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -676,6 +680,7 @@ describe('Selection strategies test suite', () => {
           executed: expect.any(Number),
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -739,6 +744,7 @@ describe('Selection strategies test suite', () => {
           executed: expect.any(Number),
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -881,6 +887,7 @@ describe('Selection strategies test suite', () => {
           executed: expect.any(Number),
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -942,6 +949,7 @@ describe('Selection strategies test suite', () => {
           executed: expect.any(Number),
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -1082,6 +1090,7 @@ describe('Selection strategies test suite', () => {
           executed: expect.any(Number),
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -1150,6 +1159,7 @@ describe('Selection strategies test suite', () => {
           executed: expect.any(Number),
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -1223,6 +1233,7 @@ describe('Selection strategies test suite', () => {
           executed: expect.any(Number),
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -1444,6 +1455,7 @@ describe('Selection strategies test suite', () => {
           executed: expect.any(Number),
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -1515,6 +1527,7 @@ describe('Selection strategies test suite', () => {
           executed: expect.any(Number),
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -1591,6 +1604,7 @@ describe('Selection strategies test suite', () => {
           executed: expect.any(Number),
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -1824,6 +1838,7 @@ describe('Selection strategies test suite', () => {
           executed: maxMultiplier,
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -1906,6 +1921,7 @@ describe('Selection strategies test suite', () => {
           executed: maxMultiplier,
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {

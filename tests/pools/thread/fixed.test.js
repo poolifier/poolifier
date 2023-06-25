@@ -101,6 +101,7 @@ describe('Fixed thread pool test suite', () => {
       )
       expect(workerNode.workerUsage.tasks.executed).toBe(0)
       expect(workerNode.workerUsage.tasks.queued).toBeGreaterThan(0)
+      expect(workerNode.workerUsage.tasks.maxQueued).toBeGreaterThan(0)
     }
     expect(queuePool.info.executingTasks).toBe(numberOfThreads)
     expect(queuePool.info.queuedTasks).toBe(
@@ -117,6 +118,7 @@ describe('Fixed thread pool test suite', () => {
         maxMultiplier
       )
       expect(workerNode.workerUsage.tasks.queued).toBe(0)
+      expect(workerNode.workerUsage.tasks.maxQueued).toBe(1)
     }
   })
 

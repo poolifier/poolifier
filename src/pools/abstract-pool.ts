@@ -263,12 +263,13 @@ export abstract class AbstractPool<
         0
       ),
       queuedTasks: this.workerNodes.reduce(
-        (accumulator, workerNode) => accumulator + workerNode.tasksQueue.size,
+        (accumulator, workerNode) =>
+          accumulator + workerNode.workerUsage.tasks.queued,
         0
       ),
       maxQueuedTasks: this.workerNodes.reduce(
         (accumulator, workerNode) =>
-          accumulator + workerNode.tasksQueue.maxSize,
+          accumulator + workerNode.workerUsage.tasks.maxQueued,
         0
       ),
       failedTasks: this.workerNodes.reduce(
@@ -881,6 +882,10 @@ export abstract class AbstractPool<
     return this.workerNodes[workerNodeKey].tasksQueue.size
   }
 
+  private tasksMaxQueueSize (workerNodeKey: number): number {
+    return this.workerNodes[workerNodeKey].tasksQueue.maxSize
+  }
+
   private flushTasksQueue (workerNodeKey: number): void {
     if (this.tasksQueueSize(workerNodeKey) > 0) {
       for (let i = 0; i < this.tasksQueueSize(workerNodeKey); i++) {
@@ -890,6 +895,7 @@ export abstract class AbstractPool<
         )
       }
     }
+    this.workerNodes[workerNodeKey].tasksQueue.clear()
   }
 
   private flushTasksQueues (): void {
@@ -914,12 +920,18 @@ export abstract class AbstractPool<
     const getTasksQueueSize = (workerNodeKey?: number): number => {
       return workerNodeKey != null ? this.tasksQueueSize(workerNodeKey) : 0
     }
+    const getTasksMaxQueueSize = (workerNodeKey?: number): number => {
+      return workerNodeKey != null ? this.tasksMaxQueueSize(workerNodeKey) : 0
+    }
     return {
       tasks: {
         executed: 0,
         executing: 0,
         get queued (): number {
           return getTasksQueueSize(workerNodeKey)
+        },
+        get maxQueued (): number {
+          return getTasksMaxQueueSize(workerNodeKey)
         },
         failed: 0
       },

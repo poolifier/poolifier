@@ -455,6 +455,7 @@ describe('Abstract pool test suite', () => {
           executed: 0,
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -519,6 +520,7 @@ describe('Abstract pool test suite', () => {
           executed: 0,
           executing: maxMultiplier,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -557,6 +559,7 @@ describe('Abstract pool test suite', () => {
           executed: maxMultiplier,
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -609,6 +612,7 @@ describe('Abstract pool test suite', () => {
           executed: expect.any(Number),
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {
@@ -651,6 +655,7 @@ describe('Abstract pool test suite', () => {
           executed: 0,
           executing: 0,
           queued: 0,
+          maxQueued: 0,
           failed: 0
         },
         runTime: {

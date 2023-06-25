@@ -48,4 +48,18 @@ describe('Queue test suite', () => {
     expect(queue.maxSize).toBe(3)
     expect(queue.items).toStrictEqual([])
   })
+
+  it('Verify clear() behavior', () => {
+    const queue = new Queue()
+    queue.enqueue(1)
+    queue.enqueue(2)
+    queue.enqueue(3)
+    expect(queue.size).toBe(3)
+    expect(queue.maxSize).toBe(3)
+    queue.clear()
+    expect(queue.size).toBe(0)
+    expect(queue.maxSize).toBe(0)
+    expect(queue.items).toStrictEqual([])
+    expect(queue.offset).toBe(0)
+  })
 })

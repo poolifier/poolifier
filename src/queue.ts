@@ -64,4 +64,14 @@ export class Queue<T> {
     }
     return this.items[this.offset]
   }
+
+  /**
+   * Clear the queue.
+   */
+  public clear (): void {
+    this.items = []
+    this.offset = 0
+    this.size = 0
+    this.maxSize = 0
+  }
 }
