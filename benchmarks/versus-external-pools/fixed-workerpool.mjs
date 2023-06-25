@@ -1,5 +1,5 @@
 // IMPORT LIBRARIES
-const workerpool = require('workerpool')
+import workerpool from 'workerpool'
 // FINISH IMPORT LIBRARIES
 const size = parseInt(process.env.POOL_SIZE)
 const iterations = parseInt(process.env.NUM_ITERATIONS)
@@ -10,7 +10,7 @@ const dataArray = [
 ]
 
 const workerPool = workerpool.pool(
-  './workers/workerpool/function-to-bench-worker.js',
+  './workers/workerpool/function-to-bench-worker.mjs',
   {
     minWorkers: size,
     maxWorkers: size,
@@ -28,4 +28,4 @@ async function run () {
   process.exit()
 }
 
-run()
+await run()

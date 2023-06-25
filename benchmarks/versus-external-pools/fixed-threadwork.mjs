@@ -1,10 +1,6 @@
 // IMPORT LIBRARIES
-const { DynamicPool } = require('node-worker-threads-pool')
+import threadPool from './pool-threadwork'
 // FINISH IMPORT LIBRARIES
-// IMPORT FUNCTION TO BENCH
-const functionToBench = require('./functions/function-to-bench')
-// FINISH IMPORT FUNCTION TO BENCH
-const size = parseInt(process.env.POOL_SIZE)
 const iterations = parseInt(process.env.NUM_ITERATIONS)
 const data = {
   test: 'MYBENCH',
@@ -12,21 +8,14 @@ const data = {
   taskSize: parseInt(process.env.TASK_SIZE)
 }
 
-const pool = new DynamicPool(size)
-
 async function run () {
   const promises = []
   for (let i = 0; i < iterations; i++) {
-    promises.push(
-      pool.exec({
-        task: functionToBench,
-        param: data
-      })
-    )
+    promises.push(threadPool.run(data))
   }
   await Promise.all(promises)
   // eslint-disable-next-line n/no-process-exit
   process.exit()
 }
 
-run()
+await run()

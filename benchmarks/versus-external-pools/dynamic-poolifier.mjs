@@ -1,5 +1,5 @@
 // IMPORT LIBRARIES
-const { DynamicThreadPool } = require('poolifier')
+import { DynamicThreadPool } from 'poolifier'
 // FINISH IMPORT LIBRARIES
 const size = parseInt(process.env.POOL_SIZE)
 const iterations = parseInt(process.env.NUM_ITERATIONS)
@@ -12,7 +12,7 @@ const data = {
 const dynamicPool = new DynamicThreadPool(
   size,
   size * 3,
-  './workers/poolifier/function-to-bench-worker.js'
+  './workers/poolifier/function-to-bench-worker.mjs'
 )
 
 async function run () {
@@ -25,4 +25,4 @@ async function run () {
   process.exit()
 }
 
-run()
+await run()

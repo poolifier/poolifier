@@ -1,6 +1,5 @@
-'use strict'
-const workerpool = require('workerpool')
-const functionToBench = require('../../functions/function-to-bench')
+import workerpool from 'workerpool'
+import functionToBench from '../../functions/function-to-bench.mjs'
 
 function workerPoolWrapperFunctionToBench (testName, taskType, taskSize) {
   return functionToBench({

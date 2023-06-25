@@ -1,5 +1,5 @@
 // IMPORT LIBRARIES
-const { spawn, Worker } = require('threads')
+import { Worker, spawn } from 'threads'
 // FINISH IMPORT LIBRARIES
 const size = parseInt(process.env.POOL_SIZE)
 const iterations = parseInt(process.env.NUM_ITERATIONS)
@@ -14,7 +14,7 @@ const workers = []
 async function poolify () {
   for (let i = 0; i < size; i++) {
     const worker = await spawn(
-      new Worker('./workers/threadjs/function-to-bench-worker.js')
+      new Worker('./workers/threadjs/function-to-bench-worker.mjs')
     )
     workers.push(worker)
   }
@@ -32,4 +32,4 @@ async function run () {
   process.exit()
 }
 
-run()
+await run()

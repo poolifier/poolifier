@@ -1,9 +1,6 @@
 // IMPORT LIBRARIES
-const { job, start } = require('microjob')
+import Piscina from 'piscina'
 // FINISH IMPORT LIBRARIES
-// IMPORT FUNCTION TO BENCH
-const functionToBench = require('./functions/function-to-bench')
-// FINISH IMPORT FUNCTION TO BENCH
 const size = parseInt(process.env.POOL_SIZE)
 const iterations = parseInt(process.env.NUM_ITERATIONS)
 const data = {
@@ -12,22 +9,21 @@ const data = {
   taskSize: parseInt(process.env.TASK_SIZE)
 }
 
+const piscina = new Piscina({
+  filename: './workers/piscina/function-to-bench-worker.mjs',
+  minThreads: size,
+  maxThreads: size,
+  idleTimeout: 60000 // this is the same as poolifier default
+})
+
 async function run () {
-  await start({ maxWorkers: size })
   const promises = []
   for (let i = 0; i < iterations; i++) {
-    promises.push(
-      job(
-        data => {
-          functionToBench(data)
-        },
-        { data, ctx: { functionToBench } }
-      )
-    )
+    promises.push(piscina.run(data))
   }
   await Promise.all(promises)
   // eslint-disable-next-line n/no-process-exit
   process.exit()
 }
 
-run()
+await run()

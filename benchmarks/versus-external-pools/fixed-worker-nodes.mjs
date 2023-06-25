@@ -1,5 +1,6 @@
 // IMPORT LIBRARIES
-const { FixedThreadPool } = require('poolifier')
+import { resolve } from 'path'
+import WorkerNodes from 'worker-nodes'
 // FINISH IMPORT LIBRARIES
 const size = parseInt(process.env.POOL_SIZE)
 const iterations = parseInt(process.env.NUM_ITERATIONS)
@@ -9,19 +10,23 @@ const data = {
   taskSize: parseInt(process.env.TASK_SIZE)
 }
 
-const fixedPool = new FixedThreadPool(
-  size,
-  './workers/poolifier/function-to-bench-worker.js'
+const workerNodes = new WorkerNodes(
+  resolve('./workers/worker-nodes/function-to-bench-worker'),
+  {
+    minWorkers: size,
+    maxWorkers: size,
+    taskTimeout: 60000 // this is the same as poolifier default
+  }
 )
 
 async function run () {
   const promises = []
   for (let i = 0; i < iterations; i++) {
-    promises.push(fixedPool.execute(data))
+    promises.push(workerNodes.call.functionToBench(data))
   }
   await Promise.all(promises)
   // eslint-disable-next-line n/no-process-exit
   process.exit()
 }
 
-run()
+await run()

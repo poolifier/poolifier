@@ -10,7 +10,7 @@ const data = {
 }
 
 const tinypool = new Tinypool({
-  filename: './workers/tinypool/function-to-bench-worker.js',
+  filename: './workers/tinypool/function-to-bench-worker.mjs',
   minThreads: size,
   maxThreads: size * 3,
   idleTimeout: 60000 // this is the same as poolifier default
@@ -26,4 +26,4 @@ async function run () {
   process.exit()
 }
 
-run()
+await run()

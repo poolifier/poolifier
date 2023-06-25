@@ -1,8 +1,8 @@
 // IMPORT LIBRARIES
-const { StaticPool } = require('node-worker-threads-pool')
+import { StaticPool } from 'node-worker-threads-pool'
 // FINISH IMPORT LIBRARIES
 // IMPORT FUNCTION TO BENCH
-const functionToBench = require('./functions/function-to-bench')
+import functionToBench from './functions/function-to-bench.mjs'
 // FINISH IMPORT FUNCTION TO BENCH
 const size = parseInt(process.env.POOL_SIZE)
 const iterations = parseInt(process.env.NUM_ITERATIONS)
@@ -27,4 +27,4 @@ async function run () {
   process.exit()
 }
 
-run()
+await run()
