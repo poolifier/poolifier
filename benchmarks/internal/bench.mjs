@@ -1,11 +1,7 @@
-const Benchmark = require('benny')
-const { WorkerChoiceStrategies } = require('../../lib')
-const {
-  PoolTypes,
-  WorkerFunctions,
-  WorkerTypes
-} = require('../benchmarks-types')
-const { buildPool, runTest } = require('../benchmarks-utils')
+import Benchmark from 'benny'
+import { WorkerChoiceStrategies } from '../../lib/index.mjs'
+import { PoolTypes, WorkerFunctions, WorkerTypes } from '../benchmarks-types.js'
+import { buildPool, runTest } from '../benchmarks-utils.js'
 
 const poolSize = 30
 const taskExecutions = 1

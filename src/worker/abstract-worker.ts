@@ -45,7 +45,7 @@ export abstract class AbstractWorker<
    */
   protected lastTaskTimestamp!: number
   /**
-   * Performance statistics computation.
+   * Performance statistics computation requirements.
    */
   protected statistics!: WorkerStatistics
   /**
@@ -298,6 +298,7 @@ export abstract class AbstractWorker<
   }
 
   private beginTaskPerformance (): TaskPerformance {
+    this.checkStatistics()
     return {
       timestamp: performance.now(),
       ...(this.statistics.elu && { elu: performance.eventLoopUtilization() })
@@ -307,6 +308,7 @@ export abstract class AbstractWorker<
   private endTaskPerformance (
     taskPerformance: TaskPerformance
   ): TaskPerformance {
+    this.checkStatistics()
     return {
       ...taskPerformance,
       ...(this.statistics.runTime && {
@@ -315,6 +317,12 @@ export abstract class AbstractWorker<
       ...(this.statistics.elu && {
         elu: performance.eventLoopUtilization(taskPerformance.elu)
       })
+    }
+  }
+
+  private checkStatistics (): void {
+    if (this.statistics == null) {
+      throw new Error('Performance statistics computation requirements not set')
     }
   }
 }

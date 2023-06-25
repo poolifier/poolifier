@@ -1,8 +1,7 @@
-'use strict'
-const { isMaster } = require('cluster')
-const { ClusterWorker } = require('../../lib')
-const { executeWorkerFunction } = require('../benchmarks-utils')
-const { WorkerFunctions } = require('../benchmarks-types')
+import { isMaster } from 'cluster'
+import { ClusterWorker } from '../../lib/index.mjs'
+import { executeWorkerFunction } from '../benchmarks-utils.js'
+import { WorkerFunctions } from '../benchmarks-types.js'
 
 const debug = false
 
@@ -14,4 +13,4 @@ function yourFunction (data) {
   return { ok: 1 }
 }
 
-module.exports = new ClusterWorker(yourFunction)
+export default new ClusterWorker(yourFunction)
