@@ -7,7 +7,7 @@ import fs from 'fs'
  * @param {*} data The worker data.
  * @returns {*} The result.
  */
-export default async function functionToBench (data) {
+export default function functionToBench (data) {
   const TaskTypes = {
     CPU_INTENSIVE: 'CPU_INTENSIVE',
     IO_INTENSIVE: 'IO_INTENSIVE'
