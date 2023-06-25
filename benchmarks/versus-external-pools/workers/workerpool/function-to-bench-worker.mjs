@@ -1,8 +1,8 @@
 import workerpool from 'workerpool'
 import functionToBench from '../../functions/function-to-bench.mjs'
 
-function workerPoolWrapperFunctionToBench (testName, taskType, taskSize) {
-  return functionToBench({
+async function workerPoolWrapperFunctionToBench (testName, taskType, taskSize) {
+  return await functionToBench({
     test: testName,
     taskType,
     taskSize
