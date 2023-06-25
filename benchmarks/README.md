@@ -15,7 +15,7 @@ External pools with which we compared the poolifier results:
 
 - [piscina](https://github.com/piscinajs/piscina)
 - [tinypool](https://github.com/tinylibs/tinypool)
-- [node-worker-threads-pool](https://github.com/SUCHMOKUO/node-worker-threads-pool)
+- [node-worker-threads-pool](https://github.com/SUCHMOKUO/node-worker-threads-pool): removed from the benchmark because does not support ESM modules
 - [workerpool](https://github.com/josdejong/workerpool)
 - [worker-nodes](https://github.com/allegro/node-worker-nodes)
 - [threads.js](https://github.com/andywer/threads.js/)
