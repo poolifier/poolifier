@@ -11,8 +11,8 @@ hyperfine --export-markdown BENCH-100000.md --min-runs 20 --prepare 'sleep 2' --
   'node fixed-workerpool.mjs' \
   'node dynamic-node-worker-threads-pool.mjs' \
   'node static-node-worker-threads-pool.mjs' \
+  'node dynamic-worker-nodes.mjs' \
+  'node fixed-worker-nodes.mjs' \
   'node threadjs.mjs' \
   'node fixed-threadwork.mjs' \
-  'node fixed-microjob.mjs' \
-  'node dynamic-worker-nodes.mjs' \
-  'node fixed-worker-nodes.mjs'
+  'node fixed-microjob.mjs'
