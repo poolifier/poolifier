@@ -13,6 +13,5 @@ async function error (data) {
 
 module.exports = new ThreadWorker(error, {
   maxInactiveTime: 500,
-  async: true,
   killBehavior: KillBehaviors.HARD
 })

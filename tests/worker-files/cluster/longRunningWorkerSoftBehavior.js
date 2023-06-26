@@ -7,6 +7,5 @@ async function sleep (data) {
 }
 
 module.exports = new ClusterWorker(sleep, {
-  maxInactiveTime: 500,
-  async: true
+  maxInactiveTime: 500
 })

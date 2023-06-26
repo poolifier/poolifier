@@ -49,14 +49,10 @@ export interface WorkerStatistics {
  *
  * @typeParam Data - Type of data sent to the worker or execution response. This can only be structured-cloneable data.
  * @typeParam ErrorData - Type of data sent to the worker triggering an error. This can only be structured-cloneable data.
- * @typeParam MainWorker - Type of main worker.
  * @internal
  */
-export interface MessageValue<
-  Data = unknown,
-  ErrorData = unknown,
-  MainWorker = NodeJS.Process | MessagePort
-> extends Task<Data> {
+export interface MessageValue<Data = unknown, ErrorData = unknown>
+  extends Task<Data> {
   /**
    * Kill code.
    */
@@ -69,10 +65,6 @@ export interface MessageValue<
    * Task performance.
    */
   readonly taskPerformance?: TaskPerformance
-  /**
-   * Reference to main worker.
-   */
-  readonly parent?: MainWorker
   /**
    * Whether to compute the given statistics or not.
    */

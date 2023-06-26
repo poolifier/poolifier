@@ -142,7 +142,7 @@ You can do the same with the classes ClusterWorker, FixedClusterPool and Dynamic
 
 **See examples folder for more details (in particular if you want to use a pool with [multiple worker functions](./examples/multiFunctionExample.js))**.
 
-Remember that workers can only send and receive serializable data.
+Remember that workers can only send and receive structured-cloneable data.
 
 ## Node versions
 

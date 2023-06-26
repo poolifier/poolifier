@@ -1,4 +1,5 @@
 import { AsyncResource } from 'node:async_hooks'
+import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
 import { performance } from 'node:perf_hooks'
 import type {
@@ -31,7 +32,7 @@ const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
  * @typeParam Response - Type of response the worker sends back to the main worker. This can only be structured-cloneable data.
  */
 export abstract class AbstractWorker<
-  MainWorker extends NodeJS.Process | MessagePort,
+  MainWorker extends Worker | MessagePort,
   Data = unknown,
   Response = unknown
 > extends AsyncResource {
@@ -145,9 +146,7 @@ export abstract class AbstractWorker<
    *
    * @param message - Message received.
    */
-  protected messageListener (
-    message: MessageValue<Data, Data, MainWorker>
-  ): void {
+  protected messageListener (message: MessageValue<Data, Data>): void {
     if (message.id != null && message.data != null) {
       // Task message received
       const fn = this.getTaskFunction(message.name)
@@ -156,9 +155,6 @@ export abstract class AbstractWorker<
       } else {
         this.runInAsyncScope(this.runSync.bind(this), this, fn, message)
       }
-    } else if (message.parent != null) {
-      // Main worker reference message received
-      this.mainWorker = message.parent
     } else if (message.statistics != null) {
       // Statistics message received
       this.statistics = message.statistics

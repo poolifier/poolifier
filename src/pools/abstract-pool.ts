@@ -466,8 +466,8 @@ export abstract class AbstractPool<
   protected abstract destroyWorker (worker: Worker): void | Promise<void>
 
   /**
-   * Setup hook to execute code before worker node are created in the abstract constructor.
-   * Can be overridden
+   * Setup hook to execute code before worker nodes are created in the abstract constructor.
+   * Can be overridden.
    *
    * @virtual
    */
@@ -692,10 +692,11 @@ export abstract class AbstractPool<
 
   /**
    * Function that can be hooked up when a worker has been newly created and moved to the pool worker nodes.
+   * Can be overridden.
    *
    * @param worker - The newly created worker.
    */
-  private afterWorkerSetup (worker: Worker): void {
+  protected afterWorkerSetup (worker: Worker): void {
     // Listen to worker messages.
     this.registerWorkerMessageListener(worker, this.workerListener())
   }

@@ -1,4 +1,4 @@
-import cluster from 'node:cluster'
+import cluster, { type Worker } from 'node:cluster'
 import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
@@ -21,7 +21,7 @@ import type { TaskFunctions, WorkerFunction } from './worker-functions'
 export class ClusterWorker<
   Data = unknown,
   Response = unknown
-> extends AbstractWorker<NodeJS.Process, Data, Response> {
+> extends AbstractWorker<Worker, Data, Response> {
   /**
    * Constructs a new poolifier cluster worker.
    *
@@ -38,18 +38,14 @@ export class ClusterWorker<
       'worker-cluster-pool:poolifier',
       cluster.isPrimary,
       taskFunctions,
-      process,
+      cluster.worker as Worker,
       opts
     )
   }
 
   /** @inheritDoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
-    const mainWorker = this.getMainWorker()
-    if (mainWorker.send == null) {
-      throw new Error('Main worker does not support IPC communication')
-    }
-    mainWorker.send(message)
+    this.getMainWorker().send(message)
   }
 
   /** @inheritDoc */

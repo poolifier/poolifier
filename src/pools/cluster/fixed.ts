@@ -30,8 +30,6 @@ export interface ClusterPoolOptions extends PoolOptions<Worker> {
 /**
  * A cluster pool with a fixed number of workers.
  *
- * It is possible to perform tasks in sync or asynchronous mode as you prefer.
- *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)

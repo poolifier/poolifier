@@ -13,6 +13,5 @@ async function error (data) {
 
 module.exports = new ClusterWorker(error, {
   maxInactiveTime: 500,
-  async: true,
   killBehavior: KillBehaviors.HARD
 })

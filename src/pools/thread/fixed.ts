@@ -29,8 +29,6 @@ export interface ThreadPoolOptions extends PoolOptions<Worker> {
 /**
  * A thread pool with a fixed number of threads.
  *
- * It is possible to perform tasks in sync or asynchronous mode as you prefer.
- *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)

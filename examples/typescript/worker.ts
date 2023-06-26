@@ -13,8 +13,7 @@ class MyThreadWorker extends ThreadWorker<MyData, Promise<MyResponse>> {
   constructor () {
     // eslint-disable-next-line @typescript-eslint/promise-function-async
     super((data: MyData) => this.process(data), {
-      maxInactiveTime: 60000,
-      async: true
+      maxInactiveTime: 60000
     })
   }
 

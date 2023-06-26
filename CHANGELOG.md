@@ -548,7 +548,7 @@ const { DynamicThreadPool } = require('poolifier')
 
 #### New type definitions for input data and response
 
-For cluster worker and worker-thread pools, you can now only send and receive serializable data.  
+For cluster worker and worker-thread pools, you can now only send and receive structured-cloneable data.  
 _This is not a limitation by poolifier but NodeJS._
 
 #### Public property replacements

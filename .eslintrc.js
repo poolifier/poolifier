@@ -72,7 +72,6 @@ module.exports = defineConfig({
           'poolify',
           'readonly',
           'resize',
-          'serializable',
           'sinon',
           'threadjs',
           'threadwork',
