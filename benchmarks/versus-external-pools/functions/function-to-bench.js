@@ -1,3 +1,4 @@
+'use strict'
 /**
  * The worker function to execute during pools benchmarks.
  * NOTE: This function requires to be self-contained, thread-safe and re-entrant.

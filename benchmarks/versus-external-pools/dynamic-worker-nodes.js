@@ -1,3 +1,4 @@
+'use strict'
 // IMPORT LIBRARIES
 const WorkerNodes = require('worker-nodes')
 // FINISH IMPORT LIBRARIES
