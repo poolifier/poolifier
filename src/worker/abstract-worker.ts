@@ -67,7 +67,7 @@ export abstract class AbstractWorker<
     taskFunctions:
     | WorkerFunction<Data, Response>
     | TaskFunctions<Data, Response>,
-    protected mainWorker: MainWorker,
+    protected readonly mainWorker: MainWorker,
     protected readonly opts: WorkerOptions = {
       /**
        * The kill behavior option on this worker or its default value.
