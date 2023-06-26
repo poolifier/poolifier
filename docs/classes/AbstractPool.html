@@ -29,12 +29,12 @@
 <div class="tsd-comment tsd-typography"></div></li>
 <li>
 <h4><span class="tsd-kind-type-parameter">Data</span> = <span class="tsd-signature-type">unknown</span></h4>
-<div class="tsd-comment tsd-typography"><p>Type of data sent to the worker. This can only be serializable data.</p>
+<div class="tsd-comment tsd-typography"><p>Type of data sent to the worker. This can only be structured-cloneable data.</p>
 </div>
 <div class="tsd-comment tsd-typography"></div></li>
 <li>
 <h4><span class="tsd-kind-type-parameter">Response</span> = <span class="tsd-signature-type">unknown</span></h4>
-<div class="tsd-comment tsd-typography"><p>Type of execution response. This can only be serializable data.</p>
+<div class="tsd-comment tsd-typography"><p>Type of execution response. This can only be structured-cloneable data.</p>
 </div>
 <div class="tsd-comment tsd-typography"></div></li></ul></section> 
 <section class="tsd-panel tsd-hierarchy">
@@ -49,7 +49,7 @@
 <ul class="tsd-hierarchy">
 <li><a href="../interfaces/IPool.html" class="tsd-signature-type tsd-kind-interface">IPool</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Worker</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type tsd-kind-type-parameter">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">&gt;</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L46">src/pools/abstract-pool.ts:46</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L46">src/pools/abstract-pool.ts:46</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -105,13 +105,12 @@
 <a href="AbstractPool.html#executeTask" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>execute<wbr/>Task</span></a>
 <a href="AbstractPool.html#flushTasksQueue" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>flush<wbr/>Tasks<wbr/>Queue</span></a>
 <a href="AbstractPool.html#flushTasksQueues" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>flush<wbr/>Tasks<wbr/>Queues</span></a>
-<a href="AbstractPool.html#getTaskStatistics" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Task<wbr/>Statistics</span></a>
 <a href="AbstractPool.html#getWorkerNodeKey" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Worker<wbr/>Node<wbr/>Key</span></a>
 <a href="AbstractPool.html#getWorkerUsage" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Worker<wbr/>Usage</span></a>
 <a href="AbstractPool.html#internalBusy" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>internal<wbr/>Busy</span></a>
 <a href="AbstractPool.html#isMain" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>is<wbr/>Main</span></a>
 <a href="AbstractPool.html#pushWorkerNode" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>push<wbr/>Worker<wbr/>Node</span></a>
-<a href="AbstractPool.html#registerWorkerMessageListener" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>register<wbr/>Worker<wbr/>Message<wbr/>Listener</span></a>
+<a href="AbstractPool.html#registerWorkerMessageListener" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>register<wbr/>Worker<wbr/>Message<wbr/>Listener</span></a>
 <a href="AbstractPool.html#removeWorkerNode" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>remove<wbr/>Worker<wbr/>Node</span></a>
 <a href="AbstractPool.html#sendToWorker" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>send<wbr/>To<wbr/>Worker</span></a>
 <a href="AbstractPool.html#setTasksQueueOptions" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>set<wbr/>Tasks<wbr/>Queue<wbr/>Options</span></a>
@@ -121,6 +120,7 @@
 <a href="AbstractPool.html#setWorkerStatistics" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>set<wbr/>Worker<wbr/>Statistics</span></a>
 <a href="AbstractPool.html#setupHook" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>setup<wbr/>Hook</span></a>
 <a href="AbstractPool.html#shallCreateDynamicWorker" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>shall<wbr/>Create<wbr/>Dynamic<wbr/>Worker</span></a>
+<a href="AbstractPool.html#tasksMaxQueueSize" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>tasks<wbr/>Max<wbr/>Queue<wbr/>Size</span></a>
 <a href="AbstractPool.html#tasksQueueSize" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>tasks<wbr/>Queue<wbr/>Size</span></a>
 <a href="AbstractPool.html#updateEluWorkerUsage" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>update<wbr/>Elu<wbr/>Worker<wbr/>Usage</span></a>
 <a href="AbstractPool.html#updateRunTimeWorkerUsage" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>update<wbr/>Run<wbr/>Time<wbr/>Worker<wbr/>Usage</span></a>
@@ -167,7 +167,7 @@
 <h4 class="tsd-returns-title">Returns <a href="AbstractPool.html" class="tsd-signature-type tsd-kind-class">AbstractPool</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Worker</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type tsd-kind-type-parameter">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">&gt;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L86">src/pools/abstract-pool.ts:86</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L86">src/pools/abstract-pool.ts:86</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member"><a id="emitter" class="tsd-anchor"></a>
@@ -185,7 +185,7 @@
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Implementation of <a href="../interfaces/IPool.html">IPool</a>.<a href="../interfaces/IPool.html#emitter">emitter</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L55">src/pools/abstract-pool.ts:55</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L55">src/pools/abstract-pool.ts:55</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="filePath" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>file<wbr/>Path</span><a href="#filePath" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">file<wbr/>Path</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
@@ -193,7 +193,7 @@
 </div>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L88">src/pools/abstract-pool.ts:88</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L88">src/pools/abstract-pool.ts:88</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="numberOfWorkers" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>number<wbr/>Of<wbr/>Workers</span><a href="#numberOfWorkers" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">number<wbr/>Of<wbr/>Workers</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
@@ -201,7 +201,7 @@
 </div>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L87">src/pools/abstract-pool.ts:87</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L87">src/pools/abstract-pool.ts:87</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="opts" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>opts</span><a href="#opts" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">opts</span><span class="tsd-signature-symbol">:</span> <a href="../interfaces/PoolOptions.html" class="tsd-signature-type tsd-kind-interface">PoolOptions</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Worker</span><span class="tsd-signature-symbol">&gt;</span></div>
@@ -209,7 +209,7 @@
 </div>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L89">src/pools/abstract-pool.ts:89</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L89">src/pools/abstract-pool.ts:89</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="promiseResponseMap" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>promise<wbr/>Response<wbr/>Map</span><a href="#promiseResponseMap" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">promise<wbr/>Response<wbr/>Map</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type ">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/PromiseResponseWrapper.html" class="tsd-signature-type tsd-kind-interface">PromiseResponseWrapper</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Worker</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
@@ -222,7 +222,7 @@
 </div>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L65">src/pools/abstract-pool.ts:65</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L65">src/pools/abstract-pool.ts:65</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="workerChoiceStrategyContext" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>worker<wbr/>Choice<wbr/>Strategy<wbr/>Context</span><a href="#workerChoiceStrategyContext" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">worker<wbr/>Choice<wbr/>Strategy<wbr/>Context</span><span class="tsd-signature-symbol">:</span> <a href="WorkerChoiceStrategyContext.html" class="tsd-signature-type tsd-kind-class">WorkerChoiceStrategyContext</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Worker</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type tsd-kind-type-parameter">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">&gt;</span></div>
@@ -230,7 +230,7 @@
 </div>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L73">src/pools/abstract-pool.ts:73</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L73">src/pools/abstract-pool.ts:73</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="workerNodes" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>worker<wbr/>Nodes</span><a href="#workerNodes" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">worker<wbr/>Nodes</span><span class="tsd-signature-symbol">:</span> <a href="../interfaces/WorkerNode.html" class="tsd-signature-type tsd-kind-interface">WorkerNode</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Worker</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type tsd-kind-type-parameter">Data</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
@@ -239,7 +239,7 @@
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Implementation of <a href="../interfaces/IPool.html">IPool</a>.<a href="../interfaces/IPool.html#workerNodes">workerNodes</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L52">src/pools/abstract-pool.ts:52</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L52">src/pools/abstract-pool.ts:52</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Accessors</h2>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="busy" class="tsd-anchor"></a>
@@ -253,7 +253,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L400">src/pools/abstract-pool.ts:400</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L401">src/pools/abstract-pool.ts:401</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="full" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>full</span><a href="#full" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -265,7 +265,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L391">src/pools/abstract-pool.ts:391</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L392">src/pools/abstract-pool.ts:392</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="info" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>info</span><a href="#info" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -277,7 +277,7 @@
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Implementation of <a href="../interfaces/IPool.html">IPool</a>.<a href="../interfaces/IPool.html#info">info</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L240">src/pools/abstract-pool.ts:240</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L240">src/pools/abstract-pool.ts:240</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="maxSize" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagAbstract">Abstract</code> <span>max<wbr/>Size</span><a href="#maxSize" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -288,7 +288,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L308">src/pools/abstract-pool.ts:308</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L309">src/pools/abstract-pool.ts:309</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="minSize" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagAbstract">Abstract</code> <span>min<wbr/>Size</span><a href="#minSize" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -299,7 +299,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L303">src/pools/abstract-pool.ts:303</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L304">src/pools/abstract-pool.ts:304</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="type" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagAbstract">Abstract</code> <span>type</span><a href="#type" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -311,7 +311,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">&quot;fixed&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;dynamic&quot;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L293">src/pools/abstract-pool.ts:293</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L294">src/pools/abstract-pool.ts:294</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="worker" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagAbstract">Abstract</code> <span>worker</span><a href="#worker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -322,7 +322,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">&quot;cluster&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;thread&quot;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L298">src/pools/abstract-pool.ts:298</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L299">src/pools/abstract-pool.ts:299</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="afterTaskExecutionHook" class="tsd-anchor"></a>
@@ -342,21 +342,21 @@ Can be overridden.</p>
 </div>
 <div class="tsd-comment tsd-typography"></div></li>
 <li>
-<h5><span class="tsd-kind-parameter">message</span>: <a href="../interfaces/MessageValue.html" class="tsd-signature-type tsd-kind-interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type ">Worker</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">MessagePort</span><span class="tsd-signature-symbol">&gt;</span></h5>
+<h5><span class="tsd-kind-parameter">message</span>: <a href="../interfaces/MessageValue.html" class="tsd-signature-type tsd-kind-interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5>
 <div class="tsd-comment tsd-typography"><p>The received message.</p>
 </div>
 <div class="tsd-comment tsd-typography"></div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L505">src/pools/abstract-pool.ts:505</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L506">src/pools/abstract-pool.ts:506</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="afterWorkerSetup" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagAbstract">Abstract</code> <span>after<wbr/>Worker<wbr/>Setup</span><a href="#afterWorkerSetup" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>after<wbr/>Worker<wbr/>Setup</span><a href="#afterWorkerSetup" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
 <li class="tsd-signature tsd-anchor-link" id="afterWorkerSetup.afterWorkerSetup-1"><span class="tsd-kind-call-signature">after<wbr/>Worker<wbr/>Setup</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">worker</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#afterWorkerSetup.afterWorkerSetup-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Function that can be hooked up when a worker has been newly created and moved to the pool worker nodes.</p>
-<p>Can be used to update the <code>maxListeners</code> or binding the <code>main-worker</code>&lt;-&gt;<code>worker</code> connection if not bind by default.</p>
+<div class="tsd-comment tsd-typography"><p>Function that can be hooked up when a worker has been newly created and moved to the pool worker nodes.
+Can be overridden.</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
@@ -369,7 +369,7 @@ Can be overridden.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L696">src/pools/abstract-pool.ts:696</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L699">src/pools/abstract-pool.ts:699</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="beforeTaskExecutionHook" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>before<wbr/>Task<wbr/>Execution<wbr/>Hook</span><a href="#beforeTaskExecutionHook" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -394,7 +394,7 @@ Can be overridden.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L489">src/pools/abstract-pool.ts:489</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L490">src/pools/abstract-pool.ts:490</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="buildTasksQueueOptions" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>build<wbr/>Tasks<wbr/>Queue<wbr/>Options</span><a href="#buildTasksQueueOptions" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -407,7 +407,7 @@ Can be overridden.</p>
 <h5><span class="tsd-kind-parameter">tasksQueueOptions</span>: <a href="../interfaces/TasksQueueOptions.html" class="tsd-signature-type tsd-kind-interface">TasksQueueOptions</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="../interfaces/TasksQueueOptions.html" class="tsd-signature-type tsd-kind-interface">TasksQueueOptions</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L378">src/pools/abstract-pool.ts:378</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L379">src/pools/abstract-pool.ts:379</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="checkAndEmitEvents" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>check<wbr/>And<wbr/>Emit<wbr/>Events</span><a href="#checkAndEmitEvents" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -415,7 +415,7 @@ Can be overridden.</p>
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L795">src/pools/abstract-pool.ts:795</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L801">src/pools/abstract-pool.ts:801</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="checkFilePath" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>check<wbr/>File<wbr/>Path</span><a href="#checkFilePath" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -428,7 +428,7 @@ Can be overridden.</p>
 <h5><span class="tsd-kind-parameter">filePath</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L123">src/pools/abstract-pool.ts:123</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L123">src/pools/abstract-pool.ts:123</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="checkNumberOfWorkers" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>check<wbr/>Number<wbr/>Of<wbr/>Workers</span><a href="#checkNumberOfWorkers" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -441,7 +441,7 @@ Can be overridden.</p>
 <h5><span class="tsd-kind-parameter">numberOfWorkers</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L132">src/pools/abstract-pool.ts:132</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L132">src/pools/abstract-pool.ts:132</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="checkPoolOptions" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>check<wbr/>Pool<wbr/>Options</span><a href="#checkPoolOptions" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -454,7 +454,7 @@ Can be overridden.</p>
 <h5><span class="tsd-kind-parameter">opts</span>: <a href="../interfaces/PoolOptions.html" class="tsd-signature-type tsd-kind-interface">PoolOptions</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Worker</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L150">src/pools/abstract-pool.ts:150</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L150">src/pools/abstract-pool.ts:150</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="checkValidTasksQueueOptions" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>check<wbr/>Valid<wbr/>Tasks<wbr/>Queue<wbr/>Options</span><a href="#checkValidTasksQueueOptions" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -467,7 +467,7 @@ Can be overridden.</p>
 <h5><span class="tsd-kind-parameter">tasksQueueOptions</span>: <a href="../interfaces/TasksQueueOptions.html" class="tsd-signature-type tsd-kind-interface">TasksQueueOptions</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L215">src/pools/abstract-pool.ts:215</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L215">src/pools/abstract-pool.ts:215</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="checkValidWorkerChoiceStrategy" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>check<wbr/>Valid<wbr/>Worker<wbr/>Choice<wbr/>Strategy</span><a href="#checkValidWorkerChoiceStrategy" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -480,7 +480,7 @@ Can be overridden.</p>
 <h5><span class="tsd-kind-parameter">workerChoiceStrategy</span>: <span class="tsd-signature-type">&quot;ROUND_ROBIN&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;LEAST_USED&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;LEAST_BUSY&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;LEAST_ELU&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;FAIR_SHARE&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;WEIGHTED_ROUND_ROBIN&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;INTERLEAVED_WEIGHTED_ROUND_ROBIN&quot;</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L177">src/pools/abstract-pool.ts:177</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L177">src/pools/abstract-pool.ts:177</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="checkValidWorkerChoiceStrategyOptions" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>check<wbr/>Valid<wbr/>Worker<wbr/>Choice<wbr/>Strategy<wbr/>Options</span><a href="#checkValidWorkerChoiceStrategyOptions" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -493,7 +493,7 @@ Can be overridden.</p>
 <h5><span class="tsd-kind-parameter">workerChoiceStrategyOptions</span>: <a href="../interfaces/WorkerChoiceStrategyOptions.html" class="tsd-signature-type tsd-kind-interface">WorkerChoiceStrategyOptions</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L187">src/pools/abstract-pool.ts:187</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L187">src/pools/abstract-pool.ts:187</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="chooseWorkerNode" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>choose<wbr/>Worker<wbr/>Node</span><a href="#chooseWorkerNode" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -506,7 +506,7 @@ Can be overridden.</p>
 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L640">src/pools/abstract-pool.ts:640</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L641">src/pools/abstract-pool.ts:641</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="createAndSetupDynamicWorker" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>create<wbr/>And<wbr/>Setup<wbr/>Dynamic<wbr/>Worker</span><a href="#createAndSetupDynamicWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -518,7 +518,7 @@ Can be overridden.</p>
 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L736">src/pools/abstract-pool.ts:736</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L742">src/pools/abstract-pool.ts:742</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="createAndSetupWorker" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>create<wbr/>And<wbr/>Setup<wbr/>Worker</span><a href="#createAndSetupWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -530,7 +530,7 @@ Can be overridden.</p>
 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L703">src/pools/abstract-pool.ts:703</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L709">src/pools/abstract-pool.ts:709</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="createWorker" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagAbstract">Abstract</code> <span>create<wbr/>Worker</span><a href="#createWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -542,7 +542,7 @@ Can be overridden.</p>
 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L687">src/pools/abstract-pool.ts:687</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L691">src/pools/abstract-pool.ts:691</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="dequeueTask" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>dequeue<wbr/>Task</span><a href="#dequeueTask" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -555,7 +555,7 @@ Can be overridden.</p>
 <h5><span class="tsd-kind-parameter">workerNodeKey</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/Task.html" class="tsd-signature-type tsd-kind-interface">Task</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Data</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L876">src/pools/abstract-pool.ts:876</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L888">src/pools/abstract-pool.ts:888</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="destroy" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>destroy</span><a href="#destroy" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -567,7 +567,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Implementation of <a href="../interfaces/IPool.html">IPool</a>.<a href="../interfaces/IPool.html#destroy">destroy</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L450">src/pools/abstract-pool.ts:450</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L451">src/pools/abstract-pool.ts:451</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="destroyWorker" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagAbstract">Abstract</code> <span>destroy<wbr/>Worker</span><a href="#destroyWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -586,7 +586,7 @@ Can be overridden.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L465">src/pools/abstract-pool.ts:465</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L466">src/pools/abstract-pool.ts:466</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="enableTasksQueue" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>enable<wbr/>Tasks<wbr/>Queue</span><a href="#enableTasksQueue" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -611,7 +611,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Implementation of <a href="../interfaces/IPool.html">IPool</a>.<a href="../interfaces/IPool.html#enableTasksQueue">enableTasksQueue</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L356">src/pools/abstract-pool.ts:356</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L357">src/pools/abstract-pool.ts:357</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="enqueueTask" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>enqueue<wbr/>Task</span><a href="#enqueueTask" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -626,7 +626,7 @@ Can be overridden.</p>
 <h5><span class="tsd-kind-parameter">task</span>: <a href="../interfaces/Task.html" class="tsd-signature-type tsd-kind-interface">Task</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Data</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L872">src/pools/abstract-pool.ts:872</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L884">src/pools/abstract-pool.ts:884</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="execute" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>execute</span><a href="#execute" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -639,7 +639,7 @@ Can be overridden.</p>
 <ul class="tsd-parameter-list">
 <li>
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">data</span>: <span class="tsd-signature-type tsd-kind-type-parameter">Data</span></h5>
-<div class="tsd-comment tsd-typography"><p>The task input data for the specified worker function. This can only be serializable data.</p>
+<div class="tsd-comment tsd-typography"><p>The task input data for the specified worker function. This can only be structured-cloneable data.</p>
 </div>
 <div class="tsd-comment tsd-typography"></div></li>
 <li>
@@ -652,7 +652,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Implementation of <a href="../interfaces/IPool.html">IPool</a>.<a href="../interfaces/IPool.html#execute">execute</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L416">src/pools/abstract-pool.ts:416</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L417">src/pools/abstract-pool.ts:417</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="executeTask" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>execute<wbr/>Task</span><a href="#executeTask" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -667,7 +667,7 @@ Can be overridden.</p>
 <h5><span class="tsd-kind-parameter">task</span>: <a href="../interfaces/Task.html" class="tsd-signature-type tsd-kind-interface">Task</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Data</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L867">src/pools/abstract-pool.ts:867</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L879">src/pools/abstract-pool.ts:879</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="flushTasksQueue" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>flush<wbr/>Tasks<wbr/>Queue</span><a href="#flushTasksQueue" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -680,7 +680,7 @@ Can be overridden.</p>
 <h5><span class="tsd-kind-parameter">workerNodeKey</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L884">src/pools/abstract-pool.ts:884</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L900">src/pools/abstract-pool.ts:900</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="flushTasksQueues" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>flush<wbr/>Tasks<wbr/>Queues</span><a href="#flushTasksQueues" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -688,20 +688,7 @@ Can be overridden.</p>
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L895">src/pools/abstract-pool.ts:895</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-is-private"><a id="getTaskStatistics" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>get<wbr/>Task<wbr/>Statistics</span><a href="#getTaskStatistics" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<ul class="tsd-signatures tsd-is-private">
-<li class="tsd-signature tsd-anchor-link" id="getTaskStatistics.getTaskStatistics-1"><span class="tsd-kind-call-signature">get<wbr/>Task<wbr/>Statistics</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">worker</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/TaskStatistics.html" class="tsd-signature-type tsd-kind-interface">TaskStatistics</a><a href="#getTaskStatistics.getTaskStatistics-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
-<li class="tsd-description">
-<div class="tsd-parameters">
-<h4 class="tsd-parameters-title">Parameters</h4>
-<ul class="tsd-parameter-list">
-<li>
-<h5><span class="tsd-kind-parameter">worker</span>: <span class="tsd-signature-type tsd-kind-type-parameter">Worker</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <a href="../interfaces/TaskStatistics.html" class="tsd-signature-type tsd-kind-interface">TaskStatistics</a></h4><aside class="tsd-sources">
-<ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L946">src/pools/abstract-pool.ts:946</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L912">src/pools/abstract-pool.ts:912</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="getWorkerNodeKey" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>get<wbr/>Worker<wbr/>Node<wbr/>Key</span><a href="#getWorkerNodeKey" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -721,20 +708,20 @@ Can be overridden.</p>
 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L316">src/pools/abstract-pool.ts:316</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L317">src/pools/abstract-pool.ts:317</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="getWorkerUsage" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>get<wbr/>Worker<wbr/>Usage</span><a href="#getWorkerUsage" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
-<li class="tsd-signature tsd-anchor-link" id="getWorkerUsage.getWorkerUsage-1"><span class="tsd-kind-call-signature">get<wbr/>Worker<wbr/>Usage</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">worker</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/WorkerUsage.html" class="tsd-signature-type tsd-kind-interface">WorkerUsage</a><a href="#getWorkerUsage.getWorkerUsage-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="getWorkerUsage.getWorkerUsage-1"><span class="tsd-kind-call-signature">get<wbr/>Worker<wbr/>Usage</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">workerNodeKey</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/WorkerUsage.html" class="tsd-signature-type tsd-kind-interface">WorkerUsage</a><a href="#getWorkerUsage.getWorkerUsage-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">worker</span>: <span class="tsd-signature-type tsd-kind-type-parameter">Worker</span></h5></li></ul></div>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">workerNodeKey</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="../interfaces/WorkerUsage.html" class="tsd-signature-type tsd-kind-interface">WorkerUsage</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L913">src/pools/abstract-pool.ts:913</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L930">src/pools/abstract-pool.ts:930</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="internalBusy" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>internal<wbr/>Busy</span><a href="#internalBusy" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -746,7 +733,7 @@ Can be overridden.</p>
 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L407">src/pools/abstract-pool.ts:407</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L408">src/pools/abstract-pool.ts:408</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="isMain" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagAbstract">Abstract</code> <span>is<wbr/>Main</span><a href="#isMain" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -757,7 +744,7 @@ Can be overridden.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L480">src/pools/abstract-pool.ts:480</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L481">src/pools/abstract-pool.ts:481</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="pushWorkerNode" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>push<wbr/>Worker<wbr/>Node</span><a href="#pushWorkerNode" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -777,10 +764,10 @@ Can be overridden.</p>
 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L825">src/pools/abstract-pool.ts:825</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-is-protected"><a id="registerWorkerMessageListener" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagAbstract">Abstract</code> <span>register<wbr/>Worker<wbr/>Message<wbr/>Listener</span><a href="#registerWorkerMessageListener" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<ul class="tsd-signatures tsd-is-protected">
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L831">src/pools/abstract-pool.ts:831</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-private"><a id="registerWorkerMessageListener" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>register<wbr/>Worker<wbr/>Message<wbr/>Listener</span><a href="#registerWorkerMessageListener" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-private">
 <li class="tsd-signature tsd-anchor-link" id="registerWorkerMessageListener.registerWorkerMessageListener-1"><span class="tsd-kind-call-signature">register<wbr/>Worker<wbr/>Message<wbr/>Listener</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Message</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">worker</span>, <span class="tsd-kind-parameter">listener</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#registerWorkerMessageListener.registerWorkerMessageListener-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Registers a listener callback on the given worker.</p>
@@ -812,12 +799,12 @@ Can be overridden.</p>
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">message</span>: <a href="../interfaces/MessageValue.html" class="tsd-signature-type tsd-kind-interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Message</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type ">Worker</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">MessagePort</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
+<h5><span class="tsd-kind-parameter">message</span>: <a href="../interfaces/MessageValue.html" class="tsd-signature-type tsd-kind-interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Message</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></li></ul></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L678">src/pools/abstract-pool.ts:678</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L679">src/pools/abstract-pool.ts:679</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="removeWorkerNode" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>remove<wbr/>Worker<wbr/>Node</span><a href="#removeWorkerNode" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -836,7 +823,7 @@ Can be overridden.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L859">src/pools/abstract-pool.ts:859</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L871">src/pools/abstract-pool.ts:871</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="sendToWorker" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <code class="tsd-tag ts-flagAbstract">Abstract</code> <span>send<wbr/>To<wbr/>Worker</span><a href="#sendToWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -853,14 +840,14 @@ Can be overridden.</p>
 </div>
 <div class="tsd-comment tsd-typography"></div></li>
 <li>
-<h5><span class="tsd-kind-parameter">message</span>: <a href="../interfaces/MessageValue.html" class="tsd-signature-type tsd-kind-interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type ">Worker</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">MessagePort</span><span class="tsd-signature-symbol">&gt;</span></h5>
+<h5><span class="tsd-kind-parameter">message</span>: <a href="../interfaces/MessageValue.html" class="tsd-signature-type tsd-kind-interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Data</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5>
 <div class="tsd-comment tsd-typography"><p>The message.</p>
 </div>
 <div class="tsd-comment tsd-typography"></div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L667">src/pools/abstract-pool.ts:667</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L668">src/pools/abstract-pool.ts:668</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="setTasksQueueOptions" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Tasks<wbr/>Queue<wbr/>Options</span><a href="#setTasksQueueOptions" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -880,7 +867,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Implementation of <a href="../interfaces/IPool.html">IPool</a>.<a href="../interfaces/IPool.html#setTasksQueueOptions">setTasksQueueOptions</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L368">src/pools/abstract-pool.ts:368</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L369">src/pools/abstract-pool.ts:369</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="setWorkerChoiceStrategy" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Worker<wbr/>Choice<wbr/>Strategy</span><a href="#setWorkerChoiceStrategy" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -905,7 +892,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Implementation of <a href="../interfaces/IPool.html">IPool</a>.<a href="../interfaces/IPool.html#setWorkerChoiceStrategy">setWorkerChoiceStrategy</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L323">src/pools/abstract-pool.ts:323</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L324">src/pools/abstract-pool.ts:324</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="setWorkerChoiceStrategyOptions" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Worker<wbr/>Choice<wbr/>Strategy<wbr/>Options</span><a href="#setWorkerChoiceStrategyOptions" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -925,7 +912,7 @@ Can be overridden.</p>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <p>Implementation of <a href="../interfaces/IPool.html">IPool</a>.<a href="../interfaces/IPool.html#setWorkerChoiceStrategyOptions">setWorkerChoiceStrategyOptions</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L345">src/pools/abstract-pool.ts:345</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L346">src/pools/abstract-pool.ts:346</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="setWorkerNodeTasksUsage" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>set<wbr/>Worker<wbr/>Node<wbr/>Tasks<wbr/>Usage</span><a href="#setWorkerNodeTasksUsage" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -949,7 +936,7 @@ Can be overridden.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L812">src/pools/abstract-pool.ts:812</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L818">src/pools/abstract-pool.ts:818</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="setWorkerStatistics" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>set<wbr/>Worker<wbr/>Statistics</span><a href="#setWorkerStatistics" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -962,19 +949,19 @@ Can be overridden.</p>
 <h5><span class="tsd-kind-parameter">worker</span>: <span class="tsd-signature-type tsd-kind-type-parameter">Worker</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L901">src/pools/abstract-pool.ts:901</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L918">src/pools/abstract-pool.ts:918</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="setupHook" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>setup<wbr/>Hook</span><a href="#setupHook" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
 <li class="tsd-signature tsd-anchor-link" id="setupHook.setupHook-1"><span class="tsd-kind-call-signature">setup<wbr/>Hook</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#setupHook.setupHook-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Setup hook to execute code before worker node are created in the abstract constructor.
-Can be overridden</p>
+<div class="tsd-comment tsd-typography"><p>Setup hook to execute code before worker nodes are created in the abstract constructor.
+Can be overridden.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L473">src/pools/abstract-pool.ts:473</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L474">src/pools/abstract-pool.ts:474</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="shallCreateDynamicWorker" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>shall<wbr/>Create<wbr/>Dynamic<wbr/>Worker</span><a href="#shallCreateDynamicWorker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -986,7 +973,20 @@ Can be overridden</p>
 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L657">src/pools/abstract-pool.ts:657</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L658">src/pools/abstract-pool.ts:658</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-private"><a id="tasksMaxQueueSize" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>tasks<wbr/>Max<wbr/>Queue<wbr/>Size</span><a href="#tasksMaxQueueSize" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-private">
+<li class="tsd-signature tsd-anchor-link" id="tasksMaxQueueSize.tasksMaxQueueSize-1"><span class="tsd-kind-call-signature">tasks<wbr/>Max<wbr/>Queue<wbr/>Size</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">workerNodeKey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><a href="#tasksMaxQueueSize.tasksMaxQueueSize-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5><span class="tsd-kind-parameter">workerNodeKey</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L896">src/pools/abstract-pool.ts:896</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="tasksQueueSize" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>tasks<wbr/>Queue<wbr/>Size</span><a href="#tasksQueueSize" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -999,7 +999,7 @@ Can be overridden</p>
 <h5><span class="tsd-kind-parameter">workerNodeKey</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L880">src/pools/abstract-pool.ts:880</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L892">src/pools/abstract-pool.ts:892</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="updateEluWorkerUsage" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>update<wbr/>Elu<wbr/>Worker<wbr/>Usage</span><a href="#updateEluWorkerUsage" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -1011,10 +1011,10 @@ Can be overridden</p>
 <li>
 <h5><span class="tsd-kind-parameter">workerUsage</span>: <a href="../interfaces/WorkerUsage.html" class="tsd-signature-type tsd-kind-interface">WorkerUsage</a></h5></li>
 <li>
-<h5><span class="tsd-kind-parameter">message</span>: <a href="../interfaces/MessageValue.html" class="tsd-signature-type tsd-kind-interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type ">Worker</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">MessagePort</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
+<h5><span class="tsd-kind-parameter">message</span>: <a href="../interfaces/MessageValue.html" class="tsd-signature-type tsd-kind-interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L588">src/pools/abstract-pool.ts:588</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L589">src/pools/abstract-pool.ts:589</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="updateRunTimeWorkerUsage" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>update<wbr/>Run<wbr/>Time<wbr/>Worker<wbr/>Usage</span><a href="#updateRunTimeWorkerUsage" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -1026,10 +1026,10 @@ Can be overridden</p>
 <li>
 <h5><span class="tsd-kind-parameter">workerUsage</span>: <a href="../interfaces/WorkerUsage.html" class="tsd-signature-type tsd-kind-interface">WorkerUsage</a></h5></li>
 <li>
-<h5><span class="tsd-kind-parameter">message</span>: <a href="../interfaces/MessageValue.html" class="tsd-signature-type tsd-kind-interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type ">Worker</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">MessagePort</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
+<h5><span class="tsd-kind-parameter">message</span>: <a href="../interfaces/MessageValue.html" class="tsd-signature-type tsd-kind-interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L528">src/pools/abstract-pool.ts:528</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L529">src/pools/abstract-pool.ts:529</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="updateTaskStatisticsWorkerUsage" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>update<wbr/>Task<wbr/>Statistics<wbr/>Worker<wbr/>Usage</span><a href="#updateTaskStatisticsWorkerUsage" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -1041,10 +1041,10 @@ Can be overridden</p>
 <li>
 <h5><span class="tsd-kind-parameter">workerUsage</span>: <a href="../interfaces/WorkerUsage.html" class="tsd-signature-type tsd-kind-interface">WorkerUsage</a></h5></li>
 <li>
-<h5><span class="tsd-kind-parameter">message</span>: <a href="../interfaces/MessageValue.html" class="tsd-signature-type tsd-kind-interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type ">Worker</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">MessagePort</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
+<h5><span class="tsd-kind-parameter">message</span>: <a href="../interfaces/MessageValue.html" class="tsd-signature-type tsd-kind-interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L516">src/pools/abstract-pool.ts:516</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L517">src/pools/abstract-pool.ts:517</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="updateWaitTimeWorkerUsage" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>update<wbr/>Wait<wbr/>Time<wbr/>Worker<wbr/>Usage</span><a href="#updateWaitTimeWorkerUsage" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -1059,7 +1059,7 @@ Can be overridden</p>
 <h5><span class="tsd-kind-parameter">task</span>: <a href="../interfaces/Task.html" class="tsd-signature-type tsd-kind-interface">Task</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Data</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L557">src/pools/abstract-pool.ts:557</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L558">src/pools/abstract-pool.ts:558</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="workerListener" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>worker<wbr/>Listener</span><a href="#workerListener" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected">
@@ -1080,13 +1080,13 @@ Can be overridden</p>
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">message</span>: <a href="../interfaces/MessageValue.html" class="tsd-signature-type tsd-kind-interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type ">Worker</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">MessagePort</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
+<h5><span class="tsd-kind-parameter">message</span>: <a href="../interfaces/MessageValue.html" class="tsd-signature-type tsd-kind-interface">MessageValue</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><p>The listener function to execute when a message is received from a worker.</p>
 
 <div class="tsd-comment tsd-typography"></div></li></ul></li></ul>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/628134d/src/pools/abstract-pool.ts#L763">src/pools/abstract-pool.ts:763</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/6677a3d/src/pools/abstract-pool.ts#L769">src/pools/abstract-pool.ts:769</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -1145,13 +1145,12 @@ Can be overridden</p>
 <li><a href="#executeTask" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>execute<wbr/>Task</span></a></li>
 <li><a href="#flushTasksQueue" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>flush<wbr/>Tasks<wbr/>Queue</span></a></li>
 <li><a href="#flushTasksQueues" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>flush<wbr/>Tasks<wbr/>Queues</span></a></li>
-<li><a href="#getTaskStatistics" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Task<wbr/>Statistics</span></a></li>
 <li><a href="#getWorkerNodeKey" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Worker<wbr/>Node<wbr/>Key</span></a></li>
 <li><a href="#getWorkerUsage" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Worker<wbr/>Usage</span></a></li>
 <li><a href="#internalBusy" class="tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>internal<wbr/>Busy</span></a></li>
 <li><a href="#isMain" class="tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>is<wbr/>Main</span></a></li>
 <li><a href="#pushWorkerNode" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>push<wbr/>Worker<wbr/>Node</span></a></li>
-<li><a href="#registerWorkerMessageListener" class="tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>register<wbr/>Worker<wbr/>Message<wbr/>Listener</span></a></li>
+<li><a href="#registerWorkerMessageListener" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>register<wbr/>Worker<wbr/>Message<wbr/>Listener</span></a></li>
 <li><a href="#removeWorkerNode" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>remove<wbr/>Worker<wbr/>Node</span></a></li>
 <li><a href="#sendToWorker" class="tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>send<wbr/>To<wbr/>Worker</span></a></li>
 <li><a href="#setTasksQueueOptions" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>set<wbr/>Tasks<wbr/>Queue<wbr/>Options</span></a></li>
@@ -1161,6 +1160,7 @@ Can be overridden</p>
 <li><a href="#setWorkerStatistics" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>set<wbr/>Worker<wbr/>Statistics</span></a></li>
 <li><a href="#setupHook" class="tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>setup<wbr/>Hook</span></a></li>
 <li><a href="#shallCreateDynamicWorker" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>shall<wbr/>Create<wbr/>Dynamic<wbr/>Worker</span></a></li>
+<li><a href="#tasksMaxQueueSize" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>tasks<wbr/>Max<wbr/>Queue<wbr/>Size</span></a></li>
 <li><a href="#tasksQueueSize" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>tasks<wbr/>Queue<wbr/>Size</span></a></li>
 <li><a href="#updateEluWorkerUsage" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>update<wbr/>Elu<wbr/>Worker<wbr/>Usage</span></a></li>
 <li><a href="#updateRunTimeWorkerUsage" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>update<wbr/>Run<wbr/>Time<wbr/>Worker<wbr/>Usage</span></a></li>
@@ -1207,8 +1207,7 @@ Can be overridden</p>
 <li><a href="../interfaces/WorkerOptions.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Worker<wbr/>Options</span></a></li>
 <li><a href="../interfaces/WorkerStatistics.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Worker<wbr/>Statistics</span></a></li>
 <li><a href="../interfaces/WorkerUsage.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Worker<wbr/>Usage</span></a></li>
-<li><a href="../types/Draft.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-4194304"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-type-alias)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)"></path></g></svg><span>Draft</span></a></li>
-<li><a href="../types/ErrorHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Error<wbr/>Handler</span></a></li>
+<li><a href="../types/ErrorHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-4194304"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-type-alias)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)"></path></g></svg><span>Error<wbr/>Handler</span></a></li>
 <li><a href="../types/ExitHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Exit<wbr/>Handler</span></a></li>
 <li><a href="../types/KillBehavior.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Kill<wbr/>Behavior</span></a></li>
 <li><a href="../types/Measurement.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Measurement</span></a></li>
@@ -1217,7 +1216,6 @@ Can be overridden</p>
 <li><a href="../types/PoolEvent.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Pool<wbr/>Event</span></a></li>
 <li><a href="../types/PoolType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Pool<wbr/>Type</span></a></li>
 <li><a href="../types/TaskFunctions.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Task<wbr/>Functions</span></a></li>
-<li><a href="../types/ThreadWorkerWithMessageChannel.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Thread<wbr/>Worker<wbr/>With<wbr/>Message<wbr/>Channel</span></a></li>
 <li><a href="../types/WorkerAsyncFunction.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Worker<wbr/>Async<wbr/>Function</span></a></li>
 <li><a href="../types/WorkerChoiceStrategy.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Worker<wbr/>Choice<wbr/>Strategy</span></a></li>
 <li><a href="../types/WorkerFunction.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Worker<wbr/>Function</span></a></li>
