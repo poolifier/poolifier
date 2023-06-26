@@ -48,7 +48,7 @@
   },
   "volta": {
     "node": "20.3.1",
-    "pnpm": "8.6.3"
+    "pnpm": "8.6.5"
   },
   "repository": {
     "type": "git",
@@ -107,8 +107,8 @@
     "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.1",
     "@types/node": "^20.3.1",
-    "@typescript-eslint/eslint-plugin": "^5.60.0",
-    "@typescript-eslint/parser": "^5.60.0",
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
     "benny": "^3.7.1",
     "c8": "^8.0.0",
     "eslint": "^8.43.0",
@@ -117,7 +117,7 @@
     "eslint-define-config": "^1.21.0",
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-jsdoc": "^46.2.6",
+    "eslint-plugin-jsdoc": "^46.3.0",
     "eslint-plugin-n": "^16.0.1",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-spellcheck": "^0.0.20",

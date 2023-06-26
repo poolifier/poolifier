@@ -1,5 +1,4 @@
 import { AsyncResource } from 'node:async_hooks'
-import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
 import { performance } from 'node:perf_hooks'
 import type {
@@ -28,11 +27,11 @@ const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
  * Base class that implements some shared logic for all poolifier workers.
  *
  * @typeParam MainWorker - Type of main worker.
- * @typeParam Data - Type of data this worker receives from pool's execution. This can only be serializable data.
- * @typeParam Response - Type of response the worker sends back to the main worker. This can only be serializable data.
+ * @typeParam Data - Type of data this worker receives from pool's execution. This can only be structured-cloneable data.
+ * @typeParam Response - Type of response the worker sends back to the main worker. This can only be structured-cloneable data.
  */
 export abstract class AbstractWorker<
-  MainWorker extends Worker | MessagePort,
+  MainWorker extends NodeJS.Process | MessagePort,
   Data = unknown,
   Response = unknown
 > extends AsyncResource {
@@ -67,7 +66,7 @@ export abstract class AbstractWorker<
     taskFunctions:
     | WorkerFunction<Data, Response>
     | TaskFunctions<Data, Response>,
-    protected mainWorker: MainWorker | undefined | null,
+    protected mainWorker: MainWorker,
     protected readonly opts: WorkerOptions = {
       /**
        * The kill behavior option on this worker or its default value.
@@ -177,7 +176,7 @@ export abstract class AbstractWorker<
    */
   protected getMainWorker (): MainWorker {
     if (this.mainWorker == null) {
-      throw new Error('Main worker was not set')
+      throw new Error('Main worker not set')
     }
     return this.mainWorker
   }

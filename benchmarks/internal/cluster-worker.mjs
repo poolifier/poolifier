@@ -5,7 +5,7 @@ import { WorkerFunctions } from '../benchmarks-types.mjs'
 
 const debug = false
 
-function yourFunction (data) {
+function workerFunction (data) {
   data = data || {}
   data.function = data.function || WorkerFunctions.jsonIntegerSerialization
   executeWorkerFunction(data)
@@ -13,4 +13,4 @@ function yourFunction (data) {
   return { ok: 1 }
 }
 
-export default new ClusterWorker(yourFunction)
+export default new ClusterWorker(workerFunction)

@@ -21,7 +21,13 @@ import {
   type TasksQueueOptions,
   type WorkerType
 } from './pool'
-import type { IWorker, Task, WorkerNode, WorkerUsage } from './worker'
+import type {
+  IWorker,
+  MessageHandler,
+  Task,
+  WorkerNode,
+  WorkerUsage
+} from './worker'
 import {
   Measurements,
   WorkerChoiceStrategies,
@@ -34,8 +40,8 @@ import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choic
  * Base class that implements some shared logic for all poolifier pools.
  *
  * @typeParam Worker - Type of worker which manages this pool.
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of execution response. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  */
 export abstract class AbstractPool<
   Worker extends IWorker,
@@ -670,9 +676,12 @@ export abstract class AbstractPool<
    * @param worker - The worker which should register a listener.
    * @param listener - The message listener callback.
    */
-  protected abstract registerWorkerMessageListener<
-    Message extends Data | Response
-  >(worker: Worker, listener: (message: MessageValue<Message>) => void): void
+  private registerWorkerMessageListener<Message extends Data | Response>(
+    worker: Worker,
+    listener: (message: MessageValue<Message>) => void
+  ): void {
+    worker.on('message', listener as MessageHandler<Worker>)
+  }
 
   /**
    * Creates a new worker.
@@ -684,11 +693,12 @@ export abstract class AbstractPool<
   /**
    * Function that can be hooked up when a worker has been newly created and moved to the pool worker nodes.
    *
-   * Can be used to update the `maxListeners` or binding the `main-worker`\<-\>`worker` connection if not bind by default.
-   *
    * @param worker - The newly created worker.
    */
-  protected abstract afterWorkerSetup (worker: Worker): void
+  private afterWorkerSetup (worker: Worker): void {
+    // Listen to worker messages.
+    this.registerWorkerMessageListener(worker, this.workerListener())
+  }
 
   /**
    * Creates a new worker and sets it up completely in the pool worker nodes.

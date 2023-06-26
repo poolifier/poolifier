@@ -32,8 +32,8 @@ export interface ClusterPoolOptions extends PoolOptions<Worker> {
  *
  * It is possible to perform tasks in sync or asynchronous mode as you prefer.
  *
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of execution response. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
  */
@@ -81,22 +81,8 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
-  protected registerWorkerMessageListener<Message extends Data | Response>(
-    worker: Worker,
-    listener: (message: MessageValue<Message>) => void
-  ): void {
-    worker.on('message', listener)
-  }
-
-  /** @inheritDoc */
   protected createWorker (): Worker {
     return cluster.fork(this.opts.env)
-  }
-
-  /** @inheritDoc */
-  protected afterWorkerSetup (worker: Worker): void {
-    // Listen to worker messages.
-    this.registerWorkerMessageListener(worker, super.workerListener())
   }
 
   /** @inheritDoc */

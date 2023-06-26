@@ -152,8 +152,8 @@ export interface PoolOptions<Worker extends IWorker> {
  * Contract definition for a poolifier pool.
  *
  * @typeParam Worker - Type of worker which manages this pool.
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of execution response. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  */
 export interface IPool<
   Worker extends IWorker,
@@ -182,7 +182,7 @@ export interface IPool<
   /**
    * Executes the specified function in the worker constructor with the task data input parameter.
    *
-   * @param data - The task input data for the specified worker function. This can only be serializable data.
+   * @param data - The task input data for the specified worker function. This can only be structured-cloneable data.
    * @param name - The name of the worker function to execute. If not specified, the default worker function will be executed.
    * @returns Promise that will be fulfilled when the task is completed.
    */

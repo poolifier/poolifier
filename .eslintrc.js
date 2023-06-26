@@ -43,6 +43,7 @@ module.exports = defineConfig({
           'builtins',
           'christopher',
           'cjs',
+          'cloneable',
           'comparator',
           'cpu',
           'cpus',

@@ -13,8 +13,8 @@ import type {
  * Worker choice strategy abstract base class.
  *
  * @typeParam Worker - Type of worker which manages the strategy.
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of execution response. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  */
 export abstract class AbstractWorkerChoiceStrategy<
   Worker extends IWorker,

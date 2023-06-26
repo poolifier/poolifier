@@ -6,18 +6,15 @@
  * @typeParam T - Type of queue items.
  */
 export class Queue<T> {
-  private items: T[]
-  private offset: number
-  public size: number
-  public maxSize: number
+  private items!: T[]
+  private offset!: number
+  /** The size of the queue. */
+  public size!: number
+  /** The maximum size of the queue. */
+  public maxSize!: number
 
   public constructor () {
-    this.items = []
-    this.offset = 0
-    /** The size of the queue. */
-    this.size = 0
-    /** The maximum size of the queue. */
-    this.maxSize = 0
+    this.clear()
   }
 
   /**

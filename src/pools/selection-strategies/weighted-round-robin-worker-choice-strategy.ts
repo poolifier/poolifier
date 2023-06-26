@@ -14,8 +14,8 @@ import type {
  * Loosely modeled after the weighted round robin queueing algorithm: https://en.wikipedia.org/wiki/Weighted_round_robin.
  *
  * @typeParam Worker - Type of worker which manages the strategy.
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of execution response. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  */
 export class WeightedRoundRobinWorkerChoiceStrategy<
     Worker extends IWorker,

@@ -1,20 +1,11 @@
-import type { Worker as ClusterWorker } from 'node:cluster'
-import type { MessagePort } from 'node:worker_threads'
 import type { EventLoopUtilization } from 'node:perf_hooks'
 import type { KillBehavior } from './worker/worker-options'
 import type { IWorker, Task } from './pools/worker'
 
 /**
- * Make all properties in T non-readonly.
- *
- * @typeParam T - Type in which properties will be non-readonly.
- */
-export type Draft<T> = { -readonly [P in keyof T]?: T[P] }
-
-/**
  * Task error.
  *
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker triggering an error. This can only be structured-cloneable data.
  */
 export interface TaskError<Data = unknown> {
   /**
@@ -56,16 +47,16 @@ export interface WorkerStatistics {
 /**
  * Message object that is passed between main worker and worker.
  *
- * @typeParam MessageData - Type of data sent to and/or from the worker. This can only be serializable data.
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker or execution response. This can only be structured-cloneable data.
+ * @typeParam ErrorData - Type of data sent to the worker triggering an error. This can only be structured-cloneable data.
  * @typeParam MainWorker - Type of main worker.
  * @internal
  */
 export interface MessageValue<
-  MessageData = unknown,
   Data = unknown,
-  MainWorker extends ClusterWorker | MessagePort = ClusterWorker | MessagePort
-> extends Task<MessageData> {
+  ErrorData = unknown,
+  MainWorker = NodeJS.Process | MessagePort
+> extends Task<Data> {
   /**
    * Kill code.
    */
@@ -73,7 +64,7 @@ export interface MessageValue<
   /**
    * Task error.
    */
-  readonly taskError?: TaskError<Data>
+  readonly taskError?: TaskError<ErrorData>
   /**
    * Task performance.
    */
@@ -92,7 +83,7 @@ export interface MessageValue<
  * An object holding the execution response promise resolve/reject callbacks.
  *
  * @typeParam Worker - Type of worker.
- * @typeParam Response - Type of execution response. This can only be serializable data.
+ * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  * @internal
  */
 export interface PromiseResponseWrapper<

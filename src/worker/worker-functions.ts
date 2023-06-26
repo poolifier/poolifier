@@ -1,8 +1,8 @@
 /**
  * Worker synchronous function that can be executed.
  *
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of execution response. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  */
 export type WorkerSyncFunction<Data = unknown, Response = unknown> = (
   data?: Data
@@ -12,8 +12,8 @@ export type WorkerSyncFunction<Data = unknown, Response = unknown> = (
  * Worker asynchronous function that can be executed.
  * This function must return a promise.
  *
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of execution response. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  */
 export type WorkerAsyncFunction<Data = unknown, Response = unknown> = (
   data?: Data
@@ -23,8 +23,8 @@ export type WorkerAsyncFunction<Data = unknown, Response = unknown> = (
  * Worker function that can be executed.
  * This function can be synchronous or asynchronous.
  *
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of execution response. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  */
 export type WorkerFunction<Data = unknown, Response = unknown> =
   | WorkerSyncFunction<Data, Response>
@@ -36,8 +36,8 @@ export type WorkerFunction<Data = unknown, Response = unknown> =
  * The key is the name of the function.
  * The value is the function itself.
  *
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of execution response. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  */
 export type TaskFunctions<Data = unknown, Response = unknown> = Record<
 string,

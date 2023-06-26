@@ -44,11 +44,7 @@ export type {
 } from './pools/selection-strategies/selection-strategies-types'
 export type { WorkerChoiceStrategyContext } from './pools/selection-strategies/worker-choice-strategy-context'
 export { DynamicThreadPool } from './pools/thread/dynamic'
-export {
-  FixedThreadPool,
-  type ThreadPoolOptions,
-  type ThreadWorkerWithMessageChannel
-} from './pools/thread/fixed'
+export { FixedThreadPool, type ThreadPoolOptions } from './pools/thread/fixed'
 export type { AbstractWorker } from './worker/abstract-worker'
 export { ClusterWorker } from './worker/cluster-worker'
 export { ThreadWorker } from './worker/thread-worker'
@@ -61,7 +57,6 @@ export type {
   WorkerSyncFunction
 } from './worker/worker-functions'
 export type {
-  Draft,
   MessageValue,
   PromiseResponseWrapper,
   TaskError,

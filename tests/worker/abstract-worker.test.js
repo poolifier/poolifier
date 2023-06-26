@@ -114,6 +114,6 @@ describe('Abstract worker test suite', () => {
   it('Verify that getMainWorker() throw error if main worker is not set', () => {
     expect(() =>
       new StubWorkerWithMainWorker(() => {}).getMainWorker()
-    ).toThrowError('Main worker was not set')
+    ).toThrowError('Main worker not set')
   })
 })

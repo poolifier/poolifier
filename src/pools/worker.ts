@@ -6,7 +6,7 @@ import type { Queue } from '../queue'
  */
 export type MessageHandler<Worker extends IWorker> = (
   this: Worker,
-  m: unknown
+  message: unknown
 ) => void
 
 /**
@@ -14,7 +14,7 @@ export type MessageHandler<Worker extends IWorker> = (
  */
 export type ErrorHandler<Worker extends IWorker> = (
   this: Worker,
-  e: Error
+  error: Error
 ) => void
 
 /**
@@ -27,13 +27,13 @@ export type OnlineHandler<Worker extends IWorker> = (this: Worker) => void
  */
 export type ExitHandler<Worker extends IWorker> = (
   this: Worker,
-  code: number
+  exitCode: number
 ) => void
 
 /**
  * Message object that is passed as a task between main worker and worker.
  *
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @internal
  */
 export interface Task<Data = unknown> {
@@ -169,7 +169,7 @@ export interface IWorker {
  * Worker node interface.
  *
  * @typeParam Worker - Type of worker.
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @internal
  */
 export interface WorkerNode<Worker extends IWorker, Data = unknown> {

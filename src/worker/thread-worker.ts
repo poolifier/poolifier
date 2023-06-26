@@ -13,8 +13,8 @@ import type { TaskFunctions, WorkerFunction } from './worker-functions'
  * If you use a `DynamicThreadPool` the extra workers that were created will be terminated,
  * but the minimum number of workers will be guaranteed.
  *
- * @typeParam Data - Type of data this worker receives from pool's execution. This can only be serializable data.
- * @typeParam Response - Type of response the worker sends back to the main thread. This can only be serializable data.
+ * @typeParam Data - Type of data this worker receives from pool's execution. This can only be structured-cloneable data.
+ * @typeParam Response - Type of response the worker sends back to the main thread. This can only be structured-cloneable data.
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */
@@ -38,7 +38,7 @@ export class ThreadWorker<
       'worker-thread-pool:poolifier',
       isMainThread,
       taskFunctions,
-      parentPort,
+      parentPort as MessagePort,
       opts
     )
   }

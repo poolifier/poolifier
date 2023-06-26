@@ -21,8 +21,8 @@ import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-w
  * The worker choice strategy context.
  *
  * @typeParam Worker - Type of worker.
- * @typeParam Data - Type of data sent to the worker. This can only be serializable data.
- * @typeParam Response - Type of execution response. This can only be serializable data.
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  */
 export class WorkerChoiceStrategyContext<
   Worker extends IWorker,
