@@ -9,8 +9,10 @@ hyperfine --export-markdown BENCH-100000.md --min-runs 20 --prepare 'sleep 2' --
   'node dynamic-tinypool.mjs' \
   'node dynamic-workerpool.mjs' \
   'node fixed-workerpool.mjs' \
-  'node --experimental-import-meta-resolve dynamic-worker-nodes.mjs' \
-  'node --experimental-import-meta-resolve fixed-worker-nodes.mjs' \
+  'node dynamic-worker-nodes.js' \
+  'node fixed-worker-nodes.js' \
+  'node dynamic-node-worker-threads-pool.mjs' \
+  'node static-node-worker-threads-pool.mjs' \
   'node threadjs.mjs' \
   'node fixed-threadwork.mjs' \
   'node fixed-microjob.mjs'

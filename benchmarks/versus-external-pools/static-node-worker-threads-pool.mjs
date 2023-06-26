@@ -2,7 +2,7 @@
 import { StaticPool } from 'node-worker-threads-pool'
 // FINISH IMPORT LIBRARIES
 // IMPORT FUNCTION TO BENCH
-import functionToBench from './functions/function-to-bench.mjs'
+import functionToBench from './functions/function-to-bench.js'
 // FINISH IMPORT FUNCTION TO BENCH
 const size = parseInt(process.env.POOL_SIZE)
 const iterations = parseInt(process.env.NUM_ITERATIONS)

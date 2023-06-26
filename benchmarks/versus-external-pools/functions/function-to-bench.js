@@ -1,13 +1,12 @@
-import crypto from 'crypto'
-import fs from 'fs'
-
 /**
  * The worker function to execute during pools benchmarks.
  * NOTE: This function requires to be self-contained, thread-safe and re-entrant.
  * @param {*} data The worker data.
  * @returns {*} The result.
  */
-export default function functionToBench (data) {
+module.exports = function functionToBench (data) {
+  const crypto = require('crypto')
+  const fs = require('fs')
   const TaskTypes = {
     CPU_INTENSIVE: 'CPU_INTENSIVE',
     IO_INTENSIVE: 'IO_INTENSIVE'

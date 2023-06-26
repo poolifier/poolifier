@@ -1,5 +1,5 @@
 import workerpool from 'workerpool'
-import functionToBench from '../../functions/function-to-bench.mjs'
+import functionToBench from '../../functions/function-to-bench.js'
 
 function wrapperFunctionToBench (testName, taskType, taskSize) {
   return functionToBench({

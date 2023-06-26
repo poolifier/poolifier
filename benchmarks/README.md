@@ -17,6 +17,7 @@ External pools with which we compared the poolifier results:
 - [tinypool](https://github.com/tinylibs/tinypool)
 - [workerpool](https://github.com/josdejong/workerpool)
 - [worker-nodes](https://github.com/allegro/node-worker-nodes)
+- [node-worker-threads-pool](https://github.com/SUCHMOKUO/node-worker-threads-pool)
 - [threads.js](https://github.com/andywer/threads.js/)
 - [threadwork](https://github.com/kevlened/threadwork)
 - [microjob](https://github.com/wilk/microjob)
@@ -29,7 +30,8 @@ Those are our results:
 
 External pools with which we used to compare the poolifier results:
 
-- [node-worker-threads-pool](https://github.com/SUCHMOKUO/node-worker-threads-pool): removed because it does not support dynamic modules import or import outside the worker function. The worker function is expected to be self-contained, which makes it difficult to use in real world application without ugly hacks.
+<!-- - [node-worker-threads-pool](https://github.com/SUCHMOKUO/node-worker-threads-pool): removed because it does not support dynamic modules import or import outside the worker function. The worker function is expected to be self-contained, which makes it difficult to use in real world application without ugly hacks. -->
+
 - [worker-threads-pool](https://github.com/watson/worker-threads-pool): removed because unmaintained since more than 4 years.
 
 ### Internal

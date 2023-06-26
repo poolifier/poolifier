@@ -1,5 +1,5 @@
 // IMPORT LIBRARIES
-import WorkerNodes from 'worker-nodes'
+const WorkerNodes = require('worker-nodes')
 // FINISH IMPORT LIBRARIES
 const size = parseInt(process.env.POOL_SIZE)
 const iterations = parseInt(process.env.NUM_ITERATIONS)
@@ -10,10 +10,10 @@ const data = {
 }
 
 const workerNodes = new WorkerNodes(
-  import.meta.resolve('./workers/worker-nodes/function-to-bench-worker'),
+  require.resolve('./workers/worker-nodes/function-to-bench-worker'),
   {
     minWorkers: size,
-    maxWorkers: size,
+    maxWorkers: size * 3,
     taskTimeout: 60000 // this is the same as poolifier default
   }
 )
@@ -28,4 +28,12 @@ async function run () {
   process.exit()
 }
 
-await run()
+(async () => {
+  try {
+    await run()
+  } catch (e) {
+    console.error(e)
+    // eslint-disable-next-line n/no-process-exit
+    process.exit(1)
+  }
+})()
