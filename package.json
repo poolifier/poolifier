@@ -106,7 +106,7 @@
     "@release-it/keep-a-changelog": "^3.1.0",
     "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.1",
-    "@types/node": "^20.3.1",
+    "@types/node": "^20.3.2",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
     "benny": "^3.7.1",
