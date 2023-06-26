@@ -140,7 +140,7 @@ pool.execute({}).then(res => {
 
 You can do the same with the classes ClusterWorker, FixedClusterPool and DynamicClusterPool.
 
-**See examples folder for more details (in particular if you want to use a pool with [multiple worker functions](./examples/multiFunctionExample.js))**.
+**See [examples](./examples/) folder for more details (in particular if you want to use a pool with [multiple worker functions](./examples/multiFunctionExample.js))**.
 
 Remember that workers can only send and receive structured-cloneable data.
 
