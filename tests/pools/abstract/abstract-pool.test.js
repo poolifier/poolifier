@@ -779,6 +779,6 @@ describe('Abstract pool test suite', () => {
     const result2 = await pool.execute(data, 'factorial')
     expect(result2).toBe(3628800)
     const result3 = await pool.execute(data, 'fibonacci')
-    expect(result3).toBe(89)
+    expect(result3).toBe(55)
   })
 })

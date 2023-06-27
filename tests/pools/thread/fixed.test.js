@@ -65,7 +65,7 @@ describe('Fixed thread pool test suite', () => {
     let result = await pool.execute({
       function: WorkerFunctions.fibonacci
     })
-    expect(result).toBe(121393)
+    expect(result).toBe(75025)
     result = await pool.execute({
       function: WorkerFunctions.factorial
     })

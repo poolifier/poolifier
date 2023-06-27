@@ -81,7 +81,7 @@ class TestUtils {
    * @returns {number} - The nth fibonacci number.
    */
   static fibonacci (n) {
-    if (n <= 1) return 1
+    if (n <= 1) return n
     return TestUtils.fibonacci(n - 1) + TestUtils.fibonacci(n - 2)
   }
 

@@ -8,7 +8,7 @@ import {
 } from '../lib/index.mjs'
 import { PoolTypes, WorkerFunctions, WorkerTypes } from './benchmarks-types.mjs'
 
-async function runTest (pool, { taskExecutions, workerData }) {
+export async function runTest (pool, { taskExecutions, workerData }) {
   return new Promise((resolve, reject) => {
     let executions = 0
     for (let i = 1; i <= taskExecutions; i++) {
@@ -29,7 +29,7 @@ async function runTest (pool, { taskExecutions, workerData }) {
   })
 }
 
-function generateRandomInteger (max = Number.MAX_SAFE_INTEGER, min = 0) {
+export function generateRandomInteger (max = Number.MAX_SAFE_INTEGER, min = 0) {
   if (max < min || max < 0 || min < 0) {
     throw new RangeError('Invalid interval')
   }
@@ -55,8 +55,8 @@ function jsonIntegerSerialization (n) {
  * @param {number} n - The number of fibonacci numbers to generate.
  * @returns {number} - The nth fibonacci number.
  */
-function fibonacci (n) {
-  if (n <= 1) return 1
+export function fibonacci (n) {
+  if (n <= 1) return n
   return fibonacci(n - 1) + fibonacci(n - 2)
 }
 
@@ -65,14 +65,14 @@ function fibonacci (n) {
  * @param {number} n - The number to calculate the factorial of.
  * @returns {number} - The factorial of n.
  */
-function factorial (n) {
+export function factorial (n) {
   if (n === 0) {
     return 1
   }
   return factorial(n - 1) * n
 }
 
-function readWriteFiles (
+export function readWriteFiles (
   n,
   baseDirectory = `/tmp/poolifier-benchmarks/${crypto.randomInt(
     281474976710655
@@ -93,7 +93,7 @@ function readWriteFiles (
   fs.rmSync(baseDirectory, { recursive: true })
 }
 
-function executeWorkerFunction (data) {
+export function executeWorkerFunction (data) {
   switch (data.function) {
     case WorkerFunctions.jsonIntegerSerialization:
       return jsonIntegerSerialization(data.taskSize || 1000)
@@ -108,7 +108,7 @@ function executeWorkerFunction (data) {
   }
 }
 
-function buildPool (workerType, poolType, poolSize, poolOptions) {
+export function buildPool (workerType, poolType, poolSize, poolOptions) {
   switch (poolType) {
     case PoolTypes.fixed:
       switch (workerType) {
@@ -145,13 +145,4 @@ function buildPool (workerType, poolType, poolSize, poolOptions) {
       }
       break
   }
-}
-
-export {
-  WorkerFunctions,
-  buildPool,
-  executeWorkerFunction,
-  generateRandomInteger,
-  readWriteFiles,
-  runTest
 }
