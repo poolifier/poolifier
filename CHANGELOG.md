@@ -7,11 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Known issues
+
+- Cluster pools tasks execution are not working: https://github.com/poolifier/poolifier/issues/782
+
 ### Fixed
 
 - Ensure cluster pool destroy() gracefully shutdowns worker's server.
 - Ensure pool event is emitted before task error promise rejection.
 - Fix queued tasks count computation.
+
+### Removed
+
+- Remove unneeded worker-threads worker `MessageChannel` internal usage for IPC.
 
 ## [2.6.3] - 2023-06-19
 
