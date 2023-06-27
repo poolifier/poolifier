@@ -90,8 +90,8 @@ export abstract class AbstractWorker<
         (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) / 2
       )
       this.checkAlive.bind(this)()
+      this.mainWorker?.on('message', this.messageListener.bind(this))
     }
-    this.mainWorker?.on('message', this.messageListener.bind(this))
   }
 
   private checkWorkerOptions (opts: WorkerOptions): void {

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Ensure message handler is only registered in worker.
+
 ## [2.6.5] - 2023-06-27
 
 ### Known issues
