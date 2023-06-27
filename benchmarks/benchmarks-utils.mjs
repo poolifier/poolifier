@@ -55,7 +55,7 @@ function jsonIntegerSerialization (n) {
  * @param {number} n - The number of fibonacci numbers to generate.
  * @returns {number} - The nth fibonacci number.
  */
-export function fibonacci (n) {
+function fibonacci (n) {
   if (n <= 1) return n
   return fibonacci(n - 1) + fibonacci(n - 2)
 }
@@ -65,14 +65,14 @@ export function fibonacci (n) {
  * @param {number} n - The number to calculate the factorial of.
  * @returns {number} - The factorial of n.
  */
-export function factorial (n) {
+function factorial (n) {
   if (n === 0) {
     return 1
   }
   return factorial(n - 1) * n
 }
 
-export function readWriteFiles (
+function readWriteFiles (
   n,
   baseDirectory = `/tmp/poolifier-benchmarks/${crypto.randomInt(
     281474976710655
