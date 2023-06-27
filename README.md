@@ -34,26 +34,27 @@ With poolifier you can improve your **performance** and resolve problems related
 Moreover you can execute your tasks using an API designed to improve the **developer experience**.  
 Please consult our [general guidelines](#general-guidance).
 
-- Performance :racehorse: [benchmarks](./benchmarks/README.md)
-- Security :bank: :cop: [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=security_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
-- Easy to use :couple:
+- Easy to use :white_check_mark:
+- Performance [benchmarks](./benchmarks/README.md) :white_check_mark:
 - Dynamic pool size :white_check_mark:
 - Easy switch from a pool to another :white_check_mark:
 - No runtime dependencies :white_check_mark:
 - Proper async integration with node async hooks :white_check_mark:
-- Support for worker threads and cluster node modules :white_check_mark:
+- Support CommonJS, ESM, and TypeScript :white_check_mark:
+- Support for worker-threads and cluster node modules :white_check_mark:
 - Support sync and async tasks :white_check_mark:
 - Tasks distribution strategies :white_check_mark:
-- General guidance on pools to use :white_check_mark:
+- General guidance on pool choice :white_check_mark:
 - Widely tested :white_check_mark:
 - Error handling out of the box :white_check_mark:
 - Active community :white_check_mark:
-- Code quality :octocat: [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=bugs)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
+- Code quality [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=bugs)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
   [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=code_smells)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
   [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
   [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
   [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
   [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=sqale_index)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
+- Code security [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=security_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 
 ## Contents
 
