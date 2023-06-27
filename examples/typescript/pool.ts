@@ -10,7 +10,7 @@ export const fixedPool = new FixedThreadPool<MyData, Promise<MyResponse>>(
       console.error(e)
     },
     onlineHandler: () => {
-      console.log('Worker is online')
+      console.info('Worker is online')
     }
   }
 )
@@ -24,7 +24,7 @@ export const dynamicPool = new DynamicThreadPool<MyData, Promise<MyResponse>>(
       console.error(e)
     },
     onlineHandler: () => {
-      console.log('Worker is online')
+      console.info('Worker is online')
     }
   }
 )

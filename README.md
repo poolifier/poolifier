@@ -117,26 +117,32 @@ Instantiate your pool based on your needs :
 const { DynamicThreadPool, FixedThreadPool, PoolEvents } = require('poolifier')
 
 // a fixed worker-threads pool
-const pool = new FixedThreadPool(15,
-  './yourWorker.js',
-  { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
+const pool = new FixedThreadPool(15, './yourWorker.js', {
+  errorHandler: e => console.error(e),
+  onlineHandler: () => console.info('worker is online')
+})
 
-pool.emitter.on(PoolEvents.busy, () => console.log('Pool is busy'))
+pool.emitter.on(PoolEvents.busy, () => console.info('Pool is busy'))
 
 // or a dynamic worker-threads pool
-const pool = new DynamicThreadPool(10, 100,
-  './yourWorker.js',
-  { errorHandler: (e) => console.error(e), onlineHandler: () => console.log('worker is online') })
+const pool = new DynamicThreadPool(10, 100, './yourWorker.js', {
+  errorHandler: e => console.error(e),
+  onlineHandler: () => console.info('worker is online')
+})
 
-pool.emitter.on(PoolEvents.full, () => console.log('Pool is full'))
-pool.emitter.on(PoolEvents.busy, () => console.log('Pool is busy'))
+pool.emitter.on(PoolEvents.full, () => console.info('Pool is full'))
+pool.emitter.on(PoolEvents.busy, () => console.info('Pool is busy'))
 
 // the execute method signature is the same for both implementations,
 // so you can easy switch from one to another
-pool.execute({}).then(res => {
-  console.log(res)
-}).catch ....
-
+pool
+  .execute({})
+  .then(res => {
+    console.info(res)
+  })
+  .catch(err => {
+    console.error(err)
+  })
 ```
 
 You can do the same with the classes ClusterWorker, FixedClusterPool and DynamicClusterPool.
