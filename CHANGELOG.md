@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.4] - 2023-06-27
+
 ### Known issues
 
 - Cluster pools tasks execution are not working: https://github.com/poolifier/poolifier/issues/782

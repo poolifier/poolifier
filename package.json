@@ -1,6 +1,6 @@
 {
   "name": "poolifier",
-  "version": "2.6.3",
+  "version": "2.6.4",
   "description": "A fast, easy to use Node.js Worker Thread Pool and Cluster Pool implementation",
   "license": "MIT",
   "main": "./lib/index.js",
