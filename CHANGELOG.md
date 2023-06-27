@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Known issues
 
-- Cluster pools tasks execution are not working: https://github.com/poolifier/poolifier/issues/782
+- Cluster pools tasks execution are not working by using ESM files extension: https://github.com/poolifier/poolifier/issues/782
 
 ### Fixed
 
@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Known issues
 
-- Cluster pools tasks execution are not working: https://github.com/poolifier/poolifier/issues/782
+- Cluster pools tasks execution are not working by using ESM files extension: https://github.com/poolifier/poolifier/issues/782
 
 ### Fixed
 
