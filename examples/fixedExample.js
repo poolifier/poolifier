@@ -3,7 +3,7 @@ let resolved = 0
 let poolBusy = 0
 const pool = new FixedThreadPool(15, './yourWorker.js', {
   errorHandler: e => console.error(e),
-  onlineHandler: () => console.log('worker is online')
+  onlineHandler: () => console.info('worker is online')
 })
 pool.emitter.on(PoolEvents.busy, () => poolBusy++)
 
@@ -15,8 +15,8 @@ for (let i = 1; i <= iterations; i++) {
     .then(() => {
       resolved++
       if (resolved === iterations) {
-        console.log('Time taken is ' + (performance.now() - start))
-        return console.log('The pool was busy for ' + poolBusy + ' times')
+        console.info('Time taken is ' + (performance.now() - start))
+        return console.info('The pool was busy for ' + poolBusy + ' times')
       }
       return null
     })
