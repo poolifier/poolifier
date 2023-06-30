@@ -1,4 +1,9 @@
-import { type MessagePort, isMainThread, parentPort } from 'node:worker_threads'
+import {
+  type MessagePort,
+  isMainThread,
+  parentPort,
+  threadId
+} from 'node:worker_threads'
 import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
@@ -41,10 +46,18 @@ export class ThreadWorker<
       parentPort as MessagePort,
       opts
     )
+    if (!this.isMain) {
+      this.sendToMainWorker({ workerId: this.id, started: true })
+    }
+  }
+
+  protected get id (): number {
+    return threadId
   }
 
   /** @inheritDoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
+    console.log('sending message to main worker(thread)', message)
     this.getMainWorker().postMessage(message)
   }
 }

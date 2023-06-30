@@ -96,12 +96,12 @@ describe('Fixed cluster pool test suite', () => {
     }
     expect(promises.size).toBe(numberOfWorkers * maxMultiplier)
     for (const workerNode of queuePool.workerNodes) {
-      expect(workerNode.workerUsage.tasks.executing).toBeLessThanOrEqual(
+      expect(workerNode.usage.tasks.executing).toBeLessThanOrEqual(
         queuePool.opts.tasksQueueOptions.concurrency
       )
-      expect(workerNode.workerUsage.tasks.executed).toBe(0)
-      expect(workerNode.workerUsage.tasks.queued).toBeGreaterThan(0)
-      expect(workerNode.workerUsage.tasks.maxQueued).toBeGreaterThan(0)
+      expect(workerNode.usage.tasks.executed).toBe(0)
+      expect(workerNode.usage.tasks.queued).toBeGreaterThan(0)
+      expect(workerNode.usage.tasks.maxQueued).toBeGreaterThan(0)
     }
     expect(queuePool.info.executingTasks).toBe(numberOfWorkers)
     expect(queuePool.info.queuedTasks).toBe(
@@ -112,13 +112,11 @@ describe('Fixed cluster pool test suite', () => {
     )
     await Promise.all(promises)
     for (const workerNode of queuePool.workerNodes) {
-      expect(workerNode.workerUsage.tasks.executing).toBe(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
-        maxMultiplier
-      )
-      expect(workerNode.workerUsage.tasks.queued).toBe(0)
-      expect(workerNode.workerUsage.tasks.maxQueued).toBe(1)
+      expect(workerNode.usage.tasks.executing).toBe(0)
+      expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(maxMultiplier)
+      expect(workerNode.usage.tasks.queued).toBe(0)
+      expect(workerNode.usage.tasks.maxQueued).toBe(1)
     }
   })
 
@@ -154,7 +152,7 @@ describe('Fixed cluster pool test suite', () => {
     })
     expect(
       errorPool.workerNodes.some(
-        workerNode => workerNode.workerUsage.tasks.failed === 1
+        workerNode => workerNode.usage.tasks.failed === 1
       )
     ).toBe(true)
   })
@@ -180,7 +178,7 @@ describe('Fixed cluster pool test suite', () => {
     })
     expect(
       asyncErrorPool.workerNodes.some(
-        workerNode => workerNode.workerUsage.tasks.failed === 1
+        workerNode => workerNode.usage.tasks.failed === 1
       )
     ).toBe(true)
   })

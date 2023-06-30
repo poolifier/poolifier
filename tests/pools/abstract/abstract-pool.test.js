@@ -406,11 +406,14 @@ describe('Abstract pool test suite', () => {
       maxQueuedTasks: 0,
       failedTasks: 0
     })
+    for (const workerNode of pool.workerNodes) {
+      console.log('thread:workerNode.info', workerNode.info)
+    }
     await pool.destroy()
     pool = new DynamicClusterPool(
       numberOfWorkers,
       numberOfWorkers * 2,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/cluster/testWorker.js'
     )
     expect(pool.info).toStrictEqual({
       type: PoolTypes.dynamic,
@@ -426,13 +429,16 @@ describe('Abstract pool test suite', () => {
       maxQueuedTasks: 0,
       failedTasks: 0
     })
+    for (const workerNode of pool.workerNodes) {
+      console.log('cluster:workerNode.info', workerNode.info)
+    }
     await pool.destroy()
   })
 
   it('Simulate worker not found', async () => {
     const pool = new StubPoolWithRemoveAllWorker(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js',
+      './tests/worker-files/thread/testWorker.js',
       {
         errorHandler: e => console.error(e)
       }
@@ -450,7 +456,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/cluster/testWorker.js'
     )
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: 0,
           executing: 0,
@@ -515,7 +521,7 @@ describe('Abstract pool test suite', () => {
       promises.add(pool.execute())
     }
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: 0,
           executing: maxMultiplier,
@@ -554,7 +560,7 @@ describe('Abstract pool test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: maxMultiplier,
           executing: 0,
@@ -607,7 +613,7 @@ describe('Abstract pool test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -643,14 +649,12 @@ describe('Abstract pool test suite', () => {
           utilization: 0
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
-        maxMultiplier
-      )
+      expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(maxMultiplier)
     }
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: 0,
           executing: 0,
@@ -686,8 +690,8 @@ describe('Abstract pool test suite', () => {
           utilization: 0
         }
       })
-      expect(workerNode.workerUsage.runTime.history.length).toBe(0)
-      expect(workerNode.workerUsage.waitTime.history.length).toBe(0)
+      expect(workerNode.usage.runTime.history.length).toBe(0)
+      expect(workerNode.usage.waitTime.history.length).toBe(0)
     }
     await pool.destroy()
   })

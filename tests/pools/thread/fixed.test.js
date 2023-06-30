@@ -96,12 +96,12 @@ describe('Fixed thread pool test suite', () => {
     }
     expect(promises.size).toBe(numberOfThreads * maxMultiplier)
     for (const workerNode of queuePool.workerNodes) {
-      expect(workerNode.workerUsage.tasks.executing).toBeLessThanOrEqual(
+      expect(workerNode.usage.tasks.executing).toBeLessThanOrEqual(
         queuePool.opts.tasksQueueOptions.concurrency
       )
-      expect(workerNode.workerUsage.tasks.executed).toBe(0)
-      expect(workerNode.workerUsage.tasks.queued).toBeGreaterThan(0)
-      expect(workerNode.workerUsage.tasks.maxQueued).toBeGreaterThan(0)
+      expect(workerNode.usage.tasks.executed).toBe(0)
+      expect(workerNode.usage.tasks.queued).toBeGreaterThan(0)
+      expect(workerNode.usage.tasks.maxQueued).toBeGreaterThan(0)
     }
     expect(queuePool.info.executingTasks).toBe(numberOfThreads)
     expect(queuePool.info.queuedTasks).toBe(
@@ -112,13 +112,11 @@ describe('Fixed thread pool test suite', () => {
     )
     await Promise.all(promises)
     for (const workerNode of queuePool.workerNodes) {
-      expect(workerNode.workerUsage.tasks.executing).toBe(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThan(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
-        maxMultiplier
-      )
-      expect(workerNode.workerUsage.tasks.queued).toBe(0)
-      expect(workerNode.workerUsage.tasks.maxQueued).toBe(1)
+      expect(workerNode.usage.tasks.executing).toBe(0)
+      expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(maxMultiplier)
+      expect(workerNode.usage.tasks.queued).toBe(0)
+      expect(workerNode.usage.tasks.maxQueued).toBe(1)
     }
   })
 
@@ -156,7 +154,7 @@ describe('Fixed thread pool test suite', () => {
     })
     expect(
       errorPool.workerNodes.some(
-        workerNode => workerNode.workerUsage.tasks.failed === 1
+        workerNode => workerNode.usage.tasks.failed === 1
       )
     ).toBe(true)
   })
@@ -184,7 +182,7 @@ describe('Fixed thread pool test suite', () => {
     })
     expect(
       asyncErrorPool.workerNodes.some(
-        workerNode => workerNode.workerUsage.tasks.failed === 1
+        workerNode => workerNode.usage.tasks.failed === 1
       )
     ).toBe(true)
   })
@@ -210,7 +208,7 @@ describe('Fixed thread pool test suite', () => {
   })
 
   it('Verify that thread pool options are checked', async () => {
-    const workerFilePath = './tests/worker-files/cluster/testWorker.js'
+    const workerFilePath = './tests/worker-files/thread/testWorker.js'
     let pool1 = new FixedThreadPool(numberOfThreads, workerFilePath)
     expect(pool1.opts.workerOptions).toBeUndefined()
     await pool1.destroy()

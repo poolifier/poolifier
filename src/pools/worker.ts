@@ -119,6 +119,22 @@ export interface TaskStatistics {
 }
 
 /**
+ * Worker information.
+ *
+ * @internal
+ */
+export interface WorkerInfo {
+  /**
+   * Worker Id.
+   */
+  id: number | undefined
+  /**
+   * Started flag.
+   */
+  started: boolean
+}
+
+/**
  * Worker usage statistics.
  *
  * @internal
@@ -146,6 +162,11 @@ export interface WorkerUsage {
  * Worker interface.
  */
 export interface IWorker {
+  /**
+   * Worker Id.
+   */
+  id?: number
+  threadId?: number
   /**
    * Register an event listener.
    *
@@ -178,9 +199,13 @@ export interface WorkerNode<Worker extends IWorker, Data = unknown> {
    */
   readonly worker: Worker
   /**
+   * Worker node worker info.
+   */
+  info: WorkerInfo
+  /**
    * Worker node worker usage statistics.
    */
-  workerUsage: WorkerUsage
+  usage: WorkerUsage
   /**
    * Worker node tasks queue.
    */

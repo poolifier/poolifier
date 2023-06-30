@@ -54,6 +54,10 @@ export interface WorkerStatistics {
 export interface MessageValue<Data = unknown, ErrorData = unknown>
   extends Task<Data> {
   /**
+   * Worker Id.
+   */
+  readonly workerId?: number
+  /**
    * Kill code.
    */
   readonly kill?: KillBehavior | 1
@@ -66,9 +70,13 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    */
   readonly taskPerformance?: TaskPerformance
   /**
-   * Whether to compute the given statistics or not.
+   * Whether the worker computes the given statistics or not.
    */
   readonly statistics?: WorkerStatistics
+  /**
+   * Whether the worker has started or not.
+   */
+  readonly started?: boolean
 }
 
 /**

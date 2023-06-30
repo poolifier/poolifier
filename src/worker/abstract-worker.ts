@@ -37,6 +37,10 @@ export abstract class AbstractWorker<
   Response = unknown
 > extends AsyncResource {
   /**
+   * Worker Id.
+   */
+  protected abstract id: number
+  /**
    * Task function(s) processed by the worker when the pool's `execution` function is invoked.
    */
   protected taskFunctions!: Map<string, WorkerFunction<Data, Response>>
@@ -225,6 +229,7 @@ export abstract class AbstractWorker<
       this.sendToMainWorker({
         data: res,
         taskPerformance,
+        workerId: this.id,
         id: message.id
       })
     } catch (e) {
@@ -234,6 +239,7 @@ export abstract class AbstractWorker<
           message: err,
           data: message.data
         },
+        workerId: this.id,
         id: message.id
       })
     } finally {
@@ -258,6 +264,7 @@ export abstract class AbstractWorker<
         this.sendToMainWorker({
           data: res,
           taskPerformance,
+          workerId: this.id,
           id: message.id
         })
         return null
@@ -269,6 +276,7 @@ export abstract class AbstractWorker<
             message: err,
             data: message.data
           },
+          workerId: this.id,
           id: message.id
         })
       })

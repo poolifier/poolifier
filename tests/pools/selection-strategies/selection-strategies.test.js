@@ -209,7 +209,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: maxMultiplier,
           executing: 0,
@@ -270,7 +270,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: maxMultiplier,
           executing: 0,
@@ -476,7 +476,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -512,8 +512,8 @@ describe('Selection strategies test suite', () => {
           utilization: 0
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
     }
@@ -536,7 +536,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -572,8 +572,8 @@ describe('Selection strategies test suite', () => {
           utilization: 0
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
     }
@@ -675,7 +675,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -711,14 +711,12 @@ describe('Selection strategies test suite', () => {
           utilization: 0
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.waitTime.aggregate).toBeGreaterThanOrEqual(
-        0
-      )
+      expect(workerNode.usage.runTime.aggregate).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.waitTime.aggregate).toBeGreaterThanOrEqual(0)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -739,7 +737,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -775,14 +773,12 @@ describe('Selection strategies test suite', () => {
           utilization: 0
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.waitTime.aggregate).toBeGreaterThanOrEqual(
-        0
-      )
+      expect(workerNode.usage.runTime.aggregate).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.waitTime.aggregate).toBeGreaterThanOrEqual(0)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -882,7 +878,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -918,12 +914,12 @@ describe('Selection strategies test suite', () => {
           utilization: expect.any(Number)
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
+      expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -944,7 +940,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -980,12 +976,12 @@ describe('Selection strategies test suite', () => {
           utilization: expect.any(Number)
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
+      expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -1085,7 +1081,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -1121,14 +1117,14 @@ describe('Selection strategies test suite', () => {
           utilization: expect.any(Number)
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.runTime.average).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
+      expect(workerNode.usage.runTime.aggregate).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.runTime.average).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1154,7 +1150,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -1190,14 +1186,14 @@ describe('Selection strategies test suite', () => {
           utilization: expect.any(Number)
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.runTime.average).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
+      expect(workerNode.usage.runTime.aggregate).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.runTime.average).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1228,7 +1224,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -1264,14 +1260,14 @@ describe('Selection strategies test suite', () => {
           utilization: expect.any(Number)
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.runTime.median).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.elu.utilization).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.elu.utilization).toBeLessThanOrEqual(1)
+      expect(workerNode.usage.runTime.aggregate).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.runTime.median).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1450,7 +1446,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -1486,12 +1482,12 @@ describe('Selection strategies test suite', () => {
           utilization: 0
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.runTime.average).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.runTime.aggregate).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.runTime.average).toBeGreaterThanOrEqual(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1522,7 +1518,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -1558,12 +1554,12 @@ describe('Selection strategies test suite', () => {
           utilization: 0
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
-      expect(workerNode.workerUsage.runTime.average).toBeGreaterThan(0)
+      expect(workerNode.usage.runTime.aggregate).toBeGreaterThan(0)
+      expect(workerNode.usage.runTime.average).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1599,7 +1595,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -1635,12 +1631,12 @@ describe('Selection strategies test suite', () => {
           utilization: 0
         }
       })
-      expect(workerNode.workerUsage.tasks.executed).toBeGreaterThanOrEqual(0)
-      expect(workerNode.workerUsage.tasks.executed).toBeLessThanOrEqual(
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.workerUsage.runTime.aggregate).toBeGreaterThan(0)
-      expect(workerNode.workerUsage.runTime.median).toBeGreaterThan(0)
+      expect(workerNode.usage.runTime.aggregate).toBeGreaterThan(0)
+      expect(workerNode.usage.runTime.median).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1833,7 +1829,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: maxMultiplier,
           executing: 0,
@@ -1916,7 +1912,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.workerUsage).toStrictEqual({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: maxMultiplier,
           executing: 0,

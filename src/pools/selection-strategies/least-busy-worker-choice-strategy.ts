@@ -64,8 +64,7 @@ export class LeastBusyWorkerChoiceStrategy<
     let minTime = Infinity
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerTime =
-        workerNode.workerUsage.runTime.aggregate +
-        workerNode.workerUsage.waitTime.aggregate
+        workerNode.usage.runTime.aggregate + workerNode.usage.waitTime.aggregate
       if (workerTime === 0) {
         this.nextWorkerNodeId = workerNodeKey
         break
