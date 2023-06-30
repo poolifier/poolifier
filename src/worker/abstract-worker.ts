@@ -37,7 +37,7 @@ export abstract class AbstractWorker<
   Response = unknown
 > extends AsyncResource {
   /**
-   * Worker Id.
+   * Worker id.
    */
   protected abstract id: number
   /**

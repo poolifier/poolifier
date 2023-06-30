@@ -19,7 +19,8 @@ import {
   type PoolType,
   PoolTypes,
   type TasksQueueOptions,
-  type WorkerType
+  type WorkerType,
+  WorkerTypes
 } from './pool'
 import type {
   IWorker,
@@ -784,9 +785,13 @@ export abstract class AbstractPool<
     return message => {
       if (message.workerId != null && message.started != null) {
         // Worker started message received
-        this.workerNodes[
-          this.getWorkerNodeKey(this.getWorkerById(message.workerId) as Worker)
-        ].info.started = message.started
+        const worker = this.getWorkerById(message.workerId)
+        if (worker != null) {
+          this.workerNodes[this.getWorkerNodeKey(worker)].info.started =
+            message.started
+        } else {
+          throw new Error('Worker started message received from unknown worker')
+        }
       } else if (message.id != null) {
         // Task execution response received
         const promiseResponse = this.promiseResponseMap.get(message.id)
@@ -850,7 +855,7 @@ export abstract class AbstractPool<
   private pushWorkerNode (worker: Worker): number {
     this.workerNodes.push({
       worker,
-      info: { id: worker.threadId ?? worker.id, started: false },
+      info: { id: this.getWorkerId(worker), started: false },
       usage: this.getWorkerUsage(),
       tasksQueue: new Queue<Task<Data>>()
     })
@@ -860,6 +865,20 @@ export abstract class AbstractPool<
       this.getWorkerUsage(workerNodeKey)
     )
     return this.workerNodes.length
+  }
+
+  /**
+   * Gets the worker id.
+   *
+   * @param worker - The worker.
+   * @returns The worker id.
+   */
+  private getWorkerId (worker: Worker): number | undefined {
+    if (this.worker === WorkerTypes.thread) {
+      return worker.threadId
+    } else if (this.worker === WorkerTypes.cluster) {
+      return worker.id
+    }
   }
 
   // /**

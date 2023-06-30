@@ -54,7 +54,7 @@ export interface WorkerStatistics {
 export interface MessageValue<Data = unknown, ErrorData = unknown>
   extends Task<Data> {
   /**
-   * Worker Id.
+   * Worker id.
    */
   readonly workerId?: number
   /**

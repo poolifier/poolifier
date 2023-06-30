@@ -125,7 +125,7 @@ export interface TaskStatistics {
  */
 export interface WorkerInfo {
   /**
-   * Worker Id.
+   * Worker id.
    */
   id: number | undefined
   /**
@@ -163,7 +163,7 @@ export interface WorkerUsage {
  */
 export interface IWorker {
   /**
-   * Worker Id.
+   * Worker id.
    */
   id?: number
   threadId?: number
