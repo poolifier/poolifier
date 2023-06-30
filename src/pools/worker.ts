@@ -165,8 +165,8 @@ export interface IWorker {
   /**
    * Worker id.
    */
-  id?: number
-  threadId?: number
+  readonly id?: number
+  readonly threadId?: number
   /**
    * Register an event listener.
    *
