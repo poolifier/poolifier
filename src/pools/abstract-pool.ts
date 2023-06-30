@@ -246,41 +246,39 @@ export abstract class AbstractPool<
       workerNodes: this.workerNodes.length,
       idleWorkerNodes: this.workerNodes.reduce(
         (accumulator, workerNode) =>
-          workerNode.workerUsage.tasks.executing === 0
+          workerNode.usage.tasks.executing === 0
             ? accumulator + 1
             : accumulator,
         0
       ),
       busyWorkerNodes: this.workerNodes.reduce(
         (accumulator, workerNode) =>
-          workerNode.workerUsage.tasks.executing > 0
-            ? accumulator + 1
-            : accumulator,
+          workerNode.usage.tasks.executing > 0 ? accumulator + 1 : accumulator,
         0
       ),
       executedTasks: this.workerNodes.reduce(
         (accumulator, workerNode) =>
-          accumulator + workerNode.workerUsage.tasks.executed,
+          accumulator + workerNode.usage.tasks.executed,
         0
       ),
       executingTasks: this.workerNodes.reduce(
         (accumulator, workerNode) =>
-          accumulator + workerNode.workerUsage.tasks.executing,
+          accumulator + workerNode.usage.tasks.executing,
         0
       ),
       queuedTasks: this.workerNodes.reduce(
         (accumulator, workerNode) =>
-          accumulator + workerNode.workerUsage.tasks.queued,
+          accumulator + workerNode.usage.tasks.queued,
         0
       ),
       maxQueuedTasks: this.workerNodes.reduce(
         (accumulator, workerNode) =>
-          accumulator + workerNode.workerUsage.tasks.maxQueued,
+          accumulator + workerNode.usage.tasks.maxQueued,
         0
       ),
       failedTasks: this.workerNodes.reduce(
         (accumulator, workerNode) =>
-          accumulator + workerNode.workerUsage.tasks.failed,
+          accumulator + workerNode.usage.tasks.failed,
         0
       )
     }
@@ -312,7 +310,7 @@ export abstract class AbstractPool<
    * Gets the given worker its worker node key.
    *
    * @param worker - The worker.
-   * @returns The worker node key if the worker is found in the pool worker nodes, `-1` otherwise.
+   * @returns The worker node key if found in the pool worker nodes, `-1` otherwise.
    */
   private getWorkerNodeKey (worker: Worker): number {
     return this.workerNodes.findIndex(
@@ -408,7 +406,7 @@ export abstract class AbstractPool<
   protected internalBusy (): boolean {
     return (
       this.workerNodes.findIndex(workerNode => {
-        return workerNode.workerUsage.tasks.executing === 0
+        return workerNode.usage.tasks.executing === 0
       }) === -1
     )
   }
@@ -434,7 +432,7 @@ export abstract class AbstractPool<
     if (
       this.opts.enableTasksQueue === true &&
       (this.busy ||
-        this.workerNodes[workerNodeKey].workerUsage.tasks.executing >=
+        this.workerNodes[workerNodeKey].usage.tasks.executing >=
           ((this.opts.tasksQueueOptions as TasksQueueOptions)
             .concurrency as number))
     ) {
@@ -491,7 +489,7 @@ export abstract class AbstractPool<
     workerNodeKey: number,
     task: Task<Data>
   ): void {
-    const workerUsage = this.workerNodes[workerNodeKey].workerUsage
+    const workerUsage = this.workerNodes[workerNodeKey].usage
     ++workerUsage.tasks.executing
     this.updateWaitTimeWorkerUsage(workerUsage, task)
   }
@@ -507,8 +505,7 @@ export abstract class AbstractPool<
     worker: Worker,
     message: MessageValue<Response>
   ): void {
-    const workerUsage =
-      this.workerNodes[this.getWorkerNodeKey(worker)].workerUsage
+    const workerUsage = this.workerNodes[this.getWorkerNodeKey(worker)].usage
     this.updateTaskStatisticsWorkerUsage(workerUsage, message)
     this.updateRunTimeWorkerUsage(workerUsage, message)
     this.updateEluWorkerUsage(workerUsage, message)
@@ -747,11 +744,9 @@ export abstract class AbstractPool<
         isKillBehavior(KillBehaviors.HARD, message.kill) ||
         (message.kill != null &&
           ((this.opts.enableTasksQueue === false &&
-            this.workerNodes[workerNodeKey].workerUsage.tasks.executing ===
-              0) ||
+            this.workerNodes[workerNodeKey].usage.tasks.executing === 0) ||
             (this.opts.enableTasksQueue === true &&
-              this.workerNodes[workerNodeKey].workerUsage.tasks.executing ===
-                0 &&
+              this.workerNodes[workerNodeKey].usage.tasks.executing === 0 &&
               this.tasksQueueSize(workerNodeKey) === 0)))
       ) {
         // Kill message received from the worker: no new tasks are submitted to that worker for a while ( > maxInactiveTime)
@@ -819,7 +814,7 @@ export abstract class AbstractPool<
     workerNode: WorkerNode<Worker, Data>,
     workerUsage: WorkerUsage
   ): void {
-    workerNode.workerUsage = workerUsage
+    workerNode.usage = workerUsage
   }
 
   /**
@@ -831,7 +826,7 @@ export abstract class AbstractPool<
   private pushWorkerNode (worker: Worker): number {
     this.workerNodes.push({
       worker,
-      workerUsage: this.getWorkerUsage(),
+      usage: this.getWorkerUsage(),
       tasksQueue: new Queue<Task<Data>>()
     })
     const workerNodeKey = this.getWorkerNodeKey(worker)
@@ -858,7 +853,7 @@ export abstract class AbstractPool<
   // ): void {
   //   this.workerNodes[workerNodeKey] = {
   //     worker,
-  //     workerUsage,
+  //     usage: workerUsage,
   //     tasksQueue
   //   }
   // }

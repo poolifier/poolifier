@@ -152,8 +152,8 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected getWorkerTaskRunTime (workerNodeKey: number): number {
     return this.taskStatisticsRequirements.runTime.median
-      ? this.pool.workerNodes[workerNodeKey].workerUsage.runTime.median
-      : this.pool.workerNodes[workerNodeKey].workerUsage.runTime.average
+      ? this.pool.workerNodes[workerNodeKey].usage.runTime.median
+      : this.pool.workerNodes[workerNodeKey].usage.runTime.average
   }
 
   /**
@@ -166,8 +166,8 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected getWorkerTaskWaitTime (workerNodeKey: number): number {
     return this.taskStatisticsRequirements.waitTime.median
-      ? this.pool.workerNodes[workerNodeKey].workerUsage.waitTime.median
-      : this.pool.workerNodes[workerNodeKey].workerUsage.waitTime.average
+      ? this.pool.workerNodes[workerNodeKey].usage.waitTime.median
+      : this.pool.workerNodes[workerNodeKey].usage.waitTime.average
   }
 
   /**
@@ -180,8 +180,8 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected getWorkerTaskElu (workerNodeKey: number): number {
     return this.taskStatisticsRequirements.elu.median
-      ? this.pool.workerNodes[workerNodeKey].workerUsage.elu.active.median
-      : this.pool.workerNodes[workerNodeKey].workerUsage.elu.active.average
+      ? this.pool.workerNodes[workerNodeKey].usage.elu.active.median
+      : this.pool.workerNodes[workerNodeKey].usage.elu.active.average
   }
 
   protected computeDefaultWorkerWeight (): number {
@@ -206,7 +206,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   //  */
   // private findFirstFreeWorkerNodeKey (): number {
   //   return this.pool.workerNodes.findIndex(workerNode => {
-  //     return workerNode.workerUsage.tasks.executing === 0
+  //     return workerNode.usage.tasks.executing === 0
   //   })
   // }
 
@@ -221,17 +221,15 @@ export abstract class AbstractWorkerChoiceStrategy<
   //  */
   // private findLastFreeWorkerNodeKey (): number {
   //   // It requires node >= 18.0.0:
-  //   // return this.workerNodes.findLastIndex(workerNode => {
-  //   //   return workerNode.workerUsage.tasks.executing === 0
+  //   // return this.pool.workerNodes.findLastIndex(workerNode => {
+  //   //   return workerNode.usage.tasks.executing === 0
   //   // })
   //   for (
   //     let workerNodeKey = this.pool.workerNodes.length - 1;
   //     workerNodeKey >= 0;
   //     workerNodeKey--
   //   ) {
-  //     if (
-  //       this.pool.workerNodes[workerNodeKey].workerUsage.tasks.executing === 0
-  //     ) {
+  //     if (this.pool.workerNodes[workerNodeKey].usage.tasks.executing === 0) {
   //       return workerNodeKey
   //     }
   //   }

@@ -180,7 +180,7 @@ export interface WorkerNode<Worker extends IWorker, Data = unknown> {
   /**
    * Worker node worker usage statistics.
    */
-  workerUsage: WorkerUsage
+  usage: WorkerUsage
   /**
    * Worker node tasks queue.
    */

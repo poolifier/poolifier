@@ -66,7 +66,7 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    */
   readonly taskPerformance?: TaskPerformance
   /**
-   * Whether to compute the given statistics or not.
+   * Whether the worker computes the given statistics or not.
    */
   readonly statistics?: WorkerStatistics
 }
