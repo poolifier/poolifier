@@ -221,7 +221,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   //  */
   // private findLastFreeWorkerNodeKey (): number {
   //   // It requires node >= 18.0.0:
-  //   // return this.workerNodes.findLastIndex(workerNode => {
+  //   // return this.pool.workerNodes.findLastIndex(workerNode => {
   //   //   return workerNode.usage.tasks.executing === 0
   //   // })
   //   for (
