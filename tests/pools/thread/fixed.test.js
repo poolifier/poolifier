@@ -208,7 +208,7 @@ describe('Fixed thread pool test suite', () => {
   })
 
   it('Verify that thread pool options are checked', async () => {
-    const workerFilePath = './tests/worker-files/cluster/testWorker.js'
+    const workerFilePath = './tests/worker-files/thread/testWorker.js'
     let pool1 = new FixedThreadPool(numberOfThreads, workerFilePath)
     expect(pool1.opts.workerOptions).toBeUndefined()
     await pool1.destroy()

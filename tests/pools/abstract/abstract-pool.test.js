@@ -410,7 +410,7 @@ describe('Abstract pool test suite', () => {
     pool = new DynamicClusterPool(
       numberOfWorkers,
       numberOfWorkers * 2,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/cluster/testWorker.js'
     )
     expect(pool.info).toStrictEqual({
       type: PoolTypes.dynamic,
