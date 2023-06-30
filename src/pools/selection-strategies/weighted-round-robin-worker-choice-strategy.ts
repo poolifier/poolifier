@@ -1,6 +1,9 @@
 import type { IWorker } from '../worker'
 import type { IPool } from '../pool'
-import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
+import {
+  DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+  DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+} from '../../utils'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
@@ -36,16 +39,8 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
       average: true,
       median: false
     },
-    waitTime: {
-      aggregate: false,
-      average: false,
-      median: false
-    },
-    elu: {
-      aggregate: false,
-      average: false,
-      median: false
-    }
+    waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS
   }
 
   /**

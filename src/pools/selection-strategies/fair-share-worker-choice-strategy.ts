@@ -1,4 +1,7 @@
-import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
+import {
+  DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+  DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+} from '../../utils'
 import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
@@ -31,11 +34,7 @@ export class FairShareWorkerChoiceStrategy<
       average: true,
       median: false
     },
-    waitTime: {
-      aggregate: false,
-      average: false,
-      median: false
-    },
+    waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
     elu: {
       aggregate: true,
       average: true,

@@ -1,4 +1,7 @@
-import type { WorkerChoiceStrategyOptions } from './pools/selection-strategies/selection-strategies-types'
+import type {
+  MeasurementStatisticsRequirements,
+  WorkerChoiceStrategyOptions
+} from './pools/selection-strategies/selection-strategies-types'
 
 /**
  * An intentional empty function.
@@ -15,6 +18,16 @@ export const DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS: WorkerChoiceStrategyOptions
     runTime: { median: false },
     waitTime: { median: false },
     elu: { median: false }
+  }
+
+/**
+ * Default measurement statistics requirements.
+ */
+export const DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS: MeasurementStatisticsRequirements =
+  {
+    aggregate: false,
+    average: false,
+    median: false
   }
 
 /**
