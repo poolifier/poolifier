@@ -1,3 +1,4 @@
+import os from 'node:os'
 import type {
   MeasurementStatisticsRequirements,
   WorkerChoiceStrategyOptions
@@ -29,6 +30,22 @@ export const DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS: MeasurementStatisticsR
     average: false,
     median: false
   }
+
+/**
+ * Safe helper to get the host OS optimized maximum pool size.
+ */
+export const availableParallelism = (): number => {
+  let availableParallelism = 1
+  try {
+    availableParallelism = os.availableParallelism()
+  } catch {
+    const cpus = os.cpus()
+    if (Array.isArray(cpus) && cpus.length > 0) {
+      availableParallelism = cpus.length
+    }
+  }
+  return availableParallelism
+}
 
 /**
  * Compute the median of the given data set.
