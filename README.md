@@ -114,10 +114,10 @@ Instantiate your pool based on your needs :
 
 ```js
 'use strict'
-const { DynamicThreadPool, FixedThreadPool, PoolEvents } = require('poolifier')
+const { DynamicThreadPool, FixedThreadPool, PoolEvents, availableParallelism } = require('poolifier')
 
 // a fixed worker-threads pool
-const pool = new FixedThreadPool(15, './yourWorker.js', {
+const pool = new FixedThreadPool(availableParallelism(), './yourWorker.js', {
   errorHandler: e => console.error(e),
   onlineHandler: () => console.info('worker is online')
 })
@@ -125,7 +125,7 @@ const pool = new FixedThreadPool(15, './yourWorker.js', {
 pool.emitter.on(PoolEvents.busy, () => console.info('Pool is busy'))
 
 // or a dynamic worker-threads pool
-const pool = new DynamicThreadPool(10, 100, './yourWorker.js', {
+const pool = new DynamicThreadPool(availableParallelism() / 2, availableParallelism(), './yourWorker.js', {
   errorHandler: e => console.error(e),
   onlineHandler: () => console.info('worker is online')
 })
