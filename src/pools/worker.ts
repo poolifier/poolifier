@@ -147,7 +147,7 @@ export interface WorkerUsage {
  */
 export interface IWorker {
   /**
-   * Register an event listener.
+   * Registers an event listener.
    *
    * @param event - The event.
    * @param handler - The event handler.
@@ -157,7 +157,7 @@ export interface IWorker {
   ((event: 'online', handler: OnlineHandler<this>) => void) &
   ((event: 'exit', handler: ExitHandler<this>) => void)
   /**
-   * Register a listener to the exit event that will only be performed once.
+   * Registers a listener to the exit event that will only be performed once.
    *
    * @param event - `'exit'`.
    * @param handler - The exit handler.

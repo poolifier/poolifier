@@ -51,7 +51,7 @@ export class Queue<T> {
   }
 
   /**
-   * Peek at the first item.
+   * Peeks at the first item.
    *
    * @returns The first item or `undefined` if the queue is empty.
    */
@@ -63,7 +63,7 @@ export class Queue<T> {
   }
 
   /**
-   * Clear the queue.
+   * Clears the queue.
    */
   public clear (): void {
     this.items = []

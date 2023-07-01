@@ -72,9 +72,13 @@ export interface PoolInfo {
   worker: WorkerType
   minSize: number
   maxSize: number
+  /** Pool utilization ratio. */
   utilization: number
+  /** Pool total worker nodes */
   workerNodes: number
+  /** Pool idle worker nodes */
   idleWorkerNodes: number
+  /** Pool busy worker nodes */
   busyWorkerNodes: number
   executedTasks: number
   executingTasks: number
@@ -189,7 +193,7 @@ export interface IPool<
    */
   execute: (data?: Data, name?: string) => Promise<Response>
   /**
-   * Terminate every current worker in this pool.
+   * Terminates every current worker in this pool.
    */
   destroy: () => Promise<void>
   /**
