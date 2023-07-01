@@ -72,6 +72,7 @@ export interface PoolInfo {
   worker: WorkerType
   minSize: number
   maxSize: number
+  utilization: number
   workerNodes: number
   idleWorkerNodes: number
   busyWorkerNodes: number

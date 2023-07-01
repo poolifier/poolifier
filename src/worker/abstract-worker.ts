@@ -206,7 +206,7 @@ export abstract class AbstractWorker<
    * Handles an error and convert it to a string so it can be sent back to the main worker.
    *
    * @param e - The error raised by the worker.
-   * @returns Message of the error.
+   * @returns The error message.
    */
   protected handleError (e: Error | string): string {
     return e as string

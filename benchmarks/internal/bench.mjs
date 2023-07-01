@@ -1,5 +1,8 @@
 import Benchmark from 'benny'
-import { WorkerChoiceStrategies } from '../../lib/index.mjs'
+import {
+  WorkerChoiceStrategies,
+  availableParallelism
+} from '../../lib/index.mjs'
 import {
   PoolTypes,
   WorkerFunctions,
@@ -7,7 +10,7 @@ import {
 } from '../benchmarks-types.mjs'
 import { buildPool, runTest } from '../benchmarks-utils.mjs'
 
-const poolSize = 30
+const poolSize = availableParallelism()
 const taskExecutions = 1
 const workerData = {
   function: WorkerFunctions.jsonIntegerSerialization,

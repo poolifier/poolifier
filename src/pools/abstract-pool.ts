@@ -5,7 +5,8 @@ import {
   DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
   EMPTY_FUNCTION,
   isPlainObject,
-  median
+  median,
+  round
 } from '../utils'
 import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
 import { CircularArray } from '../circular-array'
@@ -78,6 +79,11 @@ export abstract class AbstractPool<
   >
 
   /**
+   * The start timestamp of the pool.
+   */
+  private readonly startTimestamp
+
+  /**
    * Constructs a new poolifier pool.
    *
    * @param numberOfWorkers - Number of workers that this pool should manage.
@@ -116,9 +122,11 @@ export abstract class AbstractPool<
 
     this.setupHook()
 
-    for (let i = 1; i <= this.numberOfWorkers; i++) {
+    while (this.workerNodes.length < this.numberOfWorkers) {
       this.createAndSetupWorker()
     }
+
+    this.startTimestamp = performance.now()
   }
 
   private checkFilePath (filePath: string): void {
@@ -252,6 +260,7 @@ export abstract class AbstractPool<
       worker: this.worker,
       minSize: this.minSize,
       maxSize: this.maxSize,
+      utilization: round(this.utilization),
       workerNodes: this.workerNodes.length,
       idleWorkerNodes: this.workerNodes.reduce(
         (accumulator, workerNode) =>
@@ -291,6 +300,35 @@ export abstract class AbstractPool<
         0
       )
     }
+  }
+
+  /**
+   * Gets the pool run time.
+   *
+   * @returns The pool run time in milliseconds.
+   */
+  private get runTime (): number {
+    return performance.now() - this.startTimestamp
+  }
+
+  /**
+   * Gets the approximate pool utilization.
+   *
+   * @returns The pool utilization.
+   */
+  private get utilization (): number {
+    const poolRunTimeCapacity = this.runTime * this.maxSize
+    const totalTasksRunTime = this.workerNodes.reduce(
+      (accumulator, workerNode) =>
+        accumulator + workerNode.usage.runTime.aggregate,
+      0
+    )
+    const totalTasksWaitTime = this.workerNodes.reduce(
+      (accumulator, workerNode) =>
+        accumulator + workerNode.usage.waitTime.aggregate,
+      0
+    )
+    return (totalTasksRunTime + totalTasksWaitTime) / poolRunTimeCapacity
   }
 
   /**
