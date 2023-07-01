@@ -51,7 +51,7 @@ export const availableParallelism = (): number => {
 }
 
 /**
- * Compute the median of the given data set.
+ * Computes the median of the given data set.
  *
  * @param dataSet - Data set.
  * @returns The median of the given data set.
@@ -69,6 +69,18 @@ export const median = (dataSet: number[]): number => {
       sortedDataSet[sortedDataSet.length >> 1]) /
     2
   )
+}
+
+/**
+ * Rounds the given number to the given scale.
+ *
+ * @param num - The number to round.
+ * @param scale - The scale to round to.
+ * @returns The rounded number.
+ */
+export const round = (num: number, scale = 2): number => {
+  const rounder = Math.pow(10, scale)
+  return Math.round(num * rounder * (1 + Number.EPSILON)) / rounder
 }
 
 /**

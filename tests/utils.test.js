@@ -1,16 +1,39 @@
 const { expect } = require('expect')
-const { isPlainObject, median, availableParallelism } = require('../lib/utils')
+const {
+  availableParallelism,
+  isPlainObject,
+  median,
+  round
+} = require('../lib/utils')
 const {
   isKillBehavior,
   KillBehaviors
 } = require('../lib/worker/worker-options')
 
 describe('Utils test suite', () => {
+  it('Verify availableParallelism() behavior', () => {
+    expect(typeof availableParallelism() === 'number').toBe(true)
+  })
+
   it('Verify median() computation', () => {
     expect(median([])).toBe(0)
     expect(median([0.08])).toBe(0.08)
     expect(median([0.25, 4.75, 3.05, 6.04, 1.01, 2.02, 5.03])).toBe(3.05)
     expect(median([0.25, 4.75, 3.05, 6.04, 1.01, 2.02])).toBe(2.535)
+  })
+
+  it('Verify round() behavior', () => {
+    expect(round(0)).toBe(0)
+    expect(round(0.5, 0)).toBe(1)
+    expect(round(0.5)).toBe(0.5)
+    expect(round(-0.5, 0)).toBe(-1)
+    expect(round(-0.5)).toBe(-0.5)
+    expect(round(1.005)).toBe(1.01)
+    expect(round(2.175)).toBe(2.18)
+    expect(round(5.015)).toBe(5.02)
+    expect(round(-1.005)).toBe(-1.01)
+    expect(round(-2.175)).toBe(-2.18)
+    expect(round(-5.015)).toBe(-5.02)
   })
 
   it('Verify isPlainObject() behavior', () => {
@@ -59,9 +82,5 @@ describe('Utils test suite', () => {
     expect(isKillBehavior(KillBehaviors.HARD)).toBe(false)
     expect(isKillBehavior(KillBehaviors.HARD, null)).toBe(false)
     expect(isKillBehavior(KillBehaviors.SOFT, 'unknown')).toBe(false)
-  })
-
-  it('Verify availableParallelism() behavior', () => {
-    expect(typeof availableParallelism() === 'number').toBe(true)
   })
 })
