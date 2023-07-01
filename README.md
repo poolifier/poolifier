@@ -83,7 +83,7 @@ Please consult our [general guidelines](#general-guidance).
 Node pool contains two [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads)/[cluster worker](https://nodejs.org/api/cluster.html#cluster_class_worker) pool implementations, you don't have to deal with worker-threads/cluster worker complexity.  
 The first implementation is a static worker pool, with a defined number of workers that are started at creation time and will be reused.  
 The second implementation is a dynamic worker pool with a number of worker started at creation time (these workers will be always active and reused) and other workers created when the load will increase (with an upper limit, these workers will be reused when active), the new created workers will be stopped after a configurable period of inactivity.  
-You have to implement your worker extending the ThreadWorker or ClusterWorker class.
+You have to implement your worker by extending the ThreadWorker or ClusterWorker class.
 
 ## Installation
 
