@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add safe helper `availableParallelism` to help sizing the pool.
+
 ### Fixed
 
 - Ensure message handler is only registered in worker.

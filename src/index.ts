@@ -65,3 +65,4 @@ export type {
 } from './utility-types'
 export type { CircularArray } from './circular-array'
 export type { Queue } from './queue'
+export { availableParallelism } from './utils'

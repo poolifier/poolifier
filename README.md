@@ -83,7 +83,7 @@ Please consult our [general guidelines](#general-guidance).
 Node pool contains two [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads)/[cluster worker](https://nodejs.org/api/cluster.html#cluster_class_worker) pool implementations, you don't have to deal with worker-threads/cluster worker complexity.  
 The first implementation is a static worker pool, with a defined number of workers that are started at creation time and will be reused.  
 The second implementation is a dynamic worker pool with a number of worker started at creation time (these workers will be always active and reused) and other workers created when the load will increase (with an upper limit, these workers will be reused when active), the new created workers will be stopped after a configurable period of inactivity.  
-You have to implement your worker extending the ThreadWorker or ClusterWorker class.
+You have to implement your worker by extending the ThreadWorker or ClusterWorker class.
 
 ## Installation
 
@@ -114,10 +114,10 @@ Instantiate your pool based on your needs :
 
 ```js
 'use strict'
-const { DynamicThreadPool, FixedThreadPool, PoolEvents } = require('poolifier')
+const { DynamicThreadPool, FixedThreadPool, PoolEvents, availableParallelism } = require('poolifier')
 
 // a fixed worker-threads pool
-const pool = new FixedThreadPool(15, './yourWorker.js', {
+const pool = new FixedThreadPool(availableParallelism(), './yourWorker.js', {
   errorHandler: e => console.error(e),
   onlineHandler: () => console.info('worker is online')
 })
@@ -125,7 +125,7 @@ const pool = new FixedThreadPool(15, './yourWorker.js', {
 pool.emitter.on(PoolEvents.busy, () => console.info('Pool is busy'))
 
 // or a dynamic worker-threads pool
-const pool = new DynamicThreadPool(10, 100, './yourWorker.js', {
+const pool = new DynamicThreadPool(availableParallelism() / 2, availableParallelism(), './yourWorker.js', {
   errorHandler: e => console.error(e),
   onlineHandler: () => console.info('worker is online')
 })

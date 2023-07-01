@@ -1,5 +1,5 @@
 const { expect } = require('expect')
-const { isPlainObject, median } = require('../lib/utils')
+const { isPlainObject, median, availableParallelism } = require('../lib/utils')
 const {
   isKillBehavior,
   KillBehaviors
@@ -59,5 +59,9 @@ describe('Utils test suite', () => {
     expect(isKillBehavior(KillBehaviors.HARD)).toBe(false)
     expect(isKillBehavior(KillBehaviors.HARD, null)).toBe(false)
     expect(isKillBehavior(KillBehaviors.SOFT, 'unknown')).toBe(false)
+  })
+
+  it('Verify availableParallelism() behavior', () => {
+    expect(typeof availableParallelism() === 'number').toBe(true)
   })
 })

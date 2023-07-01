@@ -1,8 +1,13 @@
-const { FixedThreadPool } = require('poolifier')
-const pool = new FixedThreadPool(15, './multiFunctionWorker.js', {
-  errorHandler: e => console.error(e),
-  onlineHandler: () => console.info('worker is online')
-})
+const { FixedThreadPool, availableParallelism } = require('poolifier')
+
+const pool = new FixedThreadPool(
+  availableParallelism(),
+  './multiFunctionWorker.js',
+  {
+    errorHandler: e => console.error(e),
+    onlineHandler: () => console.info('worker is online')
+  }
+)
 
 pool
   .execute({ text: 'hello' }, 'fn0')

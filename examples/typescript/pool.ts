@@ -1,9 +1,13 @@
 import { join } from 'path'
 import type { MyData, MyResponse } from './worker'
-import { DynamicThreadPool, FixedThreadPool } from 'poolifier'
+import {
+  DynamicThreadPool,
+  FixedThreadPool,
+  availableParallelism
+} from 'poolifier'
 
 export const fixedPool = new FixedThreadPool<MyData, Promise<MyResponse>>(
-  8,
+  availableParallelism(),
   join(__dirname, 'worker.js'),
   {
     errorHandler: (e: Error) => {
@@ -16,8 +20,8 @@ export const fixedPool = new FixedThreadPool<MyData, Promise<MyResponse>>(
 )
 
 export const dynamicPool = new DynamicThreadPool<MyData, Promise<MyResponse>>(
-  2,
-  8,
+  availableParallelism() / 2,
+  availableParallelism(),
   join(__dirname, 'worker.js'),
   {
     errorHandler: (e: Error) => {
