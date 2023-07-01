@@ -73,6 +73,7 @@ export const median = (dataSet: number[]): number => {
 
 /**
  * Rounds the given number to the given scale.
+ * The rounding is done using the "round half away from zero" method.
  *
  * @param num - The number to round.
  * @param scale - The scale to round to.

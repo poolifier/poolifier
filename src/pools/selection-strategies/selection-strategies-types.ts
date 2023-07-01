@@ -107,15 +107,15 @@ export interface WorkerChoiceStrategyOptions {
  */
 export interface MeasurementStatisticsRequirements {
   /**
-   * Require measurement aggregate.
+   * Requires measurement aggregate.
    */
   aggregate: boolean
   /**
-   * Require measurement average.
+   * Requires measurement average.
    */
   average: boolean
   /**
-   * Require measurement median.
+   * Requires measurement median.
    */
   median: boolean
 }
