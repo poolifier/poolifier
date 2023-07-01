@@ -32,7 +32,10 @@ export const DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS: MeasurementStatisticsR
   }
 
 /**
- * Safe helper to get the host OS optimized maximum pool size.
+ * Returns safe host OS optimized estimate of the default amount of parallelism a pool should use.
+ * Always returns a value greater than zero.
+ *
+ * @returns The host OS optimized maximum pool size.
  */
 export const availableParallelism = (): number => {
   let availableParallelism = 1
