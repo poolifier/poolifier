@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.6] - 2023-07-01
+
 ### Added
 
 - Add safe helper `availableParallelism` to help sizing the pool.
