@@ -1,7 +1,7 @@
 const { expect } = require('expect')
 const { FixedClusterPool, PoolEvents } = require('../../../lib')
 const { WorkerFunctions } = require('../../test-types')
-const TestUtils = require('../../test-utils')
+const { waitWorkerEvents } = require('../../test-utils')
 
 describe('Fixed cluster pool test suite', () => {
   const numberOfWorkers = 6
@@ -195,11 +195,7 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it('Shutdown test', async () => {
-    const exitPromise = TestUtils.waitWorkerEvents(
-      pool,
-      'exit',
-      numberOfWorkers
-    )
+    const exitPromise = waitWorkerEvents(pool, 'exit', numberOfWorkers)
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
     expect(numberOfExitEvents).toBe(numberOfWorkers)

@@ -1,13 +1,13 @@
 'use strict'
 const { isMainThread } = require('worker_threads')
 const { ThreadWorker, KillBehaviors } = require('../../../lib')
-const TestUtils = require('../../test-utils')
+const { executeWorkerFunction } = require('../../test-utils')
 const { WorkerFunctions } = require('../../test-types')
 
 function test (data) {
   data = data || {}
   data.function = data.function || WorkerFunctions.jsonIntegerSerialization
-  const result = TestUtils.executeWorkerFunction(data)
+  const result = executeWorkerFunction(data)
   if (result == null) {
     return isMainThread
   }

@@ -1,9 +1,9 @@
 'use strict'
 const { ClusterWorker, KillBehaviors } = require('../../../lib')
-const TestUtils = require('../../test-utils')
+const { sleepWorkerFunction } = require('../../test-utils')
 
 async function sleep (data) {
-  return TestUtils.sleepWorkerFunction(data, 50000)
+  return sleepWorkerFunction(data, 50000)
 }
 
 module.exports = new ClusterWorker(sleep, {

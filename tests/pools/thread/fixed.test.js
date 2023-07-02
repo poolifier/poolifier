@@ -1,7 +1,7 @@
 const { expect } = require('expect')
 const { FixedThreadPool, PoolEvents } = require('../../../lib')
 const { WorkerFunctions } = require('../../test-types')
-const TestUtils = require('../../test-utils')
+const { waitWorkerEvents } = require('../../test-utils')
 
 describe('Fixed thread pool test suite', () => {
   const numberOfThreads = 6
@@ -199,11 +199,7 @@ describe('Fixed thread pool test suite', () => {
   })
 
   it('Shutdown test', async () => {
-    const exitPromise = TestUtils.waitWorkerEvents(
-      pool,
-      'exit',
-      numberOfThreads
-    )
+    const exitPromise = waitWorkerEvents(pool, 'exit', numberOfThreads)
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
     expect(numberOfExitEvents).toBe(numberOfThreads)

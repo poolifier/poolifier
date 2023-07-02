@@ -1,9 +1,9 @@
 'use strict'
 const { ThreadWorker, KillBehaviors } = require('../../../lib')
-const TestUtils = require('../../test-utils')
+const { sleepWorkerFunction } = require('../../test-utils')
 
 async function error (data) {
-  return TestUtils.sleepWorkerFunction(
+  return sleepWorkerFunction(
     data,
     2000,
     true,

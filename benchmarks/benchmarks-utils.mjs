@@ -8,7 +8,7 @@ import {
 } from '../lib/index.mjs'
 import { PoolTypes, WorkerFunctions, WorkerTypes } from './benchmarks-types.mjs'
 
-export async function runTest (pool, { taskExecutions, workerData }) {
+export const runTest = async (pool, { taskExecutions, workerData }) => {
   return new Promise((resolve, reject) => {
     let executions = 0
     for (let i = 1; i <= taskExecutions; i++) {
@@ -29,7 +29,10 @@ export async function runTest (pool, { taskExecutions, workerData }) {
   })
 }
 
-export function generateRandomInteger (max = Number.MAX_SAFE_INTEGER, min = 0) {
+export const generateRandomInteger = (
+  max = Number.MAX_SAFE_INTEGER,
+  min = 0
+) => {
   if (max < min || max < 0 || min < 0) {
     throw new RangeError('Invalid interval')
   }
@@ -41,7 +44,7 @@ export function generateRandomInteger (max = Number.MAX_SAFE_INTEGER, min = 0) {
   return Math.floor(Math.random() * (max + 1))
 }
 
-function jsonIntegerSerialization (n) {
+const jsonIntegerSerialization = n => {
   for (let i = 0; i < n; i++) {
     const o = {
       a: i
@@ -55,7 +58,7 @@ function jsonIntegerSerialization (n) {
  * @param {number} n - The number of fibonacci numbers to generate.
  * @returns {number} - The nth fibonacci number.
  */
-function fibonacci (n) {
+const fibonacci = n => {
   if (n <= 1) return n
   return fibonacci(n - 1) + fibonacci(n - 2)
 }
@@ -65,19 +68,19 @@ function fibonacci (n) {
  * @param {number} n - The number to calculate the factorial of.
  * @returns {number} - The factorial of n.
  */
-function factorial (n) {
+const factorial = n => {
   if (n === 0) {
     return 1
   }
   return factorial(n - 1) * n
 }
 
-function readWriteFiles (
+const readWriteFiles = (
   n,
   baseDirectory = `/tmp/poolifier-benchmarks/${crypto.randomInt(
     281474976710655
   )}`
-) {
+) => {
   if (fs.existsSync(baseDirectory) === true) {
     fs.rmSync(baseDirectory, { recursive: true })
   }
@@ -93,7 +96,7 @@ function readWriteFiles (
   fs.rmSync(baseDirectory, { recursive: true })
 }
 
-export function executeWorkerFunction (data) {
+export const executeWorkerFunction = data => {
   switch (data.function) {
     case WorkerFunctions.jsonIntegerSerialization:
       return jsonIntegerSerialization(data.taskSize || 1000)
@@ -108,7 +111,7 @@ export function executeWorkerFunction (data) {
   }
 }
 
-export function buildPool (workerType, poolType, poolSize, poolOptions) {
+export const buildPool = (workerType, poolType, poolSize, poolOptions) => {
   switch (poolType) {
     case PoolTypes.fixed:
       switch (workerType) {

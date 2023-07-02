@@ -4,7 +4,7 @@ const { FixedThreadPool } = require('../../../lib')
 const {
   WeightedRoundRobinWorkerChoiceStrategy
 } = require('../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy')
-const TestUtils = require('../../test-utils')
+const { generateRandomInteger } = require('../../test-utils')
 
 describe('Weighted round robin strategy worker choice strategy test suite', () => {
   // const min = 1
@@ -25,11 +25,8 @@ describe('Weighted round robin strategy worker choice strategy test suite', () =
 
   it('Verify that reset() resets internals', () => {
     const strategy = new WeightedRoundRobinWorkerChoiceStrategy(pool)
-    strategy.currentWorkerId = TestUtils.generateRandomInteger(
-      Number.MAX_SAFE_INTEGER,
-      1
-    )
-    strategy.workerVirtualTaskRunTime = TestUtils.generateRandomInteger(
+    strategy.currentWorkerId = generateRandomInteger(Number.MAX_SAFE_INTEGER, 1)
+    strategy.workerVirtualTaskRunTime = generateRandomInteger(
       Number.MAX_SAFE_INTEGER,
       1
     )

@@ -1,9 +1,9 @@
 'use strict'
 const { ThreadWorker, KillBehaviors } = require('../../../lib')
-const TestUtils = require('../../test-utils')
+const { sleepWorkerFunction } = require('../../test-utils')
 
 async function sleep (data) {
-  return TestUtils.sleepWorkerFunction(data, 2000)
+  return sleepWorkerFunction(data, 2000)
 }
 
 module.exports = new ThreadWorker(sleep, {
