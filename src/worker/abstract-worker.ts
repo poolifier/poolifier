@@ -7,7 +7,7 @@ import type {
   TaskPerformance,
   WorkerStatistics
 } from '../utility-types'
-import { EMPTY_FUNCTION, isPlainObject } from '../utils'
+import { EMPTY_FUNCTION, isAsyncFunction, isPlainObject } from '../utils'
 import {
   type KillBehavior,
   KillBehaviors,
@@ -154,7 +154,7 @@ export abstract class AbstractWorker<
     if (message.id != null && message.data != null) {
       // Task message received
       const fn = this.getTaskFunction(message.name)
-      if (fn?.constructor.name === 'AsyncFunction') {
+      if (isAsyncFunction(fn)) {
         this.runInAsyncScope(this.runAsync.bind(this), this, fn, message)
       } else {
         this.runInAsyncScope(this.runSync.bind(this), this, fn, message)

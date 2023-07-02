@@ -111,3 +111,15 @@ export const isKillBehavior = <KB extends KillBehavior>(
 ): value is KB => {
   return value === killBehavior
 }
+
+/**
+ * Detects whether the given value is an asynchronous function or not.
+ *
+ * @param fn - Any value.
+ * @returns `true` if `fn` was an asynchronous function, otherwise `false`.
+ */
+export const isAsyncFunction = (
+  fn: unknown
+): fn is (...args: unknown[]) => Promise<unknown> => {
+  return typeof fn === 'function' && fn.constructor.name === 'AsyncFunction'
+}
