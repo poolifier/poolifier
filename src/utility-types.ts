@@ -9,6 +9,10 @@ import type { IWorker, Task } from './pools/worker'
  */
 export interface TaskError<Data = unknown> {
   /**
+   * Worker id.
+   */
+  workerId: number
+  /**
    * Error message.
    */
   message: string

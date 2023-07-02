@@ -820,7 +820,9 @@ export abstract class AbstractPool<
           this.workerNodes[this.getWorkerNodeKey(worker)].info.started =
             message.started
         } else {
-          throw new Error('Worker started message received from unknown worker')
+          throw new Error(
+            `Worker started message received from unknown worker '${message.workerId}'`
+          )
         }
       } else if (message.id != null) {
         // Task execution response received
@@ -830,7 +832,9 @@ export abstract class AbstractPool<
             if (this.emitter != null) {
               this.emitter.emit(PoolEvents.taskError, message.taskError)
             }
-            promiseResponse.reject(message.taskError.message)
+            promiseResponse.reject(
+              `${message.taskError.message} on worker '${message.taskError.workerId}`
+            )
           } else {
             promiseResponse.resolve(message.data as Response)
           }
@@ -885,7 +889,7 @@ export abstract class AbstractPool<
   private pushWorkerNode (worker: Worker): number {
     this.workerNodes.push({
       worker,
-      info: { id: this.getWorkerId(worker), started: false },
+      info: { id: this.getWorkerId(worker), started: true },
       usage: this.getWorkerUsage(),
       tasksQueue: new Queue<Task<Data>>()
     })

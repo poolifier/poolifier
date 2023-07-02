@@ -236,10 +236,10 @@ export abstract class AbstractWorker<
       const err = this.handleError(e as Error)
       this.sendToMainWorker({
         taskError: {
+          workerId: this.id,
           message: err,
           data: message.data
         },
-        workerId: this.id,
         id: message.id
       })
     } finally {
@@ -273,10 +273,10 @@ export abstract class AbstractWorker<
         const err = this.handleError(e as Error)
         this.sendToMainWorker({
           taskError: {
+            workerId: this.id,
             message: err,
             data: message.data
           },
-          workerId: this.id,
           id: message.id
         })
       })
