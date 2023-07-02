@@ -11,15 +11,15 @@ export interface TaskError<Data = unknown> {
   /**
    * Worker id.
    */
-  workerId: number
+  readonly workerId: number
   /**
    * Error message.
    */
-  message: string
+  readonly message: string
   /**
    * Data passed to the worker triggering the error.
    */
-  data?: Data
+  readonly data?: Data
 }
 
 /**
@@ -29,15 +29,15 @@ export interface TaskPerformance {
   /**
    * Task performance timestamp.
    */
-  timestamp: number
+  readonly timestamp: number
   /**
    * Task runtime.
    */
-  runTime?: number
+  readonly runTime?: number
   /**
    * Task event loop utilization.
    */
-  elu?: EventLoopUtilization
+  readonly elu?: EventLoopUtilization
 }
 
 /**

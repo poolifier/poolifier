@@ -147,11 +147,10 @@ describe('Fixed thread pool test suite', () => {
     expect(inError).toBeInstanceOf(Error)
     expect(inError.message).toBeDefined()
     expect(typeof inError.message === 'string').toBe(true)
-    expect(inError.message).toBe('Error Message from ThreadWorker')
-    expect(taskError).toStrictEqual({
-      message: new Error('Error Message from ThreadWorker'),
-      data
-    })
+    expect(inError.message).toContain(
+      'Error Message from ThreadWorker on worker'
+    )
+    expect(taskError.data).toStrictEqual(data)
     expect(
       errorPool.workerNodes.some(
         workerNode => workerNode.usage.tasks.failed === 1
@@ -175,11 +174,10 @@ describe('Fixed thread pool test suite', () => {
     expect(inError).toBeInstanceOf(Error)
     expect(inError.message).toBeDefined()
     expect(typeof inError.message === 'string').toBe(true)
-    expect(inError.message).toBe('Error Message from ThreadWorker:async')
-    expect(taskError).toStrictEqual({
-      message: new Error('Error Message from ThreadWorker:async'),
-      data
-    })
+    expect(inError.message).toContain(
+      'Error Message from ThreadWorker:async on worker'
+    )
+    expect(taskError.data).toStrictEqual(data)
     expect(
       asyncErrorPool.workerNodes.some(
         workerNode => workerNode.usage.tasks.failed === 1

@@ -96,7 +96,7 @@ export interface TasksQueueOptions {
    *
    * @defaultValue 1
    */
-  concurrency?: number
+  readonly concurrency?: number
 }
 
 /**

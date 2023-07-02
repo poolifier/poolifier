@@ -833,7 +833,7 @@ export abstract class AbstractPool<
               this.emitter.emit(PoolEvents.taskError, message.taskError)
             }
             promiseResponse.reject(
-              `${message.taskError.message} on worker '${message.taskError.workerId}`
+              `${message.taskError.message} on worker '${message.taskError.workerId}'`
             )
           } else {
             promiseResponse.resolve(message.data as Response)
