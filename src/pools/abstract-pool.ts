@@ -20,7 +20,8 @@ import {
   type PoolType,
   PoolTypes,
   type TasksQueueOptions,
-  type WorkerType
+  type WorkerType,
+  WorkerTypes
 } from './pool'
 import type {
   IWorker,
@@ -343,6 +344,17 @@ export abstract class AbstractPool<
    * Pool maximum size.
    */
   protected abstract get maxSize (): number
+
+  /**
+   * Get the worker given its id.
+   *
+   * @param workerId - The worker id.
+   * @returns The worker if found in the pool worker nodes, `undefined` otherwise.
+   */
+  private getWorkerById (workerId: number): Worker | undefined {
+    return this.workerNodes.find(workerNode => workerNode.info.id === workerId)
+      ?.worker
+  }
 
   /**
    * Gets the given worker its worker node key.
@@ -801,7 +813,18 @@ export abstract class AbstractPool<
    */
   protected workerListener (): (message: MessageValue<Response>) => void {
     return message => {
-      if (message.id != null) {
+      if (message.workerId != null && message.started != null) {
+        // Worker started message received
+        const worker = this.getWorkerById(message.workerId)
+        if (worker != null) {
+          this.workerNodes[this.getWorkerNodeKey(worker)].info.started =
+            message.started
+        } else {
+          throw new Error(
+            `Worker started message received from unknown worker '${message.workerId}'`
+          )
+        }
+      } else if (message.id != null) {
         // Task execution response received
         const promiseResponse = this.promiseResponseMap.get(message.id)
         if (promiseResponse != null) {
@@ -864,6 +887,7 @@ export abstract class AbstractPool<
   private pushWorkerNode (worker: Worker): number {
     this.workerNodes.push({
       worker,
+      info: { id: this.getWorkerId(worker), started: true },
       usage: this.getWorkerUsage(),
       tasksQueue: new Queue<Task<Data>>()
     })
@@ -875,22 +899,39 @@ export abstract class AbstractPool<
     return this.workerNodes.length
   }
 
+  /**
+   * Gets the worker id.
+   *
+   * @param worker - The worker.
+   * @returns The worker id.
+   */
+  private getWorkerId (worker: Worker): number | undefined {
+    if (this.worker === WorkerTypes.thread) {
+      return worker.threadId
+    } else if (this.worker === WorkerTypes.cluster) {
+      return worker.id
+    }
+  }
+
   // /**
   //  * Sets the given worker in the pool worker nodes.
   //  *
   //  * @param workerNodeKey - The worker node key.
   //  * @param worker - The worker.
+  //  * @param workerInfo - The worker info.
   //  * @param workerUsage - The worker usage.
   //  * @param tasksQueue - The worker task queue.
   //  */
   // private setWorkerNode (
   //   workerNodeKey: number,
   //   worker: Worker,
+  //   workerInfo: WorkerInfo,
   //   workerUsage: WorkerUsage,
   //   tasksQueue: Queue<Task<Data>>
   // ): void {
   //   this.workerNodes[workerNodeKey] = {
   //     worker,
+  //     info: workerInfo,
   //     usage: workerUsage,
   //     tasksQueue
   //   }

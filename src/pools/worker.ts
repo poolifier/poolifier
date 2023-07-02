@@ -76,7 +76,7 @@ export interface MeasurementStatistics {
   /**
    * Measurement history.
    */
-  history: CircularArray<number>
+  readonly history: CircularArray<number>
 }
 
 /**
@@ -85,8 +85,8 @@ export interface MeasurementStatistics {
  * @internal
  */
 export interface EventLoopUtilizationMeasurementStatistics {
-  idle: MeasurementStatistics
-  active: MeasurementStatistics
+  readonly idle: MeasurementStatistics
+  readonly active: MeasurementStatistics
   utilization: number
 }
 
@@ -119,6 +119,22 @@ export interface TaskStatistics {
 }
 
 /**
+ * Worker information.
+ *
+ * @internal
+ */
+export interface WorkerInfo {
+  /**
+   * Worker id.
+   */
+  readonly id: number | undefined
+  /**
+   * Started flag.
+   */
+  started: boolean
+}
+
+/**
  * Worker usage statistics.
  *
  * @internal
@@ -127,25 +143,30 @@ export interface WorkerUsage {
   /**
    * Tasks statistics.
    */
-  tasks: TaskStatistics
+  readonly tasks: TaskStatistics
   /**
    * Tasks runtime statistics.
    */
-  runTime: MeasurementStatistics
+  readonly runTime: MeasurementStatistics
   /**
    * Tasks wait time statistics.
    */
-  waitTime: MeasurementStatistics
+  readonly waitTime: MeasurementStatistics
   /**
    * Tasks event loop utilization statistics.
    */
-  elu: EventLoopUtilizationMeasurementStatistics
+  readonly elu: EventLoopUtilizationMeasurementStatistics
 }
 
 /**
  * Worker interface.
  */
 export interface IWorker {
+  /**
+   * Worker id.
+   */
+  readonly id?: number
+  readonly threadId?: number
   /**
    * Registers an event listener.
    *
@@ -177,6 +198,10 @@ export interface WorkerNode<Worker extends IWorker, Data = unknown> {
    * Worker node worker.
    */
   readonly worker: Worker
+  /**
+   * Worker node worker info.
+   */
+  readonly info: WorkerInfo
   /**
    * Worker node worker usage statistics.
    */

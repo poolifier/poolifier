@@ -62,7 +62,7 @@ export interface MeasurementOptions {
   /**
    * Set measurement median.
    */
-  median: boolean
+  readonly median: boolean
 }
 
 /**
@@ -72,32 +72,32 @@ export interface WorkerChoiceStrategyOptions {
   /**
    * Measurement to use for worker choice strategy.
    */
-  measurement?: Measurement
+  readonly measurement?: Measurement
   /**
    * Runtime options.
    *
    * @defaultValue \{ median: false \}
    */
-  runTime?: MeasurementOptions
+  readonly runTime?: MeasurementOptions
   /**
    * Wait time options.
    *
    * @defaultValue \{ median: false \}
    */
-  waitTime?: MeasurementOptions
+  readonly waitTime?: MeasurementOptions
   /**
    * Event loop utilization options.
    *
    * @defaultValue \{ median: false \}
    */
-  elu?: MeasurementOptions
+  readonly elu?: MeasurementOptions
   /**
    * Worker weights to use for weighted round robin worker selection strategy.
    * Weight is the tasks maximum average or median runtime in milliseconds.
    *
    * @defaultValue Computed worker weights automatically given the CPU performance.
    */
-  weights?: Record<number, number>
+  readonly weights?: Record<number, number>
 }
 
 /**
@@ -129,15 +129,15 @@ export interface TaskStatisticsRequirements {
   /**
    * Tasks runtime requirements.
    */
-  runTime: MeasurementStatisticsRequirements
+  readonly runTime: MeasurementStatisticsRequirements
   /**
    * Tasks wait time requirements.
    */
-  waitTime: MeasurementStatisticsRequirements
+  readonly waitTime: MeasurementStatisticsRequirements
   /**
    * Tasks event loop utilization requirements.
    */
-  elu: MeasurementStatisticsRequirements
+  readonly elu: MeasurementStatisticsRequirements
 }
 
 /**
@@ -149,7 +149,7 @@ export interface StrategyPolicy {
   /**
    * Expects direct usage of dynamic worker.
    */
-  useDynamicWorker: boolean
+  readonly useDynamicWorker: boolean
 }
 
 /**

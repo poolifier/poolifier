@@ -1,4 +1,9 @@
-import { type MessagePort, isMainThread, parentPort } from 'node:worker_threads'
+import {
+  type MessagePort,
+  isMainThread,
+  parentPort,
+  threadId
+} from 'node:worker_threads'
 import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
@@ -43,8 +48,17 @@ export class ThreadWorker<
     )
   }
 
+  protected get id (): number {
+    return threadId
+  }
+
   /** @inheritDoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
     this.getMainWorker().postMessage(message)
+  }
+
+  /** @inheritDoc */
+  protected handleError (e: Error | string): string {
+    return e as string
   }
 }

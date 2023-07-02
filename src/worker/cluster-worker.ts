@@ -44,12 +44,12 @@ export class ClusterWorker<
   }
 
   /** @inheritDoc */
-  protected sendToMainWorker (message: MessageValue<Response>): void {
-    this.getMainWorker().send(message)
+  protected get id (): number {
+    return this.getMainWorker().id
   }
 
   /** @inheritDoc */
-  protected handleError (e: Error | string): string {
-    return e instanceof Error ? e.message : e
+  protected sendToMainWorker (message: MessageValue<Response>): void {
+    this.getMainWorker().send(message)
   }
 }

@@ -9,13 +9,17 @@ import type { IWorker, Task } from './pools/worker'
  */
 export interface TaskError<Data = unknown> {
   /**
+   * Worker id.
+   */
+  readonly workerId: number
+  /**
    * Error message.
    */
-  message: string
+  readonly message: string
   /**
    * Data passed to the worker triggering the error.
    */
-  data?: Data
+  readonly data?: Data
 }
 
 /**
@@ -25,15 +29,15 @@ export interface TaskPerformance {
   /**
    * Task performance timestamp.
    */
-  timestamp: number
+  readonly timestamp: number
   /**
    * Task runtime.
    */
-  runTime?: number
+  readonly runTime?: number
   /**
    * Task event loop utilization.
    */
-  elu?: EventLoopUtilization
+  readonly elu?: EventLoopUtilization
 }
 
 /**
@@ -54,6 +58,10 @@ export interface WorkerStatistics {
 export interface MessageValue<Data = unknown, ErrorData = unknown>
   extends Task<Data> {
   /**
+   * Worker id.
+   */
+  readonly workerId?: number
+  /**
    * Kill code.
    */
   readonly kill?: KillBehavior | 1
@@ -69,6 +77,10 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    * Whether the worker computes the given statistics or not.
    */
   readonly statistics?: WorkerStatistics
+  /**
+   * Whether the worker has started or not.
+   */
+  readonly started?: boolean
 }
 
 /**

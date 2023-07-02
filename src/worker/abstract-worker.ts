@@ -37,6 +37,10 @@ export abstract class AbstractWorker<
   Response = unknown
 > extends AsyncResource {
   /**
+   * Worker id.
+   */
+  protected abstract id: number
+  /**
    * Task function(s) processed by the worker when the pool's `execution` function is invoked.
    */
   protected taskFunctions!: Map<string, WorkerFunction<Data, Response>>
@@ -205,7 +209,7 @@ export abstract class AbstractWorker<
    * @returns The error message.
    */
   protected handleError (e: Error | string): string {
-    return e as string
+    return e instanceof Error ? e.message : e
   }
 
   /**
@@ -225,13 +229,15 @@ export abstract class AbstractWorker<
       this.sendToMainWorker({
         data: res,
         taskPerformance,
+        workerId: this.id,
         id: message.id
       })
     } catch (e) {
-      const err = this.handleError(e as Error)
+      const errorMessage = this.handleError(e as Error | string)
       this.sendToMainWorker({
         taskError: {
-          message: err,
+          workerId: this.id,
+          message: errorMessage,
           data: message.data
         },
         id: message.id
@@ -258,15 +264,17 @@ export abstract class AbstractWorker<
         this.sendToMainWorker({
           data: res,
           taskPerformance,
+          workerId: this.id,
           id: message.id
         })
         return null
       })
       .catch(e => {
-        const err = this.handleError(e as Error)
+        const errorMessage = this.handleError(e as Error | string)
         this.sendToMainWorker({
           taskError: {
-            message: err,
+            workerId: this.id,
+            message: errorMessage,
             data: message.data
           },
           id: message.id
