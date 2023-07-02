@@ -24,6 +24,8 @@ export interface TaskError<Data = unknown> {
 
 /**
  * Task performance.
+ *
+ * @internal
  */
 export interface TaskPerformance {
   /**
@@ -42,6 +44,8 @@ export interface TaskPerformance {
 
 /**
  * Performance statistics computation.
+ *
+ * @internal
  */
 export interface WorkerStatistics {
   runTime: boolean
