@@ -117,6 +117,6 @@ module.exports = {
   jsonIntegerSerialization,
   sleep,
   sleepWorkerFunction,
-  waitWorkerEvents,
-  waitPoolEvents
+  waitPoolEvents,
+  waitWorkerEvents
 }
