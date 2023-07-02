@@ -209,7 +209,7 @@ export abstract class AbstractWorker<
    * @returns The error message.
    */
   protected handleError (e: Error | string): string {
-    return e as string
+    return e instanceof Error ? e.message : e
   }
 
   /**
@@ -233,11 +233,11 @@ export abstract class AbstractWorker<
         id: message.id
       })
     } catch (e) {
-      const err = this.handleError(e as Error)
+      const errorMessage = this.handleError(e as Error | string)
       this.sendToMainWorker({
         taskError: {
           workerId: this.id,
-          message: err,
+          message: errorMessage,
           data: message.data
         },
         id: message.id
@@ -270,11 +270,11 @@ export abstract class AbstractWorker<
         return null
       })
       .catch(e => {
-        const err = this.handleError(e as Error)
+        const errorMessage = this.handleError(e as Error | string)
         this.sendToMainWorker({
           taskError: {
             workerId: this.id,
-            message: err,
+            message: errorMessage,
             data: message.data
           },
           id: message.id

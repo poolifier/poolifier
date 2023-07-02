@@ -56,4 +56,9 @@ export class ThreadWorker<
   protected sendToMainWorker (message: MessageValue<Response>): void {
     this.getMainWorker().postMessage(message)
   }
+
+  /** @inheritDoc */
+  protected handleError (e: Error | string): string {
+    return e as string
+  }
 }
