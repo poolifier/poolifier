@@ -25,6 +25,7 @@ export type {
   OnlineHandler,
   Task,
   TaskStatistics,
+  WorkerInfo,
   WorkerNode,
   WorkerUsage
 } from './pools/worker'
