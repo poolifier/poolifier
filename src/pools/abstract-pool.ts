@@ -4,11 +4,12 @@ import type { MessageValue, PromiseResponseWrapper } from '../utility-types'
 import {
   DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
   EMPTY_FUNCTION,
+  isKillBehavior,
   isPlainObject,
   median,
   round
 } from '../utils'
-import { KillBehaviors, isKillBehavior } from '../worker/worker-options'
+import { KillBehaviors } from '../worker/worker-options'
 import { CircularArray } from '../circular-array'
 import { Queue } from '../queue'
 import {

@@ -18,21 +18,6 @@ export const KillBehaviors = Object.freeze({
 export type KillBehavior = keyof typeof KillBehaviors
 
 /**
- * Detects whether the given value is a kill behavior or not.
- *
- * @typeParam KB - Which specific KillBehavior type to test against.
- * @param killBehavior - Which kind of kill behavior to detect.
- * @param value - Any value.
- * @returns `true` if `value` was strictly equals to `killBehavior`, otherwise `false`.
- */
-export const isKillBehavior = <KB extends KillBehavior>(
-  killBehavior: KB,
-  value: unknown
-): value is KB => {
-  return value === killBehavior
-}
-
-/**
  * Options for workers.
  */
 export interface WorkerOptions {

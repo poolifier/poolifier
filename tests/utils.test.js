@@ -1,14 +1,12 @@
 const { expect } = require('expect')
 const {
   availableParallelism,
+  isKillBehavior,
   isPlainObject,
   median,
   round
 } = require('../lib/utils')
-const {
-  isKillBehavior,
-  KillBehaviors
-} = require('../lib/worker/worker-options')
+const { KillBehaviors } = require('../lib/worker/worker-options')
 
 describe('Utils test suite', () => {
   it('Verify availableParallelism() behavior', () => {
