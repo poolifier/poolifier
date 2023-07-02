@@ -407,9 +407,6 @@ describe('Abstract pool test suite', () => {
       maxQueuedTasks: 0,
       failedTasks: 0
     })
-    for (const workerNode of pool.workerNodes) {
-      console.log('thread:workerNode.info', workerNode.info)
-    }
     await pool.destroy()
     pool = new DynamicClusterPool(
       numberOfWorkers,
@@ -431,9 +428,6 @@ describe('Abstract pool test suite', () => {
       maxQueuedTasks: 0,
       failedTasks: 0
     })
-    for (const workerNode of pool.workerNodes) {
-      console.log('cluster:workerNode.info', workerNode.info)
-    }
     await pool.destroy()
   })
 

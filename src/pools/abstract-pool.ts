@@ -245,14 +245,6 @@ export abstract class AbstractPool<
     }
   }
 
-  private get starting (): boolean {
-    return this.workerNodes.some(workerNode => !workerNode.info.started)
-  }
-
-  private get started (): boolean {
-    return this.workerNodes.some(workerNode => workerNode.info.started)
-  }
-
   /** @inheritDoc */
   public get info (): PoolInfo {
     return {
@@ -770,7 +762,7 @@ export abstract class AbstractPool<
       if (this.emitter != null) {
         this.emitter.emit(PoolEvents.error, error)
       }
-      if (this.opts.restartWorkerOnError === true && !this.starting) {
+      if (this.opts.restartWorkerOnError === true) {
         this.createAndSetupWorker()
       }
     })

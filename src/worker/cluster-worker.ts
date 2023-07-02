@@ -41,9 +41,6 @@ export class ClusterWorker<
       cluster.worker as Worker,
       opts
     )
-    if (!this.isMain) {
-      this.sendToMainWorker({ workerId: this.id, started: true })
-    }
   }
 
   /** @inheritDoc */
@@ -53,7 +50,6 @@ export class ClusterWorker<
 
   /** @inheritDoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
-    console.log('sending message to main worker(cluster)', message)
     this.getMainWorker().send(message)
   }
 

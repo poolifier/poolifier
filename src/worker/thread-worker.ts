@@ -46,9 +46,6 @@ export class ThreadWorker<
       parentPort as MessagePort,
       opts
     )
-    if (!this.isMain) {
-      this.sendToMainWorker({ workerId: this.id, started: true })
-    }
   }
 
   protected get id (): number {
@@ -57,7 +54,6 @@ export class ThreadWorker<
 
   /** @inheritDoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
-    console.log('sending message to main worker(thread)', message)
     this.getMainWorker().postMessage(message)
   }
 }
