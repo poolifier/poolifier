@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Ensure worker queued tasks at error are reassigned to other pool workers.
+
 ### Added
 
 - Add pool `utilization` ratio to pool information.

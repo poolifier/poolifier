@@ -772,6 +772,33 @@ export abstract class AbstractPool<
       if (this.emitter != null) {
         this.emitter.emit(PoolEvents.error, error)
       }
+      if (this.opts.enableTasksQueue === true) {
+        const workerNodeKey = this.getWorkerNodeKey(worker)
+        while (this.tasksQueueSize(workerNodeKey) > 0) {
+          let targetWorkerNodeKey: number = workerNodeKey
+          let minQueuedTasks = Infinity
+          for (const [workerNodeId, workerNode] of this.workerNodes.entries()) {
+            if (
+              workerNodeId !== workerNodeKey &&
+              workerNode.usage.tasks.queued === 0
+            ) {
+              targetWorkerNodeKey = workerNodeId
+              break
+            }
+            if (
+              workerNodeId !== workerNodeKey &&
+              workerNode.usage.tasks.queued < minQueuedTasks
+            ) {
+              minQueuedTasks = workerNode.usage.tasks.queued
+              targetWorkerNodeKey = workerNodeId
+            }
+          }
+          this.enqueueTask(
+            targetWorkerNodeKey,
+            this.dequeueTask(workerNodeKey) as Task<Data>
+          )
+        }
+      }
       if (this.opts.restartWorkerOnError === true) {
         this.createAndSetupWorker()
       }
