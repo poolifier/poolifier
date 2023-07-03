@@ -125,7 +125,7 @@ const pool = new FixedThreadPool(availableParallelism(), './yourWorker.js', {
 pool.emitter.on(PoolEvents.busy, () => console.info('Pool is busy'))
 
 // or a dynamic worker-threads pool
-const pool = new DynamicThreadPool(availableParallelism() / 2, availableParallelism(), './yourWorker.js', {
+const pool = new DynamicThreadPool(Math.floor(availableParallelism() / 2), availableParallelism(), './yourWorker.js', {
   errorHandler: e => console.error(e),
   onlineHandler: () => console.info('worker is online')
 })

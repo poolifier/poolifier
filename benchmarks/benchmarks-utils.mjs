@@ -133,14 +133,14 @@ export const buildPool = (workerType, poolType, poolSize, poolOptions) => {
       switch (workerType) {
         case WorkerTypes.thread:
           return new DynamicThreadPool(
-            poolSize / 2,
+            Math.floor(poolSize / 2),
             poolSize * 3,
             './benchmarks/internal/thread-worker.mjs',
             poolOptions
           )
         case WorkerTypes.cluster:
           return new DynamicClusterPool(
-            poolSize / 2,
+            Math.floor(poolSize / 2),
             poolSize * 3,
             './benchmarks/internal/cluster-worker.mjs',
             poolOptions

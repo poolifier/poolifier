@@ -20,7 +20,7 @@ export const fixedPool = new FixedThreadPool<MyData, Promise<MyResponse>>(
 )
 
 export const dynamicPool = new DynamicThreadPool<MyData, Promise<MyResponse>>(
-  availableParallelism() / 2,
+  Math.floor(availableParallelism() / 2),
   availableParallelism(),
   join(__dirname, 'worker.js'),
   {

@@ -5,7 +5,7 @@ const {
 } = require('poolifier')
 
 const pool = new DynamicThreadPool(
-  availableParallelism() / 2,
+  Math.floor(availableParallelism() / 2),
   availableParallelism(),
   './yourWorker.js',
   {
