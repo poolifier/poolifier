@@ -73,7 +73,7 @@ export interface PoolInfo {
   minSize: number
   maxSize: number
   /** Pool utilization ratio. */
-  utilization: number
+  utilization?: number
   /** Pool total worker nodes */
   workerNodes: number
   /** Pool idle worker nodes */
