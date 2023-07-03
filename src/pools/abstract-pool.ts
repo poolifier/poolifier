@@ -255,8 +255,8 @@ export abstract class AbstractPool<
       maxSize: this.maxSize,
       ...(this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
         .runTime.aggregate &&
-        this.workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
-          .aggregate && { utilization: round(this.utilization) }),
+        this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+          .waitTime.aggregate && { utilization: round(this.utilization) }),
       workerNodes: this.workerNodes.length,
       idleWorkerNodes: this.workerNodes.reduce(
         (accumulator, workerNode) =>
