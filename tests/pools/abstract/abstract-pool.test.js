@@ -11,6 +11,7 @@ const {
 } = require('../../../lib')
 const { CircularArray } = require('../../../lib/circular-array')
 const { Queue } = require('../../../lib/queue')
+const { version } = require('../../../package.json')
 
 describe('Abstract pool test suite', () => {
   const numberOfWorkers = 2
@@ -393,6 +394,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.js'
     )
     expect(pool.info).toStrictEqual({
+      version,
       type: PoolTypes.fixed,
       worker: WorkerTypes.thread,
       minSize: numberOfWorkers,
@@ -413,6 +415,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/cluster/testWorker.js'
     )
     expect(pool.info).toStrictEqual({
+      version,
       type: PoolTypes.dynamic,
       worker: WorkerTypes.cluster,
       minSize: numberOfWorkers,
@@ -711,6 +714,7 @@ describe('Abstract pool test suite', () => {
     // So in total numberOfWorkers * 2 times for a loop submitting up to numberOfWorkers * 2 tasks to the dynamic pool with min = max = numberOfWorkers.
     expect(poolFull).toBe(numberOfWorkers * 2)
     expect(poolInfo).toStrictEqual({
+      version,
       type: PoolTypes.dynamic,
       worker: WorkerTypes.thread,
       minSize: expect.any(Number),
@@ -747,6 +751,7 @@ describe('Abstract pool test suite', () => {
     // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the fixed pool.
     expect(poolBusy).toBe(numberOfWorkers + 1)
     expect(poolInfo).toStrictEqual({
+      version,
       type: PoolTypes.fixed,
       worker: WorkerTypes.thread,
       minSize: expect.any(Number),

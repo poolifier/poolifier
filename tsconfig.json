@@ -4,9 +4,11 @@
     "target": "ES2022",
     "module": "ES2022",
     "outDir": "lib",
+    "moduleResolution": "Node",
     "esModuleInterop": true,
     "declaration": true,
-    "strict": true
+    "strict": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "lib"]

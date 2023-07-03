@@ -68,6 +68,7 @@ export type PoolEvent = keyof typeof PoolEvents
  * Pool information.
  */
 export interface PoolInfo {
+  version: string
   type: PoolType
   worker: WorkerType
   minSize: number
