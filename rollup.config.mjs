@@ -48,7 +48,6 @@ export default {
     'node:cluster',
     'node:crypto',
     'node:events',
-    'node:fs',
     'node:os',
     'node:perf_hooks',
     'node:worker_threads'

@@ -1,6 +1,5 @@
 import crypto from 'node:crypto'
 import { performance } from 'node:perf_hooks'
-import { readFileSync } from 'node:fs'
 import type { MessageValue, PromiseResponseWrapper } from '../utility-types'
 import {
   DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
@@ -39,12 +38,7 @@ import {
   type WorkerChoiceStrategyOptions
 } from './selection-strategies/selection-strategies-types'
 import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
-
-const version = (
-  JSON.parse(
-    readFileSync(new URL('../../package.json', import.meta.url), 'utf8')
-  ) as Record<string, unknown>
-).version as string
+import { version } from './version'
 
 /**
  * Base class that implements some shared logic for all poolifier pools.
