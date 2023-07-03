@@ -125,7 +125,7 @@ describe('Dynamic cluster pool test suite', () => {
       longRunningPool.execute()
     }
     expect(longRunningPool.workerNodes.length).toBe(max)
-    await sleep(1500)
+    await sleep(1000)
     // Here we expect the workerNodes to be at the max size since the task is still executing
     expect(longRunningPool.workerNodes.length).toBe(max)
     // We need to clean up the resources after our test

@@ -505,7 +505,13 @@ export abstract class AbstractPool<
       this.workerNodes.map(async (workerNode, workerNodeKey) => {
         this.flushTasksQueue(workerNodeKey)
         // FIXME: wait for tasks to be finished
+        const workerExitPromise = new Promise<void>(resolve => {
+          workerNode.worker.on('exit', () => {
+            resolve()
+          })
+        })
         await this.destroyWorker(workerNode.worker)
+        await workerExitPromise
       })
     )
   }
@@ -987,13 +993,11 @@ export abstract class AbstractPool<
   }
 
   private flushTasksQueue (workerNodeKey: number): void {
-    if (this.tasksQueueSize(workerNodeKey) > 0) {
-      for (let i = 0; i < this.tasksQueueSize(workerNodeKey); i++) {
-        this.executeTask(
-          workerNodeKey,
-          this.dequeueTask(workerNodeKey) as Task<Data>
-        )
-      }
+    while (this.tasksQueueSize(workerNodeKey) > 0) {
+      this.executeTask(
+        workerNodeKey,
+        this.dequeueTask(workerNodeKey) as Task<Data>
+      )
     }
     this.workerNodes[workerNodeKey].tasksQueue.clear()
   }
