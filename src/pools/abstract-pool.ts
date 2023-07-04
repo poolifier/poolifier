@@ -301,21 +301,13 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Gets the pool run time.
-   *
-   * @returns The pool run time in milliseconds.
-   */
-  private get runTime (): number {
-    return performance.now() - this.startTimestamp
-  }
-
-  /**
    * Gets the approximate pool utilization.
    *
    * @returns The pool utilization.
    */
   private get utilization (): number {
-    const poolRunTimeCapacity = this.runTime * this.maxSize
+    const poolRunTimeCapacity =
+      (performance.now() - this.startTimestamp) * this.maxSize
     const totalTasksRunTime = this.workerNodes.reduce(
       (accumulator, workerNode) =>
         accumulator + workerNode.usage.runTime.aggregate,
