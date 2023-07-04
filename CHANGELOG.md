@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Recreate the right worker type on uncaught exception.
+
+### Added
+
+- Add minimum and maximum to internal measurement statistics.
+
 ## [2.6.8] - 2023-07-03
 
 ### Fixed

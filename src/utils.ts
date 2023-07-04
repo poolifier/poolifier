@@ -1,4 +1,4 @@
-import os from 'node:os'
+import { cpus, availableParallelism as parallelism } from 'node:os'
 import type {
   MeasurementStatisticsRequirements,
   WorkerChoiceStrategyOptions
@@ -41,11 +41,11 @@ export const DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS: MeasurementStatisticsR
 export const availableParallelism = (): number => {
   let availableParallelism = 1
   try {
-    availableParallelism = os.availableParallelism()
+    availableParallelism = parallelism()
   } catch {
-    const cpus = os.cpus()
-    if (Array.isArray(cpus) && cpus.length > 0) {
-      availableParallelism = cpus.length
+    const numberOfCpus = cpus()
+    if (Array.isArray(numberOfCpus) && numberOfCpus.length > 0) {
+      availableParallelism = numberOfCpus.length
     }
   }
   return availableParallelism

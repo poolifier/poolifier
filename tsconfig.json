@@ -5,7 +5,6 @@
     "module": "ES2022",
     "outDir": "lib",
     "moduleResolution": "Node",
-    "esModuleInterop": true,
     "declaration": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true

@@ -1,4 +1,4 @@
-import crypto from 'node:crypto'
+import { randomUUID } from 'node:crypto'
 import { performance } from 'node:perf_hooks'
 import type { MessageValue, PromiseResponseWrapper } from '../utility-types'
 import {
@@ -469,7 +469,7 @@ export abstract class AbstractPool<
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       data: data ?? ({} as Data),
       timestamp,
-      id: crypto.randomUUID()
+      id: randomUUID()
     }
     const res = new Promise<Response>((resolve, reject) => {
       this.promiseResponseMap.set(submittedTask.id as string, {
@@ -938,10 +938,10 @@ export abstract class AbstractPool<
   private checkAndEmitEvents (): void {
     if (this.emitter != null) {
       if (this.busy) {
-        this.emitter?.emit(PoolEvents.busy, this.info)
+        this.emitter.emit(PoolEvents.busy, this.info)
       }
       if (this.type === PoolTypes.dynamic && this.full) {
-        this.emitter?.emit(PoolEvents.full, this.info)
+        this.emitter.emit(PoolEvents.full, this.info)
       }
     }
   }

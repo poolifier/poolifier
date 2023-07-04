@@ -144,10 +144,6 @@ export interface WorkerInfo {
    * Started flag.
    */
   started: boolean
-  /**
-   * Shared buffer.
-   */
-  readonly sharedBuffer?: Int32Array
 }
 
 /**

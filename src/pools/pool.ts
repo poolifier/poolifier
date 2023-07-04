@@ -1,4 +1,4 @@
-import EventEmitterAsyncResource from 'node:events'
+import { EventEmitter } from 'node:events'
 import type {
   ErrorHandler,
   ExitHandler,
@@ -47,7 +47,7 @@ export type WorkerType = keyof typeof WorkerTypes
 /**
  * Pool events emitter.
  */
-export class PoolEmitter extends EventEmitterAsyncResource {}
+export class PoolEmitter extends EventEmitter {}
 
 /**
  * Enumeration of pool events.
