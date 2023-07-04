@@ -585,7 +585,16 @@ export abstract class AbstractPool<
       this.workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
         .aggregate
     ) {
-      workerUsage.runTime.aggregate += message.taskPerformance?.runTime ?? 0
+      const taskRunTime = message.taskPerformance?.runTime ?? 0
+      workerUsage.runTime.aggregate += taskRunTime
+      workerUsage.runTime.minimum = Math.min(
+        taskRunTime,
+        workerUsage.runTime.minimum
+      )
+      workerUsage.runTime.maximum = Math.max(
+        taskRunTime,
+        workerUsage.runTime.maximum
+      )
       if (
         this.workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
           .average &&
@@ -616,7 +625,15 @@ export abstract class AbstractPool<
       this.workerChoiceStrategyContext.getTaskStatisticsRequirements().waitTime
         .aggregate
     ) {
-      workerUsage.waitTime.aggregate += taskWaitTime ?? 0
+      workerUsage.waitTime.aggregate += taskWaitTime
+      workerUsage.waitTime.minimum = Math.min(
+        taskWaitTime,
+        workerUsage.waitTime.minimum
+      )
+      workerUsage.waitTime.maximum = Math.max(
+        taskWaitTime,
+        workerUsage.waitTime.maximum
+      )
       if (
         this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
           .waitTime.average &&
@@ -645,17 +662,33 @@ export abstract class AbstractPool<
       this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
         .aggregate
     ) {
-      if (workerUsage.elu != null && message.taskPerformance?.elu != null) {
+      if (message.taskPerformance?.elu != null) {
         workerUsage.elu.idle.aggregate += message.taskPerformance.elu.idle
         workerUsage.elu.active.aggregate += message.taskPerformance.elu.active
-        workerUsage.elu.utilization =
-          (workerUsage.elu.utilization +
-            message.taskPerformance.elu.utilization) /
-          2
-      } else if (message.taskPerformance?.elu != null) {
-        workerUsage.elu.idle.aggregate = message.taskPerformance.elu.idle
-        workerUsage.elu.active.aggregate = message.taskPerformance.elu.active
-        workerUsage.elu.utilization = message.taskPerformance.elu.utilization
+        if (workerUsage.elu.utilization != null) {
+          workerUsage.elu.utilization =
+            (workerUsage.elu.utilization +
+              message.taskPerformance.elu.utilization) /
+            2
+        } else {
+          workerUsage.elu.utilization = message.taskPerformance.elu.utilization
+        }
+        workerUsage.elu.idle.minimum = Math.min(
+          message.taskPerformance.elu.idle,
+          workerUsage.elu.idle.minimum
+        )
+        workerUsage.elu.idle.maximum = Math.max(
+          message.taskPerformance.elu.idle,
+          workerUsage.elu.idle.maximum
+        )
+        workerUsage.elu.active.minimum = Math.min(
+          message.taskPerformance.elu.active,
+          workerUsage.elu.active.minimum
+        )
+        workerUsage.elu.active.maximum = Math.max(
+          message.taskPerformance.elu.active,
+          workerUsage.elu.active.maximum
+        )
       }
       if (
         this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
@@ -1062,12 +1095,16 @@ export abstract class AbstractPool<
       },
       runTime: {
         aggregate: 0,
+        maximum: 0,
+        minimum: 0,
         average: 0,
         median: 0,
         history: new CircularArray()
       },
       waitTime: {
         aggregate: 0,
+        maximum: 0,
+        minimum: 0,
         average: 0,
         median: 0,
         history: new CircularArray()
@@ -1075,17 +1112,20 @@ export abstract class AbstractPool<
       elu: {
         idle: {
           aggregate: 0,
+          maximum: 0,
+          minimum: 0,
           average: 0,
           median: 0,
           history: new CircularArray()
         },
         active: {
           aggregate: 0,
+          maximum: 0,
+          minimum: 0,
           average: 0,
           median: 0,
           history: new CircularArray()
-        },
-        utilization: 0
+        }
       }
     }
   }

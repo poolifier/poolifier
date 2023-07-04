@@ -66,6 +66,14 @@ export interface MeasurementStatistics {
    */
   aggregate: number
   /**
+   * Measurement minimum.
+   */
+  minimum: number
+  /**
+   * Measurement maximum.
+   */
+  maximum: number
+  /**
    * Measurement average.
    */
   average: number
@@ -87,7 +95,7 @@ export interface MeasurementStatistics {
 export interface EventLoopUtilizationMeasurementStatistics {
   readonly idle: MeasurementStatistics
   readonly active: MeasurementStatistics
-  utilization: number
+  utilization?: number
 }
 
 /**

@@ -463,12 +463,16 @@ describe('Abstract pool test suite', () => {
         },
         runTime: {
           aggregate: 0,
+          maximum: 0,
+          minimum: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
           aggregate: 0,
+          maximum: 0,
+          minimum: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -476,17 +480,20 @@ describe('Abstract pool test suite', () => {
         elu: {
           idle: {
             aggregate: 0,
+            maximum: 0,
+            minimum: 0,
             average: 0,
             median: 0,
             history: expect.any(CircularArray)
           },
           active: {
             aggregate: 0,
+            maximum: 0,
+            minimum: 0,
             average: 0,
             median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
     }
@@ -528,12 +535,16 @@ describe('Abstract pool test suite', () => {
         },
         runTime: {
           aggregate: 0,
+          maximum: 0,
+          minimum: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
           aggregate: 0,
+          maximum: 0,
+          minimum: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -541,17 +552,20 @@ describe('Abstract pool test suite', () => {
         elu: {
           idle: {
             aggregate: 0,
+            maximum: 0,
+            minimum: 0,
             average: 0,
             median: 0,
             history: expect.any(CircularArray)
           },
           active: {
             aggregate: 0,
+            maximum: 0,
+            minimum: 0,
             average: 0,
             median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
     }
@@ -567,12 +581,16 @@ describe('Abstract pool test suite', () => {
         },
         runTime: {
           aggregate: 0,
+          maximum: 0,
+          minimum: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
           aggregate: 0,
+          maximum: 0,
+          minimum: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -580,17 +598,20 @@ describe('Abstract pool test suite', () => {
         elu: {
           idle: {
             aggregate: 0,
+            maximum: 0,
+            minimum: 0,
             average: 0,
             median: 0,
             history: expect.any(CircularArray)
           },
           active: {
             aggregate: 0,
+            maximum: 0,
+            minimum: 0,
             average: 0,
             median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
     }
@@ -620,12 +641,16 @@ describe('Abstract pool test suite', () => {
         },
         runTime: {
           aggregate: 0,
+          maximum: 0,
+          minimum: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
           aggregate: 0,
+          maximum: 0,
+          minimum: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -633,17 +658,20 @@ describe('Abstract pool test suite', () => {
         elu: {
           idle: {
             aggregate: 0,
+            maximum: 0,
+            minimum: 0,
             average: 0,
             median: 0,
             history: expect.any(CircularArray)
           },
           active: {
             aggregate: 0,
+            maximum: 0,
+            minimum: 0,
             average: 0,
             median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
@@ -661,12 +689,16 @@ describe('Abstract pool test suite', () => {
         },
         runTime: {
           aggregate: 0,
+          maximum: 0,
+          minimum: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
           aggregate: 0,
+          maximum: 0,
+          minimum: 0,
           average: 0,
           median: 0,
           history: expect.any(CircularArray)
@@ -674,17 +706,20 @@ describe('Abstract pool test suite', () => {
         elu: {
           idle: {
             aggregate: 0,
+            maximum: 0,
+            minimum: 0,
             average: 0,
             median: 0,
             history: expect.any(CircularArray)
           },
           active: {
             aggregate: 0,
+            maximum: 0,
+            minimum: 0,
             average: 0,
             median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
       expect(workerNode.usage.runTime.history.length).toBe(0)
