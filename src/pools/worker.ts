@@ -137,6 +137,10 @@ export interface WorkerInfo {
    */
   readonly id: number | undefined
   /**
+   * Dynamic flag.
+   */
+  dynamic: boolean
+  /**
    * Started flag.
    */
   started: boolean

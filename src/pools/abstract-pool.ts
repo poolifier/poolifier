@@ -28,6 +28,7 @@ import type {
   IWorker,
   MessageHandler,
   Task,
+  WorkerInfo,
   WorkerNode,
   WorkerUsage
 } from './worker'
@@ -379,10 +380,10 @@ export abstract class AbstractPool<
     if (workerChoiceStrategyOptions != null) {
       this.setWorkerChoiceStrategyOptions(workerChoiceStrategyOptions)
     }
-    for (const [workerNodeKey, workerNode] of this.workerNodes.entries()) {
+    for (const workerNode of this.workerNodes) {
       this.setWorkerNodeTasksUsage(
         workerNode,
-        this.getWorkerUsage(workerNodeKey)
+        this.getInitialWorkerUsage(workerNode.worker)
       )
       this.setWorkerStatistics(workerNode.worker)
     }
@@ -827,7 +828,11 @@ export abstract class AbstractPool<
         }
       }
       if (this.opts.restartWorkerOnError === true) {
-        this.createAndSetupWorker()
+        if (this.getWorkerInfo(this.getWorkerNodeKey(worker)).dynamic) {
+          this.createAndSetupDynamicWorker()
+        } else {
+          this.createAndSetupWorker()
+        }
       }
     })
     worker.on('online', this.opts.onlineHandler ?? EMPTY_FUNCTION)
@@ -852,6 +857,7 @@ export abstract class AbstractPool<
    */
   protected createAndSetupDynamicWorker (): Worker {
     const worker = this.createAndSetupWorker()
+    this.getWorkerInfo(this.getWorkerNodeKey(worker)).dynamic = true
     this.registerWorkerMessageListener(worker, message => {
       const workerNodeKey = this.getWorkerNodeKey(worker)
       if (
@@ -954,6 +960,15 @@ export abstract class AbstractPool<
   }
 
   /**
+   * Gets the worker information.
+   *
+   * @param workerNodeKey - The worker node key.
+   */
+  private getWorkerInfo (workerNodeKey: number): WorkerInfo {
+    return this.workerNodes[workerNodeKey].info
+  }
+
+  /**
    * Pushes the given worker in the pool worker nodes.
    *
    * @param worker - The worker.
@@ -962,14 +977,13 @@ export abstract class AbstractPool<
   private pushWorkerNode (worker: Worker): number {
     this.workerNodes.push({
       worker,
-      info: { id: this.getWorkerId(worker), started: true },
-      usage: this.getWorkerUsage(),
+      info: this.getInitialWorkerInfo(worker),
+      usage: this.getInitialWorkerUsage(),
       tasksQueue: new Queue<Task<Data>>()
     })
-    const workerNodeKey = this.getWorkerNodeKey(worker)
     this.setWorkerNodeTasksUsage(
-      this.workerNodes[workerNodeKey],
-      this.getWorkerUsage(workerNodeKey)
+      this.workerNodes[this.getWorkerNodeKey(worker)],
+      this.getInitialWorkerUsage(worker)
     )
     return this.workerNodes.length
   }
@@ -1074,22 +1088,26 @@ export abstract class AbstractPool<
     })
   }
 
-  private getWorkerUsage (workerNodeKey?: number): WorkerUsage {
-    const getTasksQueueSize = (workerNodeKey?: number): number => {
-      return workerNodeKey != null ? this.tasksQueueSize(workerNodeKey) : 0
+  private getInitialWorkerUsage (worker?: Worker): WorkerUsage {
+    const getTasksQueueSize = (worker?: Worker): number => {
+      return worker != null
+        ? this.tasksQueueSize(this.getWorkerNodeKey(worker))
+        : 0
     }
-    const getTasksMaxQueueSize = (workerNodeKey?: number): number => {
-      return workerNodeKey != null ? this.tasksMaxQueueSize(workerNodeKey) : 0
+    const getTasksMaxQueueSize = (worker?: Worker): number => {
+      return worker != null
+        ? this.tasksMaxQueueSize(this.getWorkerNodeKey(worker))
+        : 0
     }
     return {
       tasks: {
         executed: 0,
         executing: 0,
         get queued (): number {
-          return getTasksQueueSize(workerNodeKey)
+          return getTasksQueueSize(worker)
         },
         get maxQueued (): number {
-          return getTasksMaxQueueSize(workerNodeKey)
+          return getTasksMaxQueueSize(worker)
         },
         failed: 0
       },
@@ -1128,5 +1146,9 @@ export abstract class AbstractPool<
         }
       }
     }
+  }
+
+  private getInitialWorkerInfo (worker: Worker): WorkerInfo {
+    return { id: this.getWorkerId(worker), dynamic: false, started: true }
   }
 }
