@@ -1347,8 +1347,8 @@ packages:
       readable-stream: 3.6.2
     dev: true
 
-  /boxen@7.1.0:
-    resolution: {integrity: sha512-ScG8CDo8dj7McqCZ5hz4dIBp20xj4unQ2lXIDa7ff6RcZElCpuNzutdwzKVvRikfNjm7CFAlR3HJHcoHkDOExQ==}
+  /boxen@7.1.1:
+    resolution: {integrity: sha512-2hCgjEmP8YLWQ130n2FerGv7rYpfBmnmp9Uy2Le1vge6X3gZIfSmEzP5QTDElFxcvVcXlEn8Aq6MU/PZygIOog==}
     engines: {node: '>=14.16'}
     dependencies:
       ansi-align: 3.0.1
@@ -5928,7 +5928,7 @@ packages:
     resolution: {integrity: sha512-EDxhTEVPZZRLWYcJ4ZXjGFN0oP7qYvbXWzEgRm/Yql4dHX5wDbvh89YHP6PK1lzZJYrMtXUuZZz8XGK+U6U1og==}
     engines: {node: '>=14.16'}
     dependencies:
-      boxen: 7.1.0
+      boxen: 7.1.1
       chalk: 5.2.0
       configstore: 6.0.0
       has-yarn: 3.0.0
