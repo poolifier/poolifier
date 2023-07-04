@@ -13,8 +13,8 @@ const data = {
 const workerNodes = new WorkerNodes(
   require.resolve('./workers/worker-nodes/function-to-bench-worker'),
   {
-    minWorkers: size,
-    maxWorkers: size * 3,
+    minWorkers: Math.floor(size / 2),
+    maxWorkers: size,
     taskTimeout: 60000 // this is the same as poolifier default
   }
 )

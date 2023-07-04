@@ -10,8 +10,8 @@ const data = {
 }
 
 const dynamicPool = new DynamicThreadPool(
+  Math.floor(size / 2),
   size,
-  size * 3,
   './workers/poolifier/function-to-bench-worker.mjs'
 )
 

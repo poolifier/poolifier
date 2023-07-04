@@ -37,7 +37,7 @@ done
 
 taskType=${taskType:-'CPU_INTENSIVE'}
 taskSize=${taskSize:-5000}
-poolSize=${poolSize:-10}
+poolSize=${poolSize:-$(nproc --all)}
 iterations=${iterations:-100000}
 
 echo 'Running benchmarks with pool size:' ${poolSize}', number of iterations:' ${iterations}', task type:' ${taskType} 'and task size:' ${taskSize}

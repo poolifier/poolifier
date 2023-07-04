@@ -25,6 +25,7 @@
     "mochawesome",
     "MYBENCH",
     "nocombine",
+    "nproc",
     "octocat",
     "opencollective",
     "OPTARG",
