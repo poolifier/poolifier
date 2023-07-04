@@ -20,7 +20,8 @@ async function run () {
     promises.push(
       pool.exec({
         task: functionToBench,
-        param: data
+        param: data,
+        timeout: 60000 // this is the same as poolifier default
       })
     )
   }
