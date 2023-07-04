@@ -590,11 +590,11 @@ export abstract class AbstractPool<
       workerUsage.runTime.aggregate += taskRunTime
       workerUsage.runTime.minimum = Math.min(
         taskRunTime,
-        workerUsage.runTime.minimum
+        workerUsage.runTime.minimum ?? Infinity
       )
       workerUsage.runTime.maximum = Math.max(
         taskRunTime,
-        workerUsage.runTime.maximum
+        workerUsage.runTime.maximum ?? -Infinity
       )
       if (
         this.workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
@@ -629,11 +629,11 @@ export abstract class AbstractPool<
       workerUsage.waitTime.aggregate += taskWaitTime
       workerUsage.waitTime.minimum = Math.min(
         taskWaitTime,
-        workerUsage.waitTime.minimum
+        workerUsage.waitTime.minimum ?? Infinity
       )
       workerUsage.waitTime.maximum = Math.max(
         taskWaitTime,
-        workerUsage.waitTime.maximum
+        workerUsage.waitTime.maximum ?? -Infinity
       )
       if (
         this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
@@ -676,19 +676,19 @@ export abstract class AbstractPool<
         }
         workerUsage.elu.idle.minimum = Math.min(
           message.taskPerformance.elu.idle,
-          workerUsage.elu.idle.minimum
+          workerUsage.elu.idle.minimum ?? Infinity
         )
         workerUsage.elu.idle.maximum = Math.max(
           message.taskPerformance.elu.idle,
-          workerUsage.elu.idle.maximum
+          workerUsage.elu.idle.maximum ?? -Infinity
         )
         workerUsage.elu.active.minimum = Math.min(
           message.taskPerformance.elu.active,
-          workerUsage.elu.active.minimum
+          workerUsage.elu.active.minimum ?? Infinity
         )
         workerUsage.elu.active.maximum = Math.max(
           message.taskPerformance.elu.active,
-          workerUsage.elu.active.maximum
+          workerUsage.elu.active.maximum ?? -Infinity
         )
       }
       if (
