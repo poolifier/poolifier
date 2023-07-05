@@ -89,10 +89,14 @@ export interface PoolInfo {
   runTime?: {
     minimum: number
     maximum: number
+    average: number
+    median?: number
   }
   waitTime?: {
     minimum: number
     maximum: number
+    average: number
+    median?: number
   }
 }
 

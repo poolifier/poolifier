@@ -301,31 +301,83 @@ export abstract class AbstractPool<
       ...(this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
         .runTime.aggregate && {
         runTime: {
-          minimum: Math.min(
-            ...this.workerNodes.map(
-              workerNode => workerNode.usage.runTime?.minimum ?? Infinity
+          minimum: round(
+            Math.min(
+              ...this.workerNodes.map(
+                workerNode => workerNode.usage.runTime?.minimum ?? Infinity
+              )
             )
           ),
-          maximum: Math.max(
-            ...this.workerNodes.map(
-              workerNode => workerNode.usage.runTime?.maximum ?? -Infinity
+          maximum: round(
+            Math.max(
+              ...this.workerNodes.map(
+                workerNode => workerNode.usage.runTime?.maximum ?? -Infinity
+              )
             )
-          )
+          ),
+          average: round(
+            this.workerNodes.reduce(
+              (accumulator, workerNode) =>
+                accumulator + (workerNode.usage.runTime?.aggregate ?? 0),
+              0
+            ) /
+              this.workerNodes.reduce(
+                (accumulator, workerNode) =>
+                  accumulator + (workerNode.usage.tasks?.executed ?? 0),
+                0
+              )
+          ),
+          ...(this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+            .runTime.median && {
+            median: round(
+              median(
+                this.workerNodes.map(
+                  workerNode => workerNode.usage.runTime?.median ?? 0
+                )
+              )
+            )
+          })
         }
       }),
       ...(this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
         .waitTime.aggregate && {
         waitTime: {
-          minimum: Math.min(
-            ...this.workerNodes.map(
-              workerNode => workerNode.usage.waitTime?.minimum ?? Infinity
+          minimum: round(
+            Math.min(
+              ...this.workerNodes.map(
+                workerNode => workerNode.usage.waitTime?.minimum ?? Infinity
+              )
             )
           ),
-          maximum: Math.max(
-            ...this.workerNodes.map(
-              workerNode => workerNode.usage.waitTime?.maximum ?? -Infinity
+          maximum: round(
+            Math.max(
+              ...this.workerNodes.map(
+                workerNode => workerNode.usage.waitTime?.maximum ?? -Infinity
+              )
             )
-          )
+          ),
+          average: round(
+            this.workerNodes.reduce(
+              (accumulator, workerNode) =>
+                accumulator + (workerNode.usage.waitTime?.aggregate ?? 0),
+              0
+            ) /
+              this.workerNodes.reduce(
+                (accumulator, workerNode) =>
+                  accumulator + (workerNode.usage.tasks?.executed ?? 0),
+                0
+              )
+          ),
+          ...(this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+            .waitTime.median && {
+            median: round(
+              median(
+                this.workerNodes.map(
+                  workerNode => workerNode.usage.waitTime?.median ?? 0
+                )
+              )
+            )
+          })
         }
       })
     }
@@ -602,8 +654,9 @@ export abstract class AbstractPool<
   ): void {
     const workerTaskStatistics = workerUsage.tasks
     --workerTaskStatistics.executing
-    ++workerTaskStatistics.executed
-    if (message.taskError != null) {
+    if (message.taskError == null) {
+      ++workerTaskStatistics.executed
+    } else {
       ++workerTaskStatistics.failed
     }
   }
@@ -633,8 +686,7 @@ export abstract class AbstractPool<
         workerUsage.tasks.executed !== 0
       ) {
         workerUsage.runTime.average =
-          workerUsage.runTime.aggregate /
-          (workerUsage.tasks.executed - workerUsage.tasks.failed)
+          workerUsage.runTime.aggregate / workerUsage.tasks.executed
       }
       if (
         this.workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
@@ -673,8 +725,7 @@ export abstract class AbstractPool<
         workerUsage.tasks.executed !== 0
       ) {
         workerUsage.waitTime.average =
-          workerUsage.waitTime.aggregate /
-          (workerUsage.tasks.executed - workerUsage.tasks.failed)
+          workerUsage.waitTime.aggregate / workerUsage.tasks.executed
       }
       if (
         this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
@@ -730,12 +781,10 @@ export abstract class AbstractPool<
             .average &&
           workerUsage.tasks.executed !== 0
         ) {
-          const executedTasks =
-            workerUsage.tasks.executed - workerUsage.tasks.failed
           workerUsage.elu.idle.average =
-            workerUsage.elu.idle.aggregate / executedTasks
+            workerUsage.elu.idle.aggregate / workerUsage.tasks.executed
           workerUsage.elu.active.average =
-            workerUsage.elu.active.aggregate / executedTasks
+            workerUsage.elu.active.aggregate / workerUsage.tasks.executed
         }
         if (
           this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
