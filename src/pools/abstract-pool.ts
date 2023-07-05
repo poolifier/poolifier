@@ -1130,23 +1130,13 @@ export abstract class AbstractPool<
       if (worker == null) {
         return 0
       }
-      // FIXME: Workaround tasks queue initialization race issue.
-      try {
-        return this.tasksQueueSize(this.getWorkerNodeKey(worker))
-      } catch {
-        return 0
-      }
+      return this.tasksQueueSize(this.getWorkerNodeKey(worker))
     }
     const getTasksMaxQueueSize = (worker?: Worker): number => {
       if (worker == null) {
         return 0
       }
-      // FIXME: Workaround tasks queue initialization race issue.
-      try {
-        return this.tasksMaxQueueSize(this.getWorkerNodeKey(worker))
-      } catch {
-        return 0
-      }
+      return this.tasksMaxQueueSize(this.getWorkerNodeKey(worker))
     }
     return {
       tasks: {
