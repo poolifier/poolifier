@@ -739,8 +739,7 @@ export abstract class AbstractPool<
         }
         if (
           this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
-            .median &&
-          message.taskPerformance?.elu != null
+            .median
         ) {
           workerUsage.elu.idle.history.push(message.taskPerformance.elu.idle)
           workerUsage.elu.active.history.push(
