@@ -86,6 +86,14 @@ export interface PoolInfo {
   queuedTasks: number
   maxQueuedTasks: number
   failedTasks: number
+  runTime?: {
+    minimum: number
+    maximum: number
+  }
+  waitTime?: {
+    minimum: number
+    maximum: number
+  }
 }
 
 /**

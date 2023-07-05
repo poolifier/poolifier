@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add minimum and maximum to internal measurement statistics.
+- Add `runTime` and `waitTime` to pool information.
 
 ## [2.6.8] - 2023-07-03
 

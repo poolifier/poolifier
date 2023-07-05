@@ -297,7 +297,37 @@ export abstract class AbstractPool<
         (accumulator, workerNode) =>
           accumulator + workerNode.usage.tasks.failed,
         0
-      )
+      ),
+      ...(this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+        .runTime.aggregate && {
+        runTime: {
+          minimum: Math.min(
+            ...this.workerNodes.map(
+              workerNode => workerNode.usage.runTime.minimum
+            )
+          ),
+          maximum: Math.max(
+            ...this.workerNodes.map(
+              workerNode => workerNode.usage.runTime.maximum
+            )
+          )
+        }
+      }),
+      ...(this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+        .waitTime.aggregate && {
+        waitTime: {
+          minimum: Math.min(
+            ...this.workerNodes.map(
+              workerNode => workerNode.usage.waitTime.minimum
+            )
+          ),
+          maximum: Math.max(
+            ...this.workerNodes.map(
+              workerNode => workerNode.usage.waitTime.maximum
+            )
+          )
+        }
+      })
     }
   }
 
