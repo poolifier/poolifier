@@ -1130,7 +1130,7 @@ export abstract class AbstractPool<
       if (worker == null) {
         return 0
       }
-      // FIXME: Workaround tasks queue initialization issue.
+      // FIXME: Workaround tasks queue initialization race issue.
       try {
         return this.tasksQueueSize(this.getWorkerNodeKey(worker))
       } catch {
@@ -1141,7 +1141,7 @@ export abstract class AbstractPool<
       if (worker == null) {
         return 0
       }
-      // FIXME: Workaround tasks queue initialization issue.
+      // FIXME: Workaround tasks queue initialization race issue.
       try {
         return this.tasksMaxQueueSize(this.getWorkerNodeKey(worker))
       } catch {
