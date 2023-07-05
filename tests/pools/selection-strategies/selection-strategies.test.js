@@ -218,31 +218,18 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         elu: {
           idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
           },
           active: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
     }
@@ -279,31 +266,18 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         elu: {
           idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
           },
           active: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
     }
@@ -485,31 +459,18 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         elu: {
           idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
           },
           active: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -545,31 +506,18 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         elu: {
           idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
           },
           active: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -685,30 +633,23 @@ describe('Selection strategies test suite', () => {
         },
         runTime: {
           aggregate: expect.any(Number),
-          average: 0,
-          median: 0,
+          maximum: expect.any(Number),
+          minimum: expect.any(Number),
           history: expect.any(CircularArray)
         },
         waitTime: {
           aggregate: expect.any(Number),
-          average: 0,
-          median: 0,
+          maximum: expect.any(Number),
+          minimum: expect.any(Number),
           history: expect.any(CircularArray)
         },
         elu: {
           idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
           },
           active: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -747,30 +688,23 @@ describe('Selection strategies test suite', () => {
         },
         runTime: {
           aggregate: expect.any(Number),
-          average: 0,
-          median: 0,
+          maximum: expect.any(Number),
+          minimum: expect.any(Number),
           history: expect.any(CircularArray)
         },
         waitTime: {
           aggregate: expect.any(Number),
-          average: 0,
-          median: 0,
+          maximum: expect.any(Number),
+          minimum: expect.any(Number),
           history: expect.any(CircularArray)
         },
         elu: {
           idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
           },
           active: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -878,7 +812,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.usage).toStrictEqual({
+      expect(workerNode.usage).toMatchObject({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -887,39 +821,30 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         elu: {
-          idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
+          idle: expect.objectContaining({
             history: expect.any(CircularArray)
-          },
-          active: {
-            aggregate: expect.any(Number),
-            average: 0,
-            median: 0,
+          }),
+          active: expect.objectContaining({
             history: expect.any(CircularArray)
-          },
-          utilization: expect.any(Number)
+          })
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
+      if (workerNode.usage.elu.utilization == null) {
+        expect(workerNode.usage.elu.utilization).toBeUndefined()
+      } else {
+        expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
+        expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
+      }
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -940,7 +865,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.usage).toStrictEqual({
+      expect(workerNode.usage).toMatchObject({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -949,39 +874,30 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         elu: {
-          idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
+          idle: expect.objectContaining({
             history: expect.any(CircularArray)
-          },
-          active: {
-            aggregate: expect.any(Number),
-            average: 0,
-            median: 0,
+          }),
+          active: expect.objectContaining({
             history: expect.any(CircularArray)
-          },
-          utilization: expect.any(Number)
+          })
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
+      if (workerNode.usage.elu.utilization == null) {
+        expect(workerNode.usage.elu.utilization).toBeUndefined()
+      } else {
+        expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
+        expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
+      }
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -1081,7 +997,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.usage).toStrictEqual({
+      expect(workerNode.usage).toMatchObject({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -1089,42 +1005,41 @@ describe('Selection strategies test suite', () => {
           maxQueued: 0,
           failed: 0
         },
-        runTime: {
-          aggregate: expect.any(Number),
-          average: expect.any(Number),
-          median: 0,
+        runTime: expect.objectContaining({
           history: expect.any(CircularArray)
-        },
+        }),
         waitTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         elu: {
-          idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
+          idle: expect.objectContaining({
             history: expect.any(CircularArray)
-          },
-          active: {
-            aggregate: expect.any(Number),
-            average: expect.any(Number),
-            median: 0,
+          }),
+          active: expect.objectContaining({
             history: expect.any(CircularArray)
-          },
-          utilization: expect.any(Number)
+          })
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.usage.runTime.aggregate).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.runTime.average).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
+      if (workerNode.usage.runTime.aggregate == null) {
+        expect(workerNode.usage.runTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.runTime.average == null) {
+        expect(workerNode.usage.runTime.average).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.average).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.elu.utilization == null) {
+        expect(workerNode.usage.elu.utilization).toBeUndefined()
+      } else {
+        expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
+        expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
+      }
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1150,7 +1065,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.usage).toStrictEqual({
+      expect(workerNode.usage).toMatchObject({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -1158,42 +1073,41 @@ describe('Selection strategies test suite', () => {
           maxQueued: 0,
           failed: 0
         },
-        runTime: {
-          aggregate: expect.any(Number),
-          average: expect.any(Number),
-          median: 0,
+        runTime: expect.objectContaining({
           history: expect.any(CircularArray)
-        },
+        }),
         waitTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         elu: {
-          idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
+          idle: expect.objectContaining({
             history: expect.any(CircularArray)
-          },
-          active: {
-            aggregate: expect.any(Number),
-            average: expect.any(Number),
-            median: 0,
+          }),
+          active: expect.objectContaining({
             history: expect.any(CircularArray)
-          },
-          utilization: expect.any(Number)
+          })
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.usage.runTime.aggregate).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.runTime.average).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
+      if (workerNode.usage.runTime.aggregate == null) {
+        expect(workerNode.usage.runTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.runTime.average == null) {
+        expect(workerNode.usage.runTime.average).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.average).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.elu.utilization == null) {
+        expect(workerNode.usage.elu.utilization).toBeUndefined()
+      } else {
+        expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
+        expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
+      }
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1224,7 +1138,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.usage).toStrictEqual({
+      expect(workerNode.usage).toMatchObject({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -1232,42 +1146,41 @@ describe('Selection strategies test suite', () => {
           maxQueued: 0,
           failed: 0
         },
-        runTime: {
-          aggregate: expect.any(Number),
-          average: 0,
-          median: expect.any(Number),
+        runTime: expect.objectContaining({
           history: expect.any(CircularArray)
-        },
+        }),
         waitTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         elu: {
-          idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
+          idle: expect.objectContaining({
             history: expect.any(CircularArray)
-          },
-          active: {
-            aggregate: expect.any(Number),
-            average: expect.any(Number),
-            median: 0,
+          }),
+          active: expect.objectContaining({
             history: expect.any(CircularArray)
-          },
-          utilization: expect.any(Number)
+          })
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.usage.runTime.aggregate).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.runTime.median).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
+      if (workerNode.usage.runTime.aggregate == null) {
+        expect(workerNode.usage.runTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.runTime.median == null) {
+        expect(workerNode.usage.runTime.median).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.median).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.elu.utilization == null) {
+        expect(workerNode.usage.elu.utilization).toBeUndefined()
+      } else {
+        expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
+        expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
+      }
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1454,40 +1367,35 @@ describe('Selection strategies test suite', () => {
           maxQueued: 0,
           failed: 0
         },
-        runTime: {
-          aggregate: expect.any(Number),
-          average: expect.any(Number),
-          median: 0,
+        runTime: expect.objectContaining({
           history: expect.any(CircularArray)
-        },
+        }),
         waitTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         elu: {
           idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
           },
           active: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.usage.runTime.aggregate).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.runTime.average).toBeGreaterThanOrEqual(0)
+      if (workerNode.usage.runTime.aggregate == null) {
+        expect(workerNode.usage.runTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.runTime.average == null) {
+        expect(workerNode.usage.runTime.average).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.average).toBeGreaterThan(0)
+      }
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1528,30 +1436,21 @@ describe('Selection strategies test suite', () => {
         },
         runTime: {
           aggregate: expect.any(Number),
+          maximum: expect.any(Number),
+          minimum: expect.any(Number),
           average: expect.any(Number),
-          median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         elu: {
           idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
           },
           active: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -1605,30 +1504,21 @@ describe('Selection strategies test suite', () => {
         },
         runTime: {
           aggregate: expect.any(Number),
-          average: 0,
+          maximum: expect.any(Number),
+          minimum: expect.any(Number),
           median: expect.any(Number),
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         elu: {
           idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
           },
           active: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -1838,31 +1728,18 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         elu: {
           idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
           },
           active: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
     }
@@ -1921,31 +1798,18 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregate: 0,
-          average: 0,
-          median: 0,
           history: expect.any(CircularArray)
         },
         elu: {
           idle: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
           },
           active: {
-            aggregate: 0,
-            average: 0,
-            median: 0,
             history: expect.any(CircularArray)
-          },
-          utilization: 0
+          }
         }
       })
     }

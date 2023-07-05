@@ -152,8 +152,8 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected getWorkerTaskRunTime (workerNodeKey: number): number {
     return this.taskStatisticsRequirements.runTime.median
-      ? this.pool.workerNodes[workerNodeKey].usage.runTime.median
-      : this.pool.workerNodes[workerNodeKey].usage.runTime.average
+      ? this.pool.workerNodes[workerNodeKey].usage.runTime?.median ?? 0
+      : this.pool.workerNodes[workerNodeKey].usage.runTime?.average ?? 0
   }
 
   /**
@@ -166,8 +166,8 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected getWorkerTaskWaitTime (workerNodeKey: number): number {
     return this.taskStatisticsRequirements.waitTime.median
-      ? this.pool.workerNodes[workerNodeKey].usage.waitTime.median
-      : this.pool.workerNodes[workerNodeKey].usage.waitTime.average
+      ? this.pool.workerNodes[workerNodeKey].usage.waitTime?.median ?? 0
+      : this.pool.workerNodes[workerNodeKey].usage.waitTime?.average ?? 0
   }
 
   /**
@@ -180,8 +180,8 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected getWorkerTaskElu (workerNodeKey: number): number {
     return this.taskStatisticsRequirements.elu.median
-      ? this.pool.workerNodes[workerNodeKey].usage.elu.active.median
-      : this.pool.workerNodes[workerNodeKey].usage.elu.active.average
+      ? this.pool.workerNodes[workerNodeKey].usage.elu.active?.median ?? 0
+      : this.pool.workerNodes[workerNodeKey].usage.elu.active?.average ?? 0
   }
 
   protected computeDefaultWorkerWeight (): number {

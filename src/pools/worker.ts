@@ -64,23 +64,23 @@ export interface MeasurementStatistics {
   /**
    * Measurement aggregate.
    */
-  aggregate: number
+  aggregate?: number
   /**
    * Measurement minimum.
    */
-  minimum: number
+  minimum?: number
   /**
    * Measurement maximum.
    */
-  maximum: number
+  maximum?: number
   /**
    * Measurement average.
    */
-  average: number
+  average?: number
   /**
    * Measurement median.
    */
-  median: number
+  median?: number
   /**
    * Measurement history.
    */
