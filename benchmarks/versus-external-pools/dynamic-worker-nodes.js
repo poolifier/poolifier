@@ -20,9 +20,9 @@ const workerNodes = new WorkerNodes(
 )
 
 async function run () {
-  const promises = []
+  const promises = new Set()
   for (let i = 0; i < iterations; i++) {
-    promises.push(workerNodes.call.functionToBench(data))
+    promises.add(workerNodes.call.functionToBench(data))
   }
   await Promise.all(promises)
   // eslint-disable-next-line n/no-process-exit

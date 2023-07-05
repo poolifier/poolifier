@@ -17,9 +17,9 @@ const tinypool = new Tinypool({
 })
 
 async function run () {
-  const promises = []
+  const promises = new Set()
   for (let i = 0; i < iterations; i++) {
-    promises.push(tinypool.run(data))
+    promises.add(tinypool.run(data))
   }
   await Promise.all(promises)
   // eslint-disable-next-line n/no-process-exit

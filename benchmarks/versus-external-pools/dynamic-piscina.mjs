@@ -17,9 +17,9 @@ const piscina = new Piscina({
 })
 
 async function run () {
-  const promises = []
+  const promises = new Set()
   for (let i = 0; i < iterations; i++) {
-    promises.push(piscina.run(data))
+    promises.add(piscina.run(data))
   }
   await Promise.all(promises)
   // eslint-disable-next-line n/no-process-exit

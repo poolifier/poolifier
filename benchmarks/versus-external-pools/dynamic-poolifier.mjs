@@ -16,9 +16,9 @@ const dynamicPool = new DynamicThreadPool(
 )
 
 async function run () {
-  const promises = []
+  const promises = new Set()
   for (let i = 0; i < iterations; i++) {
-    promises.push(dynamicPool.execute(data))
+    promises.add(dynamicPool.execute(data))
   }
   await Promise.all(promises)
   // eslint-disable-next-line n/no-process-exit

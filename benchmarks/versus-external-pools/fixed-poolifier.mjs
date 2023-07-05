@@ -15,9 +15,9 @@ const fixedPool = new FixedThreadPool(
 )
 
 async function run () {
-  const promises = []
+  const promises = new Set()
   for (let i = 0; i < iterations; i++) {
-    promises.push(fixedPool.execute(data))
+    promises.add(fixedPool.execute(data))
   }
   await Promise.all(promises)
   // eslint-disable-next-line n/no-process-exit

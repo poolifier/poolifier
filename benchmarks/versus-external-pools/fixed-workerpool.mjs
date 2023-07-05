@@ -19,9 +19,9 @@ const workerPool = workerpool.pool(
 )
 
 async function run () {
-  const promises = []
+  const promises = new Set()
   for (let i = 0; i < iterations; i++) {
-    promises.push(workerPool.exec('functionToBench', dataArray))
+    promises.add(workerPool.exec('functionToBench', dataArray))
   }
   await Promise.all(promises)
   // eslint-disable-next-line n/no-process-exit

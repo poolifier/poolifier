@@ -15,9 +15,9 @@ const data = {
 const pool = new DynamicPool(size)
 
 async function run () {
-  const promises = []
+  const promises = new Set()
   for (let i = 0; i < iterations; i++) {
-    promises.push(
+    promises.add(
       pool.exec({
         task: functionToBench,
         param: data,
