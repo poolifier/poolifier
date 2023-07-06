@@ -145,12 +145,12 @@ export abstract class AbstractWorker<
    * @param message - Message received.
    */
   protected messageListener (message: MessageValue<Data, Data>): void {
-    if (message.dynamic === true) {
-      // Worker dynamic message received
-      this.startCheckAlive()
-    } else if (message.statistics != null) {
+    if (message.statistics != null) {
       // Statistics message received
       this.statistics = message.statistics
+    } else if (message.dynamic === true) {
+      // Worker dynamic message received
+      this.startCheckAlive()
     } else if (message.id != null && message.data != null) {
       // Task message received
       const fn = this.getTaskFunction(message.name)
