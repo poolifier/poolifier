@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  semver: 7.3.5
-
 dependencies:
   node-worker-threads-pool:
     specifier: 1.5.1
