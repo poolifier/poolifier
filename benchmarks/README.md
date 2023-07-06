@@ -19,6 +19,7 @@ We chose to use this tool because it allows to run isolated Node.js processes so
   - [workerpool](https://github.com/josdejong/workerpool)
   - [worker-nodes](https://github.com/allegro/node-worker-nodes)
   - [node-worker-threads-pool](https://github.com/SUCHMOKUO/node-worker-threads-pool)
+  - [nanothreads](https://github.com/snuffyDev/nanothreads)
 
   Those are our results:
 
