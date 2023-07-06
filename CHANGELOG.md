@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add minimum and maximum to internal measurement statistics.
 - Add `runTime` and `waitTime` to pool information.
+- Check worker inactive time only on dynamic worker.
 
 ## [2.6.8] - 2023-07-03
 

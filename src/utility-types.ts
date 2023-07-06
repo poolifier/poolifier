@@ -85,6 +85,10 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    * Whether the worker has started or not.
    */
   readonly started?: boolean
+  /**
+   * Whether the worker is dynamic or not.
+   */
+  readonly dynamic?: boolean
 }
 
 /**
