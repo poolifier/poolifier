@@ -55,7 +55,7 @@ export abstract class AbstractWorker<
   /**
    * Handler id of the `aliveInterval` worker alive check.
    */
-  protected readonly aliveInterval?: NodeJS.Timeout
+  protected aliveInterval?: NodeJS.Timeout
   /**
    * Constructs a new poolifier worker.
    *
@@ -88,12 +88,6 @@ export abstract class AbstractWorker<
     this.checkWorkerOptions(this.opts)
     this.checkTaskFunctions(taskFunctions)
     if (!this.isMain) {
-      this.lastTaskTimestamp = performance.now()
-      this.aliveInterval = setInterval(
-        this.checkAlive.bind(this),
-        (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) / 2
-      )
-      this.checkAlive.bind(this)()
       this.mainWorker?.on('message', this.messageListener.bind(this))
     }
   }
@@ -151,7 +145,13 @@ export abstract class AbstractWorker<
    * @param message - Message received.
    */
   protected messageListener (message: MessageValue<Data, Data>): void {
-    if (message.id != null && message.data != null) {
+    if (message.dynamic === true) {
+      // Worker dynamic message received
+      this.startCheckAlive()
+    } else if (message.statistics != null) {
+      // Statistics message received
+      this.statistics = message.statistics
+    } else if (message.id != null && message.data != null) {
       // Task message received
       const fn = this.getTaskFunction(message.name)
       if (isAsyncFunction(fn)) {
@@ -159,14 +159,20 @@ export abstract class AbstractWorker<
       } else {
         this.runInAsyncScope(this.runSync.bind(this), this, fn, message)
       }
-    } else if (message.statistics != null) {
-      // Statistics message received
-      this.statistics = message.statistics
     } else if (message.kill != null) {
       // Kill message received
       this.aliveInterval != null && clearInterval(this.aliveInterval)
       this.emitDestroy()
     }
+  }
+
+  private startCheckAlive (): void {
+    this.lastTaskTimestamp = performance.now()
+    this.aliveInterval = setInterval(
+      this.checkAlive.bind(this),
+      (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) / 2
+    )
+    this.checkAlive.bind(this)()
   }
 
   /**
@@ -243,7 +249,9 @@ export abstract class AbstractWorker<
         id: message.id
       })
     } finally {
-      !this.isMain && (this.lastTaskTimestamp = performance.now())
+      if (!this.isMain && this.aliveInterval != null) {
+        this.lastTaskTimestamp = performance.now()
+      }
     }
   }
 
@@ -281,7 +289,9 @@ export abstract class AbstractWorker<
         })
       })
       .finally(() => {
-        !this.isMain && (this.lastTaskTimestamp = performance.now())
+        if (!this.isMain && this.aliveInterval != null) {
+          this.lastTaskTimestamp = performance.now()
+        }
       })
       .catch(EMPTY_FUNCTION)
   }
