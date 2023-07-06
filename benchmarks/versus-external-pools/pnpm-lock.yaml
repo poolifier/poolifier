@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  nanothreads:
+    specifier: 0.3.7
+    version: 0.3.7
   node-worker-threads-pool:
     specifier: 1.5.1
     version: 1.5.1
@@ -15,8 +18,8 @@ dependencies:
     specifier: 2.6.8
     version: 2.6.8
   tinypool:
-    specifier: 0.6.0
-    version: 0.6.0
+    specifier: 0.7.0
+    version: 0.7.0
   worker-nodes:
     specifier: 2.6.0
     version: 2.6.0
@@ -76,6 +79,10 @@ packages:
       isarray: 1.0.0
     dev: false
 
+  /nanothreads@0.3.7:
+    resolution: {integrity: sha512-l/gbxnQBeMGspLoa+JKhqDrsBtqMW4G5ElsEgbVigR5gl6IBHzBjpM7URGeu0UQN4k7DK0o+J3GmHgaXv+aDQw==}
+    dev: false
+
   /nice-napi@1.0.2:
     resolution: {integrity: sha512-px/KnJAJZf5RuBGcfD+Sp2pAKq0ytz8j+1NehvgIGFkvtvFrDM3T8E4x/JJODXK9WZow8RRGrbA9QQ3hs+pDhA==}
     os: ['!win32']
@@ -121,8 +128,8 @@ packages:
     requiresBuild: true
     dev: false
 
-  /tinypool@0.6.0:
-    resolution: {integrity: sha512-FdswUUo5SxRizcBc6b1GSuLpLjisa8N8qMyYoP3rl+bym+QauhtJP5bvZY1ytt8krKGmMLYIRl36HBZfeAoqhQ==}
+  /tinypool@0.7.0:
+    resolution: {integrity: sha512-zSYNUlYSMhJ6Zdou4cJwo/p7w5nmAH17GRfU/ui3ctvjXFErXXkruT4MWW6poDeXgCaIBlGLrfU6TbTXxyGMww==}
     engines: {node: '>=14.0.0'}
     dev: false
 

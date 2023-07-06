@@ -24,6 +24,7 @@
     "microtime",
     "mochawesome",
     "MYBENCH",
+    "nanothreads",
     "nocombine",
     "nproc",
     "octocat",
