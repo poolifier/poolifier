@@ -3,5 +3,6 @@
   "tsconfig": "./tsconfig.production.json",
   "entryPoints": ["src"],
   "out": "docs",
-  "readme": "none"
+  "readme": "none",
+  "includeVersion": true
 }
