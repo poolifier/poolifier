@@ -13,6 +13,11 @@
     "node": "18.16.1",
     "pnpm": "8.6.6"
   },
+  "pnpm": {
+    "overrides": {
+      "semver": "7.3.5"
+    }
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
