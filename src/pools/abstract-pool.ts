@@ -886,31 +886,7 @@ export abstract class AbstractPool<
         this.emitter.emit(PoolEvents.error, error)
       }
       if (this.opts.enableTasksQueue === true) {
-        const workerNodeKey = this.getWorkerNodeKey(worker)
-        while (this.tasksQueueSize(workerNodeKey) > 0) {
-          let targetWorkerNodeKey: number = workerNodeKey
-          let minQueuedTasks = Infinity
-          for (const [workerNodeId, workerNode] of this.workerNodes.entries()) {
-            if (
-              workerNodeId !== workerNodeKey &&
-              workerNode.usage.tasks.queued === 0
-            ) {
-              targetWorkerNodeKey = workerNodeId
-              break
-            }
-            if (
-              workerNodeId !== workerNodeKey &&
-              workerNode.usage.tasks.queued < minQueuedTasks
-            ) {
-              minQueuedTasks = workerNode.usage.tasks.queued
-              targetWorkerNodeKey = workerNodeId
-            }
-          }
-          this.enqueueTask(
-            targetWorkerNodeKey,
-            this.dequeueTask(workerNodeKey) as Task<Data>
-          )
-        }
+        this.redistributeQueuedTasks(worker)
       }
       if (this.opts.restartWorkerOnError === true) {
         if (this.getWorkerInfo(this.getWorkerNodeKey(worker)).dynamic) {
@@ -933,6 +909,34 @@ export abstract class AbstractPool<
     this.afterWorkerSetup(worker)
 
     return worker
+  }
+
+  private redistributeQueuedTasks (worker: Worker): void {
+    const workerNodeKey = this.getWorkerNodeKey(worker)
+    while (this.tasksQueueSize(workerNodeKey) > 0) {
+      let targetWorkerNodeKey: number = workerNodeKey
+      let minQueuedTasks = Infinity
+      for (const [workerNodeId, workerNode] of this.workerNodes.entries()) {
+        if (
+          workerNodeId !== workerNodeKey &&
+          workerNode.usage.tasks.queued === 0
+        ) {
+          targetWorkerNodeKey = workerNodeId
+          break
+        }
+        if (
+          workerNodeId !== workerNodeKey &&
+          workerNode.usage.tasks.queued < minQueuedTasks
+        ) {
+          minQueuedTasks = workerNode.usage.tasks.queued
+          targetWorkerNodeKey = workerNodeId
+        }
+      }
+      this.enqueueTask(
+        targetWorkerNodeKey,
+        this.dequeueTask(workerNodeKey) as Task<Data>
+      )
+    }
   }
 
   /**
