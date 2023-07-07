@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.9] - 2023-07-07
+
 ### Fixed
 
 - Recreate the right worker type on uncaught exception.
