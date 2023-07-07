@@ -979,7 +979,6 @@ export abstract class AbstractPool<
   }
 
   private handleWorkerStartedMessage (message: MessageValue<Response>): void {
-    // Worker started message received
     const worker = this.getWorkerById(message.workerId as number)
     if (worker != null) {
       this.getWorkerInfo(this.getWorkerNodeKey(worker)).started =
