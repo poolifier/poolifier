@@ -51,6 +51,7 @@ const jsonIntegerSerialization = n => {
     }
     JSON.stringify(o)
   }
+  return { ok: 1 }
 }
 
 /**
@@ -94,6 +95,7 @@ const readWriteFiles = (
     fs.readFileSync(filePath, 'utf8')
   }
   fs.rmSync(baseDirectory, { recursive: true })
+  return { ok: 1 }
 }
 
 export const executeWorkerFunction = data => {

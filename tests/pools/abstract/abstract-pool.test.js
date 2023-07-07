@@ -711,9 +711,9 @@ describe('Abstract pool test suite', () => {
     )
     const data = { n: 10 }
     const result0 = await pool.execute(data)
-    expect(result0).toBe(false)
+    expect(result0).toStrictEqual({ ok: 1 })
     const result1 = await pool.execute(data, 'jsonIntegerSerialization')
-    expect(result1).toBe(false)
+    expect(result1).toStrictEqual({ ok: 1 })
     const result2 = await pool.execute(data, 'factorial')
     expect(result2).toBe(3628800)
     const result3 = await pool.execute(data, 'fibonacci')

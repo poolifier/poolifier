@@ -72,6 +72,7 @@ const jsonIntegerSerialization = n => {
     }
     JSON.stringify(o)
   }
+  return { ok: 1 }
 }
 
 /**

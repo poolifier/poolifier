@@ -77,7 +77,7 @@ describe('Dynamic cluster pool test suite', () => {
       './tests/worker-files/cluster/testWorker.js'
     )
     const result = await pool1.execute()
-    expect(result).toBe(false)
+    expect(result).toStrictEqual({ ok: 1 })
     // We need to clean up the resources after our test
     await pool1.destroy()
   })

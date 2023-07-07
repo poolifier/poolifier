@@ -74,7 +74,7 @@ describe('Fixed thread pool test suite', () => {
 
   it('Verify that is possible to invoke the execute() method without input', async () => {
     const result = await pool.execute()
-    expect(result).toBe(false)
+    expect(result).toStrictEqual({ ok: 1 })
   })
 
   it("Verify that 'busy' event is emitted", async () => {
@@ -229,7 +229,7 @@ describe('Fixed thread pool test suite', () => {
       './tests/worker-files/thread/testWorker.js'
     )
     const res = await pool1.execute()
-    expect(res).toBe(false)
+    expect(res).toStrictEqual({ ok: 1 })
     // We need to clean up the resources after our test
     await pool1.destroy()
   })

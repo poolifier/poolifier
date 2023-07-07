@@ -1,5 +1,4 @@
 'use strict'
-const { isMainThread } = require('worker_threads')
 const { ThreadWorker, KillBehaviors } = require('../../../lib')
 const {
   jsonIntegerSerialization,
@@ -9,10 +8,7 @@ const {
 
 module.exports = new ThreadWorker(
   {
-    jsonIntegerSerialization: data => {
-      jsonIntegerSerialization(data.n)
-      return isMainThread
-    },
+    jsonIntegerSerialization: data => jsonIntegerSerialization(data.n),
     factorial: data => factorial(data.n),
     fibonacci: data => fibonacci(data.n)
   },

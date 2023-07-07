@@ -8,9 +8,9 @@ const debug = false
 function workerFunction (data) {
   data = data || {}
   data.function = data.function || WorkerFunctions.jsonIntegerSerialization
-  executeWorkerFunction(data)
+  const res = executeWorkerFunction(data)
   debug === true && console.debug('This is the main thread ' + isMainThread)
-  return { ok: 1 }
+  return res
 }
 
 export default new ThreadWorker(workerFunction)

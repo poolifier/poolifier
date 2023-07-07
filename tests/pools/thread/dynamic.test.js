@@ -77,7 +77,7 @@ describe('Dynamic thread pool test suite', () => {
       './tests/worker-files/thread/testWorker.js'
     )
     const res = await pool1.execute()
-    expect(res).toBe(false)
+    expect(res).toStrictEqual({ ok: 1 })
     // We need to clean up the resources after our test
     await pool1.destroy()
   })
