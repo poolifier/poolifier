@@ -70,7 +70,7 @@ implements IWorkerNode<Worker, Data> {
     const getTasksQueueSize = (): number => {
       return this.tasksQueueSize()
     }
-    const getTasksMaxQueueSize = (): number => {
+    const getTasksQueueMaxSize = (): number => {
       return this.tasksQueueMaxSize()
     }
     return {
@@ -81,7 +81,7 @@ implements IWorkerNode<Worker, Data> {
           return getTasksQueueSize()
         },
         get maxQueued (): number {
-          return getTasksMaxQueueSize()
+          return getTasksQueueMaxSize()
         },
         failed: 0
       },

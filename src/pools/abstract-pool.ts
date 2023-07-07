@@ -982,7 +982,7 @@ export abstract class AbstractPool<
     // Worker started message received
     const worker = this.getWorkerById(message.workerId as number)
     if (worker != null) {
-      this.workerNodes[this.getWorkerNodeKey(worker)].info.started =
+      this.getWorkerInfo(this.getWorkerNodeKey(worker)).started =
         message.started as boolean
     } else {
       throw new Error(
