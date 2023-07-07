@@ -169,30 +169,30 @@ export interface IWorkerChoiceStrategy {
    *
    * @returns `true` if the reset is successful, `false` otherwise.
    */
-  reset: () => boolean
+  readonly reset: () => boolean
   /**
    * Updates the worker node key strategy internals.
    *
    * @returns `true` if the update is successful, `false` otherwise.
    */
-  update: (workerNodeKey: number) => boolean
+  readonly update: (workerNodeKey: number) => boolean
   /**
    * Chooses a worker node in the pool and returns its key.
    *
    * @returns The worker node key.
    */
-  choose: () => number
+  readonly choose: () => number
   /**
    * Removes the worker node key from strategy internals.
    *
    * @param workerNodeKey - The worker node key.
    * @returns `true` if the worker node key is removed, `false` otherwise.
    */
-  remove: (workerNodeKey: number) => boolean
+  readonly remove: (workerNodeKey: number) => boolean
   /**
    * Sets the worker choice strategy options.
    *
    * @param opts - The worker choice strategy options.
    */
-  setOptions: (opts: WorkerChoiceStrategyOptions) => void
+  readonly setOptions: (opts: WorkerChoiceStrategyOptions) => void
 }

@@ -3,9 +3,10 @@ import type {
   ErrorHandler,
   ExitHandler,
   IWorker,
+  IWorkerNode,
   MessageHandler,
   OnlineHandler,
-  WorkerNode
+  WorkerType
 } from './worker'
 import type {
   WorkerChoiceStrategy,
@@ -32,19 +33,6 @@ export const PoolTypes = Object.freeze({
 export type PoolType = keyof typeof PoolTypes
 
 /**
- * Enumeration of worker types.
- */
-export const WorkerTypes = Object.freeze({
-  cluster: 'cluster',
-  thread: 'thread'
-} as const)
-
-/**
- * Worker type.
- */
-export type WorkerType = keyof typeof WorkerTypes
-
-/**
  * Pool events emitter.
  */
 export class PoolEmitter extends EventEmitter {}
@@ -68,35 +56,35 @@ export type PoolEvent = keyof typeof PoolEvents
  * Pool information.
  */
 export interface PoolInfo {
-  version: string
-  type: PoolType
-  worker: WorkerType
-  minSize: number
-  maxSize: number
+  readonly version: string
+  readonly type: PoolType
+  readonly worker: WorkerType
+  readonly minSize: number
+  readonly maxSize: number
   /** Pool utilization ratio. */
-  utilization?: number
+  readonly utilization?: number
   /** Pool total worker nodes */
-  workerNodes: number
+  readonly workerNodes: number
   /** Pool idle worker nodes */
-  idleWorkerNodes: number
+  readonly idleWorkerNodes: number
   /** Pool busy worker nodes */
-  busyWorkerNodes: number
-  executedTasks: number
-  executingTasks: number
-  queuedTasks: number
-  maxQueuedTasks: number
-  failedTasks: number
-  runTime?: {
-    minimum: number
-    maximum: number
-    average: number
-    median?: number
+  readonly busyWorkerNodes: number
+  readonly executedTasks: number
+  readonly executingTasks: number
+  readonly queuedTasks: number
+  readonly maxQueuedTasks: number
+  readonly failedTasks: number
+  readonly runTime?: {
+    readonly minimum: number
+    readonly maximum: number
+    readonly average: number
+    readonly median?: number
   }
-  waitTime?: {
-    minimum: number
-    maximum: number
-    average: number
-    median?: number
+  readonly waitTime?: {
+    readonly minimum: number
+    readonly maximum: number
+    readonly average: number
+    readonly median?: number
   }
 }
 
@@ -185,7 +173,7 @@ export interface IPool<
   /**
    * Pool worker nodes.
    */
-  readonly workerNodes: Array<WorkerNode<Worker, Data>>
+  readonly workerNodes: Array<IWorkerNode<Worker, Data>>
   /**
    * Emitter on which events can be listened to.
    *
@@ -204,18 +192,18 @@ export interface IPool<
    * @param name - The name of the worker function to execute. If not specified, the default worker function will be executed.
    * @returns Promise that will be fulfilled when the task is completed.
    */
-  execute: (data?: Data, name?: string) => Promise<Response>
+  readonly execute: (data?: Data, name?: string) => Promise<Response>
   /**
    * Terminates every current worker in this pool.
    */
-  destroy: () => Promise<void>
+  readonly destroy: () => Promise<void>
   /**
    * Sets the worker choice strategy in this pool.
    *
    * @param workerChoiceStrategy - The worker choice strategy.
    * @param workerChoiceStrategyOptions - The worker choice strategy options.
    */
-  setWorkerChoiceStrategy: (
+  readonly setWorkerChoiceStrategy: (
     workerChoiceStrategy: WorkerChoiceStrategy,
     workerChoiceStrategyOptions?: WorkerChoiceStrategyOptions
   ) => void
@@ -224,7 +212,7 @@ export interface IPool<
    *
    * @param workerChoiceStrategyOptions - The worker choice strategy options.
    */
-  setWorkerChoiceStrategyOptions: (
+  readonly setWorkerChoiceStrategyOptions: (
     workerChoiceStrategyOptions: WorkerChoiceStrategyOptions
   ) => void
   /**
@@ -233,7 +221,7 @@ export interface IPool<
    * @param enable - Whether to enable or disable the worker tasks queue.
    * @param tasksQueueOptions - The worker tasks queue options.
    */
-  enableTasksQueue: (
+  readonly enableTasksQueue: (
     enable: boolean,
     tasksQueueOptions?: TasksQueueOptions
   ) => void
@@ -242,5 +230,5 @@ export interface IPool<
    *
    * @param tasksQueueOptions - The worker tasks queue options.
    */
-  setTasksQueueOptions: (tasksQueueOptions: TasksQueueOptions) => void
+  readonly setTasksQueueOptions: (tasksQueueOptions: TasksQueueOptions) => void
 }

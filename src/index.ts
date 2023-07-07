@@ -4,7 +4,7 @@ export {
   FixedClusterPool,
   type ClusterPoolOptions
 } from './pools/cluster/fixed'
-export { PoolEvents, PoolTypes, WorkerTypes } from './pools/pool'
+export { PoolEvents, PoolTypes } from './pools/pool'
 export type {
   IPool,
   PoolEmitter,
@@ -12,21 +12,22 @@ export type {
   PoolInfo,
   PoolOptions,
   PoolType,
-  TasksQueueOptions,
-  WorkerType
+  TasksQueueOptions
 } from './pools/pool'
+export { WorkerTypes } from './pools/worker'
 export type {
   ErrorHandler,
   EventLoopUtilizationMeasurementStatistics,
   ExitHandler,
   IWorker,
+  IWorkerNode,
   MeasurementStatistics,
   MessageHandler,
   OnlineHandler,
   Task,
   TaskStatistics,
   WorkerInfo,
-  WorkerNode,
+  WorkerType,
   WorkerUsage
 } from './pools/worker'
 export {

@@ -1,5 +1,4 @@
 import type { CircularArray } from '../circular-array'
-import type { Queue } from '../queue'
 
 /**
  * Callback invoked if the worker has received a message.
@@ -127,6 +126,19 @@ export interface TaskStatistics {
 }
 
 /**
+ * Enumeration of worker types.
+ */
+export const WorkerTypes = Object.freeze({
+  cluster: 'cluster',
+  thread: 'thread'
+} as const)
+
+/**
+ * Worker type.
+ */
+export type WorkerType = keyof typeof WorkerTypes
+
+/**
  * Worker information.
  *
  * @internal
@@ -136,6 +148,10 @@ export interface WorkerInfo {
    * Worker id.
    */
   readonly id: number | undefined
+  /**
+   * Worker type.
+   */
+  type: WorkerType
   /**
    * Dynamic flag.
    */
@@ -185,7 +201,7 @@ export interface IWorker {
    * @param event - The event.
    * @param handler - The event handler.
    */
-  on: ((event: 'message', handler: MessageHandler<this>) => void) &
+  readonly on: ((event: 'message', handler: MessageHandler<this>) => void) &
   ((event: 'error', handler: ErrorHandler<this>) => void) &
   ((event: 'online', handler: OnlineHandler<this>) => void) &
   ((event: 'exit', handler: ExitHandler<this>) => void)
@@ -195,7 +211,7 @@ export interface IWorker {
    * @param event - `'exit'`.
    * @param handler - The exit handler.
    */
-  once: (event: 'exit', handler: ExitHandler<this>) => void
+  readonly once: (event: 'exit', handler: ExitHandler<this>) => void
 }
 
 /**
@@ -205,7 +221,7 @@ export interface IWorker {
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @internal
  */
-export interface WorkerNode<Worker extends IWorker, Data = unknown> {
+export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
   /**
    * Worker node worker.
    */
@@ -219,7 +235,30 @@ export interface WorkerNode<Worker extends IWorker, Data = unknown> {
    */
   usage: WorkerUsage
   /**
-   * Worker node tasks queue.
+   * Worker node tasks queue size.
+   *
+   * @returns The tasks queue size.
    */
-  readonly tasksQueue: Queue<Task<Data>>
+  readonly tasksQueueSize: () => number
+  /**
+   * Worker node enqueue task.
+   *
+   * @param task - The task to queue.
+   * @returns The task queue size.
+   */
+  readonly enqueueTask: (task: Task<Data>) => number
+  /**
+   * Worker node dequeue task.
+   *
+   * @returns The dequeued task.
+   */
+  readonly dequeueTask: () => Task<Data> | undefined
+  /**
+   * Worker node clear tasks queue.
+   */
+  readonly clearTasksQueue: () => void
+  /**
+   * Worker node reset usage statistics .
+   */
+  readonly resetUsage: () => void
 }
