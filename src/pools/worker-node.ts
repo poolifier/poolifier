@@ -75,7 +75,7 @@ implements IWorkerNode<Worker, Data> {
       id: this.getWorkerId(worker, workerType),
       type: workerType,
       dynamic: false,
-      started: true
+      ready: true
     }
   }
 

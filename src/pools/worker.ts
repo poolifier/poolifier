@@ -157,9 +157,9 @@ export interface WorkerInfo {
    */
   dynamic: boolean
   /**
-   * Started flag.
+   * Ready flag.
    */
-  started: boolean
+  ready: boolean
 }
 
 /**

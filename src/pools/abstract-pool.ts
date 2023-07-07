@@ -968,9 +968,9 @@ export abstract class AbstractPool<
    */
   protected workerListener (): (message: MessageValue<Response>) => void {
     return message => {
-      if (message.workerId != null && message.started != null) {
-        // Worker started message received
-        this.handleWorkerStartedMessage(message)
+      if (message.workerId != null && message.ready != null) {
+        // Worker ready message received
+        this.handleWorkerReadyMessage(message)
       } else if (message.id != null) {
         // Task execution response received
         this.handleTaskExecutionResponse(message)
@@ -978,14 +978,14 @@ export abstract class AbstractPool<
     }
   }
 
-  private handleWorkerStartedMessage (message: MessageValue<Response>): void {
+  private handleWorkerReadyMessage (message: MessageValue<Response>): void {
     const worker = this.getWorkerById(message.workerId as number)
     if (worker != null) {
-      this.getWorkerInfo(this.getWorkerNodeKey(worker)).started =
-        message.started as boolean
+      this.getWorkerInfo(this.getWorkerNodeKey(worker)).ready =
+        message.ready as boolean
     } else {
       throw new Error(
-        `Worker started message received from unknown worker '${
+        `Worker ready message received from unknown worker '${
           message.workerId as number
         }'`
       )

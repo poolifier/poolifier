@@ -82,9 +82,9 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    */
   readonly statistics?: WorkerStatistics
   /**
-   * Whether the worker has started or not.
+   * Whether the worker is ready or not.
    */
-  readonly started?: boolean
+  readonly ready?: boolean
   /**
    * Whether the worker starts or stops its aliveness check.
    */
