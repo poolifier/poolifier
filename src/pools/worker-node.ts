@@ -10,6 +10,12 @@ import {
   type WorkerUsage
 } from './worker'
 
+/**
+ * Worker node.
+ *
+ * @typeParam Worker - Type of worker.
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ */
 export class WorkerNode<Worker extends IWorker, Data = unknown>
 implements IWorkerNode<Worker, Data> {
   public readonly worker: Worker
@@ -17,6 +23,13 @@ implements IWorkerNode<Worker, Data> {
   public usage: WorkerUsage
   private readonly tasksQueue: Queue<Task<Data>>
 
+  /**
+   * Constructs a new worker node.
+   *
+   * @param worker - The worker.
+   * @param workerType - The worker type.
+   * @internal
+   */
   constructor (worker: Worker, workerType: WorkerType) {
     this.worker = worker
     this.info = this.initWorkerInfo(worker, workerType)
@@ -106,6 +119,7 @@ implements IWorkerNode<Worker, Data> {
    * Gets the worker id.
    *
    * @param worker - The worker.
+   * @param workerType - The worker type.
    * @returns The worker id.
    */
   private getWorkerId (
