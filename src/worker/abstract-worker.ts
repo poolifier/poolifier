@@ -148,9 +148,9 @@ export abstract class AbstractWorker<
     if (message.statistics != null) {
       // Statistics message received
       this.statistics = message.statistics
-    } else if (message.dynamic === true) {
-      // Worker dynamic message received
-      this.startCheckAlive()
+    } else if (message.checkAlive != null) {
+      // Check alive message received
+      message.checkAlive ? this.startCheckAlive() : this.stopCheckAlive()
     } else if (message.id != null && message.data != null) {
       // Task message received
       const fn = this.getTaskFunction(message.name)
@@ -159,13 +159,16 @@ export abstract class AbstractWorker<
       } else {
         this.runInAsyncScope(this.runSync.bind(this), this, fn, message)
       }
-    } else if (message.kill != null) {
+    } else if (message.kill === true) {
       // Kill message received
-      this.aliveInterval != null && clearInterval(this.aliveInterval)
+      this.stopCheckAlive()
       this.emitDestroy()
     }
   }
 
+  /**
+   * Starts the worker alive check interval.
+   */
   private startCheckAlive (): void {
     this.lastTaskTimestamp = performance.now()
     this.aliveInterval = setInterval(
@@ -173,6 +176,25 @@ export abstract class AbstractWorker<
       (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) / 2
     )
     this.checkAlive.bind(this)()
+  }
+
+  /**
+   * Stops the worker alive check interval.
+   */
+  private stopCheckAlive (): void {
+    this.aliveInterval != null && clearInterval(this.aliveInterval)
+  }
+
+  /**
+   * Checks if the worker should be terminated, because its living too long.
+   */
+  private checkAlive (): void {
+    if (
+      performance.now() - this.lastTaskTimestamp >
+      (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME)
+    ) {
+      this.sendToMainWorker({ kill: this.opts.killBehavior })
+    }
   }
 
   /**
@@ -195,18 +217,6 @@ export abstract class AbstractWorker<
   protected abstract sendToMainWorker (
     message: MessageValue<Response, Data>
   ): void
-
-  /**
-   * Checks if the worker should be terminated, because its living too long.
-   */
-  protected checkAlive (): void {
-    if (
-      performance.now() - this.lastTaskTimestamp >
-      (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME)
-    ) {
-      this.sendToMainWorker({ kill: this.opts.killBehavior })
-    }
-  }
 
   /**
    * Handles an error and convert it to a string so it can be sent back to the main worker.

@@ -68,7 +68,7 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
   /**
    * Kill code.
    */
-  readonly kill?: KillBehavior | 1
+  readonly kill?: KillBehavior | true
   /**
    * Task error.
    */
@@ -86,9 +86,9 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    */
   readonly started?: boolean
   /**
-   * Whether the worker is dynamic or not.
+   * Whether the worker starts or stops its aliveness check.
    */
-  readonly dynamic?: boolean
+  readonly checkAlive?: boolean
 }
 
 /**

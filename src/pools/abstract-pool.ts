@@ -957,7 +957,7 @@ export abstract class AbstractPool<
         void (this.destroyWorker(worker) as Promise<void>)
       }
     })
-    this.sendToWorker(worker, { dynamic: true })
+    this.sendToWorker(worker, { checkAlive: true })
     return worker
   }
 

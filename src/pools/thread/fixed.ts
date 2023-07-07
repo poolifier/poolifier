@@ -55,7 +55,7 @@ export class FixedThreadPool<
 
   /** @inheritDoc */
   protected async destroyWorker (worker: Worker): Promise<void> {
-    this.sendToWorker(worker, { kill: 1 })
+    this.sendToWorker(worker, { kill: true })
     await worker.terminate()
   }
 
