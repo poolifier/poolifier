@@ -1,9 +1,9 @@
 const { expect } = require('expect')
 const { FixedClusterPool, PoolEvents } = require('../../../lib')
 const { WorkerFunctions } = require('../../test-types')
-const { waitWorkerEvents } = require('../../test-utils')
+const { waitPoolEvents, waitWorkerEvents } = require('../../test-utils')
 
-describe('Fixed cluster pool test suite', () => {
+describe('Fixed cluster pool test suite', async () => {
   const numberOfWorkers = 6
   const pool = new FixedClusterPool(
     numberOfWorkers,
@@ -12,6 +12,9 @@ describe('Fixed cluster pool test suite', () => {
       errorHandler: e => console.error(e)
     }
   )
+  let poolReady = 0
+  pool.emitter.on(PoolEvents.ready, () => ++poolReady)
+  await waitPoolEvents(pool, PoolEvents.ready, 1)
   const queuePool = new FixedClusterPool(
     numberOfWorkers,
     './tests/worker-files/cluster/testWorker.js',
@@ -75,6 +78,10 @@ describe('Fixed cluster pool test suite', () => {
   it('Verify that is possible to invoke the execute() method without input', async () => {
     const result = await pool.execute()
     expect(result).toStrictEqual({ ok: 1 })
+  })
+
+  it("Verify that 'ready' event is emitted", async () => {
+    expect(poolReady).toBe(1)
   })
 
   it("Verify that 'busy' event is emitted", async () => {

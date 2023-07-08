@@ -75,7 +75,7 @@ describe('Abstract pool test suite', () => {
     )
   })
 
-  it('Verify dynamic pool sizing', () => {
+  it('Verify that dynamic pool sizing is checked', () => {
     expect(
       () =>
         new DynamicThreadPool(2, 1, './tests/worker-files/thread/testWorker.js')
