@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.10] - 2023-07-08
+
 ### Fixed
 
 - Ensure workers are not recreated on error at pool startup.
