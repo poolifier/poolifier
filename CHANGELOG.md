@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Ensure workers are not recreated on error at pool startup.
+
+### Added
+
+- Add `ready` and `strategy` fields to pool information.
+- Add pool event `ready` to notify when the number of workers created in the pool has reached the maximum size expected and are ready.
+- Add dynamic pool sizes checks.
+
 ## [2.6.9] - 2023-07-07
 
 ### Fixed

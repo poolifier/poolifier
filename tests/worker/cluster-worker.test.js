@@ -17,13 +17,7 @@ describe('Cluster worker test suite', () => {
     expect(worker.opts.maxInactiveTime).toStrictEqual(60000)
   })
 
-  it('Verify that handleError() method works properly', () => {
-    const errorMessage = 'Error as a string'
-    const worker = new ClusterWorker(() => {})
-    expect(worker.handleError(errorMessage)).toStrictEqual(errorMessage)
-  })
-
-  it('Verify worker invoke the getMainWorker() and send() methods', () => {
+  it('Verify worker invokes the getMainWorker() and send() methods', () => {
     const worker = new SpyWorker(() => {})
     worker.sendToMainWorker({ ok: 1 })
     expect(numberOfMessagesSent).toBe(1)

@@ -105,10 +105,13 @@ describe('Abstract worker test suite', () => {
     expect(typeof worker.taskFunctions.get('fn2') === 'function').toBe(true)
   })
 
-  it('Verify that handleError() method is working properly', () => {
-    const error = new Error('My error')
-    const worker = new ThreadWorker(() => {})
-    expect(worker.handleError(error)).toStrictEqual(error)
+  it('Verify that handleError() method works properly', () => {
+    const error = new Error('Error as an error')
+    const worker = new ClusterWorker(() => {})
+    expect(worker.handleError(error)).not.toBeInstanceOf(Error)
+    expect(worker.handleError(error)).toStrictEqual(error.message)
+    const errorMessage = 'Error as a string'
+    expect(worker.handleError(errorMessage)).toStrictEqual(errorMessage)
   })
 
   it('Verify that getMainWorker() throw error if main worker is not set', () => {

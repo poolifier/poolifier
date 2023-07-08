@@ -237,6 +237,6 @@ describe('Fixed thread pool test suite', () => {
   it('Verify that a pool with zero worker fails', async () => {
     expect(
       () => new FixedThreadPool(0, './tests/worker-files/thread/testWorker.js')
-    ).toThrowError('Cannot instantiate a fixed pool with no worker')
+    ).toThrowError('Cannot instantiate a fixed pool with zero worker')
   })
 })

@@ -31,6 +31,7 @@ export class DynamicClusterPool<
     opts: ClusterPoolOptions = {}
   ) {
     super(min, filePath, opts)
+    this.checkDynamicPoolSize(this.numberOfWorkers, this.max)
   }
 
   /** @inheritDoc */

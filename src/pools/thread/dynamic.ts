@@ -31,6 +31,7 @@ export class DynamicThreadPool<
     opts: ThreadPoolOptions = {}
   ) {
     super(min, filePath, opts)
+    this.checkDynamicPoolSize(this.numberOfWorkers, this.max)
   }
 
   /** @inheritDoc */

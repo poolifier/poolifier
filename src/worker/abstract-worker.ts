@@ -145,7 +145,10 @@ export abstract class AbstractWorker<
    * @param message - Message received.
    */
   protected messageListener (message: MessageValue<Data, Data>): void {
-    if (message.statistics != null) {
+    if (message.ready != null && message.workerId === this.id) {
+      // Startup message received
+      this.workerReady()
+    } else if (message.statistics != null) {
       // Statistics message received
       this.statistics = message.statistics
     } else if (message.checkAlive != null) {
@@ -164,6 +167,13 @@ export abstract class AbstractWorker<
       this.stopCheckAlive()
       this.emitDestroy()
     }
+  }
+
+  /**
+   * Notifies the main worker that this worker is ready to process tasks.
+   */
+  protected workerReady (): void {
+    !this.isMain && this.sendToMainWorker({ ready: true, workerId: this.id })
   }
 
   /**

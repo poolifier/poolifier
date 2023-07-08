@@ -42,6 +42,7 @@ export class PoolEmitter extends EventEmitter {}
  */
 export const PoolEvents = Object.freeze({
   full: 'full',
+  ready: 'ready',
   busy: 'busy',
   error: 'error',
   taskError: 'taskError'
@@ -59,6 +60,8 @@ export interface PoolInfo {
   readonly version: string
   readonly type: PoolType
   readonly worker: WorkerType
+  readonly ready: boolean
+  readonly strategy: WorkerChoiceStrategy
   readonly minSize: number
   readonly maxSize: number
   /** Pool utilization ratio. */
@@ -179,8 +182,9 @@ export interface IPool<
    *
    * Events that can currently be listened to:
    *
-   * - `'full'`: Emitted when the pool is dynamic and full.
-   * - `'busy'`: Emitted when the pool is busy.
+   * - `'full'`: Emitted when the pool is dynamic and the number of workers created has reached the maximum size expected.
+   * - `'ready'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are ready.
+   * - `'busy'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are executing at least one task.
    * - `'error'`: Emitted when an uncaught error occurs.
    * - `'taskError'`: Emitted when an error occurs while executing a task.
    */

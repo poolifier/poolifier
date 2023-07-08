@@ -17,7 +17,15 @@ describe('Thread worker test suite', () => {
     expect(worker.opts.maxInactiveTime).toStrictEqual(60000)
   })
 
-  it('Verify worker invoke the getMainWorker() and postMessage() methods', () => {
+  it('Verify that handleError() method is working properly', () => {
+    const error = new Error('Error as an error')
+    const worker = new ThreadWorker(() => {})
+    expect(worker.handleError(error)).toStrictEqual(error)
+    const errorMessage = 'Error as a string'
+    expect(worker.handleError(errorMessage)).toStrictEqual(errorMessage)
+  })
+
+  it('Verify worker invokes the getMainWorker() and postMessage() methods', () => {
     const worker = new SpyWorker(() => {})
     worker.sendToMainWorker({ ok: 1 })
     expect(numberOfMessagesPosted).toBe(1)
