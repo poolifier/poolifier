@@ -158,18 +158,20 @@ export abstract class AbstractPool<
   }
 
   protected checkDynamicPoolSize (min: number, max: number): void {
-    if (this.type === PoolTypes.dynamic && min > max) {
-      throw new RangeError(
-        'Cannot instantiate a dynamic pool with a maximum pool size inferior to the minimum pool size'
-      )
-    } else if (this.type === PoolTypes.dynamic && min === 0 && max === 0) {
-      throw new RangeError(
-        'Cannot instantiate a dynamic pool with a minimum pool size and a maximum pool size equal to zero'
-      )
-    } else if (this.type === PoolTypes.dynamic && min === max) {
-      throw new RangeError(
-        'Cannot instantiate a dynamic pool with a minimum pool size equal to the maximum pool size. Use a fixed pool instead'
-      )
+    if (this.type === PoolTypes.dynamic) {
+      if (min > max) {
+        throw new RangeError(
+          'Cannot instantiate a dynamic pool with a maximum pool size inferior to the minimum pool size'
+        )
+      } else if (min === 0 && max === 0) {
+        throw new RangeError(
+          'Cannot instantiate a dynamic pool with a minimum pool size and a maximum pool size equal to zero'
+        )
+      } else if (min === max) {
+        throw new RangeError(
+          'Cannot instantiate a dynamic pool with a minimum pool size equal to the maximum pool size. Use a fixed pool instead'
+        )
+      }
     }
   }
 

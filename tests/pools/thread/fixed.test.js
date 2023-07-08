@@ -3,7 +3,7 @@ const { FixedThreadPool, PoolEvents } = require('../../../lib')
 const { WorkerFunctions } = require('../../test-types')
 const { waitPoolEvents, waitWorkerEvents } = require('../../test-utils')
 
-describe('Fixed thread pool test suite', async () => {
+describe('Fixed thread pool test suite', () => {
   const numberOfThreads = 6
   const pool = new FixedThreadPool(
     numberOfThreads,
@@ -12,9 +12,6 @@ describe('Fixed thread pool test suite', async () => {
       errorHandler: e => console.error(e)
     }
   )
-  let poolReady = 0
-  pool.emitter.on(PoolEvents.ready, () => ++poolReady)
-  await waitPoolEvents(pool, PoolEvents.ready, 1)
   const queuePool = new FixedThreadPool(
     numberOfThreads,
     './tests/worker-files/thread/testWorker.js',
@@ -81,6 +78,16 @@ describe('Fixed thread pool test suite', async () => {
   })
 
   it("Verify that 'ready' event is emitted", async () => {
+    const pool1 = new FixedThreadPool(
+      numberOfThreads,
+      './tests/worker-files/thread/testWorker.js',
+      {
+        errorHandler: e => console.error(e)
+      }
+    )
+    let poolReady = 0
+    pool1.emitter.on(PoolEvents.ready, () => ++poolReady)
+    await waitPoolEvents(pool1, PoolEvents.ready, 1)
     expect(poolReady).toBe(1)
   })
 
