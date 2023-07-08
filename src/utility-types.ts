@@ -9,10 +9,6 @@ import type { IWorker, Task } from './pools/worker'
  */
 export interface TaskError<Data = unknown> {
   /**
-   * Worker id.
-   */
-  readonly workerId: number
-  /**
    * Error message.
    */
   readonly message: string
@@ -61,10 +57,6 @@ export interface WorkerStatistics {
  */
 export interface MessageValue<Data = unknown, ErrorData = unknown>
   extends Task<Data> {
-  /**
-   * Worker id.
-   */
-  readonly workerId?: number
   /**
    * Kill code.
    */

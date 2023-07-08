@@ -148,13 +148,17 @@ export abstract class AbstractWorker<
     if (message.ready != null && message.workerId === this.id) {
       // Startup message received
       this.workerReady()
-    } else if (message.statistics != null) {
+    } else if (message.statistics != null && message.workerId === this.id) {
       // Statistics message received
       this.statistics = message.statistics
-    } else if (message.checkAlive != null) {
+    } else if (message.checkAlive != null && message.workerId === this.id) {
       // Check alive message received
       message.checkAlive ? this.startCheckAlive() : this.stopCheckAlive()
-    } else if (message.id != null && message.data != null) {
+    } else if (
+      message.id != null &&
+      message.data != null &&
+      message.workerId === this.id
+    ) {
       // Task message received
       const fn = this.getTaskFunction(message.name)
       if (isAsyncFunction(fn)) {
@@ -162,7 +166,7 @@ export abstract class AbstractWorker<
       } else {
         this.runInAsyncScope(this.runSync.bind(this), this, fn, message)
       }
-    } else if (message.kill === true) {
+    } else if (message.kill === true && message.workerId === this.id) {
       // Kill message received
       this.stopCheckAlive()
       this.emitDestroy()
@@ -203,7 +207,7 @@ export abstract class AbstractWorker<
       performance.now() - this.lastTaskTimestamp >
       (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME)
     ) {
-      this.sendToMainWorker({ kill: this.opts.killBehavior })
+      this.sendToMainWorker({ kill: this.opts.killBehavior, workerId: this.id })
     }
   }
 
@@ -262,10 +266,10 @@ export abstract class AbstractWorker<
       const errorMessage = this.handleError(e as Error | string)
       this.sendToMainWorker({
         taskError: {
-          workerId: this.id,
           message: errorMessage,
           data: message.data
         },
+        workerId: this.id,
         id: message.id
       })
     } finally {
@@ -301,10 +305,10 @@ export abstract class AbstractWorker<
         const errorMessage = this.handleError(e as Error | string)
         this.sendToMainWorker({
           taskError: {
-            workerId: this.id,
             message: errorMessage,
             data: message.data
           },
+          workerId: this.id,
           id: message.id
         })
       })

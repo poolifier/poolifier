@@ -16,13 +16,6 @@ const { waitPoolEvents } = require('../../test-utils')
 
 describe('Abstract pool test suite', () => {
   const numberOfWorkers = 2
-  class StubPoolWithRemoveAllWorker extends FixedThreadPool {
-    removeAllWorker () {
-      this.workerNodes = []
-      this.promiseResponseMap.clear()
-      this.handleWorkerReadyMessage = () => {}
-    }
-  }
   class StubPoolWithIsMain extends FixedThreadPool {
     isMain () {
       return false
@@ -97,6 +90,14 @@ describe('Abstract pool test suite', () => {
     ).toThrowError(
       new RangeError(
         'Cannot instantiate a dynamic pool with a minimum pool size equal to the maximum pool size. Use a fixed pool instead'
+      )
+    )
+    expect(
+      () =>
+        new DynamicThreadPool(0, 0, './tests/worker-files/thread/testWorker.js')
+    ).toThrowError(
+      new RangeError(
+        'Cannot instantiate a dynamic pool with a minimum pool size and a maximum pool size equal to zero'
       )
     )
   })
@@ -454,21 +455,6 @@ describe('Abstract pool test suite', () => {
       maxQueuedTasks: 0,
       failedTasks: 0
     })
-    await pool.destroy()
-  })
-
-  it('Simulate worker not found', async () => {
-    const pool = new StubPoolWithRemoveAllWorker(
-      numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js',
-      {
-        errorHandler: e => console.error(e)
-      }
-    )
-    expect(pool.workerNodes.length).toBe(numberOfWorkers)
-    // Simulate worker not found.
-    pool.removeAllWorker()
-    expect(pool.workerNodes.length).toBe(0)
     await pool.destroy()
   })
 

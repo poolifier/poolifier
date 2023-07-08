@@ -162,6 +162,10 @@ export abstract class AbstractPool<
       throw new RangeError(
         'Cannot instantiate a dynamic pool with a maximum pool size inferior to the minimum pool size'
       )
+    } else if (this.type === PoolTypes.dynamic && min === 0 && max === 0) {
+      throw new RangeError(
+        'Cannot instantiate a dynamic pool with a minimum pool size and a maximum pool size equal to zero'
+      )
     } else if (this.type === PoolTypes.dynamic && min === max) {
       throw new RangeError(
         'Cannot instantiate a dynamic pool with a minimum pool size equal to the maximum pool size. Use a fixed pool instead'
@@ -462,6 +466,17 @@ export abstract class AbstractPool<
       ?.worker
   }
 
+  private checkMessageWorkerId (message: MessageValue<Response>): void {
+    if (
+      message.workerId != null &&
+      this.getWorkerById(message.workerId) == null
+    ) {
+      throw new Error(
+        `Worker message received from unknown worker '${message.workerId}'`
+      )
+    }
+  }
+
   /**
    * Gets the given worker its worker node key.
    *
@@ -573,6 +588,7 @@ export abstract class AbstractPool<
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       data: data ?? ({} as Data),
       timestamp,
+      workerId: this.getWorkerInfo(workerNodeKey).id as number,
       id: randomUUID()
     }
     const res = new Promise<Response>((resolve, reject) => {
@@ -894,7 +910,7 @@ export abstract class AbstractPool<
     // Send startup message to worker.
     this.sendToWorker(worker, {
       ready: false,
-      workerId: this.getWorkerInfo(this.getWorkerNodeKey(worker)).id
+      workerId: this.getWorkerInfo(this.getWorkerNodeKey(worker)).id as number
     })
     // Setup worker task statistics computation.
     this.setWorkerStatistics(worker)
@@ -988,8 +1004,12 @@ export abstract class AbstractPool<
         void (this.destroyWorker(worker) as Promise<void>)
       }
     })
-    this.getWorkerInfo(this.getWorkerNodeKey(worker)).dynamic = true
-    this.sendToWorker(worker, { checkAlive: true })
+    const workerInfo = this.getWorkerInfo(this.getWorkerNodeKey(worker))
+    workerInfo.dynamic = true
+    this.sendToWorker(worker, {
+      checkAlive: true,
+      workerId: workerInfo.id as number
+    })
     return worker
   }
 
@@ -1000,6 +1020,7 @@ export abstract class AbstractPool<
    */
   protected workerListener (): (message: MessageValue<Response>) => void {
     return message => {
+      this.checkMessageWorkerId(message)
       if (message.ready != null && message.workerId != null) {
         // Worker ready message received
         this.handleWorkerReadyMessage(message)
@@ -1011,17 +1032,9 @@ export abstract class AbstractPool<
   }
 
   private handleWorkerReadyMessage (message: MessageValue<Response>): void {
-    const worker = this.getWorkerById(message.workerId as number)
-    if (worker != null) {
-      this.getWorkerInfo(this.getWorkerNodeKey(worker)).ready =
-        message.ready as boolean
-    } else {
-      throw new Error(
-        `Worker ready message received from unknown worker '${
-          message.workerId as number
-        }'`
-      )
-    }
+    const worker = this.getWorkerById(message.workerId)
+    this.getWorkerInfo(this.getWorkerNodeKey(worker as Worker)).ready =
+      message.ready as boolean
     if (this.emitter != null && this.ready) {
       this.emitter.emit(PoolEvents.ready, this.info)
     }
@@ -1138,7 +1151,8 @@ export abstract class AbstractPool<
             .runTime.aggregate,
         elu: this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
           .elu.aggregate
-      }
+      },
+      workerId: this.getWorkerInfo(this.getWorkerNodeKey(worker)).id as number
     })
   }
 }

@@ -37,6 +37,10 @@ export type ExitHandler<Worker extends IWorker> = (
  */
 export interface Task<Data = unknown> {
   /**
+   * Worker id.
+   */
+  readonly workerId: number
+  /**
    * Task name.
    */
   readonly name?: string

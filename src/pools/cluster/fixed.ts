@@ -61,7 +61,7 @@ export class FixedClusterPool<
 
   /** @inheritDoc */
   protected destroyWorker (worker: Worker): void {
-    this.sendToWorker(worker, { kill: true })
+    this.sendToWorker(worker, { kill: true, workerId: worker.id })
     worker.on('disconnect', () => {
       worker.kill()
     })
