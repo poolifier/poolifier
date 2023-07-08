@@ -46,7 +46,7 @@
 <ul class="tsd-hierarchy">
 <li><a href="../classes/AbstractPool.html" class="tsd-signature-type tsd-kind-class">AbstractPool</a></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/93fd07e/src/pools/pool.ts#L164">src/pools/pool.ts:164</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/2431bdb/src/pools/pool.ts#L167">src/pools/pool.ts:167</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -81,22 +81,23 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 <div class="tsd-comment tsd-typography"></div></li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/93fd07e/src/pools/pool.ts#L199">src/pools/pool.ts:199</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/2431bdb/src/pools/pool.ts#L203">src/pools/pool.ts:203</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="emitter" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>emitter</span><a href="#emitter" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">emitter</span><span class="tsd-signature-symbol">?:</span> <a href="../classes/PoolEmitter.html" class="tsd-signature-type tsd-kind-class">PoolEmitter</a></div>
 <div class="tsd-comment tsd-typography"><p>Emitter on which events can be listened to.</p>
 <p>Events that can currently be listened to:</p>
 <ul>
-<li><code>&#39;full&#39;</code>: Emitted when the pool is dynamic and full.</li>
-<li><code>&#39;busy&#39;</code>: Emitted when the pool is busy.</li>
+<li><code>&#39;full&#39;</code>: Emitted when the pool is dynamic and the number of workers created has reached the maximum size expected.</li>
+<li><code>&#39;ready&#39;</code>: Emitted when the number of workers created in the pool has reached the maximum size expected and are ready.</li>
+<li><code>&#39;busy&#39;</code>: Emitted when the number of workers created in the pool has reached the maximum size expected and are executing at least one task.</li>
 <li><code>&#39;error&#39;</code>: Emitted when an uncaught error occurs.</li>
 <li><code>&#39;taskError&#39;</code>: Emitted when an error occurs while executing a task.</li>
 </ul>
 </div>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/93fd07e/src/pools/pool.ts#L187">src/pools/pool.ts:187</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/2431bdb/src/pools/pool.ts#L191">src/pools/pool.ts:191</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="enableTasksQueue" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>enable<wbr/>Tasks<wbr/>Queue</span><a href="#enableTasksQueue" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">enable<wbr/>Tasks<wbr/>Queue</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">enable</span>, <span class="tsd-kind-parameter">tasksQueueOptions</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span></div>
@@ -125,7 +126,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 <div class="tsd-comment tsd-typography"></div></li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/93fd07e/src/pools/pool.ts#L224">src/pools/pool.ts:224</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/2431bdb/src/pools/pool.ts#L228">src/pools/pool.ts:228</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="execute" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>execute</span><a href="#execute" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">execute</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">data</span><span class="tsd-signature-symbol">?</span>, <span class="tsd-kind-parameter">name</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Response</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span></div>
@@ -155,7 +156,7 @@
 
 <div class="tsd-comment tsd-typography"></div></li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/93fd07e/src/pools/pool.ts#L195">src/pools/pool.ts:195</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/2431bdb/src/pools/pool.ts#L199">src/pools/pool.ts:199</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="info" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>info</span><a href="#info" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">info</span><span class="tsd-signature-symbol">:</span> <a href="PoolInfo.html" class="tsd-signature-type tsd-kind-interface">PoolInfo</a></div>
@@ -163,7 +164,7 @@
 </div>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/93fd07e/src/pools/pool.ts#L172">src/pools/pool.ts:172</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/2431bdb/src/pools/pool.ts#L175">src/pools/pool.ts:175</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="setTasksQueueOptions" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>set<wbr/>Tasks<wbr/>Queue<wbr/>Options</span><a href="#setTasksQueueOptions" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">set<wbr/>Tasks<wbr/>Queue<wbr/>Options</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">tasksQueueOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span></div>
@@ -187,7 +188,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 <div class="tsd-comment tsd-typography"></div></li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/93fd07e/src/pools/pool.ts#L233">src/pools/pool.ts:233</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/2431bdb/src/pools/pool.ts#L237">src/pools/pool.ts:237</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="setWorkerChoiceStrategy" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>set<wbr/>Worker<wbr/>Choice<wbr/>Strategy</span><a href="#setWorkerChoiceStrategy" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">set<wbr/>Worker<wbr/>Choice<wbr/>Strategy</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">workerChoiceStrategy</span>, <span class="tsd-kind-parameter">workerChoiceStrategyOptions</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span></div>
@@ -216,7 +217,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 <div class="tsd-comment tsd-typography"></div></li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/93fd07e/src/pools/pool.ts#L206">src/pools/pool.ts:206</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/2431bdb/src/pools/pool.ts#L210">src/pools/pool.ts:210</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="setWorkerChoiceStrategyOptions" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>set<wbr/>Worker<wbr/>Choice<wbr/>Strategy<wbr/>Options</span><a href="#setWorkerChoiceStrategyOptions" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">set<wbr/>Worker<wbr/>Choice<wbr/>Strategy<wbr/>Options</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">workerChoiceStrategyOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span></div>
@@ -240,7 +241,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 <div class="tsd-comment tsd-typography"></div></li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/93fd07e/src/pools/pool.ts#L215">src/pools/pool.ts:215</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/2431bdb/src/pools/pool.ts#L219">src/pools/pool.ts:219</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="workerNodes" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>worker<wbr/>Nodes</span><a href="#workerNodes" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">worker<wbr/>Nodes</span><span class="tsd-signature-symbol">:</span> <a href="IWorkerNode.html" class="tsd-signature-type tsd-kind-interface">IWorkerNode</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Worker</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type tsd-kind-type-parameter">Data</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span></div>
@@ -248,7 +249,7 @@
 </div>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/93fd07e/src/pools/pool.ts#L176">src/pools/pool.ts:176</a></li></ul></aside></section></section></div>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/2431bdb/src/pools/pool.ts#L179">src/pools/pool.ts:179</a></li></ul></aside></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
