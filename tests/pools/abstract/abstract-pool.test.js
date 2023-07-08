@@ -432,6 +432,24 @@ describe('Abstract pool test suite', () => {
       maxQueuedTasks: 0,
       failedTasks: 0
     })
+    await waitPoolEvents(pool, PoolEvents.ready, 1)
+    expect(pool.info).toStrictEqual({
+      version,
+      type: PoolTypes.fixed,
+      worker: WorkerTypes.thread,
+      ready: true,
+      strategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      minSize: numberOfWorkers,
+      maxSize: numberOfWorkers,
+      workerNodes: numberOfWorkers,
+      idleWorkerNodes: numberOfWorkers,
+      busyWorkerNodes: 0,
+      executedTasks: 0,
+      executingTasks: 0,
+      queuedTasks: 0,
+      maxQueuedTasks: 0,
+      failedTasks: 0
+    })
     await pool.destroy()
     pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
@@ -443,6 +461,24 @@ describe('Abstract pool test suite', () => {
       type: PoolTypes.dynamic,
       worker: WorkerTypes.cluster,
       ready: false,
+      strategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      minSize: Math.floor(numberOfWorkers / 2),
+      maxSize: numberOfWorkers,
+      workerNodes: Math.floor(numberOfWorkers / 2),
+      idleWorkerNodes: Math.floor(numberOfWorkers / 2),
+      busyWorkerNodes: 0,
+      executedTasks: 0,
+      executingTasks: 0,
+      queuedTasks: 0,
+      maxQueuedTasks: 0,
+      failedTasks: 0
+    })
+    await waitPoolEvents(pool, PoolEvents.ready, 1)
+    expect(pool.info).toStrictEqual({
+      version,
+      type: PoolTypes.dynamic,
+      worker: WorkerTypes.cluster,
+      ready: true,
       strategy: WorkerChoiceStrategies.ROUND_ROBIN,
       minSize: Math.floor(numberOfWorkers / 2),
       maxSize: numberOfWorkers,
@@ -529,6 +565,15 @@ describe('Abstract pool test suite', () => {
         ready: false
       })
     }
+    await waitPoolEvents(pool, PoolEvents.ready, 1)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.info).toStrictEqual({
+        id: expect.any(Number),
+        type: WorkerTypes.cluster,
+        dynamic: false,
+        ready: true
+      })
+    }
     await pool.destroy()
     pool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
@@ -541,6 +586,15 @@ describe('Abstract pool test suite', () => {
         type: WorkerTypes.thread,
         dynamic: false,
         ready: false
+      })
+    }
+    await waitPoolEvents(pool, PoolEvents.ready, 1)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.info).toStrictEqual({
+        id: expect.any(Number),
+        type: WorkerTypes.thread,
+        dynamic: false,
+        ready: true
       })
     }
   })
