@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix pool readiness semantic.
+
 ## [2.6.10] - 2023-07-08
 
 ### Fixed

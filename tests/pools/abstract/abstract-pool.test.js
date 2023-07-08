@@ -720,7 +720,8 @@ describe('Abstract pool test suite', () => {
   })
 
   it("Verify that pool event emitter 'ready' event can register a callback", async () => {
-    const pool = new FixedClusterPool(
+    const pool = new DynamicClusterPool(
+      Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js'
     )
@@ -734,7 +735,7 @@ describe('Abstract pool test suite', () => {
     expect(poolReady).toBe(1)
     expect(poolInfo).toStrictEqual({
       version,
-      type: PoolTypes.fixed,
+      type: PoolTypes.dynamic,
       worker: WorkerTypes.cluster,
       ready: true,
       strategy: WorkerChoiceStrategies.ROUND_ROBIN,

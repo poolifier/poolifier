@@ -403,14 +403,16 @@ export abstract class AbstractPool<
 
   private get starting (): boolean {
     return (
-      !this.full ||
-      (this.full && this.workerNodes.some(workerNode => !workerNode.info.ready))
+      this.workerNodes.length < this.minSize ||
+      (this.workerNodes.length >= this.minSize &&
+        this.workerNodes.some(workerNode => !workerNode.info.ready))
     )
   }
 
   private get ready (): boolean {
     return (
-      this.full && this.workerNodes.every(workerNode => workerNode.info.ready)
+      this.workerNodes.length >= this.minSize &&
+      this.workerNodes.every(workerNode => workerNode.info.ready)
     )
   }
 
