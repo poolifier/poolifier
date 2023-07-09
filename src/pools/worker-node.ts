@@ -74,7 +74,7 @@ implements IWorkerNode<Worker, Data> {
   }
 
   /** @inheritdoc */
-  public getTasksWorkerUsage (name: string): WorkerUsage | undefined {
+  public getTaskWorkerUsage (name: string): WorkerUsage | undefined {
     if (!this.tasksUsage.has(name)) {
       this.tasksUsage.set(name, this.initTaskWorkerUsage(name))
     }

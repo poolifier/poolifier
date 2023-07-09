@@ -266,7 +266,7 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    */
   readonly resetUsage: () => void
   /**
-   * Worker node get tasks usage statistics.
+   * Worker node get task usage statistics.
    */
-  readonly getTasksWorkerUsage: (name: string) => WorkerUsage | undefined
+  readonly getTaskWorkerUsage: (name: string) => WorkerUsage | undefined
 }
