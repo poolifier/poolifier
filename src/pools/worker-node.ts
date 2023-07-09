@@ -44,7 +44,7 @@ implements IWorkerNode<Worker, Data> {
   }
 
   /**
-   * Worker node tasks queue maximum size.
+   * Tasks queue maximum size.
    *
    * @returns The tasks queue maximum size.
    */

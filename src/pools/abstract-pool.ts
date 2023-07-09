@@ -675,11 +675,11 @@ export abstract class AbstractPool<
     const workerUsage = this.workerNodes[workerNodeKey].usage
     ++workerUsage.tasks.executing
     this.updateWaitTimeWorkerUsage(workerUsage, task)
-    const tasksWorkerUsage = this.workerNodes[workerNodeKey].getTaskWorkerUsage(
+    const taskWorkerUsage = this.workerNodes[workerNodeKey].getTaskWorkerUsage(
       task.name as string
     ) as WorkerUsage
-    ++tasksWorkerUsage.tasks.executing
-    this.updateWaitTimeWorkerUsage(tasksWorkerUsage, task)
+    ++taskWorkerUsage.tasks.executing
+    this.updateWaitTimeWorkerUsage(taskWorkerUsage, task)
   }
 
   /**
@@ -698,12 +698,12 @@ export abstract class AbstractPool<
     this.updateTaskStatisticsWorkerUsage(workerUsage, message)
     this.updateRunTimeWorkerUsage(workerUsage, message)
     this.updateEluWorkerUsage(workerUsage, message)
-    const tasksWorkerUsage = this.workerNodes[workerNodeKey].getTaskWorkerUsage(
+    const taskWorkerUsage = this.workerNodes[workerNodeKey].getTaskWorkerUsage(
       message.name as string
     ) as WorkerUsage
-    this.updateTaskStatisticsWorkerUsage(tasksWorkerUsage, message)
-    this.updateRunTimeWorkerUsage(tasksWorkerUsage, message)
-    this.updateEluWorkerUsage(tasksWorkerUsage, message)
+    this.updateTaskStatisticsWorkerUsage(taskWorkerUsage, message)
+    this.updateRunTimeWorkerUsage(taskWorkerUsage, message)
+    this.updateEluWorkerUsage(taskWorkerUsage, message)
   }
 
   private updateTaskStatisticsWorkerUsage (
