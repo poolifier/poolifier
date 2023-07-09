@@ -123,6 +123,11 @@ export abstract class AbstractWorker<
     } else if (isPlainObject(taskFunctions)) {
       let firstEntry = true
       for (const [name, fn] of Object.entries(taskFunctions)) {
+        if (typeof name !== 'string') {
+          throw new TypeError(
+            'A taskFunctions parameter object key is not a string'
+          )
+        }
         if (typeof fn !== 'function') {
           throw new TypeError(
             'A taskFunctions parameter object value is not a function'
