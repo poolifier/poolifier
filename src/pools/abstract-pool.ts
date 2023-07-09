@@ -1,6 +1,10 @@
 import { randomUUID } from 'node:crypto'
 import { performance } from 'node:perf_hooks'
-import type { MessageValue, PromiseResponseWrapper } from '../utility-types'
+import type {
+  MessageValue,
+  PromiseResponseWrapper,
+  Task
+} from '../utility-types'
 import {
   DEFAULT_TASK_NAME,
   DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
@@ -25,7 +29,6 @@ import type {
   IWorker,
   IWorkerNode,
   MessageHandler,
-  Task,
   WorkerInfo,
   WorkerType,
   WorkerUsage

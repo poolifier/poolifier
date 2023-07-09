@@ -1,4 +1,5 @@
 import type { CircularArray } from '../circular-array'
+import type { Task } from '../utility-types'
 
 /**
  * Callback invoked if the worker has received a message.
@@ -28,35 +29,6 @@ export type ExitHandler<Worker extends IWorker> = (
   this: Worker,
   exitCode: number
 ) => void
-
-/**
- * Message object that is passed as a task between main worker and worker.
- *
- * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
- * @internal
- */
-export interface Task<Data = unknown> {
-  /**
-   * Worker id.
-   */
-  readonly workerId: number
-  /**
-   * Task name.
-   */
-  readonly name?: string
-  /**
-   * Task input data that will be passed to the worker.
-   */
-  readonly data?: Data
-  /**
-   * Timestamp.
-   */
-  readonly timestamp?: number
-  /**
-   * Message UUID.
-   */
-  readonly id?: string
-}
 
 /**
  * Measurement statistics.

@@ -1,6 +1,6 @@
 import type { EventLoopUtilization } from 'node:perf_hooks'
 import type { KillBehavior } from './worker/worker-options'
-import type { IWorker, Task } from './pools/worker'
+import type { IWorker } from './pools/worker'
 
 /**
  * Task error.
@@ -54,6 +54,35 @@ export interface TaskPerformance {
 export interface WorkerStatistics {
   runTime: boolean
   elu: boolean
+}
+
+/**
+ * Message object that is passed as a task between main worker and worker.
+ *
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @internal
+ */
+export interface Task<Data = unknown> {
+  /**
+   * Worker id.
+   */
+  readonly workerId: number
+  /**
+   * Task name.
+   */
+  readonly name?: string
+  /**
+   * Task input data that will be passed to the worker.
+   */
+  readonly data?: Data
+  /**
+   * Timestamp.
+   */
+  readonly timestamp?: number
+  /**
+   * Message UUID.
+   */
+  readonly id?: string
 }
 
 /**

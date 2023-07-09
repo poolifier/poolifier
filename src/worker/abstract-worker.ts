@@ -4,6 +4,7 @@ import type { MessagePort } from 'node:worker_threads'
 import { performance } from 'node:perf_hooks'
 import type {
   MessageValue,
+  Task,
   TaskPerformance,
   WorkerStatistics
 } from '../utility-types'
@@ -280,12 +281,7 @@ export abstract class AbstractWorker<
         message.checkAlive ? this.startCheckAlive() : this.stopCheckAlive()
       } else if (message.id != null && message.data != null) {
         // Task message received
-        const fn = this.getTaskFunction(message.name)
-        if (isAsyncFunction(fn)) {
-          this.runInAsyncScope(this.runAsync.bind(this), this, fn, message)
-        } else {
-          this.runInAsyncScope(this.runSync.bind(this), this, fn, message)
-        }
+        this.run(message)
       } else if (message.kill === true) {
         // Kill message received
         this.stopCheckAlive()
@@ -364,35 +360,50 @@ export abstract class AbstractWorker<
   }
 
   /**
+   * Runs the given task.
+   *
+   * @param task - The task to execute.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the task function is not found.
+   */
+  protected run (task: Task<Data>): void {
+    const fn = this.getTaskFunction(task.name)
+    if (isAsyncFunction(fn)) {
+      this.runInAsyncScope(this.runAsync.bind(this), this, fn, task)
+    } else {
+      this.runInAsyncScope(this.runSync.bind(this), this, fn, task)
+    }
+  }
+
+  /**
    * Runs the given function synchronously.
    *
-   * @param fn - Function that will be executed.
-   * @param message - Input data for the given function.
+   * @param fn - Task function that will be executed.
+   * @param task - Input data for the task function.
    */
   protected runSync (
     fn: WorkerSyncFunction<Data, Response>,
-    message: MessageValue<Data>
+    task: Task<Data>
   ): void {
     try {
-      let taskPerformance = this.beginTaskPerformance(message.name)
-      const res = fn(message.data)
+      let taskPerformance = this.beginTaskPerformance(task.name)
+      const res = fn(task.data)
       taskPerformance = this.endTaskPerformance(taskPerformance)
       this.sendToMainWorker({
         data: res,
         taskPerformance,
         workerId: this.id,
-        id: message.id
+        id: task.id
       })
     } catch (e) {
       const errorMessage = this.handleError(e as Error | string)
       this.sendToMainWorker({
         taskError: {
-          name: message.name ?? DEFAULT_TASK_NAME,
+          name: task.name ?? DEFAULT_TASK_NAME,
           message: errorMessage,
-          data: message.data
+          data: task.data
         },
         workerId: this.id,
-        id: message.id
+        id: task.id
       })
     } finally {
       if (!this.isMain && this.aliveInterval != null) {
@@ -404,22 +415,22 @@ export abstract class AbstractWorker<
   /**
    * Runs the given function asynchronously.
    *
-   * @param fn - Function that will be executed.
-   * @param message - Input data for the given function.
+   * @param fn - Task function that will be executed.
+   * @param task - Input data for the task function.
    */
   protected runAsync (
     fn: WorkerAsyncFunction<Data, Response>,
-    message: MessageValue<Data>
+    task: Task<Data>
   ): void {
-    let taskPerformance = this.beginTaskPerformance(message.name)
-    fn(message.data)
+    let taskPerformance = this.beginTaskPerformance(task.name)
+    fn(task.data)
       .then(res => {
         taskPerformance = this.endTaskPerformance(taskPerformance)
         this.sendToMainWorker({
           data: res,
           taskPerformance,
           workerId: this.id,
-          id: message.id
+          id: task.id
         })
         return null
       })
@@ -427,12 +438,12 @@ export abstract class AbstractWorker<
         const errorMessage = this.handleError(e as Error | string)
         this.sendToMainWorker({
           taskError: {
-            name: message.name ?? DEFAULT_TASK_NAME,
+            name: task.name ?? DEFAULT_TASK_NAME,
             message: errorMessage,
-            data: message.data
+            data: task.data
           },
           workerId: this.id,
-          id: message.id
+          id: task.id
         })
       })
       .finally(() => {
@@ -444,9 +455,11 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Gets the task function in the given scope.
+   * Gets the task function with the given name.
    *
    * @param name - Name of the task function that will be returned.
+   * @returns The task function.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the task function is not found.
    */
   private getTaskFunction (name?: string): WorkerFunction<Data, Response> {
     name = name ?? DEFAULT_TASK_NAME

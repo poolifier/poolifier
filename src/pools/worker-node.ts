@@ -1,9 +1,9 @@
 import { CircularArray } from '../circular-array'
 import { Queue } from '../queue'
+import type { Task } from '../utility-types'
 import {
   type IWorker,
   type IWorkerNode,
-  type Task,
   type WorkerInfo,
   type WorkerType,
   WorkerTypes,

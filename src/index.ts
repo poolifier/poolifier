@@ -24,7 +24,6 @@ export type {
   MeasurementStatistics,
   MessageHandler,
   OnlineHandler,
-  Task,
   TaskStatistics,
   WorkerInfo,
   WorkerType,
@@ -61,6 +60,7 @@ export type {
 export type {
   MessageValue,
   PromiseResponseWrapper,
+  Task,
   TaskError,
   TaskPerformance,
   WorkerStatistics
