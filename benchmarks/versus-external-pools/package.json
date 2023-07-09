@@ -20,7 +20,7 @@
     "nanothreads": "0.3.7",
     "node-worker-threads-pool": "1.5.1",
     "piscina": "4.0.0",
-    "poolifier": "2.6.10",
+    "poolifier": "2.6.11",
     "tinypool": "0.7.0",
     "worker-nodes": "2.6.0",
     "workerpool": "6.4.0"
