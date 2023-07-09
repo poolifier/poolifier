@@ -144,6 +144,125 @@ export abstract class AbstractWorker<
   }
 
   /**
+   * Checks if the worker has a task function with the given name.
+   *
+   * @param name - The name of the task function to check.
+   * @returns Whether the worker has a task function with the given name or not.
+   * @throws {@link TypeError} If the `name` parameter is not a string.
+   */
+  public hasTaskFunction (name: string): boolean {
+    if (typeof name !== 'string') {
+      throw new TypeError('name parameter is not a string')
+    }
+    return this.taskFunctions.has(name)
+  }
+
+  /**
+   * Adds a task function to the worker.
+   * If a task function with the same name already exists, it is replaced.
+   *
+   * @param name - The name of the task function to add.
+   * @param fn - The task function to add.
+   * @returns Whether the task function was added or not.
+   * @throws {@link TypeError} If the `name` parameter is not a string.
+   * @throws {@link Error} If the `name` parameter is the default task function reserved name.
+   * @throws {@link TypeError} If the `fn` parameter is not a function.
+   */
+  public addTaskFunction (
+    name: string,
+    fn: WorkerFunction<Data, Response>
+  ): boolean {
+    if (typeof name !== 'string') {
+      throw new TypeError('name parameter is not a string')
+    }
+    if (name === DEFAULT_TASK_NAME) {
+      throw new Error(
+        'Cannot add a task function with the default reserved name'
+      )
+    }
+    if (typeof fn !== 'function') {
+      throw new TypeError('fn parameter is not a function')
+    }
+    try {
+      if (
+        this.taskFunctions.get(name) ===
+        this.taskFunctions.get(DEFAULT_TASK_NAME)
+      ) {
+        this.taskFunctions.set(DEFAULT_TASK_NAME, fn.bind(this))
+      }
+      this.taskFunctions.set(name, fn.bind(this))
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  /**
+   * Removes a task function from the worker.
+   *
+   * @param name - The name of the task function to remove.
+   * @returns Whether the task function existed and was removed or not.
+   * @throws {@link TypeError} If the `name` parameter is not a string.
+   * @throws {@link Error} If the `name` parameter is the default task function reserved name.
+   * @throws {@link Error} If the `name` parameter is the task function used as default task function.
+   */
+  public removeTaskFunction (name: string): boolean {
+    if (typeof name !== 'string') {
+      throw new TypeError('name parameter is not a string')
+    }
+    if (name === DEFAULT_TASK_NAME) {
+      throw new Error(
+        'Cannot remove the task function with the default reserved name'
+      )
+    }
+    if (
+      this.taskFunctions.get(name) === this.taskFunctions.get(DEFAULT_TASK_NAME)
+    ) {
+      throw new Error(
+        'Cannot remove the task function used as the default task function'
+      )
+    }
+    return this.taskFunctions.delete(name)
+  }
+
+  /**
+   * Sets the default task function to use when no task function name is specified.
+   *
+   * @param name - The name of the task function to use as default task function.
+   * @returns Whether the default task function was set or not.
+   * @throws {@link TypeError} If the `name` parameter is not a string.
+   * @throws {@link Error} If the `name` parameter is the default task function reserved name.
+   * @throws {@link Error} If the `name` parameter is a non-existing task function.
+   */
+  public setDefaultTaskFunction (name: string): boolean {
+    if (typeof name !== 'string') {
+      throw new TypeError('name parameter is not a string')
+    }
+    if (name === DEFAULT_TASK_NAME) {
+      throw new Error(
+        'Cannot set the default task function reserved name as the default task function'
+      )
+    }
+    if (!this.taskFunctions.has(name)) {
+      throw new Error(
+        'Cannot set the default task function to a non-existing task function'
+      )
+    }
+    try {
+      this.taskFunctions.set(
+        DEFAULT_TASK_NAME,
+        this.taskFunctions.get(name)?.bind(this) as WorkerFunction<
+        Data,
+        Response
+        >
+      )
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  /**
    * Worker message listener.
    *
    * @param message - Message received.

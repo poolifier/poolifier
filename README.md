@@ -231,17 +231,17 @@ An object with these properties:
 ### `pool.execute(data, name)`
 
 `data` (optional) An object that you want to pass to your worker implementation  
-`name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
-This method is available on both pool implementations and returns a promise.
+`name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`
+
+This method is available on both pool implementations and returns a promise with the task function execution response.
 
 ### `pool.destroy()`
 
-Destroy method is available on both pool implementations.  
-This method will call the terminate method on each worker.
+This method is available on both pool implementations and will call the terminate method on each worker.
 
 ### `class YourWorker extends ThreadWorker/ClusterWorker`
 
-`taskFunctions` (mandatory) The task function or task functions object that you want to execute on the worker  
+`taskFunctions` (mandatory) The task function or task functions object `{ name_1: fn_1, ..., name_n, fn_n }` that you want to execute on the worker  
 `opts` (optional) An object with these properties:
 
 - `maxInactiveTime` (optional) - Max time to wait tasks to work on in milliseconds, after this period the new worker will die.  
@@ -255,6 +255,31 @@ This method will call the terminate method on each worker.
   **KillBehaviors.HARD**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker will be deleted.  
   This option only apply to the newly created workers.  
   Default: `KillBehaviors.SOFT`
+
+#### `YourWorker.hasTaskFunction(name)`
+
+`name` (mandatory) The task function name
+
+This method is available on both worker implementations and returns a boolean.
+
+#### `YourWorker.addTaskFunction(name, fn)`
+
+`name` (mandatory) The task function name
+`fn` (mandatory) The task function
+
+This method is available on both worker implementations and returns a boolean.
+
+#### `YourWorker.removeTaskFunction(name)`
+
+`name` (mandatory) The task function name
+
+This method is available on both worker implementations and returns a boolean.
+
+#### `YourWorker.setDefaultTaskFunction(name)`
+
+`name` (mandatory) The task function name
+
+This method is available on both worker implementations and returns a boolean.
 
 ## General guidance
 
