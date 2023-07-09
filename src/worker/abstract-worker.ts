@@ -148,7 +148,7 @@ export abstract class AbstractWorker<
    *
    * @param name - The name of the task function to check.
    * @returns Whether the worker has a task function with the given name or not.
-   * @throws {@link TypeError} If the `name` parameter is not a string.
+   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string.
    */
   public hasTaskFunction (name: string): boolean {
     if (typeof name !== 'string') {
@@ -164,9 +164,9 @@ export abstract class AbstractWorker<
    * @param name - The name of the task function to add.
    * @param fn - The task function to add.
    * @returns Whether the task function was added or not.
-   * @throws {@link TypeError} If the `name` parameter is not a string.
-   * @throws {@link Error} If the `name` parameter is the default task function reserved name.
-   * @throws {@link TypeError} If the `fn` parameter is not a function.
+   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is the default task function reserved name.
+   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `fn` parameter is not a function.
    */
   public addTaskFunction (
     name: string,
@@ -202,9 +202,9 @@ export abstract class AbstractWorker<
    *
    * @param name - The name of the task function to remove.
    * @returns Whether the task function existed and was removed or not.
-   * @throws {@link TypeError} If the `name` parameter is not a string.
-   * @throws {@link Error} If the `name` parameter is the default task function reserved name.
-   * @throws {@link Error} If the `name` parameter is the task function used as default task function.
+   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is the default task function reserved name.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is the task function used as default task function.
    */
   public removeTaskFunction (name: string): boolean {
     if (typeof name !== 'string') {
@@ -230,9 +230,9 @@ export abstract class AbstractWorker<
    *
    * @param name - The name of the task function to use as default task function.
    * @returns Whether the default task function was set or not.
-   * @throws {@link TypeError} If the `name` parameter is not a string.
-   * @throws {@link Error} If the `name` parameter is the default task function reserved name.
-   * @throws {@link Error} If the `name` parameter is a non-existing task function.
+   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is the default task function reserved name.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is a non-existing task function.
    */
   public setDefaultTaskFunction (name: string): boolean {
     if (typeof name !== 'string') {
