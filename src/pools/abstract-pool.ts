@@ -699,7 +699,7 @@ export abstract class AbstractPool<
     this.updateRunTimeWorkerUsage(workerUsage, message)
     this.updateEluWorkerUsage(workerUsage, message)
     const taskWorkerUsage = this.workerNodes[workerNodeKey].getTaskWorkerUsage(
-      message.name as string
+      message.taskPerformance?.name ?? DEFAULT_TASK_NAME
     ) as WorkerUsage
     this.updateTaskStatisticsWorkerUsage(taskWorkerUsage, message)
     this.updateRunTimeWorkerUsage(taskWorkerUsage, message)
