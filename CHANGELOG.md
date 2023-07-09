@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Workaround import issue with `node:os` module in node 16.x.x.
+
 ## [2.6.11] - 2023-07-09
 
 ### Fixed
