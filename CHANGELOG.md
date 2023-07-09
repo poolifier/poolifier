@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add per task function statistics tracking.
-- Add public methods to manipulate the worker tasks function at runtime.
+- Add public methods to manipulate the worker task functions at runtime.
 
 ## [2.6.12] - 2023-07-09
 
