@@ -292,7 +292,7 @@ export abstract class AbstractWorker<
     fn: WorkerAsyncFunction<Data, Response>,
     message: MessageValue<Data>
   ): void {
-    let taskPerformance = this.beginTaskPerformance()
+    let taskPerformance = this.beginTaskPerformance(message.name)
     fn(message.data)
       .then(res => {
         taskPerformance = this.endTaskPerformance(taskPerformance)
