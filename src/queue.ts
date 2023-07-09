@@ -91,7 +91,7 @@ export class Queue<T> {
           }
         }
         const value = items[i]
-        i++
+        ++i
         return {
           value,
           done: false
