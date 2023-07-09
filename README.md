@@ -241,7 +241,7 @@ This method is available on both pool implementations and will call the terminat
 
 ### `class YourWorker extends ThreadWorker/ClusterWorker`
 
-`taskFunctions` (mandatory) The task function or task functions object `{ name_1: fn_1, ..., name_n, fn_n }` that you want to execute on the worker  
+`taskFunctions` (mandatory) The task function or task functions object `{ name_1: fn_1, ..., name_n: fn_n }` that you want to execute on the worker  
 `opts` (optional) An object with these properties:
 
 - `maxInactiveTime` (optional) - Max time to wait tasks to work on in milliseconds, after this period the new worker will die.  
