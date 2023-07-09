@@ -9,11 +9,15 @@ import type { IWorker, Task } from './pools/worker'
  */
 export interface TaskError<Data = unknown> {
   /**
+   * Task name triggering the error.
+   */
+  readonly name: string
+  /**
    * Error message.
    */
   readonly message: string
   /**
-   * Data passed to the worker triggering the error.
+   * Data triggering the error.
    */
   readonly data?: Data
 }

@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { performance } from 'node:perf_hooks'
 import type { MessageValue, PromiseResponseWrapper } from '../utility-types'
 import {
+  DEFAULT_TASK_NAME,
   DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
   EMPTY_FUNCTION,
   isKillBehavior,
@@ -588,7 +589,7 @@ export abstract class AbstractPool<
     const timestamp = performance.now()
     const workerNodeKey = this.chooseWorkerNode()
     const submittedTask: Task<Data> = {
-      name,
+      name: name ?? DEFAULT_TASK_NAME,
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       data: data ?? ({} as Data),
       timestamp,
@@ -671,6 +672,11 @@ export abstract class AbstractPool<
     const workerUsage = this.workerNodes[workerNodeKey].usage
     ++workerUsage.tasks.executing
     this.updateWaitTimeWorkerUsage(workerUsage, task)
+    const tasksWorkerUsage = this.workerNodes[
+      workerNodeKey
+    ].getTasksWorkerUsage(task.name as string) as WorkerUsage
+    ++tasksWorkerUsage.tasks.executing
+    this.updateWaitTimeWorkerUsage(tasksWorkerUsage, task)
   }
 
   /**
@@ -684,10 +690,17 @@ export abstract class AbstractPool<
     worker: Worker,
     message: MessageValue<Response>
   ): void {
-    const workerUsage = this.workerNodes[this.getWorkerNodeKey(worker)].usage
+    const workerNodeKey = this.getWorkerNodeKey(worker)
+    const workerUsage = this.workerNodes[workerNodeKey].usage
     this.updateTaskStatisticsWorkerUsage(workerUsage, message)
     this.updateRunTimeWorkerUsage(workerUsage, message)
     this.updateEluWorkerUsage(workerUsage, message)
+    const tasksWorkerUsage = this.workerNodes[
+      workerNodeKey
+    ].getTasksWorkerUsage(message.name as string) as WorkerUsage
+    this.updateTaskStatisticsWorkerUsage(tasksWorkerUsage, message)
+    this.updateRunTimeWorkerUsage(tasksWorkerUsage, message)
+    this.updateEluWorkerUsage(tasksWorkerUsage, message)
   }
 
   private updateTaskStatisticsWorkerUsage (

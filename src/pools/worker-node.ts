@@ -21,6 +21,7 @@ implements IWorkerNode<Worker, Data> {
   public readonly worker: Worker
   public readonly info: WorkerInfo
   public usage: WorkerUsage
+  private readonly tasksUsage: Map<string, WorkerUsage>
   private readonly tasksQueue: Queue<Task<Data>>
 
   /**
@@ -33,6 +34,7 @@ implements IWorkerNode<Worker, Data> {
     this.worker = worker
     this.info = this.initWorkerInfo(worker, workerType)
     this.usage = this.initWorkerUsage()
+    this.tasksUsage = new Map<string, WorkerUsage>()
     this.tasksQueue = new Queue<Task<Data>>()
   }
 
@@ -65,8 +67,18 @@ implements IWorkerNode<Worker, Data> {
     this.tasksQueue.clear()
   }
 
+  /** @inheritdoc */
   public resetUsage (): void {
     this.usage = this.initWorkerUsage()
+    this.tasksUsage.clear()
+  }
+
+  /** @inheritdoc */
+  public getTasksWorkerUsage (name: string): WorkerUsage | undefined {
+    if (!this.tasksUsage.has(name)) {
+      this.tasksUsage.set(name, this.initWorkerUsage())
+    }
+    return this.tasksUsage.get(name)
   }
 
   private initWorkerInfo (worker: Worker, workerType: WorkerType): WorkerInfo {

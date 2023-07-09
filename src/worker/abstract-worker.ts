@@ -7,7 +7,12 @@ import type {
   TaskPerformance,
   WorkerStatistics
 } from '../utility-types'
-import { EMPTY_FUNCTION, isAsyncFunction, isPlainObject } from '../utils'
+import {
+  DEFAULT_TASK_NAME,
+  EMPTY_FUNCTION,
+  isAsyncFunction,
+  isPlainObject
+} from '../utils'
 import {
   type KillBehavior,
   KillBehaviors,
@@ -20,7 +25,6 @@ import type {
   WorkerSyncFunction
 } from './worker-functions'
 
-const DEFAULT_FUNCTION_NAME = 'default'
 const DEFAULT_MAX_INACTIVE_TIME = 60000
 const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
 
@@ -114,7 +118,7 @@ export abstract class AbstractWorker<
     }
     this.taskFunctions = new Map<string, WorkerFunction<Data, Response>>()
     if (typeof taskFunctions === 'function') {
-      this.taskFunctions.set(DEFAULT_FUNCTION_NAME, taskFunctions.bind(this))
+      this.taskFunctions.set(DEFAULT_TASK_NAME, taskFunctions.bind(this))
     } else if (isPlainObject(taskFunctions)) {
       let firstEntry = true
       for (const [name, fn] of Object.entries(taskFunctions)) {
@@ -125,7 +129,7 @@ export abstract class AbstractWorker<
         }
         this.taskFunctions.set(name, fn.bind(this))
         if (firstEntry) {
-          this.taskFunctions.set(DEFAULT_FUNCTION_NAME, fn.bind(this))
+          this.taskFunctions.set(DEFAULT_TASK_NAME, fn.bind(this))
           firstEntry = false
         }
       }
@@ -264,6 +268,7 @@ export abstract class AbstractWorker<
       const errorMessage = this.handleError(e as Error | string)
       this.sendToMainWorker({
         taskError: {
+          name: message.name ?? DEFAULT_TASK_NAME,
           message: errorMessage,
           data: message.data
         },
@@ -303,6 +308,7 @@ export abstract class AbstractWorker<
         const errorMessage = this.handleError(e as Error | string)
         this.sendToMainWorker({
           taskError: {
+            name: message.name ?? DEFAULT_TASK_NAME,
             message: errorMessage,
             data: message.data
           },
@@ -321,10 +327,10 @@ export abstract class AbstractWorker<
   /**
    * Gets the task function in the given scope.
    *
-   * @param name - Name of the function that will be returned.
+   * @param name - Name of the task function that will be returned.
    */
   private getTaskFunction (name?: string): WorkerFunction<Data, Response> {
-    name = name ?? DEFAULT_FUNCTION_NAME
+    name = name ?? DEFAULT_TASK_NAME
     const fn = this.taskFunctions.get(name)
     if (fn == null) {
       throw new Error(`Task function '${name}' not found`)
@@ -335,7 +341,7 @@ export abstract class AbstractWorker<
   private beginTaskPerformance (name?: string): TaskPerformance {
     this.checkStatistics()
     return {
-      name: name ?? DEFAULT_FUNCTION_NAME,
+      name: name ?? DEFAULT_TASK_NAME,
       timestamp: performance.now(),
       ...(this.statistics.elu && { elu: performance.eventLoopUtilization() })
     }

@@ -6,6 +6,11 @@ import type {
 import type { KillBehavior } from './worker/worker-options'
 
 /**
+ * Default task name.
+ */
+export const DEFAULT_TASK_NAME = 'default'
+
+/**
  * An intentional empty function.
  */
 export const EMPTY_FUNCTION: () => void = Object.freeze(() => {
