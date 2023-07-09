@@ -264,7 +264,7 @@ This method is available on both worker implementations and returns a boolean.
 
 #### `YourWorker.addTaskFunction(name, fn)`
 
-`name` (mandatory) The task function name
+`name` (mandatory) The task function name  
 `fn` (mandatory) The task function
 
 This method is available on both worker implementations and returns a boolean.
