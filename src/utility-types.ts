@@ -25,6 +25,10 @@ export interface TaskError<Data = unknown> {
  */
 export interface TaskPerformance {
   /**
+   * Task name.
+   */
+  readonly name: string
+  /**
    * Task performance timestamp.
    */
   readonly timestamp: number

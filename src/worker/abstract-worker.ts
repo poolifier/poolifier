@@ -251,7 +251,7 @@ export abstract class AbstractWorker<
     message: MessageValue<Data>
   ): void {
     try {
-      let taskPerformance = this.beginTaskPerformance()
+      let taskPerformance = this.beginTaskPerformance(message.name)
       const res = fn(message.data)
       taskPerformance = this.endTaskPerformance(taskPerformance)
       this.sendToMainWorker({
@@ -332,9 +332,10 @@ export abstract class AbstractWorker<
     return fn
   }
 
-  private beginTaskPerformance (): TaskPerformance {
+  private beginTaskPerformance (name?: string): TaskPerformance {
     this.checkStatistics()
     return {
+      name: name ?? DEFAULT_FUNCTION_NAME,
       timestamp: performance.now(),
       ...(this.statistics.elu && { elu: performance.eventLoopUtilization() })
     }
