@@ -227,46 +227,46 @@ export interface IWorker {
  */
 export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
   /**
-   * Worker node worker.
+   * Worker.
    */
   readonly worker: Worker
   /**
-   * Worker node worker info.
+   * Worker info.
    */
   readonly info: WorkerInfo
   /**
-   * Worker node worker usage statistics.
+   * Worker usage statistics.
    */
   usage: WorkerUsage
   /**
-   * Worker node tasks queue size.
+   * Tasks queue size.
    *
    * @returns The tasks queue size.
    */
   readonly tasksQueueSize: () => number
   /**
-   * Worker node enqueue task.
+   * Enqueue task.
    *
    * @param task - The task to queue.
    * @returns The task queue size.
    */
   readonly enqueueTask: (task: Task<Data>) => number
   /**
-   * Worker node dequeue task.
+   * Dequeue task.
    *
    * @returns The dequeued task.
    */
   readonly dequeueTask: () => Task<Data> | undefined
   /**
-   * Worker node clear tasks queue.
+   * Clears tasks queue.
    */
   readonly clearTasksQueue: () => void
   /**
-   * Worker node reset usage statistics .
+   * Resets usage statistics .
    */
   readonly resetUsage: () => void
   /**
-   * Worker node get task usage statistics.
+   * Gets task usage statistics.
    */
   readonly getTaskWorkerUsage: (name: string) => WorkerUsage | undefined
 }
