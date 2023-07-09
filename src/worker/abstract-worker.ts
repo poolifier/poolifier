@@ -380,7 +380,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Runs the given function synchronously.
+   * Runs the given task function synchronously.
    *
    * @param fn - Task function that will be executed.
    * @param task - Input data for the task function.
@@ -418,7 +418,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Runs the given function asynchronously.
+   * Runs the given task function asynchronously.
    *
    * @param fn - Task function that will be executed.
    * @param task - Input data for the task function.
