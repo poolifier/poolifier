@@ -154,6 +154,8 @@ export interface StrategyPolicy {
 
 /**
  * Worker choice strategy interface.
+ *
+ * @internal
  */
 export interface IWorkerChoiceStrategy {
   /**

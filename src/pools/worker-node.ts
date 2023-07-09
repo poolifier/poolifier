@@ -28,7 +28,6 @@ implements IWorkerNode<Worker, Data> {
    *
    * @param worker - The worker.
    * @param workerType - The worker type.
-   * @internal
    */
   constructor (worker: Worker, workerType: WorkerType) {
     this.worker = worker
