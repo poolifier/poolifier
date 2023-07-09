@@ -71,4 +71,32 @@ export class Queue<T> {
     this.size = 0
     this.maxSize = 0
   }
+
+  /**
+   * Returns an iterator for the queue.
+   *
+   * @returns An iterator for the queue.
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
+   */
+  [Symbol.iterator] (): Iterator<T> {
+    const items = this.items
+    let i = this.offset
+
+    return {
+      next: () => {
+        if (i >= items.length) {
+          return {
+            value: undefined,
+            done: true
+          }
+        }
+        const value = items[i]
+        i++
+        return {
+          value,
+          done: false
+        }
+      }
+    }
+  }
 }

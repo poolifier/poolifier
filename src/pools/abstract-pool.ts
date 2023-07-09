@@ -309,7 +309,7 @@ export abstract class AbstractPool<
       ),
       maxQueuedTasks: this.workerNodes.reduce(
         (accumulator, workerNode) =>
-          accumulator + workerNode.usage.tasks.maxQueued,
+          accumulator + (workerNode.usage.tasks?.maxQueued ?? 0),
         0
       ),
       failedTasks: this.workerNodes.reduce(

@@ -122,7 +122,7 @@ export interface TaskStatistics {
   /**
    * Maximum number of queued tasks.
    */
-  readonly maxQueued: number
+  readonly maxQueued?: number
   /**
    * Number of failed tasks.
    */

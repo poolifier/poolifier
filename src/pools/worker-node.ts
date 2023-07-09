@@ -76,7 +76,7 @@ implements IWorkerNode<Worker, Data> {
   /** @inheritdoc */
   public getTasksWorkerUsage (name: string): WorkerUsage | undefined {
     if (!this.tasksUsage.has(name)) {
-      this.tasksUsage.set(name, this.initWorkerUsage())
+      this.tasksUsage.set(name, this.initTaskWorkerUsage(name))
     }
     return this.tasksUsage.get(name)
   }
@@ -106,6 +106,42 @@ implements IWorkerNode<Worker, Data> {
         },
         get maxQueued (): number {
           return getTasksQueueMaxSize()
+        },
+        failed: 0
+      },
+      runTime: {
+        history: new CircularArray()
+      },
+      waitTime: {
+        history: new CircularArray()
+      },
+      elu: {
+        idle: {
+          history: new CircularArray()
+        },
+        active: {
+          history: new CircularArray()
+        }
+      }
+    }
+  }
+
+  private initTaskWorkerUsage (name: string): WorkerUsage {
+    const getTaskQueueSize = (): number => {
+      let taskQueueSize = 0
+      for (const task of this.tasksQueue) {
+        if (task.name === name) {
+          ++taskQueueSize
+        }
+      }
+      return taskQueueSize
+    }
+    return {
+      tasks: {
+        executed: 0,
+        executing: 0,
+        get queued (): number {
+          return getTaskQueueSize()
         },
         failed: 0
       },

@@ -62,4 +62,16 @@ describe('Queue test suite', () => {
     expect(queue.items).toStrictEqual([])
     expect(queue.offset).toBe(0)
   })
+
+  it('Verify iterator behavior', () => {
+    const queue = new Queue()
+    queue.enqueue(1)
+    queue.enqueue(2)
+    queue.enqueue(3)
+    let i = 1
+    for (const item of queue) {
+      expect(item).toBe(i)
+      ++i
+    }
+  })
 })
