@@ -145,31 +145,29 @@ export abstract class AbstractWorker<
    * @param message - Message received.
    */
   protected messageListener (message: MessageValue<Data, Data>): void {
-    if (message.ready != null && message.workerId === this.id) {
-      // Startup message received
-      this.workerReady()
-    } else if (message.statistics != null && message.workerId === this.id) {
-      // Statistics message received
-      this.statistics = message.statistics
-    } else if (message.checkAlive != null && message.workerId === this.id) {
-      // Check alive message received
-      message.checkAlive ? this.startCheckAlive() : this.stopCheckAlive()
-    } else if (
-      message.id != null &&
-      message.data != null &&
-      message.workerId === this.id
-    ) {
-      // Task message received
-      const fn = this.getTaskFunction(message.name)
-      if (isAsyncFunction(fn)) {
-        this.runInAsyncScope(this.runAsync.bind(this), this, fn, message)
-      } else {
-        this.runInAsyncScope(this.runSync.bind(this), this, fn, message)
+    if (message.workerId === this.id) {
+      if (message.ready != null) {
+        // Startup message received
+        this.workerReady()
+      } else if (message.statistics != null) {
+        // Statistics message received
+        this.statistics = message.statistics
+      } else if (message.checkAlive != null) {
+        // Check alive message received
+        message.checkAlive ? this.startCheckAlive() : this.stopCheckAlive()
+      } else if (message.id != null && message.data != null) {
+        // Task message received
+        const fn = this.getTaskFunction(message.name)
+        if (isAsyncFunction(fn)) {
+          this.runInAsyncScope(this.runAsync.bind(this), this, fn, message)
+        } else {
+          this.runInAsyncScope(this.runSync.bind(this), this, fn, message)
+        }
+      } else if (message.kill === true) {
+        // Kill message received
+        this.stopCheckAlive()
+        this.emitDestroy()
       }
-    } else if (message.kill === true && message.workerId === this.id) {
-      // Kill message received
-      this.stopCheckAlive()
-      this.emitDestroy()
     }
   }
 
