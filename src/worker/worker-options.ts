@@ -42,7 +42,7 @@ export interface WorkerOptions {
    */
   async?: boolean
   /**
-   * `killBehavior` dictates if your async unit (worker/process) will be deleted in case that a task is active on it.
+   * `killBehavior` dictates if your worker will be deleted in case that a task is active on it.
    *
    * - SOFT: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker **won't** be deleted.
    * - HARD: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker will be deleted.

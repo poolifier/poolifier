@@ -250,7 +250,7 @@ This method is available on both pool implementations and will call the terminat
   If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.  
   Default: `60000`
 
-- `killBehavior` (optional) - Dictates if your async unit (worker/process) will be deleted in case that a task is active on it.  
+- `killBehavior` (optional) - Dictates if your worker will be deleted in case that a task is active on it.  
   **KillBehaviors.SOFT**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker **won't** be deleted.  
   **KillBehaviors.HARD**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker will be deleted.  
   This option only apply to the newly created workers.  

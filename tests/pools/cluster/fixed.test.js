@@ -87,7 +87,9 @@ describe('Fixed cluster pool test suite', () => {
     )
     let poolReady = 0
     pool1.emitter.on(PoolEvents.ready, () => ++poolReady)
-    await waitPoolEvents(pool1, PoolEvents.ready, 1)
+    if (!pool1.info.ready) {
+      await waitPoolEvents(pool1, PoolEvents.ready, 1)
+    }
     expect(poolReady).toBe(1)
   })
 
