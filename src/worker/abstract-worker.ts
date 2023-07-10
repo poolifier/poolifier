@@ -271,7 +271,7 @@ export abstract class AbstractWorker<
   /**
    * Worker message listener.
    *
-   * @param message - Message received.
+   * @param message - The received message.
    */
   protected messageListener (message: MessageValue<Data, Data>): void {
     if (message.workerId === this.id) {

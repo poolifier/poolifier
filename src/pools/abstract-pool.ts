@@ -474,6 +474,12 @@ export abstract class AbstractPool<
       ?.worker
   }
 
+  /**
+   * Checks if the worker id sent in the received message from a worker is valid.
+   *
+   * @param message - The received message.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the worker id is invalid.
+   */
   private checkMessageWorkerId (message: MessageValue<Response>): void {
     if (
       message.workerId != null &&
