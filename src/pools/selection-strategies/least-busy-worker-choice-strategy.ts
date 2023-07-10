@@ -61,8 +61,7 @@ export class LeastBusyWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number {
-    this.leastBusyNextWorkerNodeKey()
-    return this.nextWorkerNodeKey
+    return this.leastBusyNextWorkerNodeKey()
   }
 
   /** @inheritDoc */
@@ -70,7 +69,7 @@ export class LeastBusyWorkerChoiceStrategy<
     return true
   }
 
-  private leastBusyNextWorkerNodeKey (): void {
+  private leastBusyNextWorkerNodeKey (): number {
     let minTime = Infinity
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerTime =
@@ -87,5 +86,6 @@ export class LeastBusyWorkerChoiceStrategy<
         this.nextWorkerNodeKey = workerNodeKey
       }
     }
+    return this.nextWorkerNodeKey
   }
 }

@@ -147,7 +147,7 @@ export interface TaskStatisticsRequirements {
  */
 export interface StrategyPolicy {
   /**
-   * Expects direct usage of dynamic worker.
+   * Expects direct usage of the newly created dynamic worker.
    */
   readonly useDynamicWorker: boolean
 }

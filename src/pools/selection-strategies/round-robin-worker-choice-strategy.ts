@@ -66,10 +66,11 @@ export class RoundRobinWorkerChoiceStrategy<
     return true
   }
 
-  private roundRobinNextWorkerNodeKey (): void {
+  private roundRobinNextWorkerNodeKey (): number {
     this.nextWorkerNodeKey =
       this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
         ? 0
         : this.nextWorkerNodeKey + 1
+    return this.nextWorkerNodeKey
   }
 }
