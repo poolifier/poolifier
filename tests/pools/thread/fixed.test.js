@@ -87,9 +87,7 @@ describe('Fixed thread pool test suite', () => {
     )
     let poolReady = 0
     pool1.emitter.on(PoolEvents.ready, () => ++poolReady)
-    if (!pool1.info.ready) {
-      await waitPoolEvents(pool1, PoolEvents.ready, 1)
-    }
+    await waitPoolEvents(pool1, PoolEvents.ready, 1)
     expect(poolReady).toBe(1)
   })
 

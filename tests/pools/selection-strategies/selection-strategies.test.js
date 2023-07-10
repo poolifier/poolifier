@@ -1717,9 +1717,8 @@ describe('Selection strategies test suite', () => {
           WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
       }
     )
-    if (!pool.info.ready) {
-      await waitPoolEvents(pool, PoolEvents.ready, 1)
-    }
+    // FIXME: shall not be needed
+    await waitPoolEvents(pool, PoolEvents.ready, 1)
     // TODO: Create a better test to cover `InterleavedWeightedRoundRobinWorkerChoiceStrategy#choose`
     const promises = new Set()
     const maxMultiplier = 2
@@ -1790,9 +1789,6 @@ describe('Selection strategies test suite', () => {
           WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
       }
     )
-    if (!pool.info.ready) {
-      await waitPoolEvents(pool, PoolEvents.ready, 1)
-    }
     // TODO: Create a better test to cover `InterleavedWeightedRoundRobinWorkerChoiceStrategy#choose`
     const promises = new Set()
     const maxMultiplier = 2
@@ -1803,7 +1799,7 @@ describe('Selection strategies test suite', () => {
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
         tasks: {
-          executed: expect.any(Number),
+          executed: maxMultiplier,
           executing: 0,
           queued: 0,
           maxQueued: 0,
@@ -1839,7 +1835,7 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
       ).nextWorkerNodeKey
-    ).toBe(1)
+    ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy

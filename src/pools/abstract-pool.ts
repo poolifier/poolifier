@@ -411,17 +411,16 @@ export abstract class AbstractPool<
   }
 
   private get starting (): boolean {
-    return (
-      this.workerNodes.length < this.minSize ||
-      (this.workerNodes.length >= this.minSize &&
-        this.workerNodes.some(workerNode => !workerNode.info.ready))
-    )
+    return this.workerNodes.length < this.minSize
   }
 
   private get ready (): boolean {
     return (
       this.workerNodes.length >= this.minSize &&
-      this.workerNodes.every(workerNode => workerNode.info.ready)
+      this.workerNodes.every(
+        (workerNode, workerNodeKey) =>
+          workerNodeKey < this.minSize && workerNode.info.ready
+      )
     )
   }
 
@@ -980,6 +979,7 @@ export abstract class AbstractPool<
       }
     })
     const workerInfo = this.getWorkerInfo(this.getWorkerNodeKey(worker))
+    workerInfo.ready = true
     workerInfo.dynamic = true
     this.sendToWorker(worker, {
       checkAlive: true,
@@ -1011,12 +1011,16 @@ export abstract class AbstractPool<
     // Listen to worker messages.
     this.registerWorkerMessageListener(worker, this.workerListener())
     // Send startup message to worker.
+    this.sendWorkerStartupMessage(worker)
+    // Setup worker task statistics computation.
+    this.setWorkerStatistics(worker)
+  }
+
+  private sendWorkerStartupMessage (worker: Worker): void {
     this.sendToWorker(worker, {
       ready: false,
       workerId: this.getWorkerInfo(this.getWorkerNodeKey(worker)).id as number
     })
-    // Setup worker task statistics computation.
-    this.setWorkerStatistics(worker)
   }
 
   private redistributeQueuedTasks (workerNodeKey: number): void {
@@ -1057,7 +1061,7 @@ export abstract class AbstractPool<
   protected workerListener (): (message: MessageValue<Response>) => void {
     return message => {
       this.checkMessageWorkerId(message)
-      if (message.ready != null && message.workerId != null) {
+      if (message.ready != null) {
         // Worker ready message received
         this.handleWorkerReadyMessage(message)
       } else if (message.id != null) {
@@ -1130,6 +1134,10 @@ export abstract class AbstractPool<
    * @returns The worker nodes length.
    */
   private pushWorkerNode (worker: Worker): number {
+    const workerNode = new WorkerNode(worker, this.worker)
+    if (this.starting) {
+      workerNode.info.ready = true
+    }
     return this.workerNodes.push(new WorkerNode(worker, this.worker))
   }
 

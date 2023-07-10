@@ -134,11 +134,11 @@ export interface PromiseResponseWrapper<
   /**
    * Resolve callback to fulfill the promise.
    */
-  readonly resolve: (value: Response) => void
+  readonly resolve: (value: Response | PromiseLike<Response>) => void
   /**
    * Reject callback to reject the promise.
    */
-  readonly reject: (reason?: string) => void
+  readonly reject: (reason?: unknown) => void
   /**
    * The worker handling the execution.
    */
