@@ -303,7 +303,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Starts the worker alive check interval.
+   * Starts the worker aliveness check interval.
    */
   private startCheckAlive (): void {
     this.lastTaskTimestamp = performance.now()
@@ -315,7 +315,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Stops the worker alive check interval.
+   * Stops the worker aliveness check interval.
    */
   private stopCheckAlive (): void {
     this.aliveInterval != null && clearInterval(this.aliveInterval)

@@ -426,7 +426,7 @@ export abstract class AbstractPool<
    * @returns The pool utilization.
    */
   private get utilization (): number {
-    const poolRunTimeCapacity =
+    const poolTimeCapacity =
       (performance.now() - this.startTimestamp) * this.maxSize
     const totalTasksRunTime = this.workerNodes.reduce(
       (accumulator, workerNode) =>
@@ -438,7 +438,7 @@ export abstract class AbstractPool<
         accumulator + (workerNode.usage.waitTime?.aggregate ?? 0),
       0
     )
-    return (totalTasksRunTime + totalTasksWaitTime) / poolRunTimeCapacity
+    return (totalTasksRunTime + totalTasksWaitTime) / poolTimeCapacity
   }
 
   /**
