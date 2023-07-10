@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Take into account worker node readiness in worker choice strategies.
+
 ## [2.6.14] - 2023-07-10
 
 ### Fixed

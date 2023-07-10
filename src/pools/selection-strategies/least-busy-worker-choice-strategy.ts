@@ -66,10 +66,10 @@ export class LeastBusyWorkerChoiceStrategy<
       const workerTime =
         (workerNode.usage.runTime?.aggregate ?? 0) +
         (workerNode.usage.waitTime?.aggregate ?? 0)
-      if (workerTime === 0) {
+      if (this.workerNodeReady(workerNodeKey) && workerTime === 0) {
         this.nextWorkerNodeId = workerNodeKey
         break
-      } else if (workerTime < minTime) {
+      } else if (this.workerNodeReady(workerNodeKey) && workerTime < minTime) {
         minTime = workerTime
         this.nextWorkerNodeId = workerNodeKey
       }

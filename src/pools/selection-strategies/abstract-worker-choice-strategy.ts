@@ -128,6 +128,10 @@ export abstract class AbstractWorkerChoiceStrategy<
     this.setTaskStatisticsRequirements(this.opts)
   }
 
+  protected workerNodeReady (workerNodeKey: number): boolean {
+    return this.pool.workerNodes[workerNodeKey].info.ready
+  }
+
   // /**
   //  * Finds a free worker node key.
   //  *

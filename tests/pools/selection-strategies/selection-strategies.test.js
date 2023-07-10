@@ -623,7 +623,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.usage).toStrictEqual({
+      expect(workerNode.usage).toMatchObject({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -632,15 +632,9 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregate: expect.any(Number),
-          maximum: expect.any(Number),
-          minimum: expect.any(Number),
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregate: expect.any(Number),
-          maximum: expect.any(Number),
-          minimum: expect.any(Number),
           history: expect.any(CircularArray)
         },
         elu: {
@@ -656,8 +650,16 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.usage.runTime.aggregate).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.waitTime.aggregate).toBeGreaterThanOrEqual(0)
+      if (workerNode.usage.runTime.aggregate == null) {
+        expect(workerNode.usage.runTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.waitTime.aggregate == null) {
+        expect(workerNode.usage.waitTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.aggregate).toBeGreaterThan(0)
+      }
     }
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -678,7 +680,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.usage).toStrictEqual({
+      expect(workerNode.usage).toMatchObject({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -687,15 +689,9 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          aggregate: expect.any(Number),
-          maximum: expect.any(Number),
-          minimum: expect.any(Number),
           history: expect.any(CircularArray)
         },
         waitTime: {
-          aggregate: expect.any(Number),
-          maximum: expect.any(Number),
-          minimum: expect.any(Number),
           history: expect.any(CircularArray)
         },
         elu: {
@@ -711,8 +707,16 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.usage.runTime.aggregate).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.waitTime.aggregate).toBeGreaterThanOrEqual(0)
+      if (workerNode.usage.runTime.aggregate == null) {
+        expect(workerNode.usage.runTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.waitTime.aggregate == null) {
+        expect(workerNode.usage.waitTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.aggregate).toBeGreaterThan(0)
+      }
     }
     // We need to clean up the resources after our test
     await pool.destroy()

@@ -950,15 +950,15 @@ export abstract class AbstractPool<
       if (this.emitter != null) {
         this.emitter.emit(PoolEvents.error, error)
       }
-      if (this.opts.enableTasksQueue === true) {
-        this.redistributeQueuedTasks(worker)
-      }
       if (this.opts.restartWorkerOnError === true && !this.starting) {
         if (this.getWorkerInfo(this.getWorkerNodeKey(worker)).dynamic) {
           this.createAndSetupDynamicWorker()
         } else {
           this.createAndSetupWorker()
         }
+      }
+      if (this.opts.enableTasksQueue === true) {
+        this.redistributeQueuedTasks(worker)
       }
     })
     worker.on('online', this.opts.onlineHandler ?? EMPTY_FUNCTION)
