@@ -108,7 +108,7 @@
     "@commitlint/cli": "^17.6.6",
     "@commitlint/config-conventional": "^17.6.6",
     "@release-it/bumper": "^5.0.0",
-    "@release-it/keep-a-changelog": "^3.1.0",
+    "@release-it/keep-a-changelog": "^4.0.0",
     "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.2",
     "@types/node": "^20.4.1",
