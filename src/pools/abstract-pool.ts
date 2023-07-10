@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import { performance } from 'node:perf_hooks'
+import { existsSync } from 'node:fs'
 import type {
   MessageValue,
   PromiseResponseWrapper,
@@ -137,9 +138,13 @@ export abstract class AbstractPool<
   private checkFilePath (filePath: string): void {
     if (
       filePath == null ||
+      typeof filePath !== 'string' ||
       (typeof filePath === 'string' && filePath.trim().length === 0)
     ) {
       throw new Error('Please specify a file with a worker implementation')
+    }
+    if (!existsSync(filePath)) {
+      throw new Error(`Cannot find the worker file '${filePath}'`)
     }
   }
 

@@ -311,7 +311,6 @@ export abstract class AbstractWorker<
       this.checkAlive.bind(this),
       (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) / 2
     )
-    this.checkAlive.bind(this)()
   }
 
   /**

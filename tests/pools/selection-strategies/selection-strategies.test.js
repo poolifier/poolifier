@@ -1,9 +1,9 @@
 const { expect } = require('expect')
 const {
-  WorkerChoiceStrategies,
   DynamicThreadPool,
+  FixedClusterPool,
   FixedThreadPool,
-  FixedClusterPool
+  WorkerChoiceStrategies
 } = require('../../../lib')
 const { CircularArray } = require('../../../lib/circular-array')
 

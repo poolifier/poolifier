@@ -5,8 +5,8 @@ const {
   FixedClusterPool,
   FixedThreadPool,
   PoolEvents,
-  WorkerChoiceStrategies,
   PoolTypes,
+  WorkerChoiceStrategies,
   WorkerTypes
 } = require('../../../lib')
 const { CircularArray } = require('../../../lib/circular-array')
@@ -45,6 +45,15 @@ describe('Abstract pool test suite', () => {
     expect(() => new FixedThreadPool(numberOfWorkers, '')).toThrowError(
       expectedError
     )
+    expect(() => new FixedThreadPool(numberOfWorkers, 0)).toThrowError(
+      expectedError
+    )
+    expect(() => new FixedThreadPool(numberOfWorkers, true)).toThrowError(
+      expectedError
+    )
+    expect(
+      () => new FixedThreadPool(numberOfWorkers, './dummyWorker.ts')
+    ).toThrowError(new Error("Cannot find the worker file './dummyWorker.ts'"))
   })
 
   it('Verify that numberOfWorkers is checked', () => {
