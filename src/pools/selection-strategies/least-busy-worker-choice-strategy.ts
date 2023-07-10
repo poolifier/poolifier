@@ -61,24 +61,31 @@ export class LeastBusyWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number {
-    let minTime = Infinity
-    for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
-      const workerTime =
-        (workerNode.usage.runTime?.aggregate ?? 0) +
-        (workerNode.usage.waitTime?.aggregate ?? 0)
-      if (this.workerNodeReady(workerNodeKey) && workerTime === 0) {
-        this.nextWorkerNodeId = workerNodeKey
-        break
-      } else if (this.workerNodeReady(workerNodeKey) && workerTime < minTime) {
-        minTime = workerTime
-        this.nextWorkerNodeId = workerNodeKey
-      }
-    }
-    return this.nextWorkerNodeId
+    this.leastBusyNextWorkerNodeKey()
+    return this.nextWorkerNodeKey
   }
 
   /** @inheritDoc */
   public remove (): boolean {
     return true
+  }
+
+  private leastBusyNextWorkerNodeKey (): void {
+    let minTime = Infinity
+    for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
+      const workerTime =
+        (workerNode.usage.runTime?.aggregate ?? 0) +
+        (workerNode.usage.waitTime?.aggregate ?? 0)
+      if (this.isWorkerNodeReady(workerNodeKey) && workerTime === 0) {
+        this.nextWorkerNodeKey = workerNodeKey
+        break
+      } else if (
+        this.isWorkerNodeReady(workerNodeKey) &&
+        workerTime < minTime
+      ) {
+        minTime = workerTime
+        this.nextWorkerNodeKey = workerNodeKey
+      }
+    }
   }
 }

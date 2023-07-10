@@ -953,18 +953,21 @@ export abstract class AbstractPool<
     worker.on('message', this.opts.messageHandler ?? EMPTY_FUNCTION)
     worker.on('error', this.opts.errorHandler ?? EMPTY_FUNCTION)
     worker.on('error', error => {
+      const workerNodeKey = this.getWorkerNodeKey(worker)
+      const workerInfo = this.getWorkerInfo(workerNodeKey)
+      workerInfo.ready = false
       if (this.emitter != null) {
         this.emitter.emit(PoolEvents.error, error)
       }
       if (this.opts.restartWorkerOnError === true && !this.starting) {
-        if (this.getWorkerInfo(this.getWorkerNodeKey(worker)).dynamic) {
+        if (workerInfo.dynamic) {
           this.createAndSetupDynamicWorker()
         } else {
           this.createAndSetupWorker()
         }
       }
       if (this.opts.enableTasksQueue === true) {
-        this.redistributeQueuedTasks(worker)
+        this.redistributeQueuedTasks(workerNodeKey)
       }
     })
     worker.on('online', this.opts.onlineHandler ?? EMPTY_FUNCTION)
@@ -980,8 +983,7 @@ export abstract class AbstractPool<
     return worker
   }
 
-  private redistributeQueuedTasks (worker: Worker): void {
-    const workerNodeKey = this.getWorkerNodeKey(worker)
+  private redistributeQueuedTasks (workerNodeKey: number): void {
     while (this.tasksQueueSize(workerNodeKey) > 0) {
       let targetWorkerNodeKey: number = workerNodeKey
       let minQueuedTasks = Infinity

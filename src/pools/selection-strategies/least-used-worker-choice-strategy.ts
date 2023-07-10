@@ -42,6 +42,16 @@ export class LeastUsedWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number {
+    this.leastUsedNextWorkerNodeKey()
+    return this.nextWorkerNodeKey
+  }
+
+  /** @inheritDoc */
+  public remove (): boolean {
+    return true
+  }
+
+  private leastUsedNextWorkerNodeKey (): void {
     let minNumberOfTasks = Infinity
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerTaskStatistics = workerNode.usage.tasks
@@ -49,22 +59,16 @@ export class LeastUsedWorkerChoiceStrategy<
         workerTaskStatistics.executed +
         workerTaskStatistics.executing +
         workerTaskStatistics.queued
-      if (this.workerNodeReady(workerNodeKey) && workerTasks === 0) {
-        this.nextWorkerNodeId = workerNodeKey
+      if (this.isWorkerNodeReady(workerNodeKey) && workerTasks === 0) {
+        this.nextWorkerNodeKey = workerNodeKey
         break
       } else if (
-        this.workerNodeReady(workerNodeKey) &&
+        this.isWorkerNodeReady(workerNodeKey) &&
         workerTasks < minNumberOfTasks
       ) {
         minNumberOfTasks = workerTasks
-        this.nextWorkerNodeId = workerNodeKey
+        this.nextWorkerNodeKey = workerNodeKey
       }
     }
-    return this.nextWorkerNodeId
-  }
-
-  /** @inheritDoc */
-  public remove (): boolean {
-    return true
   }
 }

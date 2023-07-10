@@ -54,7 +54,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public reset (): boolean {
-    this.nextWorkerNodeId = 0
+    this.nextWorkerNodeKey = 0
     this.roundId = 0
     return true
   }
@@ -74,7 +74,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
       roundIndex++
     ) {
       for (
-        let workerNodeKey = this.nextWorkerNodeId;
+        let workerNodeKey = this.nextWorkerNodeKey;
         workerNodeKey < this.pool.workerNodes.length;
         workerNodeKey++
       ) {
@@ -88,25 +88,25 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
       }
     }
     this.roundId = roundId ?? 0
-    this.nextWorkerNodeId = workerNodeId ?? 0
-    const chosenWorkerNodeKey = this.nextWorkerNodeId
-    if (this.nextWorkerNodeId === this.pool.workerNodes.length - 1) {
-      this.nextWorkerNodeId = 0
+    this.nextWorkerNodeKey = workerNodeId ?? 0
+    const chosenWorkerNodeKey = this.nextWorkerNodeKey
+    if (this.nextWorkerNodeKey === this.pool.workerNodes.length - 1) {
+      this.nextWorkerNodeKey = 0
       this.roundId =
         this.roundId === this.roundWeights.length - 1 ? 0 : this.roundId + 1
     } else {
-      this.nextWorkerNodeId = this.nextWorkerNodeId + 1
+      this.nextWorkerNodeKey = this.nextWorkerNodeKey + 1
     }
     return chosenWorkerNodeKey
   }
 
   /** @inheritDoc */
   public remove (workerNodeKey: number): boolean {
-    if (this.nextWorkerNodeId === workerNodeKey) {
+    if (this.nextWorkerNodeKey === workerNodeKey) {
       if (this.pool.workerNodes.length === 0) {
-        this.nextWorkerNodeId = 0
-      } else if (this.nextWorkerNodeId > this.pool.workerNodes.length - 1) {
-        this.nextWorkerNodeId = this.pool.workerNodes.length - 1
+        this.nextWorkerNodeKey = 0
+      } else if (this.nextWorkerNodeKey > this.pool.workerNodes.length - 1) {
+        this.nextWorkerNodeKey = this.pool.workerNodes.length - 1
         this.roundId =
           this.roundId === this.roundWeights.length - 1 ? 0 : this.roundId + 1
       }

@@ -64,7 +64,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public reset (): boolean {
-    this.nextWorkerNodeId = 0
+    this.nextWorkerNodeKey = 0
     this.workerVirtualTaskRunTime = 0
     return true
   }
@@ -76,34 +76,38 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number {
-    const chosenWorkerNodeKey = this.nextWorkerNodeId
-    const workerVirtualTaskRunTime = this.workerVirtualTaskRunTime
-    const workerWeight =
-      this.opts.weights?.[chosenWorkerNodeKey] ?? this.defaultWorkerWeight
-    if (workerVirtualTaskRunTime < workerWeight) {
-      this.workerVirtualTaskRunTime =
-        workerVirtualTaskRunTime +
-        this.getWorkerTaskRunTime(chosenWorkerNodeKey)
-    } else {
-      this.nextWorkerNodeId =
-        this.nextWorkerNodeId === this.pool.workerNodes.length - 1
-          ? 0
-          : this.nextWorkerNodeId + 1
-      this.workerVirtualTaskRunTime = 0
-    }
+    const chosenWorkerNodeKey = this.nextWorkerNodeKey
+    this.weightedRoundRobinNextWorkerNodeKey()
     return chosenWorkerNodeKey
   }
 
   /** @inheritDoc */
   public remove (workerNodeKey: number): boolean {
-    if (this.nextWorkerNodeId === workerNodeKey) {
+    if (this.nextWorkerNodeKey === workerNodeKey) {
       if (this.pool.workerNodes.length === 0) {
-        this.nextWorkerNodeId = 0
-      } else if (this.nextWorkerNodeId > this.pool.workerNodes.length - 1) {
-        this.nextWorkerNodeId = this.pool.workerNodes.length - 1
+        this.nextWorkerNodeKey = 0
+      } else if (this.nextWorkerNodeKey > this.pool.workerNodes.length - 1) {
+        this.nextWorkerNodeKey = this.pool.workerNodes.length - 1
       }
       this.workerVirtualTaskRunTime = 0
     }
     return true
+  }
+
+  private weightedRoundRobinNextWorkerNodeKey (): void {
+    const workerVirtualTaskRunTime = this.workerVirtualTaskRunTime
+    const workerWeight =
+      this.opts.weights?.[this.nextWorkerNodeKey] ?? this.defaultWorkerWeight
+    if (workerVirtualTaskRunTime < workerWeight) {
+      this.workerVirtualTaskRunTime =
+        workerVirtualTaskRunTime +
+        this.getWorkerTaskRunTime(this.nextWorkerNodeKey)
+    } else {
+      this.nextWorkerNodeKey =
+        this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
+          ? 0
+          : this.nextWorkerNodeKey + 1
+      this.workerVirtualTaskRunTime = 0
+    }
   }
 }

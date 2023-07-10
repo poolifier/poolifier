@@ -30,9 +30,9 @@ export abstract class AbstractWorkerChoiceStrategy<
   // private toggleFindLastFreeWorkerNodeKey: boolean = false
 
   /**
-   * Id of the next worker node.
+   * The next worker node key.
    */
-  protected nextWorkerNodeId: number = 0
+  protected nextWorkerNodeKey: number = 0
 
   /** @inheritDoc */
   public readonly strategyPolicy: StrategyPolicy = {
@@ -128,7 +128,7 @@ export abstract class AbstractWorkerChoiceStrategy<
     this.setTaskStatisticsRequirements(this.opts)
   }
 
-  protected workerNodeReady (workerNodeKey: number): boolean {
+  protected isWorkerNodeReady (workerNodeKey: number): boolean {
     return this.pool.workerNodes[workerNodeKey].info.ready
   }
 
