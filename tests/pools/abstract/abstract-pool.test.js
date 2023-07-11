@@ -655,9 +655,7 @@ describe('Abstract pool test suite', () => {
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
-      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
-        numberOfWorkers * maxMultiplier
-      )
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(maxMultiplier)
       expect(workerNode.usage.runTime.history.length).toBe(0)
       expect(workerNode.usage.waitTime.history.length).toBe(0)
       expect(workerNode.usage.elu.idle.history.length).toBe(0)
