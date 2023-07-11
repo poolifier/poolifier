@@ -115,9 +115,9 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    */
   readonly ready?: boolean
   /**
-   * Whether the worker starts or stops its aliveness check.
+   * Whether the worker starts or stops its activity check.
    */
-  readonly checkAlive?: boolean
+  readonly checkActive?: boolean
 }
 
 /**

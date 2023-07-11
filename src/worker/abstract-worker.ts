@@ -58,9 +58,9 @@ export abstract class AbstractWorker<
    */
   protected statistics!: WorkerStatistics
   /**
-   * Handler id of the `aliveInterval` worker alive check.
+   * Handler id of the `activeInterval` worker activity check.
    */
-  protected aliveInterval?: NodeJS.Timeout
+  protected activeInterval?: NodeJS.Timeout
   /**
    * Constructs a new poolifier worker.
    *
@@ -83,7 +83,7 @@ export abstract class AbstractWorker<
        */
       killBehavior: DEFAULT_KILL_BEHAVIOR,
       /**
-       * The maximum time to keep this worker alive while idle.
+       * The maximum time to keep this worker active while idle.
        * The pool automatically checks and terminates this worker when the time expires.
        */
       maxInactiveTime: DEFAULT_MAX_INACTIVE_TIME
@@ -277,53 +277,53 @@ export abstract class AbstractWorker<
     if (message.workerId === this.id) {
       if (message.ready != null) {
         // Startup message received
-        this.workerReady()
+        this.sendReadyResponse()
       } else if (message.statistics != null) {
         // Statistics message received
         this.statistics = message.statistics
-      } else if (message.checkAlive != null) {
-        // Check alive message received
-        message.checkAlive ? this.startCheckAlive() : this.stopCheckAlive()
+      } else if (message.checkActive != null) {
+        // Check active message received
+        message.checkActive ? this.startCheckActive() : this.stopCheckActive()
       } else if (message.id != null && message.data != null) {
         // Task message received
         this.run(message)
       } else if (message.kill === true) {
         // Kill message received
-        this.stopCheckAlive()
+        this.stopCheckActive()
         this.emitDestroy()
       }
     }
   }
 
   /**
-   * Notifies the main worker that this worker is ready to process tasks.
+   * Sends to the main worker the ready response.
    */
-  protected workerReady (): void {
+  protected sendReadyResponse (): void {
     !this.isMain && this.sendToMainWorker({ ready: true, workerId: this.id })
   }
 
   /**
-   * Starts the worker aliveness check interval.
+   * Starts the worker check active interval.
    */
-  private startCheckAlive (): void {
+  private startCheckActive (): void {
     this.lastTaskTimestamp = performance.now()
-    this.aliveInterval = setInterval(
-      this.checkAlive.bind(this),
+    this.activeInterval = setInterval(
+      this.checkActive.bind(this),
       (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) / 2
     )
   }
 
   /**
-   * Stops the worker aliveness check interval.
+   * Stops the worker check active interval.
    */
-  private stopCheckAlive (): void {
-    this.aliveInterval != null && clearInterval(this.aliveInterval)
+  private stopCheckActive (): void {
+    this.activeInterval != null && clearInterval(this.activeInterval)
   }
 
   /**
    * Checks if the worker should be terminated, because its living too long.
    */
-  private checkAlive (): void {
+  private checkActive (): void {
     if (
       performance.now() - this.lastTaskTimestamp >
       (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME)
@@ -410,7 +410,7 @@ export abstract class AbstractWorker<
         id: task.id
       })
     } finally {
-      if (!this.isMain && this.aliveInterval != null) {
+      if (!this.isMain && this.activeInterval != null) {
         this.lastTaskTimestamp = performance.now()
       }
     }
@@ -451,7 +451,7 @@ export abstract class AbstractWorker<
         })
       })
       .finally(() => {
-        if (!this.isMain && this.aliveInterval != null) {
+        if (!this.isMain && this.activeInterval != null) {
           this.lastTaskTimestamp = performance.now()
         }
       })

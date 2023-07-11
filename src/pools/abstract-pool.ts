@@ -963,7 +963,7 @@ export abstract class AbstractPool<
       this.removeWorkerNode(worker)
     })
 
-    this.pushWorkerNode(worker)
+    this.addWorkerNode(worker)
 
     this.afterWorkerSetup(worker)
 
@@ -993,12 +993,12 @@ export abstract class AbstractPool<
       }
     })
     const workerInfo = this.getWorkerInfo(this.getWorkerNodeKey(worker))
+    workerInfo.dynamic = true
     if (this.workerChoiceStrategyContext.getStrategyPolicy().useDynamicWorker) {
       workerInfo.ready = true
     }
-    workerInfo.dynamic = true
     this.sendToWorker(worker, {
-      checkAlive: true,
+      checkActive: true,
       workerId: workerInfo.id as number
     })
     return worker
@@ -1144,12 +1144,12 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Pushes the given worker in the pool worker nodes.
+   * Adds the given worker in the pool worker nodes.
    *
    * @param worker - The worker.
    * @returns The worker nodes length.
    */
-  private pushWorkerNode (worker: Worker): number {
+  private addWorkerNode (worker: Worker): number {
     const workerNode = new WorkerNode<Worker, Data>(worker, this.worker)
     // Flag the worker node as ready at pool startup.
     if (this.starting) {
@@ -1171,6 +1171,12 @@ export abstract class AbstractPool<
     }
   }
 
+  /**
+   * Executes the given task on the given worker.
+   *
+   * @param worker - The worker.
+   * @param task - The task to execute.
+   */
   private executeTask (workerNodeKey: number, task: Task<Data>): void {
     this.beforeTaskExecutionHook(workerNodeKey, task)
     this.sendToWorker(this.workerNodes[workerNodeKey].worker, task)

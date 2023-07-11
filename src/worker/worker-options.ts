@@ -22,13 +22,13 @@ export type KillBehavior = keyof typeof KillBehaviors
  */
 export interface WorkerOptions {
   /**
-   * Maximum waiting time in milliseconds for tasks.
+   * Maximum waiting time in milliseconds for tasks on newly created workers.
    *
    * After this time, newly created workers will be terminated.
-   * The last active time of your worker unit will be updated when a task is submitted to a worker or when a worker terminate a task.
+   * The last active time of your worker will be updated when it terminates a task.
    *
    * - If `killBehavior` is set to `KillBehaviors.HARD` this value represents also the timeout for the tasks that you submit to the pool,
-   *   when this timeout expires your tasks is interrupted and the worker is killed if is not part of the minimum size of the pool.
+   *   when this timeout expires your tasks is interrupted before completion and removed. The worker is killed if is not part of the minimum size of the pool.
    * - If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.
    *
    * @defaultValue 60000
@@ -42,7 +42,7 @@ export interface WorkerOptions {
    */
   async?: boolean
   /**
-   * `killBehavior` dictates if your worker will be deleted in case that a task is active on it.
+   * `killBehavior` dictates if your worker will be deleted in case a task is active on it.
    *
    * - SOFT: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker **won't** be deleted.
    * - HARD: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker will be deleted.
