@@ -1078,8 +1078,8 @@ export abstract class AbstractPool<
     return message => {
       this.checkMessageWorkerId(message)
       if (message.ready != null) {
-        // Worker ready message received
-        this.handleWorkerReadyMessage(message)
+        // Worker ready response received
+        this.handleWorkerReadyResponse(message)
       } else if (message.id != null) {
         // Task execution response received
         this.handleTaskExecutionResponse(message)
@@ -1087,7 +1087,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private handleWorkerReadyMessage (message: MessageValue<Response>): void {
+  private handleWorkerReadyResponse (message: MessageValue<Response>): void {
     const worker = this.getWorkerById(message.workerId)
     this.getWorkerInfo(this.getWorkerNodeKey(worker as Worker)).ready =
       message.ready as boolean
