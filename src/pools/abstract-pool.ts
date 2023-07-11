@@ -85,7 +85,7 @@ export abstract class AbstractPool<
   >
 
   /**
-   * Whether the pool is starting.
+   * Whether the pool is starting or not.
    */
   private readonly starting: boolean
   /**
