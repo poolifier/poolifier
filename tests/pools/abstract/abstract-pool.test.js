@@ -106,7 +106,7 @@ describe('Abstract pool test suite', () => {
         new DynamicThreadPool(0, 0, './tests/worker-files/thread/testWorker.js')
     ).toThrowError(
       new RangeError(
-        'Cannot instantiate a dynamic pool with a minimum pool size and a maximum pool size equal to zero'
+        'Cannot instantiate a dynamic pool with a pool size equal to zero'
       )
     )
   })
@@ -655,7 +655,13 @@ describe('Abstract pool test suite', () => {
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
-      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(maxMultiplier)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
+        numberOfWorkers * maxMultiplier
+      )
+      expect(workerNode.usage.runTime.history.length).toBe(0)
+      expect(workerNode.usage.waitTime.history.length).toBe(0)
+      expect(workerNode.usage.elu.idle.history.length).toBe(0)
+      expect(workerNode.usage.elu.active.history.length).toBe(0)
     }
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
     for (const workerNode of pool.workerNodes) {
@@ -684,6 +690,8 @@ describe('Abstract pool test suite', () => {
       })
       expect(workerNode.usage.runTime.history.length).toBe(0)
       expect(workerNode.usage.waitTime.history.length).toBe(0)
+      expect(workerNode.usage.elu.idle.history.length).toBe(0)
+      expect(workerNode.usage.elu.active.history.length).toBe(0)
     }
     await pool.destroy()
   })

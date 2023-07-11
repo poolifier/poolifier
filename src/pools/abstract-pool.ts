@@ -128,7 +128,13 @@ export abstract class AbstractPool<
 
     this.setupHook()
 
-    while (this.workerNodes.length < this.numberOfWorkers) {
+    while (
+      this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          !workerNode.info.dynamic ? accumulator + 1 : accumulator,
+        0
+      ) < this.numberOfWorkers
+    ) {
       this.createAndSetupWorker()
     }
 
@@ -172,9 +178,9 @@ export abstract class AbstractPool<
         throw new RangeError(
           'Cannot instantiate a dynamic pool with a maximum pool size inferior to the minimum pool size'
         )
-      } else if (min === 0 && max === 0) {
+      } else if (max === 0) {
         throw new RangeError(
-          'Cannot instantiate a dynamic pool with a minimum pool size and a maximum pool size equal to zero'
+          'Cannot instantiate a dynamic pool with a pool size equal to zero'
         )
       } else if (min === max) {
         throw new RangeError(
@@ -411,16 +417,24 @@ export abstract class AbstractPool<
   }
 
   private get starting (): boolean {
-    return this.workerNodes.length < this.minSize
+    return (
+      this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          !workerNode.info.dynamic ? accumulator + 1 : accumulator,
+        0
+      ) < this.minSize
+    )
   }
 
   private get ready (): boolean {
     return (
-      this.workerNodes.length >= this.minSize &&
-      this.workerNodes.every(
-        (workerNode, workerNodeKey) =>
-          workerNodeKey < this.minSize && workerNode.info.ready
-      )
+      this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          !workerNode.info.dynamic && workerNode.info.ready
+            ? accumulator + 1
+            : accumulator,
+        0
+      ) >= this.minSize
     )
   }
 
@@ -979,7 +993,9 @@ export abstract class AbstractPool<
       }
     })
     const workerInfo = this.getWorkerInfo(this.getWorkerNodeKey(worker))
-    workerInfo.ready = true
+    if (this.workerChoiceStrategyContext.getStrategyPolicy().useDynamicWorker) {
+      workerInfo.ready = true
+    }
     workerInfo.dynamic = true
     this.sendToWorker(worker, {
       checkAlive: true,
@@ -1135,7 +1151,7 @@ export abstract class AbstractPool<
    */
   private pushWorkerNode (worker: Worker): number {
     const workerNode = new WorkerNode<Worker, Data>(worker, this.worker)
-    // Flag the worker as ready at pool startup.
+    // Flag the worker node as ready at pool startup.
     if (this.starting) {
       workerNode.info.ready = true
     }
