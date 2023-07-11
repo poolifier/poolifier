@@ -296,7 +296,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Sends to the main worker the ready response.
+   * Sends the ready response to the main worker.
    */
   protected sendReadyResponse (): void {
     !this.isMain && this.sendToMainWorker({ ready: true, workerId: this.id })
