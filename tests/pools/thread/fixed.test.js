@@ -1,7 +1,7 @@
 const { expect } = require('expect')
 const { FixedThreadPool, PoolEvents } = require('../../../lib')
 const { WorkerFunctions } = require('../../test-types')
-const { waitWorkerEvents } = require('../../test-utils')
+const { waitPoolEvents, waitWorkerEvents } = require('../../test-utils')
 
 describe('Fixed thread pool test suite', () => {
   const numberOfThreads = 6
@@ -77,7 +77,7 @@ describe('Fixed thread pool test suite', () => {
     expect(result).toStrictEqual({ ok: 1 })
   })
 
-  it.skip("Verify that 'ready' event is emitted", async () => {
+  it("Verify that 'ready' event is emitted", async () => {
     const pool1 = new FixedThreadPool(
       numberOfThreads,
       './tests/worker-files/thread/testWorker.js',
@@ -85,17 +85,15 @@ describe('Fixed thread pool test suite', () => {
         errorHandler: e => console.error(e)
       }
     )
-    let poolInfo
     let poolReady = 0
-    pool1.emitter.on(PoolEvents.ready, info => {
+    pool1.emitter.on(PoolEvents.ready, () => {
       ++poolReady
-      poolInfo = info
     })
+    await waitPoolEvents(pool1, 'ready', 1)
     expect(poolReady).toBe(1)
-    expect(poolInfo).toBeDefined()
   })
 
-  it("Verify that 'busy' event is emitted", async () => {
+  it("Verify that 'busy' event is emitted", () => {
     let poolBusy = 0
     pool.emitter.on(PoolEvents.busy, () => ++poolBusy)
     for (let i = 0; i < numberOfThreads * 2; i++) {
