@@ -77,7 +77,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public choose (): number {
     const chosenWorkerNodeKey = this.nextWorkerNodeKey
-    this.weightedRoundRobinNextWorkerNodeKey()
+    do {
+      this.weightedRoundRobinNextWorkerNodeKey()
+    } while (!this.isWorkerNodeReady(this.nextWorkerNodeKey))
     return chosenWorkerNodeKey
   }
 

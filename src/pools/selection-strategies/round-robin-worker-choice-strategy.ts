@@ -50,7 +50,9 @@ export class RoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public choose (): number {
     const chosenWorkerNodeKey = this.nextWorkerNodeKey
-    this.roundRobinNextWorkerNodeKey()
+    do {
+      this.roundRobinNextWorkerNodeKey()
+    } while (!this.isWorkerNodeReady(this.nextWorkerNodeKey))
     return chosenWorkerNodeKey
   }
 

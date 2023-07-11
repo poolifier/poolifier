@@ -1135,6 +1135,7 @@ export abstract class AbstractPool<
    */
   private pushWorkerNode (worker: Worker): number {
     const workerNode = new WorkerNode<Worker, Data>(worker, this.worker)
+    // Flag the worker as ready at pool startup.
     if (this.starting) {
       workerNode.info.ready = true
     }
