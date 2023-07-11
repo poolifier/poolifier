@@ -24,7 +24,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">WorkerOptions</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/4a0db58/src/worker/worker-options.ts#L23">src/worker/worker-options.ts:23</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/b0a4db6/src/worker/worker-options.ts#L23">src/worker/worker-options.ts:23</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -49,11 +49,11 @@
 <h4>Deprecated</h4><p>This option will be removed in the next major version.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/4a0db58/src/worker/worker-options.ts#L43">src/worker/worker-options.ts:43</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/b0a4db6/src/worker/worker-options.ts#L43">src/worker/worker-options.ts:43</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="killBehavior" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>kill<wbr/>Behavior</span><a href="#killBehavior" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">kill<wbr/>Behavior</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">&quot;SOFT&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;HARD&quot;</span></div>
-<div class="tsd-comment tsd-typography"><p><code>killBehavior</code> dictates if your async unit (worker/process) will be deleted in case that a task is active on it.</p>
+<div class="tsd-comment tsd-typography"><p><code>killBehavior</code> dictates if your worker will be deleted in case a task is active on it.</p>
 <ul>
 <li>SOFT: If <code>currentTime - lastActiveTime</code> is greater than <code>maxInactiveTime</code> but a task is still executing or queued, then the worker <strong>won&#39;t</strong> be deleted.</li>
 <li>HARD: If <code>currentTime - lastActiveTime</code> is greater than <code>maxInactiveTime</code> but a task is still executing or queued, then the worker will be deleted.</li>
@@ -64,16 +64,16 @@
 <h4>Default Value</h4><p>KillBehaviors.SOFT</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/4a0db58/src/worker/worker-options.ts#L54">src/worker/worker-options.ts:54</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/b0a4db6/src/worker/worker-options.ts#L54">src/worker/worker-options.ts:54</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="maxInactiveTime" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>max<wbr/>Inactive<wbr/>Time</span><a href="#maxInactiveTime" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">max<wbr/>Inactive<wbr/>Time</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span></div>
-<div class="tsd-comment tsd-typography"><p>Maximum waiting time in milliseconds for tasks.</p>
+<div class="tsd-comment tsd-typography"><p>Maximum waiting time in milliseconds for tasks on newly created workers.</p>
 <p>After this time, newly created workers will be terminated.
-The last active time of your worker unit will be updated when a task is submitted to a worker or when a worker terminate a task.</p>
+The last active time of your worker will be updated when it terminates a task.</p>
 <ul>
 <li>If <code>killBehavior</code> is set to <code>KillBehaviors.HARD</code> this value represents also the timeout for the tasks that you submit to the pool,
-when this timeout expires your tasks is interrupted and the worker is killed if is not part of the minimum size of the pool.</li>
+when this timeout expires your tasks is interrupted before completion and removed. The worker is killed if is not part of the minimum size of the pool.</li>
 <li>If <code>killBehavior</code> is set to <code>KillBehaviors.SOFT</code> your tasks have no timeout and your workers will not be terminated until your task is completed.</li>
 </ul>
 </div>
@@ -81,7 +81,7 @@ when this timeout expires your tasks is interrupted and the worker is killed if 
 <h4>Default Value</h4><p>60000</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/4a0db58/src/worker/worker-options.ts#L36">src/worker/worker-options.ts:36</a></li></ul></aside></section></section></div>
+<li>Defined in <a href="https://github.com/poolifier/poolifier/blob/b0a4db6/src/worker/worker-options.ts#L36">src/worker/worker-options.ts:36</a></li></ul></aside></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
