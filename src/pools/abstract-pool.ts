@@ -85,6 +85,10 @@ export abstract class AbstractPool<
   >
 
   /**
+   * Whether the pool is starting.
+   */
+  private readonly starting: boolean
+  /**
    * The start timestamp of the pool.
    */
   private readonly startTimestamp
@@ -128,6 +132,7 @@ export abstract class AbstractPool<
 
     this.setupHook()
 
+    this.starting = true
     while (
       this.workerNodes.reduce(
         (accumulator, workerNode) =>
@@ -137,6 +142,7 @@ export abstract class AbstractPool<
     ) {
       this.createAndSetupWorker()
     }
+    this.starting = false
 
     this.startTimestamp = performance.now()
   }
@@ -414,16 +420,6 @@ export abstract class AbstractPool<
         }
       })
     }
-  }
-
-  private get starting (): boolean {
-    return (
-      this.workerNodes.reduce(
-        (accumulator, workerNode) =>
-          !workerNode.info.dynamic ? accumulator + 1 : accumulator,
-        0
-      ) < this.minSize
-    )
   }
 
   private get ready (): boolean {
