@@ -1134,11 +1134,11 @@ export abstract class AbstractPool<
    * @returns The worker nodes length.
    */
   private pushWorkerNode (worker: Worker): number {
-    const workerNode = new WorkerNode(worker, this.worker)
+    const workerNode = new WorkerNode<Worker, Data>(worker, this.worker)
     if (this.starting) {
       workerNode.info.ready = true
     }
-    return this.workerNodes.push(new WorkerNode(worker, this.worker))
+    return this.workerNodes.push(workerNode)
   }
 
   /**

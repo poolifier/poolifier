@@ -428,24 +428,6 @@ describe('Abstract pool test suite', () => {
       version,
       type: PoolTypes.fixed,
       worker: WorkerTypes.thread,
-      ready: false,
-      strategy: WorkerChoiceStrategies.ROUND_ROBIN,
-      minSize: numberOfWorkers,
-      maxSize: numberOfWorkers,
-      workerNodes: numberOfWorkers,
-      idleWorkerNodes: numberOfWorkers,
-      busyWorkerNodes: 0,
-      executedTasks: 0,
-      executingTasks: 0,
-      queuedTasks: 0,
-      maxQueuedTasks: 0,
-      failedTasks: 0
-    })
-    await waitPoolEvents(pool, PoolEvents.ready, 1)
-    expect(pool.info).toStrictEqual({
-      version,
-      type: PoolTypes.fixed,
-      worker: WorkerTypes.thread,
       ready: true,
       strategy: WorkerChoiceStrategies.ROUND_ROBIN,
       minSize: numberOfWorkers,
@@ -465,24 +447,6 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js'
     )
-    expect(pool.info).toStrictEqual({
-      version,
-      type: PoolTypes.dynamic,
-      worker: WorkerTypes.cluster,
-      ready: false,
-      strategy: WorkerChoiceStrategies.ROUND_ROBIN,
-      minSize: Math.floor(numberOfWorkers / 2),
-      maxSize: numberOfWorkers,
-      workerNodes: Math.floor(numberOfWorkers / 2),
-      idleWorkerNodes: Math.floor(numberOfWorkers / 2),
-      busyWorkerNodes: 0,
-      executedTasks: 0,
-      executingTasks: 0,
-      queuedTasks: 0,
-      maxQueuedTasks: 0,
-      failedTasks: 0
-    })
-    await waitPoolEvents(pool, PoolEvents.ready, 1)
     expect(pool.info).toStrictEqual({
       version,
       type: PoolTypes.dynamic,
@@ -571,15 +535,6 @@ describe('Abstract pool test suite', () => {
         id: expect.any(Number),
         type: WorkerTypes.cluster,
         dynamic: false,
-        ready: false
-      })
-    }
-    await waitPoolEvents(pool, PoolEvents.ready, 1)
-    for (const workerNode of pool.workerNodes) {
-      expect(workerNode.info).toStrictEqual({
-        id: expect.any(Number),
-        type: WorkerTypes.cluster,
-        dynamic: false,
         ready: true
       })
     }
@@ -589,15 +544,6 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js'
     )
-    for (const workerNode of pool.workerNodes) {
-      expect(workerNode.info).toStrictEqual({
-        id: expect.any(Number),
-        type: WorkerTypes.thread,
-        dynamic: false,
-        ready: false
-      })
-    }
-    await waitPoolEvents(pool, PoolEvents.ready, 1)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.info).toStrictEqual({
         id: expect.any(Number),
@@ -788,8 +734,8 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js'
     )
-    let poolReady = 0
     let poolInfo
+    let poolReady = 0
     pool.emitter.on(PoolEvents.ready, info => {
       ++poolReady
       poolInfo = info

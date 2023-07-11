@@ -3,11 +3,9 @@ const {
   DynamicThreadPool,
   FixedClusterPool,
   FixedThreadPool,
-  PoolEvents,
   WorkerChoiceStrategies
 } = require('../../../lib')
 const { CircularArray } = require('../../../lib/circular-array')
-const { waitPoolEvents } = require('../../test-utils')
 
 describe('Selection strategies test suite', () => {
   const min = 0
@@ -1717,8 +1715,6 @@ describe('Selection strategies test suite', () => {
           WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
       }
     )
-    // FIXME: shall not be needed
-    await waitPoolEvents(pool, PoolEvents.ready, 1)
     // TODO: Create a better test to cover `InterleavedWeightedRoundRobinWorkerChoiceStrategy#choose`
     const promises = new Set()
     const maxMultiplier = 2
