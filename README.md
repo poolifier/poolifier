@@ -5,8 +5,8 @@
 <h2 align="center">Node Thread Pool and Cluster Pool :arrow_double_up: :on:</h2>
 
 <p align="center">
-  <a href="https://img.shields.io/github/commit-activity/m/poolifier/poolifier/master">
-    <img alt="GitHub commit activity (branch)" src="https://img.shields.io/github/commit-activity/m/poolifier/poolifier/master"></a>
+  <a href="https://github.com/poolifier/poolifier/graphs/commit-activity">
+    <img alt="GitHub commit activity (master)" src="https://img.shields.io/github/commit-activity/m/poolifier/poolifier/master"></a>
   <a href="https://www.npmjs.com/package/poolifier">
     <img alt="Weekly Downloads" src="https://img.shields.io/npm/dw/poolifier"></a>
   <a href="https://github.com/poolifier/poolifier/actions/workflows/ci.yml">
