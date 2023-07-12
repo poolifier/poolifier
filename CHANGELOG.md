@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.6.15] - 2023-07-11
 
+### Fixed
+
+- Fix pool starting semantic.
+- Fix worker task functions handling.
+
 ### Added
 
 - Take into account worker node readiness in worker choice strategies.

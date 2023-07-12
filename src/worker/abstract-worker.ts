@@ -119,7 +119,15 @@ export abstract class AbstractWorker<
     }
     this.taskFunctions = new Map<string, WorkerFunction<Data, Response>>()
     if (typeof taskFunctions === 'function') {
-      this.taskFunctions.set(DEFAULT_TASK_NAME, taskFunctions.bind(this))
+      const boundFn = taskFunctions.bind(this)
+      this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)
+      this.taskFunctions.set(
+        typeof taskFunctions.name === 'string' &&
+          taskFunctions.name.trim().length > 0
+          ? taskFunctions.name
+          : 'fn1',
+        boundFn
+      )
     } else if (isPlainObject(taskFunctions)) {
       let firstEntry = true
       for (const [name, fn] of Object.entries(taskFunctions)) {
@@ -133,9 +141,10 @@ export abstract class AbstractWorker<
             'A taskFunctions parameter object value is not a function'
           )
         }
-        this.taskFunctions.set(name, fn.bind(this))
+        const boundFn = fn.bind(this)
+        this.taskFunctions.set(name, boundFn)
         if (firstEntry) {
-          this.taskFunctions.set(DEFAULT_TASK_NAME, fn.bind(this))
+          this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)
           firstEntry = false
         }
       }
@@ -189,14 +198,15 @@ export abstract class AbstractWorker<
     if (typeof fn !== 'function') {
       throw new TypeError('fn parameter is not a function')
     }
+    const boundFn = fn.bind(this)
     try {
       if (
         this.taskFunctions.get(name) ===
         this.taskFunctions.get(DEFAULT_TASK_NAME)
       ) {
-        this.taskFunctions.set(DEFAULT_TASK_NAME, fn.bind(this))
+        this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)
       }
-      this.taskFunctions.set(name, fn.bind(this))
+      this.taskFunctions.set(name, boundFn)
       return true
     } catch {
       return false
@@ -257,10 +267,7 @@ export abstract class AbstractWorker<
     try {
       this.taskFunctions.set(
         DEFAULT_TASK_NAME,
-        this.taskFunctions.get(name)?.bind(this) as WorkerFunction<
-        Data,
-        Response
-        >
+        this.taskFunctions.get(name) as WorkerFunction<Data, Response>
       )
       return true
     } catch {

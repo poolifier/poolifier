@@ -939,9 +939,7 @@ export abstract class AbstractPool<
       const workerNodeKey = this.getWorkerNodeKey(worker)
       const workerInfo = this.getWorkerInfo(workerNodeKey)
       workerInfo.ready = false
-      if (this.emitter != null) {
-        this.emitter.emit(PoolEvents.error, error)
-      }
+      this.emitter?.emit(PoolEvents.error, error)
       if (this.opts.restartWorkerOnError === true && !this.starting) {
         if (workerInfo.dynamic) {
           this.createAndSetupDynamicWorker()
@@ -1096,9 +1094,7 @@ export abstract class AbstractPool<
     const promiseResponse = this.promiseResponseMap.get(message.id as string)
     if (promiseResponse != null) {
       if (message.taskError != null) {
-        if (this.emitter != null) {
-          this.emitter.emit(PoolEvents.taskError, message.taskError)
-        }
+        this.emitter?.emit(PoolEvents.taskError, message.taskError)
         promiseResponse.reject(message.taskError.message)
       } else {
         promiseResponse.resolve(message.data as Response)

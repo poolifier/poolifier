@@ -23,7 +23,7 @@ const waitPoolEvents = async (pool, poolEvent, numberOfEventsToWait) => {
     if (numberOfEventsToWait === 0) {
       resolve(events)
     }
-    pool.emitter.on(poolEvent, () => {
+    pool?.emitter.on(poolEvent, () => {
       ++events
       if (events === numberOfEventsToWait) {
         resolve(events)
