@@ -7,12 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.6.15] - 2023-07-11
-
 ### Fixed
 
 - Fix pool startup detection.
 - Fix worker task functions handling.
+
+## [2.6.15] - 2023-07-11
 
 ### Added
 
