@@ -193,7 +193,7 @@ describe('Abstract worker test suite', () => {
     const fn2 = () => {
       return 2
     }
-    const worker = new ThreadWorker({ fn1, fn2 })
+    const worker = new ClusterWorker({ fn1, fn2 })
     expect(worker.taskFunctions.get('default')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Function)
