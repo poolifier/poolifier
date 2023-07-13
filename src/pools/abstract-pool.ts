@@ -133,15 +133,7 @@ export abstract class AbstractPool<
     this.setupHook()
 
     this.starting = true
-    while (
-      this.workerNodes.reduce(
-        (accumulator, workerNode) =>
-          !workerNode.info.dynamic ? accumulator + 1 : accumulator,
-        0
-      ) < this.numberOfWorkers
-    ) {
-      this.createAndSetupWorker()
-    }
+    this.startPool()
     this.starting = false
 
     this.startTimestamp = performance.now()
@@ -282,6 +274,18 @@ export abstract class AbstractPool<
       throw new Error(
         `Invalid worker tasks concurrency '${tasksQueueOptions.concurrency}'`
       )
+    }
+  }
+
+  private startPool (): void {
+    while (
+      this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          !workerNode.info.dynamic ? accumulator + 1 : accumulator,
+        0
+      ) < this.numberOfWorkers
+    ) {
+      this.createAndSetupWorker()
     }
   }
 
