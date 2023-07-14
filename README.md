@@ -29,7 +29,7 @@
 
 ## Why Poolifier?
 
-Poolifier is used to perform CPU intensive and I/O intensive tasks on nodejs servers, it implements worker pools using [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) and cluster pools using [cluster](https://nodejs.org/api/cluster.html) Node.js modules.  
+Poolifier is used to perform CPU intensive and I/O intensive tasks on nodejs servers, it implements worker pools using [worker_threads](https://nodejs.org/api/worker_threads.html) and [cluster](https://nodejs.org/api/cluster.html) Node.js modules.  
 With poolifier you can improve your **performance** and resolve problems related to the event loop.  
 Moreover you can execute your tasks using an API designed to improve the **developer experience**.  
 Please consult our [general guidelines](#general-guidance).
@@ -80,7 +80,7 @@ Please consult our [general guidelines](#general-guidance).
 
 ## Overview
 
-Node pool contains two [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads)/[cluster worker](https://nodejs.org/api/cluster.html#cluster_class_worker) pool implementations, you don't have to deal with worker_threads/cluster worker complexity.  
+Poolifier contains two [worker_threads](https://nodejs.org/api/worker_threads.html#class-worker)/[cluster](https://nodejs.org/api/cluster.html#cluster_class_worker) worker pool implementations, you don't have to deal with worker_threads/cluster complexity.  
 The first implementation is a static worker pool, with a defined number of workers that are started at creation time and will be reused.  
 The second implementation is a dynamic worker pool with a number of worker started at creation time (these workers will be always active and reused) and other workers created when the load will increase (with an upper limit, these workers will be reused when active), the new created workers will be stopped after a configurable period of inactivity.  
 You have to implement your worker by extending the ThreadWorker or ClusterWorker class.
@@ -284,7 +284,7 @@ This method is available on both worker implementations and returns a boolean.
 ## General guidance
 
 Performance is one of the main target of these worker pool implementations, we want to have a strong focus on this.  
-We already have a bench folder where you can find some comparisons.
+We already have a benchmarks folder where you can find some comparisons.
 
 ### Internal Node.js thread pool
 
@@ -297,12 +297,12 @@ Please take a look at [which tasks run on the libuv thread pool](https://nodejs.
 
 and/or
 
-- Use poolifier cluster pool that spawning child processes will also increase the number of libuv threads since that any new child process comes with a separated libuv thread pool. **More threads does not mean more fast, so please tune your application**.
+- Use poolifier cluster pool that is spawning child processes, they will also increase the number of libuv threads since that any new child process comes with a separated libuv thread pool. **More threads does not mean more fast, so please tune your application**.
 
 ### Cluster vs Threads worker pools
 
 **If your task does not run into libuv thread pool** and is CPU intensive then poolifier **thread pools** (FixedThreadPool and DynamicThreadPool) are suggested to run CPU intensive tasks, you can still run I/O intensive tasks into thread pools, but performance enhancement is expected to be minimal.  
-Thread pools are built on top of Node.js [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) module.
+Thread pools are built on top of Node.js [worker_threads](https://nodejs.org/api/worker_threads.html) module.
 
 **If your task does not run into libuv thread pool** and is I/O intensive then poolifier **cluster pools** (FixedClusterPool and DynamicClusterPool) are suggested to run I/O intensive tasks, again you can still run CPU intensive tasks into cluster pools, but performance enhancement is expected to be minimal.  
 Consider that by default Node.js already has great performance for I/O tasks (asynchronous I/O).  
