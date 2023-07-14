@@ -66,11 +66,11 @@ export interface PoolInfo {
   readonly maxSize: number
   /** Pool utilization ratio. */
   readonly utilization?: number
-  /** Pool total worker nodes */
+  /** Pool total worker nodes. */
   readonly workerNodes: number
-  /** Pool idle worker nodes */
+  /** Pool idle worker nodes. */
   readonly idleWorkerNodes: number
-  /** Pool busy worker nodes */
+  /** Pool busy worker nodes. */
   readonly busyWorkerNodes: number
   readonly executedTasks: number
   readonly executingTasks: number
