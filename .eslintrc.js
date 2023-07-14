@@ -80,6 +80,7 @@ module.exports = defineConfig({
           'tsdoc',
           'typedoc',
           'unlink',
+          'unref',
           'unregister',
           'utf8',
           'workerpool',
