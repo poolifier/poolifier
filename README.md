@@ -29,7 +29,7 @@
 
 ## Why Poolifier?
 
-Poolifier is used to perform CPU intensive and I/O intensive tasks on nodejs servers, it implements worker pools using [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) and cluster pools using [cluster](https://nodejs.org/api/cluster.html) Node.js modules.  
+Poolifier is used to perform CPU intensive and I/O intensive tasks on nodejs servers, it implements worker pools using [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) and cluster pools using [cluster](https://nodejs.org/api/cluster.html) Node.js modules.  
 With poolifier you can improve your **performance** and resolve problems related to the event loop.  
 Moreover you can execute your tasks using an API designed to improve the **developer experience**.  
 Please consult our [general guidelines](#general-guidance).
@@ -41,7 +41,7 @@ Please consult our [general guidelines](#general-guidance).
 - No runtime dependencies :white_check_mark:
 - Proper async integration with node async hooks :white_check_mark:
 - Support CommonJS, ESM, and TypeScript :white_check_mark:
-- Support for worker-threads and cluster node modules :white_check_mark:
+- Support for worker_threads and cluster node modules :white_check_mark:
 - Support sync and async tasks :white_check_mark:
 - Tasks distribution strategies :white_check_mark:
 - General guidance on pool choice :white_check_mark:
@@ -80,7 +80,7 @@ Please consult our [general guidelines](#general-guidance).
 
 ## Overview
 
-Node pool contains two [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads)/[cluster worker](https://nodejs.org/api/cluster.html#cluster_class_worker) pool implementations, you don't have to deal with worker-threads/cluster worker complexity.  
+Node pool contains two [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads)/[cluster worker](https://nodejs.org/api/cluster.html#cluster_class_worker) pool implementations, you don't have to deal with worker_threads/cluster worker complexity.  
 The first implementation is a static worker pool, with a defined number of workers that are started at creation time and will be reused.  
 The second implementation is a dynamic worker pool with a number of worker started at creation time (these workers will be always active and reused) and other workers created when the load will increase (with an upper limit, these workers will be reused when active), the new created workers will be stopped after a configurable period of inactivity.  
 You have to implement your worker by extending the ThreadWorker or ClusterWorker class.
@@ -93,7 +93,7 @@ npm install poolifier --save
 
 ## Usage
 
-You can implement a worker-threads worker in a simple way by extending the class ThreadWorker:
+You can implement a worker_threads worker in a simple way by extending the class ThreadWorker:
 
 ```js
 'use strict'
@@ -116,7 +116,7 @@ Instantiate your pool based on your needs :
 'use strict'
 const { DynamicThreadPool, FixedThreadPool, PoolEvents, availableParallelism } = require('poolifier')
 
-// a fixed worker-threads pool
+// a fixed worker_threads pool
 const pool = new FixedThreadPool(availableParallelism(), './yourWorker.js', {
   errorHandler: e => console.error(e),
   onlineHandler: () => console.info('worker is online')
@@ -125,7 +125,7 @@ const pool = new FixedThreadPool(availableParallelism(), './yourWorker.js', {
 pool.emitter.on(PoolEvents.ready, () => console.info('Pool is ready'))
 pool.emitter.on(PoolEvents.busy, () => console.info('Pool is busy'))
 
-// or a dynamic worker-threads pool
+// or a dynamic worker_threads pool
 const pool = new DynamicThreadPool(Math.floor(availableParallelism() / 2), availableParallelism(), './yourWorker.js', {
   errorHandler: e => console.error(e),
   onlineHandler: () => console.info('worker is online')
@@ -302,7 +302,7 @@ and/or
 ### Cluster vs Threads worker pools
 
 **If your task does not run into libuv thread pool** and is CPU intensive then poolifier **thread pools** (FixedThreadPool and DynamicThreadPool) are suggested to run CPU intensive tasks, you can still run I/O intensive tasks into thread pools, but performance enhancement is expected to be minimal.  
-Thread pools are built on top of Node.js [worker-threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) module.
+Thread pools are built on top of Node.js [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) module.
 
 **If your task does not run into libuv thread pool** and is I/O intensive then poolifier **cluster pools** (FixedClusterPool and DynamicClusterPool) are suggested to run I/O intensive tasks, again you can still run CPU intensive tasks into cluster pools, but performance enhancement is expected to be minimal.  
 Consider that by default Node.js already has great performance for I/O tasks (asynchronous I/O).  

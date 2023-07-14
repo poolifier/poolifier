@@ -112,7 +112,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- Remove unneeded worker-threads worker `MessageChannel` internal usage for IPC.
+- Remove unneeded worker_threads worker `MessageChannel` internal usage for IPC.
 
 ## [2.6.4] - 2023-06-27
 
@@ -128,7 +128,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- Remove unneeded worker-threads worker `MessageChannel` internal usage for IPC.
+- Remove unneeded worker_threads worker `MessageChannel` internal usage for IPC.
 
 ## [2.6.3] - 2023-06-19
 
@@ -185,7 +185,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Compute statistics at the worker level only if needed.
-- Add `worker-threads` options to thread pool options.
+- Add `worker_threads` options to thread pool options.
 
 ### Fixed
 

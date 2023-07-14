@@ -59,7 +59,7 @@
     "pool",
     "workers pool",
     "threads pool",
-    "worker-threads",
+    "worker_threads",
     "cluster",
     "cluster worker",
     "concurrency",
