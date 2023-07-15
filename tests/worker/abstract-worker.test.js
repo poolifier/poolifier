@@ -218,6 +218,17 @@ describe('Abstract worker test suite', () => {
     expect(worker.taskFunctions.size).toBe(2)
   })
 
+  it('Verify that listTaskFunctions() works', () => {
+    const fn1 = () => {
+      return 1
+    }
+    const fn2 = () => {
+      return 2
+    }
+    const worker = new ClusterWorker({ fn1, fn2 })
+    expect(worker.listTaskFunctions()).toStrictEqual(['default', 'fn1', 'fn2'])
+  })
+
   it('Verify that setDefaultTaskFunction() works', () => {
     const fn1 = () => {
       return 1

@@ -142,11 +142,11 @@ export abstract class AbstractWorker<
           )
         }
         const boundFn = fn.bind(this)
-        this.taskFunctions.set(name, boundFn)
         if (firstEntry) {
           this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)
           firstEntry = false
         }
+        this.taskFunctions.set(name, boundFn)
       }
       if (firstEntry) {
         throw new Error('taskFunctions parameter object is empty')
@@ -242,7 +242,16 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Sets the default task function to use when no task function name is specified.
+   * Lists the names of the worker's task functions.
+   *
+   * @returns The names of the worker's task functions.
+   */
+  public listTaskFunctions (): string[] {
+    return Array.from(this.taskFunctions.keys())
+  }
+
+  /**
+   * Sets the default task function to use in the worker.
    *
    * @param name - The name of the task function to use as default task function.
    * @returns Whether the default task function was set or not.

@@ -275,6 +275,10 @@ This method is available on both worker implementations and returns a boolean.
 
 This method is available on both worker implementations and returns a boolean.
 
+#### `YourWorker.listTaskFunctions()`
+
+This method is available on both worker implementations and returns an array of the task function names.
+
 #### `YourWorker.setDefaultTaskFunction(name)`
 
 `name` (mandatory) The task function name
@@ -284,7 +288,7 @@ This method is available on both worker implementations and returns a boolean.
 ## General guidance
 
 Performance is one of the main target of these worker pool implementations, we want to have a strong focus on this.  
-We already have a benchmarks folder where you can find some comparisons.
+We already have a [benchmarks](./benchmarks/) folder where you can find some comparisons.
 
 ### Internal Node.js thread pool
 
