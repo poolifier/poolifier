@@ -123,6 +123,12 @@ export abstract class AbstractWorkerChoiceStrategy<
     this.setTaskStatisticsRequirements(this.opts)
   }
 
+  /**
+   * Whether the worker node is ready or not.
+   *
+   * @param workerNodeKey - The worker node key.
+   * @returns Whether the worker node is ready or not.
+   */
   protected isWorkerNodeReady (workerNodeKey: number): boolean {
     return this.pool.workerNodes[workerNodeKey].info.ready
   }
