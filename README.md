@@ -29,24 +29,24 @@
 
 ## Why Poolifier?
 
-Poolifier is used to perform CPU intensive and I/O intensive tasks on nodejs servers, it implements worker pools using [worker_threads](https://nodejs.org/api/worker_threads.html) and [cluster](https://nodejs.org/api/cluster.html) Node.js modules.  
+Poolifier is used to perform CPU and/or I/O intensive tasks on Node.js servers, it implements worker pools using [worker_threads](https://nodejs.org/api/worker_threads.html) and [cluster](https://nodejs.org/api/cluster.html) Node.js modules.  
 With poolifier you can improve your **performance** and resolve problems related to the event loop.  
 Moreover you can execute your tasks using an API designed to improve the **developer experience**.  
 Please consult our [general guidelines](#general-guidance).
 
 - Easy to use :white_check_mark:
 - Performance [benchmarks](./benchmarks/README.md) :white_check_mark:
-- Dynamic pool size :white_check_mark:
-- Easy switch from a pool to another :white_check_mark:
+- Static and dynamic pool size :white_check_mark:
+- Easy switch from a pool type to another :white_check_mark:
 - No runtime dependencies :white_check_mark:
-- Proper async integration with node async hooks :white_check_mark:
+- Proper async integration with node [async_hooks](https://nodejs.org/api/async_hooks.html) :white_check_mark:
 - Support CommonJS, ESM, and TypeScript :white_check_mark:
-- Support for worker_threads and cluster node modules :white_check_mark:
+- Support for [worker_threads](https://nodejs.org/api/worker_threads.html) and [cluster](https://nodejs.org/api/cluster.html) Node.js modules :white_check_mark:
 - Support sync and async tasks :white_check_mark:
 - Tasks distribution strategies :white_check_mark:
 - General guidance on pool choice :white_check_mark:
-- Widely tested :white_check_mark:
 - Error handling out of the box :white_check_mark:
+- Widely tested :white_check_mark:
 - Active community :white_check_mark:
 - Code quality [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=bugs)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
   [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=code_smells)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
@@ -80,10 +80,10 @@ Please consult our [general guidelines](#general-guidance).
 
 ## Overview
 
-Poolifier contains two [worker_threads](https://nodejs.org/api/worker_threads.html#class-worker)/[cluster](https://nodejs.org/api/cluster.html#cluster_class_worker) worker pool implementations, you don't have to deal with worker_threads/cluster complexity.  
+Poolifier contains two [worker_threads](https://nodejs.org/api/worker_threads.html#class-worker)/[cluster](https://nodejs.org/api/cluster.html#cluster_class_worker) worker pool implementations, you don't have to deal with worker*threads/cluster complexity.  
 The first implementation is a static worker pool, with a defined number of workers that are started at creation time and will be reused.  
 The second implementation is a dynamic worker pool with a number of worker started at creation time (these workers will be always active and reused) and other workers created when the load will increase (with an upper limit, these workers will be reused when active), the new created workers will be stopped after a configurable period of inactivity.  
-You have to implement your worker by extending the ThreadWorker or ClusterWorker class.
+You have to implement your worker by extending the \_ThreadWorker* or _ClusterWorker_ class.
 
 ## Installation
 
@@ -93,7 +93,7 @@ npm install poolifier --save
 
 ## Usage
 
-You can implement a worker_threads worker in a simple way by extending the class ThreadWorker:
+You can implement a [worker_threads](https://nodejs.org/api/worker_threads.html#class-worker) worker in a simple way by extending the class _ThreadWorker_:
 
 ```js
 'use strict'
@@ -147,7 +147,7 @@ pool
   })
 ```
 
-You can do the same with the classes ClusterWorker, FixedClusterPool and DynamicClusterPool.
+You can do the same with the classes _ClusterWorker_, _FixedClusterPool_ and _DynamicClusterPool_.
 
 **See [examples](./examples/) folder for more details (in particular if you want to use a pool with [multiple worker functions](./examples/multiFunctionExample.js))**.
 
@@ -158,6 +158,30 @@ Remember that workers can only send and receive structured-cloneable data.
 Node versions >= 16.14.x are supported.
 
 ## [API](https://poolifier.github.io/poolifier/)
+
+### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
+
+`numberOfThreads/numberOfWorkers` (mandatory) Number of workers for this pool  
+`filePath` (mandatory) Path to a file with a worker implementation  
+`opts` (optional) An object with the pool options properties described below
+
+### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
+
+`min` (mandatory) Same as _FixedThreadPool_/_FixedClusterPool_ numberOfThreads/numberOfWorkers, this number of workers will be always active  
+`max` (mandatory) Max number of workers that this pool can contain, the new created workers will die after a threshold (default is 1 minute, you can override it in your worker implementation).  
+`filePath` (mandatory) Path to a file with a worker implementation  
+`opts` (optional) An object with the pool options properties described below
+
+### `pool.execute(data, name)`
+
+`data` (optional) An object that you want to pass to your worker implementation  
+`name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`
+
+This method is available on both pool implementations and returns a promise with the task function execution response.
+
+### `pool.destroy()`
+
+This method is available on both pool implementations and will call the terminate method on each worker.
 
 ### `PoolOptions`
 
@@ -215,30 +239,6 @@ An object with these properties:
 
 - `settings` (optional) - An object with the cluster settings. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_settings) for more details.
 
-### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
-
-`numberOfThreads/numberOfWorkers` (mandatory) Number of workers for this pool  
-`filePath` (mandatory) Path to a file with a worker implementation  
-`opts` (optional) An object with the pool options properties described above
-
-### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
-
-`min` (mandatory) Same as FixedThreadPool/FixedClusterPool numberOfThreads/numberOfWorkers, this number of workers will be always active  
-`max` (mandatory) Max number of workers that this pool can contain, the new created workers will die after a threshold (default is 1 minute, you can override it in your worker implementation).  
-`filePath` (mandatory) Path to a file with a worker implementation  
-`opts` (optional) An object with the pool options properties described above
-
-### `pool.execute(data, name)`
-
-`data` (optional) An object that you want to pass to your worker implementation  
-`name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`
-
-This method is available on both pool implementations and returns a promise with the task function execution response.
-
-### `pool.destroy()`
-
-This method is available on both pool implementations and will call the terminate method on each worker.
-
 ### `class YourWorker extends ThreadWorker/ClusterWorker`
 
 `taskFunctions` (mandatory) The task function or task functions object `{ name_1: fn_1, ..., name_n: fn_n }` that you want to execute on the worker  
@@ -287,8 +287,8 @@ This method is available on both worker implementations and returns a boolean.
 
 ## General guidance
 
-Performance is one of the main target of these worker pool implementations, we want to have a strong focus on this.  
-We already have a [benchmarks](./benchmarks/) folder where you can find some comparisons.
+Performance is one of the main target of these worker pool implementations, poolifier team wants to have a strong focus on this.  
+Poolifier already has a [benchmarks](./benchmarks/) folder where you can find some comparisons.
 
 ### Internal Node.js thread pool
 
@@ -301,14 +301,14 @@ Please take a look at [which tasks run on the libuv thread pool](https://nodejs.
 
 and/or
 
-- Use poolifier cluster pool that is spawning child processes, they will also increase the number of libuv threads since that any new child process comes with a separated libuv thread pool. **More threads does not mean more fast, so please tune your application**.
+- Use poolifier cluster pools that are spawning child processes, they will also increase the number of libuv threads since that any new child process comes with a separated libuv thread pool. **More threads does not mean more fast, so please tune your application**.
 
 ### Cluster vs Threads worker pools
 
-**If your task does not run into libuv thread pool** and is CPU intensive then poolifier **thread pools** (FixedThreadPool and DynamicThreadPool) are suggested to run CPU intensive tasks, you can still run I/O intensive tasks into thread pools, but performance enhancement is expected to be minimal.  
+**If your task does not run into libuv thread pool** and is CPU intensive then poolifier **thread pools** (_FixedThreadPool_ and _DynamicThreadPool_) are suggested to run CPU intensive tasks, you can still run I/O intensive tasks into thread pools, but performance enhancement is expected to be minimal.  
 Thread pools are built on top of Node.js [worker_threads](https://nodejs.org/api/worker_threads.html) module.
 
-**If your task does not run into libuv thread pool** and is I/O intensive then poolifier **cluster pools** (FixedClusterPool and DynamicClusterPool) are suggested to run I/O intensive tasks, again you can still run CPU intensive tasks into cluster pools, but performance enhancement is expected to be minimal.  
+**If your task does not run into libuv thread pool** and is I/O intensive then poolifier **cluster pools** (_FixedClusterPool_ and _DynamicClusterPool_) are suggested to run I/O intensive tasks, again you can still run CPU intensive tasks into cluster pools, but performance enhancement is expected to be minimal.  
 Consider that by default Node.js already has great performance for I/O tasks (asynchronous I/O).  
 Cluster pools are built on top of Node.js [cluster](https://nodejs.org/api/cluster.html) module.
 
@@ -317,10 +317,10 @@ But in general, **always profile your application**.
 
 ### Fixed vs Dynamic pools
 
-To choose your pool consider that with a FixedThreadPool/FixedClusterPool or a DynamicThreadPool/DynamicClusterPool (in this case is important the min parameter passed to the constructor) your application memory footprint will increase.  
-Increasing the memory footprint, your application will be ready to accept more tasks, but during idle time your application will consume more memory.  
-One good choice from poolifier team point of view is to profile your application using fixed or dynamic worker pool, and to see your application metrics when you increase/decrease the num of workers.  
-For example you could keep the memory footprint low choosing a DynamicThreadPool/DynamicClusterPool with 5 workers, and allow to create new workers until 50/100 when needed, this is the advantage to use the DynamicThreadPool/DynamicClusterPool.  
+To choose your pool consider first that with a _FixedThreadPool_/_FixedClusterPool_ or a _DynamicThreadPool_/_DynamicClusterPool_ your application memory footprint will increase.  
+By doing so, your application will be ready to execute in parallel more tasks, but during idle time your application will consume more memory.  
+One good choice from poolifier team point of view is to profile your application using a static or dynamic worker pool, and analyze your application metrics when you increase/decrease the number of workers.  
+For example you could keep the memory footprint low by choosing a _DynamicThreadPool_/_DynamicClusterPool_ with a minimum of 5 workers, and allowing it to create new workers until a maximum of 50 workers if needed. This is the advantage of using a _DynamicThreadPool_/_DynamicClusterPool_.  
 But in general, **always profile your application**.
 
 ## Contribute
