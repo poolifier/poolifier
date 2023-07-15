@@ -55,19 +55,18 @@
     "url": "git+https://github.com/poolifier/poolifier.git"
   },
   "keywords": [
-    "node",
-    "pool",
-    "workers pool",
-    "threads pool",
+    "nodejs",
+    "worker pool",
+    "thread pool",
     "worker_threads",
     "cluster",
-    "cluster worker",
     "concurrency",
     "performance",
     "cpu",
     "computing",
-    "async computing",
-    "async resource"
+    "scheduling",
+    "parallelism",
+    "eventloop"
   ],
   "author": "pioardi",
   "contributors": [
