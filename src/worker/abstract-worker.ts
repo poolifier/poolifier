@@ -198,8 +198,8 @@ export abstract class AbstractWorker<
     if (typeof fn !== 'function') {
       throw new TypeError('fn parameter is not a function')
     }
-    const boundFn = fn.bind(this)
     try {
+      const boundFn = fn.bind(this)
       if (
         this.taskFunctions.get(name) ===
         this.taskFunctions.get(DEFAULT_TASK_NAME)
