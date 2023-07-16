@@ -5,8 +5,8 @@ hyperfine --export-markdown BENCH-100000.md --min-runs 20 --prepare 'sleep 5' --
   'node fixed-poolifier.mjs' \
   'node dynamic-piscina.mjs' \
   'node fixed-piscina.mjs' \
-  'node fixed-tinypool.mjs' \
   'node dynamic-tinypool.mjs' \
+  'node fixed-tinypool.mjs' \
   'node dynamic-workerpool.mjs' \
   'node fixed-workerpool.mjs' \
   'node dynamic-worker-nodes.js' \
