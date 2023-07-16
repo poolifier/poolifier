@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `listTaskFunctions()` method to worker.
+- Add `listTaskFunctions()` method to worker class.
 
 ## [2.6.16] - 2023-07-12
 
