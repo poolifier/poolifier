@@ -333,7 +333,10 @@ export abstract class AbstractWorker<
    * Stops the worker check active interval.
    */
   private stopCheckActive (): void {
-    this.activeInterval != null && clearInterval(this.activeInterval)
+    if (this.activeInterval != null) {
+      clearInterval(this.activeInterval)
+      delete this.activeInterval
+    }
   }
 
   /**
@@ -426,9 +429,7 @@ export abstract class AbstractWorker<
         id: task.id
       })
     } finally {
-      if (!this.isMain && this.activeInterval != null) {
-        this.lastTaskTimestamp = performance.now()
-      }
+      this.updateLastTaskTimestamp()
     }
   }
 
@@ -467,9 +468,7 @@ export abstract class AbstractWorker<
         })
       })
       .finally(() => {
-        if (!this.isMain && this.activeInterval != null) {
-          this.lastTaskTimestamp = performance.now()
-        }
+        this.updateLastTaskTimestamp()
       })
       .catch(EMPTY_FUNCTION)
   }
@@ -517,6 +516,12 @@ export abstract class AbstractWorker<
   private checkStatistics (): void {
     if (this.statistics == null) {
       throw new Error('Performance statistics computation requirements not set')
+    }
+  }
+
+  private updateLastTaskTimestamp (): void {
+    if (!this.isMain && this.activeInterval != null) {
+      this.lastTaskTimestamp = performance.now()
     }
   }
 }
