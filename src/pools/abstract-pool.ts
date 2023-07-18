@@ -13,7 +13,8 @@ import {
   isKillBehavior,
   isPlainObject,
   median,
-  round
+  round,
+  updateMeasurementStatistics
 } from '../utils'
 import { KillBehaviors } from '../worker/worker-options'
 import {
@@ -747,38 +748,12 @@ export abstract class AbstractPool<
     workerUsage: WorkerUsage,
     message: MessageValue<Response>
   ): void {
-    if (
-      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
-        .aggregate
-    ) {
-      const taskRunTime = message.taskPerformance?.runTime ?? 0
-      workerUsage.runTime.aggregate =
-        (workerUsage.runTime.aggregate ?? 0) + taskRunTime
-      workerUsage.runTime.minimum = Math.min(
-        taskRunTime,
-        workerUsage.runTime?.minimum ?? Infinity
-      )
-      workerUsage.runTime.maximum = Math.max(
-        taskRunTime,
-        workerUsage.runTime?.maximum ?? -Infinity
-      )
-      if (
-        this.workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
-          .average &&
-        workerUsage.tasks.executed !== 0
-      ) {
-        workerUsage.runTime.average =
-          workerUsage.runTime.aggregate / workerUsage.tasks.executed
-      }
-      if (
-        this.workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
-          .median &&
-        message.taskPerformance?.runTime != null
-      ) {
-        workerUsage.runTime.history.push(message.taskPerformance.runTime)
-        workerUsage.runTime.median = median(workerUsage.runTime.history)
-      }
-    }
+    updateMeasurementStatistics(
+      workerUsage.runTime,
+      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime,
+      message.taskPerformance?.runTime ?? 0,
+      workerUsage.tasks.executed
+    )
   }
 
   private updateWaitTimeWorkerUsage (
@@ -787,53 +762,35 @@ export abstract class AbstractPool<
   ): void {
     const timestamp = performance.now()
     const taskWaitTime = timestamp - (task.timestamp ?? timestamp)
-    if (
-      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().waitTime
-        .aggregate
-    ) {
-      workerUsage.waitTime.aggregate =
-        (workerUsage.waitTime?.aggregate ?? 0) + taskWaitTime
-      workerUsage.waitTime.minimum = Math.min(
-        taskWaitTime,
-        workerUsage.waitTime?.minimum ?? Infinity
-      )
-      workerUsage.waitTime.maximum = Math.max(
-        taskWaitTime,
-        workerUsage.waitTime?.maximum ?? -Infinity
-      )
-      if (
-        this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
-          .waitTime.average &&
-        workerUsage.tasks.executed !== 0
-      ) {
-        workerUsage.waitTime.average =
-          workerUsage.waitTime.aggregate / workerUsage.tasks.executed
-      }
-      if (
-        this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
-          .waitTime.median
-      ) {
-        workerUsage.waitTime.history.push(taskWaitTime)
-        workerUsage.waitTime.median = median(workerUsage.waitTime.history)
-      }
-    }
+    updateMeasurementStatistics(
+      workerUsage.waitTime,
+      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().waitTime,
+      taskWaitTime,
+      workerUsage.tasks.executed
+    )
   }
 
   private updateEluWorkerUsage (
     workerUsage: WorkerUsage,
     message: MessageValue<Response>
   ): void {
+    updateMeasurementStatistics(
+      workerUsage.elu.active,
+      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu,
+      message.taskPerformance?.elu?.active ?? 0,
+      workerUsage.tasks.executed
+    )
+    updateMeasurementStatistics(
+      workerUsage.elu.idle,
+      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu,
+      message.taskPerformance?.elu?.idle ?? 0,
+      workerUsage.tasks.executed
+    )
     if (
       this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
         .aggregate
     ) {
       if (message.taskPerformance?.elu != null) {
-        workerUsage.elu.idle.aggregate =
-          (workerUsage.elu.idle?.aggregate ?? 0) +
-          message.taskPerformance.elu.idle
-        workerUsage.elu.active.aggregate =
-          (workerUsage.elu.active?.aggregate ?? 0) +
-          message.taskPerformance.elu.active
         if (workerUsage.elu.utilization != null) {
           workerUsage.elu.utilization =
             (workerUsage.elu.utilization +
@@ -841,43 +798,6 @@ export abstract class AbstractPool<
             2
         } else {
           workerUsage.elu.utilization = message.taskPerformance.elu.utilization
-        }
-        workerUsage.elu.idle.minimum = Math.min(
-          message.taskPerformance.elu.idle,
-          workerUsage.elu.idle?.minimum ?? Infinity
-        )
-        workerUsage.elu.idle.maximum = Math.max(
-          message.taskPerformance.elu.idle,
-          workerUsage.elu.idle?.maximum ?? -Infinity
-        )
-        workerUsage.elu.active.minimum = Math.min(
-          message.taskPerformance.elu.active,
-          workerUsage.elu.active?.minimum ?? Infinity
-        )
-        workerUsage.elu.active.maximum = Math.max(
-          message.taskPerformance.elu.active,
-          workerUsage.elu.active?.maximum ?? -Infinity
-        )
-        if (
-          this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
-            .average &&
-          workerUsage.tasks.executed !== 0
-        ) {
-          workerUsage.elu.idle.average =
-            workerUsage.elu.idle.aggregate / workerUsage.tasks.executed
-          workerUsage.elu.active.average =
-            workerUsage.elu.active.aggregate / workerUsage.tasks.executed
-        }
-        if (
-          this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
-            .median
-        ) {
-          workerUsage.elu.idle.history.push(message.taskPerformance.elu.idle)
-          workerUsage.elu.active.history.push(
-            message.taskPerformance.elu.active
-          )
-          workerUsage.elu.idle.median = median(workerUsage.elu.idle.history)
-          workerUsage.elu.active.median = median(workerUsage.elu.active.history)
         }
       }
     }

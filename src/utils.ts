@@ -4,6 +4,7 @@ import type {
   WorkerChoiceStrategyOptions
 } from './pools/selection-strategies/selection-strategies-types'
 import type { KillBehavior } from './worker/worker-options'
+import type { MeasurementStatistics } from './pools/worker'
 
 /**
  * Default task name.
@@ -127,4 +128,40 @@ export const isAsyncFunction = (
   fn: unknown
 ): fn is (...args: unknown[]) => Promise<unknown> => {
   return typeof fn === 'function' && fn.constructor.name === 'AsyncFunction'
+}
+
+/**
+ * Updates the given measurement statistics.
+ *
+ * @param measurementStatistics - The measurement statistics to update.
+ * @param measurementRequirements - The measurement statistics requirements.
+ * @param measurementValue - The measurement value.
+ * @param tasksExecuted - The number of tasks executed.
+ */
+export const updateMeasurementStatistics = (
+  measurementStatistics: MeasurementStatistics,
+  measurementRequirements: MeasurementStatisticsRequirements,
+  measurementValue: number,
+  tasksExecuted: number
+): void => {
+  if (measurementRequirements.aggregate) {
+    measurementStatistics.aggregate =
+      (measurementStatistics.aggregate ?? 0) + measurementValue
+    measurementStatistics.minimum = Math.min(
+      measurementValue,
+      measurementStatistics.minimum ?? Infinity
+    )
+    measurementStatistics.maximum = Math.max(
+      measurementValue,
+      measurementStatistics.maximum ?? -Infinity
+    )
+    if (measurementRequirements.average && tasksExecuted !== 0) {
+      measurementStatistics.average =
+        measurementStatistics.aggregate / tasksExecuted
+    }
+    if (measurementRequirements.median && measurementValue != null) {
+      measurementStatistics.history.push(measurementValue)
+      measurementStatistics.median = median(measurementStatistics.history)
+    }
+  }
 }
