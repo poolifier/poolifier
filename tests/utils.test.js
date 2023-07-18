@@ -5,7 +5,8 @@ const {
   isKillBehavior,
   isPlainObject,
   median,
-  round
+  round,
+  updateMeasurementStatistics
 } = require('../lib/utils')
 const { KillBehaviors } = require('../lib/worker/worker-options')
 
@@ -124,5 +125,43 @@ describe('Utils test suite', () => {
     expect(isAsyncFunction(async () => {})).toBe(true)
     expect(isAsyncFunction(async function () {})).toBe(true)
     expect(isAsyncFunction(async function named () {})).toBe(true)
+  })
+
+  it('Verify updateMeasurementStatistics() behavior', () => {
+    const measurementStatistics = {}
+    updateMeasurementStatistics(
+      measurementStatistics,
+      { aggregate: true, average: false, median: false },
+      0.01,
+      1
+    )
+    expect(measurementStatistics).toEqual({
+      aggregate: 0.01,
+      maximum: 0.01,
+      minimum: 0.01
+    })
+    updateMeasurementStatistics(
+      measurementStatistics,
+      { aggregate: true, average: false, median: false },
+      0.02,
+      2
+    )
+    expect(measurementStatistics).toEqual({
+      aggregate: 0.03,
+      maximum: 0.02,
+      minimum: 0.01
+    })
+    updateMeasurementStatistics(
+      measurementStatistics,
+      { aggregate: true, average: true, median: false },
+      0.001,
+      3
+    )
+    expect(measurementStatistics).toEqual({
+      aggregate: 0.031,
+      maximum: 0.02,
+      minimum: 0.001,
+      average: 0.010333333333333333
+    })
   })
 })
