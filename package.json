@@ -48,7 +48,7 @@
   },
   "volta": {
     "node": "20.4.0",
-    "pnpm": "8.6.8"
+    "pnpm": "8.6.9"
   },
   "repository": {
     "type": "git",
