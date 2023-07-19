@@ -910,7 +910,7 @@ export abstract class AbstractPool<
         void (this.destroyWorker(worker) as Promise<void>)
       }
     })
-    const workerInfo = this.getWorkerInfo(this.getWorkerNodeKey(worker))
+    const workerInfo = this.getWorkerInfoByWorker(worker)
     workerInfo.dynamic = true
     if (this.workerChoiceStrategyContext.getStrategyPolicy().useDynamicWorker) {
       workerInfo.ready = true
@@ -953,7 +953,7 @@ export abstract class AbstractPool<
   private sendWorkerStartupMessage (worker: Worker): void {
     this.sendToWorker(worker, {
       ready: false,
-      workerId: this.getWorkerInfo(this.getWorkerNodeKey(worker)).id as number
+      workerId: this.getWorkerInfoByWorker(worker).id as number
     })
   }
 
@@ -1006,9 +1006,9 @@ export abstract class AbstractPool<
   }
 
   private handleWorkerReadyResponse (message: MessageValue<Response>): void {
-    const worker = this.getWorkerById(message.workerId)
-    this.getWorkerInfo(this.getWorkerNodeKey(worker as Worker)).ready =
-      message.ready as boolean
+    this.getWorkerInfoByWorker(
+      this.getWorkerById(message.workerId) as Worker
+    ).ready = message.ready as boolean
     if (this.emitter != null && this.ready) {
       this.emitter.emit(PoolEvents.ready, this.info)
     }
@@ -1051,12 +1051,21 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Gets the worker information.
+   * Gets the worker information from the given worker node key.
    *
    * @param workerNodeKey - The worker node key.
    */
   private getWorkerInfo (workerNodeKey: number): WorkerInfo {
     return this.workerNodes[workerNodeKey].info
+  }
+
+  /**
+   * Gets the worker information from the given worker.
+   *
+   * @param worker - The worker.
+   */
+  private getWorkerInfoByWorker (worker: Worker): WorkerInfo {
+    return this.workerNodes[this.getWorkerNodeKey(worker)].info
   }
 
   /**
@@ -1135,7 +1144,7 @@ export abstract class AbstractPool<
         elu: this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
           .elu.aggregate
       },
-      workerId: this.getWorkerInfo(this.getWorkerNodeKey(worker)).id as number
+      workerId: this.getWorkerInfoByWorker(worker).id as number
     })
   }
 }
