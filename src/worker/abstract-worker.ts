@@ -285,6 +285,13 @@ export abstract class AbstractWorker<
   }
 
   /**
+   * Handles the ready message sent by the main worker.
+   *
+   * @param message - The ready message.
+   */
+  protected abstract handleReadyMessage (message: MessageValue<Data>): void
+
+  /**
    * Worker message listener.
    *
    * @param message - The received message.
@@ -309,13 +316,6 @@ export abstract class AbstractWorker<
       }
     }
   }
-
-  /**
-   * Handles the ready message sent by the main worker.
-   *
-   * @param message - The ready message.
-   */
-  protected abstract handleReadyMessage (message: MessageValue<Data>): void
 
   /**
    * Starts the worker check active interval.

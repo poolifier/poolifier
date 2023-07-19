@@ -79,7 +79,7 @@ export class FixedThreadPool<
     worker.postMessage(
       {
         ready: false,
-        workerId: this.getWorkerInfoByWorker(worker).id as number,
+        workerId: worker.threadId,
         port: port2
       },
       [port2]

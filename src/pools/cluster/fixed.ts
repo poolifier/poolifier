@@ -77,7 +77,7 @@ export class FixedClusterPool<
   protected sendStartupMessageToWorker (worker: Worker): void {
     this.sendToWorker(worker, {
       ready: false,
-      workerId: this.getWorkerInfoByWorker(worker).id as number
+      workerId: worker.id
     })
   }
 
