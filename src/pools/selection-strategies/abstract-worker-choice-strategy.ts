@@ -7,6 +7,7 @@ import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import type {
   IWorkerChoiceStrategy,
+  MeasurementStatisticsRequirements,
   StrategyPolicy,
   TaskStatisticsRequirements,
   WorkerChoiceStrategyOptions
@@ -57,51 +58,31 @@ export abstract class AbstractWorkerChoiceStrategy<
   protected setTaskStatisticsRequirements (
     opts: WorkerChoiceStrategyOptions
   ): void {
-    if (
-      this.taskStatisticsRequirements.runTime.average &&
-      opts.runTime?.median === true
-    ) {
-      this.taskStatisticsRequirements.runTime.average = false
-      this.taskStatisticsRequirements.runTime.median = opts.runTime
-        .median as boolean
+    this.toggleMedianMeasurementStatisticsRequirements(
+      this.taskStatisticsRequirements.runTime,
+      opts.runTime?.median as boolean
+    )
+    this.toggleMedianMeasurementStatisticsRequirements(
+      this.taskStatisticsRequirements.waitTime,
+      opts.waitTime?.median as boolean
+    )
+    this.toggleMedianMeasurementStatisticsRequirements(
+      this.taskStatisticsRequirements.elu,
+      opts.elu?.median as boolean
+    )
+  }
+
+  private toggleMedianMeasurementStatisticsRequirements (
+    measurementStatisticsRequirements: MeasurementStatisticsRequirements,
+    toggleMedian: boolean
+  ): void {
+    if (measurementStatisticsRequirements.average && toggleMedian) {
+      measurementStatisticsRequirements.average = false
+      measurementStatisticsRequirements.median = toggleMedian
     }
-    if (
-      this.taskStatisticsRequirements.runTime.median &&
-      opts.runTime?.median === false
-    ) {
-      this.taskStatisticsRequirements.runTime.average = true
-      this.taskStatisticsRequirements.runTime.median = opts.runTime
-        .median as boolean
-    }
-    if (
-      this.taskStatisticsRequirements.waitTime.average &&
-      opts.waitTime?.median === true
-    ) {
-      this.taskStatisticsRequirements.waitTime.average = false
-      this.taskStatisticsRequirements.waitTime.median = opts.waitTime
-        .median as boolean
-    }
-    if (
-      this.taskStatisticsRequirements.waitTime.median &&
-      opts.waitTime?.median === false
-    ) {
-      this.taskStatisticsRequirements.waitTime.average = true
-      this.taskStatisticsRequirements.waitTime.median = opts.waitTime
-        .median as boolean
-    }
-    if (
-      this.taskStatisticsRequirements.elu.average &&
-      opts.elu?.median === true
-    ) {
-      this.taskStatisticsRequirements.elu.average = false
-      this.taskStatisticsRequirements.elu.median = opts.elu.median as boolean
-    }
-    if (
-      this.taskStatisticsRequirements.elu.median &&
-      opts.elu?.median === false
-    ) {
-      this.taskStatisticsRequirements.elu.average = true
-      this.taskStatisticsRequirements.elu.median = opts.elu.median as boolean
+    if (measurementStatisticsRequirements.median && !toggleMedian) {
+      measurementStatisticsRequirements.average = true
+      measurementStatisticsRequirements.median = toggleMedian
     }
   }
 
