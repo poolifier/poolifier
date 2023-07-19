@@ -299,13 +299,15 @@ export abstract class AbstractWorker<
         this.statistics = message.statistics
       } else if (message.checkActive != null) {
         // Check active message received
-        message.checkActive ? this.startCheckActive() : this.stopCheckActive()
+        !this.isMain && message.checkActive
+          ? this.startCheckActive()
+          : this.stopCheckActive()
       } else if (message.id != null && message.data != null) {
         // Task message received
         this.run(message)
       } else if (message.kill === true) {
         // Kill message received
-        this.stopCheckActive()
+        !this.isMain && this.stopCheckActive()
         this.emitDestroy()
       }
     }
@@ -389,6 +391,9 @@ export abstract class AbstractWorker<
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the task function is not found.
    */
   protected run (task: Task<Data>): void {
+    if (this.isMain) {
+      throw new Error('Cannot run a task in the main worker')
+    }
     const fn = this.getTaskFunction(task.name)
     if (isAsyncFunction(fn)) {
       this.runInAsyncScope(this.runAsync.bind(this), this, fn, task)
