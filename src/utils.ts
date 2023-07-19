@@ -136,13 +136,13 @@ export const isAsyncFunction = (
  * @param measurementStatistics - The measurement statistics to update.
  * @param measurementRequirements - The measurement statistics requirements.
  * @param measurementValue - The measurement value.
- * @param tasksExecuted - The number of tasks executed.
+ * @param numberOfMeasurements - The number of measurements.
  */
 export const updateMeasurementStatistics = (
   measurementStatistics: MeasurementStatistics,
   measurementRequirements: MeasurementStatisticsRequirements,
   measurementValue: number,
-  tasksExecuted: number
+  numberOfMeasurements: number
 ): void => {
   if (measurementRequirements.aggregate) {
     measurementStatistics.aggregate =
@@ -155,9 +155,9 @@ export const updateMeasurementStatistics = (
       measurementValue,
       measurementStatistics.maximum ?? -Infinity
     )
-    if (measurementRequirements.average && tasksExecuted !== 0) {
+    if (measurementRequirements.average && numberOfMeasurements !== 0) {
       measurementStatistics.average =
-        measurementStatistics.aggregate / tasksExecuted
+        measurementStatistics.aggregate / numberOfMeasurements
     }
     if (measurementRequirements.median && measurementValue != null) {
       measurementStatistics.history.push(measurementValue)

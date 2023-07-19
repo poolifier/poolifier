@@ -36,6 +36,7 @@ import type {
   WorkerUsage
 } from './worker'
 import {
+  type MeasurementStatisticsRequirements,
   Measurements,
   WorkerChoiceStrategies,
   type WorkerChoiceStrategy,
@@ -774,22 +775,21 @@ export abstract class AbstractPool<
     workerUsage: WorkerUsage,
     message: MessageValue<Response>
   ): void {
+    const eluTaskStatisticsRequirements: MeasurementStatisticsRequirements =
+      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
     updateMeasurementStatistics(
       workerUsage.elu.active,
-      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu,
+      eluTaskStatisticsRequirements,
       message.taskPerformance?.elu?.active ?? 0,
       workerUsage.tasks.executed
     )
     updateMeasurementStatistics(
       workerUsage.elu.idle,
-      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu,
+      eluTaskStatisticsRequirements,
       message.taskPerformance?.elu?.idle ?? 0,
       workerUsage.tasks.executed
     )
-    if (
-      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
-        .aggregate
-    ) {
+    if (eluTaskStatisticsRequirements.aggregate) {
       if (message.taskPerformance?.elu != null) {
         if (workerUsage.elu.utilization != null) {
           workerUsage.elu.utilization =
