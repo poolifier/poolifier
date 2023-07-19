@@ -1066,7 +1066,11 @@ export abstract class AbstractPool<
    * @param worker - The worker.
    */
   protected getWorkerInfoByWorker (worker: Worker): WorkerInfo {
-    return this.workerNodes[this.getWorkerNodeKey(worker)].info
+    const workerNodeKey = this.getWorkerNodeKey(worker)
+    if (workerNodeKey === -1) {
+      throw new Error('Worker not found')
+    }
+    return this.workerNodes[workerNodeKey].info
   }
 
   /**
