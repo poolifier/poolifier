@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Code refactoring and cleanup for better maintainability and readability. Bundle size is a bit smaller.
+
 ## [2.6.17] - 2023-07-16
 
 ### Added
