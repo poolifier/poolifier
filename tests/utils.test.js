@@ -1,4 +1,5 @@
 const { expect } = require('expect')
+const { CircularArray } = require('../lib/circular-array')
 const {
   availableParallelism,
   isAsyncFunction,
@@ -128,17 +129,20 @@ describe('Utils test suite', () => {
   })
 
   it('Verify updateMeasurementStatistics() behavior', () => {
-    const measurementStatistics = {}
+    const measurementStatistics = {
+      history: new CircularArray()
+    }
     updateMeasurementStatistics(
       measurementStatistics,
       { aggregate: true, average: false, median: false },
       0.01,
       1
     )
-    expect(measurementStatistics).toEqual({
+    expect(measurementStatistics).toStrictEqual({
       aggregate: 0.01,
       maximum: 0.01,
-      minimum: 0.01
+      minimum: 0.01,
+      history: expect.any(CircularArray)
     })
     updateMeasurementStatistics(
       measurementStatistics,
@@ -146,10 +150,11 @@ describe('Utils test suite', () => {
       0.02,
       2
     )
-    expect(measurementStatistics).toEqual({
+    expect(measurementStatistics).toStrictEqual({
       aggregate: 0.03,
       maximum: 0.02,
-      minimum: 0.01
+      minimum: 0.01,
+      history: expect.any(CircularArray)
     })
     updateMeasurementStatistics(
       measurementStatistics,
@@ -157,11 +162,12 @@ describe('Utils test suite', () => {
       0.001,
       3
     )
-    expect(measurementStatistics).toEqual({
+    expect(measurementStatistics).toStrictEqual({
       aggregate: 0.031,
       maximum: 0.02,
       minimum: 0.001,
-      average: 0.010333333333333333
+      average: 0.010333333333333333,
+      history: expect.any(CircularArray)
     })
   })
 })
