@@ -74,6 +74,22 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
+  protected sendStartupMessageToWorker (worker: Worker): void {
+    this.sendToWorker(worker, {
+      ready: false,
+      workerId: this.getWorkerInfoByWorker(worker).id as number
+    })
+  }
+
+  /** @inheritDoc */
+  protected registerWorkerMessageListener<Message extends Data | Response>(
+    worker: Worker,
+    listener: (message: MessageValue<Message>) => void
+  ): void {
+    worker.on('message', listener)
+  }
+
+  /** @inheritDoc */
   protected createWorker (): Worker {
     return cluster.fork(this.opts.env)
   }

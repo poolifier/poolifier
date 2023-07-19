@@ -7,8 +7,9 @@ describe('Thread worker test suite', () => {
     ++numberOfMessagesPosted
   }
   class SpyWorker extends ThreadWorker {
-    getMainWorker () {
-      return { postMessage }
+    constructor (fn) {
+      super(fn)
+      this.port = { postMessage }
     }
   }
 
@@ -25,7 +26,7 @@ describe('Thread worker test suite', () => {
     expect(worker.handleError(errorMessage)).toStrictEqual(errorMessage)
   })
 
-  it('Verify worker invokes the getMainWorker() and postMessage() methods', () => {
+  it('Verify worker invokes the postMessage() method on port property', () => {
     const worker = new SpyWorker(() => {})
     worker.sendToMainWorker({ ok: 1 })
     expect(numberOfMessagesPosted).toBe(1)

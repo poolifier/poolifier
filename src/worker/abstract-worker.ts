@@ -66,17 +66,17 @@ export abstract class AbstractWorker<
    *
    * @param type - The type of async event.
    * @param isMain - Whether this is the main worker or not.
-   * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked. The first function is the default function.
    * @param mainWorker - Reference to main worker.
+   * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked. The first function is the default function.
    * @param opts - Options for the worker.
    */
   public constructor (
     type: string,
     protected readonly isMain: boolean,
+    protected readonly mainWorker: MainWorker,
     taskFunctions:
     | WorkerFunction<Data, Response>
     | TaskFunctions<Data, Response>,
-    protected readonly mainWorker: MainWorker,
     protected readonly opts: WorkerOptions = {
       /**
        * The kill behavior option on this worker or its default value.
@@ -93,7 +93,7 @@ export abstract class AbstractWorker<
     this.checkWorkerOptions(this.opts)
     this.checkTaskFunctions(taskFunctions)
     if (!this.isMain) {
-      this.mainWorker?.on('message', this.messageListener.bind(this))
+      this.getMainWorker()?.on('message', this.handleReadyMessage.bind(this))
     }
   }
 
@@ -289,12 +289,9 @@ export abstract class AbstractWorker<
    *
    * @param message - The received message.
    */
-  protected messageListener (message: MessageValue<Data, Data>): void {
+  protected messageListener (message: MessageValue<Data>): void {
     if (message.workerId === this.id) {
-      if (message.ready != null) {
-        // Startup message received
-        this.sendReadyResponse()
-      } else if (message.statistics != null) {
+      if (message.statistics != null) {
         // Statistics message received
         this.statistics = message.statistics
       } else if (message.checkActive != null) {
@@ -314,11 +311,11 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Sends the ready response to the main worker.
+   * Handles the ready message sent by the main worker.
+   *
+   * @param message - The ready message.
    */
-  protected sendReadyResponse (): void {
-    !this.isMain && this.sendToMainWorker({ ready: true, workerId: this.id })
-  }
+  protected abstract handleReadyMessage (message: MessageValue<Data>): void
 
   /**
    * Starts the worker check active interval.

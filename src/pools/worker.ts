@@ -1,3 +1,4 @@
+import type { MessageChannel } from 'node:worker_threads'
 import type { CircularArray } from '../circular-array'
 import type { Task } from '../utility-types'
 
@@ -136,6 +137,10 @@ export interface WorkerInfo {
    * Ready flag.
    */
   ready: boolean
+  /**
+   * Message channel.
+   */
+  messageChannel?: MessageChannel
 }
 
 /**

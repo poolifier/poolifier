@@ -1,3 +1,4 @@
+import { MessageChannel } from 'node:worker_threads'
 import { CircularArray } from '../circular-array'
 import { Queue } from '../queue'
 import type { Task } from '../utility-types'
@@ -86,7 +87,10 @@ implements IWorkerNode<Worker, Data> {
       id: this.getWorkerId(worker, workerType),
       type: workerType,
       dynamic: false,
-      ready: false
+      ready: false,
+      ...(workerType === WorkerTypes.thread && {
+        messageChannel: new MessageChannel()
+      })
     }
   }
 

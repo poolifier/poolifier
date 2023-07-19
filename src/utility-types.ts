@@ -1,4 +1,5 @@
 import type { EventLoopUtilization } from 'node:perf_hooks'
+import type { MessagePort } from 'node:worker_threads'
 import type { KillBehavior } from './worker/worker-options'
 import type { IWorker } from './pools/worker'
 
@@ -118,6 +119,10 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    * Whether the worker starts or stops its activity check.
    */
   readonly checkActive?: boolean
+  /**
+   * Message port.
+   */
+  readonly port?: MessagePort
 }
 
 /**

@@ -1,4 +1,6 @@
 import {
+  type MessageChannel,
+  type MessagePort,
   SHARE_ENV,
   Worker,
   type WorkerOptions,
@@ -56,12 +58,42 @@ export class FixedThreadPool<
   /** @inheritDoc */
   protected async destroyWorker (worker: Worker): Promise<void> {
     this.sendToWorker(worker, { kill: true, workerId: worker.threadId })
+    const workerInfo = this.getWorkerInfoByWorker(worker)
+    workerInfo.messageChannel?.port1.close()
+    workerInfo.messageChannel?.port2.close()
     await worker.terminate()
   }
 
   /** @inheritDoc */
   protected sendToWorker (worker: Worker, message: MessageValue<Data>): void {
-    worker.postMessage(message)
+    (
+      this.getWorkerInfoByWorker(worker).messageChannel as MessageChannel
+    ).port1.postMessage(message)
+  }
+
+  /** @inheritDoc */
+  protected sendStartupMessageToWorker (worker: Worker): void {
+    const port2: MessagePort = (
+      this.getWorkerInfoByWorker(worker).messageChannel as MessageChannel
+    ).port2
+    worker.postMessage(
+      {
+        ready: false,
+        workerId: this.getWorkerInfoByWorker(worker).id as number,
+        port: port2
+      },
+      [port2]
+    )
+  }
+
+  /** @inheritDoc */
+  protected registerWorkerMessageListener<Message extends Data | Response>(
+    worker: Worker,
+    listener: (message: MessageValue<Message>) => void
+  ): void {
+    (
+      this.getWorkerInfoByWorker(worker).messageChannel as MessageChannel
+    ).port1.on('message', listener)
   }
 
   /** @inheritDoc */

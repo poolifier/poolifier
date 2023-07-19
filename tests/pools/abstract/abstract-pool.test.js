@@ -1,3 +1,4 @@
+const { MessageChannel } = require('worker_threads')
 const { expect } = require('expect')
 const {
   DynamicClusterPool,
@@ -549,7 +550,8 @@ describe('Abstract pool test suite', () => {
         id: expect.any(Number),
         type: WorkerTypes.thread,
         dynamic: false,
-        ready: true
+        ready: true,
+        messageChannel: expect.any(MessageChannel)
       })
     }
   })

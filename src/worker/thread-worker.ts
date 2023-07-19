@@ -28,6 +28,10 @@ export class ThreadWorker<
   Response = unknown
 > extends AbstractWorker<MessagePort, Data, Response> {
   /**
+   * Message port used to communicate with the main thread.
+   */
+  private port!: MessagePort
+  /**
    * Constructs a new poolifier thread worker.
    *
    * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked.
@@ -42,19 +46,35 @@ export class ThreadWorker<
     super(
       'worker-thread-pool:poolifier',
       isMainThread,
-      taskFunctions,
       parentPort as MessagePort,
+      taskFunctions,
       opts
     )
   }
 
+  /** @inheritDoc */
+  protected handleReadyMessage (message: MessageValue<Data>): void {
+    if (
+      message.workerId === this.id &&
+      message.ready != null &&
+      message.port != null
+    ) {
+      if (!this.isMain) {
+        this.port = message.port
+        this.port.on('message', this.messageListener.bind(this))
+        this.sendToMainWorker({ ready: true, workerId: this.id })
+      }
+    }
+  }
+
+  /** @inheritDoc */
   protected get id (): number {
     return threadId
   }
 
   /** @inheritDoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
-    this.getMainWorker().postMessage(message)
+    this.port.postMessage(message)
   }
 
   /** @inheritDoc */

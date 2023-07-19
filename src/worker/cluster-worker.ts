@@ -37,10 +37,20 @@ export class ClusterWorker<
     super(
       'worker-cluster-pool:poolifier',
       cluster.isPrimary,
-      taskFunctions,
       cluster.worker as Worker,
+      taskFunctions,
       opts
     )
+    if (!this.isMain) {
+      this.getMainWorker()?.on('message', this.messageListener.bind(this))
+    }
+  }
+
+  /** @inheritDoc */
+  protected handleReadyMessage (message: MessageValue<Data>): void {
+    if (message.workerId === this.id && message.ready != null) {
+      !this.isMain && this.sendToMainWorker({ ready: true, workerId: this.id })
+    }
   }
 
   /** @inheritDoc */
