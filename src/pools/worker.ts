@@ -243,6 +243,10 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    */
   readonly resetUsage: () => void
   /**
+   * Close communication channel.
+   */
+  readonly closeChannel: () => void
+  /**
    * Gets task worker usage statistics.
    */
   readonly getTaskWorkerUsage: (name: string) => WorkerUsage | undefined

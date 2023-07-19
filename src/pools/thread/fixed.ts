@@ -58,9 +58,7 @@ export class FixedThreadPool<
   /** @inheritDoc */
   protected async destroyWorker (worker: Worker): Promise<void> {
     this.sendToWorker(worker, { kill: true, workerId: worker.threadId })
-    const workerInfo = this.getWorkerInfoByWorker(worker)
-    workerInfo.messageChannel?.port1.close()
-    workerInfo.messageChannel?.port2.close()
+    this.workerNodes[this.getWorkerNodeKey(worker)].closeChannel()
     await worker.terminate()
   }
 

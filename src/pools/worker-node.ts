@@ -75,6 +75,15 @@ implements IWorkerNode<Worker, Data> {
   }
 
   /** @inheritdoc */
+  public closeChannel (): void {
+    if (this.info.messageChannel != null) {
+      this.info.messageChannel?.port1.close()
+      this.info.messageChannel?.port2.close()
+      delete this.info.messageChannel
+    }
+  }
+
+  /** @inheritdoc */
   public getTaskWorkerUsage (name: string): WorkerUsage | undefined {
     if (!this.tasksUsage.has(name)) {
       this.tasksUsage.set(name, this.initTaskWorkerUsage(name))

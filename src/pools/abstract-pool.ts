@@ -516,7 +516,7 @@ export abstract class AbstractPool<
    * @param worker - The worker.
    * @returns The worker node key if found in the pool worker nodes, `-1` otherwise.
    */
-  private getWorkerNodeKey (worker: Worker): number {
+  protected getWorkerNodeKey (worker: Worker): number {
     return this.workerNodes.findIndex(
       workerNode => workerNode.worker === worker
     )
@@ -877,11 +877,7 @@ export abstract class AbstractPool<
     worker.on('online', this.opts.onlineHandler ?? EMPTY_FUNCTION)
     worker.on('exit', this.opts.exitHandler ?? EMPTY_FUNCTION)
     worker.once('exit', () => {
-      const workerInfo = this.getWorkerInfoByWorker(worker)
-      if (workerInfo.messageChannel != null) {
-        workerInfo.messageChannel?.port1.close()
-        workerInfo.messageChannel?.port1.close()
-      }
+      this.workerNodes[this.getWorkerNodeKey(worker)].closeChannel()
       this.removeWorkerNode(worker)
     })
 
@@ -1055,6 +1051,7 @@ export abstract class AbstractPool<
    * Gets the worker information from the given worker node key.
    *
    * @param workerNodeKey - The worker node key.
+   * @returns The worker information.
    */
   private getWorkerInfo (workerNodeKey: number): WorkerInfo {
     return this.workerNodes[workerNodeKey].info
@@ -1064,6 +1061,8 @@ export abstract class AbstractPool<
    * Gets the worker information from the given worker.
    *
    * @param worker - The worker.
+   * @returns The worker information.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the worker is not found.
    */
   protected getWorkerInfoByWorker (worker: Worker): WorkerInfo {
     const workerNodeKey = this.getWorkerNodeKey(worker)
