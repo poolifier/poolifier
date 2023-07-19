@@ -73,7 +73,7 @@ export abstract class AbstractWorker<
   public constructor (
     type: string,
     protected readonly isMain: boolean,
-    protected readonly mainWorker: MainWorker,
+    private readonly mainWorker: MainWorker,
     taskFunctions:
     | WorkerFunction<Data, Response>
     | TaskFunctions<Data, Response>,

@@ -48,8 +48,8 @@ export class ClusterWorker<
 
   /** @inheritDoc */
   protected handleReadyMessage (message: MessageValue<Data>): void {
-    if (message.workerId === this.id && message.ready != null) {
-      !this.isMain && this.sendToMainWorker({ ready: true, workerId: this.id })
+    if (!this.isMain && message.workerId === this.id && message.ready != null) {
+      this.sendToMainWorker({ ready: true, workerId: this.id })
     }
   }
 

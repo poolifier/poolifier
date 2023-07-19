@@ -55,15 +55,14 @@ export class ThreadWorker<
   /** @inheritDoc */
   protected handleReadyMessage (message: MessageValue<Data>): void {
     if (
+      !this.isMain &&
       message.workerId === this.id &&
       message.ready != null &&
       message.port != null
     ) {
-      if (!this.isMain) {
-        this.port = message.port
-        this.port.on('message', this.messageListener.bind(this))
-        this.sendToMainWorker({ ready: true, workerId: this.id })
-      }
+      this.port = message.port
+      this.port.on('message', this.messageListener.bind(this))
+      this.sendToMainWorker({ ready: true, workerId: this.id })
     }
   }
 
