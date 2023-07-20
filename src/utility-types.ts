@@ -1,7 +1,6 @@
 import type { EventLoopUtilization } from 'node:perf_hooks'
 import type { MessagePort } from 'node:worker_threads'
 import type { KillBehavior } from './worker/worker-options'
-import type { IWorker } from './pools/worker'
 
 /**
  * Task error.
@@ -128,14 +127,10 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
 /**
  * An object holding the execution response promise resolve/reject callbacks.
  *
- * @typeParam Worker - Type of worker.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  * @internal
  */
-export interface PromiseResponseWrapper<
-  Worker extends IWorker,
-  Response = unknown
-> {
+export interface PromiseResponseWrapper<Response = unknown> {
   /**
    * Resolve callback to fulfill the promise.
    */
@@ -145,7 +140,7 @@ export interface PromiseResponseWrapper<
    */
   readonly reject: (reason?: unknown) => void
   /**
-   * The worker handling the execution.
+   * The worker node key handling the execution.
    */
-  readonly worker: Worker
+  readonly workerNodeKey: number
 }

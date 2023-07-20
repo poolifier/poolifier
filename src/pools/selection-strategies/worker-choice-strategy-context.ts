@@ -179,7 +179,7 @@ export class WorkerChoiceStrategyContext<
   /**
    * Removes the worker node key from the worker choice strategy in the context.
    *
-   * @param workerNodeKey - The key of the worker node.
+   * @param workerNodeKey - The worker node key.
    * @returns `true` if the removal is successful, `false` otherwise.
    */
   public remove (workerNodeKey: number): boolean {

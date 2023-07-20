@@ -71,10 +71,8 @@ export abstract class AbstractPool<
    *
    * When we receive a message from the worker, we get a map entry with the promise resolve/reject bound to the message id.
    */
-  protected promiseResponseMap: Map<
-  string,
-  PromiseResponseWrapper<Worker, Response>
-  > = new Map<string, PromiseResponseWrapper<Worker, Response>>()
+  protected promiseResponseMap: Map<string, PromiseResponseWrapper<Response>> =
+    new Map<string, PromiseResponseWrapper<Response>>()
 
   /**
    * Worker choice strategy context referencing a worker choice algorithm implementation.
@@ -617,7 +615,7 @@ export abstract class AbstractPool<
     return await new Promise<Response>((resolve, reject) => {
       const timestamp = performance.now()
       const workerNodeKey = this.chooseWorkerNode()
-      const submittedTask: Task<Data> = {
+      const task: Task<Data> = {
         name: name ?? DEFAULT_TASK_NAME,
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         data: data ?? ({} as Data),
@@ -625,10 +623,10 @@ export abstract class AbstractPool<
         workerId: this.getWorkerInfo(workerNodeKey).id as number,
         id: randomUUID()
       }
-      this.promiseResponseMap.set(submittedTask.id as string, {
+      this.promiseResponseMap.set(task.id as string, {
         resolve,
         reject,
-        worker: this.workerNodes[workerNodeKey].worker
+        workerNodeKey
       })
       if (
         this.opts.enableTasksQueue === true &&
@@ -637,9 +635,9 @@ export abstract class AbstractPool<
             ((this.opts.tasksQueueOptions as TasksQueueOptions)
               .concurrency as number))
       ) {
-        this.enqueueTask(workerNodeKey, submittedTask)
+        this.enqueueTask(workerNodeKey, task)
       } else {
-        this.executeTask(workerNodeKey, submittedTask)
+        this.executeTask(workerNodeKey, task)
       }
       this.checkAndEmitEvents()
     })
@@ -709,14 +707,13 @@ export abstract class AbstractPool<
    * Hook executed after the worker task execution.
    * Can be overridden.
    *
-   * @param worker - The worker.
+   * @param workerNodeKey - The worker node key.
    * @param message - The received message.
    */
   protected afterTaskExecutionHook (
-    worker: Worker,
+    workerNodeKey: number,
     message: MessageValue<Response>
   ): void {
-    const workerNodeKey = this.getWorkerNodeKey(worker)
     const workerUsage = this.workerNodes[workerNodeKey].usage
     this.updateTaskStatisticsWorkerUsage(workerUsage, message)
     this.updateRunTimeWorkerUsage(workerUsage, message)
@@ -1018,9 +1015,9 @@ export abstract class AbstractPool<
       } else {
         promiseResponse.resolve(message.data as Response)
       }
-      this.afterTaskExecutionHook(promiseResponse.worker, message)
+      const workerNodeKey = promiseResponse.workerNodeKey
+      this.afterTaskExecutionHook(workerNodeKey, message)
       this.promiseResponseMap.delete(message.id as string)
-      const workerNodeKey = this.getWorkerNodeKey(promiseResponse.worker)
       if (
         this.opts.enableTasksQueue === true &&
         this.tasksQueueSize(workerNodeKey) > 0
