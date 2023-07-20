@@ -64,7 +64,7 @@ export abstract class AbstractPool<
   public readonly emitter?: PoolEmitter
 
   /**
-   * The execution response promise map.
+   * The task execution response promise map.
    *
    * - `key`: The message id of each submitted task.
    * - `value`: An object that contains the worker, the execution response promise resolve and reject callbacks.
@@ -614,37 +614,35 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public async execute (data?: Data, name?: string): Promise<Response> {
-    const timestamp = performance.now()
-    const workerNodeKey = this.chooseWorkerNode()
-    const submittedTask: Task<Data> = {
-      name: name ?? DEFAULT_TASK_NAME,
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      data: data ?? ({} as Data),
-      timestamp,
-      workerId: this.getWorkerInfo(workerNodeKey).id as number,
-      id: randomUUID()
-    }
-    const res = new Promise<Response>((resolve, reject) => {
+    return await new Promise<Response>((resolve, reject) => {
+      const timestamp = performance.now()
+      const workerNodeKey = this.chooseWorkerNode()
+      const submittedTask: Task<Data> = {
+        name: name ?? DEFAULT_TASK_NAME,
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        data: data ?? ({} as Data),
+        timestamp,
+        workerId: this.getWorkerInfo(workerNodeKey).id as number,
+        id: randomUUID()
+      }
       this.promiseResponseMap.set(submittedTask.id as string, {
         resolve,
         reject,
         worker: this.workerNodes[workerNodeKey].worker
       })
+      if (
+        this.opts.enableTasksQueue === true &&
+        (this.busy ||
+          this.workerNodes[workerNodeKey].usage.tasks.executing >=
+            ((this.opts.tasksQueueOptions as TasksQueueOptions)
+              .concurrency as number))
+      ) {
+        this.enqueueTask(workerNodeKey, submittedTask)
+      } else {
+        this.executeTask(workerNodeKey, submittedTask)
+      }
+      this.checkAndEmitEvents()
     })
-    if (
-      this.opts.enableTasksQueue === true &&
-      (this.busy ||
-        this.workerNodes[workerNodeKey].usage.tasks.executing >=
-          ((this.opts.tasksQueueOptions as TasksQueueOptions)
-            .concurrency as number))
-    ) {
-      this.enqueueTask(workerNodeKey, submittedTask)
-    } else {
-      this.executeTask(workerNodeKey, submittedTask)
-    }
-    this.checkAndEmitEvents()
-    // eslint-disable-next-line @typescript-eslint/return-await
-    return res
   }
 
   /** @inheritDoc */
