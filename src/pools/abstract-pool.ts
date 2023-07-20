@@ -862,6 +862,7 @@ export abstract class AbstractPool<
       const workerNodeKey = this.getWorkerNodeKey(worker)
       const workerInfo = this.getWorkerInfo(workerNodeKey)
       workerInfo.ready = false
+      this.workerNodes[workerNodeKey].closeChannel()
       this.emitter?.emit(PoolEvents.error, error)
       if (this.opts.restartWorkerOnError === true && !this.starting) {
         if (workerInfo.dynamic) {
@@ -877,7 +878,6 @@ export abstract class AbstractPool<
     worker.on('online', this.opts.onlineHandler ?? EMPTY_FUNCTION)
     worker.on('exit', this.opts.exitHandler ?? EMPTY_FUNCTION)
     worker.once('exit', () => {
-      this.workerNodes[this.getWorkerNodeKey(worker)].closeChannel()
       this.removeWorkerNode(worker)
     })
 
