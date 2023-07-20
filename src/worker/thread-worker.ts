@@ -67,6 +67,13 @@ export class ThreadWorker<
   }
 
   /** @inheritDoc */
+  protected handleKillMessage (message: MessageValue<Data, unknown>): void {
+    super.handleKillMessage(message)
+    this.port?.unref()
+    this.port?.close()
+  }
+
+  /** @inheritDoc */
   protected get id (): number {
     return threadId
   }

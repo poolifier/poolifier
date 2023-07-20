@@ -311,10 +311,19 @@ export abstract class AbstractWorker<
         this.run(message)
       } else if (message.kill === true) {
         // Kill message received
-        !this.isMain && this.stopCheckActive()
-        this.emitDestroy()
+        this.handleKillMessage(message)
       }
     }
+  }
+
+  /**
+   * Handles a kill message sent by the main worker.
+   *
+   * @param message - The kill message.
+   */
+  protected handleKillMessage (message: MessageValue<Data>): void {
+    !this.isMain && this.stopCheckActive()
+    this.emitDestroy()
   }
 
   /**
@@ -325,7 +334,8 @@ export abstract class AbstractWorker<
     this.activeInterval = setInterval(
       this.checkActive.bind(this),
       (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) / 2
-    ).unref()
+    )
+    this.activeInterval.unref()
   }
 
   /**

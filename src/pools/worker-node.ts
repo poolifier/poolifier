@@ -77,6 +77,8 @@ implements IWorkerNode<Worker, Data> {
   /** @inheritdoc */
   public closeChannel (): void {
     if (this.info.messageChannel != null) {
+      this.info.messageChannel?.port1.unref()
+      this.info.messageChannel?.port2.unref()
       this.info.messageChannel?.port1.close()
       this.info.messageChannel?.port2.close()
       delete this.info.messageChannel
