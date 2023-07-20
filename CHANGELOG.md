@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Dedicated internal communication channel for worker_threads pools.
+
 ## [2.6.18] - 2023-07-19
 
 ### Changed
