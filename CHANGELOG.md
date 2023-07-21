@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.20] - 2023-07-21
+
 ### Fixed
 
 - Fix queued tasks redistribution on error task execution starvation.
