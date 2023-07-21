@@ -173,7 +173,11 @@ export abstract class AbstractPool<
 
   protected checkDynamicPoolSize (min: number, max: number): void {
     if (this.type === PoolTypes.dynamic) {
-      if (min > max) {
+      if (!Number.isSafeInteger(max)) {
+        throw new TypeError(
+          'Cannot instantiate a dynamic pool with a non safe integer maximum pool size'
+        )
+      } else if (min > max) {
         throw new RangeError(
           'Cannot instantiate a dynamic pool with a maximum pool size inferior to the minimum pool size'
         )

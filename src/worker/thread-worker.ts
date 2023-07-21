@@ -28,7 +28,7 @@ export class ThreadWorker<
   Response = unknown
 > extends AbstractWorker<MessagePort, Data, Response> {
   /**
-   * Message port used to communicate with the main thread.
+   * Message port used to communicate with the main worker.
    */
   private port!: MessagePort
   /**

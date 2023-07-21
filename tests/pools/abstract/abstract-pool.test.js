@@ -88,6 +88,30 @@ describe('Abstract pool test suite', () => {
   it('Verify that dynamic pool sizing is checked', () => {
     expect(
       () =>
+        new DynamicThreadPool(
+          0.5,
+          1,
+          './tests/worker-files/thread/testWorker.js'
+        )
+    ).toThrowError(
+      new TypeError(
+        'Cannot instantiate a pool with a non safe integer number of workers'
+      )
+    )
+    expect(
+      () =>
+        new DynamicClusterPool(
+          0,
+          0.5,
+          './tests/worker-files/thread/testWorker.js'
+        )
+    ).toThrowError(
+      new TypeError(
+        'Cannot instantiate a dynamic pool with a non safe integer maximum pool size'
+      )
+    )
+    expect(
+      () =>
         new DynamicThreadPool(2, 1, './tests/worker-files/thread/testWorker.js')
     ).toThrowError(
       new RangeError(
@@ -96,7 +120,11 @@ describe('Abstract pool test suite', () => {
     )
     expect(
       () =>
-        new DynamicThreadPool(1, 1, './tests/worker-files/thread/testWorker.js')
+        new DynamicClusterPool(
+          1,
+          1,
+          './tests/worker-files/thread/testWorker.js'
+        )
     ).toThrowError(
       new RangeError(
         'Cannot instantiate a dynamic pool with a minimum pool size equal to the maximum pool size. Use a fixed pool instead'
