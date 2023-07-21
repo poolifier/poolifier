@@ -617,9 +617,10 @@ export abstract class AbstractPool<
    */
   protected internalBusy (): boolean {
     return (
-      this.workerNodes.findIndex(workerNode => {
-        return workerNode.usage.tasks.executing === 0
-      }) === -1
+      this.workerNodes.findIndex(
+        workerNode =>
+          workerNode.info.ready && workerNode.usage.tasks.executing === 0
+      ) === -1
     )
   }
 
