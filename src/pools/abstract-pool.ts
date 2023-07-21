@@ -648,8 +648,7 @@ export abstract class AbstractPool<
         this.opts.enableTasksQueue === true &&
         (this.busy ||
           this.workerNodes[workerNodeKey].usage.tasks.executing >=
-            ((this.opts.tasksQueueOptions as TasksQueueOptions)
-              .concurrency as number))
+            (this.opts.tasksQueueOptions?.concurrency as number))
       ) {
         this.enqueueTask(workerNodeKey, task)
       } else {
@@ -936,14 +935,14 @@ export abstract class AbstractPool<
       }
     })
     const workerInfo = this.getWorkerInfo(workerNodeKey)
-    workerInfo.dynamic = true
-    if (this.workerChoiceStrategyContext.getStrategyPolicy().useDynamicWorker) {
-      workerInfo.ready = true
-    }
     this.sendToWorker(workerNodeKey, {
       checkActive: true,
       workerId: workerInfo.id as number
     })
+    workerInfo.dynamic = true
+    if (this.workerChoiceStrategyContext.getStrategyPolicy().useDynamicWorker) {
+      workerInfo.ready = true
+    }
     return workerNodeKey
   }
 
@@ -1085,7 +1084,9 @@ export abstract class AbstractPool<
       this.promiseResponseMap.delete(message.id as string)
       if (
         this.opts.enableTasksQueue === true &&
-        this.tasksQueueSize(workerNodeKey) > 0
+        this.tasksQueueSize(workerNodeKey) > 0 &&
+        this.workerNodes[workerNodeKey].usage.tasks.executing <
+          (this.opts.tasksQueueOptions?.concurrency as number)
       ) {
         this.executeTask(
           workerNodeKey,
