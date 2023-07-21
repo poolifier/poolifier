@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Drastically reduce lookup by worker in the worker nodes.
+- Drastically reduce lookups by worker in the worker nodes.
 
 ## [2.6.19] - 2023-07-20
 

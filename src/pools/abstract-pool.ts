@@ -10,6 +10,7 @@ import {
   DEFAULT_TASK_NAME,
   DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
   EMPTY_FUNCTION,
+  isAsyncFunction,
   isKillBehavior,
   isPlainObject,
   median,
@@ -913,7 +914,16 @@ export abstract class AbstractPool<
               this.tasksQueueSize(localWorkerNodeKey) === 0)))
       ) {
         // Kill message received from the worker: no new tasks are submitted to that worker for a while ( > maxInactiveTime)
-        void (this.destroyWorkerNode(localWorkerNodeKey) as Promise<void>)
+        const destroyWorkerNodeBounded = this.destroyWorkerNode.bind(this)
+        if (isAsyncFunction(destroyWorkerNodeBounded)) {
+          (
+            destroyWorkerNodeBounded as (workerNodeKey: number) => Promise<void>
+          )(localWorkerNodeKey).catch(EMPTY_FUNCTION)
+        } else {
+          (destroyWorkerNodeBounded as (workerNodeKey: number) => void)(
+            localWorkerNodeKey
+          )
+        }
       }
     })
     const workerInfo = this.getWorkerInfo(workerNodeKey)
