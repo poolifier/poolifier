@@ -173,7 +173,11 @@ export abstract class AbstractPool<
 
   protected checkDynamicPoolSize (min: number, max: number): void {
     if (this.type === PoolTypes.dynamic) {
-      if (!Number.isSafeInteger(max)) {
+      if (max == null) {
+        throw new Error(
+          'Cannot instantiate a dynamic pool without specifying the maximum pool size'
+        )
+      } else if (!Number.isSafeInteger(max)) {
         throw new TypeError(
           'Cannot instantiate a dynamic pool with a non safe integer maximum pool size'
         )
@@ -1008,7 +1012,10 @@ export abstract class AbstractPool<
           workerInfo.ready &&
           workerNode.usage.tasks.queued === 0
         ) {
-          if (workerNode.usage.tasks.executing === 0) {
+          if (
+            this.workerNodes[workerNodeId].usage.tasks.executing <
+            (this.opts.tasksQueueOptions?.concurrency as number)
+          ) {
             executeTask = true
           }
           targetWorkerNodeKey = workerNodeId

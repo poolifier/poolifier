@@ -88,6 +88,18 @@ describe('Abstract pool test suite', () => {
   it('Verify that dynamic pool sizing is checked', () => {
     expect(
       () =>
+        new DynamicClusterPool(
+          1,
+          undefined,
+          './tests/worker-files/cluster/testWorker.js'
+        )
+    ).toThrowError(
+      new TypeError(
+        'Cannot instantiate a dynamic pool without specifying the maximum pool size'
+      )
+    )
+    expect(
+      () =>
         new DynamicThreadPool(
           0.5,
           1,
@@ -103,7 +115,7 @@ describe('Abstract pool test suite', () => {
         new DynamicClusterPool(
           0,
           0.5,
-          './tests/worker-files/thread/testWorker.js'
+          './tests/worker-files/cluster/testWorker.js'
         )
     ).toThrowError(
       new TypeError(
@@ -123,7 +135,7 @@ describe('Abstract pool test suite', () => {
         new DynamicClusterPool(
           1,
           1,
-          './tests/worker-files/thread/testWorker.js'
+          './tests/worker-files/cluster/testWorker.js'
         )
     ).toThrowError(
       new RangeError(
