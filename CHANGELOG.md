@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix queued tasks redistribution on error task execution starvation.
+
 ### Changed
 
 - Drastically reduce lookups by worker in the worker nodes.

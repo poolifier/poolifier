@@ -115,6 +115,7 @@ export abstract class AbstractPool<
     this.chooseWorkerNode = this.chooseWorkerNode.bind(this)
     this.executeTask = this.executeTask.bind(this)
     this.enqueueTask = this.enqueueTask.bind(this)
+    this.dequeueTask = this.dequeueTask.bind(this)
     this.checkAndEmitEvents = this.checkAndEmitEvents.bind(this)
 
     if (this.opts.enableEvents === true) {
@@ -995,6 +996,7 @@ export abstract class AbstractPool<
     while (this.tasksQueueSize(workerNodeKey) > 0) {
       let targetWorkerNodeKey: number = workerNodeKey
       let minQueuedTasks = Infinity
+      let executeTask = false
       for (const [workerNodeId, workerNode] of this.workerNodes.entries()) {
         const workerInfo = this.getWorkerInfo(workerNodeId)
         if (
@@ -1002,6 +1004,9 @@ export abstract class AbstractPool<
           workerInfo.ready &&
           workerNode.usage.tasks.queued === 0
         ) {
+          if (workerNode.usage.tasks.executing === 0) {
+            executeTask = true
+          }
           targetWorkerNodeKey = workerNodeId
           break
         }
@@ -1014,10 +1019,17 @@ export abstract class AbstractPool<
           targetWorkerNodeKey = workerNodeId
         }
       }
-      this.enqueueTask(
-        targetWorkerNodeKey,
-        this.dequeueTask(workerNodeKey) as Task<Data>
-      )
+      if (executeTask) {
+        this.executeTask(
+          targetWorkerNodeKey,
+          this.dequeueTask(workerNodeKey) as Task<Data>
+        )
+      } else {
+        this.enqueueTask(
+          targetWorkerNodeKey,
+          this.dequeueTask(workerNodeKey) as Task<Data>
+        )
+      }
     }
   }
 
