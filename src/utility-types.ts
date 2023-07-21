@@ -125,7 +125,7 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
 }
 
 /**
- * An object holding the execution response promise resolve/reject callbacks.
+ * An object holding the task execution response promise resolve/reject callbacks.
  *
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  * @internal
@@ -140,7 +140,7 @@ export interface PromiseResponseWrapper<Response = unknown> {
    */
   readonly reject: (reason?: unknown) => void
   /**
-   * The worker node key handling the execution.
+   * The worker node key executing the task.
    */
   readonly workerNodeKey: number
 }
