@@ -5,6 +5,7 @@ const { waitPoolEvents, waitWorkerEvents } = require('../../test-utils')
 
 describe('Fixed cluster pool test suite', () => {
   const numberOfWorkers = 6
+  const tasksConcurrency = 2
   const pool = new FixedClusterPool(
     numberOfWorkers,
     './tests/worker-files/cluster/testWorker.js',
@@ -18,7 +19,7 @@ describe('Fixed cluster pool test suite', () => {
     {
       enableTasksQueue: true,
       tasksQueueOptions: {
-        concurrency: 2
+        concurrency: tasksConcurrency
       },
       errorHandler: e => console.error(e)
     }
@@ -104,7 +105,7 @@ describe('Fixed cluster pool test suite', () => {
 
   it('Verify that tasks queuing is working', async () => {
     const promises = new Set()
-    const maxMultiplier = 2
+    const maxMultiplier = 3 // Must be greater than tasksConcurrency
     for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
       promises.add(queuePool.execute())
     }
@@ -114,23 +115,32 @@ describe('Fixed cluster pool test suite', () => {
         queuePool.opts.tasksQueueOptions.concurrency
       )
       expect(workerNode.usage.tasks.executed).toBe(0)
-      expect(workerNode.usage.tasks.queued).toBeGreaterThan(0)
-      expect(workerNode.usage.tasks.maxQueued).toBeGreaterThan(0)
+      expect(workerNode.usage.tasks.queued).toBe(
+        maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency
+      )
+      expect(workerNode.usage.tasks.maxQueued).toBe(
+        maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency
+      )
     }
-    expect(queuePool.info.executingTasks).toBe(numberOfWorkers)
+    expect(queuePool.info.executingTasks).toBe(
+      numberOfWorkers * queuePool.opts.tasksQueueOptions.concurrency
+    )
     expect(queuePool.info.queuedTasks).toBe(
-      numberOfWorkers * maxMultiplier - numberOfWorkers
+      numberOfWorkers *
+        (maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency)
     )
     expect(queuePool.info.maxQueuedTasks).toBe(
-      numberOfWorkers * maxMultiplier - numberOfWorkers
+      numberOfWorkers *
+        (maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency)
     )
     await Promise.all(promises)
     for (const workerNode of queuePool.workerNodes) {
       expect(workerNode.usage.tasks.executing).toBe(0)
-      expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
-      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(maxMultiplier)
+      expect(workerNode.usage.tasks.executed).toBe(maxMultiplier)
       expect(workerNode.usage.tasks.queued).toBe(0)
-      expect(workerNode.usage.tasks.maxQueued).toBe(1)
+      expect(workerNode.usage.tasks.maxQueued).toBe(
+        maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency
+      )
     }
   })
 

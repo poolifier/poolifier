@@ -642,14 +642,14 @@ export abstract class AbstractPool<
         workerNodeKey
       })
       if (
-        this.opts.enableTasksQueue === true &&
-        (this.busy ||
-          this.workerNodes[workerNodeKey].usage.tasks.executing >=
+        this.opts.enableTasksQueue === false ||
+        (this.opts.enableTasksQueue === true &&
+          this.workerNodes[workerNodeKey].usage.tasks.executing <
             (this.opts.tasksQueueOptions?.concurrency as number))
       ) {
-        this.enqueueTask(workerNodeKey, task)
-      } else {
         this.executeTask(workerNodeKey, task)
+      } else {
+        this.enqueueTask(workerNodeKey, task)
       }
       this.checkAndEmitEvents()
     })

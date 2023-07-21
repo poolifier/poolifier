@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix queued tasks redistribution on error task execution starvation.
+- Ensure task queueing per worker condition is untangled from the pool busyness semantic.
 
 ### Changed
 
