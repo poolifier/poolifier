@@ -57,11 +57,19 @@ export class FixedThreadPool<
 
   /** @inheritDoc */
   protected async destroyWorkerNode (workerNodeKey: number): Promise<void> {
+    this.flushTasksQueue(workerNodeKey)
+    // FIXME: wait for tasks to be finished
     const workerNode = this.workerNodes[workerNodeKey]
     const worker = workerNode.worker
+    const workerExitPromise = new Promise<void>(resolve => {
+      worker.on('exit', () => {
+        resolve()
+      })
+    })
     this.sendToWorker(workerNodeKey, { kill: true, workerId: worker.threadId })
     workerNode.closeChannel()
     await worker.terminate()
+    await workerExitPromise
   }
 
   /** @inheritDoc */
