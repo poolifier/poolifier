@@ -334,16 +334,20 @@ export abstract class AbstractPool<
           accumulator + workerNode.usage.tasks.executing,
         0
       ),
-      queuedTasks: this.workerNodes.reduce(
-        (accumulator, workerNode) =>
-          accumulator + workerNode.usage.tasks.queued,
-        0
-      ),
-      maxQueuedTasks: this.workerNodes.reduce(
-        (accumulator, workerNode) =>
-          accumulator + (workerNode.usage.tasks?.maxQueued ?? 0),
-        0
-      ),
+      ...(this.opts.enableTasksQueue === true && {
+        queuedTasks: this.workerNodes.reduce(
+          (accumulator, workerNode) =>
+            accumulator + workerNode.usage.tasks.queued,
+          0
+        )
+      }),
+      ...(this.opts.enableTasksQueue === true && {
+        maxQueuedTasks: this.workerNodes.reduce(
+          (accumulator, workerNode) =>
+            accumulator + (workerNode.usage.tasks?.maxQueued ?? 0),
+          0
+        )
+      }),
       failedTasks: this.workerNodes.reduce(
         (accumulator, workerNode) =>
           accumulator + workerNode.usage.tasks.failed,

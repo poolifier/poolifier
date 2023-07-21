@@ -74,8 +74,8 @@ export interface PoolInfo {
   readonly busyWorkerNodes: number
   readonly executedTasks: number
   readonly executingTasks: number
-  readonly queuedTasks: number
-  readonly maxQueuedTasks: number
+  readonly queuedTasks?: number
+  readonly maxQueuedTasks?: number
   readonly failedTasks: number
   readonly runTime?: {
     readonly minimum: number
