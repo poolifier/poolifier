@@ -502,7 +502,7 @@ export abstract class AbstractPool<
   private checkMessageWorkerId (message: MessageValue<Response>): void {
     if (
       message.workerId != null &&
-      this.getWorkerNodeKeyByWorkerId(message.workerId) == null
+      this.getWorkerNodeKeyByWorkerId(message.workerId) === -1
     ) {
       throw new Error(
         `Worker message received from unknown worker '${message.workerId}'`
@@ -516,7 +516,7 @@ export abstract class AbstractPool<
    * @param worker - The worker.
    * @returns The worker node key if found in the pool worker nodes, `-1` otherwise.
    */
-  private getWorkerNodeKey (worker: Worker): number {
+  private getWorkerNodeKeyByWorker (worker: Worker): number {
     return this.workerNodes.findIndex(
       workerNode => workerNode.worker === worker
     )
@@ -526,14 +526,12 @@ export abstract class AbstractPool<
    * Gets the worker node key given its worker id.
    *
    * @param workerId - The worker id.
-   * @returns The worker node key if the worker id is found in the pool worker nodes, `undefined` otherwise.
+   * @returns The worker node key if the worker id is found in the pool worker nodes, `-1` otherwise.
    */
-  private getWorkerNodeKeyByWorkerId (workerId: number): number | undefined {
-    for (const [workerNodeKey, workerNode] of this.workerNodes.entries()) {
-      if (workerNode.info.id === workerId) {
-        return workerNodeKey
-      }
-    }
+  private getWorkerNodeKeyByWorkerId (workerId: number): number {
+    return this.workerNodes.findIndex(
+      workerNode => workerNode.info.id === workerId
+    )
   }
 
   /** @inheritDoc */
@@ -871,7 +869,7 @@ export abstract class AbstractPool<
     worker.on('message', this.opts.messageHandler ?? EMPTY_FUNCTION)
     worker.on('error', this.opts.errorHandler ?? EMPTY_FUNCTION)
     worker.on('error', error => {
-      const workerNodeKey = this.getWorkerNodeKey(worker)
+      const workerNodeKey = this.getWorkerNodeKeyByWorker(worker)
       const workerInfo = this.getWorkerInfo(workerNodeKey)
       workerInfo.ready = false
       this.workerNodes[workerNodeKey].closeChannel()
@@ -910,7 +908,7 @@ export abstract class AbstractPool<
     this.registerWorkerMessageListener(workerNodeKey, message => {
       const localWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(
         message.workerId
-      ) as number
+      )
       const workerUsage = this.workerNodes[localWorkerNodeKey].usage
       if (
         isKillBehavior(KillBehaviors.HARD, message.kill) ||
@@ -1063,7 +1061,7 @@ export abstract class AbstractPool<
 
   private handleWorkerReadyResponse (message: MessageValue<Response>): void {
     this.getWorkerInfo(
-      this.getWorkerNodeKeyByWorkerId(message.workerId) as number
+      this.getWorkerNodeKeyByWorkerId(message.workerId)
     ).ready = message.ready as boolean
     if (this.emitter != null && this.ready) {
       this.emitter.emit(PoolEvents.ready, this.info)
@@ -1132,7 +1130,7 @@ export abstract class AbstractPool<
       workerNode.info.ready = true
     }
     this.workerNodes.push(workerNode)
-    const workerNodeKey = this.getWorkerNodeKey(worker)
+    const workerNodeKey = this.getWorkerNodeKeyByWorker(worker)
     if (workerNodeKey === -1) {
       throw new Error('Worker node not found')
     }
@@ -1145,7 +1143,7 @@ export abstract class AbstractPool<
    * @param worker - The worker.
    */
   private removeWorkerNode (worker: Worker): void {
-    const workerNodeKey = this.getWorkerNodeKey(worker)
+    const workerNodeKey = this.getWorkerNodeKeyByWorker(worker)
     if (workerNodeKey !== -1) {
       this.workerNodes.splice(workerNodeKey, 1)
       this.workerChoiceStrategyContext.remove(workerNodeKey)
