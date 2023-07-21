@@ -15,8 +15,8 @@ dependencies:
     specifier: 4.0.0
     version: 4.0.0
   poolifier:
-    specifier: 2.6.17
-    version: 2.6.17
+    specifier: 2.6.19
+    version: 2.6.19
   tinypool:
     specifier: 0.7.0
     version: 0.7.0
@@ -122,8 +122,8 @@ packages:
       nice-napi: 1.0.2
     dev: false
 
-  /poolifier@2.6.17:
-    resolution: {integrity: sha512-inFx7imhKy34H9irFyJ3eOmaoueM8/nkQDf3jeJ99jyKVqd7BZdAufABCQtvHok9zievuaEOUx5WqPsk38Utcg==}
+  /poolifier@2.6.19:
+    resolution: {integrity: sha512-Ql4c30svl3ZqpgFnNBhnEDCu7nEUj/vbu6k8NQIxvVae9yJuFhyEMRsFGV90sEgy69rn3BsYP7xg5arIzxg5yg==}
     engines: {node: '>=16.14.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
