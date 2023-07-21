@@ -56,23 +56,29 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
-  protected async destroyWorker (worker: Worker): Promise<void> {
-    this.sendToWorker(worker, { kill: true, workerId: worker.threadId })
-    this.workerNodes[this.getWorkerNodeKey(worker)].closeChannel()
+  protected async destroyWorkerNode (workerNodeKey: number): Promise<void> {
+    const workerNode = this.workerNodes[workerNodeKey]
+    const worker = workerNode.worker
+    this.sendToWorker(workerNodeKey, { kill: true, workerId: worker.threadId })
+    workerNode.closeChannel()
     await worker.terminate()
   }
 
   /** @inheritDoc */
-  protected sendToWorker (worker: Worker, message: MessageValue<Data>): void {
+  protected sendToWorker (
+    workerNodeKey: number,
+    message: MessageValue<Data>
+  ): void {
     (
-      this.getWorkerInfoByWorker(worker).messageChannel as MessageChannel
+      this.getWorkerInfo(workerNodeKey).messageChannel as MessageChannel
     ).port1.postMessage(message)
   }
 
   /** @inheritDoc */
-  protected sendStartupMessageToWorker (worker: Worker): void {
+  protected sendStartupMessageToWorker (workerNodeKey: number): void {
+    const worker = this.workerNodes[workerNodeKey].worker
     const port2: MessagePort = (
-      this.getWorkerInfoByWorker(worker).messageChannel as MessageChannel
+      this.getWorkerInfo(workerNodeKey).messageChannel as MessageChannel
     ).port2
     worker.postMessage(
       {
@@ -86,11 +92,11 @@ export class FixedThreadPool<
 
   /** @inheritDoc */
   protected registerWorkerMessageListener<Message extends Data | Response>(
-    worker: Worker,
+    workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
   ): void {
     (
-      this.getWorkerInfoByWorker(worker).messageChannel as MessageChannel
+      this.getWorkerInfo(workerNodeKey).messageChannel as MessageChannel
     ).port1.on('message', listener)
   }
 

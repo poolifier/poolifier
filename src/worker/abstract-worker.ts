@@ -373,7 +373,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Sends a message to the main worker.
+   * Sends a message to main worker.
    *
    * @param message - The response message.
    */

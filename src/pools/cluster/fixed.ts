@@ -60,8 +60,9 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
-  protected destroyWorker (worker: Worker): void {
-    this.sendToWorker(worker, { kill: true, workerId: worker.id })
+  protected destroyWorkerNode (workerNodeKey: number): void {
+    const worker = this.workerNodes[workerNodeKey].worker
+    this.sendToWorker(workerNodeKey, { kill: true, workerId: worker.id })
     worker.on('disconnect', () => {
       worker.kill()
     })
@@ -69,24 +70,27 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
-  protected sendToWorker (worker: Worker, message: MessageValue<Data>): void {
-    worker.send(message)
+  protected sendToWorker (
+    workerNodeKey: number,
+    message: MessageValue<Data>
+  ): void {
+    this.workerNodes[workerNodeKey].worker.send(message)
   }
 
   /** @inheritDoc */
-  protected sendStartupMessageToWorker (worker: Worker): void {
-    this.sendToWorker(worker, {
+  protected sendStartupMessageToWorker (workerNodeKey: number): void {
+    this.sendToWorker(workerNodeKey, {
       ready: false,
-      workerId: worker.id
+      workerId: this.workerNodes[workerNodeKey].worker.id
     })
   }
 
   /** @inheritDoc */
   protected registerWorkerMessageListener<Message extends Data | Response>(
-    worker: Worker,
+    workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
   ): void {
-    worker.on('message', listener)
+    this.workerNodes[workerNodeKey].worker.on('message', listener)
   }
 
   /** @inheritDoc */

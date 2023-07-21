@@ -171,7 +171,7 @@ export class WorkerChoiceStrategyContext<
       ) as IWorkerChoiceStrategy
     ).choose()
     if (workerNodeKey == null) {
-      throw new Error('Worker node key chosen is null or undefined')
+      throw new TypeError('Worker node key chosen is null or undefined')
     }
     return workerNodeKey
   }

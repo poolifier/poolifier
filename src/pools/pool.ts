@@ -64,7 +64,7 @@ export interface PoolInfo {
   readonly strategy: WorkerChoiceStrategy
   readonly minSize: number
   readonly maxSize: number
-  /** Pool utilization ratio. */
+  /** Pool utilization. */
   readonly utilization?: number
   /** Pool total worker nodes. */
   readonly workerNodes: number
@@ -198,7 +198,7 @@ export interface IPool<
    */
   readonly execute: (data?: Data, name?: string) => Promise<Response>
   /**
-   * Terminates every current worker in this pool.
+   * Terminates all workers in this pool.
    */
   readonly destroy: () => Promise<void>
   /**

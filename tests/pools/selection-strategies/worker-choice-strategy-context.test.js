@@ -115,14 +115,14 @@ describe('Worker choice strategy context test suite', () => {
       WorkerChoiceStrategyUndefinedStub
     )
     expect(() => workerChoiceStrategyContext.execute()).toThrowError(
-      new Error('Worker node key chosen is null or undefined')
+      new TypeError('Worker node key chosen is null or undefined')
     )
     workerChoiceStrategyContext.workerChoiceStrategies.set(
       workerChoiceStrategyContext.workerChoiceStrategy,
       WorkerChoiceStrategyNullStub
     )
     expect(() => workerChoiceStrategyContext.execute()).toThrowError(
-      new Error('Worker node key chosen is null or undefined')
+      new TypeError('Worker node key chosen is null or undefined')
     )
   })
 
