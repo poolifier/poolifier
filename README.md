@@ -138,7 +138,7 @@ pool.emitter.on(PoolEvents.busy, () => console.info('Pool is busy'))
 // the execute method signature is the same for both implementations,
 // so you can easy switch from one to another
 pool
-  .execute({})
+  .execute()
   .then(res => {
     console.info(res)
   })

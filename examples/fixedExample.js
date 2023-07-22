@@ -18,7 +18,7 @@ const start = performance.now()
 const iterations = 1000
 for (let i = 1; i <= iterations; i++) {
   pool
-    .execute({})
+    .execute()
     .then(() => {
       resolved++
       if (resolved === iterations) {
