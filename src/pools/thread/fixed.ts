@@ -61,7 +61,7 @@ export class FixedThreadPool<
     // FIXME: wait for tasks to be finished
     const workerNode = this.workerNodes[workerNodeKey]
     const worker = workerNode.worker
-    const workerExitPromise = new Promise<void>(resolve => {
+    const waitWorkerExit = new Promise<void>(resolve => {
       worker.on('exit', () => {
         resolve()
       })
@@ -69,7 +69,7 @@ export class FixedThreadPool<
     this.sendToWorker(workerNodeKey, { kill: true, workerId: worker.threadId })
     workerNode.closeChannel()
     await worker.terminate()
-    await workerExitPromise
+    await waitWorkerExit
   }
 
   /** @inheritDoc */
