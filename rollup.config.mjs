@@ -9,7 +9,7 @@ const isDevelopmentBuild = process.env.BUILD === 'development'
 const isAnalyzeBuild = process.env.ANALYZE
 const isDocumentationBuild = process.env.DOCUMENTATION
 
-const maxWorkers = cpus().length / 2
+const maxWorkers = Math.floor(cpus().length / 2)
 
 export default {
   input: 'src/index.ts',
