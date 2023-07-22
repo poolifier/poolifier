@@ -478,8 +478,6 @@ describe('Abstract pool test suite', () => {
       busyWorkerNodes: 0,
       executedTasks: 0,
       executingTasks: 0,
-      queuedTasks: 0,
-      maxQueuedTasks: 0,
       failedTasks: 0
     })
     await pool.destroy()
@@ -501,8 +499,6 @@ describe('Abstract pool test suite', () => {
       busyWorkerNodes: 0,
       executedTasks: 0,
       executingTasks: 0,
-      queuedTasks: 0,
-      maxQueuedTasks: 0,
       failedTasks: 0
     })
     await pool.destroy()
@@ -769,8 +765,6 @@ describe('Abstract pool test suite', () => {
       busyWorkerNodes: expect.any(Number),
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
-      queuedTasks: expect.any(Number),
-      maxQueuedTasks: expect.any(Number),
       failedTasks: expect.any(Number)
     })
     await pool.destroy()
@@ -803,8 +797,6 @@ describe('Abstract pool test suite', () => {
       busyWorkerNodes: expect.any(Number),
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
-      queuedTasks: expect.any(Number),
-      maxQueuedTasks: expect.any(Number),
       failedTasks: expect.any(Number)
     })
     await pool.destroy()
@@ -842,8 +834,6 @@ describe('Abstract pool test suite', () => {
       busyWorkerNodes: expect.any(Number),
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
-      queuedTasks: expect.any(Number),
-      maxQueuedTasks: expect.any(Number),
       failedTasks: expect.any(Number)
     })
     await pool.destroy()
