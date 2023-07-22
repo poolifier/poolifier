@@ -175,7 +175,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.onlineHandler).toBeUndefined()
     expect(pool.opts.exitHandler).toBeUndefined()
     await pool.destroy()
-    const testHandler = () => console.log('test handler executed')
+    const testHandler = () => console.info('test handler executed')
     pool = new FixedThreadPool(
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js',

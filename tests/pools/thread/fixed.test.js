@@ -27,7 +27,7 @@ describe('Fixed thread pool test suite', () => {
   const emptyPool = new FixedThreadPool(
     numberOfThreads,
     './tests/worker-files/thread/emptyWorker.js',
-    { exitHandler: () => console.log('empty pool worker exited') }
+    { exitHandler: () => console.info('empty pool worker exited') }
   )
   const echoPool = new FixedThreadPool(
     numberOfThreads,

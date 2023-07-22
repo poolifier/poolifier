@@ -27,7 +27,7 @@ describe('Fixed cluster pool test suite', () => {
   const emptyPool = new FixedClusterPool(
     numberOfWorkers,
     './tests/worker-files/cluster/emptyWorker.js',
-    { exitHandler: () => console.log('empty pool worker exited') }
+    { exitHandler: () => console.info('empty pool worker exited') }
   )
   const echoPool = new FixedClusterPool(
     numberOfWorkers,
