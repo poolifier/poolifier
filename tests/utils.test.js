@@ -14,6 +14,8 @@ const { KillBehaviors } = require('../lib/worker/worker-options')
 describe('Utils test suite', () => {
   it('Verify availableParallelism() behavior', () => {
     expect(typeof availableParallelism() === 'number').toBe(true)
+    expect(availableParallelism()).toBeGreaterThan(0)
+    expect(Number.isSafeInteger(availableParallelism())).toBe(true)
   })
 
   it('Verify median() computation', () => {
