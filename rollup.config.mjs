@@ -1,15 +1,28 @@
-import { cpus } from 'node:os'
+import * as os from 'node:os'
 import terser from '@rollup/plugin-terser'
 import typescript from '@rollup/plugin-typescript'
 import analyze from 'rollup-plugin-analyzer'
 import command from 'rollup-plugin-command'
 import del from 'rollup-plugin-delete'
 
+const availableParallelism = () => {
+  let availableParallelism = 1
+  try {
+    availableParallelism = os.availableParallelism()
+  } catch {
+    const numberOfCpus = os.cpus()
+    if (Array.isArray(numberOfCpus) && numberOfCpus.length > 0) {
+      availableParallelism = numberOfCpus.length
+    }
+  }
+  return availableParallelism
+}
+
 const isDevelopmentBuild = process.env.BUILD === 'development'
 const isAnalyzeBuild = process.env.ANALYZE
 const isDocumentationBuild = process.env.DOCUMENTATION
 
-const maxWorkers = Math.floor(cpus().length / 2)
+const maxWorkers = Math.floor(availableParallelism() / 2)
 
 export default {
   input: 'src/index.ts',
