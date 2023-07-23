@@ -5,10 +5,14 @@ import {
 } from '../../lib/index.mjs'
 import {
   PoolTypes,
-  WorkerFunctions,
-  WorkerTypes
+  WorkerFunctions
+  // WorkerTypes
 } from '../benchmarks-types.mjs'
 import { buildPool, runTest } from '../benchmarks-utils.mjs'
+
+const WorkerTypes = Object.freeze({
+  thread: 'thread'
+})
 
 const poolSize = availableParallelism()
 const pools = []
