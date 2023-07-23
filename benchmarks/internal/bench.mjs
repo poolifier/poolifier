@@ -39,12 +39,12 @@ for (const poolType of Object.values(PoolTypes)) {
     }
   }
 }
+
 const taskExecutions = 1
 const workerData = {
   function: WorkerFunctions.jsonIntegerSerialization,
   taskSize: 1000
 }
-
 const addPools = pools =>
   pools.map(([name, pool]) => {
     return add(name, async () => {
@@ -57,7 +57,6 @@ const addPools = pools =>
 
 const resultsFile = 'poolifier'
 const resultsFolder = 'benchmarks/internal/results'
-
 suite(
   'Poolifier',
   ...addPools(pools),
