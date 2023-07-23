@@ -1,16 +1,10 @@
-export const WorkerFunctions = {
+import { PoolTypes, WorkerTypes } from '../lib/index.mjs'
+
+const WorkerFunctions = {
   jsonIntegerSerialization: 'jsonIntegerSerialization',
   fibonacci: 'fibonacci',
   factorial: 'factorial',
   readWriteFiles: 'readWriteFiles'
 }
 
-export const PoolTypes = {
-  fixed: 'fixed',
-  dynamic: 'dynamic'
-}
-
-export const WorkerTypes = {
-  thread: 'thread',
-  cluster: 'cluster'
-}
+export { PoolTypes, WorkerFunctions, WorkerTypes }
