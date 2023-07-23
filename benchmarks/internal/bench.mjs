@@ -5,19 +5,18 @@ import {
 } from '../../lib/index.mjs'
 import {
   PoolTypes,
-  WorkerFunctions
-  // WorkerTypes
+  WorkerFunctions,
+  WorkerTypes
 } from '../benchmarks-types.mjs'
 import { buildPool, runTest } from '../benchmarks-utils.mjs'
-
-const WorkerTypes = Object.freeze({
-  thread: 'thread'
-})
 
 const poolSize = availableParallelism()
 const pools = []
 for (const poolType of Object.values(PoolTypes)) {
   for (const workerType of Object.values(WorkerTypes)) {
+    if (workerType === WorkerTypes.cluster) {
+      continue
+    }
     for (const workerChoiceStrategy of Object.values(WorkerChoiceStrategies)) {
       for (const tasksQueue of [false, true]) {
         const pool = buildPool(
