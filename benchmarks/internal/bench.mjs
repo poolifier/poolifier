@@ -32,7 +32,7 @@ for (const poolType of Object.values(PoolTypes)) {
               }
         )
         pools.push([
-          `${poolType}:${workerType}:${workerChoiceStrategy}:${tasksQueue}`,
+          `${poolType}|${workerType}|${workerChoiceStrategy}|tasks queue:${tasksQueue}`,
           pool
         ])
       }
