@@ -20,26 +20,24 @@ for (const poolType of Object.values(PoolTypes)) {
       for (const enableTasksQueue of [false, true]) {
         if (workerChoiceStrategy === WorkerChoiceStrategies.FAIR_SHARE) {
           for (const measurement of [Measurements.runTime, Measurements.elu]) {
-            const pool = buildPool(workerType, poolType, poolSize, {
-              workerChoiceStrategy,
-              workerChoiceStrategyOptions: {
-                measurement
-              },
-              enableTasksQueue
-            })
             pools.push([
               `${poolType}|${workerType}|${workerChoiceStrategy}|tasks queue:${enableTasksQueue}|measurement:${measurement}`,
-              pool
+              buildPool(workerType, poolType, poolSize, {
+                workerChoiceStrategy,
+                workerChoiceStrategyOptions: {
+                  measurement
+                },
+                enableTasksQueue
+              })
             ])
           }
         } else {
-          const pool = buildPool(workerType, poolType, poolSize, {
-            workerChoiceStrategy,
-            enableTasksQueue
-          })
           pools.push([
             `${poolType}|${workerType}|${workerChoiceStrategy}|tasks queue:${enableTasksQueue}`,
-            pool
+            buildPool(workerType, poolType, poolSize, {
+              workerChoiceStrategy,
+              enableTasksQueue
+            })
           ])
         }
       }
