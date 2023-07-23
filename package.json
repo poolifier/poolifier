@@ -19,7 +19,7 @@
     "build:prod": "rollup --config",
     "benchmark": "pnpm build && node -r source-map-support/register benchmarks/internal/bench.mjs",
     "benchmark:debug": "pnpm build && node -r source-map-support/register --inspect benchmarks/internal/bench.mjs",
-    "benchmark:prod": "pnpm build:prod && node -r source-map-support/register benchmarks/internal/bench.mjs",
+    "benchmark:prod": "pnpm build:prod && benchmarks/internal/bench.mjs",
     "test": "pnpm build && c8 mocha 'tests/**/*.test.js'",
     "test:debug": "pnpm build && mocha --no-parallel --inspect 'tests/**/*.test.js'",
     "coverage": "c8 report --reporter=lcov",
