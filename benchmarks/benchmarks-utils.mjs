@@ -4,9 +4,11 @@ import {
   DynamicClusterPool,
   DynamicThreadPool,
   FixedClusterPool,
-  FixedThreadPool
+  FixedThreadPool,
+  PoolTypes,
+  WorkerTypes
 } from '../lib/index.mjs'
-import { PoolTypes, WorkerFunctions, WorkerTypes } from './benchmarks-types.mjs'
+import { WorkerFunctions } from './benchmarks-types.mjs'
 
 export const runTest = async (pool, { taskExecutions, workerData }) => {
   return new Promise((resolve, reject) => {

@@ -1,13 +1,12 @@
 import { add, complete, cycle, save, suite } from 'benny'
 import {
+  Measurements,
+  PoolTypes,
   WorkerChoiceStrategies,
+  WorkerTypes,
   availableParallelism
 } from '../../lib/index.mjs'
-import {
-  PoolTypes,
-  WorkerFunctions,
-  WorkerTypes
-} from '../benchmarks-types.mjs'
+import { WorkerFunctions } from '../benchmarks-types.mjs'
 import { buildPool, runTest } from '../benchmarks-utils.mjs'
 
 const poolSize = availableParallelism()
@@ -18,26 +17,31 @@ for (const poolType of Object.values(PoolTypes)) {
       continue
     }
     for (const workerChoiceStrategy of Object.values(WorkerChoiceStrategies)) {
-      for (const tasksQueue of [false, true]) {
-        const pool = buildPool(
-          workerType,
-          poolType,
-          poolSize,
-          tasksQueue
-            ? {
-                ...{
-                  workerChoiceStrategy
-                },
-                ...{ enableTasksQueue: true }
-              }
-            : {
-                workerChoiceStrategy
-              }
-        )
-        pools.push([
-          `${poolType}|${workerType}|${workerChoiceStrategy}|tasks queue:${tasksQueue}`,
-          pool
-        ])
+      for (const enableTasksQueue of [false, true]) {
+        if (workerChoiceStrategy === WorkerChoiceStrategies.FAIR_SHARE) {
+          for (const measurement of [Measurements.runTime, Measurements.elu]) {
+            const pool = buildPool(workerType, poolType, poolSize, {
+              workerChoiceStrategy,
+              workerChoiceStrategyOptions: {
+                measurement
+              },
+              enableTasksQueue
+            })
+            pools.push([
+              `${poolType}|${workerType}|${workerChoiceStrategy}|tasks queue:${enableTasksQueue}|measurement:${measurement}`,
+              pool
+            ])
+          }
+        } else {
+          const pool = buildPool(workerType, poolType, poolSize, {
+            workerChoiceStrategy,
+            enableTasksQueue
+          })
+          pools.push([
+            `${poolType}|${workerType}|${workerChoiceStrategy}|tasks queue:${enableTasksQueue}`,
+            pool
+          ])
+        }
       }
     }
   }
