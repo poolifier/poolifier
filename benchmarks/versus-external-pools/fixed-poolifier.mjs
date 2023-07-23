@@ -11,7 +11,10 @@ const data = {
 
 const fixedPool = new FixedThreadPool(
   size,
-  './workers/poolifier/function-to-bench-worker.mjs'
+  './workers/poolifier/function-to-bench-worker.mjs',
+  {
+    enableTasksQueue: true
+  }
 )
 
 async function run () {

@@ -12,7 +12,10 @@ const data = {
 const dynamicPool = new DynamicThreadPool(
   Math.floor(size / 2),
   size,
-  './workers/poolifier/function-to-bench-worker.mjs'
+  './workers/poolifier/function-to-bench-worker.mjs',
+  {
+    enableTasksQueue: true
+  }
 )
 
 async function run () {
