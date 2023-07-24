@@ -14,7 +14,7 @@ const dynamicPool = new DynamicThreadPool(
   size,
   './workers/poolifier/function-to-bench-worker.mjs',
   {
-    enableTasksQueue: true
+    enableTasksQueue: false
   }
 )
 
