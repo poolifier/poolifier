@@ -31,6 +31,6 @@ Please consider our pillars before to start change the project
 
 - Performance :white_check_mark:
 - Security :white_check_mark:
-- No runtime dependencies (until now we don't have any exception to that) :white_check_mark:
+- No runtime dependencies :white_check_mark: (until now we don't have any exception to that)
 - Easy to use :white_check_mark:
 - Code quality :white_check_mark:
