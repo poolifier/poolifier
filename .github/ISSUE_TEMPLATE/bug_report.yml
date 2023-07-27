@@ -1,0 +1,55 @@
+name: Bug report
+description: File a bug report
+title: '[BUG]'
+labels: ['bug', 'triage']
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue.
+
+        This issue tracker is for bugs and issues found in e-mobility-charging-stations-simulator.
+        Any misuse of this issue tracker will be closed immediately.
+
+        Please fill in as much of the template below as you're able.
+  - type: checkboxes
+    attributes:
+      label: Duplicate issue
+      options:
+        - label: I've searched for any related issues and avoided creating a duplicate issue.
+          required: true
+  - type: textarea
+    attributes:
+      label: Description
+      description: A clear and concise description of the bug.
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+  - type: textarea
+    attributes:
+      label: Actual behavior
+      description: A clear and concise description of what actually happened.
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the bug.
+      placeholder: |
+        - If you can please specify at least a draft of your worker (if it is an async function or not is also important)
+        - Indicate which pool type are you using (i.e. FixedThreadPool) and with which options (number of threads, and so on)
+  - type: input
+    attributes:
+      label: poolifier version
+  - type: input
+    attributes:
+      label: Node.js version
+      description: Output of `node -v`.
+  - type: textarea
+    attributes:
+      label: System
+      description: Output of `npx --yes envinfo --system`.
+  - type: textarea
+    attributes:
+      label: Attachments
+      description: Logs, configurations, screenshots, screencast, etc.
