@@ -1,0 +1,32 @@
+name: Feature request
+description: Request a feature
+title: '[FEATURE]'
+labels: ['enhancement', 'triage']
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for requesting a feature.
+
+        This issue tracker is for feature requests in poolifier.
+        Any misuse of this issue tracker will be closed immediately.
+
+        Please fill in as much of the template below as you're able.
+  - type: checkboxes
+    attributes:
+      label: Duplicate issue
+      options:
+        - label: I've searched for any related issues and avoided creating a duplicate issue.
+          required: true
+  - type: textarea
+    attributes:
+      label: Description
+      description: A clear and concise description of the feature.
+      placeholder: |
+        - If your feature request is related to a problem, please describe it
+        - If you have solutions in mind, please describe them
+  - type: textarea
+    attributes:
+      label: Attachments
+      description: Architecture or design documents, screenshots, screencast, etc.

@@ -9,7 +9,7 @@ body:
       value: |
         Thank you for reporting an issue.
 
-        This issue tracker is for bugs and issues found in e-mobility-charging-stations-simulator.
+        This issue tracker is for bugs and issues found in poolifier.
         Any misuse of this issue tracker will be closed immediately.
 
         Please fill in as much of the template below as you're able.
