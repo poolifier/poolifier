@@ -186,7 +186,7 @@ export abstract class AbstractPool<
         )
       } else if (max === 0) {
         throw new RangeError(
-          'Cannot instantiate a dynamic pool with a pool size equal to zero'
+          'Cannot instantiate a dynamic pool with a maximum pool size equal to zero'
         )
       } else if (min === max) {
         throw new RangeError(

@@ -147,7 +147,7 @@ describe('Abstract pool test suite', () => {
         new DynamicThreadPool(0, 0, './tests/worker-files/thread/testWorker.js')
     ).toThrowError(
       new RangeError(
-        'Cannot instantiate a dynamic pool with a pool size equal to zero'
+        'Cannot instantiate a dynamic pool with a maximum pool size equal to zero'
       )
     )
   })
