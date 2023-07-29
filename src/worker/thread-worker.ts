@@ -67,7 +67,7 @@ export class ThreadWorker<
   }
 
   /** @inheritDoc */
-  protected handleKillMessage (message: MessageValue<Data, unknown>): void {
+  protected handleKillMessage (message: MessageValue<Data>): void {
     super.handleKillMessage(message)
     this.port?.unref()
     this.port?.close()
