@@ -106,7 +106,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.6.7",
     "@commitlint/config-conventional": "^17.6.7",
-    "@release-it/bumper": "^5.0.0",
+    "@release-it/bumper": "^5.1.0",
     "@release-it/keep-a-changelog": "^4.0.0",
     "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.2",
