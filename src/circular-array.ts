@@ -57,7 +57,7 @@ export class CircularArray<T> extends Array<T> {
     ...items: T[]
   ): CircularArray<T> {
     let itemsRemoved: T[] = []
-    if (arguments.length >= 3 && deleteCount !== undefined) {
+    if (arguments.length >= 3 && deleteCount != null) {
       itemsRemoved = super.splice(start, deleteCount, ...items)
       if (this.length > this.size) {
         const itemsOverflowing = super.splice(0, this.length - this.size)
