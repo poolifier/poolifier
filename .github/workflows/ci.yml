@@ -46,6 +46,7 @@ jobs:
         run: pnpm build
 
       - name: Lint
+        if: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '18.x' }}
         run: pnpm lint
 
       - name: Tests
