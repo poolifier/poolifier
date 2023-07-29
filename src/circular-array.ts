@@ -51,18 +51,28 @@ export class CircularArray<T> extends Array<T> {
   }
 
   /** @inheritDoc */
-  public splice (start: number, deleteCount?: number, ...items: T[]): T[] {
-    let itemsRemoved: T[]
+  public splice (
+    start: number,
+    deleteCount?: number,
+    ...items: T[]
+  ): CircularArray<T> {
+    let itemsRemoved: T[] = []
     if (arguments.length >= 3 && deleteCount !== undefined) {
-      itemsRemoved = super.splice(start, deleteCount)
-      // FIXME: that makes the items insert not in place
-      this.push(...items)
+      itemsRemoved = super.splice(start, deleteCount, ...items)
+      if (this.length > this.size) {
+        const itemsOverflowing = super.splice(0, this.length - this.size)
+        itemsRemoved = new CircularArray<T>(
+          itemsRemoved.length + itemsOverflowing.length,
+          ...itemsRemoved,
+          ...itemsOverflowing
+        )
+      }
     } else if (arguments.length === 2) {
       itemsRemoved = super.splice(start, deleteCount)
     } else {
       itemsRemoved = super.splice(start)
     }
-    return itemsRemoved
+    return itemsRemoved as CircularArray<T>
   }
 
   public resize (size: number): void {

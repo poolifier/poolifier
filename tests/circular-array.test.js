@@ -83,9 +83,9 @@ describe('Circular array test suite', () => {
     expect(circularArray).toStrictEqual(new CircularArray(1000, 1, 2, 4, 5))
     circularArray = new CircularArray(4, 1, 2, 3, 4)
     deletedItems = circularArray.splice(2, 1, 5, 6)
-    expect(deletedItems).toStrictEqual(new CircularArray(1, 3))
+    expect(deletedItems).toStrictEqual(new CircularArray(2, 3, 1))
     expect(circularArray.length).toBe(4)
-    expect(circularArray).toStrictEqual(new CircularArray(4, 2, 4, 5, 6))
+    expect(circularArray).toStrictEqual(new CircularArray(4, 2, 5, 6, 4))
   })
 
   it('Verify that circular array concat works as intended', () => {
