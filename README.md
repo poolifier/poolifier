@@ -39,9 +39,10 @@ Please consult our [general guidelines](#general-guidance).
 - Fixed and dynamic pool size :white_check_mark:
 - Easy switch from a pool type to another :white_check_mark:
 - No runtime dependencies :white_check_mark:
-- Proper async integration with node [async_hooks](https://nodejs.org/api/async_hooks.html) :white_check_mark:
+- Proper integration with node [async_hooks](https://nodejs.org/api/async_hooks.html) :white_check_mark:
 - Support CommonJS, ESM, and TypeScript :white_check_mark:
 - Support for [worker_threads](https://nodejs.org/api/worker_threads.html) and [cluster](https://nodejs.org/api/cluster.html) Node.js modules :white_check_mark:
+- Support multiple worker functions :white_check_mark:
 - Support sync and async tasks :white_check_mark:
 - Tasks distribution strategies :white_check_mark:
 - General guidance on pool choice :white_check_mark:
@@ -198,7 +199,7 @@ An object with these properties:
   - `WorkerChoiceStrategies.LEAST_BUSY`: Submit tasks to the worker with the minimum tasks total execution and wait time
   - `WorkerChoiceStrategies.LEAST_ELU`: Submit tasks to the worker with the minimum event loop utilization (ELU) (experimental)
   - `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN`: Submit tasks to worker by using a [weighted round robin scheduling algorithm](./src/pools/selection-strategies/README.md#weighted-round-robin) based on tasks execution time
-  - `WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN`: Submit tasks to worker by using an [interleaved weighted round robin scheduling algorithm](./src/pools/selection-strategies/README.md#interleaved-weighted-round-robin) based on tasks execution time(experimental)
+  - `WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN`: Submit tasks to worker by using an [interleaved weighted round robin scheduling algorithm](./src/pools/selection-strategies/README.md#interleaved-weighted-round-robin) based on tasks execution time (experimental)
   - `WorkerChoiceStrategies.FAIR_SHARE`: Submit tasks to worker by using a [fair share scheduling algorithm](./src/pools/selection-strategies/README.md#fair-share) based on tasks execution time (the default) or ELU active time
 
   `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN`, `WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN` and `WorkerChoiceStrategies.FAIR_SHARE` strategies are targeted to heavy and long tasks.  
