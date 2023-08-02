@@ -1,7 +1,7 @@
 import workerpool from 'workerpool'
 import functionToBench from '../../functions/function-to-bench.js'
 
-function wrapperFunctionToBench (testName, taskType, taskSize) {
+const functionToBenchWrapper = (testName, taskType, taskSize) => {
   return functionToBench({
     test: testName,
     taskType,
@@ -10,5 +10,5 @@ function wrapperFunctionToBench (testName, taskType, taskSize) {
 }
 
 workerpool.worker({
-  functionToBench: wrapperFunctionToBench
+  functionToBench: functionToBenchWrapper
 })

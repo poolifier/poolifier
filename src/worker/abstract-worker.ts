@@ -243,7 +243,7 @@ export abstract class AbstractWorker<
    * @returns The names of the worker's task functions.
    */
   public listTaskFunctions (): string[] {
-    return Array.from(this.taskFunctions.keys())
+    return [...this.taskFunctions.keys()]
   }
 
   /**

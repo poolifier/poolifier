@@ -5,7 +5,7 @@
  * @param {*} data The worker data.
  * @returns {*} The result.
  */
-module.exports = function functionToBench (data) {
+const functionToBench = data => {
   const crypto = require('crypto')
   const fs = require('fs')
   const TaskTypes = {
@@ -48,3 +48,5 @@ module.exports = function functionToBench (data) {
       throw new Error(`Unknown task type: ${data.taskType}`)
   }
 }
+
+module.exports = functionToBench

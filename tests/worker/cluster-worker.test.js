@@ -3,7 +3,7 @@ const { ClusterWorker } = require('../../lib')
 
 describe('Cluster worker test suite', () => {
   let numberOfMessagesSent = 0
-  const send = function () {
+  const send = () => {
     ++numberOfMessagesSent
   }
   class SpyWorker extends ClusterWorker {
