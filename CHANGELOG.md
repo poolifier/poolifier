@@ -298,7 +298,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix typescript type definition for worker function: ensure the input data is optional.
+- Fix typescript type definition for task function: ensure the input data is optional.
 - Fix typescript type definition for pool execute(): ensure the input data is optional.
 
 ## [2.4.9] - 2023-04-15
@@ -315,7 +315,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix worker function type definition and validation.
+- Fix task function type definition and validation.
 - Fix worker choice strategy options handling.
 
 ## [2.4.8] - 2023-04-12

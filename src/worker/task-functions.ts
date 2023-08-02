@@ -1,37 +1,37 @@
 /**
- * Worker synchronous function that can be executed.
+ * Task synchronous function that can be executed.
  *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  */
-export type WorkerSyncFunction<Data = unknown, Response = unknown> = (
+export type TaskSyncFunction<Data = unknown, Response = unknown> = (
   data?: Data
 ) => Response
 
 /**
- * Worker asynchronous function that can be executed.
+ * Task asynchronous function that can be executed.
  * This function must return a promise.
  *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  */
-export type WorkerAsyncFunction<Data = unknown, Response = unknown> = (
+export type TaskAsyncFunction<Data = unknown, Response = unknown> = (
   data?: Data
 ) => Promise<Response>
 
 /**
- * Worker function that can be executed.
+ * Task function that can be executed.
  * This function can be synchronous or asynchronous.
  *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  */
-export type WorkerFunction<Data = unknown, Response = unknown> =
-  | WorkerSyncFunction<Data, Response>
-  | WorkerAsyncFunction<Data, Response>
+export type TaskFunction<Data = unknown, Response = unknown> =
+  | TaskSyncFunction<Data, Response>
+  | TaskAsyncFunction<Data, Response>
 
 /**
- * Worker functions that can be executed.
+ * Tasks functions that can be executed.
  * This object can contain synchronous or asynchronous functions.
  * The key is the name of the function.
  * The value is the function itself.
@@ -41,5 +41,5 @@ export type WorkerFunction<Data = unknown, Response = unknown> =
  */
 export type TaskFunctions<Data = unknown, Response = unknown> = Record<
 string,
-WorkerFunction<Data, Response>
+TaskFunction<Data, Response>
 >

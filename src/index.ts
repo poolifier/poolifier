@@ -52,11 +52,11 @@ export { ThreadWorker } from './worker/thread-worker'
 export { KillBehaviors } from './worker/worker-options'
 export type { KillBehavior, WorkerOptions } from './worker/worker-options'
 export type {
+  TaskAsyncFunction,
+  TaskFunction,
   TaskFunctions,
-  WorkerAsyncFunction,
-  WorkerFunction,
-  WorkerSyncFunction
-} from './worker/worker-functions'
+  TaskSyncFunction
+} from './worker/task-functions'
 export type {
   MessageValue,
   PromiseResponseWrapper,

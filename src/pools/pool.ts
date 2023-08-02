@@ -192,8 +192,8 @@ export interface IPool<
   /**
    * Executes the specified function in the worker constructor with the task data input parameter.
    *
-   * @param data - The task input data for the specified worker function. This can only be structured-cloneable data.
-   * @param name - The name of the worker function to execute. If not specified, the default worker function will be executed.
+   * @param data - The task input data for the specified task function. This can only be structured-cloneable data.
+   * @param name - The name of the task function to execute. If not specified, the default task function will be executed.
    * @returns Promise that will be fulfilled when the task is completed.
    */
   readonly execute: (data?: Data, name?: string) => Promise<Response>

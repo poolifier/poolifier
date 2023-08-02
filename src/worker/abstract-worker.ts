@@ -20,11 +20,11 @@ import {
   type WorkerOptions
 } from './worker-options'
 import type {
+  TaskAsyncFunction,
+  TaskFunction,
   TaskFunctions,
-  WorkerAsyncFunction,
-  WorkerFunction,
-  WorkerSyncFunction
-} from './worker-functions'
+  TaskSyncFunction
+} from './task-functions'
 
 const DEFAULT_MAX_INACTIVE_TIME = 60000
 const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
@@ -48,7 +48,7 @@ export abstract class AbstractWorker<
   /**
    * Task function(s) processed by the worker when the pool's `execution` function is invoked.
    */
-  protected taskFunctions!: Map<string, WorkerFunction<Data, Response>>
+  protected taskFunctions!: Map<string, TaskFunction<Data, Response>>
   /**
    * Timestamp of the last task processed by this worker.
    */
@@ -74,9 +74,7 @@ export abstract class AbstractWorker<
     type: string,
     protected readonly isMain: boolean,
     private readonly mainWorker: MainWorker,
-    taskFunctions:
-    | WorkerFunction<Data, Response>
-    | TaskFunctions<Data, Response>,
+    taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     protected readonly opts: WorkerOptions = {
       /**
        * The kill behavior option on this worker or its default value.
@@ -110,14 +108,12 @@ export abstract class AbstractWorker<
    * @param taskFunctions - The task function(s) parameter that should be checked.
    */
   private checkTaskFunctions (
-    taskFunctions:
-    | WorkerFunction<Data, Response>
-    | TaskFunctions<Data, Response>
+    taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>
   ): void {
     if (taskFunctions == null) {
       throw new Error('taskFunctions parameter is mandatory')
     }
-    this.taskFunctions = new Map<string, WorkerFunction<Data, Response>>()
+    this.taskFunctions = new Map<string, TaskFunction<Data, Response>>()
     if (typeof taskFunctions === 'function') {
       const boundFn = taskFunctions.bind(this)
       this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)
@@ -185,7 +181,7 @@ export abstract class AbstractWorker<
    */
   public addTaskFunction (
     name: string,
-    fn: WorkerFunction<Data, Response>
+    fn: TaskFunction<Data, Response>
   ): boolean {
     if (typeof name !== 'string') {
       throw new TypeError('name parameter is not a string')
@@ -276,7 +272,7 @@ export abstract class AbstractWorker<
     try {
       this.taskFunctions.set(
         DEFAULT_TASK_NAME,
-        this.taskFunctions.get(name) as WorkerFunction<Data, Response>
+        this.taskFunctions.get(name) as TaskFunction<Data, Response>
       )
       return true
     } catch {
@@ -415,7 +411,7 @@ export abstract class AbstractWorker<
    * @param task - Input data for the task function.
    */
   protected runSync (
-    fn: WorkerSyncFunction<Data, Response>,
+    fn: TaskSyncFunction<Data, Response>,
     task: Task<Data>
   ): void {
     try {
@@ -451,7 +447,7 @@ export abstract class AbstractWorker<
    * @param task - Input data for the task function.
    */
   protected runAsync (
-    fn: WorkerAsyncFunction<Data, Response>,
+    fn: TaskAsyncFunction<Data, Response>,
     task: Task<Data>
   ): void {
     let taskPerformance = this.beginTaskPerformance(task.name)
@@ -491,7 +487,7 @@ export abstract class AbstractWorker<
    * @returns The task function.
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the task function is not found.
    */
-  private getTaskFunction (name?: string): WorkerFunction<Data, Response> {
+  private getTaskFunction (name?: string): TaskFunction<Data, Response> {
     name = name ?? DEFAULT_TASK_NAME
     const fn = this.taskFunctions.get(name)
     if (fn == null) {

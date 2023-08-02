@@ -42,8 +42,8 @@ Please consult our [general guidelines](#general-guidance).
 - Proper integration with node [async_hooks](https://nodejs.org/api/async_hooks.html) :white_check_mark:
 - Support CommonJS, ESM, and TypeScript :white_check_mark:
 - Support for [worker_threads](https://nodejs.org/api/worker_threads.html) and [cluster](https://nodejs.org/api/cluster.html) Node.js modules :white_check_mark:
-- Support multiple worker functions :white_check_mark:
-- Support sync and async tasks :white_check_mark:
+- Support multiple task functions :white_check_mark:
+- Support sync and async task functions :white_check_mark:
 - Tasks distribution strategies :white_check_mark:
 - General guidance on pool choice :white_check_mark:
 - Error handling out of the box :white_check_mark:
@@ -150,7 +150,7 @@ pool
 
 You can do the same with the classes _ClusterWorker_, _FixedClusterPool_ and _DynamicClusterPool_.
 
-**See [examples](./examples/) folder for more details (in particular if you want to use a pool with [multiple worker functions](./examples/multiFunctionExample.js))**.
+**See [examples](./examples/) folder for more details (in particular if you want to use a pool with [multiple task functions](./examples/multiFunctionExample.js))**.
 
 Remember that workers can only send and receive structured-cloneable data.
 

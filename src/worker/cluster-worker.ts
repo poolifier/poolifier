@@ -2,7 +2,7 @@ import cluster, { type Worker } from 'node:cluster'
 import type { MessageValue } from '../utility-types'
 import { AbstractWorker } from './abstract-worker'
 import type { WorkerOptions } from './worker-options'
-import type { TaskFunctions, WorkerFunction } from './worker-functions'
+import type { TaskFunction, TaskFunctions } from './task-functions'
 
 /**
  * A cluster worker used by a poolifier `ClusterPool`.
@@ -29,9 +29,7 @@ export class ClusterWorker<
    * @param opts - Options for the worker.
    */
   public constructor (
-    taskFunctions:
-    | WorkerFunction<Data, Response>
-    | TaskFunctions<Data, Response>,
+    taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     opts: WorkerOptions = {}
   ) {
     super(

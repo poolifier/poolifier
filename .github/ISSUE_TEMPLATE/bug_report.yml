@@ -36,7 +36,7 @@ body:
       label: Steps to reproduce
       description: Steps to reproduce the bug.
       placeholder: |
-        - If you can please specify at least a draft of your worker (if it is an async function or not is also important)
+        - If you can please specify at least a draft of your worker (if it is an async task function or not is also important)
         - Indicate which pool type are you using (i.e. FixedThreadPool) and with which options (number of threads, and so on)
   - type: input
     attributes:
