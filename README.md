@@ -36,7 +36,7 @@ Please consult our [general guidelines](#general-guidance).
 
 - Easy to use :white_check_mark:
 - Performance [benchmarks](./benchmarks/README.md) :white_check_mark:
-- Static and dynamic pool size :white_check_mark:
+- Fixed and dynamic pool size :white_check_mark:
 - Easy switch from a pool type to another :white_check_mark:
 - No runtime dependencies :white_check_mark:
 - Proper async integration with node [async_hooks](https://nodejs.org/api/async_hooks.html) :white_check_mark:
@@ -81,7 +81,7 @@ Please consult our [general guidelines](#general-guidance).
 ## Overview
 
 Poolifier contains two [worker_threads](https://nodejs.org/api/worker_threads.html#class-worker)/[cluster](https://nodejs.org/api/cluster.html#cluster_class_worker) worker pool implementations, you don't have to deal with [worker_threads](https://nodejs.org/api/worker_threads.html)/[cluster](https://nodejs.org/api/cluster.html) complexity.  
-The first implementation is a static worker pool, with a defined number of workers that are started at creation time and will be reused.  
+The first implementation is a fixed worker pool, with a defined number of workers that are started at creation time and will be reused.  
 The second implementation is a dynamic worker pool, with a number of worker started at creation time (these workers will be always active and reused) and other workers created when the load will increase (with an upper limit, these workers will be reused when active), the new created workers will be stopped after a configurable period of inactivity.  
 You have to implement your worker by extending the _ThreadWorker_ or _ClusterWorker_ class.
 
@@ -319,7 +319,7 @@ But in general, **always profile your application**.
 
 To choose your pool consider first that with a _FixedThreadPool_/_FixedClusterPool_ or a _DynamicThreadPool_/_DynamicClusterPool_ your application memory footprint will increase.  
 By doing so, your application will be ready to execute in parallel more tasks, but during idle time your application will consume more memory.  
-One good choice from poolifier team point of view is to profile your application using a static or dynamic worker pool, and analyze your application metrics when you increase/decrease the number of workers.  
+One good choice from poolifier team point of view is to profile your application using a fixed or dynamic worker pool, and analyze your application metrics when you increase/decrease the number of workers.  
 For example you could keep the memory footprint low by choosing a _DynamicThreadPool_/_DynamicClusterPool_ with a minimum of 5 workers, and allowing it to create new workers until a maximum of 50 workers if needed. This is the advantage of using a _DynamicThreadPool_/_DynamicClusterPool_.  
 But in general, **always profile your application**.
 
