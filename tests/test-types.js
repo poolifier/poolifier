@@ -1,7 +1,7 @@
-const WorkerFunctions = {
+const TaskFunctions = {
   jsonIntegerSerialization: 'jsonIntegerSerialization',
   fibonacci: 'fibonacci',
   factorial: 'factorial'
 }
 
-module.exports = { WorkerFunctions }
+module.exports = { TaskFunctions }

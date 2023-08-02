@@ -8,7 +8,7 @@ import {
   PoolTypes,
   WorkerTypes
 } from '../lib/index.mjs'
-import { WorkerFunctions } from './benchmarks-types.mjs'
+import { TaskFunctions } from './benchmarks-types.mjs'
 
 export const runTest = async (pool, { taskExecutions, workerData }) => {
   return new Promise((resolve, reject) => {
@@ -100,18 +100,18 @@ const readWriteFiles = (
   return { ok: 1 }
 }
 
-export const executeWorkerFunction = data => {
+export const executeTaskFunction = data => {
   switch (data.function) {
-    case WorkerFunctions.jsonIntegerSerialization:
+    case TaskFunctions.jsonIntegerSerialization:
       return jsonIntegerSerialization(data.taskSize || 1000)
-    case WorkerFunctions.fibonacci:
+    case TaskFunctions.fibonacci:
       return fibonacci(data.taskSize || 1000)
-    case WorkerFunctions.factorial:
+    case TaskFunctions.factorial:
       return factorial(data.taskSize || 1000)
-    case WorkerFunctions.readWriteFiles:
+    case TaskFunctions.readWriteFiles:
       return readWriteFiles(data.taskSize || 1000)
     default:
-      throw new Error('Unknown worker function')
+      throw new Error('Unknown task function')
   }
 }
 

@@ -27,7 +27,7 @@ We chose to use this tool because it allows to run isolated Node.js processes so
 
 - External pools with which we used to compare the poolifier results:
 
-  <!-- - [node-worker-threads-pool](https://github.com/SUCHMOKUO/node-worker-threads-pool): removed because it does not support dynamic modules import or import outside the worker function. The worker function is expected to be self-contained, which makes it difficult to use in real world application without ugly hacks. -->
+  <!-- - [node-worker-threads-pool](https://github.com/SUCHMOKUO/node-worker-threads-pool): removed because it does not support dynamic modules import or import outside the task function. The task function is expected to be self-contained, which makes it difficult to use in real world application without ugly hacks. -->
 
   - [worker-threads-pool](https://github.com/watson/worker-threads-pool): removed because unmaintained since more than 4 years.
   - [threadwork](https://github.com/kevlened/threadwork): removed because unmaintained since more than 3 years.

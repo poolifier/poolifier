@@ -1,7 +1,7 @@
 'use strict'
 /**
- * The worker function to execute during pools benchmarks.
- * NOTE: This function requires to be self-contained, thread-safe and re-entrant.
+ * The task function to execute during pools benchmarks.
+ * NOTE: This function requires to be self-contained, thread-safe and re-entrant (node-worker-threads-pool requirement).
  * @param {*} data The worker data.
  * @returns {*} The result.
  */

@@ -1,6 +1,6 @@
 const { expect } = require('expect')
 const { DynamicThreadPool, PoolEvents } = require('../../../lib')
-const { WorkerFunctions } = require('../../test-types')
+const { TaskFunctions } = require('../../test-types')
 const { sleep, waitWorkerEvents } = require('../../test-utils')
 
 describe('Dynamic thread pool test suite', () => {
@@ -17,11 +17,11 @@ describe('Dynamic thread pool test suite', () => {
 
   it('Verify that the function is executed in a worker thread', async () => {
     let result = await pool.execute({
-      function: WorkerFunctions.fibonacci
+      function: TaskFunctions.fibonacci
     })
     expect(result).toBe(75025)
     result = await pool.execute({
-      function: WorkerFunctions.factorial
+      function: TaskFunctions.factorial
     })
     expect(result).toBe(9.33262154439441e157)
   })

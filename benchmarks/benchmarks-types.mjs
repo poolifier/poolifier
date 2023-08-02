@@ -1,4 +1,4 @@
-export const WorkerFunctions = {
+export const TaskFunctions = {
   jsonIntegerSerialization: 'jsonIntegerSerialization',
   fibonacci: 'fibonacci',
   factorial: 'factorial',

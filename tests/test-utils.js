@@ -1,4 +1,4 @@
-const { WorkerFunctions } = require('./test-types')
+const { TaskFunctions } = require('./test-types')
 
 const waitWorkerEvents = async (pool, workerEvent, numberOfEventsToWait) => {
   return new Promise(resolve => {
@@ -36,7 +36,7 @@ const sleep = async ms => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-const sleepWorkerFunction = async (
+const sleepTaskFunction = async (
   data,
   ms,
   rejection = false,
@@ -97,13 +97,13 @@ const factorial = n => {
   return factorial(n - 1) * n
 }
 
-const executeWorkerFunction = data => {
+const executeTaskFunction = data => {
   switch (data.function) {
-    case WorkerFunctions.jsonIntegerSerialization:
+    case TaskFunctions.jsonIntegerSerialization:
       return jsonIntegerSerialization(data.n || 100)
-    case WorkerFunctions.fibonacci:
+    case TaskFunctions.fibonacci:
       return fibonacci(data.n || 25)
-    case WorkerFunctions.factorial:
+    case TaskFunctions.factorial:
       return factorial(data.n || 100)
     default:
       throw new Error('Unknown worker function')
@@ -111,13 +111,13 @@ const executeWorkerFunction = data => {
 }
 
 module.exports = {
-  executeWorkerFunction,
+  executeTaskFunction,
   factorial,
   fibonacci,
   generateRandomInteger,
   jsonIntegerSerialization,
   sleep,
-  sleepWorkerFunction,
+  sleepTaskFunction,
   waitPoolEvents,
   waitWorkerEvents
 }

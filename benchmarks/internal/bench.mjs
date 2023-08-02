@@ -6,7 +6,7 @@ import {
   WorkerTypes,
   availableParallelism
 } from '../../lib/index.mjs'
-import { WorkerFunctions } from '../benchmarks-types.mjs'
+import { TaskFunctions } from '../benchmarks-types.mjs'
 import { buildPool, runTest } from '../benchmarks-utils.mjs'
 
 const poolSize = availableParallelism()
@@ -47,7 +47,7 @@ for (const poolType of Object.values(PoolTypes)) {
 
 const taskExecutions = 1
 const workerData = {
-  function: WorkerFunctions.jsonIntegerSerialization,
+  function: TaskFunctions.jsonIntegerSerialization,
   taskSize: 1000
 }
 const addPools = pools =>
