@@ -23,7 +23,7 @@ We chose to use this tool because it allows to run isolated Node.js processes so
 
   Those are our results:
 
-  - CPU Intensive task with 100k operations submitted to each pool [BENCH-100000.md](./versus-external-pools/BENCH-100000.md).
+  - CPU Intensive task with 100k operations submitted to each pool: [BENCH-100000.md](./versus-external-pools/BENCH-100000.md).
 
 - External pools with which we used to compare the poolifier results:
 
