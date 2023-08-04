@@ -80,9 +80,9 @@ export interface Task<Data = unknown> {
    */
   readonly timestamp?: number
   /**
-   * Message UUID.
+   * Task UUID.
    */
-  readonly id?: string
+  readonly taskId?: string
 }
 
 /**

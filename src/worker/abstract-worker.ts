@@ -302,7 +302,7 @@ export abstract class AbstractWorker<
         !this.isMain && message.checkActive
           ? this.startCheckActive()
           : this.stopCheckActive()
-      } else if (message.id != null && message.data != null) {
+      } else if (message.taskId != null && message.data != null) {
         // Task message received
         this.run(message)
       } else if (message.kill === true) {
@@ -422,7 +422,7 @@ export abstract class AbstractWorker<
         data: res,
         taskPerformance,
         workerId: this.id,
-        id: task.id
+        taskId: task.taskId
       })
     } catch (e) {
       const errorMessage = this.handleError(e as Error | string)
@@ -433,7 +433,7 @@ export abstract class AbstractWorker<
           data: task.data
         },
         workerId: this.id,
-        id: task.id
+        taskId: task.taskId
       })
     } finally {
       this.updateLastTaskTimestamp()
@@ -458,7 +458,7 @@ export abstract class AbstractWorker<
           data: res,
           taskPerformance,
           workerId: this.id,
-          id: task.id
+          taskId: task.taskId
         })
         return null
       })
@@ -471,7 +471,7 @@ export abstract class AbstractWorker<
             data: task.data
           },
           workerId: this.id,
-          id: task.id
+          taskId: task.taskId
         })
       })
       .finally(() => {

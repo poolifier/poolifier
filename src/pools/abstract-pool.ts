@@ -639,9 +639,9 @@ export abstract class AbstractPool<
         data: data ?? ({} as Data),
         timestamp,
         workerId: this.getWorkerInfo(workerNodeKey).id as number,
-        id: randomUUID()
+        taskId: randomUUID()
       }
-      this.promiseResponseMap.set(task.id as string, {
+      this.promiseResponseMap.set(task.taskId as string, {
         resolve,
         reject,
         workerNodeKey
@@ -1037,7 +1037,7 @@ export abstract class AbstractPool<
       if (message.ready != null) {
         // Worker ready response received from worker
         this.handleWorkerReadyResponse(message)
-      } else if (message.id != null) {
+      } else if (message.taskId != null) {
         // Task execution response received from worker
         this.handleTaskExecutionResponse(message)
       }
@@ -1054,7 +1054,9 @@ export abstract class AbstractPool<
   }
 
   private handleTaskExecutionResponse (message: MessageValue<Response>): void {
-    const promiseResponse = this.promiseResponseMap.get(message.id as string)
+    const promiseResponse = this.promiseResponseMap.get(
+      message.taskId as string
+    )
     if (promiseResponse != null) {
       if (message.taskError != null) {
         this.emitter?.emit(PoolEvents.taskError, message.taskError)
@@ -1064,7 +1066,7 @@ export abstract class AbstractPool<
       }
       const workerNodeKey = promiseResponse.workerNodeKey
       this.afterTaskExecutionHook(workerNodeKey, message)
-      this.promiseResponseMap.delete(message.id as string)
+      this.promiseResponseMap.delete(message.taskId as string)
       if (
         this.opts.enableTasksQueue === true &&
         this.tasksQueueSize(workerNodeKey) > 0 &&
