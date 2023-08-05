@@ -293,7 +293,9 @@ export abstract class AbstractWorker<
    * @param message - The received message.
    */
   protected messageListener (message: MessageValue<Data>): void {
-    if (message.workerId === this.id) {
+    if (message.workerId != null && message.workerId !== this.id) {
+      throw new Error('Message worker id does not match worker id')
+    } else if (message.workerId === this.id) {
       if (message.statistics != null) {
         // Statistics message received
         this.statistics = message.statistics
