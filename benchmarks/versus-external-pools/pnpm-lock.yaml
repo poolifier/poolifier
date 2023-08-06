@@ -12,11 +12,11 @@ dependencies:
     specifier: 1.5.1
     version: 1.5.1
   piscina:
-    specifier: 4.0.0
-    version: 4.0.0
+    specifier: 4.1.0
+    version: 4.1.0
   poolifier:
-    specifier: 2.6.20
-    version: 2.6.20
+    specifier: 2.6.21
+    version: 2.6.21
   tinypool:
     specifier: 0.7.0
     version: 0.7.0
@@ -114,8 +114,8 @@ packages:
     resolution: {integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==}
     dev: false
 
-  /piscina@4.0.0:
-    resolution: {integrity: sha512-641nAmJS4k4iqpNUqfggqUBUMmlw0ZoM5VZKdQkV2e970Inn3Tk9kroCc1wpsYLD07vCwpys5iY0d3xI/9WkTg==}
+  /piscina@4.1.0:
+    resolution: {integrity: sha512-sjbLMi3sokkie+qmtZpkfMCUJTpbxJm/wvaPzU28vmYSsTSW8xk9JcFUsbqGJdtPpIQ9tuj+iDcTtgZjwnOSig==}
     dependencies:
       eventemitter-asyncresource: 1.0.0
       hdr-histogram-js: 2.0.3
@@ -124,8 +124,8 @@ packages:
       nice-napi: 1.0.2
     dev: false
 
-  /poolifier@2.6.20:
-    resolution: {integrity: sha512-1s4Ylz09IU6o6NkYMGKmzM885VNpBzAdqPtoTZmpHkWT1Plyeh1L8VtmmS2nFWYapjSQ46H/Ypr6AeLc4mjkmg==}
+  /poolifier@2.6.21:
+    resolution: {integrity: sha512-TOTocb/Ek8UfZBvoJNWlEWSQJUv6In0GCGwMyI8W+WHfaS2ukkxwfYJE+AcVA9ezPfZTDso+AsqLVrs1acTWDA==}
     engines: {node: '>=16.14.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
