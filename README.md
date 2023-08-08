@@ -32,7 +32,7 @@
 Poolifier is used to perform CPU and/or I/O intensive tasks on Node.js servers, it implements worker pools using [worker_threads](https://nodejs.org/api/worker_threads.html) and [cluster](https://nodejs.org/api/cluster.html) Node.js modules.  
 With poolifier you can improve your **performance** and resolve problems related to the event loop.  
 Moreover you can execute your tasks using an API designed to improve the **developer experience**.  
-Please consult our [general guidelines](#general-guidance).
+Please consult our [general guidelines](#general-guidelines).
 
 - Easy to use :white_check_mark:
 - Performance [benchmarks](./benchmarks/README.md) :white_check_mark:
@@ -45,7 +45,7 @@ Please consult our [general guidelines](#general-guidance).
 - Support multiple task functions :white_check_mark:
 - Support sync and async task functions :white_check_mark:
 - Tasks distribution strategies :white_check_mark:
-- General guidance on pool choice :white_check_mark:
+- General guidelines on pool choice :white_check_mark:
 - Error handling out of the box :white_check_mark:
 - Widely tested :white_check_mark:
 - Active community :white_check_mark:
@@ -70,7 +70,7 @@ Please consult our [general guidelines](#general-guidance).
   <span> · </span>
   <a href="#api">API</a>
   <span> · </span>
-  <a href="#general-guidance">General guidance</a>
+  <a href="#general-guidelines">General guidelines</a>
   <span> · </span>
   <a href="#contribute">Contribute</a>
   <span> · </span>
@@ -158,13 +158,9 @@ Remember that workers can only send and receive structured-cloneable data.
 
 Node versions >= 16.14.x are supported.
 
-## [API](https://poolifier.github.io/poolifier/)
+## [API](./docs/api.md)
 
-[**API Details**](./docs/api-details.md)
-
-## General Guideline
-
-For general guidelines, please refer to [this document](./docs/general-guidelines.md)
+## [General Guidelines](./docs/general-guidelines.md)
 
 ## Contribute
 
