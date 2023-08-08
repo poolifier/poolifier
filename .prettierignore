@@ -3,6 +3,8 @@ pnpm-lock.yaml
 coverage/
 reports/
 benchmarks/internal/results/
-docs/
+docs/**/*.html
+docs/**/*.css
+docs/**/*.js
 outputs/
 lib/
