@@ -12,6 +12,11 @@
     - [`ClusterPoolOptions extends PoolOptions`](#clusterpooloptions-extends-pooloptions)
 - [Worker](#worker)
   - [`class YourWorker extends ThreadWorker/ClusterWorker`](#class-yourworker-extends-threadworkerclusterworker)
+    - [`YourWorker.hasTaskFunction(name)`](#yourworkerhastaskfunctionname)
+    - [`YourWorker.addTaskFunction(name, fn)`](#yourworkeraddtaskfunctionname-fn)
+    - [`YourWorker.removeTaskFunction(name)`](#yourworkerremovetaskfunctionname)
+    - [`YourWorker.listTaskFunctions()`](#yourworkerlisttaskfunctions)
+    - [`YourWorker.setDefaultTaskFunction(name)`](#yourworkersetdefaulttaskfunctionname)
 
 ## Pool
 
