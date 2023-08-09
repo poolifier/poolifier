@@ -1,9 +1,15 @@
-## General Guidelines
+# General guidelines
 
 Performance is one of the main target of these worker pool implementations, poolifier team wants to have a strong focus on this.  
 Poolifier already has a [benchmarks](./benchmarks/) folder where you can find some comparisons.
 
-### Internal Node.js thread pool
+## Table of contents
+
+- [Internal Node.js thread pool](#internal-nodejs-thread-pool)
+- [Cluster vs Threads worker pools](#cluster-vs-threads-worker-pools)
+- [Fixed vs Dynamic pools](#fixed-vs-dynamic-pools)
+
+## Internal Node.js thread pool
 
 Before to jump into each poolifier pool type, let highlight that **Node.js comes with a thread pool already**, the libuv thread pool where some particular tasks already run by default.  
 Please take a look at [which tasks run on the libuv thread pool](https://nodejs.org/en/docs/guides/dont-block-the-event-loop/#what-code-runs-on-the-worker-pool).
@@ -16,7 +22,7 @@ and/or
 
 - Use poolifier cluster pools that are spawning child processes, they will also increase the number of libuv threads since that any new child process comes with a separated libuv thread pool. **More threads does not mean more fast, so please tune your application**.
 
-### Cluster vs Threads worker pools
+## Cluster vs Threads worker pools
 
 **If your task does not run into libuv thread pool** and is CPU intensive then poolifier **thread pools** (_FixedThreadPool_ and _DynamicThreadPool_) are suggested to run CPU intensive tasks, you can still run I/O intensive tasks into thread pools, but performance enhancement is expected to be minimal.  
 Thread pools are built on top of Node.js [worker_threads](https://nodejs.org/api/worker_threads.html) module.
@@ -28,7 +34,7 @@ Cluster pools are built on top of Node.js [cluster](https://nodejs.org/api/clust
 If your task contains code that runs on libuv plus code that is CPU intensive or I/O intensive you either split it either combine more strategies (i.e. tune the number of libuv threads and use cluster/thread pools).  
 But in general, **always profile your application**.
 
-### Fixed vs Dynamic pools
+## Fixed vs Dynamic pools
 
 To choose your pool consider first that with a _FixedThreadPool_/_FixedClusterPool_ or a _DynamicThreadPool_/_DynamicClusterPool_ your application memory footprint will increase.  
 By doing so, your application will be ready to execute in parallel more tasks, but during idle time your application will consume more memory.  

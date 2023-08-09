@@ -1,8 +1,17 @@
 # Worker choice strategies
 
-All duration or timestamp are expressed in milliseconds.
+## Table of contents
+
+- [Strategies](#strategies)
+  - [Fair share](#fair-share)
+  - [Weighted round robin](#weighted-round-robin)
+  - [Interleaved weighted round robin](#interleaved-weighted-round-robin)
+- [Statistics](#statistics)
+  - [Median](#median)
 
 ## Strategies
+
+All duration or timestamp are expressed in milliseconds.
 
 ### Fair share
 

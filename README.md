@@ -2,7 +2,7 @@
   <img src="./images/logo.png" width="340px" height="266px"/>
 </div>
 
-<h2 align="center">Node Thread Pool and Cluster Pool :arrow_double_up: :on:</h2>
+<h1 align="center">Node Thread Pool and Cluster Pool</h1>
 
 <p align="center">
   <a href="https://github.com/poolifier/poolifier/graphs/commit-activity">
@@ -57,27 +57,18 @@ Please consult our [general guidelines](#general-guidelines).
   [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=sqale_index)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 - Code security [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=security_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 
-## Contents
+## Table of contents
 
-<h3 align="center">
-  <a href="#overview">Overview</a>
-  <span> · </span>
-  <a href="#installation">Installation</a>
-  <span> · </span>
-  <a href="#usage">Usage</a>
-  <span> · </span>
-  <a href="#node-versions">Node versions</a>
-  <span> · </span>
-  <a href="#api">API</a>
-  <span> · </span>
-  <a href="#general-guidelines">General guidelines</a>
-  <span> · </span>
-  <a href="#contribute">Contribute</a>
-  <span> · </span>
-  <a href="#team">Team</a>
-  <span> · </span>
-  <a href="#license">License</a>
-</h3>
+- [Overview](#overview)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Node versions](#node-versions)
+- [API](#api)
+- [General guidelines](#general-guidelines)
+- [Worker choice strategies](#worker-choice-strategies)
+- [Contribute](#contribute)
+- [Team](#team)
+- [License](#license)
 
 ## Overview
 
@@ -160,7 +151,9 @@ Node versions >= 16.14.x are supported.
 
 ## [API](./docs/api.md)
 
-## [General Guidelines](./docs/general-guidelines.md)
+## [General guidelines](./docs/general-guidelines.md)
+
+## [Worker choice strategies](./docs/worker-choice-strategies.md)
 
 ## Contribute
 

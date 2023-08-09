@@ -1,4 +1,19 @@
-## [API](https://poolifier.github.io/poolifier/)
+# [API](https://poolifier.github.io/poolifier/)
+
+## Table of contents
+
+- [Pool](#pool)
+  - [`pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`](#pool--new-fixedthreadpoolfixedclusterpoolnumberofthreadsnumberofworkers-filepath-opts)
+  - [`pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`](#pool--new-dynamicthreadpooldynamicclusterpoolmin-max-filepath-opts)
+  - [`pool.execute(data, name)`](#poolexecutedata-name)
+  - [`pool.destroy()`](#pooldestroy)
+  - [`PoolOptions`](#pooloptions)
+    - [``ThreadPoolOptions extends PoolOptions`](#threadpooloptions-extends-pooloptions)
+    - [`ClusterPoolOptions extends PoolOptions`](#clusterpooloptions-extends-pooloptions)
+- [Worker](#worker)
+  - [`class YourWorker extends ThreadWorker/ClusterWorker`](#class-yourworker-extends-threadworkerclusterworker)
+
+## Pool
 
 ### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
 
@@ -79,6 +94,8 @@ An object with these properties:
 - `env` (optional) - An object with the environment variables to pass to worker. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_fork_env) for more details.
 
 - `settings` (optional) - An object with the cluster settings. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_settings) for more details.
+
+## Worker
 
 ### `class YourWorker extends ThreadWorker/ClusterWorker`
 
