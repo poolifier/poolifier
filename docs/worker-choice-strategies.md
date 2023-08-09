@@ -1,5 +1,7 @@
 # Worker choice strategies
 
+All duration or timestamp are expressed in milliseconds.
+
 ## Table of contents
 
 - [Strategies](#strategies)
@@ -10,8 +12,6 @@
   - [Median](#median)
 
 ## Strategies
-
-All duration or timestamp are expressed in milliseconds.
 
 ### Fair share
 
