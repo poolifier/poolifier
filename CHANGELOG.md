@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Changed
+
+- Structure markdown documentation (PR #811).
+
+## Fixed
+
+- Add missing `types` field to package.json `exports`.
+
 ## [2.6.21] - 2023-08-03
 
 ### Changed
@@ -499,7 +507,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix `exports` syntax for ESM and CommonJS.
+- Fix package.json `exports` syntax for ESM and CommonJS.
 
 ### Changed
 
@@ -509,7 +517,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix `exports` syntax for ESM and CommonJS.
+- Fix package.json `exports` syntax for ESM and CommonJS.
 
 ## [2.3.10-1] - 2023-03-18
 
@@ -521,7 +529,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix `exports` syntax for ESM and CommonJS.
+- Fix package.json `exports` syntax for ESM and CommonJS.
 
 ## [2.3.9] - 2023-03-18
 
@@ -636,7 +644,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking Changes
 
-- Support only NodeJS version 16.x.x for cluster pool: upstream cluster API have changed on that version.
+- Support only Node.js version 16.x.x for cluster pool: upstream cluster API have changed on that version.
 
 ## [2.1.0] - 2021-08-29
 
@@ -702,7 +710,7 @@ const { DynamicThreadPool } = require('poolifier')
 #### New type definitions for input data and response
 
 For cluster worker and worker-thread pools, you can now only send and receive structured-cloneable data.  
-_This is not a limitation by poolifier but NodeJS._
+_This is not a limitation by poolifier but Node.js._
 
 #### Public property replacements
 
