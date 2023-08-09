@@ -8,7 +8,7 @@
   - [`pool.execute(data, name)`](#poolexecutedata-name)
   - [`pool.destroy()`](#pooldestroy)
   - [`PoolOptions`](#pooloptions)
-    - [``ThreadPoolOptions extends PoolOptions`](#threadpooloptions-extends-pooloptions)
+    - [`ThreadPoolOptions extends PoolOptions`](#threadpooloptions-extends-pooloptions)
     - [`ClusterPoolOptions extends PoolOptions`](#clusterpooloptions-extends-pooloptions)
 - [Worker](#worker)
   - [`class YourWorker extends ThreadWorker/ClusterWorker`](#class-yourworker-extends-threadworkerclusterworker)
