@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package",
   "name": "poolifier",
   "version": "2.6.21",
   "description": "Fast and small Node.js Worker_Threads and Cluster Worker Pool",

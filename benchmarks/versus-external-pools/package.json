@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package",
   "name": "poolifier-benchmarks",
   "version": "1.0.0",
   "description": "This project contains benchmarks for the most used and popular Node.js worker_threads/cluster worker pools implementations",
