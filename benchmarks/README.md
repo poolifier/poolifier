@@ -36,7 +36,7 @@ We chose to use this tool because it allows to run isolated Node.js processes so
 
 > :warning: **We would need funds to run our benchmarks more often and on Cloud VMs, please consider to sponsor this project**
 
-Read [README.md](./versus-external-pools/README.md) to know how to run the benchmarks.
+Read [README.md](./versus-external-pools/README.md) to know how to run these benchmarks.
 
 ## Internal
 
