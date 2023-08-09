@@ -1,7 +1,7 @@
 {
   "name": "poolifier-benchmarks",
   "version": "1.0.0",
-  "description": "This project contains benchmarks for the most used and popular Node.js thread/cluster pools implementations",
+  "description": "This project contains benchmarks for the most used and popular Node.js worker_threads/cluster worker pools implementations",
   "private": true,
   "main": "index.js",
   "author": "pioardi",

@@ -2,7 +2,7 @@
   <img src="./images/logo.png" width="340px" height="266px"/>
 </div>
 
-<h1 align="center">Node Thread Pool and Cluster Pool</h1>
+<h1 align="center">Node.js Worker_Threads and Cluster Worker Pool</h1>
 
 <p align="center">
   <a href="https://github.com/poolifier/poolifier/graphs/commit-activity">
