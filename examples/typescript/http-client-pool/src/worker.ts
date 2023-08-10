@@ -44,6 +44,4 @@ class HttpClientWorker extends ThreadWorker<WorkerData, WorkerResponse> {
   }
 }
 
-const httpClientWorker = new HttpClientWorker()
-
-export { httpClientWorker }
+export const httpClientWorker = new HttpClientWorker()

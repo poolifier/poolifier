@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url'
 import { dirname, extname, join } from 'node:path'
-import { FixedThreadPool, availableParallelism } from 'poolifier'
+import { DynamicThreadPool, availableParallelism } from 'poolifier'
 import { type WorkerData, type WorkerResponse } from './types.js'
 
 const workerFile = join(
@@ -8,7 +8,8 @@ const workerFile = join(
   `worker${extname(fileURLToPath(import.meta.url))}`
 )
 
-export const httpClientPool = new FixedThreadPool<WorkerData, WorkerResponse>(
+export const httpClientPool = new DynamicThreadPool<WorkerData, WorkerResponse>(
+  1,
   availableParallelism(),
   workerFile,
   {
