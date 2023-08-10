@@ -1,4 +1,4 @@
-import { dirname, join } from 'path'
+import { dirname, extname, join } from 'path'
 import { fileURLToPath } from 'url'
 import type { MyData, MyResponse } from './worker'
 import {
@@ -7,9 +7,14 @@ import {
   availableParallelism
 } from 'poolifier'
 
+const workerFile = join(
+  dirname(fileURLToPath(import.meta.url)),
+  `worker${extname(fileURLToPath(import.meta.url))}`
+)
+
 export const fixedPool = new FixedThreadPool<MyData, Promise<MyResponse>>(
   availableParallelism(),
-  join(dirname(fileURLToPath(import.meta.url)), 'worker.js'),
+  workerFile,
   {
     errorHandler: (e: Error) => {
       console.error(e)
@@ -23,7 +28,7 @@ export const fixedPool = new FixedThreadPool<MyData, Promise<MyResponse>>(
 export const dynamicPool = new DynamicThreadPool<MyData, Promise<MyResponse>>(
   Math.floor(availableParallelism() / 2),
   availableParallelism(),
-  join(dirname(fileURLToPath(import.meta.url)), 'worker.js'),
+  workerFile,
   {
     errorHandler: (e: Error) => {
       console.error(e)
