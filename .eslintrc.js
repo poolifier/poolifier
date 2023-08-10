@@ -161,7 +161,7 @@ module.exports = defineConfig({
       }
     },
     {
-      files: ['examples/**/*.js'],
+      files: ['examples/javascript/**/*.js'],
       rules: {
         'n/no-missing-require': 'off',
         'jsdoc/require-jsdoc': 'off'

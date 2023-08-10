@@ -143,7 +143,7 @@ You can do the same with the classes _ClusterWorker_, _FixedClusterPool_ and _Dy
 
 **See [examples](./examples/) folder for more details**:
 
-- [Javascript](./examples/)
+- [Javascript](./examples/javascript/)
 - [Typescript](./examples/typescript/)
   - [HTTP client pool](./examples/typescript/http-client/)
 
