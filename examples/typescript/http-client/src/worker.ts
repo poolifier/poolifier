@@ -6,7 +6,7 @@ import {
 } from 'node-fetch'
 import { type WorkerData, type WorkerResponse } from './types.js'
 
-class FetchWorker extends ThreadWorker<WorkerData, WorkerResponse> {
+class HttpClientWorker extends ThreadWorker<WorkerData, WorkerResponse> {
   public constructor () {
     super({
       node_fetch: async (workerData?: WorkerData) => {
@@ -33,6 +33,6 @@ class FetchWorker extends ThreadWorker<WorkerData, WorkerResponse> {
   }
 }
 
-const fetchWorker = new FetchWorker()
+const httpClientWorker = new HttpClientWorker()
 
-export { fetchWorker }
+export { httpClientWorker }
