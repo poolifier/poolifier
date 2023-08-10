@@ -10,8 +10,8 @@
     "pnpm": "8.6.12"
   },
   "scripts": {
-    "build": "pnpm build:clean && npx tsc",
-    "build:clean": "npx tsc --build --clean",
+    "build": "pnpm build:clean && tsc",
+    "build:clean": "tsc --build --clean",
     "start": "node dist/main.js",
     "start:httpd-echo": "node dist/httpd-echo.js",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,3 +1,4 @@
 docs/
-outputs/
+dist/
 lib/
+outputs/
