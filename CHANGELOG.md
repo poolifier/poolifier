@@ -7,15 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix pool busyness semantic when tasks queueing is enabled: the pool is busy when the number of executing tasks on each worker has reached the maximum tasks concurrency per worker.
+
+### Added
+
+- HTTP client pool examples: fetch, node-fetch and axios with multiple task functions.
+- HTTP server pool examples: express.
+
 ## [2.6.22] - 2023-08-10
 
-## Changed
-
-- Structure markdown documentation (PR #811).
-
-## Fixed
+### Fixed
 
 - Add missing `types` field to package.json `exports`.
+
+### Changed
+
+- Structure markdown documentation (PR #811).
 
 ## [2.6.21] - 2023-08-03
 

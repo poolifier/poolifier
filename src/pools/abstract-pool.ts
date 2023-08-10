@@ -615,17 +615,28 @@ export abstract class AbstractPool<
   protected abstract get busy (): boolean
 
   /**
-   * Whether worker nodes are executing at least one task.
+   * Whether worker nodes are executing concurrently their tasks quota or not.
    *
    * @returns Worker nodes busyness boolean status.
    */
   protected internalBusy (): boolean {
-    return (
-      this.workerNodes.findIndex(
-        workerNode =>
-          workerNode.info.ready && workerNode.usage.tasks.executing === 0
-      ) === -1
-    )
+    if (this.opts.enableTasksQueue === true) {
+      return (
+        this.workerNodes.findIndex(
+          workerNode =>
+            workerNode.info.ready &&
+            workerNode.usage.tasks.executing <
+              (this.opts.tasksQueueOptions?.concurrency as number)
+        ) === -1
+      )
+    } else {
+      return (
+        this.workerNodes.findIndex(
+          workerNode =>
+            workerNode.info.ready && workerNode.usage.tasks.executing === 0
+        ) === -1
+      )
+    }
   }
 
   /** @inheritDoc */
