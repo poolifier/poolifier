@@ -5,11 +5,11 @@ import { type WorkerResponse } from './types.js'
 const parallelism = availableParallelism()
 const requestUrl = 'http://localhost:8080/'
 
-for (const workerFunction of ['node_fetch', 'fetch']) {
+for (const workerFunction of ['node_fetch', 'fetch', 'axios']) {
   const fetchPoolPromises = new Set<Promise<WorkerResponse>>()
   for (let i = 0; i < availableParallelism(); i++) {
     fetchPoolPromises.add(
-      fetchPool.execute({ url: requestUrl }, workerFunction)
+      fetchPool.execute({ input: requestUrl }, workerFunction)
     )
   }
   try {
