@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/package",
-  "name": "http-client-node-fetch",
+  "name": "http-client-pool",
   "version": "1.0.0",
-  "description": "multithreaded node-fetch",
+  "description": "HTTP client pool",
   "main": "dist/main.js",
   "type": "module",
   "volta": {

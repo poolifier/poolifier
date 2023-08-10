@@ -141,7 +141,11 @@ pool
 
 You can do the same with the classes _ClusterWorker_, _FixedClusterPool_ and _DynamicClusterPool_.
 
-**See [examples](./examples/) folder for more details (in particular if you want to use a pool with [multiple task functions](./examples/multiFunctionExample.js))**.
+**See [examples](./examples/) folder for more details**:
+
+- [Javascript](./examples/)
+- [Typescript](./examples/typescript/)
+  - [HTTP client pool](./examples/typescript/http-client/)
 
 Remember that workers can only send and receive structured-cloneable data.
 

@@ -8,11 +8,14 @@ const workerFile = join(
   `worker${extname(fileURLToPath(import.meta.url))}`
 )
 
-export const fetchPool = new FixedThreadPool<WorkerData, WorkerResponse>(
+export const httpClientPool = new FixedThreadPool<WorkerData, WorkerResponse>(
   availableParallelism(),
   workerFile,
   {
     enableTasksQueue: true,
+    tasksQueueOptions: {
+      concurrency: 8
+    },
     errorHandler: (e: Error) => {
       console.error(e)
     }

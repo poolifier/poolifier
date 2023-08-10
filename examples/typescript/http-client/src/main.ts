@@ -1,20 +1,20 @@
 import { availableParallelism } from 'poolifier'
-import { fetchPool } from './pool.js'
+import { httpClientPool } from './pool.js'
 import { type WorkerResponse } from './types.js'
 
 const parallelism = availableParallelism()
 const requestUrl = 'http://localhost:8080/'
 
 for (const workerFunction of ['node_fetch', 'fetch', 'axios']) {
-  const fetchPoolPromises = new Set<Promise<WorkerResponse>>()
+  const httpClientPoolPromises = new Set<Promise<WorkerResponse>>()
   for (let i = 0; i < availableParallelism(); i++) {
-    fetchPoolPromises.add(
-      fetchPool.execute({ input: requestUrl }, workerFunction)
+    httpClientPoolPromises.add(
+      httpClientPool.execute({ input: requestUrl }, workerFunction)
     )
   }
   try {
     const now = performance.now()
-    const responses = await Promise.all(fetchPoolPromises)
+    const responses = await Promise.all(httpClientPoolPromises)
     const elapsedTime = performance.now() - now
     console.info(
       `Received in ${elapsedTime.toFixed(2)}ms an array with ${
