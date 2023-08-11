@@ -5,7 +5,7 @@
 - [Pool](#pool)
   - [`pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`](#pool--new-fixedthreadpoolfixedclusterpoolnumberofthreadsnumberofworkers-filepath-opts)
   - [`pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`](#pool--new-dynamicthreadpooldynamicclusterpoolmin-max-filepath-opts)
-  - [`pool.execute(data, name)`](#poolexecutedata-name)
+  - [`pool.execute(data, name, transferList)`](#poolexecutedata-name-transferlist)
   - [`pool.destroy()`](#pooldestroy)
   - [`PoolOptions`](#pooloptions)
     - [`ThreadPoolOptions extends PoolOptions`](#threadpooloptions-extends-pooloptions)
@@ -33,10 +33,11 @@
 `filePath` (mandatory) Path to a file with a worker implementation  
 `opts` (optional) An object with the pool options properties described below
 
-### `pool.execute(data, name)`
+### `pool.execute(data, name, transferList)`
 
 `data` (optional) An object that you want to pass to your worker implementation  
 `name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`
+`transferList` (optional) An array of transferable objects that you want to transfer to your [worker_threads](https://nodejs.org/api/worker_threads.html) worker implementation
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
 

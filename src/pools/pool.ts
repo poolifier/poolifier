@@ -1,4 +1,5 @@
 import { EventEmitter } from 'node:events'
+import { type TransferListItem } from 'node:worker_threads'
 import type {
   ErrorHandler,
   ExitHandler,
@@ -192,11 +193,16 @@ export interface IPool<
   /**
    * Executes the specified function in the worker constructor with the task data input parameter.
    *
-   * @param data - The task input data for the specified task function. This can only be structured-cloneable data.
-   * @param name - The name of the task function to execute. If not specified, the default task function will be executed.
+   * @param data - The optional task input data for the specified task function. This can only be structured-cloneable data.
+   * @param name - The optional name of the task function to execute. If not specified, the default task function will be executed.
+   * @param transferList - An optional array of transferable objects to transfer ownership of. Ownership of the transferred objects is given to the pool's worker_threads worker and they should not be used in the main thread afterwards.
    * @returns Promise that will be fulfilled when the task is completed.
    */
-  readonly execute: (data?: Data, name?: string) => Promise<Response>
+  readonly execute: (
+    data?: Data,
+    name?: string,
+    transferList?: TransferListItem[]
+  ) => Promise<Response>
   /**
    * Terminates all workers in this pool.
    */

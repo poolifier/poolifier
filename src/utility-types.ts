@@ -1,5 +1,5 @@
 import type { EventLoopUtilization } from 'node:perf_hooks'
-import type { MessagePort } from 'node:worker_threads'
+import type { MessagePort, TransferListItem } from 'node:worker_threads'
 import type { KillBehavior } from './worker/worker-options'
 
 /**
@@ -75,6 +75,10 @@ export interface Task<Data = unknown> {
    * Task input data that will be passed to the worker.
    */
   readonly data?: Data
+  /**
+   * Array of transferable objects.
+   */
+  readonly transferList?: TransferListItem[]
   /**
    * Timestamp.
    */

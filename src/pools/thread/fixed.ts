@@ -2,6 +2,7 @@ import {
   type MessageChannel,
   type MessagePort,
   SHARE_ENV,
+  type TransferListItem,
   Worker,
   type WorkerOptions,
   isMainThread
@@ -75,11 +76,12 @@ export class FixedThreadPool<
   /** @inheritDoc */
   protected sendToWorker (
     workerNodeKey: number,
-    message: MessageValue<Data>
+    message: MessageValue<Data>,
+    transferList?: TransferListItem[]
   ): void {
     (
       this.getWorkerInfo(workerNodeKey).messageChannel as MessageChannel
-    ).port1.postMessage(message)
+    ).port1.postMessage(message, transferList)
   }
 
   /** @inheritDoc */
