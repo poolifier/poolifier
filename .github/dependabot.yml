@@ -32,3 +32,39 @@ updates:
       - 'pioardi'
       - 'jerome-benoit'
     versioning-strategy: increase
+  - package-ecosystem: 'npm'
+    directory: '/examples/typescript/http-client-pool'
+    schedule:
+      interval: 'daily'
+    labels:
+      - 'dependencies'
+      - 'examples'
+      - 'nocombine'
+    reviewers:
+      - 'pioardi'
+      - 'jerome-benoit'
+    versioning-strategy: increase
+  - package-ecosystem: 'npm'
+    directory: '/examples/typescript/http-server-pool/express'
+    schedule:
+      interval: 'daily'
+    labels:
+      - 'dependencies'
+      - 'examples'
+      - 'nocombine'
+    reviewers:
+      - 'pioardi'
+      - 'jerome-benoit'
+    versioning-strategy: increase
+  - package-ecosystem: 'npm'
+    directory: '/examples/typescript/http-server-pool/fastify'
+    schedule:
+      interval: 'daily'
+    labels:
+      - 'dependencies'
+      - 'examples'
+      - 'nocombine'
+    reviewers:
+      - 'pioardi'
+      - 'jerome-benoit'
+    versioning-strategy: increase
