@@ -36,8 +36,8 @@ We chose to use this tool because it allows to run isolated Node.js processes so
 
 > :warning: **We would need funds to run our benchmarks more often and on Cloud VMs, please consider to sponsor this project**
 
-Read [README.md](./versus-external-pools/README.md) to know how to run these benchmarks.
+Read the [README.md](./versus-external-pools/README.md) to know how to run these benchmarks.
 
-## Internal
+## Poolifier internal benchmark
 
 To run the internal benchmarks, you just need to navigate to the root of poolifier project and run `pnpm benchmark`
