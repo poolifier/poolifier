@@ -28,17 +28,15 @@ await fastify.register(fastifyPoolifier, {
   }
 })
 
-fastify.all('/api/echo', async (request, reply) => {
-  await reply.send((await fastify.execute({ body: request.body }, 'echo')).body)
+fastify.all('/api/echo', async request => {
+  return (await fastify.execute({ body: request.body }, 'echo')).body
 })
 
 fastify.get<{
   Params: { number: number }
-}>('/api/factorial/:number', async (request, reply) => {
+}>('/api/factorial/:number', async request => {
   const { number } = request.params
-  await reply.send(
-    (await fastify.execute({ body: { number } }, 'factorial')).body
-  )
+  return (await fastify.execute({ body: { number } }, 'factorial')).body
 })
 
 try {
