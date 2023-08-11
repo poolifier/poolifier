@@ -1,4 +1,4 @@
-import { DynamicThreadPool } from 'poolifier'
+import { DynamicThreadPool, availableParallelism } from 'poolifier'
 import { type FastifyPluginCallback } from 'fastify'
 import fp from 'fastify-plugin'
 import {
@@ -12,9 +12,16 @@ const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
   options,
   done
 ) => {
+  options = {
+    ...{
+      minWorkers: 1,
+      maxWorkers: availableParallelism()
+    },
+    ...options
+  }
   const pool = new DynamicThreadPool<WorkerData, WorkerResponse>(
-    options.minWorkers,
-    options.maxWorkers,
+    options.minWorkers as number,
+    options.maxWorkers as number,
     options.workerFile,
     options
   )
