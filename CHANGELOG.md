@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.23] - 2023-08-11
+
 ### Fixed
 
 - Fix pool busyness semantic when tasks queueing is enabled: the pool is busy when the number of executing tasks on each worker has reached the maximum tasks concurrency per worker.
