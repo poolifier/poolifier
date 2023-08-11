@@ -27,6 +27,16 @@ expressApp.all('/api/echo', (req: Request, res: Response) => {
     .catch(emptyFunction)
 })
 
+expressApp.get('/api/factorial/:number', (req: Request, res: Response) => {
+  const { number } = req.params
+  requestHandlerPool
+    .execute({ body: { number } }, 'factorial')
+    .then(response => {
+      return res.send(response.body).end()
+    })
+    .catch(emptyFunction)
+})
+
 try {
   expressApp.listen(port, () => {
     console.info(

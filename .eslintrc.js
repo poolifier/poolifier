@@ -73,6 +73,7 @@ module.exports = defineConfig({
           'poolifier',
           'poolify',
           'readonly',
+          'req',
           'resize',
           'sinon',
           'threadjs',

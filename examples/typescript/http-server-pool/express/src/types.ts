@@ -1,3 +1,7 @@
+export interface BodyPayload {
+  number?: number
+}
+
 export interface WorkerData<T = unknown> {
   body: T
 }
