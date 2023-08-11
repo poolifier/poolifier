@@ -124,7 +124,9 @@ module.exports = defineConfig({
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',
         '@typescript-eslint/no-unnecessary-type-assertion': 'off',
-        '@typescript-eslint/restrict-template-expressions': 'off'
+        '@typescript-eslint/strict-boolean-expressions': 'off',
+        '@typescript-eslint/restrict-template-expressions': 'off',
+        '@typescript-eslint/return-await': 'off'
       }
     },
     {

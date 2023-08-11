@@ -11,7 +11,7 @@ const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
   fastify,
   options,
   done
-): void => {
+) => {
   const pool = new DynamicThreadPool<WorkerData, WorkerResponse>(
     options.minWorkers,
     options.maxWorkers,
