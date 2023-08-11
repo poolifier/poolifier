@@ -2,12 +2,12 @@ import { availableParallelism } from 'poolifier'
 import { httpClientPool } from './pool.js'
 import { type WorkerResponse } from './types.js'
 
-const parallelism = availableParallelism()
+const parallelism = availableParallelism() * 2
 const requestUrl = 'http://localhost:8080/'
 
 for (const workerFunction of ['node_fetch', 'fetch', 'axios']) {
   const httpClientPoolPromises = new Set<Promise<WorkerResponse>>()
-  for (let i = 0; i < availableParallelism(); i++) {
+  for (let i = 0; i < parallelism; i++) {
     httpClientPoolPromises.add(
       httpClientPool.execute({ input: requestUrl }, workerFunction)
     )
