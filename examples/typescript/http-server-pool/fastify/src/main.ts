@@ -1,7 +1,6 @@
 import { dirname, extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import Fastify from 'fastify'
-import { availableParallelism } from 'poolifier'
 import { fastifyPoolifier } from './fastify-poolifier.js'
 
 /**
@@ -20,8 +19,6 @@ const workerFile = join(
 
 await fastify.register(fastifyPoolifier, {
   workerFile,
-  minWorkers: 1,
-  maxWorkers: availableParallelism(),
   enableTasksQueue: true,
   tasksQueueOptions: {
     concurrency: 8
