@@ -24,7 +24,7 @@ await fastify.register(fastifyPoolifier, {
     concurrency: 8
   },
   errorHandler: (e: Error) => {
-    console.error(e)
+    fastify.log.error(e)
   }
 })
 
