@@ -31,10 +31,14 @@ fastify.all('/api/echo', async (request, reply) => {
   await reply.send((await fastify.execute({ body: request.body }, 'echo')).body)
 })
 
-// fastify.get('/api/factorial/:number', async (request, reply) => {
-//   const { number } = request.params
-//   await reply.send((await fastify.execute({ body: { number } }, 'factorial')).body)
-// })
+fastify.get<{
+  Params: { number: number }
+}>('/api/factorial/:number', async (request, reply) => {
+  const { number } = request.params
+  await reply.send(
+    (await fastify.execute({ body: { number } }, 'factorial')).body
+  )
+})
 
 try {
   await fastify.listen({ port })
