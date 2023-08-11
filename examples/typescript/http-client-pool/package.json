@@ -6,7 +6,7 @@
   "main": "dist/main.js",
   "type": "module",
   "volta": {
-    "node": "20.5.0",
+    "node": "20.5.1",
     "pnpm": "8.6.12"
   },
   "scripts": {
