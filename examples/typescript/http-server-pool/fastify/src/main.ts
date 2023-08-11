@@ -4,6 +4,10 @@ import Fastify from 'fastify'
 import { availableParallelism } from 'poolifier'
 import { fastifyPoolifier } from './fastify-poolifier.js'
 
+/**
+ * The fastify server is still a single-threaded application, but the request handling can be multi-threaded.
+ */
+
 const port = 8080
 const fastify = Fastify({
   logger: true
