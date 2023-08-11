@@ -27,8 +27,13 @@ expressApp.all('/api/echo', (req: Request, res: Response) => {
     .catch(emptyFunction)
 })
 
-expressApp.listen(port, () => {
-  console.info(
-    `⚡️[express server]: Express server is started at http://localhost:${port}/`
-  )
-})
+try {
+  expressApp.listen(port, () => {
+    console.info(
+      `⚡️[express server]: Express server is started at http://localhost:${port}/`
+    )
+  })
+} catch (err) {
+  console.error(err)
+  process.exit(1)
+}

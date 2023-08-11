@@ -1,14 +1,20 @@
 import { ThreadWorker } from 'poolifier'
 import { type WorkerData, type WorkerResponse } from './types.js'
 
-class RequestHandlerWorker extends ThreadWorker<WorkerData, WorkerResponse> {
+class RequestHandlerWorker<
+  Data extends WorkerData,
+  Response extends WorkerResponse
+> extends ThreadWorker<Data, Response> {
   public constructor () {
     super({
-      echo: (workerData?: WorkerData) => {
-        return workerData as WorkerResponse
+      echo: (workerData?: Data) => {
+        return workerData as unknown as Response
       }
     })
   }
 }
 
-export const requestHandlerWorker = new RequestHandlerWorker()
+export const requestHandlerWorker = new RequestHandlerWorker<
+WorkerData,
+WorkerResponse
+>()

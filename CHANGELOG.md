@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - HTTP client pool examples: fetch, node-fetch and axios with multiple task functions.
-- HTTP server pool examples: express.
+- HTTP server pool examples: express, fastify.
 
 ## [2.6.22] - 2023-08-10
 
