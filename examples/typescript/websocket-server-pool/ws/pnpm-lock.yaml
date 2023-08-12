@@ -22,7 +22,7 @@ optionalDependencies:
 
 devDependencies:
   '@types/node':
-    specifier: ^20.4.9
+    specifier: ^20.4.10
     version: 20.4.10
   '@types/ws':
     specifier: ^8.5.5
