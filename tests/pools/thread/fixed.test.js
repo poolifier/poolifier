@@ -155,6 +155,19 @@ describe('Fixed thread pool test suite', () => {
     expect(result).toStrictEqual(data)
   })
 
+  it('Verify that transferable objects are sent to the worker correctly', async () => {
+    const transferList = [new ArrayBuffer(16), new MessageChannel().port1]
+    let error
+    let result
+    try {
+      result = await pool.execute(undefined, undefined, transferList)
+    } catch (e) {
+      error = e
+    }
+    expect(result).toStrictEqual({ ok: 1 })
+    expect(error).toBeUndefined()
+  })
+
   it('Verify that error handling is working properly:sync', async () => {
     const data = { f: 10 }
     let taskError
