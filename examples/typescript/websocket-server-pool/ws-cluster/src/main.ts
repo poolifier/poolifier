@@ -12,31 +12,29 @@ const pool = new FixedClusterPool<WorkerData, WorkerResponse>(
   availableParallelism(),
   workerFile,
   {
+    onlineHandler: () => {
+      pool
+        .execute({ port: 8080 })
+        .then(response => {
+          if (response.status) {
+            console.info(
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `WebSocket server is listening on worker on port ${response.port}`
+            )
+          } else {
+            console.error(
+              'WebSocket server failed to start on worker:',
+              response.error
+            )
+          }
+          return null
+        })
+        .catch(error => {
+          console.error(error)
+        })
+    },
     errorHandler: (e: Error) => {
       console.error(e)
     }
   }
 )
-
-// Start one ws server instance per cluster worker in the pool
-for (let i = 1; i <= pool.info.maxSize; i++) {
-  pool
-    .execute({ port: 8080 })
-    .then(response => {
-      if (response.status) {
-        console.info(
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          `WebSocket server is listening on worker ${i} on port ${response.port}`
-        )
-      } else {
-        console.error(
-          `WebSocket server failed to start on worker ${i}:`,
-          response.error
-        )
-      }
-      return null
-    })
-    .catch(error => {
-      console.error(error)
-    })
-}
