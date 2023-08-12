@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/package",
   "name": "fastify-plugin-request-pool",
   "version": "1.0.0",
-  "description": "fastify plugin request pool",
+  "description": "Fastify plugin request pool",
   "main": "dist/main.js",
   "type": "module",
   "volta": {
@@ -21,7 +21,7 @@
   "dependencies": {
     "fastify": "^4.21.0",
     "fastify-plugin": "^4.5.1",
-    "poolifier": "^2.6.23"
+    "poolifier": "^2.6.24"
   },
   "devDependencies": {
     "@types/node": "^20.4.10",

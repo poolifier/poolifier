@@ -1,3 +1,4 @@
+import type { TransferListItem } from 'worker_threads'
 import { DynamicThreadPool, availableParallelism } from 'poolifier'
 import { type FastifyPluginCallback } from 'fastify'
 import fp from 'fastify-plugin'
@@ -31,8 +32,11 @@ const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
   if (!fastify.hasDecorator('execute')) {
     fastify.decorate(
       'execute',
-      async (data?: WorkerData, name?: string): Promise<WorkerResponse> =>
-        await pool.execute(data, name)
+      async (
+        data?: WorkerData,
+        name?: string,
+        transferList?: TransferListItem[]
+      ): Promise<WorkerResponse> => await pool.execute(data, name, transferList)
     )
   }
   done()

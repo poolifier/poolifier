@@ -45,7 +45,7 @@ updates:
       - 'jerome-benoit'
     versioning-strategy: increase
   - package-ecosystem: 'npm'
-    directory: '/examples/typescript/http-server-pool/express'
+    directory: '/examples/typescript/http-server-pool/express-worker_threads'
     schedule:
       interval: 'daily'
     labels:
@@ -57,7 +57,7 @@ updates:
       - 'jerome-benoit'
     versioning-strategy: increase
   - package-ecosystem: 'npm'
-    directory: '/examples/typescript/http-server-pool/fastify'
+    directory: '/examples/typescript/http-server-pool/fastify-worker_threads'
     schedule:
       interval: 'daily'
     labels:
@@ -69,7 +69,19 @@ updates:
       - 'jerome-benoit'
     versioning-strategy: increase
   - package-ecosystem: 'npm'
-    directory: '/examples/typescript/websocket-server-pool/ws'
+    directory: '/examples/typescript/http-server-pool/fastify-cluster'
+    schedule:
+      interval: 'daily'
+    labels:
+      - 'dependencies'
+      - 'examples'
+      - 'nocombine'
+    reviewers:
+      - 'pioardi'
+      - 'jerome-benoit'
+    versioning-strategy: increase
+  - package-ecosystem: 'npm'
+    directory: '/examples/typescript/websocket-server-pool/ws-worker_threads'
     schedule:
       interval: 'daily'
     labels:
