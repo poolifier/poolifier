@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/package",
-  "name": "fastify-plugin-request-pool",
+  "name": "ws-request-pool",
   "version": "1.0.0",
-  "description": "fastify plugin request pool",
+  "description": "ws request pool",
   "main": "dist/main.js",
   "type": "module",
   "volta": {
@@ -19,12 +19,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^4.21.0",
-    "fastify-plugin": "^4.5.1",
-    "poolifier": "^2.6.23"
+    "poolifier": "^2.6.23",
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "@types/node": "^20.4.9",
+    "@types/ws": "^8.5.5",
     "typescript": "^5.1.6"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.7",
+    "utf-8-validate": "^6.0.3"
   }
 }

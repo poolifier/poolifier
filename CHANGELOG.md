@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add array of transferable objects to the `execute()` method arguments.
+- WebSocket server pool examples: ws
 
 ## [2.6.23] - 2023-08-11
 

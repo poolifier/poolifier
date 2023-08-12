@@ -2,7 +2,7 @@ import { dirname, extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { DynamicThreadPool, availableParallelism } from 'poolifier'
 import {
-  type BodyPayload,
+  type DataPayload,
   type WorkerData,
   type WorkerResponse
 } from './types.js'
@@ -13,8 +13,8 @@ const workerFile = join(
 )
 
 export const requestHandlerPool = new DynamicThreadPool<
-WorkerData<BodyPayload>,
-WorkerResponse<BodyPayload>
+WorkerData<DataPayload>,
+WorkerResponse<DataPayload>
 >(1, availableParallelism(), workerFile, {
   enableTasksQueue: true,
   tasksQueueOptions: {

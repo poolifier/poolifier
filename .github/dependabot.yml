@@ -68,3 +68,15 @@ updates:
       - 'pioardi'
       - 'jerome-benoit'
     versioning-strategy: increase
+  - package-ecosystem: 'npm'
+    directory: '/examples/typescript/websocket-server-pool/ws'
+    schedule:
+      interval: 'daily'
+    labels:
+      - 'dependencies'
+      - 'examples'
+      - 'nocombine'
+    reviewers:
+      - 'pioardi'
+      - 'jerome-benoit'
+    versioning-strategy: increase
