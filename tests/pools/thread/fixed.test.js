@@ -156,16 +156,29 @@ describe('Fixed thread pool test suite', () => {
   })
 
   it('Verify that transferable objects are sent to the worker correctly', async () => {
-    const transferList = [new ArrayBuffer(16), new MessageChannel().port1]
     let error
     let result
     try {
-      result = await pool.execute(undefined, undefined, transferList)
+      result = await pool.execute(undefined, undefined, [
+        new ArrayBuffer(16),
+        new MessageChannel().port1
+      ])
     } catch (e) {
       error = e
     }
     expect(result).toStrictEqual({ ok: 1 })
     expect(error).toBeUndefined()
+    try {
+      result = await pool.execute(undefined, undefined, [
+        new SharedArrayBuffer(16)
+      ])
+    } catch (e) {
+      error = e
+    }
+    expect(result).toStrictEqual({ ok: 1 })
+    expect(error).toStrictEqual(
+      new TypeError('Found invalid object in transferList')
+    )
   })
 
   it('Verify that error handling is working properly:sync', async () => {
