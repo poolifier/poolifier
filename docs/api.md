@@ -36,7 +36,7 @@
 ### `pool.execute(data, name, transferList)`
 
 `data` (optional) An object that you want to pass to your worker implementation  
-`name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`
+`name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
 `transferList` (optional) An array of transferable objects that you want to transfer to your [worker_threads](https://nodejs.org/api/worker_threads.html) worker implementation
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
