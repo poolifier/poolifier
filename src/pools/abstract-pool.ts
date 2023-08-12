@@ -28,13 +28,12 @@ import {
   PoolTypes,
   type TasksQueueOptions
 } from './pool'
-import {
-  type IWorker,
-  type IWorkerNode,
-  type WorkerInfo,
-  type WorkerType,
-  WorkerTypes,
-  type WorkerUsage
+import type {
+  IWorker,
+  IWorkerNode,
+  WorkerInfo,
+  WorkerType,
+  WorkerUsage
 } from './worker'
 import {
   type MeasurementStatisticsRequirements,
@@ -1171,13 +1170,7 @@ export abstract class AbstractPool<
    */
   private executeTask (workerNodeKey: number, task: Task<Data>): void {
     this.beforeTaskExecutionHook(workerNodeKey, task)
-    this.sendToWorker(
-      workerNodeKey,
-      task,
-      this.worker === WorkerTypes.thread && task.transferList != null
-        ? task.transferList
-        : undefined
-    )
+    this.sendToWorker(workerNodeKey, task, task.transferList)
   }
 
   private enqueueTask (workerNodeKey: number, task: Task<Data>): number {
