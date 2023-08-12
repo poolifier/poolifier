@@ -16,10 +16,11 @@ const factorial: (n: number) => number = n => {
 }
 
 const startWebSocketServer = (workerData?: WorkerData): WorkerResponse => {
-  const wss = new WebSocketServer({ port: workerData?.port }, () => {
+  const { port } = workerData as WorkerData
+  const wss = new WebSocketServer({ port }, () => {
     console.info(
       `⚡️[ws server]: WebSocket server is started on worker at ws://localhost:${
-        workerData?.port as number
+        port
       }/`
     )
   })

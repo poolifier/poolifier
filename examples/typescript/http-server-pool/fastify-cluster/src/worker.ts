@@ -13,6 +13,7 @@ const factorial: (n: number) => number = n => {
 const startFastify = async (
   workerData?: WorkerData
 ): Promise<WorkerResponse> => {
+  const { port } = workerData as WorkerData
   const fastify = Fastify({
     logger: true
   })
@@ -28,7 +29,7 @@ const startFastify = async (
     return { number: factorial(number) }
   })
 
-  await fastify.listen({ port: workerData?.port })
+  await fastify.listen({ port })
   return {
     status: true,
     port: (fastify.server.address() as AddressInfo).port
