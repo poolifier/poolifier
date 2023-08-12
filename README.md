@@ -149,7 +149,7 @@ You can do the same with the classes _ClusterWorker_, _FixedClusterPool_ and _Dy
   - [HTTP server pool](./examples/typescript/http-server-pool/)
     - [Express](./examples/typescript/http-server-pool/express/)
     - [Fastify](./examples/typescript/http-server-pool/fastify/)
-  - [Websocket server pool](./examples/typescript/websocket-server-pool/)
+  - [WebSocket server pool](./examples/typescript/websocket-server-pool/)
     - [ws](./examples/typescript/websocket-server-pool/ws/)
 
 Remember that workers can only send and receive structured-cloneable data.
