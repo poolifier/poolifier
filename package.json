@@ -31,7 +31,7 @@
     "lint:fix": "eslint . --cache --fix",
     "lint:report": "eslint . --cache --format json --output-file reports/eslint.json",
     "release": "release-it",
-    "typedoc": "mkdir ./tmp && cp ./docs/*.md ./tmp && typedoc && cp ./tmp/*.md ./docs && rm -rf ./tmp",
+    "typedoc": "node typedoc.mjs",
     "prepublishOnly": "pnpm build:prod"
   },
   "ts-standard": {

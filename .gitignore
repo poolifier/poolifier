@@ -77,5 +77,6 @@ package-lock.json
 *.bak
 lib
 dist
+tmp
 reports/
 benchmarks/internal/results/

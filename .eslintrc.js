@@ -66,6 +66,7 @@ module.exports = defineConfig({
           'jsdoc',
           'microjob',
           'mjs',
+          'npx',
           'num',
           'os',
           'perf',
