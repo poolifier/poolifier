@@ -5,7 +5,7 @@ import { requestHandlerPool } from './pool.js'
 const port = 8080
 const wss = new WebSocketServer({ port }, () => {
   console.info(
-    `⚡️[ws server]: WebSocket server is started at http://localhost:${port}/`
+    `⚡️[ws server]: WebSocket server is started at ws://localhost:${port}/`
   )
 })
 

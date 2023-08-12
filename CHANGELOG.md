@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- HTTP server pool examples: fastify-cluster.
+- WebSocket server pool examples: ws-cluster
+
 ## [2.6.24] - 2023-08-12
 
 ### Added

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json.schemastore.org/package",
+  "name": "ws-cluster-pool",
+  "version": "1.0.0",
+  "description": "ws cluster pool",
+  "main": "dist/main.js",
+  "type": "module",
+  "volta": {
+    "node": "20.5.1",
+    "pnpm": "8.6.12"
+  },
+  "scripts": {
+    "build": "rollup --config",
+    "start": "node dist/main.cjs",
+    "start:esm": "node dist/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "poolifier": "^2.6.24",
+    "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.2",
+    "@types/node": "^20.4.10",
+    "@types/ws": "^8.5.5",
+    "rollup": "^3.28.0",
+    "rollup-plugin-delete": "^2.0.0",
+    "tslib": "^2.6.1",
+    "typescript": "^5.1.6"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.7",
+    "utf-8-validate": "^6.0.3"
+  }
+}

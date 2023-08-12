@@ -64,6 +64,7 @@ module.exports = defineConfig({
           'fs',
           'inheritDoc',
           'jsdoc',
+          'localhost',
           'microjob',
           'mjs',
           'npx',
@@ -89,6 +90,8 @@ module.exports = defineConfig({
           'unregister',
           'utf8',
           'workerpool',
+          'ws',
+          'wss',
           'wwr'
         ],
         skipIfMatch: ['^@.*', '^plugin:.*']

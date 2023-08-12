@@ -152,6 +152,7 @@ You can do the same with the classes _ClusterWorker_, _FixedClusterPool_ and _Dy
     - [Fastify cluster pool](./examples/typescript/http-server-pool/fastify-cluster/)
   - [WebSocket server pool](./examples/typescript/websocket-server-pool/)
     - [ws worker_threads pool](./examples/typescript/websocket-server-pool/ws-worker_threads/)
+    - [ws cluster pool](./examples/typescript/websocket-server-pool/ws-cluster/)
 
 Remember that workers can only send and receive structured-cloneable data.
 
