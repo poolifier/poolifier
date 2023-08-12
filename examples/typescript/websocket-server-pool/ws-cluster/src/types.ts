@@ -19,5 +19,4 @@ export interface WorkerData {
 export interface WorkerResponse {
   status: boolean
   port?: number
-  error?: Error
 }

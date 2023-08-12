@@ -16,51 +16,44 @@ const factorial: (n: number) => number = n => {
 }
 
 const startWebSocketServer = (workerData?: WorkerData): WorkerResponse => {
-  try {
-    const wss = new WebSocketServer({ port: workerData?.port }, () => {
-      console.info(
-        `⚡️[ws server]: WebSocket server is started on worker at ws://localhost:${
-          workerData?.port as number
-        }/`
-      )
-    })
+  const wss = new WebSocketServer({ port: workerData?.port }, () => {
+    console.info(
+      `⚡️[ws server]: WebSocket server is started on worker at ws://localhost:${
+        workerData?.port as number
+      }/`
+    )
+  })
 
-    wss.on('connection', ws => {
-      ws.on('error', console.error)
-      ws.on('message', (message: RawData) => {
-        const { type, data } = JSON.parse(
-          // eslint-disable-next-line @typescript-eslint/no-base-to-string
-          message.toString()
-        ) as MessagePayload<DataPayload>
-        switch (type) {
-          case MessageType.echo:
-            ws.send(
-              JSON.stringify({
-                type: MessageType.echo,
-                data
-              })
-            )
-            break
-          case MessageType.factorial:
-            ws.send(
-              JSON.stringify({
-                type: MessageType.factorial,
-                data: { number: factorial(data.number as number) }
-              })
-            )
-            break
-        }
-      })
+  wss.on('connection', ws => {
+    ws.on('error', console.error)
+    ws.on('message', (message: RawData) => {
+      const { type, data } = JSON.parse(
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
+        message.toString()
+      ) as MessagePayload<DataPayload>
+      switch (type) {
+        case MessageType.echo:
+          ws.send(
+            JSON.stringify({
+              type: MessageType.echo,
+              data
+            })
+          )
+          break
+        case MessageType.factorial:
+          ws.send(
+            JSON.stringify({
+              type: MessageType.factorial,
+              data: { number: factorial(data.number as number) }
+            })
+          )
+          break
+      }
     })
-    return {
-      status: true,
-      port: wss.options.port
-    }
-  } catch (err) {
-    return {
-      status: false,
-      error: err as Error
-    }
+  })
+  return {
+    status: true,
+    port: wss.options.port
   }
 }
 

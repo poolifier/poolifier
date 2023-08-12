@@ -28,18 +28,10 @@ const startFastify = async (
     return { number: factorial(number) }
   })
 
-  try {
-    await fastify.listen({ port: workerData?.port })
-    return {
-      status: true,
-      port: (fastify.server.address() as AddressInfo).port
-    }
-  } catch (err) {
-    fastify.log.error(err)
-    return {
-      status: false,
-      error: err as Error
-    }
+  await fastify.listen({ port: workerData?.port })
+  return {
+    status: true,
+    port: (fastify.server.address() as AddressInfo).port
   }
 }
 
