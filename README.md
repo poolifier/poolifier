@@ -150,6 +150,7 @@ You can do the same with the classes _ClusterWorker_, _FixedClusterPool_ and _Dy
     - [Express worker_threads pool](./examples/typescript/http-server-pool/express-worker_threads/)
     - [Fastify worker_threads pool](./examples/typescript/http-server-pool/fastify-worker_threads/)
     - [Fastify cluster pool](./examples/typescript/http-server-pool/fastify-cluster/)
+    - [Fastify hybrid pool](./examples/typescript/http-server-pool/fastify-hybrid/)
   - [WebSocket server pool](./examples/typescript/websocket-server-pool/)
     - [ws worker_threads pool](./examples/typescript/websocket-server-pool/ws-worker_threads/)
     - [ws cluster pool](./examples/typescript/websocket-server-pool/ws-cluster/)

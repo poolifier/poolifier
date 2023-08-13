@@ -1,16 +1,16 @@
 import { dirname, extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { FixedClusterPool, availableParallelism } from 'poolifier'
-import type { WorkerData, WorkerResponse } from './types.js'
+import type { ClusterWorkerData, ClusterWorkerResponse } from './types.js'
 
-const workerFile = join(
+const fastifyWorkerFile = join(
   dirname(fileURLToPath(import.meta.url)),
-  `worker${extname(fileURLToPath(import.meta.url))}`
+  `fastify-worker${extname(fileURLToPath(import.meta.url))}`
 )
 
-const pool = new FixedClusterPool<WorkerData, WorkerResponse>(
-  availableParallelism(),
-  workerFile,
+const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(
+  Math.round(availableParallelism() / 2),
+  fastifyWorkerFile,
   {
     onlineHandler: () => {
       pool

@@ -81,6 +81,18 @@ updates:
       - 'jerome-benoit'
     versioning-strategy: increase
   - package-ecosystem: 'npm'
+    directory: '/examples/typescript/http-server-pool/fastify-hybrid'
+    schedule:
+      interval: 'daily'
+    labels:
+      - 'dependencies'
+      - 'examples'
+      - 'nocombine'
+    reviewers:
+      - 'pioardi'
+      - 'jerome-benoit'
+    versioning-strategy: increase
+  - package-ecosystem: 'npm'
     directory: '/examples/typescript/websocket-server-pool/ws-worker_threads'
     schedule:
       interval: 'daily'

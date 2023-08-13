@@ -24,7 +24,7 @@ await fastify.register(fastifyPoolifier, {
     concurrency: 8
   },
   errorHandler: (e: Error) => {
-    fastify.log.error(e)
+    fastify.log.error('Thread worker error:', e)
   }
 })
 

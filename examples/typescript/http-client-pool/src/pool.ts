@@ -18,7 +18,7 @@ export const httpClientPool = new DynamicThreadPool<WorkerData, WorkerResponse>(
       concurrency: 8
     },
     errorHandler: (e: Error) => {
-      console.error(e)
+      console.error('Thread worker error:', e)
     }
   }
 )
