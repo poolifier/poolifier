@@ -21,7 +21,7 @@ const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(
       pool
         .execute({
           port: 8080,
-          maxWorkers: Math.round(availableParallelism() / 2),
+          maxWorkers: Math.round(availableParallelism() / 4),
           workerFile: requestHandlerWorkerFile,
           enableTasksQueue: true,
           tasksQueueOptions: {
