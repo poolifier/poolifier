@@ -8,13 +8,29 @@ const webSocketServerWorkerFile = join(
   `websocket-server-worker${extname(fileURLToPath(import.meta.url))}`
 )
 
+const requestHandlerWorkerFile = join(
+  dirname(fileURLToPath(import.meta.url)),
+  `request-handler-worker${extname(fileURLToPath(import.meta.url))}`
+)
+
 const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(
   Math.round(availableParallelism() / 2),
   webSocketServerWorkerFile,
   {
     onlineHandler: () => {
       pool
-        .execute({ port: 8080 })
+        .execute({
+          port: 8080,
+          maxWorkers: Math.round(availableParallelism() / 2),
+          workerFile: requestHandlerWorkerFile,
+          enableTasksQueue: true,
+          tasksQueueOptions: {
+            concurrency: 8
+          },
+          errorHandler: (e: Error) => {
+            console.error('Thread worker error:', e)
+          }
+        })
         .then(response => {
           if (response.status) {
             console.info(

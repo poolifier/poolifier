@@ -1,5 +1,3 @@
-import { dirname, extname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import {
   ClusterWorker,
   DynamicThreadPool,
@@ -34,6 +32,15 @@ ClusterWorkerResponse
       )
     })
 
+    WebSocketServerWorker.requestHandlerPool = new DynamicThreadPool<
+    ThreadWorkerData<DataPayload>,
+    ThreadWorkerResponse<DataPayload>
+    >(
+      workerData?.minWorkers ?? 1,
+      workerData?.maxWorkers ?? availableParallelism(),
+      workerData?.workerFile as string
+    )
+
     wss.on('connection', ws => {
       ws.on('error', console.error)
       ws.on('message', (message: RawData) => {
@@ -43,7 +50,7 @@ ClusterWorkerResponse
         ) as MessagePayload<DataPayload>
         switch (type) {
           case MessageType.echo:
-            this.requestHandlerPool
+            WebSocketServerWorker.requestHandlerPool
               .execute({ data }, 'echo')
               .then(response => {
                 ws.send(
@@ -57,7 +64,7 @@ ClusterWorkerResponse
               .catch(emptyFunction)
             break
           case MessageType.factorial:
-            this.requestHandlerPool
+            WebSocketServerWorker.requestHandlerPool
               .execute({ data }, 'factorial')
               .then(response => {
                 ws.send(
@@ -79,28 +86,10 @@ ClusterWorkerResponse
     }
   }
 
-  private static readonly requestHandlerWorkerFile = join(
-    dirname(fileURLToPath(import.meta.url)),
-    `request-handler-worker${extname(fileURLToPath(import.meta.url))}`
-  )
-
-  private static readonly requestHandlerPool = new DynamicThreadPool<
+  private static requestHandlerPool: DynamicThreadPool<
   ThreadWorkerData<DataPayload>,
   ThreadWorkerResponse<DataPayload>
-  >(
-    1,
-    Math.round(availableParallelism() / 2),
-    WebSocketServerWorker.requestHandlerWorkerFile,
-    {
-      enableTasksQueue: true,
-      tasksQueueOptions: {
-        concurrency: 8
-      },
-      errorHandler: (e: Error) => {
-        console.error('Thread worker error:', e)
-      }
-    }
-  )
+  >
 
   public constructor () {
     super(WebSocketServerWorker.startWebSocketServer)

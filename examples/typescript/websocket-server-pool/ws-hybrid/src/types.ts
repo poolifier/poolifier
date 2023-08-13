@@ -1,3 +1,5 @@
+import type { ThreadPoolOptions } from 'poolifier'
+
 export enum MessageType {
   echo = 'echo',
   factorial = 'factorial'
@@ -12,8 +14,11 @@ export interface DataPayload {
   number?: number
 }
 
-export interface ClusterWorkerData {
+export interface ClusterWorkerData extends ThreadPoolOptions {
   port: number
+  workerFile: string
+  minWorkers?: number
+  maxWorkers?: number
 }
 
 export interface ClusterWorkerResponse {
