@@ -31,7 +31,7 @@ const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(
             console.error('Thread worker error:', e)
           }
         })
-        .then(response => {
+        .then((response) => {
           if (response.status) {
             console.info(
               // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -40,7 +40,7 @@ const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(
           }
           return null
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(
             'WebSocket server failed to start in cluster worker:',
             error

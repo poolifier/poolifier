@@ -10,7 +10,7 @@ describe('Fixed cluster pool test suite', () => {
     numberOfWorkers,
     './tests/worker-files/cluster/testWorker.js',
     {
-      errorHandler: e => console.error(e)
+      errorHandler: (e) => console.error(e)
     }
   )
   const queuePool = new FixedClusterPool(
@@ -21,7 +21,7 @@ describe('Fixed cluster pool test suite', () => {
       tasksQueueOptions: {
         concurrency: tasksConcurrency
       },
-      errorHandler: e => console.error(e)
+      errorHandler: (e) => console.error(e)
     }
   )
   const emptyPool = new FixedClusterPool(
@@ -37,14 +37,14 @@ describe('Fixed cluster pool test suite', () => {
     numberOfWorkers,
     './tests/worker-files/cluster/errorWorker.js',
     {
-      errorHandler: e => console.error(e)
+      errorHandler: (e) => console.error(e)
     }
   )
   const asyncErrorPool = new FixedClusterPool(
     numberOfWorkers,
     './tests/worker-files/cluster/asyncErrorWorker.js',
     {
-      errorHandler: e => console.error(e)
+      errorHandler: (e) => console.error(e)
     }
   )
   const asyncPool = new FixedClusterPool(
@@ -83,7 +83,7 @@ describe('Fixed cluster pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js',
       {
-        errorHandler: e => console.error(e)
+        errorHandler: (e) => console.error(e)
       }
     )
     let poolReady = 0
@@ -158,7 +158,7 @@ describe('Fixed cluster pool test suite', () => {
   it('Verify that error handling is working properly:sync', async () => {
     const data = { f: 10 }
     let taskError
-    errorPool.emitter.on(PoolEvents.taskError, e => {
+    errorPool.emitter.on(PoolEvents.taskError, (e) => {
       taskError = e
     })
     let inError
@@ -177,7 +177,7 @@ describe('Fixed cluster pool test suite', () => {
     })
     expect(
       errorPool.workerNodes.some(
-        workerNode => workerNode.usage.tasks.failed === 1
+        (workerNode) => workerNode.usage.tasks.failed === 1
       )
     ).toBe(true)
   })
@@ -185,7 +185,7 @@ describe('Fixed cluster pool test suite', () => {
   it('Verify that error handling is working properly:async', async () => {
     const data = { f: 10 }
     let taskError
-    asyncErrorPool.emitter.on(PoolEvents.taskError, e => {
+    asyncErrorPool.emitter.on(PoolEvents.taskError, (e) => {
       taskError = e
     })
     let inError
@@ -204,7 +204,7 @@ describe('Fixed cluster pool test suite', () => {
     })
     expect(
       asyncErrorPool.workerNodes.some(
-        workerNode => workerNode.usage.tasks.failed === 1
+        (workerNode) => workerNode.usage.tasks.failed === 1
       )
     ).toBe(true)
   })

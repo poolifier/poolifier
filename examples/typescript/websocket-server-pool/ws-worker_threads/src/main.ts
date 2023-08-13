@@ -13,7 +13,7 @@ const emptyFunction = (): void => {
   /** Intentional */
 }
 
-wss.on('connection', ws => {
+wss.on('connection', (ws) => {
   ws.on('error', console.error)
   ws.on('message', (message: RawData) => {
     const { type, data } = JSON.parse(
@@ -24,7 +24,7 @@ wss.on('connection', ws => {
       case MessageType.echo:
         requestHandlerPool
           .execute({ data }, 'echo')
-          .then(response => {
+          .then((response) => {
             ws.send(
               JSON.stringify({
                 type: MessageType.echo,
@@ -38,7 +38,7 @@ wss.on('connection', ws => {
       case MessageType.factorial:
         requestHandlerPool
           .execute({ data }, 'factorial')
-          .then(response => {
+          .then((response) => {
             ws.send(
               JSON.stringify({
                 type: MessageType.factorial,

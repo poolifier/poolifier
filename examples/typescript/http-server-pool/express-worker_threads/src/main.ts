@@ -21,7 +21,7 @@ expressApp.use(express.json())
 expressApp.all('/api/echo', (req: Request, res: Response) => {
   requestHandlerPool
     .execute({ body: req.body }, 'echo')
-    .then(response => {
+    .then((response) => {
       return res.send(response.body).end()
     })
     .catch(emptyFunction)
@@ -31,7 +31,7 @@ expressApp.get('/api/factorial/:number', (req: Request, res: Response) => {
   const { number } = req.params
   requestHandlerPool
     .execute({ body: { number: parseInt(number) } }, 'factorial')
-    .then(response => {
+    .then((response) => {
       return res.send(response.body).end()
     })
     .catch(emptyFunction)

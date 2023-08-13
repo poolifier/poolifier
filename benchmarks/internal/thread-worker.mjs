@@ -5,7 +5,7 @@ import { TaskFunctions } from '../benchmarks-types.mjs'
 
 const debug = false
 
-const taskFunction = data => {
+const taskFunction = (data) => {
   data = data || {}
   data.function = data.function || TaskFunctions.jsonIntegerSerialization
   const res = executeTaskFunction(data)

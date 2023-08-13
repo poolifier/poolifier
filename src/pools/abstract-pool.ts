@@ -360,14 +360,14 @@ export abstract class AbstractPool<
           minimum: round(
             Math.min(
               ...this.workerNodes.map(
-                workerNode => workerNode.usage.runTime?.minimum ?? Infinity
+                (workerNode) => workerNode.usage.runTime?.minimum ?? Infinity
               )
             )
           ),
           maximum: round(
             Math.max(
               ...this.workerNodes.map(
-                workerNode => workerNode.usage.runTime?.maximum ?? -Infinity
+                (workerNode) => workerNode.usage.runTime?.maximum ?? -Infinity
               )
             )
           ),
@@ -388,7 +388,7 @@ export abstract class AbstractPool<
             median: round(
               median(
                 this.workerNodes.map(
-                  workerNode => workerNode.usage.runTime?.median ?? 0
+                  (workerNode) => workerNode.usage.runTime?.median ?? 0
                 )
               )
             )
@@ -401,14 +401,14 @@ export abstract class AbstractPool<
           minimum: round(
             Math.min(
               ...this.workerNodes.map(
-                workerNode => workerNode.usage.waitTime?.minimum ?? Infinity
+                (workerNode) => workerNode.usage.waitTime?.minimum ?? Infinity
               )
             )
           ),
           maximum: round(
             Math.max(
               ...this.workerNodes.map(
-                workerNode => workerNode.usage.waitTime?.maximum ?? -Infinity
+                (workerNode) => workerNode.usage.waitTime?.maximum ?? -Infinity
               )
             )
           ),
@@ -429,7 +429,7 @@ export abstract class AbstractPool<
             median: round(
               median(
                 this.workerNodes.map(
-                  workerNode => workerNode.usage.waitTime?.median ?? 0
+                  (workerNode) => workerNode.usage.waitTime?.median ?? 0
                 )
               )
             )
@@ -522,7 +522,7 @@ export abstract class AbstractPool<
    */
   private getWorkerNodeKeyByWorker (worker: Worker): number {
     return this.workerNodes.findIndex(
-      workerNode => workerNode.worker === worker
+      (workerNode) => workerNode.worker === worker
     )
   }
 
@@ -534,7 +534,7 @@ export abstract class AbstractPool<
    */
   private getWorkerNodeKeyByWorkerId (workerId: number): number {
     return this.workerNodes.findIndex(
-      workerNode => workerNode.info.id === workerId
+      (workerNode) => workerNode.info.id === workerId
     )
   }
 
@@ -624,7 +624,7 @@ export abstract class AbstractPool<
     if (this.opts.enableTasksQueue === true) {
       return (
         this.workerNodes.findIndex(
-          workerNode =>
+          (workerNode) =>
             workerNode.info.ready &&
             workerNode.usage.tasks.executing <
               (this.opts.tasksQueueOptions?.concurrency as number)
@@ -633,7 +633,7 @@ export abstract class AbstractPool<
     } else {
       return (
         this.workerNodes.findIndex(
-          workerNode =>
+          (workerNode) =>
             workerNode.info.ready && workerNode.usage.tasks.executing === 0
         ) === -1
       )
@@ -887,7 +887,7 @@ export abstract class AbstractPool<
 
     worker.on('message', this.opts.messageHandler ?? EMPTY_FUNCTION)
     worker.on('error', this.opts.errorHandler ?? EMPTY_FUNCTION)
-    worker.on('error', error => {
+    worker.on('error', (error) => {
       const workerNodeKey = this.getWorkerNodeKeyByWorker(worker)
       const workerInfo = this.getWorkerInfo(workerNodeKey)
       workerInfo.ready = false
@@ -924,7 +924,7 @@ export abstract class AbstractPool<
    */
   protected createAndSetupDynamicWorkerNode (): number {
     const workerNodeKey = this.createAndSetupWorkerNode()
-    this.registerWorkerMessageListener(workerNodeKey, message => {
+    this.registerWorkerMessageListener(workerNodeKey, (message) => {
       const localWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(
         message.workerId
       )
@@ -1057,7 +1057,7 @@ export abstract class AbstractPool<
    * @returns The listener function to execute when a message is received from a worker.
    */
   protected workerListener (): (message: MessageValue<Response>) => void {
-    return message => {
+    return (message) => {
       this.checkMessageWorkerId(message)
       if (message.ready != null) {
         // Worker ready response received from worker

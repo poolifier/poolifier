@@ -47,7 +47,7 @@ ClusterWorkerResponse
       workerData?.workerFile as string
     )
 
-    WebSocketServerWorker.wss.on('connection', ws => {
+    WebSocketServerWorker.wss.on('connection', (ws) => {
       ws.on('error', console.error)
       ws.on('message', (message: RawData) => {
         const { type, data } = JSON.parse(
@@ -58,7 +58,7 @@ ClusterWorkerResponse
           case MessageType.echo:
             WebSocketServerWorker.requestHandlerPool
               .execute({ data }, 'echo')
-              .then(response => {
+              .then((response) => {
                 ws.send(
                   JSON.stringify({
                     type: MessageType.echo,
@@ -72,7 +72,7 @@ ClusterWorkerResponse
           case MessageType.factorial:
             WebSocketServerWorker.requestHandlerPool
               .execute({ data }, 'factorial')
-              .then(response => {
+              .then((response) => {
                 ws.send(
                   JSON.stringify({
                     type: MessageType.factorial,

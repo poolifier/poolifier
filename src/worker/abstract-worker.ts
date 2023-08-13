@@ -119,7 +119,7 @@ export abstract class AbstractWorker<
       this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)
       this.taskFunctions.set(
         typeof taskFunctions.name === 'string' &&
-          taskFunctions.name.trim().length > 0
+        taskFunctions.name.trim().length > 0
           ? taskFunctions.name
           : 'fn1',
         boundFn
@@ -454,7 +454,7 @@ export abstract class AbstractWorker<
   ): void {
     let taskPerformance = this.beginTaskPerformance(task.name)
     fn(task.data)
-      .then(res => {
+      .then((res) => {
         taskPerformance = this.endTaskPerformance(taskPerformance)
         this.sendToMainWorker({
           data: res,
@@ -464,7 +464,7 @@ export abstract class AbstractWorker<
         })
         return null
       })
-      .catch(e => {
+      .catch((e) => {
         const errorMessage = this.handleError(e as Error | string)
         this.sendToMainWorker({
           taskError: {
