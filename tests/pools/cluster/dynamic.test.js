@@ -11,7 +11,7 @@ describe('Dynamic cluster pool test suite', () => {
     max,
     './tests/worker-files/cluster/testWorker.js',
     {
-      errorHandler: e => console.error(e)
+      errorHandler: (e) => console.error(e)
     }
   )
 
@@ -88,7 +88,7 @@ describe('Dynamic cluster pool test suite', () => {
       max,
       './tests/worker-files/cluster/longRunningWorkerHardBehavior.js',
       {
-        errorHandler: e => console.error(e),
+        errorHandler: (e) => console.error(e),
         onlineHandler: () => console.info('long executing worker is online'),
         exitHandler: () => console.info('long executing worker exited')
       }
@@ -115,7 +115,7 @@ describe('Dynamic cluster pool test suite', () => {
       max,
       './tests/worker-files/cluster/longRunningWorkerSoftBehavior.js',
       {
-        errorHandler: e => console.error(e),
+        errorHandler: (e) => console.error(e),
         onlineHandler: () => console.info('long executing worker is online'),
         exitHandler: () => console.info('long executing worker exited')
       }

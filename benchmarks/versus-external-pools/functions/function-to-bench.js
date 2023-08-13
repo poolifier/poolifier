@@ -5,7 +5,7 @@
  * @param {*} data The worker data.
  * @returns {*} The result.
  */
-const functionToBench = data => {
+const functionToBench = (data) => {
   const crypto = require('crypto')
   const fs = require('fs')
   const TaskTypes = {

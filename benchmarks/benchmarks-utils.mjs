@@ -23,7 +23,7 @@ export const runTest = async (pool, { taskExecutions, workerData }) => {
           }
           return null
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err)
           return reject(err)
         })
@@ -46,7 +46,7 @@ export const generateRandomInteger = (
   return Math.floor(Math.random() * (max + 1))
 }
 
-const jsonIntegerSerialization = n => {
+const jsonIntegerSerialization = (n) => {
   for (let i = 0; i < n; i++) {
     const o = {
       a: i
@@ -61,7 +61,7 @@ const jsonIntegerSerialization = n => {
  * @param {number} n - The number of fibonacci numbers to generate.
  * @returns {number} - The nth fibonacci number.
  */
-const fibonacci = n => {
+const fibonacci = (n) => {
   if (n <= 1) return n
   return fibonacci(n - 1) + fibonacci(n - 2)
 }
@@ -71,7 +71,7 @@ const fibonacci = n => {
  * @param {number} n - The number to calculate the factorial of.
  * @returns {number} - The factorial of n.
  */
-const factorial = n => {
+const factorial = (n) => {
   if (n === 0) {
     return 1
   }
@@ -100,7 +100,7 @@ const readWriteFiles = (
   return { ok: 1 }
 }
 
-export const executeTaskFunction = data => {
+export const executeTaskFunction = (data) => {
   switch (data.function) {
     case TaskFunctions.jsonIntegerSerialization:
       return jsonIntegerSerialization(data.taskSize || 1000)

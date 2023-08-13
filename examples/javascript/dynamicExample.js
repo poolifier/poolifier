@@ -10,7 +10,7 @@ const pool = new DynamicThreadPool(
   availableParallelism(),
   './yourWorker.js',
   {
-    errorHandler: e => console.error(e),
+    errorHandler: (e) => console.error(e),
     onlineHandler: () => console.info('worker is online')
   }
 )
@@ -37,5 +37,5 @@ for (let i = 1; i <= iterations; i++) {
       }
       return null
     })
-    .catch(err => console.error(err))
+    .catch((err) => console.error(err))
 }
