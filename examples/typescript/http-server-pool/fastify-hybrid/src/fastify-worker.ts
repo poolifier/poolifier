@@ -1,43 +1,49 @@
 import type { AddressInfo } from 'node:net'
 import { ClusterWorker } from 'poolifier'
-import Fastify from 'fastify'
+import Fastify, { type FastifyInstance } from 'fastify'
 import type { ClusterWorkerData, ClusterWorkerResponse } from './types.js'
 import { fastifyPoolifier } from './fastify-poolifier.js'
-
-const startFastify = async (
-  workerData?: ClusterWorkerData
-): Promise<ClusterWorkerResponse> => {
-  const { port } = workerData as ClusterWorkerData
-  const fastify = Fastify({
-    logger: true
-  })
-
-  await fastify.register(fastifyPoolifier, workerData)
-
-  fastify.all('/api/echo', async request => {
-    return (await fastify.execute({ body: request.body }, 'echo')).body
-  })
-
-  fastify.get<{
-    Params: { number: number }
-  }>('/api/factorial/:number', async request => {
-    const { number } = request.params
-    return (await fastify.execute({ body: { number } }, 'factorial')).body
-  })
-
-  await fastify.listen({ port })
-  return {
-    status: true,
-    port: (fastify.server.address() as AddressInfo).port
-  }
-}
 
 class FastifyWorker extends ClusterWorker<
 ClusterWorkerData,
 ClusterWorkerResponse
 > {
+  private static fastify: FastifyInstance
+
+  private static readonly startFastify = async (
+    workerData?: ClusterWorkerData
+  ): Promise<ClusterWorkerResponse> => {
+    const { port } = workerData as ClusterWorkerData
+    FastifyWorker.fastify = Fastify({
+      logger: true
+    })
+
+    await FastifyWorker.fastify.register(fastifyPoolifier, workerData)
+
+    FastifyWorker.fastify.all('/api/echo', async request => {
+      return (
+        await FastifyWorker.fastify.execute({ body: request.body }, 'echo')
+      ).body
+    })
+
+    FastifyWorker.fastify.get<{
+      Params: { number: number }
+    }>('/api/factorial/:number', async request => {
+      const { number } = request.params
+      return (
+        await FastifyWorker.fastify.execute({ body: { number } }, 'factorial')
+      ).body
+    })
+
+    await FastifyWorker.fastify.listen({ port })
+    return {
+      status: true,
+      port: (FastifyWorker.fastify.server.address() as AddressInfo).port
+    }
+  }
+
   public constructor () {
-    super(startFastify)
+    super(FastifyWorker.startFastify)
   }
 }
 

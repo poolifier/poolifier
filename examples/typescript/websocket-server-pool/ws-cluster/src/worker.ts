@@ -15,50 +15,54 @@ const factorial: (n: number) => number = n => {
   return factorial(n - 1) * n
 }
 
-const startWebSocketServer = (workerData?: WorkerData): WorkerResponse => {
-  const { port } = workerData as WorkerData
-  const wss = new WebSocketServer({ port }, () => {
-    console.info(
-      `⚡️[ws server]: WebSocket server is started in cluster worker at ws://localhost:${port}/`
-    )
-  })
-
-  wss.on('connection', ws => {
-    ws.on('error', console.error)
-    ws.on('message', (message: RawData) => {
-      const { type, data } = JSON.parse(
-        // eslint-disable-next-line @typescript-eslint/no-base-to-string
-        message.toString()
-      ) as MessagePayload<DataPayload>
-      switch (type) {
-        case MessageType.echo:
-          ws.send(
-            JSON.stringify({
-              type: MessageType.echo,
-              data
-            })
-          )
-          break
-        case MessageType.factorial:
-          ws.send(
-            JSON.stringify({
-              type: MessageType.factorial,
-              data: { number: factorial(data.number as number) }
-            })
-          )
-          break
-      }
-    })
-  })
-  return {
-    status: true,
-    port: wss.options.port
-  }
-}
-
 class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
+  private static wss: WebSocketServer
+
+  private static readonly startWebSocketServer = (
+    workerData?: WorkerData
+  ): WorkerResponse => {
+    const { port } = workerData as WorkerData
+    WebSocketServerWorker.wss = new WebSocketServer({ port }, () => {
+      console.info(
+        `⚡️[ws server]: WebSocket server is started in cluster worker at ws://localhost:${port}/`
+      )
+    })
+
+    WebSocketServerWorker.wss.on('connection', ws => {
+      ws.on('error', console.error)
+      ws.on('message', (message: RawData) => {
+        const { type, data } = JSON.parse(
+          // eslint-disable-next-line @typescript-eslint/no-base-to-string
+          message.toString()
+        ) as MessagePayload<DataPayload>
+        switch (type) {
+          case MessageType.echo:
+            ws.send(
+              JSON.stringify({
+                type: MessageType.echo,
+                data
+              })
+            )
+            break
+          case MessageType.factorial:
+            ws.send(
+              JSON.stringify({
+                type: MessageType.factorial,
+                data: { number: factorial(data.number as number) }
+              })
+            )
+            break
+        }
+      })
+    })
+    return {
+      status: true,
+      port: WebSocketServerWorker.wss.options.port
+    }
+  }
+
   public constructor () {
-    super(startWebSocketServer)
+    super(WebSocketServerWorker.startWebSocketServer)
   }
 }
 

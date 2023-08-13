@@ -22,11 +22,17 @@ class WebSocketServerWorker extends ClusterWorker<
 ClusterWorkerData,
 ClusterWorkerResponse
 > {
+  private static wss: WebSocketServer
+  private static requestHandlerPool: DynamicThreadPool<
+  ThreadWorkerData<DataPayload>,
+  ThreadWorkerResponse<DataPayload>
+  >
+
   private static readonly startWebSocketServer = (
     workerData?: ClusterWorkerData
   ): ClusterWorkerResponse => {
     const { port } = workerData as ClusterWorkerData
-    const wss = new WebSocketServer({ port }, () => {
+    WebSocketServerWorker.wss = new WebSocketServer({ port }, () => {
       console.info(
         `⚡️[ws server]: WebSocket server is started in cluster worker at ws://localhost:${port}/`
       )
@@ -41,7 +47,7 @@ ClusterWorkerResponse
       workerData?.workerFile as string
     )
 
-    wss.on('connection', ws => {
+    WebSocketServerWorker.wss.on('connection', ws => {
       ws.on('error', console.error)
       ws.on('message', (message: RawData) => {
         const { type, data } = JSON.parse(
@@ -82,14 +88,9 @@ ClusterWorkerResponse
     })
     return {
       status: true,
-      port: wss.options.port
+      port: WebSocketServerWorker.wss.options.port
     }
   }
-
-  private static requestHandlerPool: DynamicThreadPool<
-  ThreadWorkerData<DataPayload>,
-  ThreadWorkerResponse<DataPayload>
-  >
 
   public constructor () {
     super(WebSocketServerWorker.startWebSocketServer)
