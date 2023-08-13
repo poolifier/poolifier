@@ -4,5 +4,5 @@ module.exports = {
     'ts-standard --fix',
     'eslint --cache --fix'
   ],
-  '**/*.{json,md,yml,yaml}': ['rome format --write']
+  '!(.vscode/**)**/*.{json,md,yml,yaml}': ['rome format --write']
 }
