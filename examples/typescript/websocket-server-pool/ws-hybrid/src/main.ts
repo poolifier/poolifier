@@ -19,14 +19,14 @@ const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(
           if (response.status) {
             console.info(
               // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              `WebSocket server is listening on cluster worker on port ${response.port}`
+              `WebSocket server is listening in cluster worker on port ${response.port}`
             )
           }
           return null
         })
         .catch(error => {
           console.error(
-            'WebSocket server failed to start on cluster worker:',
+            'WebSocket server failed to start in cluster worker:',
             error
           )
         })

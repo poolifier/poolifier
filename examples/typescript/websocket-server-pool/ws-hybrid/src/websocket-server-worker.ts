@@ -30,7 +30,7 @@ ClusterWorkerResponse
     const { port } = workerData as ClusterWorkerData
     const wss = new WebSocketServer({ port }, () => {
       console.info(
-        `⚡️[ws server]: WebSocket server is started on cluster worker at ws://localhost:${port}/`
+        `⚡️[ws server]: WebSocket server is started in cluster worker at ws://localhost:${port}/`
       )
     })
 
