@@ -16,10 +16,10 @@ devDependencies:
     version: 17.7.0
   '@release-it/bumper':
     specifier: ^5.1.0
-    version: 5.1.0(release-it@16.1.4)
+    version: 5.1.0(release-it@16.1.5)
   '@release-it/keep-a-changelog':
     specifier: ^4.0.0
-    version: 4.0.0(release-it@16.1.4)
+    version: 4.0.0(release-it@16.1.5)
   '@rollup/plugin-terser':
     specifier: ^0.4.3
     version: 0.4.3(rollup@3.28.0)
@@ -96,8 +96,8 @@ devDependencies:
     specifier: ^3.0.1
     version: 3.0.1
   release-it:
-    specifier: ^16.1.4
-    version: 16.1.4
+    specifier: ^16.1.5
+    version: 16.1.5
   rollup:
     specifier: ^3.28.0
     version: 3.28.0
@@ -692,7 +692,7 @@ packages:
       config-chain: 1.1.13
     dev: true
 
-  /@release-it/bumper@5.1.0(release-it@16.1.4):
+  /@release-it/bumper@5.1.0(release-it@16.1.5):
     resolution: {integrity: sha512-mnM5QQJvK+4sqLpU7vkDbGMGh1QNwdnWNPqrkfOCyr/cKgRDvb8e+nbiNZzyI/1XsxSjnfLHDecRVuqucwE6BQ==}
     engines: {node: '>=16'}
     peerDependencies:
@@ -704,18 +704,18 @@ packages:
       ini: 4.1.1
       js-yaml: 4.1.0
       lodash-es: 4.17.21
-      release-it: 16.1.4
+      release-it: 16.1.5
       semver: 7.5.4
     dev: true
 
-  /@release-it/keep-a-changelog@4.0.0(release-it@16.1.4):
+  /@release-it/keep-a-changelog@4.0.0(release-it@16.1.5):
     resolution: {integrity: sha512-a3n6RkBaYGf2qK2Yz/FkHDkpJjLYtMvpoZBIGfOz1zmv+918YU3In9zjoBJn4f2PldIW5yTWuk81hMYAdgPFww==}
     engines: {node: '>=16'}
     peerDependencies:
       release-it: ^16.0.0
     dependencies:
       detect-newline: 4.0.0
-      release-it: 16.1.4
+      release-it: 16.1.5
       string-template: 1.0.0
     dev: true
 
@@ -4996,8 +4996,8 @@ packages:
       rc: 1.2.8
     dev: true
 
-  /release-it@16.1.4:
-    resolution: {integrity: sha512-lLYuXfZzAzO9tDyhQKpvkrUMY43/+PMTzibcUsC4dDDzDf3JT69FhiAjkqXv9nBAotyENGMoeHtK0jRiL4YeEQ==}
+  /release-it@16.1.5:
+    resolution: {integrity: sha512-w/zCljPZBSYcCwR9fjDB1zaYwie1CAQganUrwNqjtXacXhrrsS5E6dDUNLcxm2ypu8GWAgZNMJfuBJqIO2E7fA==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
