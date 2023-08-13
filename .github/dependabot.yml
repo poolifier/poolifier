@@ -69,7 +69,7 @@ updates:
       - 'jerome-benoit'
     versioning-strategy: increase
   - package-ecosystem: 'npm'
-    directory: '/examples/typescript/http-server-pool/fastify-cluster'
+    directory: '/examples/typescript/http-server-pool/fastify-hybrid'
     schedule:
       interval: 'daily'
     labels:
@@ -81,7 +81,7 @@ updates:
       - 'jerome-benoit'
     versioning-strategy: increase
   - package-ecosystem: 'npm'
-    directory: '/examples/typescript/http-server-pool/fastify-hybrid'
+    directory: '/examples/typescript/http-server-pool/fastify-cluster'
     schedule:
       interval: 'daily'
     labels:
@@ -104,6 +104,18 @@ updates:
       - 'pioardi'
       - 'jerome-benoit'
     versioning-strategy: increase
+  - package-ecosystem: 'npm'
+    directory: '/examples/typescript/websocket-server-pool/ws-hybrid'
+    schedule:
+      interval: 'daily'
+    labels:
+      - 'dependencies'
+      - 'examples'
+      - 'nocombine'
+    reviewers:
+      - 'pioardi'
+      - 'jerome-benoit'
+    versioning-strategy: increases
   - package-ecosystem: 'npm'
     directory: '/examples/typescript/websocket-server-pool/ws-cluster'
     schedule:

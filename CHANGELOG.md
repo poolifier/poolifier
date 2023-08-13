@@ -10,14 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - HTTP server pool examples: fastify-cluster, fastify-hybrid.
-- WebSocket server pool examples: ws-cluster
+- WebSocket server pool examples: ws-cluster, ws-hybrid.
 
 ## [2.6.24] - 2023-08-12
 
 ### Added
 
 - Add array of transferable objects to the `execute()` method arguments.
-- WebSocket server pool examples: ws
+- WebSocket server pool examples: ws-worker_threads.
 
 ## [2.6.23] - 2023-08-11
 
@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - HTTP client pool examples: fetch, node-fetch and axios with multiple task functions.
-- HTTP server pool examples: express, fastify.
+- HTTP server pool examples: express-worker_threads, fastify-worker_threads.
 
 ## [2.6.22] - 2023-08-10
 

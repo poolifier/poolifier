@@ -19,7 +19,7 @@ const startWebSocketServer = (workerData?: WorkerData): WorkerResponse => {
   const { port } = workerData as WorkerData
   const wss = new WebSocketServer({ port }, () => {
     console.info(
-      `⚡️[ws server]: WebSocket server is started on worker at ws://localhost:${port}/`
+      `⚡️[ws server]: WebSocket server is started on cluster worker at ws://localhost:${port}/`
     )
   })
 
