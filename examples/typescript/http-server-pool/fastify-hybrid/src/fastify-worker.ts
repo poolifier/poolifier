@@ -1,7 +1,5 @@
 import type { AddressInfo } from 'node:net'
-import { dirname, extname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { ClusterWorker, availableParallelism } from 'poolifier'
+import { ClusterWorker } from 'poolifier'
 import Fastify from 'fastify'
 import type { ClusterWorkerData, ClusterWorkerResponse } from './types.js'
 import { fastifyPoolifier } from './fastify-poolifier.js'
@@ -14,22 +12,7 @@ const startFastify = async (
     logger: true
   })
 
-  const requestHandlerWorkerFile = join(
-    dirname(fileURLToPath(import.meta.url)),
-    `request-handler-worker${extname(fileURLToPath(import.meta.url))}`
-  )
-
-  await fastify.register(fastifyPoolifier, {
-    workerFile: requestHandlerWorkerFile,
-    maxWorkers: Math.round(availableParallelism() / 2),
-    enableTasksQueue: true,
-    tasksQueueOptions: {
-      concurrency: 8
-    },
-    errorHandler: (e: Error) => {
-      fastify.log.error('Thread worker error', e)
-    }
-  })
+  await fastify.register(fastifyPoolifier, workerData)
 
   fastify.all('/api/echo', async request => {
     return (await fastify.execute({ body: request.body }, 'echo')).body
