@@ -958,7 +958,9 @@ export abstract class AbstractPool<
               workerUsage.tasks.executing === 0 &&
               this.tasksQueueSize(localWorkerNodeKey) === 0)))
       ) {
-        this.destroyWorkerNode(localWorkerNodeKey).catch(EMPTY_FUNCTION)
+        this.destroyWorkerNode(localWorkerNodeKey).catch((error) => {
+          this.emitter?.emit(PoolEvents.error, error)
+        })
       }
     })
     const workerInfo = this.getWorkerInfo(workerNodeKey)
