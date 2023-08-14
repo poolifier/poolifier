@@ -84,7 +84,11 @@ export abstract class AbstractWorker<
        * The maximum time to keep this worker active while idle.
        * The pool automatically checks and terminates this worker when the time expires.
        */
-      maxInactiveTime: DEFAULT_MAX_INACTIVE_TIME
+      maxInactiveTime: DEFAULT_MAX_INACTIVE_TIME,
+      /**
+       * The function to call when the worker is killed.
+       */
+      killHandler: EMPTY_FUNCTION
     }
   ) {
     super(type)
@@ -100,6 +104,7 @@ export abstract class AbstractWorker<
     this.opts.maxInactiveTime =
       opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME
     delete this.opts.async
+    this.opts.killHandler = opts.killHandler ?? EMPTY_FUNCTION
   }
 
   /**
@@ -320,8 +325,11 @@ export abstract class AbstractWorker<
    * @param message - The kill message.
    */
   protected handleKillMessage (message: MessageValue<Data>): void {
-    !this.isMain && this.stopCheckActive()
-    this.emitDestroy()
+    if (!this.isMain) {
+      this.stopCheckActive()
+      this.opts.killHandler?.()
+      this.emitDestroy()
+    }
   }
 
   /**

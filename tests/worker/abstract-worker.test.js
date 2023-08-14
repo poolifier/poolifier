@@ -1,5 +1,7 @@
 const { expect } = require('expect')
+const sinon = require('sinon')
 const { ClusterWorker, KillBehaviors, ThreadWorker } = require('../../lib')
+const { EMPTY_FUNCTION } = require('../../lib/utils')
 
 describe('Abstract worker test suite', () => {
   class StubWorkerWithMainWorker extends ThreadWorker {
@@ -13,17 +15,23 @@ describe('Abstract worker test suite', () => {
     const worker = new ThreadWorker(() => {})
     expect(worker.opts.maxInactiveTime).toStrictEqual(60000)
     expect(worker.opts.killBehavior).toBe(KillBehaviors.SOFT)
+    expect(worker.opts.killHandler).toStrictEqual(EMPTY_FUNCTION)
     expect(worker.opts.async).toBe(undefined)
   })
 
   it('Verify that worker options are set at worker creation', () => {
+    const killHandler = () => {
+      console.info('Worker received kill message')
+    }
     const worker = new ClusterWorker(() => {}, {
       maxInactiveTime: 6000,
-      async: true,
-      killBehavior: KillBehaviors.HARD
+      killBehavior: KillBehaviors.HARD,
+      killHandler,
+      async: true
     })
     expect(worker.opts.maxInactiveTime).toStrictEqual(6000)
     expect(worker.opts.killBehavior).toBe(KillBehaviors.HARD)
+    expect(worker.opts.killHandler).toStrictEqual(killHandler)
     expect(worker.opts.async).toBe(undefined)
   })
 
@@ -118,6 +126,24 @@ describe('Abstract worker test suite', () => {
       worker.taskFunctions.get('fn1')
     )
   })
+
+  it('Verify that sync kill handler is called when worker is killed', () => {
+    const worker = new ClusterWorker(() => {}, {
+      killHandler: sinon.stub().returns()
+    })
+    worker.isMain = false
+    worker.handleKillMessage()
+    expect(worker.opts.killHandler.calledOnce).toBe(true)
+  })
+
+  // it('Verify that async kill handler is called when worker is killed', () => {
+  //   const worker = new ClusterWorker(() => {}, {
+  //     killHandler: sinon.stub().resolves()
+  //   })
+  //   worker.isMain = false
+  //   worker.handleKillMessage()
+  //   expect(worker.opts.killHandler.calledOnce).toBe(true)
+  // })
 
   it('Verify that handleError() method works properly', () => {
     const error = new Error('Error as an error')

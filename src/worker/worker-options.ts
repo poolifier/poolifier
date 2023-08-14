@@ -18,6 +18,11 @@ export const KillBehaviors = Object.freeze({
 export type KillBehavior = keyof typeof KillBehaviors
 
 /**
+ * Handler called when a worker is killed.
+ */
+export type KillHandler = () => void
+
+/**
  * Options for workers.
  */
 export interface WorkerOptions {
@@ -52,4 +57,8 @@ export interface WorkerOptions {
    * @defaultValue KillBehaviors.SOFT
    */
   killBehavior?: KillBehavior
+  /**
+   * The function to call when a worker is killed.
+   */
+  killHandler?: KillHandler
 }
