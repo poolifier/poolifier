@@ -106,7 +106,9 @@ export abstract class AbstractPool<
     protected readonly opts: PoolOptions<Worker>
   ) {
     if (!this.isMain()) {
-      throw new Error('Cannot start a pool from a worker!')
+      throw new Error(
+        'Cannot start a pool from the same worker type as the current pool one'
+      )
     }
     this.checkNumberOfWorkers(this.numberOfWorkers)
     this.checkFilePath(this.filePath)

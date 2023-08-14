@@ -33,7 +33,9 @@ describe('Abstract pool test suite', () => {
             errorHandler: (e) => console.error(e)
           }
         )
-    ).toThrowError('Cannot start a pool from a worker!')
+    ).toThrowError(
+      'Cannot start a pool from the same worker type as the current pool one'
+    )
   })
 
   it('Verify that filePath is checked', () => {
