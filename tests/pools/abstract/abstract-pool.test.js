@@ -34,7 +34,7 @@ describe('Abstract pool test suite', () => {
           }
         )
     ).toThrowError(
-      'Cannot start a pool from the same worker type as the current pool one'
+      'Cannot start a pool from a worker with the same type as the pool'
     )
   })
 

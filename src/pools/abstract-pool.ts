@@ -107,7 +107,7 @@ export abstract class AbstractPool<
   ) {
     if (!this.isMain()) {
       throw new Error(
-        'Cannot start a pool from the same worker type as the current pool one'
+        'Cannot start a pool from a worker with the same type as the pool'
       )
     }
     this.checkNumberOfWorkers(this.numberOfWorkers)
