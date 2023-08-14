@@ -35,7 +35,14 @@
     "prepublishOnly": "pnpm build:prod"
   },
   "ts-standard": {
-    "globals": ["describe", "it", "before", "after", "beforeEach", "afterEach"]
+    "globals": [
+      "describe",
+      "it",
+      "before",
+      "after",
+      "beforeEach",
+      "afterEach"
+    ]
   },
   "engines": {
     "node": ">=16.14.0",
@@ -90,7 +97,9 @@
     "url": "https://github.com/poolifier/poolifier/issues"
   },
   "homepage": "https://github.com/poolifier/poolifier#readme",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "pnpm": {
     "overrides": {
       "semver": "^7.5.3"
@@ -121,7 +130,7 @@
     "eslint-plugin-tsdoc": "^0.2.17",
     "expect": "^29.6.2",
     "husky": "^8.0.3",
-    "lint-staged": "^13.3.0",
+    "lint-staged": "^14.0.0",
     "microtime": "^3.1.1",
     "mocha": "^10.2.0",
     "mochawesome": "^7.1.3",
