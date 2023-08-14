@@ -67,7 +67,7 @@ export class FixedThreadPool<
         resolve()
       })
     })
-    this.sendToWorker(workerNodeKey, { kill: true, workerId: worker.threadId })
+    await this.sendKillMessageToWorker(workerNodeKey, worker.threadId)
     workerNode.closeChannel()
     await worker.terminate()
     await waitWorkerExit

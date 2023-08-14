@@ -694,6 +694,23 @@ export abstract class AbstractPool<
     )
   }
 
+  protected async sendKillMessageToWorker (
+    workerNodeKey: number,
+    workerId: number
+  ): Promise<void> {
+    const waitForKillResponse = new Promise<void>((resolve, reject) => {
+      this.registerWorkerMessageListener(workerNodeKey, (message) => {
+        if (message.kill === 'success') {
+          resolve()
+        } else if (message.kill === 'failure') {
+          reject(new Error('Worker kill message handling failed'))
+        }
+      })
+    })
+    this.sendToWorker(workerNodeKey, { kill: true, workerId })
+    await waitForKillResponse
+  }
+
   /**
    * Terminates the worker node given its worker node key.
    *
@@ -934,7 +951,7 @@ export abstract class AbstractPool<
       // Kill message received from worker
       if (
         isKillBehavior(KillBehaviors.HARD, message.kill) ||
-        (message.kill != null &&
+        (isKillBehavior(KillBehaviors.SOFT, message.kill) &&
           ((this.opts.enableTasksQueue === false &&
             workerUsage.tasks.executing === 0) ||
             (this.opts.enableTasksQueue === true &&

@@ -72,7 +72,7 @@ export class FixedClusterPool<
     worker.on('disconnect', () => {
       worker.kill()
     })
-    this.sendToWorker(workerNodeKey, { kill: true, workerId: worker.id })
+    await this.sendKillMessageToWorker(workerNodeKey, worker.id)
     worker.disconnect()
     await waitWorkerExit
   }

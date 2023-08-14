@@ -101,7 +101,7 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
   /**
    * Kill code.
    */
-  readonly kill?: KillBehavior | true
+  readonly kill?: KillBehavior | true | 'success' | 'failure'
   /**
    * Task error.
    */

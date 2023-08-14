@@ -132,7 +132,12 @@ describe('Abstract worker test suite', () => {
       killHandler: sinon.stub().returns()
     })
     worker.isMain = false
+    worker.getMainWorker = sinon.stub().returns({
+      id: 1,
+      send: sinon.stub().returns()
+    })
     worker.handleKillMessage()
+    expect(worker.getMainWorker().send.calledOnce).toBe(true)
     expect(worker.opts.killHandler.calledOnce).toBe(true)
   })
 

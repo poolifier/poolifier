@@ -328,12 +328,27 @@ export abstract class AbstractWorker<
     this.stopCheckActive()
     if (isAsyncFunction(this.opts.killHandler)) {
       (this.opts.killHandler?.() as Promise<void>)
-        .then(() => this.emitDestroy())
+        .then(() => {
+          this.sendToMainWorker({ kill: 'success', workerId: this.id })
+          return null
+        })
+        .catch(() => {
+          this.sendToMainWorker({ kill: 'failure', workerId: this.id })
+        })
+        .finally(() => {
+          this.emitDestroy()
+        })
         .catch(EMPTY_FUNCTION)
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-      this.opts.killHandler?.() as void
-      this.emitDestroy()
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+        this.opts.killHandler?.() as void
+        this.sendToMainWorker({ kill: 'success', workerId: this.id })
+      } catch (error) {
+        this.sendToMainWorker({ kill: 'failure', workerId: this.id })
+      } finally {
+        this.emitDestroy()
+      }
     }
   }
 
