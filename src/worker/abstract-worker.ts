@@ -326,8 +326,15 @@ export abstract class AbstractWorker<
    */
   protected handleKillMessage (message: MessageValue<Data>): void {
     this.stopCheckActive()
-    this.opts.killHandler?.()
-    this.emitDestroy()
+    if (isAsyncFunction(this.opts.killHandler)) {
+      (this.opts.killHandler?.() as Promise<void>)
+        .then(() => this.emitDestroy())
+        .catch(EMPTY_FUNCTION)
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+      this.opts.killHandler?.() as void
+      this.emitDestroy()
+    }
   }
 
   /**

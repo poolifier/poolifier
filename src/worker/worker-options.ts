@@ -20,7 +20,7 @@ export type KillBehavior = keyof typeof KillBehaviors
 /**
  * Handler called when a worker is killed.
  */
-export type KillHandler = () => void
+export type KillHandler = () => void | Promise<void>
 
 /**
  * Options for workers.

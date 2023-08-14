@@ -136,14 +136,15 @@ describe('Abstract worker test suite', () => {
     expect(worker.opts.killHandler.calledOnce).toBe(true)
   })
 
-  // it('Verify that async kill handler is called when worker is killed', () => {
-  //   const worker = new ClusterWorker(() => {}, {
-  //     killHandler: sinon.stub().resolves()
-  //   })
-  //   worker.isMain = false
-  //   worker.handleKillMessage()
-  //   expect(worker.opts.killHandler.calledOnce).toBe(true)
-  // })
+  it('Verify that async kill handler is called when worker is killed', () => {
+    const killHandlerStub = sinon.stub().returns()
+    const worker = new ClusterWorker(() => {}, {
+      killHandler: async () => Promise.resolve(killHandlerStub())
+    })
+    worker.isMain = false
+    worker.handleKillMessage()
+    expect(killHandlerStub.calledOnce).toBe(true)
+  })
 
   it('Verify that handleError() method works properly', () => {
     const error = new Error('Error as an error')
