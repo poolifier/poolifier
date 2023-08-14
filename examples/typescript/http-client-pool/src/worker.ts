@@ -1,6 +1,5 @@
 import { ThreadWorker } from 'poolifier'
-import nodeFetch from 'node-fetch'
-import {
+import nodeFetch, {
   type RequestInfo as NodeFetchRequestInfo,
   type ResponseInit as NodeFetchRequestInit
 } from 'node-fetch'
