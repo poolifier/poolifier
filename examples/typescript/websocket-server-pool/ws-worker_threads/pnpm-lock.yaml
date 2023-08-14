@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   poolifier:
-    specifier: ^2.6.24
-    version: 2.6.24
+    specifier: ^2.6.25
+    version: 2.6.25
   ws:
     specifier: ^8.13.0
     version: 8.13.0(bufferutil@4.0.7)(utf-8-validate@6.0.3)
@@ -57,8 +57,8 @@ packages:
     requiresBuild: true
     dev: false
 
-  /poolifier@2.6.24:
-    resolution: {integrity: sha512-3sofqoocsvz7R6LshWJ1FvnjCsHdKytw29gsrVB7AJ0d7jVuE6dMd7ax2O0U03hg+yhxpeBXOaUGO025b40kjA==}
+  /poolifier@2.6.25:
+    resolution: {integrity: sha512-e8RNC8txuDO7x1ALNMDTUVWyrsMCod3krp/ZIhR+L9Q0KpoywwHekyWnRB4V2PYW/B1yxvXoPbQi1a2hZOfsNw==}
     engines: {node: '>=16.14.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
