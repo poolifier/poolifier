@@ -703,7 +703,7 @@ export abstract class AbstractPool<
         if (message.kill === 'success') {
           resolve()
         } else if (message.kill === 'failure') {
-          reject(new Error('Worker kill message handling failed'))
+          reject(new Error(`Worker ${workerId} kill message handling failed`))
         }
       })
     })
