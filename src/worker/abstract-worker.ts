@@ -344,7 +344,7 @@ export abstract class AbstractWorker<
         // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
         this.opts.killHandler?.() as void
         this.sendToMainWorker({ kill: 'success', workerId: this.id })
-      } catch (error) {
+      } catch {
         this.sendToMainWorker({ kill: 'failure', workerId: this.id })
       } finally {
         this.emitDestroy()
