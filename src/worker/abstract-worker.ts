@@ -298,7 +298,9 @@ export abstract class AbstractWorker<
    * @param message - The received message.
    */
   protected messageListener (message: MessageValue<Data>): void {
-    if (message.workerId != null && message.workerId !== this.id) {
+    if (this.isMain) {
+      throw new Error('Cannot handle message to worker in main worker')
+    } else if (message.workerId != null && message.workerId !== this.id) {
       throw new Error('Message worker id does not match worker id')
     } else if (message.workerId === this.id) {
       if (message.statistics != null) {
@@ -306,9 +308,7 @@ export abstract class AbstractWorker<
         this.statistics = message.statistics
       } else if (message.checkActive != null) {
         // Check active message received
-        !this.isMain && message.checkActive
-          ? this.startCheckActive()
-          : this.stopCheckActive()
+        message.checkActive ? this.startCheckActive() : this.stopCheckActive()
       } else if (message.taskId != null && message.data != null) {
         // Task message received
         this.run(message)
@@ -325,11 +325,9 @@ export abstract class AbstractWorker<
    * @param message - The kill message.
    */
   protected handleKillMessage (message: MessageValue<Data>): void {
-    if (!this.isMain) {
-      this.stopCheckActive()
-      this.opts.killHandler?.()
-      this.emitDestroy()
-    }
+    this.stopCheckActive()
+    this.opts.killHandler?.()
+    this.emitDestroy()
   }
 
   /**
@@ -403,9 +401,6 @@ export abstract class AbstractWorker<
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the task function is not found.
    */
   protected run (task: Task<Data>): void {
-    if (this.isMain) {
-      throw new Error('Cannot run a task in the main worker')
-    }
     const fn = this.getTaskFunction(task.name)
     if (isAsyncFunction(fn)) {
       this.runInAsyncScope(this.runAsync.bind(this), this, fn, task)
@@ -537,7 +532,7 @@ export abstract class AbstractWorker<
   }
 
   private updateLastTaskTimestamp (): void {
-    if (!this.isMain && this.activeInterval != null) {
+    if (this.activeInterval != null) {
       this.lastTaskTimestamp = performance.now()
     }
   }

@@ -53,7 +53,6 @@ export class ThreadWorker<
   /** @inheritDoc */
   protected handleReadyMessage (message: MessageValue<Data>): void {
     if (
-      !this.isMain &&
       message.workerId === this.id &&
       message.ready != null &&
       message.port != null
