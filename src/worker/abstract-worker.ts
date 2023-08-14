@@ -301,7 +301,7 @@ export abstract class AbstractWorker<
     if (this.isMain) {
       throw new Error('Cannot handle message to worker in main worker')
     } else if (message.workerId != null && message.workerId !== this.id) {
-      throw new Error('Message worker id does not match worker id')
+      throw new Error('Message worker id does not match the worker id')
     } else if (message.workerId === this.id) {
       if (message.statistics != null) {
         // Statistics message received
