@@ -39,6 +39,7 @@ const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
       ): Promise<WorkerResponse> => await pool.execute(data, name, transferList)
     )
   }
+  done()
 }
 
 export const fastifyPoolifier = fp(fastifyPoolifierPlugin, {
