@@ -27,6 +27,17 @@ export type KillHandler = () => void | Promise<void>
  */
 export interface WorkerOptions {
   /**
+   * `killBehavior` dictates if your worker will be deleted in case a task is active on it.
+   *
+   * - SOFT: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker **won't** be deleted.
+   * - HARD: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker will be deleted.
+   *
+   * This option only apply to the newly created workers.
+   *
+   * @defaultValue KillBehaviors.SOFT
+   */
+  killBehavior?: KillBehavior
+  /**
    * Maximum waiting time in milliseconds for tasks on newly created workers.
    *
    * After this time, newly created workers will be terminated.
@@ -40,25 +51,14 @@ export interface WorkerOptions {
    */
   maxInactiveTime?: number
   /**
+   * The function to call when a worker is killed.
+   */
+  killHandler?: KillHandler
+  /**
    * Whether your worker will perform asynchronous or not.
    *
    * @defaultValue false
    * @deprecated This option will be removed in the next major version.
    */
   async?: boolean
-  /**
-   * `killBehavior` dictates if your worker will be deleted in case a task is active on it.
-   *
-   * - SOFT: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker **won't** be deleted.
-   * - HARD: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker will be deleted.
-   *
-   * This option only apply to the newly created workers.
-   *
-   * @defaultValue KillBehaviors.SOFT
-   */
-  killBehavior?: KillBehavior
-  /**
-   * The function to call when a worker is killed.
-   */
-  killHandler?: KillHandler
 }

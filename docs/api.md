@@ -113,17 +113,20 @@ An object with these properties:
 `taskFunctions` (mandatory) The task function or task functions object `{ name_1: fn_1, ..., name_n: fn_n }` that you want to execute on the worker  
 `opts` (optional) An object with these properties:
 
+- `killBehavior` (optional) - Dictates if your worker will be deleted in case a task is active on it.  
+  **KillBehaviors.SOFT**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker **won't** be deleted.  
+  **KillBehaviors.HARD**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker will be deleted.  
+  This option only apply to the newly created workers.  
+  Default: `KillBehaviors.SOFT`
+
 - `maxInactiveTime` (optional) - Maximum waiting time in milliseconds for tasks on newly created workers. After this time newly created workers will die.  
   The last active time of your worker will be updated when it terminates a task.  
   If `killBehavior` is set to `KillBehaviors.HARD` this value represents also the timeout for the tasks that you submit to the pool, when this timeout expires your tasks is interrupted before completion and removed. The worker is killed if is not part of the minimum size of the pool.  
   If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.  
   Default: `60000`
 
-- `killBehavior` (optional) - Dictates if your worker will be deleted in case a task is active on it.  
-  **KillBehaviors.SOFT**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker **won't** be deleted.  
-  **KillBehaviors.HARD**: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker will be deleted.  
-  This option only apply to the newly created workers.  
-  Default: `KillBehaviors.SOFT`
+- `killHandler` (optional) - A function that will be called when a worker is killed.  
+  Default: `() => {}`
 
 #### `YourWorker.hasTaskFunction(name)`
 
