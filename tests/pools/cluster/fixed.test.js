@@ -220,9 +220,12 @@ describe('Fixed cluster pool test suite', () => {
 
   it('Shutdown test', async () => {
     const exitPromise = waitWorkerEvents(pool, 'exit', numberOfWorkers)
+    let poolDestroy = 0
+    pool.emitter.on(PoolEvents.destroy, () => ++poolDestroy)
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
     expect(numberOfExitEvents).toBe(numberOfWorkers)
+    expect(poolDestroy).toBe(1)
   })
 
   it('Verify that cluster pool options are checked', async () => {

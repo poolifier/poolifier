@@ -721,6 +721,7 @@ export abstract class AbstractPool<
         await this.destroyWorkerNode(workerNodeKey)
       })
     )
+    this.emitter?.emit(PoolEvents.destroy)
   }
 
   protected async sendKillMessageToWorker (

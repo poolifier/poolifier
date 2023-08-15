@@ -59,9 +59,12 @@ describe('Dynamic thread pool test suite', () => {
 
   it('Shutdown test', async () => {
     const exitPromise = waitWorkerEvents(pool, 'exit', min)
+    let poolDestroy = 0
+    pool.emitter.on(PoolEvents.destroy, () => ++poolDestroy)
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
     expect(numberOfExitEvents).toBe(min)
+    expect(poolDestroy).toBe(1)
   })
 
   it('Validation of inputs test', () => {
