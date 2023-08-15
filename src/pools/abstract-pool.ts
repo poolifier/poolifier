@@ -555,7 +555,7 @@ export abstract class AbstractPool<
     }
     for (const [workerNodeKey, workerNode] of this.workerNodes.entries()) {
       workerNode.resetUsage()
-      this.sendWorkerStatisticsMessageToWorker(workerNodeKey)
+      this.sendStatisticsMessageToWorker(workerNodeKey)
     }
   }
 
@@ -698,7 +698,7 @@ export abstract class AbstractPool<
     workerNodeKey: number,
     workerId: number
   ): Promise<void> {
-    const waitForKillResponse = new Promise<void>((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       this.registerWorkerMessageListener(workerNodeKey, (message) => {
         if (message.kill === 'success') {
           resolve()
@@ -706,9 +706,8 @@ export abstract class AbstractPool<
           reject(new Error(`Worker ${workerId} kill message handling failed`))
         }
       })
+      this.sendToWorker(workerNodeKey, { kill: true, workerId })
     })
-    this.sendToWorker(workerNodeKey, { kill: true, workerId })
-    await waitForKillResponse
   }
 
   /**
@@ -999,8 +998,8 @@ export abstract class AbstractPool<
     this.registerWorkerMessageListener(workerNodeKey, this.workerListener())
     // Send the startup message to worker.
     this.sendStartupMessageToWorker(workerNodeKey)
-    // Send the worker statistics message to worker.
-    this.sendWorkerStatisticsMessageToWorker(workerNodeKey)
+    // Send the statistics message to worker.
+    this.sendStatisticsMessageToWorker(workerNodeKey)
   }
 
   /**
@@ -1011,11 +1010,11 @@ export abstract class AbstractPool<
   protected abstract sendStartupMessageToWorker (workerNodeKey: number): void
 
   /**
-   * Sends the worker statistics message to worker given its worker node key.
+   * Sends the statistics message to worker given its worker node key.
    *
    * @param workerNodeKey - The worker node key.
    */
-  private sendWorkerStatisticsMessageToWorker (workerNodeKey: number): void {
+  private sendStatisticsMessageToWorker (workerNodeKey: number): void {
     this.sendToWorker(workerNodeKey, {
       statistics: {
         runTime:
