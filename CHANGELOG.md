@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add kill handler to worker options allowing to execute custom code when worker is killed.
+- Add listTaskFunctions() method to pool API.
 - SMTP server pool example: nodemailer.
 
 ## [2.6.25] - 2023-08-13
@@ -81,7 +82,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `listTaskFunctions()` method to worker class.
+- Add `listTaskFunctions()` method to worker API.
 
 ## [2.6.16] - 2023-07-12
 
@@ -728,15 +729,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ```js
 // Before
-const DynamicThreadPool = require('poolifier/lib/dynamic')
+const DynamicThreadPool = require("poolifier/lib/dynamic");
 // After
-const { DynamicThreadPool } = require('poolifier/lib/dynamic')
+const { DynamicThreadPool } = require("poolifier/lib/dynamic");
 ```
 
 But you should always prefer just using
 
 ```js
-const { DynamicThreadPool } = require('poolifier')
+const { DynamicThreadPool } = require("poolifier");
 ```
 
 #### New type definitions for input data and response
