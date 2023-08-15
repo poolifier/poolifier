@@ -50,7 +50,11 @@ export type { AbstractWorker } from './worker/abstract-worker'
 export { ClusterWorker } from './worker/cluster-worker'
 export { ThreadWorker } from './worker/thread-worker'
 export { KillBehaviors } from './worker/worker-options'
-export type { KillBehavior, WorkerOptions } from './worker/worker-options'
+export type {
+  KillBehavior,
+  WorkerOptions,
+  KillHandler
+} from './worker/worker-options'
 export type {
   TaskAsyncFunction,
   TaskFunction,

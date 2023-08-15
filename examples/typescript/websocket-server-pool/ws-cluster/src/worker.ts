@@ -62,7 +62,11 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   }
 
   public constructor () {
-    super(WebSocketServerWorker.startWebSocketServer)
+    super(WebSocketServerWorker.startWebSocketServer, {
+      killHandler: () => {
+        WebSocketServerWorker.wss.close()
+      }
+    })
   }
 }
 
