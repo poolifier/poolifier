@@ -226,6 +226,10 @@ describe('Abstract worker test suite', () => {
       return 2
     }
     const worker = new ClusterWorker({ fn1, fn2 })
+    worker.getMainWorker = sinon.stub().returns({
+      id: 1,
+      send: sinon.stub().returns()
+    })
     expect(worker.taskFunctions.get('default')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Function)
@@ -248,6 +252,7 @@ describe('Abstract worker test suite', () => {
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn2')).toBeUndefined()
     expect(worker.taskFunctions.size).toBe(2)
+    expect(worker.getMainWorker().send.calledOnce).toBe(true)
   })
 
   it('Verify that listTaskFunctions() works', () => {

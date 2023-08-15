@@ -208,6 +208,12 @@ export interface IPool<
    */
   readonly destroy: () => Promise<void>
   /**
+   * Lists the names of task function available in this pool.
+   *
+   * @returns The names of task function available in this pool.
+   */
+  readonly listTaskFunctions: () => string[]
+  /**
    * Sets the worker choice strategy in this pool.
    *
    * @param workerChoiceStrategy - The worker choice strategy.

@@ -7,6 +7,7 @@
   - [`pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`](#pool--new-dynamicthreadpooldynamicclusterpoolmin-max-filepath-opts)
   - [`pool.execute(data, name, transferList)`](#poolexecutedata-name-transferlist)
   - [`pool.destroy()`](#pooldestroy)
+  - [`pool.listTaskFunctions()`](#poollisttaskfunctions)
   - [`PoolOptions`](#pooloptions)
     - [`ThreadPoolOptions extends PoolOptions`](#threadpooloptions-extends-pooloptions)
     - [`ClusterPoolOptions extends PoolOptions`](#clusterpooloptions-extends-pooloptions)
@@ -44,6 +45,10 @@ This method is available on both pool implementations and returns a promise with
 ### `pool.destroy()`
 
 This method is available on both pool implementations and will call the terminate method on each worker.
+
+### `pool.listTaskFunctions()`
+
+This method is available on both pool implementations and returns an array of the task function names.
 
 ### `PoolOptions`
 

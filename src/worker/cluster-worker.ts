@@ -45,6 +45,7 @@ export class ClusterWorker<
   protected handleReadyMessage (message: MessageValue<Data>): void {
     if (message.workerId === this.id && message.ready != null) {
       this.getMainWorker()?.on('message', this.messageListener.bind(this))
+      this.sendTaskFunctionsListToMainWorker()
       this.sendToMainWorker({ ready: true, workerId: this.id })
     }
   }

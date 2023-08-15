@@ -841,11 +841,37 @@ describe('Abstract pool test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify that multiple tasks worker is working', async () => {
+  it('Verify that listTaskFunctions() is working', async () => {
+    const dynamicThreadPool = new DynamicThreadPool(
+      Math.floor(numberOfWorkers / 2),
+      numberOfWorkers,
+      './tests/worker-files/thread/testMultipleTaskFunctionsWorker.js'
+    )
+    await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
+    expect(dynamicThreadPool.listTaskFunctions()).toStrictEqual([
+      'default',
+      'jsonIntegerSerialization',
+      'factorial',
+      'fibonacci'
+    ])
+    const fixedClusterPool = new FixedClusterPool(
+      numberOfWorkers,
+      './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.js'
+    )
+    await waitPoolEvents(fixedClusterPool, PoolEvents.ready, 1)
+    expect(fixedClusterPool.listTaskFunctions()).toStrictEqual([
+      'default',
+      'jsonIntegerSerialization',
+      'factorial',
+      'fibonacci'
+    ])
+  })
+
+  it('Verify that multiple task functions worker is working', async () => {
     const pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/cluster/testMultiTasksWorker.js'
+      './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.js'
     )
     const data = { n: 10 }
     const result0 = await pool.execute(data)

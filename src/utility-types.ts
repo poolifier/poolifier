@@ -111,6 +111,10 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    */
   readonly taskPerformance?: TaskPerformance
   /**
+   * Task function names.
+   */
+  readonly taskFunctions?: string[]
+  /**
    * Whether the worker computes the given statistics or not.
    */
   readonly statistics?: WorkerStatistics

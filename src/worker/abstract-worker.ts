@@ -137,6 +137,11 @@ export abstract class AbstractWorker<
             'A taskFunctions parameter object key is not a string'
           )
         }
+        if (typeof name === 'string' && name.trim().length === 0) {
+          throw new TypeError(
+            'A taskFunctions parameter object key an empty string'
+          )
+        }
         if (typeof fn !== 'function') {
           throw new TypeError(
             'A taskFunctions parameter object value is not a function'
@@ -170,6 +175,9 @@ export abstract class AbstractWorker<
     if (typeof name !== 'string') {
       throw new TypeError('name parameter is not a string')
     }
+    if (typeof name === 'string' && name.trim().length === 0) {
+      throw new TypeError('name parameter is an empty string')
+    }
     return this.taskFunctions.has(name)
   }
 
@@ -191,6 +199,9 @@ export abstract class AbstractWorker<
     if (typeof name !== 'string') {
       throw new TypeError('name parameter is not a string')
     }
+    if (typeof name === 'string' && name.trim().length === 0) {
+      throw new TypeError('name parameter is an empty string')
+    }
     if (name === DEFAULT_TASK_NAME) {
       throw new Error(
         'Cannot add a task function with the default reserved name'
@@ -208,6 +219,7 @@ export abstract class AbstractWorker<
         this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)
       }
       this.taskFunctions.set(name, boundFn)
+      this.sendTaskFunctionsListToMainWorker()
       return true
     } catch {
       return false
@@ -227,6 +239,9 @@ export abstract class AbstractWorker<
     if (typeof name !== 'string') {
       throw new TypeError('name parameter is not a string')
     }
+    if (typeof name === 'string' && name.trim().length === 0) {
+      throw new TypeError('name parameter is an empty string')
+    }
     if (name === DEFAULT_TASK_NAME) {
       throw new Error(
         'Cannot remove the task function with the default reserved name'
@@ -239,7 +254,9 @@ export abstract class AbstractWorker<
         'Cannot remove the task function used as the default task function'
       )
     }
-    return this.taskFunctions.delete(name)
+    const deleteStatus = this.taskFunctions.delete(name)
+    this.sendTaskFunctionsListToMainWorker()
+    return deleteStatus
   }
 
   /**
@@ -263,6 +280,9 @@ export abstract class AbstractWorker<
   public setDefaultTaskFunction (name: string): boolean {
     if (typeof name !== 'string') {
       throw new TypeError('name parameter is not a string')
+    }
+    if (typeof name === 'string' && name.trim().length === 0) {
+      throw new TypeError('name parameter is an empty string')
     }
     if (name === DEFAULT_TASK_NAME) {
       throw new Error(
@@ -407,6 +427,16 @@ export abstract class AbstractWorker<
   protected abstract sendToMainWorker (
     message: MessageValue<Response, Data>
   ): void
+
+  /**
+   * Sends the list of task function names to the main worker.
+   */
+  protected sendTaskFunctionsListToMainWorker (): void {
+    this.sendToMainWorker({
+      taskFunctions: this.listTaskFunctions(),
+      workerId: this.id
+    })
+  }
 
   /**
    * Handles an error and convert it to a string so it can be sent back to the main worker.

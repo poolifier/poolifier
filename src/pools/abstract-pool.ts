@@ -92,6 +92,10 @@ export abstract class AbstractPool<
    * The start timestamp of the pool.
    */
   private readonly startTimestamp
+  /**
+   * The task function names.
+   */
+  private taskFunctions!: string[]
 
   /**
    * Constructs a new poolifier pool.
@@ -643,6 +647,15 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
+  public listTaskFunctions (): string[] {
+    if (this.taskFunctions != null) {
+      return this.taskFunctions
+    } else {
+      return []
+    }
+  }
+
+  /** @inheritDoc */
   public async execute (
     data?: Data,
     name?: string,
@@ -651,6 +664,18 @@ export abstract class AbstractPool<
     return await new Promise<Response>((resolve, reject) => {
       if (name != null && typeof name !== 'string') {
         reject(new TypeError('name argument must be a string'))
+      }
+      if (
+        name != null &&
+        typeof name === 'string' &&
+        name.trim().length === 0
+      ) {
+        reject(new Error('name argument must not be an empty string'))
+      }
+      if (name != null && !this.taskFunctions.includes(name)) {
+        reject(
+          new Error(`Task function '${name}' is not registered in the pool`)
+        )
       }
       if (transferList != null && !Array.isArray(transferList)) {
         reject(new TypeError('transferList argument must be an array'))
@@ -1085,6 +1110,9 @@ export abstract class AbstractPool<
       } else if (message.taskId != null) {
         // Task execution response received from worker
         this.handleTaskExecutionResponse(message)
+      } else if (message.taskFunctions != null) {
+        // Task functions message received from worker
+        this.taskFunctions = message.taskFunctions
       }
     }
   }
