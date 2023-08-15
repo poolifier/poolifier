@@ -1,1 +1,10 @@
+.nyc_output/
+benchmarks/internal/results/
+coverage/
+docs/**/*.html
+docs/**/*.css
+docs/**/*.js
+lib/
+outputs/
 pnpm-lock.yaml
+reports/

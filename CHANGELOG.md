@@ -729,15 +729,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ```js
 // Before
-const DynamicThreadPool = require("poolifier/lib/dynamic");
+const DynamicThreadPool = require('poolifier/lib/dynamic')
 // After
-const { DynamicThreadPool } = require("poolifier/lib/dynamic");
+const { DynamicThreadPool } = require('poolifier/lib/dynamic')
 ```
 
 But you should always prefer just using
 
 ```js
-const { DynamicThreadPool } = require("poolifier");
+const { DynamicThreadPool } = require('poolifier')
 ```
 
 #### New type definitions for input data and response
