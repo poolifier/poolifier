@@ -94,8 +94,9 @@ ClusterWorkerResponse
 
   public constructor () {
     super(WebSocketServerWorker.startWebSocketServer, {
-      killHandler: () => {
+      killHandler: async () => {
         WebSocketServerWorker.wss.close()
+        await WebSocketServerWorker.requestHandlerPool.destroy()
       }
     })
   }
