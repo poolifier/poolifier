@@ -43,7 +43,11 @@ ClusterWorkerResponse
   }
 
   public constructor () {
-    super(FastifyWorker.startFastify)
+    super(FastifyWorker.startFastify, {
+      killHandler: async () => {
+        await FastifyWorker.fastify.close()
+      }
+    })
   }
 }
 

@@ -40,7 +40,11 @@ class FastifyWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   }
 
   public constructor () {
-    super(FastifyWorker.startFastify)
+    super(FastifyWorker.startFastify, {
+      killHandler: async () => {
+        await FastifyWorker.fastify.close()
+      }
+    })
   }
 }
 
