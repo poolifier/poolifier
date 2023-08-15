@@ -670,7 +670,7 @@ export abstract class AbstractPool<
         typeof name === 'string' &&
         name.trim().length === 0
       ) {
-        reject(new Error('name argument must not be an empty string'))
+        reject(new TypeError('name argument must not be an empty string'))
       }
       if (name != null && !this.taskFunctions.includes(name)) {
         reject(
