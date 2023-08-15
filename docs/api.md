@@ -54,9 +54,9 @@ This method is available on both pool implementations and returns an array of th
 
 An object with these properties:
 
+- `onlineHandler` (optional) - A function that will listen for online event on each worker
 - `messageHandler` (optional) - A function that will listen for message event on each worker
 - `errorHandler` (optional) - A function that will listen for error event on each worker
-- `onlineHandler` (optional) - A function that will listen for online event on each worker
 - `exitHandler` (optional) - A function that will listen for exit event on each worker
 - `workerChoiceStrategy` (optional) - The worker choice strategy to use in this pool:
 
