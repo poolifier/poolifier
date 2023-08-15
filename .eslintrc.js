@@ -68,6 +68,7 @@ module.exports = defineConfig({
           'localhost',
           'microjob',
           'mjs',
+          'nodemailer',
           'npx',
           'num',
           'os',
