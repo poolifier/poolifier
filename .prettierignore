@@ -1,8 +1,8 @@
 .nyc_output/
 benchmarks/internal/results/
 coverage/
-docs/**/*.html
 docs/**/*.css
+docs/**/*.html
 docs/**/*.js
 lib/
 outputs/
