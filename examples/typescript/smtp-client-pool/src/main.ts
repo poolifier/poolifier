@@ -1,8 +1,9 @@
+import type SMTPTransport from 'nodemailer/lib/smtp-transport/index.js'
 import { smtpClientPool } from './pool.js'
 
 const tos = ['bar@example.com, baz@example.com']
 
-const smtpClientPoolPromises = new Set<Promise<unknown>>()
+const smtpClientPoolPromises = new Set<Promise<SMTPTransport.SentMessageInfo>>()
 for (const to of tos) {
   smtpClientPoolPromises.add(
     smtpClientPool.execute({
