@@ -672,7 +672,11 @@ export abstract class AbstractPool<
       ) {
         reject(new TypeError('name argument must not be an empty string'))
       }
-      if (name != null && !this.taskFunctions.includes(name)) {
+      if (
+        name != null &&
+        this.taskFunctions != null &&
+        !this.taskFunctions.includes(name)
+      ) {
         reject(
           new Error(`Task function '${name}' is not registered in the pool`)
         )
