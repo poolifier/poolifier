@@ -81,6 +81,7 @@ module.exports = defineConfig({
           'req',
           'resize',
           'sinon',
+          'smtp',
           'threadjs',
           'threadwork',
           'tinypool',

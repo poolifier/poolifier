@@ -146,6 +146,7 @@ You can do the same with the classes _ClusterWorker_, _FixedClusterPool_ and _Dy
 - [Javascript](./examples/javascript/)
 - [Typescript](./examples/typescript/)
   - [HTTP client pool](./examples/typescript/http-client-pool/)
+  - [SMTP client pool](./examples/typescript/smtp-client-pool/)
   - [HTTP server pool](./examples/typescript/http-server-pool/)
     - [Express worker_threads pool](./examples/typescript/http-server-pool/express-worker_threads/)
     - [Fastify worker_threads pool](./examples/typescript/http-server-pool/fastify-worker_threads/)

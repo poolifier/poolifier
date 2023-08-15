@@ -19,7 +19,7 @@ for (const workerFunction of ['node_fetch', 'fetch', 'axios']) {
     console.info(
       `Received in ${elapsedTime.toFixed(2)}ms an array with ${
         responses.length
-      } responses from ${parallelism} parallel requests made with ${workerFunction} on ${requestUrl}:\n`,
+      } responses from ${parallelism} parallel requests made with HTTP client pool task function ${workerFunction} on ${requestUrl}:\n`,
       responses
     )
   } catch (error) {

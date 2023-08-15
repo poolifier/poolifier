@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json.schemastore.org/package",
+  "name": "smtp-client-pool",
+  "version": "1.0.0",
+  "description": "SMTP client pool",
+  "main": "dist/main.js",
+  "type": "module",
+  "volta": {
+    "node": "20.5.1",
+    "pnpm": "8.6.12"
+  },
+  "scripts": {
+    "build": "pnpm build:clean && tsc",
+    "build:clean": "tsc --build --clean",
+    "start": "node dist/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nodemailer": "^6.9.4",
+    "poolifier": "^2.6.25"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.0",
+    "@types/nodemailer": "^6.4.9",
+    "typescript": "^5.1.6"
+  }
+}
