@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.26] - 2023-08-15
+
 ### Added
 
 - Add kill handler to worker options allowing to execute custom code when worker is killed.
