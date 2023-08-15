@@ -13,6 +13,5 @@ declare module 'fastify' {
       name?: string,
       transferList?: TransferListItem[]
     ) => Promise<ThreadWorkerResponse>
-    listTaskFunctions: () => string[]
   }
 }

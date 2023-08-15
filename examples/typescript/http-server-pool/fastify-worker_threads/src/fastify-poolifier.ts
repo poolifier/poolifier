@@ -39,12 +39,6 @@ const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
       ): Promise<WorkerResponse> => await pool.execute(data, name, transferList)
     )
   }
-  if (!fastify.hasDecorator('listTaskFunctions')) {
-    fastify.decorate('listTaskFunctions', (): string[] =>
-      pool.listTaskFunctions()
-    )
-  }
-  done()
 }
 
 export const fastifyPoolifier = fp(fastifyPoolifierPlugin, {

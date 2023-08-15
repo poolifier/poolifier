@@ -45,6 +45,7 @@ ClusterWorkerResponse
   public constructor () {
     super(FastifyWorker.startFastify, {
       killHandler: async () => {
+        await FastifyWorker.fastify.pool.destroy()
         await FastifyWorker.fastify.close()
       }
     })

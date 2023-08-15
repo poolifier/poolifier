@@ -40,11 +40,6 @@ const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
         await pool.execute(data, name, transferList)
     )
   }
-  if (!fastify.hasDecorator('listTaskFunctions')) {
-    fastify.decorate('listTaskFunctions', (): string[] =>
-      pool.listTaskFunctions()
-    )
-  }
   done()
 }
 
