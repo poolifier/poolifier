@@ -182,9 +182,9 @@ export interface IWorker {
    * @param event - The event.
    * @param handler - The event handler.
    */
-  readonly on: ((event: 'message', handler: MessageHandler<this>) => void) &
+  readonly on: ((event: 'online', handler: OnlineHandler<this>) => void) &
+  ((event: 'message', handler: MessageHandler<this>) => void) &
   ((event: 'error', handler: ErrorHandler<this>) => void) &
-  ((event: 'online', handler: OnlineHandler<this>) => void) &
   ((event: 'exit', handler: ExitHandler<this>) => void)
   /**
    * Registers a listener to the exit event that will only be performed once.

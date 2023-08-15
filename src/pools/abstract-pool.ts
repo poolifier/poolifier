@@ -933,6 +933,7 @@ export abstract class AbstractPool<
   protected createAndSetupWorkerNode (): number {
     const worker = this.createWorker()
 
+    worker.on('online', this.opts.onlineHandler ?? EMPTY_FUNCTION)
     worker.on('message', this.opts.messageHandler ?? EMPTY_FUNCTION)
     worker.on('error', this.opts.errorHandler ?? EMPTY_FUNCTION)
     worker.on('error', (error) => {
@@ -952,7 +953,6 @@ export abstract class AbstractPool<
         this.redistributeQueuedTasks(workerNodeKey)
       }
     })
-    worker.on('online', this.opts.onlineHandler ?? EMPTY_FUNCTION)
     worker.on('exit', this.opts.exitHandler ?? EMPTY_FUNCTION)
     worker.once('exit', () => {
       this.removeWorkerNode(worker)
