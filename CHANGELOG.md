@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Add `KillHandler` type definition to exported types.
+
 ### Added
 
 - Add `destroy` event to pool API.
