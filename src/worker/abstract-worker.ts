@@ -320,24 +320,25 @@ export abstract class AbstractWorker<
   protected messageListener (message: MessageValue<Data>): void {
     if (this.isMain) {
       throw new Error('Cannot handle message to worker in main worker')
+    } else if (message.workerId == null) {
+      throw new Error('Message worker id is not set')
     } else if (message.workerId != null && message.workerId !== this.id) {
       throw new Error(
         `Message worker id ${message.workerId} does not match the worker id ${this.id}`
       )
-    } else if (message.workerId === this.id) {
-      if (message.statistics != null) {
-        // Statistics message received
-        this.statistics = message.statistics
-      } else if (message.checkActive != null) {
-        // Check active message received
-        message.checkActive ? this.startCheckActive() : this.stopCheckActive()
-      } else if (message.taskId != null && message.data != null) {
-        // Task message received
-        this.run(message)
-      } else if (message.kill === true) {
-        // Kill message received
-        this.handleKillMessage(message)
-      }
+    }
+    if (message.statistics != null) {
+      // Statistics message received
+      this.statistics = message.statistics
+    } else if (message.checkActive != null) {
+      // Check active message received
+      message.checkActive ? this.startCheckActive() : this.stopCheckActive()
+    } else if (message.taskId != null && message.data != null) {
+      // Task message received
+      this.run(message)
+    } else if (message.kill === true) {
+      // Kill message received
+      this.handleKillMessage(message)
     }
   }
 
@@ -473,26 +474,27 @@ export abstract class AbstractWorker<
     fn: TaskSyncFunction<Data, Response>,
     task: Task<Data>
   ): void {
+    const { name, taskId, data } = task
     try {
-      let taskPerformance = this.beginTaskPerformance(task.name)
-      const res = fn(task.data)
+      let taskPerformance = this.beginTaskPerformance(name)
+      const res = fn(data)
       taskPerformance = this.endTaskPerformance(taskPerformance)
       this.sendToMainWorker({
         data: res,
         taskPerformance,
         workerId: this.id,
-        taskId: task.taskId
+        taskId
       })
     } catch (e) {
       const errorMessage = this.handleError(e as Error | string)
       this.sendToMainWorker({
         taskError: {
-          name: task.name ?? DEFAULT_TASK_NAME,
+          name: name ?? DEFAULT_TASK_NAME,
           message: errorMessage,
-          data: task.data
+          data
         },
         workerId: this.id,
-        taskId: task.taskId
+        taskId
       })
     } finally {
       this.updateLastTaskTimestamp()
@@ -509,15 +511,16 @@ export abstract class AbstractWorker<
     fn: TaskAsyncFunction<Data, Response>,
     task: Task<Data>
   ): void {
-    let taskPerformance = this.beginTaskPerformance(task.name)
-    fn(task.data)
+    const { name, taskId, data } = task
+    let taskPerformance = this.beginTaskPerformance(name)
+    fn(data)
       .then((res) => {
         taskPerformance = this.endTaskPerformance(taskPerformance)
         this.sendToMainWorker({
           data: res,
           taskPerformance,
           workerId: this.id,
-          taskId: task.taskId
+          taskId
         })
         return null
       })
@@ -525,12 +528,12 @@ export abstract class AbstractWorker<
         const errorMessage = this.handleError(e as Error | string)
         this.sendToMainWorker({
           taskError: {
-            name: task.name ?? DEFAULT_TASK_NAME,
+            name: name ?? DEFAULT_TASK_NAME,
             message: errorMessage,
-            data: task.data
+            data
           },
           workerId: this.id,
-          taskId: task.taskId
+          taskId
         })
       })
       .finally(() => {

@@ -510,7 +510,9 @@ export abstract class AbstractPool<
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the worker id is invalid.
    */
   private checkMessageWorkerId (message: MessageValue<Response>): void {
-    if (
+    if (message.workerId == null) {
+      throw new Error('Worker message received without worker id')
+    } else if (
       message.workerId != null &&
       this.getWorkerNodeKeyByWorkerId(message.workerId) === -1
     ) {
