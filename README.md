@@ -141,7 +141,7 @@ pool
 
 You can do the same with the classes _ClusterWorker_, _FixedClusterPool_ and _DynamicClusterPool_.
 
-**See [examples](./examples/) folder for more details**:
+**See [examples](./examples/) for more details**:
 
 - [Javascript](./examples/javascript/)
 - [Typescript](./examples/typescript/)
