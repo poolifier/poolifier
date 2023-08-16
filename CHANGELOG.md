@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - HTTP server pool examples: express-cluster, express-hybrid.
 
+### Changed
+
+- Remove now useless branching in worker hot code path.
+
 ## [2.6.27] - 2023-08-15
 
 ### Fixed
