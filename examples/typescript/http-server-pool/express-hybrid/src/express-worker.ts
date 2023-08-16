@@ -31,7 +31,7 @@ ClusterWorkerResponse
   private static readonly startExpress = (
     workerData?: ClusterWorkerData
   ): ClusterWorkerResponse => {
-    const { port, workerFile, minWorkers, maxWorkers } =
+    const { port, workerFile, minWorkers, maxWorkers, ...poolOptions } =
       workerData as ClusterWorkerData
 
     ExpressWorker.requestHandlerPool = new DynamicThreadPool<
@@ -41,7 +41,7 @@ ClusterWorkerResponse
       minWorkers ?? 1,
       maxWorkers ?? availableParallelism(),
       workerFile,
-      workerData
+      poolOptions
     )
 
     const application: Express = express()
