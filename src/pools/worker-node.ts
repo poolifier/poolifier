@@ -2,6 +2,7 @@ import { MessageChannel } from 'node:worker_threads'
 import { CircularArray } from '../circular-array'
 import { Queue } from '../queue'
 import type { Task } from '../utility-types'
+import { DEFAULT_TASK_NAME } from '../utils'
 import {
   type IWorker,
   type IWorkerNode,
@@ -22,6 +23,7 @@ implements IWorkerNode<Worker, Data> {
   public readonly worker: Worker
   public readonly info: WorkerInfo
   public usage: WorkerUsage
+  public taskFunctions!: string[]
   private readonly tasksUsage: Map<string, WorkerUsage>
   private readonly tasksQueue: Queue<Task<Data>>
 
@@ -87,6 +89,13 @@ implements IWorkerNode<Worker, Data> {
 
   /** @inheritdoc */
   public getTaskWorkerUsage (name: string): WorkerUsage | undefined {
+    if (
+      name === DEFAULT_TASK_NAME &&
+      Array.isArray(this.taskFunctions) &&
+      this.taskFunctions.length > 1
+    ) {
+      name = this.taskFunctions[1]
+    }
     if (!this.tasksUsage.has(name)) {
       this.tasksUsage.set(name, this.initTaskWorkerUsage(name))
     }
