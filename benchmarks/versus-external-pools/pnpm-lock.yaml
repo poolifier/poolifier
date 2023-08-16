@@ -18,8 +18,8 @@ dependencies:
     specifier: 2.6.25
     version: 2.6.25
   tinypool:
-    specifier: 0.7.0
-    version: 0.7.0
+    specifier: 0.8.0
+    version: 0.8.0
   worker-nodes:
     specifier: 2.6.0
     version: 2.6.0
@@ -130,8 +130,8 @@ packages:
     requiresBuild: true
     dev: false
 
-  /tinypool@0.7.0:
-    resolution: {integrity: sha512-zSYNUlYSMhJ6Zdou4cJwo/p7w5nmAH17GRfU/ui3ctvjXFErXXkruT4MWW6poDeXgCaIBlGLrfU6TbTXxyGMww==}
+  /tinypool@0.8.0:
+    resolution: {integrity: sha512-BkMhpw8M8y9+XBOEP57Wzbw/8IoJYtL1OvFjX+88IvwzAqVhwEV2TID0lZ1l4b5dPhjzSFQrhWdD2CLWt+oXRw==}
     engines: {node: '>=14.0.0'}
     dev: false
 
