@@ -1,7 +1,10 @@
 import type { ThreadPoolOptions } from 'poolifier'
 
-export interface ClusterWorkerData extends FastifyPoolifierOptions {
+export interface ClusterWorkerData extends ThreadPoolOptions {
   port: number
+  workerFile: string
+  minWorkers?: number
+  maxWorkers?: number
 }
 
 export interface ClusterWorkerResponse {
@@ -19,10 +22,4 @@ export interface ThreadWorkerData<T = unknown> {
 
 export interface ThreadWorkerResponse<T = unknown> {
   data: T
-}
-
-export interface FastifyPoolifierOptions extends ThreadPoolOptions {
-  workerFile: string
-  minWorkers?: number
-  maxWorkers?: number
 }

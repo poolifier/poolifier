@@ -17,6 +17,7 @@ class FastifyWorker extends ClusterWorker<WorkerData, WorkerResponse> {
     workerData?: WorkerData
   ): Promise<WorkerResponse> => {
     const { port } = workerData as WorkerData
+
     FastifyWorker.fastify = Fastify({
       logger: true
     })

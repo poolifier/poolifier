@@ -14,6 +14,7 @@ ClusterWorkerResponse
     workerData?: ClusterWorkerData
   ): Promise<ClusterWorkerResponse> => {
     const { port } = workerData as ClusterWorkerData
+
     FastifyWorker.fastify = Fastify({
       logger: true
     })
@@ -22,8 +23,8 @@ ClusterWorkerResponse
 
     FastifyWorker.fastify.all('/api/echo', async (request) => {
       return (
-        await FastifyWorker.fastify.execute({ body: request.body }, 'echo')
-      ).body
+        await FastifyWorker.fastify.execute({ data: request.body }, 'echo')
+      ).data
     })
 
     FastifyWorker.fastify.get<{
@@ -31,8 +32,8 @@ ClusterWorkerResponse
     }>('/api/factorial/:number', async (request) => {
       const { number } = request.params
       return (
-        await FastifyWorker.fastify.execute({ body: { number } }, 'factorial')
-      ).body
+        await FastifyWorker.fastify.execute({ data: { number } }, 'factorial')
+      ).data
     })
 
     await FastifyWorker.fastify.listen({ port })

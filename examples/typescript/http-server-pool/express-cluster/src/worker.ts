@@ -17,6 +17,8 @@ class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static readonly startExpress = (
     workerData?: WorkerData
   ): WorkerResponse => {
+    const { port } = workerData as WorkerData
+
     const application: Express = express()
 
     // Parse only JSON requests body
@@ -31,17 +33,15 @@ class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
       res.send({ number: factorial(parseInt(number)) }).end()
     })
 
-    ExpressWorker.server = application.listen(workerData?.port, () => {
+    ExpressWorker.server = application.listen(port, () => {
       console.info(
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        `⚡️[express server]: Express server is started in cluster worker at http://localhost:${workerData?.port}/`
+        `⚡️[express server]: Express server is started in cluster worker at http://localhost:${port}/`
       )
     })
     return {
       status: true,
-      port:
-        (ExpressWorker.server.address() as AddressInfo)?.port ??
-        workerData?.port
+      port: (ExpressWorker.server.address() as AddressInfo)?.port ?? port
     }
   }
 

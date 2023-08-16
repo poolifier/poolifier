@@ -31,21 +31,24 @@ ClusterWorkerResponse
   private static readonly startWebSocketServer = (
     workerData?: ClusterWorkerData
   ): ClusterWorkerResponse => {
-    const { port } = workerData as ClusterWorkerData
-    WebSocketServerWorker.wss = new WebSocketServer({ port }, () => {
-      console.info(
-        `⚡️[ws server]: WebSocket server is started in cluster worker at ws://localhost:${port}/`
-      )
-    })
+    const { port, workerFile, minWorkers, maxWorkers } =
+      workerData as ClusterWorkerData
 
     WebSocketServerWorker.requestHandlerPool = new DynamicThreadPool<
     ThreadWorkerData<DataPayload>,
     ThreadWorkerResponse<DataPayload>
     >(
-      workerData?.minWorkers ?? 1,
-      workerData?.maxWorkers ?? availableParallelism(),
-      workerData?.workerFile as string
+      minWorkers ?? 1,
+      maxWorkers ?? availableParallelism(),
+      workerFile,
+      workerData
     )
+
+    WebSocketServerWorker.wss = new WebSocketServer({ port }, () => {
+      console.info(
+        `⚡️[ws server]: WebSocket server is started in cluster worker at ws://localhost:${port}/`
+      )
+    })
 
     WebSocketServerWorker.wss.on('connection', (ws) => {
       ws.on('error', console.error)

@@ -68,6 +68,18 @@ updates:
       - 'pioardi'
       - 'jerome-benoit'
   - package-ecosystem: 'npm'
+    directory: '/examples/typescript/http-server-pool/express-hybrid'
+    schedule:
+      interval: 'daily'
+    labels:
+      - 'dependencies'
+      - 'examples'
+      - 'nocombine'
+    reviewers:
+      - 'pioardi'
+      - 'jerome-benoit'
+    versioning-strategy: increase
+  - package-ecosystem: 'npm'
     directory: '/examples/typescript/http-server-pool/express-cluster'
     schedule:
       interval: 'daily'
