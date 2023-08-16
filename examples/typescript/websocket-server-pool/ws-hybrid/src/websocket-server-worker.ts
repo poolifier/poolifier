@@ -31,7 +31,7 @@ ClusterWorkerResponse
   private static readonly startWebSocketServer = (
     workerData?: ClusterWorkerData
   ): ClusterWorkerResponse => {
-    const { port, workerFile, minWorkers, maxWorkers } =
+    const { port, workerFile, minWorkers, maxWorkers, ...poolOptions } =
       workerData as ClusterWorkerData
 
     WebSocketServerWorker.requestHandlerPool = new DynamicThreadPool<
@@ -41,7 +41,7 @@ ClusterWorkerResponse
       minWorkers ?? 1,
       maxWorkers ?? availableParallelism(),
       workerFile,
-      workerData
+      poolOptions
     )
 
     WebSocketServerWorker.wss = new WebSocketServer({ port }, () => {

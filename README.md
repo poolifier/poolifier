@@ -40,10 +40,10 @@ Please consult our [general guidelines](#general-guidelines).
 - Easy switch from a pool type to another :white_check_mark:
 - No runtime dependencies :white_check_mark:
 - Proper integration with Node.js [async_hooks](https://nodejs.org/api/async_hooks.html) :white_check_mark:
-- Support CommonJS, ESM, and TypeScript :white_check_mark:
+- Support for CommonJS, ESM, and TypeScript :white_check_mark:
 - Support for [worker_threads](https://nodejs.org/api/worker_threads.html) and [cluster](https://nodejs.org/api/cluster.html) Node.js modules :white_check_mark:
-- Support multiple task functions :white_check_mark:
-- Support sync and async task functions :white_check_mark:
+- Support for multiple task functions :white_check_mark:
+- Support for sync and async task functions :white_check_mark:
 - Tasks distribution strategies :white_check_mark:
 - General guidelines on pool choice :white_check_mark:
 - Error handling out of the box :white_check_mark:
@@ -141,7 +141,7 @@ pool
 
 You can do the same with the classes _ClusterWorker_, _FixedClusterPool_ and _DynamicClusterPool_.
 
-**See [examples](./examples/) folder for more details**:
+**See [examples](./examples/) for more details**:
 
 - [Javascript](./examples/javascript/)
 - [Typescript](./examples/typescript/)
