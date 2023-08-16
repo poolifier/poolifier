@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Ensure pool workers are properly initialized.
+
 ### Added
 
 - HTTP server pool examples: express-cluster, express-hybrid.

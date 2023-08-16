@@ -54,13 +54,17 @@ export class ThreadWorker<
   protected handleReadyMessage (message: MessageValue<Data>): void {
     if (
       message.workerId === this.id &&
-      message.ready != null &&
+      message.ready === false &&
       message.port != null
     ) {
-      this.port = message.port
-      this.port.on('message', this.messageListener.bind(this))
-      this.sendTaskFunctionsListToMainWorker()
-      this.sendToMainWorker({ ready: true, workerId: this.id })
+      try {
+        this.port = message.port
+        this.port.on('message', this.messageListener.bind(this))
+        this.sendTaskFunctionsListToMainWorker()
+        this.sendToMainWorker({ ready: true, workerId: this.id })
+      } catch {
+        this.sendToMainWorker({ ready: false, workerId: this.id })
+      }
     }
   }
 

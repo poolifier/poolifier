@@ -1125,6 +1125,9 @@ export abstract class AbstractPool<
   }
 
   private handleWorkerReadyResponse (message: MessageValue<Response>): void {
+    if (message.ready === false) {
+      throw new Error(`Worker ${message.workerId} failed to initialize`)
+    }
     this.getWorkerInfo(
       this.getWorkerNodeKeyByWorkerId(message.workerId)
     ).ready = message.ready as boolean
