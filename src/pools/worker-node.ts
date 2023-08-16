@@ -23,7 +23,6 @@ implements IWorkerNode<Worker, Data> {
   public readonly worker: Worker
   public readonly info: WorkerInfo
   public usage: WorkerUsage
-  public taskFunctions!: string[]
   private readonly tasksUsage: Map<string, WorkerUsage>
   private readonly tasksQueue: Queue<Task<Data>>
 
@@ -89,12 +88,17 @@ implements IWorkerNode<Worker, Data> {
 
   /** @inheritdoc */
   public getTaskWorkerUsage (name: string): WorkerUsage | undefined {
+    if (name === DEFAULT_TASK_NAME && !Array.isArray(this.info.taskFunctions)) {
+      throw new Error(
+        'Cannot get task worker usage for default task function name when task function names list is not yet defined'
+      )
+    }
     if (
       name === DEFAULT_TASK_NAME &&
-      Array.isArray(this.taskFunctions) &&
-      this.taskFunctions.length > 1
+      Array.isArray(this.info.taskFunctions) &&
+      this.info.taskFunctions.length > 1
     ) {
-      name = this.taskFunctions[1]
+      name = this.info.taskFunctions[1]
     }
     if (!this.tasksUsage.has(name)) {
       this.tasksUsage.set(name, this.initTaskWorkerUsage(name))
