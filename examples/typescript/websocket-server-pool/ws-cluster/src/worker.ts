@@ -22,6 +22,7 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
     workerData?: WorkerData
   ): WorkerResponse => {
     const { port } = workerData as WorkerData
+
     WebSocketServerWorker.wss = new WebSocketServer({ port }, () => {
       console.info(
         `⚡️[ws server]: WebSocket server is started in cluster worker at ws://localhost:${port}/`

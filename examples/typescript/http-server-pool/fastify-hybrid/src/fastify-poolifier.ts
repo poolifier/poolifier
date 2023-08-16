@@ -20,11 +20,12 @@ const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
     },
     ...options
   }
+  const { workerFile, minWorkers, maxWorkers, ...poolOptions } = options
   const pool = new DynamicThreadPool<ThreadWorkerData, ThreadWorkerResponse>(
-    options.minWorkers as number,
-    options.maxWorkers as number,
-    options.workerFile,
-    options
+    minWorkers as number,
+    maxWorkers as number,
+    workerFile,
+    poolOptions
   )
   if (!fastify.hasDecorator('pool')) {
     fastify.decorate('pool', pool)
