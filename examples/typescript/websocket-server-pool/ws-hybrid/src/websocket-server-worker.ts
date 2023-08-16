@@ -15,7 +15,7 @@ import {
 } from './types.js'
 
 const emptyFunction = (): void => {
-  /** Intentional */
+  /* Intentional */
 }
 
 class WebSocketServerWorker extends ClusterWorker<

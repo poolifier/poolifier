@@ -62,7 +62,7 @@ Please consult our [general guidelines](#general-guidelines).
 - [Overview](#overview)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Node versions](#node-versions)
+- [Node.js versions](#nodejs-versions)
 - [API](#api)
 - [General guidelines](#general-guidelines)
 - [Worker choice strategies](#worker-choice-strategies)
@@ -161,9 +161,9 @@ You can do the same with the classes _ClusterWorker_, _FixedClusterPool_ and _Dy
 
 Remember that workers can only send and receive structured-cloneable data.
 
-## Node versions
+## Node.js versions
 
-Node versions >= 16.14.x are supported.
+Node.js versions >= 16.14.x are supported.
 
 ## [API](./docs/api.md)
 

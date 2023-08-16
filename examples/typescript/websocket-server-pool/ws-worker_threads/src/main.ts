@@ -10,7 +10,7 @@ const wss = new WebSocketServer({ port }, () => {
 })
 
 const emptyFunction = (): void => {
-  /** Intentional */
+  /* Intentional */
 }
 
 wss.on('connection', (ws) => {

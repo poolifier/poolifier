@@ -33,7 +33,7 @@ jobs:
         with:
           version: 8
 
-      - name: Setup node ${{ matrix.node }}
+      - name: Setup Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
