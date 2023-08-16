@@ -169,7 +169,7 @@ export abstract class AbstractWorker<
    *
    * @param name - The name of the task function to check.
    * @returns Whether the worker has a task function with the given name or not.
-   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string.
+   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string or an empty string.
    */
   public hasTaskFunction (name: string): boolean {
     if (typeof name !== 'string') {
@@ -188,7 +188,7 @@ export abstract class AbstractWorker<
    * @param name - The name of the task function to add.
    * @param fn - The task function to add.
    * @returns Whether the task function was added or not.
-   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string.
+   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string or an empty string.
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is the default task function reserved name.
    * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `fn` parameter is not a function.
    */
@@ -231,7 +231,7 @@ export abstract class AbstractWorker<
    *
    * @param name - The name of the task function to remove.
    * @returns Whether the task function existed and was removed or not.
-   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string.
+   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string or an empty string.
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is the default task function reserved name.
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is the task function used as default task function.
    */
@@ -273,7 +273,7 @@ export abstract class AbstractWorker<
    *
    * @param name - The name of the task function to use as default task function.
    * @returns Whether the default task function was set or not.
-   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string.
+   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string or an empty string.
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is the default task function reserved name.
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is a non-existing task function.
    */
@@ -320,13 +320,8 @@ export abstract class AbstractWorker<
   protected messageListener (message: MessageValue<Data>): void {
     if (this.isMain) {
       throw new Error('Cannot handle message to worker in main worker')
-    } else if (message.workerId == null) {
-      throw new Error('Message worker id is not set')
-    } else if (message.workerId != null && message.workerId !== this.id) {
-      throw new Error(
-        `Message worker id ${message.workerId} does not match the worker id ${this.id}`
-      )
     }
+    this.checkMessageWorkerId(message)
     if (message.statistics != null) {
       // Statistics message received
       this.statistics = message.statistics
@@ -372,6 +367,22 @@ export abstract class AbstractWorker<
       } finally {
         this.emitDestroy()
       }
+    }
+  }
+
+  /**
+   * Check if the message worker id is set and matches the worker id.
+   *
+   * @param message - The message to check.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the message worker id is not set or does not match the worker id.
+   */
+  private checkMessageWorkerId (message: MessageValue<Data>): void {
+    if (message.workerId == null) {
+      throw new Error('Message worker id is not set')
+    } else if (message.workerId != null && message.workerId !== this.id) {
+      throw new Error(
+        `Message worker id ${message.workerId} does not match the worker id ${this.id}`
+      )
     }
   }
 
