@@ -11,7 +11,7 @@ function yourFunction () {
     }
     JSON.stringify(o)
   }
-  debug === true && console.info('This is the main thread ' + isMainThread)
+  debug === true && console.info(`This is the main thread ${isMainThread}`)
   return { ok: 1 }
 }
 

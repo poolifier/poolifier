@@ -318,9 +318,6 @@ export abstract class AbstractWorker<
    * @param message - The received message.
    */
   protected messageListener (message: MessageValue<Data>): void {
-    if (this.isMain) {
-      throw new Error('Cannot handle message to worker in main worker')
-    }
     this.checkMessageWorkerId(message)
     if (message.statistics != null) {
       // Statistics message received

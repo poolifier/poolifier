@@ -9,7 +9,7 @@ const taskFunction = (data) => {
   data = data || {}
   data.function = data.function || TaskFunctions.jsonIntegerSerialization
   const res = executeTaskFunction(data)
-  debug === true && console.debug('This is the main thread ' + isMainThread)
+  debug === true && console.debug(`This is the main thread ${isMainThread}`)
   return res
 }
 

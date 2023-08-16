@@ -23,9 +23,9 @@ for (let i = 1; i <= iterations; i++) {
     .then(() => {
       resolved++
       if (resolved === iterations) {
-        console.info('Time taken is ' + (performance.now() - start))
-        console.info('The pool was ready for ' + poolReady + ' times')
-        return console.info('The pool was busy for ' + poolBusy + ' times')
+        console.info(`Time taken is ${performance.now() - start}`)
+        console.info(`The pool was ready for ${poolReady} times`)
+        return console.info(`The pool was busy for ${poolBusy} times`)
       }
       return null
     })
