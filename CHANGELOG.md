@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix race condition between ready and task functions worker message handling at startup.
+- Fix duplicate task usage statistics computation per task function.
+
 ## [2.6.28] - 2023-08-16
 
 ### Fixed
