@@ -2,6 +2,7 @@ import { MessageChannel } from 'node:worker_threads'
 import { CircularArray } from '../circular-array'
 import { Queue } from '../queue'
 import type { Task } from '../utility-types'
+import { DEFAULT_TASK_NAME } from '../utils'
 import {
   type IWorker,
   type IWorkerNode,
@@ -87,6 +88,18 @@ implements IWorkerNode<Worker, Data> {
 
   /** @inheritdoc */
   public getTaskWorkerUsage (name: string): WorkerUsage | undefined {
+    if (name === DEFAULT_TASK_NAME && !Array.isArray(this.info.taskFunctions)) {
+      throw new Error(
+        'Cannot get task worker usage for default task function name when task function names list is not yet defined'
+      )
+    }
+    if (
+      name === DEFAULT_TASK_NAME &&
+      Array.isArray(this.info.taskFunctions) &&
+      this.info.taskFunctions.length > 1
+    ) {
+      name = this.info.taskFunctions[1]
+    }
     if (!this.tasksUsage.has(name)) {
       this.tasksUsage.set(name, this.initTaskWorkerUsage(name))
     }

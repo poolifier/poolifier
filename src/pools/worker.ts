@@ -138,6 +138,10 @@ export interface WorkerInfo {
    */
   ready: boolean
   /**
+   * Task function names.
+   */
+  taskFunctions?: string[]
+  /**
    * Message channel.
    */
   messageChannel?: MessageChannel

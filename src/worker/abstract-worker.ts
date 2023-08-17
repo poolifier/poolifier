@@ -265,7 +265,24 @@ export abstract class AbstractWorker<
    * @returns The names of the worker's task functions.
    */
   public listTaskFunctions (): string[] {
-    return [...this.taskFunctions.keys()]
+    const names: string[] = [...this.taskFunctions.keys()]
+    let defaultTaskFunctionName: string = DEFAULT_TASK_NAME
+    for (const [name, fn] of this.taskFunctions) {
+      if (
+        name !== DEFAULT_TASK_NAME &&
+        fn === this.taskFunctions.get(DEFAULT_TASK_NAME)
+      ) {
+        defaultTaskFunctionName = name
+        break
+      }
+    }
+    return [
+      names[names.indexOf(DEFAULT_TASK_NAME)],
+      defaultTaskFunctionName,
+      ...names.filter(
+        (name) => name !== DEFAULT_TASK_NAME && name !== defaultTaskFunctionName
+      )
+    ]
   }
 
   /**
