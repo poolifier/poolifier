@@ -141,10 +141,6 @@ export interface WorkerInfo {
    * Task function names.
    */
   taskFunctions?: string[]
-  /**
-   * Message channel.
-   */
-  messageChannel?: MessageChannel
 }
 
 /**
@@ -215,6 +211,10 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    * Worker info.
    */
   readonly info: WorkerInfo
+  /**
+   * Message channel.
+   */
+  readonly messageChannel?: MessageChannel
   /**
    * Worker usage statistics.
    */

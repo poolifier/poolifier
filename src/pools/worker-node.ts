@@ -22,6 +22,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
 implements IWorkerNode<Worker, Data> {
   public readonly worker: Worker
   public readonly info: WorkerInfo
+  public messageChannel?: MessageChannel
   public usage: WorkerUsage
   private readonly tasksUsage: Map<string, WorkerUsage>
   private readonly tasksQueue: Queue<Task<Data>>
@@ -35,6 +36,9 @@ implements IWorkerNode<Worker, Data> {
   constructor (worker: Worker, workerType: WorkerType) {
     this.worker = worker
     this.info = this.initWorkerInfo(worker, workerType)
+    if (workerType === WorkerTypes.thread) {
+      this.messageChannel = new MessageChannel()
+    }
     this.usage = this.initWorkerUsage()
     this.tasksUsage = new Map<string, WorkerUsage>()
     this.tasksQueue = new Queue<Task<Data>>()
@@ -77,12 +81,12 @@ implements IWorkerNode<Worker, Data> {
 
   /** @inheritdoc */
   public closeChannel (): void {
-    if (this.info.messageChannel != null) {
-      this.info.messageChannel?.port1.unref()
-      this.info.messageChannel?.port2.unref()
-      this.info.messageChannel?.port1.close()
-      this.info.messageChannel?.port2.close()
-      delete this.info.messageChannel
+    if (this.messageChannel != null) {
+      this.messageChannel?.port1.unref()
+      this.messageChannel?.port2.unref()
+      this.messageChannel?.port1.close()
+      this.messageChannel?.port2.close()
+      delete this.messageChannel
     }
   }
 
@@ -111,10 +115,7 @@ implements IWorkerNode<Worker, Data> {
       id: this.getWorkerId(worker, workerType),
       type: workerType,
       dynamic: false,
-      ready: false,
-      ...(workerType === WorkerTypes.thread && {
-        messageChannel: new MessageChannel()
-      })
+      ready: false
     }
   }
 
