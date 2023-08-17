@@ -257,7 +257,10 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    */
   readonly closeChannel: () => void
   /**
-   * Gets task worker usage statistics.
+   * Gets task function worker usage statistics.
+   *
+   * @param name - The task function name.
+   * @returns The task function worker usage statistics if the task function worker usage statistics are initialized, `undefined` otherwise.
    */
   readonly getTaskWorkerUsage: (name: string) => WorkerUsage | undefined
 }
