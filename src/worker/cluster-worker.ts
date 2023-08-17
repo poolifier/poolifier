@@ -46,10 +46,17 @@ export class ClusterWorker<
     if (message.workerId === this.id && message.ready === false) {
       try {
         this.getMainWorker()?.on('message', this.messageListener.bind(this))
-        this.sendTaskFunctionsListToMainWorker()
-        this.sendToMainWorker({ ready: true, workerId: this.id })
+        this.sendToMainWorker({
+          ready: true,
+          taskFunctions: this.listTaskFunctions(),
+          workerId: this.id
+        })
       } catch {
-        this.sendToMainWorker({ ready: false, workerId: this.id })
+        this.sendToMainWorker({
+          ready: false,
+          taskFunctions: this.listTaskFunctions(),
+          workerId: this.id
+        })
       }
     }
   }

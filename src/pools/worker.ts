@@ -247,7 +247,7 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    */
   readonly resetUsage: () => void
   /**
-   * Close communication channel.
+   * Closes communication channel.
    */
   readonly closeChannel: () => void
   /**

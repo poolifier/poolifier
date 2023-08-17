@@ -678,12 +678,11 @@ export abstract class AbstractPool<
       }
       const timestamp = performance.now()
       const workerNodeKey = this.chooseWorkerNode()
+      const workerInfo = this.getWorkerInfo(workerNodeKey)
       if (
         name != null &&
-        Array.isArray(this.getWorkerInfo(workerNodeKey).taskFunctions) &&
-        !(this.getWorkerInfo(workerNodeKey).taskFunctions as string[]).includes(
-          name
-        )
+        Array.isArray(workerInfo.taskFunctions) &&
+        !workerInfo.taskFunctions.includes(name)
       ) {
         reject(
           new Error(`Task function '${name}' is not registered in the pool`)
@@ -695,7 +694,7 @@ export abstract class AbstractPool<
         data: data ?? ({} as Data),
         transferList,
         timestamp,
-        workerId: this.getWorkerInfo(workerNodeKey).id as number,
+        workerId: workerInfo.id as number,
         taskId: randomUUID()
       }
       this.promiseResponseMap.set(task.taskId as string, {
@@ -816,9 +815,10 @@ export abstract class AbstractPool<
   }
 
   private canUpdateTaskWorkerUsage (workerNodeKey: number): boolean {
+    const workerInfo = this.getWorkerInfo(workerNodeKey)
     return (
-      Array.isArray(this.getWorkerInfo(workerNodeKey).taskFunctions) &&
-      (this.getWorkerInfo(workerNodeKey).taskFunctions as string[]).length > 1
+      Array.isArray(workerInfo.taskFunctions) &&
+      workerInfo.taskFunctions.length > 1
     )
   }
 
@@ -1125,7 +1125,7 @@ export abstract class AbstractPool<
   protected workerListener (): (message: MessageValue<Response>) => void {
     return (message) => {
       this.checkMessageWorkerId(message)
-      if (message.ready != null) {
+      if (message.ready != null && message.taskFunctions != null) {
         // Worker ready response received from worker
         this.handleWorkerReadyResponse(message)
       } else if (message.taskId != null) {
@@ -1144,9 +1144,11 @@ export abstract class AbstractPool<
     if (message.ready === false) {
       throw new Error(`Worker ${message.workerId} failed to initialize`)
     }
-    this.getWorkerInfo(
+    const workerInfo = this.getWorkerInfo(
       this.getWorkerNodeKeyByWorkerId(message.workerId)
-    ).ready = message.ready as boolean
+    )
+    workerInfo.ready = message.ready as boolean
+    workerInfo.taskFunctions = message.taskFunctions
     if (this.emitter != null && this.ready) {
       this.emitter.emit(PoolEvents.ready, this.info)
     }
@@ -1217,7 +1219,7 @@ export abstract class AbstractPool<
     this.workerNodes.push(workerNode)
     const workerNodeKey = this.getWorkerNodeKeyByWorker(worker)
     if (workerNodeKey === -1) {
-      throw new Error('Worker node not found')
+      throw new Error('Worker node added not found')
     }
     return workerNodeKey
   }

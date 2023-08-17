@@ -88,9 +88,9 @@ implements IWorkerNode<Worker, Data> {
 
   /** @inheritdoc */
   public getTaskWorkerUsage (name: string): WorkerUsage | undefined {
-    if (name === DEFAULT_TASK_NAME && !Array.isArray(this.info.taskFunctions)) {
+    if (!Array.isArray(this.info.taskFunctions)) {
       throw new Error(
-        'Cannot get task worker usage for default task function name when task function names list is not yet defined'
+        `Cannot get task worker usage for task function name '${name}' when task function names list is not yet defined`
       )
     }
     if (
