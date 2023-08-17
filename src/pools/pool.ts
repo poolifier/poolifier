@@ -47,7 +47,8 @@ export const PoolEvents = Object.freeze({
   full: 'full',
   destroy: 'destroy',
   error: 'error',
-  taskError: 'taskError'
+  taskError: 'taskError',
+  backPressure: 'backPressure'
 } as const)
 
 /**

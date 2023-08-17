@@ -20,20 +20,26 @@ import {
  */
 export class WorkerNode<Worker extends IWorker, Data = unknown>
 implements IWorkerNode<Worker, Data> {
+  /** @inheritdoc */
   public readonly worker: Worker
+  /** @inheritdoc */
   public readonly info: WorkerInfo
+  /** @inheritdoc */
   public messageChannel?: MessageChannel
+  /** @inheritdoc */
   public usage: WorkerUsage
   private readonly tasksUsage: Map<string, WorkerUsage>
   private readonly tasksQueue: Queue<Task<Data>>
+  private readonly tasksQueueBackPressureMaxSize: number
 
   /**
    * Constructs a new worker node.
    *
    * @param worker - The worker.
    * @param workerType - The worker type.
+   * @param poolMaxSize - The pool maximum size.
    */
-  constructor (worker: Worker, workerType: WorkerType) {
+  constructor (worker: Worker, workerType: WorkerType, poolMaxSize: number) {
     this.worker = worker
     this.info = this.initWorkerInfo(worker, workerType)
     if (workerType === WorkerTypes.thread) {
@@ -42,6 +48,7 @@ implements IWorkerNode<Worker, Data> {
     this.usage = this.initWorkerUsage()
     this.tasksUsage = new Map<string, WorkerUsage>()
     this.tasksQueue = new Queue<Task<Data>>()
+    this.tasksQueueBackPressureMaxSize = Math.pow(poolMaxSize, 2)
   }
 
   /** @inheritdoc */
@@ -71,6 +78,11 @@ implements IWorkerNode<Worker, Data> {
   /** @inheritdoc */
   public clearTasksQueue (): void {
     this.tasksQueue.clear()
+  }
+
+  /** @inheritdoc */
+  public hasBackPressure (): boolean {
+    return this.tasksQueueSize() >= this.tasksQueueBackPressureMaxSize
   }
 
   /** @inheritdoc */

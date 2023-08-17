@@ -3,6 +3,11 @@ import type { CircularArray } from '../circular-array'
 import type { Task } from '../utility-types'
 
 /**
+ * Callback invoked when the worker has started successfully.
+ */
+export type OnlineHandler<Worker extends IWorker> = (this: Worker) => void
+
+/**
  * Callback invoked if the worker has received a message.
  */
 export type MessageHandler<Worker extends IWorker> = (
@@ -17,11 +22,6 @@ export type ErrorHandler<Worker extends IWorker> = (
   this: Worker,
   error: Error
 ) => void
-
-/**
- * Callback invoked when the worker has started successfully.
- */
-export type OnlineHandler<Worker extends IWorker> = (this: Worker) => void
 
 /**
  * Callback invoked when the worker exits successfully.
@@ -242,6 +242,12 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    * Clears tasks queue.
    */
   readonly clearTasksQueue: () => void
+  /**
+   * Whether the worker node has back pressure.
+   *
+   * @returns `true` if the worker node has back pressure, `false` otherwise.
+   */
+  readonly hasBackPressure: () => boolean
   /**
    * Resets usage statistics .
    */
