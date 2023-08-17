@@ -646,14 +646,15 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public listTaskFunctions (): string[] {
-    if (
-      Array.isArray(this.getWorkerInfo(0).taskFunctions) &&
-      (this.getWorkerInfo(0).taskFunctions as string[]).length > 0
-    ) {
-      return this.getWorkerInfo(0).taskFunctions as string[]
-    } else {
-      return []
+    for (const workerNode of this.workerNodes) {
+      if (
+        Array.isArray(workerNode.info.taskFunctions) &&
+        workerNode.info.taskFunctions.length > 0
+      ) {
+        return workerNode.info.taskFunctions
+      }
     }
+    return []
   }
 
   /** @inheritDoc */
