@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add back pressure detection on the worker node queue. Event `backPressure` is emitted when the worker node queue is full (size > poolMaxSize^2).
+- Add back pressure detection on the worker node queue. Event `backPressure` is emitted all worker node queues are full (size > poolMaxSize^2).
 - Use back pressure detection in worker choice strategies.
 - Add worker choice strategies retries mechanism if no worker is eligible.
 
