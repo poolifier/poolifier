@@ -14,11 +14,7 @@ import {
   isAsyncFunction,
   isPlainObject
 } from '../utils'
-import {
-  type KillBehavior,
-  KillBehaviors,
-  type WorkerOptions
-} from './worker-options'
+import { KillBehaviors, type WorkerOptions } from './worker-options'
 import type {
   TaskAsyncFunction,
   TaskFunction,
@@ -27,7 +23,21 @@ import type {
 } from './task-functions'
 
 const DEFAULT_MAX_INACTIVE_TIME = 60000
-const DEFAULT_KILL_BEHAVIOR: KillBehavior = KillBehaviors.SOFT
+const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
+  /**
+   * The kill behavior option on this worker or its default value.
+   */
+  killBehavior: KillBehaviors.SOFT,
+  /**
+   * The maximum time to keep this worker active while idle.
+   * The pool automatically checks and terminates this worker when the time expires.
+   */
+  maxInactiveTime: DEFAULT_MAX_INACTIVE_TIME,
+  /**
+   * The function to call when the worker is killed.
+   */
+  killHandler: EMPTY_FUNCTION
+}
 
 /**
  * Base class that implements some shared logic for all poolifier workers.
@@ -75,21 +85,7 @@ export abstract class AbstractWorker<
     protected readonly isMain: boolean,
     private readonly mainWorker: MainWorker,
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
-    protected readonly opts: WorkerOptions = {
-      /**
-       * The kill behavior option on this worker or its default value.
-       */
-      killBehavior: DEFAULT_KILL_BEHAVIOR,
-      /**
-       * The maximum time to keep this worker active while idle.
-       * The pool automatically checks and terminates this worker when the time expires.
-       */
-      maxInactiveTime: DEFAULT_MAX_INACTIVE_TIME,
-      /**
-       * The function to call when the worker is killed.
-       */
-      killHandler: EMPTY_FUNCTION
-    }
+    protected opts: WorkerOptions = DEFAULT_WORKER_OPTIONS
   ) {
     super(type)
     this.checkWorkerOptions(this.opts)
@@ -100,10 +96,7 @@ export abstract class AbstractWorker<
   }
 
   private checkWorkerOptions (opts: WorkerOptions): void {
-    this.opts.killBehavior = opts.killBehavior ?? DEFAULT_KILL_BEHAVIOR
-    this.opts.maxInactiveTime =
-      opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME
-    this.opts.killHandler = opts.killHandler ?? EMPTY_FUNCTION
+    this.opts = { ...DEFAULT_WORKER_OPTIONS, ...opts }
     delete this.opts.async
   }
 
