@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.29] - 2023-08-18
+
 ### Fixed
 
 - Fix race condition between ready and task functions worker message handling at startup.
