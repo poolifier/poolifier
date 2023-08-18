@@ -187,6 +187,7 @@ export class WorkerChoiceStrategyContext<
         `Worker node key chosen is null or undefined after ${this.choiceRetriesCount} retries`
       )
     }
+    this.choiceRetriesCount = 0
     return workerNodeKey
   }
 
