@@ -178,6 +178,8 @@ export interface IPool<
   readonly info: PoolInfo
   /**
    * Pool worker nodes.
+   *
+   * @internal
    */
   readonly workerNodes: Array<IWorkerNode<Worker, Data>>
   /**
@@ -185,6 +187,7 @@ export interface IPool<
    *
    * @param workerNodeKey - The worker node key.
    * @returns `true` if the worker node has back pressure, `false` otherwise.
+   * @internal
    */
   readonly hasWorkerNodeBackPressure: (workerNodeKey: number) => boolean
   /**
