@@ -864,7 +864,7 @@ export abstract class AbstractPool<
       workerTaskStatistics.executing < 0
     ) {
       throw new Error(
-        'Worker usage statistics for tasks executing cannot be negative'
+        'Worker usage statistic for tasks executing cannot be negative'
       )
     }
     if (message.taskError == null) {
