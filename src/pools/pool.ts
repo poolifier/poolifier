@@ -201,7 +201,7 @@ export interface IPool<
    * - '`destroy`': Emitted when the pool is destroyed.
    * - `'error'`: Emitted when an uncaught error occurs.
    * - `'taskError'`: Emitted when an error occurs while executing a task.
-   * - `'backPressure'`: Emitted when all worker nodes have back pressure (i.e. their tasks queue is full).
+   * - `'backPressure'`: Emitted when all worker nodes have back pressure (i.e. their tasks queue is full: queue size \>= pool maximum size^2).
    */
   readonly emitter?: PoolEmitter
   /**

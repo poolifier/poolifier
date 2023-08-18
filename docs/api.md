@@ -94,7 +94,8 @@ An object with these properties:
   Properties:
 
   - `concurrency` (optional) - The maximum number of tasks that can be executed concurrently on a worker. It must be a positive integer.
-    Default: `{ concurrency: 1 }`
+
+  Default: `{ concurrency: 1 }`
 
 #### `ThreadPoolOptions extends PoolOptions`
 
