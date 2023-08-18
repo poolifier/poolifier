@@ -913,5 +913,36 @@ describe('Abstract pool test suite', () => {
     expect(result2).toBe(3628800)
     const result3 = await pool.execute(data, 'fibonacci')
     expect(result3).toBe(55)
+    expect(pool.info.executingTasks).toBe(0)
+    expect(pool.info.executedTasks).toBe(4)
+    for (const name of pool.listTaskFunctions()) {
+      for (const workerNode of pool.workerNodes) {
+        expect(workerNode.getTaskFunctionWorkerUsage(name)).toStrictEqual({
+          tasks: {
+            executed: expect.any(Number),
+            executing: expect.any(Number),
+            failed: 0,
+            queued: 0
+          },
+          runTime: {
+            history: expect.any(CircularArray)
+          },
+          waitTime: {
+            history: expect.any(CircularArray)
+          },
+          elu: {
+            idle: {
+              history: expect.any(CircularArray)
+            },
+            active: {
+              history: expect.any(CircularArray)
+            }
+          }
+        })
+        expect(
+          workerNode.getTaskFunctionWorkerUsage(name).tasks.executing
+        ).toBeGreaterThanOrEqual(0)
+      }
+    }
   })
 })

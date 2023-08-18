@@ -111,6 +111,7 @@ describe('Fixed cluster pool test suite', () => {
     }
     expect(promises.size).toBe(numberOfWorkers * maxMultiplier)
     for (const workerNode of queuePool.workerNodes) {
+      expect(workerNode.usage.tasks.executing).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executing).toBeLessThanOrEqual(
         queuePool.opts.tasksQueueOptions.concurrency
       )

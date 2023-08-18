@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix race condition between ready and task functions worker message handling at startup.
 - Fix duplicate task function worker usage statistics computation per task function.
 - Update task function worker usage statistics if and only if there's at least two different task functions.
+- Fix race condition at task function worker usage executing task computation leading to negative value.
 
 ### Added
 
