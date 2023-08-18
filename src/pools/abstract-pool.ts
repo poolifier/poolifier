@@ -1242,6 +1242,17 @@ export abstract class AbstractPool<
     }
   }
 
+  /** @inheritDoc */
+  public hasWorkerNodeBackPressure (workerNodeKey: number): boolean {
+    if (
+      this.opts.enableTasksQueue === true &&
+      this.workerNodes[workerNodeKey].hasBackPressure()
+    ) {
+      return true
+    }
+    return false
+  }
+
   /**
    * Executes the given task on the worker given its worker node key.
    *
@@ -1254,16 +1265,14 @@ export abstract class AbstractPool<
   }
 
   private enqueueTask (workerNodeKey: number, task: Task<Data>): number {
-    if (
-      this.opts.enableTasksQueue === true &&
-      this.workerNodes[workerNodeKey].hasBackPressure()
-    ) {
+    const tasksQueueSize = this.workerNodes[workerNodeKey].enqueueTask(task)
+    if (this.hasWorkerNodeBackPressure(workerNodeKey)) {
       this.emitter?.emit(PoolEvents.backPressure, {
         workerId: this.getWorkerInfo(workerNodeKey).id,
         ...this.info
       })
     }
-    return this.workerNodes[workerNodeKey].enqueueTask(task)
+    return tasksQueueSize
   }
 
   private dequeueTask (workerNodeKey: number): Task<Data> | undefined {

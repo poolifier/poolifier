@@ -30,7 +30,7 @@ implements IWorkerNode<Worker, Data> {
   public usage: WorkerUsage
   private readonly tasksUsage: Map<string, WorkerUsage>
   private readonly tasksQueue: Queue<Task<Data>>
-  private readonly tasksQueueBackPressureMaxSize: number
+  private readonly tasksQueueBackPressureSize: number
 
   /**
    * Constructs a new worker node.
@@ -48,7 +48,7 @@ implements IWorkerNode<Worker, Data> {
     this.usage = this.initWorkerUsage()
     this.tasksUsage = new Map<string, WorkerUsage>()
     this.tasksQueue = new Queue<Task<Data>>()
-    this.tasksQueueBackPressureMaxSize = Math.pow(poolMaxSize, 2)
+    this.tasksQueueBackPressureSize = Math.pow(poolMaxSize, 2)
   }
 
   /** @inheritdoc */
@@ -82,7 +82,7 @@ implements IWorkerNode<Worker, Data> {
 
   /** @inheritdoc */
   public hasBackPressure (): boolean {
-    return this.tasksQueueSize() >= this.tasksQueueBackPressureMaxSize
+    return this.tasksQueueSize() >= this.tasksQueueBackPressureSize
   }
 
   /** @inheritdoc */

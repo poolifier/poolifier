@@ -181,6 +181,13 @@ export interface IPool<
    */
   readonly workerNodes: Array<IWorkerNode<Worker, Data>>
   /**
+   * Whether the worker node has back pressure (i.e. its tasks queue is full).
+   *
+   * @param workerNodeKey - The worker node key.
+   * @returns `true` if the worker node has back pressure, `false` otherwise.
+   */
+  readonly hasWorkerNodeBackPressure: (workerNodeKey: number) => boolean
+  /**
    * Emitter on which events can be listened to.
    *
    * Events that can currently be listened to:
