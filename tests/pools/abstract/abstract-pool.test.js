@@ -915,8 +915,15 @@ describe('Abstract pool test suite', () => {
     expect(result3).toBe(55)
     expect(pool.info.executingTasks).toBe(0)
     expect(pool.info.executedTasks).toBe(4)
-    for (const name of pool.listTaskFunctions()) {
-      for (const workerNode of pool.workerNodes) {
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.info.taskFunctions).toStrictEqual([
+        'default',
+        'jsonIntegerSerialization',
+        'factorial',
+        'fibonacci'
+      ])
+      expect(workerNode.taskFunctionsUsage.size).toBe(3)
+      for (const name of pool.listTaskFunctions()) {
         expect(workerNode.getTaskFunctionWorkerUsage(name)).toStrictEqual({
           tasks: {
             executed: expect.any(Number),
