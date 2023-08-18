@@ -74,13 +74,14 @@ An object with these properties:
 - `workerChoiceStrategyOptions` (optional) - The worker choice strategy options object to use in this pool.  
   Properties:
 
+  - `choiceRetries` (optional) - The number of retries to perform if no worker is eligible.
   - `measurement` (optional) - The measurement to use in worker choice strategies: `runTime`, `waitTime` or `elu`.
   - `runTime` (optional) - Use the tasks [median](./../docs/worker-choice-strategies.md#median) runtime instead of the tasks average runtime in worker choice strategies.
   - `waitTime` (optional) - Use the tasks [median](./../docs/worker-choice-strategies.md#median) wait time instead of the tasks average wait time in worker choice strategies.
   - `elu` (optional) - Use the tasks [median](./../docs/worker-choice-strategies.md#median) ELU instead of the tasks average ELU in worker choice strategies.
   - `weights` (optional) - The worker weights to use in weighted round robin worker choice strategies: `{ 0: 200, 1: 300, ..., n: 100 }`.
 
-  Default: `{ runTime: { median: false }, waitTime: { median: false }, elu: { median: false } }`
+  Default: `{ choiceRetries: 6, runTime: { median: false }, waitTime: { median: false }, elu: { median: false } }`
 
 - `restartWorkerOnError` (optional) - Restart worker on uncaught error in this pool.  
   Default: `true`

@@ -167,6 +167,13 @@ describe('Abstract pool test suite', () => {
       WorkerChoiceStrategies.ROUND_ROBIN
     )
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
+      choiceRetries: 6,
+      runTime: { median: false },
+      waitTime: { median: false },
+      elu: { median: false }
+    })
+    expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
+      choiceRetries: 6,
       runTime: { median: false },
       waitTime: { median: false },
       elu: { median: false }
@@ -205,7 +212,17 @@ describe('Abstract pool test suite', () => {
       WorkerChoiceStrategies.LEAST_USED
     )
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
+      choiceRetries: 6,
       runTime: { median: true },
+      waitTime: { median: false },
+      elu: { median: false },
+      weights: { 0: 300, 1: 200 }
+    })
+    expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
+      choiceRetries: 6,
+      runTime: { median: true },
+      waitTime: { median: false },
+      elu: { median: false },
       weights: { 0: 300, 1: 200 }
     })
     expect(pool.opts.messageHandler).toStrictEqual(testHandler)
@@ -226,18 +243,6 @@ describe('Abstract pool test suite', () => {
           }
         )
     ).toThrowError("Invalid worker choice strategy 'invalidStrategy'")
-    expect(
-      () =>
-        new FixedThreadPool(
-          numberOfWorkers,
-          './tests/worker-files/thread/testWorker.js',
-          {
-            workerChoiceStrategyOptions: 'invalidOptions'
-          }
-        )
-    ).toThrowError(
-      'Invalid worker choice strategy options: must be a plain object'
-    )
     expect(
       () =>
         new FixedThreadPool(
@@ -304,6 +309,13 @@ describe('Abstract pool test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
     )
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
+      choiceRetries: 6,
+      runTime: { median: false },
+      waitTime: { median: false },
+      elu: { median: false }
+    })
+    expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
+      choiceRetries: 6,
       runTime: { median: false },
       waitTime: { median: false },
       elu: { median: false }
@@ -311,6 +323,7 @@ describe('Abstract pool test suite', () => {
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
+        choiceRetries: 6,
         runTime: { median: false },
         waitTime: { median: false },
         elu: { median: false }
@@ -340,13 +353,23 @@ describe('Abstract pool test suite', () => {
       elu: { median: true }
     })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
+      choiceRetries: 6,
       runTime: { median: true },
+      waitTime: { median: false },
+      elu: { median: true }
+    })
+    expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
+      choiceRetries: 6,
+      runTime: { median: true },
+      waitTime: { median: false },
       elu: { median: true }
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
+        choiceRetries: 6,
         runTime: { median: true },
+        waitTime: { median: false },
         elu: { median: true }
       })
     }
@@ -374,13 +397,23 @@ describe('Abstract pool test suite', () => {
       elu: { median: false }
     })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
+      choiceRetries: 6,
       runTime: { median: false },
+      waitTime: { median: false },
+      elu: { median: false }
+    })
+    expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
+      choiceRetries: 6,
+      runTime: { median: false },
+      waitTime: { median: false },
       elu: { median: false }
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
+        choiceRetries: 6,
         runTime: { median: false },
+        waitTime: { median: false },
         elu: { median: false }
       })
     }

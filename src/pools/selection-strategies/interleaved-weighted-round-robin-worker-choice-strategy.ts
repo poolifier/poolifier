@@ -81,7 +81,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
         const workerWeight =
           this.opts.weights?.[workerNodeKey] ?? this.defaultWorkerWeight
         if (
-          this.isWorkerNodeReady(workerNodeKey) &&
+          this.isWorkerNodeEligible(workerNodeKey) &&
           workerWeight >= this.roundWeights[roundIndex]
         ) {
           roundId = roundIndex

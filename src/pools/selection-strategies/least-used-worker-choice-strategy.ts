@@ -58,11 +58,11 @@ export class LeastUsedWorkerChoiceStrategy<
         workerTaskStatistics.executed +
         workerTaskStatistics.executing +
         workerTaskStatistics.queued
-      if (this.isWorkerNodeReady(workerNodeKey) && workerTasks === 0) {
+      if (this.isWorkerNodeEligible(workerNodeKey) && workerTasks === 0) {
         this.nextWorkerNodeKey = workerNodeKey
         break
       } else if (
-        this.isWorkerNodeReady(workerNodeKey) &&
+        this.isWorkerNodeEligible(workerNodeKey) &&
         workerTasks < minNumberOfTasks
       ) {
         minNumberOfTasks = workerTasks

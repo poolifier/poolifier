@@ -23,6 +23,7 @@ export const EMPTY_FUNCTION: () => void = Object.freeze(() => {
  */
 export const DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS: WorkerChoiceStrategyOptions =
   {
+    choiceRetries: 6,
     runTime: { median: false },
     waitTime: { median: false },
     elu: { median: false }
@@ -55,6 +56,22 @@ export const availableParallelism = (): number => {
     }
   }
   return availableParallelism
+}
+
+/**
+ * Computes the retry delay in milliseconds using an exponential back off algorithm.
+ *
+ * @param retryNumber - The number of retries that have already been attempted
+ * @param maxDelayRatio - The maximum ratio of the delay that can be randomized
+ * @returns Delay in milliseconds
+ */
+export const exponentialDelay = (
+  retryNumber = 0,
+  maxDelayRatio = 0.2
+): number => {
+  const delay = Math.pow(2, retryNumber) * 100
+  const randomSum = delay * maxDelayRatio * Math.random() // 0-(maxDelayRatio*100)% of the delay
+  return delay + randomSum
 }
 
 /**

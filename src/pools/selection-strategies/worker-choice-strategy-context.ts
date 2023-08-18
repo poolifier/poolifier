@@ -35,6 +35,11 @@ export class WorkerChoiceStrategyContext<
   >
 
   /**
+   * The number of times the worker choice strategy in the context has been retried.
+   */
+  private choiceRetriesCount = 0
+
+  /**
    * Worker choice strategy context constructor.
    *
    * @param pool - The pool instance.
@@ -44,8 +49,9 @@ export class WorkerChoiceStrategyContext<
   public constructor (
     pool: IPool<Worker, Data, Response>,
     private workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN,
-    opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+    private opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
+    this.opts = { ...DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS, ...opts }
     this.execute = this.execute.bind(this)
     this.workerChoiceStrategies = new Map<
     WorkerChoiceStrategy,
@@ -119,7 +125,7 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
-   * Gets the worker choice strategy task statistics requirements in the context.
+   * Gets the worker choice strategy in the context task statistics requirements.
    *
    * @returns The task statistics requirements.
    */
@@ -146,7 +152,7 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
-   * Updates the worker node key in the worker choice strategy internals in the context.
+   * Updates the worker node key in the worker choice strategy in the context internals.
    *
    * @returns `true` if the update is successful, `false` otherwise.
    */
@@ -159,7 +165,7 @@ export class WorkerChoiceStrategyContext<
   }
 
   /**
-   * Executes the worker choice strategy algorithm in the context.
+   * Executes the worker choice strategy in the context algorithm.
    *
    * @returns The key of the worker node.
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the worker node key is null or undefined.
@@ -170,7 +176,13 @@ export class WorkerChoiceStrategyContext<
         this.workerChoiceStrategy
       ) as IWorkerChoiceStrategy
     ).choose()
-    if (workerNodeKey == null) {
+    if (
+      workerNodeKey == null &&
+      this.choiceRetriesCount < (this.opts.choiceRetries as number)
+    ) {
+      this.choiceRetriesCount++
+      return this.execute()
+    } else if (workerNodeKey == null) {
       throw new TypeError('Worker node key chosen is null or undefined')
     }
     return workerNodeKey
@@ -196,6 +208,7 @@ export class WorkerChoiceStrategyContext<
    * @param opts - The worker choice strategy options.
    */
   public setOptions (opts: WorkerChoiceStrategyOptions): void {
+    this.opts = { ...DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS, ...opts }
     for (const workerChoiceStrategy of this.workerChoiceStrategies.values()) {
       workerChoiceStrategy.setOptions(opts)
     }

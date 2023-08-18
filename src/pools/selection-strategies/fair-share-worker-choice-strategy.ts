@@ -88,7 +88,7 @@ export class FairShareWorkerChoiceStrategy<
       const workerVirtualTaskEndTimestamp =
         this.workersVirtualTaskEndTimestamp[workerNodeKey]
       if (
-        this.isWorkerNodeReady(workerNodeKey) &&
+        this.isWorkerNodeEligible(workerNodeKey) &&
         workerVirtualTaskEndTimestamp < minWorkerVirtualTaskEndTimestamp
       ) {
         minWorkerVirtualTaskEndTimestamp = workerVirtualTaskEndTimestamp

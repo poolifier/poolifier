@@ -70,7 +70,13 @@ export interface MeasurementOptions {
  */
 export interface WorkerChoiceStrategyOptions {
   /**
-   * Measurement to use for worker choice strategy.
+   * Number of worker choice retries to perform if no worker is eligible.
+   *
+   * @defaultValue 6
+   */
+  readonly choiceRetries?: number
+  /**
+   * Measurement to use in worker choice strategy supporting it.
    */
   readonly measurement?: Measurement
   /**

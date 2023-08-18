@@ -52,6 +52,7 @@ export abstract class AbstractWorkerChoiceStrategy<
     protected readonly pool: IPool<Worker, Data, Response>,
     protected opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
   ) {
+    this.opts = { ...DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS, ...opts }
     this.choose = this.choose.bind(this)
   }
 
@@ -100,7 +101,7 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public setOptions (opts: WorkerChoiceStrategyOptions): void {
-    this.opts = opts ?? DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+    this.opts = { ...DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS, ...opts }
     this.setTaskStatisticsRequirements(this.opts)
   }
 
@@ -110,7 +111,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @param workerNodeKey - The worker node key.
    * @returns Whether the worker node is ready or not.
    */
-  protected isWorkerNodeReady (workerNodeKey: number): boolean {
+  private isWorkerNodeReady (workerNodeKey: number): boolean {
     return this.pool.workerNodes[workerNodeKey].info.ready
   }
 
@@ -120,8 +121,24 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @param workerNodeKey - The worker node key.
    * @returns `true` if the worker node has back pressure, `false` otherwise.
    */
-  protected hasWorkerNodeBackPressure (workerNodeKey: number): boolean {
+  private hasWorkerNodeBackPressure (workerNodeKey: number): boolean {
     return this.pool.hasWorkerNodeBackPressure(workerNodeKey)
+  }
+
+  /**
+   * Whether the worker node is eligible or not.
+   * A worker node is eligible if it is ready and does not have back pressure.
+   *
+   * @param workerNodeKey - The worker node key.
+   * @returns `true` if the worker node is eligible, `false` otherwise.
+   * @see {@link isWorkerNodeReady}
+   * @see {@link hasWorkerNodeBackPressure}
+   */
+  protected isWorkerNodeEligible (workerNodeKey: number): boolean {
+    return (
+      this.isWorkerNodeReady(workerNodeKey) &&
+      !this.hasWorkerNodeBackPressure(workerNodeKey)
+    )
   }
 
   /**

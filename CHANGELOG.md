@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix race condition between ready and task functions worker message handling at startup.
 - Fix duplicate task usage statistics computation per task function.
 
+### Added
+
+- Add back pressure detection on the worker node queue. Event `backPressure` is emitted when the worker node queue is full (size > poolMaxSize^2).
+- Use back pressure detection in worker choice strategies.
+- Add worker choice strategies retries mechanism if no worker is eligible.
+
 ## [2.6.28] - 2023-08-16
 
 ### Fixed
