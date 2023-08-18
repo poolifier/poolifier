@@ -249,7 +249,7 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    */
   readonly hasBackPressure: () => boolean
   /**
-   * Resets usage statistics .
+   * Resets usage statistics.
    */
   readonly resetUsage: () => void
   /**
