@@ -300,7 +300,7 @@ export abstract class AbstractPool<
       tasksQueueOptions.concurrency <= 0
     ) {
       throw new Error(
-        `Invalid worker tasks concurrency '${tasksQueueOptions.concurrency}'`
+        `Invalid worker tasks concurrency '${tasksQueueOptions.concurrency}' is a negative integer or zero`
       )
     }
   }

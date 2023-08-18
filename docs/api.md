@@ -93,9 +93,8 @@ An object with these properties:
 - `tasksQueueOptions` (optional) - The worker tasks queue options object to use in this pool.  
   Properties:
 
-  - `concurrency` (optional) - The maximum number of tasks that can be executed concurrently on a worker.
-
-  Default: `{ concurrency: 1 }`
+  - `concurrency` (optional) - The maximum number of tasks that can be executed concurrently on a worker. It must be a positive integer.
+    Default: `{ concurrency: 1 }`
 
 #### `ThreadPoolOptions extends PoolOptions`
 
