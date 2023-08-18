@@ -28,7 +28,7 @@ implements IWorkerNode<Worker, Data> {
   public messageChannel?: MessageChannel
   /** @inheritdoc */
   public usage: WorkerUsage
-  private readonly tasksUsage: Map<string, WorkerUsage>
+  private readonly taskFunctionsUsage: Map<string, WorkerUsage>
   private readonly tasksQueue: Queue<Task<Data>>
   private readonly tasksQueueBackPressureSize: number
 
@@ -46,7 +46,7 @@ implements IWorkerNode<Worker, Data> {
       this.messageChannel = new MessageChannel()
     }
     this.usage = this.initWorkerUsage()
-    this.tasksUsage = new Map<string, WorkerUsage>()
+    this.taskFunctionsUsage = new Map<string, WorkerUsage>()
     this.tasksQueue = new Queue<Task<Data>>()
     this.tasksQueueBackPressureSize = Math.pow(poolMaxSize, 2)
   }
@@ -88,7 +88,7 @@ implements IWorkerNode<Worker, Data> {
   /** @inheritdoc */
   public resetUsage (): void {
     this.usage = this.initWorkerUsage()
-    this.tasksUsage.clear()
+    this.taskFunctionsUsage.clear()
   }
 
   /** @inheritdoc */
@@ -103,23 +103,27 @@ implements IWorkerNode<Worker, Data> {
   }
 
   /** @inheritdoc */
-  public getTaskWorkerUsage (name: string): WorkerUsage | undefined {
+  public getTaskFunctionWorkerUsage (name: string): WorkerUsage | undefined {
     if (!Array.isArray(this.info.taskFunctions)) {
       throw new Error(
-        `Cannot get task worker usage for task function name '${name}' when task function names list is not yet defined`
+        `Cannot get task function worker usage for task function name '${name}' when task function names list is not yet defined`
       )
     }
     if (
-      name === DEFAULT_TASK_NAME &&
       Array.isArray(this.info.taskFunctions) &&
-      this.info.taskFunctions.length > 1
+      this.info.taskFunctions.length < 3
     ) {
+      throw new Error(
+        `Cannot get task function worker usage for task function name '${name}' when task function names list has less than 3 elements`
+      )
+    }
+    if (name === DEFAULT_TASK_NAME) {
       name = this.info.taskFunctions[1]
     }
-    if (!this.tasksUsage.has(name)) {
-      this.tasksUsage.set(name, this.initTaskWorkerUsage(name))
+    if (!this.taskFunctionsUsage.has(name)) {
+      this.taskFunctionsUsage.set(name, this.initTaskFunctionWorkerUsage(name))
     }
-    return this.tasksUsage.get(name)
+    return this.taskFunctionsUsage.get(name)
   }
 
   private initWorkerInfo (worker: Worker, workerType: WorkerType): WorkerInfo {
@@ -167,7 +171,7 @@ implements IWorkerNode<Worker, Data> {
     }
   }
 
-  private initTaskWorkerUsage (name: string): WorkerUsage {
+  private initTaskFunctionWorkerUsage (name: string): WorkerUsage {
     const getTaskQueueSize = (): number => {
       let taskQueueSize = 0
       for (const task of this.tasksQueue) {

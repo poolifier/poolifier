@@ -799,12 +799,12 @@ export abstract class AbstractPool<
     const workerUsage = this.workerNodes[workerNodeKey].usage
     ++workerUsage.tasks.executing
     this.updateWaitTimeWorkerUsage(workerUsage, task)
-    if (this.canUpdateTaskWorkerUsage(workerNodeKey)) {
-      const taskWorkerUsage = this.workerNodes[
+    if (this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey)) {
+      const taskFunctionWorkerUsage = this.workerNodes[
         workerNodeKey
-      ].getTaskWorkerUsage(task.name as string) as WorkerUsage
-      ++taskWorkerUsage.tasks.executing
-      this.updateWaitTimeWorkerUsage(taskWorkerUsage, task)
+      ].getTaskFunctionWorkerUsage(task.name as string) as WorkerUsage
+      ++taskFunctionWorkerUsage.tasks.executing
+      this.updateWaitTimeWorkerUsage(taskFunctionWorkerUsage, task)
     }
   }
 
@@ -823,23 +823,29 @@ export abstract class AbstractPool<
     this.updateTaskStatisticsWorkerUsage(workerUsage, message)
     this.updateRunTimeWorkerUsage(workerUsage, message)
     this.updateEluWorkerUsage(workerUsage, message)
-    if (this.canUpdateTaskWorkerUsage(workerNodeKey)) {
-      const taskWorkerUsage = this.workerNodes[
+    if (this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey)) {
+      const taskFunctionWorkerUsage = this.workerNodes[
         workerNodeKey
-      ].getTaskWorkerUsage(
+      ].getTaskFunctionWorkerUsage(
         message.taskPerformance?.name ?? DEFAULT_TASK_NAME
       ) as WorkerUsage
-      this.updateTaskStatisticsWorkerUsage(taskWorkerUsage, message)
-      this.updateRunTimeWorkerUsage(taskWorkerUsage, message)
-      this.updateEluWorkerUsage(taskWorkerUsage, message)
+      this.updateTaskStatisticsWorkerUsage(taskFunctionWorkerUsage, message)
+      this.updateRunTimeWorkerUsage(taskFunctionWorkerUsage, message)
+      this.updateEluWorkerUsage(taskFunctionWorkerUsage, message)
     }
   }
 
-  private canUpdateTaskWorkerUsage (workerNodeKey: number): boolean {
+  /**
+   * Whether the worker node shall update its task function worker usage or not.
+   *
+   * @param workerNodeKey - The worker node key.
+   * @returns `true` if the worker node shall update its task function worker usage, `false` otherwise.
+   */
+  private shallUpdateTaskFunctionWorkerUsage (workerNodeKey: number): boolean {
     const workerInfo = this.getWorkerInfo(workerNodeKey)
     return (
       Array.isArray(workerInfo.taskFunctions) &&
-      workerInfo.taskFunctions.length > 1
+      workerInfo.taskFunctions.length > 2
     )
   }
 
