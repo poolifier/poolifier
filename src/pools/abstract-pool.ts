@@ -1229,6 +1229,9 @@ export abstract class AbstractPool<
       if (this.type === PoolTypes.dynamic && this.full) {
         this.emitter.emit(PoolEvents.full, this.info)
       }
+      if (this.hasBackPressure()) {
+        this.emitter.emit(PoolEvents.backPressure, this.info)
+      }
     }
   }
 
@@ -1309,11 +1312,7 @@ export abstract class AbstractPool<
   }
 
   private enqueueTask (workerNodeKey: number, task: Task<Data>): number {
-    const tasksQueueSize = this.workerNodes[workerNodeKey].enqueueTask(task)
-    if (this.hasBackPressure()) {
-      this.emitter?.emit(PoolEvents.backPressure, this.info)
-    }
-    return tasksQueueSize
+    return this.workerNodes[workerNodeKey].enqueueTask(task)
   }
 
   private dequeueTask (workerNodeKey: number): Task<Data> | undefined {
