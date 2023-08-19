@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Ensure pool event `backPressure` is emitted.
+- Ensure pool event `full` is emitted only once.
+
 ## [2.6.29] - 2023-08-18
 
 ### Fixed

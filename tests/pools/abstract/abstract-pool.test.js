@@ -851,9 +851,7 @@ describe('Abstract pool test suite', () => {
       promises.add(pool.execute())
     }
     await Promise.all(promises)
-    // The `full` event is triggered when the number of submitted tasks at once reach the maximum number of workers in the dynamic pool.
-    // So in total numberOfWorkers * 2 - 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the dynamic pool with min = (max = numberOfWorkers) / 2.
-    expect(poolFull).toBe(numberOfWorkers * 2 - 1)
+    expect(poolFull).toBe(1)
     expect(poolInfo).toStrictEqual({
       version,
       type: PoolTypes.dynamic,

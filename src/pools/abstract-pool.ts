@@ -122,6 +122,8 @@ export abstract class AbstractPool<
       this.checkAndEmitTaskExecutionEvents.bind(this)
     this.checkAndEmitTaskQueuingEvents =
       this.checkAndEmitTaskQueuingEvents.bind(this)
+    this.checkAndEmitDynamicWorkerCreationEvents =
+      this.checkAndEmitDynamicWorkerCreationEvents.bind(this)
 
     if (this.opts.enableEvents === true) {
       this.emitter = new PoolEmitter()
@@ -749,7 +751,7 @@ export abstract class AbstractPool<
         await this.destroyWorkerNode(workerNodeKey)
       })
     )
-    this.emitter?.emit(PoolEvents.destroy)
+    this.emitter?.emit(PoolEvents.destroy, this.info)
   }
 
   protected async sendKillMessageToWorker (
@@ -1061,6 +1063,7 @@ export abstract class AbstractPool<
     if (this.workerChoiceStrategyContext.getStrategyPolicy().useDynamicWorker) {
       workerInfo.ready = true
     }
+    this.checkAndEmitDynamicWorkerCreationEvents()
     return workerNodeKey
   }
 
@@ -1227,19 +1230,22 @@ export abstract class AbstractPool<
   }
 
   private checkAndEmitTaskExecutionEvents (): void {
-    if (this.emitter != null) {
-      if (this.busy) {
-        this.emitter.emit(PoolEvents.busy, this.info)
-      }
-      if (this.type === PoolTypes.dynamic && this.full) {
-        this.emitter.emit(PoolEvents.full, this.info)
-      }
+    if (this.busy) {
+      this.emitter?.emit(PoolEvents.busy, this.info)
     }
   }
 
   private checkAndEmitTaskQueuingEvents (): void {
     if (this.hasBackPressure()) {
       this.emitter?.emit(PoolEvents.backPressure, this.info)
+    }
+  }
+
+  private checkAndEmitDynamicWorkerCreationEvents (): void {
+    if (this.type === PoolTypes.dynamic) {
+      if (this.full) {
+        this.emitter?.emit(PoolEvents.full, this.info)
+      }
     }
   }
 
