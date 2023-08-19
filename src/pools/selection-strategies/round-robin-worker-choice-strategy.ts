@@ -45,11 +45,7 @@ export class RoundRobinWorkerChoiceStrategy<
   public choose (): number | undefined {
     const chosenWorkerNodeKey = this.nextWorkerNodeKey
     this.roundRobinNextWorkerNodeKey()
-    if (!this.isWorkerNodeEligible(this.nextWorkerNodeKey as number)) {
-      this.nextWorkerNodeKey = undefined
-      this.previousWorkerNodeKey =
-        chosenWorkerNodeKey ?? this.previousWorkerNodeKey
-    }
+    this.checkNextWorkerNodeEligibility(chosenWorkerNodeKey)
     return chosenWorkerNodeKey
   }
 

@@ -204,6 +204,16 @@ export abstract class AbstractWorkerChoiceStrategy<
     }
   }
 
+  protected checkNextWorkerNodeEligibility (
+    chosenWorkerNodeKey: number | undefined
+  ): void {
+    if (!this.isWorkerNodeEligible(this.nextWorkerNodeKey as number)) {
+      this.nextWorkerNodeKey = undefined
+      this.previousWorkerNodeKey =
+        chosenWorkerNodeKey ?? this.previousWorkerNodeKey
+    }
+  }
+
   protected computeDefaultWorkerWeight (): number {
     let cpusCycleTimeWeight = 0
     for (const cpu of cpus()) {
