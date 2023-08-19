@@ -28,11 +28,12 @@ export abstract class AbstractWorkerChoiceStrategy<
   /**
    * The next worker node key.
    */
-  protected nextWorkerNodeKey: number = 0
+  protected nextWorkerNodeKey: number | undefined = 0
 
   /** @inheritDoc */
   public readonly strategyPolicy: StrategyPolicy = {
-    useDynamicWorker: false
+    dynamicWorkerUsage: false,
+    dynamicWorkerReady: false
   }
 
   /** @inheritDoc */
@@ -94,7 +95,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   public abstract update (workerNodeKey: number): boolean
 
   /** @inheritDoc */
-  public abstract choose (): number
+  public abstract choose (): number | undefined
 
   /** @inheritDoc */
   public abstract remove (workerNodeKey: number): boolean
@@ -181,6 +182,21 @@ export abstract class AbstractWorkerChoiceStrategy<
     return this.taskStatisticsRequirements.elu.median
       ? this.pool.workerNodes[workerNodeKey].usage.elu.active?.median ?? 0
       : this.pool.workerNodes[workerNodeKey].usage.elu.active?.average ?? 0
+  }
+
+  /**
+   * Assign to nextWorkerNodeKey property the chosen worker node key.
+   *
+   * @param chosenWorkerNodeKey - The chosen worker node key.
+   */
+  protected assignChosenWorkerNodeKey (
+    chosenWorkerNodeKey: number | undefined
+  ): void {
+    if (chosenWorkerNodeKey != null) {
+      this.nextWorkerNodeKey = chosenWorkerNodeKey
+    } else {
+      this.nextWorkerNodeKey = undefined
+    }
   }
 
   protected computeDefaultWorkerWeight (): number {

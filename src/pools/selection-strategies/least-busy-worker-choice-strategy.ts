@@ -7,6 +7,7 @@ import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
+  StrategyPolicy,
   TaskStatisticsRequirements,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
@@ -25,6 +26,12 @@ export class LeastBusyWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
+  /** @inheritDoc */
+  public readonly strategyPolicy: StrategyPolicy = {
+    dynamicWorkerUsage: false,
+    dynamicWorkerReady: true
+  }
+
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
     runTime: {
@@ -60,8 +67,10 @@ export class LeastBusyWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number {
-    return this.leastBusyNextWorkerNodeKey()
+  public choose (): number | undefined {
+    const chosenWorkerNodeKey = this.leastBusyNextWorkerNodeKey()
+    this.assignChosenWorkerNodeKey(chosenWorkerNodeKey)
+    return this.nextWorkerNodeKey
   }
 
   /** @inheritDoc */
@@ -69,23 +78,24 @@ export class LeastBusyWorkerChoiceStrategy<
     return true
   }
 
-  private leastBusyNextWorkerNodeKey (): number {
+  private leastBusyNextWorkerNodeKey (): number | undefined {
     let minTime = Infinity
+    let chosenWorkerNodeKey: number | undefined
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerTime =
         (workerNode.usage.runTime?.aggregate ?? 0) +
         (workerNode.usage.waitTime?.aggregate ?? 0)
       if (this.isWorkerNodeEligible(workerNodeKey) && workerTime === 0) {
-        this.nextWorkerNodeKey = workerNodeKey
+        chosenWorkerNodeKey = workerNodeKey
         break
       } else if (
         this.isWorkerNodeEligible(workerNodeKey) &&
         workerTime < minTime
       ) {
         minTime = workerTime
-        this.nextWorkerNodeKey = workerNodeKey
+        chosenWorkerNodeKey = workerNodeKey
       }
     }
-    return this.nextWorkerNodeKey
+    return chosenWorkerNodeKey
   }
 }

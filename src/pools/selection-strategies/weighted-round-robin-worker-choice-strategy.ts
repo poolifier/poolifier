@@ -29,7 +29,8 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public readonly strategyPolicy: StrategyPolicy = {
-    useDynamicWorker: true
+    dynamicWorkerUsage: false,
+    dynamicWorkerReady: true
   }
 
   /** @inheritDoc */
@@ -75,11 +76,12 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number {
+  public choose (): number | undefined {
     const chosenWorkerNodeKey = this.nextWorkerNodeKey
-    do {
-      this.weightedRoundRobinNextWorkerNodeKey()
-    } while (!this.isWorkerNodeEligible(this.nextWorkerNodeKey))
+    this.weightedRoundRobinNextWorkerNodeKey()
+    if (!this.isWorkerNodeEligible(this.nextWorkerNodeKey as number)) {
+      this.nextWorkerNodeKey = undefined
+    }
     return chosenWorkerNodeKey
   }
 
@@ -96,19 +98,20 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     return true
   }
 
-  private weightedRoundRobinNextWorkerNodeKey (): number {
+  private weightedRoundRobinNextWorkerNodeKey (): number | undefined {
     const workerVirtualTaskRunTime = this.workerVirtualTaskRunTime
     const workerWeight =
-      this.opts.weights?.[this.nextWorkerNodeKey] ?? this.defaultWorkerWeight
+      this.opts.weights?.[this.nextWorkerNodeKey ?? 0] ??
+      this.defaultWorkerWeight
     if (workerVirtualTaskRunTime < workerWeight) {
       this.workerVirtualTaskRunTime =
         workerVirtualTaskRunTime +
-        this.getWorkerTaskRunTime(this.nextWorkerNodeKey)
+        this.getWorkerTaskRunTime(this.nextWorkerNodeKey ?? 0)
     } else {
       this.nextWorkerNodeKey =
         this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
           ? 0
-          : this.nextWorkerNodeKey + 1
+          : (this.nextWorkerNodeKey ?? 0) + 1
       this.workerVirtualTaskRunTime = 0
     }
     return this.nextWorkerNodeKey

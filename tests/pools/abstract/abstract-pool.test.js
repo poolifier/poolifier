@@ -1,4 +1,5 @@
 const { expect } = require('expect')
+const sinon = require('sinon')
 const {
   DynamicClusterPool,
   DynamicThreadPool,
@@ -900,14 +901,20 @@ describe('Abstract pool test suite', () => {
   })
 
   it.skip("Verify that pool event emitter 'backPressure' event can register a callback", async () => {
-    const pool = new DynamicThreadPool(
-      Math.floor(numberOfWorkers / 2),
+    const pool = new FixedThreadPool(
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js',
       {
         enableTasksQueue: true
       }
     )
+    for (const workerNode of pool.workerNodes) {
+      workerNode.hasBackPressure = sinon
+        .stub()
+        .onFirstCall()
+        .returns(true)
+        .returns(false)
+    }
     const promises = new Set()
     let poolBackPressure = 0
     let poolInfo
@@ -915,10 +922,12 @@ describe('Abstract pool test suite', () => {
       ++poolBackPressure
       poolInfo = info
     })
-    for (let i = 0; i < Math.pow(numberOfWorkers, 2); i++) {
+    for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.add(pool.execute())
     }
+    // console.log(pool.info.backPressure)
     await Promise.all(promises)
+    // console.log(pool.info.backPressure)
     expect(poolBackPressure).toBe(1)
     expect(poolInfo).toStrictEqual({
       version,

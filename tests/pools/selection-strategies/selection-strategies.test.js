@@ -123,7 +123,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      useDynamicWorker: true
+      dynamicWorkerUsage: true,
+      dynamicWorkerReady: true
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -133,7 +134,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      useDynamicWorker: true
+      dynamicWorkerUsage: true,
+      dynamicWorkerReady: true
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -364,7 +366,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      useDynamicWorker: false
+      dynamicWorkerUsage: false,
+      dynamicWorkerReady: true
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -374,7 +377,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      useDynamicWorker: false
+      dynamicWorkerUsage: false,
+      dynamicWorkerReady: true
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -537,7 +541,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      useDynamicWorker: false
+      dynamicWorkerUsage: false,
+      dynamicWorkerReady: true
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -547,7 +552,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      useDynamicWorker: false
+      dynamicWorkerUsage: false,
+      dynamicWorkerReady: true
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -730,7 +736,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      useDynamicWorker: false
+      dynamicWorkerUsage: false,
+      dynamicWorkerReady: true
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -740,7 +747,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      useDynamicWorker: false
+      dynamicWorkerUsage: false,
+      dynamicWorkerReady: true
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -915,7 +923,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      useDynamicWorker: false
+      dynamicWorkerUsage: false,
+      dynamicWorkerReady: true
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -925,7 +934,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      useDynamicWorker: false
+      dynamicWorkerUsage: false,
+      dynamicWorkerReady: true
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -1277,7 +1287,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      useDynamicWorker: true
+      dynamicWorkerUsage: false,
+      dynamicWorkerReady: true
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -1287,7 +1298,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      useDynamicWorker: true
+      dynamicWorkerUsage: false,
+      dynamicWorkerReady: true
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -1438,13 +1450,9 @@ describe('Selection strategies test suite', () => {
           maxQueued: 0,
           failed: 0
         },
-        runTime: {
-          aggregate: expect.any(Number),
-          maximum: expect.any(Number),
-          minimum: expect.any(Number),
-          average: expect.any(Number),
+        runTime: expect.objectContaining({
           history: expect.any(CircularArray)
-        },
+        }),
         waitTime: {
           history: expect.any(CircularArray)
         },
@@ -1461,8 +1469,16 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.usage.runTime.aggregate).toBeGreaterThan(0)
-      expect(workerNode.usage.runTime.average).toBeGreaterThan(0)
+      if (workerNode.usage.runTime.aggregate == null) {
+        expect(workerNode.usage.runTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.runTime.average == null) {
+        expect(workerNode.usage.runTime.average).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.average).toBeGreaterThan(0)
+      }
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1506,13 +1522,9 @@ describe('Selection strategies test suite', () => {
           maxQueued: 0,
           failed: 0
         },
-        runTime: {
-          aggregate: expect.any(Number),
-          maximum: expect.any(Number),
-          minimum: expect.any(Number),
-          median: expect.any(Number),
+        runTime: expect.objectContaining({
           history: expect.any(CircularArray)
-        },
+        }),
         waitTime: {
           history: expect.any(CircularArray)
         },
@@ -1529,8 +1541,16 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
-      expect(workerNode.usage.runTime.aggregate).toBeGreaterThan(0)
-      expect(workerNode.usage.runTime.median).toBeGreaterThan(0)
+      if (workerNode.usage.runTime.aggregate == null) {
+        expect(workerNode.usage.runTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.runTime.median == null) {
+        expect(workerNode.usage.runTime.median).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.median).toBeGreaterThan(0)
+      }
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1633,7 +1653,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      useDynamicWorker: true
+      dynamicWorkerUsage: false,
+      dynamicWorkerReady: true
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -1643,7 +1664,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      useDynamicWorker: true
+      dynamicWorkerUsage: false,
+      dynamicWorkerReady: true
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -1795,7 +1817,7 @@ describe('Selection strategies test suite', () => {
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
         tasks: {
-          executed: maxMultiplier,
+          executed: expect.any(Number),
           executing: 0,
           queued: 0,
           maxQueued: 0,

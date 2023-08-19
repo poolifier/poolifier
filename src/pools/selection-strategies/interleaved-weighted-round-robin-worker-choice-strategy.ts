@@ -24,7 +24,8 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public readonly strategyPolicy: StrategyPolicy = {
-    useDynamicWorker: true
+    dynamicWorkerUsage: false,
+    dynamicWorkerReady: true
   }
 
   /**
@@ -65,7 +66,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number {
+  public choose (): number | undefined {
     let roundId: number | undefined
     let workerNodeId: number | undefined
     for (
@@ -74,7 +75,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
       roundIndex++
     ) {
       for (
-        let workerNodeKey = this.nextWorkerNodeKey;
+        let workerNodeKey = this.nextWorkerNodeKey ?? 0;
         workerNodeKey < this.pool.workerNodes.length;
         workerNodeKey++
       ) {
@@ -90,15 +91,15 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
         }
       }
     }
-    this.roundId = roundId ?? 0
-    this.nextWorkerNodeKey = workerNodeId ?? 0
+    this.roundId = roundId as number
+    this.nextWorkerNodeKey = workerNodeId
     const chosenWorkerNodeKey = this.nextWorkerNodeKey
     if (this.nextWorkerNodeKey === this.pool.workerNodes.length - 1) {
       this.nextWorkerNodeKey = 0
       this.roundId =
         this.roundId === this.roundWeights.length - 1 ? 0 : this.roundId + 1
     } else {
-      this.nextWorkerNodeKey = this.nextWorkerNodeKey + 1
+      this.nextWorkerNodeKey = (this.nextWorkerNodeKey ?? 0) + 1
     }
     return chosenWorkerNodeKey
   }

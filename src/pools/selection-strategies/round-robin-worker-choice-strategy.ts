@@ -24,7 +24,8 @@ export class RoundRobinWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public readonly strategyPolicy: StrategyPolicy = {
-    useDynamicWorker: true
+    dynamicWorkerUsage: true,
+    dynamicWorkerReady: true
   }
 
   /** @inheritDoc */
@@ -48,11 +49,12 @@ export class RoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number {
+  public choose (): number | undefined {
     const chosenWorkerNodeKey = this.nextWorkerNodeKey
-    do {
-      this.roundRobinNextWorkerNodeKey()
-    } while (!this.isWorkerNodeEligible(this.nextWorkerNodeKey))
+    this.roundRobinNextWorkerNodeKey()
+    if (!this.isWorkerNodeEligible(this.nextWorkerNodeKey as number)) {
+      this.nextWorkerNodeKey = undefined
+    }
     return chosenWorkerNodeKey
   }
 
@@ -68,11 +70,11 @@ export class RoundRobinWorkerChoiceStrategy<
     return true
   }
 
-  private roundRobinNextWorkerNodeKey (): number {
+  private roundRobinNextWorkerNodeKey (): number | undefined {
     this.nextWorkerNodeKey =
       this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
         ? 0
-        : this.nextWorkerNodeKey + 1
+        : (this.nextWorkerNodeKey ?? 0) + 1
     return this.nextWorkerNodeKey
   }
 }

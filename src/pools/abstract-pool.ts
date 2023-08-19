@@ -952,7 +952,7 @@ export abstract class AbstractPool<
     if (this.shallCreateDynamicWorker()) {
       const workerNodeKey = this.createAndSetupDynamicWorkerNode()
       if (
-        this.workerChoiceStrategyContext.getStrategyPolicy().useDynamicWorker
+        this.workerChoiceStrategyContext.getStrategyPolicy().dynamicWorkerUsage
       ) {
         return workerNodeKey
       }
@@ -1062,7 +1062,10 @@ export abstract class AbstractPool<
       workerId: workerInfo.id as number
     })
     workerInfo.dynamic = true
-    if (this.workerChoiceStrategyContext.getStrategyPolicy().useDynamicWorker) {
+    if (
+      this.workerChoiceStrategyContext.getStrategyPolicy().dynamicWorkerReady ||
+      this.workerChoiceStrategyContext.getStrategyPolicy().dynamicWorkerUsage
+    ) {
       workerInfo.ready = true
     }
     this.checkAndEmitDynamicWorkerCreationEvents()

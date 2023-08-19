@@ -153,9 +153,13 @@ export interface TaskStatisticsRequirements {
  */
 export interface StrategyPolicy {
   /**
-   * Expects direct usage of the newly created dynamic worker.
+   * Expects tasks execution on the newly created dynamic worker.
    */
-  readonly useDynamicWorker: boolean
+  readonly dynamicWorkerUsage: boolean
+  /**
+   * Expects the newly created dynamic worker to be flagged as ready.
+   */
+  readonly dynamicWorkerReady: boolean
 }
 
 /**
@@ -186,10 +190,11 @@ export interface IWorkerChoiceStrategy {
   readonly update: (workerNodeKey: number) => boolean
   /**
    * Chooses a worker node in the pool and returns its key.
+   * If the worker node is not eligible, `undefined` is returned.
    *
-   * @returns The worker node key.
+   * @returns The worker node key or `undefined`.
    */
-  readonly choose: () => number
+  readonly choose: () => number | undefined
   /**
    * Removes the worker node key from strategy internals.
    *

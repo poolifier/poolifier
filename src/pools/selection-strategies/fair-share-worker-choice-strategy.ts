@@ -8,6 +8,7 @@ import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import {
   type IWorkerChoiceStrategy,
   Measurements,
+  type StrategyPolicy,
   type TaskStatisticsRequirements,
   type WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
@@ -27,6 +28,12 @@ export class FairShareWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
+  /** @inheritDoc */
+  public readonly strategyPolicy: StrategyPolicy = {
+    dynamicWorkerUsage: false,
+    dynamicWorkerReady: true
+  }
+
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
     runTime: {
@@ -69,8 +76,10 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number {
-    return this.fairShareNextWorkerNodeKey()
+  public choose (): number | undefined {
+    const chosenWorkerNodeKey = this.fairShareNextWorkerNodeKey()
+    this.assignChosenWorkerNodeKey(chosenWorkerNodeKey)
+    return this.nextWorkerNodeKey
   }
 
   /** @inheritDoc */
@@ -79,8 +88,9 @@ export class FairShareWorkerChoiceStrategy<
     return true
   }
 
-  private fairShareNextWorkerNodeKey (): number {
+  private fairShareNextWorkerNodeKey (): number | undefined {
     let minWorkerVirtualTaskEndTimestamp = Infinity
+    let chosenWorkerNodeKey: number | undefined
     for (const [workerNodeKey] of this.pool.workerNodes.entries()) {
       if (this.workersVirtualTaskEndTimestamp[workerNodeKey] == null) {
         this.computeWorkerVirtualTaskEndTimestamp(workerNodeKey)
@@ -92,10 +102,10 @@ export class FairShareWorkerChoiceStrategy<
         workerVirtualTaskEndTimestamp < minWorkerVirtualTaskEndTimestamp
       ) {
         minWorkerVirtualTaskEndTimestamp = workerVirtualTaskEndTimestamp
-        this.nextWorkerNodeKey = workerNodeKey
+        chosenWorkerNodeKey = workerNodeKey
       }
     }
-    return this.nextWorkerNodeKey
+    return chosenWorkerNodeKey
   }
 
   /**

@@ -4,6 +4,7 @@ import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
+  StrategyPolicy,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
@@ -21,6 +22,12 @@ export class LeastUsedWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
+  /** @inheritDoc */
+  public readonly strategyPolicy: StrategyPolicy = {
+    dynamicWorkerUsage: false,
+    dynamicWorkerReady: true
+  }
+
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
@@ -41,8 +48,10 @@ export class LeastUsedWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number {
-    return this.leastUsedNextWorkerNodeKey()
+  public choose (): number | undefined {
+    const chosenWorkerNodeKey = this.leastUsedNextWorkerNodeKey()
+    this.assignChosenWorkerNodeKey(chosenWorkerNodeKey)
+    return this.nextWorkerNodeKey
   }
 
   /** @inheritDoc */
@@ -50,8 +59,9 @@ export class LeastUsedWorkerChoiceStrategy<
     return true
   }
 
-  private leastUsedNextWorkerNodeKey (): number {
+  private leastUsedNextWorkerNodeKey (): number | undefined {
     let minNumberOfTasks = Infinity
+    let chosenWorkerNodeKey: number | undefined
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerTaskStatistics = workerNode.usage.tasks
       const workerTasks =
@@ -59,16 +69,16 @@ export class LeastUsedWorkerChoiceStrategy<
         workerTaskStatistics.executing +
         workerTaskStatistics.queued
       if (this.isWorkerNodeEligible(workerNodeKey) && workerTasks === 0) {
-        this.nextWorkerNodeKey = workerNodeKey
+        chosenWorkerNodeKey = workerNodeKey
         break
       } else if (
         this.isWorkerNodeEligible(workerNodeKey) &&
         workerTasks < minNumberOfTasks
       ) {
         minNumberOfTasks = workerTasks
-        this.nextWorkerNodeKey = workerNodeKey
+        chosenWorkerNodeKey = workerNodeKey
       }
     }
-    return this.nextWorkerNodeKey
+    return chosenWorkerNodeKey
   }
 }
