@@ -24,7 +24,7 @@ export class RoundRobinWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public readonly strategyPolicy: StrategyPolicy = {
-    dynamicWorkerUsage: true,
+    dynamicWorkerUsage: false,
     dynamicWorkerReady: true
   }
 

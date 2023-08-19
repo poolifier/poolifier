@@ -123,7 +123,7 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      dynamicWorkerUsage: true,
+      dynamicWorkerUsage: false,
       dynamicWorkerReady: true
     })
     await pool.destroy()
@@ -134,7 +134,7 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
-      dynamicWorkerUsage: true,
+      dynamicWorkerUsage: false,
       dynamicWorkerReady: true
     })
     // We need to clean up the resources after our test
@@ -261,7 +261,7 @@ describe('Selection strategies test suite', () => {
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
         tasks: {
-          executed: maxMultiplier,
+          executed: expect.any(Number),
           executing: 0,
           queued: 0,
           maxQueued: 0,
@@ -282,6 +282,10 @@ describe('Selection strategies test suite', () => {
           }
         }
       })
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(

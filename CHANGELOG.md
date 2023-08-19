@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix worker choice strategy retries mechanism on some edge cases.
 
+### Changed
+
+- Make orthogonal worker choice strategies tasks distribution and dynamic worker creation usage.
+
 ## [2.6.30] - 2023-08-19
 
 ### Fixed
