@@ -819,10 +819,8 @@ export abstract class AbstractPool<
       const taskFunctionWorkerUsage = this.workerNodes[
         workerNodeKey
       ].getTaskFunctionWorkerUsage(task.name as string) as WorkerUsage
-      if (taskFunctionWorkerUsage != null) {
-        ++taskFunctionWorkerUsage.tasks.executing
-        this.updateWaitTimeWorkerUsage(taskFunctionWorkerUsage, task)
-      }
+      ++taskFunctionWorkerUsage.tasks.executing
+      this.updateWaitTimeWorkerUsage(taskFunctionWorkerUsage, task)
     }
   }
 
@@ -846,7 +844,7 @@ export abstract class AbstractPool<
     if (
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       this.workerNodes[workerNodeKey].getTaskFunctionWorkerUsage(
-        message.taskPerformance?.name ?? DEFAULT_TASK_NAME
+        message.taskPerformance?.name as string
       ) != null
     ) {
       const taskFunctionWorkerUsage = this.workerNodes[
