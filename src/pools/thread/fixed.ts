@@ -129,16 +129,6 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
-  protected get minSize (): number {
-    return this.numberOfWorkers
-  }
-
-  /** @inheritDoc */
-  protected get maxSize (): number {
-    return this.numberOfWorkers
-  }
-
-  /** @inheritDoc */
   protected get busy (): boolean {
     return this.internalBusy()
   }

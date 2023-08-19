@@ -85,6 +85,11 @@ export abstract class AbstractPool<
   >
 
   /**
+   * Dynamic pool maximum size property placeholder.
+   */
+  protected readonly max?: number
+
+  /**
    * Whether the pool is starting or not.
    */
   private readonly starting: boolean
@@ -117,13 +122,6 @@ export abstract class AbstractPool<
     this.chooseWorkerNode = this.chooseWorkerNode.bind(this)
     this.executeTask = this.executeTask.bind(this)
     this.enqueueTask = this.enqueueTask.bind(this)
-    this.dequeueTask = this.dequeueTask.bind(this)
-    this.checkAndEmitTaskExecutionEvents =
-      this.checkAndEmitTaskExecutionEvents.bind(this)
-    this.checkAndEmitTaskQueuingEvents =
-      this.checkAndEmitTaskQueuingEvents.bind(this)
-    this.checkAndEmitDynamicWorkerCreationEvents =
-      this.checkAndEmitDynamicWorkerCreationEvents.bind(this)
 
     if (this.opts.enableEvents === true) {
       this.emitter = new PoolEmitter()
@@ -305,7 +303,7 @@ export abstract class AbstractPool<
       tasksQueueOptions.concurrency <= 0
     ) {
       throw new Error(
-        `Invalid worker tasks concurrency '${tasksQueueOptions.concurrency}' is a negative integer or zero`
+        `Invalid worker tasks concurrency: ${tasksQueueOptions.concurrency} is a negative integer or zero`
       )
     }
   }
@@ -517,12 +515,16 @@ export abstract class AbstractPool<
   /**
    * The pool minimum size.
    */
-  protected abstract get minSize (): number
+  protected get minSize (): number {
+    return this.numberOfWorkers
+  }
 
   /**
    * The pool maximum size.
    */
-  protected abstract get maxSize (): number
+  protected get maxSize (): number {
+    return this.max ?? this.numberOfWorkers
+  }
 
   /**
    * Checks if the worker id sent in the received message from a worker is valid.

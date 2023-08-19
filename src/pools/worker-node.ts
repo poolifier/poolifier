@@ -40,6 +40,22 @@ implements IWorkerNode<Worker, Data> {
    * @param poolMaxSize - The pool maximum size.
    */
   constructor (worker: Worker, workerType: WorkerType, poolMaxSize: number) {
+    if (worker == null) {
+      throw new Error('Cannot construct a worker node without a worker')
+    }
+    if (workerType == null) {
+      throw new Error('Cannot construct a worker node without a worker type')
+    }
+    if (poolMaxSize == null) {
+      throw new Error(
+        'Cannot construct a worker node without a pool maximum size'
+      )
+    }
+    if (isNaN(poolMaxSize)) {
+      throw new Error(
+        'Cannot construct a worker node with a NaN pool maximum size'
+      )
+    }
     this.worker = worker
     this.info = this.initWorkerInfo(worker, workerType)
     if (workerType === WorkerTypes.thread) {
@@ -82,7 +98,7 @@ implements IWorkerNode<Worker, Data> {
 
   /** @inheritdoc */
   public hasBackPressure (): boolean {
-    return this.tasksQueueSize() >= this.tasksQueueBackPressureSize
+    return this.tasksQueue.size >= this.tasksQueueBackPressureSize
   }
 
   /** @inheritdoc */
