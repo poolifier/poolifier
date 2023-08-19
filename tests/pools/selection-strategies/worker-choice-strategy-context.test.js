@@ -115,18 +115,14 @@ describe('Worker choice strategy context test suite', () => {
       WorkerChoiceStrategyUndefinedStub
     )
     expect(() => workerChoiceStrategyContext.execute()).toThrowError(
-      new TypeError(
-        'Worker node key chosen is null or undefined after 6 retries'
-      )
+      new Error('Worker node key chosen is null or undefined after 6 retries')
     )
     workerChoiceStrategyContext.workerChoiceStrategies.set(
       workerChoiceStrategyContext.workerChoiceStrategy,
       WorkerChoiceStrategyNullStub
     )
     expect(() => workerChoiceStrategyContext.execute()).toThrowError(
-      new TypeError(
-        'Worker node key chosen is null or undefined after 6 retries'
-      )
+      new Error('Worker node key chosen is null or undefined after 6 retries')
     )
   })
 

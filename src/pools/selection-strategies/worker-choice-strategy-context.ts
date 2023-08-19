@@ -183,7 +183,7 @@ export class WorkerChoiceStrategyContext<
       this.choiceRetriesCount++
       return this.execute()
     } else if (workerNodeKey == null) {
-      throw new TypeError(
+      throw new Error(
         `Worker node key chosen is null or undefined after ${this.choiceRetriesCount} retries`
       )
     }

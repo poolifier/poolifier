@@ -34,7 +34,9 @@ describe('Abstract pool test suite', () => {
           }
         )
     ).toThrowError(
-      'Cannot start a pool from a worker with the same type as the pool'
+      new Error(
+        'Cannot start a pool from a worker with the same type as the pool'
+      )
     )
   })
 
@@ -61,7 +63,9 @@ describe('Abstract pool test suite', () => {
 
   it('Verify that numberOfWorkers is checked', () => {
     expect(() => new FixedThreadPool()).toThrowError(
-      'Cannot instantiate a pool without specifying the number of workers'
+      new Error(
+        'Cannot instantiate a pool without specifying the number of workers'
+      )
     )
   })
 
@@ -285,7 +289,7 @@ describe('Abstract pool test suite', () => {
           }
         )
     ).toThrowError(
-      new TypeError(
+      new RangeError(
         'Invalid worker tasks concurrency: 0 is a negative integer or zero'
       )
     )
@@ -509,12 +513,12 @@ describe('Abstract pool test suite', () => {
       new TypeError('Invalid tasks queue options: must be a plain object')
     )
     expect(() => pool.setTasksQueueOptions({ concurrency: 0 })).toThrowError(
-      new Error(
+      new RangeError(
         'Invalid worker tasks concurrency: 0 is a negative integer or zero'
       )
     )
     expect(() => pool.setTasksQueueOptions({ concurrency: -1 })).toThrowError(
-      new Error(
+      new RangeError(
         'Invalid worker tasks concurrency: -1 is a negative integer or zero'
       )
     )

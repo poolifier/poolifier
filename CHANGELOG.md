@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Make orthogonal worker choice strategies tasks distribution and dynamic worker creation usage.
+- Make orthogonal worker choice strategies tasks distribution and created dynamic worker usage.
 - Remove the experimental status of the `LEAST_ELU` worker choice strategy.
 
 ## [2.6.30] - 2023-08-19

@@ -179,7 +179,7 @@ export abstract class AbstractPool<
   protected checkDynamicPoolSize (min: number, max: number): void {
     if (this.type === PoolTypes.dynamic) {
       if (max == null) {
-        throw new Error(
+        throw new TypeError(
           'Cannot instantiate a dynamic pool without specifying the maximum pool size'
         )
       } else if (!Number.isSafeInteger(max)) {
@@ -302,7 +302,7 @@ export abstract class AbstractPool<
       tasksQueueOptions?.concurrency != null &&
       tasksQueueOptions.concurrency <= 0
     ) {
-      throw new Error(
+      throw new RangeError(
         `Invalid worker tasks concurrency: ${tasksQueueOptions.concurrency} is a negative integer or zero`
       )
     }

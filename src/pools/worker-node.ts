@@ -41,18 +41,20 @@ implements IWorkerNode<Worker, Data> {
    */
   constructor (worker: Worker, workerType: WorkerType, poolMaxSize: number) {
     if (worker == null) {
-      throw new Error('Cannot construct a worker node without a worker')
+      throw new TypeError('Cannot construct a worker node without a worker')
     }
     if (workerType == null) {
-      throw new Error('Cannot construct a worker node without a worker type')
+      throw new TypeError(
+        'Cannot construct a worker node without a worker type'
+      )
     }
     if (poolMaxSize == null) {
-      throw new Error(
+      throw new TypeError(
         'Cannot construct a worker node without a pool maximum size'
       )
     }
     if (isNaN(poolMaxSize)) {
-      throw new Error(
+      throw new TypeError(
         'Cannot construct a worker node with a NaN pool maximum size'
       )
     }
