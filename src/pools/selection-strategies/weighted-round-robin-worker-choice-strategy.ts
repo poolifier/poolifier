@@ -58,7 +58,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public reset (): boolean {
-    this.nextWorkerNodeKey = 0
+    this.resetWorkerNodeKeyProperties()
     this.workerVirtualTaskRunTime = 0
     return true
   }

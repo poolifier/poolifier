@@ -93,6 +93,11 @@ export abstract class AbstractWorkerChoiceStrategy<
     }
   }
 
+  protected resetWorkerNodeKeyProperties (): void {
+    this.nextWorkerNodeKey = 0
+    this.previousWorkerNodeKey = 0
+  }
+
   /** @inheritDoc */
   public abstract reset (): boolean
 

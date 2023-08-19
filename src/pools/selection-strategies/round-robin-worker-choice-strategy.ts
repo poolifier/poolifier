@@ -32,7 +32,7 @@ export class RoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public reset (): boolean {
-    this.nextWorkerNodeKey = 0
+    this.resetWorkerNodeKeyProperties()
     return true
   }
 

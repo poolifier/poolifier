@@ -48,7 +48,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public reset (): boolean {
-    this.nextWorkerNodeKey = 0
+    this.resetWorkerNodeKeyProperties()
     this.roundId = 0
     return true
   }
