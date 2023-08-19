@@ -38,7 +38,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   /** @inheritDoc */
   public readonly strategyPolicy: StrategyPolicy = {
     dynamicWorkerUsage: false,
-    dynamicWorkerReady: false
+    dynamicWorkerReady: true
   }
 
   /** @inheritDoc */

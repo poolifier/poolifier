@@ -4,7 +4,6 @@ import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
-  StrategyPolicy,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
@@ -22,12 +21,6 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
-  /** @inheritDoc */
-  public readonly strategyPolicy: StrategyPolicy = {
-    dynamicWorkerUsage: false,
-    dynamicWorkerReady: true
-  }
-
   /**
    * Round id.
    * This is used to determine the current round weight.

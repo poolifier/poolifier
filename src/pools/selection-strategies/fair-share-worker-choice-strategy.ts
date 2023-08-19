@@ -8,7 +8,6 @@ import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import {
   type IWorkerChoiceStrategy,
   Measurements,
-  type StrategyPolicy,
   type TaskStatisticsRequirements,
   type WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
@@ -28,12 +27,6 @@ export class FairShareWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
-  /** @inheritDoc */
-  public readonly strategyPolicy: StrategyPolicy = {
-    dynamicWorkerUsage: false,
-    dynamicWorkerReady: true
-  }
-
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
     runTime: {
