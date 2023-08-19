@@ -902,7 +902,7 @@ describe('Abstract pool test suite', () => {
     await pool.destroy()
   })
 
-  it.skip("Verify that pool event emitter 'backPressure' event can register a callback", async () => {
+  it("Verify that pool event emitter 'backPressure' event can register a callback", async () => {
     const pool = new FixedThreadPool(
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js',
@@ -910,13 +910,7 @@ describe('Abstract pool test suite', () => {
         enableTasksQueue: true
       }
     )
-    for (const workerNode of pool.workerNodes) {
-      workerNode.hasBackPressure = sinon
-        .stub()
-        .onFirstCall()
-        .returns(true)
-        .returns(false)
-    }
+    sinon.stub(pool, 'hasBackPressure').returns(true)
     const promises = new Set()
     let poolBackPressure = 0
     let poolInfo
@@ -927,13 +921,11 @@ describe('Abstract pool test suite', () => {
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.add(pool.execute())
     }
-    // console.log(pool.info.backPressure)
     await Promise.all(promises)
-    // console.log(pool.info.backPressure)
-    expect(poolBackPressure).toBe(1)
+    expect(poolBackPressure).toBe(2)
     expect(poolInfo).toStrictEqual({
       version,
-      type: PoolTypes.dynamic,
+      type: PoolTypes.fixed,
       worker: WorkerTypes.thread,
       ready: expect.any(Boolean),
       strategy: WorkerChoiceStrategies.ROUND_ROBIN,
@@ -944,8 +936,12 @@ describe('Abstract pool test suite', () => {
       busyWorkerNodes: expect.any(Number),
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
+      maxQueuedTasks: expect.any(Number),
+      queuedTasks: expect.any(Number),
+      backPressure: true,
       failedTasks: expect.any(Number)
     })
+    expect(pool.hasBackPressure.called).toBe(true)
     await pool.destroy()
   })
 
