@@ -229,7 +229,7 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    * Enqueue task.
    *
    * @param task - The task to queue.
-   * @returns The task queue size.
+   * @returns The tasks queue size.
    */
   readonly enqueueTask: (task: Task<Data>) => number
   /**

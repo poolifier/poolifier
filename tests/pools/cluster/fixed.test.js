@@ -134,6 +134,7 @@ describe('Fixed cluster pool test suite', () => {
       numberOfWorkers *
         (maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency)
     )
+    expect(queuePool.info.backPressure).toBe(false)
     await Promise.all(promises)
     for (const workerNode of queuePool.workerNodes) {
       expect(workerNode.usage.tasks.executing).toBe(0)

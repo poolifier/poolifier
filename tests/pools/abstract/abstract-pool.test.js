@@ -765,44 +765,6 @@ describe('Abstract pool test suite', () => {
     await pool.destroy()
   })
 
-  it("Verify that pool event emitter 'full' event can register a callback", async () => {
-    const pool = new DynamicThreadPool(
-      Math.floor(numberOfWorkers / 2),
-      numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js'
-    )
-    const promises = new Set()
-    let poolFull = 0
-    let poolInfo
-    pool.emitter.on(PoolEvents.full, (info) => {
-      ++poolFull
-      poolInfo = info
-    })
-    for (let i = 0; i < numberOfWorkers * 2; i++) {
-      promises.add(pool.execute())
-    }
-    await Promise.all(promises)
-    // The `full` event is triggered when the number of submitted tasks at once reach the maximum number of workers in the dynamic pool.
-    // So in total numberOfWorkers * 2 - 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the dynamic pool with min = (max = numberOfWorkers) / 2.
-    expect(poolFull).toBe(numberOfWorkers * 2 - 1)
-    expect(poolInfo).toStrictEqual({
-      version,
-      type: PoolTypes.dynamic,
-      worker: WorkerTypes.thread,
-      ready: expect.any(Boolean),
-      strategy: WorkerChoiceStrategies.ROUND_ROBIN,
-      minSize: expect.any(Number),
-      maxSize: expect.any(Number),
-      workerNodes: expect.any(Number),
-      idleWorkerNodes: expect.any(Number),
-      busyWorkerNodes: expect.any(Number),
-      executedTasks: expect.any(Number),
-      executingTasks: expect.any(Number),
-      failedTasks: expect.any(Number)
-    })
-    await pool.destroy()
-  })
-
   it("Verify that pool event emitter 'ready' event can register a callback", async () => {
     const pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
@@ -857,6 +819,44 @@ describe('Abstract pool test suite', () => {
     expect(poolInfo).toStrictEqual({
       version,
       type: PoolTypes.fixed,
+      worker: WorkerTypes.thread,
+      ready: expect.any(Boolean),
+      strategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      minSize: expect.any(Number),
+      maxSize: expect.any(Number),
+      workerNodes: expect.any(Number),
+      idleWorkerNodes: expect.any(Number),
+      busyWorkerNodes: expect.any(Number),
+      executedTasks: expect.any(Number),
+      executingTasks: expect.any(Number),
+      failedTasks: expect.any(Number)
+    })
+    await pool.destroy()
+  })
+
+  it("Verify that pool event emitter 'full' event can register a callback", async () => {
+    const pool = new DynamicThreadPool(
+      Math.floor(numberOfWorkers / 2),
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    const promises = new Set()
+    let poolFull = 0
+    let poolInfo
+    pool.emitter.on(PoolEvents.full, (info) => {
+      ++poolFull
+      poolInfo = info
+    })
+    for (let i = 0; i < numberOfWorkers * 2; i++) {
+      promises.add(pool.execute())
+    }
+    await Promise.all(promises)
+    // The `full` event is triggered when the number of submitted tasks at once reach the maximum number of workers in the dynamic pool.
+    // So in total numberOfWorkers * 2 - 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the dynamic pool with min = (max = numberOfWorkers) / 2.
+    expect(poolFull).toBe(numberOfWorkers * 2 - 1)
+    expect(poolInfo).toStrictEqual({
+      version,
+      type: PoolTypes.dynamic,
       worker: WorkerTypes.thread,
       ready: expect.any(Boolean),
       strategy: WorkerChoiceStrategies.ROUND_ROBIN,

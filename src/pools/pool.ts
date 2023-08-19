@@ -79,6 +79,7 @@ export interface PoolInfo {
   readonly executingTasks: number
   readonly queuedTasks?: number
   readonly maxQueuedTasks?: number
+  readonly backPressure?: boolean
   readonly failedTasks: number
   readonly runTime?: {
     readonly minimum: number

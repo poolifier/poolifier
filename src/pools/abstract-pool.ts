@@ -118,7 +118,10 @@ export abstract class AbstractPool<
     this.executeTask = this.executeTask.bind(this)
     this.enqueueTask = this.enqueueTask.bind(this)
     this.dequeueTask = this.dequeueTask.bind(this)
-    this.checkAndEmitEvents = this.checkAndEmitEvents.bind(this)
+    this.checkAndEmitTaskExecutionEvents =
+      this.checkAndEmitTaskExecutionEvents.bind(this)
+    this.checkAndEmitTaskQueuingEvents =
+      this.checkAndEmitTaskQueuingEvents.bind(this)
 
     if (this.opts.enableEvents === true) {
       this.emitter = new PoolEmitter()
@@ -367,6 +370,9 @@ export abstract class AbstractPool<
             accumulator + (workerNode.usage.tasks?.maxQueued ?? 0),
           0
         )
+      }),
+      ...(this.opts.enableTasksQueue === true && {
+        backPressure: this.hasBackPressure()
       }),
       failedTasks: this.workerNodes.reduce(
         (accumulator, workerNode) =>
@@ -733,7 +739,6 @@ export abstract class AbstractPool<
       } else {
         this.enqueueTask(workerNodeKey, task)
       }
-      this.checkAndEmitEvents()
     })
   }
 
@@ -1221,7 +1226,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private checkAndEmitEvents (): void {
+  private checkAndEmitTaskExecutionEvents (): void {
     if (this.emitter != null) {
       if (this.busy) {
         this.emitter.emit(PoolEvents.busy, this.info)
@@ -1229,9 +1234,12 @@ export abstract class AbstractPool<
       if (this.type === PoolTypes.dynamic && this.full) {
         this.emitter.emit(PoolEvents.full, this.info)
       }
-      if (this.hasBackPressure()) {
-        this.emitter.emit(PoolEvents.backPressure, this.info)
-      }
+    }
+  }
+
+  private checkAndEmitTaskQueuingEvents (): void {
+    if (this.hasBackPressure()) {
+      this.emitter?.emit(PoolEvents.backPressure, this.info)
     }
   }
 
@@ -1296,7 +1304,7 @@ export abstract class AbstractPool<
       this.opts.enableTasksQueue === true &&
       this.workerNodes.findIndex(
         (workerNode) => !workerNode.hasBackPressure()
-      ) !== -1
+      ) === -1
     )
   }
 
@@ -1309,10 +1317,13 @@ export abstract class AbstractPool<
   private executeTask (workerNodeKey: number, task: Task<Data>): void {
     this.beforeTaskExecutionHook(workerNodeKey, task)
     this.sendToWorker(workerNodeKey, task, task.transferList)
+    this.checkAndEmitTaskExecutionEvents()
   }
 
   private enqueueTask (workerNodeKey: number, task: Task<Data>): number {
-    return this.workerNodes[workerNodeKey].enqueueTask(task)
+    const tasksQueueSize = this.workerNodes[workerNodeKey].enqueueTask(task)
+    this.checkAndEmitTaskQueuingEvents()
+    return tasksQueueSize
   }
 
   private dequeueTask (workerNodeKey: number): Task<Data> | undefined {
