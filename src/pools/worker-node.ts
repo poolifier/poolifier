@@ -53,9 +53,9 @@ implements IWorkerNode<Worker, Data> {
         'Cannot construct a worker node without a pool maximum size'
       )
     }
-    if (isNaN(poolMaxSize)) {
+    if (!Number.isSafeInteger(poolMaxSize)) {
       throw new TypeError(
-        'Cannot construct a worker node with a NaN pool maximum size'
+        'Cannot construct a worker node with a pool maximum size that is not an integer'
       )
     }
     this.worker = worker
