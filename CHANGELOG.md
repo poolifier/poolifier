@@ -214,7 +214,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add safe helper `availableParallelism` to help sizing the pool.
+- Add safe helper `availableParallelism()` to help sizing the pool.
 
 ### Fixed
 
@@ -229,7 +229,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Artificial version bump to 2.6.5 to workaround publication issue.
-- Ensure cluster pool destroy() gracefully shutdowns worker's server.
+- Ensure cluster pool `destroy()` gracefully shutdowns worker's server.
 - Ensure pool event is emitted before task error promise rejection.
 - Fix queued tasks count computation.
 
@@ -245,7 +245,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Ensure cluster pool destroy() gracefully shutdowns worker's server.
+- Ensure cluster pool `destroy()` gracefully shutdowns worker's server.
 - Ensure pool event is emitted before task error promise rejection.
 - Fix queued tasks count computation.
 

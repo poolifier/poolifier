@@ -165,12 +165,7 @@ export abstract class AbstractWorker<
    * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string or an empty string.
    */
   public hasTaskFunction (name: string): boolean {
-    if (typeof name !== 'string') {
-      throw new TypeError('name parameter is not a string')
-    }
-    if (typeof name === 'string' && name.trim().length === 0) {
-      throw new TypeError('name parameter is an empty string')
-    }
+    this.checkTaskFunctionName(name)
     return this.taskFunctions.has(name)
   }
 
@@ -189,12 +184,7 @@ export abstract class AbstractWorker<
     name: string,
     fn: TaskFunction<Data, Response>
   ): boolean {
-    if (typeof name !== 'string') {
-      throw new TypeError('name parameter is not a string')
-    }
-    if (typeof name === 'string' && name.trim().length === 0) {
-      throw new TypeError('name parameter is an empty string')
-    }
+    this.checkTaskFunctionName(name)
     if (name === DEFAULT_TASK_NAME) {
       throw new Error(
         'Cannot add a task function with the default reserved name'
@@ -229,12 +219,7 @@ export abstract class AbstractWorker<
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is the task function used as default task function.
    */
   public removeTaskFunction (name: string): boolean {
-    if (typeof name !== 'string') {
-      throw new TypeError('name parameter is not a string')
-    }
-    if (typeof name === 'string' && name.trim().length === 0) {
-      throw new TypeError('name parameter is an empty string')
-    }
+    this.checkTaskFunctionName(name)
     if (name === DEFAULT_TASK_NAME) {
       throw new Error(
         'Cannot remove the task function with the default reserved name'
@@ -288,12 +273,7 @@ export abstract class AbstractWorker<
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is a non-existing task function.
    */
   public setDefaultTaskFunction (name: string): boolean {
-    if (typeof name !== 'string') {
-      throw new TypeError('name parameter is not a string')
-    }
-    if (typeof name === 'string' && name.trim().length === 0) {
-      throw new TypeError('name parameter is an empty string')
-    }
+    this.checkTaskFunctionName(name)
     if (name === DEFAULT_TASK_NAME) {
       throw new Error(
         'Cannot set the default task function reserved name as the default task function'
@@ -312,6 +292,15 @@ export abstract class AbstractWorker<
       return true
     } catch {
       return false
+    }
+  }
+
+  private checkTaskFunctionName (name: string): void {
+    if (typeof name !== 'string') {
+      throw new TypeError('name parameter is not a string')
+    }
+    if (typeof name === 'string' && name.trim().length === 0) {
+      throw new TypeError('name parameter is an empty string')
     }
   }
 
