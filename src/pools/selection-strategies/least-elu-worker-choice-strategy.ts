@@ -57,8 +57,7 @@ export class LeastEluWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number | undefined {
-    const chosenWorkerNodeKey = this.leastEluNextWorkerNodeKey()
-    this.assignChosenWorkerNodeKey(chosenWorkerNodeKey)
+    this.nextWorkerNodeKey = this.leastEluNextWorkerNodeKey()
     return this.nextWorkerNodeKey
   }
 

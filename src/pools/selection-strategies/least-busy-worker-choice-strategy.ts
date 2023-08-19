@@ -61,8 +61,7 @@ export class LeastBusyWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number | undefined {
-    const chosenWorkerNodeKey = this.leastBusyNextWorkerNodeKey()
-    this.assignChosenWorkerNodeKey(chosenWorkerNodeKey)
+    this.nextWorkerNodeKey = this.leastBusyNextWorkerNodeKey()
     return this.nextWorkerNodeKey
   }
 

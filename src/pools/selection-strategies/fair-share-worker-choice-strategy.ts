@@ -70,8 +70,7 @@ export class FairShareWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number | undefined {
-    const chosenWorkerNodeKey = this.fairShareNextWorkerNodeKey()
-    this.assignChosenWorkerNodeKey(chosenWorkerNodeKey)
+    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey()
     return this.nextWorkerNodeKey
   }
 
