@@ -30,6 +30,11 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected nextWorkerNodeKey: number | undefined = 0
 
+  /**
+   * The previous worker node key.
+   */
+  protected previousWorkerNodeKey: number = 0
+
   /** @inheritDoc */
   public readonly strategyPolicy: StrategyPolicy = {
     dynamicWorkerUsage: false,

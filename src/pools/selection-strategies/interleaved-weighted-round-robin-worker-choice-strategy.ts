@@ -67,15 +67,17 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number | undefined {
-    let roundId: number | undefined
+    let roundId: number = this.roundId
     let workerNodeId: number | undefined
     for (
       let roundIndex = this.roundId;
       roundIndex < this.roundWeights.length;
       roundIndex++
     ) {
+      roundId = roundIndex
       for (
-        let workerNodeKey = this.nextWorkerNodeKey ?? 0;
+        let workerNodeKey =
+          this.nextWorkerNodeKey ?? this.previousWorkerNodeKey;
         workerNodeKey < this.pool.workerNodes.length;
         workerNodeKey++
       ) {
@@ -85,13 +87,16 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
           this.isWorkerNodeEligible(workerNodeKey) &&
           workerWeight >= this.roundWeights[roundIndex]
         ) {
-          roundId = roundIndex
           workerNodeId = workerNodeKey
           break
         }
       }
     }
-    this.roundId = roundId as number
+    this.roundId = roundId
+    if (workerNodeId == null) {
+      this.previousWorkerNodeKey =
+        this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
+    }
     this.nextWorkerNodeKey = workerNodeId
     const chosenWorkerNodeKey = this.nextWorkerNodeKey
     if (this.nextWorkerNodeKey === this.pool.workerNodes.length - 1) {
@@ -99,7 +104,8 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
       this.roundId =
         this.roundId === this.roundWeights.length - 1 ? 0 : this.roundId + 1
     } else {
-      this.nextWorkerNodeKey = (this.nextWorkerNodeKey ?? 0) + 1
+      this.nextWorkerNodeKey =
+        (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
     }
     return chosenWorkerNodeKey
   }
