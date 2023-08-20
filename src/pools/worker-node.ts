@@ -193,7 +193,11 @@ implements IWorkerNode<Worker, Data> {
     const getTaskQueueSize = (): number => {
       let taskQueueSize = 0
       for (const task of this.tasksQueue) {
-        if (task.name === name) {
+        if (
+          (name === DEFAULT_TASK_NAME &&
+            task.name === (this.info.taskFunctions as string[])[1]) ||
+          task.name === name
+        ) {
           ++taskQueueSize
         }
       }
