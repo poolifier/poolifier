@@ -212,7 +212,7 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    */
   readonly info: WorkerInfo
   /**
-   * Message channel.
+   * Message channel (worker_threads only).
    */
   readonly messageChannel?: MessageChannel
   /**
