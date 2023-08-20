@@ -190,25 +190,25 @@ implements IWorkerNode<Worker, Data> {
   }
 
   private initTaskFunctionWorkerUsage (name: string): WorkerUsage {
-    const getTaskQueueSize = (): number => {
-      let taskQueueSize = 0
+    const getTaskFunctionQueueSize = (): number => {
+      let taskFunctionQueueSize = 0
       for (const task of this.tasksQueue) {
         if (
-          (name === DEFAULT_TASK_NAME &&
-            task.name === (this.info.taskFunctions as string[])[1]) ||
-          task.name === name
+          (task.name === DEFAULT_TASK_NAME &&
+            name === (this.info.taskFunctions as string[])[1]) ||
+          (task.name !== DEFAULT_TASK_NAME && name === task.name)
         ) {
-          ++taskQueueSize
+          ++taskFunctionQueueSize
         }
       }
-      return taskQueueSize
+      return taskFunctionQueueSize
     }
     return {
       tasks: {
         executed: 0,
         executing: 0,
         get queued (): number {
-          return getTaskQueueSize()
+          return getTaskFunctionQueueSize()
         },
         failed: 0
       },
