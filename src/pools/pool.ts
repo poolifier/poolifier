@@ -96,11 +96,17 @@ export interface PoolInfo {
 }
 
 /**
- * Worker tasks queue options.
+ * Worker node tasks queue options.
  */
 export interface TasksQueueOptions {
   /**
-   * Maximum number of tasks that can be executed concurrently on a worker.
+   * Maximum tasks queue size per worker node flagging it as back pressured.
+   *
+   * @defaultValue (pool maximum size)^2
+   */
+  readonly queueMaxSize?: number
+  /**
+   * Maximum number of tasks that can be executed concurrently on a worker node.
    *
    * @defaultValue 1
    */
@@ -150,13 +156,13 @@ export interface PoolOptions<Worker extends IWorker> {
    */
   enableEvents?: boolean
   /**
-   * Pool worker tasks queue.
+   * Pool worker node tasks queue.
    *
    * @defaultValue false
    */
   enableTasksQueue?: boolean
   /**
-   * Pool worker tasks queue options.
+   * Pool worker node tasks queue options.
    */
   tasksQueueOptions?: TasksQueueOptions
 }
@@ -202,7 +208,7 @@ export interface IPool<
    * - '`destroy`': Emitted when the pool is destroyed.
    * - `'error'`: Emitted when an uncaught error occurs.
    * - `'taskError'`: Emitted when an error occurs while executing a task.
-   * - `'backPressure'`: Emitted when all worker nodes have back pressure (i.e. their tasks queue is full: queue size \>= pool maximum size^2).
+   * - `'backPressure'`: Emitted when all worker nodes have back pressure (i.e. their tasks queue is full: queue size \>= max queue size).
    */
   readonly emitter?: PoolEmitter
   /**
@@ -247,19 +253,19 @@ export interface IPool<
     workerChoiceStrategyOptions: WorkerChoiceStrategyOptions
   ) => void
   /**
-   * Enables/disables the worker tasks queue in this pool.
+   * Enables/disables the worker node tasks queue in this pool.
    *
-   * @param enable - Whether to enable or disable the worker tasks queue.
-   * @param tasksQueueOptions - The worker tasks queue options.
+   * @param enable - Whether to enable or disable the worker node tasks queue.
+   * @param tasksQueueOptions - The worker node tasks queue options.
    */
   readonly enableTasksQueue: (
     enable: boolean,
     tasksQueueOptions?: TasksQueueOptions
   ) => void
   /**
-   * Sets the worker tasks queue options in this pool.
+   * Sets the worker node tasks queue options in this pool.
    *
-   * @param tasksQueueOptions - The worker tasks queue options.
+   * @param tasksQueueOptions - The worker node tasks queue options.
    */
   readonly setTasksQueueOptions: (tasksQueueOptions: TasksQueueOptions) => void
 }

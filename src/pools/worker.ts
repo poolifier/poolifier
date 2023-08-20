@@ -220,6 +220,11 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    */
   usage: WorkerUsage
   /**
+   * Tasks queue back pressure size.
+   * This is the number of tasks that can be enqueued before the worker node has back pressure.
+   */
+  tasksQueueBackPressureSize: number
+  /**
    * Tasks queue size.
    *
    * @returns The tasks queue size.

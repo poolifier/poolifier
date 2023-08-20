@@ -212,7 +212,10 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.enableEvents).toBe(false)
     expect(pool.opts.restartWorkerOnError).toBe(false)
     expect(pool.opts.enableTasksQueue).toBe(true)
-    expect(pool.opts.tasksQueueOptions).toStrictEqual({ concurrency: 2 })
+    expect(pool.opts.tasksQueueOptions).toStrictEqual({
+      concurrency: 2,
+      queueMaxSize: 4
+    })
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.LEAST_USED
     )
@@ -290,7 +293,7 @@ describe('Abstract pool test suite', () => {
         )
     ).toThrowError(
       new RangeError(
-        'Invalid worker tasks concurrency: 0 is a negative integer or zero'
+        'Invalid worker node tasks concurrency: 0 is a negative integer or zero'
       )
     )
     expect(
@@ -317,7 +320,7 @@ describe('Abstract pool test suite', () => {
           }
         )
     ).toThrowError(
-      new TypeError('Invalid worker tasks concurrency: must be an integer')
+      new TypeError('Invalid worker node tasks concurrency: must be an integer')
     )
   })
 
@@ -488,10 +491,16 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.tasksQueueOptions).toBeUndefined()
     pool.enableTasksQueue(true)
     expect(pool.opts.enableTasksQueue).toBe(true)
-    expect(pool.opts.tasksQueueOptions).toStrictEqual({ concurrency: 1 })
+    expect(pool.opts.tasksQueueOptions).toStrictEqual({
+      concurrency: 1,
+      queueMaxSize: 4
+    })
     pool.enableTasksQueue(true, { concurrency: 2 })
     expect(pool.opts.enableTasksQueue).toBe(true)
-    expect(pool.opts.tasksQueueOptions).toStrictEqual({ concurrency: 2 })
+    expect(pool.opts.tasksQueueOptions).toStrictEqual({
+      concurrency: 2,
+      queueMaxSize: 4
+    })
     pool.enableTasksQueue(false)
     expect(pool.opts.enableTasksQueue).toBe(false)
     expect(pool.opts.tasksQueueOptions).toBeUndefined()
@@ -504,9 +513,15 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { enableTasksQueue: true }
     )
-    expect(pool.opts.tasksQueueOptions).toStrictEqual({ concurrency: 1 })
+    expect(pool.opts.tasksQueueOptions).toStrictEqual({
+      concurrency: 1,
+      queueMaxSize: 4
+    })
     pool.setTasksQueueOptions({ concurrency: 2 })
-    expect(pool.opts.tasksQueueOptions).toStrictEqual({ concurrency: 2 })
+    expect(pool.opts.tasksQueueOptions).toStrictEqual({
+      concurrency: 2,
+      queueMaxSize: 4
+    })
     expect(() =>
       pool.setTasksQueueOptions('invalidTasksQueueOptions')
     ).toThrowError(
@@ -514,16 +529,31 @@ describe('Abstract pool test suite', () => {
     )
     expect(() => pool.setTasksQueueOptions({ concurrency: 0 })).toThrowError(
       new RangeError(
-        'Invalid worker tasks concurrency: 0 is a negative integer or zero'
+        'Invalid worker node tasks concurrency: 0 is a negative integer or zero'
       )
     )
     expect(() => pool.setTasksQueueOptions({ concurrency: -1 })).toThrowError(
       new RangeError(
-        'Invalid worker tasks concurrency: -1 is a negative integer or zero'
+        'Invalid worker node tasks concurrency: -1 is a negative integer or zero'
       )
     )
     expect(() => pool.setTasksQueueOptions({ concurrency: 0.2 })).toThrowError(
-      new TypeError('Invalid worker tasks concurrency: must be an integer')
+      new TypeError('Invalid worker node tasks concurrency: must be an integer')
+    )
+    expect(() => pool.setTasksQueueOptions({ queueMaxSize: 0 })).toThrowError(
+      new RangeError(
+        'Invalid worker node tasks queue max size: 0 is a negative integer or zero'
+      )
+    )
+    expect(() => pool.setTasksQueueOptions({ queueMaxSize: -1 })).toThrowError(
+      new RangeError(
+        'Invalid worker node tasks queue max size: -1 is a negative integer or zero'
+      )
+    )
+    expect(() => pool.setTasksQueueOptions({ queueMaxSize: 0.2 })).toThrowError(
+      new TypeError(
+        'Invalid worker node tasks queue max size: must be an integer'
+      )
     )
     await pool.destroy()
   })

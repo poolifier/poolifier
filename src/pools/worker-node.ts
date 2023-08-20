@@ -28,18 +28,23 @@ implements IWorkerNode<Worker, Data> {
   public messageChannel?: MessageChannel
   /** @inheritdoc */
   public usage: WorkerUsage
+  /** @inheritdoc */
+  public tasksQueueBackPressureSize: number
   private readonly taskFunctionsUsage: Map<string, WorkerUsage>
   private readonly tasksQueue: Queue<Task<Data>>
-  private readonly tasksQueueBackPressureSize: number
 
   /**
    * Constructs a new worker node.
    *
    * @param worker - The worker.
    * @param workerType - The worker type.
-   * @param poolMaxSize - The pool maximum size.
+   * @param tasksQueueBackPressureSize - The tasks queue back pressure size.
    */
-  constructor (worker: Worker, workerType: WorkerType, poolMaxSize: number) {
+  constructor (
+    worker: Worker,
+    workerType: WorkerType,
+    tasksQueueBackPressureSize: number
+  ) {
     if (worker == null) {
       throw new TypeError('Cannot construct a worker node without a worker')
     }
@@ -48,14 +53,14 @@ implements IWorkerNode<Worker, Data> {
         'Cannot construct a worker node without a worker type'
       )
     }
-    if (poolMaxSize == null) {
+    if (tasksQueueBackPressureSize == null) {
       throw new TypeError(
-        'Cannot construct a worker node without a pool maximum size'
+        'Cannot construct a worker node without a tasks queue back pressure size'
       )
     }
-    if (!Number.isSafeInteger(poolMaxSize)) {
+    if (!Number.isSafeInteger(tasksQueueBackPressureSize)) {
       throw new TypeError(
-        'Cannot construct a worker node with a pool maximum size that is not an integer'
+        'Cannot construct a worker node with a tasks queue back pressure size that is not an integer'
       )
     }
     this.worker = worker
@@ -66,7 +71,7 @@ implements IWorkerNode<Worker, Data> {
     this.usage = this.initWorkerUsage()
     this.taskFunctionsUsage = new Map<string, WorkerUsage>()
     this.tasksQueue = new Queue<Task<Data>>()
-    this.tasksQueueBackPressureSize = Math.pow(poolMaxSize, 2)
+    this.tasksQueueBackPressureSize = tasksQueueBackPressureSize
   }
 
   /** @inheritdoc */
