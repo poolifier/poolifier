@@ -1,3 +1,4 @@
+import type { TransferListItem } from 'node:worker_threads'
 import type * as fastify from 'fastify'
 import { type DynamicThreadPool } from 'poolifier'
 import {
