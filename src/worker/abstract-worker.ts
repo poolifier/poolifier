@@ -496,7 +496,7 @@ export abstract class AbstractWorker<
       const errorMessage = this.handleError(e as Error | string)
       this.sendToMainWorker({
         taskError: {
-          name: name ?? DEFAULT_TASK_NAME,
+          name: name as string,
           message: errorMessage,
           data
         },
@@ -535,7 +535,7 @@ export abstract class AbstractWorker<
         const errorMessage = this.handleError(e as Error | string)
         this.sendToMainWorker({
           taskError: {
-            name: name ?? DEFAULT_TASK_NAME,
+            name: name as string,
             message: errorMessage,
             data
           },
