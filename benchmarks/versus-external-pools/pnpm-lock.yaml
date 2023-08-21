@@ -24,8 +24,8 @@ dependencies:
     specifier: 2.6.0
     version: 2.6.0
   workerpool:
-    specifier: 6.4.1
-    version: 6.4.1
+    specifier: 6.4.2
+    version: 6.4.2
 
 packages:
 
@@ -142,6 +142,6 @@ packages:
       msgpack-lite: 0.1.26
     dev: false
 
-  /workerpool@6.4.1:
-    resolution: {integrity: sha512-zIK7qRgM1Mk+ySxOJl7ZpjX6SlKt5gugxzl8eXHPdbpXX8iDAaVIxYJz4Apn6JdDxP2buY/Ekqg0bOLNSf0u0g==}
+  /workerpool@6.4.2:
+    resolution: {integrity: sha512-MrDWwemtC4xNV22kbbZDQQQmxNX+yLm790sgYl2wVD3CWnK7LJY1youI/11wHorAjHjK+GEjUxUh74XoPU71uQ==}
     dev: false
