@@ -64,6 +64,8 @@ export class Deque<T> {
 
   /**
    * Pops a value from the deque.
+   *
+   * @returns The popped value or `undefined` if the deque is empty.
    */
   public pop (): T | undefined {
     if (this.head == null) {
@@ -102,7 +104,7 @@ export class Deque<T> {
 
   /**
    * Peeks at the first value.
-   * @returns The first value or `undefined` if the queue is empty.
+   * @returns The first value or `undefined` if the deque is empty.
    */
   public peekFirst (): T | undefined {
     return this.head?.value
@@ -110,7 +112,7 @@ export class Deque<T> {
 
   /**
    * Peeks at the last value.
-   * @returns The last value or `undefined` if the queue is empty.
+   * @returns The last value or `undefined` if the deque is empty.
    */
   public peekLast (): T | undefined {
     return this.tail?.value
