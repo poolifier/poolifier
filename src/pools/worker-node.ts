@@ -274,8 +274,11 @@ implements IWorkerNode<Worker, Data> {
 
   /**
    * Executes a function once at a time.
+   *
+   * @param fn - The function to execute.
+   * @param context - The context to bind the function to.
+   * @returns The function to execute.
    */
-
   private once (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     fn: (...args: any[]) => void,
