@@ -11,7 +11,7 @@ const {
   WorkerTypes
 } = require('../../../lib')
 const { CircularArray } = require('../../../lib/circular-array')
-const { Queue } = require('../../../lib/queue')
+const { Deque } = require('../../../lib/deque')
 const { version } = require('../../../package.json')
 const { waitPoolEvents } = require('../../test-utils')
 
@@ -642,7 +642,7 @@ describe('Abstract pool test suite', () => {
     )
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksQueue).toBeDefined()
-      expect(workerNode.tasksQueue).toBeInstanceOf(Queue)
+      expect(workerNode.tasksQueue).toBeInstanceOf(Deque)
       expect(workerNode.tasksQueue.size).toBe(0)
       expect(workerNode.tasksQueue.maxSize).toBe(0)
     }
@@ -654,7 +654,7 @@ describe('Abstract pool test suite', () => {
     )
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksQueue).toBeDefined()
-      expect(workerNode.tasksQueue).toBeInstanceOf(Queue)
+      expect(workerNode.tasksQueue).toBeInstanceOf(Deque)
       expect(workerNode.tasksQueue.size).toBe(0)
       expect(workerNode.tasksQueue.maxSize).toBe(0)
     }

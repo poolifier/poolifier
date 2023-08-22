@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `queueMaxSize` option to tasks queue options.
+- Add O(1) deque implementation implemented with doubly linked list and use it for tasks queueing.
 
 ## [2.6.31] - 2023-08-20
 

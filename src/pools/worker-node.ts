@@ -1,8 +1,8 @@
 import { MessageChannel } from 'node:worker_threads'
 import { CircularArray } from '../circular-array'
-import { Queue } from '../queue'
 import type { Task } from '../utility-types'
 import { DEFAULT_TASK_NAME } from '../utils'
+import { Deque } from '../deque'
 import {
   type IWorker,
   type IWorkerNode,
@@ -31,7 +31,7 @@ implements IWorkerNode<Worker, Data> {
   /** @inheritdoc */
   public tasksQueueBackPressureSize: number
   private readonly taskFunctionsUsage: Map<string, WorkerUsage>
-  private readonly tasksQueue: Queue<Task<Data>>
+  private readonly tasksQueue: Deque<Task<Data>>
 
   /**
    * Constructs a new worker node.
@@ -70,7 +70,7 @@ implements IWorkerNode<Worker, Data> {
     }
     this.usage = this.initWorkerUsage()
     this.taskFunctionsUsage = new Map<string, WorkerUsage>()
-    this.tasksQueue = new Queue<Task<Data>>()
+    this.tasksQueue = new Deque<Task<Data>>()
     this.tasksQueueBackPressureSize = tasksQueueBackPressureSize
   }
 
@@ -90,12 +90,12 @@ implements IWorkerNode<Worker, Data> {
 
   /** @inheritdoc */
   public enqueueTask (task: Task<Data>): number {
-    return this.tasksQueue.enqueue(task)
+    return this.tasksQueue.push(task)
   }
 
   /** @inheritdoc */
   public dequeueTask (): Task<Data> | undefined {
-    return this.tasksQueue.dequeue()
+    return this.tasksQueue.shift()
   }
 
   /** @inheritdoc */

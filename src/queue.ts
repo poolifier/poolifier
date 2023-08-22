@@ -1,7 +1,7 @@
-// Copyright Jerome Benoit. 2021-2023. All Rights Reserved.
+// Copyright Jerome Benoit. 2022-2023. All Rights Reserved.
 
 /**
- * Queue
+ * Queue.
  *
  * @typeParam T - Type of queue items.
  */

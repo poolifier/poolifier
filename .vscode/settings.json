@@ -12,6 +12,7 @@
     "codeql",
     "commitlint",
     "Dependabot",
+    "deque",
     "eventloop",
     "Fastify",
     "FOSS",
