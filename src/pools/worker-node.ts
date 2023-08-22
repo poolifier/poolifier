@@ -94,7 +94,7 @@ implements IWorkerNode<Worker, Data> {
   public enqueueTask (task: Task<Data>): number {
     const tasksQueueSize = this.tasksQueue.push(task)
     if (this.onBackPressure != null && this.hasBackPressure()) {
-      once(this.onBackPressure)(this.info.id as number)
+      once(this.onBackPressure, this)(this.info.id as number)
     }
     return tasksQueueSize
   }
@@ -103,7 +103,7 @@ implements IWorkerNode<Worker, Data> {
   public unshiftTask (task: Task<Data>): number {
     const tasksQueueSize = this.tasksQueue.unshift(task)
     if (this.onBackPressure != null && this.hasBackPressure()) {
-      once(this.onBackPressure)(this.info.id as number)
+      once(this.onBackPressure, this)(this.info.id as number)
     }
     return tasksQueueSize
   }

@@ -193,7 +193,7 @@ export const updateMeasurementStatistics = (
 export const once = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fn: (...args: any[]) => void,
-  context = this
+  context: unknown
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): ((...args: any[]) => void) => {
   let called = false
