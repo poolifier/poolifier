@@ -182,3 +182,27 @@ export const updateMeasurementStatistics = (
     }
   }
 }
+
+/**
+ * Executes a function once at a time.
+ *
+ * @param fn - The function to execute.
+ * @param context - The context to bind the function to.
+ * @returns The function to execute.
+ */
+export const once = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  fn: (...args: any[]) => void,
+  context = this
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): ((...args: any[]) => void) => {
+  let called = false
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return function (...args: any[]): void {
+    if (!called) {
+      called = true
+      fn.apply(context, args)
+      called = false
+    }
+  }
+}

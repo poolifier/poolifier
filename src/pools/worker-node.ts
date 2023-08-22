@@ -1,7 +1,7 @@
 import { MessageChannel } from 'node:worker_threads'
 import { CircularArray } from '../circular-array'
 import type { Task } from '../utility-types'
-import { DEFAULT_TASK_NAME } from '../utils'
+import { DEFAULT_TASK_NAME, once } from '../utils'
 import { Deque } from '../deque'
 import {
   type IWorker,
@@ -94,7 +94,7 @@ implements IWorkerNode<Worker, Data> {
   public enqueueTask (task: Task<Data>): number {
     const tasksQueueSize = this.tasksQueue.push(task)
     if (this.onBackPressure != null && this.hasBackPressure()) {
-      this.once(this.onBackPressure)(this.info.id as number)
+      once(this.onBackPressure)(this.info.id as number)
     }
     return tasksQueueSize
   }
@@ -103,7 +103,7 @@ implements IWorkerNode<Worker, Data> {
   public unshiftTask (task: Task<Data>): number {
     const tasksQueueSize = this.tasksQueue.unshift(task)
     if (this.onBackPressure != null && this.hasBackPressure()) {
-      this.once(this.onBackPressure)(this.info.id as number)
+      once(this.onBackPressure)(this.info.id as number)
     }
     return tasksQueueSize
   }
@@ -269,30 +269,6 @@ implements IWorkerNode<Worker, Data> {
       return worker.threadId
     } else if (workerType === WorkerTypes.cluster) {
       return worker.id
-    }
-  }
-
-  /**
-   * Executes a function once at a time.
-   *
-   * @param fn - The function to execute.
-   * @param context - The context to bind the function to.
-   * @returns The function to execute.
-   */
-  private once (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fn: (...args: any[]) => void,
-    context = this
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): (...args: any[]) => void {
-    let called = false
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return function (...args: any[]): void {
-      if (!called) {
-        called = true
-        fn.apply(context, args)
-        called = false
-      }
     }
   }
 }
