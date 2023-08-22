@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `queueMaxSize` option to tasks queue options.
 - Add O(1) deque implementation implemented with doubly linked list and use it for tasks queueing.
+- Add tasks stealing algorithm when a worker node queue is back pressured if tasks queueing is enabled.
 
 ## [2.6.31] - 2023-08-20
 

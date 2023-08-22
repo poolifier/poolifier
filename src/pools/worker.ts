@@ -225,6 +225,12 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    */
   tasksQueueBackPressureSize: number
   /**
+   * Callback invoked when worker node tasks queue is back pressured.
+   *
+   * @param workerId - The worker id.
+   */
+  onBackPressure?: (workerId: number) => void
+  /**
    * Tasks queue size.
    *
    * @returns The tasks queue size.
@@ -238,11 +244,24 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    */
   readonly enqueueTask: (task: Task<Data>) => number
   /**
+   * Prepends a task to the tasks queue.
+   *
+   * @param task - The task to prepend.
+   * @returns The tasks queue size.
+   */
+  readonly unshiftTask: (task: Task<Data>) => number
+  /**
    * Dequeue task.
    *
    * @returns The dequeued task.
    */
   readonly dequeueTask: () => Task<Data> | undefined
+  /**
+   * Pops a task from the tasks queue.
+   *
+   * @returns The popped task.
+   */
+  readonly popTask: () => Task<Data> | undefined
   /**
    * Clears tasks queue.
    */

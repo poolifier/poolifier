@@ -1142,6 +1142,10 @@ export abstract class AbstractPool<
     this.sendStartupMessageToWorker(workerNodeKey)
     // Send the statistics message to worker.
     this.sendStatisticsMessageToWorker(workerNodeKey)
+    if (this.opts.enableTasksQueue === true) {
+      this.workerNodes[workerNodeKey].onBackPressure =
+        this.tasksStealingOnBackPressure.bind(this)
+    }
   }
 
   /**
@@ -1175,24 +1179,23 @@ export abstract class AbstractPool<
       let minQueuedTasks = Infinity
       let executeTask = false
       for (const [workerNodeId, workerNode] of this.workerNodes.entries()) {
-        const workerInfo = this.getWorkerInfo(workerNodeId) as WorkerInfo
+        if (
+          this.workerNodes[workerNodeId].usage.tasks.executing <
+          (this.opts.tasksQueueOptions?.concurrency as number)
+        ) {
+          executeTask = true
+        }
         if (
           workerNodeId !== workerNodeKey &&
-          workerInfo.ready &&
+          workerNode.info.ready &&
           workerNode.usage.tasks.queued === 0
         ) {
-          if (
-            this.workerNodes[workerNodeId].usage.tasks.executing <
-            (this.opts.tasksQueueOptions?.concurrency as number)
-          ) {
-            executeTask = true
-          }
           targetWorkerNodeKey = workerNodeId
           break
         }
         if (
           workerNodeId !== workerNodeKey &&
-          workerInfo.ready &&
+          workerNode.info.ready &&
           workerNode.usage.tasks.queued < minQueuedTasks
         ) {
           minQueuedTasks = workerNode.usage.tasks.queued
@@ -1202,12 +1205,48 @@ export abstract class AbstractPool<
       if (executeTask) {
         this.executeTask(
           targetWorkerNodeKey,
-          this.dequeueTask(workerNodeKey) as Task<Data>
+          this.popTask(workerNodeKey) as Task<Data>
         )
       } else {
         this.enqueueTask(
           targetWorkerNodeKey,
-          this.dequeueTask(workerNodeKey) as Task<Data>
+          this.popTask(workerNodeKey) as Task<Data>
+        )
+      }
+    }
+  }
+
+  private tasksStealingOnBackPressure (workerId: number): void {
+    const sourceWorkerNode =
+      this.workerNodes[this.getWorkerNodeKeyByWorkerId(workerId)]
+    const workerNodes = this.workerNodes
+      .filter((workerNode) => workerNode.info.id !== workerId)
+      .sort(
+        (workerNodeA, workerNodeB) =>
+          workerNodeA.usage.tasks.queued - workerNodeB.usage.tasks.queued
+      )
+    for (const [workerNodeKey, workerNode] of workerNodes.entries()) {
+      if (
+        workerNode.info.ready &&
+        sourceWorkerNode.usage.tasks.queued > 0 &&
+        !workerNode.hasBackPressure() &&
+        workerNode.usage.tasks.executing <
+          (this.opts.tasksQueueOptions?.concurrency as number)
+      ) {
+        this.executeTask(
+          workerNodeKey,
+          sourceWorkerNode.popTask() as Task<Data>
+        )
+      } else if (
+        workerNode.info.ready &&
+        sourceWorkerNode.usage.tasks.queued > 0 &&
+        !workerNode.hasBackPressure() &&
+        workerNode.usage.tasks.executing >=
+          (this.opts.tasksQueueOptions?.concurrency as number)
+      ) {
+        this.enqueueTask(
+          workerNodeKey,
+          sourceWorkerNode.popTask() as Task<Data>
         )
       }
     }
@@ -1385,6 +1424,10 @@ export abstract class AbstractPool<
 
   private dequeueTask (workerNodeKey: number): Task<Data> | undefined {
     return this.workerNodes[workerNodeKey].dequeueTask()
+  }
+
+  private popTask (workerNodeKey: number): Task<Data> | undefined {
+    return this.workerNodes[workerNodeKey].popTask()
   }
 
   private tasksQueueSize (workerNodeKey: number): number {

@@ -30,6 +30,8 @@ implements IWorkerNode<Worker, Data> {
   public usage: WorkerUsage
   /** @inheritdoc */
   public tasksQueueBackPressureSize: number
+  /** @inheritdoc */
+  public onBackPressure?: (workerId: number) => void
   private readonly taskFunctionsUsage: Map<string, WorkerUsage>
   private readonly tasksQueue: Deque<Task<Data>>
 
@@ -90,12 +92,30 @@ implements IWorkerNode<Worker, Data> {
 
   /** @inheritdoc */
   public enqueueTask (task: Task<Data>): number {
-    return this.tasksQueue.push(task)
+    const tasksQueueSize = this.tasksQueue.push(task)
+    if (this.onBackPressure != null && this.hasBackPressure()) {
+      this.once(this.onBackPressure)(this.info.id as number)
+    }
+    return tasksQueueSize
+  }
+
+  /** @inheritdoc */
+  public unshiftTask (task: Task<Data>): number {
+    const tasksQueueSize = this.tasksQueue.unshift(task)
+    if (this.onBackPressure != null && this.hasBackPressure()) {
+      this.once(this.onBackPressure)(this.info.id as number)
+    }
+    return tasksQueueSize
   }
 
   /** @inheritdoc */
   public dequeueTask (): Task<Data> | undefined {
     return this.tasksQueue.shift()
+  }
+
+  /** @inheritdoc */
+  public popTask (): Task<Data> | undefined {
+    return this.tasksQueue.pop()
   }
 
   /** @inheritdoc */
@@ -249,6 +269,27 @@ implements IWorkerNode<Worker, Data> {
       return worker.threadId
     } else if (workerType === WorkerTypes.cluster) {
       return worker.id
+    }
+  }
+
+  /**
+   * Executes a function once at a time.
+   */
+
+  private once (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    fn: (...args: any[]) => void,
+    context = this
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ): (...args: any[]) => void {
+    let called = false
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return function (...args: any[]): void {
+      if (!called) {
+        called = true
+        fn.apply(context, args)
+        called = false
+      }
     }
   }
 }
