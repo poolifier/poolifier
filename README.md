@@ -45,6 +45,7 @@ Please consult our [general guidelines](#general-guidelines).
 - Support for multiple task functions :white_check_mark:
 - Support for sync and async task functions :white_check_mark:
 - Tasks distribution strategies :white_check_mark:
+- Lockless tasks queueing :white_check_mark:
 - General guidelines on pool choice :white_check_mark:
 - Error handling out of the box :white_check_mark:
 - Widely tested :white_check_mark:
