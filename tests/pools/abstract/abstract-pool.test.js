@@ -214,7 +214,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.enableTasksQueue).toBe(true)
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 2,
-      queueMaxSize: 4
+      size: 4
     })
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.LEAST_USED
@@ -493,13 +493,13 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.enableTasksQueue).toBe(true)
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 1,
-      queueMaxSize: 4
+      size: 4
     })
     pool.enableTasksQueue(true, { concurrency: 2 })
     expect(pool.opts.enableTasksQueue).toBe(true)
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 2,
-      queueMaxSize: 4
+      size: 4
     })
     pool.enableTasksQueue(false)
     expect(pool.opts.enableTasksQueue).toBe(false)
@@ -515,12 +515,12 @@ describe('Abstract pool test suite', () => {
     )
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 1,
-      queueMaxSize: 4
+      size: 4
     })
     pool.setTasksQueueOptions({ concurrency: 2 })
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 2,
-      queueMaxSize: 4
+      size: 4
     })
     expect(() =>
       pool.setTasksQueueOptions('invalidTasksQueueOptions')
@@ -540,17 +540,17 @@ describe('Abstract pool test suite', () => {
     expect(() => pool.setTasksQueueOptions({ concurrency: 0.2 })).toThrowError(
       new TypeError('Invalid worker node tasks concurrency: must be an integer')
     )
-    expect(() => pool.setTasksQueueOptions({ queueMaxSize: 0 })).toThrowError(
+    expect(() => pool.setTasksQueueOptions({ size: 0 })).toThrowError(
       new RangeError(
         'Invalid worker node tasks queue max size: 0 is a negative integer or zero'
       )
     )
-    expect(() => pool.setTasksQueueOptions({ queueMaxSize: -1 })).toThrowError(
+    expect(() => pool.setTasksQueueOptions({ size: -1 })).toThrowError(
       new RangeError(
         'Invalid worker node tasks queue max size: -1 is a negative integer or zero'
       )
     )
-    expect(() => pool.setTasksQueueOptions({ queueMaxSize: 0.2 })).toThrowError(
+    expect(() => pool.setTasksQueueOptions({ size: 0.2 })).toThrowError(
       new TypeError(
         'Invalid worker node tasks queue max size: must be an integer'
       )

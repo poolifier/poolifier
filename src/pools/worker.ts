@@ -231,6 +231,12 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    */
   onBackPressure?: (workerId: number) => void
   /**
+   * Callback invoked when worker node tasks queue is empty.
+   *
+   * @param workerId - The worker id.
+   */
+  onEmptyQueue?: (workerId: number) => void
+  /**
    * Tasks queue size.
    *
    * @returns The tasks queue size.

@@ -197,15 +197,15 @@ export abstract class AbstractWorkerChoiceStrategy<
   /**
    * Check the next worker node eligibility.
    *
-   * @param chosenWorkerNodeKey - The chosen worker node key.
+   * @param chosenNextWorkerNodeKey - The chosen worker node key.
    */
   protected checkNextWorkerNodeEligibility (
-    chosenWorkerNodeKey: number | undefined
+    chosenNextWorkerNodeKey: number | undefined
   ): void {
     if (!this.isWorkerNodeEligible(this.nextWorkerNodeKey as number)) {
       this.nextWorkerNodeKey = undefined
       this.previousWorkerNodeKey =
-        chosenWorkerNodeKey ?? this.previousWorkerNodeKey
+        chosenNextWorkerNodeKey ?? this.previousWorkerNodeKey
     }
   }
 

@@ -5,7 +5,8 @@ import { type TransferListItem } from 'node:worker_threads'
 import type {
   MessageValue,
   PromiseResponseWrapper,
-  Task
+  Task,
+  Writable
 } from '../utility-types'
 import {
   DEFAULT_TASK_NAME,
@@ -94,6 +95,10 @@ export abstract class AbstractPool<
    */
   private readonly starting: boolean
   /**
+   * Whether the pool is started or not.
+   */
+  private started: boolean
+  /**
    * The start timestamp of the pool.
    */
   private readonly startTimestamp
@@ -141,6 +146,7 @@ export abstract class AbstractPool<
     this.starting = true
     this.startPool()
     this.starting = false
+    this.started = true
 
     this.startTimestamp = performance.now()
   }
@@ -285,7 +291,7 @@ export abstract class AbstractPool<
   }
 
   private checkValidTasksQueueOptions (
-    tasksQueueOptions: TasksQueueOptions
+    tasksQueueOptions: Writable<TasksQueueOptions>
   ): void {
     if (tasksQueueOptions != null && !isPlainObject(tasksQueueOptions)) {
       throw new TypeError('Invalid tasks queue options: must be a plain object')
@@ -308,18 +314,26 @@ export abstract class AbstractPool<
     }
     if (
       tasksQueueOptions?.queueMaxSize != null &&
-      !Number.isSafeInteger(tasksQueueOptions.queueMaxSize)
+      tasksQueueOptions?.size != null
+    ) {
+      throw new Error(
+        'Invalid tasks queue options: cannot specify both queueMaxSize and size'
+      )
+    }
+    if (tasksQueueOptions?.queueMaxSize != null) {
+      tasksQueueOptions.size = tasksQueueOptions.queueMaxSize
+    }
+    if (
+      tasksQueueOptions?.size != null &&
+      !Number.isSafeInteger(tasksQueueOptions.size)
     ) {
       throw new TypeError(
         'Invalid worker node tasks queue max size: must be an integer'
       )
     }
-    if (
-      tasksQueueOptions?.queueMaxSize != null &&
-      tasksQueueOptions.queueMaxSize <= 0
-    ) {
+    if (tasksQueueOptions?.size != null && tasksQueueOptions.size <= 0) {
       throw new RangeError(
-        `Invalid worker node tasks queue max size: ${tasksQueueOptions.queueMaxSize} is a negative integer or zero`
+        `Invalid worker node tasks queue max size: ${tasksQueueOptions.size} is a negative integer or zero`
       )
     }
   }
@@ -636,17 +650,15 @@ export abstract class AbstractPool<
       this.checkValidTasksQueueOptions(tasksQueueOptions)
       this.opts.tasksQueueOptions =
         this.buildTasksQueueOptions(tasksQueueOptions)
-      this.setTasksQueueMaxSize(
-        this.opts.tasksQueueOptions.queueMaxSize as number
-      )
+      this.setTasksQueueMaxSize(this.opts.tasksQueueOptions.size as number)
     } else if (this.opts.tasksQueueOptions != null) {
       delete this.opts.tasksQueueOptions
     }
   }
 
-  private setTasksQueueMaxSize (queueMaxSize: number): void {
+  private setTasksQueueMaxSize (size: number): void {
     for (const workerNode of this.workerNodes) {
-      workerNode.tasksQueueBackPressureSize = queueMaxSize
+      workerNode.tasksQueueBackPressureSize = size
     }
   }
 
@@ -655,7 +667,7 @@ export abstract class AbstractPool<
   ): TasksQueueOptions {
     return {
       ...{
-        queueMaxSize: Math.pow(this.maxSize, 2),
+        size: Math.pow(this.maxSize, 2),
         concurrency: 1
       },
       ...tasksQueueOptions
@@ -723,6 +735,9 @@ export abstract class AbstractPool<
     transferList?: TransferListItem[]
   ): Promise<Response> {
     return await new Promise<Response>((resolve, reject) => {
+      if (!this.started) {
+        reject(new Error('Cannot execute a task on destroyed pool'))
+      }
       if (name != null && typeof name !== 'string') {
         reject(new TypeError('name argument must be a string'))
       }
@@ -783,6 +798,7 @@ export abstract class AbstractPool<
       })
     )
     this.emitter?.emit(PoolEvents.destroy, this.info)
+    this.started = false
   }
 
   protected async sendKillMessageToWorker (
@@ -912,13 +928,6 @@ export abstract class AbstractPool<
       workerTaskStatistics.executing > 0
     ) {
       --workerTaskStatistics.executing
-    } else if (
-      workerTaskStatistics.executing != null &&
-      workerTaskStatistics.executing < 0
-    ) {
-      throw new Error(
-        'Worker usage statistic for tasks executing cannot be negative'
-      )
     }
     if (message.taskError == null) {
       ++workerTaskStatistics.executed
@@ -1050,7 +1059,11 @@ export abstract class AbstractPool<
       workerInfo.ready = false
       this.workerNodes[workerNodeKey].closeChannel()
       this.emitter?.emit(PoolEvents.error, error)
-      if (this.opts.restartWorkerOnError === true && !this.starting) {
+      if (
+        this.opts.restartWorkerOnError === true &&
+        !this.starting &&
+        this.started
+      ) {
         if (workerInfo.dynamic) {
           this.createAndSetupDynamicWorkerNode()
         } else {
@@ -1143,6 +1156,8 @@ export abstract class AbstractPool<
     // Send the statistics message to worker.
     this.sendStatisticsMessageToWorker(workerNodeKey)
     if (this.opts.enableTasksQueue === true) {
+      this.workerNodes[workerNodeKey].onEmptyQueue =
+        this.taskStealingOnEmptyQueue.bind(this)
       this.workerNodes[workerNodeKey].onBackPressure =
         this.tasksStealingOnBackPressure.bind(this)
     }
@@ -1175,43 +1190,76 @@ export abstract class AbstractPool<
 
   private redistributeQueuedTasks (workerNodeKey: number): void {
     while (this.tasksQueueSize(workerNodeKey) > 0) {
-      let targetWorkerNodeKey: number = workerNodeKey
+      let destinationWorkerNodeKey: number = workerNodeKey
       let minQueuedTasks = Infinity
       let executeTask = false
       for (const [workerNodeId, workerNode] of this.workerNodes.entries()) {
         if (
-          this.workerNodes[workerNodeId].usage.tasks.executing <
-          (this.opts.tasksQueueOptions?.concurrency as number)
+          workerNode.info.ready &&
+          workerNodeId !== workerNodeKey &&
+          workerNode.usage.tasks.executing <
+            (this.opts.tasksQueueOptions?.concurrency as number)
         ) {
           executeTask = true
         }
         if (
-          workerNodeId !== workerNodeKey &&
           workerNode.info.ready &&
+          workerNodeId !== workerNodeKey &&
           workerNode.usage.tasks.queued === 0
         ) {
-          targetWorkerNodeKey = workerNodeId
+          destinationWorkerNodeKey = workerNodeId
           break
         }
         if (
-          workerNodeId !== workerNodeKey &&
           workerNode.info.ready &&
+          workerNodeId !== workerNodeKey &&
           workerNode.usage.tasks.queued < minQueuedTasks
         ) {
           minQueuedTasks = workerNode.usage.tasks.queued
-          targetWorkerNodeKey = workerNodeId
+          destinationWorkerNodeKey = workerNodeId
         }
       }
+      const task = {
+        ...(this.dequeueTask(workerNodeKey) as Task<Data>),
+        workerId: (this.getWorkerInfo(destinationWorkerNodeKey) as WorkerInfo)
+          .id as number
+      }
       if (executeTask) {
-        this.executeTask(
-          targetWorkerNodeKey,
-          this.popTask(workerNodeKey) as Task<Data>
-        )
+        this.executeTask(destinationWorkerNodeKey, task)
       } else {
-        this.enqueueTask(
-          targetWorkerNodeKey,
-          this.popTask(workerNodeKey) as Task<Data>
-        )
+        this.enqueueTask(destinationWorkerNodeKey, task)
+      }
+    }
+  }
+
+  private taskStealingOnEmptyQueue (workerId: number): void {
+    const destinationWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+    const destinationWorkerNode = this.workerNodes[destinationWorkerNodeKey]
+    const workerNodes = this.workerNodes
+      .slice()
+      .sort(
+        (workerNodeA, workerNodeB) =>
+          workerNodeB.usage.tasks.queued - workerNodeA.usage.tasks.queued
+      )
+    for (const sourceWorkerNode of workerNodes) {
+      if (
+        sourceWorkerNode.info.ready &&
+        sourceWorkerNode.info.id !== workerId &&
+        sourceWorkerNode.usage.tasks.queued > 0
+      ) {
+        const task = {
+          ...(sourceWorkerNode.popTask() as Task<Data>),
+          workerId: destinationWorkerNode.info.id as number
+        }
+        if (
+          destinationWorkerNode.usage.tasks.executing <
+          (this.opts.tasksQueueOptions?.concurrency as number)
+        ) {
+          this.executeTask(destinationWorkerNodeKey, task)
+        } else {
+          this.enqueueTask(destinationWorkerNodeKey, task)
+        }
+        break
       }
     }
   }
@@ -1220,7 +1268,7 @@ export abstract class AbstractPool<
     const sourceWorkerNode =
       this.workerNodes[this.getWorkerNodeKeyByWorkerId(workerId)]
     const workerNodes = this.workerNodes
-      .filter((workerNode) => workerNode.info.id !== workerId)
+      .slice()
       .sort(
         (workerNodeA, workerNodeB) =>
           workerNodeA.usage.tasks.queued - workerNodeB.usage.tasks.queued
@@ -1228,26 +1276,22 @@ export abstract class AbstractPool<
     for (const [workerNodeKey, workerNode] of workerNodes.entries()) {
       if (
         workerNode.info.ready &&
+        workerNode.info.id !== workerId &&
         sourceWorkerNode.usage.tasks.queued > 0 &&
-        !workerNode.hasBackPressure() &&
-        workerNode.usage.tasks.executing <
-          (this.opts.tasksQueueOptions?.concurrency as number)
+        !workerNode.hasBackPressure()
       ) {
-        this.executeTask(
-          workerNodeKey,
-          sourceWorkerNode.popTask() as Task<Data>
-        )
-      } else if (
-        workerNode.info.ready &&
-        sourceWorkerNode.usage.tasks.queued > 0 &&
-        !workerNode.hasBackPressure() &&
-        workerNode.usage.tasks.executing >=
+        const task = {
+          ...(sourceWorkerNode.popTask() as Task<Data>),
+          workerId: workerNode.info.id as number
+        }
+        if (
+          workerNode.usage.tasks.executing <
           (this.opts.tasksQueueOptions?.concurrency as number)
-      ) {
-        this.enqueueTask(
-          workerNodeKey,
-          sourceWorkerNode.popTask() as Task<Data>
-        )
+        ) {
+          this.executeTask(workerNodeKey, task)
+        } else {
+          this.enqueueTask(workerNodeKey, task)
+        }
       }
     }
   }
@@ -1360,7 +1404,7 @@ export abstract class AbstractPool<
     const workerNode = new WorkerNode<Worker, Data>(
       worker,
       this.worker,
-      this.opts.tasksQueueOptions?.queueMaxSize ?? Math.pow(this.maxSize, 2)
+      this.opts.tasksQueueOptions?.size ?? Math.pow(this.maxSize, 2)
     )
     // Flag the worker node as ready at pool startup.
     if (this.starting) {
@@ -1424,10 +1468,6 @@ export abstract class AbstractPool<
 
   private dequeueTask (workerNodeKey: number): Task<Data> | undefined {
     return this.workerNodes[workerNodeKey].dequeueTask()
-  }
-
-  private popTask (workerNodeKey: number): Task<Data> | undefined {
-    return this.workerNodes[workerNodeKey].popTask()
   }
 
   private tasksQueueSize (workerNodeKey: number): number {

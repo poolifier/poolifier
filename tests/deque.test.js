@@ -123,4 +123,16 @@ describe('Deque test suite', () => {
       ++i
     }
   })
+
+  it('Verify backward() iterator behavior', () => {
+    const deque = new Deque()
+    deque.push(1)
+    deque.push(2)
+    deque.push(3)
+    let i = deque.size
+    for (const value of deque.backward()) {
+      expect(value).toBe(i)
+      --i
+    }
+  })
 })

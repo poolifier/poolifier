@@ -32,6 +32,8 @@ implements IWorkerNode<Worker, Data> {
   public tasksQueueBackPressureSize: number
   /** @inheritdoc */
   public onBackPressure?: (workerId: number) => void
+  /** @inheritdoc */
+  public onEmptyQueue?: (workerId: number) => void
   private readonly taskFunctionsUsage: Map<string, WorkerUsage>
   private readonly tasksQueue: Deque<Task<Data>>
 
@@ -81,15 +83,6 @@ implements IWorkerNode<Worker, Data> {
     return this.tasksQueue.size
   }
 
-  /**
-   * Tasks queue maximum size.
-   *
-   * @returns The tasks queue maximum size.
-   */
-  private tasksQueueMaxSize (): number {
-    return this.tasksQueue.maxSize
-  }
-
   /** @inheritdoc */
   public enqueueTask (task: Task<Data>): number {
     const tasksQueueSize = this.tasksQueue.push(task)
@@ -110,12 +103,20 @@ implements IWorkerNode<Worker, Data> {
 
   /** @inheritdoc */
   public dequeueTask (): Task<Data> | undefined {
-    return this.tasksQueue.shift()
+    const task = this.tasksQueue.shift()
+    if (this.onEmptyQueue != null && this.tasksQueue.size === 0) {
+      once(this.onEmptyQueue, this)(this.info.id as number)
+    }
+    return task
   }
 
   /** @inheritdoc */
   public popTask (): Task<Data> | undefined {
-    return this.tasksQueue.pop()
+    const task = this.tasksQueue.pop()
+    if (this.onEmptyQueue != null && this.tasksQueue.size === 0) {
+      once(this.onEmptyQueue, this)(this.info.id as number)
+    }
+    return task
   }
 
   /** @inheritdoc */
@@ -180,10 +181,10 @@ implements IWorkerNode<Worker, Data> {
 
   private initWorkerUsage (): WorkerUsage {
     const getTasksQueueSize = (): number => {
-      return this.tasksQueueSize()
+      return this.tasksQueue.size
     }
     const getTasksQueueMaxSize = (): number => {
-      return this.tasksQueueMaxSize()
+      return this.tasksQueue.maxSize
     }
     return {
       tasks: {

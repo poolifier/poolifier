@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.33] - 2023-08-24
+
+### Fixed
+
+- Fix queued tasks rescheduling.
+
+### Changed
+
+- Rename tasks queue options `queueMaxSize` to `size`.
+
+### Added
+
+- Task stealing scheduling algorithm if tasks queueing is enabled.
+
+## [2.6.32] - 2023-08-23
+
+### Fixed
+
+- Ensure no task can be executed when the pool is destroyed.
+
 ### Added
 
 - Add `queueMaxSize` option to tasks queue options.
