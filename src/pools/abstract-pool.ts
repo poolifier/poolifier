@@ -5,7 +5,8 @@ import { type TransferListItem } from 'node:worker_threads'
 import type {
   MessageValue,
   PromiseResponseWrapper,
-  Task
+  Task,
+  Writable
 } from '../utility-types'
 import {
   DEFAULT_TASK_NAME,
@@ -290,7 +291,7 @@ export abstract class AbstractPool<
   }
 
   private checkValidTasksQueueOptions (
-    tasksQueueOptions: TasksQueueOptions
+    tasksQueueOptions: Writable<TasksQueueOptions>
   ): void {
     if (tasksQueueOptions != null && !isPlainObject(tasksQueueOptions)) {
       throw new TypeError('Invalid tasks queue options: must be a plain object')
@@ -313,18 +314,26 @@ export abstract class AbstractPool<
     }
     if (
       tasksQueueOptions?.queueMaxSize != null &&
-      !Number.isSafeInteger(tasksQueueOptions.queueMaxSize)
+      tasksQueueOptions?.size != null
+    ) {
+      throw new Error(
+        'Invalid tasks queue options: cannot specify both queueMaxSize and size'
+      )
+    }
+    if (tasksQueueOptions?.queueMaxSize != null) {
+      tasksQueueOptions.size = tasksQueueOptions.queueMaxSize
+    }
+    if (
+      tasksQueueOptions?.size != null &&
+      !Number.isSafeInteger(tasksQueueOptions.size)
     ) {
       throw new TypeError(
         'Invalid worker node tasks queue max size: must be an integer'
       )
     }
-    if (
-      tasksQueueOptions?.queueMaxSize != null &&
-      tasksQueueOptions.queueMaxSize <= 0
-    ) {
+    if (tasksQueueOptions?.size != null && tasksQueueOptions.size <= 0) {
       throw new RangeError(
-        `Invalid worker node tasks queue max size: ${tasksQueueOptions.queueMaxSize} is a negative integer or zero`
+        `Invalid worker node tasks queue max size: ${tasksQueueOptions.size} is a negative integer or zero`
       )
     }
   }
@@ -641,17 +650,15 @@ export abstract class AbstractPool<
       this.checkValidTasksQueueOptions(tasksQueueOptions)
       this.opts.tasksQueueOptions =
         this.buildTasksQueueOptions(tasksQueueOptions)
-      this.setTasksQueueMaxSize(
-        this.opts.tasksQueueOptions.queueMaxSize as number
-      )
+      this.setTasksQueueMaxSize(this.opts.tasksQueueOptions.size as number)
     } else if (this.opts.tasksQueueOptions != null) {
       delete this.opts.tasksQueueOptions
     }
   }
 
-  private setTasksQueueMaxSize (queueMaxSize: number): void {
+  private setTasksQueueMaxSize (size: number): void {
     for (const workerNode of this.workerNodes) {
-      workerNode.tasksQueueBackPressureSize = queueMaxSize
+      workerNode.tasksQueueBackPressureSize = size
     }
   }
 
@@ -660,7 +667,7 @@ export abstract class AbstractPool<
   ): TasksQueueOptions {
     return {
       ...{
-        queueMaxSize: Math.pow(this.maxSize, 2),
+        size: Math.pow(this.maxSize, 2),
         concurrency: 1
       },
       ...tasksQueueOptions
@@ -1361,7 +1368,7 @@ export abstract class AbstractPool<
     const workerNode = new WorkerNode<Worker, Data>(
       worker,
       this.worker,
-      this.opts.tasksQueueOptions?.queueMaxSize ?? Math.pow(this.maxSize, 2)
+      this.opts.tasksQueueOptions?.size ?? Math.pow(this.maxSize, 2)
     )
     // Flag the worker node as ready at pool startup.
     if (this.starting) {

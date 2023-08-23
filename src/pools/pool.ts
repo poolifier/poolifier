@@ -104,6 +104,10 @@ export interface TasksQueueOptions {
    *
    * @defaultValue (pool maximum size)^2
    */
+  readonly size?: number
+  /**
+   * @deprecated Use `size` instead.
+   */
   readonly queueMaxSize?: number
   /**
    * Maximum number of tasks that can be executed concurrently on a worker node.

@@ -67,7 +67,8 @@ export type {
   Task,
   TaskError,
   TaskPerformance,
-  WorkerStatistics
+  WorkerStatistics,
+  Writable
 } from './utility-types'
 export type { CircularArray } from './circular-array'
 export type { Deque } from './deque'

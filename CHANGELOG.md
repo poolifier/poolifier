@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Rename tasks queue options `queueMaxSize` to `size`.
+
 ## [2.6.32] - 2023-08-23
 
 ### Fixed

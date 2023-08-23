@@ -152,3 +152,5 @@ export interface PromiseResponseWrapper<Response = unknown> {
    */
   readonly workerNodeKey: number
 }
+
+export type Writable<T> = { -readonly [P in keyof T]: T[P] }
