@@ -154,6 +154,12 @@ export class Deque<T> {
     }
   }
 
+  /**
+   * Returns an backward iterator for the deque.
+   *
+   * @returns An backward iterator for the deque.
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
+   */
   backward (): Iterable<T> {
     return {
       [Symbol.iterator]: (): Iterator<T> => {
