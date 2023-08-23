@@ -94,6 +94,10 @@ export abstract class AbstractPool<
    */
   private readonly starting: boolean
   /**
+   * Whether the pool is started or not.
+   */
+  private started: boolean
+  /**
    * The start timestamp of the pool.
    */
   private readonly startTimestamp
@@ -141,6 +145,7 @@ export abstract class AbstractPool<
     this.starting = true
     this.startPool()
     this.starting = false
+    this.started = true
 
     this.startTimestamp = performance.now()
   }
@@ -723,6 +728,9 @@ export abstract class AbstractPool<
     transferList?: TransferListItem[]
   ): Promise<Response> {
     return await new Promise<Response>((resolve, reject) => {
+      if (!this.started) {
+        reject(new Error('Cannot execute a task on destroyed pool'))
+      }
       if (name != null && typeof name !== 'string') {
         reject(new TypeError('name argument must be a string'))
       }
@@ -783,6 +791,7 @@ export abstract class AbstractPool<
       })
     )
     this.emitter?.emit(PoolEvents.destroy, this.info)
+    this.started = false
   }
 
   protected async sendKillMessageToWorker (
@@ -1050,7 +1059,11 @@ export abstract class AbstractPool<
       workerInfo.ready = false
       this.workerNodes[workerNodeKey].closeChannel()
       this.emitter?.emit(PoolEvents.error, error)
-      if (this.opts.restartWorkerOnError === true && !this.starting) {
+      if (
+        this.opts.restartWorkerOnError === true &&
+        !this.starting &&
+        this.started
+      ) {
         if (workerInfo.dynamic) {
           this.createAndSetupDynamicWorkerNode()
         } else {

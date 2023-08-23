@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Ensure no task can be executed when the pool is destroyed.
+
 ### Added
 
 - Add `queueMaxSize` option to tasks queue options.
