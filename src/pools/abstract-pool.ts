@@ -921,13 +921,6 @@ export abstract class AbstractPool<
       workerTaskStatistics.executing > 0
     ) {
       --workerTaskStatistics.executing
-    } else if (
-      workerTaskStatistics.executing != null &&
-      workerTaskStatistics.executing < 0
-    ) {
-      throw new Error(
-        'Worker usage statistic for tasks executing cannot be negative'
-      )
     }
     if (message.taskError == null) {
       ++workerTaskStatistics.executed
