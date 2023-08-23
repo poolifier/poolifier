@@ -154,6 +154,30 @@ export class Deque<T> {
     }
   }
 
+  backward (): Iterable<T> {
+    return {
+      [Symbol.iterator]: (): Iterator<T> => {
+        let node = this.tail
+        return {
+          next: () => {
+            if (node == null) {
+              return {
+                value: undefined,
+                done: true
+              }
+            }
+            const ret = {
+              value: node.value,
+              done: false
+            }
+            node = node.prev as Node<T>
+            return ret
+          }
+        }
+      }
+    }
+  }
+
   private incrementSize (): number {
     ++this.size
     if (this.size > this.maxSize) {
