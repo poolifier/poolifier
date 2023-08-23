@@ -20,7 +20,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
-    "poolifier": "^2.6.28"
+    "poolifier": "^2.6.31"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
