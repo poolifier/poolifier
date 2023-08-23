@@ -1189,7 +1189,7 @@ export abstract class AbstractPool<
       let executeTask = false
       for (const [workerNodeId, workerNode] of workerNodes.entries()) {
         if (
-          this.workerNodes[workerNodeId].usage.tasks.executing <
+          workerNode.usage.tasks.executing <
           (this.opts.tasksQueueOptions?.concurrency as number)
         ) {
           executeTask = true
