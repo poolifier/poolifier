@@ -70,5 +70,5 @@ export type {
   WorkerStatistics
 } from './utility-types'
 export type { CircularArray } from './circular-array'
-export type { Queue } from './queue'
+export type { Deque } from './deque'
 export { availableParallelism } from './utils'

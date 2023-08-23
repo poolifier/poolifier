@@ -1205,12 +1205,12 @@ export abstract class AbstractPool<
       if (executeTask) {
         this.executeTask(
           targetWorkerNodeKey,
-          this.popTask(workerNodeKey) as Task<Data>
+          this.dequeueTask(workerNodeKey) as Task<Data>
         )
       } else {
         this.enqueueTask(
           targetWorkerNodeKey,
-          this.popTask(workerNodeKey) as Task<Data>
+          this.dequeueTask(workerNodeKey) as Task<Data>
         )
       }
     }
@@ -1424,10 +1424,6 @@ export abstract class AbstractPool<
 
   private dequeueTask (workerNodeKey: number): Task<Data> | undefined {
     return this.workerNodes[workerNodeKey].dequeueTask()
-  }
-
-  private popTask (workerNodeKey: number): Task<Data> | undefined {
-    return this.workerNodes[workerNodeKey].popTask()
   }
 
   private tasksQueueSize (workerNodeKey: number): number {
