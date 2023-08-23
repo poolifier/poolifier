@@ -1156,6 +1156,8 @@ export abstract class AbstractPool<
     // Send the statistics message to worker.
     this.sendStatisticsMessageToWorker(workerNodeKey)
     if (this.opts.enableTasksQueue === true) {
+      // this.workerNodes[workerNodeKey].onEmptyQueue =
+      //   this.taskStealingOnEmptyQueue.bind(this)
       this.workerNodes[workerNodeKey].onBackPressure =
         this.tasksStealingOnBackPressure.bind(this)
     }
@@ -1188,10 +1190,11 @@ export abstract class AbstractPool<
 
   private redistributeQueuedTasks (workerNodeKey: number): void {
     const workerNodes = this.workerNodes.filter(
-      (_, workerNodeId) => workerNodeId !== workerNodeKey
+      (workerNode, workerNodeId) =>
+        workerNode.info.ready && workerNodeId !== workerNodeKey
     )
     while (this.tasksQueueSize(workerNodeKey) > 0) {
-      let targetWorkerNodeKey: number = workerNodeKey
+      let destinationWorkerNodeKey: number = workerNodeKey
       let minQueuedTasks = Infinity
       let executeTask = false
       for (const [workerNodeId, workerNode] of workerNodes.entries()) {
@@ -1201,28 +1204,58 @@ export abstract class AbstractPool<
         ) {
           executeTask = true
         }
-        if (workerNode.info.ready && workerNode.usage.tasks.queued === 0) {
-          targetWorkerNodeKey = workerNodeId
+        if (workerNode.usage.tasks.queued === 0) {
+          destinationWorkerNodeKey = workerNodeId
           break
         }
-        if (
-          workerNode.info.ready &&
-          workerNode.usage.tasks.queued < minQueuedTasks
-        ) {
+        if (workerNode.usage.tasks.queued < minQueuedTasks) {
           minQueuedTasks = workerNode.usage.tasks.queued
-          targetWorkerNodeKey = workerNodeId
+          destinationWorkerNodeKey = workerNodeId
         }
       }
+      const task = {
+        ...(this.dequeueTask(workerNodeKey) as Task<Data>),
+        workerId: (this.getWorkerInfo(destinationWorkerNodeKey) as WorkerInfo)
+          .id as number
+      }
       if (executeTask) {
-        this.executeTask(
-          targetWorkerNodeKey,
-          this.dequeueTask(workerNodeKey) as Task<Data>
-        )
+        this.executeTask(destinationWorkerNodeKey, task)
       } else {
-        this.enqueueTask(
-          targetWorkerNodeKey,
-          this.dequeueTask(workerNodeKey) as Task<Data>
-        )
+        this.enqueueTask(destinationWorkerNodeKey, task)
+      }
+    }
+  }
+
+  private taskStealingOnEmptyQueue (workerId: number): void {
+    const workerNodes = this.workerNodes
+      .filter(
+        (workerNode) => workerNode.info.ready && workerNode.info.id !== workerId
+      )
+      .sort(
+        (workerNodeA, workerNodeB) =>
+          workerNodeB.usage.tasks.queued - workerNodeA.usage.tasks.queued
+      )
+    const destinationWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+    const destinationWorkerNode = workerNodes[destinationWorkerNodeKey]
+    for (const sourceWorkerNode of workerNodes) {
+      if (sourceWorkerNode.usage.tasks.queued > 0) {
+        if (
+          destinationWorkerNode?.usage?.tasks?.executing <
+          (this.opts.tasksQueueOptions?.concurrency as number)
+        ) {
+          const task = {
+            ...(sourceWorkerNode.popTask() as Task<Data>),
+            workerId: destinationWorkerNode.info.id as number
+          }
+          this.executeTask(destinationWorkerNodeKey, task)
+        } else {
+          const task = {
+            ...(sourceWorkerNode.popTask() as Task<Data>),
+            workerId: destinationWorkerNode.info.id as number
+          }
+          this.enqueueTask(destinationWorkerNodeKey, task)
+        }
+        break
       }
     }
   }
@@ -1231,30 +1264,29 @@ export abstract class AbstractPool<
     const sourceWorkerNode =
       this.workerNodes[this.getWorkerNodeKeyByWorkerId(workerId)]
     const workerNodes = this.workerNodes
-      .filter((workerNode) => workerNode.info.id !== workerId)
+      .filter(
+        (workerNode) => workerNode.info.ready && workerNode.info.id !== workerId
+      )
       .sort(
         (workerNodeA, workerNodeB) =>
           workerNodeA.usage.tasks.queued - workerNodeB.usage.tasks.queued
       )
     for (const [workerNodeKey, workerNode] of workerNodes.entries()) {
       if (
-        workerNode.info.ready &&
         sourceWorkerNode.usage.tasks.queued > 0 &&
         !workerNode.hasBackPressure()
       ) {
+        const task = {
+          ...(sourceWorkerNode.popTask() as Task<Data>),
+          workerId: workerNode.info.id as number
+        }
         if (
           workerNode.usage.tasks.executing <
           (this.opts.tasksQueueOptions?.concurrency as number)
         ) {
-          this.executeTask(
-            workerNodeKey,
-            sourceWorkerNode.popTask() as Task<Data>
-          )
+          this.executeTask(workerNodeKey, task)
         } else {
-          this.enqueueTask(
-            workerNodeKey,
-            sourceWorkerNode.popTask() as Task<Data>
-          )
+          this.enqueueTask(workerNodeKey, task)
         }
       }
     }

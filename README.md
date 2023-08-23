@@ -47,8 +47,9 @@ Please consult our [general guidelines](#general-guidelines).
 - Tasks distribution strategies :white_check_mark:
 - Lockless tasks queueing :white_check_mark:
 - Queued tasks rescheduling:
-  - Tasks redistribution on worker error :white_check_mark:
+  <!-- - Task stealing :white_check_mark: -->
   - Tasks stealing under back pressure :white_check_mark:
+  - Tasks redistribution on worker error :white_check_mark:
 - General guidelines on pool choice :white_check_mark:
 - Error handling out of the box :white_check_mark:
 - Widely tested :white_check_mark:
