@@ -1194,29 +1194,21 @@ export abstract class AbstractPool<
       let minQueuedTasks = Infinity
       let executeTask = false
       for (const [workerNodeId, workerNode] of this.workerNodes.entries()) {
-        if (
-          workerNode.info.ready &&
-          workerNodeId !== workerNodeKey &&
-          workerNode.usage.tasks.executing <
+        if (workerNode.info.ready && workerNodeId !== workerNodeKey) {
+          if (
+            workerNode.usage.tasks.executing <
             (this.opts.tasksQueueOptions?.concurrency as number)
-        ) {
-          executeTask = true
-        }
-        if (
-          workerNode.info.ready &&
-          workerNodeId !== workerNodeKey &&
-          workerNode.usage.tasks.queued === 0
-        ) {
-          destinationWorkerNodeKey = workerNodeId
-          break
-        }
-        if (
-          workerNode.info.ready &&
-          workerNodeId !== workerNodeKey &&
-          workerNode.usage.tasks.queued < minQueuedTasks
-        ) {
-          minQueuedTasks = workerNode.usage.tasks.queued
-          destinationWorkerNodeKey = workerNodeId
+          ) {
+            executeTask = true
+          }
+          if (workerNode.usage.tasks.queued === 0) {
+            destinationWorkerNodeKey = workerNodeId
+            break
+          }
+          if (workerNode.usage.tasks.queued < minQueuedTasks) {
+            minQueuedTasks = workerNode.usage.tasks.queued
+            destinationWorkerNodeKey = workerNodeId
+          }
         }
       }
       const task = {
