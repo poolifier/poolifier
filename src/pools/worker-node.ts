@@ -1,7 +1,7 @@
 import { MessageChannel } from 'node:worker_threads'
 import { CircularArray } from '../circular-array'
 import type { Task } from '../utility-types'
-import { DEFAULT_TASK_NAME, once } from '../utils'
+import { DEFAULT_TASK_NAME } from '../utils'
 import { Deque } from '../deque'
 import {
   type IWorker,
@@ -87,7 +87,7 @@ implements IWorkerNode<Worker, Data> {
   public enqueueTask (task: Task<Data>): number {
     const tasksQueueSize = this.tasksQueue.push(task)
     if (this.onBackPressure != null && this.hasBackPressure()) {
-      once(this.onBackPressure, this)(this.info.id as number)
+      this.onBackPressure(this.info.id as number)
     }
     return tasksQueueSize
   }
@@ -96,7 +96,7 @@ implements IWorkerNode<Worker, Data> {
   public unshiftTask (task: Task<Data>): number {
     const tasksQueueSize = this.tasksQueue.unshift(task)
     if (this.onBackPressure != null && this.hasBackPressure()) {
-      once(this.onBackPressure, this)(this.info.id as number)
+      this.onBackPressure(this.info.id as number)
     }
     return tasksQueueSize
   }
@@ -105,7 +105,7 @@ implements IWorkerNode<Worker, Data> {
   public dequeueTask (): Task<Data> | undefined {
     const task = this.tasksQueue.shift()
     if (this.onEmptyQueue != null && this.tasksQueue.size === 0) {
-      once(this.onEmptyQueue, this)(this.info.id as number)
+      this.onEmptyQueue(this.info.id as number)
     }
     return task
   }
@@ -114,7 +114,7 @@ implements IWorkerNode<Worker, Data> {
   public popTask (): Task<Data> | undefined {
     const task = this.tasksQueue.pop()
     if (this.onEmptyQueue != null && this.tasksQueue.size === 0) {
-      once(this.onEmptyQueue, this)(this.info.id as number)
+      this.onEmptyQueue(this.info.id as number)
     }
     return task
   }
