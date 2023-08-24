@@ -96,10 +96,10 @@ export interface WorkerChoiceStrategyOptions {
    */
   readonly elu?: MeasurementOptions
   /**
-   * Worker weights to use for weighted round robin worker selection strategy.
-   * Weight is the tasks maximum average or median runtime in milliseconds.
+   * Worker weights to use for weighted round robin worker selection strategies.
+   * A weight is the tasks maximum execution in milliseconds for each worker node.
    *
-   * @defaultValue Computed worker weights automatically given the CPU performance.
+   * @defaultValue Weights computed automatically given the CPU performance.
    */
   readonly weights?: Record<number, number>
 }
