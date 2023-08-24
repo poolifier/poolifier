@@ -1253,18 +1253,14 @@ export abstract class AbstractPool<
           ...(sourceWorkerNode.popTask() as Task<Data>),
           workerId: destinationWorkerNode.info.id as number
         }
-        // Enqueue task for continuous task stealing
-        this.enqueueTask(destinationWorkerNodeKey, task)
-        // Avoid starvation
         if (
-          this.tasksQueueSize(destinationWorkerNodeKey) > 0 &&
+          this.tasksQueueSize(destinationWorkerNodeKey) === 0 &&
           destinationWorkerNode.usage.tasks.executing <
             (this.opts.tasksQueueOptions?.concurrency as number)
         ) {
-          this.executeTask(
-            destinationWorkerNodeKey,
-            this.dequeueTask(destinationWorkerNodeKey) as Task<Data>
-          )
+          this.executeTask(destinationWorkerNodeKey, task)
+        } else {
+          this.enqueueTask(destinationWorkerNodeKey, task)
         }
         break
       }
