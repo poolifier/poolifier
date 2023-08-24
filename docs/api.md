@@ -93,10 +93,10 @@ An object with these properties:
 - `tasksQueueOptions` (optional) - The worker tasks queue options object to use in this pool.  
   Properties:
 
-  - `queueMaxSize` (optional) - The maximum number of tasks that can be queued on a worker before flagging it as back pressured. It must be a positive integer.
+  - `size` (optional) - The maximum number of tasks that can be queued on a worker before flagging it as back pressured. It must be a positive integer.
   - `concurrency` (optional) - The maximum number of tasks that can be executed concurrently on a worker. It must be a positive integer.
 
-  Default: `{ queueMaxSize: (pool maximum size)^2, concurrency: 1 }`
+  Default: `{ size: (pool maximum size)^2, concurrency: 1 }`
 
 #### `ThreadPoolOptions extends PoolOptions`
 
