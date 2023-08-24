@@ -17,10 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update simple moving average implementation to use a circular buffer.
 - Update simple moving median implementation to use a circular buffer.
 
-### Added
-
-- Support for continuous tasks stealing.
-
 ## [2.6.34] - 2023-08-24
 
 ### Fixes
