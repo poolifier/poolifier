@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixes
+
+- Avoid cascading tasks stealing under back pressure.
+
+### Changed
+
+- Add fastpath to queued tasks rescheduling.
+
 ## [2.6.33] - 2023-08-24
 
 ### Fixed
