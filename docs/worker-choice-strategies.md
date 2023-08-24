@@ -34,4 +34,4 @@ Worker choice strategies enable only the statistics that are needed to choose th
 
 ### Simple moving median
 
-Strategies using the average task execution time for each worker can use the simple moving median instead. Simple moving median is more robust to outliers and can be used to avoid assigning tasks to workers that are currently overloaded. Simple moving median usage introduces a small overhead: measurement history must be kept for each worker and the simple moving median must be recomputed each time a task has finished.
+Strategies using the simple moving average task execution time for each worker can use the simple moving median instead. Simple moving median is more robust to outliers and can be used to avoid assigning tasks to workers that are currently overloaded.

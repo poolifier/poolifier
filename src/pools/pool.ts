@@ -84,13 +84,13 @@ export interface PoolInfo {
   readonly runTime?: {
     readonly minimum: number
     readonly maximum: number
-    readonly average: number
+    readonly average?: number
     readonly median?: number
   }
   readonly waitTime?: {
     readonly minimum: number
     readonly maximum: number
-    readonly average: number
+    readonly average?: number
     readonly median?: number
   }
 }

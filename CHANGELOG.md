@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Don't account worker usage statistics for tasks that have failed.
+- Fix pool information runtime and wait time median computation.
 
 ### Changed
 

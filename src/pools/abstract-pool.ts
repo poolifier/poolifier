@@ -427,21 +427,26 @@ export abstract class AbstractPool<
               )
             )
           ),
-          average: round(
-            average(
-              this.workerNodes.reduce<number[]>(
-                (accumulator, workerNode) =>
-                  accumulator.concat(workerNode.usage.runTime.history),
-                []
+          ...(this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+            .runTime.average && {
+            average: round(
+              average(
+                this.workerNodes.reduce<number[]>(
+                  (accumulator, workerNode) =>
+                    accumulator.concat(workerNode.usage.runTime.history),
+                  []
+                )
               )
             )
-          ),
+          }),
           ...(this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
             .runTime.median && {
             median: round(
               median(
-                this.workerNodes.map(
-                  (workerNode) => workerNode.usage.runTime?.median ?? 0
+                this.workerNodes.reduce<number[]>(
+                  (accumulator, workerNode) =>
+                    accumulator.concat(workerNode.usage.runTime.history),
+                  []
                 )
               )
             )
@@ -465,21 +470,26 @@ export abstract class AbstractPool<
               )
             )
           ),
-          average: round(
-            average(
-              this.workerNodes.reduce<number[]>(
-                (accumulator, workerNode) =>
-                  accumulator.concat(workerNode.usage.waitTime.history),
-                []
+          ...(this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+            .waitTime.average && {
+            average: round(
+              average(
+                this.workerNodes.reduce<number[]>(
+                  (accumulator, workerNode) =>
+                    accumulator.concat(workerNode.usage.waitTime.history),
+                  []
+                )
               )
             )
-          ),
+          }),
           ...(this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
             .waitTime.median && {
             median: round(
               median(
-                this.workerNodes.map(
-                  (workerNode) => workerNode.usage.waitTime?.median ?? 0
+                this.workerNodes.reduce<number[]>(
+                  (accumulator, workerNode) =>
+                    accumulator.concat(workerNode.usage.waitTime.history),
+                  []
                 )
               )
             )
