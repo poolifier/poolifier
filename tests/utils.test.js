@@ -1,7 +1,11 @@
 const { expect } = require('expect')
-const { CircularArray } = require('../lib/circular-array')
+const {
+  CircularArray,
+  DEFAULT_CIRCULAR_ARRAY_SIZE
+} = require('../lib/circular-array')
 const {
   availableParallelism,
+  average,
   isAsyncFunction,
   isKillBehavior,
   isPlainObject,
@@ -16,6 +20,17 @@ describe('Utils test suite', () => {
     expect(typeof availableParallelism() === 'number').toBe(true)
     expect(availableParallelism()).toBeGreaterThan(0)
     expect(Number.isSafeInteger(availableParallelism())).toBe(true)
+  })
+
+  it('Verify average() computation', () => {
+    expect(average([])).toBe(0)
+    expect(average([0.08])).toBe(0.08)
+    expect(average([0.25, 4.75, 3.05, 6.04, 1.01, 2.02, 5.03])).toBe(
+      3.1642857142857146
+    )
+    expect(average([0.25, 4.75, 3.05, 6.04, 1.01, 2.02])).toBe(
+      2.8533333333333335
+    )
   })
 
   it('Verify median() computation', () => {
@@ -137,39 +152,48 @@ describe('Utils test suite', () => {
     updateMeasurementStatistics(
       measurementStatistics,
       { aggregate: true, average: false, median: false },
-      0.01,
-      1
+      0.01
     )
     expect(measurementStatistics).toStrictEqual({
       aggregate: 0.01,
       maximum: 0.01,
       minimum: 0.01,
-      history: expect.any(CircularArray)
+      history: new CircularArray()
     })
     updateMeasurementStatistics(
       measurementStatistics,
       { aggregate: true, average: false, median: false },
-      0.02,
-      2
+      0.02
     )
     expect(measurementStatistics).toStrictEqual({
       aggregate: 0.03,
       maximum: 0.02,
       minimum: 0.01,
-      history: expect.any(CircularArray)
+      history: new CircularArray()
     })
     updateMeasurementStatistics(
       measurementStatistics,
       { aggregate: true, average: true, median: false },
-      0.001,
-      3
+      0.001
     )
     expect(measurementStatistics).toStrictEqual({
       aggregate: 0.031,
       maximum: 0.02,
       minimum: 0.001,
-      average: 0.010333333333333333,
-      history: expect.any(CircularArray)
+      average: 0.001,
+      history: new CircularArray(DEFAULT_CIRCULAR_ARRAY_SIZE, 0.001)
+    })
+    updateMeasurementStatistics(
+      measurementStatistics,
+      { aggregate: true, average: true, median: false },
+      0.003
+    )
+    expect(measurementStatistics).toStrictEqual({
+      aggregate: 0.034,
+      maximum: 0.02,
+      minimum: 0.001,
+      average: 0.002,
+      history: new CircularArray(DEFAULT_CIRCULAR_ARRAY_SIZE, 0.001, 0.003)
     })
   })
 })

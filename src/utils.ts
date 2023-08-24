@@ -77,6 +77,26 @@ export const availableParallelism = (): number => {
 // }
 
 /**
+ * Computes the average of the given data set.
+ *
+ * @param dataSet - Data set.
+ * @returns The average of the given data set.
+ * @internal
+ */
+export const average = (dataSet: number[]): number => {
+  if (Array.isArray(dataSet) && dataSet.length === 0) {
+    return 0
+  }
+  if (Array.isArray(dataSet) && dataSet.length === 1) {
+    return dataSet[0]
+  }
+  return (
+    dataSet.reduce((accumulator, number) => accumulator + number, 0) /
+    dataSet.length
+  )
+}
+
+/**
  * Computes the median of the given data set.
  *
  * @param dataSet - Data set.
@@ -163,8 +183,7 @@ export const isAsyncFunction = (
 export const updateMeasurementStatistics = (
   measurementStatistics: MeasurementStatistics,
   measurementRequirements: MeasurementStatisticsRequirements,
-  measurementValue: number,
-  numberOfMeasurements: number
+  measurementValue: number
 ): void => {
   if (measurementRequirements.aggregate) {
     measurementStatistics.aggregate =
@@ -177,13 +196,17 @@ export const updateMeasurementStatistics = (
       measurementValue,
       measurementStatistics.maximum ?? -Infinity
     )
-    if (measurementRequirements.average && numberOfMeasurements !== 0) {
-      measurementStatistics.average =
-        measurementStatistics.aggregate / numberOfMeasurements
-    }
-    if (measurementRequirements.median && measurementValue != null) {
+    if (
+      (measurementRequirements.average || measurementRequirements.median) &&
+      measurementValue != null
+    ) {
       measurementStatistics.history.push(measurementValue)
-      measurementStatistics.median = median(measurementStatistics.history)
+      if (measurementRequirements.average) {
+        measurementStatistics.average = average(measurementStatistics.history)
+      }
+      if (measurementRequirements.median) {
+        measurementStatistics.median = median(measurementStatistics.history)
+      }
     }
   }
 }

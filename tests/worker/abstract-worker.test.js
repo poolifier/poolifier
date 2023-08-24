@@ -11,6 +11,10 @@ describe('Abstract worker test suite', () => {
     }
   }
 
+  afterEach(() => {
+    sinon.restore()
+  })
+
   it('Verify worker options default values', () => {
     const worker = new ThreadWorker(() => {})
     expect(worker.opts.maxInactiveTime).toStrictEqual(60000)

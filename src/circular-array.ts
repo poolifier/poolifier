@@ -1,6 +1,6 @@
 // Copyright Jerome Benoit. 2021-2023. All Rights Reserved.
 
-const DEFAULT_CIRCULAR_ARRAY_SIZE = 1024
+export const DEFAULT_CIRCULAR_ARRAY_SIZE = 1024
 
 /**
  * Array with a maximum length and shifting items when full.

@@ -9,14 +9,14 @@ All duration or timestamp are expressed in milliseconds.
   - [Weighted round robin](#weighted-round-robin)
   - [Interleaved weighted round robin](#interleaved-weighted-round-robin)
 - [Statistics](#statistics)
-  - [Median](#median)
+  - [Simple moving median](#simple-moving-median)
 
 ## Strategies
 
 ### Fair share
 
-Its goal is to distribute the load evenly across all workers. To achieve this, the strategy keeps track of the average task execution time for each worker and assigns the next task to the worker with the lowest task end prediction time: `task_end_prediction = max(current_time, task_end_prediction) + average_task_execution_time`.  
-By default, the strategy uses the average task execution time for each worker but it can be configured to use the average task event loop utilization (ELU) active time instead.
+Its goal is to distribute the load evenly across all workers. To achieve this, the strategy keeps track of the simple moving average task execution time for each worker and assigns the next task to the worker with the lowest task end prediction time: `task_end_prediction = max(current_time, task_end_prediction) + simple_moving_average_task_execution_time`.  
+By default, the strategy uses the simple moving average task execution time for each worker but it can be configured to use the simple moving average task event loop utilization (ELU) active time instead.
 
 ### Weighted round robin
 
@@ -32,6 +32,6 @@ The worker default weights are the same for all workers and is computed given th
 
 Worker choice strategies enable only the statistics that are needed to choose the next worker to avoid unnecessary overhead.
 
-### Median
+### Simple moving median
 
-Strategies using the average task execution time for each worker can use the median instead. Median is more robust to outliers and can be used to avoid assigning tasks to workers that are currently overloaded. Median usage introduces a small overhead: measurement history must be kept for each worker and the median must be recomputed each time a task has finished.
+Strategies using the average task execution time for each worker can use the simple moving median instead. Simple moving median is more robust to outliers and can be used to avoid assigning tasks to workers that are currently overloaded. Simple moving median usage introduces a small overhead: measurement history must be kept for each worker and the simple moving median must be recomputed each time a task has finished.

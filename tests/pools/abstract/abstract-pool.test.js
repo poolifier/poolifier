@@ -23,6 +23,10 @@ describe('Abstract pool test suite', () => {
     }
   }
 
+  afterEach(() => {
+    sinon.restore()
+  })
+
   it('Simulate pool creation from a non main thread/process', () => {
     expect(
       () =>
