@@ -44,6 +44,7 @@ export const DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS: MeasurementStatisticsR
  * Always returns a value greater than zero.
  *
  * @returns The host OS optimized maximum pool size.
+ * @internal
  */
 export const availableParallelism = (): number => {
   let availableParallelism = 1
@@ -64,6 +65,7 @@ export const availableParallelism = (): number => {
 //  * @param retryNumber - The number of retries that have already been attempted
 //  * @param maxDelayRatio - The maximum ratio of the delay that can be randomized
 //  * @returns Delay in milliseconds
+//  * @internal
 //  */
 // export const exponentialDelay = (
 //   retryNumber = 0,
@@ -79,6 +81,7 @@ export const availableParallelism = (): number => {
  *
  * @param dataSet - Data set.
  * @returns The median of the given data set.
+ * @internal
  */
 export const median = (dataSet: number[]): number => {
   if (Array.isArray(dataSet) && dataSet.length === 0) {
@@ -127,6 +130,7 @@ export const isPlainObject = (obj: unknown): boolean =>
  * @param killBehavior - Which kind of kill behavior to detect.
  * @param value - Any value.
  * @returns `true` if `value` was strictly equals to `killBehavior`, otherwise `false`.
+ * @internal
  */
 export const isKillBehavior = <KB extends KillBehavior>(
   killBehavior: KB,
@@ -154,6 +158,7 @@ export const isAsyncFunction = (
  * @param measurementRequirements - The measurement statistics requirements.
  * @param measurementValue - The measurement value.
  * @param numberOfMeasurements - The number of measurements.
+ * @internal
  */
 export const updateMeasurementStatistics = (
   measurementStatistics: MeasurementStatistics,

@@ -4,6 +4,8 @@ const DEFAULT_CIRCULAR_ARRAY_SIZE = 1024
 
 /**
  * Array with a maximum length and shifting items when full.
+ *
+ * @internal
  */
 export class CircularArray<T> extends Array<T> {
   public size: number

@@ -1,5 +1,8 @@
 // Copyright Jerome Benoit. 2023. All Rights Reserved.
 
+/**
+ * @internal
+ */
 export class Node<T> {
   public value: T
   public next?: Node<T>
@@ -15,6 +18,7 @@ export class Node<T> {
  * Implemented with a doubly linked list.
  *
  * @typeParam T - Type of deque values.
+ * @internal
  */
 export class Deque<T> {
   private head?: Node<T>
