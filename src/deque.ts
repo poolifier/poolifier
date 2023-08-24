@@ -1,6 +1,6 @@
 // Copyright Jerome Benoit. 2023. All Rights Reserved.
 
-class Node<T> {
+export class Node<T> {
   public value: T
   public next?: Node<T>
   public prev?: Node<T>

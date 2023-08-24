@@ -71,5 +71,5 @@ export type {
   Writable
 } from './utility-types'
 export type { CircularArray } from './circular-array'
-export type { Deque } from './deque'
+export type { Deque, Node } from './deque'
 export { availableParallelism } from './utils'
