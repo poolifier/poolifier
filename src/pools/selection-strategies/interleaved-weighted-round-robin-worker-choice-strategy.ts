@@ -60,7 +60,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number | undefined {
-    let roundId: number = this.roundId
+    let roundId!: number
     let workerNodeId: number | undefined
     for (
       let roundIndex = this.roundId;
