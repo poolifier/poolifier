@@ -1238,17 +1238,6 @@ export abstract class AbstractPool<
     }
   }
 
-  // private incrementTasksStolen (workerNodeKey: number, workerNode: WorkerNode): void {
-  //   ++workerNode.usage.tasks.stolen
-  //   if (this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey)) {
-  //     const taskFunctionWorkerUsage =
-  //       workerNode.getTaskFunctionWorkerUsage(
-  //         task.name as string
-  //       ) as WorkerUsage
-  //     ++taskFunctionWorkerUsage.tasks.stolen
-  //   }
-  // }
-
   private taskStealingOnEmptyQueue (workerId: number): void {
     const destinationWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
     const destinationWorkerNode = this.workerNodes[destinationWorkerNodeKey]
