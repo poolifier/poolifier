@@ -12,16 +12,16 @@ dependencies:
     specifier: ^4.5.1
     version: 4.5.1
   poolifier:
-    specifier: ^2.6.32
-    version: 2.6.32
+    specifier: ^2.6.34
+    version: 2.6.34
 
 devDependencies:
   '@types/node':
     specifier: ^20.5.4
     version: 20.5.4
   typescript:
-    specifier: ^5.1.6
-    version: 5.1.6
+    specifier: ^5.2.2
+    version: 5.2.2
 
 packages:
 
@@ -288,8 +288,8 @@ packages:
       thread-stream: 2.4.0
     dev: false
 
-  /poolifier@2.6.32:
-    resolution: {integrity: sha512-2bXB7C5Uazckw8Li7ZAoSHfBaMHA2h0I5VlsprubPcFrr/KRVi1EUg/j6wPFlZs4tcHouD4ZJOcJjySXpV5EgQ==}
+  /poolifier@2.6.34:
+    resolution: {integrity: sha512-QrsuJ8o7C/8+gLciL8IpHI4kjuKrE0DaF89wi53OQXxUy1963uaeUfwGxxv+c0j0BCwzMzSJ77Kzlczvn5tKDA==}
     engines: {node: '>=16.14.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
@@ -414,8 +414,8 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /typescript@5.1.6:
-    resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}
+  /typescript@5.2.2:
+    resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
