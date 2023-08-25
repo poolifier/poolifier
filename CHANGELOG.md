@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.35] - 2023-08-25
+
 ### Fixed
 
 - Don't account worker usage statistics for tasks that have failed.
