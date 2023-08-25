@@ -11,6 +11,7 @@ const {
   isPlainObject,
   median,
   round,
+  secureRandom,
   updateMeasurementStatistics
 } = require('../lib/utils')
 const { KillBehaviors } = require('../lib/worker/worker-options')
@@ -195,5 +196,12 @@ describe('Utils test suite', () => {
       average: 0.002,
       history: new CircularArray(DEFAULT_CIRCULAR_ARRAY_SIZE, 0.001, 0.003)
     })
+  })
+
+  it('Verify secureRandom() behavior', () => {
+    const randomNumber = secureRandom()
+    expect(typeof randomNumber === 'number').toBe(true)
+    expect(randomNumber).toBeGreaterThanOrEqual(0)
+    expect(randomNumber).toBeLessThan(1)
   })
 })

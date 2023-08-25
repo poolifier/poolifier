@@ -97,7 +97,7 @@ export interface WorkerChoiceStrategyOptions {
   readonly elu?: MeasurementOptions
   /**
    * Worker weights to use for weighted round robin worker selection strategies.
-   * A weight is the tasks maximum execution in milliseconds for each worker node.
+   * A weight is the tasks maximum execution time in milliseconds for each worker node.
    *
    * @defaultValue Weights computed automatically given the CPU performance.
    */
