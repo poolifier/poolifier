@@ -48,6 +48,7 @@ module.exports = defineConfig({
           'comparator',
           'cpu',
           'cpus',
+          'cryptographically',
           'ctx',
           'deprecations',
           'deque',

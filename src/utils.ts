@@ -75,16 +75,16 @@ export const sleep = async (ms: number): Promise<void> => {
  * Computes the retry delay in milliseconds using an exponential back off algorithm.
  *
  * @param retryNumber - The number of retries that have already been attempted
- * @param maxDelayRatio - The maximum ratio of the delay that can be randomized
+ * @param delayFactor - The base delay factor in milliseconds
  * @returns Delay in milliseconds
  * @internal
  */
 export const exponentialDelay = (
   retryNumber = 0,
-  maxDelayRatio = 0.2
+  delayFactor = 100
 ): number => {
-  const delay = Math.pow(2, retryNumber) * 100
-  const randomSum = delay * maxDelayRatio * secureRandom() // 0-(maxDelayRatio*100)% of the delay
+  const delay = Math.pow(2, retryNumber) * delayFactor
+  const randomSum = delay * 0.2 * secureRandom() // 0-20% of the delay
   return delay + randomSum
 }
 
