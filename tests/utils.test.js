@@ -27,10 +27,10 @@ describe('Utils test suite', () => {
   })
 
   it('Verify sleep() behavior', async () => {
-    const now = performance.now()
+    const start = performance.now()
     await sleep(1000)
-    const elapsed = performance.now() - now
-    expect(elapsed).toBeGreaterThanOrEqual(1000)
+    const stop = performance.now()
+    expect(stop - start).toBeGreaterThanOrEqual(1000)
   })
 
   it('Verify exponentialDelay() behavior', () => {
