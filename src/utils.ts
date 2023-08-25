@@ -59,22 +59,34 @@ export const availableParallelism = (): number => {
   return availableParallelism
 }
 
-// /**
-//  * Computes the retry delay in milliseconds using an exponential back off algorithm.
-//  *
-//  * @param retryNumber - The number of retries that have already been attempted
-//  * @param maxDelayRatio - The maximum ratio of the delay that can be randomized
-//  * @returns Delay in milliseconds
-//  * @internal
-//  */
-// export const exponentialDelay = (
-//   retryNumber = 0,
-//   maxDelayRatio = 0.2
-// ): number => {
-//   const delay = Math.pow(2, retryNumber) * 100
-//   const randomSum = delay * maxDelayRatio * Math.random() // 0-(maxDelayRatio*100)% of the delay
-//   return delay + randomSum
-// }
+/**
+ * Sleeps for the given amount of milliseconds.
+ *
+ * @param ms - The amount of milliseconds to sleep.
+ * @returns A promise that resolves after the given amount of milliseconds.
+ */
+export const sleep = async (ms: number): Promise<void> => {
+  await new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
+
+/**
+ * Computes the retry delay in milliseconds using an exponential back off algorithm.
+ *
+ * @param retryNumber - The number of retries that have already been attempted
+ * @param maxDelayRatio - The maximum ratio of the delay that can be randomized
+ * @returns Delay in milliseconds
+ * @internal
+ */
+export const exponentialDelay = (
+  retryNumber = 0,
+  maxDelayRatio = 0.2
+): number => {
+  const delay = Math.pow(2, retryNumber) * 100
+  const randomSum = delay * maxDelayRatio * secureRandom() // 0-(maxDelayRatio*100)% of the delay
+  return delay + randomSum
+}
 
 /**
  * Computes the average of the given data set.
@@ -233,4 +245,13 @@ export const once = (
       called = false
     }
   }
+}
+
+/**
+ * Generate a cryptographically secure random number in the [0,1[ range
+ *
+ * @returns A number in the [0,1[ range
+ */
+const secureRandom = (): number => {
+  return crypto.getRandomValues(new Uint32Array(1))[0] / 0x100000000
 }

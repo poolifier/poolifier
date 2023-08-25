@@ -97,6 +97,10 @@ export interface TaskStatistics {
    */
   readonly maxQueued?: number
   /**
+   * Number of stolen tasks.
+   */
+  stolen: number
+  /**
    * Number of failed tasks.
    */
   failed: number

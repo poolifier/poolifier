@@ -618,6 +618,7 @@ describe('Abstract pool test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
@@ -710,6 +711,7 @@ describe('Abstract pool test suite', () => {
           executing: maxMultiplier,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
@@ -736,6 +738,7 @@ describe('Abstract pool test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
@@ -776,6 +779,7 @@ describe('Abstract pool test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
@@ -810,6 +814,7 @@ describe('Abstract pool test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
@@ -977,6 +982,7 @@ describe('Abstract pool test suite', () => {
       maxQueuedTasks: expect.any(Number),
       queuedTasks: expect.any(Number),
       backPressure: true,
+      stolenTasks: expect.any(Number),
       failedTasks: expect.any(Number)
     })
     expect(pool.hasBackPressure.called).toBe(true)
@@ -1040,7 +1046,8 @@ describe('Abstract pool test suite', () => {
             executed: expect.any(Number),
             executing: expect.any(Number),
             failed: 0,
-            queued: 0
+            queued: 0,
+            stolen: 0
           },
           runTime: {
             history: expect.any(CircularArray)

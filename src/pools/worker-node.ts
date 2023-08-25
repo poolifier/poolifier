@@ -1,7 +1,12 @@
 import { MessageChannel } from 'node:worker_threads'
 import { CircularArray } from '../circular-array'
 import type { Task } from '../utility-types'
-import { DEFAULT_TASK_NAME } from '../utils'
+import {
+  DEFAULT_TASK_NAME,
+  EMPTY_FUNCTION,
+  exponentialDelay,
+  sleep
+} from '../utils'
 import { Deque } from '../deque'
 import {
   type IWorker,
@@ -36,6 +41,7 @@ implements IWorkerNode<Worker, Data> {
   public onEmptyQueue?: (workerId: number) => void
   private readonly taskFunctionsUsage: Map<string, WorkerUsage>
   private readonly tasksQueue: Deque<Task<Data>>
+  private onEmptyQueueCount: number
 
   /**
    * Constructs a new worker node.
@@ -76,6 +82,7 @@ implements IWorkerNode<Worker, Data> {
     this.taskFunctionsUsage = new Map<string, WorkerUsage>()
     this.tasksQueue = new Deque<Task<Data>>()
     this.tasksQueueBackPressureSize = tasksQueueBackPressureSize
+    this.onEmptyQueueCount = 0
   }
 
   /** @inheritdoc */
@@ -105,7 +112,7 @@ implements IWorkerNode<Worker, Data> {
   public dequeueTask (): Task<Data> | undefined {
     const task = this.tasksQueue.shift()
     if (this.onEmptyQueue != null && this.tasksQueue.size === 0) {
-      this.onEmptyQueue(this.info.id as number)
+      this.startOnEmptyQueue().catch(EMPTY_FUNCTION)
     }
     return task
   }
@@ -114,7 +121,7 @@ implements IWorkerNode<Worker, Data> {
   public popTask (): Task<Data> | undefined {
     const task = this.tasksQueue.pop()
     if (this.onEmptyQueue != null && this.tasksQueue.size === 0) {
-      this.onEmptyQueue(this.info.id as number)
+      this.startOnEmptyQueue().catch(EMPTY_FUNCTION)
     }
     return task
   }
@@ -170,6 +177,19 @@ implements IWorkerNode<Worker, Data> {
     return this.taskFunctionsUsage.get(name)
   }
 
+  private async startOnEmptyQueue (): Promise<void> {
+    if (this.onEmptyQueue != null) {
+      if (this.tasksQueue.size > 0) {
+        this.onEmptyQueueCount = 0
+        return
+      }
+      this.onEmptyQueue(this.info.id as number)
+      ++this.onEmptyQueueCount
+      await sleep(exponentialDelay(this.onEmptyQueueCount))
+      await this.startOnEmptyQueue()
+    }
+  }
+
   private initWorkerInfo (worker: Worker, workerType: WorkerType): WorkerInfo {
     return {
       id: this.getWorkerId(worker, workerType),
@@ -196,6 +216,7 @@ implements IWorkerNode<Worker, Data> {
         get maxQueued (): number {
           return getTasksQueueMaxSize()
         },
+        stolen: 0,
         failed: 0
       },
       runTime: {
@@ -236,6 +257,7 @@ implements IWorkerNode<Worker, Data> {
         get queued (): number {
           return getTaskFunctionQueueSize()
         },
+        stolen: 0,
         failed: 0
       },
       runTime: {

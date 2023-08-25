@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update simple moving average implementation to use a circular buffer.
 - Update simple moving median implementation to use a circular buffer.
+- Account for stolen tasks in worker usage statistics and pool information.
+
+### Added
+
+- Continuous tasks stealing algorithm.
 
 ## [2.6.34] - 2023-08-24
 

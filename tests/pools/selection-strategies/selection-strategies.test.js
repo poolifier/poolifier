@@ -217,6 +217,7 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
@@ -265,6 +266,7 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
@@ -464,6 +466,7 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
@@ -511,6 +514,7 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
@@ -639,6 +643,7 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
@@ -696,6 +701,7 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
@@ -834,6 +840,7 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
@@ -843,12 +850,12 @@ describe('Selection strategies test suite', () => {
           history: expect.any(CircularArray)
         },
         elu: {
-          idle: expect.objectContaining({
+          idle: {
             history: expect.any(CircularArray)
-          }),
-          active: expect.objectContaining({
+          },
+          active: {
             history: expect.any(CircularArray)
-          })
+          }
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -887,6 +894,7 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
@@ -896,12 +904,12 @@ describe('Selection strategies test suite', () => {
           history: expect.any(CircularArray)
         },
         elu: {
-          idle: expect.objectContaining({
+          idle: {
             history: expect.any(CircularArray)
-          }),
-          active: expect.objectContaining({
+          },
+          active: {
             history: expect.any(CircularArray)
-          })
+          }
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -1021,21 +1029,22 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
-        runTime: expect.objectContaining({
+        runTime: {
           history: expect.any(CircularArray)
-        }),
+        },
         waitTime: {
           history: expect.any(CircularArray)
         },
         elu: {
-          idle: expect.objectContaining({
+          idle: {
             history: expect.any(CircularArray)
-          }),
-          active: expect.objectContaining({
+          },
+          active: {
             history: expect.any(CircularArray)
-          })
+          }
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -1089,21 +1098,22 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
-        runTime: expect.objectContaining({
+        runTime: {
           history: expect.any(CircularArray)
-        }),
+        },
         waitTime: {
           history: expect.any(CircularArray)
         },
         elu: {
-          idle: expect.objectContaining({
+          idle: {
             history: expect.any(CircularArray)
-          }),
-          active: expect.objectContaining({
+          },
+          active: {
             history: expect.any(CircularArray)
-          })
+          }
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -1162,21 +1172,22 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
-        runTime: expect.objectContaining({
+        runTime: {
           history: expect.any(CircularArray)
-        }),
+        },
         waitTime: {
           history: expect.any(CircularArray)
         },
         elu: {
-          idle: expect.objectContaining({
+          idle: {
             history: expect.any(CircularArray)
-          }),
-          active: expect.objectContaining({
+          },
+          active: {
             history: expect.any(CircularArray)
-          })
+          }
         }
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -1385,6 +1396,7 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: expect.objectContaining({
@@ -1452,6 +1464,7 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: expect.objectContaining({
@@ -1524,6 +1537,7 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: expect.objectContaining({
@@ -1755,6 +1769,7 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
@@ -1825,6 +1840,7 @@ describe('Selection strategies test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
