@@ -1,5 +1,5 @@
 import * as os from 'node:os'
-import { getRandomValues } from 'node:crypto'
+import * as crypto from 'node:crypto'
 import type {
   MeasurementStatisticsRequirements,
   WorkerChoiceStrategyOptions
@@ -254,5 +254,5 @@ export const once = (
  * @returns A number in the [0,1[ range
  */
 export const secureRandom = (): number => {
-  return getRandomValues(new Uint32Array(1))[0] / 0x100000000
+  return crypto.getRandomValues(new Uint32Array(1))[0] / 0x100000000
 }
