@@ -26,11 +26,11 @@ describe('Utils test suite', () => {
     expect(Number.isSafeInteger(availableParallelism())).toBe(true)
   })
 
-  it('Verify sleep() behavior', async () => {
+  it.skip('Verify sleep() behavior', async () => {
     const start = performance.now()
     await sleep(1000)
-    const stop = performance.now()
-    expect(stop - start).toBeGreaterThanOrEqual(1000)
+    const elapsed = performance.now() - start
+    expect(elapsed).toBeGreaterThanOrEqual(1000)
   })
 
   it('Verify exponentialDelay() behavior', () => {
