@@ -1,5 +1,8 @@
 const { expect } = require('expect')
-const { CircularArray } = require('../lib/circular-array')
+const {
+  CircularArray,
+  DEFAULT_CIRCULAR_ARRAY_SIZE
+} = require('../lib/circular-array')
 
 describe('Circular array test suite', () => {
   it('Verify that circular array can be instantiated', () => {
@@ -9,7 +12,7 @@ describe('Circular array test suite', () => {
 
   it('Verify circular array default size at instance creation', () => {
     const circularArray = new CircularArray()
-    expect(circularArray.size).toBe(1024)
+    expect(circularArray.size).toBe(DEFAULT_CIRCULAR_ARRAY_SIZE)
   })
 
   it('Verify that circular array size can be set at instance creation', () => {
