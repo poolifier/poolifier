@@ -1,5 +1,4 @@
 import * as os from 'node:os'
-import * as crypto from 'node:crypto'
 import type {
   MeasurementStatisticsRequirements,
   WorkerChoiceStrategyOptions
