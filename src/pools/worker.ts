@@ -189,7 +189,7 @@ export interface IWorker {
   /**
    * Registers a listener to the exit event that will only be performed once.
    *
-   * @param event - `'exit'`.
+   * @param event - The `'exit'` event.
    * @param handler - The exit handler.
    */
   readonly once: (event: 'exit', handler: ExitHandler<this>) => void
