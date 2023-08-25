@@ -17,8 +17,8 @@ dependencies:
 
 devDependencies:
   '@types/node':
-    specifier: ^20.5.4
-    version: 20.5.4
+    specifier: ^20.5.6
+    version: 20.5.6
   typescript:
     specifier: ^5.2.2
     version: 5.2.2
@@ -47,8 +47,8 @@ packages:
       fast-json-stringify: 5.8.0
     dev: false
 
-  /@types/node@20.5.4:
-    resolution: {integrity: sha512-Y9vbIAoM31djQZrPYjpTLo0XlaSwOIsrlfE3LpulZeRblttsLQRFRlBAppW0LOxyT3ALj2M5vU1ucQQayQH3jA==}
+  /@types/node@20.5.6:
+    resolution: {integrity: sha512-Gi5wRGPbbyOTX+4Y2iULQ27oUPrefaB0PxGQJnfyWN3kvEDGM3mIB5M/gQLmitZf7A9FmLeaqxD3L1CXpm3VKQ==}
     dev: true
 
   /abort-controller@3.0.0:
