@@ -956,11 +956,11 @@ describe('Abstract pool test suite', () => {
       ++poolBackPressure
       poolInfo = info
     })
-    for (let i = 0; i < numberOfWorkers * 2; i++) {
+    for (let i = 0; i < numberOfWorkers + 1; i++) {
       promises.add(pool.execute())
     }
     await Promise.all(promises)
-    expect(poolBackPressure).toBe(2)
+    expect(poolBackPressure).toBe(1)
     expect(poolInfo).toStrictEqual({
       version,
       type: PoolTypes.fixed,
