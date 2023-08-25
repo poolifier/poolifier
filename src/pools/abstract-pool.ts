@@ -1238,6 +1238,17 @@ export abstract class AbstractPool<
     }
   }
 
+  // private incrementTasksStolen (workerNodeKey: number, workerNode: WorkerNode): void {
+  //   ++workerNode.usage.tasks.stolen
+  //   if (this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey)) {
+  //     const taskFunctionWorkerUsage =
+  //       workerNode.getTaskFunctionWorkerUsage(
+  //         task.name as string
+  //       ) as WorkerUsage
+  //     ++taskFunctionWorkerUsage.tasks.stolen
+  //   }
+  // }
+
   private taskStealingOnEmptyQueue (workerId: number): void {
     const destinationWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
     const destinationWorkerNode = this.workerNodes[destinationWorkerNodeKey]
@@ -1269,8 +1280,15 @@ export abstract class AbstractPool<
         } else {
           this.enqueueTask(destinationWorkerNodeKey, task)
         }
-        ++destinationWorkerNode.usage.tasks.stolen
-        if (this.shallUpdateTaskFunctionWorkerUsage(destinationWorkerNodeKey)) {
+        if (destinationWorkerNode?.usage != null) {
+          ++destinationWorkerNode.usage.tasks.stolen
+        }
+        if (
+          this.shallUpdateTaskFunctionWorkerUsage(destinationWorkerNodeKey) &&
+          destinationWorkerNode.getTaskFunctionWorkerUsage(
+            task.name as string
+          ) != null
+        ) {
           const taskFunctionWorkerUsage =
             destinationWorkerNode.getTaskFunctionWorkerUsage(
               task.name as string
@@ -1312,8 +1330,13 @@ export abstract class AbstractPool<
         } else {
           this.enqueueTask(workerNodeKey, task)
         }
-        ++workerNode.usage.tasks.stolen
-        if (this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey)) {
+        if (workerNode?.usage != null) {
+          ++workerNode.usage.tasks.stolen
+        }
+        if (
+          this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
+          workerNode.getTaskFunctionWorkerUsage(task.name as string) != null
+        ) {
           const taskFunctionWorkerUsage = workerNode.getTaskFunctionWorkerUsage(
             task.name as string
           ) as WorkerUsage
