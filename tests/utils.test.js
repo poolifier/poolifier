@@ -1,3 +1,4 @@
+const { randomInt } = require('crypto')
 const { expect } = require('expect')
 const {
   CircularArray,
@@ -6,12 +7,14 @@ const {
 const {
   availableParallelism,
   average,
+  exponentialDelay,
   isAsyncFunction,
   isKillBehavior,
   isPlainObject,
   median,
   round,
   secureRandom,
+  sleep,
   updateMeasurementStatistics
 } = require('../lib/utils')
 const { KillBehaviors } = require('../lib/worker/worker-options')
@@ -21,6 +24,23 @@ describe('Utils test suite', () => {
     expect(typeof availableParallelism() === 'number').toBe(true)
     expect(availableParallelism()).toBeGreaterThan(0)
     expect(Number.isSafeInteger(availableParallelism())).toBe(true)
+  })
+
+  it('Verify sleep() behavior', async () => {
+    const now = performance.now()
+    await sleep(1000)
+    const elapsed = performance.now() - now
+    expect(elapsed).toBeGreaterThanOrEqual(1000)
+  })
+
+  it('Verify exponentialDelay() behavior', () => {
+    expect(typeof exponentialDelay(randomInt(1000)) === 'number').toBe(true)
+    expect(exponentialDelay(randomInt(1000))).toBeGreaterThanOrEqual(
+      Number.MIN_VALUE
+    )
+    expect(exponentialDelay(randomInt(1000))).toBeLessThanOrEqual(
+      Number.MAX_VALUE
+    )
   })
 
   it('Verify average() computation', () => {
