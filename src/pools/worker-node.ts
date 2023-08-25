@@ -178,16 +178,14 @@ implements IWorkerNode<Worker, Data> {
   }
 
   private async startOnEmptyQueue (): Promise<void> {
-    if (this.onEmptyQueue != null) {
-      if (this.tasksQueue.size > 0) {
-        this.onEmptyQueueCount = 0
-        return
-      }
-      this.onEmptyQueue(this.info.id as number)
-      ++this.onEmptyQueueCount
-      await sleep(exponentialDelay(this.onEmptyQueueCount))
-      await this.startOnEmptyQueue()
+    if (this.tasksQueue.size > 0) {
+      this.onEmptyQueueCount = 0
+      return
     }
+    (this.onEmptyQueue as (workerId: number) => void)(this.info.id as number)
+    ++this.onEmptyQueueCount
+    await sleep(exponentialDelay(this.onEmptyQueueCount))
+    await this.startOnEmptyQueue()
   }
 
   private initWorkerInfo (worker: Worker, workerType: WorkerType): WorkerInfo {
