@@ -96,6 +96,22 @@ describe('Deque test suite', () => {
     expect(deque.tail).toBeUndefined()
   })
 
+  it('Verify peekFirst() behavior', () => {
+    const deque = new Deque()
+    deque.push(1)
+    deque.push(2)
+    deque.push(3)
+    expect(deque.peekFirst()).toBe(1)
+  })
+
+  it('Verify peekLast() behavior', () => {
+    const deque = new Deque()
+    deque.push(1)
+    deque.push(2)
+    deque.push(3)
+    expect(deque.peekLast()).toBe(3)
+  })
+
   it('Verify clear() behavior', () => {
     const deque = new Deque()
     deque.push(1)
