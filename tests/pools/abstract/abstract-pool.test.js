@@ -697,6 +697,29 @@ describe('Abstract pool test suite', () => {
     }
   })
 
+  it('Verify that pool execute() arguments are checked', async () => {
+    const pool = new FixedClusterPool(
+      numberOfWorkers,
+      './tests/worker-files/cluster/testWorker.js'
+    )
+    await expect(pool.execute(undefined, 0)).rejects.toThrowError(
+      new TypeError('name argument must be a string')
+    )
+    await expect(pool.execute(undefined, '')).rejects.toThrowError(
+      new TypeError('name argument must not be an empty string')
+    )
+    await expect(pool.execute(undefined, undefined, {})).rejects.toThrowError(
+      new TypeError('transferList argument must be an array')
+    )
+    await expect(pool.execute(undefined, 'unknown')).rejects.toBe(
+      "Task function 'unknown' not found"
+    )
+    await pool.destroy()
+    await expect(pool.execute(undefined, undefined, {})).rejects.toThrowError(
+      new Error('Cannot execute a task on destroyed pool')
+    )
+  })
+
   it('Verify that pool worker tasks usage are computed', async () => {
     const pool = new FixedClusterPool(
       numberOfWorkers,

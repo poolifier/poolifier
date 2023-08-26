@@ -88,10 +88,13 @@ export abstract class AbstractWorker<
     protected opts: WorkerOptions = DEFAULT_WORKER_OPTIONS
   ) {
     super(type)
-    this.checkWorkerOptions(this.opts)
+    if (this.isMain == null) {
+      throw new Error('isMain parameter is mandatory')
+    }
     this.checkTaskFunctions(taskFunctions)
+    this.checkWorkerOptions(this.opts)
     if (!this.isMain) {
-      this.getMainWorker()?.on('message', this.handleReadyMessage.bind(this))
+      this.getMainWorker().on('message', this.handleReadyMessage.bind(this))
     }
   }
 
@@ -463,7 +466,20 @@ export abstract class AbstractWorker<
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the task function is not found.
    */
   protected run (task: Task<Data>): void {
-    const fn = this.getTaskFunction(task.name)
+    const { name, taskId, data } = task
+    const fn = this.taskFunctions.get(name ?? DEFAULT_TASK_NAME)
+    if (fn == null) {
+      this.sendToMainWorker({
+        taskError: {
+          name: name as string,
+          message: `Task function '${name as string}' not found`,
+          data
+        },
+        workerId: this.id,
+        taskId
+      })
+      return
+    }
     if (isAsyncFunction(fn)) {
       this.runInAsyncScope(this.runAsync.bind(this), this, fn, task)
     } else {
@@ -547,22 +563,6 @@ export abstract class AbstractWorker<
         this.updateLastTaskTimestamp()
       })
       .catch(EMPTY_FUNCTION)
-  }
-
-  /**
-   * Gets the task function with the given name.
-   *
-   * @param name - Name of the task function that will be returned.
-   * @returns The task function.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the task function is not found.
-   */
-  private getTaskFunction (name?: string): TaskFunction<Data, Response> {
-    name = name ?? DEFAULT_TASK_NAME
-    const fn = this.taskFunctions.get(name)
-    if (fn == null) {
-      throw new Error(`Task function '${name}' not found`)
-    }
-    return fn
   }
 
   private beginTaskPerformance (name?: string): TaskPerformance {

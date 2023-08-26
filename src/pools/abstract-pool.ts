@@ -743,9 +743,11 @@ export abstract class AbstractPool<
     return await new Promise<Response>((resolve, reject) => {
       if (!this.started) {
         reject(new Error('Cannot execute a task on destroyed pool'))
+        return
       }
       if (name != null && typeof name !== 'string') {
         reject(new TypeError('name argument must be a string'))
+        return
       }
       if (
         name != null &&
@@ -753,22 +755,15 @@ export abstract class AbstractPool<
         name.trim().length === 0
       ) {
         reject(new TypeError('name argument must not be an empty string'))
+        return
       }
       if (transferList != null && !Array.isArray(transferList)) {
         reject(new TypeError('transferList argument must be an array'))
+        return
       }
       const timestamp = performance.now()
       const workerNodeKey = this.chooseWorkerNode()
       const workerInfo = this.getWorkerInfo(workerNodeKey) as WorkerInfo
-      if (
-        name != null &&
-        Array.isArray(workerInfo.taskFunctions) &&
-        !workerInfo.taskFunctions.includes(name)
-      ) {
-        reject(
-          new Error(`Task function '${name}' is not registered in the pool`)
-        )
-      }
       const task: Task<Data> = {
         name: name ?? DEFAULT_TASK_NAME,
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
