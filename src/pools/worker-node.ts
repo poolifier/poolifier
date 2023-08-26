@@ -9,6 +9,8 @@ import {
 } from '../utils'
 import { Deque } from '../deque'
 import {
+  type BackPressureCallback,
+  type EmptyQueueCallback,
   type IWorker,
   type IWorkerNode,
   type WorkerInfo,
@@ -16,9 +18,6 @@ import {
   WorkerTypes,
   type WorkerUsage
 } from './worker'
-
-type EmptyQueueCallback = (workerId: number) => void
-type BackPressureCallback = EmptyQueueCallback
 
 /**
  * Worker node.

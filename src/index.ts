@@ -16,6 +16,8 @@ export type {
 } from './pools/pool'
 export { WorkerTypes } from './pools/worker'
 export type {
+  BackPressureCallback,
+  EmptyQueueCallback,
   ErrorHandler,
   EventLoopUtilizationMeasurementStatistics,
   ExitHandler,
