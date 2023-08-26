@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Make continuous tasks stealing algorithm less aggressive.
+- Fine tune tasks stealing algorithm under back pressure.
 
 ## [2.6.35] - 2023-08-25
 
