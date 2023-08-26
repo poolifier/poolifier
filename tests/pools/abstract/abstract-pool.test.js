@@ -544,20 +544,23 @@ describe('Abstract pool test suite', () => {
     expect(() => pool.setTasksQueueOptions({ concurrency: 0.2 })).toThrowError(
       new TypeError('Invalid worker node tasks concurrency: must be an integer')
     )
+    expect(() => pool.setTasksQueueOptions({ queueMaxSize: 2 })).toThrowError(
+      new Error(
+        'Invalid tasks queue options: queueMaxSize is deprecated, please use size instead'
+      )
+    )
     expect(() => pool.setTasksQueueOptions({ size: 0 })).toThrowError(
       new RangeError(
-        'Invalid worker node tasks queue max size: 0 is a negative integer or zero'
+        'Invalid worker node tasks queue size: 0 is a negative integer or zero'
       )
     )
     expect(() => pool.setTasksQueueOptions({ size: -1 })).toThrowError(
       new RangeError(
-        'Invalid worker node tasks queue max size: -1 is a negative integer or zero'
+        'Invalid worker node tasks queue size: -1 is a negative integer or zero'
       )
     )
     expect(() => pool.setTasksQueueOptions({ size: 0.2 })).toThrowError(
-      new TypeError(
-        'Invalid worker node tasks queue max size: must be an integer'
-      )
+      new TypeError('Invalid worker node tasks queue size: must be an integer')
     )
     await pool.destroy()
   })

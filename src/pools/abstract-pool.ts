@@ -313,28 +313,22 @@ export abstract class AbstractPool<
         `Invalid worker node tasks concurrency: ${tasksQueueOptions.concurrency} is a negative integer or zero`
       )
     }
-    if (
-      tasksQueueOptions?.queueMaxSize != null &&
-      tasksQueueOptions?.size != null
-    ) {
-      throw new Error(
-        'Invalid tasks queue options: cannot specify both queueMaxSize and size'
-      )
-    }
     if (tasksQueueOptions?.queueMaxSize != null) {
-      tasksQueueOptions.size = tasksQueueOptions.queueMaxSize
+      throw new Error(
+        'Invalid tasks queue options: queueMaxSize is deprecated, please use size instead'
+      )
     }
     if (
       tasksQueueOptions?.size != null &&
       !Number.isSafeInteger(tasksQueueOptions.size)
     ) {
       throw new TypeError(
-        'Invalid worker node tasks queue max size: must be an integer'
+        'Invalid worker node tasks queue size: must be an integer'
       )
     }
     if (tasksQueueOptions?.size != null && tasksQueueOptions.size <= 0) {
       throw new RangeError(
-        `Invalid worker node tasks queue max size: ${tasksQueueOptions.size} is a negative integer or zero`
+        `Invalid worker node tasks queue size: ${tasksQueueOptions.size} is a negative integer or zero`
       )
     }
   }
@@ -1290,6 +1284,9 @@ export abstract class AbstractPool<
   }
 
   private tasksStealingOnBackPressure (workerId: number): void {
+    if ((this.opts.tasksQueueOptions?.size as number) <= 1) {
+      return
+    }
     const sourceWorkerNode =
       this.workerNodes[this.getWorkerNodeKeyByWorkerId(workerId)]
     const workerNodes = this.workerNodes
