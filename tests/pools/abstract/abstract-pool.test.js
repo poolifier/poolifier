@@ -12,6 +12,7 @@ const {
 } = require('../../../lib')
 const { CircularArray } = require('../../../lib/circular-array')
 const { Deque } = require('../../../lib/deque')
+const { DEFAULT_TASK_NAME } = require('../../../lib/utils')
 const { version } = require('../../../package.json')
 const { waitPoolEvents } = require('../../test-utils')
 
@@ -1155,7 +1156,7 @@ describe('Abstract pool test suite', () => {
     )
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
     expect(dynamicThreadPool.listTaskFunctions()).toStrictEqual([
-      'default',
+      DEFAULT_TASK_NAME,
       'jsonIntegerSerialization',
       'factorial',
       'fibonacci'
@@ -1166,7 +1167,7 @@ describe('Abstract pool test suite', () => {
     )
     await waitPoolEvents(fixedClusterPool, PoolEvents.ready, 1)
     expect(fixedClusterPool.listTaskFunctions()).toStrictEqual([
-      'default',
+      DEFAULT_TASK_NAME,
       'jsonIntegerSerialization',
       'factorial',
       'fibonacci'
@@ -1192,7 +1193,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.info.executedTasks).toBe(4)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.info.taskFunctions).toStrictEqual([
-        'default',
+        DEFAULT_TASK_NAME,
         'jsonIntegerSerialization',
         'factorial',
         'fibonacci'

@@ -4,6 +4,7 @@ const { WorkerNode } = require('../../../lib/pools/worker-node')
 const { WorkerTypes } = require('../../../lib')
 const { CircularArray } = require('../../../lib/circular-array')
 const { Deque } = require('../../../lib/deque')
+const { DEFAULT_TASK_NAME } = require('../../../lib/utils')
 
 describe('Worker node test suite', () => {
   const worker = new Worker('./tests/worker-files/thread/testWorker.js')
@@ -80,7 +81,7 @@ describe('Worker node test suite', () => {
         "Cannot get task function worker usage for task function name 'invalidTaskFunction' when task function names list is not yet defined"
       )
     )
-    workerNode.info.taskFunctions = ['default', 'fn1']
+    workerNode.info.taskFunctions = [DEFAULT_TASK_NAME, 'fn1']
     expect(() =>
       workerNode.getTaskFunctionWorkerUsage('invalidTaskFunction')
     ).toThrowError(
@@ -88,8 +89,10 @@ describe('Worker node test suite', () => {
         "Cannot get task function worker usage for task function name 'invalidTaskFunction' when task function names list has less than 3 elements"
       )
     )
-    workerNode.info.taskFunctions = ['default', 'fn1', 'fn2']
-    expect(workerNode.getTaskFunctionWorkerUsage('default')).toStrictEqual({
+    workerNode.info.taskFunctions = [DEFAULT_TASK_NAME, 'fn1', 'fn2']
+    expect(
+      workerNode.getTaskFunctionWorkerUsage(DEFAULT_TASK_NAME)
+    ).toStrictEqual({
       tasks: {
         executed: 0,
         executing: 0,

@@ -2,6 +2,7 @@ const { expect } = require('expect')
 const { FixedThreadPool, PoolEvents } = require('../../../lib')
 const { TaskFunctions } = require('../../test-types')
 const { waitPoolEvents, waitWorkerEvents } = require('../../test-utils')
+const { DEFAULT_TASK_NAME } = require('../../../lib/utils')
 
 describe('Fixed thread pool test suite', () => {
   const numberOfThreads = 6
@@ -219,7 +220,7 @@ describe('Fixed thread pool test suite', () => {
     expect(typeof inError.message === 'string').toBe(true)
     expect(inError.message).toBe('Error Message from ThreadWorker')
     expect(taskError).toStrictEqual({
-      name: 'default',
+      name: DEFAULT_TASK_NAME,
       message: new Error('Error Message from ThreadWorker'),
       data
     })
@@ -248,7 +249,7 @@ describe('Fixed thread pool test suite', () => {
     expect(typeof inError.message === 'string').toBe(true)
     expect(inError.message).toBe('Error Message from ThreadWorker:async')
     expect(taskError).toStrictEqual({
-      name: 'default',
+      name: DEFAULT_TASK_NAME,
       message: new Error('Error Message from ThreadWorker:async'),
       data
     })

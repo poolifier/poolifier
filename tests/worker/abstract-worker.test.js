@@ -1,7 +1,7 @@
 const { expect } = require('expect')
 const sinon = require('sinon')
 const { ClusterWorker, KillBehaviors, ThreadWorker } = require('../../lib')
-const { EMPTY_FUNCTION } = require('../../lib/utils')
+const { DEFAULT_TASK_NAME, EMPTY_FUNCTION } = require('../../lib/utils')
 
 describe('Abstract worker test suite', () => {
   class StubWorkerWithMainWorker extends ThreadWorker {
@@ -96,10 +96,10 @@ describe('Abstract worker test suite', () => {
 
   it('Verify that taskFunctions parameter with unique function is taken', () => {
     const worker = new ThreadWorker(() => {})
-    expect(worker.taskFunctions.get('default')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.size).toBe(2)
-    expect(worker.taskFunctions.get('default')).toStrictEqual(
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
     )
   })
@@ -125,11 +125,11 @@ describe('Abstract worker test suite', () => {
       return 2
     }
     const worker = new ClusterWorker({ fn1, fn2 })
-    expect(worker.taskFunctions.get('default')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.size).toBe(3)
-    expect(worker.taskFunctions.get('default')).toStrictEqual(
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
     )
   })
@@ -187,7 +187,7 @@ describe('Abstract worker test suite', () => {
     expect(() => worker.hasTaskFunction('')).toThrowError(
       new TypeError('name parameter is an empty string')
     )
-    expect(worker.hasTaskFunction('default')).toBe(true)
+    expect(worker.hasTaskFunction(DEFAULT_TASK_NAME)).toBe(true)
     expect(worker.hasTaskFunction('fn1')).toBe(true)
     expect(worker.hasTaskFunction('fn2')).toBe(true)
     expect(worker.hasTaskFunction('fn3')).toBe(false)
@@ -213,29 +213,29 @@ describe('Abstract worker test suite', () => {
     expect(() => worker.addTaskFunction('fn3', '')).toThrowError(
       new TypeError('fn parameter is not a function')
     )
-    expect(worker.taskFunctions.get('default')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.size).toBe(2)
-    expect(worker.taskFunctions.get('default')).toStrictEqual(
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
     )
-    expect(() => worker.addTaskFunction('default', fn2)).toThrowError(
+    expect(() => worker.addTaskFunction(DEFAULT_TASK_NAME, fn2)).toThrowError(
       new Error('Cannot add a task function with the default reserved name')
     )
     worker.addTaskFunction('fn2', fn2)
-    expect(worker.taskFunctions.get('default')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.size).toBe(3)
-    expect(worker.taskFunctions.get('default')).toStrictEqual(
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
     )
     worker.addTaskFunction('fn1', fn1Replacement)
-    expect(worker.taskFunctions.get('default')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.size).toBe(3)
-    expect(worker.taskFunctions.get('default')).toStrictEqual(
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
     )
   })
@@ -258,14 +258,14 @@ describe('Abstract worker test suite', () => {
       id: 1,
       send: sinon.stub().returns()
     })
-    expect(worker.taskFunctions.get('default')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.size).toBe(3)
-    expect(worker.taskFunctions.get('default')).toStrictEqual(
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
     )
-    expect(() => worker.removeTaskFunction('default')).toThrowError(
+    expect(() => worker.removeTaskFunction(DEFAULT_TASK_NAME)).toThrowError(
       new Error(
         'Cannot remove the task function with the default reserved name'
       )
@@ -276,7 +276,7 @@ describe('Abstract worker test suite', () => {
       )
     )
     worker.removeTaskFunction('fn2')
-    expect(worker.taskFunctions.get('default')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn2')).toBeUndefined()
     expect(worker.taskFunctions.size).toBe(2)
@@ -291,7 +291,11 @@ describe('Abstract worker test suite', () => {
       return 2
     }
     const worker = new ClusterWorker({ fn1, fn2 })
-    expect(worker.listTaskFunctions()).toStrictEqual(['default', 'fn1', 'fn2'])
+    expect(worker.listTaskFunctions()).toStrictEqual([
+      DEFAULT_TASK_NAME,
+      'fn1',
+      'fn2'
+    ])
   })
 
   it('Verify that setDefaultTaskFunction() works', () => {
@@ -308,14 +312,14 @@ describe('Abstract worker test suite', () => {
     expect(() => worker.setDefaultTaskFunction('', fn1)).toThrowError(
       new TypeError('name parameter is an empty string')
     )
-    expect(worker.taskFunctions.get('default')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.size).toBe(3)
-    expect(worker.taskFunctions.get('default')).toStrictEqual(
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
     )
-    expect(() => worker.setDefaultTaskFunction('default')).toThrowError(
+    expect(() => worker.setDefaultTaskFunction(DEFAULT_TASK_NAME)).toThrowError(
       new Error(
         'Cannot set the default task function reserved name as the default task function'
       )
@@ -326,11 +330,11 @@ describe('Abstract worker test suite', () => {
       )
     )
     worker.setDefaultTaskFunction('fn1')
-    expect(worker.taskFunctions.get('default')).toStrictEqual(
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
     )
     worker.setDefaultTaskFunction('fn2')
-    expect(worker.taskFunctions.get('default')).toStrictEqual(
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn2')
     )
   })

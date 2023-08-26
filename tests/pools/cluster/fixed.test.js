@@ -2,6 +2,7 @@ const { expect } = require('expect')
 const { FixedClusterPool, PoolEvents } = require('../../../lib')
 const { TaskFunctions } = require('../../test-types')
 const { waitPoolEvents, waitWorkerEvents } = require('../../test-utils')
+const { DEFAULT_TASK_NAME } = require('../../../lib/utils')
 
 describe('Fixed cluster pool test suite', () => {
   const numberOfWorkers = 8
@@ -191,7 +192,7 @@ describe('Fixed cluster pool test suite', () => {
     expect(typeof inError === 'string').toBe(true)
     expect(inError).toBe('Error Message from ClusterWorker')
     expect(taskError).toStrictEqual({
-      name: 'default',
+      name: DEFAULT_TASK_NAME,
       message: 'Error Message from ClusterWorker',
       data
     })
@@ -218,7 +219,7 @@ describe('Fixed cluster pool test suite', () => {
     expect(typeof inError === 'string').toBe(true)
     expect(inError).toBe('Error Message from ClusterWorker:async')
     expect(taskError).toStrictEqual({
-      name: 'default',
+      name: DEFAULT_TASK_NAME,
       message: 'Error Message from ClusterWorker:async',
       data
     })
