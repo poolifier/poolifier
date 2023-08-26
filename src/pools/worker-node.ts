@@ -17,6 +17,9 @@ import {
   type WorkerUsage
 } from './worker'
 
+type EmptyQueueCallback = (workerId: number) => void
+type BackPressureCallback = EmptyQueueCallback
+
 /**
  * Worker node.
  *
@@ -36,9 +39,9 @@ implements IWorkerNode<Worker, Data> {
   /** @inheritdoc */
   public tasksQueueBackPressureSize: number
   /** @inheritdoc */
-  public onBackPressure?: (workerId: number) => void
+  public onBackPressure?: BackPressureCallback
   /** @inheritdoc */
-  public onEmptyQueue?: (workerId: number) => void
+  public onEmptyQueue?: EmptyQueueCallback
   private readonly tasksQueue: Deque<Task<Data>>
   private onEmptyQueueCount: number
   private readonly taskFunctionsUsage: Map<string, WorkerUsage>
@@ -185,7 +188,7 @@ implements IWorkerNode<Worker, Data> {
       this.onEmptyQueueCount = 0
       return
     }
-    (this.onEmptyQueue as (workerId: number) => void)(this.info.id as number)
+    (this.onEmptyQueue as EmptyQueueCallback)(this.info.id as number)
     ++this.onEmptyQueueCount
     await sleep(exponentialDelay(this.onEmptyQueueCount))
     await this.startOnEmptyQueue()
