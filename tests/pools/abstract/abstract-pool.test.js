@@ -324,6 +324,19 @@ describe('Abstract pool test suite', () => {
           './tests/worker-files/thread/testWorker.js',
           {
             enableTasksQueue: true,
+            tasksQueueOptions: 'invalidTasksQueueOptions'
+          }
+        )
+    ).toThrowError(
+      new TypeError('Invalid tasks queue options: must be a plain object')
+    )
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.js',
+          {
+            enableTasksQueue: true,
             tasksQueueOptions: { concurrency: 0 }
           }
         )
@@ -339,11 +352,13 @@ describe('Abstract pool test suite', () => {
           './tests/worker-files/thread/testWorker.js',
           {
             enableTasksQueue: true,
-            tasksQueueOptions: 'invalidTasksQueueOptions'
+            tasksQueueOptions: { concurrency: -1 }
           }
         )
     ).toThrowError(
-      new TypeError('Invalid tasks queue options: must be a plain object')
+      new RangeError(
+        'Invalid worker node tasks concurrency: -1 is a negative integer or zero'
+      )
     )
     expect(
       () =>
@@ -357,6 +372,64 @@ describe('Abstract pool test suite', () => {
         )
     ).toThrowError(
       new TypeError('Invalid worker node tasks concurrency: must be an integer')
+    )
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.js',
+          {
+            enableTasksQueue: true,
+            tasksQueueOptions: { queueMaxSize: 2 }
+          }
+        )
+    ).toThrowError(
+      new Error(
+        'Invalid tasks queue options: queueMaxSize is deprecated, please use size instead'
+      )
+    )
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.js',
+          {
+            enableTasksQueue: true,
+            tasksQueueOptions: { size: 0 }
+          }
+        )
+    ).toThrowError(
+      new RangeError(
+        'Invalid worker node tasks queue size: 0 is a negative integer or zero'
+      )
+    )
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.js',
+          {
+            enableTasksQueue: true,
+            tasksQueueOptions: { size: -1 }
+          }
+        )
+    ).toThrowError(
+      new RangeError(
+        'Invalid worker node tasks queue size: -1 is a negative integer or zero'
+      )
+    )
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.js',
+          {
+            enableTasksQueue: true,
+            tasksQueueOptions: { size: 0.2 }
+          }
+        )
+    ).toThrowError(
+      new TypeError('Invalid worker node tasks queue size: must be an integer')
     )
   })
 
