@@ -44,6 +44,17 @@ describe('Abstract pool test suite', () => {
     )
   })
 
+  it('Verify that pool statuses properties are set', async () => {
+    const pool = new FixedThreadPool(
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.js'
+    )
+    expect(pool.starting).toBe(false)
+    expect(pool.started).toBe(true)
+    await pool.destroy()
+    expect(pool.started).toBe(false)
+  })
+
   it('Verify that filePath is checked', () => {
     const expectedError = new Error(
       'Please specify a file with a worker implementation'
