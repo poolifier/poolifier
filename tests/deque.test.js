@@ -101,7 +101,9 @@ describe('Deque test suite', () => {
     deque.push(1)
     deque.push(2)
     deque.push(3)
+    expect(deque.size).toBe(3)
     expect(deque.peekFirst()).toBe(1)
+    expect(deque.size).toBe(3)
   })
 
   it('Verify peekLast() behavior', () => {
@@ -109,7 +111,9 @@ describe('Deque test suite', () => {
     deque.push(1)
     deque.push(2)
     deque.push(3)
+    expect(deque.size).toBe(3)
     expect(deque.peekLast()).toBe(3)
+    expect(deque.size).toBe(3)
   })
 
   it('Verify clear() behavior', () => {
