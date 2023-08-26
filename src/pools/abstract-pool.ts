@@ -5,8 +5,7 @@ import { type TransferListItem } from 'node:worker_threads'
 import type {
   MessageValue,
   PromiseResponseWrapper,
-  Task,
-  Writable
+  Task
 } from '../utility-types'
 import {
   DEFAULT_TASK_NAME,
@@ -292,7 +291,7 @@ export abstract class AbstractPool<
   }
 
   private checkValidTasksQueueOptions (
-    tasksQueueOptions: Writable<TasksQueueOptions>
+    tasksQueueOptions: TasksQueueOptions
   ): void {
     if (tasksQueueOptions != null && !isPlainObject(tasksQueueOptions)) {
       throw new TypeError('Invalid tasks queue options: must be a plain object')
