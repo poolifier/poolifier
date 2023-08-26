@@ -135,7 +135,7 @@ export abstract class AbstractWorker<
         }
         if (typeof name === 'string' && name.trim().length === 0) {
           throw new TypeError(
-            'A taskFunctions parameter object key an empty string'
+            'A taskFunctions parameter object key is an empty string'
           )
         }
         if (typeof fn !== 'function') {

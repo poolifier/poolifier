@@ -104,11 +104,14 @@ describe('Abstract worker test suite', () => {
     )
   })
 
-  it('Verify that taskFunctions parameter with multiple task functions contains function', () => {
+  it('Verify that taskFunctions parameter with multiple task functions is checked', () => {
     const fn1 = () => {
       return 1
     }
     const fn2 = ''
+    expect(() => new ThreadWorker({ '': fn1 })).toThrowError(
+      new TypeError('A taskFunctions parameter object key is an empty string')
+    )
     expect(() => new ThreadWorker({ fn1, fn2 })).toThrowError(
       new TypeError('A taskFunctions parameter object value is not a function')
     )
@@ -178,6 +181,12 @@ describe('Abstract worker test suite', () => {
       return 2
     }
     const worker = new ClusterWorker({ fn1, fn2 })
+    expect(() => worker.hasTaskFunction(0)).toThrowError(
+      new TypeError('name parameter is not a string')
+    )
+    expect(() => worker.hasTaskFunction('')).toThrowError(
+      new TypeError('name parameter is an empty string')
+    )
     expect(worker.hasTaskFunction('default')).toBe(true)
     expect(worker.hasTaskFunction('fn1')).toBe(true)
     expect(worker.hasTaskFunction('fn2')).toBe(true)
@@ -195,6 +204,15 @@ describe('Abstract worker test suite', () => {
       return 3
     }
     const worker = new ThreadWorker(fn1)
+    expect(() => worker.addTaskFunction(0, fn1)).toThrowError(
+      new TypeError('name parameter is not a string')
+    )
+    expect(() => worker.addTaskFunction('', fn1)).toThrowError(
+      new TypeError('name parameter is an empty string')
+    )
+    expect(() => worker.addTaskFunction('fn3', '')).toThrowError(
+      new TypeError('fn parameter is not a function')
+    )
     expect(worker.taskFunctions.get('default')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.size).toBe(2)
@@ -230,6 +248,12 @@ describe('Abstract worker test suite', () => {
       return 2
     }
     const worker = new ClusterWorker({ fn1, fn2 })
+    expect(() => worker.removeTaskFunction(0, fn1)).toThrowError(
+      new TypeError('name parameter is not a string')
+    )
+    expect(() => worker.removeTaskFunction('', fn1)).toThrowError(
+      new TypeError('name parameter is an empty string')
+    )
     worker.getMainWorker = sinon.stub().returns({
       id: 1,
       send: sinon.stub().returns()
@@ -278,6 +302,12 @@ describe('Abstract worker test suite', () => {
       return 2
     }
     const worker = new ThreadWorker({ fn1, fn2 })
+    expect(() => worker.setDefaultTaskFunction(0, fn1)).toThrowError(
+      new TypeError('name parameter is not a string')
+    )
+    expect(() => worker.setDefaultTaskFunction('', fn1)).toThrowError(
+      new TypeError('name parameter is an empty string')
+    )
     expect(worker.taskFunctions.get('default')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Function)
@@ -288,6 +318,11 @@ describe('Abstract worker test suite', () => {
     expect(() => worker.setDefaultTaskFunction('default')).toThrowError(
       new Error(
         'Cannot set the default task function reserved name as the default task function'
+      )
+    )
+    expect(() => worker.setDefaultTaskFunction('fn3')).toThrowError(
+      new Error(
+        'Cannot set the default task function to a non-existing task function'
       )
     )
     worker.setDefaultTaskFunction('fn1')
