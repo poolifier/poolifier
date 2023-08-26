@@ -216,13 +216,13 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    */
   readonly info: WorkerInfo
   /**
-   * Message channel (worker_threads only).
-   */
-  readonly messageChannel?: MessageChannel
-  /**
    * Worker usage statistics.
    */
   usage: WorkerUsage
+  /**
+   * Message channel (worker_threads only).
+   */
+  readonly messageChannel?: MessageChannel
   /**
    * Tasks queue back pressure size.
    * This is the number of tasks that can be enqueued before the worker node has back pressure.

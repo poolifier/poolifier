@@ -30,18 +30,18 @@ implements IWorkerNode<Worker, Data> {
   /** @inheritdoc */
   public readonly info: WorkerInfo
   /** @inheritdoc */
-  public messageChannel?: MessageChannel
-  /** @inheritdoc */
   public usage: WorkerUsage
+  /** @inheritdoc */
+  public messageChannel?: MessageChannel
   /** @inheritdoc */
   public tasksQueueBackPressureSize: number
   /** @inheritdoc */
   public onBackPressure?: (workerId: number) => void
   /** @inheritdoc */
   public onEmptyQueue?: (workerId: number) => void
-  private readonly taskFunctionsUsage: Map<string, WorkerUsage>
   private readonly tasksQueue: Deque<Task<Data>>
   private onEmptyQueueCount: number
+  private readonly taskFunctionsUsage: Map<string, WorkerUsage>
 
   /**
    * Constructs a new worker node.
@@ -75,14 +75,14 @@ implements IWorkerNode<Worker, Data> {
     }
     this.worker = worker
     this.info = this.initWorkerInfo(worker, workerType)
+    this.usage = this.initWorkerUsage()
     if (workerType === WorkerTypes.thread) {
       this.messageChannel = new MessageChannel()
     }
-    this.usage = this.initWorkerUsage()
-    this.taskFunctionsUsage = new Map<string, WorkerUsage>()
-    this.tasksQueue = new Deque<Task<Data>>()
     this.tasksQueueBackPressureSize = tasksQueueBackPressureSize
+    this.tasksQueue = new Deque<Task<Data>>()
     this.onEmptyQueueCount = 0
+    this.taskFunctionsUsage = new Map<string, WorkerUsage>()
   }
 
   /** @inheritdoc */
