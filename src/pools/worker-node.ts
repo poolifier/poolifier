@@ -178,7 +178,11 @@ implements IWorkerNode<Worker, Data> {
   }
 
   private async startOnEmptyQueue (): Promise<void> {
-    if (this.tasksQueue.size > 0) {
+    if (
+      this.onEmptyQueueCount > 0 &&
+      this.usage.tasks.executing > 0 &&
+      this.tasksQueue.size > 0
+    ) {
       this.onEmptyQueueCount = 0
       return
     }

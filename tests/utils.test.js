@@ -34,13 +34,10 @@ describe('Utils test suite', () => {
   })
 
   it('Verify exponentialDelay() behavior', () => {
-    expect(typeof exponentialDelay(randomInt(1000)) === 'number').toBe(true)
-    expect(exponentialDelay(randomInt(1000))).toBeGreaterThanOrEqual(
-      Number.MIN_VALUE
-    )
-    expect(exponentialDelay(randomInt(1000))).toBeLessThanOrEqual(
-      Number.MAX_VALUE
-    )
+    const delay = exponentialDelay(randomInt(1000))
+    expect(typeof delay === 'number').toBe(true)
+    expect(delay).toBeGreaterThanOrEqual(Number.MIN_VALUE)
+    expect(delay).toBeLessThanOrEqual(Number.MAX_VALUE)
   })
 
   it('Verify average() computation', () => {
