@@ -263,6 +263,38 @@ describe('Abstract pool test suite', () => {
           numberOfWorkers,
           './tests/worker-files/thread/testWorker.js',
           {
+            workerChoiceStrategyOptions: {
+              choiceRetries: 'invalidChoiceRetries'
+            }
+          }
+        )
+    ).toThrowError(
+      new TypeError(
+        'Invalid worker choice strategy options: choice retries must be an integer'
+      )
+    )
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.js',
+          {
+            workerChoiceStrategyOptions: {
+              choiceRetries: -1
+            }
+          }
+        )
+    ).toThrowError(
+      new RangeError(
+        "Invalid worker choice strategy options: choice retries '-1' must be greater or equal than zero"
+      )
+    )
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.js',
+          {
             workerChoiceStrategyOptions: { weights: {} }
           }
         )
@@ -467,6 +499,22 @@ describe('Abstract pool test suite', () => {
     ).toThrowError(
       new TypeError(
         'Invalid worker choice strategy options: must be a plain object'
+      )
+    )
+    expect(() =>
+      pool.setWorkerChoiceStrategyOptions({
+        choiceRetries: 'invalidChoiceRetries'
+      })
+    ).toThrowError(
+      new TypeError(
+        'Invalid worker choice strategy options: choice retries must be an integer'
+      )
+    )
+    expect(() =>
+      pool.setWorkerChoiceStrategyOptions({ choiceRetries: -1 })
+    ).toThrowError(
+      new RangeError(
+        "Invalid worker choice strategy options: choice retries '-1' must be greater or equal than zero"
       )
     )
     expect(() =>

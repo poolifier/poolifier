@@ -265,10 +265,10 @@ export abstract class AbstractPool<
     }
     if (
       workerChoiceStrategyOptions.choiceRetries != null &&
-      workerChoiceStrategyOptions.choiceRetries <= 0
+      workerChoiceStrategyOptions.choiceRetries < 0
     ) {
       throw new RangeError(
-        `Invalid worker choice strategy options: choice retries '${workerChoiceStrategyOptions.choiceRetries}' must be greater than zero`
+        `Invalid worker choice strategy options: choice retries '${workerChoiceStrategyOptions.choiceRetries}' must be greater or equal than zero`
       )
     }
     if (
