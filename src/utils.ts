@@ -68,6 +68,40 @@ export const availableParallelism = (): number => {
 }
 
 /**
+ * Returns the worker type of the given worker.
+ *
+ * @param worker - The worker to get the type of.
+ * @returns The worker type of the given worker.
+ * @internal
+ */
+export const getWorkerType = <Worker extends IWorker>(
+  worker: Worker
+): WorkerType | undefined => {
+  if (worker instanceof ThreadWorker) {
+    return WorkerTypes.thread
+  } else if (worker instanceof ClusterWorker) {
+    return WorkerTypes.cluster
+  }
+}
+
+/**
+ * Returns the worker id of the given worker.
+ *
+ * @param worker - The worker to get the id of.
+ * @returns The worker id of the given worker.
+ * @internal
+ */
+export const getWorkerId = <Worker extends IWorker>(
+  worker: Worker
+): number | undefined => {
+  if (worker instanceof ThreadWorker) {
+    return worker.threadId
+  } else if (worker instanceof ClusterWorker) {
+    return worker.id
+  }
+}
+
+/**
  * Sleeps for the given amount of milliseconds.
  *
  * @param ms - The amount of milliseconds to sleep.
@@ -114,41 +148,6 @@ export const average = (dataSet: number[]): number => {
     dataSet.reduce((accumulator, number) => accumulator + number, 0) /
     dataSet.length
   )
-}
-
-/**
- * Returns the worker type of the given worker.
- *
- * @param worker - The worker to get the type of.
- * @returns The worker type of the given worker.
- * @internal
- */
-export const getWorkerType = <Worker extends IWorker>(
-  worker: Worker
-): WorkerType | undefined => {
-  if (worker instanceof ThreadWorker) {
-    return WorkerTypes.thread
-  }
-  if (worker instanceof ClusterWorker) {
-    return WorkerTypes.cluster
-  }
-}
-
-/**
- * Returns the worker id of the given worker.
- *
- * @param worker - The worker to get the id of.
- * @returns The worker id of the given worker.
- * @internal
- */
-export const getWorkerId = <Worker extends IWorker>(
-  worker: Worker
-): number | undefined => {
-  if (worker instanceof ThreadWorker) {
-    return worker.threadId
-  } else if (worker instanceof ClusterWorker) {
-    return worker.id
-  }
 }
 
 /**

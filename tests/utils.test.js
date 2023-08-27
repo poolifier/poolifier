@@ -1,4 +1,6 @@
 const { randomInt } = require('crypto')
+const { Worker } = require('worker_threads')
+const cluster = require('cluster')
 const { expect } = require('expect')
 const {
   CircularArray,
@@ -8,6 +10,8 @@ const {
   availableParallelism,
   average,
   exponentialDelay,
+  getWorkerType,
+  getWorkerId,
   isAsyncFunction,
   isKillBehavior,
   isPlainObject,
@@ -17,13 +21,28 @@ const {
   sleep,
   updateMeasurementStatistics
 } = require('../lib/utils')
-const { KillBehaviors } = require('../lib/worker/worker-options')
+const { KillBehaviors, WorkerTypes } = require('../lib')
 
 describe('Utils test suite', () => {
   it('Verify availableParallelism() behavior', () => {
-    expect(typeof availableParallelism() === 'number').toBe(true)
-    expect(availableParallelism()).toBeGreaterThan(0)
-    expect(Number.isSafeInteger(availableParallelism())).toBe(true)
+    const parallelism = availableParallelism()
+    expect(typeof parallelism === 'number').toBe(true)
+    expect(parallelism).toBeGreaterThan(0)
+    expect(Number.isSafeInteger(parallelism)).toBe(true)
+  })
+
+  it('Verify getWorkerType() behavior', () => {
+    expect(
+      getWorkerType(new Worker('./tests/worker-files/thread/testWorker.js'))
+    ).toBe(WorkerTypes.thread)
+    expect(getWorkerType(cluster.fork())).toBe(WorkerTypes.cluster)
+  })
+
+  it('Verify getWorkerId() behavior', () => {
+    const threadWorker = new Worker('./tests/worker-files/thread/testWorker.js')
+    const clusterWorker = cluster.fork()
+    expect(getWorkerId(threadWorker)).toBe(threadWorker.threadId)
+    expect(getWorkerId(clusterWorker)).toBe(clusterWorker.id)
   })
 
   it.skip('Verify sleep() behavior', async () => {

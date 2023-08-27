@@ -74,16 +74,16 @@ export class LeastBusyWorkerChoiceStrategy<
     let minTime = Infinity
     let chosenWorkerNodeKey: number | undefined
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
+      if (!this.isWorkerNodeEligible(workerNodeKey)) {
+        continue
+      }
       const workerTime =
         (workerNode.usage.runTime?.aggregate ?? 0) +
         (workerNode.usage.waitTime?.aggregate ?? 0)
-      if (this.isWorkerNodeEligible(workerNodeKey) && workerTime === 0) {
+      if (workerTime === 0) {
         chosenWorkerNodeKey = workerNodeKey
         break
-      } else if (
-        this.isWorkerNodeEligible(workerNodeKey) &&
-        workerTime < minTime
-      ) {
+      } else if (workerTime < minTime) {
         minTime = workerTime
         chosenWorkerNodeKey = workerNodeKey
       }
