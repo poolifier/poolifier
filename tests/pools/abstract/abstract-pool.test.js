@@ -1172,6 +1172,8 @@ describe('Abstract pool test suite', () => {
       'factorial',
       'fibonacci'
     ])
+    await dynamicThreadPool.destroy()
+    await fixedClusterPool.destroy()
   })
 
   it('Verify that multiple task functions worker is working', async () => {
@@ -1228,5 +1230,6 @@ describe('Abstract pool test suite', () => {
         ).toBeGreaterThanOrEqual(0)
       }
     }
+    await pool.destroy()
   })
 })

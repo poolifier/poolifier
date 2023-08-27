@@ -72,15 +72,15 @@ describe('Dynamic cluster pool test suite', () => {
   })
 
   it('Should work even without opts in input', async () => {
-    const pool1 = new DynamicClusterPool(
+    const pool = new DynamicClusterPool(
       min,
       max,
       './tests/worker-files/cluster/testWorker.js'
     )
-    const result = await pool1.execute()
+    const result = await pool.execute()
     expect(result).toStrictEqual({ ok: 1 })
     // We need to clean up the resources after our test
-    await pool1.destroy()
+    await pool.destroy()
   })
 
   it('Verify scale processes up and down is working when long executing task is used:hard', async () => {

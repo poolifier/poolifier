@@ -72,15 +72,15 @@ describe('Dynamic thread pool test suite', () => {
   })
 
   it('Should work even without opts in input', async () => {
-    const pool1 = new DynamicThreadPool(
+    const pool = new DynamicThreadPool(
       min,
       max,
       './tests/worker-files/thread/testWorker.js'
     )
-    const res = await pool1.execute()
+    const res = await pool.execute()
     expect(res).toStrictEqual({ ok: 1 })
     // We need to clean up the resources after our test
-    await pool1.destroy()
+    await pool.destroy()
   })
 
   it('Verify scale thread up and down is working when long executing task is used:hard', async () => {

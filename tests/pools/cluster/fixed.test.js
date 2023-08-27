@@ -80,7 +80,7 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it("Verify that 'ready' event is emitted", async () => {
-    const pool1 = new FixedClusterPool(
+    const pool = new FixedClusterPool(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js',
       {
@@ -88,9 +88,10 @@ describe('Fixed cluster pool test suite', () => {
       }
     )
     let poolReady = 0
-    pool1.emitter.on(PoolEvents.ready, () => ++poolReady)
-    await waitPoolEvents(pool1, PoolEvents.ready, 1)
+    pool.emitter.on(PoolEvents.ready, () => ++poolReady)
+    await waitPoolEvents(pool, PoolEvents.ready, 1)
     expect(poolReady).toBe(1)
+    await pool.destroy()
   })
 
   it("Verify that 'busy' event is emitted", async () => {
@@ -251,36 +252,36 @@ describe('Fixed cluster pool test suite', () => {
 
   it('Verify that cluster pool options are checked', async () => {
     const workerFilePath = './tests/worker-files/cluster/testWorker.js'
-    let pool1 = new FixedClusterPool(numberOfWorkers, workerFilePath)
-    expect(pool1.opts.env).toBeUndefined()
-    expect(pool1.opts.settings).toBeUndefined()
-    await pool1.destroy()
-    pool1 = new FixedClusterPool(numberOfWorkers, workerFilePath, {
+    let pool = new FixedClusterPool(numberOfWorkers, workerFilePath)
+    expect(pool.opts.env).toBeUndefined()
+    expect(pool.opts.settings).toBeUndefined()
+    await pool.destroy()
+    pool = new FixedClusterPool(numberOfWorkers, workerFilePath, {
       env: { TEST: 'test' },
       settings: { args: ['--use', 'http'], silent: true }
     })
-    expect(pool1.opts.env).toStrictEqual({ TEST: 'test' })
-    expect(pool1.opts.settings).toStrictEqual({
+    expect(pool.opts.env).toStrictEqual({ TEST: 'test' })
+    expect(pool.opts.settings).toStrictEqual({
       args: ['--use', 'http'],
       silent: true
     })
-    expect({ ...pool1.opts.settings, exec: workerFilePath }).toStrictEqual({
+    expect({ ...pool.opts.settings, exec: workerFilePath }).toStrictEqual({
       args: ['--use', 'http'],
       silent: true,
       exec: workerFilePath
     })
-    await pool1.destroy()
+    await pool.destroy()
   })
 
   it('Should work even without opts in input', async () => {
-    const pool1 = new FixedClusterPool(
+    const pool = new FixedClusterPool(
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js'
     )
-    const res = await pool1.execute()
+    const res = await pool.execute()
     expect(res).toStrictEqual({ ok: 1 })
     // We need to clean up the resources after our test
-    await pool1.destroy()
+    await pool.destroy()
   })
 
   it('Verify that a pool with zero worker fails', async () => {

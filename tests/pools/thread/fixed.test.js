@@ -80,7 +80,7 @@ describe('Fixed thread pool test suite', () => {
   })
 
   it("Verify that 'ready' event is emitted", async () => {
-    const pool1 = new FixedThreadPool(
+    const pool = new FixedThreadPool(
       numberOfThreads,
       './tests/worker-files/thread/testWorker.js',
       {
@@ -88,9 +88,10 @@ describe('Fixed thread pool test suite', () => {
       }
     )
     let poolReady = 0
-    pool1.emitter.on(PoolEvents.ready, () => ++poolReady)
-    await waitPoolEvents(pool1, PoolEvents.ready, 1)
+    pool.emitter.on(PoolEvents.ready, () => ++poolReady)
+    await waitPoolEvents(pool, PoolEvents.ready, 1)
     expect(poolReady).toBe(1)
+    await pool.destroy()
   })
 
   it("Verify that 'busy' event is emitted", async () => {
@@ -281,31 +282,31 @@ describe('Fixed thread pool test suite', () => {
 
   it('Verify that thread pool options are checked', async () => {
     const workerFilePath = './tests/worker-files/thread/testWorker.js'
-    let pool1 = new FixedThreadPool(numberOfThreads, workerFilePath)
-    expect(pool1.opts.workerOptions).toBeUndefined()
-    await pool1.destroy()
-    pool1 = new FixedThreadPool(numberOfThreads, workerFilePath, {
+    let pool = new FixedThreadPool(numberOfThreads, workerFilePath)
+    expect(pool.opts.workerOptions).toBeUndefined()
+    await pool.destroy()
+    pool = new FixedThreadPool(numberOfThreads, workerFilePath, {
       workerOptions: {
         env: { TEST: 'test' },
         name: 'test'
       }
     })
-    expect(pool1.opts.workerOptions).toStrictEqual({
+    expect(pool.opts.workerOptions).toStrictEqual({
       env: { TEST: 'test' },
       name: 'test'
     })
-    await pool1.destroy()
+    await pool.destroy()
   })
 
   it('Should work even without opts in input', async () => {
-    const pool1 = new FixedThreadPool(
+    const pool = new FixedThreadPool(
       numberOfThreads,
       './tests/worker-files/thread/testWorker.js'
     )
-    const res = await pool1.execute()
+    const res = await pool.execute()
     expect(res).toStrictEqual({ ok: 1 })
     // We need to clean up the resources after our test
-    await pool1.destroy()
+    await pool.destroy()
   })
 
   it('Verify that a pool with zero worker fails', async () => {
