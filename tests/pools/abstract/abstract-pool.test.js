@@ -154,6 +154,14 @@ describe('Abstract pool test suite', () => {
     )
     expect(
       () =>
+        new DynamicThreadPool(0, 0, './tests/worker-files/thread/testWorker.js')
+    ).toThrowError(
+      new RangeError(
+        'Cannot instantiate a dynamic pool with a maximum pool size equal to zero'
+      )
+    )
+    expect(
+      () =>
         new DynamicClusterPool(
           1,
           1,
@@ -162,14 +170,6 @@ describe('Abstract pool test suite', () => {
     ).toThrowError(
       new RangeError(
         'Cannot instantiate a dynamic pool with a minimum pool size equal to the maximum pool size. Use a fixed pool instead'
-      )
-    )
-    expect(
-      () =>
-        new DynamicThreadPool(0, 0, './tests/worker-files/thread/testWorker.js')
-    ).toThrowError(
-      new RangeError(
-        'Cannot instantiate a dynamic pool with a maximum pool size equal to zero'
       )
     )
   })
@@ -799,6 +799,7 @@ describe('Abstract pool test suite', () => {
       expect(workerNode.tasksQueue.size).toBe(0)
       expect(workerNode.tasksQueue.maxSize).toBe(0)
     }
+    await pool.destroy()
   })
 
   it('Verify that pool worker info are initialized', async () => {
@@ -828,6 +829,7 @@ describe('Abstract pool test suite', () => {
         ready: true
       })
     }
+    await pool.destroy()
   })
 
   it('Verify that pool execute() arguments are checked', async () => {
