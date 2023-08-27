@@ -103,6 +103,27 @@ export abstract class AbstractWorker<
     delete this.opts.async
   }
 
+  private checkValidTaskFunction (
+    name: string,
+    fn: TaskFunction<Data, Response>
+  ): void {
+    if (typeof name !== 'string') {
+      throw new TypeError(
+        'A taskFunctions parameter object key is not a string'
+      )
+    }
+    if (typeof name === 'string' && name.trim().length === 0) {
+      throw new TypeError(
+        'A taskFunctions parameter object key is an empty string'
+      )
+    }
+    if (typeof fn !== 'function') {
+      throw new TypeError(
+        'A taskFunctions parameter object value is not a function'
+      )
+    }
+  }
+
   /**
    * Checks if the `taskFunctions` parameter is passed to the constructor.
    *
@@ -128,21 +149,7 @@ export abstract class AbstractWorker<
     } else if (isPlainObject(taskFunctions)) {
       let firstEntry = true
       for (const [name, fn] of Object.entries(taskFunctions)) {
-        if (typeof name !== 'string') {
-          throw new TypeError(
-            'A taskFunctions parameter object key is not a string'
-          )
-        }
-        if (typeof name === 'string' && name.trim().length === 0) {
-          throw new TypeError(
-            'A taskFunctions parameter object key is an empty string'
-          )
-        }
-        if (typeof fn !== 'function') {
-          throw new TypeError(
-            'A taskFunctions parameter object value is not a function'
-          )
-        }
+        this.checkValidTaskFunction(name, fn)
         const boundFn = fn.bind(this)
         if (firstEntry) {
           this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)
