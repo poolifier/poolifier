@@ -208,7 +208,7 @@ export interface IPool<
    * Events that can currently be listened to:
    *
    * - `'ready'`: Emitted when the number of workers created in the pool has reached the minimum size expected and are ready.
-   * - `'busy'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are executing at least one task.
+   * - `'busy'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are executing concurrently their tasks quota.
    * - `'full'`: Emitted when the pool is dynamic and the number of workers created has reached the maximum size expected.
    * - `'destroy'`: Emitted when the pool is destroyed.
    * - `'error'`: Emitted when an uncaught error occurs.

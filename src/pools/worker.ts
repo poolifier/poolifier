@@ -199,8 +199,7 @@ export interface IWorker {
   readonly once: (event: 'exit', handler: ExitHandler<this>) => void
 }
 
-export type EmptyQueueCallback = (workerId: number) => void
-export type BackPressureCallback = EmptyQueueCallback
+export type WorkerNodeEventCallback = (workerId: number) => void
 
 /**
  * Worker node interface.
@@ -236,13 +235,13 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    *
    * @param workerId - The worker id.
    */
-  onBackPressure?: EmptyQueueCallback
+  onBackPressure?: WorkerNodeEventCallback
   /**
    * Callback invoked when worker node tasks queue is empty.
    *
    * @param workerId - The worker id.
    */
-  onEmptyQueue?: BackPressureCallback
+  onEmptyQueue?: WorkerNodeEventCallback
   /**
    * Tasks queue size.
    *

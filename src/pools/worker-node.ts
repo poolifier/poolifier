@@ -11,11 +11,10 @@ import {
 } from '../utils'
 import { Deque } from '../deque'
 import {
-  type BackPressureCallback,
-  type EmptyQueueCallback,
   type IWorker,
   type IWorkerNode,
   type WorkerInfo,
+  type WorkerNodeEventCallback,
   type WorkerType,
   WorkerTypes,
   type WorkerUsage
@@ -40,9 +39,9 @@ implements IWorkerNode<Worker, Data> {
   /** @inheritdoc */
   public tasksQueueBackPressureSize: number
   /** @inheritdoc */
-  public onBackPressure?: BackPressureCallback
+  public onBackPressure?: WorkerNodeEventCallback
   /** @inheritdoc */
-  public onEmptyQueue?: EmptyQueueCallback
+  public onEmptyQueue?: WorkerNodeEventCallback
   private readonly tasksQueue: Deque<Task<Data>>
   private onEmptyQueueCount: number
   private readonly taskFunctionsUsage: Map<string, WorkerUsage>
@@ -179,7 +178,7 @@ implements IWorkerNode<Worker, Data> {
       this.onEmptyQueueCount = 0
       return
     }
-    (this.onEmptyQueue as EmptyQueueCallback)(this.info.id as number)
+    (this.onEmptyQueue as WorkerNodeEventCallback)(this.info.id as number)
     ++this.onEmptyQueueCount
     await sleep(exponentialDelay(this.onEmptyQueueCount))
     await this.startOnEmptyQueue()
