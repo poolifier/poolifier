@@ -57,7 +57,6 @@ implements IWorkerNode<Worker, Data> {
     if (worker == null) {
       throw new TypeError('Cannot construct a worker node without a worker')
     }
-
     if (tasksQueueBackPressureSize == null) {
       throw new TypeError(
         'Cannot construct a worker node without a tasks queue back pressure size'
