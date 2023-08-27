@@ -257,9 +257,13 @@ export const updateMeasurementStatistics = (
       measurementStatistics.history.push(measurementValue)
       if (measurementRequirements.average) {
         measurementStatistics.average = average(measurementStatistics.history)
+      } else if (measurementStatistics.average != null) {
+        delete measurementStatistics.average
       }
       if (measurementRequirements.median) {
         measurementStatistics.median = median(measurementStatistics.history)
+      } else if (measurementStatistics.median != null) {
+        delete measurementStatistics.median
       }
     }
   }

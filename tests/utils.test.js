@@ -232,6 +232,41 @@ describe('Utils test suite', () => {
       average: 0.002,
       history: new CircularArray(DEFAULT_CIRCULAR_ARRAY_SIZE, 0.001, 0.003)
     })
+    updateMeasurementStatistics(
+      measurementStatistics,
+      { aggregate: true, average: false, median: true },
+      0.006
+    )
+    expect(measurementStatistics).toStrictEqual({
+      aggregate: 0.04,
+      maximum: 0.02,
+      minimum: 0.001,
+      median: 0.003,
+      history: new CircularArray(
+        DEFAULT_CIRCULAR_ARRAY_SIZE,
+        0.001,
+        0.003,
+        0.006
+      )
+    })
+    updateMeasurementStatistics(
+      measurementStatistics,
+      { aggregate: true, average: true, median: false },
+      0.01
+    )
+    expect(measurementStatistics).toStrictEqual({
+      aggregate: 0.05,
+      maximum: 0.02,
+      minimum: 0.001,
+      average: 0.005,
+      history: new CircularArray(
+        DEFAULT_CIRCULAR_ARRAY_SIZE,
+        0.001,
+        0.003,
+        0.006,
+        0.01
+      )
+    })
   })
 
   it('Verify secureRandom() behavior', () => {
