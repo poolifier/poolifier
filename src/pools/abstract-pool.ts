@@ -255,19 +255,19 @@ export abstract class AbstractPool<
       )
     }
     if (
-      workerChoiceStrategyOptions.choiceRetries != null &&
-      !Number.isSafeInteger(workerChoiceStrategyOptions.choiceRetries)
+      workerChoiceStrategyOptions.retries != null &&
+      !Number.isSafeInteger(workerChoiceStrategyOptions.retries)
     ) {
       throw new TypeError(
-        'Invalid worker choice strategy options: choice retries must be an integer'
+        'Invalid worker choice strategy options: retries must be an integer'
       )
     }
     if (
-      workerChoiceStrategyOptions.choiceRetries != null &&
-      workerChoiceStrategyOptions.choiceRetries < 0
+      workerChoiceStrategyOptions.retries != null &&
+      workerChoiceStrategyOptions.retries < 0
     ) {
       throw new RangeError(
-        `Invalid worker choice strategy options: choice retries '${workerChoiceStrategyOptions.choiceRetries}' must be greater or equal than zero`
+        `Invalid worker choice strategy options: retries '${workerChoiceStrategyOptions.retries}' must be greater or equal than zero`
       )
     }
     if (

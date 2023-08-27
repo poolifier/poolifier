@@ -72,7 +72,7 @@ export interface WorkerChoiceStrategyOptions {
    *
    * @defaultValue 6
    */
-  readonly choiceRetries?: number
+  readonly retries?: number
   /**
    * Measurement to use in worker choice strategy supporting it.
    */

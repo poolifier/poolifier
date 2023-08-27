@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Rename worker choice strategy options `choiceRetries` to `retries`.
+
 ## [2.6.36] - 2023-08-27
 
 ### Fixed

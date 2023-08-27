@@ -37,7 +37,7 @@ export class WorkerChoiceStrategyContext<
   /**
    * The number of times the worker choice strategy in the context has been retried.
    */
-  private choiceRetriesCount = 0
+  private retriesCount = 0
 
   /**
    * Worker choice strategy context constructor.
@@ -178,16 +178,16 @@ export class WorkerChoiceStrategyContext<
     ).choose()
     if (
       workerNodeKey == null &&
-      this.choiceRetriesCount < (this.opts.choiceRetries as number)
+      this.retriesCount < (this.opts.retries as number)
     ) {
-      this.choiceRetriesCount++
+      this.retriesCount++
       return this.execute()
     } else if (workerNodeKey == null) {
       throw new Error(
-        `Worker node key chosen is null or undefined after ${this.choiceRetriesCount} retries`
+        `Worker node key chosen is null or undefined after ${this.retriesCount} retries`
       )
     }
-    this.choiceRetriesCount = 0
+    this.retriesCount = 0
     return workerNodeKey
   }
 
