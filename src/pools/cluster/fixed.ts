@@ -63,7 +63,8 @@ export class FixedClusterPool<
   protected async destroyWorkerNode (workerNodeKey: number): Promise<void> {
     this.flushTasksQueue(workerNodeKey)
     // FIXME: wait for tasks to be finished
-    const worker = this.workerNodes[workerNodeKey].worker
+    const workerNode = this.workerNodes[workerNodeKey]
+    const worker = workerNode.worker
     const waitWorkerExit = new Promise<void>((resolve) => {
       worker.on('exit', () => {
         resolve()
@@ -72,7 +73,10 @@ export class FixedClusterPool<
     worker.on('disconnect', () => {
       worker.kill()
     })
-    await this.sendKillMessageToWorker(workerNodeKey, worker.id)
+    await this.sendKillMessageToWorker(
+      workerNodeKey,
+      workerNode.info.id as number
+    )
     worker.disconnect()
     await waitWorkerExit
   }
@@ -89,7 +93,7 @@ export class FixedClusterPool<
   protected sendStartupMessageToWorker (workerNodeKey: number): void {
     this.sendToWorker(workerNodeKey, {
       ready: false,
-      workerId: this.workerNodes[workerNodeKey].worker.id
+      workerId: this.workerNodes[workerNodeKey].info.id as number
     })
   }
 

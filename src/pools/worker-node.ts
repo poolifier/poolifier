@@ -5,6 +5,8 @@ import {
   DEFAULT_TASK_NAME,
   EMPTY_FUNCTION,
   exponentialDelay,
+  getWorkerId,
+  getWorkerType,
   sleep
 } from '../utils'
 import { Deque } from '../deque'
@@ -49,22 +51,13 @@ implements IWorkerNode<Worker, Data> {
    * Constructs a new worker node.
    *
    * @param worker - The worker.
-   * @param workerType - The worker type.
    * @param tasksQueueBackPressureSize - The tasks queue back pressure size.
    */
-  constructor (
-    worker: Worker,
-    workerType: WorkerType,
-    tasksQueueBackPressureSize: number
-  ) {
+  constructor (worker: Worker, tasksQueueBackPressureSize: number) {
     if (worker == null) {
       throw new TypeError('Cannot construct a worker node without a worker')
     }
-    if (workerType == null) {
-      throw new TypeError(
-        'Cannot construct a worker node without a worker type'
-      )
-    }
+
     if (tasksQueueBackPressureSize == null) {
       throw new TypeError(
         'Cannot construct a worker node without a tasks queue back pressure size'
@@ -76,9 +69,9 @@ implements IWorkerNode<Worker, Data> {
       )
     }
     this.worker = worker
-    this.info = this.initWorkerInfo(worker, workerType)
+    this.info = this.initWorkerInfo(worker)
     this.usage = this.initWorkerUsage()
-    if (workerType === WorkerTypes.thread) {
+    if (this.info.type === WorkerTypes.thread) {
       this.messageChannel = new MessageChannel()
     }
     this.tasksQueueBackPressureSize = tasksQueueBackPressureSize
@@ -193,10 +186,10 @@ implements IWorkerNode<Worker, Data> {
     await this.startOnEmptyQueue()
   }
 
-  private initWorkerInfo (worker: Worker, workerType: WorkerType): WorkerInfo {
+  private initWorkerInfo (worker: Worker): WorkerInfo {
     return {
-      id: this.getWorkerId(worker, workerType),
-      type: workerType,
+      id: getWorkerId(worker),
+      type: getWorkerType(worker) as WorkerType,
       dynamic: false,
       ready: false
     }
@@ -277,24 +270,6 @@ implements IWorkerNode<Worker, Data> {
           history: new CircularArray()
         }
       }
-    }
-  }
-
-  /**
-   * Gets the worker id.
-   *
-   * @param worker - The worker.
-   * @param workerType - The worker type.
-   * @returns The worker id.
-   */
-  private getWorkerId (
-    worker: Worker,
-    workerType: WorkerType
-  ): number | undefined {
-    if (workerType === WorkerTypes.thread) {
-      return worker.threadId
-    } else if (workerType === WorkerTypes.cluster) {
-      return worker.id
     }
   }
 }

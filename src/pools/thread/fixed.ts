@@ -67,7 +67,10 @@ export class FixedThreadPool<
         resolve()
       })
     })
-    await this.sendKillMessageToWorker(workerNodeKey, worker.threadId)
+    await this.sendKillMessageToWorker(
+      workerNodeKey,
+      workerNode.info.id as number
+    )
     workerNode.closeChannel()
     await worker.terminate()
     await waitWorkerExit
@@ -86,14 +89,14 @@ export class FixedThreadPool<
 
   /** @inheritDoc */
   protected sendStartupMessageToWorker (workerNodeKey: number): void {
-    const worker = this.workerNodes[workerNodeKey].worker
-    const port2: MessagePort = (
-      this.workerNodes[workerNodeKey].messageChannel as MessageChannel
-    ).port2
+    const workerNode = this.workerNodes[workerNodeKey]
+    const worker = workerNode.worker
+    const port2: MessagePort = (workerNode.messageChannel as MessageChannel)
+      .port2
     worker.postMessage(
       {
         ready: false,
-        workerId: worker.threadId,
+        workerId: workerNode.info.id,
         port: port2
       },
       [port2]

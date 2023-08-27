@@ -1427,7 +1427,6 @@ export abstract class AbstractPool<
   private addWorkerNode (worker: Worker): number {
     const workerNode = new WorkerNode<Worker, Data>(
       worker,
-      this.worker,
       this.opts.tasksQueueOptions?.size ?? Math.pow(this.maxSize, 2)
     )
     // Flag the worker node as ready at pool startup.

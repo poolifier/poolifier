@@ -1,11 +1,18 @@
 import * as os from 'node:os'
 import { webcrypto } from 'node:crypto'
+import { Worker as ClusterWorker } from 'node:cluster'
+import { Worker as ThreadWorker } from 'node:worker_threads'
 import type {
   MeasurementStatisticsRequirements,
   WorkerChoiceStrategyOptions
 } from './pools/selection-strategies/selection-strategies-types'
 import type { KillBehavior } from './worker/worker-options'
-import type { MeasurementStatistics } from './pools/worker'
+import {
+  type IWorker,
+  type MeasurementStatistics,
+  type WorkerType,
+  WorkerTypes
+} from './pools/worker'
 
 /**
  * Default task name.
@@ -107,6 +114,41 @@ export const average = (dataSet: number[]): number => {
     dataSet.reduce((accumulator, number) => accumulator + number, 0) /
     dataSet.length
   )
+}
+
+/**
+ * Returns the worker type of the given worker.
+ *
+ * @param worker - The worker to get the type of.
+ * @returns The worker type of the given worker.
+ * @internal
+ */
+export const getWorkerType = <Worker extends IWorker>(
+  worker: Worker
+): WorkerType | undefined => {
+  if (worker instanceof ThreadWorker) {
+    return WorkerTypes.thread
+  }
+  if (worker instanceof ClusterWorker) {
+    return WorkerTypes.cluster
+  }
+}
+
+/**
+ * Returns the worker id of the given worker.
+ *
+ * @param worker - The worker to get the id of.
+ * @returns The worker id of the given worker.
+ * @internal
+ */
+export const getWorkerId = <Worker extends IWorker>(
+  worker: Worker
+): number | undefined => {
+  if (worker instanceof ThreadWorker) {
+    return worker.threadId
+  } else if (worker instanceof ClusterWorker) {
+    return worker.id
+  }
 }
 
 /**
