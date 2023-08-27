@@ -1301,7 +1301,11 @@ export abstract class AbstractPool<
           ...(sourceWorkerNode.popTask() as Task<Data>),
           workerId: workerNode.info.id as number
         }
-        if (this.tasksQueueSize(workerNodeKey) === 0) {
+        if (
+          this.tasksQueueSize(workerNodeKey) === 0 &&
+          workerNode.usage.tasks.executing <
+            (this.opts.tasksQueueOptions?.concurrency as number)
+        ) {
           this.executeTask(workerNodeKey, task)
         } else {
           this.enqueueTask(workerNodeKey, task)
