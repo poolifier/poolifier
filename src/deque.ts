@@ -1,15 +1,18 @@
 // Copyright Jerome Benoit. 2023. All Rights Reserved.
 
 /**
+ * Node.
+ *
+ * @typeParam T - Type of node data.
  * @internal
  */
 export class Node<T> {
-  public value: T
+  public data: T
   public next?: Node<T>
   public prev?: Node<T>
 
-  public constructor (value: T) {
-    this.value = value
+  public constructor (data: T) {
+    this.data = data
   }
 }
 
@@ -17,7 +20,7 @@ export class Node<T> {
  * Deque.
  * Implemented with a doubly linked list.
  *
- * @typeParam T - Type of deque values.
+ * @typeParam T - Type of deque data.
  * @internal
  */
 export class Deque<T> {
@@ -33,13 +36,13 @@ export class Deque<T> {
   }
 
   /**
-   * Appends a value to the deque.
+   * Appends data to the deque.
    *
-   * @param value - Value to append.
+   * @param data - Data to append.
    * @returns The new size of the queue.
    */
-  public push (value: T): number {
-    const node = new Node(value)
+  public push (data: T): number {
+    const node = new Node(data)
     if (this.tail == null) {
       this.head = this.tail = node
     } else {
@@ -50,13 +53,13 @@ export class Deque<T> {
   }
 
   /**
-   * Prepends a value to the deque.
+   * Prepends data to the deque.
    *
-   * @param value - Value to prepend.
+   * @param data - Data to prepend.
    * @returns The new size of the queue.
    */
-  public unshift (value: T): number {
-    const node = new Node(value)
+  public unshift (data: T): number {
+    const node = new Node(data)
     if (this.head == null) {
       this.head = this.tail = node
     } else {
@@ -67,9 +70,9 @@ export class Deque<T> {
   }
 
   /**
-   * Pops a value from the deque.
+   * Pops data from the deque.
    *
-   * @returns The popped value or `undefined` if the deque is empty.
+   * @returns The popped data or `undefined` if the deque is empty.
    */
   public pop (): T | undefined {
     if (this.head == null) {
@@ -83,13 +86,13 @@ export class Deque<T> {
       this.tail.next = undefined
     }
     --this.size
-    return tail?.value
+    return tail?.data
   }
 
   /**
-   * Shifts a value from the deque.
+   * Shifts data from the deque.
    *
-   * @returns The shifted value or `undefined` if the deque is empty.
+   * @returns The shifted data or `undefined` if the deque is empty.
    */
   public shift (): T | undefined {
     if (this.head == null) {
@@ -103,23 +106,23 @@ export class Deque<T> {
       this.head.prev = undefined
     }
     --this.size
-    return head?.value
+    return head?.data
   }
 
   /**
-   * Peeks at the first value.
-   * @returns The first value or `undefined` if the deque is empty.
+   * Peeks at the first data.
+   * @returns The first data or `undefined` if the deque is empty.
    */
   public peekFirst (): T | undefined {
-    return this.head?.value
+    return this.head?.data
   }
 
   /**
-   * Peeks at the last value.
-   * @returns The last value or `undefined` if the deque is empty.
+   * Peeks at the last data.
+   * @returns The last data or `undefined` if the deque is empty.
    */
   public peekLast (): T | undefined {
-    return this.tail?.value
+    return this.tail?.data
   }
 
   /**
@@ -149,7 +152,7 @@ export class Deque<T> {
           }
         }
         const ret = {
-          value: node.value,
+          value: node.data,
           done: false
         }
         node = node.next as Node<T>
@@ -177,7 +180,7 @@ export class Deque<T> {
               }
             }
             const ret = {
-              value: node.value,
+              value: node.data,
               done: false
             }
             node = node.prev as Node<T>
