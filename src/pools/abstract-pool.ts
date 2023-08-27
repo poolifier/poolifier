@@ -1228,6 +1228,25 @@ export abstract class AbstractPool<
     }
   }
 
+  private updateTaskStolenStatisticsWorkerUsage (
+    workerNodeKey: number,
+    workerNode: IWorkerNode<Worker, Data>,
+    taskName: string
+  ): void {
+    if (workerNode?.usage != null) {
+      ++workerNode.usage.tasks.stolen
+    }
+    if (
+      this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
+      workerNode.getTaskFunctionWorkerUsage(taskName) != null
+    ) {
+      const taskFunctionWorkerUsage = workerNode.getTaskFunctionWorkerUsage(
+        taskName
+      ) as WorkerUsage
+      ++taskFunctionWorkerUsage.tasks.stolen
+    }
+  }
+
   private taskStealingOnEmptyQueue (workerId: number): void {
     const destinationWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
     const destinationWorkerNode = this.workerNodes[destinationWorkerNodeKey]
@@ -1255,21 +1274,11 @@ export abstract class AbstractPool<
         } else {
           this.enqueueTask(destinationWorkerNodeKey, task)
         }
-        if (destinationWorkerNode?.usage != null) {
-          ++destinationWorkerNode.usage.tasks.stolen
-        }
-        if (
-          this.shallUpdateTaskFunctionWorkerUsage(destinationWorkerNodeKey) &&
-          destinationWorkerNode.getTaskFunctionWorkerUsage(
-            task.name as string
-          ) != null
-        ) {
-          const taskFunctionWorkerUsage =
-            destinationWorkerNode.getTaskFunctionWorkerUsage(
-              task.name as string
-            ) as WorkerUsage
-          ++taskFunctionWorkerUsage.tasks.stolen
-        }
+        this.updateTaskStolenStatisticsWorkerUsage(
+          destinationWorkerNodeKey,
+          destinationWorkerNode,
+          task.name as string
+        )
         break
       }
     }
@@ -1304,18 +1313,11 @@ export abstract class AbstractPool<
         } else {
           this.enqueueTask(workerNodeKey, task)
         }
-        if (workerNode?.usage != null) {
-          ++workerNode.usage.tasks.stolen
-        }
-        if (
-          this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
-          workerNode.getTaskFunctionWorkerUsage(task.name as string) != null
-        ) {
-          const taskFunctionWorkerUsage = workerNode.getTaskFunctionWorkerUsage(
-            task.name as string
-          ) as WorkerUsage
-          ++taskFunctionWorkerUsage.tasks.stolen
-        }
+        this.updateTaskStolenStatisticsWorkerUsage(
+          workerNodeKey,
+          workerNode,
+          task.name as string
+        )
       }
     }
   }
