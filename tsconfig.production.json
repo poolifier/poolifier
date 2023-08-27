@@ -1,7 +1,4 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "verbatimModuleSyntax": true
-  },
   "exclude": ["node_modules", "lib", "examples/typescript/**/*.ts"]
 }

@@ -2,7 +2,6 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "sourceMap": true,
-    "verbatimModuleSyntax": true
   },
   "exclude": ["node_modules", "lib", "examples/typescript/**/*.ts"]
 }

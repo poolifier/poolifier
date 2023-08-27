@@ -20,7 +20,7 @@ module.exports = defineConfig({
   settings: {
     'import/resolver': {
       typescript: {
-        project: './tsconfig.eslint.json'
+        project: './tsconfig.json'
       }
     }
   },
@@ -112,7 +112,7 @@ module.exports = defineConfig({
       plugins: ['@typescript-eslint', 'eslint-plugin-tsdoc'],
       parser: '@typescript-eslint/parser',
       parserOptions: {
-        project: './tsconfig.eslint.json'
+        project: './tsconfig.json'
       },
       extends: [
         'plugin:@typescript-eslint/recommended',
