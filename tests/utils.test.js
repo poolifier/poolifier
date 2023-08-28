@@ -57,6 +57,7 @@ describe('Utils test suite', () => {
   it('Verify availableParallelism() behavior', () => {
     const parallelism = availableParallelism()
     expect(typeof parallelism === 'number').toBe(true)
+    expect(Number.isSafeInteger(parallelism)).toBe(true)
     let expectedParallelism = 1
     try {
       expectedParallelism = os.availableParallelism()
@@ -64,7 +65,6 @@ describe('Utils test suite', () => {
       expectedParallelism = os.cpus().length
     }
     expect(parallelism).toBe(expectedParallelism)
-    expect(Number.isSafeInteger(parallelism)).toBe(true)
   })
 
   it('Verify getWorkerType() behavior', () => {
