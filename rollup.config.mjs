@@ -71,8 +71,8 @@ export default [
     plugins: [
       typescript({
         tsconfig: isDevelopmentBuild
-          ? 'tsconfig.development.json'
-          : 'tsconfig.production.json'
+          ? './tsconfig.development.json'
+          : './tsconfig.production.json'
       }),
       del({
         targets: ['./lib/*']
