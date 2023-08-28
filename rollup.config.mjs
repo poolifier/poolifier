@@ -5,6 +5,7 @@ import typescript from '@rollup/plugin-typescript'
 import analyze from 'rollup-plugin-analyzer'
 import command from 'rollup-plugin-command'
 import del from 'rollup-plugin-delete'
+import { defineConfig } from 'rollup'
 
 const availableParallelism = () => {
   let availableParallelism = 1
@@ -25,7 +26,7 @@ const isDocumentationBuild = process.env.DOCUMENTATION
 
 const maxWorkers = Math.floor(availableParallelism() / 2)
 
-export default [
+export default defineConfig([
   {
     input: './src/index.ts',
     strictDeprecations: true,
@@ -100,4 +101,4 @@ export default [
       isAnalyzeBuild && analyze()
     ]
   }
-]
+])
