@@ -47,17 +47,17 @@ describe('Worker node test suite', () => {
         failed: 0
       },
       runTime: {
-        history: expect.any(CircularArray)
+        history: new CircularArray()
       },
       waitTime: {
-        history: expect.any(CircularArray)
+        history: new CircularArray()
       },
       elu: {
         idle: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
         active: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         }
       }
     })
@@ -85,17 +85,17 @@ describe('Worker node test suite', () => {
         failed: 0
       },
       runTime: {
-        history: expect.any(CircularArray)
+        history: new CircularArray()
       },
       waitTime: {
-        history: expect.any(CircularArray)
+        history: new CircularArray()
       },
       elu: {
         idle: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
         active: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         }
       }
     })
@@ -134,17 +134,17 @@ describe('Worker node test suite', () => {
         failed: 0
       },
       runTime: {
-        history: expect.any(CircularArray)
+        history: new CircularArray()
       },
       waitTime: {
-        history: expect.any(CircularArray)
+        history: new CircularArray()
       },
       elu: {
         idle: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
         active: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         }
       }
     })
@@ -157,17 +157,17 @@ describe('Worker node test suite', () => {
         failed: 0
       },
       runTime: {
-        history: expect.any(CircularArray)
+        history: new CircularArray()
       },
       waitTime: {
-        history: expect.any(CircularArray)
+        history: new CircularArray()
       },
       elu: {
         idle: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
         active: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         }
       }
     })
@@ -180,17 +180,17 @@ describe('Worker node test suite', () => {
         failed: 0
       },
       runTime: {
-        history: expect.any(CircularArray)
+        history: new CircularArray()
       },
       waitTime: {
-        history: expect.any(CircularArray)
+        history: new CircularArray()
       },
       elu: {
         idle: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
         active: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         }
       }
     })

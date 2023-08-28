@@ -776,17 +776,17 @@ describe('Abstract pool test suite', () => {
           failed: 0
         },
         runTime: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
         waitTime: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
         elu: {
           idle: {
-            history: expect.any(CircularArray)
+            history: new CircularArray()
           },
           active: {
-            history: expect.any(CircularArray)
+            history: new CircularArray()
           }
         }
       })
@@ -1225,7 +1225,7 @@ describe('Abstract pool test suite', () => {
         expect(workerNode.getTaskFunctionWorkerUsage(name)).toStrictEqual({
           tasks: {
             executed: expect.any(Number),
-            executing: expect.any(Number),
+            executing: 0,
             failed: 0,
             queued: 0,
             stolen: 0
@@ -1246,8 +1246,8 @@ describe('Abstract pool test suite', () => {
           }
         })
         expect(
-          workerNode.getTaskFunctionWorkerUsage(name).tasks.executing
-        ).toBeGreaterThanOrEqual(0)
+          workerNode.getTaskFunctionWorkerUsage(name).tasks.executed
+        ).toBeGreaterThan(0)
       }
     }
     await pool.destroy()
