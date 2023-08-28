@@ -1249,6 +1249,11 @@ describe('Abstract pool test suite', () => {
           workerNode.getTaskFunctionWorkerUsage(name).tasks.executed
         ).toBeGreaterThan(0)
       }
+      expect(
+        workerNode.getTaskFunctionWorkerUsage(DEFAULT_TASK_NAME)
+      ).toStrictEqual(
+        workerNode.getTaskFunctionWorkerUsage(workerNode.info.taskFunctions[1])
+      )
     }
     await pool.destroy()
   })
