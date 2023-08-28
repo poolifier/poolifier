@@ -6,6 +6,7 @@
     "outDir": "lib",
     "moduleResolution": "Node",
     "declaration": true,
+    "declarationDir": "lib/dts",
     "strict": true,
     "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true

@@ -54,6 +54,7 @@ module.exports = defineConfig({
           'deque',
           'dequeue',
           'dequeued',
+          'dts',
           'ecma',
           'elu',
           'enqueue',
