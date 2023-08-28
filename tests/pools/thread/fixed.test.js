@@ -312,17 +312,12 @@ describe('Fixed thread pool test suite', () => {
   it('Verify destroyWorkerNode()', async () => {
     const workerFilePath = './tests/worker-files/thread/testWorker.js'
     const pool = new FixedThreadPool(numberOfThreads, workerFilePath)
+    const workerNodeKey = 0
     let exitEvent = 0
-    pool.workerNodes[0].worker.on('exit', () => {
+    pool.workerNodes[workerNodeKey].worker.on('exit', () => {
       ++exitEvent
     })
-    let error
-    try {
-      await pool.destroyWorkerNode(0)
-    } catch (e) {
-      error = e
-    }
-    expect(error).toBeUndefined()
+    await expect(pool.destroyWorkerNode(workerNodeKey)).resolves.toBeUndefined()
     expect(exitEvent).toBe(1)
     expect(pool.workerNodes.length).toBe(numberOfThreads - 1)
     await pool.destroy()

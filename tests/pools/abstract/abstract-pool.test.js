@@ -1252,4 +1252,20 @@ describe('Abstract pool test suite', () => {
     }
     await pool.destroy()
   })
+
+  it('Verify sendKillMessageToWorker()', async () => {
+    const pool = new DynamicClusterPool(
+      Math.floor(numberOfWorkers / 2),
+      numberOfWorkers,
+      './tests/worker-files/cluster/testWorker.js'
+    )
+    const workerNodeKey = 0
+    await expect(
+      pool.sendKillMessageToWorker(
+        workerNodeKey,
+        pool.workerNodes[workerNodeKey].info.id
+      )
+    ).resolves.toBeUndefined()
+    await pool.destroy()
+  })
 })
