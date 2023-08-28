@@ -276,13 +276,35 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it('Should work even without opts in input', async () => {
-    const pool = new FixedClusterPool(
-      numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
-    )
+    const workerFilePath = './tests/worker-files/cluster/testWorker.js'
+    const pool = new FixedClusterPool(numberOfWorkers, workerFilePath)
     const res = await pool.execute()
     expect(res).toStrictEqual({ ok: 1 })
     // We need to clean up the resources after our test
+    await pool.destroy()
+  })
+
+  it('Verify destroyWorkerNode()', async () => {
+    const workerFilePath = './tests/worker-files/cluster/testWorker.js'
+    const pool = new FixedClusterPool(numberOfWorkers, workerFilePath)
+    let disconnectEvent = 0
+    pool.workerNodes[0].worker.on('disconnect', () => {
+      ++disconnectEvent
+    })
+    let exitEvent = 0
+    pool.workerNodes[0].worker.on('exit', () => {
+      ++exitEvent
+    })
+    let error
+    try {
+      await pool.destroyWorkerNode(0)
+    } catch (e) {
+      error = e
+    }
+    expect(error).toBeUndefined()
+    expect(disconnectEvent).toBe(1)
+    expect(exitEvent).toBe(1)
+    expect(pool.workerNodes.length).toBe(numberOfWorkers - 1)
     await pool.destroy()
   })
 
