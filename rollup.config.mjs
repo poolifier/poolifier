@@ -27,33 +27,33 @@ const maxWorkers = Math.floor(availableParallelism() / 2)
 
 export default [
   {
-    input: 'src/index.ts',
+    input: './src/index.ts',
     strictDeprecations: true,
     output: [
       {
         format: 'cjs',
         ...(isDevelopmentBuild && {
-          dir: 'lib',
+          dir: './lib',
           sourcemap: true,
           preserveModules: true,
-          preserveModulesRoot: 'src'
+          preserveModulesRoot: './src'
         }),
         ...(!isDevelopmentBuild && {
-          file: 'lib/index.js',
+          file: './lib/index.js',
           plugins: [terser({ maxWorkers })]
         })
       },
       {
         format: 'esm',
         ...(isDevelopmentBuild && {
-          dir: 'lib',
+          dir: './lib',
           sourcemap: true,
           entryFileNames: '[name].mjs',
           preserveModules: true,
-          preserveModulesRoot: 'src'
+          preserveModulesRoot: './src'
         }),
         ...(!isDevelopmentBuild && {
-          file: 'lib/index.mjs',
+          file: './lib/index.mjs',
           plugins: [terser({ maxWorkers })]
         })
       }
@@ -75,7 +75,7 @@ export default [
           : 'tsconfig.production.json'
       }),
       del({
-        targets: ['lib/*']
+        targets: ['./lib/*']
       }),
       isAnalyzeBuild && analyze(),
       isDocumentationBuild && command('pnpm typedoc')
@@ -83,7 +83,7 @@ export default [
   },
   {
     input: './lib/dts/index.d.ts',
-    output: [{ format: 'esm', file: 'lib/index.d.ts' }],
+    output: [{ format: 'esm', file: './lib/index.d.ts' }],
     external: [
       'node:async_hooks',
       'node:cluster',
@@ -94,7 +94,7 @@ export default [
     plugins: [
       dts(),
       del({
-        targets: ['lib/dts'],
+        targets: ['./lib/dts'],
         hook: 'buildEnd'
       }),
       isAnalyzeBuild && analyze()

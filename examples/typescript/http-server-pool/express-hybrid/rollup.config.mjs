@@ -4,33 +4,33 @@ import del from 'rollup-plugin-delete'
 
 export default {
   input: [
-    'src/main.ts',
-    'src/express-worker.ts',
-    'src/request-handler-worker.ts'
+    './src/main.ts',
+    './src/express-worker.ts',
+    './src/request-handler-worker.ts'
   ],
   strictDeprecations: true,
   output: [
     {
       format: 'cjs',
-      dir: 'dist',
+      dir: './dist',
       sourcemap: true,
       entryFileNames: '[name].cjs',
       preserveModules: true,
-      preserveModulesRoot: 'src'
+      preserveModulesRoot: './src'
     },
     {
       format: 'esm',
-      dir: 'dist',
+      dir: './dist',
       sourcemap: true,
       preserveModules: true,
-      preserveModulesRoot: 'src'
+      preserveModulesRoot: './src'
     }
   ],
   external: ['express', 'node:path', 'node:url', 'poolifier'],
   plugins: [
     typescript(),
     del({
-      targets: ['dist/*']
+      targets: ['./dist/*']
     })
   ]
 }
