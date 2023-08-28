@@ -1,8 +1,9 @@
 /* eslint-disable n/no-unpublished-import */
 import typescript from '@rollup/plugin-typescript'
 import del from 'rollup-plugin-delete'
+import { defineConfig } from 'rollup'
 
-export default {
+export default defineConfig({
   input: ['./src/main.ts', './src/worker.ts'],
   strictDeprecations: true,
   output: [
@@ -29,4 +30,4 @@ export default {
       targets: ['./dist/*']
     })
   ]
-}
+})
