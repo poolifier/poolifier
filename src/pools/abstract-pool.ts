@@ -838,7 +838,7 @@ export abstract class AbstractPool<
    * @virtual
    */
   protected setupHook (): void {
-    /** Intentionally empty */
+    /* Intentionally empty */
   }
 
   /**
