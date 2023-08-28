@@ -900,6 +900,16 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
+      if (workerNode.usage.elu.active.aggregate == null) {
+        expect(workerNode.usage.elu.active.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.elu.active.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.elu.idle.aggregate == null) {
+        expect(workerNode.usage.elu.idle.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.elu.idle.aggregate).toBeGreaterThanOrEqual(0)
+      }
       if (workerNode.usage.elu.utilization == null) {
         expect(workerNode.usage.elu.utilization).toBeUndefined()
       } else {
@@ -954,6 +964,16 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
+      if (workerNode.usage.elu.active.aggregate == null) {
+        expect(workerNode.usage.elu.active.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.elu.active.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.elu.idle.aggregate == null) {
+        expect(workerNode.usage.elu.idle.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.elu.idle.aggregate).toBeGreaterThanOrEqual(0)
+      }
       if (workerNode.usage.elu.utilization == null) {
         expect(workerNode.usage.elu.utilization).toBeUndefined()
       } else {
@@ -1099,6 +1119,16 @@ describe('Selection strategies test suite', () => {
       } else {
         expect(workerNode.usage.runTime.average).toBeGreaterThan(0)
       }
+      if (workerNode.usage.elu.active.aggregate == null) {
+        expect(workerNode.usage.elu.active.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.elu.active.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.elu.idle.aggregate == null) {
+        expect(workerNode.usage.elu.idle.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.elu.idle.aggregate).toBeGreaterThanOrEqual(0)
+      }
       if (workerNode.usage.elu.utilization == null) {
         expect(workerNode.usage.elu.utilization).toBeUndefined()
       } else {
@@ -1167,6 +1197,16 @@ describe('Selection strategies test suite', () => {
         expect(workerNode.usage.runTime.average).toBeUndefined()
       } else {
         expect(workerNode.usage.runTime.average).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.elu.active.aggregate == null) {
+        expect(workerNode.usage.elu.active.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.elu.active.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.elu.idle.aggregate == null) {
+        expect(workerNode.usage.elu.idle.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.elu.idle.aggregate).toBeGreaterThanOrEqual(0)
       }
       if (workerNode.usage.elu.utilization == null) {
         expect(workerNode.usage.elu.utilization).toBeUndefined()
@@ -1241,6 +1281,16 @@ describe('Selection strategies test suite', () => {
         expect(workerNode.usage.runTime.median).toBeUndefined()
       } else {
         expect(workerNode.usage.runTime.median).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.elu.active.aggregate == null) {
+        expect(workerNode.usage.elu.active.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.elu.active.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.elu.idle.aggregate == null) {
+        expect(workerNode.usage.elu.idle.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.elu.idle.aggregate).toBeGreaterThanOrEqual(0)
       }
       if (workerNode.usage.elu.utilization == null) {
         expect(workerNode.usage.elu.utilization).toBeUndefined()
