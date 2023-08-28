@@ -429,6 +429,7 @@ export abstract class AbstractWorker<
    * Returns the main worker.
    *
    * @returns Reference to the main worker.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the main worker is not set.
    */
   protected getMainWorker (): MainWorker {
     if (this.mainWorker == null) {
