@@ -198,6 +198,15 @@ describe('Abstract pool test suite', () => {
       waitTime: { median: false },
       elu: { median: false }
     })
+    for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
+      .workerChoiceStrategies) {
+      expect(workerChoiceStrategy.opts).toStrictEqual({
+        retries: 6,
+        runTime: { median: false },
+        waitTime: { median: false },
+        elu: { median: false }
+      })
+    }
     expect(pool.opts.messageHandler).toBeUndefined()
     expect(pool.opts.errorHandler).toBeUndefined()
     expect(pool.opts.onlineHandler).toBeUndefined()
@@ -248,6 +257,16 @@ describe('Abstract pool test suite', () => {
       elu: { median: false },
       weights: { 0: 300, 1: 200 }
     })
+    for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
+      .workerChoiceStrategies) {
+      expect(workerChoiceStrategy.opts).toStrictEqual({
+        retries: 6,
+        runTime: { median: true },
+        waitTime: { median: false },
+        elu: { median: false },
+        weights: { 0: 300, 1: 200 }
+      })
+    }
     expect(pool.opts.messageHandler).toStrictEqual(testHandler)
     expect(pool.opts.errorHandler).toStrictEqual(testHandler)
     expect(pool.opts.onlineHandler).toStrictEqual(testHandler)

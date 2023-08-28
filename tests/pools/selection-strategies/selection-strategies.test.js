@@ -1,5 +1,6 @@
 const { expect } = require('expect')
 const {
+  DynamicClusterPool,
   DynamicThreadPool,
   FixedClusterPool,
   FixedThreadPool,
@@ -65,6 +66,43 @@ describe('Selection strategies test suite', () => {
       expect(pool.workerChoiceStrategyContext.workerChoiceStrategy).toBe(
         workerChoiceStrategy
       )
+      expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
+        retries: 6,
+        runTime: { median: false },
+        waitTime: { median: false },
+        elu: { median: false }
+      })
+      expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
+        retries: 6,
+        runTime: { median: false },
+        waitTime: { median: false },
+        elu: { median: false }
+      })
+      await pool.destroy()
+    }
+    for (const workerChoiceStrategy of Object.values(WorkerChoiceStrategies)) {
+      const pool = new DynamicClusterPool(
+        min,
+        max,
+        './tests/worker-files/cluster/testWorker.js'
+      )
+      pool.setWorkerChoiceStrategy(workerChoiceStrategy, { retries: 3 })
+      expect(pool.opts.workerChoiceStrategy).toBe(workerChoiceStrategy)
+      expect(pool.workerChoiceStrategyContext.workerChoiceStrategy).toBe(
+        workerChoiceStrategy
+      )
+      expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
+        retries: 3,
+        runTime: { median: false },
+        waitTime: { median: false },
+        elu: { median: false }
+      })
+      expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
+        retries: 3,
+        runTime: { median: false },
+        waitTime: { median: false },
+        elu: { median: false }
+      })
       await pool.destroy()
     }
   })
