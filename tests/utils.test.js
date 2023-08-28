@@ -45,7 +45,7 @@ describe('Utils test suite', () => {
     expect(getWorkerId(clusterWorker)).toBe(clusterWorker.id)
   })
 
-  it.skip('Verify sleep() behavior', async () => {
+  it('Verify sleep() behavior', async () => {
     const start = performance.now()
     await sleep(1000)
     const elapsed = performance.now() - start

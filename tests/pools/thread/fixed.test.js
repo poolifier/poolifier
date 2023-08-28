@@ -276,6 +276,8 @@ describe('Fixed thread pool test suite', () => {
     pool.emitter.on(PoolEvents.destroy, () => ++poolDestroy)
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
+    expect(pool.started).toBe(false)
+    expect(pool.workerNodes.length).toBe(0)
     expect(numberOfExitEvents).toBe(numberOfThreads)
     expect(poolDestroy).toBe(1)
   })
