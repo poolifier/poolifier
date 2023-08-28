@@ -59,9 +59,9 @@ export const availableParallelism = (): number => {
   try {
     availableParallelism = os.availableParallelism()
   } catch {
-    const numberOfCpus = os.cpus()
-    if (Array.isArray(numberOfCpus) && numberOfCpus.length > 0) {
-      availableParallelism = numberOfCpus.length
+    const cpus = os.cpus()
+    if (Array.isArray(cpus) && cpus.length > 0) {
+      availableParallelism = cpus.length
     }
   }
   return availableParallelism

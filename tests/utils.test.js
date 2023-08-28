@@ -1,6 +1,7 @@
 const { randomInt } = require('crypto')
 const { Worker } = require('worker_threads')
 const cluster = require('cluster')
+const os = require('os')
 const { expect } = require('expect')
 const {
   CircularArray,
@@ -56,7 +57,13 @@ describe('Utils test suite', () => {
   it('Verify availableParallelism() behavior', () => {
     const parallelism = availableParallelism()
     expect(typeof parallelism === 'number').toBe(true)
-    expect(parallelism).toBeGreaterThan(0)
+    let expectedParallelism = 1
+    try {
+      expectedParallelism = os.availableParallelism()
+    } catch {
+      expectedParallelism = os.cpus().length
+    }
+    expect(parallelism).toBe(expectedParallelism)
     expect(Number.isSafeInteger(parallelism)).toBe(true)
   })
 
