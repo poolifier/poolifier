@@ -7,6 +7,10 @@ const {
   DEFAULT_CIRCULAR_ARRAY_SIZE
 } = require('../lib/circular-array')
 const {
+  DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+  DEFAULT_TASK_NAME,
+  DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
+  EMPTY_FUNCTION,
   availableParallelism,
   average,
   exponentialDelay,
@@ -24,6 +28,31 @@ const {
 const { KillBehaviors, WorkerTypes } = require('../lib')
 
 describe('Utils test suite', () => {
+  it('Verify DEFAULT_TASK_NAME value', () => {
+    expect(DEFAULT_TASK_NAME).toBe('default')
+  })
+
+  it('Verify EMPTY_FUNCTION value', () => {
+    expect(EMPTY_FUNCTION).toStrictEqual(expect.any(Function))
+  })
+
+  it('Verify DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS values', () => {
+    expect(DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS).toStrictEqual({
+      retries: 6,
+      runTime: { median: false },
+      waitTime: { median: false },
+      elu: { median: false }
+    })
+  })
+
+  it('Verify DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS values', () => {
+    expect(DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS).toStrictEqual({
+      aggregate: false,
+      average: false,
+      median: false
+    })
+  })
+
   it('Verify availableParallelism() behavior', () => {
     const parallelism = availableParallelism()
     expect(typeof parallelism === 'number').toBe(true)
