@@ -1230,9 +1230,9 @@ export abstract class AbstractPool<
 
   private updateTaskStolenStatisticsWorkerUsage (
     workerNodeKey: number,
-    workerNode: IWorkerNode<Worker, Data>,
     taskName: string
   ): void {
+    const workerNode = this.workerNodes[workerNodeKey]
     if (workerNode?.usage != null) {
       ++workerNode.usage.tasks.stolen
     }
@@ -1276,7 +1276,6 @@ export abstract class AbstractPool<
         }
         this.updateTaskStolenStatisticsWorkerUsage(
           destinationWorkerNodeKey,
-          destinationWorkerNode,
           task.name as string
         )
         break
@@ -1315,7 +1314,6 @@ export abstract class AbstractPool<
         }
         this.updateTaskStolenStatisticsWorkerUsage(
           workerNodeKey,
-          workerNode,
           task.name as string
         )
       }
