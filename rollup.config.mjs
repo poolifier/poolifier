@@ -96,7 +96,8 @@ export default [
       del({
         targets: ['lib/dts'],
         hook: 'buildEnd'
-      })
+      }),
+      isAnalyzeBuild && analyze()
     ]
   }
 ]
