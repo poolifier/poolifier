@@ -12,8 +12,8 @@ dependencies:
     specifier: ^4.5.1
     version: 4.5.1
   poolifier:
-    specifier: ^2.6.35
-    version: 2.6.35
+    specifier: ^2.6.37
+    version: 2.6.37
 
 devDependencies:
   '@types/node':
@@ -288,8 +288,8 @@ packages:
       thread-stream: 2.4.0
     dev: false
 
-  /poolifier@2.6.35:
-    resolution: {integrity: sha512-pNma73oAgpjVwMaiUB697258LnQV4wKBEbr0Rk5lttOuiRWGVff3+/1p3UxkEc86HNUrL7XbiLv+bZYbCLD6Tw==}
+  /poolifier@2.6.37:
+    resolution: {integrity: sha512-f2LQTGfDxIWFLyXa/Rn/DTJToR0uRrfKNpCEIyPstK2T7OJSXLQ/5LzMBW4CJbiO1th/y/0ePiFdD+EcfGKe1A==}
     engines: {node: '>=16.14.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
