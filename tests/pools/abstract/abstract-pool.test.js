@@ -1,3 +1,4 @@
+const { EventEmitter } = require('events')
 const { expect } = require('expect')
 const sinon = require('sinon')
 const {
@@ -178,7 +179,7 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js'
     )
-    expect(pool.emitter).toBeDefined()
+    expect(pool.emitter).toBeInstanceOf(EventEmitter)
     expect(pool.opts.enableEvents).toBe(true)
     expect(pool.opts.restartWorkerOnError).toBe(true)
     expect(pool.opts.enableTasksQueue).toBe(false)

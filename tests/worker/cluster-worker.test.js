@@ -12,11 +12,6 @@ describe('Cluster worker test suite', () => {
     }
   }
 
-  it('Verify worker has default maxInactiveTime', () => {
-    const worker = new ClusterWorker(() => {})
-    expect(worker.opts.maxInactiveTime).toStrictEqual(60000)
-  })
-
   it('Verify worker invokes the getMainWorker() and send() methods', () => {
     const worker = new SpyWorker(() => {})
     worker.sendToMainWorker({ ok: 1 })

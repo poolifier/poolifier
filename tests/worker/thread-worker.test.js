@@ -13,11 +13,6 @@ describe('Thread worker test suite', () => {
     }
   }
 
-  it('Verify worker has default maxInactiveTime', () => {
-    const worker = new ThreadWorker(() => {})
-    expect(worker.opts.maxInactiveTime).toStrictEqual(60000)
-  })
-
   it('Verify that handleError() method is working properly', () => {
     const error = new Error('Error as an error')
     const worker = new ThreadWorker(() => {})

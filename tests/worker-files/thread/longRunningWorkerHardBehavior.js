@@ -7,6 +7,6 @@ async function sleep (data) {
 }
 
 module.exports = new ThreadWorker(sleep, {
-  maxInactiveTime: 500,
-  killBehavior: KillBehaviors.HARD
+  killBehavior: KillBehaviors.HARD,
+  maxInactiveTime: 500
 })

@@ -13,7 +13,7 @@ module.exports = new ClusterWorker(
     fibonacci: (data) => fibonacci(data.n)
   },
   {
-    maxInactiveTime: 500,
-    killBehavior: KillBehaviors.HARD
+    killBehavior: KillBehaviors.HARD,
+    maxInactiveTime: 500
   }
 )

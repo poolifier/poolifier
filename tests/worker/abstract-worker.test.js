@@ -17,10 +17,11 @@ describe('Abstract worker test suite', () => {
 
   it('Verify worker options default values', () => {
     const worker = new ThreadWorker(() => {})
-    expect(worker.opts.maxInactiveTime).toStrictEqual(60000)
-    expect(worker.opts.killBehavior).toBe(KillBehaviors.SOFT)
-    expect(worker.opts.killHandler).toStrictEqual(EMPTY_FUNCTION)
-    expect(worker.opts.async).toBe(undefined)
+    expect(worker.opts).toStrictEqual({
+      killBehavior: KillBehaviors.SOFT,
+      maxInactiveTime: 60000,
+      killHandler: EMPTY_FUNCTION
+    })
   })
 
   it('Verify that worker options are set at worker creation', () => {
@@ -28,15 +29,16 @@ describe('Abstract worker test suite', () => {
       console.info('Worker received kill message')
     }
     const worker = new ClusterWorker(() => {}, {
-      maxInactiveTime: 6000,
       killBehavior: KillBehaviors.HARD,
+      maxInactiveTime: 6000,
       killHandler,
       async: true
     })
-    expect(worker.opts.maxInactiveTime).toStrictEqual(6000)
-    expect(worker.opts.killBehavior).toBe(KillBehaviors.HARD)
-    expect(worker.opts.killHandler).toStrictEqual(killHandler)
-    expect(worker.opts.async).toBe(undefined)
+    expect(worker.opts).toStrictEqual({
+      killBehavior: KillBehaviors.HARD,
+      maxInactiveTime: 6000,
+      killHandler
+    })
   })
 
   it('Verify that taskFunctions parameter is mandatory', () => {

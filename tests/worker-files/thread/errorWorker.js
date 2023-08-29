@@ -6,6 +6,6 @@ function error () {
 }
 
 module.exports = new ThreadWorker(error, {
-  maxInactiveTime: 500,
-  killBehavior: KillBehaviors.HARD
+  killBehavior: KillBehaviors.HARD,
+  maxInactiveTime: 500
 })
