@@ -188,10 +188,13 @@ See [CONTRIBUTING](CONTRIBUTING.md) guidelines.
 
 - [**Alessandro Pio Ardizio**](https://github.com/pioardi)
 
-**_Contributors_**
+**Maintainers:**
+
+- [**Jérôme Benoit**](https://github.com/jerome-benoit)
+
+**Contributors:**
 
 - [**Shinigami92**](https://github.com/Shinigami92)
-- [**Jérôme Benoit**](https://github.com/jerome-benoit)
 
 ## License
 
