@@ -35,9 +35,9 @@ Moreover you can execute your tasks using an API designed to improve the **devel
 Please consult our [general guidelines](#general-guidelines).
 
 - Easy to use :white_check_mark:
-- Performance [benchmarks](./benchmarks/README.md) :white_check_mark:
 - Fixed and dynamic pool size :white_check_mark:
 - Easy switch from a pool type to another :white_check_mark:
+- Performance [benchmarks](./benchmarks/README.md) :white_check_mark:
 - No runtime dependencies :white_check_mark:
 - Proper integration with Node.js [async_hooks](https://nodejs.org/api/async_hooks.html) :white_check_mark:
 - Support for CommonJS, ESM, and TypeScript :white_check_mark:
