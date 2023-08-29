@@ -132,7 +132,7 @@ export interface WorkerInfo {
   /**
    * Worker type.
    */
-  type: WorkerType
+  readonly type: WorkerType
   /**
    * Dynamic flag.
    */
@@ -199,6 +199,12 @@ export interface IWorker {
   readonly once: (event: 'exit', handler: ExitHandler<this>) => void
 }
 
+/**
+ * Worker node event callback.
+ *
+ * @param workerId - The worker id.
+ * @internal
+ */
 export type WorkerNodeEventCallback = (workerId: number) => void
 
 /**
@@ -220,7 +226,7 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
   /**
    * Worker usage statistics.
    */
-  usage: WorkerUsage
+  readonly usage: WorkerUsage
   /**
    * Message channel (worker_threads only).
    */
@@ -232,14 +238,10 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
   tasksQueueBackPressureSize: number
   /**
    * Callback invoked when worker node tasks queue is back pressured.
-   *
-   * @param workerId - The worker id.
    */
   onBackPressure?: WorkerNodeEventCallback
   /**
    * Callback invoked when worker node tasks queue is empty.
-   *
-   * @param workerId - The worker id.
    */
   onEmptyQueue?: WorkerNodeEventCallback
   /**

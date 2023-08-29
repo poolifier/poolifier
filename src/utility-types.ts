@@ -47,13 +47,19 @@ export interface TaskPerformance {
 }
 
 /**
- * Performance statistics computation.
+ * Worker task performance statistics computation settings.
  *
  * @internal
  */
 export interface WorkerStatistics {
-  runTime: boolean
-  elu: boolean
+  /**
+   * Whether the worker computes the task runtime or not.
+   */
+  readonly runTime: boolean
+  /**
+   * Whether the worker computes the task event loop utilization (ELU) or not.
+   */
+  readonly elu: boolean
 }
 
 /**

@@ -655,13 +655,13 @@ export abstract class AbstractPool<
       this.checkValidTasksQueueOptions(tasksQueueOptions)
       this.opts.tasksQueueOptions =
         this.buildTasksQueueOptions(tasksQueueOptions)
-      this.setTasksQueueMaxSize(this.opts.tasksQueueOptions.size as number)
+      this.setTasksQueueSize(this.opts.tasksQueueOptions.size as number)
     } else if (this.opts.tasksQueueOptions != null) {
       delete this.opts.tasksQueueOptions
     }
   }
 
-  private setTasksQueueMaxSize (size: number): void {
+  private setTasksQueueSize (size: number): void {
     for (const workerNode of this.workerNodes) {
       workerNode.tasksQueueBackPressureSize = size
     }

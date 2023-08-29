@@ -29,6 +29,21 @@ describe('Worker node test suite', () => {
         'Cannot construct a worker node with a tasks queue back pressure size that is not an integer'
       )
     )
+    expect(() => new WorkerNode(threadWorker, 0.2)).toThrowError(
+      new TypeError(
+        'Cannot construct a worker node with a tasks queue back pressure size that is not an integer'
+      )
+    )
+    expect(() => new WorkerNode(threadWorker, 0)).toThrowError(
+      new RangeError(
+        'Cannot construct a worker node with a tasks queue back pressure size that is not a positive integer'
+      )
+    )
+    expect(() => new WorkerNode(threadWorker, -1)).toThrowError(
+      new RangeError(
+        'Cannot construct a worker node with a tasks queue back pressure size that is not a positive integer'
+      )
+    )
     expect(threadWorkerNode).toBeInstanceOf(WorkerNode)
     expect(threadWorkerNode.worker).toBe(threadWorker)
     expect(threadWorkerNode.info).toStrictEqual({
