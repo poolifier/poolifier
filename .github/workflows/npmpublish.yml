@@ -71,7 +71,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish Pre-Release
-        if: ${{ contains(steps.package-version.outputs.version, '-') == true }}
+        if: ${{ contains(steps.package-version.outputs.version, '-') == true && contains(steps.package-version.outputs.version, '-beta') == false }}
         run: pnpm publish --no-git-checks --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
