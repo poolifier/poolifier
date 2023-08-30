@@ -143,10 +143,13 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   public remove (workerNodeKey: number): boolean {
     if (this.nextWorkerNodeKey === workerNodeKey) {
       if (this.pool.workerNodes.length === 0) {
+        this.roundId = 0
+        this.workerNodeId = 0
         this.nextWorkerNodeKey = 0
       } else if (this.nextWorkerNodeKey > this.pool.workerNodes.length - 1) {
-        this.roundId =
-          this.roundId === this.roundWeights.length - 1 ? 0 : this.roundId + 1
+        if (this.workerNodeId === this.nextWorkerNodeKey) {
+          this.workerNodeId = this.pool.workerNodes.length - 1
+        }
         this.nextWorkerNodeKey = this.pool.workerNodes.length - 1
       }
       this.workerVirtualTaskRunTime = 0
