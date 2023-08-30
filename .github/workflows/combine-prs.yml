@@ -18,3 +18,5 @@ jobs:
       - name: combine-prs
         id: combine-prs
         uses: github/combine-prs@v3.1.2
+        with:
+          github_token: ${{ secrets.GH_TOKEN_PROTECTED }}
