@@ -70,9 +70,6 @@ export class LeastEluWorkerChoiceStrategy<
     let minWorkerElu = Infinity
     let chosenWorkerNodeKey: number | undefined
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
-      if (!this.isWorkerNodeEligible(workerNodeKey)) {
-        continue
-      }
       const workerUsage = workerNode.usage
       const workerElu = workerUsage.elu?.active?.aggregate ?? 0
       if (workerElu === 0) {

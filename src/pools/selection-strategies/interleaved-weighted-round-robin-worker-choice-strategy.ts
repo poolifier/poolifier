@@ -96,9 +96,6 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
         workerNodeKey++
       ) {
         this.workerNodeId = workerNodeKey
-        if (!this.isWorkerNodeEligible(workerNodeKey)) {
-          continue
-        }
         if (
           this.workerNodeId !== this.nextWorkerNodeKey &&
           this.workerVirtualTaskRunTime !== 0

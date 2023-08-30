@@ -72,7 +72,6 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   public choose (): number | undefined {
     const chosenWorkerNodeKey = this.nextWorkerNodeKey
     this.weightedRoundRobinNextWorkerNodeKey()
-    this.checkNextWorkerNodeEligibility(chosenWorkerNodeKey)
     return chosenWorkerNodeKey
   }
 

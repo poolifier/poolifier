@@ -55,9 +55,6 @@ export class LeastUsedWorkerChoiceStrategy<
     let minNumberOfTasks = Infinity
     let chosenWorkerNodeKey: number | undefined
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
-      if (!this.isWorkerNodeEligible(workerNodeKey)) {
-        continue
-      }
       const workerTaskStatistics = workerNode.usage.tasks
       const workerTasks =
         workerTaskStatistics.executed +
