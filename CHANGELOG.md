@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.39] - 2023-08-30
+
 ### Fixed
 
 - Fix race condition in worker choice strategies at worker node info querying while not yet initialized .
