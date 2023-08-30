@@ -7,7 +7,7 @@ All duration or timestamp are expressed in milliseconds.
 - [Strategies](#strategies)
   - [Fair share](#fair-share)
   - [Weighted round robin](#weighted-round-robin)
-  - [Interleaved weighted round robin](#interleaved-weighted-round-robin)
+  - [Interleaved weighted round robin](#interleaved-weighted-round-robin-experimental)
 - [Statistics](#statistics)
   - [Simple moving median](#simple-moving-median)
 
