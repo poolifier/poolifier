@@ -13,7 +13,9 @@
     "build": "rollup --config",
     "start": "node dist/main.cjs",
     "start:esm": "node dist/main.mjs",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "benchmark:echo": "autocannon -c 60 -d 30 -p 10 -m POST -H Content-Type=application/json -b '{\"key1\":\"value1\", \"key2\":\"value2\"}' http://localhost:8080/api/echo",
+    "benchmark:factorial": "autocannon -c 60 -d 30 -p 10 http://localhost:8080/api/factorial/30"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +28,7 @@
     "@rollup/plugin-typescript": "^11.1.3",
     "@types/express": "^4.17.17",
     "@types/node": "^20.5.7",
+    "autocannon": "^7.12.0",
     "rollup": "^3.28.1",
     "rollup-plugin-delete": "^2.0.0",
     "tslib": "^2.6.2",

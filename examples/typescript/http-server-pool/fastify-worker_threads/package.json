@@ -13,7 +13,9 @@
     "build": "pnpm build:clean && tsc",
     "build:clean": "tsc --build --clean",
     "start": "node dist/main.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "benchmark:echo": "autocannon -c 60 -d 30 -p 10 -m POST -H Content-Type=application/json -b '{\"key1\":\"value1\", \"key2\":\"value2\"}' http://localhost:8080/api/echo",
+    "benchmark:factorial": "autocannon -c 60 -d 30 -p 10 http://localhost:8080/api/factorial/30"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +27,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.5.7",
+    "autocannon": "^7.12.0",
     "typescript": "^5.2.2"
   }
 }
