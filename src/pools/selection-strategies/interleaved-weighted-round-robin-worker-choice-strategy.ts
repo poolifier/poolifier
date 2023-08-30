@@ -1,9 +1,13 @@
 import type { IWorker } from '../worker'
 import type { IPool } from '../pool'
-import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
+import {
+  DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+  DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+} from '../../utils'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
+  TaskStatisticsRequirements,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
@@ -21,19 +25,37 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
+  /** @inheritDoc */
+  public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
+    runTime: {
+      aggregate: true,
+      average: true,
+      median: false
+    },
+    waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS
+  }
+
   /**
    * Round id.
-   * This is used to determine the current round weight.
    */
   private roundId: number = 0
+  /**
+   * Default worker weight.
+   */
+  private readonly defaultWorkerWeight: number
   /**
    * Round weights.
    */
   private roundWeights: number[]
   /**
-   * Default worker weight.
+   * Worker node id.
    */
-  private readonly defaultWorkerWeight: number
+  private workerNodeId: number = 0
+  /**
+   * Worker virtual task runtime.
+   */
+  private workerVirtualTaskRunTime: number = 0
 
   /** @inheritDoc */
   public constructor (
@@ -50,6 +72,8 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   public reset (): boolean {
     this.resetWorkerNodeKeyProperties()
     this.roundId = 0
+    this.workerNodeId = 0
+    this.workerVirtualTaskRunTime = 0
     return true
   }
 
@@ -60,47 +84,59 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number | undefined {
-    let roundId!: number
-    let workerNodeId: number | undefined
     for (
       let roundIndex = this.roundId;
       roundIndex < this.roundWeights.length;
       roundIndex++
     ) {
-      roundId = roundIndex
+      this.roundId = roundIndex
       for (
-        let workerNodeKey =
-          this.nextWorkerNodeKey ?? this.previousWorkerNodeKey;
+        let workerNodeKey = this.workerNodeId;
         workerNodeKey < this.pool.workerNodes.length;
         workerNodeKey++
       ) {
+        this.workerNodeId = workerNodeKey
         if (!this.isWorkerNodeEligible(workerNodeKey)) {
           continue
         }
+        if (
+          this.workerNodeId !== this.nextWorkerNodeKey &&
+          this.workerVirtualTaskRunTime !== 0
+        ) {
+          this.workerVirtualTaskRunTime = 0
+        }
         const workerWeight =
           this.opts.weights?.[workerNodeKey] ?? this.defaultWorkerWeight
-        if (workerWeight >= this.roundWeights[roundIndex]) {
-          workerNodeId = workerNodeKey
-          break
+        if (
+          workerWeight >= this.roundWeights[roundIndex] &&
+          this.workerVirtualTaskRunTime < workerWeight
+        ) {
+          this.workerVirtualTaskRunTime =
+            this.workerVirtualTaskRunTime +
+            this.getWorkerTaskRunTime(workerNodeKey)
+          this.previousWorkerNodeKey =
+            this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
+          this.nextWorkerNodeKey = workerNodeKey
+          return this.nextWorkerNodeKey
         }
       }
     }
-    this.roundId = roundId
-    if (workerNodeId == null) {
-      this.previousWorkerNodeKey =
-        this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
-    }
-    this.nextWorkerNodeKey = workerNodeId
-    const chosenWorkerNodeKey = this.nextWorkerNodeKey
-    if (this.nextWorkerNodeKey === this.pool.workerNodes.length - 1) {
-      this.nextWorkerNodeKey = 0
-      this.roundId =
-        this.roundId === this.roundWeights.length - 1 ? 0 : this.roundId + 1
+    this.interleavedWeightedRoundRobinNextWorkerNodeId()
+  }
+
+  private interleavedWeightedRoundRobinNextWorkerNodeId (): void {
+    if (
+      this.roundId === this.roundWeights.length - 1 &&
+      this.workerNodeId === this.pool.workerNodes.length - 1
+    ) {
+      this.roundId = 0
+      this.workerNodeId = 0
+    } else if (this.workerNodeId === this.pool.workerNodes.length - 1) {
+      this.roundId = this.roundId + 1
+      this.workerNodeId = 0
     } else {
-      this.nextWorkerNodeKey =
-        (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
+      this.workerNodeId = this.workerNodeId + 1
     }
-    return chosenWorkerNodeKey
   }
 
   /** @inheritDoc */
@@ -109,10 +145,11 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
       if (this.pool.workerNodes.length === 0) {
         this.nextWorkerNodeKey = 0
       } else if (this.nextWorkerNodeKey > this.pool.workerNodes.length - 1) {
-        this.nextWorkerNodeKey = this.pool.workerNodes.length - 1
         this.roundId =
           this.roundId === this.roundWeights.length - 1 ? 0 : this.roundId + 1
+        this.nextWorkerNodeKey = this.pool.workerNodes.length - 1
       }
+      this.workerVirtualTaskRunTime = 0
     }
     return true
   }

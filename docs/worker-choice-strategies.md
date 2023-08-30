@@ -20,12 +20,12 @@ By default, the strategy uses the simple moving average task execution time for 
 
 ### Weighted round robin
 
-The worker weights are maximum tasks execution time, once the worker has reached its maximum tasks execution time, the next task is assigned to the next worker. The default worker weight is the same for each and computed given the CPU cores speed and theirs numbers.
+The worker weights are maximum tasks execution time. Once the worker has reached its maximum tasks execution time, the next task is assigned to the next worker. The default worker weight is the same for each and computed given the CPU cores speed and theirs numbers.
 
-### Interleaved weighted round robin
+### Interleaved weighted round robin (experimental)
 
 The worker weights are maximum tasks execution time. The rounds are the deduplicated worker weights.  
-During a round, if the worker weight is superior or equal to the current round weight, the task is assigned to the worker. Once all workers weight have been tested, the next round starts.  
+During a round, if the worker weight is superior or equal to the current round weight and its tasks execution time is inferior or equal to the current round weight, the task is assigned to the worker. Once all workers weight have been tested, the next round starts.  
 The default worker weights is the same for each and computed given the CPU cores speed and theirs numbers. So the default 'rounds' consists of a unique worker weight.
 
 ## Statistics

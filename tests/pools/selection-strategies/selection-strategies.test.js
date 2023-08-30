@@ -675,7 +675,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.usage).toMatchObject({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -684,18 +684,18 @@ describe('Selection strategies test suite', () => {
           stolen: 0,
           failed: 0
         },
-        runTime: {
+        runTime: expect.objectContaining({
           history: expect.any(CircularArray)
-        },
-        waitTime: {
+        }),
+        waitTime: expect.objectContaining({
           history: expect.any(CircularArray)
-        },
+        }),
         elu: {
           idle: {
-            history: expect.any(CircularArray)
+            history: new CircularArray()
           },
           active: {
-            history: expect.any(CircularArray)
+            history: new CircularArray()
           }
         }
       })
@@ -733,7 +733,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.usage).toMatchObject({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -742,18 +742,18 @@ describe('Selection strategies test suite', () => {
           stolen: 0,
           failed: 0
         },
-        runTime: {
+        runTime: expect.objectContaining({
           history: expect.any(CircularArray)
-        },
-        waitTime: {
+        }),
+        waitTime: expect.objectContaining({
           history: expect.any(CircularArray)
-        },
+        }),
         elu: {
           idle: {
-            history: expect.any(CircularArray)
+            history: new CircularArray()
           },
           active: {
-            history: expect.any(CircularArray)
+            history: new CircularArray()
           }
         }
       })
@@ -872,7 +872,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.usage).toMatchObject({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -882,19 +882,19 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
         waitTime: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
-        elu: {
-          idle: {
+        elu: expect.objectContaining({
+          idle: expect.objectContaining({
             history: expect.any(CircularArray)
-          },
-          active: {
+          }),
+          active: expect.objectContaining({
             history: expect.any(CircularArray)
-          }
-        }
+          })
+        })
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
@@ -936,7 +936,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.usage).toMatchObject({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -946,19 +946,19 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
         waitTime: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
-        elu: {
-          idle: {
+        elu: expect.objectContaining({
+          idle: expect.objectContaining({
             history: expect.any(CircularArray)
-          },
-          active: {
+          }),
+          active: expect.objectContaining({
             history: expect.any(CircularArray)
-          }
-        }
+          })
+        })
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
@@ -1081,7 +1081,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.usage).toMatchObject({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -1090,20 +1090,20 @@ describe('Selection strategies test suite', () => {
           stolen: 0,
           failed: 0
         },
-        runTime: {
+        runTime: expect.objectContaining({
           history: expect.any(CircularArray)
-        },
+        }),
         waitTime: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
-        elu: {
-          idle: {
+        elu: expect.objectContaining({
+          idle: expect.objectContaining({
             history: expect.any(CircularArray)
-          },
-          active: {
+          }),
+          active: expect.objectContaining({
             history: expect.any(CircularArray)
-          }
-        }
+          })
+        })
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
@@ -1160,7 +1160,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.usage).toMatchObject({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -1169,20 +1169,20 @@ describe('Selection strategies test suite', () => {
           stolen: 0,
           failed: 0
         },
-        runTime: {
+        runTime: expect.objectContaining({
           history: expect.any(CircularArray)
-        },
+        }),
         waitTime: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
-        elu: {
-          idle: {
+        elu: expect.objectContaining({
+          idle: expect.objectContaining({
             history: expect.any(CircularArray)
-          },
-          active: {
+          }),
+          active: expect.objectContaining({
             history: expect.any(CircularArray)
-          }
-        }
+          })
+        })
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
@@ -1244,7 +1244,7 @@ describe('Selection strategies test suite', () => {
     }
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.usage).toMatchObject({
+      expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: expect.any(Number),
           executing: 0,
@@ -1253,20 +1253,20 @@ describe('Selection strategies test suite', () => {
           stolen: 0,
           failed: 0
         },
-        runTime: {
+        runTime: expect.objectContaining({
           history: expect.any(CircularArray)
-        },
+        }),
         waitTime: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
-        elu: {
-          idle: {
+        elu: expect.objectContaining({
+          idle: expect.objectContaining({
             history: expect.any(CircularArray)
-          },
-          active: {
+          }),
+          active: expect.objectContaining({
             history: expect.any(CircularArray)
-          }
-        }
+          })
+        })
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
@@ -1491,14 +1491,14 @@ describe('Selection strategies test suite', () => {
           history: expect.any(CircularArray)
         }),
         waitTime: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
         elu: {
           idle: {
-            history: expect.any(CircularArray)
+            history: new CircularArray()
           },
           active: {
-            history: expect.any(CircularArray)
+            history: new CircularArray()
           }
         }
       })
@@ -1559,14 +1559,14 @@ describe('Selection strategies test suite', () => {
           history: expect.any(CircularArray)
         }),
         waitTime: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
         elu: {
           idle: {
-            history: expect.any(CircularArray)
+            history: new CircularArray()
           },
           active: {
-            history: expect.any(CircularArray)
+            history: new CircularArray()
           }
         }
       })
@@ -1632,14 +1632,14 @@ describe('Selection strategies test suite', () => {
           history: expect.any(CircularArray)
         }),
         waitTime: {
-          history: expect.any(CircularArray)
+          history: new CircularArray()
         },
         elu: {
           idle: {
-            history: expect.any(CircularArray)
+            history: new CircularArray()
           },
           active: {
-            history: expect.any(CircularArray)
+            history: new CircularArray()
           }
         }
       })
@@ -1789,8 +1789,8 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
       runTime: {
-        aggregate: false,
-        average: false,
+        aggregate: true,
+        average: true,
         median: false
       },
       waitTime: {
@@ -1815,8 +1815,8 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
       runTime: {
-        aggregate: false,
-        average: false,
+        aggregate: true,
+        average: true,
         median: false
       },
       waitTime: {
@@ -1853,16 +1853,16 @@ describe('Selection strategies test suite', () => {
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
         tasks: {
-          executed: maxMultiplier,
+          executed: expect.any(Number),
           executing: 0,
           queued: 0,
           maxQueued: 0,
           stolen: 0,
           failed: 0
         },
-        runTime: {
-          history: new CircularArray()
-        },
+        runTime: expect.objectContaining({
+          history: expect.any(CircularArray)
+        }),
         waitTime: {
           history: new CircularArray()
         },
@@ -1875,6 +1875,10 @@ describe('Selection strategies test suite', () => {
           }
         }
       })
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
+        max * maxMultiplier
+      )
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1885,6 +1889,11 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
       ).roundId
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).workerNodeId
     ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1931,9 +1940,9 @@ describe('Selection strategies test suite', () => {
           stolen: 0,
           failed: 0
         },
-        runTime: {
-          history: new CircularArray()
-        },
+        runTime: expect.objectContaining({
+          history: expect.any(CircularArray)
+        }),
         waitTime: {
           history: new CircularArray()
         },
@@ -1960,6 +1969,11 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
       ).roundId
+    ).toBe(0)
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).workerNodeId
     ).toBe(0)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(

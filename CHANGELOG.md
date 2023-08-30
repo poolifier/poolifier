@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Bundle typescript types declaration into one file.
 
+### Changed
+
+- Improve interleaved weighted round robin worker choice strategy implementation.
+
 ## [2.6.37] - 2023-08-28
 
 ### Fixed

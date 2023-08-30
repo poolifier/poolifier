@@ -197,7 +197,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   /**
    * Check the next worker node eligibility.
    *
-   * @param chosenNextWorkerNodeKey - The chosen worker node key.
+   * @param chosenNextWorkerNodeKey - The chosen next worker node key.
    */
   protected checkNextWorkerNodeEligibility (
     chosenNextWorkerNodeKey: number | undefined
