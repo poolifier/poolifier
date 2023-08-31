@@ -1284,7 +1284,8 @@ export abstract class AbstractPool<
   }
 
   private tasksStealingOnBackPressure (workerId: number): void {
-    if ((this.opts.tasksQueueOptions?.size as number) <= 1) {
+    const sizeOffset = 1
+    if ((this.opts.tasksQueueOptions?.size as number) <= sizeOffset) {
       return
     }
     const sourceWorkerNode =
@@ -1301,7 +1302,7 @@ export abstract class AbstractPool<
         workerNode.info.ready &&
         workerNode.info.id !== workerId &&
         workerNode.usage.tasks.queued <
-          (this.opts.tasksQueueOptions?.size as number) - 1
+          (this.opts.tasksQueueOptions?.size as number) - sizeOffset
       ) {
         const task = {
           ...(sourceWorkerNode.popTask() as Task<Data>),
