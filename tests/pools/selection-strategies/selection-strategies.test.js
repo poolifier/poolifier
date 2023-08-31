@@ -113,13 +113,17 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js'
     )
     for (const workerChoiceStrategy of Object.values(WorkerChoiceStrategies)) {
-      if (workerChoiceStrategy === WorkerChoiceStrategies.ROUND_ROBIN) {
-        expect(
-          pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
-            workerChoiceStrategy
-          ).nextWorkerNodeKey
-        ).toBe(0)
-      } else if (workerChoiceStrategy === WorkerChoiceStrategies.FAIR_SHARE) {
+      expect(
+        pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+          workerChoiceStrategy
+        ).nextWorkerNodeKey
+      ).toBe(0)
+      expect(
+        pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+          workerChoiceStrategy
+        ).previousWorkerNodeKey
+      ).toBe(0)
+      if (workerChoiceStrategy === WorkerChoiceStrategies.FAIR_SHARE) {
         expect(
           pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
             workerChoiceStrategy
@@ -136,8 +140,17 @@ describe('Selection strategies test suite', () => {
         expect(
           pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
             workerChoiceStrategy
-          ).nextWorkerNodeKey
+          ).defaultWorkerWeight
+        ).toBeGreaterThan(0)
+        expect(
+          pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+            workerChoiceStrategy
+          ).workerVirtualTaskRunTime
         ).toBe(0)
+      } else if (
+        workerChoiceStrategy ===
+        WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
+      ) {
         expect(
           pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
             workerChoiceStrategy
@@ -148,6 +161,25 @@ describe('Selection strategies test suite', () => {
             workerChoiceStrategy
           ).workerVirtualTaskRunTime
         ).toBe(0)
+        expect(
+          pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+            workerChoiceStrategy
+          ).roundId
+        ).toBe(0)
+        expect(
+          pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+            workerChoiceStrategy
+          ).workerNodeId
+        ).toBe(0)
+        expect(
+          pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+            workerChoiceStrategy
+          ).roundWeights
+        ).toStrictEqual([
+          pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+            workerChoiceStrategy
+          ).defaultWorkerWeight
+        ])
       }
     }
     await pool.destroy()
