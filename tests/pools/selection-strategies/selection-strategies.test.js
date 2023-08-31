@@ -413,6 +413,16 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
     )
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).nextWorkerNodeKey
+    ).toBeDefined()
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).previousWorkerNodeKey
+    ).toBeDefined()
     pool.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -431,6 +441,16 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.js',
       { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
     )
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).nextWorkerNodeKey
+    ).toBeDefined()
+    expect(
+      pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+        pool.workerChoiceStrategyContext.workerChoiceStrategy
+      ).previousWorkerNodeKey
+    ).toBeDefined()
     pool.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(

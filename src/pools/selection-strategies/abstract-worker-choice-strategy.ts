@@ -205,15 +205,10 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /**
    * Check the next worker node eligibility.
-   *
-   * @param previousWorkerNodeKey - The previous worker node key.
    */
-  protected checkNextWorkerNodeEligibility (
-    previousWorkerNodeKey: number | undefined
-  ): void {
+  protected checkNextWorkerNodeEligibility (): void {
     if (!this.isWorkerNodeEligible(this.nextWorkerNodeKey as number)) {
       this.nextWorkerNodeKey = undefined
-      this.setPreviousWorkerNodeKey(previousWorkerNodeKey)
     }
   }
 
