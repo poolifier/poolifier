@@ -137,18 +137,20 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public remove (workerNodeKey: number): boolean {
-    if (this.nextWorkerNodeKey === workerNodeKey) {
-      if (this.pool.workerNodes.length === 0) {
-        this.roundId = 0
-        this.workerNodeId = 0
-        this.nextWorkerNodeKey = 0
-      } else if (this.nextWorkerNodeKey > this.pool.workerNodes.length - 1) {
-        if (this.workerNodeId === this.nextWorkerNodeKey) {
-          this.workerNodeId = this.pool.workerNodes.length - 1
-        }
-        this.nextWorkerNodeKey = this.pool.workerNodes.length - 1
-      }
-      this.workerVirtualTaskRunTime = 0
+    if (this.pool.workerNodes.length === 0) {
+      this.reset()
+    }
+    if (
+      this.workerNodeId === workerNodeKey &&
+      this.workerNodeId > this.pool.workerNodes.length - 1
+    ) {
+      this.workerNodeId = this.pool.workerNodes.length - 1
+    }
+    if (
+      this.previousWorkerNodeKey === workerNodeKey &&
+      this.previousWorkerNodeKey > this.pool.workerNodes.length - 1
+    ) {
+      this.previousWorkerNodeKey = this.pool.workerNodes.length - 1
     }
     return true
   }

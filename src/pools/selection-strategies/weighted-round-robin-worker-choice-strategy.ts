@@ -76,13 +76,17 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public remove (workerNodeKey: number): boolean {
+    if (this.pool.workerNodes.length === 0) {
+      this.reset()
+    }
     if (this.nextWorkerNodeKey === workerNodeKey) {
-      if (this.pool.workerNodes.length === 0) {
-        this.nextWorkerNodeKey = 0
-      } else if (this.nextWorkerNodeKey > this.pool.workerNodes.length - 1) {
-        this.nextWorkerNodeKey = this.pool.workerNodes.length - 1
-      }
       this.workerVirtualTaskRunTime = 0
+    }
+    if (
+      this.previousWorkerNodeKey === workerNodeKey &&
+      this.previousWorkerNodeKey > this.pool.workerNodes.length - 1
+    ) {
+      this.previousWorkerNodeKey = this.pool.workerNodes.length - 1
     }
     return true
   }

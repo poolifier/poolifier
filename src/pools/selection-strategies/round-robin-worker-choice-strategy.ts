@@ -51,12 +51,20 @@ export class RoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public remove (workerNodeKey: number): boolean {
-    if (this.nextWorkerNodeKey === workerNodeKey) {
-      if (this.pool.workerNodes.length === 0) {
-        this.nextWorkerNodeKey = 0
-      } else if (this.nextWorkerNodeKey > this.pool.workerNodes.length - 1) {
-        this.nextWorkerNodeKey = this.pool.workerNodes.length - 1
-      }
+    if (this.pool.workerNodes.length === 0) {
+      this.reset()
+    }
+    if (
+      this.nextWorkerNodeKey === workerNodeKey &&
+      this.nextWorkerNodeKey > this.pool.workerNodes.length - 1
+    ) {
+      this.nextWorkerNodeKey = this.pool.workerNodes.length - 1
+    }
+    if (
+      this.previousWorkerNodeKey === workerNodeKey &&
+      this.previousWorkerNodeKey > this.pool.workerNodes.length - 1
+    ) {
+      this.previousWorkerNodeKey = this.pool.workerNodes.length - 1
     }
     return true
   }
