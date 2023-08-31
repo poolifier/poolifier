@@ -57,6 +57,7 @@ export class LeastEluWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number | undefined {
+    this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     this.nextWorkerNodeKey = this.leastEluNextWorkerNodeKey()
     return this.nextWorkerNodeKey
   }
@@ -67,8 +68,8 @@ export class LeastEluWorkerChoiceStrategy<
   }
 
   private leastEluNextWorkerNodeKey (): number | undefined {
-    let minWorkerElu = Infinity
     let chosenWorkerNodeKey: number | undefined
+    let minWorkerElu = Infinity
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerUsage = workerNode.usage
       const workerElu = workerUsage.elu?.active?.aggregate ?? 0

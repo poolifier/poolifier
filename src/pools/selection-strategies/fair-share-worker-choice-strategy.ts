@@ -70,6 +70,7 @@ export class FairShareWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number | undefined {
+    this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey()
     return this.nextWorkerNodeKey
   }
@@ -81,8 +82,8 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   private fairShareNextWorkerNodeKey (): number | undefined {
-    let minWorkerVirtualTaskEndTimestamp = Infinity
     let chosenWorkerNodeKey: number | undefined
+    let minWorkerVirtualTaskEndTimestamp = Infinity
     for (const [workerNodeKey] of this.pool.workerNodes.entries()) {
       if (this.workersVirtualTaskEndTimestamp[workerNodeKey] == null) {
         this.computeWorkerVirtualTaskEndTimestamp(workerNodeKey)

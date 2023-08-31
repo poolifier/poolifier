@@ -42,6 +42,7 @@ export class LeastUsedWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number | undefined {
+    this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     this.nextWorkerNodeKey = this.leastUsedNextWorkerNodeKey()
     return this.nextWorkerNodeKey
   }
@@ -52,8 +53,8 @@ export class LeastUsedWorkerChoiceStrategy<
   }
 
   private leastUsedNextWorkerNodeKey (): number | undefined {
-    let minNumberOfTasks = Infinity
     let chosenWorkerNodeKey: number | undefined
+    let minNumberOfTasks = Infinity
     for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
       const workerTaskStatistics = workerNode.usage.tasks
       const workerTasks =

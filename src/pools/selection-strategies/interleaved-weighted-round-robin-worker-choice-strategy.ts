@@ -111,8 +111,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
           this.workerVirtualTaskRunTime =
             this.workerVirtualTaskRunTime +
             this.getWorkerTaskRunTime(workerNodeKey)
-          this.previousWorkerNodeKey =
-            this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
+          this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
           this.nextWorkerNodeKey = workerNodeKey
           return this.nextWorkerNodeKey
         }

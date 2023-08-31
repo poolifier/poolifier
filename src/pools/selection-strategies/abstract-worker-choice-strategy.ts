@@ -195,17 +195,25 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /**
+   * Sets safely the previous worker node key.
+   *
+   * @param workerNodeKey - The worker node key.
+   */
+  protected setPreviousWorkerNodeKey (workerNodeKey: number | undefined): void {
+    this.previousWorkerNodeKey = workerNodeKey ?? this.previousWorkerNodeKey
+  }
+
+  /**
    * Check the next worker node eligibility.
    *
-   * @param chosenNextWorkerNodeKey - The chosen next worker node key.
+   * @param previousWorkerNodeKey - The previous worker node key.
    */
   protected checkNextWorkerNodeEligibility (
-    chosenNextWorkerNodeKey: number | undefined
+    previousWorkerNodeKey: number | undefined
   ): void {
     if (!this.isWorkerNodeEligible(this.nextWorkerNodeKey as number)) {
       this.nextWorkerNodeKey = undefined
-      this.previousWorkerNodeKey =
-        chosenNextWorkerNodeKey ?? this.previousWorkerNodeKey
+      this.setPreviousWorkerNodeKey(previousWorkerNodeKey)
     }
   }
 
