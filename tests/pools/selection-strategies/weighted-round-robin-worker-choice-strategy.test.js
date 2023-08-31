@@ -30,8 +30,7 @@ describe('Weighted round robin strategy worker choice strategy test suite', () =
       Number.MAX_SAFE_INTEGER,
       1
     )
-    const resetResult = strategy.reset()
-    expect(resetResult).toBe(true)
+    expect(strategy.reset()).toBe(true)
     expect(strategy.nextWorkerNodeKey).toBe(0)
     expect(strategy.previousWorkerNodeKey).toBe(0)
     expect(strategy.workerVirtualTaskRunTime).toBe(0)
