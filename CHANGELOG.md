@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.40] - 2023-09-01
+
 ### Fixed
 
 - Do not pre-choose in WRR worker choice strategy to avoid bias.
