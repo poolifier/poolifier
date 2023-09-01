@@ -2,7 +2,7 @@ name: Combine PRs
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -19,4 +19,4 @@ jobs:
         id: combine-prs
         uses: github/combine-prs@v3.1.2
         with:
-          github_token: ${{ secrets.GH_TOKEN_PROTECTED }}
+          github_token: ${{ secrets.SECRET_TOKEN }}
