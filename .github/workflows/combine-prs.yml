@@ -2,7 +2,7 @@ name: Combine PRs
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 permissions:
@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   combine-prs:
+    if: github.repository == 'poolifier/poolifier'
     runs-on: ubuntu-latest
 
     steps:
@@ -19,4 +20,4 @@ jobs:
         id: combine-prs
         uses: github/combine-prs@v3.1.2
         with:
-          github_token: ${{ secrets.SECRET_TOKEN }}
+          github_token: ${{ secrets.GH_TOKEN_PROTECTED }}
