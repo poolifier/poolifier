@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   combine-prs:
+    if: github.repository == 'poolifier/poolifier'
     runs-on: ubuntu-latest
 
     steps:

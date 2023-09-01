@@ -1437,7 +1437,7 @@ export abstract class AbstractPool<
     this.workerNodes.push(workerNode)
     const workerNodeKey = this.getWorkerNodeKeyByWorker(worker)
     if (workerNodeKey === -1) {
-      throw new Error('Worker node added not found')
+      throw new Error('Worker added not found in worker nodes')
     }
     return workerNodeKey
   }

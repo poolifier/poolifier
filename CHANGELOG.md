@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Do not pre-choose in WRR worker choice strategy to avoid bias.
+- Avoid array out of bound in worker choice strategies after worker node removal.
 
 ## [2.6.39] - 2023-08-30
 
