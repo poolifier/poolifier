@@ -9,8 +9,8 @@ dependencies:
     specifier: ^4.18.2
     version: 4.18.2
   poolifier:
-    specifier: ^2.6.39
-    version: 2.6.39
+    specifier: ^2.6.40
+    version: 2.6.40
 
 devDependencies:
   '@types/express':
@@ -586,8 +586,8 @@ packages:
     resolution: {integrity: sha512-5DFkuoqlv1uYQKxy8omFBeJPQcdoE07Kv2sferDCrAq1ohOU+MSDswDIbnx3YAM60qIOnYa53wBhXW0EbMonrQ==}
     dev: false
 
-  /poolifier@2.6.39:
-    resolution: {integrity: sha512-tHss2aTuys/xTineTBqu0NSQKJoRxNh6dg7yWw6wfnpN6ol+cce+4S0zunu9JW8iCO3IIAlmLCepKvGJ8JUpBA==}
+  /poolifier@2.6.40:
+    resolution: {integrity: sha512-x7A7XMMehRFgh7TNy5kAwMyZRF7bB97A1JxZZGbEXnjT8FEObXlZ80DrYkKfdMh3J4GAHh3tl/jT/KciDxC9PA==}
     engines: {node: '>=16.14.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
