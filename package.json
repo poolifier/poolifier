@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "poolifier",
-  "version": "2.6.39",
+  "version": "2.6.40",
   "description": "Fast and small Node.js Worker_Threads and Cluster Worker Pool",
   "license": "MIT",
   "main": "./lib/index.js",
@@ -70,7 +70,11 @@
     "parallelism",
     "eventloop"
   ],
-  "author": "pioardi",
+  "author": {
+    "name": "Alessandro Pio Ardizio",
+    "email": "alessandroardizio94@gmail.com",
+    "url": "https://github.com/pioardi"
+  },
   "contributors": [
     {
       "name": "Christopher Quadflieg",
