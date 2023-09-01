@@ -70,7 +70,11 @@
     "parallelism",
     "eventloop"
   ],
-  "author": "pioardi",
+  "author": {
+    "name": "Alessandro Pio Ardizio",
+    "email": "alessandroardizio94@gmail.com",
+    "url": "https://github.com/pioardi"
+  },
   "contributors": [
     {
       "name": "Christopher Quadflieg",
