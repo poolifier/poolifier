@@ -11,16 +11,12 @@ export default defineConfig({
       format: 'cjs',
       dir: './dist',
       sourcemap: true,
-      entryFileNames: '[name].cjs',
-      preserveModules: true,
-      preserveModulesRoot: './src'
+      entryFileNames: '[name].cjs'
     },
     {
       format: 'esm',
       dir: './dist',
-      sourcemap: true,
-      preserveModules: true,
-      preserveModulesRoot: './src'
+      sourcemap: true
     }
   ],
   external: ['express', 'node:path', 'node:url', 'poolifier'],
