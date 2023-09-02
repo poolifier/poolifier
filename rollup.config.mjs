@@ -50,6 +50,7 @@ export default defineConfig([
           dir: './lib',
           sourcemap: true,
           entryFileNames: '[name].mjs',
+          chunkFileNames: '[name]-[hash].mjs',
           preserveModules: true,
           preserveModulesRoot: './src'
         }),

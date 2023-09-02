@@ -16,15 +16,12 @@ export default defineConfig({
       dir: './dist',
       sourcemap: true,
       entryFileNames: '[name].cjs',
-      preserveModules: true,
-      preserveModulesRoot: './src'
+      chunkFileNames: '[name]-[hash].cjs'
     },
     {
       format: 'esm',
       dir: './dist',
-      sourcemap: true,
-      preserveModules: true,
-      preserveModulesRoot: './src'
+      sourcemap: true
     }
   ],
   external: ['node:path', 'node:url', 'poolifier', 'ws'],
