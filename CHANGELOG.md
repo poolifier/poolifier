@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Optimize worker choice strategies implementation.
+
 ## [2.6.40] - 2023-09-01
 
 ### Fixed

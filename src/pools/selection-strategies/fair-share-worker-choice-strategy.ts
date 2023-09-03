@@ -3,7 +3,7 @@ import {
   DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
 } from '../../utils'
 import type { IPool } from '../pool'
-import type { IWorker } from '../worker'
+import type { IWorker, StrategyData } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import {
   type IWorkerChoiceStrategy,
@@ -42,11 +42,6 @@ export class FairShareWorkerChoiceStrategy<
     }
   }
 
-  /**
-   * Workers' virtual task end execution timestamp.
-   */
-  private workersVirtualTaskEndTimestamp: number[] = []
-
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
@@ -58,13 +53,18 @@ export class FairShareWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public reset (): boolean {
-    this.workersVirtualTaskEndTimestamp = []
+    for (const workerNode of this.pool.workerNodes) {
+      delete workerNode.strategyData?.virtualTaskEndTimestamp
+    }
     return true
   }
 
   /** @inheritDoc */
   public update (workerNodeKey: number): boolean {
-    this.computeWorkerVirtualTaskEndTimestamp(workerNodeKey)
+    this.pool.workerNodes[workerNodeKey].strategyData = {
+      virtualTaskEndTimestamp:
+        this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey)
+    }
     return true
   }
 
@@ -76,56 +76,64 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public remove (workerNodeKey: number): boolean {
-    this.workersVirtualTaskEndTimestamp.splice(workerNodeKey, 1)
+  public remove (): boolean {
     return true
   }
 
   private fairShareNextWorkerNodeKey (): number | undefined {
-    let chosenWorkerNodeKey: number | undefined
-    let minWorkerVirtualTaskEndTimestamp = Infinity
-    for (const [workerNodeKey] of this.pool.workerNodes.entries()) {
-      if (this.workersVirtualTaskEndTimestamp[workerNodeKey] == null) {
-        this.computeWorkerVirtualTaskEndTimestamp(workerNodeKey)
-      }
-      const workerVirtualTaskEndTimestamp =
-        this.workersVirtualTaskEndTimestamp[workerNodeKey]
-      if (workerVirtualTaskEndTimestamp < minWorkerVirtualTaskEndTimestamp) {
-        minWorkerVirtualTaskEndTimestamp = workerVirtualTaskEndTimestamp
-        chosenWorkerNodeKey = workerNodeKey
-      }
-    }
-    return chosenWorkerNodeKey
+    return this.pool.workerNodes.reduce(
+      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
+        if (workerNode.strategyData?.virtualTaskEndTimestamp == null) {
+          workerNode.strategyData = {
+            virtualTaskEndTimestamp:
+              this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey)
+          }
+        }
+        return (workerNode.strategyData.virtualTaskEndTimestamp as number) <
+          ((workerNodes[minWorkerNodeKey].strategyData as StrategyData)
+            .virtualTaskEndTimestamp as number)
+          ? workerNodeKey
+          : minWorkerNodeKey
+      },
+      0
+    )
   }
 
   /**
    * Computes the worker node key virtual task end timestamp.
    *
    * @param workerNodeKey - The worker node key.
+   * @returns The worker node key virtual task end timestamp.
    */
-  private computeWorkerVirtualTaskEndTimestamp (workerNodeKey: number): void {
-    this.workersVirtualTaskEndTimestamp[workerNodeKey] =
-      this.getWorkerVirtualTaskEndTimestamp(
-        workerNodeKey,
-        this.getWorkerVirtualTaskStartTimestamp(workerNodeKey)
-      )
-  }
-
-  private getWorkerVirtualTaskEndTimestamp (
-    workerNodeKey: number,
-    workerVirtualTaskStartTimestamp: number
+  private computeWorkerNodeVirtualTaskEndTimestamp (
+    workerNodeKey: number
   ): number {
-    const workerTaskRunTime =
-      this.opts.measurement === Measurements.elu
-        ? this.getWorkerTaskElu(workerNodeKey)
-        : this.getWorkerTaskRunTime(workerNodeKey)
-    return workerVirtualTaskStartTimestamp + workerTaskRunTime
+    return this.getWorkerNodeVirtualTaskEndTimestamp(
+      workerNodeKey,
+      this.getWorkerNodeVirtualTaskStartTimestamp(workerNodeKey)
+    )
   }
 
-  private getWorkerVirtualTaskStartTimestamp (workerNodeKey: number): number {
-    return Math.max(
-      performance.now(),
-      this.workersVirtualTaskEndTimestamp[workerNodeKey] ?? -Infinity
-    )
+  private getWorkerNodeVirtualTaskEndTimestamp (
+    workerNodeKey: number,
+    workerNodeVirtualTaskStartTimestamp: number
+  ): number {
+    const workerNodeTaskRunTime =
+      this.opts.measurement === Measurements.elu
+        ? this.getWorkerNodeTaskElu(workerNodeKey)
+        : this.getWorkerNodeTaskRunTime(workerNodeKey)
+    return workerNodeVirtualTaskStartTimestamp + workerNodeTaskRunTime
+  }
+
+  private getWorkerNodeVirtualTaskStartTimestamp (
+    workerNodeKey: number
+  ): number {
+    const now = performance.now()
+    return now <
+      (this.pool.workerNodes[workerNodeKey]?.strategyData
+        ?.virtualTaskEndTimestamp ?? -Infinity)
+      ? (this.pool.workerNodes[workerNodeKey]?.strategyData
+          ?.virtualTaskEndTimestamp as number)
+      : now
   }
 }

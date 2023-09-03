@@ -1372,6 +1372,7 @@ export abstract class AbstractPool<
       }
       const workerNodeKey = promiseResponse.workerNodeKey
       this.afterTaskExecutionHook(workerNodeKey, message)
+      this.workerChoiceStrategyContext.update(workerNodeKey)
       this.promiseResponseMap.delete(taskId as string)
       if (
         this.opts.enableTasksQueue === true &&
@@ -1384,7 +1385,6 @@ export abstract class AbstractPool<
           this.dequeueTask(workerNodeKey) as Task<Data>
         )
       }
-      this.workerChoiceStrategyContext.update(workerNodeKey)
     }
   }
 

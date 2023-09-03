@@ -33,6 +33,6 @@ describe('Weighted round robin strategy worker choice strategy test suite', () =
     expect(strategy.reset()).toBe(true)
     expect(strategy.nextWorkerNodeKey).toBe(0)
     expect(strategy.previousWorkerNodeKey).toBe(0)
-    expect(strategy.workerVirtualTaskRunTime).toBe(0)
+    expect(strategy.workerNodeVirtualTaskRunTime).toBe(0)
   })
 })

@@ -13,6 +13,7 @@ import { Deque } from '../deque'
 import {
   type IWorker,
   type IWorkerNode,
+  type StrategyData,
   type WorkerInfo,
   type WorkerNodeEventCallback,
   type WorkerType,
@@ -34,6 +35,8 @@ implements IWorkerNode<Worker, Data> {
   public readonly info: WorkerInfo
   /** @inheritdoc */
   public usage: WorkerUsage
+  /** @inheritdoc */
+  public strategyData?: StrategyData
   /** @inheritdoc */
   public messageChannel?: MessageChannel
   /** @inheritdoc */
