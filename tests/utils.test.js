@@ -315,12 +315,14 @@ describe('Utils test suite', () => {
   })
 
   it('Verify min() behavior', () => {
+    expect(min()).toBe(Infinity)
     expect(min(1, 2)).toBe(1)
     expect(min(2, 1)).toBe(1)
     expect(min(1, 1)).toBe(1)
   })
 
   it('Verify max() behavior', () => {
+    expect(max()).toBe(-Infinity)
     expect(max(1, 2)).toBe(2)
     expect(max(2, 1)).toBe(2)
     expect(max(1, 1)).toBe(1)
