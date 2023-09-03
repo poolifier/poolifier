@@ -128,12 +128,12 @@ export class FairShareWorkerChoiceStrategy<
   private getWorkerNodeVirtualTaskStartTimestamp (
     workerNodeKey: number
   ): number {
+    const virtualTaskEndTimestamp =
+      this.pool.workerNodes[workerNodeKey]?.strategyData
+        ?.virtualTaskEndTimestamp
     const now = performance.now()
-    return now <
-      (this.pool.workerNodes[workerNodeKey]?.strategyData
-        ?.virtualTaskEndTimestamp ?? -Infinity)
-      ? (this.pool.workerNodes[workerNodeKey]?.strategyData
-          ?.virtualTaskEndTimestamp as number)
+    return now < (virtualTaskEndTimestamp ?? -Infinity)
+      ? (virtualTaskEndTimestamp as number)
       : now
   }
 }
