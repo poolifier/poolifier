@@ -1211,17 +1211,15 @@ export abstract class AbstractPool<
         },
         0
       )
-      if (destinationWorkerNodeKey != null) {
-        const destinationWorkerNode = this.workerNodes[destinationWorkerNodeKey]
-        const task = {
-          ...(this.dequeueTask(workerNodeKey) as Task<Data>),
-          workerId: destinationWorkerNode.info.id as number
-        }
-        if (this.shallExecuteTask(destinationWorkerNodeKey)) {
-          this.executeTask(destinationWorkerNodeKey, task)
-        } else {
-          this.enqueueTask(destinationWorkerNodeKey, task)
-        }
+      const destinationWorkerNode = this.workerNodes[destinationWorkerNodeKey]
+      const task = {
+        ...(this.dequeueTask(workerNodeKey) as Task<Data>),
+        workerId: destinationWorkerNode.info.id as number
+      }
+      if (this.shallExecuteTask(destinationWorkerNodeKey)) {
+        this.executeTask(destinationWorkerNodeKey, task)
+      } else {
+        this.enqueueTask(destinationWorkerNodeKey, task)
       }
     }
   }
