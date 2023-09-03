@@ -14,7 +14,9 @@ import {
   average,
   isKillBehavior,
   isPlainObject,
+  max,
   median,
+  min,
   round,
   updateMeasurementStatistics
 } from '../utils'
@@ -414,14 +416,14 @@ export abstract class AbstractPool<
         .runTime.aggregate && {
         runTime: {
           minimum: round(
-            Math.min(
+            min(
               ...this.workerNodes.map(
                 (workerNode) => workerNode.usage.runTime?.minimum ?? Infinity
               )
             )
           ),
           maximum: round(
-            Math.max(
+            max(
               ...this.workerNodes.map(
                 (workerNode) => workerNode.usage.runTime?.maximum ?? -Infinity
               )
@@ -457,14 +459,14 @@ export abstract class AbstractPool<
         .waitTime.aggregate && {
         waitTime: {
           minimum: round(
-            Math.min(
+            min(
               ...this.workerNodes.map(
                 (workerNode) => workerNode.usage.waitTime?.minimum ?? Infinity
               )
             )
           ),
           maximum: round(
-            Math.max(
+            max(
               ...this.workerNodes.map(
                 (workerNode) => workerNode.usage.waitTime?.maximum ?? -Infinity
               )

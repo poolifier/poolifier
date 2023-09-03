@@ -20,7 +20,9 @@ const {
   isAsyncFunction,
   isKillBehavior,
   isPlainObject,
+  max,
   median,
+  min,
   round,
   secureRandom,
   sleep,
@@ -310,5 +312,17 @@ describe('Utils test suite', () => {
     expect(typeof randomNumber === 'number').toBe(true)
     expect(randomNumber).toBeGreaterThanOrEqual(0)
     expect(randomNumber).toBeLessThan(1)
+  })
+
+  it('Verify min() behavior', () => {
+    expect(min(1, 2)).toBe(1)
+    expect(min(2, 1)).toBe(1)
+    expect(min(1, 1)).toBe(1)
+  })
+
+  it('Verify max() behavior', () => {
+    expect(max(1, 2)).toBe(2)
+    expect(max(2, 1)).toBe(2)
+    expect(max(1, 1)).toBe(1)
   })
 })

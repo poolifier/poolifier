@@ -274,5 +274,8 @@ export const secureRandom = (): number => {
   return webcrypto.getRandomValues(new Uint32Array(1))[0] / 0x100000000
 }
 
-const min = (a: number, b: number): number => (a < b ? a : b)
-const max = (a: number, b: number): number => (a > b ? a : b)
+export const min = (...args: number[]): number =>
+  args.reduce((minimum, num) => (minimum < num ? minimum : num), Infinity)
+
+export const max = (...args: number[]): number =>
+  args.reduce((maximum, num) => (maximum > num ? maximum : num), -Infinity)
