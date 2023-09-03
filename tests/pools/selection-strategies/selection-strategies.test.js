@@ -1248,6 +1248,7 @@ describe('Selection strategies test suite', () => {
         expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
         expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
       }
+      expect(workerNode.strategyData.virtualTaskEndTimestamp).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1332,6 +1333,7 @@ describe('Selection strategies test suite', () => {
         expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
         expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
       }
+      expect(workerNode.strategyData.virtualTaskEndTimestamp).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1421,6 +1423,7 @@ describe('Selection strategies test suite', () => {
         expect(workerNode.usage.elu.utilization).toBeGreaterThanOrEqual(0)
         expect(workerNode.usage.elu.utilization).toBeLessThanOrEqual(1)
       }
+      expect(workerNode.strategyData.virtualTaskEndTimestamp).toBeGreaterThan(0)
     }
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
