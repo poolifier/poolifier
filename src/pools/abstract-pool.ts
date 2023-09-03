@@ -297,37 +297,37 @@ export abstract class AbstractPool<
       throw new TypeError('Invalid tasks queue options: must be a plain object')
     }
     if (
-      tasksQueueOptions.concurrency != null &&
-      !Number.isSafeInteger(tasksQueueOptions.concurrency)
+      tasksQueueOptions?.concurrency != null &&
+      !Number.isSafeInteger(tasksQueueOptions?.concurrency)
     ) {
       throw new TypeError(
         'Invalid worker node tasks concurrency: must be an integer'
       )
     }
     if (
-      tasksQueueOptions.concurrency != null &&
-      tasksQueueOptions.concurrency <= 0
+      tasksQueueOptions?.concurrency != null &&
+      tasksQueueOptions?.concurrency <= 0
     ) {
       throw new RangeError(
-        `Invalid worker node tasks concurrency: ${tasksQueueOptions.concurrency} is a negative integer or zero`
+        `Invalid worker node tasks concurrency: ${tasksQueueOptions?.concurrency} is a negative integer or zero`
       )
     }
-    if (tasksQueueOptions.queueMaxSize != null) {
+    if (tasksQueueOptions?.queueMaxSize != null) {
       throw new Error(
         'Invalid tasks queue options: queueMaxSize is deprecated, please use size instead'
       )
     }
     if (
-      tasksQueueOptions.size != null &&
-      !Number.isSafeInteger(tasksQueueOptions.size)
+      tasksQueueOptions?.size != null &&
+      !Number.isSafeInteger(tasksQueueOptions?.size)
     ) {
       throw new TypeError(
         'Invalid worker node tasks queue size: must be an integer'
       )
     }
-    if (tasksQueueOptions.size != null && tasksQueueOptions.size <= 0) {
+    if (tasksQueueOptions?.size != null && tasksQueueOptions?.size <= 0) {
       throw new RangeError(
-        `Invalid worker node tasks queue size: ${tasksQueueOptions.size} is a negative integer or zero`
+        `Invalid worker node tasks queue size: ${tasksQueueOptions?.size} is a negative integer or zero`
       )
     }
   }
