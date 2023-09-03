@@ -52,7 +52,6 @@ export const DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS: MeasurementStatisticsR
  * Always returns a value greater than zero.
  *
  * @returns The host OS optimized maximum pool size.
- * @internal
  */
 export const availableParallelism = (): number => {
   let availableParallelism = 1
@@ -102,6 +101,7 @@ export const getWorkerId = (worker: IWorker): number | undefined => {
  *
  * @param ms - The amount of milliseconds to sleep.
  * @returns A promise that resolves after the given amount of milliseconds.
+ * @internal
  */
 export const sleep = async (ms: number): Promise<void> => {
   await new Promise((resolve) => {
@@ -175,6 +175,7 @@ export const median = (dataSet: number[]): number => {
  * @param num - The number to round.
  * @param scale - The scale to round to.
  * @returns The rounded number.
+ * @internal
  */
 export const round = (num: number, scale = 2): number => {
   const rounder = Math.pow(10, scale)
@@ -186,6 +187,7 @@ export const round = (num: number, scale = 2): number => {
  *
  * @param obj - The object to check.
  * @returns `true` if the given object is a plain object, `false` otherwise.
+ * @internal
  */
 export const isPlainObject = (obj: unknown): boolean =>
   typeof obj === 'object' &&
@@ -214,6 +216,7 @@ export const isKillBehavior = <KB extends KillBehavior>(
  *
  * @param fn - Any value.
  * @returns `true` if `fn` was an asynchronous function, otherwise `false`.
+ * @internal
  */
 export const isAsyncFunction = (
   fn: unknown
@@ -266,16 +269,33 @@ export const updateMeasurementStatistics = (
 }
 
 /**
- * Generate a cryptographically secure random number in the [0,1[ range
+ * Generates a cryptographically secure random number in the [0,1[ range
  *
  * @returns A number in the [0,1[ range
+ * @internal
  */
 export const secureRandom = (): number => {
   return webcrypto.getRandomValues(new Uint32Array(1))[0] / 0x100000000
 }
 
+/**
+ * Returns the minimum of the given numbers.
+ * If no numbers are given, `Infinity` is returned.
+ *
+ * @param args - The numbers to get the minimum of.
+ * @returns The minimum of the given numbers.
+ * @internal
+ */
 export const min = (...args: number[]): number =>
   args.reduce((minimum, num) => (minimum < num ? minimum : num), Infinity)
 
+/**
+ * Returns the maximum of the given numbers.
+ * If no numbers are given, `-Infinity` is returned.
+ *
+ * @param args - The numbers to get the maximum of.
+ * @returns The maximum of the given numbers.
+ * @internal
+ */
 export const max = (...args: number[]): number =>
   args.reduce((maximum, num) => (maximum > num ? maximum : num), -Infinity)

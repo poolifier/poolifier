@@ -173,6 +173,8 @@ export interface WorkerUsage {
 
 /**
  * Worker choice strategy data.
+ *
+ * @internal
  */
 export interface StrategyData {
   virtualTaskEndTimestamp?: number
