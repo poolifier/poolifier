@@ -238,11 +238,11 @@ export const updateMeasurementStatistics = (
   if (measurementRequirements.aggregate) {
     measurementStatistics.aggregate =
       (measurementStatistics.aggregate ?? 0) + measurementValue
-    measurementStatistics.minimum = Math.min(
+    measurementStatistics.minimum = min(
       measurementValue,
       measurementStatistics.minimum ?? Infinity
     )
-    measurementStatistics.maximum = Math.max(
+    measurementStatistics.maximum = max(
       measurementValue,
       measurementStatistics.maximum ?? -Infinity
     )
@@ -273,3 +273,6 @@ export const updateMeasurementStatistics = (
 export const secureRandom = (): number => {
   return webcrypto.getRandomValues(new Uint32Array(1))[0] / 0x100000000
 }
+
+const min = (a: number, b: number): number => (a < b ? a : b)
+const max = (a: number, b: number): number => (a > b ? a : b)
