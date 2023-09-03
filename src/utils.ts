@@ -74,9 +74,7 @@ export const availableParallelism = (): number => {
  * @returns The worker type of the given worker.
  * @internal
  */
-export const getWorkerType = <Worker extends IWorker>(
-  worker: Worker
-): WorkerType | undefined => {
+export const getWorkerType = (worker: IWorker): WorkerType | undefined => {
   if (worker instanceof ThreadWorker) {
     return WorkerTypes.thread
   } else if (worker instanceof ClusterWorker) {
@@ -91,9 +89,7 @@ export const getWorkerType = <Worker extends IWorker>(
  * @returns The worker id of the given worker.
  * @internal
  */
-export const getWorkerId = <Worker extends IWorker>(
-  worker: Worker
-): number | undefined => {
+export const getWorkerId = (worker: IWorker): number | undefined => {
   if (worker instanceof ThreadWorker) {
     return worker.threadId
   } else if (worker instanceof ClusterWorker) {
