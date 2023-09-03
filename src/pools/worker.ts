@@ -172,7 +172,7 @@ export interface WorkerUsage {
 }
 
 /**
- * Worker strategy data.
+ * Worker choice strategy data.
  */
 export interface StrategyData {
   virtualTaskEndTimestamp?: number
@@ -235,7 +235,7 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    */
   readonly usage: WorkerUsage
   /**
-   * Worker strategy data.
+   * Worker choice strategy data.
    * This is used to store data that is specific to the worker choice strategy.
    */
   strategyData?: StrategyData
