@@ -1203,11 +1203,9 @@ export abstract class AbstractPool<
     while (this.tasksQueueSize(workerNodeKey) > 0) {
       const destinationWorkerNodeKey = this.workerNodes.reduce(
         (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
-          if (!workerNode.info.ready) {
-            return minWorkerNodeKey
-          }
-          return workerNode.usage.tasks.queued <
-            workerNodes[minWorkerNodeKey].usage.tasks.queued
+          return workerNode.info.ready &&
+            workerNode.usage.tasks.queued <
+              workerNodes[minWorkerNodeKey].usage.tasks.queued
             ? workerNodeKey
             : minWorkerNodeKey
         },
