@@ -297,7 +297,7 @@ export abstract class AbstractPool<
       throw new TypeError('Invalid tasks queue options: must be a plain object')
     }
     if (
-      tasksQueueOptions?.concurrency != null &&
+      tasksQueueOptions.concurrency != null &&
       !Number.isSafeInteger(tasksQueueOptions.concurrency)
     ) {
       throw new TypeError(
@@ -305,27 +305,27 @@ export abstract class AbstractPool<
       )
     }
     if (
-      tasksQueueOptions?.concurrency != null &&
+      tasksQueueOptions.concurrency != null &&
       tasksQueueOptions.concurrency <= 0
     ) {
       throw new RangeError(
         `Invalid worker node tasks concurrency: ${tasksQueueOptions.concurrency} is a negative integer or zero`
       )
     }
-    if (tasksQueueOptions?.queueMaxSize != null) {
+    if (tasksQueueOptions.queueMaxSize != null) {
       throw new Error(
         'Invalid tasks queue options: queueMaxSize is deprecated, please use size instead'
       )
     }
     if (
-      tasksQueueOptions?.size != null &&
+      tasksQueueOptions.size != null &&
       !Number.isSafeInteger(tasksQueueOptions.size)
     ) {
       throw new TypeError(
         'Invalid worker node tasks queue size: must be an integer'
       )
     }
-    if (tasksQueueOptions?.size != null && tasksQueueOptions.size <= 0) {
+    if (tasksQueueOptions.size != null && tasksQueueOptions.size <= 0) {
       throw new RangeError(
         `Invalid worker node tasks queue size: ${tasksQueueOptions.size} is a negative integer or zero`
       )
@@ -770,7 +770,7 @@ export abstract class AbstractPool<
       }
       const timestamp = performance.now()
       const workerNodeKey = this.chooseWorkerNode()
-      const workerInfo = this.getWorkerInfo(workerNodeKey) as WorkerInfo
+      const workerInfo = this.getWorkerInfo(workerNodeKey)
       const task: Task<Data> = {
         name: name ?? DEFAULT_TASK_NAME,
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -1064,7 +1064,7 @@ export abstract class AbstractPool<
     worker.on('error', this.opts.errorHandler ?? EMPTY_FUNCTION)
     worker.on('error', (error) => {
       const workerNodeKey = this.getWorkerNodeKeyByWorker(worker)
-      const workerInfo = this.getWorkerInfo(workerNodeKey) as WorkerInfo
+      const workerInfo = this.getWorkerInfo(workerNodeKey)
       workerInfo.ready = false
       this.workerNodes[workerNodeKey].closeChannel()
       this.emitter?.emit(PoolEvents.error, error)
@@ -1122,7 +1122,7 @@ export abstract class AbstractPool<
         })
       }
     })
-    const workerInfo = this.getWorkerInfo(workerNodeKey) as WorkerInfo
+    const workerInfo = this.getWorkerInfo(workerNodeKey)
     this.sendToWorker(workerNodeKey, {
       checkActive: true,
       workerId: workerInfo.id as number
@@ -1193,7 +1193,7 @@ export abstract class AbstractPool<
         elu: this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
           .elu.aggregate
       },
-      workerId: (this.getWorkerInfo(workerNodeKey) as WorkerInfo).id as number
+      workerId: this.getWorkerInfo(workerNodeKey).id as number
     })
   }
 
@@ -1337,10 +1337,8 @@ export abstract class AbstractPool<
         this.handleTaskExecutionResponse(message)
       } else if (message.taskFunctions != null) {
         // Task functions message received from worker
-        (
-          this.getWorkerInfo(
-            this.getWorkerNodeKeyByWorkerId(message.workerId)
-          ) as WorkerInfo
+        this.getWorkerInfo(
+          this.getWorkerNodeKeyByWorkerId(message.workerId)
         ).taskFunctions = message.taskFunctions
       }
     }
@@ -1352,7 +1350,7 @@ export abstract class AbstractPool<
     }
     const workerInfo = this.getWorkerInfo(
       this.getWorkerNodeKeyByWorkerId(message.workerId)
-    ) as WorkerInfo
+    )
     workerInfo.ready = message.ready as boolean
     workerInfo.taskFunctions = message.taskFunctions
     if (this.emitter != null && this.ready) {
@@ -1414,8 +1412,8 @@ export abstract class AbstractPool<
    * @param workerNodeKey - The worker node key.
    * @returns The worker information.
    */
-  protected getWorkerInfo (workerNodeKey: number): WorkerInfo | undefined {
-    return this.workerNodes[workerNodeKey]?.info
+  protected getWorkerInfo (workerNodeKey: number): WorkerInfo {
+    return this.workerNodes[workerNodeKey].info
   }
 
   /**
