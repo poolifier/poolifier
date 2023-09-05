@@ -180,7 +180,7 @@ Node.js versions >= 16.14.x are supported.
 
 Choose your task [here](https://github.com/orgs/poolifier/projects/1), propose an idea, a fix, an improvement.
 
-See [CONTRIBUTING](CONTRIBUTING.md) guidelines.
+See [CONTRIBUTING](./CONTRIBUTING.md) guidelines.
 
 ## Team
 
