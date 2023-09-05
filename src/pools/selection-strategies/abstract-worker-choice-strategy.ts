@@ -153,45 +153,45 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /**
-   * Gets the worker task runtime.
+   * Gets the worker node task runtime.
    * If the task statistics require the average runtime, the average runtime is returned.
    * If the task statistics require the median runtime , the median runtime is returned.
    *
    * @param workerNodeKey - The worker node key.
-   * @returns The worker task runtime.
+   * @returns The worker node task runtime.
    */
-  protected getWorkerTaskRunTime (workerNodeKey: number): number {
+  protected getWorkerNodeTaskRunTime (workerNodeKey: number): number {
     return this.taskStatisticsRequirements.runTime.median
-      ? this.pool.workerNodes[workerNodeKey].usage.runTime?.median ?? 0
-      : this.pool.workerNodes[workerNodeKey].usage.runTime?.average ?? 0
+      ? this.pool.workerNodes[workerNodeKey].usage.runTime.median ?? 0
+      : this.pool.workerNodes[workerNodeKey].usage.runTime.average ?? 0
   }
 
   /**
-   * Gets the worker task wait time.
+   * Gets the worker node task wait time.
    * If the task statistics require the average wait time, the average wait time is returned.
    * If the task statistics require the median wait time, the median wait time is returned.
    *
    * @param workerNodeKey - The worker node key.
-   * @returns The worker task wait time.
+   * @returns The worker node task wait time.
    */
-  protected getWorkerTaskWaitTime (workerNodeKey: number): number {
+  protected getWorkerNodeTaskWaitTime (workerNodeKey: number): number {
     return this.taskStatisticsRequirements.waitTime.median
-      ? this.pool.workerNodes[workerNodeKey].usage.waitTime?.median ?? 0
-      : this.pool.workerNodes[workerNodeKey].usage.waitTime?.average ?? 0
+      ? this.pool.workerNodes[workerNodeKey].usage.waitTime.median ?? 0
+      : this.pool.workerNodes[workerNodeKey].usage.waitTime.average ?? 0
   }
 
   /**
-   * Gets the worker task ELU.
+   * Gets the worker node task ELU.
    * If the task statistics require the average ELU, the average ELU is returned.
    * If the task statistics require the median ELU, the median ELU is returned.
    *
    * @param workerNodeKey - The worker node key.
-   * @returns The worker task ELU.
+   * @returns The worker node task ELU.
    */
-  protected getWorkerTaskElu (workerNodeKey: number): number {
+  protected getWorkerNodeTaskElu (workerNodeKey: number): number {
     return this.taskStatisticsRequirements.elu.median
-      ? this.pool.workerNodes[workerNodeKey].usage.elu.active?.median ?? 0
-      : this.pool.workerNodes[workerNodeKey].usage.elu.active?.average ?? 0
+      ? this.pool.workerNodes[workerNodeKey].usage.elu.active.median ?? 0
+      : this.pool.workerNodes[workerNodeKey].usage.elu.active.average ?? 0
   }
 
   /**

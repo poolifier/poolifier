@@ -53,22 +53,18 @@ export class LeastUsedWorkerChoiceStrategy<
   }
 
   private leastUsedNextWorkerNodeKey (): number | undefined {
-    let chosenWorkerNodeKey: number | undefined
-    let minNumberOfTasks = Infinity
-    for (const [workerNodeKey, workerNode] of this.pool.workerNodes.entries()) {
-      const workerTaskStatistics = workerNode.usage.tasks
-      const workerTasks =
-        workerTaskStatistics.executed +
-        workerTaskStatistics.executing +
-        workerTaskStatistics.queued
-      if (workerTasks === 0) {
-        chosenWorkerNodeKey = workerNodeKey
-        break
-      } else if (workerTasks < minNumberOfTasks) {
-        minNumberOfTasks = workerTasks
-        chosenWorkerNodeKey = workerNodeKey
-      }
-    }
-    return chosenWorkerNodeKey
+    return this.pool.workerNodes.reduce(
+      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
+        return workerNode.usage.tasks.executed +
+          workerNode.usage.tasks.executing +
+          workerNode.usage.tasks.queued <
+          workerNodes[minWorkerNodeKey].usage.tasks.executed +
+            workerNodes[minWorkerNodeKey].usage.tasks.executing +
+            workerNodes[minWorkerNodeKey].usage.tasks.queued
+          ? workerNodeKey
+          : minWorkerNodeKey
+      },
+      0
+    )
   }
 }

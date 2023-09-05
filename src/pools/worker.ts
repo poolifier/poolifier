@@ -172,6 +172,15 @@ export interface WorkerUsage {
 }
 
 /**
+ * Worker choice strategy data.
+ *
+ * @internal
+ */
+export interface StrategyData {
+  virtualTaskEndTimestamp?: number
+}
+
+/**
  * Worker interface.
  */
 export interface IWorker {
@@ -227,6 +236,11 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    * Worker usage statistics.
    */
   readonly usage: WorkerUsage
+  /**
+   * Worker choice strategy data.
+   * This is used to store data that is specific to the worker choice strategy.
+   */
+  strategyData?: StrategyData
   /**
    * Message channel (worker_threads only).
    */

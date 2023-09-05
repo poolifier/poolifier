@@ -42,9 +42,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
    */
   private readonly defaultWorkerWeight: number
   /**
-   * Worker virtual task runtime.
+   * Worker node virtual task runtime.
    */
-  private workerVirtualTaskRunTime: number = 0
+  private workerNodeVirtualTaskRunTime: number = 0
 
   /** @inheritDoc */
   public constructor (
@@ -59,7 +59,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public reset (): boolean {
     this.resetWorkerNodeKeyProperties()
-    this.workerVirtualTaskRunTime = 0
+    this.workerNodeVirtualTaskRunTime = 0
     return true
   }
 
@@ -80,7 +80,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
       this.reset()
     }
     if (this.nextWorkerNodeKey === workerNodeKey) {
-      this.workerVirtualTaskRunTime = 0
+      this.workerNodeVirtualTaskRunTime = 0
       if (this.nextWorkerNodeKey > this.pool.workerNodes.length - 1) {
         this.nextWorkerNodeKey = this.pool.workerNodes.length - 1
       }
@@ -99,10 +99,10 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
       this.opts.weights?.[
         this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
       ] ?? this.defaultWorkerWeight
-    if (this.workerVirtualTaskRunTime < workerWeight) {
-      this.workerVirtualTaskRunTime =
-        this.workerVirtualTaskRunTime +
-        this.getWorkerTaskRunTime(
+    if (this.workerNodeVirtualTaskRunTime < workerWeight) {
+      this.workerNodeVirtualTaskRunTime =
+        this.workerNodeVirtualTaskRunTime +
+        this.getWorkerNodeTaskRunTime(
           this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
         )
     } else {
@@ -110,7 +110,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
         this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
           ? 0
           : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
-      this.workerVirtualTaskRunTime = 0
+      this.workerNodeVirtualTaskRunTime = 0
     }
     return this.nextWorkerNodeKey
   }

@@ -15,7 +15,8 @@ export default defineConfig({
       format: 'cjs',
       dir: './dist',
       sourcemap: true,
-      entryFileNames: '[name].cjs'
+      entryFileNames: '[name].cjs',
+      chunkFileNames: '[name]-[hash].cjs'
     },
     {
       format: 'esm',

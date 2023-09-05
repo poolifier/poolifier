@@ -24,6 +24,7 @@ export type {
   MeasurementStatistics,
   MessageHandler,
   OnlineHandler,
+  StrategyData,
   TaskStatistics,
   WorkerInfo,
   WorkerNodeEventCallback,
