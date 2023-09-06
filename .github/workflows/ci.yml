@@ -60,7 +60,7 @@ jobs:
 
       - name: Sonar Code Analysis
         if: ${{ github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x' }}
-        uses: sonarsource/sonarcloud-github-action@v2.0.0
+        uses: sonarsource/sonarcloud-github-action@v2.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
