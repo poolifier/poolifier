@@ -15,12 +15,14 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-
     strategy:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
         node: ['16.x', '18.x', '20.x']
+
+    name: Node.js ${{ matrix.node }} on ${{ matrix.os }}
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout
@@ -40,7 +42,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install
-        run: pnpm install
+        run: pnpm install --ignore-scripts
 
       - name: Build
         run: pnpm build
