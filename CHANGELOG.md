@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.42] - 2023-09-06
+
 ### Changed
 
 - Optimize hot code paths implementation: avoid unnecessary branching, add and use optimized helpers (min, max), use reduce() array helper, ...
