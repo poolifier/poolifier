@@ -37,7 +37,7 @@ jobs:
       - name: Production Build
         run: pnpm build:prod
 
-  publish:
+  publish-npm:
     needs: build
     runs-on: ubuntu-latest
 
@@ -81,3 +81,51 @@ jobs:
         run: pnpm publish --no-git-checks --tag beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish-gpr:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: https://npm.pkg.github.com
+          cache: 'pnpm'
+
+      - name: Install
+        run: pnpm install --ignore-scripts
+
+      - name: Read package.json version
+        id: package-version
+        uses: jaywcjlove/github-action-package@main
+
+      - name: Publish Release
+        if: ${{ contains(steps.package-version.outputs.version, '-') == false }}
+        run: pnpm publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish Pre-Release
+        if: ${{ contains(steps.package-version.outputs.version, '-') == true && contains(steps.package-version.outputs.version, '-beta') == false }}
+        run: pnpm publish --no-git-checks --tag next
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish Beta Release
+        if: ${{ contains(steps.package-version.outputs.version, '-beta') == true }}
+        run: pnpm publish --no-git-checks --tag beta
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
