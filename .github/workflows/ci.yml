@@ -7,11 +7,6 @@ on:
     types: [opened, synchronize, reopened]
   merge_group:
     branches: [master]
-  workflow_dispatch:
-    inputs:
-      withBenchmark:
-        description: 'With Benchmark?'
-        default: false
 
 jobs:
   build:
@@ -64,7 +59,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - name: Benchmark
-        if: github.event.inputs.withBenchmark
-        run: pnpm benchmark
