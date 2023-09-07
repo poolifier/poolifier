@@ -8,6 +8,10 @@ on:
   merge_group:
     branches: [master]
 
+permissions:
+  contents: read
+  checks: read
+
 jobs:
   build:
     strategy:
