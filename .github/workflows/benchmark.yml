@@ -32,8 +32,8 @@ jobs:
       - name: Install
         run: pnpm install --ignore-scripts
 
-      - name: Build
-        run: pnpm build
+      - name: Production Build
+        run: pnpm build:prod
 
       - name: Benchmark
         run: pnpm benchmark
