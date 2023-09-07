@@ -30,7 +30,7 @@
 ### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
 
 `min` (mandatory) Same as _FixedThreadPool_/_FixedClusterPool_ numberOfThreads/numberOfWorkers, this number of workers will be always active  
-`max` (mandatory) Max number of workers that this pool can contain, the new created workers will die after a threshold (default is 1 minute, you can override it in your worker implementation).  
+`max` (mandatory) Max number of workers that this pool can contain, the newly created workers will die after a threshold (default is 1 minute, you can override it in your worker implementation).  
 `filePath` (mandatory) Path to a file with a worker implementation  
 `opts` (optional) An object with the pool options properties described below
 
