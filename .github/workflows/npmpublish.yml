@@ -57,12 +57,12 @@ jobs:
           registry-url: https://registry.npmjs.org/
           cache: 'pnpm'
 
+      - name: Install
+        run: pnpm install --ignore-scripts
+
       - name: Read package.json version
         id: package-version
         uses: jaywcjlove/github-action-package@main
-
-      - name: Install
-        run: pnpm install --ignore-scripts
 
       - name: Publish Release
         if: ${{ contains(steps.package-version.outputs.version, '-') == false }}
