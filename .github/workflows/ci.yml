@@ -58,7 +58,7 @@ jobs:
         run: pnpm coverage
 
       - name: Sonar Code Analysis
-        if: ${{ github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x' }}
+        if: ${{ github.event.repository.fork == false && github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x' }}
         uses: sonarsource/sonarcloud-github-action@v2.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
