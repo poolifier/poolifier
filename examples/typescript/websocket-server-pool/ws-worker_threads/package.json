@@ -20,7 +20,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "poolifier": "^2.6.42",
+    "poolifier": "^2.6.44",
     "ws": "^8.14.0"
   },
   "devDependencies": {
