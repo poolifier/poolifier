@@ -1,6 +1,6 @@
 module.exports = {
   '**/*.{ts,tsx,js,jsx,cjs,mjs}': [
-    'biome format --write,
+    'biome format --write',
     'ts-standard --fix',
     'eslint --cache --fix'
   ],
