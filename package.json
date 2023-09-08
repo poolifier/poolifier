@@ -35,14 +35,7 @@
     "prepublishOnly": "pnpm build:prod"
   },
   "ts-standard": {
-    "globals": [
-      "describe",
-      "it",
-      "before",
-      "after",
-      "beforeEach",
-      "afterEach"
-    ]
+    "globals": ["describe", "it", "before", "after", "beforeEach", "afterEach"]
   },
   "engines": {
     "node": ">=16.14.0",
@@ -54,7 +47,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/poolifier/poolifier.git"
+    "url": "https://github.com/poolifier/poolifier.git"
   },
   "keywords": [
     "nodejs",
@@ -101,9 +94,7 @@
     "url": "https://github.com/poolifier/poolifier/issues"
   },
   "homepage": "https://github.com/poolifier/poolifier#readme",
-  "files": [
-    "lib"
-  ],
+  "files": ["lib"],
   "pnpm": {
     "overrides": {
       "semver": "^7.5.3"
