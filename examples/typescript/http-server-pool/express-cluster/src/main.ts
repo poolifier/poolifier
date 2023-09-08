@@ -15,7 +15,7 @@ const pool = new FixedClusterPool<WorkerData, WorkerResponse>(
     onlineHandler: () => {
       pool
         .execute({ port: 8080 })
-        .then((response) => {
+        .then(response => {
           if (response.status) {
             console.info(
               // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -24,7 +24,7 @@ const pool = new FixedClusterPool<WorkerData, WorkerResponse>(
           }
           return null
         })
-        .catch((error) => {
+        .catch(error => {
           console.error('Express failed to start in cluster worker:', error)
         })
     },

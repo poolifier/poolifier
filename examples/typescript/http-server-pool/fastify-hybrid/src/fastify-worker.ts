@@ -24,7 +24,7 @@ ClusterWorkerResponse
       fastifyPoolifierOptions
     )
 
-    FastifyWorker.fastify.all('/api/echo', async (request) => {
+    FastifyWorker.fastify.all('/api/echo', async request => {
       return (
         await FastifyWorker.fastify.execute({ data: request.body }, 'echo')
       ).data
@@ -32,7 +32,7 @@ ClusterWorkerResponse
 
     FastifyWorker.fastify.get<{
       Params: { number: number }
-    }>('/api/factorial/:number', async (request) => {
+    }>('/api/factorial/:number', async request => {
       const { number } = request.params
       return (
         await FastifyWorker.fastify.execute({ data: { number } }, 'factorial')

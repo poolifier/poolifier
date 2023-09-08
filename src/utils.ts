@@ -104,7 +104,7 @@ export const getWorkerId = (worker: IWorker): number | undefined => {
  * @internal
  */
 export const sleep = async (ms: number): Promise<void> => {
-  await new Promise((resolve) => {
+  await new Promise(resolve => {
     setTimeout(resolve, ms)
   })
 }

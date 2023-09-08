@@ -36,7 +36,7 @@ describe('Abstract pool test suite', () => {
           numberOfWorkers,
           './tests/worker-files/thread/testWorker.js',
           {
-            errorHandler: (e) => console.error(e)
+            errorHandler: e => console.error(e)
           }
         )
     ).toThrowError(
@@ -1028,7 +1028,7 @@ describe('Abstract pool test suite', () => {
     )
     let poolInfo
     let poolReady = 0
-    pool.emitter.on(PoolEvents.ready, (info) => {
+    pool.emitter.on(PoolEvents.ready, info => {
       ++poolReady
       poolInfo = info
     })
@@ -1060,7 +1060,7 @@ describe('Abstract pool test suite', () => {
     const promises = new Set()
     let poolBusy = 0
     let poolInfo
-    pool.emitter.on(PoolEvents.busy, (info) => {
+    pool.emitter.on(PoolEvents.busy, info => {
       ++poolBusy
       poolInfo = info
     })
@@ -1098,7 +1098,7 @@ describe('Abstract pool test suite', () => {
     const promises = new Set()
     let poolFull = 0
     let poolInfo
-    pool.emitter.on(PoolEvents.full, (info) => {
+    pool.emitter.on(PoolEvents.full, info => {
       ++poolFull
       poolInfo = info
     })
@@ -1137,7 +1137,7 @@ describe('Abstract pool test suite', () => {
     const promises = new Set()
     let poolBackPressure = 0
     let poolInfo
-    pool.emitter.on(PoolEvents.backPressure, (info) => {
+    pool.emitter.on(PoolEvents.backPressure, info => {
       ++poolBackPressure
       poolInfo = info
     })
