@@ -169,7 +169,7 @@ implements IWorkerNode<Worker, Data> {
       this.onEmptyQueueCount = 0
       return
     }
-    ;(this.onEmptyQueue as WorkerNodeEventCallback)(this.info.id as number)
+    (this.onEmptyQueue as WorkerNodeEventCallback)(this.info.id as number)
     ++this.onEmptyQueueCount
     await sleep(exponentialDelay(this.onEmptyQueueCount))
     await this.startOnEmptyQueue()
