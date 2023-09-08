@@ -54,7 +54,7 @@ jobs:
         run: pnpm test
 
       - name: Coverage Report
-        if: ${{ github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x' }}
+        if: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '18.x' }}
         run: pnpm coverage
 
       - name: Check for SonarCloud Token Availability

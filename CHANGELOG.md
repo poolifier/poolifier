@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Publish on GitHub packages registry on release
+
+### Changed
+
+- Switch from rome to biome: [PR #1128](https://github.com/poolifier/poolifier/pull/1128)
+
 ## [2.6.42] - 2023-09-06
 
 ### Changed
