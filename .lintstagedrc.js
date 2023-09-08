@@ -4,6 +4,6 @@ module.exports = {
     'ts-standard --fix',
     'eslint --cache --fix'
   ],
-  '!(.vscode/**)**/*.json': ['biome format --write --no-errors-on-unmatched'],
+  '!(.vscode/**)**/*.json': ['biome format --write'],
   '**/*.{md,yml,yaml}': ['prettier --cache --write']
 }
