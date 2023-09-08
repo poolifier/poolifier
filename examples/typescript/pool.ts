@@ -6,7 +6,6 @@ import {
   FixedThreadPool,
   availableParallelism
 } from 'poolifier'
-import type { MyData, MyResponse } from './worker'
 
 const workerFile = join(
   dirname(fileURLToPath(import.meta.url)),
