@@ -57,8 +57,18 @@ jobs:
         if: ${{ github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x' }}
         run: pnpm coverage
 
-      - name: Sonar Code Analysis
-        if: ${{ github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x' }}
+      - name: Check for SonarCloud Token Availability
+        id: sonar-token
+        shell: bash
+        run: |
+          if [ "${{ secrets.SONAR_TOKEN }}" != '' ]; then
+            echo "available=true" >> $GITHUB_OUTPUT;
+          else
+            echo "available=false" >> $GITHUB_OUTPUT;
+          fi
+
+      - name: SonarCloud Code Analysis
+        if: ${{ steps.sonar-token.outputs.available == 'true' && github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x' }}
         uses: sonarsource/sonarcloud-github-action@v2.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
