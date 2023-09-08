@@ -351,7 +351,7 @@ export abstract class AbstractWorker<
   protected handleKillMessage (message: MessageValue<Data>): void {
     this.stopCheckActive()
     if (isAsyncFunction(this.opts.killHandler)) {
-      (this.opts.killHandler?.() as Promise<void>)
+      ;(this.opts.killHandler?.() as Promise<void>)
         .then(() => {
           this.sendToMainWorker({ kill: 'success', workerId: this.id })
           return null
