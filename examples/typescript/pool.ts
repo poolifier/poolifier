@@ -1,5 +1,6 @@
 import { dirname, extname, join } from 'path'
 import { fileURLToPath } from 'url'
+import type { MyData, MyResponse } from './worker'
 import {
   DynamicThreadPool,
   FixedThreadPool,
