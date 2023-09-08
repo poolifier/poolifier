@@ -7,15 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Use a dedicated PAT to publish on GitHub packages registry.
+
+### Added
+
+- Publish on GitHub packages registry on release.
+
+### Changed
+
+- Switch from rome to biome: [PR #1128](https://github.com/poolifier/poolifier/pull/1128).
+
 ## [2.6.43] - 2023-09-08
 
 ### Added
 
-- Publish on GitHub packages registry on release
+- Publish on GitHub packages registry on release.
 
 ### Changed
 
-- Switch from rome to biome: [PR #1128](https://github.com/poolifier/poolifier/pull/1128)
+- Switch from rome to biome: [PR #1128](https://github.com/poolifier/poolifier/pull/1128).
 
 ## [2.6.42] - 2023-09-06
 
@@ -40,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix race condition in worker choice strategies at worker node info querying while not yet initialized .
+- Fix race condition in worker choice strategies at worker node info querying while not yet initialized.
 
 ## [2.6.38] - 2023-08-30
 
