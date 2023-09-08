@@ -11,7 +11,7 @@ class HttpClientWorker extends ThreadWorker<WorkerData, WorkerResponse> {
     super({
       node_fetch: async (workerData?: WorkerData) => {
         const response = await nodeFetch(
-          (workerData as WorkerData).input,
+          (workerData as WorkerData).input as URL | NodeFetchRequestInfo,
           workerData?.init as NodeFetchRequestInit
         )
         // The response is not structured-cloneable, so we return the response text body instead.
