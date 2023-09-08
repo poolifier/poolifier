@@ -1,7 +1,7 @@
 const { TaskFunctions } = require('./test-types')
 
 const waitWorkerEvents = async (pool, workerEvent, numberOfEventsToWait) => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     let events = 0
     if (numberOfEventsToWait === 0) {
       resolve(events)
@@ -18,7 +18,7 @@ const waitWorkerEvents = async (pool, workerEvent, numberOfEventsToWait) => {
 }
 
 const waitPoolEvents = async (pool, poolEvent, numberOfEventsToWait) => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     let events = 0
     if (numberOfEventsToWait === 0) {
       resolve(events)
@@ -32,8 +32,8 @@ const waitPoolEvents = async (pool, poolEvent, numberOfEventsToWait) => {
   })
 }
 
-const sleep = async (ms) => {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+const sleep = async ms => {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 const sleepTaskFunction = async (
@@ -65,7 +65,7 @@ const generateRandomInteger = (max = Number.MAX_SAFE_INTEGER, min = 0) => {
   return Math.floor(Math.random() * (max + 1))
 }
 
-const jsonIntegerSerialization = (n) => {
+const jsonIntegerSerialization = n => {
   for (let i = 0; i < n; i++) {
     const o = {
       a: i
@@ -80,7 +80,7 @@ const jsonIntegerSerialization = (n) => {
  * @param {number} n - The number of fibonacci numbers to generate.
  * @returns {number} - The nth fibonacci number.
  */
-const fibonacci = (n) => {
+const fibonacci = n => {
   if (n <= 1) return n
   return fibonacci(n - 1) + fibonacci(n - 2)
 }
@@ -90,14 +90,14 @@ const fibonacci = (n) => {
  * @param {number} n - The number to calculate the factorial of.
  * @returns {number} - The factorial of n.
  */
-const factorial = (n) => {
+const factorial = n => {
   if (n === 0) {
     return 1
   }
   return factorial(n - 1) * n
 }
 
-const executeTaskFunction = (data) => {
+const executeTaskFunction = data => {
   switch (data.function) {
     case TaskFunctions.jsonIntegerSerialization:
       return jsonIntegerSerialization(data.n || 100)

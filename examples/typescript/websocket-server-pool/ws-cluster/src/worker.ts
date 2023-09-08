@@ -8,7 +8,7 @@ import {
   type WorkerResponse
 } from './types.js'
 
-const factorial: (n: number) => number = (n) => {
+const factorial: (n: number) => number = n => {
   if (n === 0) {
     return 1
   }
@@ -29,7 +29,7 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
       )
     })
 
-    WebSocketServerWorker.wss.on('connection', (ws) => {
+    WebSocketServerWorker.wss.on('connection', ws => {
       ws.on('error', console.error)
       ws.on('message', (message: RawData) => {
         const { type, data } = JSON.parse(

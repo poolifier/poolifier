@@ -50,7 +50,7 @@ const workerData = {
   function: TaskFunctions.jsonIntegerSerialization,
   taskSize: 1000
 }
-const addPools = (pools) =>
+const addPools = pools =>
   pools.map(([name, pool]) => {
     return add(name, async () => {
       await runTest(pool, {
@@ -90,4 +90,4 @@ suite(
     // eslint-disable-next-line n/no-process-exit
     return process.exit()
   })
-  .catch((err) => console.error(err))
+  .catch(err => console.error(err))

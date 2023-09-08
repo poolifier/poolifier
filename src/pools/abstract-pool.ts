@@ -418,14 +418,14 @@ export abstract class AbstractPool<
           minimum: round(
             min(
               ...this.workerNodes.map(
-                (workerNode) => workerNode.usage.runTime?.minimum ?? Infinity
+                workerNode => workerNode.usage.runTime?.minimum ?? Infinity
               )
             )
           ),
           maximum: round(
             max(
               ...this.workerNodes.map(
-                (workerNode) => workerNode.usage.runTime?.maximum ?? -Infinity
+                workerNode => workerNode.usage.runTime?.maximum ?? -Infinity
               )
             )
           ),
@@ -461,14 +461,14 @@ export abstract class AbstractPool<
           minimum: round(
             min(
               ...this.workerNodes.map(
-                (workerNode) => workerNode.usage.waitTime?.minimum ?? Infinity
+                workerNode => workerNode.usage.waitTime?.minimum ?? Infinity
               )
             )
           ),
           maximum: round(
             max(
               ...this.workerNodes.map(
-                (workerNode) => workerNode.usage.waitTime?.maximum ?? -Infinity
+                workerNode => workerNode.usage.waitTime?.maximum ?? -Infinity
               )
             )
           ),
@@ -590,7 +590,7 @@ export abstract class AbstractPool<
    */
   private getWorkerNodeKeyByWorker (worker: Worker): number {
     return this.workerNodes.findIndex(
-      (workerNode) => workerNode.worker === worker
+      workerNode => workerNode.worker === worker
     )
   }
 
@@ -602,7 +602,7 @@ export abstract class AbstractPool<
    */
   private getWorkerNodeKeyByWorkerId (workerId: number): number {
     return this.workerNodes.findIndex(
-      (workerNode) => workerNode.info.id === workerId
+      workerNode => workerNode.info.id === workerId
     )
   }
 
@@ -706,7 +706,7 @@ export abstract class AbstractPool<
     if (this.opts.enableTasksQueue === true) {
       return (
         this.workerNodes.findIndex(
-          (workerNode) =>
+          workerNode =>
             workerNode.info.ready &&
             workerNode.usage.tasks.executing <
               (this.opts.tasksQueueOptions?.concurrency as number)
@@ -715,7 +715,7 @@ export abstract class AbstractPool<
     } else {
       return (
         this.workerNodes.findIndex(
-          (workerNode) =>
+          workerNode =>
             workerNode.info.ready && workerNode.usage.tasks.executing === 0
         ) === -1
       )
@@ -815,7 +815,7 @@ export abstract class AbstractPool<
     workerId: number
   ): Promise<void> {
     await new Promise<void>((resolve, reject) => {
-      this.registerWorkerMessageListener(workerNodeKey, (message) => {
+      this.registerWorkerMessageListener(workerNodeKey, message => {
         if (message.kill === 'success') {
           resolve()
         } else if (message.kill === 'failure') {
@@ -1064,7 +1064,7 @@ export abstract class AbstractPool<
     worker.on('online', this.opts.onlineHandler ?? EMPTY_FUNCTION)
     worker.on('message', this.opts.messageHandler ?? EMPTY_FUNCTION)
     worker.on('error', this.opts.errorHandler ?? EMPTY_FUNCTION)
-    worker.on('error', (error) => {
+    worker.on('error', error => {
       const workerNodeKey = this.getWorkerNodeKeyByWorker(worker)
       const workerInfo = this.getWorkerInfo(workerNodeKey)
       workerInfo.ready = false
@@ -1104,7 +1104,7 @@ export abstract class AbstractPool<
    */
   protected createAndSetupDynamicWorkerNode (): number {
     const workerNodeKey = this.createAndSetupWorkerNode()
-    this.registerWorkerMessageListener(workerNodeKey, (message) => {
+    this.registerWorkerMessageListener(workerNodeKey, message => {
       const localWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(
         message.workerId
       )
@@ -1119,7 +1119,7 @@ export abstract class AbstractPool<
               workerUsage.tasks.executing === 0 &&
               this.tasksQueueSize(localWorkerNodeKey) === 0)))
       ) {
-        this.destroyWorkerNode(localWorkerNodeKey).catch((error) => {
+        this.destroyWorkerNode(localWorkerNodeKey).catch(error => {
           this.emitter?.emit(PoolEvents.error, error)
         })
       }
@@ -1253,7 +1253,7 @@ export abstract class AbstractPool<
           workerNodeB.usage.tasks.queued - workerNodeA.usage.tasks.queued
       )
     const sourceWorkerNode = workerNodes.find(
-      (workerNode) =>
+      workerNode =>
         workerNode.info.ready &&
         workerNode.info.id !== workerId &&
         workerNode.usage.tasks.queued > 0
@@ -1319,7 +1319,7 @@ export abstract class AbstractPool<
    * @returns The listener function to execute when a message is received from a worker.
    */
   protected workerListener (): (message: MessageValue<Response>) => void {
-    return (message) => {
+    return message => {
       this.checkMessageWorkerId(message)
       if (message.ready != null && message.taskFunctions != null) {
         // Worker ready response received from worker
@@ -1457,7 +1457,7 @@ export abstract class AbstractPool<
     return (
       this.opts.enableTasksQueue === true &&
       this.workerNodes.findIndex(
-        (workerNode) => !workerNode.hasBackPressure()
+        workerNode => !workerNode.hasBackPressure()
       ) === -1
     )
   }

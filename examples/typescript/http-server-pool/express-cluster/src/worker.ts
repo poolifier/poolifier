@@ -4,7 +4,7 @@ import { ClusterWorker } from 'poolifier'
 import express, { type Express, type Request, type Response } from 'express'
 import { type WorkerData, type WorkerResponse } from './types.js'
 
-const factorial: (n: number) => number = (n) => {
+const factorial: (n: number) => number = n => {
   if (n === 0) {
     return 1
   }

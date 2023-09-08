@@ -16,6 +16,6 @@ ws.on('open', () => {
   }
 })
 
-ws.on('message', (message) => {
+ws.on('message', message => {
   console.info('message received: %s', message)
 })

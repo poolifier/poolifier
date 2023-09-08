@@ -8,9 +8,9 @@ const {
 
 module.exports = new ClusterWorker(
   {
-    jsonIntegerSerialization: (data) => jsonIntegerSerialization(data.n),
-    factorial: (data) => factorial(data.n),
-    fibonacci: (data) => fibonacci(data.n)
+    jsonIntegerSerialization: data => jsonIntegerSerialization(data.n),
+    factorial: data => factorial(data.n),
+    fibonacci: data => fibonacci(data.n)
   },
   {
     killBehavior: KillBehaviors.HARD,

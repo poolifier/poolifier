@@ -18,7 +18,13 @@
     "formatter": {
       "quoteStyle": "single",
       "trailingComma": "none",
-      "semicolons": "asNeeded"
+      "semicolons": "asNeeded",
+      "arrowParentheses": "asNeeded"
+    }
+  },
+  "json": {
+    "parser": {
+      "allowComments": true
     }
   },
   "files": {

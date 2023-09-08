@@ -65,7 +65,7 @@ export class FixedClusterPool<
     // FIXME: wait for tasks to be finished
     const workerNode = this.workerNodes[workerNodeKey]
     const worker = workerNode.worker
-    const waitWorkerExit = new Promise<void>((resolve) => {
+    const waitWorkerExit = new Promise<void>(resolve => {
       worker.on('exit', () => {
         resolve()
       })

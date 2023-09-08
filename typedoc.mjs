@@ -9,7 +9,7 @@ try {
   })
   const markdownFiles = readdirSync(
     join(dirname(fileURLToPath(import.meta.url)), 'docs')
-  ).filter((file) => file.endsWith('.md'))
+  ).filter(file => file.endsWith('.md'))
   for (const markdownFile of markdownFiles) {
     copyFileSync(
       join(dirname(fileURLToPath(import.meta.url)), 'docs', markdownFile),

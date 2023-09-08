@@ -52,7 +52,7 @@ ClusterWorkerResponse
     application.all('/api/echo', (req: Request, res: Response) => {
       ExpressWorker.requestHandlerPool
         .execute({ data: req.body }, 'echo')
-        .then((response) => {
+        .then(response => {
           return res.send(response.data).end()
         })
         .catch(emptyFunction)
@@ -62,7 +62,7 @@ ClusterWorkerResponse
       const { number } = req.params
       ExpressWorker.requestHandlerPool
         .execute({ data: { number: parseInt(number) } }, 'factorial')
-        .then((response) => {
+        .then(response => {
           return res.send(response.data).end()
         })
         .catch(emptyFunction)

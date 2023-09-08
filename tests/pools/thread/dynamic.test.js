@@ -11,7 +11,7 @@ describe('Dynamic thread pool test suite', () => {
     max,
     './tests/worker-files/thread/testWorker.js',
     {
-      errorHandler: (e) => console.error(e)
+      errorHandler: e => console.error(e)
     }
   )
 
@@ -91,7 +91,7 @@ describe('Dynamic thread pool test suite', () => {
       max,
       './tests/worker-files/thread/longRunningWorkerHardBehavior.js',
       {
-        errorHandler: (e) => console.error(e),
+        errorHandler: e => console.error(e),
         onlineHandler: () => console.info('long executing worker is online'),
         exitHandler: () => console.info('long executing worker exited')
       }
@@ -118,7 +118,7 @@ describe('Dynamic thread pool test suite', () => {
       max,
       './tests/worker-files/thread/longRunningWorkerSoftBehavior.js',
       {
-        errorHandler: (e) => console.error(e),
+        errorHandler: e => console.error(e),
         onlineHandler: () => console.info('long executing worker is online'),
         exitHandler: () => console.info('long executing worker exited')
       }

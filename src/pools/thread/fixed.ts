@@ -62,7 +62,7 @@ export class FixedThreadPool<
     // FIXME: wait for tasks to be finished
     const workerNode = this.workerNodes[workerNodeKey]
     const worker = workerNode.worker
-    const waitWorkerExit = new Promise<void>((resolve) => {
+    const waitWorkerExit = new Promise<void>(resolve => {
       worker.on('exit', () => {
         resolve()
       })
@@ -82,7 +82,7 @@ export class FixedThreadPool<
     message: MessageValue<Data>,
     transferList?: TransferListItem[]
   ): void {
-    ;(
+    (
       this.workerNodes[workerNodeKey].messageChannel as MessageChannel
     ).port1.postMessage(message, transferList)
   }
@@ -108,7 +108,7 @@ export class FixedThreadPool<
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
   ): void {
-    ;(
+    (
       this.workerNodes[workerNodeKey].messageChannel as MessageChannel
     ).port1.on('message', listener)
   }

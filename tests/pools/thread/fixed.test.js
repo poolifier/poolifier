@@ -11,7 +11,7 @@ describe('Fixed thread pool test suite', () => {
     numberOfThreads,
     './tests/worker-files/thread/testWorker.js',
     {
-      errorHandler: (e) => console.error(e)
+      errorHandler: e => console.error(e)
     }
   )
   const queuePool = new FixedThreadPool(
@@ -22,7 +22,7 @@ describe('Fixed thread pool test suite', () => {
       tasksQueueOptions: {
         concurrency: tasksConcurrency
       },
-      errorHandler: (e) => console.error(e)
+      errorHandler: e => console.error(e)
     }
   )
   const emptyPool = new FixedThreadPool(
@@ -38,14 +38,14 @@ describe('Fixed thread pool test suite', () => {
     numberOfThreads,
     './tests/worker-files/thread/errorWorker.js',
     {
-      errorHandler: (e) => console.error(e)
+      errorHandler: e => console.error(e)
     }
   )
   const asyncErrorPool = new FixedThreadPool(
     numberOfThreads,
     './tests/worker-files/thread/asyncErrorWorker.js',
     {
-      errorHandler: (e) => console.error(e)
+      errorHandler: e => console.error(e)
     }
   )
   const asyncPool = new FixedThreadPool(
@@ -84,7 +84,7 @@ describe('Fixed thread pool test suite', () => {
       numberOfThreads,
       './tests/worker-files/thread/testWorker.js',
       {
-        errorHandler: (e) => console.error(e)
+        errorHandler: e => console.error(e)
       }
     )
     let poolReady = 0
@@ -206,7 +206,7 @@ describe('Fixed thread pool test suite', () => {
   it('Verify that error handling is working properly:sync', async () => {
     const data = { f: 10 }
     let taskError
-    errorPool.emitter.on(PoolEvents.taskError, (e) => {
+    errorPool.emitter.on(PoolEvents.taskError, e => {
       taskError = e
     })
     let inError
@@ -227,7 +227,7 @@ describe('Fixed thread pool test suite', () => {
     })
     expect(
       errorPool.workerNodes.some(
-        (workerNode) => workerNode.usage.tasks.failed === 1
+        workerNode => workerNode.usage.tasks.failed === 1
       )
     ).toBe(true)
   })
@@ -235,7 +235,7 @@ describe('Fixed thread pool test suite', () => {
   it('Verify that error handling is working properly:async', async () => {
     const data = { f: 10 }
     let taskError
-    asyncErrorPool.emitter.on(PoolEvents.taskError, (e) => {
+    asyncErrorPool.emitter.on(PoolEvents.taskError, e => {
       taskError = e
     })
     let inError
@@ -256,7 +256,7 @@ describe('Fixed thread pool test suite', () => {
     })
     expect(
       asyncErrorPool.workerNodes.some(
-        (workerNode) => workerNode.usage.tasks.failed === 1
+        workerNode => workerNode.usage.tasks.failed === 1
       )
     ).toBe(true)
   })

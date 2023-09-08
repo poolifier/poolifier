@@ -268,7 +268,7 @@ export abstract class AbstractWorker<
       names[names.indexOf(DEFAULT_TASK_NAME)],
       defaultTaskFunctionName,
       ...names.filter(
-        (name) => name !== DEFAULT_TASK_NAME && name !== defaultTaskFunctionName
+        name => name !== DEFAULT_TASK_NAME && name !== defaultTaskFunctionName
       )
     ]
   }
@@ -351,7 +351,7 @@ export abstract class AbstractWorker<
   protected handleKillMessage (message: MessageValue<Data>): void {
     this.stopCheckActive()
     if (isAsyncFunction(this.opts.killHandler)) {
-      ;(this.opts.killHandler?.() as Promise<void>)
+      (this.opts.killHandler?.() as Promise<void>)
         .then(() => {
           this.sendToMainWorker({ kill: 'success', workerId: this.id })
           return null
@@ -545,7 +545,7 @@ export abstract class AbstractWorker<
     const { name, taskId, data } = task
     let taskPerformance = this.beginTaskPerformance(name)
     fn(data)
-      .then((res) => {
+      .then(res => {
         taskPerformance = this.endTaskPerformance(taskPerformance)
         this.sendToMainWorker({
           data: res,
@@ -555,7 +555,7 @@ export abstract class AbstractWorker<
         })
         return null
       })
-      .catch((e) => {
+      .catch(e => {
         const errorMessage = this.handleError(e as Error | string)
         this.sendToMainWorker({
           taskError: {

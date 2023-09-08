@@ -1,9 +1,9 @@
 module.exports = {
   '**/*.{ts,tsx,js,jsx,cjs,mjs}': [
-    'biome format --write --no-errors-on-unmatched',
+    'biome format --write',
     'ts-standard --fix',
     'eslint --cache --fix'
   ],
-  '!(.vscode/**)**/*.json': ['biome format --write --no-errors-on-unmatched'],
+  '**/*.json': ['biome format --write'],
   '**/*.{md,yml,yaml}': ['prettier --cache --write']
 }

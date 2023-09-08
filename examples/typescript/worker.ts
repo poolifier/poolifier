@@ -18,7 +18,7 @@ class MyThreadWorker extends ThreadWorker<MyData, Promise<MyResponse>> {
   }
 
   private async process (data: MyData): Promise<MyResponse> {
-    return await new Promise((resolve) => {
+    return await new Promise(resolve => {
       setTimeout(() => {
         resolve({ message: 'Hello from Worker :)', data })
       }, 10000)
