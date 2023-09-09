@@ -42,7 +42,7 @@
     "pnpm": ">=8.6.0"
   },
   "volta": {
-    "node": "20.5.1",
+    "node": "20.6.1",
     "pnpm": "8.7.4"
   },
   "repository": {
@@ -108,7 +108,7 @@
     "@release-it/keep-a-changelog": "^4.0.0",
     "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.3",
-    "@types/node": "^20.5.9",
+    "@types/node": "^20.6.0",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "@typescript-eslint/parser": "^6.6.0",
     "benny": "^3.7.1",
