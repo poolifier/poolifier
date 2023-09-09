@@ -1,9 +1,7 @@
-// IMPORT LIBRARIES
 import { ThreadPool } from 'nanothreads'
-// FINISH IMPORT LIBRARIES
-// IMPORT FUNCTION TO BENCH
+import { executeAsyncFn } from '../benchmarks-utils.mjs'
 import functionToBench from './functions/function-to-bench.js'
-// FINISH IMPORT FUNCTION TO BENCH
+
 const size = parseInt(process.env.POOL_SIZE)
 const iterations = parseInt(process.env.NUM_ITERATIONS)
 const data = {
@@ -27,4 +25,4 @@ async function run () {
   process.exit()
 }
 
-await run()
+await executeAsyncFn(run)

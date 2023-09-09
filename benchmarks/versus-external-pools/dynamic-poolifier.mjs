@@ -1,6 +1,6 @@
-// IMPORT LIBRARIES
 import { DynamicThreadPool } from 'poolifier'
-// FINISH IMPORT LIBRARIES
+import { executeAsyncFn } from '../benchmarks-utils.mjs'
+
 const size = parseInt(process.env.POOL_SIZE)
 const iterations = parseInt(process.env.NUM_ITERATIONS)
 const data = {
@@ -28,4 +28,4 @@ async function run () {
   process.exit()
 }
 
-await run()
+await executeAsyncFn(run)

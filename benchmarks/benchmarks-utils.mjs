@@ -10,7 +10,54 @@ import {
 } from '../lib/index.mjs'
 import { TaskFunctions } from './benchmarks-types.mjs'
 
-export const runTest = async (pool, { taskExecutions, workerData }) => {
+export const buildPoolifierPool = (
+  workerType,
+  poolType,
+  poolSize,
+  poolOptions
+) => {
+  switch (poolType) {
+    case PoolTypes.fixed:
+      switch (workerType) {
+        case WorkerTypes.thread:
+          return new FixedThreadPool(
+            poolSize,
+            './benchmarks/internal/thread-worker.mjs',
+            poolOptions
+          )
+        case WorkerTypes.cluster:
+          return new FixedClusterPool(
+            poolSize,
+            './benchmarks/internal/cluster-worker.mjs',
+            poolOptions
+          )
+      }
+      break
+    case PoolTypes.dynamic:
+      switch (workerType) {
+        case WorkerTypes.thread:
+          return new DynamicThreadPool(
+            Math.floor(poolSize / 2),
+            poolSize,
+            './benchmarks/internal/thread-worker.mjs',
+            poolOptions
+          )
+        case WorkerTypes.cluster:
+          return new DynamicClusterPool(
+            Math.floor(poolSize / 2),
+            poolSize,
+            './benchmarks/internal/cluster-worker.mjs',
+            poolOptions
+          )
+      }
+      break
+  }
+}
+
+export const runPoolifierTest = async (
+  pool,
+  { taskExecutions, workerData }
+) => {
   return new Promise((resolve, reject) => {
     let executions = 0
     for (let i = 1; i <= taskExecutions; i++) {
@@ -29,6 +76,16 @@ export const runTest = async (pool, { taskExecutions, workerData }) => {
         })
     }
   })
+}
+
+export const executeAsyncFn = async fn => {
+  try {
+    await fn()
+  } catch (e) {
+    console.error(e)
+    // eslint-disable-next-line n/no-process-exit
+    process.exit(1)
+  }
 }
 
 export const generateRandomInteger = (
@@ -112,44 +169,5 @@ export const executeTaskFunction = data => {
       return readWriteFiles(data.taskSize || 1000)
     default:
       throw new Error('Unknown task function')
-  }
-}
-
-export const buildPool = (workerType, poolType, poolSize, poolOptions) => {
-  switch (poolType) {
-    case PoolTypes.fixed:
-      switch (workerType) {
-        case WorkerTypes.thread:
-          return new FixedThreadPool(
-            poolSize,
-            './benchmarks/internal/thread-worker.mjs',
-            poolOptions
-          )
-        case WorkerTypes.cluster:
-          return new FixedClusterPool(
-            poolSize,
-            './benchmarks/internal/cluster-worker.mjs',
-            poolOptions
-          )
-      }
-      break
-    case PoolTypes.dynamic:
-      switch (workerType) {
-        case WorkerTypes.thread:
-          return new DynamicThreadPool(
-            Math.floor(poolSize / 2),
-            poolSize,
-            './benchmarks/internal/thread-worker.mjs',
-            poolOptions
-          )
-        case WorkerTypes.cluster:
-          return new DynamicClusterPool(
-            Math.floor(poolSize / 2),
-            poolSize,
-            './benchmarks/internal/cluster-worker.mjs',
-            poolOptions
-          )
-      }
-      break
   }
 }

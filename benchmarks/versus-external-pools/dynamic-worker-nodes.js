@@ -1,7 +1,6 @@
 'use strict'
-// IMPORT LIBRARIES
 const WorkerNodes = require('worker-nodes')
-// FINISH IMPORT LIBRARIES
+
 const size = parseInt(process.env.POOL_SIZE)
 const iterations = parseInt(process.env.NUM_ITERATIONS)
 const data = {

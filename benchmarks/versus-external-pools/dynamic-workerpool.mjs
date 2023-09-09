@@ -1,6 +1,6 @@
-// IMPORT LIBRARIES
 import workerpool from 'workerpool'
-// FINISH IMPORT LIBRARIES
+import { executeAsyncFn } from '../benchmarks-utils.mjs'
+
 const size = parseInt(process.env.POOL_SIZE)
 const iterations = parseInt(process.env.NUM_ITERATIONS)
 const dataArray = [
@@ -28,4 +28,4 @@ async function run () {
   process.exit()
 }
 
-await run()
+await executeAsyncFn(run)

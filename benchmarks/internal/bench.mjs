@@ -7,7 +7,7 @@ import {
   availableParallelism
 } from '../../lib/index.mjs'
 import { TaskFunctions } from '../benchmarks-types.mjs'
-import { buildPool, runTest } from '../benchmarks-utils.mjs'
+import { buildPoolifierPool, runPoolifierTest } from '../benchmarks-utils.mjs'
 
 const poolSize = availableParallelism()
 const pools = []
@@ -22,7 +22,7 @@ for (const poolType of Object.values(PoolTypes)) {
           for (const measurement of [Measurements.runTime, Measurements.elu]) {
             pools.push([
               `${poolType}|${workerType}|${workerChoiceStrategy}|tasks queue:${enableTasksQueue}|measurement:${measurement}`,
-              buildPool(workerType, poolType, poolSize, {
+              buildPoolifierPool(workerType, poolType, poolSize, {
                 workerChoiceStrategy,
                 workerChoiceStrategyOptions: {
                   measurement
@@ -34,7 +34,7 @@ for (const poolType of Object.values(PoolTypes)) {
         } else {
           pools.push([
             `${poolType}|${workerType}|${workerChoiceStrategy}|tasks queue:${enableTasksQueue}`,
-            buildPool(workerType, poolType, poolSize, {
+            buildPoolifierPool(workerType, poolType, poolSize, {
               workerChoiceStrategy,
               enableTasksQueue
             })
@@ -53,7 +53,7 @@ const workerData = {
 const addPools = pools =>
   pools.map(([name, pool]) => {
     return add(name, async () => {
-      await runTest(pool, {
+      await runPoolifierTest(pool, {
         taskExecutions,
         workerData
       })
