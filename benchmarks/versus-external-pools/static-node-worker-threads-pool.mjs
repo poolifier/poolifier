@@ -10,7 +10,7 @@ const data = {
   taskSize: parseInt(process.env.TASK_SIZE)
 }
 
-const pool = new StaticPool({
+const staticPool = new StaticPool({
   size,
   task: functionToBench
 })
@@ -18,7 +18,7 @@ const pool = new StaticPool({
 async function run () {
   const promises = new Set()
   for (let i = 0; i < iterations; i++) {
-    promises.add(pool.exec(data))
+    promises.add(staticPool.exec(data))
   }
   await Promise.all(promises)
   // eslint-disable-next-line n/no-process-exit

@@ -10,13 +10,13 @@ const data = {
   taskSize: parseInt(process.env.TASK_SIZE)
 }
 
-const pool = new DynamicPool(size)
+const dynamicPool = new DynamicPool(size)
 
 async function run () {
   const promises = new Set()
   for (let i = 0; i < iterations; i++) {
     promises.add(
-      pool.exec({
+      dynamicPool.exec({
         task: functionToBench,
         param: data,
         timeout: 60000 // this is the same as poolifier default

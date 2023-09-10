@@ -9,7 +9,7 @@ const data = {
   taskSize: parseInt(process.env.TASK_SIZE)
 }
 
-const dynamicPool = new DynamicThreadPool(
+const dynamicThreadPool = new DynamicThreadPool(
   Math.floor(size / 2),
   size,
   './workers/poolifier/function-to-bench-worker.mjs',
@@ -21,7 +21,7 @@ const dynamicPool = new DynamicThreadPool(
 async function run () {
   const promises = new Set()
   for (let i = 0; i < iterations; i++) {
-    promises.add(dynamicPool.execute(data))
+    promises.add(dynamicThreadPool.execute(data))
   }
   await Promise.all(promises)
   // eslint-disable-next-line n/no-process-exit

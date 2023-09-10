@@ -9,7 +9,7 @@ const data = {
   taskSize: parseInt(process.env.TASK_SIZE)
 }
 
-const fixedPool = new FixedThreadPool(
+const fixedThreadPool = new FixedThreadPool(
   size,
   './workers/poolifier/function-to-bench-worker.mjs',
   {
@@ -20,7 +20,7 @@ const fixedPool = new FixedThreadPool(
 async function run () {
   const promises = new Set()
   for (let i = 0; i < iterations; i++) {
-    promises.add(fixedPool.execute(data))
+    promises.add(fixedThreadPool.execute(data))
   }
   await Promise.all(promises)
   // eslint-disable-next-line n/no-process-exit
