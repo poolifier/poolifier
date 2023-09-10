@@ -1071,8 +1071,8 @@ export abstract class AbstractPool<
       this.emitter?.emit(PoolEvents.error, error)
       if (
         this.opts.restartWorkerOnError === true &&
-        !this.starting &&
-        this.started
+        this.started &&
+        !this.starting
       ) {
         if (workerInfo.dynamic) {
           this.createAndSetupDynamicWorkerNode()
