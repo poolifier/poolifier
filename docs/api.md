@@ -7,7 +7,7 @@
   - [`pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`](#pool--new-dynamicthreadpooldynamicclusterpoolmin-max-filepath-opts)
   - [`pool.execute(data, name, transferList)`](#poolexecutedata-name-transferlist)
   - [`pool.destroy()`](#pooldestroy)
-  - [`pool.listTaskFunctions()`](#poollisttaskfunctions)
+  - [`pool.listTaskFunctionNames()`](#poollisttaskfunctionnames)
   - [`PoolOptions`](#pooloptions)
     - [`ThreadPoolOptions extends PoolOptions`](#threadpooloptions-extends-pooloptions)
     - [`ClusterPoolOptions extends PoolOptions`](#clusterpooloptions-extends-pooloptions)
@@ -16,7 +16,7 @@
     - [`YourWorker.hasTaskFunction(name)`](#yourworkerhastaskfunctionname)
     - [`YourWorker.addTaskFunction(name, fn)`](#yourworkeraddtaskfunctionname-fn)
     - [`YourWorker.removeTaskFunction(name)`](#yourworkerremovetaskfunctionname)
-    - [`YourWorker.listTaskFunctions()`](#yourworkerlisttaskfunctions)
+    - [`YourWorker.listTaskFunctionNames()`](#yourworkerlisttaskfunctionnames)
     - [`YourWorker.setDefaultTaskFunction(name)`](#yourworkersetdefaulttaskfunctionname)
 
 ## Pool
@@ -46,7 +46,7 @@ This method is available on both pool implementations and returns a promise with
 
 This method is available on both pool implementations and will call the terminate method on each worker.
 
-### `pool.listTaskFunctions()`
+### `pool.listTaskFunctionNames()`
 
 This method is available on both pool implementations and returns an array of the task function names.
 
@@ -149,7 +149,7 @@ This method is available on both worker implementations and returns a boolean.
 
 This method is available on both worker implementations and returns a boolean.
 
-#### `YourWorker.listTaskFunctions()`
+#### `YourWorker.listTaskFunctionNames()`
 
 This method is available on both worker implementations and returns an array of the task function names.
 

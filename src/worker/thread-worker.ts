@@ -62,13 +62,13 @@ export class ThreadWorker<
         this.port.on('message', this.messageListener.bind(this))
         this.sendToMainWorker({
           ready: true,
-          taskFunctions: this.listTaskFunctions(),
+          taskFunctionNames: this.listTaskFunctionNames(),
           workerId: this.id
         })
       } catch {
         this.sendToMainWorker({
           ready: false,
-          taskFunctions: this.listTaskFunctions(),
+          taskFunctionNames: this.listTaskFunctionNames(),
           workerId: this.id
         })
       }

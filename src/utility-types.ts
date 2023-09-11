@@ -3,13 +3,13 @@ import type { MessagePort, TransferListItem } from 'node:worker_threads'
 import type { KillBehavior } from './worker/worker-options'
 
 /**
- * Task error.
+ * Worker error.
  *
  * @typeParam Data - Type of data sent to the worker triggering an error. This can only be structured-cloneable data.
  */
-export interface TaskError<Data = unknown> {
+export interface WorkerError<Data = unknown> {
   /**
-   * Task name triggering the error.
+   * Task function name triggering the error.
    */
   readonly name: string
   /**
@@ -109,17 +109,34 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    */
   readonly kill?: KillBehavior | true | 'success' | 'failure'
   /**
-   * Task error.
+   * Worker error.
    */
-  readonly taskError?: TaskError<ErrorData>
+  readonly workerError?: WorkerError<ErrorData>
   /**
    * Task performance.
    */
   readonly taskPerformance?: TaskPerformance
   /**
+   * Task function operation:
+   * - `'has'` - Check if a task function exists.
+   * - `'add'` - Add a task function.
+   * - `'delete'` - Delete a task function.
+   * - `'default'` - Set a task function as default.
+   */
+  readonly taskFunctionOperation?: 'has' | 'add' | 'remove' | 'default'
+  readonly taskFunctionOperationStatus?: boolean
+  /**
+   * Task function serialized to string.
+   */
+  readonly taskFunction?: string
+  /**
+   * Task function name.
+   */
+  readonly taskFunctionName?: string
+  /**
    * Task function names.
    */
-  readonly taskFunctions?: string[]
+  readonly taskFunctionNames?: string[]
   /**
    * Whether the worker computes the given statistics or not.
    */

@@ -139,21 +139,21 @@ implements IWorkerNode<Worker, Data> {
 
   /** @inheritdoc */
   public getTaskFunctionWorkerUsage (name: string): WorkerUsage | undefined {
-    if (!Array.isArray(this.info.taskFunctions)) {
+    if (!Array.isArray(this.info.taskFunctionNames)) {
       throw new Error(
         `Cannot get task function worker usage for task function name '${name}' when task function names list is not yet defined`
       )
     }
     if (
-      Array.isArray(this.info.taskFunctions) &&
-      this.info.taskFunctions.length < 3
+      Array.isArray(this.info.taskFunctionNames) &&
+      this.info.taskFunctionNames.length < 3
     ) {
       throw new Error(
         `Cannot get task function worker usage for task function name '${name}' when task function names list has less than 3 elements`
       )
     }
     if (name === DEFAULT_TASK_NAME) {
-      name = this.info.taskFunctions[1]
+      name = this.info.taskFunctionNames[1]
     }
     if (!this.taskFunctionsUsage.has(name)) {
       this.taskFunctionsUsage.set(name, this.initTaskFunctionWorkerUsage(name))
@@ -227,7 +227,7 @@ implements IWorkerNode<Worker, Data> {
       for (const task of this.tasksQueue) {
         if (
           (task.name === DEFAULT_TASK_NAME &&
-            name === (this.info.taskFunctions as string[])[1]) ||
+            name === (this.info.taskFunctionNames as string[])[1]) ||
           (task.name !== DEFAULT_TASK_NAME && name === task.name)
         ) {
           ++taskFunctionQueueSize

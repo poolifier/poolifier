@@ -22,6 +22,11 @@ import type {
   TaskSyncFunction
 } from './task-functions'
 
+interface TaskFunctionOperationReturnType {
+  status: boolean
+  error?: Error
+}
+
 const DEFAULT_MAX_INACTIVE_TIME = 60000
 const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
   /**
@@ -172,11 +177,14 @@ export abstract class AbstractWorker<
    *
    * @param name - The name of the task function to check.
    * @returns Whether the worker has a task function with the given name or not.
-   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string or an empty string.
    */
-  public hasTaskFunction (name: string): boolean {
-    this.checkTaskFunctionName(name)
-    return this.taskFunctions.has(name)
+  public hasTaskFunction (name: string): TaskFunctionOperationReturnType {
+    try {
+      this.checkTaskFunctionName(name)
+    } catch (error) {
+      return { status: false, error: error as Error }
+    }
+    return { status: this.taskFunctions.has(name) }
   }
 
   /**
@@ -186,24 +194,21 @@ export abstract class AbstractWorker<
    * @param name - The name of the task function to add.
    * @param fn - The task function to add.
    * @returns Whether the task function was added or not.
-   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string or an empty string.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is the default task function reserved name.
-   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `fn` parameter is not a function.
    */
   public addTaskFunction (
     name: string,
     fn: TaskFunction<Data, Response>
-  ): boolean {
-    this.checkTaskFunctionName(name)
-    if (name === DEFAULT_TASK_NAME) {
-      throw new Error(
-        'Cannot add a task function with the default reserved name'
-      )
-    }
-    if (typeof fn !== 'function') {
-      throw new TypeError('fn parameter is not a function')
-    }
+  ): TaskFunctionOperationReturnType {
     try {
+      this.checkTaskFunctionName(name)
+      if (name === DEFAULT_TASK_NAME) {
+        throw new Error(
+          'Cannot add a task function with the default reserved name'
+        )
+      }
+      if (typeof fn !== 'function') {
+        throw new TypeError('fn parameter is not a function')
+      }
       const boundFn = fn.bind(this)
       if (
         this.taskFunctions.get(name) ===
@@ -213,9 +218,9 @@ export abstract class AbstractWorker<
       }
       this.taskFunctions.set(name, boundFn)
       this.sendTaskFunctionsListToMainWorker()
-      return true
-    } catch {
-      return false
+      return { status: true }
+    } catch (error) {
+      return { status: false, error: error as Error }
     }
   }
 
@@ -224,27 +229,29 @@ export abstract class AbstractWorker<
    *
    * @param name - The name of the task function to remove.
    * @returns Whether the task function existed and was removed or not.
-   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string or an empty string.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is the default task function reserved name.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is the task function used as default task function.
    */
-  public removeTaskFunction (name: string): boolean {
-    this.checkTaskFunctionName(name)
-    if (name === DEFAULT_TASK_NAME) {
-      throw new Error(
-        'Cannot remove the task function with the default reserved name'
-      )
+  public removeTaskFunction (name: string): TaskFunctionOperationReturnType {
+    try {
+      this.checkTaskFunctionName(name)
+      if (name === DEFAULT_TASK_NAME) {
+        throw new Error(
+          'Cannot remove the task function with the default reserved name'
+        )
+      }
+      if (
+        this.taskFunctions.get(name) ===
+        this.taskFunctions.get(DEFAULT_TASK_NAME)
+      ) {
+        throw new Error(
+          'Cannot remove the task function used as the default task function'
+        )
+      }
+      const deleteStatus = this.taskFunctions.delete(name)
+      this.sendTaskFunctionsListToMainWorker()
+      return { status: deleteStatus }
+    } catch (error) {
+      return { status: false, error: error as Error }
     }
-    if (
-      this.taskFunctions.get(name) === this.taskFunctions.get(DEFAULT_TASK_NAME)
-    ) {
-      throw new Error(
-        'Cannot remove the task function used as the default task function'
-      )
-    }
-    const deleteStatus = this.taskFunctions.delete(name)
-    this.sendTaskFunctionsListToMainWorker()
-    return deleteStatus
   }
 
   /**
@@ -252,7 +259,7 @@ export abstract class AbstractWorker<
    *
    * @returns The names of the worker's task functions.
    */
-  public listTaskFunctions (): string[] {
+  public listTaskFunctionNames (): string[] {
     const names: string[] = [...this.taskFunctions.keys()]
     let defaultTaskFunctionName: string = DEFAULT_TASK_NAME
     for (const [name, fn] of this.taskFunctions) {
@@ -278,30 +285,27 @@ export abstract class AbstractWorker<
    *
    * @param name - The name of the task function to use as default task function.
    * @returns Whether the default task function was set or not.
-   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string or an empty string.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is the default task function reserved name.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the `name` parameter is a non-existing task function.
    */
-  public setDefaultTaskFunction (name: string): boolean {
-    this.checkTaskFunctionName(name)
-    if (name === DEFAULT_TASK_NAME) {
-      throw new Error(
-        'Cannot set the default task function reserved name as the default task function'
-      )
-    }
-    if (!this.taskFunctions.has(name)) {
-      throw new Error(
-        'Cannot set the default task function to a non-existing task function'
-      )
-    }
+  public setDefaultTaskFunction (name: string): TaskFunctionOperationReturnType {
     try {
+      this.checkTaskFunctionName(name)
+      if (name === DEFAULT_TASK_NAME) {
+        throw new Error(
+          'Cannot set the default task function reserved name as the default task function'
+        )
+      }
+      if (!this.taskFunctions.has(name)) {
+        throw new Error(
+          'Cannot set the default task function to a non-existing task function'
+        )
+      }
       this.taskFunctions.set(
         DEFAULT_TASK_NAME,
         this.taskFunctions.get(name) as TaskFunction<Data, Response>
       )
-      return true
-    } catch {
-      return false
+      return { status: true }
+    } catch (error) {
+      return { status: false, error: error as Error }
     }
   }
 
@@ -334,6 +338,9 @@ export abstract class AbstractWorker<
     } else if (message.checkActive != null) {
       // Check active message received
       message.checkActive ? this.startCheckActive() : this.stopCheckActive()
+    } else if (message.taskFunctionOperation != null) {
+      // Task function operation message received
+      this.handleTaskFunctionOperationMessage(message)
     } else if (message.taskId != null && message.data != null) {
       // Task message received
       this.run(message)
@@ -341,6 +348,38 @@ export abstract class AbstractWorker<
       // Kill message received
       this.handleKillMessage(message)
     }
+  }
+
+  protected handleTaskFunctionOperationMessage (
+    message: MessageValue<Data>
+  ): void {
+    const { taskFunctionOperation, taskFunction, taskFunctionName } = message
+    let response!: TaskFunctionOperationReturnType
+    if (taskFunctionOperation === 'has') {
+      response = this.hasTaskFunction(taskFunctionName as string)
+    } else if (taskFunctionOperation === 'add') {
+      response = this.addTaskFunction(
+        taskFunctionName as string,
+        // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
+        new Function(`return ${taskFunction as string}`)() as TaskFunction<
+        Data,
+        Response
+        >
+      )
+    } else if (taskFunctionOperation === 'remove') {
+      response = this.removeTaskFunction(taskFunctionName as string)
+    } else if (taskFunctionOperation === 'default') {
+      response = this.setDefaultTaskFunction(taskFunctionName as string)
+    }
+    this.sendToMainWorker({
+      taskFunctionOperation,
+      taskFunctionOperationStatus: response.status,
+      workerError: {
+        name: taskFunctionName as string,
+        message: this.handleError(response.error as Error | string)
+      },
+      workerId: this.id
+    })
   }
 
   /**
@@ -452,7 +491,7 @@ export abstract class AbstractWorker<
    */
   protected sendTaskFunctionsListToMainWorker (): void {
     this.sendToMainWorker({
-      taskFunctions: this.listTaskFunctions(),
+      taskFunctionNames: this.listTaskFunctionNames(),
       workerId: this.id
     })
   }
@@ -460,11 +499,11 @@ export abstract class AbstractWorker<
   /**
    * Handles an error and convert it to a string so it can be sent back to the main worker.
    *
-   * @param e - The error raised by the worker.
+   * @param error - The error raised by the worker.
    * @returns The error message.
    */
-  protected handleError (e: Error | string): string {
-    return e instanceof Error ? e.message : e
+  protected handleError (error: Error | string): string {
+    return error instanceof Error ? error.message : error
   }
 
   /**
@@ -478,7 +517,7 @@ export abstract class AbstractWorker<
     const fn = this.taskFunctions.get(name ?? DEFAULT_TASK_NAME)
     if (fn == null) {
       this.sendToMainWorker({
-        taskError: {
+        workerError: {
           name: name as string,
           message: `Task function '${name as string}' not found`,
           data
@@ -516,12 +555,11 @@ export abstract class AbstractWorker<
         workerId: this.id,
         taskId
       })
-    } catch (e) {
-      const errorMessage = this.handleError(e as Error | string)
+    } catch (error) {
       this.sendToMainWorker({
-        taskError: {
+        workerError: {
           name: name as string,
-          message: errorMessage,
+          message: this.handleError(error as Error | string),
           data
         },
         workerId: this.id,
@@ -555,12 +593,11 @@ export abstract class AbstractWorker<
         })
         return null
       })
-      .catch(e => {
-        const errorMessage = this.handleError(e as Error | string)
+      .catch(error => {
         this.sendToMainWorker({
-          taskError: {
+          workerError: {
             name: name as string,
-            message: errorMessage,
+            message: this.handleError(error as Error | string),
             data
           },
           workerId: this.id,

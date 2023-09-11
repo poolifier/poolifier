@@ -67,7 +67,7 @@ export type {
   MessageValue,
   PromiseResponseWrapper,
   Task,
-  TaskError,
+  WorkerError,
   TaskPerformance,
   WorkerStatistics,
   Writable

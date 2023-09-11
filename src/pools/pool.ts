@@ -1,5 +1,6 @@
 import { EventEmitter } from 'node:events'
 import { type TransferListItem } from 'node:worker_threads'
+import type { TaskFunction } from '../worker/task-functions'
 import type {
   ErrorHandler,
   ExitHandler,
@@ -234,11 +235,44 @@ export interface IPool<
    */
   readonly destroy: () => Promise<void>
   /**
+   * Whether the specified task function exists in this pool.
+   *
+   * @param name - The name of the task function.
+   * @returns `true` if the task function exists, `false` otherwise.
+   */
+  readonly hasTaskFunction: (name: string) => boolean
+  /**
+   * Adds a task function to this pool.
+   * If a task function with the same name already exists, it will be overwritten.
+   *
+   * @param name - The name of the task function.
+   * @param taskFunction - The task function.
+   * @returns `true` if the task function was added, `false` otherwise.
+   */
+  readonly addTaskFunction: (
+    name: string,
+    taskFunction: TaskFunction
+  ) => boolean
+  /**
+   * Removes a task function from this pool.
+   *
+   * @param name - The name of the task function.
+   * @returns `true` if the task function was removed, `false` otherwise.
+   */
+  readonly removeTaskFunction: (name: string) => boolean
+  /**
    * Lists the names of task function available in this pool.
    *
    * @returns The names of task function available in this pool.
    */
-  readonly listTaskFunctions: () => string[]
+  readonly listTaskFunctionNames: () => string[]
+  /**
+   * Sets the default task function in this pool.
+   *
+   * @param name - The name of the task function.
+   * @returns `true` if the default task function was set, `false` otherwise.
+   */
+  readonly setDefaultTaskFunction: (name: string) => boolean
   /**
    * Sets the worker choice strategy in this pool.
    *

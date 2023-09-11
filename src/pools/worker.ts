@@ -144,7 +144,7 @@ export interface WorkerInfo {
   /**
    * Task function names.
    */
-  taskFunctions?: string[]
+  taskFunctionNames?: string[]
 }
 
 /**

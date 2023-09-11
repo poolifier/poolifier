@@ -21,6 +21,7 @@ import {
   updateMeasurementStatistics
 } from '../utils'
 import { KillBehaviors } from '../worker/worker-options'
+import type { TaskFunction } from '../worker/task-functions'
 import {
   type IPool,
   PoolEmitter,
@@ -722,17 +723,66 @@ export abstract class AbstractPool<
     }
   }
 
+  private sendToWorkers (message: Omit<MessageValue<Data>, 'workerId'>): number {
+    let messagesCount = 0
+    for (const [workerNodeKey] of this.workerNodes.entries()) {
+      this.sendToWorker(workerNodeKey, {
+        ...message,
+        workerId: this.getWorkerInfo(workerNodeKey).id as number
+      })
+      ++messagesCount
+    }
+    return messagesCount
+  }
+
   /** @inheritDoc */
-  public listTaskFunctions (): string[] {
+  public hasTaskFunction (name: string): boolean {
+    this.sendToWorkers({
+      taskFunctionOperation: 'has',
+      taskFunctionName: name
+    })
+    return true
+  }
+
+  /** @inheritDoc */
+  public addTaskFunction (name: string, taskFunction: TaskFunction): boolean {
+    this.sendToWorkers({
+      taskFunctionOperation: 'add',
+      taskFunctionName: name,
+      taskFunction: taskFunction.toString()
+    })
+    return true
+  }
+
+  /** @inheritDoc */
+  public removeTaskFunction (name: string): boolean {
+    this.sendToWorkers({
+      taskFunctionOperation: 'remove',
+      taskFunctionName: name
+    })
+    return true
+  }
+
+  /** @inheritDoc */
+  public listTaskFunctionNames (): string[] {
     for (const workerNode of this.workerNodes) {
       if (
-        Array.isArray(workerNode.info.taskFunctions) &&
-        workerNode.info.taskFunctions.length > 0
+        Array.isArray(workerNode.info.taskFunctionNames) &&
+        workerNode.info.taskFunctionNames.length > 0
       ) {
-        return workerNode.info.taskFunctions
+        return workerNode.info.taskFunctionNames
       }
     }
     return []
+  }
+
+  /** @inheritDoc */
+  public setDefaultTaskFunction (name: string): boolean {
+    this.sendToWorkers({
+      taskFunctionOperation: 'default',
+      taskFunctionName: name
+    })
+    return true
   }
 
   private shallExecuteTask (workerNodeKey: number): boolean {
@@ -921,8 +971,8 @@ export abstract class AbstractPool<
     const workerInfo = this.getWorkerInfo(workerNodeKey)
     return (
       workerInfo != null &&
-      Array.isArray(workerInfo.taskFunctions) &&
-      workerInfo.taskFunctions.length > 2
+      Array.isArray(workerInfo.taskFunctionNames) &&
+      workerInfo.taskFunctionNames.length > 2
     )
   }
 
@@ -937,7 +987,7 @@ export abstract class AbstractPool<
     ) {
       --workerTaskStatistics.executing
     }
-    if (message.taskError == null) {
+    if (message.workerError == null) {
       ++workerTaskStatistics.executed
     } else {
       ++workerTaskStatistics.failed
@@ -948,7 +998,7 @@ export abstract class AbstractPool<
     workerUsage: WorkerUsage,
     message: MessageValue<Response>
   ): void {
-    if (message.taskError != null) {
+    if (message.workerError != null) {
       return
     }
     updateMeasurementStatistics(
@@ -975,7 +1025,7 @@ export abstract class AbstractPool<
     workerUsage: WorkerUsage,
     message: MessageValue<Response>
   ): void {
-    if (message.taskError != null) {
+    if (message.workerError != null) {
       return
     }
     const eluTaskStatisticsRequirements: MeasurementStatisticsRequirements =
@@ -1320,17 +1370,19 @@ export abstract class AbstractPool<
   protected workerListener (): (message: MessageValue<Response>) => void {
     return message => {
       this.checkMessageWorkerId(message)
-      if (message.ready != null && message.taskFunctions != null) {
+      if (message.ready != null && message.taskFunctionNames != null) {
         // Worker ready response received from worker
         this.handleWorkerReadyResponse(message)
       } else if (message.taskId != null) {
         // Task execution response received from worker
         this.handleTaskExecutionResponse(message)
-      } else if (message.taskFunctions != null) {
-        // Task functions message received from worker
+      } else if (message.taskFunctionNames != null) {
+        // Task function names message received from worker
         this.getWorkerInfo(
           this.getWorkerNodeKeyByWorkerId(message.workerId)
-        ).taskFunctions = message.taskFunctions
+        ).taskFunctionNames = message.taskFunctionNames
+      } else if (message.taskFunctionOperation != null) {
+        // Task function operation response received from worker
       }
     }
   }
@@ -1343,19 +1395,19 @@ export abstract class AbstractPool<
       this.getWorkerNodeKeyByWorkerId(message.workerId)
     )
     workerInfo.ready = message.ready as boolean
-    workerInfo.taskFunctions = message.taskFunctions
+    workerInfo.taskFunctionNames = message.taskFunctionNames
     if (this.emitter != null && this.ready) {
       this.emitter.emit(PoolEvents.ready, this.info)
     }
   }
 
   private handleTaskExecutionResponse (message: MessageValue<Response>): void {
-    const { taskId, taskError, data } = message
+    const { taskId, workerError, data } = message
     const promiseResponse = this.promiseResponseMap.get(taskId as string)
     if (promiseResponse != null) {
-      if (taskError != null) {
-        this.emitter?.emit(PoolEvents.taskError, taskError)
-        promiseResponse.reject(taskError.message)
+      if (workerError != null) {
+        this.emitter?.emit(PoolEvents.taskError, workerError)
+        promiseResponse.reject(workerError.message)
       } else {
         promiseResponse.resolve(data as Response)
       }
