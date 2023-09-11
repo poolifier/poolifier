@@ -1,5 +1,5 @@
-import type { Server } from 'http'
-import type { AddressInfo } from 'net'
+import type { Server } from 'node:http'
+import type { AddressInfo } from 'node:net'
 import { ClusterWorker } from 'poolifier'
 import express, { type Express, type Request, type Response } from 'express'
 import { type WorkerData, type WorkerResponse } from './types.js'

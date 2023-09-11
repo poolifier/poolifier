@@ -1,5 +1,5 @@
 'use strict'
-const { isMainThread } = require('worker_threads')
+const { isMainThread } = require('node:worker_threads')
 const { ThreadWorker } = require('poolifier')
 
 const debug = false

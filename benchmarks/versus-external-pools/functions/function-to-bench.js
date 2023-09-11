@@ -6,8 +6,8 @@
  * @returns {*} The result.
  */
 const functionToBench = data => {
-  const crypto = require('crypto')
-  const fs = require('fs')
+  const crypto = require('node:crypto')
+  const fs = require('node:fs')
   const TaskTypes = {
     CPU_INTENSIVE: 'CPU_INTENSIVE',
     IO_INTENSIVE: 'IO_INTENSIVE'
