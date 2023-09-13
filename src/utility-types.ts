@@ -72,7 +72,7 @@ export interface Task<Data = unknown> {
   /**
    * Worker id.
    */
-  readonly workerId: number
+  readonly workerId?: number
   /**
    * Task name.
    */

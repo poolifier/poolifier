@@ -73,10 +73,7 @@ export class FixedClusterPool<
     worker.on('disconnect', () => {
       worker.kill()
     })
-    await this.sendKillMessageToWorker(
-      workerNodeKey,
-      workerNode.info.id as number
-    )
+    await this.sendKillMessageToWorker(workerNodeKey)
     worker.disconnect()
     await waitWorkerExit
   }
@@ -86,7 +83,10 @@ export class FixedClusterPool<
     workerNodeKey: number,
     message: MessageValue<Data>
   ): void {
-    this.workerNodes[workerNodeKey].worker.send(message)
+    this.workerNodes[workerNodeKey].worker.send({
+      ...message,
+      workerId: this.workerNodes[workerNodeKey].info.id as number
+    })
   }
 
   /** @inheritDoc */

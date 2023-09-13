@@ -251,7 +251,7 @@ export interface IPool<
    */
   readonly addTaskFunction: (
     name: string,
-    taskFunction: TaskFunction
+    taskFunction: TaskFunction<Data, Response>
   ) => Promise<boolean>
   /**
    * Removes a task function from this pool.
