@@ -355,9 +355,7 @@ export abstract class AbstractWorker<
   ): void {
     const { taskFunctionOperation, taskFunction, taskFunctionName } = message
     let response!: TaskFunctionOperationReturnType
-    if (taskFunctionOperation === 'has') {
-      response = this.hasTaskFunction(taskFunctionName as string)
-    } else if (taskFunctionOperation === 'add') {
+    if (taskFunctionOperation === 'add') {
       response = this.addTaskFunction(
         taskFunctionName as string,
         // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func

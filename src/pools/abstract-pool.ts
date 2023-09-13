@@ -737,11 +737,15 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public hasTaskFunction (name: string): boolean {
-    this.sendToWorkers({
-      taskFunctionOperation: 'has',
-      taskFunctionName: name
-    })
-    return true
+    for (const workerNode of this.workerNodes) {
+      if (
+        Array.isArray(workerNode.info.taskFunctionNames) &&
+        workerNode.info.taskFunctionNames.includes(name)
+      ) {
+        return true
+      }
+    }
+    return false
   }
 
   /** @inheritDoc */

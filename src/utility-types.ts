@@ -118,12 +118,14 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
   readonly taskPerformance?: TaskPerformance
   /**
    * Task function operation:
-   * - `'has'` - Check if a task function exists.
    * - `'add'` - Add a task function.
    * - `'delete'` - Delete a task function.
    * - `'default'` - Set a task function as default.
    */
-  readonly taskFunctionOperation?: 'has' | 'add' | 'remove' | 'default'
+  readonly taskFunctionOperation?: 'add' | 'remove' | 'default'
+  /**
+   * Whether the task function operation is successful or not.
+   */
   readonly taskFunctionOperationStatus?: boolean
   /**
    * Task function serialized to string.
