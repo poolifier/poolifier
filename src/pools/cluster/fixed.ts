@@ -92,8 +92,7 @@ export class FixedClusterPool<
   /** @inheritDoc */
   protected sendStartupMessageToWorker (workerNodeKey: number): void {
     this.sendToWorker(workerNodeKey, {
-      ready: false,
-      workerId: this.workerNodes[workerNodeKey].info.id as number
+      ready: false
     })
   }
 

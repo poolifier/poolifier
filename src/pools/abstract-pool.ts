@@ -1248,8 +1248,7 @@ export abstract class AbstractPool<
     })
     const workerInfo = this.getWorkerInfo(workerNodeKey)
     this.sendToWorker(workerNodeKey, {
-      checkActive: true,
-      workerId: workerInfo.id as number
+      checkActive: true
     })
     if (this.taskFunctions.size > 0) {
       for (const [taskFunctionName, taskFunction] of this.taskFunctions) {
