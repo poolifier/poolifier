@@ -24,6 +24,6 @@
     "poolifier": "2.6.44",
     "tinypool": "0.8.0",
     "worker-nodes": "2.6.0",
-    "workerpool": "6.4.2"
+    "workerpool": "6.5.0"
   }
 }
