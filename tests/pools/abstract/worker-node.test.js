@@ -129,7 +129,7 @@ describe('Worker node test suite', () => {
         "Cannot get task function worker usage for task function name 'invalidTaskFunction' when task function names list is not yet defined"
       )
     )
-    threadWorkerNode.info.taskFunctions = [DEFAULT_TASK_NAME, 'fn1']
+    threadWorkerNode.info.taskFunctionNames = [DEFAULT_TASK_NAME, 'fn1']
     expect(() =>
       threadWorkerNode.getTaskFunctionWorkerUsage('invalidTaskFunction')
     ).toThrowError(
@@ -137,7 +137,7 @@ describe('Worker node test suite', () => {
         "Cannot get task function worker usage for task function name 'invalidTaskFunction' when task function names list has less than 3 elements"
       )
     )
-    threadWorkerNode.info.taskFunctions = [DEFAULT_TASK_NAME, 'fn1', 'fn2']
+    threadWorkerNode.info.taskFunctionNames = [DEFAULT_TASK_NAME, 'fn1', 'fn2']
     expect(
       threadWorkerNode.getTaskFunctionWorkerUsage(DEFAULT_TASK_NAME)
     ).toStrictEqual({

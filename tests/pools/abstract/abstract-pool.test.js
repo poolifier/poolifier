@@ -1176,7 +1176,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testMultipleTaskFunctionsWorker.js'
     )
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
-    expect(dynamicThreadPool.listTaskFunctions()).toStrictEqual([
+    expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
       DEFAULT_TASK_NAME,
       'jsonIntegerSerialization',
       'factorial',
@@ -1187,7 +1187,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.js'
     )
     await waitPoolEvents(fixedClusterPool, PoolEvents.ready, 1)
-    expect(fixedClusterPool.listTaskFunctions()).toStrictEqual([
+    expect(fixedClusterPool.listTaskFunctionNames()).toStrictEqual([
       DEFAULT_TASK_NAME,
       'jsonIntegerSerialization',
       'factorial',
@@ -1215,14 +1215,14 @@ describe('Abstract pool test suite', () => {
     expect(pool.info.executingTasks).toBe(0)
     expect(pool.info.executedTasks).toBe(4)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.info.taskFunctions).toStrictEqual([
+      expect(workerNode.info.taskFunctionNames).toStrictEqual([
         DEFAULT_TASK_NAME,
         'jsonIntegerSerialization',
         'factorial',
         'fibonacci'
       ])
       expect(workerNode.taskFunctionsUsage.size).toBe(3)
-      for (const name of pool.listTaskFunctions()) {
+      for (const name of pool.listTaskFunctionNames()) {
         expect(workerNode.getTaskFunctionWorkerUsage(name)).toStrictEqual({
           tasks: {
             executed: expect.any(Number),
@@ -1253,7 +1253,9 @@ describe('Abstract pool test suite', () => {
       expect(
         workerNode.getTaskFunctionWorkerUsage(DEFAULT_TASK_NAME)
       ).toStrictEqual(
-        workerNode.getTaskFunctionWorkerUsage(workerNode.info.taskFunctions[1])
+        workerNode.getTaskFunctionWorkerUsage(
+          workerNode.info.taskFunctionNames[1]
+        )
       )
     }
     await pool.destroy()
