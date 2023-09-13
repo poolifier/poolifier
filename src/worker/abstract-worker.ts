@@ -371,8 +371,7 @@ export abstract class AbstractWorker<
       workerError: {
         name: taskFunctionName as string,
         message: this.handleError(response.error as Error | string)
-      },
-      workerId: this.id
+      }
     })
   }
 
@@ -386,11 +385,11 @@ export abstract class AbstractWorker<
     if (isAsyncFunction(this.opts.killHandler)) {
       (this.opts.killHandler?.() as Promise<void>)
         .then(() => {
-          this.sendToMainWorker({ kill: 'success', workerId: this.id })
+          this.sendToMainWorker({ kill: 'success' })
           return null
         })
         .catch(() => {
-          this.sendToMainWorker({ kill: 'failure', workerId: this.id })
+          this.sendToMainWorker({ kill: 'failure' })
         })
         .finally(() => {
           this.emitDestroy()
@@ -400,9 +399,9 @@ export abstract class AbstractWorker<
       try {
         // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
         this.opts.killHandler?.() as void
-        this.sendToMainWorker({ kill: 'success', workerId: this.id })
+        this.sendToMainWorker({ kill: 'success' })
       } catch {
-        this.sendToMainWorker({ kill: 'failure', workerId: this.id })
+        this.sendToMainWorker({ kill: 'failure' })
       } finally {
         this.emitDestroy()
       }
@@ -454,7 +453,7 @@ export abstract class AbstractWorker<
       performance.now() - this.lastTaskTimestamp >
       (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME)
     ) {
-      this.sendToMainWorker({ kill: this.opts.killBehavior, workerId: this.id })
+      this.sendToMainWorker({ kill: this.opts.killBehavior })
     }
   }
 
@@ -485,8 +484,7 @@ export abstract class AbstractWorker<
    */
   protected sendTaskFunctionNamesToMainWorker (): void {
     this.sendToMainWorker({
-      taskFunctionNames: this.listTaskFunctionNames(),
-      workerId: this.id
+      taskFunctionNames: this.listTaskFunctionNames()
     })
   }
 
@@ -516,7 +514,6 @@ export abstract class AbstractWorker<
           message: `Task function '${name as string}' not found`,
           data
         },
-        workerId: this.id,
         taskId
       })
       return
@@ -546,7 +543,6 @@ export abstract class AbstractWorker<
       this.sendToMainWorker({
         data: res,
         taskPerformance,
-        workerId: this.id,
         taskId
       })
     } catch (error) {
@@ -556,7 +552,6 @@ export abstract class AbstractWorker<
           message: this.handleError(error as Error | string),
           data
         },
-        workerId: this.id,
         taskId
       })
     } finally {
@@ -582,7 +577,6 @@ export abstract class AbstractWorker<
         this.sendToMainWorker({
           data: res,
           taskPerformance,
-          workerId: this.id,
           taskId
         })
         return null
@@ -594,7 +588,6 @@ export abstract class AbstractWorker<
             message: this.handleError(error as Error | string),
             data
           },
-          workerId: this.id,
           taskId
         })
       })
