@@ -252,14 +252,14 @@ export interface IPool<
   readonly addTaskFunction: (
     name: string,
     taskFunction: TaskFunction
-  ) => boolean
+  ) => Promise<boolean>
   /**
    * Removes a task function from this pool.
    *
    * @param name - The name of the task function.
    * @returns `true` if the task function was removed, `false` otherwise.
    */
-  readonly removeTaskFunction: (name: string) => boolean
+  readonly removeTaskFunction: (name: string) => Promise<boolean>
   /**
    * Lists the names of task function available in this pool.
    *
@@ -272,7 +272,7 @@ export interface IPool<
    * @param name - The name of the task function.
    * @returns `true` if the default task function was set, `false` otherwise.
    */
-  readonly setDefaultTaskFunction: (name: string) => boolean
+  readonly setDefaultTaskFunction: (name: string) => Promise<boolean>
   /**
    * Sets the worker choice strategy in this pool.
    *

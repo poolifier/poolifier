@@ -18,14 +18,10 @@ import { KillBehaviors, type WorkerOptions } from './worker-options'
 import type {
   TaskAsyncFunction,
   TaskFunction,
+  TaskFunctionOperationReturnType,
   TaskFunctions,
   TaskSyncFunction
 } from './task-functions'
-
-interface TaskFunctionOperationReturnType {
-  status: boolean
-  error?: Error
-}
 
 const DEFAULT_MAX_INACTIVE_TIME = 60000
 const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
@@ -217,7 +213,7 @@ export abstract class AbstractWorker<
         this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)
       }
       this.taskFunctions.set(name, boundFn)
-      this.sendTaskFunctionsListToMainWorker()
+      this.sendTaskFunctionNamesToMainWorker()
       return { status: true }
     } catch (error) {
       return { status: false, error: error as Error }
@@ -247,7 +243,7 @@ export abstract class AbstractWorker<
         )
       }
       const deleteStatus = this.taskFunctions.delete(name)
-      this.sendTaskFunctionsListToMainWorker()
+      this.sendTaskFunctionNamesToMainWorker()
       return { status: deleteStatus }
     } catch (error) {
       return { status: false, error: error as Error }
@@ -485,9 +481,9 @@ export abstract class AbstractWorker<
   ): void
 
   /**
-   * Sends the list of task function names to the main worker.
+   * Sends task function names to the main worker.
    */
-  protected sendTaskFunctionsListToMainWorker (): void {
+  protected sendTaskFunctionNamesToMainWorker (): void {
     this.sendToMainWorker({
       taskFunctionNames: this.listTaskFunctionNames(),
       workerId: this.id
