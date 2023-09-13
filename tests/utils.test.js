@@ -1,7 +1,7 @@
-const { randomInt } = require('crypto')
-const { Worker } = require('worker_threads')
-const cluster = require('cluster')
-const os = require('os')
+const { randomInt } = require('node:crypto')
+const { Worker } = require('node:worker_threads')
+const cluster = require('node:cluster')
+const os = require('node:os')
 const { expect } = require('expect')
 const {
   CircularArray,

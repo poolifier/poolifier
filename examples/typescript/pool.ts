@@ -1,5 +1,5 @@
-import { dirname, extname, join } from 'path'
-import { fileURLToPath } from 'url'
+import { dirname, extname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import type { MyData, MyResponse } from './worker'
 import {
   DynamicThreadPool,

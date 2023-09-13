@@ -1,5 +1,5 @@
-const { MessageChannel, Worker } = require('worker_threads')
-const cluster = require('cluster')
+const { MessageChannel, Worker } = require('node:worker_threads')
+const cluster = require('node:cluster')
 const { expect } = require('expect')
 const { WorkerNode } = require('../../../lib/pools/worker-node')
 const { WorkerTypes } = require('../../../lib')

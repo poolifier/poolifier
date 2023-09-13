@@ -1,4 +1,4 @@
-import { isPrimary } from 'cluster'
+import { isPrimary } from 'node:cluster'
 import { ClusterWorker } from '../../lib/index.mjs'
 import { executeTaskFunction } from '../benchmarks-utils.mjs'
 import { TaskFunctions } from '../benchmarks-types.mjs'

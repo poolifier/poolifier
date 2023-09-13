@@ -1,4 +1,4 @@
-import { isMainThread } from 'worker_threads'
+import { isMainThread } from 'node:worker_threads'
 import { ThreadWorker } from '../../lib/index.mjs'
 import { executeTaskFunction } from '../benchmarks-utils.mjs'
 import { TaskFunctions } from '../benchmarks-types.mjs'
