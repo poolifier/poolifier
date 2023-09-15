@@ -18,14 +18,14 @@ dependencies:
     specifier: 2.6.44
     version: 2.6.44
   tinypool:
-    specifier: 0.8.0
-    version: 0.8.0
+    specifier: 0.8.1
+    version: 0.8.1
   worker-nodes:
     specifier: 2.6.0
     version: 2.6.0
   workerpool:
-    specifier: 6.4.2
-    version: 6.4.2
+    specifier: 6.5.0
+    version: 6.5.0
 
 packages:
 
@@ -130,8 +130,8 @@ packages:
     requiresBuild: true
     dev: false
 
-  /tinypool@0.8.0:
-    resolution: {integrity: sha512-BkMhpw8M8y9+XBOEP57Wzbw/8IoJYtL1OvFjX+88IvwzAqVhwEV2TID0lZ1l4b5dPhjzSFQrhWdD2CLWt+oXRw==}
+  /tinypool@0.8.1:
+    resolution: {integrity: sha512-zBTCK0cCgRROxvs9c0CGK838sPkeokNGdQVUUwHAbynHFlmyJYj825f/oRs528HaIJ97lo0pLIlDUzwN+IorWg==}
     engines: {node: '>=14.0.0'}
     dev: false
 
@@ -142,6 +142,6 @@ packages:
       msgpack-lite: 0.1.26
     dev: false
 
-  /workerpool@6.4.2:
-    resolution: {integrity: sha512-MrDWwemtC4xNV22kbbZDQQQmxNX+yLm790sgYl2wVD3CWnK7LJY1youI/11wHorAjHjK+GEjUxUh74XoPU71uQ==}
+  /workerpool@6.5.0:
+    resolution: {integrity: sha512-r64Ea3glXY2RVzMeNxB+4J+0YHAVzUdV4cM5nHi4BBC2LvnO1pWFAIYKYuGcPElbg1/7eEiaPtZ/jzCjIUuGBg==}
     dev: false
