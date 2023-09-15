@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   fastify:
-    specifier: ^4.23.1
-    version: 4.23.1
+    specifier: ^4.23.2
+    version: 4.23.2
   fastify-plugin:
     specifier: ^4.5.1
     version: 4.5.1
@@ -296,8 +296,8 @@ packages:
     resolution: {integrity: sha512-stRHYGeuqpEZTL1Ef0Ovr2ltazUT9g844X5z/zEBFLG8RYlpDiOCIG+ATvYEp+/zmc7sN29mcIMp8gvYplYPIQ==}
     dev: false
 
-  /fastify@4.23.1:
-    resolution: {integrity: sha512-JhZWyz2PgjzkDTrTX/PQ6+03s+/r2hC3RiOoF9WQUUHbPGiDJtQch1mg5IyJjUjwhug+/z1XHt5yweZNW4kbMg==}
+  /fastify@4.23.2:
+    resolution: {integrity: sha512-WFSxsHES115svC7NrerNqZwwM0UOxbC/P6toT9LRHgAAFvG7o2AN5W+H4ihCtOGuYXjZf4z+2jXC89rVEoPWOA==}
     dependencies:
       '@fastify/ajv-compiler': 3.5.0
       '@fastify/error': 3.3.0
