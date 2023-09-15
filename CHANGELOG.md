@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Disable publication on GitHub packages registry on release until authentication issue is fixed.
+- Rename `listTaskFunctions()` to `listTaskFunctionNames()` in pool and worker API.
+
+### Added
+
+- Add `addTaskFunction()`, `removeTaskFunction()`, `setDefaultTaskFunction()` methods to pool API.
 
 ## [2.6.44] - 2023-09-08
 
