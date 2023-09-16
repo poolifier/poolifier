@@ -23,7 +23,7 @@ const fixedThreadPool = buildPoolifierPool(
 const taskExecutions = 1
 const workerData = {
   function: TaskFunctions.jsonIntegerSerialization,
-  taskSize: 100
+  taskSize: 1000
 }
 
 const poolifierSuite = new Benchmark.Suite('Poolifier')
