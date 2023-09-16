@@ -6,6 +6,7 @@
   - [`pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`](#pool--new-fixedthreadpoolfixedclusterpoolnumberofthreadsnumberofworkers-filepath-opts)
   - [`pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`](#pool--new-dynamicthreadpooldynamicclusterpoolmin-max-filepath-opts)
   - [`pool.execute(data, name, transferList)`](#poolexecutedata-name-transferlist)
+  - [`pool.start()`](#poolstart)
   - [`pool.destroy()`](#pooldestroy)
   - [`pool.listTaskFunctionNames()`](#poollisttaskfunctionnames)
   - [`PoolOptions`](#pooloptions)
@@ -42,6 +43,10 @@
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
 
+### `pool.start()`
+
+This method is available on both pool implementations and will start the minimum number of workers.
+
 ### `pool.destroy()`
 
 This method is available on both pool implementations and will call the terminate method on each worker.
@@ -54,10 +59,15 @@ This method is available on both pool implementations and returns an array of th
 
 An object with these properties:
 
-- `onlineHandler` (optional) - A function that will listen for online event on each worker
-- `messageHandler` (optional) - A function that will listen for message event on each worker
-- `errorHandler` (optional) - A function that will listen for error event on each worker
-- `exitHandler` (optional) - A function that will listen for exit event on each worker
+- `onlineHandler` (optional) - A function that will listen for online event on each worker.  
+  Default: `() => {}`
+- `messageHandler` (optional) - A function that will listen for message event on each worker.  
+  Default: `() => {}`
+- `errorHandler` (optional) - A function that will listen for error event on each worker.  
+  Default: `() => {}`
+- `exitHandler` (optional) - A function that will listen for exit event on each worker.  
+  Default: `() => {}`
+
 - `workerChoiceStrategy` (optional) - The worker choice strategy to use in this pool:
 
   - `WorkerChoiceStrategies.ROUND_ROBIN`: Submit tasks to worker in a round robin fashion
@@ -83,6 +93,8 @@ An object with these properties:
 
   Default: `{ retries: 6, runTime: { median: false }, waitTime: { median: false }, elu: { median: false } }`
 
+- `startWorkers` (optional) - Start the minimum number of workers at pool creation.  
+  Default: `true`
 - `restartWorkerOnError` (optional) - Restart worker on uncaught error in this pool.  
   Default: `true`
 - `enableEvents` (optional) - Events emission enablement in this pool.  
@@ -95,8 +107,10 @@ An object with these properties:
 
   - `size` (optional) - The maximum number of tasks that can be queued on a worker before flagging it as back pressured. It must be a positive integer.
   - `concurrency` (optional) - The maximum number of tasks that can be executed concurrently on a worker. It must be a positive integer.
+  - `taskStealing` (optional) - Task stealing enablement.
+  - `tasksStealingOnBackPressure` (optional) - Tasks stealing enablement on back pressure.
 
-  Default: `{ size: (pool maximum size)^2, concurrency: 1 }`
+  Default: `{ size: (pool maximum size)^2, concurrency: 1, taskStealing: true, tasksStealingOnBackPressure: true }`
 
 #### `ThreadPoolOptions extends PoolOptions`
 

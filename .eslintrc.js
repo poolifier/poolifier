@@ -39,7 +39,6 @@ module.exports = defineConfig({
         skipWords: [
           'axios',
           'benoit',
-          'benny',
           'browserslist',
           'builtins',
           'christopher',

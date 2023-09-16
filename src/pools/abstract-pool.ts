@@ -100,13 +100,13 @@ export abstract class AbstractPool<
   private readonly taskFunctions: Map<string, TaskFunction<Data, Response>>
 
   /**
-   * Whether the pool is starting or not.
-   */
-  private readonly starting: boolean
-  /**
    * Whether the pool is started or not.
    */
   private started: boolean
+  /**
+   * Whether the pool is starting or not.
+   */
+  private starting: boolean
   /**
    * The start timestamp of the pool.
    */
@@ -154,10 +154,11 @@ export abstract class AbstractPool<
 
     this.taskFunctions = new Map<string, TaskFunction<Data, Response>>()
 
-    this.starting = true
-    this.startPool()
+    this.started = false
     this.starting = false
-    this.started = true
+    if (this.opts.startWorkers === true) {
+      this.start()
+    }
 
     this.startTimestamp = performance.now()
   }
@@ -221,6 +222,7 @@ export abstract class AbstractPool<
 
   private checkPoolOptions (opts: PoolOptions<Worker>): void {
     if (isPlainObject(opts)) {
+      this.opts.startWorkers = opts.startWorkers ?? true
       this.opts.workerChoiceStrategy =
         opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
       this.checkValidWorkerChoiceStrategy(this.opts.workerChoiceStrategy)
@@ -323,11 +325,6 @@ export abstract class AbstractPool<
         `Invalid worker node tasks concurrency: ${tasksQueueOptions?.concurrency} is a negative integer or zero`
       )
     }
-    if (tasksQueueOptions?.queueMaxSize != null) {
-      throw new Error(
-        'Invalid tasks queue options: queueMaxSize is deprecated, please use size instead'
-      )
-    }
     if (
       tasksQueueOptions?.size != null &&
       !Number.isSafeInteger(tasksQueueOptions?.size)
@@ -343,24 +340,13 @@ export abstract class AbstractPool<
     }
   }
 
-  private startPool (): void {
-    while (
-      this.workerNodes.reduce(
-        (accumulator, workerNode) =>
-          !workerNode.info.dynamic ? accumulator + 1 : accumulator,
-        0
-      ) < this.numberOfWorkers
-    ) {
-      this.createAndSetupWorkerNode()
-    }
-  }
-
   /** @inheritDoc */
   public get info (): PoolInfo {
     return {
       version,
       type: this.type,
       worker: this.worker,
+      started: this.started,
       ready: this.ready,
       strategy: this.opts.workerChoiceStrategy as WorkerChoiceStrategy,
       minSize: this.minSize,
@@ -684,7 +670,9 @@ export abstract class AbstractPool<
     return {
       ...{
         size: Math.pow(this.maxSize, 2),
-        concurrency: 1
+        concurrency: 1,
+        taskStealing: true,
+        tasksStealingOnBackPressure: true
       },
       ...tasksQueueOptions
     }
@@ -868,7 +856,7 @@ export abstract class AbstractPool<
   ): Promise<Response> {
     return await new Promise<Response>((resolve, reject) => {
       if (!this.started) {
-        reject(new Error('Cannot execute a task on destroyed pool'))
+        reject(new Error('Cannot execute a task on not started pool'))
         return
       }
       if (name != null && typeof name !== 'string') {
@@ -912,6 +900,22 @@ export abstract class AbstractPool<
         this.enqueueTask(workerNodeKey, task)
       }
     })
+  }
+
+  /** @inheritdoc */
+  public start (): void {
+    this.starting = true
+    while (
+      this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          !workerNode.info.dynamic ? accumulator + 1 : accumulator,
+        0
+      ) < this.numberOfWorkers
+    ) {
+      this.createAndSetupWorkerNode()
+    }
+    this.starting = false
+    this.started = true
   }
 
   /** @inheritDoc */
@@ -1297,10 +1301,14 @@ export abstract class AbstractPool<
     // Send the statistics message to worker.
     this.sendStatisticsMessageToWorker(workerNodeKey)
     if (this.opts.enableTasksQueue === true) {
-      this.workerNodes[workerNodeKey].onEmptyQueue =
-        this.taskStealingOnEmptyQueue.bind(this)
-      this.workerNodes[workerNodeKey].onBackPressure =
-        this.tasksStealingOnBackPressure.bind(this)
+      if (this.opts.tasksQueueOptions?.taskStealing === true) {
+        this.workerNodes[workerNodeKey].onEmptyQueue =
+          this.taskStealingOnEmptyQueue.bind(this)
+      }
+      if (this.opts.tasksQueueOptions?.tasksStealingOnBackPressure === true) {
+        this.workerNodes[workerNodeKey].onBackPressure =
+          this.tasksStealingOnBackPressure.bind(this)
+      }
     }
   }
 

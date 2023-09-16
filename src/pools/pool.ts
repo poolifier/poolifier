@@ -64,6 +64,7 @@ export interface PoolInfo {
   readonly version: string
   readonly type: PoolType
   readonly worker: WorkerType
+  readonly started: boolean
   readonly ready: boolean
   readonly strategy: WorkerChoiceStrategy
   readonly minSize: number
@@ -108,15 +109,23 @@ export interface TasksQueueOptions {
    */
   readonly size?: number
   /**
-   * @deprecated Use `size` instead.
-   */
-  readonly queueMaxSize?: number
-  /**
    * Maximum number of tasks that can be executed concurrently on a worker node.
    *
    * @defaultValue 1
    */
   readonly concurrency?: number
+  /**
+   * Whether to enable task stealing.
+   *
+   * @defaultValue true
+   */
+  readonly taskStealing?: boolean
+  /**
+   * Whether to enable tasks stealing on back pressure.
+   *
+   * @defaultValue true
+   */
+  readonly tasksStealingOnBackPressure?: boolean
 }
 
 /**
@@ -141,6 +150,12 @@ export interface PoolOptions<Worker extends IWorker> {
    * A function that will listen for exit event on each worker.
    */
   exitHandler?: ExitHandler<Worker>
+  /**
+   * Whether to start the minimum number of workers at pool initialization.
+   *
+   * @defaultValue false
+   */
+  startWorkers?: boolean
   /**
    * The worker choice strategy to use in this pool.
    *
@@ -230,6 +245,10 @@ export interface IPool<
     name?: string,
     transferList?: TransferListItem[]
   ) => Promise<Response>
+  /**
+   * Starts the minimum number of workers in this pool.
+   */
+  readonly start: () => void
   /**
    * Terminates all workers in this pool.
    */
