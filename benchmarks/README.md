@@ -42,8 +42,6 @@ Read the [README.md](./versus-external-pools/README.md) to know how to run the b
 
 ### Usage
 
-To run the internal benchmark, you just need to navigate to the root of poolifier project and run `pnpm benchmark`
+To run the internal benchmark, you just need to navigate to the root of poolifier project and run `pnpm benchmark`.
 
-### Results
-
-[Continuous internal benchmark result](https://poolifier.github.io/benchmark-results/dev/bench)
+### [Results](https://poolifier.github.io/benchmark-results/dev/bench)
