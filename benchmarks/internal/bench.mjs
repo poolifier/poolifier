@@ -58,10 +58,10 @@ poolifierSuite
   .on('cycle', event => {
     console.info(event.target.toString())
   })
-  .on('complete', function () {
+  .on('complete', async function () {
     console.info(
       'Fastest is ' + LIST_FORMATTER.format(this.filter('fastest').map('name'))
     )
-    fixedThreadPool.destroy()
+    await fixedThreadPool.destroy()
   })
   .run({ async: true })
