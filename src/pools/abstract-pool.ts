@@ -699,14 +699,13 @@ export abstract class AbstractPool<
               (this.opts.tasksQueueOptions?.concurrency as number)
         ) === -1
       )
-    } else {
-      return (
-        this.workerNodes.findIndex(
-          workerNode =>
-            workerNode.info.ready && workerNode.usage.tasks.executing === 0
-        ) === -1
-      )
     }
+    return (
+      this.workerNodes.findIndex(
+        workerNode =>
+          workerNode.info.ready && workerNode.usage.tasks.executing === 0
+      ) === -1
+    )
   }
 
   /** @inheritDoc */
