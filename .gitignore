@@ -79,4 +79,3 @@ lib
 dist
 tmp
 reports/
-benchmarks/internal/results/

@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Disable publication on GitHub packages registry on release until authentication issue is fixed.
 
+### Added
+
+- Continuous internal benchmarking.
+
 ## [2.6.44] - 2023-09-08
 
 ### Fixed

@@ -1,4 +1,4 @@
-name: Node.js Package
+name: Publish package
 
 on:
   release:
@@ -23,7 +23,7 @@ jobs:
           node-version: '18.x'
           cache: 'pnpm'
 
-      - name: Install
+      - name: Install Dependencies
         run: pnpm install --ignore-scripts
 
       - name: Tests & Coverage
@@ -57,7 +57,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
           cache: 'pnpm'
 
-      - name: Install
+      - name: Install Dependencies
         run: pnpm install --ignore-scripts
 
       - name: Read package.json version
@@ -105,7 +105,7 @@ jobs:
   #         registry-url: https://npm.pkg.github.com
   #         cache: 'pnpm'
 
-  #     - name: Install
+  #     - name: Install Dependencies
   #       run: pnpm install --ignore-scripts
 
   #     - name: Read package.json version

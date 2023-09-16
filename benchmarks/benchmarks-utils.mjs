@@ -78,6 +78,11 @@ export const runPoolifierTest = async (
   })
 }
 
+export const LIST_FORMATTER = new Intl.ListFormat('en-US', {
+  style: 'long',
+  type: 'conjunction'
+})
+
 export const executeAsyncFn = async fn => {
   try {
     await fn()

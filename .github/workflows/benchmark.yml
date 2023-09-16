@@ -1,36 +1,43 @@
 name: Benchmark
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+  deployments: write
 
 jobs:
   internal-benchmark:
-    strategy:
-      matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-        node: ['16.x', '18.x', '20.x']
-
-    name: Internal benchmark with Node.js ${{ matrix.node }} on ${{ matrix.os }}
-
-    runs-on: ${{ matrix.os }}
-
+    name: Internal benchmark
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
-
-      - name: Setup Node.js ${{ matrix.node }}
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node }}
+          node-version: '18.x'
           cache: 'pnpm'
-
-      - name: Install
+      - name: Install dependencies
         run: pnpm install --ignore-scripts
-
-      - name: Production Benchmark
-        run: pnpm benchmark:prod
+      - name: Run production benchmark
+        run: pnpm benchmark:prod | tee ./benchmarks/internal/output.txt
+      - name: Store production benchmark result
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: Internal benchmark
+          tool: 'benchmarkjs'
+          output-file-path: ./benchmarks/internal/output.txt
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+          alert-threshold: '200%'
+          comment-on-alert: true
+          fail-on-alert: true
+          gh-repository: 'github.com/poolifier/benchmark-results'

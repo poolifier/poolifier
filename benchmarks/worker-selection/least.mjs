@@ -1,5 +1,5 @@
-import Benchmark from 'benny'
-import { generateRandomInteger } from '../benchmarks-utils.mjs'
+import Benchmark from 'benchmark'
+import { LIST_FORMATTER, generateRandomInteger } from '../benchmarks-utils.mjs'
 
 function generateRandomTasksMap (
   numberOfWorkers,
@@ -167,26 +167,31 @@ function quickSelectRecursionRandomPivot (tasksMap) {
   )
 }
 
-Benchmark.suite(
-  'Least used worker tasks distribution',
-  Benchmark.add('Loop select', () => {
+new Benchmark.Suite('Least used worker tasks distribution')
+  .add('Loop select', () => {
     loopSelect(tasksMap)
-  }),
-  Benchmark.add('Array sort select', () => {
+  })
+  .add('Array sort select', () => {
     arraySortSelect(tasksMap)
-  }),
-  Benchmark.add('Quick select loop', () => {
+  })
+  .add('Quick select loop', () => {
     quickSelectLoop(tasksMap)
-  }),
-  Benchmark.add('Quick select loop with random pivot', () => {
+  })
+  .add('Quick select loop with random pivot', () => {
     quickSelectLoopRandomPivot(tasksMap)
-  }),
-  Benchmark.add('Quick select recursion', () => {
+  })
+  .add('Quick select recursion', () => {
     quickSelectRecursion(tasksMap)
-  }),
-  Benchmark.add('Quick select recursion with random pivot', () => {
+  })
+  .add('Quick select recursion with random pivot', () => {
     quickSelectRecursionRandomPivot(tasksMap)
-  }),
-  Benchmark.cycle(),
-  Benchmark.complete()
-)
+  })
+  .on('cycle', event => {
+    console.info(event.target.toString())
+  })
+  .on('complete', function () {
+    console.info(
+      'Fastest is ' + LIST_FORMATTER.format(this.filter('fastest').map('name'))
+    )
+  })
+  .run()

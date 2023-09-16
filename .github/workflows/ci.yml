@@ -40,7 +40,7 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'pnpm'
 
-      - name: Install
+      - name: Install Dependencies
         run: pnpm install --ignore-scripts
 
       - name: Build

@@ -1,4 +1,4 @@
-import { add, complete, cycle, save, suite } from 'benny'
+import Benchmark from 'benchmark'
 import {
   Measurements,
   PoolTypes,
@@ -7,7 +7,11 @@ import {
   availableParallelism
 } from '../../lib/index.mjs'
 import { TaskFunctions } from '../benchmarks-types.mjs'
-import { buildPoolifierPool, runPoolifierTest } from '../benchmarks-utils.mjs'
+import {
+  LIST_FORMATTER,
+  buildPoolifierPool,
+  runPoolifierTest
+} from '../benchmarks-utils.mjs'
 
 const poolSize = availableParallelism()
 const pools = []
@@ -17,7 +21,7 @@ for (const poolType of Object.values(PoolTypes)) {
       continue
     }
     for (const workerChoiceStrategy of Object.values(WorkerChoiceStrategies)) {
-      for (const enableTasksQueue of [false, true]) {
+      for (const enableTasksQueue of [false]) {
         if (workerChoiceStrategy === WorkerChoiceStrategies.FAIR_SHARE) {
           for (const measurement of [Measurements.runTime, Measurements.elu]) {
             pools.push([
@@ -48,46 +52,28 @@ for (const poolType of Object.values(PoolTypes)) {
 const taskExecutions = 1
 const workerData = {
   function: TaskFunctions.jsonIntegerSerialization,
-  taskSize: 1000
+  taskSize: 100
 }
-const addPools = pools =>
-  pools.map(([name, pool]) => {
-    return add(name, async () => {
-      await runPoolifierTest(pool, {
-        taskExecutions,
-        workerData
-      })
+
+const suite = new Benchmark.Suite('Poolifier')
+for (const [name, pool] of pools) {
+  suite.add(name, async () => {
+    await runPoolifierTest(pool, {
+      taskExecutions,
+      workerData
     })
   })
+}
 
-const resultsFile = 'poolifier'
-const resultsFolder = 'benchmarks/internal/results'
-suite(
-  'Poolifier',
-  ...addPools(pools),
-  cycle(),
-  complete(),
-  save({
-    file: resultsFile,
-    folder: resultsFolder,
-    format: 'json',
-    details: true
-  }),
-  save({
-    file: resultsFile,
-    folder: resultsFolder,
-    format: 'chart.html',
-    details: true
-  }),
-  save({
-    file: resultsFile,
-    folder: resultsFolder,
-    format: 'table.html',
-    details: true
+suite
+  .on('cycle', event => {
+    console.info(event.target.toString())
   })
-)
-  .then(() => {
+  .on('complete', function () {
+    console.info(
+      'Fastest is ' + LIST_FORMATTER.format(this.filter('fastest').map('name'))
+    )
     // eslint-disable-next-line n/no-process-exit
-    return process.exit()
+    process.exit()
   })
-  .catch(err => console.error(err))
+  .run({ async: true, maxTime: 120 })
