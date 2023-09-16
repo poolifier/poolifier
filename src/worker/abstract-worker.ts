@@ -460,11 +460,11 @@ export abstract class AbstractWorker<
   /**
    * Handles an error and convert it to a string so it can be sent back to the main worker.
    *
-   * @param e - The error raised by the worker.
+   * @param error - The error raised by the worker.
    * @returns The error message.
    */
-  protected handleError (e: Error | string): string {
-    return e instanceof Error ? e.message : e
+  protected handleError (error: Error | string): string {
+    return error instanceof Error ? error.message : error
   }
 
   /**
@@ -516,12 +516,11 @@ export abstract class AbstractWorker<
         workerId: this.id,
         taskId
       })
-    } catch (e) {
-      const errorMessage = this.handleError(e as Error | string)
+    } catch (error) {
       this.sendToMainWorker({
         taskError: {
           name: name as string,
-          message: errorMessage,
+          message: this.handleError(error as Error | string),
           data
         },
         workerId: this.id,
@@ -555,12 +554,11 @@ export abstract class AbstractWorker<
         })
         return null
       })
-      .catch(e => {
-        const errorMessage = this.handleError(e as Error | string)
+      .catch(error => {
         this.sendToMainWorker({
           taskError: {
             name: name as string,
-            message: errorMessage,
+            message: this.handleError(error as Error | string),
             data
           },
           workerId: this.id,

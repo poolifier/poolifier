@@ -93,7 +93,7 @@ export class ThreadWorker<
   }
 
   /** @inheritDoc */
-  protected handleError (e: Error | string): string {
-    return e as string
+  protected handleError (error: Error | string): string {
+    return error as string
   }
 }
