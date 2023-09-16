@@ -16,6 +16,7 @@ const { Deque } = require('../../../lib/deque')
 const { DEFAULT_TASK_NAME } = require('../../../lib/utils')
 const { version } = require('../../../package.json')
 const { waitPoolEvents } = require('../../test-utils')
+const { WorkerNode } = require('../../../lib/pools/worker-node')
 
 describe('Abstract pool test suite', () => {
   const numberOfWorkers = 2
@@ -180,18 +181,18 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.js'
     )
     expect(pool.emitter).toBeInstanceOf(EventEmitter)
-    expect(pool.opts.enableEvents).toBe(true)
-    expect(pool.opts.restartWorkerOnError).toBe(true)
-    expect(pool.opts.enableTasksQueue).toBe(false)
-    expect(pool.opts.tasksQueueOptions).toBeUndefined()
-    expect(pool.opts.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.ROUND_ROBIN
-    )
-    expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      retries: 6,
-      runTime: { median: false },
-      waitTime: { median: false },
-      elu: { median: false }
+    expect(pool.opts).toStrictEqual({
+      startWorkers: true,
+      enableEvents: true,
+      restartWorkerOnError: true,
+      enableTasksQueue: false,
+      workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      workerChoiceStrategyOptions: {
+        retries: 6,
+        runTime: { median: false },
+        waitTime: { median: false },
+        elu: { median: false }
+      }
     })
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
       retries: 6,
@@ -208,10 +209,6 @@ describe('Abstract pool test suite', () => {
         elu: { median: false }
       })
     }
-    expect(pool.opts.messageHandler).toBeUndefined()
-    expect(pool.opts.errorHandler).toBeUndefined()
-    expect(pool.opts.onlineHandler).toBeUndefined()
-    expect(pool.opts.exitHandler).toBeUndefined()
     await pool.destroy()
     const testHandler = () => console.info('test handler executed')
     pool = new FixedThreadPool(
@@ -234,22 +231,29 @@ describe('Abstract pool test suite', () => {
       }
     )
     expect(pool.emitter).toBeUndefined()
-    expect(pool.opts.enableEvents).toBe(false)
-    expect(pool.opts.restartWorkerOnError).toBe(false)
-    expect(pool.opts.enableTasksQueue).toBe(true)
-    expect(pool.opts.tasksQueueOptions).toStrictEqual({
-      concurrency: 2,
-      size: 4
-    })
-    expect(pool.opts.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.LEAST_USED
-    )
-    expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      retries: 6,
-      runTime: { median: true },
-      waitTime: { median: false },
-      elu: { median: false },
-      weights: { 0: 300, 1: 200 }
+    expect(pool.opts).toStrictEqual({
+      startWorkers: true,
+      enableEvents: false,
+      restartWorkerOnError: false,
+      enableTasksQueue: true,
+      tasksQueueOptions: {
+        concurrency: 2,
+        size: 4,
+        tasksStealing: true,
+        tasksStealingOnBackPressure: true
+      },
+      workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
+      workerChoiceStrategyOptions: {
+        retries: 6,
+        runTime: { median: true },
+        waitTime: { median: false },
+        elu: { median: false },
+        weights: { 0: 300, 1: 200 }
+      },
+      onlineHandler: testHandler,
+      messageHandler: testHandler,
+      errorHandler: testHandler,
+      exitHandler: testHandler
     })
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
       retries: 6,
@@ -268,10 +272,6 @@ describe('Abstract pool test suite', () => {
         weights: { 0: 300, 1: 200 }
       })
     }
-    expect(pool.opts.messageHandler).toStrictEqual(testHandler)
-    expect(pool.opts.errorHandler).toStrictEqual(testHandler)
-    expect(pool.opts.onlineHandler).toStrictEqual(testHandler)
-    expect(pool.opts.exitHandler).toStrictEqual(testHandler)
     await pool.destroy()
   })
 
@@ -403,21 +403,6 @@ describe('Abstract pool test suite', () => {
         )
     ).toThrowError(
       new TypeError('Invalid worker node tasks concurrency: must be an integer')
-    )
-    expect(
-      () =>
-        new FixedThreadPool(
-          numberOfWorkers,
-          './tests/worker-files/thread/testWorker.js',
-          {
-            enableTasksQueue: true,
-            tasksQueueOptions: { queueMaxSize: 2 }
-          }
-        )
-    ).toThrowError(
-      new Error(
-        'Invalid tasks queue options: queueMaxSize is deprecated, please use size instead'
-      )
     )
     expect(
       () =>
@@ -649,13 +634,17 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.enableTasksQueue).toBe(true)
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 1,
-      size: 4
+      size: 4,
+      tasksStealing: true,
+      tasksStealingOnBackPressure: true
     })
     pool.enableTasksQueue(true, { concurrency: 2 })
     expect(pool.opts.enableTasksQueue).toBe(true)
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 2,
-      size: 4
+      size: 4,
+      tasksStealing: true,
+      tasksStealingOnBackPressure: true
     })
     pool.enableTasksQueue(false)
     expect(pool.opts.enableTasksQueue).toBe(false)
@@ -671,12 +660,16 @@ describe('Abstract pool test suite', () => {
     )
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 1,
-      size: 4
+      size: 4,
+      tasksStealing: true,
+      tasksStealingOnBackPressure: true
     })
     pool.setTasksQueueOptions({ concurrency: 2 })
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 2,
-      size: 4
+      size: 4,
+      tasksStealing: true,
+      tasksStealingOnBackPressure: true
     })
     expect(() =>
       pool.setTasksQueueOptions('invalidTasksQueueOptions')
@@ -695,11 +688,6 @@ describe('Abstract pool test suite', () => {
     )
     expect(() => pool.setTasksQueueOptions({ concurrency: 0.2 })).toThrowError(
       new TypeError('Invalid worker node tasks concurrency: must be an integer')
-    )
-    expect(() => pool.setTasksQueueOptions({ queueMaxSize: 2 })).toThrowError(
-      new Error(
-        'Invalid tasks queue options: queueMaxSize is deprecated, please use size instead'
-      )
     )
     expect(() => pool.setTasksQueueOptions({ size: 0 })).toThrowError(
       new RangeError(
@@ -726,6 +714,7 @@ describe('Abstract pool test suite', () => {
       version,
       type: PoolTypes.fixed,
       worker: WorkerTypes.thread,
+      started: true,
       ready: true,
       strategy: WorkerChoiceStrategies.ROUND_ROBIN,
       minSize: numberOfWorkers,
@@ -747,6 +736,7 @@ describe('Abstract pool test suite', () => {
       version,
       type: PoolTypes.dynamic,
       worker: WorkerTypes.cluster,
+      started: true,
       ready: true,
       strategy: WorkerChoiceStrategies.ROUND_ROBIN,
       minSize: Math.floor(numberOfWorkers / 2),
@@ -767,6 +757,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/cluster/testWorker.js'
     )
     for (const workerNode of pool.workerNodes) {
+      expect(workerNode).toBeInstanceOf(WorkerNode)
       expect(workerNode.usage).toStrictEqual({
         tasks: {
           executed: 0,
@@ -801,7 +792,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/cluster/testWorker.js'
     )
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksQueue).toBeDefined()
+      expect(workerNode).toBeInstanceOf(WorkerNode)
       expect(workerNode.tasksQueue).toBeInstanceOf(Deque)
       expect(workerNode.tasksQueue.size).toBe(0)
       expect(workerNode.tasksQueue.maxSize).toBe(0)
@@ -813,7 +804,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.js'
     )
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.tasksQueue).toBeDefined()
+      expect(workerNode).toBeInstanceOf(WorkerNode)
       expect(workerNode.tasksQueue).toBeInstanceOf(Deque)
       expect(workerNode.tasksQueue.size).toBe(0)
       expect(workerNode.tasksQueue.maxSize).toBe(0)
@@ -827,6 +818,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/cluster/testWorker.js'
     )
     for (const workerNode of pool.workerNodes) {
+      expect(workerNode).toBeInstanceOf(WorkerNode)
       expect(workerNode.info).toStrictEqual({
         id: expect.any(Number),
         type: WorkerTypes.cluster,
@@ -841,12 +833,37 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.js'
     )
     for (const workerNode of pool.workerNodes) {
+      expect(workerNode).toBeInstanceOf(WorkerNode)
       expect(workerNode.info).toStrictEqual({
         id: expect.any(Number),
         type: WorkerTypes.thread,
         dynamic: false,
         ready: true
       })
+    }
+    await pool.destroy()
+  })
+
+  it('Verify that pool can be started after initialization', async () => {
+    const pool = new FixedClusterPool(
+      numberOfWorkers,
+      './tests/worker-files/cluster/testWorker.js',
+      {
+        startWorkers: false
+      }
+    )
+    expect(pool.info.started).toBe(false)
+    expect(pool.info.ready).toBe(false)
+    expect(pool.workerNodes).toStrictEqual([])
+    await expect(pool.execute()).rejects.toThrowError(
+      new Error('Cannot execute a task on not started pool')
+    )
+    pool.start()
+    expect(pool.info.started).toBe(true)
+    expect(pool.info.ready).toBe(true)
+    expect(pool.workerNodes.length).toBe(numberOfWorkers)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode).toBeInstanceOf(WorkerNode)
     }
     await pool.destroy()
   })
@@ -869,8 +886,8 @@ describe('Abstract pool test suite', () => {
       "Task function 'unknown' not found"
     )
     await pool.destroy()
-    await expect(pool.execute(undefined, undefined, {})).rejects.toThrowError(
-      new Error('Cannot execute a task on destroyed pool')
+    await expect(pool.execute()).rejects.toThrowError(
+      new Error('Cannot execute a task on not started pool')
     )
   })
 
@@ -1038,6 +1055,7 @@ describe('Abstract pool test suite', () => {
       version,
       type: PoolTypes.dynamic,
       worker: WorkerTypes.cluster,
+      started: true,
       ready: true,
       strategy: WorkerChoiceStrategies.ROUND_ROBIN,
       minSize: expect.any(Number),
@@ -1075,7 +1093,8 @@ describe('Abstract pool test suite', () => {
       version,
       type: PoolTypes.fixed,
       worker: WorkerTypes.thread,
-      ready: expect.any(Boolean),
+      started: true,
+      ready: true,
       strategy: WorkerChoiceStrategies.ROUND_ROBIN,
       minSize: expect.any(Number),
       maxSize: expect.any(Number),
@@ -1111,7 +1130,8 @@ describe('Abstract pool test suite', () => {
       version,
       type: PoolTypes.dynamic,
       worker: WorkerTypes.thread,
-      ready: expect.any(Boolean),
+      started: true,
+      ready: true,
       strategy: WorkerChoiceStrategies.ROUND_ROBIN,
       minSize: expect.any(Number),
       maxSize: expect.any(Number),
@@ -1150,7 +1170,8 @@ describe('Abstract pool test suite', () => {
       version,
       type: PoolTypes.fixed,
       worker: WorkerTypes.thread,
-      ready: expect.any(Boolean),
+      started: true,
+      ready: true,
       strategy: WorkerChoiceStrategies.ROUND_ROBIN,
       minSize: expect.any(Number),
       maxSize: expect.any(Number),
