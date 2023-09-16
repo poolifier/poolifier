@@ -36,7 +36,7 @@ jobs:
           name: Internal benchmark
           tool: 'benchmarkjs'
           output-file-path: ./benchmarks/internal/output.txt
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.BENCHMARK_RESULTS_TOKEN }}
           auto-push: true
           alert-threshold: '200%'
           comment-on-alert: true
