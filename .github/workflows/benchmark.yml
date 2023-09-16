@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   internal-benchmark:
+    if: github.repository == 'poolifier/poolifier'
     name: Internal benchmark
     runs-on: ubuntu-latest
     steps:
