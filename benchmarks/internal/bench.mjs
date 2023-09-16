@@ -10,6 +10,7 @@ import { TaskFunctions } from '../benchmarks-types.mjs'
 import {
   LIST_FORMATTER,
   buildPoolifierPool,
+  getPoolImplementationName,
   runPoolifierTest
 } from '../benchmarks-utils.mjs'
 
@@ -32,7 +33,7 @@ for (const pool of [fixedThreadPool]) {
   for (const workerChoiceStrategy of Object.values(WorkerChoiceStrategies)) {
     for (const enableTasksQueue of [false, true]) {
       poolifierSuite.add(
-        `${pool.constructor.name}|${workerChoiceStrategy}|${
+        `${getPoolImplementationName(pool)}|${workerChoiceStrategy}|${
           enableTasksQueue ? 'with' : 'without'
         } tasks queue`,
         async () => {

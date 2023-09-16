@@ -78,6 +78,18 @@ export const runPoolifierTest = async (
   })
 }
 
+export const getPoolImplementationName = pool => {
+  if (pool instanceof FixedThreadPool) {
+    return 'FixedThreadPool'
+  } else if (pool instanceof DynamicThreadPool) {
+    return 'DynamicThreadPool'
+  } else if (pool instanceof FixedClusterPool) {
+    return 'FixedClusterPool'
+  } else if (pool instanceof DynamicClusterPool) {
+    return 'DynamicClusterPool'
+  }
+}
+
 export const LIST_FORMATTER = new Intl.ListFormat('en-US', {
   style: 'long',
   type: 'conjunction'
