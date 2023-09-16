@@ -239,7 +239,7 @@ describe('Abstract pool test suite', () => {
       tasksQueueOptions: {
         concurrency: 2,
         size: 4,
-        tasksStealing: true,
+        taskStealing: true,
         tasksStealingOnBackPressure: true
       },
       workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
@@ -635,7 +635,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 1,
       size: 4,
-      tasksStealing: true,
+      taskStealing: true,
       tasksStealingOnBackPressure: true
     })
     pool.enableTasksQueue(true, { concurrency: 2 })
@@ -643,7 +643,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 2,
       size: 4,
-      tasksStealing: true,
+      taskStealing: true,
       tasksStealingOnBackPressure: true
     })
     pool.enableTasksQueue(false)
@@ -661,14 +661,14 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 1,
       size: 4,
-      tasksStealing: true,
+      taskStealing: true,
       tasksStealingOnBackPressure: true
     })
     pool.setTasksQueueOptions({ concurrency: 2 })
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 2,
       size: 4,
-      tasksStealing: true,
+      taskStealing: true,
       tasksStealingOnBackPressure: true
     })
     expect(() =>

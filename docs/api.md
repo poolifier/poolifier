@@ -102,10 +102,10 @@ An object with these properties:
 
   - `size` (optional) - The maximum number of tasks that can be queued on a worker before flagging it as back pressured. It must be a positive integer.
   - `concurrency` (optional) - The maximum number of tasks that can be executed concurrently on a worker. It must be a positive integer.
-  - `tasksStealing` (optional) - Tasks stealing enablement.
+  - `taskStealing` (optional) - Tasks stealing enablement.
   - `tasksStealingOnBackPressure` (optional) - Tasks stealing enablement on back pressure.
 
-  Default: `{ size: (pool maximum size)^2, concurrency: 1, tasksStealing: true, tasksStealingOnBackPressure: true }`
+  Default: `{ size: (pool maximum size)^2, concurrency: 1, taskStealing: true, tasksStealingOnBackPressure: true }`
 
 #### `ThreadPoolOptions extends PoolOptions`
 

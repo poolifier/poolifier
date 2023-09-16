@@ -662,7 +662,7 @@ export abstract class AbstractPool<
       ...{
         size: Math.pow(this.maxSize, 2),
         concurrency: 1,
-        tasksStealing: true,
+        taskStealing: true,
         tasksStealingOnBackPressure: true
       },
       ...tasksQueueOptions
@@ -1170,7 +1170,7 @@ export abstract class AbstractPool<
     // Send the statistics message to worker.
     this.sendStatisticsMessageToWorker(workerNodeKey)
     if (this.opts.enableTasksQueue === true) {
-      if (this.opts.tasksQueueOptions?.tasksStealing === true) {
+      if (this.opts.tasksQueueOptions?.taskStealing === true) {
         this.workerNodes[workerNodeKey].onEmptyQueue =
           this.taskStealingOnEmptyQueue.bind(this)
       }
