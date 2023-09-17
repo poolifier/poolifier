@@ -135,7 +135,7 @@ An object with these properties:
   This option only apply to the newly created workers.  
   Default: `KillBehaviors.SOFT`
 
-- `maxInactiveTime` (optional) - Maximum waiting time in milliseconds for tasks on newly created workers. After this time newly created workers will die.  
+- `maxInactiveTime` (optional) - Maximum waiting time in milliseconds for tasks on newly created workers. After this time newly created workers will die. It must be a positive integer greater or equal than 5.  
   The last active time of your worker will be updated when it terminates a task.  
   If `killBehavior` is set to `KillBehaviors.HARD` this value represents also the timeout for the tasks that you submit to the pool, when this timeout expires your tasks is interrupted before completion and removed. The worker is killed if is not part of the minimum size of the pool.  
   If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.  

@@ -100,11 +100,38 @@ export abstract class AbstractWorker<
   }
 
   private checkWorkerOptions (opts: WorkerOptions): void {
+    if (opts != null && !isPlainObject(opts)) {
+      throw new TypeError('opts worker options parameter is not a plain object')
+    }
+    if (
+      opts?.killBehavior != null &&
+      !Object.values(KillBehaviors).includes(opts.killBehavior)
+    ) {
+      throw new TypeError(
+        `killBehavior option '${opts.killBehavior}' is not valid`
+      )
+    }
+    if (
+      opts?.maxInactiveTime != null &&
+      !Number.isSafeInteger(opts.maxInactiveTime)
+    ) {
+      throw new TypeError('maxInactiveTime option is not an integer')
+    }
+    if (opts?.maxInactiveTime != null && opts.maxInactiveTime < 5) {
+      throw new TypeError(
+        'maxInactiveTime option is not a positive integer greater or equal than 5'
+      )
+    }
+    if (opts?.killHandler != null && typeof opts.killHandler !== 'function') {
+      throw new TypeError('killHandler option is not a function')
+    }
+    if (opts?.async != null) {
+      throw new Error('async option is deprecated')
+    }
     this.opts = { ...DEFAULT_WORKER_OPTIONS, ...opts }
-    delete this.opts.async
   }
 
-  private checkValidTaskFunction (
+  private checkValidTaskFunctionEntry (
     name: string,
     fn: TaskFunction<Data, Response>
   ): void {
@@ -126,7 +153,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Checks if the `taskFunctions` parameter is passed to the constructor.
+   * Checks if the `taskFunctions` parameter is passed to the constructor and valid.
    *
    * @param taskFunctions - The task function(s) parameter that should be checked.
    */
@@ -150,7 +177,7 @@ export abstract class AbstractWorker<
     } else if (isPlainObject(taskFunctions)) {
       let firstEntry = true
       for (const [name, fn] of Object.entries(taskFunctions)) {
-        this.checkValidTaskFunction(name, fn)
+        this.checkValidTaskFunctionEntry(name, fn)
         const boundFn = fn.bind(this)
         if (firstEntry) {
           this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)

@@ -238,7 +238,7 @@ describe('Abstract pool test suite', () => {
       enableTasksQueue: true,
       tasksQueueOptions: {
         concurrency: 2,
-        size: 4,
+        size: Math.pow(numberOfWorkers, 2),
         taskStealing: true,
         tasksStealingOnBackPressure: true
       },
@@ -638,7 +638,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.enableTasksQueue).toBe(true)
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 1,
-      size: 4,
+      size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
       tasksStealingOnBackPressure: true
     })
@@ -650,7 +650,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.enableTasksQueue).toBe(true)
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 2,
-      size: 4,
+      size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
       tasksStealingOnBackPressure: true
     })
@@ -676,26 +676,33 @@ describe('Abstract pool test suite', () => {
     )
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 1,
-      size: 4,
+      size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
       tasksStealingOnBackPressure: true
     })
     for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksQueueBackPressureSize).toBe(
+        pool.opts.tasksQueueOptions.size
+      )
       expect(workerNode.onEmptyQueue).toBeInstanceOf(Function)
       expect(workerNode.onBackPressure).toBeInstanceOf(Function)
     }
     pool.setTasksQueueOptions({
       concurrency: 2,
+      size: 2,
       taskStealing: false,
       tasksStealingOnBackPressure: false
     })
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 2,
-      size: 4,
+      size: 2,
       taskStealing: false,
       tasksStealingOnBackPressure: false
     })
     for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksQueueBackPressureSize).toBe(
+        pool.opts.tasksQueueOptions.size
+      )
       expect(workerNode.onEmptyQueue).toBeUndefined()
       expect(workerNode.onBackPressure).toBeUndefined()
     }
@@ -706,11 +713,14 @@ describe('Abstract pool test suite', () => {
     })
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 1,
-      size: 4,
+      size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
       tasksStealingOnBackPressure: true
     })
     for (const workerNode of pool.workerNodes) {
+      expect(workerNode.tasksQueueBackPressureSize).toBe(
+        pool.opts.tasksQueueOptions.size
+      )
       expect(workerNode.onEmptyQueue).toBeInstanceOf(Function)
       expect(workerNode.onBackPressure).toBeInstanceOf(Function)
     }

@@ -38,7 +38,7 @@ export interface WorkerOptions {
    */
   killBehavior?: KillBehavior
   /**
-   * Maximum waiting time in milliseconds for tasks on newly created workers.
+   * Maximum waiting time in milliseconds for tasks on newly created workers. It must be greater or equal than 5.
    *
    * After this time, newly created workers will be terminated.
    * The last active time of your worker will be updated when it terminates a task.
@@ -52,6 +52,8 @@ export interface WorkerOptions {
   maxInactiveTime?: number
   /**
    * The function to call when a worker is killed.
+   *
+   * @defaultValue `() => {}`
    */
   killHandler?: KillHandler
   /**
