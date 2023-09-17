@@ -678,6 +678,20 @@ export abstract class AbstractPool<
     }
   }
 
+  private buildTasksQueueOptions (
+    tasksQueueOptions: TasksQueueOptions
+  ): TasksQueueOptions {
+    return {
+      ...{
+        size: Math.pow(this.maxSize, 2),
+        concurrency: 1,
+        taskStealing: true,
+        tasksStealingOnBackPressure: true
+      },
+      ...tasksQueueOptions
+    }
+  }
+
   private setTasksQueueSize (size: number): void {
     for (const workerNode of this.workerNodes) {
       workerNode.tasksQueueBackPressureSize = size
@@ -707,20 +721,6 @@ export abstract class AbstractPool<
   private unsetTasksStealingOnBackPressure (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
       delete this.workerNodes[workerNodeKey].onBackPressure
-    }
-  }
-
-  private buildTasksQueueOptions (
-    tasksQueueOptions: TasksQueueOptions
-  ): TasksQueueOptions {
-    return {
-      ...{
-        size: Math.pow(this.maxSize, 2),
-        concurrency: 1,
-        taskStealing: true,
-        tasksStealingOnBackPressure: true
-      },
-      ...tasksQueueOptions
     }
   }
 
@@ -1241,9 +1241,9 @@ export abstract class AbstractPool<
       this.workerNodes[workerNodeKey].closeChannel()
       this.emitter?.emit(PoolEvents.error, error)
       if (
-        this.opts.restartWorkerOnError === true &&
         this.started &&
-        !this.starting
+        !this.starting &&
+        this.opts.restartWorkerOnError === true
       ) {
         if (workerInfo.dynamic) {
           this.createAndSetupDynamicWorkerNode()
@@ -1251,7 +1251,7 @@ export abstract class AbstractPool<
           this.createAndSetupWorkerNode()
         }
       }
-      if (this.opts.enableTasksQueue === true) {
+      if (this.started && this.opts.enableTasksQueue === true) {
         this.redistributeQueuedTasks(workerNodeKey)
       }
     })
@@ -1519,8 +1519,8 @@ export abstract class AbstractPool<
     )
     workerInfo.ready = message.ready as boolean
     workerInfo.taskFunctionNames = message.taskFunctionNames
-    if (this.emitter != null && this.ready) {
-      this.emitter.emit(PoolEvents.ready, this.info)
+    if (this.ready) {
+      this.emitter?.emit(PoolEvents.ready, this.info)
     }
   }
 
