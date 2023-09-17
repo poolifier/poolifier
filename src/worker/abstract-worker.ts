@@ -130,7 +130,7 @@ export abstract class AbstractWorker<
     this.opts = { ...DEFAULT_WORKER_OPTIONS, ...opts }
   }
 
-  private checkValidTaskFunction (
+  private checkValidTaskFunctionEntry (
     name: string,
     fn: TaskFunction<Data, Response>
   ): void {
@@ -176,7 +176,7 @@ export abstract class AbstractWorker<
     } else if (isPlainObject(taskFunctions)) {
       let firstEntry = true
       for (const [name, fn] of Object.entries(taskFunctions)) {
-        this.checkValidTaskFunction(name, fn)
+        this.checkValidTaskFunctionEntry(name, fn)
         const boundFn = fn.bind(this)
         if (firstEntry) {
           this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)
