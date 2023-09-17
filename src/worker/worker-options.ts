@@ -52,6 +52,8 @@ export interface WorkerOptions {
   maxInactiveTime?: number
   /**
    * The function to call when a worker is killed.
+   *
+   * @defaultValue `() => {}`
    */
   killHandler?: KillHandler
   /**
