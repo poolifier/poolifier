@@ -24,20 +24,20 @@
 
 ### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
 
-`numberOfThreads/numberOfWorkers` (mandatory) Number of workers for this pool  
-`filePath` (mandatory) Path to a file with a worker implementation  
-`opts` (optional) An object with the pool options properties described below
+`numberOfThreads/numberOfWorkers` (mandatory) Number of workers for this pool.  
+`filePath` (mandatory) Path to a file with a worker implementation.  
+`opts` (optional) An object with the pool options properties described below.
 
 ### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
 
-`min` (mandatory) Same as _FixedThreadPool_/_FixedClusterPool_ numberOfThreads/numberOfWorkers, this number of workers will be always active  
+`min` (mandatory) Same as _FixedThreadPool_/_FixedClusterPool_ numberOfThreads/numberOfWorkers, this number of workers will be always active.  
 `max` (mandatory) Max number of workers that this pool can contain, the newly created workers will die after a threshold (default is 1 minute, you can override it in your worker implementation).  
-`filePath` (mandatory) Path to a file with a worker implementation  
-`opts` (optional) An object with the pool options properties described below
+`filePath` (mandatory) Path to a file with a worker implementation.  
+`opts` (optional) An object with the pool options properties described below.
 
 ### `pool.execute(data, name, transferList)`
 
-`data` (optional) An object that you want to pass to your worker implementation  
+`data` (optional) An object that you want to pass to your worker implementation.  
 `name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
 `transferList` (optional) An array of transferable objects that you want to transfer to your [worker_threads](https://nodejs.org/api/worker_threads.html) worker implementation
 
@@ -132,7 +132,7 @@ An object with these properties:
 
 ### `class YourWorker extends ThreadWorker/ClusterWorker`
 
-`taskFunctions` (mandatory) The task function or task functions object `{ name_1: fn_1, ..., name_n: fn_n }` that you want to execute on the worker  
+`taskFunctions` (mandatory) The task function or task functions object `{ name_1: fn_1, ..., name_n: fn_n }` that you want to execute on the worker.  
 `opts` (optional) An object with these properties:
 
 - `killBehavior` (optional) - Dictates if your worker will be deleted in case a task is active on it.  
@@ -152,20 +152,20 @@ An object with these properties:
 
 #### `YourWorker.hasTaskFunction(name)`
 
-`name` (mandatory) The task function name
+`name` (mandatory) The task function name.
 
 This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
 
 #### `YourWorker.addTaskFunction(name, fn)`
 
-`name` (mandatory) The task function name  
-`fn` (mandatory) The task function
+`name` (mandatory) The task function name.  
+`fn` (mandatory) The task function.
 
 This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
 
 #### `YourWorker.removeTaskFunction(name)`
 
-`name` (mandatory) The task function name
+`name` (mandatory) The task function name.
 
 This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
 
@@ -175,6 +175,6 @@ This method is available on both worker implementations and returns an array of 
 
 #### `YourWorker.setDefaultTaskFunction(name)`
 
-`name` (mandatory) The task function name
+`name` (mandatory) The task function name.
 
 This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
