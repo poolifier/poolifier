@@ -14,7 +14,7 @@ jobs:
   internal-benchmark:
     if: github.repository == 'poolifier/poolifier'
     name: Internal benchmark
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v4
