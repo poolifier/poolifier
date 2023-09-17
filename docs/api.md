@@ -51,6 +51,12 @@ This method is available on both pool implementations and will start the minimum
 
 This method is available on both pool implementations and will call the terminate method on each worker.
 
+### `pool.hasTaskFunction(name)`
+
+`name` (mandatory) The task function name
+
+This method is available on both pool implementations and returns a boolean.
+
 ### `pool.listTaskFunctionNames()`
 
 This method is available on both pool implementations and returns an array of the task function names.
@@ -148,20 +154,20 @@ An object with these properties:
 
 `name` (mandatory) The task function name
 
-This method is available on both worker implementations and returns a boolean.
+This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
 
 #### `YourWorker.addTaskFunction(name, fn)`
 
 `name` (mandatory) The task function name  
 `fn` (mandatory) The task function
 
-This method is available on both worker implementations and returns a boolean.
+This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
 
 #### `YourWorker.removeTaskFunction(name)`
 
 `name` (mandatory) The task function name
 
-This method is available on both worker implementations and returns a boolean.
+This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
 
 #### `YourWorker.listTaskFunctionNames()`
 
@@ -171,4 +177,4 @@ This method is available on both worker implementations and returns an array of 
 
 `name` (mandatory) The task function name
 
-This method is available on both worker implementations and returns a boolean.
+This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.

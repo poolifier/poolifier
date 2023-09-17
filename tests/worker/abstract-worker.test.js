@@ -339,7 +339,7 @@ describe('Abstract worker test suite', () => {
     expect(worker.getMainWorker().send.calledOnce).toBe(true)
   })
 
-  it('Verify that listTaskFunctions() works', () => {
+  it('Verify that listTaskFunctionNames() works', () => {
     const fn1 = () => {
       return 1
     }

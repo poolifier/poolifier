@@ -1243,7 +1243,7 @@ describe('Abstract pool test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify that listTaskFunctions() is working', async () => {
+  it('Verify that listTaskFunctionNames() is working', async () => {
     const dynamicThreadPool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
@@ -1267,6 +1267,36 @@ describe('Abstract pool test suite', () => {
       'factorial',
       'fibonacci'
     ])
+    await dynamicThreadPool.destroy()
+    await fixedClusterPool.destroy()
+  })
+
+  it('Verify that hasTaskFunction() is working', async () => {
+    const dynamicThreadPool = new DynamicThreadPool(
+      Math.floor(numberOfWorkers / 2),
+      numberOfWorkers,
+      './tests/worker-files/thread/testMultipleTaskFunctionsWorker.js'
+    )
+    await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
+    expect(dynamicThreadPool.hasTaskFunction(DEFAULT_TASK_NAME)).toBe(true)
+    expect(dynamicThreadPool.hasTaskFunction('jsonIntegerSerialization')).toBe(
+      true
+    )
+    expect(dynamicThreadPool.hasTaskFunction('factorial')).toBe(true)
+    expect(dynamicThreadPool.hasTaskFunction('fibonacci')).toBe(true)
+    expect(dynamicThreadPool.hasTaskFunction('unknown')).toBe(false)
+    const fixedClusterPool = new FixedClusterPool(
+      numberOfWorkers,
+      './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.js'
+    )
+    await waitPoolEvents(fixedClusterPool, PoolEvents.ready, 1)
+    expect(dynamicThreadPool.hasTaskFunction(DEFAULT_TASK_NAME)).toBe(true)
+    expect(dynamicThreadPool.hasTaskFunction('jsonIntegerSerialization')).toBe(
+      true
+    )
+    expect(dynamicThreadPool.hasTaskFunction('factorial')).toBe(true)
+    expect(dynamicThreadPool.hasTaskFunction('fibonacci')).toBe(true)
+    expect(dynamicThreadPool.hasTaskFunction('unknown')).toBe(false)
     await dynamicThreadPool.destroy()
     await fixedClusterPool.destroy()
   })
