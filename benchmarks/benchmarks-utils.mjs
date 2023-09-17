@@ -100,7 +100,7 @@ export const runPoolifierPoolBenchmark = async (
               Measurements.elu
             ]) {
               suite.add(
-                `${name}|${workerChoiceStrategy}|${measurement}|${
+                `${name} with ${workerChoiceStrategy}, with ${measurement} and ${
                   enableTasksQueue ? 'with' : 'without'
                 } tasks queue`,
                 async () => {
@@ -129,7 +129,7 @@ export const runPoolifierPoolBenchmark = async (
             }
           } else {
             suite.add(
-              `${name}|${workerChoiceStrategy}|${
+              `${name} with ${workerChoiceStrategy} and ${
                 enableTasksQueue ? 'with' : 'without'
               } tasks queue`,
               async () => {
