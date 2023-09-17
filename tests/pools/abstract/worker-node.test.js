@@ -80,6 +80,11 @@ describe('Worker node test suite', () => {
     expect(threadWorkerNode.tasksQueueBackPressureSize).toBe(12)
     expect(threadWorkerNode.tasksQueue).toBeInstanceOf(Deque)
     expect(threadWorkerNode.tasksQueue.size).toBe(0)
+    expect(threadWorkerNode.tasksQueueSize()).toBe(
+      threadWorkerNode.tasksQueue.size
+    )
+    expect(threadWorkerNode.onBackPressureStarted).toBe(false)
+    expect(threadWorkerNode.onEmptyQueueCount).toBe(0)
     expect(threadWorkerNode.taskFunctionsUsage).toBeInstanceOf(Map)
 
     expect(clusterWorkerNode).toBeInstanceOf(WorkerNode)
@@ -118,6 +123,11 @@ describe('Worker node test suite', () => {
     expect(clusterWorkerNode.tasksQueueBackPressureSize).toBe(12)
     expect(clusterWorkerNode.tasksQueue).toBeInstanceOf(Deque)
     expect(clusterWorkerNode.tasksQueue.size).toBe(0)
+    expect(clusterWorkerNode.tasksQueueSize()).toBe(
+      clusterWorkerNode.tasksQueue.size
+    )
+    expect(clusterWorkerNode.onBackPressureStarted).toBe(false)
+    expect(clusterWorkerNode.onEmptyQueueCount).toBe(0)
     expect(clusterWorkerNode.taskFunctionsUsage).toBeInstanceOf(Map)
   })
 
