@@ -136,18 +136,26 @@ export interface TasksQueueOptions {
 export interface PoolOptions<Worker extends IWorker> {
   /**
    * A function that will listen for online event on each worker.
+   *
+   * @defaultValue `() => {}`
    */
   onlineHandler?: OnlineHandler<Worker>
   /**
    * A function that will listen for message event on each worker.
+   *
+   * @defaultValue `() => {}`
    */
   messageHandler?: MessageHandler<Worker>
   /**
    * A function that will listen for error event on each worker.
+   *
+   * @defaultValue `() => {}`
    */
   errorHandler?: ErrorHandler<Worker>
   /**
    * A function that will listen for exit event on each worker.
+   *
+   * @defaultValue `() => {}`
    */
   exitHandler?: ExitHandler<Worker>
   /**

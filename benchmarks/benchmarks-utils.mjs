@@ -7,6 +7,7 @@ import {
   DynamicThreadPool,
   FixedClusterPool,
   FixedThreadPool,
+  Measurements,
   PoolTypes,
   WorkerChoiceStrategies,
   WorkerTypes
@@ -93,24 +94,59 @@ export const runPoolifierPoolBenchmark = async (
         WorkerChoiceStrategies
       )) {
         for (const enableTasksQueue of [false, true]) {
-          suite.add(
-            `${name}|${workerChoiceStrategy}|${
-              enableTasksQueue ? 'with' : 'without'
-            } tasks queue`,
-            async () => {
-              pool.setWorkerChoiceStrategy(workerChoiceStrategy)
-              pool.enableTasksQueue(enableTasksQueue)
-              assert.strictEqual(
-                pool.opts.workerChoiceStrategy,
-                workerChoiceStrategy
+          if (workerChoiceStrategy === WorkerChoiceStrategies.FAIR_SHARE) {
+            for (const measurement of [
+              Measurements.runTime,
+              Measurements.elu
+            ]) {
+              suite.add(
+                `${name}|${workerChoiceStrategy}|${measurement}|${
+                  enableTasksQueue ? 'with' : 'without'
+                } tasks queue`,
+                async () => {
+                  pool.setWorkerChoiceStrategy(workerChoiceStrategy, {
+                    measurement
+                  })
+                  pool.enableTasksQueue(enableTasksQueue)
+                  assert.strictEqual(
+                    pool.opts.workerChoiceStrategy,
+                    workerChoiceStrategy
+                  )
+                  assert.strictEqual(
+                    pool.opts.enableTasksQueue,
+                    enableTasksQueue
+                  )
+                  assert.strictEqual(
+                    pool.opts.workerChoiceStrategyOptions.measurement,
+                    measurement
+                  )
+                  await runPoolifierPool(pool, {
+                    taskExecutions,
+                    workerData
+                  })
+                }
               )
-              assert.strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
-              await runPoolifierPool(pool, {
-                taskExecutions,
-                workerData
-              })
             }
-          )
+          } else {
+            suite.add(
+              `${name}|${workerChoiceStrategy}|${
+                enableTasksQueue ? 'with' : 'without'
+              } tasks queue`,
+              async () => {
+                pool.setWorkerChoiceStrategy(workerChoiceStrategy)
+                pool.enableTasksQueue(enableTasksQueue)
+                assert.strictEqual(
+                  pool.opts.workerChoiceStrategy,
+                  workerChoiceStrategy
+                )
+                assert.strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
+                await runPoolifierPool(pool, {
+                  taskExecutions,
+                  workerData
+                })
+              }
+            )
+          }
         }
       }
       suite
