@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `addTaskFunction()`, `removeTaskFunction()`, `setDefaultTaskFunction()` methods to pool API.
 - Add `startWorkers` to pool options to whether start the minimum number of workers at pool creation or not.
+- Add `start()` method to pool API to start the minimum number of workers.
 - Add `taskStealing` and `tasksStealingOnPressure` to tasks queue options to whether enable task stealing or not and whether enable tasks stealing on back pressure or not.
 - Continuous internal benchmarking: https://poolifier.github.io/benchmark-results/dev/bench.
 

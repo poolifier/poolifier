@@ -153,7 +153,7 @@ export interface PoolOptions<Worker extends IWorker> {
   /**
    * Whether to start the minimum number of workers at pool initialization.
    *
-   * @defaultValue false
+   * @defaultValue true
    */
   startWorkers?: boolean
   /**
