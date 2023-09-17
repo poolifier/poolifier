@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix task stealing related tasks queue options handling at runtime.
 
+### Changed
+
+- Stricter worker constructor arguments validation.
+
 ## [2.6.45] - 2023-09-17
 
 ### Changed
