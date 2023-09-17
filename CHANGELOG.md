@@ -11,16 +11,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix task stealing related tasks queue options handling at runtime.
 
-## [2.6.45] - 2023-09-17
-
 ### Changed
 
-- Disable publication on GitHub packages registry on release until authentication issue is fixed.
 - Rename `listTaskFunctions()` to `listTaskFunctionNames()` in pool and worker API.
 
 ### Added
 
 - Add `addTaskFunction()`, `removeTaskFunction()`, `setDefaultTaskFunction()` methods to pool API.
+
+## [2.6.45] - 2023-09-17
+
+### Changed
+
+- Disable publication on GitHub packages registry on release until authentication issue is fixed.
+
+### Added
+
 - Add `startWorkers` to pool options to whether start the minimum number of workers at pool creation or not.
 - Add `start()` method to pool API to start the minimum number of workers.
 - Add `taskStealing` and `tasksStealingOnPressure` to tasks queue options to whether enable task stealing or not and whether enable tasks stealing on back pressure or not.
