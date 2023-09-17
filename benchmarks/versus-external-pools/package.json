@@ -12,7 +12,7 @@
   },
   "volta": {
     "node": "18.17.1",
-    "pnpm": "8.7.5"
+    "pnpm": "8.7.6"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
