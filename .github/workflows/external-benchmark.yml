@@ -38,6 +38,8 @@ jobs:
         run: |
           git config --local user.name "${{ env.COMMIT_AUTHOR }}"
           git config --local user.email "${{ env.COMMIT_EMAIL }}"
+          git pull
+          git add BENCH-100000.md BENCH-100000.json
           git commit -a -m "${{ env.COMMIT_MESSAGE }}"
       - name: Push changes
         if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'

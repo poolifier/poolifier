@@ -36,6 +36,7 @@ jobs:
         run: |
           git config --local user.name "${{ env.COMMIT_AUTHOR }}"
           git config --local user.email "${{ env.COMMIT_EMAIL }}"
+          git pull
           git add ./docs
           git commit -a -m "${{ env.COMMIT_MESSAGE }}"
 
