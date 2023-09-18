@@ -1319,9 +1319,7 @@ describe('Abstract pool test suite', () => {
     await expect(
       dynamicThreadPool.removeTaskFunction('test')
     ).rejects.toThrowError(
-      new Error(
-        'Cannot remove a task function that does not exist on the pool side'
-      )
+      new Error('Cannot remove a task function not handled on the pool side')
     )
     const echoTaskFunction = data => {
       return data

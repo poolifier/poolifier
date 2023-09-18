@@ -119,7 +119,7 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
   /**
    * Task function operation:
    * - `'add'` - Add a task function.
-   * - `'delete'` - Delete a task function.
+   * - `'remove'` - Remove a task function.
    * - `'default'` - Set a task function as default.
    */
   readonly taskFunctionOperation?: 'add' | 'remove' | 'default'

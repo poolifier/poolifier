@@ -860,7 +860,7 @@ export abstract class AbstractPool<
   public async removeTaskFunction (name: string): Promise<boolean> {
     if (!this.taskFunctions.has(name)) {
       throw new Error(
-        'Cannot remove a task function that does not exist on the pool side'
+        'Cannot remove a task function not handled on the pool side'
       )
     }
     this.taskFunctions.delete(name)
