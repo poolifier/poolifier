@@ -8,7 +8,11 @@
   - [`pool.execute(data, name, transferList)`](#poolexecutedata-name-transferlist)
   - [`pool.start()`](#poolstart)
   - [`pool.destroy()`](#pooldestroy)
+  - [`pool.hasTaskFunction(name)`](#poolhastaskfunctionname)
+  - [`pool.addTaskFunction(name, fn)`](#pooladdtaskfunctionname-fn)
+  - [`pool.removeTaskFunction(name)`](#poolremovetaskfunctionname)
   - [`pool.listTaskFunctionNames()`](#poollisttaskfunctionnames)
+  - [`pool.setDefaultTaskFunction(name)`](#poolsetdefaulttaskfunctionname)
   - [`PoolOptions`](#pooloptions)
     - [`ThreadPoolOptions extends PoolOptions`](#threadpooloptions-extends-pooloptions)
     - [`ClusterPoolOptions extends PoolOptions`](#clusterpooloptions-extends-pooloptions)
@@ -57,9 +61,28 @@ This method is available on both pool implementations and will call the terminat
 
 This method is available on both pool implementations and returns a boolean.
 
+### `pool.addTaskFunction(name, fn)`
+
+`name` (mandatory) The task function name.
+`fn` (mandatory) The task function.
+
+This method is available on both pool implementations and returns a boolean promise.
+
+### `pool.removeTaskFunction(name)`
+
+`name` (mandatory) The task function name.
+
+This method is available on both pool implementations and returns a boolean promise.
+
 ### `pool.listTaskFunctionNames()`
 
 This method is available on both pool implementations and returns an array of the task function names.
+
+### `pool.setDefaultTaskFunction(name)`
+
+`name` (mandatory) The task function name.
+
+This method is available on both pool implementations and returns a boolean promise.
 
 ### `PoolOptions`
 

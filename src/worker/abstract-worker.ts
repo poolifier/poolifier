@@ -326,6 +326,7 @@ export abstract class AbstractWorker<
         DEFAULT_TASK_NAME,
         this.taskFunctions.get(name) as TaskFunction<Data, Response>
       )
+      this.sendTaskFunctionNamesToMainWorker()
       return { status: true }
     } catch (error) {
       return { status: false, error: error as Error }
@@ -376,7 +377,7 @@ export abstract class AbstractWorker<
   protected handleTaskFunctionOperationMessage (
     message: MessageValue<Data>
   ): void {
-    const { taskFunctionOperation, taskFunction, taskFunctionName } = message
+    const { taskFunctionOperation, taskFunctionName, taskFunction } = message
     let response!: TaskFunctionOperationReturnType
     if (taskFunctionOperation === 'add') {
       response = this.addTaskFunction(

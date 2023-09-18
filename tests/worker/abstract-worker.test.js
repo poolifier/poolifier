@@ -200,7 +200,7 @@ describe('Abstract worker test suite', () => {
     expect(killHandlerStub.calledOnce).toBe(true)
   })
 
-  it('Verify that handleError() method works properly', () => {
+  it('Verify that handleError() method is working properly', () => {
     const error = new Error('Error as an error')
     const worker = new ClusterWorker(() => {})
     expect(worker.handleError(error)).not.toBeInstanceOf(Error)
@@ -215,7 +215,7 @@ describe('Abstract worker test suite', () => {
     ).toThrowError('Main worker not set')
   })
 
-  it('Verify that hasTaskFunction() works', () => {
+  it('Verify that hasTaskFunction() is working', () => {
     const fn1 = () => {
       return 1
     }
@@ -239,7 +239,7 @@ describe('Abstract worker test suite', () => {
     expect(worker.hasTaskFunction('fn3')).toStrictEqual({ status: false })
   })
 
-  it('Verify that addTaskFunction() works', () => {
+  it('Verify that addTaskFunction() is working', () => {
     const fn1 = () => {
       return 1
     }
@@ -292,7 +292,7 @@ describe('Abstract worker test suite', () => {
     )
   })
 
-  it('Verify that removeTaskFunction() works', () => {
+  it('Verify that removeTaskFunction() is working', () => {
     const fn1 = () => {
       return 1
     }
@@ -339,7 +339,7 @@ describe('Abstract worker test suite', () => {
     expect(worker.getMainWorker().send.calledOnce).toBe(true)
   })
 
-  it('Verify that listTaskFunctionNames() works', () => {
+  it('Verify that listTaskFunctionNames() is working', () => {
     const fn1 = () => {
       return 1
     }
@@ -354,7 +354,7 @@ describe('Abstract worker test suite', () => {
     ])
   })
 
-  it('Verify that setDefaultTaskFunction() works', () => {
+  it('Verify that setDefaultTaskFunction() is working', () => {
     const fn1 = () => {
       return 1
     }
