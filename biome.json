@@ -30,7 +30,6 @@
   "files": {
     "ignore": [
       ".nyc_output/",
-      ".vscode/",
       "benchmarks/internal/results/",
       "coverage/",
       "docs/**/*.css",

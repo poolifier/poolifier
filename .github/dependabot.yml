@@ -27,7 +27,6 @@ updates:
     labels:
       - 'dependencies'
       - 'benchmarks'
-      - 'nocombine'
     reviewers:
       - 'pioardi'
       - 'jerome-benoit'
