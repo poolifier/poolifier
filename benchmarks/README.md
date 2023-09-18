@@ -32,7 +32,7 @@ We chose to use this tool because it allows to run isolated Node.js processes so
   - [worker-threads-pool](https://github.com/watson/worker-threads-pool): removed because unmaintained since more than 4 years.
   - [threadwork](https://github.com/kevlened/threadwork): removed because unmaintained since more than 3 years.
   - [microjob](https://github.com/wilk/microjob): removed because unmaintained since more than 5 years.
-  - [threads.js](https://github.com/andywer/threads.js/): removed because not a threads pool.
+  - [threads.js](https://github.com/andywer/threads.js): removed because not a threads pool.
 
 > :warning: **We would need funds to run our benchmark more often and on Cloud VMs, please consider to sponsor this project**
 
