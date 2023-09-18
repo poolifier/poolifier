@@ -1,4 +1,4 @@
-name: Benchmark
+name: Internal benchmark
 
 on:
   workflow_dispatch:
