@@ -846,13 +846,22 @@ export abstract class AbstractPool<
   /** @inheritDoc */
   public async addTaskFunction (
     name: string,
-    taskFunction: TaskFunction<Data, Response>
+    fn: TaskFunction<Data, Response>
   ): Promise<boolean> {
-    this.taskFunctions.set(name, taskFunction)
+    if (typeof name !== 'string') {
+      throw new TypeError('name argument must be a string')
+    }
+    if (typeof name === 'string' && name.trim().length === 0) {
+      throw new TypeError('name argument must not be an empty string')
+    }
+    if (typeof fn !== 'function') {
+      throw new TypeError('fn argument must be a function')
+    }
+    this.taskFunctions.set(name, fn)
     return await this.sendTaskFunctionOperationToWorkers({
       taskFunctionOperation: 'add',
       taskFunctionName: name,
-      taskFunction: taskFunction.toString()
+      taskFunction: fn.toString()
     })
   }
 

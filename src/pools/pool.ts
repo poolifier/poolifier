@@ -273,12 +273,12 @@ export interface IPool<
    * If a task function with the same name already exists, it will be overwritten.
    *
    * @param name - The name of the task function.
-   * @param taskFunction - The task function.
+   * @param fn - The task function.
    * @returns `true` if the task function was added, `false` otherwise.
    */
   readonly addTaskFunction: (
     name: string,
-    taskFunction: TaskFunction<Data, Response>
+    fn: TaskFunction<Data, Response>
   ) => Promise<boolean>
   /**
    * Removes a task function from this pool.

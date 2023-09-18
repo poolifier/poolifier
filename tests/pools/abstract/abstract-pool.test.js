@@ -1280,6 +1280,20 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.js'
     )
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
+    await expect(
+      dynamicThreadPool.addTaskFunction(0, () => {})
+    ).rejects.toThrowError(new TypeError('name argument must be a string'))
+    await expect(
+      dynamicThreadPool.addTaskFunction('', () => {})
+    ).rejects.toThrowError(
+      new TypeError('name argument must not be an empty string')
+    )
+    await expect(
+      dynamicThreadPool.addTaskFunction('test', 0)
+    ).rejects.toThrowError(new TypeError('fn argument must be a function'))
+    await expect(
+      dynamicThreadPool.addTaskFunction('test', '')
+    ).rejects.toThrowError(new TypeError('fn argument must be a function'))
     expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
       DEFAULT_TASK_NAME,
       'test'
