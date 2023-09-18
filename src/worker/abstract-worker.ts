@@ -386,7 +386,7 @@ export abstract class AbstractWorker<
         new Function(`return ${taskFunction as string}`)() as TaskFunction<
         Data,
         Response
-        >
+        > /* NOSONAR */
       )
     } else if (taskFunctionOperation === 'remove') {
       response = this.removeTaskFunction(taskFunctionName as string)
@@ -607,7 +607,7 @@ export abstract class AbstractWorker<
           taskPerformance,
           taskId
         })
-        return null
+        return undefined
       })
       .catch(error => {
         this.sendToMainWorker({
