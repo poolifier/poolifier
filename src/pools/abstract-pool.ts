@@ -68,8 +68,7 @@ export abstract class AbstractPool<
   public readonly emitter?: PoolEmitter
 
   /**
-   * The task execution response promise map.
-   *
+   * The task execution response promise map:
    * - `key`: The message id of each submitted task.
    * - `value`: An object that contains the worker, the execution response promise resolve and reject callbacks.
    *
@@ -93,13 +92,13 @@ export abstract class AbstractPool<
   protected readonly max?: number
 
   /**
-   * Whether the pool is starting or not.
-   */
-  private readonly starting: boolean
-  /**
    * Whether the pool is started or not.
    */
   private started: boolean
+  /**
+   * Whether the pool is starting or not.
+   */
+  private starting: boolean
   /**
    * The start timestamp of the pool.
    */
@@ -145,10 +144,11 @@ export abstract class AbstractPool<
 
     this.setupHook()
 
-    this.starting = true
-    this.startPool()
+    this.started = false
     this.starting = false
-    this.started = true
+    if (this.opts.startWorkers === true) {
+      this.start()
+    }
 
     this.startTimestamp = performance.now()
   }
@@ -212,16 +212,19 @@ export abstract class AbstractPool<
 
   private checkPoolOptions (opts: PoolOptions<Worker>): void {
     if (isPlainObject(opts)) {
+      this.opts.startWorkers = opts.startWorkers ?? true
+      this.checkValidWorkerChoiceStrategy(
+        opts.workerChoiceStrategy as WorkerChoiceStrategy
+      )
       this.opts.workerChoiceStrategy =
         opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
-      this.checkValidWorkerChoiceStrategy(this.opts.workerChoiceStrategy)
+      this.checkValidWorkerChoiceStrategyOptions(
+        opts.workerChoiceStrategyOptions as WorkerChoiceStrategyOptions
+      )
       this.opts.workerChoiceStrategyOptions = {
         ...DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
         ...opts.workerChoiceStrategyOptions
       }
-      this.checkValidWorkerChoiceStrategyOptions(
-        this.opts.workerChoiceStrategyOptions
-      )
       this.opts.restartWorkerOnError = opts.restartWorkerOnError ?? true
       this.opts.enableEvents = opts.enableEvents ?? true
       this.opts.enableTasksQueue = opts.enableTasksQueue ?? false
@@ -241,7 +244,10 @@ export abstract class AbstractPool<
   private checkValidWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy
   ): void {
-    if (!Object.values(WorkerChoiceStrategies).includes(workerChoiceStrategy)) {
+    if (
+      workerChoiceStrategy != null &&
+      !Object.values(WorkerChoiceStrategies).includes(workerChoiceStrategy)
+    ) {
       throw new Error(
         `Invalid worker choice strategy '${workerChoiceStrategy}'`
       )
@@ -251,13 +257,16 @@ export abstract class AbstractPool<
   private checkValidWorkerChoiceStrategyOptions (
     workerChoiceStrategyOptions: WorkerChoiceStrategyOptions
   ): void {
-    if (!isPlainObject(workerChoiceStrategyOptions)) {
+    if (
+      workerChoiceStrategyOptions != null &&
+      !isPlainObject(workerChoiceStrategyOptions)
+    ) {
       throw new TypeError(
         'Invalid worker choice strategy options: must be a plain object'
       )
     }
     if (
-      workerChoiceStrategyOptions.retries != null &&
+      workerChoiceStrategyOptions?.retries != null &&
       !Number.isSafeInteger(workerChoiceStrategyOptions.retries)
     ) {
       throw new TypeError(
@@ -265,7 +274,7 @@ export abstract class AbstractPool<
       )
     }
     if (
-      workerChoiceStrategyOptions.retries != null &&
+      workerChoiceStrategyOptions?.retries != null &&
       workerChoiceStrategyOptions.retries < 0
     ) {
       throw new RangeError(
@@ -273,7 +282,7 @@ export abstract class AbstractPool<
       )
     }
     if (
-      workerChoiceStrategyOptions.weights != null &&
+      workerChoiceStrategyOptions?.weights != null &&
       Object.keys(workerChoiceStrategyOptions.weights).length !== this.maxSize
     ) {
       throw new Error(
@@ -281,7 +290,7 @@ export abstract class AbstractPool<
       )
     }
     if (
-      workerChoiceStrategyOptions.measurement != null &&
+      workerChoiceStrategyOptions?.measurement != null &&
       !Object.values(Measurements).includes(
         workerChoiceStrategyOptions.measurement
       )
@@ -300,7 +309,7 @@ export abstract class AbstractPool<
     }
     if (
       tasksQueueOptions?.concurrency != null &&
-      !Number.isSafeInteger(tasksQueueOptions?.concurrency)
+      !Number.isSafeInteger(tasksQueueOptions.concurrency)
     ) {
       throw new TypeError(
         'Invalid worker node tasks concurrency: must be an integer'
@@ -308,41 +317,24 @@ export abstract class AbstractPool<
     }
     if (
       tasksQueueOptions?.concurrency != null &&
-      tasksQueueOptions?.concurrency <= 0
+      tasksQueueOptions.concurrency <= 0
     ) {
       throw new RangeError(
-        `Invalid worker node tasks concurrency: ${tasksQueueOptions?.concurrency} is a negative integer or zero`
-      )
-    }
-    if (tasksQueueOptions?.queueMaxSize != null) {
-      throw new Error(
-        'Invalid tasks queue options: queueMaxSize is deprecated, please use size instead'
+        `Invalid worker node tasks concurrency: ${tasksQueueOptions.concurrency} is a negative integer or zero`
       )
     }
     if (
       tasksQueueOptions?.size != null &&
-      !Number.isSafeInteger(tasksQueueOptions?.size)
+      !Number.isSafeInteger(tasksQueueOptions.size)
     ) {
       throw new TypeError(
         'Invalid worker node tasks queue size: must be an integer'
       )
     }
-    if (tasksQueueOptions?.size != null && tasksQueueOptions?.size <= 0) {
+    if (tasksQueueOptions?.size != null && tasksQueueOptions.size <= 0) {
       throw new RangeError(
-        `Invalid worker node tasks queue size: ${tasksQueueOptions?.size} is a negative integer or zero`
+        `Invalid worker node tasks queue size: ${tasksQueueOptions.size} is a negative integer or zero`
       )
-    }
-  }
-
-  private startPool (): void {
-    while (
-      this.workerNodes.reduce(
-        (accumulator, workerNode) =>
-          !workerNode.info.dynamic ? accumulator + 1 : accumulator,
-        0
-      ) < this.numberOfWorkers
-    ) {
-      this.createAndSetupWorkerNode()
     }
   }
 
@@ -352,6 +344,7 @@ export abstract class AbstractPool<
       version,
       type: this.type,
       worker: this.worker,
+      started: this.started,
       ready: this.ready,
       strategy: this.opts.workerChoiceStrategy as WorkerChoiceStrategy,
       minSize: this.minSize,
@@ -645,6 +638,8 @@ export abstract class AbstractPool<
     tasksQueueOptions?: TasksQueueOptions
   ): void {
     if (this.opts.enableTasksQueue === true && !enable) {
+      this.unsetTaskStealing()
+      this.unsetTasksStealingOnBackPressure()
       this.flushTasksQueues()
     }
     this.opts.enableTasksQueue = enable
@@ -658,14 +653,18 @@ export abstract class AbstractPool<
       this.opts.tasksQueueOptions =
         this.buildTasksQueueOptions(tasksQueueOptions)
       this.setTasksQueueSize(this.opts.tasksQueueOptions.size as number)
+      if (this.opts.tasksQueueOptions.taskStealing === true) {
+        this.setTaskStealing()
+      } else {
+        this.unsetTaskStealing()
+      }
+      if (this.opts.tasksQueueOptions.tasksStealingOnBackPressure === true) {
+        this.setTasksStealingOnBackPressure()
+      } else {
+        this.unsetTasksStealingOnBackPressure()
+      }
     } else if (this.opts.tasksQueueOptions != null) {
       delete this.opts.tasksQueueOptions
-    }
-  }
-
-  private setTasksQueueSize (size: number): void {
-    for (const workerNode of this.workerNodes) {
-      workerNode.tasksQueueBackPressureSize = size
     }
   }
 
@@ -675,9 +674,43 @@ export abstract class AbstractPool<
     return {
       ...{
         size: Math.pow(this.maxSize, 2),
-        concurrency: 1
+        concurrency: 1,
+        taskStealing: true,
+        tasksStealingOnBackPressure: true
       },
       ...tasksQueueOptions
+    }
+  }
+
+  private setTasksQueueSize (size: number): void {
+    for (const workerNode of this.workerNodes) {
+      workerNode.tasksQueueBackPressureSize = size
+    }
+  }
+
+  private setTaskStealing (): void {
+    for (const [workerNodeKey] of this.workerNodes.entries()) {
+      this.workerNodes[workerNodeKey].onEmptyQueue =
+        this.taskStealingOnEmptyQueue.bind(this)
+    }
+  }
+
+  private unsetTaskStealing (): void {
+    for (const [workerNodeKey] of this.workerNodes.entries()) {
+      delete this.workerNodes[workerNodeKey].onEmptyQueue
+    }
+  }
+
+  private setTasksStealingOnBackPressure (): void {
+    for (const [workerNodeKey] of this.workerNodes.entries()) {
+      this.workerNodes[workerNodeKey].onBackPressure =
+        this.tasksStealingOnBackPressure.bind(this)
+    }
+  }
+
+  private unsetTasksStealingOnBackPressure (): void {
+    for (const [workerNodeKey] of this.workerNodes.entries()) {
+      delete this.workerNodes[workerNodeKey].onBackPressure
     }
   }
 
@@ -712,14 +745,13 @@ export abstract class AbstractPool<
               (this.opts.tasksQueueOptions?.concurrency as number)
         ) === -1
       )
-    } else {
-      return (
-        this.workerNodes.findIndex(
-          workerNode =>
-            workerNode.info.ready && workerNode.usage.tasks.executing === 0
-        ) === -1
-      )
     }
+    return (
+      this.workerNodes.findIndex(
+        workerNode =>
+          workerNode.info.ready && workerNode.usage.tasks.executing === 0
+      ) === -1
+    )
   }
 
   /** @inheritDoc */
@@ -751,7 +783,7 @@ export abstract class AbstractPool<
   ): Promise<Response> {
     return await new Promise<Response>((resolve, reject) => {
       if (!this.started) {
-        reject(new Error('Cannot execute a task on destroyed pool'))
+        reject(new Error('Cannot execute a task on not started pool'))
         return
       }
       if (name != null && typeof name !== 'string') {
@@ -796,6 +828,22 @@ export abstract class AbstractPool<
         this.enqueueTask(workerNodeKey, task)
       }
     })
+  }
+
+  /** @inheritdoc */
+  public start (): void {
+    this.starting = true
+    while (
+      this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          !workerNode.info.dynamic ? accumulator + 1 : accumulator,
+        0
+      ) < this.numberOfWorkers
+    ) {
+      this.createAndSetupWorkerNode()
+    }
+    this.starting = false
+    this.started = true
   }
 
   /** @inheritDoc */
@@ -1070,9 +1118,9 @@ export abstract class AbstractPool<
       this.workerNodes[workerNodeKey].closeChannel()
       this.emitter?.emit(PoolEvents.error, error)
       if (
-        this.opts.restartWorkerOnError === true &&
         this.started &&
-        !this.starting
+        !this.starting &&
+        this.opts.restartWorkerOnError === true
       ) {
         if (workerInfo.dynamic) {
           this.createAndSetupDynamicWorkerNode()
@@ -1080,7 +1128,7 @@ export abstract class AbstractPool<
           this.createAndSetupWorkerNode()
         }
       }
-      if (this.opts.enableTasksQueue === true) {
+      if (this.started && this.opts.enableTasksQueue === true) {
         this.redistributeQueuedTasks(workerNodeKey)
       }
     })
@@ -1166,10 +1214,14 @@ export abstract class AbstractPool<
     // Send the statistics message to worker.
     this.sendStatisticsMessageToWorker(workerNodeKey)
     if (this.opts.enableTasksQueue === true) {
-      this.workerNodes[workerNodeKey].onEmptyQueue =
-        this.taskStealingOnEmptyQueue.bind(this)
-      this.workerNodes[workerNodeKey].onBackPressure =
-        this.tasksStealingOnBackPressure.bind(this)
+      if (this.opts.tasksQueueOptions?.taskStealing === true) {
+        this.workerNodes[workerNodeKey].onEmptyQueue =
+          this.taskStealingOnEmptyQueue.bind(this)
+      }
+      if (this.opts.tasksQueueOptions?.tasksStealingOnBackPressure === true) {
+        this.workerNodes[workerNodeKey].onBackPressure =
+          this.tasksStealingOnBackPressure.bind(this)
+      }
     }
   }
 
@@ -1344,8 +1396,8 @@ export abstract class AbstractPool<
     )
     workerInfo.ready = message.ready as boolean
     workerInfo.taskFunctions = message.taskFunctions
-    if (this.emitter != null && this.ready) {
-      this.emitter.emit(PoolEvents.ready, this.info)
+    if (this.ready) {
+      this.emitter?.emit(PoolEvents.ready, this.info)
     }
   }
 

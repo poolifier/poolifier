@@ -1,11 +1,15 @@
 import crypto from 'node:crypto'
+import assert from 'node:assert'
 import fs from 'node:fs'
+import Benchmark from 'benchmark'
 import {
   DynamicClusterPool,
   DynamicThreadPool,
   FixedClusterPool,
   FixedThreadPool,
+  Measurements,
   PoolTypes,
+  WorkerChoiceStrategies,
   WorkerTypes
 } from '../lib/index.mjs'
 import { TaskFunctions } from './benchmarks-types.mjs'
@@ -54,11 +58,11 @@ export const buildPoolifierPool = (
   }
 }
 
-export const runPoolifierTest = async (
+export const runPoolifierPool = async (
   pool,
   { taskExecutions, workerData }
 ) => {
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     let executions = 0
     for (let i = 1; i <= taskExecutions; i++) {
       pool
@@ -66,27 +70,108 @@ export const runPoolifierTest = async (
         .then(() => {
           ++executions
           if (executions === taskExecutions) {
-            return resolve({ ok: 1 })
+            resolve({ ok: 1 })
           }
           return null
         })
         .catch(err => {
           console.error(err)
-          return reject(err)
+          reject(err)
         })
     }
   })
 }
 
-export const executeAsyncFn = async fn => {
-  try {
-    await fn()
-  } catch (e) {
-    console.error(e)
-    // eslint-disable-next-line n/no-process-exit
-    process.exit(1)
-  }
+export const runPoolifierPoolBenchmark = async (
+  name,
+  pool,
+  { taskExecutions, workerData }
+) => {
+  return await new Promise((resolve, reject) => {
+    try {
+      const suite = new Benchmark.Suite(name)
+      for (const workerChoiceStrategy of Object.values(
+        WorkerChoiceStrategies
+      )) {
+        for (const enableTasksQueue of [false, true]) {
+          if (workerChoiceStrategy === WorkerChoiceStrategies.FAIR_SHARE) {
+            for (const measurement of [
+              Measurements.runTime,
+              Measurements.elu
+            ]) {
+              suite.add(
+                `${name} with ${workerChoiceStrategy}, with ${measurement} and ${
+                  enableTasksQueue ? 'with' : 'without'
+                } tasks queue`,
+                async () => {
+                  pool.setWorkerChoiceStrategy(workerChoiceStrategy, {
+                    measurement
+                  })
+                  pool.enableTasksQueue(enableTasksQueue)
+                  assert.strictEqual(
+                    pool.opts.workerChoiceStrategy,
+                    workerChoiceStrategy
+                  )
+                  assert.strictEqual(
+                    pool.opts.enableTasksQueue,
+                    enableTasksQueue
+                  )
+                  assert.strictEqual(
+                    pool.opts.workerChoiceStrategyOptions.measurement,
+                    measurement
+                  )
+                  await runPoolifierPool(pool, {
+                    taskExecutions,
+                    workerData
+                  })
+                }
+              )
+            }
+          } else {
+            suite.add(
+              `${name} with ${workerChoiceStrategy} and ${
+                enableTasksQueue ? 'with' : 'without'
+              } tasks queue`,
+              async () => {
+                pool.setWorkerChoiceStrategy(workerChoiceStrategy)
+                pool.enableTasksQueue(enableTasksQueue)
+                assert.strictEqual(
+                  pool.opts.workerChoiceStrategy,
+                  workerChoiceStrategy
+                )
+                assert.strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
+                await runPoolifierPool(pool, {
+                  taskExecutions,
+                  workerData
+                })
+              }
+            )
+          }
+        }
+      }
+      suite
+        .on('cycle', event => {
+          console.info(event.target.toString())
+        })
+        .on('complete', async function () {
+          console.info(
+            'Fastest is ' +
+              LIST_FORMATTER.format(this.filter('fastest').map('name'))
+          )
+          await pool.destroy()
+          resolve()
+        })
+        .run({ async: true })
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
+
+export const LIST_FORMATTER = new Intl.ListFormat('en-US', {
+  style: 'long',
+  type: 'conjunction'
+})
 
 export const generateRandomInteger = (
   max = Number.MAX_SAFE_INTEGER,

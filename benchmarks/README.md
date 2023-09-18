@@ -4,8 +4,8 @@ Welcome to poolifier benchmarks and thanks to look into this project.
 
 ## Folder Structure
 
-The [internal](./internal) folder contains poolifier internal benchmarks.  
-The [versus-external-pools](./versus-external-pools) folder contains benchmarks versus other Node.js pools.
+The [internal](./internal) folder contains poolifier internal benchmark.  
+The [versus-external-pools](./versus-external-pools) folder contains benchmark versus other Node.js pools.
 
 ## Poolifier vs other pools benchmark
 
@@ -34,10 +34,14 @@ We chose to use this tool because it allows to run isolated Node.js processes so
   - [microjob](https://github.com/wilk/microjob): removed because unmaintained since more than 5 years.
   - [threads.js](https://github.com/andywer/threads.js/): removed because not a threads pool.
 
-> :warning: **We would need funds to run our benchmarks more often and on Cloud VMs, please consider to sponsor this project**
+> :warning: **We would need funds to run our benchmark more often and on Cloud VMs, please consider to sponsor this project**
 
-Read the [README.md](./versus-external-pools/README.md) to know how to run these benchmarks.
+Read the [README.md](./versus-external-pools/README.md) to know how to run the benchmark.
 
 ## Poolifier internal benchmark
 
-To run the internal benchmarks, you just need to navigate to the root of poolifier project and run `pnpm benchmark`
+### Usage
+
+To run the internal benchmark, you just need to navigate to the root of poolifier project and run `pnpm benchmark`.
+
+### [Results](https://poolifier.github.io/benchmark-results/dev/bench)

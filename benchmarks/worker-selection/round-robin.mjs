@@ -1,4 +1,5 @@
-import Benchmark from 'benny'
+import Benchmark from 'benchmark'
+import { LIST_FORMATTER } from '../benchmarks-utils.mjs'
 
 function generateWorkersArray (numberOfWorkers) {
   return [...Array(numberOfWorkers).keys()]
@@ -36,24 +37,29 @@ function roundRobinIncrementModulo () {
   return chosenWorker
 }
 
-Benchmark.suite(
-  'Round robin tasks distribution',
-  Benchmark.add('Ternary off by one', () => {
+new Benchmark.Suite('Round robin tasks distribution')
+  .add('Ternary off by one', () => {
     nextWorkerIndex = 0
     roundRobinTernaryOffByOne()
-  }),
-  Benchmark.add('Ternary with negation', () => {
+  })
+  .add('Ternary with negation', () => {
     nextWorkerIndex = 0
     roundRobinTernaryWithNegation()
-  }),
-  Benchmark.add('Ternary with pre-choosing', () => {
+  })
+  .add('Ternary with pre-choosing', () => {
     nextWorkerIndex = 0
     roundRobinTernaryWithPreChoosing()
-  }),
-  Benchmark.add('Increment+Modulo', () => {
+  })
+  .add('Increment+Modulo', () => {
     nextWorkerIndex = 0
     roundRobinIncrementModulo()
-  }),
-  Benchmark.cycle(),
-  Benchmark.complete()
-)
+  })
+  .on('cycle', event => {
+    console.info(event.target.toString())
+  })
+  .on('complete', function () {
+    console.info(
+      'Fastest is ' + LIST_FORMATTER.format(this.filter('fastest').map('name'))
+    )
+  })
+  .run()

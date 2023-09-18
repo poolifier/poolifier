@@ -7,9 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix task stealing related tasks queue options handling at runtime.
+
+### Changed
+
+- Stricter worker constructor arguments validation.
+
+## [2.6.45] - 2023-09-17
+
 ### Changed
 
 - Disable publication on GitHub packages registry on release until authentication issue is fixed.
+
+### Added
+
+- Add `startWorkers` to pool options to whether start the minimum number of workers at pool creation or not.
+- Add `start()` method to pool API to start the minimum number of workers.
+- Add `taskStealing` and `tasksStealingOnPressure` to tasks queue options to whether enable task stealing or not and whether enable tasks stealing on back pressure or not.
+- Continuous internal benchmarking: https://poolifier.github.io/benchmark-results/dev/bench.
 
 ## [2.6.44] - 2023-09-08
 
@@ -645,7 +662,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optimize worker alive status check.
 - BREAKING CHANGE: Rename worker choice strategy `LESS_RECENTLY_USED` to `LESS_USED`.
 - Optimize `LESS_USED` worker choice strategy.
-- Update benchmarks versus external threads pools.
+- Update benchmark versus external threads pools.
 - Optimize tasks usage statistics requirements for worker choice strategy.
 
 ### Fixed
@@ -667,7 +684,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optimize worker alive status check.
 - BREAKING CHANGE: Rename worker choice strategy `LESS_RECENTLY_USED` to `LESS_USED`.
 - Optimize `LESS_USED` worker choice strategy.
-- Update benchmarks versus external threads pools.
+- Update benchmark versus external threads pools.
 
 ### Fixed
 
@@ -833,7 +850,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Optimize fair share task scheduling algorithm implementation.
-- Update benchmarks versus external pools results with latest version.
+- Update benchmark versus external pools results with latest version.
 
 ## [2.3.3] - 2022-10-15
 

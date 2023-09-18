@@ -1,7 +1,7 @@
 const { TaskFunctions } = require('./test-types')
 
 const waitWorkerEvents = async (pool, workerEvent, numberOfEventsToWait) => {
-  return new Promise(resolve => {
+  return await new Promise(resolve => {
     let events = 0
     if (numberOfEventsToWait === 0) {
       resolve(events)
@@ -18,7 +18,7 @@ const waitWorkerEvents = async (pool, workerEvent, numberOfEventsToWait) => {
 }
 
 const waitPoolEvents = async (pool, poolEvent, numberOfEventsToWait) => {
-  return new Promise(resolve => {
+  return await new Promise(resolve => {
     let events = 0
     if (numberOfEventsToWait === 0) {
       resolve(events)
@@ -33,7 +33,7 @@ const waitPoolEvents = async (pool, poolEvent, numberOfEventsToWait) => {
 }
 
 const sleep = async ms => {
-  return new Promise(resolve => setTimeout(resolve, ms))
+  return await new Promise(resolve => setTimeout(resolve, ms))
 }
 
 const sleepTaskFunction = async (
@@ -42,7 +42,7 @@ const sleepTaskFunction = async (
   rejection = false,
   rejectionMessage = ''
 ) => {
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     setTimeout(
       () =>
         rejection === true

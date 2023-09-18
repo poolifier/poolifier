@@ -1,5 +1,5 @@
 import { ThreadPool } from 'nanothreads'
-import { executeAsyncFn } from '../benchmarks-utils.mjs'
+import { executeAsyncFn } from './utils.mjs'
 import functionToBench from './functions/function-to-bench.js'
 
 const size = parseInt(process.env.POOL_SIZE)

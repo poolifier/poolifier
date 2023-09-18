@@ -6,6 +6,7 @@
   - [`pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`](#pool--new-fixedthreadpoolfixedclusterpoolnumberofthreadsnumberofworkers-filepath-opts)
   - [`pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`](#pool--new-dynamicthreadpooldynamicclusterpoolmin-max-filepath-opts)
   - [`pool.execute(data, name, transferList)`](#poolexecutedata-name-transferlist)
+  - [`pool.start()`](#poolstart)
   - [`pool.destroy()`](#pooldestroy)
   - [`pool.listTaskFunctions()`](#poollisttaskfunctions)
   - [`PoolOptions`](#pooloptions)
@@ -23,24 +24,28 @@
 
 ### `pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`
 
-`numberOfThreads/numberOfWorkers` (mandatory) Number of workers for this pool  
-`filePath` (mandatory) Path to a file with a worker implementation  
-`opts` (optional) An object with the pool options properties described below
+`numberOfThreads/numberOfWorkers` (mandatory) Number of workers for this pool.  
+`filePath` (mandatory) Path to a file with a worker implementation.  
+`opts` (optional) An object with the pool options properties described below.
 
 ### `pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`
 
-`min` (mandatory) Same as _FixedThreadPool_/_FixedClusterPool_ numberOfThreads/numberOfWorkers, this number of workers will be always active  
+`min` (mandatory) Same as _FixedThreadPool_/_FixedClusterPool_ numberOfThreads/numberOfWorkers, this number of workers will be always active.  
 `max` (mandatory) Max number of workers that this pool can contain, the newly created workers will die after a threshold (default is 1 minute, you can override it in your worker implementation).  
-`filePath` (mandatory) Path to a file with a worker implementation  
-`opts` (optional) An object with the pool options properties described below
+`filePath` (mandatory) Path to a file with a worker implementation.  
+`opts` (optional) An object with the pool options properties described below.
 
 ### `pool.execute(data, name, transferList)`
 
-`data` (optional) An object that you want to pass to your worker implementation  
+`data` (optional) An object that you want to pass to your worker implementation.  
 `name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
 `transferList` (optional) An array of transferable objects that you want to transfer to your [worker_threads](https://nodejs.org/api/worker_threads.html) worker implementation
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
+
+### `pool.start()`
+
+This method is available on both pool implementations and will start the minimum number of workers.
 
 ### `pool.destroy()`
 
@@ -54,10 +59,15 @@ This method is available on both pool implementations and returns an array of th
 
 An object with these properties:
 
-- `onlineHandler` (optional) - A function that will listen for online event on each worker
-- `messageHandler` (optional) - A function that will listen for message event on each worker
-- `errorHandler` (optional) - A function that will listen for error event on each worker
-- `exitHandler` (optional) - A function that will listen for exit event on each worker
+- `onlineHandler` (optional) - A function that will listen for online event on each worker.  
+  Default: `() => {}`
+- `messageHandler` (optional) - A function that will listen for message event on each worker.  
+  Default: `() => {}`
+- `errorHandler` (optional) - A function that will listen for error event on each worker.  
+  Default: `() => {}`
+- `exitHandler` (optional) - A function that will listen for exit event on each worker.  
+  Default: `() => {}`
+
 - `workerChoiceStrategy` (optional) - The worker choice strategy to use in this pool:
 
   - `WorkerChoiceStrategies.ROUND_ROBIN`: Submit tasks to worker in a round robin fashion
@@ -83,6 +93,8 @@ An object with these properties:
 
   Default: `{ retries: 6, runTime: { median: false }, waitTime: { median: false }, elu: { median: false } }`
 
+- `startWorkers` (optional) - Start the minimum number of workers at pool creation.  
+  Default: `true`
 - `restartWorkerOnError` (optional) - Restart worker on uncaught error in this pool.  
   Default: `true`
 - `enableEvents` (optional) - Events emission enablement in this pool.  
@@ -95,8 +107,10 @@ An object with these properties:
 
   - `size` (optional) - The maximum number of tasks that can be queued on a worker before flagging it as back pressured. It must be a positive integer.
   - `concurrency` (optional) - The maximum number of tasks that can be executed concurrently on a worker. It must be a positive integer.
+  - `taskStealing` (optional) - Task stealing enablement.
+  - `tasksStealingOnBackPressure` (optional) - Tasks stealing enablement on back pressure.
 
-  Default: `{ size: (pool maximum size)^2, concurrency: 1 }`
+  Default: `{ size: (pool maximum size)^2, concurrency: 1, taskStealing: true, tasksStealingOnBackPressure: true }`
 
 #### `ThreadPoolOptions extends PoolOptions`
 
@@ -112,7 +126,7 @@ An object with these properties:
 
 ### `class YourWorker extends ThreadWorker/ClusterWorker`
 
-`taskFunctions` (mandatory) The task function or task functions object `{ name_1: fn_1, ..., name_n: fn_n }` that you want to execute on the worker  
+`taskFunctions` (mandatory) The task function or task functions object `{ name_1: fn_1, ..., name_n: fn_n }` that you want to execute on the worker.  
 `opts` (optional) An object with these properties:
 
 - `killBehavior` (optional) - Dictates if your worker will be deleted in case a task is active on it.  
@@ -121,7 +135,7 @@ An object with these properties:
   This option only apply to the newly created workers.  
   Default: `KillBehaviors.SOFT`
 
-- `maxInactiveTime` (optional) - Maximum waiting time in milliseconds for tasks on newly created workers. After this time newly created workers will die.  
+- `maxInactiveTime` (optional) - Maximum waiting time in milliseconds for tasks on newly created workers. After this time newly created workers will die. It must be a positive integer greater or equal than 5.  
   The last active time of your worker will be updated when it terminates a task.  
   If `killBehavior` is set to `KillBehaviors.HARD` this value represents also the timeout for the tasks that you submit to the pool, when this timeout expires your tasks is interrupted before completion and removed. The worker is killed if is not part of the minimum size of the pool.  
   If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.  
@@ -132,20 +146,20 @@ An object with these properties:
 
 #### `YourWorker.hasTaskFunction(name)`
 
-`name` (mandatory) The task function name
+`name` (mandatory) The task function name.
 
 This method is available on both worker implementations and returns a boolean.
 
 #### `YourWorker.addTaskFunction(name, fn)`
 
-`name` (mandatory) The task function name  
-`fn` (mandatory) The task function
+`name` (mandatory) The task function name.  
+`fn` (mandatory) The task function.
 
 This method is available on both worker implementations and returns a boolean.
 
 #### `YourWorker.removeTaskFunction(name)`
 
-`name` (mandatory) The task function name
+`name` (mandatory) The task function name.
 
 This method is available on both worker implementations and returns a boolean.
 
@@ -155,6 +169,6 @@ This method is available on both worker implementations and returns an array of 
 
 #### `YourWorker.setDefaultTaskFunction(name)`
 
-`name` (mandatory) The task function name
+`name` (mandatory) The task function name.
 
 This method is available on both worker implementations and returns a boolean.

@@ -24,6 +24,47 @@ describe('Abstract worker test suite', () => {
     })
   })
 
+  it('Verify that worker options are checked at worker creation', () => {
+    expect(() => new ClusterWorker(() => {}, '')).toThrowError(
+      new TypeError('opts worker options parameter is not a plain object')
+    )
+    expect(
+      () => new ClusterWorker(() => {}, { killBehavior: '' })
+    ).toThrowError(new TypeError("killBehavior option '' is not valid"))
+    expect(() => new ClusterWorker(() => {}, { killBehavior: 0 })).toThrowError(
+      new TypeError("killBehavior option '0' is not valid")
+    )
+    expect(
+      () => new ThreadWorker(() => {}, { maxInactiveTime: '' })
+    ).toThrowError(new TypeError('maxInactiveTime option is not an integer'))
+    expect(
+      () => new ThreadWorker(() => {}, { maxInactiveTime: 0.5 })
+    ).toThrowError(new TypeError('maxInactiveTime option is not an integer'))
+    expect(
+      () => new ThreadWorker(() => {}, { maxInactiveTime: 0 })
+    ).toThrowError(
+      new TypeError(
+        'maxInactiveTime option is not a positive integer greater or equal than 5'
+      )
+    )
+    expect(
+      () => new ThreadWorker(() => {}, { maxInactiveTime: 4 })
+    ).toThrowError(
+      new TypeError(
+        'maxInactiveTime option is not a positive integer greater or equal than 5'
+      )
+    )
+    expect(() => new ThreadWorker(() => {}, { killHandler: '' })).toThrowError(
+      new TypeError('killHandler option is not a function')
+    )
+    expect(() => new ThreadWorker(() => {}, { killHandler: 0 })).toThrowError(
+      new TypeError('killHandler option is not a function')
+    )
+    expect(() => new ThreadWorker(() => {}, { async: true })).toThrowError(
+      new TypeError('async option is deprecated')
+    )
+  })
+
   it('Verify that worker options are set at worker creation', () => {
     const killHandler = () => {
       console.info('Worker received kill message')
@@ -31,8 +72,7 @@ describe('Abstract worker test suite', () => {
     const worker = new ClusterWorker(() => {}, {
       killBehavior: KillBehaviors.HARD,
       maxInactiveTime: 6000,
-      killHandler,
-      async: true
+      killHandler
     })
     expect(worker.opts).toStrictEqual({
       killBehavior: KillBehaviors.HARD,
@@ -43,7 +83,7 @@ describe('Abstract worker test suite', () => {
 
   it('Verify that taskFunctions parameter is mandatory', () => {
     expect(() => new ClusterWorker()).toThrowError(
-      'taskFunctions parameter is mandatory'
+      new Error('taskFunctions parameter is mandatory')
     )
   })
 

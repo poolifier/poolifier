@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.2.1/schema.json",
+  "$schema": "https://biomejs.dev/schemas/1.2.2/schema.json",
   "organizeImports": {
     "enabled": false
   },
@@ -30,7 +30,6 @@
   "files": {
     "ignore": [
       ".nyc_output/",
-      ".vscode/",
       "benchmarks/internal/results/",
       "coverage/",
       "docs/**/*.css",
