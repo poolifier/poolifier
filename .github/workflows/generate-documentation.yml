@@ -29,11 +29,16 @@ jobs:
 
       - name: Commit files
         if: github.repository == 'poolifier/poolifier' && github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
+        env:
+          COMMIT_MESSAGE: 'docs: generate documentation'
+          COMMIT_AUTHOR: Documentation Bot
+          COMMIT_EMAIL: documentation-bot@users.noreply.github.com
         run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.name "${{ env.COMMIT_AUTHOR }}"
+          git config --local user.email "${{ env.COMMIT_EMAIL }}"
+          git pull
           git add ./docs
-          git commit -m "docs: generate documentation" -a
+          git commit -a -m "${{ env.COMMIT_MESSAGE }}"
 
       - name: Push changes
         if: github.repository == 'poolifier/poolifier' && github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'

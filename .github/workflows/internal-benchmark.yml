@@ -1,4 +1,4 @@
-name: Benchmark
+name: Internal benchmark
 
 on:
   workflow_dispatch:
@@ -13,8 +13,7 @@ permissions:
 jobs:
   internal-benchmark:
     if: github.repository == 'poolifier/poolifier'
-    name: Internal benchmark
-    runs-on: [self-hosted, benchmark]
+    runs-on: [self-hosted, internal-benchmark]
     steps:
       - name: Checkout
         uses: actions/checkout@v4

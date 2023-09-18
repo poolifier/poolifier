@@ -51,7 +51,7 @@ case "$OSTYPE" in
     caffeinate ./hyperfine_benchmarks.sh
     ;;
   linux*)
-    systemd-inhibit ./hyperfine_benchmarks.sh
+    systemd-inhibit --what=idle ./hyperfine_benchmarks.sh
     ;;
   *)
     echo "Unsupported $OSTYPE"

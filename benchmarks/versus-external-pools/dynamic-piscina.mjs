@@ -1,5 +1,5 @@
 import Piscina from 'piscina'
-import { executeAsyncFn } from '../benchmarks-utils.mjs'
+import { executeAsyncFn } from './utils.mjs'
 
 const size = parseInt(process.env.POOL_SIZE)
 const iterations = parseInt(process.env.NUM_ITERATIONS)

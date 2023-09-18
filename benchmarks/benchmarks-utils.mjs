@@ -173,16 +173,6 @@ export const LIST_FORMATTER = new Intl.ListFormat('en-US', {
   type: 'conjunction'
 })
 
-export const executeAsyncFn = async fn => {
-  try {
-    await fn()
-  } catch (e) {
-    console.error(e)
-    // eslint-disable-next-line n/no-process-exit
-    process.exit(1)
-  }
-}
-
 export const generateRandomInteger = (
   max = Number.MAX_SAFE_INTEGER,
   min = 0
