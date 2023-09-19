@@ -7,12 +7,7 @@ import type {
   WorkerChoiceStrategyOptions
 } from './pools/selection-strategies/selection-strategies-types'
 import type { KillBehavior } from './worker/worker-options'
-import {
-  type IWorker,
-  type MeasurementStatistics,
-  type WorkerType,
-  WorkerTypes
-} from './pools/worker'
+import { type IWorker, type WorkerType, WorkerTypes } from './pools/worker'
 
 /**
  * Default task name.
@@ -222,50 +217,6 @@ export const isAsyncFunction = (
   fn: unknown
 ): fn is (...args: unknown[]) => Promise<unknown> => {
   return typeof fn === 'function' && fn.constructor.name === 'AsyncFunction'
-}
-
-/**
- * Updates the given measurement statistics.
- *
- * @param measurementStatistics - The measurement statistics to update.
- * @param measurementRequirements - The measurement statistics requirements.
- * @param measurementValue - The measurement value.
- * @param numberOfMeasurements - The number of measurements.
- * @internal
- */
-export const updateMeasurementStatistics = (
-  measurementStatistics: MeasurementStatistics,
-  measurementRequirements: MeasurementStatisticsRequirements,
-  measurementValue: number
-): void => {
-  if (measurementRequirements.aggregate) {
-    measurementStatistics.aggregate =
-      (measurementStatistics.aggregate ?? 0) + measurementValue
-    measurementStatistics.minimum = min(
-      measurementValue,
-      measurementStatistics.minimum ?? Infinity
-    )
-    measurementStatistics.maximum = max(
-      measurementValue,
-      measurementStatistics.maximum ?? -Infinity
-    )
-    if (
-      (measurementRequirements.average || measurementRequirements.median) &&
-      measurementValue != null
-    ) {
-      measurementStatistics.history.push(measurementValue)
-      if (measurementRequirements.average) {
-        measurementStatistics.average = average(measurementStatistics.history)
-      } else if (measurementStatistics.average != null) {
-        delete measurementStatistics.average
-      }
-      if (measurementRequirements.median) {
-        measurementStatistics.median = median(measurementStatistics.history)
-      } else if (measurementStatistics.median != null) {
-        delete measurementStatistics.median
-      }
-    }
-  }
 }
 
 /**

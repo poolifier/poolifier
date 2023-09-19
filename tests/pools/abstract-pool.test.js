@@ -10,13 +10,13 @@ const {
   PoolTypes,
   WorkerChoiceStrategies,
   WorkerTypes
-} = require('../../../lib')
-const { CircularArray } = require('../../../lib/circular-array')
-const { Deque } = require('../../../lib/deque')
-const { DEFAULT_TASK_NAME } = require('../../../lib/utils')
-const { version } = require('../../../package.json')
-const { waitPoolEvents } = require('../../test-utils')
-const { WorkerNode } = require('../../../lib/pools/worker-node')
+} = require('../../lib')
+const { CircularArray } = require('../../lib/circular-array')
+const { Deque } = require('../../lib/deque')
+const { DEFAULT_TASK_NAME } = require('../../lib/utils')
+const { version } = require('../../package.json')
+const { waitPoolEvents } = require('../test-utils')
+const { WorkerNode } = require('../../lib/pools/worker-node')
 
 describe('Abstract pool test suite', () => {
   const numberOfWorkers = 2

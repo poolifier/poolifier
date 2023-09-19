@@ -4,10 +4,6 @@ const cluster = require('node:cluster')
 const os = require('node:os')
 const { expect } = require('expect')
 const {
-  CircularArray,
-  DEFAULT_CIRCULAR_ARRAY_SIZE
-} = require('../lib/circular-array')
-const {
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   DEFAULT_TASK_NAME,
   DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
@@ -25,8 +21,7 @@ const {
   min,
   round,
   secureRandom,
-  sleep,
-  updateMeasurementStatistics
+  sleep
 } = require('../lib/utils')
 const { KillBehaviors, WorkerTypes } = require('../lib')
 
@@ -218,93 +213,6 @@ describe('Utils test suite', () => {
     expect(isAsyncFunction(async () => {})).toBe(true)
     expect(isAsyncFunction(async function () {})).toBe(true)
     expect(isAsyncFunction(async function named () {})).toBe(true)
-  })
-
-  it('Verify updateMeasurementStatistics() behavior', () => {
-    const measurementStatistics = {
-      history: new CircularArray()
-    }
-    updateMeasurementStatistics(
-      measurementStatistics,
-      { aggregate: true, average: false, median: false },
-      0.01
-    )
-    expect(measurementStatistics).toStrictEqual({
-      aggregate: 0.01,
-      maximum: 0.01,
-      minimum: 0.01,
-      history: new CircularArray()
-    })
-    updateMeasurementStatistics(
-      measurementStatistics,
-      { aggregate: true, average: false, median: false },
-      0.02
-    )
-    expect(measurementStatistics).toStrictEqual({
-      aggregate: 0.03,
-      maximum: 0.02,
-      minimum: 0.01,
-      history: new CircularArray()
-    })
-    updateMeasurementStatistics(
-      measurementStatistics,
-      { aggregate: true, average: true, median: false },
-      0.001
-    )
-    expect(measurementStatistics).toStrictEqual({
-      aggregate: 0.031,
-      maximum: 0.02,
-      minimum: 0.001,
-      average: 0.001,
-      history: new CircularArray(DEFAULT_CIRCULAR_ARRAY_SIZE, 0.001)
-    })
-    updateMeasurementStatistics(
-      measurementStatistics,
-      { aggregate: true, average: true, median: false },
-      0.003
-    )
-    expect(measurementStatistics).toStrictEqual({
-      aggregate: 0.034,
-      maximum: 0.02,
-      minimum: 0.001,
-      average: 0.002,
-      history: new CircularArray(DEFAULT_CIRCULAR_ARRAY_SIZE, 0.001, 0.003)
-    })
-    updateMeasurementStatistics(
-      measurementStatistics,
-      { aggregate: true, average: false, median: true },
-      0.006
-    )
-    expect(measurementStatistics).toStrictEqual({
-      aggregate: 0.04,
-      maximum: 0.02,
-      minimum: 0.001,
-      median: 0.003,
-      history: new CircularArray(
-        DEFAULT_CIRCULAR_ARRAY_SIZE,
-        0.001,
-        0.003,
-        0.006
-      )
-    })
-    updateMeasurementStatistics(
-      measurementStatistics,
-      { aggregate: true, average: true, median: false },
-      0.01
-    )
-    expect(measurementStatistics).toStrictEqual({
-      aggregate: 0.05,
-      maximum: 0.02,
-      minimum: 0.001,
-      average: 0.005,
-      history: new CircularArray(
-        DEFAULT_CIRCULAR_ARRAY_SIZE,
-        0.001,
-        0.003,
-        0.006,
-        0.01
-      )
-    })
   })
 
   it('Verify secureRandom() behavior', () => {

@@ -16,8 +16,7 @@ import {
   max,
   median,
   min,
-  round,
-  updateMeasurementStatistics
+  round
 } from '../utils'
 import { KillBehaviors } from '../worker/worker-options'
 import type { TaskFunction } from '../worker/task-functions'
@@ -51,7 +50,8 @@ import { WorkerNode } from './worker-node'
 import {
   checkFilePath,
   checkValidTasksQueueOptions,
-  checkValidWorkerChoiceStrategy
+  checkValidWorkerChoiceStrategy,
+  updateMeasurementStatistics
 } from './utils'
 
 /**

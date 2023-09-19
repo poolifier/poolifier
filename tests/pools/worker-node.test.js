@@ -1,11 +1,11 @@
 const { MessageChannel, Worker } = require('node:worker_threads')
 const cluster = require('node:cluster')
 const { expect } = require('expect')
-const { WorkerNode } = require('../../../lib/pools/worker-node')
-const { WorkerTypes } = require('../../../lib')
-const { CircularArray } = require('../../../lib/circular-array')
-const { Deque } = require('../../../lib/deque')
-const { DEFAULT_TASK_NAME } = require('../../../lib/utils')
+const { WorkerNode } = require('../../lib/pools/worker-node')
+const { WorkerTypes } = require('../../lib')
+const { CircularArray } = require('../../lib/circular-array')
+const { Deque } = require('../../lib/deque')
+const { DEFAULT_TASK_NAME } = require('../../lib/utils')
 
 describe('Worker node test suite', () => {
   const threadWorker = new Worker('./tests/worker-files/thread/testWorker.js')

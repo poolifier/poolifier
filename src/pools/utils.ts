@@ -1,11 +1,12 @@
 import { existsSync } from 'node:fs'
-import { isPlainObject } from '../utils'
+import { average, isPlainObject, max, median, min } from '../utils'
 import {
+  type MeasurementStatisticsRequirements,
   WorkerChoiceStrategies,
   type WorkerChoiceStrategy
 } from './selection-strategies/selection-strategies-types'
 import type { TasksQueueOptions } from './pool'
-import type { IWorker } from './worker'
+import type { IWorker, MeasurementStatistics } from './worker'
 
 export const checkFilePath = (filePath: string): void => {
   if (
@@ -91,6 +92,7 @@ export const checkValidTasksQueueOptions = (
     )
   }
 }
+
 export const checkWorkerNodeArguments = <Worker extends IWorker>(
   worker: Worker,
   tasksQueueBackPressureSize: number
@@ -112,5 +114,49 @@ export const checkWorkerNodeArguments = <Worker extends IWorker>(
     throw new RangeError(
       'Cannot construct a worker node with a tasks queue back pressure size that is not a positive integer'
     )
+  }
+}
+
+/**
+ * Updates the given measurement statistics.
+ *
+ * @param measurementStatistics - The measurement statistics to update.
+ * @param measurementRequirements - The measurement statistics requirements.
+ * @param measurementValue - The measurement value.
+ * @param numberOfMeasurements - The number of measurements.
+ * @internal
+ */
+export const updateMeasurementStatistics = (
+  measurementStatistics: MeasurementStatistics,
+  measurementRequirements: MeasurementStatisticsRequirements,
+  measurementValue: number
+): void => {
+  if (measurementRequirements.aggregate) {
+    measurementStatistics.aggregate =
+      (measurementStatistics.aggregate ?? 0) + measurementValue
+    measurementStatistics.minimum = min(
+      measurementValue,
+      measurementStatistics.minimum ?? Infinity
+    )
+    measurementStatistics.maximum = max(
+      measurementValue,
+      measurementStatistics.maximum ?? -Infinity
+    )
+    if (
+      (measurementRequirements.average || measurementRequirements.median) &&
+      measurementValue != null
+    ) {
+      measurementStatistics.history.push(measurementValue)
+      if (measurementRequirements.average) {
+        measurementStatistics.average = average(measurementStatistics.history)
+      } else if (measurementStatistics.average != null) {
+        delete measurementStatistics.average
+      }
+      if (measurementRequirements.median) {
+        measurementStatistics.median = median(measurementStatistics.history)
+      } else if (measurementStatistics.median != null) {
+        delete measurementStatistics.median
+      }
+    }
   }
 }
