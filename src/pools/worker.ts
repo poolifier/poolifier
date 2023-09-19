@@ -144,7 +144,7 @@ export interface WorkerInfo {
   /**
    * Task function names.
    */
-  taskFunctions?: string[]
+  taskFunctionNames?: string[]
 }
 
 /**
@@ -315,4 +315,11 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    * @returns The task function worker usage statistics if the task function worker usage statistics are initialized, `undefined` otherwise.
    */
   readonly getTaskFunctionWorkerUsage: (name: string) => WorkerUsage | undefined
+  /**
+   * Deletes task function worker usage statistics.
+   *
+   * @param name - The task function name.
+   * @returns `true` if the task function worker usage statistics were deleted, `false` otherwise.
+   */
+  readonly deleteTaskFunctionWorkerUsage: (name: string) => boolean
 }

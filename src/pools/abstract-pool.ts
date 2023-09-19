@@ -21,6 +21,7 @@ import {
   updateMeasurementStatistics
 } from '../utils'
 import { KillBehaviors } from '../worker/worker-options'
+import type { TaskFunction } from '../worker/task-functions'
 import {
   type IPool,
   PoolEmitter,
@@ -92,6 +93,13 @@ export abstract class AbstractPool<
   protected readonly max?: number
 
   /**
+   * The task functions added at runtime map:
+   * - `key`: The task function name.
+   * - `value`: The task function itself.
+   */
+  private readonly taskFunctions: Map<string, TaskFunction<Data, Response>>
+
+  /**
    * Whether the pool is started or not.
    */
   private started: boolean
@@ -143,6 +151,8 @@ export abstract class AbstractPool<
     )
 
     this.setupHook()
+
+    this.taskFunctions = new Map<string, TaskFunction<Data, Response>>()
 
     this.started = false
     this.starting = false
@@ -593,7 +603,7 @@ export abstract class AbstractPool<
    * @param workerId - The worker id.
    * @returns The worker node key if the worker id is found in the pool worker nodes, `-1` otherwise.
    */
-  private getWorkerNodeKeyByWorkerId (workerId: number): number {
+  private getWorkerNodeKeyByWorkerId (workerId: number | undefined): number {
     return this.workerNodes.findIndex(
       workerNode => workerNode.info.id === workerId
     )
@@ -754,17 +764,158 @@ export abstract class AbstractPool<
     )
   }
 
+  private async sendTaskFunctionOperationToWorker (
+    workerNodeKey: number,
+    message: MessageValue<Data>
+  ): Promise<boolean> {
+    return await new Promise<boolean>((resolve, reject) => {
+      const workerId = this.getWorkerInfo(workerNodeKey).id as number
+      this.registerWorkerMessageListener(workerNodeKey, message => {
+        if (
+          message.workerId === workerId &&
+          message.taskFunctionOperationStatus === true
+        ) {
+          resolve(true)
+        } else if (
+          message.workerId === workerId &&
+          message.taskFunctionOperationStatus === false
+        ) {
+          reject(
+            new Error(
+              `Task function operation '${
+                message.taskFunctionOperation as string
+              }' failed on worker ${message.workerId} with error: '${
+                message.workerError?.message as string
+              }'`
+            )
+          )
+        }
+      })
+      this.sendToWorker(workerNodeKey, message)
+    })
+  }
+
+  private async sendTaskFunctionOperationToWorkers (
+    message: MessageValue<Data>
+  ): Promise<boolean> {
+    return await new Promise<boolean>((resolve, reject) => {
+      const responsesReceived = new Array<MessageValue<Data | Response>>()
+      for (const [workerNodeKey] of this.workerNodes.entries()) {
+        this.registerWorkerMessageListener(workerNodeKey, message => {
+          if (message.taskFunctionOperationStatus != null) {
+            responsesReceived.push(message)
+            if (
+              responsesReceived.length === this.workerNodes.length &&
+              responsesReceived.every(
+                message => message.taskFunctionOperationStatus === true
+              )
+            ) {
+              resolve(true)
+            } else if (
+              responsesReceived.length === this.workerNodes.length &&
+              responsesReceived.some(
+                message => message.taskFunctionOperationStatus === false
+              )
+            ) {
+              const errorResponse = responsesReceived.find(
+                response => response.taskFunctionOperationStatus === false
+              )
+              reject(
+                new Error(
+                  `Task function operation '${
+                    message.taskFunctionOperation as string
+                  }' failed on worker ${
+                    errorResponse?.workerId as number
+                  } with error: '${
+                    errorResponse?.workerError?.message as string
+                  }'`
+                )
+              )
+            }
+          }
+        })
+        this.sendToWorker(workerNodeKey, message)
+      }
+    })
+  }
+
   /** @inheritDoc */
-  public listTaskFunctions (): string[] {
+  public hasTaskFunction (name: string): boolean {
     for (const workerNode of this.workerNodes) {
       if (
-        Array.isArray(workerNode.info.taskFunctions) &&
-        workerNode.info.taskFunctions.length > 0
+        Array.isArray(workerNode.info.taskFunctionNames) &&
+        workerNode.info.taskFunctionNames.includes(name)
       ) {
-        return workerNode.info.taskFunctions
+        return true
+      }
+    }
+    return false
+  }
+
+  /** @inheritDoc */
+  public async addTaskFunction (
+    name: string,
+    fn: TaskFunction<Data, Response>
+  ): Promise<boolean> {
+    if (typeof name !== 'string') {
+      throw new TypeError('name argument must be a string')
+    }
+    if (typeof name === 'string' && name.trim().length === 0) {
+      throw new TypeError('name argument must not be an empty string')
+    }
+    if (typeof fn !== 'function') {
+      throw new TypeError('fn argument must be a function')
+    }
+    const opResult = await this.sendTaskFunctionOperationToWorkers({
+      taskFunctionOperation: 'add',
+      taskFunctionName: name,
+      taskFunction: fn.toString()
+    })
+    this.taskFunctions.set(name, fn)
+    return opResult
+  }
+
+  /** @inheritDoc */
+  public async removeTaskFunction (name: string): Promise<boolean> {
+    if (!this.taskFunctions.has(name)) {
+      throw new Error(
+        'Cannot remove a task function not handled on the pool side'
+      )
+    }
+    const opResult = await this.sendTaskFunctionOperationToWorkers({
+      taskFunctionOperation: 'remove',
+      taskFunctionName: name
+    })
+    this.deleteTaskFunctionWorkerUsages(name)
+    this.taskFunctions.delete(name)
+    return opResult
+  }
+
+  /** @inheritDoc */
+  public listTaskFunctionNames (): string[] {
+    for (const workerNode of this.workerNodes) {
+      if (
+        Array.isArray(workerNode.info.taskFunctionNames) &&
+        workerNode.info.taskFunctionNames.length > 0
+      ) {
+        return workerNode.info.taskFunctionNames
       }
     }
     return []
+  }
+
+  /** @inheritDoc */
+  public async setDefaultTaskFunction (name: string): Promise<boolean> {
+    return await this.sendTaskFunctionOperationToWorkers({
+      taskFunctionOperation: 'default',
+      taskFunctionName: name
+    })
+  }
+
+  private deleteTaskFunctionWorkerUsages (name: string): void {
+    for (const workerNode of this.workerNodes) {
+      workerNode.deleteTaskFunctionWorkerUsage(name)
+    }
   }
 
   private shallExecuteTask (workerNodeKey: number): boolean {
@@ -810,7 +961,6 @@ export abstract class AbstractPool<
         data: data ?? ({} as Data),
         transferList,
         timestamp,
-        workerId: this.getWorkerInfo(workerNodeKey).id as number,
         taskId: randomUUID()
       }
       this.promiseResponseMap.set(task.taskId as string, {
@@ -858,18 +1008,23 @@ export abstract class AbstractPool<
   }
 
   protected async sendKillMessageToWorker (
-    workerNodeKey: number,
-    workerId: number
+    workerNodeKey: number
   ): Promise<void> {
     await new Promise<void>((resolve, reject) => {
       this.registerWorkerMessageListener(workerNodeKey, message => {
         if (message.kill === 'success') {
           resolve()
         } else if (message.kill === 'failure') {
-          reject(new Error(`Worker ${workerId} kill message handling failed`))
+          reject(
+            new Error(
+              `Worker ${
+                message.workerId as number
+              } kill message handling failed`
+            )
+          )
         }
       })
-      this.sendToWorker(workerNodeKey, { kill: true, workerId })
+      this.sendToWorker(workerNodeKey, { kill: true })
     })
   }
 
@@ -969,8 +1124,8 @@ export abstract class AbstractPool<
     const workerInfo = this.getWorkerInfo(workerNodeKey)
     return (
       workerInfo != null &&
-      Array.isArray(workerInfo.taskFunctions) &&
-      workerInfo.taskFunctions.length > 2
+      Array.isArray(workerInfo.taskFunctionNames) &&
+      workerInfo.taskFunctionNames.length > 2
     )
   }
 
@@ -985,7 +1140,7 @@ export abstract class AbstractPool<
     ) {
       --workerTaskStatistics.executing
     }
-    if (message.taskError == null) {
+    if (message.workerError == null) {
       ++workerTaskStatistics.executed
     } else {
       ++workerTaskStatistics.failed
@@ -996,7 +1151,7 @@ export abstract class AbstractPool<
     workerUsage: WorkerUsage,
     message: MessageValue<Response>
   ): void {
-    if (message.taskError != null) {
+    if (message.workerError != null) {
       return
     }
     updateMeasurementStatistics(
@@ -1023,7 +1178,7 @@ export abstract class AbstractPool<
     workerUsage: WorkerUsage,
     message: MessageValue<Response>
   ): void {
-    if (message.taskError != null) {
+    if (message.workerError != null) {
       return
     }
     const eluTaskStatisticsRequirements: MeasurementStatisticsRequirements =
@@ -1173,9 +1328,19 @@ export abstract class AbstractPool<
     })
     const workerInfo = this.getWorkerInfo(workerNodeKey)
     this.sendToWorker(workerNodeKey, {
-      checkActive: true,
-      workerId: workerInfo.id as number
+      checkActive: true
     })
+    if (this.taskFunctions.size > 0) {
+      for (const [taskFunctionName, taskFunction] of this.taskFunctions) {
+        this.sendTaskFunctionOperationToWorker(workerNodeKey, {
+          taskFunctionOperation: 'add',
+          taskFunctionName,
+          taskFunction: taskFunction.toString()
+        }).catch(error => {
+          this.emitter?.emit(PoolEvents.error, error)
+        })
+      }
+    }
     workerInfo.dynamic = true
     if (
       this.workerChoiceStrategyContext.getStrategyPolicy().dynamicWorkerReady ||
@@ -1245,8 +1410,7 @@ export abstract class AbstractPool<
             .runTime.aggregate,
         elu: this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
           .elu.aggregate
-      },
-      workerId: this.getWorkerInfo(workerNodeKey).id as number
+      }
     })
   }
 
@@ -1262,11 +1426,7 @@ export abstract class AbstractPool<
         },
         0
       )
-      const destinationWorkerNode = this.workerNodes[destinationWorkerNodeKey]
-      const task = {
-        ...(this.dequeueTask(workerNodeKey) as Task<Data>),
-        workerId: destinationWorkerNode.info.id as number
-      }
+      const task = this.dequeueTask(workerNodeKey) as Task<Data>
       if (this.shallExecuteTask(destinationWorkerNodeKey)) {
         this.executeTask(destinationWorkerNodeKey, task)
       } else {
@@ -1296,7 +1456,6 @@ export abstract class AbstractPool<
 
   private taskStealingOnEmptyQueue (workerId: number): void {
     const destinationWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
-    const destinationWorkerNode = this.workerNodes[destinationWorkerNodeKey]
     const workerNodes = this.workerNodes
       .slice()
       .sort(
@@ -1310,10 +1469,7 @@ export abstract class AbstractPool<
         workerNode.usage.tasks.queued > 0
     )
     if (sourceWorkerNode != null) {
-      const task = {
-        ...(sourceWorkerNode.popTask() as Task<Data>),
-        workerId: destinationWorkerNode.info.id as number
-      }
+      const task = sourceWorkerNode.popTask() as Task<Data>
       if (this.shallExecuteTask(destinationWorkerNodeKey)) {
         this.executeTask(destinationWorkerNodeKey, task)
       } else {
@@ -1347,10 +1503,7 @@ export abstract class AbstractPool<
         workerNode.usage.tasks.queued <
           (this.opts.tasksQueueOptions?.size as number) - sizeOffset
       ) {
-        const task = {
-          ...(sourceWorkerNode.popTask() as Task<Data>),
-          workerId: workerNode.info.id as number
-        }
+        const task = sourceWorkerNode.popTask() as Task<Data>
         if (this.shallExecuteTask(workerNodeKey)) {
           this.executeTask(workerNodeKey, task)
         } else {
@@ -1372,42 +1525,44 @@ export abstract class AbstractPool<
   protected workerListener (): (message: MessageValue<Response>) => void {
     return message => {
       this.checkMessageWorkerId(message)
-      if (message.ready != null && message.taskFunctions != null) {
+      if (message.ready != null && message.taskFunctionNames != null) {
         // Worker ready response received from worker
         this.handleWorkerReadyResponse(message)
       } else if (message.taskId != null) {
         // Task execution response received from worker
         this.handleTaskExecutionResponse(message)
-      } else if (message.taskFunctions != null) {
-        // Task functions message received from worker
+      } else if (message.taskFunctionNames != null) {
+        // Task function names message received from worker
         this.getWorkerInfo(
           this.getWorkerNodeKeyByWorkerId(message.workerId)
-        ).taskFunctions = message.taskFunctions
+        ).taskFunctionNames = message.taskFunctionNames
       }
     }
   }
 
   private handleWorkerReadyResponse (message: MessageValue<Response>): void {
     if (message.ready === false) {
-      throw new Error(`Worker ${message.workerId} failed to initialize`)
+      throw new Error(
+        `Worker ${message.workerId as number} failed to initialize`
+      )
     }
     const workerInfo = this.getWorkerInfo(
       this.getWorkerNodeKeyByWorkerId(message.workerId)
     )
     workerInfo.ready = message.ready as boolean
-    workerInfo.taskFunctions = message.taskFunctions
+    workerInfo.taskFunctionNames = message.taskFunctionNames
     if (this.ready) {
       this.emitter?.emit(PoolEvents.ready, this.info)
     }
   }
 
   private handleTaskExecutionResponse (message: MessageValue<Response>): void {
-    const { taskId, taskError, data } = message
+    const { taskId, workerError, data } = message
     const promiseResponse = this.promiseResponseMap.get(taskId as string)
     if (promiseResponse != null) {
-      if (taskError != null) {
-        this.emitter?.emit(PoolEvents.taskError, taskError)
-        promiseResponse.reject(taskError.message)
+      if (workerError != null) {
+        this.emitter?.emit(PoolEvents.taskError, workerError)
+        promiseResponse.reject(workerError.message)
       } else {
         promiseResponse.resolve(data as Response)
       }

@@ -62,14 +62,12 @@ export class ThreadWorker<
         this.port.on('message', this.messageListener.bind(this))
         this.sendToMainWorker({
           ready: true,
-          taskFunctions: this.listTaskFunctions(),
-          workerId: this.id
+          taskFunctionNames: this.listTaskFunctionNames()
         })
       } catch {
         this.sendToMainWorker({
           ready: false,
-          taskFunctions: this.listTaskFunctions(),
-          workerId: this.id
+          taskFunctionNames: this.listTaskFunctionNames()
         })
       }
     }
@@ -89,7 +87,7 @@ export class ThreadWorker<
 
   /** @inheritDoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
-    this.port.postMessage(message)
+    this.port.postMessage({ ...message, workerId: this.id })
   }
 
   /** @inheritDoc */

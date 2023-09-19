@@ -200,7 +200,7 @@ describe('Abstract worker test suite', () => {
     expect(killHandlerStub.calledOnce).toBe(true)
   })
 
-  it('Verify that handleError() method works properly', () => {
+  it('Verify that handleError() method is working properly', () => {
     const error = new Error('Error as an error')
     const worker = new ClusterWorker(() => {})
     expect(worker.handleError(error)).not.toBeInstanceOf(Error)
@@ -215,7 +215,7 @@ describe('Abstract worker test suite', () => {
     ).toThrowError('Main worker not set')
   })
 
-  it('Verify that hasTaskFunction() works', () => {
+  it('Verify that hasTaskFunction() is working', () => {
     const fn1 = () => {
       return 1
     }
@@ -223,19 +223,23 @@ describe('Abstract worker test suite', () => {
       return 2
     }
     const worker = new ClusterWorker({ fn1, fn2 })
-    expect(() => worker.hasTaskFunction(0)).toThrowError(
-      new TypeError('name parameter is not a string')
-    )
-    expect(() => worker.hasTaskFunction('')).toThrowError(
-      new TypeError('name parameter is an empty string')
-    )
-    expect(worker.hasTaskFunction(DEFAULT_TASK_NAME)).toBe(true)
-    expect(worker.hasTaskFunction('fn1')).toBe(true)
-    expect(worker.hasTaskFunction('fn2')).toBe(true)
-    expect(worker.hasTaskFunction('fn3')).toBe(false)
+    expect(worker.hasTaskFunction(0)).toStrictEqual({
+      status: false,
+      error: new TypeError('name parameter is not a string')
+    })
+    expect(worker.hasTaskFunction('')).toStrictEqual({
+      status: false,
+      error: new TypeError('name parameter is an empty string')
+    })
+    expect(worker.hasTaskFunction(DEFAULT_TASK_NAME)).toStrictEqual({
+      status: true
+    })
+    expect(worker.hasTaskFunction('fn1')).toStrictEqual({ status: true })
+    expect(worker.hasTaskFunction('fn2')).toStrictEqual({ status: true })
+    expect(worker.hasTaskFunction('fn3')).toStrictEqual({ status: false })
   })
 
-  it('Verify that addTaskFunction() works', () => {
+  it('Verify that addTaskFunction() is working', () => {
     const fn1 = () => {
       return 1
     }
@@ -246,24 +250,30 @@ describe('Abstract worker test suite', () => {
       return 3
     }
     const worker = new ThreadWorker(fn1)
-    expect(() => worker.addTaskFunction(0, fn1)).toThrowError(
-      new TypeError('name parameter is not a string')
-    )
-    expect(() => worker.addTaskFunction('', fn1)).toThrowError(
-      new TypeError('name parameter is an empty string')
-    )
-    expect(() => worker.addTaskFunction('fn3', '')).toThrowError(
-      new TypeError('fn parameter is not a function')
-    )
+    expect(worker.addTaskFunction(0, fn1)).toStrictEqual({
+      status: false,
+      error: new TypeError('name parameter is not a string')
+    })
+    expect(worker.addTaskFunction('', fn1)).toStrictEqual({
+      status: false,
+      error: new TypeError('name parameter is an empty string')
+    })
+    expect(worker.addTaskFunction('fn3', '')).toStrictEqual({
+      status: false,
+      error: new TypeError('fn parameter is not a function')
+    })
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.size).toBe(2)
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
     )
-    expect(() => worker.addTaskFunction(DEFAULT_TASK_NAME, fn2)).toThrowError(
-      new Error('Cannot add a task function with the default reserved name')
-    )
+    expect(worker.addTaskFunction(DEFAULT_TASK_NAME, fn2)).toStrictEqual({
+      status: false,
+      error: new Error(
+        'Cannot add a task function with the default reserved name'
+      )
+    })
     worker.addTaskFunction('fn2', fn2)
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
@@ -282,7 +292,7 @@ describe('Abstract worker test suite', () => {
     )
   })
 
-  it('Verify that removeTaskFunction() works', () => {
+  it('Verify that removeTaskFunction() is working', () => {
     const fn1 = () => {
       return 1
     }
@@ -290,12 +300,14 @@ describe('Abstract worker test suite', () => {
       return 2
     }
     const worker = new ClusterWorker({ fn1, fn2 })
-    expect(() => worker.removeTaskFunction(0, fn1)).toThrowError(
-      new TypeError('name parameter is not a string')
-    )
-    expect(() => worker.removeTaskFunction('', fn1)).toThrowError(
-      new TypeError('name parameter is an empty string')
-    )
+    expect(worker.removeTaskFunction(0, fn1)).toStrictEqual({
+      status: false,
+      error: new TypeError('name parameter is not a string')
+    })
+    expect(worker.removeTaskFunction('', fn1)).toStrictEqual({
+      status: false,
+      error: new TypeError('name parameter is an empty string')
+    })
     worker.getMainWorker = sinon.stub().returns({
       id: 1,
       send: sinon.stub().returns()
@@ -307,16 +319,18 @@ describe('Abstract worker test suite', () => {
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
     )
-    expect(() => worker.removeTaskFunction(DEFAULT_TASK_NAME)).toThrowError(
-      new Error(
+    expect(worker.removeTaskFunction(DEFAULT_TASK_NAME)).toStrictEqual({
+      status: false,
+      error: new Error(
         'Cannot remove the task function with the default reserved name'
       )
-    )
-    expect(() => worker.removeTaskFunction('fn1')).toThrowError(
-      new Error(
+    })
+    expect(worker.removeTaskFunction('fn1')).toStrictEqual({
+      status: false,
+      error: new Error(
         'Cannot remove the task function used as the default task function'
       )
-    )
+    })
     worker.removeTaskFunction('fn2')
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
@@ -325,7 +339,7 @@ describe('Abstract worker test suite', () => {
     expect(worker.getMainWorker().send.calledOnce).toBe(true)
   })
 
-  it('Verify that listTaskFunctions() works', () => {
+  it('Verify that listTaskFunctionNames() is working', () => {
     const fn1 = () => {
       return 1
     }
@@ -333,14 +347,14 @@ describe('Abstract worker test suite', () => {
       return 2
     }
     const worker = new ClusterWorker({ fn1, fn2 })
-    expect(worker.listTaskFunctions()).toStrictEqual([
+    expect(worker.listTaskFunctionNames()).toStrictEqual([
       DEFAULT_TASK_NAME,
       'fn1',
       'fn2'
     ])
   })
 
-  it('Verify that setDefaultTaskFunction() works', () => {
+  it('Verify that setDefaultTaskFunction() is working', () => {
     const fn1 = () => {
       return 1
     }
@@ -348,12 +362,14 @@ describe('Abstract worker test suite', () => {
       return 2
     }
     const worker = new ThreadWorker({ fn1, fn2 })
-    expect(() => worker.setDefaultTaskFunction(0, fn1)).toThrowError(
-      new TypeError('name parameter is not a string')
-    )
-    expect(() => worker.setDefaultTaskFunction('', fn1)).toThrowError(
-      new TypeError('name parameter is an empty string')
-    )
+    expect(worker.setDefaultTaskFunction(0, fn1)).toStrictEqual({
+      status: false,
+      error: new TypeError('name parameter is not a string')
+    })
+    expect(worker.setDefaultTaskFunction('', fn1)).toStrictEqual({
+      status: false,
+      error: new TypeError('name parameter is an empty string')
+    })
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Function)
@@ -361,16 +377,18 @@ describe('Abstract worker test suite', () => {
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
     )
-    expect(() => worker.setDefaultTaskFunction(DEFAULT_TASK_NAME)).toThrowError(
-      new Error(
+    expect(worker.setDefaultTaskFunction(DEFAULT_TASK_NAME)).toStrictEqual({
+      status: false,
+      error: new Error(
         'Cannot set the default task function reserved name as the default task function'
       )
-    )
-    expect(() => worker.setDefaultTaskFunction('fn3')).toThrowError(
-      new Error(
+    })
+    expect(worker.setDefaultTaskFunction('fn3')).toStrictEqual({
+      status: false,
+      error: new Error(
         'Cannot set the default task function to a non-existing task function'
       )
-    )
+    })
     worker.setDefaultTaskFunction('fn1')
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')

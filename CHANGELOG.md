@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Rename `listTaskFunctions()` to `listTaskFunctionNames()` in pool and worker API.
+
+### Added
+
+- Add `hasTaskFunction()`, `addTaskFunction()`, `removeTaskFunction()`, `setDefaultTaskFunction()` methods to pool API.
 - Stricter worker constructor arguments validation.
 
 ## [2.6.45] - 2023-09-17

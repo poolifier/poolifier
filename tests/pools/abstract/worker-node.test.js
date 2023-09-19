@@ -139,7 +139,7 @@ describe('Worker node test suite', () => {
         "Cannot get task function worker usage for task function name 'invalidTaskFunction' when task function names list is not yet defined"
       )
     )
-    threadWorkerNode.info.taskFunctions = [DEFAULT_TASK_NAME, 'fn1']
+    threadWorkerNode.info.taskFunctionNames = [DEFAULT_TASK_NAME, 'fn1']
     expect(() =>
       threadWorkerNode.getTaskFunctionWorkerUsage('invalidTaskFunction')
     ).toThrowError(
@@ -147,7 +147,7 @@ describe('Worker node test suite', () => {
         "Cannot get task function worker usage for task function name 'invalidTaskFunction' when task function names list has less than 3 elements"
       )
     )
-    threadWorkerNode.info.taskFunctions = [DEFAULT_TASK_NAME, 'fn1', 'fn2']
+    threadWorkerNode.info.taskFunctionNames = [DEFAULT_TASK_NAME, 'fn1', 'fn2']
     expect(
       threadWorkerNode.getTaskFunctionWorkerUsage(DEFAULT_TASK_NAME)
     ).toStrictEqual({
@@ -220,5 +220,20 @@ describe('Worker node test suite', () => {
       }
     })
     expect(threadWorkerNode.taskFunctionsUsage.size).toBe(2)
+  })
+
+  it('Worker node deleteTaskFunctionWorkerUsage()', () => {
+    expect(threadWorkerNode.info.taskFunctionNames).toStrictEqual([
+      DEFAULT_TASK_NAME,
+      'fn1',
+      'fn2'
+    ])
+    expect(threadWorkerNode.taskFunctionsUsage.size).toBe(2)
+    expect(
+      threadWorkerNode.deleteTaskFunctionWorkerUsage('invalidTaskFunction')
+    ).toBe(false)
+    expect(threadWorkerNode.taskFunctionsUsage.size).toBe(2)
+    expect(threadWorkerNode.deleteTaskFunctionWorkerUsage('fn1')).toBe(true)
+    expect(threadWorkerNode.taskFunctionsUsage.size).toBe(1)
   })
 })

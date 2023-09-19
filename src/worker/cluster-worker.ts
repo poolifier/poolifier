@@ -48,14 +48,12 @@ export class ClusterWorker<
         this.getMainWorker().on('message', this.messageListener.bind(this))
         this.sendToMainWorker({
           ready: true,
-          taskFunctions: this.listTaskFunctions(),
-          workerId: this.id
+          taskFunctionNames: this.listTaskFunctionNames()
         })
       } catch {
         this.sendToMainWorker({
           ready: false,
-          taskFunctions: this.listTaskFunctions(),
-          workerId: this.id
+          taskFunctionNames: this.listTaskFunctionNames()
         })
       }
     }
@@ -68,6 +66,6 @@ export class ClusterWorker<
 
   /** @inheritDoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
-    this.getMainWorker().send(message)
+    this.getMainWorker().send({ ...message, workerId: this.id })
   }
 }
