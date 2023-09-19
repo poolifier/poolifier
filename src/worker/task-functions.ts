@@ -45,9 +45,9 @@ TaskFunction<Data, Response>
 >
 
 /**
- * Task function operation return type.
+ * Task function operation result.
  */
-export interface TaskFunctionOperationReturnType {
+export interface TaskFunctionOperationResult {
   status: boolean
   error?: Error
 }

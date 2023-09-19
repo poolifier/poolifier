@@ -18,7 +18,7 @@ import { KillBehaviors, type WorkerOptions } from './worker-options'
 import type {
   TaskAsyncFunction,
   TaskFunction,
-  TaskFunctionOperationReturnType,
+  TaskFunctionOperationResult,
   TaskFunctions,
   TaskSyncFunction
 } from './task-functions'
@@ -201,7 +201,7 @@ export abstract class AbstractWorker<
    * @param name - The name of the task function to check.
    * @returns Whether the worker has a task function with the given name or not.
    */
-  public hasTaskFunction (name: string): TaskFunctionOperationReturnType {
+  public hasTaskFunction (name: string): TaskFunctionOperationResult {
     try {
       this.checkTaskFunctionName(name)
     } catch (error) {
@@ -221,7 +221,7 @@ export abstract class AbstractWorker<
   public addTaskFunction (
     name: string,
     fn: TaskFunction<Data, Response>
-  ): TaskFunctionOperationReturnType {
+  ): TaskFunctionOperationResult {
     try {
       this.checkTaskFunctionName(name)
       if (name === DEFAULT_TASK_NAME) {
@@ -253,7 +253,7 @@ export abstract class AbstractWorker<
    * @param name - The name of the task function to remove.
    * @returns Whether the task function existed and was removed or not.
    */
-  public removeTaskFunction (name: string): TaskFunctionOperationReturnType {
+  public removeTaskFunction (name: string): TaskFunctionOperationResult {
     try {
       this.checkTaskFunctionName(name)
       if (name === DEFAULT_TASK_NAME) {
@@ -309,7 +309,7 @@ export abstract class AbstractWorker<
    * @param name - The name of the task function to use as default task function.
    * @returns Whether the default task function was set or not.
    */
-  public setDefaultTaskFunction (name: string): TaskFunctionOperationReturnType {
+  public setDefaultTaskFunction (name: string): TaskFunctionOperationResult {
     try {
       this.checkTaskFunctionName(name)
       if (name === DEFAULT_TASK_NAME) {
@@ -378,7 +378,7 @@ export abstract class AbstractWorker<
     message: MessageValue<Data>
   ): void {
     const { taskFunctionOperation, taskFunctionName, taskFunction } = message
-    let response!: TaskFunctionOperationReturnType
+    let response!: TaskFunctionOperationResult
     if (taskFunctionOperation === 'add') {
       response = this.addTaskFunction(
         taskFunctionName as string,

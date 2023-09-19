@@ -60,7 +60,7 @@ export type {
 export type {
   TaskAsyncFunction,
   TaskFunction,
-  TaskFunctionOperationReturnType,
+  TaskFunctionOperationResult,
   TaskFunctions,
   TaskSyncFunction
 } from './worker/task-functions'
