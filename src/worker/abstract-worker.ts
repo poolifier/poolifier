@@ -22,6 +22,11 @@ import type {
   TaskFunctions,
   TaskSyncFunction
 } from './task-functions'
+import {
+  checkTaskFunctionName,
+  checkValidTaskFunctionEntry,
+  checkValidWorkerOptions
+} from './utils'
 
 const DEFAULT_MAX_INACTIVE_TIME = 60000
 const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
@@ -100,56 +105,8 @@ export abstract class AbstractWorker<
   }
 
   private checkWorkerOptions (opts: WorkerOptions): void {
-    if (opts != null && !isPlainObject(opts)) {
-      throw new TypeError('opts worker options parameter is not a plain object')
-    }
-    if (
-      opts?.killBehavior != null &&
-      !Object.values(KillBehaviors).includes(opts.killBehavior)
-    ) {
-      throw new TypeError(
-        `killBehavior option '${opts.killBehavior}' is not valid`
-      )
-    }
-    if (
-      opts?.maxInactiveTime != null &&
-      !Number.isSafeInteger(opts.maxInactiveTime)
-    ) {
-      throw new TypeError('maxInactiveTime option is not an integer')
-    }
-    if (opts?.maxInactiveTime != null && opts.maxInactiveTime < 5) {
-      throw new TypeError(
-        'maxInactiveTime option is not a positive integer greater or equal than 5'
-      )
-    }
-    if (opts?.killHandler != null && typeof opts.killHandler !== 'function') {
-      throw new TypeError('killHandler option is not a function')
-    }
-    if (opts?.async != null) {
-      throw new Error('async option is deprecated')
-    }
+    checkValidWorkerOptions(opts)
     this.opts = { ...DEFAULT_WORKER_OPTIONS, ...opts }
-  }
-
-  private checkValidTaskFunctionEntry (
-    name: string,
-    fn: TaskFunction<Data, Response>
-  ): void {
-    if (typeof name !== 'string') {
-      throw new TypeError(
-        'A taskFunctions parameter object key is not a string'
-      )
-    }
-    if (typeof name === 'string' && name.trim().length === 0) {
-      throw new TypeError(
-        'A taskFunctions parameter object key is an empty string'
-      )
-    }
-    if (typeof fn !== 'function') {
-      throw new TypeError(
-        'A taskFunctions parameter object value is not a function'
-      )
-    }
   }
 
   /**
@@ -177,7 +134,7 @@ export abstract class AbstractWorker<
     } else if (isPlainObject(taskFunctions)) {
       let firstEntry = true
       for (const [name, fn] of Object.entries(taskFunctions)) {
-        this.checkValidTaskFunctionEntry(name, fn)
+        checkValidTaskFunctionEntry<Data, Response>(name, fn)
         const boundFn = fn.bind(this)
         if (firstEntry) {
           this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)
@@ -203,7 +160,7 @@ export abstract class AbstractWorker<
    */
   public hasTaskFunction (name: string): TaskFunctionOperationResult {
     try {
-      this.checkTaskFunctionName(name)
+      checkTaskFunctionName(name)
     } catch (error) {
       return { status: false, error: error as Error }
     }
@@ -223,7 +180,7 @@ export abstract class AbstractWorker<
     fn: TaskFunction<Data, Response>
   ): TaskFunctionOperationResult {
     try {
-      this.checkTaskFunctionName(name)
+      checkTaskFunctionName(name)
       if (name === DEFAULT_TASK_NAME) {
         throw new Error(
           'Cannot add a task function with the default reserved name'
@@ -255,7 +212,7 @@ export abstract class AbstractWorker<
    */
   public removeTaskFunction (name: string): TaskFunctionOperationResult {
     try {
-      this.checkTaskFunctionName(name)
+      checkTaskFunctionName(name)
       if (name === DEFAULT_TASK_NAME) {
         throw new Error(
           'Cannot remove the task function with the default reserved name'
@@ -311,7 +268,7 @@ export abstract class AbstractWorker<
    */
   public setDefaultTaskFunction (name: string): TaskFunctionOperationResult {
     try {
-      this.checkTaskFunctionName(name)
+      checkTaskFunctionName(name)
       if (name === DEFAULT_TASK_NAME) {
         throw new Error(
           'Cannot set the default task function reserved name as the default task function'
@@ -330,15 +287,6 @@ export abstract class AbstractWorker<
       return { status: true }
     } catch (error) {
       return { status: false, error: error as Error }
-    }
-  }
-
-  private checkTaskFunctionName (name: string): void {
-    if (typeof name !== 'string') {
-      throw new TypeError('name parameter is not a string')
-    }
-    if (typeof name === 'string' && name.trim().length === 0) {
-      throw new TypeError('name parameter is an empty string')
     }
   }
 
@@ -541,7 +489,6 @@ export abstract class AbstractWorker<
    * Runs the given task.
    *
    * @param task - The task to execute.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the task function is not found.
    */
   protected run (task: Task<Data>): void {
     const { name, taskId, data } = task

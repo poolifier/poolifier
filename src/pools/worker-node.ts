@@ -20,6 +20,7 @@ import {
   WorkerTypes,
   type WorkerUsage
 } from './worker'
+import { checkWorkerNodeArguments } from './utils'
 
 /**
  * Worker node.
@@ -57,7 +58,7 @@ implements IWorkerNode<Worker, Data> {
    * @param tasksQueueBackPressureSize - The tasks queue back pressure size.
    */
   constructor (worker: Worker, tasksQueueBackPressureSize: number) {
-    this.checkWorkerNodeArguments(worker, tasksQueueBackPressureSize)
+    checkWorkerNodeArguments<Worker>(worker, tasksQueueBackPressureSize)
     this.worker = worker
     this.info = this.initWorkerInfo(worker)
     this.usage = this.initWorkerUsage()
@@ -286,30 +287,6 @@ implements IWorkerNode<Worker, Data> {
           history: new CircularArray()
         }
       }
-    }
-  }
-
-  private checkWorkerNodeArguments (
-    worker: Worker,
-    tasksQueueBackPressureSize: number
-  ): void {
-    if (worker == null) {
-      throw new TypeError('Cannot construct a worker node without a worker')
-    }
-    if (tasksQueueBackPressureSize == null) {
-      throw new TypeError(
-        'Cannot construct a worker node without a tasks queue back pressure size'
-      )
-    }
-    if (!Number.isSafeInteger(tasksQueueBackPressureSize)) {
-      throw new TypeError(
-        'Cannot construct a worker node with a tasks queue back pressure size that is not an integer'
-      )
-    }
-    if (tasksQueueBackPressureSize <= 0) {
-      throw new RangeError(
-        'Cannot construct a worker node with a tasks queue back pressure size that is not a positive integer'
-      )
     }
   }
 }

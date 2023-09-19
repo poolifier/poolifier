@@ -5,6 +5,7 @@ import {
   type WorkerChoiceStrategy
 } from './selection-strategies/selection-strategies-types'
 import type { TasksQueueOptions } from './pool'
+import type { IWorker } from './worker'
 
 export const checkFilePath = (filePath: string): void => {
   if (
@@ -87,6 +88,29 @@ export const checkValidTasksQueueOptions = (
   if (tasksQueueOptions?.size != null && tasksQueueOptions.size <= 0) {
     throw new RangeError(
       `Invalid worker node tasks queue size: ${tasksQueueOptions.size} is a negative integer or zero`
+    )
+  }
+}
+export const checkWorkerNodeArguments = <Worker extends IWorker>(
+  worker: Worker,
+  tasksQueueBackPressureSize: number
+): void => {
+  if (worker == null) {
+    throw new TypeError('Cannot construct a worker node without a worker')
+  }
+  if (tasksQueueBackPressureSize == null) {
+    throw new TypeError(
+      'Cannot construct a worker node without a tasks queue back pressure size'
+    )
+  }
+  if (!Number.isSafeInteger(tasksQueueBackPressureSize)) {
+    throw new TypeError(
+      'Cannot construct a worker node with a tasks queue back pressure size that is not an integer'
+    )
+  }
+  if (tasksQueueBackPressureSize <= 0) {
+    throw new RangeError(
+      'Cannot construct a worker node with a tasks queue back pressure size that is not a positive integer'
     )
   }
 }
