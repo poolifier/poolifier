@@ -183,6 +183,11 @@ implements IWorkerNode<Worker, Data> {
     return this.taskFunctionsUsage.get(name)
   }
 
+  /** @inheritdoc */
+  public deleteTaskFunctionWorkerUsage (name: string): boolean {
+    return this.taskFunctionsUsage.delete(name)
+  }
+
   private async startOnEmptyQueue (): Promise<void> {
     if (
       this.onEmptyQueueCount > 0 &&

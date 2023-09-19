@@ -1316,6 +1316,31 @@ describe('Abstract pool test suite', () => {
     const taskFunctionData = { test: 'test' }
     const echoResult = await dynamicThreadPool.execute(taskFunctionData, 'echo')
     expect(echoResult).toStrictEqual(taskFunctionData)
+    for (const workerNode of dynamicThreadPool.workerNodes) {
+      expect(workerNode.getTaskFunctionWorkerUsage('echo')).toStrictEqual({
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          queued: 0,
+          stolen: 0,
+          failed: 0
+        },
+        runTime: {
+          history: new CircularArray()
+        },
+        waitTime: {
+          history: new CircularArray()
+        },
+        elu: {
+          idle: {
+            history: new CircularArray()
+          },
+          active: {
+            history: new CircularArray()
+          }
+        }
+      })
+    }
     await dynamicThreadPool.destroy()
   })
 
@@ -1493,11 +1518,52 @@ describe('Abstract pool test suite', () => {
     )
     const workerNodeKey = 0
     await expect(
-      pool.sendKillMessageToWorker(
-        workerNodeKey,
-        pool.workerNodes[workerNodeKey].info.id
-      )
+      pool.sendKillMessageToWorker(workerNodeKey)
     ).resolves.toBeUndefined()
+    await pool.destroy()
+  })
+
+  it('Verify sendTaskFunctionOperationToWorker()', async () => {
+    const pool = new DynamicClusterPool(
+      Math.floor(numberOfWorkers / 2),
+      numberOfWorkers,
+      './tests/worker-files/cluster/testWorker.js'
+    )
+    const workerNodeKey = 0
+    await expect(
+      pool.sendTaskFunctionOperationToWorker(workerNodeKey, {
+        taskFunctionOperation: 'add',
+        taskFunctionName: 'empty',
+        taskFunction: (() => {}).toString()
+      })
+    ).resolves.toBe(true)
+    expect(
+      pool.workerNodes[workerNodeKey].info.taskFunctionNames
+    ).toStrictEqual([DEFAULT_TASK_NAME, 'test', 'empty'])
+    await pool.destroy()
+  })
+
+  it('Verify sendTaskFunctionOperationToWorkers()', async () => {
+    const pool = new DynamicClusterPool(
+      Math.floor(numberOfWorkers / 2),
+      numberOfWorkers,
+      './tests/worker-files/cluster/testWorker.js'
+    )
+    await waitPoolEvents(pool, PoolEvents.ready, 1)
+    await expect(
+      pool.sendTaskFunctionOperationToWorkers({
+        taskFunctionOperation: 'add',
+        taskFunctionName: 'empty',
+        taskFunction: (() => {}).toString()
+      })
+    ).resolves.toBe(true)
+    for (const workerNode of pool.workerNodes) {
+      expect(workerNode.info.taskFunctionNames).toStrictEqual([
+        DEFAULT_TASK_NAME,
+        'test',
+        'empty'
+      ])
+    }
     await pool.destroy()
   })
 })
