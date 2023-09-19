@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0] - 2023-09-19
+
 ### Fixed
 
 - Fix task stealing related tasks queue options handling at runtime.
