@@ -1420,6 +1420,27 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testMultipleTaskFunctionsWorker.js'
     )
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
+    await expect(
+      dynamicThreadPool.setDefaultTaskFunction(0)
+    ).rejects.toThrowError(
+      new Error(
+        "Task function operation 'default' failed on worker 31 with error: 'TypeError: name parameter is not a string'"
+      )
+    )
+    await expect(
+      dynamicThreadPool.setDefaultTaskFunction(DEFAULT_TASK_NAME)
+    ).rejects.toThrowError(
+      new Error(
+        "Task function operation 'default' failed on worker 31 with error: 'Error: Cannot set the default task function reserved name as the default task function'"
+      )
+    )
+    await expect(
+      dynamicThreadPool.setDefaultTaskFunction('unknown')
+    ).rejects.toThrowError(
+      new Error(
+        "Task function operation 'default' failed on worker 31 with error: 'Error: Cannot set the default task function to a non-existing task function'"
+      )
+    )
     expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
       DEFAULT_TASK_NAME,
       'jsonIntegerSerialization',

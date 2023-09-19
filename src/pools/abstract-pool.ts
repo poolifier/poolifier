@@ -782,9 +782,11 @@ export abstract class AbstractPool<
         ) {
           reject(
             new Error(
-              `Task function operation ${
+              `Task function operation '${
                 message.taskFunctionOperation as string
-              } failed on worker ${message.workerId}`
+              }' failed on worker ${message.workerId} with error: '${
+                message.workerError?.message as string
+              }'`
             )
           )
         }
@@ -815,11 +817,18 @@ export abstract class AbstractPool<
                 message => message.taskFunctionOperationStatus === false
               )
             ) {
+              const errorResponse = responsesReceived.find(
+                response => response.taskFunctionOperationStatus === false
+              )
               reject(
                 new Error(
-                  `Task function operation ${
+                  `Task function operation '${
                     message.taskFunctionOperation as string
-                  } failed on worker ${message.workerId as number}`
+                  }' failed on worker ${
+                    errorResponse?.workerId as number
+                  } with error: '${
+                    errorResponse?.workerError?.message as string
+                  }'`
                 )
               )
             }
