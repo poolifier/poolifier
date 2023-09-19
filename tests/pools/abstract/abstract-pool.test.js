@@ -1549,7 +1549,6 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js'
     )
-    await waitPoolEvents(pool, PoolEvents.ready, 1)
     await expect(
       pool.sendTaskFunctionOperationToWorkers({
         taskFunctionOperation: 'add',
