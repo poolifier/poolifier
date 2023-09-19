@@ -1,6 +1,5 @@
 import { randomUUID } from 'node:crypto'
 import { performance } from 'node:perf_hooks'
-import { existsSync } from 'node:fs'
 import { type TransferListItem } from 'node:worker_threads'
 import type {
   MessageValue,
@@ -49,6 +48,11 @@ import {
 import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
 import { version } from './version'
 import { WorkerNode } from './worker-node'
+import {
+  checkFilePath,
+  checkValidTasksQueueOptions,
+  checkValidWorkerChoiceStrategy
+} from './utils'
 
 /**
  * Base class that implements some shared logic for all poolifier pools.
@@ -130,7 +134,7 @@ export abstract class AbstractPool<
       )
     }
     this.checkNumberOfWorkers(this.numberOfWorkers)
-    this.checkFilePath(this.filePath)
+    checkFilePath(this.filePath)
     this.checkPoolOptions(this.opts)
 
     this.chooseWorkerNode = this.chooseWorkerNode.bind(this)
@@ -163,19 +167,6 @@ export abstract class AbstractPool<
     this.startTimestamp = performance.now()
   }
 
-  private checkFilePath (filePath: string): void {
-    if (
-      filePath == null ||
-      typeof filePath !== 'string' ||
-      (typeof filePath === 'string' && filePath.trim().length === 0)
-    ) {
-      throw new Error('Please specify a file with a worker implementation')
-    }
-    if (!existsSync(filePath)) {
-      throw new Error(`Cannot find the worker file '${filePath}'`)
-    }
-  }
-
   private checkNumberOfWorkers (numberOfWorkers: number): void {
     if (numberOfWorkers == null) {
       throw new Error(
@@ -194,36 +185,10 @@ export abstract class AbstractPool<
     }
   }
 
-  protected checkDynamicPoolSize (min: number, max: number): void {
-    if (this.type === PoolTypes.dynamic) {
-      if (max == null) {
-        throw new TypeError(
-          'Cannot instantiate a dynamic pool without specifying the maximum pool size'
-        )
-      } else if (!Number.isSafeInteger(max)) {
-        throw new TypeError(
-          'Cannot instantiate a dynamic pool with a non safe integer maximum pool size'
-        )
-      } else if (min > max) {
-        throw new RangeError(
-          'Cannot instantiate a dynamic pool with a maximum pool size inferior to the minimum pool size'
-        )
-      } else if (max === 0) {
-        throw new RangeError(
-          'Cannot instantiate a dynamic pool with a maximum pool size equal to zero'
-        )
-      } else if (min === max) {
-        throw new RangeError(
-          'Cannot instantiate a dynamic pool with a minimum pool size equal to the maximum pool size. Use a fixed pool instead'
-        )
-      }
-    }
-  }
-
   private checkPoolOptions (opts: PoolOptions<Worker>): void {
     if (isPlainObject(opts)) {
       this.opts.startWorkers = opts.startWorkers ?? true
-      this.checkValidWorkerChoiceStrategy(
+      checkValidWorkerChoiceStrategy(
         opts.workerChoiceStrategy as WorkerChoiceStrategy
       )
       this.opts.workerChoiceStrategy =
@@ -239,28 +204,13 @@ export abstract class AbstractPool<
       this.opts.enableEvents = opts.enableEvents ?? true
       this.opts.enableTasksQueue = opts.enableTasksQueue ?? false
       if (this.opts.enableTasksQueue) {
-        this.checkValidTasksQueueOptions(
-          opts.tasksQueueOptions as TasksQueueOptions
-        )
+        checkValidTasksQueueOptions(opts.tasksQueueOptions as TasksQueueOptions)
         this.opts.tasksQueueOptions = this.buildTasksQueueOptions(
           opts.tasksQueueOptions as TasksQueueOptions
         )
       }
     } else {
       throw new TypeError('Invalid pool options: must be a plain object')
-    }
-  }
-
-  private checkValidWorkerChoiceStrategy (
-    workerChoiceStrategy: WorkerChoiceStrategy
-  ): void {
-    if (
-      workerChoiceStrategy != null &&
-      !Object.values(WorkerChoiceStrategies).includes(workerChoiceStrategy)
-    ) {
-      throw new Error(
-        `Invalid worker choice strategy '${workerChoiceStrategy}'`
-      )
     }
   }
 
@@ -307,43 +257,6 @@ export abstract class AbstractPool<
     ) {
       throw new Error(
         `Invalid worker choice strategy options: invalid measurement '${workerChoiceStrategyOptions.measurement}'`
-      )
-    }
-  }
-
-  private checkValidTasksQueueOptions (
-    tasksQueueOptions: TasksQueueOptions
-  ): void {
-    if (tasksQueueOptions != null && !isPlainObject(tasksQueueOptions)) {
-      throw new TypeError('Invalid tasks queue options: must be a plain object')
-    }
-    if (
-      tasksQueueOptions?.concurrency != null &&
-      !Number.isSafeInteger(tasksQueueOptions.concurrency)
-    ) {
-      throw new TypeError(
-        'Invalid worker node tasks concurrency: must be an integer'
-      )
-    }
-    if (
-      tasksQueueOptions?.concurrency != null &&
-      tasksQueueOptions.concurrency <= 0
-    ) {
-      throw new RangeError(
-        `Invalid worker node tasks concurrency: ${tasksQueueOptions.concurrency} is a negative integer or zero`
-      )
-    }
-    if (
-      tasksQueueOptions?.size != null &&
-      !Number.isSafeInteger(tasksQueueOptions.size)
-    ) {
-      throw new TypeError(
-        'Invalid worker node tasks queue size: must be an integer'
-      )
-    }
-    if (tasksQueueOptions?.size != null && tasksQueueOptions.size <= 0) {
-      throw new RangeError(
-        `Invalid worker node tasks queue size: ${tasksQueueOptions.size} is a negative integer or zero`
       )
     }
   }
@@ -614,7 +527,7 @@ export abstract class AbstractPool<
     workerChoiceStrategy: WorkerChoiceStrategy,
     workerChoiceStrategyOptions?: WorkerChoiceStrategyOptions
   ): void {
-    this.checkValidWorkerChoiceStrategy(workerChoiceStrategy)
+    checkValidWorkerChoiceStrategy(workerChoiceStrategy)
     this.opts.workerChoiceStrategy = workerChoiceStrategy
     this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
       this.opts.workerChoiceStrategy
@@ -659,7 +572,7 @@ export abstract class AbstractPool<
   /** @inheritDoc */
   public setTasksQueueOptions (tasksQueueOptions: TasksQueueOptions): void {
     if (this.opts.enableTasksQueue === true) {
-      this.checkValidTasksQueueOptions(tasksQueueOptions)
+      checkValidTasksQueueOptions(tasksQueueOptions)
       this.opts.tasksQueueOptions =
         this.buildTasksQueueOptions(tasksQueueOptions)
       this.setTasksQueueSize(this.opts.tasksQueueOptions.size as number)
