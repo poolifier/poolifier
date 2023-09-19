@@ -275,6 +275,8 @@ export interface IPool<
    * @param name - The name of the task function.
    * @param fn - The task function.
    * @returns `true` if the task function was added, `false` otherwise.
+   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string or an empty string.
+   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `fn` parameter is not a function.
    */
   readonly addTaskFunction: (
     name: string,
