@@ -379,19 +379,26 @@ export abstract class AbstractWorker<
   ): void {
     const { taskFunctionOperation, taskFunctionName, taskFunction } = message
     let response!: TaskFunctionOperationResult
-    if (taskFunctionOperation === 'add') {
-      response = this.addTaskFunction(
-        taskFunctionName as string,
-        // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
-        new Function(`return ${taskFunction as string}`)() as TaskFunction<
-        Data,
-        Response
-        >
-      )
-    } else if (taskFunctionOperation === 'remove') {
-      response = this.removeTaskFunction(taskFunctionName as string)
-    } else if (taskFunctionOperation === 'default') {
-      response = this.setDefaultTaskFunction(taskFunctionName as string)
+    switch (taskFunctionOperation) {
+      case 'add':
+        response = this.addTaskFunction(
+          taskFunctionName as string,
+          // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
+          new Function(`return ${taskFunction as string}`)() as TaskFunction<
+          Data,
+          Response
+          >
+        )
+        break
+      case 'remove':
+        response = this.removeTaskFunction(taskFunctionName as string)
+        break
+      case 'default':
+        response = this.setDefaultTaskFunction(taskFunctionName as string)
+        break
+      default:
+        response = { status: false, error: new Error('Unknown task operation') }
+        break
     }
     this.sendToMainWorker({
       taskFunctionOperation,
