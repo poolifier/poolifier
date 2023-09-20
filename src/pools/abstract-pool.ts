@@ -133,8 +133,8 @@ export abstract class AbstractPool<
         'Cannot start a pool from a worker with the same type as the pool'
       )
     }
-    this.checkNumberOfWorkers(this.numberOfWorkers)
     checkFilePath(this.filePath)
+    this.checkNumberOfWorkers(this.numberOfWorkers)
     this.checkPoolOptions(this.opts)
 
     this.chooseWorkerNode = this.chooseWorkerNode.bind(this)
