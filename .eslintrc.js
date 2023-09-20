@@ -94,7 +94,6 @@ module.exports = defineConfig({
           'typedoc',
           'unlink',
           'unref',
-          'unregister',
           'utf8',
           'webcrypto',
           'workerpool',

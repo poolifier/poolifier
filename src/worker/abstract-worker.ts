@@ -100,7 +100,7 @@ export abstract class AbstractWorker<
     this.checkTaskFunctions(taskFunctions)
     this.checkWorkerOptions(this.opts)
     if (!this.isMain) {
-      this.getMainWorker().on('message', this.handleReadyMessage.bind(this))
+      this.getMainWorker().once('message', this.handleReadyMessage.bind(this))
     }
   }
 
