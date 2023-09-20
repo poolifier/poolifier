@@ -100,6 +100,7 @@ export abstract class AbstractWorker<
     this.checkTaskFunctions(taskFunctions)
     this.checkWorkerOptions(this.opts)
     if (!this.isMain) {
+      // Should be once() but Node.js on windows has a bug that prevents it from working
       this.getMainWorker().on('message', this.handleReadyMessage.bind(this))
     }
   }
