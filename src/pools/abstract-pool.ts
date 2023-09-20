@@ -30,12 +30,12 @@ import {
   PoolTypes,
   type TasksQueueOptions
 } from './pool'
-import {
-  type IWorker,
-  type IWorkerNode,
-  type WorkerInfo,
-  type WorkerType,
-  type WorkerUsage
+import type {
+  IWorker,
+  IWorkerNode,
+  WorkerInfo,
+  WorkerType,
+  WorkerUsage
 } from './worker'
 import {
   type MeasurementStatisticsRequirements,
@@ -485,7 +485,7 @@ export abstract class AbstractPool<
    * @param message - The received message.
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the worker id is invalid.
    */
-  private checkMessageWorkerId (message: MessageValue<Response>): void {
+  private checkMessageWorkerId (message: MessageValue<Data | Response>): void {
     if (message.workerId == null) {
       throw new Error('Worker message received without worker id')
     } else if (
@@ -1243,6 +1243,7 @@ export abstract class AbstractPool<
   protected createAndSetupDynamicWorkerNode (): number {
     const workerNodeKey = this.createAndSetupWorkerNode()
     this.registerWorkerMessageListener(workerNodeKey, message => {
+      this.checkMessageWorkerId(message)
       const localWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(
         message.workerId
       )

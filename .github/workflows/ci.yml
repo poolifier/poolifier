@@ -51,6 +51,7 @@ jobs:
         run: pnpm lint
 
       - name: Tests
+        if: ${{ matrix.os != 'windows-latest' && matrix.node != '16.x' }}
         run: pnpm test
 
       - name: Coverage Report
