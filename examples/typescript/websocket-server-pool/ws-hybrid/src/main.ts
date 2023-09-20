@@ -1,7 +1,7 @@
 import { dirname, extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { FixedClusterPool, availableParallelism } from 'poolifier'
-import { type ClusterWorkerData, type ClusterWorkerResponse } from './types.js'
+import type { ClusterWorkerData, ClusterWorkerResponse } from './types.js'
 
 const webSocketServerWorkerFile = join(
   dirname(fileURLToPath(import.meta.url)),

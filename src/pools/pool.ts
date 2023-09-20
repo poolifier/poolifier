@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events'
-import { type TransferListItem } from 'node:worker_threads'
+import type { TransferListItem } from 'node:worker_threads'
 import type { TaskFunction } from '../worker/task-functions'
 import type {
   ErrorHandler,

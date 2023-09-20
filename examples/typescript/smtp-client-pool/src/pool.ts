@@ -2,7 +2,7 @@ import { fileURLToPath } from 'node:url'
 import { dirname, extname, join } from 'node:path'
 import { DynamicThreadPool, availableParallelism } from 'poolifier'
 import type SMTPTransport from 'nodemailer/lib/smtp-transport/index.js'
-import { type WorkerData } from './types.js'
+import type { WorkerData } from './types.js'
 
 const workerFile = join(
   dirname(fileURLToPath(import.meta.url)),

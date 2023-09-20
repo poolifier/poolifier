@@ -4,7 +4,7 @@ import nodeFetch, {
   type ResponseInit as NodeFetchRequestInit
 } from 'node-fetch'
 import axios from 'axios'
-import { type WorkerData, type WorkerResponse } from './types.js'
+import type { WorkerData, WorkerResponse } from './types.js'
 
 class HttpClientWorker extends ThreadWorker<WorkerData, WorkerResponse> {
   public constructor () {
