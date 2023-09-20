@@ -11,7 +11,7 @@
     "pnpm": ">=8.6.0"
   },
   "volta": {
-    "node": "18.17.1",
+    "node": "18.18.0",
     "pnpm": "8.7.6"
   },
   "scripts": {
@@ -21,7 +21,7 @@
     "nanothreads": "0.3.7",
     "node-worker-threads-pool": "1.5.1",
     "piscina": "4.1.0",
-    "poolifier": "2.6.45",
+    "poolifier": "2.7.0",
     "tinypool": "0.8.1",
     "worker-nodes": "2.6.0",
     "workerpool": "6.5.0"

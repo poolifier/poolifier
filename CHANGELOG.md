@@ -7,12 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0] - 2023-09-19
+
 ### Fixed
 
 - Fix task stealing related tasks queue options handling at runtime.
 
 ### Changed
 
+- Rename `listTaskFunctions()` to `listTaskFunctionNames()` in pool and worker API.
+
+### Added
+
+- Add `hasTaskFunction()`, `addTaskFunction()`, `removeTaskFunction()`, `setDefaultTaskFunction()` methods to pool API: [PR #1148](https://github.com/poolifier/poolifier/pull/1148).
 - Stricter worker constructor arguments validation.
 
 ## [2.6.45] - 2023-09-17

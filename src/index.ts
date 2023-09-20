@@ -60,6 +60,7 @@ export type {
 export type {
   TaskAsyncFunction,
   TaskFunction,
+  TaskFunctionOperationResult,
   TaskFunctions,
   TaskSyncFunction
 } from './worker/task-functions'
@@ -67,7 +68,7 @@ export type {
   MessageValue,
   PromiseResponseWrapper,
   Task,
-  TaskError,
+  WorkerError,
   TaskPerformance,
   WorkerStatistics,
   Writable

@@ -1,4 +1,5 @@
 import { type PoolType, PoolTypes } from '../pool'
+import { checkDynamicPoolSize } from '../utils'
 import { type ClusterPoolOptions, FixedClusterPool } from './fixed'
 
 /**
@@ -31,7 +32,7 @@ export class DynamicClusterPool<
     opts: ClusterPoolOptions = {}
   ) {
     super(min, filePath, opts)
-    this.checkDynamicPoolSize(this.numberOfWorkers, this.max)
+    checkDynamicPoolSize(this.numberOfWorkers, this.max)
   }
 
   /** @inheritDoc */

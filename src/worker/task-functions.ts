@@ -43,3 +43,11 @@ export type TaskFunctions<Data = unknown, Response = unknown> = Record<
 string,
 TaskFunction<Data, Response>
 >
+
+/**
+ * Task function operation result.
+ */
+export interface TaskFunctionOperationResult {
+  status: boolean
+  error?: Error
+}

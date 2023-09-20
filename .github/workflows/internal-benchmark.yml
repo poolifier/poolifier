@@ -13,7 +13,6 @@ permissions:
 jobs:
   internal-benchmark:
     if: github.repository == 'poolifier/poolifier'
-    name: Internal benchmark
     runs-on: [self-hosted, internal-benchmark]
     steps:
       - name: Checkout

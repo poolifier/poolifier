@@ -1,4 +1,5 @@
 import { type PoolType, PoolTypes } from '../pool'
+import { checkDynamicPoolSize } from '../utils'
 import { FixedThreadPool, type ThreadPoolOptions } from './fixed'
 
 /**
@@ -31,7 +32,7 @@ export class DynamicThreadPool<
     opts: ThreadPoolOptions = {}
   ) {
     super(min, filePath, opts)
-    this.checkDynamicPoolSize(this.numberOfWorkers, this.max)
+    checkDynamicPoolSize(this.numberOfWorkers, this.max)
   }
 
   /** @inheritDoc */

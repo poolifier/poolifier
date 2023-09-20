@@ -8,7 +8,11 @@
   - [`pool.execute(data, name, transferList)`](#poolexecutedata-name-transferlist)
   - [`pool.start()`](#poolstart)
   - [`pool.destroy()`](#pooldestroy)
-  - [`pool.listTaskFunctions()`](#poollisttaskfunctions)
+  - [`pool.hasTaskFunction(name)`](#poolhastaskfunctionname)
+  - [`pool.addTaskFunction(name, fn)`](#pooladdtaskfunctionname-fn)
+  - [`pool.removeTaskFunction(name)`](#poolremovetaskfunctionname)
+  - [`pool.listTaskFunctionNames()`](#poollisttaskfunctionnames)
+  - [`pool.setDefaultTaskFunction(name)`](#poolsetdefaulttaskfunctionname)
   - [`PoolOptions`](#pooloptions)
     - [`ThreadPoolOptions extends PoolOptions`](#threadpooloptions-extends-pooloptions)
     - [`ClusterPoolOptions extends PoolOptions`](#clusterpooloptions-extends-pooloptions)
@@ -17,7 +21,7 @@
     - [`YourWorker.hasTaskFunction(name)`](#yourworkerhastaskfunctionname)
     - [`YourWorker.addTaskFunction(name, fn)`](#yourworkeraddtaskfunctionname-fn)
     - [`YourWorker.removeTaskFunction(name)`](#yourworkerremovetaskfunctionname)
-    - [`YourWorker.listTaskFunctions()`](#yourworkerlisttaskfunctions)
+    - [`YourWorker.listTaskFunctionNames()`](#yourworkerlisttaskfunctionnames)
     - [`YourWorker.setDefaultTaskFunction(name)`](#yourworkersetdefaulttaskfunctionname)
 
 ## Pool
@@ -39,7 +43,7 @@
 
 `data` (optional) An object that you want to pass to your worker implementation.  
 `name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
-`transferList` (optional) An array of transferable objects that you want to transfer to your [worker_threads](https://nodejs.org/api/worker_threads.html) worker implementation
+`transferList` (optional) An array of transferable objects that you want to transfer to your [worker_threads](https://nodejs.org/api/worker_threads.html) worker implementation.
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
 
@@ -51,9 +55,34 @@ This method is available on both pool implementations and will start the minimum
 
 This method is available on both pool implementations and will call the terminate method on each worker.
 
-### `pool.listTaskFunctions()`
+### `pool.hasTaskFunction(name)`
+
+`name` (mandatory) The task function name.
+
+This method is available on both pool implementations and returns a boolean.
+
+### `pool.addTaskFunction(name, fn)`
+
+`name` (mandatory) The task function name.
+`fn` (mandatory) The task function.
+
+This method is available on both pool implementations and returns a boolean promise.
+
+### `pool.removeTaskFunction(name)`
+
+`name` (mandatory) The task function name.
+
+This method is available on both pool implementations and returns a boolean promise.
+
+### `pool.listTaskFunctionNames()`
 
 This method is available on both pool implementations and returns an array of the task function names.
+
+### `pool.setDefaultTaskFunction(name)`
+
+`name` (mandatory) The task function name.
+
+This method is available on both pool implementations and returns a boolean promise.
 
 ### `PoolOptions`
 
@@ -148,22 +177,22 @@ An object with these properties:
 
 `name` (mandatory) The task function name.
 
-This method is available on both worker implementations and returns a boolean.
+This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
 
 #### `YourWorker.addTaskFunction(name, fn)`
 
 `name` (mandatory) The task function name.  
 `fn` (mandatory) The task function.
 
-This method is available on both worker implementations and returns a boolean.
+This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
 
 #### `YourWorker.removeTaskFunction(name)`
 
 `name` (mandatory) The task function name.
 
-This method is available on both worker implementations and returns a boolean.
+This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
 
-#### `YourWorker.listTaskFunctions()`
+#### `YourWorker.listTaskFunctionNames()`
 
 This method is available on both worker implementations and returns an array of the task function names.
 
@@ -171,4 +200,4 @@ This method is available on both worker implementations and returns an array of 
 
 `name` (mandatory) The task function name.
 
-This method is available on both worker implementations and returns a boolean.
+This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
