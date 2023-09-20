@@ -233,17 +233,17 @@ implements IWorkerNode<Worker, Data> {
         failed: 0
       },
       runTime: {
-        history: new CircularArray()
+        history: new CircularArray<number>()
       },
       waitTime: {
-        history: new CircularArray()
+        history: new CircularArray<number>()
       },
       elu: {
         idle: {
-          history: new CircularArray()
+          history: new CircularArray<number>()
         },
         active: {
-          history: new CircularArray()
+          history: new CircularArray<number>()
         }
       }
     }
@@ -274,17 +274,17 @@ implements IWorkerNode<Worker, Data> {
         failed: 0
       },
       runTime: {
-        history: new CircularArray()
+        history: new CircularArray<number>()
       },
       waitTime: {
-        history: new CircularArray()
+        history: new CircularArray<number>()
       },
       elu: {
         idle: {
-          history: new CircularArray()
+          history: new CircularArray<number>()
         },
         active: {
-          history: new CircularArray()
+          history: new CircularArray<number>()
         }
       }
     }
