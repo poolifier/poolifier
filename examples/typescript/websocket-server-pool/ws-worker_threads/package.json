@@ -20,11 +20,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "poolifier": "^2.7.0",
+    "poolifier": "^2.7.1",
     "ws": "^8.14.2"
   },
   "devDependencies": {
-    "@types/node": "^20.6.2",
+    "@types/node": "^20.6.3",
     "@types/ws": "^8.5.5",
     "typescript": "^5.2.2"
   },
