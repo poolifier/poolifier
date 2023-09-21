@@ -63,7 +63,7 @@ export class FixedThreadPool<
     const workerNode = this.workerNodes[workerNodeKey]
     const worker = workerNode.worker
     const waitWorkerExit = new Promise<void>(resolve => {
-      worker.on('exit', () => {
+      worker.once('exit', () => {
         resolve()
       })
     })
@@ -110,6 +110,26 @@ export class FixedThreadPool<
     (
       this.workerNodes[workerNodeKey].messageChannel as MessageChannel
     ).port1.on('message', listener)
+  }
+
+  /** @inheritDoc */
+  protected registerOnceWorkerMessageListener<Message extends Data | Response>(
+    workerNodeKey: number,
+    listener: (message: MessageValue<Message>) => void
+  ): void {
+    (
+      this.workerNodes[workerNodeKey].messageChannel as MessageChannel
+    ).port1.once('message', listener)
+  }
+
+  /** @inheritDoc */
+  protected deregisterWorkerMessageListener<Message extends Data | Response>(
+    workerNodeKey: number,
+    listener: (message: MessageValue<Message>) => void
+  ): void {
+    (
+      this.workerNodes[workerNodeKey].messageChannel as MessageChannel
+    ).port1.off('message', listener)
   }
 
   /** @inheritDoc */

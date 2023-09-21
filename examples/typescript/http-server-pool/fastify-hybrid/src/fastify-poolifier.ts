@@ -1,6 +1,6 @@
 import type { TransferListItem } from 'node:worker_threads'
 import { DynamicThreadPool, availableParallelism } from 'poolifier'
-import { type FastifyPluginCallback } from 'fastify'
+import type { FastifyPluginCallback } from 'fastify'
 import fp from 'fastify-plugin'
 import {
   type FastifyPoolifierOptions,

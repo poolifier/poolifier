@@ -66,11 +66,11 @@ export class FixedClusterPool<
     const workerNode = this.workerNodes[workerNodeKey]
     const worker = workerNode.worker
     const waitWorkerExit = new Promise<void>(resolve => {
-      worker.on('exit', () => {
+      worker.once('exit', () => {
         resolve()
       })
     })
-    worker.on('disconnect', () => {
+    worker.once('disconnect', () => {
       worker.kill()
     })
     await this.sendKillMessageToWorker(workerNodeKey)
@@ -102,6 +102,22 @@ export class FixedClusterPool<
     listener: (message: MessageValue<Message>) => void
   ): void {
     this.workerNodes[workerNodeKey].worker.on('message', listener)
+  }
+
+  /** @inheritDoc */
+  protected registerOnceWorkerMessageListener<Message extends Data | Response>(
+    workerNodeKey: number,
+    listener: (message: MessageValue<Message>) => void
+  ): void {
+    this.workerNodes[workerNodeKey].worker.once('message', listener)
+  }
+
+  /** @inheritDoc */
+  protected deregisterWorkerMessageListener<Message extends Data | Response>(
+    workerNodeKey: number,
+    listener: (message: MessageValue<Message>) => void
+  ): void {
+    this.workerNodes[workerNodeKey].worker.off('message', listener)
   }
 
   /** @inheritDoc */

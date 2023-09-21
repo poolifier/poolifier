@@ -79,7 +79,13 @@ describe('Abstract pool test suite', () => {
   })
 
   it('Verify that numberOfWorkers is checked', () => {
-    expect(() => new FixedThreadPool()).toThrowError(
+    expect(
+      () =>
+        new FixedThreadPool(
+          undefined,
+          './tests/worker-files/thread/testWorker.js'
+        )
+    ).toThrowError(
       new Error(
         'Cannot instantiate a pool without specifying the number of workers'
       )

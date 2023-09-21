@@ -1,4 +1,4 @@
-import { type ThreadPoolOptions } from 'poolifier'
+import type { ThreadPoolOptions } from 'poolifier'
 
 export interface BodyPayload {
   number?: number
