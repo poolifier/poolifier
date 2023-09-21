@@ -43,6 +43,7 @@ Please consult our [general guidelines](#general-guidelines).
 - Support for CommonJS, ESM, and TypeScript :white_check_mark:
 - Support for [worker_threads](https://nodejs.org/api/worker_threads.html) and [cluster](https://nodejs.org/api/cluster.html) Node.js modules :white_check_mark:
 - Support for multiple task functions :white_check_mark:
+- Support for task functions CRUD operations at runtime :white_check_mark:
 - Support for sync and async task functions :white_check_mark:
 - Tasks distribution strategies :white_check_mark:
 - Lockless tasks queueing :white_check_mark:
