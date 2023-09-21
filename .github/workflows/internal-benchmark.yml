@@ -41,4 +41,5 @@ jobs:
           alert-threshold: '200%'
           comment-on-alert: true
           fail-on-alert: true
+          max-items-in-chart: 50
           gh-repository: 'github.com/poolifier/benchmark-results'
