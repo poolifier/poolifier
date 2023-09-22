@@ -27,23 +27,33 @@ jobs:
       - name: Install dependencies
         run: pnpm install --ignore-scripts
       - name: Run benchmark
-        if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
-        run: ./bench.sh
-      - name: Commit files
-        if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
-        env:
-          COMMIT_MESSAGE: 'docs: update benchmark versus external pools results'
-          COMMIT_AUTHOR: Benchmark Bot
-          COMMIT_EMAIL: benchmark-bot@users.noreply.github.com
-        run: |
-          git config --local user.name "${{ env.COMMIT_AUTHOR }}"
-          git config --local user.email "${{ env.COMMIT_EMAIL }}"
-          git pull
-          git add ./BENCH-100000.md ./BENCH-100000.json
-          git commit -a -m "${{ env.COMMIT_MESSAGE }}"
-      - name: Push changes
-        if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
-        uses: CasperWA/push-protected@v2
+        uses: blacha/hyperfine-action@v1
         with:
-          token: ${{ secrets.GH_TOKEN_PROTECTED }}
-          branch: ${{ github.event.repository.default_branch }}
+          benchmark-config: '.hyperfine.json'
+          count: 500
+          benchmark-branch: 'gh-pages'
+          benchmark-output: './benchmarks.json'
+          benchmark-html: './benchmarks.html'
+          master-branch: 'master'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Run benchmark
+      #   if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
+      #   run: ./bench.sh
+      # - name: Commit files
+      #   if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
+      #   env:
+      #     COMMIT_MESSAGE: 'docs: update benchmark versus external pools results'
+      #     COMMIT_AUTHOR: Benchmark Bot
+      #     COMMIT_EMAIL: benchmark-bot@users.noreply.github.com
+      #   run: |
+      #     git config --local user.name "${{ env.COMMIT_AUTHOR }}"
+      #     git config --local user.email "${{ env.COMMIT_EMAIL }}"
+      #     git pull
+      #     git add ./BENCH-100000.md ./BENCH-100000.json
+      #     git commit -a -m "${{ env.COMMIT_MESSAGE }}"
+      # - name: Push changes
+      #   if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
+      #   uses: CasperWA/push-protected@v2
+      #   with:
+      #     token: ${{ secrets.GH_TOKEN_PROTECTED }}
+      #     branch: ${{ github.event.repository.default_branch }}
