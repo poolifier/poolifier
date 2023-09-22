@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "sourceMap": true
+  },
+  "exclude": ["node_modules", "lib", "examples/typescript/**/*.ts"]
+}
