@@ -41,6 +41,7 @@ export default defineConfig([
         }),
         ...(!isDevelopmentBuild && {
           file: './lib/index.js',
+          sourcemap: true,
           plugins: [terser({ maxWorkers })]
         })
       },
@@ -56,6 +57,7 @@ export default defineConfig([
         }),
         ...(!isDevelopmentBuild && {
           file: './lib/index.mjs',
+          sourcemap: true,
           plugins: [terser({ maxWorkers })]
         })
       }
@@ -72,9 +74,7 @@ export default defineConfig([
     ],
     plugins: [
       typescript({
-        tsconfig: isDevelopmentBuild
-          ? './tsconfig.development.json'
-          : './tsconfig.production.json'
+        tsconfig: './tsconfig.build.json'
       }),
       del({
         targets: ['./lib/*']
