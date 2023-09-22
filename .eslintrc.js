@@ -155,12 +155,6 @@ module.exports = defineConfig({
       }
     },
     {
-      files: ['tests/pools/selection-strategies/**/*.js'],
-      rules: {
-        'n/no-missing-require': 'off'
-      }
-    },
-    {
       files: ['benchmarks/**/*.js', 'benchmarks/**/*.mjs'],
       rules: {
         'jsdoc/require-jsdoc': 'off'
