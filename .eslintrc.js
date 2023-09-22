@@ -65,6 +65,7 @@ module.exports = defineConfig({
           'fibonacci',
           'fp',
           'fs',
+          'func',
           'inheritDoc',
           'javascript',
           'jsdoc',
