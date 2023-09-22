@@ -1,12 +1,13 @@
 import Piscina from 'piscina'
-import { executeAsyncFn } from './utils.mjs'
+import { BenchmarkDefaults, executeAsyncFn } from './utils.mjs'
 
-const size = parseInt(process.env.POOL_SIZE)
-const iterations = parseInt(process.env.NUM_ITERATIONS)
+const size = parseInt(process.env.POOL_SIZE) || BenchmarkDefaults.poolSize
+const numIterations =
+  parseInt(process.env.NUM_ITERATIONS) || BenchmarkDefaults.numIterations
 const data = {
   test: 'MYBENCH',
-  taskType: process.env.TASK_TYPE,
-  taskSize: parseInt(process.env.TASK_SIZE)
+  taskType: process.env.TASK_TYPE || BenchmarkDefaults.taskType,
+  taskSize: parseInt(process.env.TASK_SIZE) || BenchmarkDefaults.taskSize
 }
 
 const piscina = new Piscina({
@@ -18,7 +19,7 @@ const piscina = new Piscina({
 
 async function run () {
   const promises = new Set()
-  for (let i = 0; i < iterations; i++) {
+  for (let i = 0; i < numIterations; i++) {
     promises.add(piscina.run(data))
   }
   await Promise.all(promises)

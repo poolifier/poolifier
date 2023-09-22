@@ -38,14 +38,14 @@ done
 taskType=${taskType:-'CPU_INTENSIVE'}
 taskSize=${taskSize:-5000}
 poolSize=${poolSize:-$(nproc --all)}
-iterations=${iterations:-100000}
+numIterations=${iterations:-100000}
 
-echo 'Running benchmarks with pool size:' ${poolSize}', number of iterations:' ${iterations}', task type:' ${taskType} 'and task size:' ${taskSize}
+echo 'Running benchmarks with pool size:' ${poolSize}', number of iterations:' ${numIterations}', task type:' ${taskType} 'and task size:' ${taskSize}
 export NODE_ENV=production
 export TASK_TYPE=${taskType}
 export TASK_SIZE=${taskSize}
 export POOL_SIZE=${poolSize}
-export NUM_ITERATIONS=${iterations}
+export NUM_ITERATIONS=${numIterations}
 case "$OSTYPE" in
   darwin*)
     caffeinate ./hyperfine_benchmarks.sh

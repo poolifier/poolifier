@@ -1,12 +1,13 @@
 import workerpool from 'workerpool'
-import { executeAsyncFn } from './utils.mjs'
+import { BenchmarkDefaults, executeAsyncFn } from './utils.mjs'
 
-const size = parseInt(process.env.POOL_SIZE)
-const iterations = parseInt(process.env.NUM_ITERATIONS)
+const size = parseInt(process.env.POOL_SIZE) || BenchmarkDefaults.poolSize
+const numIterations =
+  parseInt(process.env.NUM_ITERATIONS) || BenchmarkDefaults.numIterations
 const dataArray = [
   'MYBENCH',
-  process.env.TASK_TYPE,
-  parseInt(process.env.TASK_SIZE)
+  process.env.TASK_TYPE || BenchmarkDefaults.taskType,
+  parseInt(process.env.TASK_SIZE) || BenchmarkDefaults.taskSize
 ]
 
 const workerPool = workerpool.pool(
@@ -20,7 +21,7 @@ const workerPool = workerpool.pool(
 
 async function run () {
   const promises = new Set()
-  for (let i = 0; i < iterations; i++) {
+  for (let i = 0; i < numIterations; i++) {
     promises.add(workerPool.exec('functionToBench', dataArray))
   }
   await Promise.all(promises)
