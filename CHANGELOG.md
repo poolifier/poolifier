@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add source maps to npm package to ease debugging.
 
+### Added
+
+- Continuous benchmarking versus other worker pools: [https://poolifier.github.io/benchmark](https://poolifier.github.io/benchmark).
+
 ## [2.7.1] - 2023-09-20
 
 ### Fixed
@@ -43,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `startWorkers` to pool options to whether start the minimum number of workers at pool creation or not.
 - Add `start()` method to pool API to start the minimum number of workers.
 - Add `taskStealing` and `tasksStealingOnPressure` to tasks queue options to whether enable task stealing or not and whether enable tasks stealing on back pressure or not.
-- Continuous internal benchmarking: https://poolifier.github.io/benchmark-results/dev/bench.
+- Continuous internal benchmarking: [https://poolifier.github.io/benchmark-results/dev/bench](https://poolifier.github.io/benchmark-results/dev/bench).
 
 ## [2.6.44] - 2023-09-08
 
