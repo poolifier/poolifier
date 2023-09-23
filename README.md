@@ -17,8 +17,8 @@
     <img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=alert_status"></a>
   <a href="https://standardjs.com">
     <img alt="Javascript Standard Style Guide" src="https://img.shields.io/badge/code_style-standard-brightgreen.svg"></a>
-  <a href="https://gitter.im/poolifier/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
-    <img alt="Gitter chat" src="https://badges.gitter.im/poolifier/community.svg"></a>
+  <a href="https://discord.gg/85VrP8m8">
+    <img alt="Discord" src="https://badgen.net/discord/online-members/85VrP8m8?icon=discord&label=discord&color=green"></a>
   <a href="https://opencollective.com/poolifier">
     <img alt="Open Collective" src="https://opencollective.com/poolifier/tiers/badge.svg"></a>
   <a href="http://makeapullrequest.com">
