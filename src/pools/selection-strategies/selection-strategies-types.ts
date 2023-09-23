@@ -182,6 +182,7 @@ export interface IWorkerChoiceStrategy {
   readonly reset: () => boolean
   /**
    * Updates the worker node key strategy internals.
+   * This is called after a task has been executed on a worker node.
    *
    * @returns `true` if the update is successful, `false` otherwise.
    */
