@@ -4,7 +4,7 @@
 
 <h1 align="center">Node.js Worker_Threads and Cluster Worker Pool</h1>
 
-<p align="center">
+<div align="center">
   <a href="https://github.com/poolifier/poolifier/graphs/commit-activity">
     <img alt="GitHub commit activity (master)" src="https://img.shields.io/github/commit-activity/m/poolifier/poolifier/master"></a>
   <a href="https://www.npmjs.com/package/poolifier">
@@ -25,7 +25,7 @@
     <img alt="PR Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square"></a>
   <a href="https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen">
     <img alt="No dependencies" src="https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen"></a>
-</p>
+</div>
 
 ## Why Poolifier?
 
