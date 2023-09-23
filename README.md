@@ -6,9 +6,9 @@
 
 <div align="center">
   <a href="https://github.com/poolifier/poolifier/graphs/commit-activity">
-    <img alt="GitHub commit activity (master)" src="https://img.shields.io/github/commit-activity/m/poolifier/poolifier/master?color=brightgreen"></a>
+    <img alt="GitHub commit activity (master)" src="https://img.shields.io/github/commit-activity/m/poolifier/poolifier/master?color=brightgreen&logo=github"></a>
   <a href="https://www.npmjs.com/package/poolifier">
-    <img alt="Weekly Downloads" src="https://badgen.net/npm/dw/poolifier"></a>
+    <img alt="Weekly Downloads" src="https://badgen.net/npm/dw/poolifier?icon=npm"></a>
   <a href="https://github.com/poolifier/poolifier/actions/workflows/ci.yml">
     <img alt="Actions Status" src="https://github.com/poolifier/poolifier/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://sonarcloud.io/dashboard?id=pioardi_poolifier">
