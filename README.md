@@ -6,9 +6,9 @@
 
 <div align="center">
   <a href="https://github.com/poolifier/poolifier/graphs/commit-activity">
-    <img alt="GitHub commit activity (master)" src="https://img.shields.io/github/commit-activity/m/poolifier/poolifier/master"></a>
+    <img alt="GitHub commit activity (master)" src="https://img.shields.io/github/commit-activity/m/poolifier/poolifier/master?color=brightgreen"></a>
   <a href="https://www.npmjs.com/package/poolifier">
-    <img alt="Weekly Downloads" src="https://img.shields.io/npm/dw/poolifier"></a>
+    <img alt="Weekly Downloads" src="https://badgen.net/npm/dw/poolifier"></a>
   <a href="https://github.com/poolifier/poolifier/actions/workflows/ci.yml">
     <img alt="Actions Status" src="https://github.com/poolifier/poolifier/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://sonarcloud.io/dashboard?id=pioardi_poolifier">
@@ -16,15 +16,15 @@
   <a href="https://sonarcloud.io/dashboard?id=pioardi_poolifier">
     <img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=alert_status"></a>
   <a href="https://standardjs.com">
-    <img alt="Javascript Standard Style Guide" src="https://img.shields.io/badge/code_style-standard-brightgreen.svg"></a>
+    <img alt="Javascript Standard Style Guide" src="https://badgen.net/static/code style/standard/green"></a>
   <a href="https://discord.gg/85VrP8m8">
     <img alt="Discord" src="https://badgen.net/discord/online-members/85VrP8m8?icon=discord&label=discord&color=green"></a>
   <a href="https://opencollective.com/poolifier">
     <img alt="Open Collective" src="https://opencollective.com/poolifier/tiers/badge.svg"></a>
   <a href="http://makeapullrequest.com">
-    <img alt="PR Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square"></a>
-  <a href="https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen">
-    <img alt="No dependencies" src="https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen"></a>
+    <img alt="PRs welcome" src="https://badgen.net/static/PRs/welcome/green"></a>
+  <a href="https://badgen.net/static/code style/standard/green">
+    <img alt="No dependencies" src="https://badgen.net/static/dependencies/no dependencies/green"></a>
 </div>
 
 ## Why Poolifier?
