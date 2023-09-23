@@ -1,5 +1,6 @@
 {
   "git": {
+    "requireBranch": "master",
     "commitMessage": "chore: v${version}",
     "tagAnnotation": "v${version}",
     "pushRepo": "upstream"
