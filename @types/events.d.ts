@@ -20,7 +20,7 @@ declare module 'events' {
   }
 
   /**
-   * Integrates `EventEmitter` with `AsyncResource` for `EventEmitters` that require
+   * Integrates `EventEmitter` with `AsyncResource` for `EventEmitter`s that require
    * manual async tracking. Specifically, all events emitted by instances of
    * `EventEmitterAsyncResource` will run within its async context.
    *
