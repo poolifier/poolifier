@@ -227,7 +227,7 @@ export interface IPool<
    */
   readonly hasWorkerNodeBackPressure: (workerNodeKey: number) => boolean
   /**
-   * Event emitter integrated with `AsyncResource` on which events can be listened to.
+   * Event emitter integrated with async resource on which events can be listened to.
    * The async tracking tooling identifier is `poolifier:<PoolType>-<WorkerType>-pool`.
    *
    * Events that can currently be listened to:
