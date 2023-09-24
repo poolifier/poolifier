@@ -1,7 +1,7 @@
 import type { AsyncResource, AsyncResourceOptions } from 'node:async_hooks'
 import { EventEmitter } from 'node:events'
 
-declare module 'node:events' {
+declare module 'events' {
   interface EventEmitterOptions {
     /**
      * Enables automatic capturing of promise rejection.
