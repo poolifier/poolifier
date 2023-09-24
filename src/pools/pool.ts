@@ -1,4 +1,4 @@
-import { EventEmitter } from 'node:events'
+import { EventEmitterAsyncResource } from 'node:events'
 import type { TransferListItem } from 'node:worker_threads'
 import type { TaskFunction } from '../worker/task-functions'
 import type {
@@ -35,9 +35,9 @@ export const PoolTypes = Object.freeze({
 export type PoolType = keyof typeof PoolTypes
 
 /**
- * Pool events emitter.
+ * Pool event emitter integrated with async resource.
  */
-export class PoolEmitter extends EventEmitter {}
+export class PoolEmitter extends EventEmitterAsyncResource {}
 
 /**
  * Enumeration of pool events.
@@ -179,7 +179,7 @@ export interface PoolOptions<Worker extends IWorker> {
    */
   restartWorkerOnError?: boolean
   /**
-   * Pool events emission.
+   * Pool events integrated with async resource emission.
    *
    * @defaultValue true
    */
@@ -227,7 +227,8 @@ export interface IPool<
    */
   readonly hasWorkerNodeBackPressure: (workerNodeKey: number) => boolean
   /**
-   * Emitter on which events can be listened to.
+   * Event emitter integrated with `AsyncResource` on which events can be listened to.
+   * The async tracking tooling identifier is `poolifier:<PoolType>-<WorkerType>-pool`.
    *
    * Events that can currently be listened to:
    *

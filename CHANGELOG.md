@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Convert pool event emitter to event emitter async resource.
+
 ## [2.7.2] - 2023-09-23
 
 ### Changed

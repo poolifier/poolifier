@@ -42,7 +42,7 @@ export class ThreadWorker<
     opts: WorkerOptions = {}
   ) {
     super(
-      'worker-thread-pool:poolifier',
+      'poolifier:thread-worker',
       isMainThread,
       parentPort as MessagePort,
       taskFunctions,

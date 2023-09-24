@@ -1,4 +1,4 @@
-const { EventEmitter } = require('node:events')
+const { EventEmitterAsyncResource } = require('node:events')
 const { expect } = require('expect')
 const sinon = require('sinon')
 const {
@@ -186,7 +186,7 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js'
     )
-    expect(pool.emitter).toBeInstanceOf(EventEmitter)
+    expect(pool.emitter).toBeInstanceOf(EventEmitterAsyncResource)
     expect(pool.opts).toStrictEqual({
       startWorkers: true,
       enableEvents: true,

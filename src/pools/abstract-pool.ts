@@ -70,7 +70,7 @@ export abstract class AbstractPool<
   public readonly workerNodes: Array<IWorkerNode<Worker, Data>> = []
 
   /** @inheritDoc */
-  public readonly emitter?: PoolEmitter
+  public emitter?: PoolEmitter
 
   /**
    * The task execution response promise map:
@@ -142,7 +142,7 @@ export abstract class AbstractPool<
     this.enqueueTask = this.enqueueTask.bind(this)
 
     if (this.opts.enableEvents === true) {
-      this.emitter = new PoolEmitter()
+      this.initializeEventEmitter()
     }
     this.workerChoiceStrategyContext = new WorkerChoiceStrategyContext<
     Worker,
@@ -259,6 +259,12 @@ export abstract class AbstractPool<
         `Invalid worker choice strategy options: invalid measurement '${workerChoiceStrategyOptions.measurement}'`
       )
     }
+  }
+
+  private initializeEventEmitter (): void {
+    this.emitter = new PoolEmitter({
+      name: `poolifier:${this.type}-${this.worker}-pool`
+    })
   }
 
   /** @inheritDoc */
@@ -938,6 +944,7 @@ export abstract class AbstractPool<
       })
     )
     this.emitter?.emit(PoolEvents.destroy, this.info)
+    this.emitter?.emitDestroy()
     this.started = false
   }
 
