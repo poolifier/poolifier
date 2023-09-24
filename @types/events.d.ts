@@ -38,11 +38,11 @@ declare module 'events' {
      */
     emitDestroy (): AsyncResource
     /** The unique asyncId assigned to the resource. */
-    get asyncId (): number
+    readonly asyncId: number
     /** The same triggerAsyncId that is passed to the AsyncResource constructor. */
-    get triggerAsyncId (): number
+    readonly triggerAsyncId: number
     /** The underlying AsyncResource */
-    get asyncResource (): AsyncResource & {
+    readonly asyncResource: AsyncResource & {
       readonly eventEmitter: EventEmitterAsyncResource
     }
   }
