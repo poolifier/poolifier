@@ -19,7 +19,7 @@
 [![Discord](https://badgen.net/discord/online-members/85VrP8m8?icon=discord&label=discord&color=green)](https://discord.gg/85VrP8m8)
 [![Open Collective](https://opencollective.com/poolifier/tiers/badge.svg)](https://opencollective.com/poolifier)
 [![PRs Welcome](https://badgen.net/static/PRs/welcome/green)](http://makeapullrequest.com)
-[![No Dependencies](<https://badgen.net/static/dependencies/no dependencies/green>)](<https://badgen.net/static/code style/standard/green>)
+[![No Dependencies](<https://badgen.net/static/dependencies/no dependencies/green>)](<https://badgen.net/static/dependencies/no dependencies/green>)
 
 </div>
 
