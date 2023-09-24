@@ -97,8 +97,8 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it("Verify that 'busy' event is emitted", async () => {
-    expect(pool.emitter.eventNames()).toStrictEqual([])
     const promises = new Set()
+    expect(pool.emitter.eventNames()).toStrictEqual([])
     let poolBusy = 0
     pool.emitter.on(PoolEvents.busy, () => ++poolBusy)
     expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.busy])
