@@ -1102,6 +1102,7 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js'
     )
+    expect(pool.emitter.eventNames()).toStrictEqual([])
     let poolInfo
     let poolReady = 0
     pool.emitter.on(PoolEvents.ready, info => {
@@ -1109,6 +1110,7 @@ describe('Abstract pool test suite', () => {
       poolInfo = info
     })
     await waitPoolEvents(pool, PoolEvents.ready, 1)
+    expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.ready])
     expect(poolReady).toBe(1)
     expect(poolInfo).toStrictEqual({
       version,
@@ -1134,6 +1136,7 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js'
     )
+    expect(pool.emitter.eventNames()).toStrictEqual([])
     const promises = new Set()
     let poolBusy = 0
     let poolInfo
@@ -1141,6 +1144,7 @@ describe('Abstract pool test suite', () => {
       ++poolBusy
       poolInfo = info
     })
+    expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.busy])
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.add(pool.execute())
     }
@@ -1173,6 +1177,7 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.js'
     )
+    expect(pool.emitter.eventNames()).toStrictEqual([])
     const promises = new Set()
     let poolFull = 0
     let poolInfo
@@ -1180,6 +1185,7 @@ describe('Abstract pool test suite', () => {
       ++poolFull
       poolInfo = info
     })
+    expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.full])
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.add(pool.execute())
     }
@@ -1213,6 +1219,7 @@ describe('Abstract pool test suite', () => {
       }
     )
     sinon.stub(pool, 'hasBackPressure').returns(true)
+    expect(pool.emitter.eventNames()).toStrictEqual([])
     const promises = new Set()
     let poolBackPressure = 0
     let poolInfo
@@ -1220,6 +1227,7 @@ describe('Abstract pool test suite', () => {
       ++poolBackPressure
       poolInfo = info
     })
+    expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.backPressure])
     for (let i = 0; i < numberOfWorkers + 1; i++) {
       promises.add(pool.execute())
     }
