@@ -122,7 +122,7 @@ An object with these properties:
 
   Default: `{ retries: 6, runTime: { median: false }, waitTime: { median: false }, elu: { median: false } }`
 
-- `startWorkers` (optional) - Start the minimum number of workers at pool creation.  
+- `startWorkers` (optional) - Start the minimum number of workers at pool initialization.  
   Default: `true`
 - `restartWorkerOnError` (optional) - Restart worker on uncaught error in this pool.  
   Default: `true`
