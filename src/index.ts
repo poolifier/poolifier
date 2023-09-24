@@ -7,7 +7,6 @@ export {
 export { PoolEvents, PoolTypes } from './pools/pool'
 export type {
   IPool,
-  PoolEmitter,
   PoolEvent,
   PoolInfo,
   PoolOptions,

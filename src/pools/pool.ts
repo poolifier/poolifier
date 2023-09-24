@@ -1,5 +1,5 @@
-import { EventEmitterAsyncResource } from 'node:events'
 import type { TransferListItem } from 'node:worker_threads'
+import type { EventEmitter, EventEmitterAsyncResource } from 'node:events'
 import type { TaskFunction } from '../worker/task-functions'
 import type {
   ErrorHandler,
@@ -33,11 +33,6 @@ export const PoolTypes = Object.freeze({
  * Pool type.
  */
 export type PoolType = keyof typeof PoolTypes
-
-/**
- * Pool event emitter integrated with async resource.
- */
-export class PoolEmitter extends EventEmitterAsyncResource {}
 
 /**
  * Enumeration of pool events.
@@ -240,7 +235,7 @@ export interface IPool<
    * - `'taskError'`: Emitted when an error occurs while executing a task.
    * - `'backPressure'`: Emitted when all worker nodes have back pressure (i.e. their tasks queue is full: queue size \>= maximum queue size).
    */
-  readonly emitter?: PoolEmitter
+  readonly emitter?: EventEmitter | EventEmitterAsyncResource
   /**
    * Executes the specified function in the worker constructor with the task data input parameter.
    *
