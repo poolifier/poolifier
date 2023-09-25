@@ -14,7 +14,7 @@ declare module 'events' {
     EventEmitterOptions {
     /**
      * The type of async event.
-     * @default new.target.name if instantiated from a child class.
+     * @default new.target.name if instantiated as a child class.
      */
     name?: string
   }
