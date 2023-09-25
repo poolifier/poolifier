@@ -14,7 +14,7 @@ declare module 'events' {
     EventEmitterOptions {
     /**
      * The type of async event.
-     * @default new.target.name
+     * @default new.target.name if instantiated from a child class.
      */
     name?: string
   }
@@ -30,7 +30,7 @@ declare module 'events' {
    * @since v17.4.0, v16.14.0
    */
   export class EventEmitterAsyncResource extends EventEmitter {
-    constructor (options?: EventEmitterAsyncResourceOptions)
+    constructor (options: EventEmitterAsyncResourceOptions)
     /**
      * Call all `destroy` hooks. This should only ever be called once. An error will
      * be thrown if it is called more than once. This **must** be manually called. If
