@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix source maps (bundler issue).
+
 ## [2.7.3] - 2023-09-24
 
 ### Changed
