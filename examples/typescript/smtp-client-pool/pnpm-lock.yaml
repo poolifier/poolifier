@@ -9,8 +9,8 @@ dependencies:
     specifier: ^6.9.5
     version: 6.9.5
   poolifier:
-    specifier: ^2.7.1
-    version: 2.7.1
+    specifier: ^2.7.4
+    version: 2.7.4
 
 devDependencies:
   '@types/node':
@@ -40,8 +40,8 @@ packages:
     engines: {node: '>=6.0.0'}
     dev: false
 
-  /poolifier@2.7.1:
-    resolution: {integrity: sha512-GUo7sdUMvHyjMGHE5oMmmzlBYTASMQGznS6Nohl5eVsuLCZTIM5UyozRH47WYMAk9cqzEeoVzKKWpsQes/pCtg==}
+  /poolifier@2.7.4:
+    resolution: {integrity: sha512-Rkw7M1reDRWPLnPtS8+DFcv8IQIie44TBQ4CgQMSghu2YZ4Gip1VwbTw9t+SEgiLbIe6+cSTdlYAGtQ81DD67A==}
     engines: {node: '>=16.14.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
