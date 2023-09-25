@@ -7,7 +7,7 @@ describe('Abstract worker test suite', () => {
   class StubWorkerWithMainWorker extends ThreadWorker {
     constructor (fn, opts) {
       super(fn, opts)
-      this.mainWorker = undefined
+      delete this.mainWorker
     }
   }
 

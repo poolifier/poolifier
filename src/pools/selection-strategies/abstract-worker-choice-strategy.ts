@@ -208,7 +208,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected checkNextWorkerNodeEligibility (): void {
     if (!this.isWorkerNodeEligible(this.nextWorkerNodeKey as number)) {
-      this.nextWorkerNodeKey = undefined
+      delete this.nextWorkerNodeKey
     }
   }
 
