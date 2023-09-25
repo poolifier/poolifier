@@ -26,6 +26,8 @@ declare module 'events' {
    *
    * The EventEmitterAsyncResource class has the same methods and takes the
    * same options as EventEmitter and AsyncResource themselves.
+   * @throws if `options.name` is not provided when instantiated directly.
+   * @since v17.4.0, v16.14.0
    */
   export class EventEmitterAsyncResource extends EventEmitter {
     constructor (options?: EventEmitterAsyncResourceOptions)
@@ -34,9 +36,8 @@ declare module 'events' {
      * be thrown if it is called more than once. This **must** be manually called. If
      * the resource is left to be collected by the GC then the `destroy` hooks will
      * never be called.
-     * @return A reference to `asyncResource`.
      */
-    emitDestroy (): AsyncResource
+    emitDestroy (): void
     /** The unique asyncId assigned to the resource. */
     readonly asyncId: number
     /** The same triggerAsyncId that is passed to the AsyncResource constructor. */
