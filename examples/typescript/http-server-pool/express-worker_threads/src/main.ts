@@ -1,3 +1,4 @@
+import { exit } from 'node:process'
 import express, { type Express, type Request, type Response } from 'express'
 import { requestHandlerPool } from './pool.js'
 
@@ -45,5 +46,5 @@ try {
   })
 } catch (err) {
   console.error(err)
-  process.exit(1)
+  exit(1)
 }

@@ -1,4 +1,5 @@
 import * as os from 'node:os'
+import { env } from 'node:process'
 import { dts } from 'rollup-plugin-dts'
 import terser from '@rollup/plugin-terser'
 import typescript from '@rollup/plugin-typescript'
@@ -20,9 +21,9 @@ const availableParallelism = () => {
   return availableParallelism
 }
 
-const isDevelopmentBuild = process.env.BUILD === 'development'
-const isAnalyzeBuild = process.env.ANALYZE
-const isDocumentationBuild = process.env.DOCUMENTATION
+const isDevelopmentBuild = env.BUILD === 'development'
+const isAnalyzeBuild = env.ANALYZE
+const isDocumentationBuild = env.DOCUMENTATION
 
 const maxWorkers = Math.floor(availableParallelism() / 2)
 

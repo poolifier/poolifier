@@ -1,5 +1,6 @@
 import { dirname, extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { exit } from 'node:process'
 import Fastify from 'fastify'
 import { fastifyPoolifier } from './fastify-poolifier.js'
 
@@ -43,5 +44,5 @@ try {
   await fastify.listen({ port })
 } catch (err) {
   fastify.log.error(err)
-  process.exit(1)
+  exit(1)
 }
