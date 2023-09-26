@@ -110,7 +110,7 @@
     "@rollup/plugin-typescript": "^11.1.4",
     "@types/node": "^20.7.0",
     "@typescript-eslint/eslint-plugin": "^6.7.3",
-    "@typescript-eslint/parser": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.3",
     "benchmark": "^2.1.4",
     "c8": "^8.0.1",
     "eslint": "^8.50.0",
