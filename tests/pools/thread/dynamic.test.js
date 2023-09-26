@@ -57,8 +57,13 @@ describe('Dynamic thread pool test suite', () => {
 
   it('Shutdown test', async () => {
     const exitPromise = waitWorkerEvents(pool, 'exit', min)
+    expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.busy])
     let poolDestroy = 0
     pool.emitter.on(PoolEvents.destroy, () => ++poolDestroy)
+    expect(pool.emitter.eventNames()).toStrictEqual([
+      PoolEvents.busy,
+      PoolEvents.destroy
+    ])
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
     expect(pool.started).toBe(false)

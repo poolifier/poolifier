@@ -1,13 +1,12 @@
-# Poolifier Benchmarks
+# Poolifier benchmarks
 
 Welcome to poolifier benchmarks and thanks to look into this project.
 
 ## Folder Structure
 
-The [internal](./internal) folder contains poolifier internal benchmark.  
-The [versus-external-pools](./versus-external-pools) folder contains benchmark versus other Node.js pools.
+The [internal](./internal) folder contains poolifier internal benchmark.
 
-## Poolifier vs other pools benchmark
+## Poolifier benchmark versus other worker pools
 
 To compare poolifier pools performance vs other pools performance we chose to use [hyperfine](https://github.com/sharkdp/hyperfine).  
 We chose to use this tool because it allows to run isolated Node.js processes so each pool does not impact each other.
@@ -23,7 +22,7 @@ We chose to use this tool because it allows to run isolated Node.js processes so
 
   Those are our results:
 
-  - CPU Intensive task with 100k operations submitted to each pool: [BENCH-100000.md](./versus-external-pools/BENCH-100000.md).
+  - CPU Intensive task with 100k operations submitted to each pool: [https://poolifier.github.io/benchmark](https://poolifier.github.io/benchmark).
 
 - External pools with which we used to compare the poolifier results:
 
@@ -36,12 +35,12 @@ We chose to use this tool because it allows to run isolated Node.js processes so
 
 > :warning: **We would need funds to run our benchmark more often and on Cloud VMs, please consider to sponsor this project**
 
-Read the [README.md](./versus-external-pools/README.md) to know how to run the benchmark.
+Read the [README.md](https://github.com/poolifier/benchmark#readme) to know how to run the benchmark.
 
 ## Poolifier internal benchmark
 
 ### Usage
 
-To run the internal benchmark, you just need to navigate to the root of poolifier project and run `pnpm benchmark`.
+To run the internal benchmark, you just need to navigate to the root of poolifier cloned repository and run `pnpm benchmark`.
 
 ### [Results](https://poolifier.github.io/benchmark-results/dev/bench)

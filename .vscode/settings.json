@@ -28,6 +28,7 @@
     "libuv",
     "loglevel",
     "markdownlint",
+    "maxdepth",
     "microjob",
     "microtime",
     "mochawesome",

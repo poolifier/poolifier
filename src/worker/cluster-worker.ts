@@ -33,7 +33,7 @@ export class ClusterWorker<
     opts: WorkerOptions = {}
   ) {
     super(
-      'worker-cluster-pool:poolifier',
+      'poolifier:cluster-worker',
       cluster.isPrimary,
       cluster.worker as Worker,
       taskFunctions,

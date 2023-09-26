@@ -122,11 +122,11 @@ An object with these properties:
 
   Default: `{ retries: 6, runTime: { median: false }, waitTime: { median: false }, elu: { median: false } }`
 
-- `startWorkers` (optional) - Start the minimum number of workers at pool creation.  
+- `startWorkers` (optional) - Start the minimum number of workers at pool initialization.  
   Default: `true`
 - `restartWorkerOnError` (optional) - Restart worker on uncaught error in this pool.  
   Default: `true`
-- `enableEvents` (optional) - Events emission enablement in this pool.  
+- `enableEvents` (optional) - Events integrated with async resource emission enablement in this pool.  
   Default: `true`
 - `enableTasksQueue` (optional) - Tasks queue per worker enablement in this pool.  
   Default: `false`

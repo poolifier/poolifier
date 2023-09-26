@@ -1,6 +1,6 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "tsconfig": "./tsconfig.production.json",
+  "tsconfig": "./tsconfig.build.json",
   "entryPoints": ["./src"],
   "out": "./docs",
   "readme": "none",

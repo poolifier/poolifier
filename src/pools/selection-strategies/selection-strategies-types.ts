@@ -182,13 +182,15 @@ export interface IWorkerChoiceStrategy {
   readonly reset: () => boolean
   /**
    * Updates the worker node key strategy internals.
+   * This is called after a task has been executed on a worker node.
    *
    * @returns `true` if the update is successful, `false` otherwise.
    */
   readonly update: (workerNodeKey: number) => boolean
   /**
    * Chooses a worker node in the pool and returns its key.
-   * If the worker node is not eligible, `undefined` is returned.
+   * If no worker nodes are not eligible, `undefined` is returned.
+   * If `undefined` is returned, the caller retry.
    *
    * @returns The worker node key or `undefined`.
    */

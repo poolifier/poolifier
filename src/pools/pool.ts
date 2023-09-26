@@ -1,5 +1,5 @@
-import { EventEmitter } from 'node:events'
 import type { TransferListItem } from 'node:worker_threads'
+import type { EventEmitter, EventEmitterAsyncResource } from 'node:events'
 import type { TaskFunction } from '../worker/task-functions'
 import type {
   ErrorHandler,
@@ -33,11 +33,6 @@ export const PoolTypes = Object.freeze({
  * Pool type.
  */
 export type PoolType = keyof typeof PoolTypes
-
-/**
- * Pool events emitter.
- */
-export class PoolEmitter extends EventEmitter {}
 
 /**
  * Enumeration of pool events.
@@ -179,7 +174,7 @@ export interface PoolOptions<Worker extends IWorker> {
    */
   restartWorkerOnError?: boolean
   /**
-   * Pool events emission.
+   * Pool events integrated with async resource emission.
    *
    * @defaultValue true
    */
@@ -227,7 +222,8 @@ export interface IPool<
    */
   readonly hasWorkerNodeBackPressure: (workerNodeKey: number) => boolean
   /**
-   * Emitter on which events can be listened to.
+   * Event emitter integrated with async resource on which events can be listened to.
+   * The async tracking tooling identifier is `poolifier:<PoolType>-<WorkerType>-pool`.
    *
    * Events that can currently be listened to:
    *
@@ -239,7 +235,7 @@ export interface IPool<
    * - `'taskError'`: Emitted when an error occurs while executing a task.
    * - `'backPressure'`: Emitted when all worker nodes have back pressure (i.e. their tasks queue is full: queue size \>= maximum queue size).
    */
-  readonly emitter?: PoolEmitter
+  readonly emitter?: EventEmitter | EventEmitterAsyncResource
   /**
    * Executes the specified function in the worker constructor with the task data input parameter.
    *

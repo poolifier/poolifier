@@ -21,17 +21,6 @@ updates:
       - 'jerome-benoit'
     versioning-strategy: increase
   - package-ecosystem: 'npm'
-    directory: '/benchmarks/versus-external-pools'
-    schedule:
-      interval: 'daily'
-    labels:
-      - 'dependencies'
-      - 'benchmarks'
-    reviewers:
-      - 'pioardi'
-      - 'jerome-benoit'
-    versioning-strategy: increase
-  - package-ecosystem: 'npm'
     directory: '/examples/typescript/http-client-pool'
     schedule:
       interval: 'daily'

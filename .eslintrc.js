@@ -65,6 +65,7 @@ module.exports = defineConfig({
           'fibonacci',
           'fp',
           'fs',
+          'func',
           'inheritDoc',
           'javascript',
           'jsdoc',
@@ -155,28 +156,9 @@ module.exports = defineConfig({
       }
     },
     {
-      files: ['tests/pools/selection-strategies/**/*.js'],
-      rules: {
-        'n/no-missing-require': 'off'
-      }
-    },
-    {
       files: ['benchmarks/**/*.js', 'benchmarks/**/*.mjs'],
       rules: {
         'jsdoc/require-jsdoc': 'off'
-      }
-    },
-    {
-      files: ['benchmarks/versus-external-pools/**/*.js'],
-      rules: {
-        'n/no-missing-require': 'off'
-      }
-    },
-    {
-      files: ['benchmarks/versus-external-pools/**/*.mjs'],
-      rules: {
-        'n/no-missing-import': 'off',
-        'import/no-unresolved': 'off'
       }
     },
     {

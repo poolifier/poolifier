@@ -76,14 +76,14 @@ export class Deque<T> {
    */
   public pop (): T | undefined {
     if (this.head == null) {
-      return undefined
+      return
     }
     const tail = this.tail
     this.tail = (this.tail as Node<T>).prev
     if (this.tail == null) {
-      this.head = undefined
+      delete this.head
     } else {
-      this.tail.next = undefined
+      delete this.tail.next
     }
     --this.size
     return tail?.data
@@ -96,14 +96,14 @@ export class Deque<T> {
    */
   public shift (): T | undefined {
     if (this.head == null) {
-      return undefined
+      return
     }
     const head = this.head
     this.head = this.head.next
     if (this.head == null) {
-      this.tail = undefined
+      delete this.tail
     } else {
-      this.head.prev = undefined
+      delete this.head.prev
     }
     --this.size
     return head?.data
@@ -129,8 +129,8 @@ export class Deque<T> {
    * Clears the deque.
    */
   public clear (): void {
-    this.head = undefined
-    this.tail = undefined
+    delete this.head
+    delete this.tail
     this.size = 0
     this.maxSize = 0
   }

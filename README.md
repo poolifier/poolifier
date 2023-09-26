@@ -2,30 +2,26 @@
   <img src="./images/logo.png" width="340px" height="266px"/>
 </div>
 
-<h1 align="center">Node.js Worker_Threads and Cluster Worker Pool</h1>
+<div align="center">
 
-<p align="center">
-  <a href="https://github.com/poolifier/poolifier/graphs/commit-activity">
-    <img alt="GitHub commit activity (master)" src="https://img.shields.io/github/commit-activity/m/poolifier/poolifier/master"></a>
-  <a href="https://www.npmjs.com/package/poolifier">
-    <img alt="Weekly Downloads" src="https://img.shields.io/npm/dw/poolifier"></a>
-  <a href="https://github.com/poolifier/poolifier/actions/workflows/ci.yml">
-    <img alt="Actions Status" src="https://github.com/poolifier/poolifier/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="https://sonarcloud.io/dashboard?id=pioardi_poolifier">
-    <img alt="Code Coverage" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=coverage"></a>
-  <a href="https://sonarcloud.io/dashboard?id=pioardi_poolifier">
-    <img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=alert_status"></a>
-  <a href="https://standardjs.com">
-    <img alt="Javascript Standard Style Guide" src="https://img.shields.io/badge/code_style-standard-brightgreen.svg"></a>
-  <a href="https://gitter.im/poolifier/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
-    <img alt="Gitter chat" src="https://badges.gitter.im/poolifier/community.svg"></a>
-  <a href="https://opencollective.com/poolifier">
-    <img alt="Open Collective" src="https://opencollective.com/poolifier/tiers/badge.svg"></a>
-  <a href="http://makeapullrequest.com">
-    <img alt="PR Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square"></a>
-  <a href="https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen">
-    <img alt="No dependencies" src="https://img.shields.io/static/v1?label=dependencies&message=no%20dependencies&color=brightgreen"></a>
-</p>
+# Node.js Worker_Threads and Cluster Worker Pool
+
+</div>
+
+<div align="center">
+
+[![GitHub commit activity (master)](https://img.shields.io/github/commit-activity/m/poolifier/poolifier/master?color=brightgreen&logo=github)](https://github.com/poolifier/poolifier/graphs/commit-activity)
+[![Weekly Downloads](https://badgen.net/npm/dw/poolifier?icon=npm)](https://www.npmjs.com/package/poolifier)
+[![CI Workflow](https://github.com/poolifier/poolifier/actions/workflows/ci.yml/badge.svg)](https://github.com/poolifier/poolifier/actions/workflows/ci.yml)
+[![Code Coverage](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=coverage)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=alert_status)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
+[![Javascript Standard Style Guide](<https://badgen.net/static/code style/standard/green>)](https://standardjs.com)
+[![Discord](https://badgen.net/discord/online-members/85VrP8m8?icon=discord&label=discord&color=green)](https://discord.gg/85VrP8m8)
+[![Open Collective](https://opencollective.com/poolifier/tiers/badge.svg)](https://opencollective.com/poolifier)
+[![PRs Welcome](https://badgen.net/static/PRs/welcome/green)](http://makeapullrequest.com)
+[![No Dependencies](<https://badgen.net/static/dependencies/no dependencies/green>)](<https://badgen.net/static/dependencies/no dependencies/green>)
+
+</div>
 
 ## Why Poolifier?
 
@@ -43,6 +39,7 @@ Please consult our [general guidelines](#general-guidelines).
 - Support for CommonJS, ESM, and TypeScript :white_check_mark:
 - Support for [worker_threads](https://nodejs.org/api/worker_threads.html) and [cluster](https://nodejs.org/api/cluster.html) Node.js modules :white_check_mark:
 - Support for multiple task functions :white_check_mark:
+- Support for task functions [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) operations at runtime :white_check_mark:
 - Support for sync and async task functions :white_check_mark:
 - Tasks distribution strategies :white_check_mark:
 - Lockless tasks queueing :white_check_mark:

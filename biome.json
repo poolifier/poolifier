@@ -30,7 +30,6 @@
   "files": {
     "ignore": [
       ".nyc_output/",
-      "benchmarks/versus-external-pools/BENCH-100000.*",
       "coverage/",
       "docs/**/*.css",
       "docs/**/*.html",

@@ -1,4 +1,5 @@
 import * as os from 'node:os'
+import { env } from 'node:process'
 import { dts } from 'rollup-plugin-dts'
 import terser from '@rollup/plugin-terser'
 import typescript from '@rollup/plugin-typescript'
@@ -20,9 +21,10 @@ const availableParallelism = () => {
   return availableParallelism
 }
 
-const isDevelopmentBuild = process.env.BUILD === 'development'
-const isAnalyzeBuild = process.env.ANALYZE
-const isDocumentationBuild = process.env.DOCUMENTATION
+const isDevelopmentBuild = env.BUILD === 'development'
+const isAnalyzeBuild = env.ANALYZE
+const isDocumentationBuild = env.DOCUMENTATION
+const sourcemap = env.SOURCEMAP !== 'false'
 
 const maxWorkers = Math.floor(availableParallelism() / 2)
 
@@ -35,20 +37,21 @@ export default defineConfig([
         format: 'cjs',
         ...(isDevelopmentBuild && {
           dir: './lib',
-          sourcemap: true,
           preserveModules: true,
           preserveModulesRoot: './src'
         }),
         ...(!isDevelopmentBuild && {
           file: './lib/index.js',
           plugins: [terser({ maxWorkers })]
+        }),
+        ...(sourcemap && {
+          sourcemap
         })
       },
       {
         format: 'esm',
         ...(isDevelopmentBuild && {
           dir: './lib',
-          sourcemap: true,
           entryFileNames: '[name].mjs',
           chunkFileNames: '[name]-[hash].mjs',
           preserveModules: true,
@@ -57,6 +60,9 @@ export default defineConfig([
         ...(!isDevelopmentBuild && {
           file: './lib/index.mjs',
           plugins: [terser({ maxWorkers })]
+        }),
+        ...(sourcemap && {
+          sourcemap
         })
       }
     ],
@@ -72,9 +78,7 @@ export default defineConfig([
     ],
     plugins: [
       typescript({
-        tsconfig: isDevelopmentBuild
-          ? './tsconfig.development.json'
-          : './tsconfig.production.json'
+        tsconfig: './tsconfig.build.json'
       }),
       del({
         targets: ['./lib/*']
