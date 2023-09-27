@@ -110,13 +110,13 @@ export interface TasksQueueOptions {
    */
   readonly concurrency?: number
   /**
-   * Whether to enable task stealing.
+   * Whether to enable task stealing on empty queue.
    *
    * @defaultValue true
    */
   readonly taskStealing?: boolean
   /**
-   * Whether to enable tasks stealing on back pressure.
+   * Whether to enable tasks stealing under back pressure.
    *
    * @defaultValue true
    */
