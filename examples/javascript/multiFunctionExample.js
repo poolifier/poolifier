@@ -19,4 +19,4 @@ pool
   .then(res => console.info(res))
   .catch(err => console.error(err))
 
-setTimeout(pool.destroy(), 3000)
+setTimeout(async () => await pool.destroy(), 3000)
