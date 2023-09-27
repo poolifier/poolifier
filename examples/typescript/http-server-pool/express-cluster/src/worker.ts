@@ -4,15 +4,15 @@ import { ClusterWorker } from 'poolifier'
 import express, { type Express, type Request, type Response } from 'express'
 import type { WorkerData, WorkerResponse } from './types.js'
 
-const factorial: (n: number) => number = n => {
-  if (n === 0) {
-    return 1
-  }
-  return factorial(n - 1) * n
-}
-
 class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static server: Server
+
+  private static readonly factorial = (n: number): number => {
+    if (n === 0) {
+      return 1
+    }
+    return ExpressWorker.factorial(n - 1) * n
+  }
 
   private static readonly startExpress = (
     workerData?: WorkerData
@@ -30,7 +30,7 @@ class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
 
     application.get('/api/factorial/:number', (req: Request, res: Response) => {
       const { number } = req.params
-      res.send({ number: factorial(parseInt(number)) }).end()
+      res.send({ number: ExpressWorker.factorial(parseInt(number)) }).end()
     })
 
     ExpressWorker.server = application.listen(port, () => {

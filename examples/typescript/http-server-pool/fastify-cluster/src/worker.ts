@@ -3,15 +3,15 @@ import { ClusterWorker } from 'poolifier'
 import Fastify, { type FastifyInstance } from 'fastify'
 import type { WorkerData, WorkerResponse } from './types.js'
 
-const factorial: (n: number) => number = n => {
-  if (n === 0) {
-    return 1
-  }
-  return factorial(n - 1) * n
-}
-
 class FastifyWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static fastify: FastifyInstance
+
+  private static readonly factorial = (n: number): number => {
+    if (n === 0) {
+      return 1
+    }
+    return FastifyWorker.factorial(n - 1) * n
+  }
 
   private static readonly startFastify = async (
     workerData?: WorkerData
@@ -30,7 +30,7 @@ class FastifyWorker extends ClusterWorker<WorkerData, WorkerResponse> {
       Params: { number: number }
     }>('/api/factorial/:number', request => {
       const { number } = request.params
-      return { number: factorial(number) }
+      return { number: FastifyWorker.factorial(number) }
     })
 
     await FastifyWorker.fastify.listen({ port })
