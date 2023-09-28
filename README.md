@@ -44,7 +44,7 @@ Please consult our [general guidelines](#general-guidelines).
 - Tasks distribution strategies :white_check_mark:
 - Lockless tasks queueing :white_check_mark:
 - Queued tasks rescheduling:
-  - Task stealing :white_check_mark:
+  - Task stealing on empty queue :white_check_mark:
   - Tasks stealing under back pressure :white_check_mark:
   - Tasks redistribution on worker error :white_check_mark:
 - General guidelines on pool choice :white_check_mark:
@@ -116,8 +116,8 @@ const pool = new FixedThreadPool(availableParallelism(), './yourWorker.js', {
   onlineHandler: () => console.info('worker is online')
 })
 
-pool.emitter.on(PoolEvents.ready, () => console.info('Pool is ready'))
-pool.emitter.on(PoolEvents.busy, () => console.info('Pool is busy'))
+pool.emitter?.on(PoolEvents.ready, () => console.info('Pool is ready'))
+pool.emitter?.on(PoolEvents.busy, () => console.info('Pool is busy'))
 
 // or a dynamic worker_threads pool
 const pool = new DynamicThreadPool(Math.floor(availableParallelism() / 2), availableParallelism(), './yourWorker.js', {
@@ -125,9 +125,9 @@ const pool = new DynamicThreadPool(Math.floor(availableParallelism() / 2), avail
   onlineHandler: () => console.info('worker is online')
 })
 
-pool.emitter.on(PoolEvents.full, () => console.info('Pool is full'))
-pool.emitter.on(PoolEvents.ready, () => console.info('Pool is ready'))
-pool.emitter.on(PoolEvents.busy, () => console.info('Pool is busy'))
+pool.emitter?.on(PoolEvents.full, () => console.info('Pool is full'))
+pool.emitter?.on(PoolEvents.ready, () => console.info('Pool is ready'))
+pool.emitter?.on(PoolEvents.busy, () => console.info('Pool is busy'))
 
 // the execute method signature is the same for both implementations,
 // so you can easily switch from one to another

@@ -8,15 +8,15 @@ import {
   type WorkerResponse
 } from './types.js'
 
-const factorial: (n: number) => number = n => {
-  if (n === 0) {
-    return 1
-  }
-  return factorial(n - 1) * n
-}
-
 class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static wss: WebSocketServer
+
+  private static readonly factorial = (n: number): number => {
+    if (n === 0) {
+      return 1
+    }
+    return WebSocketServerWorker.factorial(n - 1) * n
+  }
 
   private static readonly startWebSocketServer = (
     workerData?: WorkerData
@@ -49,7 +49,9 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
             ws.send(
               JSON.stringify({
                 type: MessageType.factorial,
-                data: { number: factorial(data.number as number) }
+                data: {
+                  number: WebSocketServerWorker.factorial(data.number as number)
+                }
               })
             )
             break
