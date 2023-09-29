@@ -1,5 +1,5 @@
-const { expect } = require('expect')
-const { ThreadWorker } = require('../../lib')
+import { expect } from 'expect'
+import { ThreadWorker } from '../../lib/index.js'
 
 describe('Thread worker test suite', () => {
   let numberOfMessagesPosted = 0

@@ -1,8 +1,8 @@
-const { expect } = require('expect')
-const { FixedClusterPool, PoolEvents } = require('../../../lib')
-const { TaskFunctions } = require('../../test-types')
-const { waitPoolEvents, waitWorkerEvents } = require('../../test-utils')
-const { DEFAULT_TASK_NAME } = require('../../../lib/utils')
+import { expect } from 'expect'
+import { FixedClusterPool, PoolEvents } from '../../../lib/index.js'
+import { TaskFunctions } from '../../test-types.js'
+import { waitPoolEvents, waitWorkerEvents } from '../../test-utils.js'
+import { DEFAULT_TASK_NAME } from '../../../lib/utils.js'
 
 describe('Fixed cluster pool test suite', () => {
   const numberOfWorkers = 8

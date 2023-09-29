@@ -1,9 +1,9 @@
-const { expect } = require('expect')
-const {
-  DEFAULT_CIRCULAR_ARRAY_SIZE,
-  CircularArray
-} = require('../../lib/circular-array')
-const { updateMeasurementStatistics } = require('../../lib/pools/utils')
+import { expect } from 'expect'
+import {
+  CircularArray,
+  DEFAULT_CIRCULAR_ARRAY_SIZE
+} from '../../lib/circular-array.js'
+import { updateMeasurementStatistics } from '../../lib/pools/utils.js'
 
 describe('Pool utils test suite', () => {
   it('Verify updateMeasurementStatistics() behavior', () => {

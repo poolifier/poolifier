@@ -1,7 +1,7 @@
-const { expect } = require('expect')
-const { DynamicThreadPool, PoolEvents } = require('../../../lib')
-const { TaskFunctions } = require('../../test-types')
-const { sleep, waitWorkerEvents } = require('../../test-utils')
+import { expect } from 'expect'
+import { DynamicThreadPool, PoolEvents } from '../../../lib/index.js'
+import { TaskFunctions } from '../../test-types.js'
+import { sleep, waitWorkerEvents } from '../../test-utils.js'
 
 describe('Dynamic thread pool test suite', () => {
   const min = 1

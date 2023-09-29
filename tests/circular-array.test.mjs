@@ -1,8 +1,8 @@
-const { expect } = require('expect')
-const {
+import { expect } from 'expect'
+import {
   CircularArray,
   DEFAULT_CIRCULAR_ARRAY_SIZE
-} = require('../lib/circular-array')
+} from '../lib/circular-array.js'
 
 describe('Circular array test suite', () => {
   it('Verify that circular array can be instantiated', () => {

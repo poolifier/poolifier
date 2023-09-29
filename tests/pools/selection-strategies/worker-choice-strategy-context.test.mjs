@@ -1,34 +1,18 @@
-const { expect } = require('expect')
-const sinon = require('sinon')
-const {
-  FixedThreadPool,
+import { expect } from 'expect'
+import { createStubInstance, restore, stub } from 'sinon'
+import {
   DynamicThreadPool,
+  FixedThreadPool,
   WorkerChoiceStrategies
-} = require('../../../lib')
-const {
-  WorkerChoiceStrategyContext
-} = require('../../../lib/pools/selection-strategies/worker-choice-strategy-context')
-const {
-  RoundRobinWorkerChoiceStrategy
-} = require('../../../lib/pools/selection-strategies/round-robin-worker-choice-strategy')
-const {
-  LeastUsedWorkerChoiceStrategy
-} = require('../../../lib/pools/selection-strategies/least-used-worker-choice-strategy')
-const {
-  LeastBusyWorkerChoiceStrategy
-} = require('../../../lib/pools/selection-strategies/least-busy-worker-choice-strategy')
-const {
-  LeastEluWorkerChoiceStrategy
-} = require('../../../lib/pools/selection-strategies/least-elu-worker-choice-strategy')
-const {
-  FairShareWorkerChoiceStrategy
-} = require('../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy')
-const {
-  WeightedRoundRobinWorkerChoiceStrategy
-} = require('../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy')
-const {
-  InterleavedWeightedRoundRobinWorkerChoiceStrategy
-} = require('../../../lib/pools/selection-strategies/interleaved-weighted-round-robin-worker-choice-strategy')
+} from '../../../lib/index.js'
+import { WorkerChoiceStrategyContext } from '../../../lib/pools/selection-strategies/worker-choice-strategy-context.js'
+import { RoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/round-robin-worker-choice-strategy.js'
+import { LeastUsedWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/least-used-worker-choice-strategy.js'
+import { LeastBusyWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/least-busy-worker-choice-strategy.js'
+import { LeastEluWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/least-elu-worker-choice-strategy.js'
+import { FairShareWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy.js'
+import { WeightedRoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy.js'
+import { InterleavedWeightedRoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/interleaved-weighted-round-robin-worker-choice-strategy.js'
 
 describe('Worker choice strategy context test suite', () => {
   const min = 1
@@ -48,7 +32,7 @@ describe('Worker choice strategy context test suite', () => {
   })
 
   afterEach(() => {
-    sinon.restore()
+    restore()
   })
 
   after(async () => {
@@ -69,10 +53,10 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
-    const WorkerChoiceStrategyStub = sinon.createStubInstance(
+    const WorkerChoiceStrategyStub = createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
-        choose: sinon.stub().returns(0)
+        choose: stub().returns(0)
       }
     )
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
@@ -95,16 +79,16 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
-    const WorkerChoiceStrategyUndefinedStub = sinon.createStubInstance(
+    const WorkerChoiceStrategyUndefinedStub = createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
-        choose: sinon.stub().returns(undefined)
+        choose: stub().returns(undefined)
       }
     )
-    const WorkerChoiceStrategyNullStub = sinon.createStubInstance(
+    const WorkerChoiceStrategyNullStub = createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
-        choose: sinon.stub().returns(null)
+        choose: stub().returns(null)
       }
     )
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
@@ -130,10 +114,10 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
-    const WorkerChoiceStrategyStub = sinon.createStubInstance(
+    const WorkerChoiceStrategyStub = createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
-        choose: sinon.stub().returns(0)
+        choose: stub().returns(0)
       }
     )
     expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(

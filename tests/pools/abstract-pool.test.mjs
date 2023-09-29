@@ -1,7 +1,8 @@
-const { EventEmitterAsyncResource } = require('node:events')
-const { expect } = require('expect')
-const sinon = require('sinon')
-const {
+import { EventEmitterAsyncResource } from 'node:events'
+import { readFileSync } from 'node:fs'
+import { expect } from 'expect'
+import { restore, stub } from 'sinon'
+import {
   DynamicClusterPool,
   DynamicThreadPool,
   FixedClusterPool,
@@ -10,15 +11,15 @@ const {
   PoolTypes,
   WorkerChoiceStrategies,
   WorkerTypes
-} = require('../../lib')
-const { CircularArray } = require('../../lib/circular-array')
-const { Deque } = require('../../lib/deque')
-const { DEFAULT_TASK_NAME } = require('../../lib/utils')
-const { version } = require('../../package.json')
-const { waitPoolEvents } = require('../test-utils')
-const { WorkerNode } = require('../../lib/pools/worker-node')
+} from '../../lib/index.js'
+import { CircularArray } from '../../lib/circular-array.js'
+import { Deque } from '../../lib/deque.js'
+import { DEFAULT_TASK_NAME } from '../../lib/utils.js'
+import { waitPoolEvents } from '../test-utils.js'
+import { WorkerNode } from '../../lib/pools/worker-node.js'
 
 describe('Abstract pool test suite', () => {
+  const version = JSON.parse(readFileSync('./package.json', 'utf8')).version
   const numberOfWorkers = 2
   class StubPoolWithIsMain extends FixedThreadPool {
     isMain () {
@@ -27,7 +28,7 @@ describe('Abstract pool test suite', () => {
   }
 
   afterEach(() => {
-    sinon.restore()
+    restore()
   })
 
   it('Simulate pool creation from a non main thread/process', () => {
@@ -1218,7 +1219,7 @@ describe('Abstract pool test suite', () => {
         enableTasksQueue: true
       }
     )
-    sinon.stub(pool, 'hasBackPressure').returns(true)
+    stub(pool, 'hasBackPressure').returns(true)
     expect(pool.emitter.eventNames()).toStrictEqual([])
     const promises = new Set()
     let poolBackPressure = 0

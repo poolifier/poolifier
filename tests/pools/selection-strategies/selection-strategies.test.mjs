@@ -1,12 +1,12 @@
-const { expect } = require('expect')
-const {
+import { expect } from 'expect'
+import {
   DynamicClusterPool,
   DynamicThreadPool,
   FixedClusterPool,
   FixedThreadPool,
   WorkerChoiceStrategies
-} = require('../../../lib')
-const { CircularArray } = require('../../../lib/circular-array')
+} from '../../../lib/index.js'
+import { CircularArray } from '../../../lib/circular-array.js'
 
 describe('Selection strategies test suite', () => {
   const min = 0
