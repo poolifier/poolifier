@@ -8,7 +8,7 @@ import { Deque } from '../../lib/deque.js'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.js'
 
 describe('Worker node test suite', () => {
-  const threadWorker = new Worker('./tests/worker-files/thread/testWorker.js')
+  const threadWorker = new Worker('./tests/worker-files/thread/testWorker.mjs')
   const clusterWorker = cluster.fork()
   const threadWorkerNode = new WorkerNode(threadWorker, 12)
   const clusterWorkerNode = new WorkerNode(clusterWorker, 12)

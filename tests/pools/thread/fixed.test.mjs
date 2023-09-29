@@ -9,14 +9,14 @@ describe('Fixed thread pool test suite', () => {
   const tasksConcurrency = 2
   const pool = new FixedThreadPool(
     numberOfThreads,
-    './tests/worker-files/thread/testWorker.js',
+    './tests/worker-files/thread/testWorker.mjs',
     {
       errorHandler: e => console.error(e)
     }
   )
   const queuePool = new FixedThreadPool(
     numberOfThreads,
-    './tests/worker-files/thread/testWorker.js',
+    './tests/worker-files/thread/testWorker.mjs',
     {
       enableTasksQueue: true,
       tasksQueueOptions: {
@@ -27,30 +27,30 @@ describe('Fixed thread pool test suite', () => {
   )
   const emptyPool = new FixedThreadPool(
     numberOfThreads,
-    './tests/worker-files/thread/emptyWorker.js',
+    './tests/worker-files/thread/emptyWorker.mjs',
     { exitHandler: () => console.info('empty pool worker exited') }
   )
   const echoPool = new FixedThreadPool(
     numberOfThreads,
-    './tests/worker-files/thread/echoWorker.js'
+    './tests/worker-files/thread/echoWorker.mjs'
   )
   const errorPool = new FixedThreadPool(
     numberOfThreads,
-    './tests/worker-files/thread/errorWorker.js',
+    './tests/worker-files/thread/errorWorker.mjs',
     {
       errorHandler: e => console.error(e)
     }
   )
   const asyncErrorPool = new FixedThreadPool(
     numberOfThreads,
-    './tests/worker-files/thread/asyncErrorWorker.js',
+    './tests/worker-files/thread/asyncErrorWorker.mjs',
     {
       errorHandler: e => console.error(e)
     }
   )
   const asyncPool = new FixedThreadPool(
     numberOfThreads,
-    './tests/worker-files/thread/asyncWorker.js'
+    './tests/worker-files/thread/asyncWorker.mjs'
   )
 
   after('Destroy all pools', async () => {
@@ -82,7 +82,7 @@ describe('Fixed thread pool test suite', () => {
   it("Verify that 'ready' event is emitted", async () => {
     const pool = new FixedThreadPool(
       numberOfThreads,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       {
         errorHandler: e => console.error(e)
       }
@@ -298,7 +298,7 @@ describe('Fixed thread pool test suite', () => {
   })
 
   it('Verify that thread pool options are checked', async () => {
-    const workerFilePath = './tests/worker-files/thread/testWorker.js'
+    const workerFilePath = './tests/worker-files/thread/testWorker.mjs'
     let pool = new FixedThreadPool(numberOfThreads, workerFilePath)
     expect(pool.opts.workerOptions).toBeUndefined()
     await pool.destroy()
@@ -316,7 +316,7 @@ describe('Fixed thread pool test suite', () => {
   })
 
   it('Should work even without opts in input', async () => {
-    const workerFilePath = './tests/worker-files/thread/testWorker.js'
+    const workerFilePath = './tests/worker-files/thread/testWorker.mjs'
     const pool = new FixedThreadPool(numberOfThreads, workerFilePath)
     const res = await pool.execute()
     expect(res).toStrictEqual({ ok: 1 })
@@ -325,7 +325,7 @@ describe('Fixed thread pool test suite', () => {
   })
 
   it('Verify destroyWorkerNode()', async () => {
-    const workerFilePath = './tests/worker-files/thread/testWorker.js'
+    const workerFilePath = './tests/worker-files/thread/testWorker.mjs'
     const pool = new FixedThreadPool(numberOfThreads, workerFilePath)
     const workerNodeKey = 0
     let exitEvent = 0
@@ -340,7 +340,7 @@ describe('Fixed thread pool test suite', () => {
 
   it('Verify that a pool with zero worker fails', async () => {
     expect(
-      () => new FixedThreadPool(0, './tests/worker-files/thread/testWorker.js')
+      () => new FixedThreadPool(0, './tests/worker-files/thread/testWorker.mjs')
     ).toThrowError('Cannot instantiate a fixed pool with zero worker')
   })
 })

@@ -66,13 +66,15 @@ describe('Utils test suite', () => {
 
   it('Verify getWorkerType() behavior', () => {
     expect(
-      getWorkerType(new Worker('./tests/worker-files/thread/testWorker.js'))
+      getWorkerType(new Worker('./tests/worker-files/thread/testWorker.mjs'))
     ).toBe(WorkerTypes.thread)
     expect(getWorkerType(cluster.fork())).toBe(WorkerTypes.cluster)
   })
 
   it('Verify getWorkerId() behavior', () => {
-    const threadWorker = new Worker('./tests/worker-files/thread/testWorker.js')
+    const threadWorker = new Worker(
+      './tests/worker-files/thread/testWorker.mjs'
+    )
     const clusterWorker = cluster.fork()
     expect(getWorkerId(threadWorker)).toBe(threadWorker.threadId)
     expect(getWorkerId(clusterWorker)).toBe(clusterWorker.id)

@@ -10,7 +10,10 @@ describe('Weighted round robin strategy worker choice strategy test suite', () =
   let pool
 
   before(() => {
-    pool = new FixedThreadPool(max, './tests/worker-files/thread/testWorker.js')
+    pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.mjs'
+    )
   })
 
   afterEach(() => {

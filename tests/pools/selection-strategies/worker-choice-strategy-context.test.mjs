@@ -22,12 +22,12 @@ describe('Worker choice strategy context test suite', () => {
   before(() => {
     fixedPool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     dynamicPool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
   })
 

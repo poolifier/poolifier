@@ -1,12 +1,11 @@
-'use strict'
-const { ThreadWorker, KillBehaviors } = require('../../../lib')
-const {
-  jsonIntegerSerialization,
+import { KillBehaviors, ThreadWorker } from '../../../lib/index.js'
+import {
   factorial,
-  fibonacci
-} = require('../../test-utils')
+  fibonacci,
+  jsonIntegerSerialization
+} from '../../test-utils.js'
 
-module.exports = new ThreadWorker(
+export default new ThreadWorker(
   {
     jsonIntegerSerialization: data => jsonIntegerSerialization(data.n),
     factorial: data => factorial(data.n),

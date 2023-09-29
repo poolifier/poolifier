@@ -1,7 +1,10 @@
-'use strict'
-const { ThreadWorker, KillBehaviors } = require('../../../lib')
-const { sleepTaskFunction } = require('../../test-utils')
+import { KillBehaviors, ThreadWorker } from '../../../lib/index.js'
+import { sleepTaskFunction } from '../../test-utils.js'
 
+/**
+ *
+ * @param data
+ */
 async function error (data) {
   return sleepTaskFunction(
     data,
@@ -11,7 +14,7 @@ async function error (data) {
   )
 }
 
-module.exports = new ThreadWorker(error, {
+export default new ThreadWorker(error, {
   killBehavior: KillBehaviors.HARD,
   maxInactiveTime: 500
 })
