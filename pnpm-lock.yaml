@@ -30,8 +30,8 @@ devDependencies:
     specifier: ^11.1.4
     version: 11.1.4(rollup@3.29.4)(typescript@5.2.2)
   '@types/node':
-    specifier: ^20.7.1
-    version: 20.7.1
+    specifier: ^20.7.2
+    version: 20.7.2
   '@typescript-eslint/eslint-plugin':
     specifier: ^6.7.3
     version: 6.7.3(@typescript-eslint/parser@6.7.3)(eslint@8.50.0)(typescript@5.2.2)
@@ -329,7 +329,7 @@ packages:
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
       resolve-from: 5.0.0
-      ts-node: 10.9.1(@types/node@20.7.1)(typescript@5.2.2)
+      ts-node: 10.9.1(@types/node@20.7.2)(typescript@5.2.2)
       typescript: 5.2.2
     transitivePeerDependencies:
       - '@swc/core'
@@ -506,8 +506,8 @@ packages:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.4
       '@types/istanbul-reports': 3.0.2
-      '@types/node': 20.7.1
-      '@types/yargs': 17.0.25
+      '@types/node': 20.7.2
+      '@types/yargs': 17.0.26
       chalk: 4.1.2
     dev: true
 
@@ -889,7 +889,7 @@ packages:
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 20.7.1
+      '@types/node': 20.7.2
     dev: true
 
   /@types/http-cache-semantics@4.0.2:
@@ -932,8 +932,8 @@ packages:
     resolution: {integrity: sha512-4tT2UrL5LBqDwoed9wZ6N3umC4Yhz3W3FloMmiiG4JwmUJWpie0c7lcnUNd4gtMKuDEO4wRVS8B6Xa0uMRsMKg==}
     dev: true
 
-  /@types/node@20.7.1:
-    resolution: {integrity: sha512-LT+OIXpp2kj4E2S/p91BMe+VgGX2+lfO+XTpfXhh+bCk2LkQtHZSub8ewFBMGP5ClysPjTDFa4sMI8Q3n4T0wg==}
+  /@types/node@20.7.2:
+    resolution: {integrity: sha512-RcdC3hOBOauLP+r/kRt27NrByYtDjsXyAuSbR87O6xpsvi763WI+5fbSIvYJrXnt9w4RuxhV6eAXfIs7aaf/FQ==}
     dev: true
 
   /@types/normalize-package-data@2.4.2:
@@ -952,8 +952,8 @@ packages:
     resolution: {integrity: sha512-axdPBuLuEJt0c4yI5OZssC19K2Mq1uKdrfZBzuxLvaztgqUtFYZUNw7lETExPYJR9jdEoIg4mb7RQKRQzOkeGQ==}
     dev: true
 
-  /@types/yargs@17.0.25:
-    resolution: {integrity: sha512-gy7iPgwnzNvxgAEi2bXOHWCVOG6f7xsprVJH4MjlAWeBmJ7vh/Y1kwMtUrs64ztf24zVIRCpr3n/z6gm9QIkgg==}
+  /@types/yargs@17.0.26:
+    resolution: {integrity: sha512-Y3vDy2X6zw/ZCumcwLpdhM5L7jmyGpmBCTYMHDLqT2IKVMYRRLdv6ZakA+wxhra6Z/3bwhNbNl9bDGXaFU+6rw==}
     dependencies:
       '@types/yargs-parser': 21.0.1
     dev: true
@@ -1912,7 +1912,7 @@ packages:
     dependencies:
       '@types/node': 20.5.1
       cosmiconfig: 8.3.6(typescript@5.2.2)
-      ts-node: 10.9.1(@types/node@20.7.1)(typescript@5.2.2)
+      ts-node: 10.9.1(@types/node@20.7.2)(typescript@5.2.2)
       typescript: 5.2.2
     dev: true
 
@@ -4015,7 +4015,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.7.1
+      '@types/node': 20.7.2
       chalk: 4.1.2
       ci-info: 3.8.0
       graceful-fs: 4.2.11
@@ -4367,8 +4367,8 @@ packages:
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dev: true
 
-  /magic-string@0.30.3:
-    resolution: {integrity: sha512-B7xGbll2fG/VjP+SWg4sX3JynwIU0mjoTc6MPpKNuIvftk6u6vqhDnk1R80b8C2GBR6ywqy+1DcKBrevBg+bmw==}
+  /magic-string@0.30.4:
+    resolution: {integrity: sha512-Q/TKtsC5BPm0kGqgBIF9oXAs/xEf2vRKiIB4wCRQTJOQIByZ1d+NnUOotvJOvNpi5RNIgVOMC3pOuaP1ZTDlVg==}
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
@@ -5454,7 +5454,7 @@ packages:
       rollup: ^3.25
       typescript: ^4.5 || ^5.0
     dependencies:
-      magic-string: 0.30.3
+      magic-string: 0.30.4
       rollup: 3.29.4
       typescript: 5.2.2
     optionalDependencies:
@@ -5971,7 +5971,7 @@ packages:
       typescript: 5.2.2
     dev: true
 
-  /ts-node@10.9.1(@types/node@20.7.1)(typescript@5.2.2):
+  /ts-node@10.9.1(@types/node@20.7.2)(typescript@5.2.2):
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -5990,7 +5990,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 20.7.1
+      '@types/node': 20.7.2
       acorn: 8.10.0
       acorn-walk: 8.2.0
       arg: 4.1.3
