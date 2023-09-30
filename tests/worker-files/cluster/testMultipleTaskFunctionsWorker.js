@@ -4,7 +4,7 @@ const {
   jsonIntegerSerialization,
   factorial,
   fibonacci
-} = require('../../test-utils')
+} = require('../../test-utils.js')
 
 module.exports = new ClusterWorker(
   {

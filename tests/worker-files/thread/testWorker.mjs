@@ -5,6 +5,7 @@ import { TaskFunctions } from '../../test-types.js'
 /**
  *
  * @param data
+ * @returns
  */
 function test (data) {
   data = data || {}

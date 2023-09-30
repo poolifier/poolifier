@@ -3,6 +3,7 @@ import { KillBehaviors, ThreadWorker } from '../../../lib/index.js'
 /**
  *
  * @param data
+ * @returns
  */
 function echo (data) {
   return data

@@ -1,7 +1,7 @@
 'use strict'
 const { ClusterWorker, KillBehaviors } = require('../../../lib')
-const { executeTaskFunction } = require('../../test-utils')
-const { TaskFunctions } = require('../../test-types')
+const { executeTaskFunction } = require('../../test-utils.js')
+const { TaskFunctions } = require('../../test-types.js')
 
 function test (data) {
   data = data || {}
