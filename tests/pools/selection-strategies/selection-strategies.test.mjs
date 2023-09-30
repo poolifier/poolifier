@@ -1,12 +1,12 @@
-const { expect } = require('expect')
-const {
+import { expect } from 'expect'
+import {
   DynamicClusterPool,
   DynamicThreadPool,
   FixedClusterPool,
   FixedThreadPool,
   WorkerChoiceStrategies
-} = require('../../../lib')
-const { CircularArray } = require('../../../lib/circular-array')
+} from '../../../lib/index.js'
+import { CircularArray } from '../../../lib/circular-array.js'
 
 describe('Selection strategies test suite', () => {
   const min = 0
@@ -30,7 +30,7 @@ describe('Selection strategies test suite', () => {
     const pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     expect(pool.opts.workerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
@@ -43,7 +43,7 @@ describe('Selection strategies test suite', () => {
     for (const workerChoiceStrategy of Object.values(WorkerChoiceStrategies)) {
       const pool = new FixedThreadPool(
         max,
-        './tests/worker-files/thread/testWorker.js',
+        './tests/worker-files/thread/testWorker.mjs',
         { workerChoiceStrategy }
       )
       expect(pool.opts.workerChoiceStrategy).toBe(workerChoiceStrategy)
@@ -59,7 +59,7 @@ describe('Selection strategies test suite', () => {
       const pool = new DynamicThreadPool(
         min,
         max,
-        './tests/worker-files/thread/testWorker.js'
+        './tests/worker-files/thread/testWorker.mjs'
       )
       pool.setWorkerChoiceStrategy(workerChoiceStrategy)
       expect(pool.opts.workerChoiceStrategy).toBe(workerChoiceStrategy)
@@ -110,7 +110,7 @@ describe('Selection strategies test suite', () => {
   it('Verify available strategies default internals at pool creation', async () => {
     const pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     for (const workerChoiceStrategy of Object.values(WorkerChoiceStrategies)) {
       expect(
@@ -178,7 +178,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
@@ -189,7 +189,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
@@ -204,7 +204,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(
@@ -230,7 +230,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(
@@ -260,7 +260,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
     const pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     // TODO: Create a better test to cover `RoundRobinWorkerChoiceStrategy#choose`
@@ -315,7 +315,7 @@ describe('Selection strategies test suite', () => {
     const pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     // TODO: Create a better test to cover `RoundRobinWorkerChoiceStrategy#choose`
@@ -384,7 +384,7 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
     pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     results = new Set()
@@ -399,7 +399,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
     )
     expect(
@@ -427,7 +427,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
     )
     expect(
@@ -459,7 +459,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_USED
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
@@ -470,7 +470,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
@@ -485,7 +485,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_USED
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(
@@ -511,7 +511,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(
@@ -540,7 +540,7 @@ describe('Selection strategies test suite', () => {
   it('Verify LEAST_USED strategy can be run in a fixed pool', async () => {
     const pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED }
     )
     // TODO: Create a better test to cover `LeastUsedWorkerChoiceStrategy#choose`
@@ -598,7 +598,7 @@ describe('Selection strategies test suite', () => {
     const pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED }
     )
     // TODO: Create a better test to cover `LeastUsedWorkerChoiceStrategy#choose`
@@ -656,7 +656,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_BUSY
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
@@ -667,7 +667,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
@@ -682,7 +682,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_BUSY
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(
@@ -708,7 +708,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(
@@ -737,7 +737,7 @@ describe('Selection strategies test suite', () => {
   it('Verify LEAST_BUSY strategy can be run in a fixed pool', async () => {
     const pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_BUSY }
     )
     // TODO: Create a better test to cover `LeastBusyWorkerChoiceStrategy#choose`
@@ -805,7 +805,7 @@ describe('Selection strategies test suite', () => {
     const pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_BUSY }
     )
     // TODO: Create a better test to cover `LeastBusyWorkerChoiceStrategy#choose`
@@ -873,7 +873,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_ELU
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
@@ -884,7 +884,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
@@ -899,7 +899,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_ELU
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(
@@ -925,7 +925,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(
@@ -954,7 +954,7 @@ describe('Selection strategies test suite', () => {
   it('Verify LEAST_ELU strategy can be run in a fixed pool', async () => {
     const pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_ELU }
     )
     // TODO: Create a better test to cover `LeastEluWorkerChoiceStrategy#choose`
@@ -1028,7 +1028,7 @@ describe('Selection strategies test suite', () => {
     const pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy: WorkerChoiceStrategies.LEAST_ELU }
     )
     // TODO: Create a better test to cover `LeastEluWorkerChoiceStrategy#choose`
@@ -1102,7 +1102,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
@@ -1113,7 +1113,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
@@ -1128,7 +1128,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(
@@ -1154,7 +1154,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(
@@ -1183,7 +1183,7 @@ describe('Selection strategies test suite', () => {
   it('Verify FAIR_SHARE strategy can be run in a fixed pool', async () => {
     const pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
     )
     // TODO: Create a better test to cover `FairShareChoiceStrategy#choose`
@@ -1268,7 +1268,7 @@ describe('Selection strategies test suite', () => {
     const pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
     )
     // TODO: Create a better test to cover `FairShareChoiceStrategy#choose`
@@ -1353,7 +1353,7 @@ describe('Selection strategies test suite', () => {
     const pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       {
         workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE,
         workerChoiceStrategyOptions: {
@@ -1443,7 +1443,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     for (const workerNode of pool.workerNodes) {
       workerNode.strategyData = {
@@ -1458,7 +1458,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     for (const workerNode of pool.workerNodes) {
       workerNode.strategyData = {
@@ -1477,7 +1477,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
@@ -1488,7 +1488,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
@@ -1503,7 +1503,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(
@@ -1529,7 +1529,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(
@@ -1558,7 +1558,7 @@ describe('Selection strategies test suite', () => {
   it('Verify WEIGHTED_ROUND_ROBIN strategy can be run in a fixed pool', async () => {
     const pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
     )
     // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
@@ -1636,7 +1636,7 @@ describe('Selection strategies test suite', () => {
     const pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN }
     )
     // TODO: Create a better test to cover `WeightedRoundRobinWorkerChoiceStrategy#choose`
@@ -1714,7 +1714,7 @@ describe('Selection strategies test suite', () => {
     const pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       {
         workerChoiceStrategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN,
         workerChoiceStrategyOptions: {
@@ -1797,7 +1797,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1844,7 +1844,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -1896,7 +1896,7 @@ describe('Selection strategies test suite', () => {
       WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
@@ -1907,7 +1907,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategyContext.getStrategyPolicy()).toStrictEqual({
@@ -1923,7 +1923,7 @@ describe('Selection strategies test suite', () => {
       WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(
@@ -1949,7 +1949,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
     expect(
@@ -1978,7 +1978,7 @@ describe('Selection strategies test suite', () => {
   it('Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy can be run in a fixed pool', async () => {
     const pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       {
         workerChoiceStrategy:
           WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
@@ -2063,7 +2063,7 @@ describe('Selection strategies test suite', () => {
     const pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       {
         workerChoiceStrategy:
           WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
@@ -2149,7 +2149,7 @@ describe('Selection strategies test suite', () => {
       WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
     let pool = new FixedThreadPool(
       max,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -2220,7 +2220,7 @@ describe('Selection strategies test suite', () => {
     pool = new DynamicThreadPool(
       min,
       max,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
@@ -2297,7 +2297,7 @@ describe('Selection strategies test suite', () => {
         new DynamicThreadPool(
           min,
           max,
-          './tests/worker-files/thread/testWorker.js',
+          './tests/worker-files/thread/testWorker.mjs',
           { workerChoiceStrategy: 'UNKNOWN_STRATEGY' }
         )
     ).toThrowError("Invalid worker choice strategy 'UNKNOWN_STRATEGY'")

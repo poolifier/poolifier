@@ -1,7 +1,8 @@
-const { EventEmitterAsyncResource } = require('node:events')
-const { expect } = require('expect')
-const sinon = require('sinon')
-const {
+import { EventEmitterAsyncResource } from 'node:events'
+import { readFileSync } from 'node:fs'
+import { expect } from 'expect'
+import { restore, stub } from 'sinon'
+import {
   DynamicClusterPool,
   DynamicThreadPool,
   FixedClusterPool,
@@ -10,15 +11,15 @@ const {
   PoolTypes,
   WorkerChoiceStrategies,
   WorkerTypes
-} = require('../../lib')
-const { CircularArray } = require('../../lib/circular-array')
-const { Deque } = require('../../lib/deque')
-const { DEFAULT_TASK_NAME } = require('../../lib/utils')
-const { version } = require('../../package.json')
-const { waitPoolEvents } = require('../test-utils')
-const { WorkerNode } = require('../../lib/pools/worker-node')
+} from '../../lib/index.js'
+import { CircularArray } from '../../lib/circular-array.js'
+import { Deque } from '../../lib/deque.js'
+import { DEFAULT_TASK_NAME } from '../../lib/utils.js'
+import { waitPoolEvents } from '../test-utils.js'
+import { WorkerNode } from '../../lib/pools/worker-node.js'
 
 describe('Abstract pool test suite', () => {
+  const version = JSON.parse(readFileSync('./package.json', 'utf8')).version
   const numberOfWorkers = 2
   class StubPoolWithIsMain extends FixedThreadPool {
     isMain () {
@@ -27,7 +28,7 @@ describe('Abstract pool test suite', () => {
   }
 
   afterEach(() => {
-    sinon.restore()
+    restore()
   })
 
   it('Simulate pool creation from a non main thread/process', () => {
@@ -35,7 +36,7 @@ describe('Abstract pool test suite', () => {
       () =>
         new StubPoolWithIsMain(
           numberOfWorkers,
-          './tests/worker-files/thread/testWorker.js',
+          './tests/worker-files/thread/testWorker.mjs',
           {
             errorHandler: e => console.error(e)
           }
@@ -50,7 +51,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool statuses properties are set', async () => {
     const pool = new FixedThreadPool(
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     expect(pool.starting).toBe(false)
     expect(pool.started).toBe(true)
@@ -83,7 +84,7 @@ describe('Abstract pool test suite', () => {
       () =>
         new FixedThreadPool(
           undefined,
-          './tests/worker-files/thread/testWorker.js'
+          './tests/worker-files/thread/testWorker.mjs'
         )
     ).toThrowError(
       new Error(
@@ -106,7 +107,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that a non integer number of workers is checked', () => {
     expect(
       () =>
-        new FixedThreadPool(0.25, './tests/worker-files/thread/testWorker.js')
+        new FixedThreadPool(0.25, './tests/worker-files/thread/testWorker.mjs')
     ).toThrowError(
       new TypeError(
         'Cannot instantiate a pool with a non safe integer number of workers'
@@ -132,7 +133,7 @@ describe('Abstract pool test suite', () => {
         new DynamicThreadPool(
           0.5,
           1,
-          './tests/worker-files/thread/testWorker.js'
+          './tests/worker-files/thread/testWorker.mjs'
         )
     ).toThrowError(
       new TypeError(
@@ -153,7 +154,11 @@ describe('Abstract pool test suite', () => {
     )
     expect(
       () =>
-        new DynamicThreadPool(2, 1, './tests/worker-files/thread/testWorker.js')
+        new DynamicThreadPool(
+          2,
+          1,
+          './tests/worker-files/thread/testWorker.mjs'
+        )
     ).toThrowError(
       new RangeError(
         'Cannot instantiate a dynamic pool with a maximum pool size inferior to the minimum pool size'
@@ -161,7 +166,11 @@ describe('Abstract pool test suite', () => {
     )
     expect(
       () =>
-        new DynamicThreadPool(0, 0, './tests/worker-files/thread/testWorker.js')
+        new DynamicThreadPool(
+          0,
+          0,
+          './tests/worker-files/thread/testWorker.mjs'
+        )
     ).toThrowError(
       new RangeError(
         'Cannot instantiate a dynamic pool with a maximum pool size equal to zero'
@@ -184,7 +193,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool options are checked', async () => {
     let pool = new FixedThreadPool(
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     expect(pool.emitter).toBeInstanceOf(EventEmitterAsyncResource)
     expect(pool.opts).toStrictEqual({
@@ -219,7 +228,7 @@ describe('Abstract pool test suite', () => {
     const testHandler = () => console.info('test handler executed')
     pool = new FixedThreadPool(
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       {
         workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
         workerChoiceStrategyOptions: {
@@ -286,7 +295,7 @@ describe('Abstract pool test suite', () => {
       () =>
         new FixedThreadPool(
           numberOfWorkers,
-          './tests/worker-files/thread/testWorker.js',
+          './tests/worker-files/thread/testWorker.mjs',
           {
             workerChoiceStrategy: 'invalidStrategy'
           }
@@ -298,7 +307,7 @@ describe('Abstract pool test suite', () => {
       () =>
         new FixedThreadPool(
           numberOfWorkers,
-          './tests/worker-files/thread/testWorker.js',
+          './tests/worker-files/thread/testWorker.mjs',
           {
             workerChoiceStrategyOptions: {
               retries: 'invalidChoiceRetries'
@@ -314,7 +323,7 @@ describe('Abstract pool test suite', () => {
       () =>
         new FixedThreadPool(
           numberOfWorkers,
-          './tests/worker-files/thread/testWorker.js',
+          './tests/worker-files/thread/testWorker.mjs',
           {
             workerChoiceStrategyOptions: {
               retries: -1
@@ -330,7 +339,7 @@ describe('Abstract pool test suite', () => {
       () =>
         new FixedThreadPool(
           numberOfWorkers,
-          './tests/worker-files/thread/testWorker.js',
+          './tests/worker-files/thread/testWorker.mjs',
           {
             workerChoiceStrategyOptions: { weights: {} }
           }
@@ -344,7 +353,7 @@ describe('Abstract pool test suite', () => {
       () =>
         new FixedThreadPool(
           numberOfWorkers,
-          './tests/worker-files/thread/testWorker.js',
+          './tests/worker-files/thread/testWorker.mjs',
           {
             workerChoiceStrategyOptions: { measurement: 'invalidMeasurement' }
           }
@@ -358,7 +367,7 @@ describe('Abstract pool test suite', () => {
       () =>
         new FixedThreadPool(
           numberOfWorkers,
-          './tests/worker-files/thread/testWorker.js',
+          './tests/worker-files/thread/testWorker.mjs',
           {
             enableTasksQueue: true,
             tasksQueueOptions: 'invalidTasksQueueOptions'
@@ -371,7 +380,7 @@ describe('Abstract pool test suite', () => {
       () =>
         new FixedThreadPool(
           numberOfWorkers,
-          './tests/worker-files/thread/testWorker.js',
+          './tests/worker-files/thread/testWorker.mjs',
           {
             enableTasksQueue: true,
             tasksQueueOptions: { concurrency: 0 }
@@ -386,7 +395,7 @@ describe('Abstract pool test suite', () => {
       () =>
         new FixedThreadPool(
           numberOfWorkers,
-          './tests/worker-files/thread/testWorker.js',
+          './tests/worker-files/thread/testWorker.mjs',
           {
             enableTasksQueue: true,
             tasksQueueOptions: { concurrency: -1 }
@@ -401,7 +410,7 @@ describe('Abstract pool test suite', () => {
       () =>
         new FixedThreadPool(
           numberOfWorkers,
-          './tests/worker-files/thread/testWorker.js',
+          './tests/worker-files/thread/testWorker.mjs',
           {
             enableTasksQueue: true,
             tasksQueueOptions: { concurrency: 0.2 }
@@ -414,7 +423,7 @@ describe('Abstract pool test suite', () => {
       () =>
         new FixedThreadPool(
           numberOfWorkers,
-          './tests/worker-files/thread/testWorker.js',
+          './tests/worker-files/thread/testWorker.mjs',
           {
             enableTasksQueue: true,
             tasksQueueOptions: { size: 0 }
@@ -429,7 +438,7 @@ describe('Abstract pool test suite', () => {
       () =>
         new FixedThreadPool(
           numberOfWorkers,
-          './tests/worker-files/thread/testWorker.js',
+          './tests/worker-files/thread/testWorker.mjs',
           {
             enableTasksQueue: true,
             tasksQueueOptions: { size: -1 }
@@ -444,7 +453,7 @@ describe('Abstract pool test suite', () => {
       () =>
         new FixedThreadPool(
           numberOfWorkers,
-          './tests/worker-files/thread/testWorker.js',
+          './tests/worker-files/thread/testWorker.mjs',
           {
             enableTasksQueue: true,
             tasksQueueOptions: { size: 0.2 }
@@ -458,7 +467,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool worker choice strategy options can be set', async () => {
     const pool = new FixedThreadPool(
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
     )
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
@@ -632,7 +641,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool tasks queue can be enabled/disabled', async () => {
     const pool = new FixedThreadPool(
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     expect(pool.opts.enableTasksQueue).toBe(false)
     expect(pool.opts.tasksQueueOptions).toBeUndefined()
@@ -677,7 +686,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool tasks queue options can be set', async () => {
     const pool = new FixedThreadPool(
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       { enableTasksQueue: true }
     )
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
@@ -767,7 +776,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool info is set', async () => {
     let pool = new FixedThreadPool(
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     expect(pool.info).toStrictEqual({
       version,
@@ -860,7 +869,7 @@ describe('Abstract pool test suite', () => {
     pool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     for (const workerNode of pool.workerNodes) {
       expect(workerNode).toBeInstanceOf(WorkerNode)
@@ -889,7 +898,7 @@ describe('Abstract pool test suite', () => {
     pool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     for (const workerNode of pool.workerNodes) {
       expect(workerNode).toBeInstanceOf(WorkerNode)
@@ -1020,7 +1029,7 @@ describe('Abstract pool test suite', () => {
     const pool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     const promises = new Set()
     const maxMultiplier = 2
@@ -1134,7 +1143,7 @@ describe('Abstract pool test suite', () => {
   it("Verify that pool event emitter 'busy' event can register a callback", async () => {
     const pool = new FixedThreadPool(
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     expect(pool.emitter.eventNames()).toStrictEqual([])
     const promises = new Set()
@@ -1175,7 +1184,7 @@ describe('Abstract pool test suite', () => {
     const pool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     expect(pool.emitter.eventNames()).toStrictEqual([])
     const promises = new Set()
@@ -1213,12 +1222,12 @@ describe('Abstract pool test suite', () => {
   it("Verify that pool event emitter 'backPressure' event can register a callback", async () => {
     const pool = new FixedThreadPool(
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js',
+      './tests/worker-files/thread/testWorker.mjs',
       {
         enableTasksQueue: true
       }
     )
-    sinon.stub(pool, 'hasBackPressure').returns(true)
+    stub(pool, 'hasBackPressure').returns(true)
     expect(pool.emitter.eventNames()).toStrictEqual([])
     const promises = new Set()
     let poolBackPressure = 0
@@ -1261,7 +1270,7 @@ describe('Abstract pool test suite', () => {
     const dynamicThreadPool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/thread/testMultipleTaskFunctionsWorker.js'
+      './tests/worker-files/thread/testMultipleTaskFunctionsWorker.mjs'
     )
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
     expect(dynamicThreadPool.hasTaskFunction(DEFAULT_TASK_NAME)).toBe(true)
@@ -1291,7 +1300,7 @@ describe('Abstract pool test suite', () => {
     const dynamicThreadPool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
     await expect(
@@ -1362,7 +1371,7 @@ describe('Abstract pool test suite', () => {
     const dynamicThreadPool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.js'
+      './tests/worker-files/thread/testWorker.mjs'
     )
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
     expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
@@ -1403,7 +1412,7 @@ describe('Abstract pool test suite', () => {
     const dynamicThreadPool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/thread/testMultipleTaskFunctionsWorker.js'
+      './tests/worker-files/thread/testMultipleTaskFunctionsWorker.mjs'
     )
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
     expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
@@ -1431,7 +1440,7 @@ describe('Abstract pool test suite', () => {
     const dynamicThreadPool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/thread/testMultipleTaskFunctionsWorker.js'
+      './tests/worker-files/thread/testMultipleTaskFunctionsWorker.mjs'
     )
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
     await expect(

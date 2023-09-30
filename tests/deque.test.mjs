@@ -1,5 +1,5 @@
-const { expect } = require('expect')
-const { Deque } = require('../lib/deque')
+import { expect } from 'expect'
+import { Deque } from '../lib/deque.js'
 
 describe('Deque test suite', () => {
   it('Verify push() behavior', () => {

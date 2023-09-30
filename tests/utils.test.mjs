@@ -1,9 +1,9 @@
-const { randomInt } = require('node:crypto')
-const { Worker } = require('node:worker_threads')
-const cluster = require('node:cluster')
-const os = require('node:os')
-const { expect } = require('expect')
-const {
+import { Worker } from 'node:worker_threads'
+import cluster from 'node:cluster'
+import os from 'node:os'
+import { randomInt } from 'node:crypto'
+import { expect } from 'expect'
+import {
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   DEFAULT_TASK_NAME,
   DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
@@ -11,8 +11,8 @@ const {
   availableParallelism,
   average,
   exponentialDelay,
-  getWorkerType,
   getWorkerId,
+  getWorkerType,
   isAsyncFunction,
   isKillBehavior,
   isPlainObject,
@@ -22,8 +22,8 @@ const {
   round,
   secureRandom,
   sleep
-} = require('../lib/utils')
-const { KillBehaviors, WorkerTypes } = require('../lib')
+} from '../lib/utils.js'
+import { KillBehaviors, WorkerTypes } from '../lib/index.js'
 
 describe('Utils test suite', () => {
   it('Verify DEFAULT_TASK_NAME value', () => {
@@ -66,13 +66,15 @@ describe('Utils test suite', () => {
 
   it('Verify getWorkerType() behavior', () => {
     expect(
-      getWorkerType(new Worker('./tests/worker-files/thread/testWorker.js'))
+      getWorkerType(new Worker('./tests/worker-files/thread/testWorker.mjs'))
     ).toBe(WorkerTypes.thread)
     expect(getWorkerType(cluster.fork())).toBe(WorkerTypes.cluster)
   })
 
   it('Verify getWorkerId() behavior', () => {
-    const threadWorker = new Worker('./tests/worker-files/thread/testWorker.js')
+    const threadWorker = new Worker(
+      './tests/worker-files/thread/testWorker.mjs'
+    )
     const clusterWorker = cluster.fork()
     expect(getWorkerId(threadWorker)).toBe(threadWorker.threadId)
     expect(getWorkerId(clusterWorker)).toBe(clusterWorker.id)

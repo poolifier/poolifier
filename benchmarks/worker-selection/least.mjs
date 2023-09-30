@@ -1,5 +1,5 @@
 import Benchmark from 'benchmark'
-import { LIST_FORMATTER, generateRandomInteger } from '../benchmarks-utils.mjs'
+import { LIST_FORMATTER, generateRandomInteger } from '../benchmarks-utils.js'
 
 function generateRandomTasksMap (
   numberOfWorkers,

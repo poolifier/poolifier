@@ -1,5 +1,5 @@
 import Benchmark from 'benchmark'
-import { LIST_FORMATTER } from '../benchmarks-utils.mjs'
+import { LIST_FORMATTER } from '../benchmarks-utils.js'
 
 function generateWorkersArray (numberOfWorkers) {
   return [...Array(numberOfWorkers).keys()]

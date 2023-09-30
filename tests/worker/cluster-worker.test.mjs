@@ -1,5 +1,5 @@
-const { expect } = require('expect')
-const { ClusterWorker } = require('../../lib')
+import { expect } from 'expect'
+import { ClusterWorker } from '../../lib/index.js'
 
 describe('Cluster worker test suite', () => {
   let numberOfMessagesSent = 0

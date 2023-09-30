@@ -1,10 +1,8 @@
-const { expect } = require('expect')
-const sinon = require('sinon')
-const { FixedThreadPool } = require('../../../lib')
-const {
-  WeightedRoundRobinWorkerChoiceStrategy
-} = require('../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy')
-const { generateRandomInteger } = require('../../test-utils')
+import { expect } from 'expect'
+import { restore } from 'sinon'
+import { FixedThreadPool } from '../../../lib/index.js'
+import { WeightedRoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy.js'
+import { generateRandomInteger } from '../../test-utils.js'
 
 describe('Weighted round robin strategy worker choice strategy test suite', () => {
   // const min = 1
@@ -12,11 +10,14 @@ describe('Weighted round robin strategy worker choice strategy test suite', () =
   let pool
 
   before(() => {
-    pool = new FixedThreadPool(max, './tests/worker-files/thread/testWorker.js')
+    pool = new FixedThreadPool(
+      max,
+      './tests/worker-files/thread/testWorker.mjs'
+    )
   })
 
   afterEach(() => {
-    sinon.restore()
+    restore()
   })
 
   after(async () => {

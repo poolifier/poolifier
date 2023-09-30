@@ -1,7 +1,7 @@
-const { expect } = require('expect')
-const { DynamicClusterPool, PoolEvents } = require('../../../lib')
-const { TaskFunctions } = require('../../test-types')
-const { sleep, waitWorkerEvents } = require('../../test-utils')
+import { expect } from 'expect'
+import { DynamicClusterPool, PoolEvents } from '../../../lib/index.js'
+import { TaskFunctions } from '../../test-types.js'
+import { sleep, waitWorkerEvents } from '../../test-utils.js'
 
 describe('Dynamic cluster pool test suite', () => {
   const min = 1

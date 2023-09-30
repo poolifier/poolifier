@@ -1,8 +1,8 @@
-import crypto from 'node:crypto'
-import assert from 'node:assert'
-import fs from 'node:fs'
-import Benchmark from 'benchmark'
-import {
+const crypto = require('node:crypto')
+const assert = require('node:assert')
+const fs = require('node:fs')
+const Benchmark = require('benchmark')
+const {
   DynamicClusterPool,
   DynamicThreadPool,
   FixedClusterPool,
@@ -11,15 +11,10 @@ import {
   PoolTypes,
   WorkerChoiceStrategies,
   WorkerTypes
-} from '../lib/index.mjs'
-import { TaskFunctions } from './benchmarks-types.mjs'
+} = require('../lib/index.js')
+const { TaskFunctions } = require('./benchmarks-types.js')
 
-export const buildPoolifierPool = (
-  workerType,
-  poolType,
-  poolSize,
-  poolOptions
-) => {
+const buildPoolifierPool = (workerType, poolType, poolSize, poolOptions) => {
   switch (poolType) {
     case PoolTypes.fixed:
       switch (workerType) {
@@ -32,7 +27,7 @@ export const buildPoolifierPool = (
         case WorkerTypes.cluster:
           return new FixedClusterPool(
             poolSize,
-            './benchmarks/internal/cluster-worker.mjs',
+            './benchmarks/internal/cluster-worker.js',
             poolOptions
           )
       }
@@ -50,7 +45,7 @@ export const buildPoolifierPool = (
           return new DynamicClusterPool(
             Math.floor(poolSize / 2),
             poolSize,
-            './benchmarks/internal/cluster-worker.mjs',
+            './benchmarks/internal/cluster-worker.js',
             poolOptions
           )
       }
@@ -58,10 +53,7 @@ export const buildPoolifierPool = (
   }
 }
 
-export const runPoolifierPool = async (
-  pool,
-  { taskExecutions, workerData }
-) => {
+const runPoolifierPool = async (pool, { taskExecutions, workerData }) => {
   return await new Promise((resolve, reject) => {
     let executions = 0
     for (let i = 1; i <= taskExecutions; i++) {
@@ -82,7 +74,7 @@ export const runPoolifierPool = async (
   })
 }
 
-export const runPoolifierPoolBenchmark = async (
+const runPoolifierPoolBenchmark = async (
   name,
   pool,
   { taskExecutions, workerData }
@@ -168,15 +160,12 @@ export const runPoolifierPoolBenchmark = async (
   })
 }
 
-export const LIST_FORMATTER = new Intl.ListFormat('en-US', {
+const LIST_FORMATTER = new Intl.ListFormat('en-US', {
   style: 'long',
   type: 'conjunction'
 })
 
-export const generateRandomInteger = (
-  max = Number.MAX_SAFE_INTEGER,
-  min = 0
-) => {
+const generateRandomInteger = (max = Number.MAX_SAFE_INTEGER, min = 0) => {
   if (max < min || max < 0 || min < 0) {
     throw new RangeError('Invalid interval')
   }
@@ -242,7 +231,7 @@ const readWriteFiles = (
   return { ok: 1 }
 }
 
-export const executeTaskFunction = data => {
+const executeTaskFunction = data => {
   switch (data.function) {
     case TaskFunctions.jsonIntegerSerialization:
       return jsonIntegerSerialization(data.taskSize || 1000)
@@ -255,4 +244,12 @@ export const executeTaskFunction = data => {
     default:
       throw new Error('Unknown task function')
   }
+}
+
+module.exports = {
+  LIST_FORMATTER,
+  buildPoolifierPool,
+  executeTaskFunction,
+  generateRandomInteger,
+  runPoolifierPoolBenchmark
 }

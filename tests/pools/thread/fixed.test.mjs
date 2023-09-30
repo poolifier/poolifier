@@ -1,22 +1,22 @@
-const { expect } = require('expect')
-const { FixedClusterPool, PoolEvents } = require('../../../lib')
-const { TaskFunctions } = require('../../test-types')
-const { waitPoolEvents, waitWorkerEvents } = require('../../test-utils')
-const { DEFAULT_TASK_NAME } = require('../../../lib/utils')
+import { expect } from 'expect'
+import { FixedThreadPool, PoolEvents } from '../../../lib/index.js'
+import { TaskFunctions } from '../../test-types.js'
+import { waitPoolEvents, waitWorkerEvents } from '../../test-utils.js'
+import { DEFAULT_TASK_NAME } from '../../../lib/utils.js'
 
-describe('Fixed cluster pool test suite', () => {
-  const numberOfWorkers = 8
+describe('Fixed thread pool test suite', () => {
+  const numberOfThreads = 6
   const tasksConcurrency = 2
-  const pool = new FixedClusterPool(
-    numberOfWorkers,
-    './tests/worker-files/cluster/testWorker.js',
+  const pool = new FixedThreadPool(
+    numberOfThreads,
+    './tests/worker-files/thread/testWorker.mjs',
     {
       errorHandler: e => console.error(e)
     }
   )
-  const queuePool = new FixedClusterPool(
-    numberOfWorkers,
-    './tests/worker-files/cluster/testWorker.js',
+  const queuePool = new FixedThreadPool(
+    numberOfThreads,
+    './tests/worker-files/thread/testWorker.mjs',
     {
       enableTasksQueue: true,
       tasksQueueOptions: {
@@ -25,32 +25,32 @@ describe('Fixed cluster pool test suite', () => {
       errorHandler: e => console.error(e)
     }
   )
-  const emptyPool = new FixedClusterPool(
-    numberOfWorkers,
-    './tests/worker-files/cluster/emptyWorker.js',
+  const emptyPool = new FixedThreadPool(
+    numberOfThreads,
+    './tests/worker-files/thread/emptyWorker.mjs',
     { exitHandler: () => console.info('empty pool worker exited') }
   )
-  const echoPool = new FixedClusterPool(
-    numberOfWorkers,
-    './tests/worker-files/cluster/echoWorker.js'
+  const echoPool = new FixedThreadPool(
+    numberOfThreads,
+    './tests/worker-files/thread/echoWorker.mjs'
   )
-  const errorPool = new FixedClusterPool(
-    numberOfWorkers,
-    './tests/worker-files/cluster/errorWorker.js',
+  const errorPool = new FixedThreadPool(
+    numberOfThreads,
+    './tests/worker-files/thread/errorWorker.mjs',
     {
       errorHandler: e => console.error(e)
     }
   )
-  const asyncErrorPool = new FixedClusterPool(
-    numberOfWorkers,
-    './tests/worker-files/cluster/asyncErrorWorker.js',
+  const asyncErrorPool = new FixedThreadPool(
+    numberOfThreads,
+    './tests/worker-files/thread/asyncErrorWorker.mjs',
     {
       errorHandler: e => console.error(e)
     }
   )
-  const asyncPool = new FixedClusterPool(
-    numberOfWorkers,
-    './tests/worker-files/cluster/asyncWorker.js'
+  const asyncPool = new FixedThreadPool(
+    numberOfThreads,
+    './tests/worker-files/thread/asyncWorker.mjs'
   )
 
   after('Destroy all pools', async () => {
@@ -63,7 +63,7 @@ describe('Fixed cluster pool test suite', () => {
     await queuePool.destroy()
   })
 
-  it('Verify that the function is executed in a worker cluster', async () => {
+  it('Verify that the function is executed in a worker thread', async () => {
     let result = await pool.execute({
       function: TaskFunctions.fibonacci
     })
@@ -80,9 +80,9 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it("Verify that 'ready' event is emitted", async () => {
-    const pool = new FixedClusterPool(
-      numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js',
+    const pool = new FixedThreadPool(
+      numberOfThreads,
+      './tests/worker-files/thread/testWorker.mjs',
       {
         errorHandler: e => console.error(e)
       }
@@ -102,22 +102,22 @@ describe('Fixed cluster pool test suite', () => {
     let poolBusy = 0
     pool.emitter.on(PoolEvents.busy, () => ++poolBusy)
     expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.busy])
-    for (let i = 0; i < numberOfWorkers * 2; i++) {
+    for (let i = 0; i < numberOfThreads * 2; i++) {
       promises.add(pool.execute())
     }
     await Promise.all(promises)
     // The `busy` event is triggered when the number of submitted tasks at once reach the number of fixed pool workers.
-    // So in total numberOfWorkers + 1 times for a loop submitting up to numberOfWorkers * 2 tasks to the fixed pool.
-    expect(poolBusy).toBe(numberOfWorkers + 1)
+    // So in total numberOfThreads + 1 times for a loop submitting up to numberOfThreads * 2 tasks to the fixed pool.
+    expect(poolBusy).toBe(numberOfThreads + 1)
   })
 
   it('Verify that tasks queuing is working', async () => {
     const promises = new Set()
     const maxMultiplier = 3 // Must be greater than tasksConcurrency
-    for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
+    for (let i = 0; i < numberOfThreads * maxMultiplier; i++) {
       promises.add(queuePool.execute())
     }
-    expect(promises.size).toBe(numberOfWorkers * maxMultiplier)
+    expect(promises.size).toBe(numberOfThreads * maxMultiplier)
     for (const workerNode of queuePool.workerNodes) {
       expect(workerNode.usage.tasks.executing).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executing).toBeLessThanOrEqual(
@@ -134,14 +134,14 @@ describe('Fixed cluster pool test suite', () => {
     }
     expect(queuePool.info.executedTasks).toBe(0)
     expect(queuePool.info.executingTasks).toBe(
-      numberOfWorkers * queuePool.opts.tasksQueueOptions.concurrency
+      numberOfThreads * queuePool.opts.tasksQueueOptions.concurrency
     )
     expect(queuePool.info.queuedTasks).toBe(
-      numberOfWorkers *
+      numberOfThreads *
         (maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency)
     )
     expect(queuePool.info.maxQueuedTasks).toBe(
-      numberOfWorkers *
+      numberOfThreads *
         (maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency)
     )
     expect(queuePool.info.backPressure).toBe(false)
@@ -150,7 +150,7 @@ describe('Fixed cluster pool test suite', () => {
     for (const workerNode of queuePool.workerNodes) {
       expect(workerNode.usage.tasks.executing).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executing).toBeLessThanOrEqual(
-        numberOfWorkers * maxMultiplier
+        numberOfThreads * maxMultiplier
       )
       expect(workerNode.usage.tasks.executed).toBe(maxMultiplier)
       expect(workerNode.usage.tasks.queued).toBe(0)
@@ -159,14 +159,14 @@ describe('Fixed cluster pool test suite', () => {
       )
       expect(workerNode.usage.tasks.stolen).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.stolen).toBeLessThanOrEqual(
-        numberOfWorkers * maxMultiplier
+        numberOfThreads * maxMultiplier
       )
     }
-    expect(queuePool.info.executedTasks).toBe(numberOfWorkers * maxMultiplier)
+    expect(queuePool.info.executedTasks).toBe(numberOfThreads * maxMultiplier)
     expect(queuePool.info.backPressure).toBe(false)
     expect(queuePool.info.stolenTasks).toBeGreaterThanOrEqual(0)
     expect(queuePool.info.stolenTasks).toBeLessThanOrEqual(
-      numberOfWorkers * maxMultiplier
+      numberOfThreads * maxMultiplier
     )
   })
 
@@ -179,6 +179,32 @@ describe('Fixed cluster pool test suite', () => {
     const data = { f: 10 }
     const result = await echoPool.execute(data)
     expect(result).toStrictEqual(data)
+  })
+
+  it('Verify that transferable objects are sent to the worker correctly', async () => {
+    let error
+    let result
+    try {
+      result = await pool.execute(undefined, undefined, [
+        new ArrayBuffer(16),
+        new MessageChannel().port1
+      ])
+    } catch (e) {
+      error = e
+    }
+    expect(result).toStrictEqual({ ok: 1 })
+    expect(error).toBeUndefined()
+    try {
+      result = await pool.execute(undefined, undefined, [
+        new SharedArrayBuffer(16)
+      ])
+    } catch (e) {
+      error = e
+    }
+    expect(result).toStrictEqual({ ok: 1 })
+    expect(error).toStrictEqual(
+      new TypeError('Found invalid object in transferList')
+    )
   })
 
   it('Verify that error handling is working properly:sync', async () => {
@@ -196,11 +222,13 @@ describe('Fixed cluster pool test suite', () => {
       inError = e
     }
     expect(inError).toBeDefined()
-    expect(typeof inError === 'string').toBe(true)
-    expect(inError).toBe('Error Message from ClusterWorker')
+    expect(inError).toBeInstanceOf(Error)
+    expect(inError.message).toBeDefined()
+    expect(typeof inError.message === 'string').toBe(true)
+    expect(inError.message).toBe('Error Message from ThreadWorker')
     expect(taskError).toStrictEqual({
       name: DEFAULT_TASK_NAME,
-      message: 'Error Message from ClusterWorker',
+      message: new Error('Error Message from ThreadWorker'),
       data
     })
     expect(
@@ -227,11 +255,13 @@ describe('Fixed cluster pool test suite', () => {
       inError = e
     }
     expect(inError).toBeDefined()
-    expect(typeof inError === 'string').toBe(true)
-    expect(inError).toBe('Error Message from ClusterWorker:async')
+    expect(inError).toBeInstanceOf(Error)
+    expect(inError.message).toBeDefined()
+    expect(typeof inError.message === 'string').toBe(true)
+    expect(inError.message).toBe('Error Message from ThreadWorker:async')
     expect(taskError).toStrictEqual({
       name: DEFAULT_TASK_NAME,
-      message: 'Error Message from ClusterWorker:async',
+      message: new Error('Error Message from ThreadWorker:async'),
       data
     })
     expect(
@@ -251,7 +281,7 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it('Shutdown test', async () => {
-    const exitPromise = waitWorkerEvents(pool, 'exit', numberOfWorkers)
+    const exitPromise = waitWorkerEvents(pool, 'exit', numberOfThreads)
     expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.busy])
     let poolDestroy = 0
     pool.emitter.on(PoolEvents.destroy, () => ++poolDestroy)
@@ -263,36 +293,31 @@ describe('Fixed cluster pool test suite', () => {
     const numberOfExitEvents = await exitPromise
     expect(pool.started).toBe(false)
     expect(pool.workerNodes.length).toBe(0)
-    expect(numberOfExitEvents).toBe(numberOfWorkers)
+    expect(numberOfExitEvents).toBe(numberOfThreads)
     expect(poolDestroy).toBe(1)
   })
 
-  it('Verify that cluster pool options are checked', async () => {
-    const workerFilePath = './tests/worker-files/cluster/testWorker.js'
-    let pool = new FixedClusterPool(numberOfWorkers, workerFilePath)
-    expect(pool.opts.env).toBeUndefined()
-    expect(pool.opts.settings).toBeUndefined()
+  it('Verify that thread pool options are checked', async () => {
+    const workerFilePath = './tests/worker-files/thread/testWorker.mjs'
+    let pool = new FixedThreadPool(numberOfThreads, workerFilePath)
+    expect(pool.opts.workerOptions).toBeUndefined()
     await pool.destroy()
-    pool = new FixedClusterPool(numberOfWorkers, workerFilePath, {
+    pool = new FixedThreadPool(numberOfThreads, workerFilePath, {
+      workerOptions: {
+        env: { TEST: 'test' },
+        name: 'test'
+      }
+    })
+    expect(pool.opts.workerOptions).toStrictEqual({
       env: { TEST: 'test' },
-      settings: { args: ['--use', 'http'], silent: true }
-    })
-    expect(pool.opts.env).toStrictEqual({ TEST: 'test' })
-    expect(pool.opts.settings).toStrictEqual({
-      args: ['--use', 'http'],
-      silent: true
-    })
-    expect({ ...pool.opts.settings, exec: workerFilePath }).toStrictEqual({
-      args: ['--use', 'http'],
-      silent: true,
-      exec: workerFilePath
+      name: 'test'
     })
     await pool.destroy()
   })
 
   it('Should work even without opts in input', async () => {
-    const workerFilePath = './tests/worker-files/cluster/testWorker.js'
-    const pool = new FixedClusterPool(numberOfWorkers, workerFilePath)
+    const workerFilePath = './tests/worker-files/thread/testWorker.mjs'
+    const pool = new FixedThreadPool(numberOfThreads, workerFilePath)
     const res = await pool.execute()
     expect(res).toStrictEqual({ ok: 1 })
     // We need to clean up the resources after our test
@@ -300,28 +325,22 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it('Verify destroyWorkerNode()', async () => {
-    const workerFilePath = './tests/worker-files/cluster/testWorker.js'
-    const pool = new FixedClusterPool(numberOfWorkers, workerFilePath)
+    const workerFilePath = './tests/worker-files/thread/testWorker.mjs'
+    const pool = new FixedThreadPool(numberOfThreads, workerFilePath)
     const workerNodeKey = 0
-    let disconnectEvent = 0
-    pool.workerNodes[workerNodeKey].worker.on('disconnect', () => {
-      ++disconnectEvent
-    })
     let exitEvent = 0
     pool.workerNodes[workerNodeKey].worker.on('exit', () => {
       ++exitEvent
     })
     await expect(pool.destroyWorkerNode(workerNodeKey)).resolves.toBeUndefined()
-    expect(disconnectEvent).toBe(1)
     expect(exitEvent).toBe(1)
-    expect(pool.workerNodes.length).toBe(numberOfWorkers - 1)
+    expect(pool.workerNodes.length).toBe(numberOfThreads - 1)
     await pool.destroy()
   })
 
   it('Verify that a pool with zero worker fails', async () => {
     expect(
-      () =>
-        new FixedClusterPool(0, './tests/worker-files/cluster/testWorker.js')
+      () => new FixedThreadPool(0, './tests/worker-files/thread/testWorker.mjs')
     ).toThrowError('Cannot instantiate a fixed pool with zero worker')
   })
 })

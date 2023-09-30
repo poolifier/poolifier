@@ -1,7 +1,7 @@
-const { expect } = require('expect')
-const sinon = require('sinon')
-const { ClusterWorker, KillBehaviors, ThreadWorker } = require('../../lib')
-const { DEFAULT_TASK_NAME, EMPTY_FUNCTION } = require('../../lib/utils')
+import { expect } from 'expect'
+import { restore, stub } from 'sinon'
+import { ClusterWorker, KillBehaviors, ThreadWorker } from '../../lib/index.js'
+import { DEFAULT_TASK_NAME, EMPTY_FUNCTION } from '../../lib/utils.js'
 
 describe('Abstract worker test suite', () => {
   class StubWorkerWithMainWorker extends ThreadWorker {
@@ -12,7 +12,7 @@ describe('Abstract worker test suite', () => {
   }
 
   afterEach(() => {
-    sinon.restore()
+    restore()
   })
 
   it('Verify worker options default values', () => {
@@ -178,12 +178,12 @@ describe('Abstract worker test suite', () => {
 
   it('Verify that sync kill handler is called when worker is killed', () => {
     const worker = new ClusterWorker(() => {}, {
-      killHandler: sinon.stub().returns()
+      killHandler: stub().returns()
     })
     worker.isMain = false
-    worker.getMainWorker = sinon.stub().returns({
+    worker.getMainWorker = stub().returns({
       id: 1,
-      send: sinon.stub().returns()
+      send: stub().returns()
     })
     worker.handleKillMessage()
     expect(worker.getMainWorker().send.calledOnce).toBe(true)
@@ -191,7 +191,7 @@ describe('Abstract worker test suite', () => {
   })
 
   it('Verify that async kill handler is called when worker is killed', () => {
-    const killHandlerStub = sinon.stub().returns()
+    const killHandlerStub = stub().returns()
     const worker = new ClusterWorker(() => {}, {
       killHandler: async () => Promise.resolve(killHandlerStub())
     })
@@ -308,9 +308,9 @@ describe('Abstract worker test suite', () => {
       status: false,
       error: new TypeError('name parameter is an empty string')
     })
-    worker.getMainWorker = sinon.stub().returns({
+    worker.getMainWorker = stub().returns({
       id: 1,
-      send: sinon.stub().returns()
+      send: stub().returns()
     })
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)

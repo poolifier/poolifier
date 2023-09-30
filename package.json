@@ -22,8 +22,8 @@
     "benchmark": "pnpm build && node -r source-map-support/register benchmarks/internal/bench.mjs",
     "benchmark:debug": "pnpm build && node -r source-map-support/register --inspect benchmarks/internal/bench.mjs",
     "benchmark:prod": "pnpm build:prod && node benchmarks/internal/bench.mjs",
-    "test": "pnpm build --environment SOURCEMAP:false && c8 mocha 'tests/**/*.test.js'",
-    "test:debug": "pnpm build && mocha --no-parallel --inspect 'tests/**/*.test.js'",
+    "test": "pnpm build --environment SOURCEMAP:false && c8 mocha 'tests/**/*.test.mjs'",
+    "test:debug": "pnpm build && mocha --no-parallel --inspect 'tests/**/*.test.mjs'",
     "coverage": "c8 report --reporter=lcov",
     "coverage:html": "c8 report --reporter=html",
     "format": "biome format . --write; ts-standard . --fix",
@@ -42,7 +42,7 @@
     "pnpm": ">=8.6.0"
   },
   "volta": {
-    "node": "20.7.0",
+    "node": "20.8.0",
     "pnpm": "8.8.0"
   },
   "repository": {
@@ -108,7 +108,7 @@
     "@release-it/keep-a-changelog": "^4.0.0",
     "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.4",
-    "@types/node": "^20.7.1",
+    "@types/node": "^20.7.2",
     "@typescript-eslint/eslint-plugin": "^6.7.3",
     "@typescript-eslint/parser": "^6.7.3",
     "benchmark": "^2.1.4",
