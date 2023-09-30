@@ -22,7 +22,7 @@ const pool = new FixedClusterPool<WorkerData, WorkerResponse>(
               `Express is listening in cluster worker on port ${response?.port}`
             )
           }
-          return null
+          return undefined
         })
         .catch(error => {
           console.error('Express failed to start in cluster worker:', error)

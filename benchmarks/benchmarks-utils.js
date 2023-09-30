@@ -64,7 +64,7 @@ const runPoolifierPool = async (pool, { taskExecutions, workerData }) => {
           if (executions === taskExecutions) {
             resolve({ ok: 1 })
           }
-          return null
+          return undefined
         })
         .catch(err => {
           console.error(err)
@@ -151,6 +151,7 @@ const runPoolifierPoolBenchmark = async (
               LIST_FORMATTER.format(this.filter('fastest').map('name'))
           )
           await pool.destroy()
+          pool = undefined
           resolve()
         })
         .run({ async: true })

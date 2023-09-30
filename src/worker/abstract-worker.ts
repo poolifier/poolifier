@@ -374,7 +374,7 @@ export abstract class AbstractWorker<
       (this.opts.killHandler?.() as Promise<void>)
         .then(() => {
           this.sendToMainWorker({ kill: 'success' })
-          return null
+          return undefined
         })
         .catch(() => {
           this.sendToMainWorker({ kill: 'failure' })

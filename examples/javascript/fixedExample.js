@@ -30,7 +30,7 @@ for (let i = 1; i <= iterations; i++) {
         console.info(`The pool was busy for ${poolBusy} times`)
         return pool.destroy()
       }
-      return null
+      return undefined
     })
     .catch(err => console.error(err))
 }
