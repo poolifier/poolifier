@@ -23,7 +23,7 @@ import { WorkerNode } from '../../lib/pools/worker-node.js'
 describe('Abstract pool test suite', () => {
   const version = JSON.parse(
     readFileSync(
-      join(dirname(fileURLToPath(import.meta.url)), '../../package.json'),
+      join(dirname(fileURLToPath(import.meta.url)), '../..', 'package.json'),
       'utf8'
     )
   ).version
