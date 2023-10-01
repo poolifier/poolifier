@@ -27,7 +27,7 @@ jobs:
           node-version: '18.x'
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm install --ignore-scripts
+        run: pnpm install --ignore-scripts --frozen-lockfile
       - name: Run production benchmark
         run: pnpm benchmark:prod | tee ./benchmarks/internal/output.txt
       - name: Store production benchmark result

@@ -24,7 +24,7 @@ jobs:
 
       - name: Generate documentation
         run: |
-          pnpm install --ignore-scripts
+          pnpm install --ignore-scripts --frozen-lockfile
           pnpm typedoc
 
       - name: Commit files
