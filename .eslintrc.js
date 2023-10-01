@@ -150,7 +150,7 @@ module.exports = defineConfig({
       extends: ['plugin:n/recommended', 'plugin:jsdoc/recommended', 'standard']
     },
     {
-      files: ['tests/**/*.js'],
+      files: ['tests/**/*.js', 'tests/**/*.mjs'],
       rules: {
         'jsdoc/require-jsdoc': 'off'
       }
