@@ -71,10 +71,10 @@ package-lock.json
 
 # Project specifics
 .eslintcache
-.history/
 .scannerwork
 *.bak
 lib
 dist
 tmp
+.history/
 reports/
