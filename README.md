@@ -16,7 +16,7 @@
 [![Code Coverage](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=coverage)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=alert_status)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
 [![Javascript Standard Style Guide](<https://badgen.net/static/code style/standard/green>)](https://standardjs.com)
-[![Discord](https://badgen.net/discord/online-members/85VrP8m8?icon=discord&label=discord&color=green)](https://discord.gg/85VrP8m8)
+[![Discord](https://badgen.net/discord/online-members/vXxZhyb3b6?icon=discord&label=discord&color=green)](https://discord.gg/vXxZhyb3b6)
 [![Open Collective](https://opencollective.com/poolifier/tiers/badge.svg)](https://opencollective.com/poolifier)
 [![PRs Welcome](https://badgen.net/static/PRs/welcome/green)](http://makeapullrequest.com)
 [![No Dependencies](<https://badgen.net/static/dependencies/no dependencies/green>)](<https://badgen.net/static/dependencies/no dependencies/green>)
