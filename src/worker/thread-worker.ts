@@ -90,7 +90,10 @@ export class ThreadWorker<
     this.port.postMessage({ ...message, workerId: this.id })
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   * @override
+   */
   protected handleError (error: Error | string): string {
     return error as string
   }
