@@ -297,7 +297,7 @@ describe('Abstract pool test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify that pool options are validated', async () => {
+  it('Verify that pool options are validated', () => {
     expect(
       () =>
         new FixedThreadPool(
