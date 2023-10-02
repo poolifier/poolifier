@@ -1,17 +1,18 @@
 import { expect } from 'expect'
+import { restore, stub } from 'sinon'
 import { ThreadWorker } from '../../lib/index.js'
 
 describe('Thread worker test suite', () => {
-  let numberOfMessagesPosted = 0
-  const postMessage = () => {
-    ++numberOfMessagesPosted
-  }
   class SpyWorker extends ThreadWorker {
     constructor (fn) {
       super(fn)
-      this.port = { postMessage }
+      this.port = { postMessage: stub().returns() }
     }
   }
+
+  afterEach(() => {
+    restore()
+  })
 
   it('Verify that handleError() method is working properly', () => {
     const error = new Error('Error as an error')
@@ -25,6 +26,6 @@ describe('Thread worker test suite', () => {
   it('Verify worker invokes the postMessage() method on port property', () => {
     const worker = new SpyWorker(() => {})
     worker.sendToMainWorker({ ok: 1 })
-    expect(numberOfMessagesPosted).toBe(1)
+    expect(worker.port.postMessage.calledOnce).toBe(true)
   })
 })
