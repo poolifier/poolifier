@@ -12,6 +12,15 @@ describe('Cluster worker test suite', () => {
     }
   }
 
+  it('Verify that handleError() method is working properly', () => {
+    const error = new Error('Error as an error')
+    const worker = new ClusterWorker(() => {})
+    expect(worker.handleError(error)).not.toBeInstanceOf(Error)
+    expect(worker.handleError(error)).toStrictEqual(error.message)
+    const errorMessage = 'Error as a string'
+    expect(worker.handleError(errorMessage)).toStrictEqual(errorMessage)
+  })
+
   it('Verify worker invokes the getMainWorker() and send() methods', () => {
     const worker = new SpyWorker(() => {})
     worker.sendToMainWorker({ ok: 1 })
