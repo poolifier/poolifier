@@ -1,5 +1,4 @@
 import { expect } from 'expect'
-import { restore } from 'sinon'
 import { FixedThreadPool } from '../../../lib/index.js'
 import { WeightedRoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy.js'
 import { generateRandomInteger } from '../../test-utils.js'
@@ -14,10 +13,6 @@ describe('Weighted round robin strategy worker choice strategy test suite', () =
       max,
       './tests/worker-files/thread/testWorker.mjs'
     )
-  })
-
-  afterEach(() => {
-    restore()
   })
 
   after(async () => {
