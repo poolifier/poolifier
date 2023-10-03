@@ -4,7 +4,6 @@
     "target": "ES2022",
     "module": "ES2022",
     "moduleResolution": "Node",
-    "typeRoots": ["./node_modules/@types", "./@types"],
     "declaration": true,
     "declarationDir": "./lib/dts",
     "strict": true,

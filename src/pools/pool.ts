@@ -1,5 +1,5 @@
 import type { TransferListItem } from 'node:worker_threads'
-import type { EventEmitter, EventEmitterAsyncResource } from 'node:events'
+import type { EventEmitterAsyncResource } from 'node:events'
 import type { TaskFunction } from '../worker/task-functions'
 import type {
   ErrorHandler,
@@ -235,7 +235,7 @@ export interface IPool<
    * - `'taskError'`: Emitted when an error occurs while executing a task.
    * - `'backPressure'`: Emitted when all worker nodes have back pressure (i.e. their tasks queue is full: queue size \>= maximum queue size).
    */
-  readonly emitter?: EventEmitter | EventEmitterAsyncResource
+  readonly emitter?: EventEmitterAsyncResource
   /**
    * Executes the specified function in the worker constructor with the task data input parameter.
    *

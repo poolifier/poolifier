@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { performance } from 'node:perf_hooks'
 import type { TransferListItem } from 'node:worker_threads'
-import { type EventEmitter, EventEmitterAsyncResource } from 'node:events'
+import { EventEmitterAsyncResource } from 'node:events'
 import type {
   MessageValue,
   PromiseResponseWrapper,
@@ -70,7 +70,7 @@ export abstract class AbstractPool<
   public readonly workerNodes: Array<IWorkerNode<Worker, Data>> = []
 
   /** @inheritDoc */
-  public emitter?: EventEmitter | EventEmitterAsyncResource
+  public emitter?: EventEmitterAsyncResource
 
   /**
    * The task execution response promise map:
@@ -944,9 +944,7 @@ export abstract class AbstractPool<
       })
     )
     this.emitter?.emit(PoolEvents.destroy, this.info)
-    if (this.emitter instanceof EventEmitterAsyncResource) {
-      this.emitter?.emitDestroy()
-    }
+    this.emitter?.emitDestroy()
     this.started = false
   }
 
