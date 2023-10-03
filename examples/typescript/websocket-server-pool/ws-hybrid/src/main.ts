@@ -41,7 +41,7 @@ const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(
               `WebSocket server is listening in cluster worker on port ${response.port}`
             )
           }
-          return null
+          return undefined
         })
         .catch(error => {
           console.error(

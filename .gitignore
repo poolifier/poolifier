@@ -1,5 +1,4 @@
-### Git ###
-# Created by git for backups. To disable backups in Git:
+# Created by git for backups. To disable backups in git:
 # $ git config --global mergetool.keepBackup false
 *.orig
 
@@ -72,10 +71,10 @@ package-lock.json
 
 # Project specifics
 .eslintcache
-.history/
 .scannerwork
 *.bak
 lib
 dist
 tmp
+.history/
 reports/

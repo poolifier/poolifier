@@ -16,12 +16,12 @@
     "preinstall": "npx --yes only-allow pnpm",
     "prepare": "node prepare.js",
     "build": "rollup --config --environment BUILD:development",
-    "build:analyze": "rollup --config --environment ANALYZE,BUILD:development",
-    "build:typedoc": "rollup --config --environment DOCUMENTATION,BUILD:development",
     "build:prod": "rollup --config",
-    "benchmark": "pnpm build && node -r source-map-support/register benchmarks/internal/bench.mjs",
-    "benchmark:debug": "pnpm build && node -r source-map-support/register --inspect benchmarks/internal/bench.mjs",
-    "benchmark:prod": "pnpm build:prod && node benchmarks/internal/bench.mjs",
+    "build:typedoc": "rollup --config --environment DOCUMENTATION,BUILD:development",
+    "build:analyze": "rollup --config --environment ANALYZE,BUILD:development",
+    "benchmark": "pnpm build && node --max-old-space-size=4096 -r source-map-support/register benchmarks/internal/bench.mjs",
+    "benchmark:prod": "pnpm build:prod && node --max-old-space-size=4096 benchmarks/internal/bench.mjs",
+    "benchmark:debug": "pnpm build && node --max-old-space-size=4096 -r source-map-support/register --inspect benchmarks/internal/bench.mjs",
     "test": "pnpm build --environment SOURCEMAP:false && c8 mocha 'tests/**/*.test.mjs'",
     "test:debug": "pnpm build && mocha --no-parallel --inspect 'tests/**/*.test.mjs'",
     "coverage": "c8 report --reporter=lcov",
@@ -35,7 +35,7 @@
     "prepublishOnly": "pnpm build:prod"
   },
   "ts-standard": {
-    "globals": ["describe", "it", "before", "after", "beforeEach", "afterEach"]
+    "globals": ["describe", "it", "after", "before", "afterEach", "beforeEach"]
   },
   "engines": {
     "node": ">=16.14.0",

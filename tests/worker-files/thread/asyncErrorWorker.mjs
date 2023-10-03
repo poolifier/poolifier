@@ -4,6 +4,7 @@ import { sleepTaskFunction } from '../../test-utils.js'
 /**
  *
  * @param data
+ * @returns
  */
 async function error (data) {
   return sleepTaskFunction(

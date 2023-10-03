@@ -68,7 +68,7 @@ ClusterWorkerResponse
                     data: response.data
                   })
                 )
-                return null
+                return undefined
               })
               .catch(emptyFunction)
             break
@@ -82,7 +82,7 @@ ClusterWorkerResponse
                     data: response.data
                   })
                 )
-                return null
+                return undefined
               })
               .catch(emptyFunction)
             break

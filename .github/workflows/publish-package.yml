@@ -24,7 +24,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install Dependencies
-        run: pnpm install --ignore-scripts
+        run: pnpm install --ignore-scripts --frozen-lockfile
 
       - name: Tests & Coverage
         run: |
@@ -58,7 +58,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install Dependencies
-        run: pnpm install --ignore-scripts
+        run: pnpm install --ignore-scripts --frozen-lockfile
 
       - name: Read package.json version
         id: package-version
@@ -106,7 +106,7 @@ jobs:
   #         cache: 'pnpm'
 
   #     - name: Install Dependencies
-  #       run: pnpm install --ignore-scripts
+  #       run: pnpm install --ignore-scripts --frozen-lockfile
 
   #     - name: Read package.json version
   #       id: package-version

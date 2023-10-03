@@ -31,7 +31,7 @@ wss.on('connection', ws => {
                 data: response.data
               })
             )
-            return null
+            return undefined
           })
           .catch(emptyFunction)
         break
@@ -45,7 +45,7 @@ wss.on('connection', ws => {
                 data: response.data
               })
             )
-            return null
+            return undefined
           })
           .catch(emptyFunction)
         break

@@ -8,7 +8,7 @@ for example in $examples
 do
   echo -e "Building $example"
   cd $example
-  pnpm install --ignore-scripts
+  pnpm install --ignore-scripts --frozen-lockfile
   pnpm build
   cd -
 done

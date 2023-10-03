@@ -1,5 +1,7 @@
 import { EventEmitterAsyncResource } from 'node:events'
+import { dirname, join } from 'node:path'
 import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { expect } from 'expect'
 import { restore, stub } from 'sinon'
 import {
@@ -19,7 +21,12 @@ import { waitPoolEvents } from '../test-utils.js'
 import { WorkerNode } from '../../lib/pools/worker-node.js'
 
 describe('Abstract pool test suite', () => {
-  const version = JSON.parse(readFileSync('./package.json', 'utf8')).version
+  const version = JSON.parse(
+    readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '../..', 'package.json'),
+      'utf8'
+    )
+  ).version
   const numberOfWorkers = 2
   class StubPoolWithIsMain extends FixedThreadPool {
     isMain () {
@@ -290,7 +297,7 @@ describe('Abstract pool test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify that pool options are validated', async () => {
+  it('Verify that pool options are validated', () => {
     expect(
       () =>
         new FixedThreadPool(
