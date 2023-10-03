@@ -318,7 +318,7 @@ describe('Fixed cluster pool test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify that a pool with zero worker fails', async () => {
+  it('Verify that a pool with zero worker fails', () => {
     expect(
       () =>
         new FixedClusterPool(0, './tests/worker-files/cluster/testWorker.js')
