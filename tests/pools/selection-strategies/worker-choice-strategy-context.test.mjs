@@ -53,7 +53,7 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
-    const WorkerChoiceStrategyStub = createStubInstance(
+    const workerChoiceStrategyStub = createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
         choose: stub().returns(0)
@@ -64,7 +64,7 @@ describe('Worker choice strategy context test suite', () => {
     )
     workerChoiceStrategyContext.workerChoiceStrategies.set(
       workerChoiceStrategyContext.workerChoiceStrategy,
-      WorkerChoiceStrategyStub
+      workerChoiceStrategyStub
     )
     const chosenWorkerKey = workerChoiceStrategyContext.execute()
     expect(
@@ -79,13 +79,13 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
-    const WorkerChoiceStrategyUndefinedStub = createStubInstance(
+    const workerChoiceStrategyUndefinedStub = createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
         choose: stub().returns(undefined)
       }
     )
-    const WorkerChoiceStrategyNullStub = createStubInstance(
+    const workerChoiceStrategyNullStub = createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
         choose: stub().returns(null)
@@ -96,14 +96,14 @@ describe('Worker choice strategy context test suite', () => {
     )
     workerChoiceStrategyContext.workerChoiceStrategies.set(
       workerChoiceStrategyContext.workerChoiceStrategy,
-      WorkerChoiceStrategyUndefinedStub
+      workerChoiceStrategyUndefinedStub
     )
     expect(() => workerChoiceStrategyContext.execute()).toThrowError(
       new Error('Worker node key chosen is null or undefined after 6 retries')
     )
     workerChoiceStrategyContext.workerChoiceStrategies.set(
       workerChoiceStrategyContext.workerChoiceStrategy,
-      WorkerChoiceStrategyNullStub
+      workerChoiceStrategyNullStub
     )
     expect(() => workerChoiceStrategyContext.execute()).toThrowError(
       new Error('Worker node key chosen is null or undefined after 6 retries')
@@ -114,7 +114,7 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
     )
-    const WorkerChoiceStrategyStub = createStubInstance(
+    const workerChoiceStrategyStub = createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
         choose: stub().returns(0)
@@ -125,7 +125,7 @@ describe('Worker choice strategy context test suite', () => {
     )
     workerChoiceStrategyContext.workerChoiceStrategies.set(
       workerChoiceStrategyContext.workerChoiceStrategy,
-      WorkerChoiceStrategyStub
+      workerChoiceStrategyStub
     )
     const chosenWorkerKey = workerChoiceStrategyContext.execute()
     expect(

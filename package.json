@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "poolifier",
-  "version": "2.7.4",
+  "version": "2.7.5",
   "description": "Fast and small Node.js Worker_Threads and Cluster Worker Pool",
   "license": "MIT",
   "main": "./lib/index.js",
@@ -14,7 +14,7 @@
   },
   "scripts": {
     "preinstall": "npx --yes only-allow pnpm",
-    "prepare": "node prepare.js",
+    "prepare": "node prepare.mjs",
     "build": "rollup --config --environment BUILD:development",
     "build:prod": "rollup --config",
     "build:typedoc": "rollup --config --environment DOCUMENTATION,BUILD:development",

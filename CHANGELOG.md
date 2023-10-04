@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.5] - 2023-10-03
+
 ### Changed
 
 - Use `EventEmitterAsyncResource` type from `@types/node` for pool event emitter. TypeScript users will need to update to latest `@types/node` version.

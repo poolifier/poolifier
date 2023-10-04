@@ -179,7 +179,7 @@ describe('Abstract worker test suite', () => {
   it('Verify that async kill handler is called when worker is killed', () => {
     const killHandlerStub = stub().returns()
     const worker = new ClusterWorker(() => {}, {
-      killHandler: async () => Promise.resolve(killHandlerStub())
+      killHandler: async () => await Promise.resolve(killHandlerStub())
     })
     worker.isMain = false
     worker.handleKillMessage()

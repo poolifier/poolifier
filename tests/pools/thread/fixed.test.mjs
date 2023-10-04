@@ -338,7 +338,7 @@ describe('Fixed thread pool test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify that a pool with zero worker fails', async () => {
+  it('Verify that a pool with zero worker fails', () => {
     expect(
       () => new FixedThreadPool(0, './tests/worker-files/thread/testWorker.mjs')
     ).toThrowError('Cannot instantiate a fixed pool with zero worker')
