@@ -132,7 +132,21 @@ module.exports = defineConfig({
     {
       files: ['examples/typescript/**/*.ts'],
       rules: {
-        'import/no-unresolved': ['error', { ignore: ['^poolifier$'] }],
+        'import/no-unresolved': [
+          'error',
+          {
+            ignore: [
+              '^axios$',
+              '^express$',
+              '^fastify$',
+              '^fastify-plugin$',
+              '^node-fetch$',
+              '^nodemailer$',
+              '^poolifier$',
+              '^ws$'
+            ]
+          }
+        ],
         '@typescript-eslint/no-unsafe-argument': 'off',
         '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/no-unsafe-return': 'off',
