@@ -60,9 +60,6 @@ describe('Abstract worker test suite', () => {
     expect(() => new ThreadWorker(() => {}, { killHandler: 0 })).toThrowError(
       new TypeError('killHandler option is not a function')
     )
-    expect(() => new ThreadWorker(() => {}, { async: true })).toThrowError(
-      new TypeError('async option is deprecated')
-    )
   })
 
   it('Verify that worker options are set at worker creation', () => {

@@ -368,7 +368,7 @@ export abstract class AbstractWorker<
    *
    * @param message - The kill message.
    */
-  protected handleKillMessage (message: MessageValue<Data>): void {
+  protected handleKillMessage (_message: MessageValue<Data>): void {
     this.stopCheckActive()
     if (isAsyncFunction(this.opts.killHandler)) {
       (this.opts.killHandler?.() as Promise<void>)

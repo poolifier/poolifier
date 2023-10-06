@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
-        node: ['16.x', '18.x', '20.x']
+        node: ['18.x', '20.x']
 
     name: Node.js ${{ matrix.node }} on ${{ matrix.os }}
 
@@ -47,14 +47,14 @@ jobs:
         run: pnpm build
 
       - name: Lint
-        if: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '18.x' }}
+        if: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '20.x' }}
         run: pnpm lint
 
       - name: Tests
         run: pnpm test
 
       - name: Coverage Report
-        if: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '18.x' }}
+        if: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '20.x' }}
         run: pnpm coverage
 
       - name: Check for SonarCloud Token Availability
@@ -68,7 +68,7 @@ jobs:
           fi
 
       - name: SonarCloud Code Analysis
-        if: ${{ steps.sonar-token.outputs.available == 'true' && github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '18.x' }}
+        if: ${{ steps.sonar-token.outputs.available == 'true' && github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '20.x' }}
         uses: sonarsource/sonarcloud-github-action@v2.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

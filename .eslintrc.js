@@ -132,7 +132,21 @@ module.exports = defineConfig({
     {
       files: ['examples/typescript/**/*.ts'],
       rules: {
-        'import/no-unresolved': 'off',
+        'import/no-unresolved': [
+          'error',
+          {
+            ignore: [
+              '^axios$',
+              '^express$',
+              '^fastify$',
+              '^fastify-plugin$',
+              '^node-fetch$',
+              '^nodemailer$',
+              '^poolifier$',
+              '^ws$'
+            ]
+          }
+        ],
         '@typescript-eslint/no-unsafe-argument': 'off',
         '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/no-unsafe-return': 'off',
@@ -164,7 +178,6 @@ module.exports = defineConfig({
     {
       files: ['examples/javascript/**/*.js'],
       rules: {
-        'n/no-missing-require': 'off',
         'jsdoc/require-jsdoc': 'off'
       }
     }

@@ -165,7 +165,7 @@ Remember that workers can only send and receive structured-cloneable data.
 
 ## Node.js versions
 
-Node.js versions >= 16.14.x are supported.
+Node.js versions >= 18.x.x are supported.
 
 ## [API](./docs/api.md)
 

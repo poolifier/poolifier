@@ -28,9 +28,6 @@ export const checkValidWorkerOptions = (opts: WorkerOptions): void => {
   if (opts?.killHandler != null && typeof opts.killHandler !== 'function') {
     throw new TypeError('killHandler option is not a function')
   }
-  if (opts?.async != null) {
-    throw new Error('async option is deprecated')
-  }
 }
 
 export const checkValidTaskFunctionEntry = <Data = unknown, Response = unknown>(

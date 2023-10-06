@@ -12,13 +12,13 @@ dependencies:
     specifier: ^4.5.1
     version: 4.5.1
   poolifier:
-    specifier: ^2.7.4
-    version: 2.7.4
+    specifier: ^2.7.5
+    version: 2.7.5
 
 devDependencies:
   '@rollup/plugin-typescript':
-    specifier: ^11.1.4
-    version: 11.1.4(rollup@3.29.4)(tslib@2.6.2)(typescript@5.2.2)
+    specifier: ^11.1.5
+    version: 11.1.5(rollup@3.29.4)(tslib@2.6.2)(typescript@5.2.2)
   '@types/node':
     specifier: ^20.8.2
     version: 20.8.2
@@ -94,11 +94,11 @@ packages:
       fastq: 1.15.0
     dev: true
 
-  /@rollup/plugin-typescript@11.1.4(rollup@3.29.4)(tslib@2.6.2)(typescript@5.2.2):
-    resolution: {integrity: sha512-WZRh5LBVLQXdKFICUId5J3eIpmjGURaBqntfg3GSZACgeOAFS+lOSMGTwfzDkELTaZVp/lWdMVNU3UkwCUBg/Q==}
+  /@rollup/plugin-typescript@11.1.5(rollup@3.29.4)(tslib@2.6.2)(typescript@5.2.2):
+    resolution: {integrity: sha512-rnMHrGBB0IUEv69Q8/JGRD/n4/n6b3nfpufUu26axhUcboUzv/twfZU8fIBbTOphRAe0v8EyxzeDpKXqGHfyDA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      rollup: ^2.14.0||^3.0.0
+      rollup: ^2.14.0||^3.0.0||^4.0.0
       tslib: '*'
       typescript: '>=3.7.0'
     peerDependenciesMeta:
@@ -819,8 +819,8 @@ packages:
       thread-stream: 2.4.0
     dev: false
 
-  /poolifier@2.7.4:
-    resolution: {integrity: sha512-Rkw7M1reDRWPLnPtS8+DFcv8IQIie44TBQ4CgQMSghu2YZ4Gip1VwbTw9t+SEgiLbIe6+cSTdlYAGtQ81DD67A==}
+  /poolifier@2.7.5:
+    resolution: {integrity: sha512-JU12qU1IpW2abb5N6YTBPbnQL6wYX3hdjUy/jR+2VIZI97R/20GwuVwZxkQTyt+IsZBneEpqz3/ym1fOeorZAQ==}
     engines: {node: '>=16.14.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
