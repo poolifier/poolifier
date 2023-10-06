@@ -24,7 +24,7 @@
     "ws": "^8.14.2"
   },
   "devDependencies": {
-    "@rollup/plugin-typescript": "^11.1.4",
+    "@rollup/plugin-typescript": "^11.1.5",
     "@types/node": "^20.8.2",
     "@types/ws": "^8.5.6",
     "rollup": "^3.29.4",
