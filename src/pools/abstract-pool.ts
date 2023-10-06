@@ -73,6 +73,11 @@ export abstract class AbstractPool<
   public emitter?: EventEmitterAsyncResource
 
   /**
+   * Dynamic pool maximum size property placeholder.
+   */
+  protected readonly max?: number
+
+  /**
    * The task execution response promise map:
    * - `key`: The message id of each submitted task.
    * - `value`: An object that contains the worker, the execution response promise resolve and reject callbacks.
@@ -90,11 +95,6 @@ export abstract class AbstractPool<
   Data,
   Response
   >
-
-  /**
-   * Dynamic pool maximum size property placeholder.
-   */
-  protected readonly max?: number
 
   /**
    * The task functions added at runtime map:
@@ -1343,7 +1343,10 @@ export abstract class AbstractPool<
    */
   protected afterWorkerNodeSetup (workerNodeKey: number): void {
     // Listen to worker messages.
-    this.registerWorkerMessageListener(workerNodeKey, this.workerListener())
+    this.registerWorkerMessageListener(
+      workerNodeKey,
+      this.workerMessageListener.bind(this)
+    )
     // Send the startup message to worker.
     this.sendStartupMessageToWorker(workerNodeKey)
     // Send the statistics message to worker.
@@ -1488,25 +1491,21 @@ export abstract class AbstractPool<
   }
 
   /**
-   * This method is the listener registered for each worker message.
-   *
-   * @returns The listener function to execute when a message is received from a worker.
+   * This method is the message listener registered on each worker.
    */
-  protected workerListener (): (message: MessageValue<Response>) => void {
-    return message => {
-      this.checkMessageWorkerId(message)
-      if (message.ready != null && message.taskFunctionNames != null) {
-        // Worker ready response received from worker
-        this.handleWorkerReadyResponse(message)
-      } else if (message.taskId != null) {
-        // Task execution response received from worker
-        this.handleTaskExecutionResponse(message)
-      } else if (message.taskFunctionNames != null) {
-        // Task function names message received from worker
-        this.getWorkerInfo(
-          this.getWorkerNodeKeyByWorkerId(message.workerId)
-        ).taskFunctionNames = message.taskFunctionNames
-      }
+  protected workerMessageListener (message: MessageValue<Response>): void {
+    this.checkMessageWorkerId(message)
+    if (message.ready != null && message.taskFunctionNames != null) {
+      // Worker ready response received from worker
+      this.handleWorkerReadyResponse(message)
+    } else if (message.taskId != null) {
+      // Task execution response received from worker
+      this.handleTaskExecutionResponse(message)
+    } else if (message.taskFunctionNames != null) {
+      // Task function names message received from worker
+      this.getWorkerInfo(
+        this.getWorkerNodeKeyByWorkerId(message.workerId)
+      ).taskFunctionNames = message.taskFunctionNames
     }
   }
 
