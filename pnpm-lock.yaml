@@ -126,8 +126,8 @@ devDependencies:
     specifier: ^12.0.2
     version: 12.0.2(eslint-import-resolver-typescript@3.6.1)(typescript@5.2.2)
   typedoc:
-    specifier: ^0.25.1
-    version: 0.25.1(typescript@5.2.2)
+    specifier: ^0.25.2
+    version: 0.25.2(typescript@5.2.2)
   typescript:
     specifier: ~5.2.2
     version: 5.2.2
@@ -1745,7 +1745,7 @@ packages:
       '@types/http-cache-semantics': 4.0.2
       get-stream: 6.0.1
       http-cache-semantics: 4.1.1
-      keyv: 4.5.3
+      keyv: 4.5.4
       mimic-response: 4.0.0
       normalize-url: 8.0.0
       responselike: 3.0.0
@@ -3123,7 +3123,7 @@ packages:
     engines: {node: '>=12.0.0'}
     dependencies:
       flatted: 3.2.9
-      keyv: 4.5.3
+      keyv: 4.5.4
       rimraf: 3.0.2
     dev: true
 
@@ -4208,8 +4208,8 @@ packages:
     resolution: {integrity: sha512-g3UB796vUFIY90VIv/WX3L2c8CS2MdWUww3CNrYmqza1Fg0DURc2K/O4YrnklBdQarSJ/y8JnJYDGc+1iumQjg==}
     dev: true
 
-  /keyv@4.5.3:
-    resolution: {integrity: sha512-QCiSav9WaX1PgETJ+SpNnx2PRRapJ/oRSXM4VO5OGYGSjrxbKPVFVhB3l2OCbLCk329N8qyAtsJjSjvVBWzEug==}
+  /keyv@4.5.4:
+    resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
     dependencies:
       json-buffer: 3.0.1
     dev: true
@@ -6257,8 +6257,8 @@ packages:
       is-typedarray: 1.0.0
     dev: true
 
-  /typedoc@0.25.1(typescript@5.2.2):
-    resolution: {integrity: sha512-c2ye3YUtGIadxN2O6YwPEXgrZcvhlZ6HlhWZ8jQRNzwLPn2ylhdGqdR8HbyDRyALP8J6lmSANILCkkIdNPFxqA==}
+  /typedoc@0.25.2(typescript@5.2.2):
+    resolution: {integrity: sha512-286F7BeATBiWe/qC4PCOCKlSTwfnsLbC/4cZ68oGBbvAqb9vV33quEOXx7q176OXotD+JdEerdQ1OZGJ818lnA==}
     engines: {node: '>= 16'}
     hasBin: true
     peerDependencies:
