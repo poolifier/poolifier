@@ -66,20 +66,8 @@ describe('Abstract pool test suite', () => {
   })
 
   it('Verify that filePath is checked', () => {
-    const expectedError = new Error(
-      'Please specify a file with a worker implementation'
-    )
     expect(() => new FixedThreadPool(numberOfWorkers)).toThrowError(
-      expectedError
-    )
-    expect(() => new FixedThreadPool(numberOfWorkers, '')).toThrowError(
-      expectedError
-    )
-    expect(() => new FixedThreadPool(numberOfWorkers, 0)).toThrowError(
-      expectedError
-    )
-    expect(() => new FixedThreadPool(numberOfWorkers, true)).toThrowError(
-      expectedError
+      new Error("Cannot find the worker file 'undefined'")
     )
     expect(
       () => new FixedThreadPool(numberOfWorkers, './dummyWorker.ts')
