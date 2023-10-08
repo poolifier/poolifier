@@ -73,7 +73,7 @@ describe('Dynamic cluster pool test suite', () => {
   })
 
   it('Validation of inputs test', () => {
-    expect(() => new DynamicClusterPool(min)).toThrowError(
+    expect(() => new DynamicClusterPool(min)).toThrow(
       "Cannot find the worker file 'undefined'"
     )
   })

@@ -25,39 +25,35 @@ describe('Abstract worker test suite', () => {
   })
 
   it('Verify that worker options are checked at worker creation', () => {
-    expect(() => new ClusterWorker(() => {}, '')).toThrowError(
+    expect(() => new ClusterWorker(() => {}, '')).toThrow(
       new TypeError('opts worker options parameter is not a plain object')
     )
-    expect(
-      () => new ClusterWorker(() => {}, { killBehavior: '' })
-    ).toThrowError(new TypeError("killBehavior option '' is not valid"))
-    expect(() => new ClusterWorker(() => {}, { killBehavior: 0 })).toThrowError(
+    expect(() => new ClusterWorker(() => {}, { killBehavior: '' })).toThrow(
+      new TypeError("killBehavior option '' is not valid")
+    )
+    expect(() => new ClusterWorker(() => {}, { killBehavior: 0 })).toThrow(
       new TypeError("killBehavior option '0' is not valid")
     )
-    expect(
-      () => new ThreadWorker(() => {}, { maxInactiveTime: '' })
-    ).toThrowError(new TypeError('maxInactiveTime option is not an integer'))
-    expect(
-      () => new ThreadWorker(() => {}, { maxInactiveTime: 0.5 })
-    ).toThrowError(new TypeError('maxInactiveTime option is not an integer'))
-    expect(
-      () => new ThreadWorker(() => {}, { maxInactiveTime: 0 })
-    ).toThrowError(
+    expect(() => new ThreadWorker(() => {}, { maxInactiveTime: '' })).toThrow(
+      new TypeError('maxInactiveTime option is not an integer')
+    )
+    expect(() => new ThreadWorker(() => {}, { maxInactiveTime: 0.5 })).toThrow(
+      new TypeError('maxInactiveTime option is not an integer')
+    )
+    expect(() => new ThreadWorker(() => {}, { maxInactiveTime: 0 })).toThrow(
       new TypeError(
         'maxInactiveTime option is not a positive integer greater or equal than 5'
       )
     )
-    expect(
-      () => new ThreadWorker(() => {}, { maxInactiveTime: 4 })
-    ).toThrowError(
+    expect(() => new ThreadWorker(() => {}, { maxInactiveTime: 4 })).toThrow(
       new TypeError(
         'maxInactiveTime option is not a positive integer greater or equal than 5'
       )
     )
-    expect(() => new ThreadWorker(() => {}, { killHandler: '' })).toThrowError(
+    expect(() => new ThreadWorker(() => {}, { killHandler: '' })).toThrow(
       new TypeError('killHandler option is not a function')
     )
-    expect(() => new ThreadWorker(() => {}, { killHandler: 0 })).toThrowError(
+    expect(() => new ThreadWorker(() => {}, { killHandler: 0 })).toThrow(
       new TypeError('killHandler option is not a function')
     )
   })
@@ -79,48 +75,48 @@ describe('Abstract worker test suite', () => {
   })
 
   it('Verify that taskFunctions parameter is mandatory', () => {
-    expect(() => new ClusterWorker()).toThrowError(
+    expect(() => new ClusterWorker()).toThrow(
       new Error('taskFunctions parameter is mandatory')
     )
   })
 
   it('Verify that taskFunctions parameter is a function or a plain object', () => {
-    expect(() => new ClusterWorker(0)).toThrowError(
+    expect(() => new ClusterWorker(0)).toThrow(
       new TypeError(
         'taskFunctions parameter is not a function or a plain object'
       )
     )
-    expect(() => new ClusterWorker('')).toThrowError(
+    expect(() => new ClusterWorker('')).toThrow(
       new TypeError(
         'taskFunctions parameter is not a function or a plain object'
       )
     )
-    expect(() => new ClusterWorker(true)).toThrowError(
+    expect(() => new ClusterWorker(true)).toThrow(
       new TypeError(
         'taskFunctions parameter is not a function or a plain object'
       )
     )
-    expect(() => new ClusterWorker([])).toThrowError(
+    expect(() => new ClusterWorker([])).toThrow(
       new TypeError(
         'taskFunctions parameter is not a function or a plain object'
       )
     )
-    expect(() => new ClusterWorker(new Map())).toThrowError(
+    expect(() => new ClusterWorker(new Map())).toThrow(
       new TypeError(
         'taskFunctions parameter is not a function or a plain object'
       )
     )
-    expect(() => new ClusterWorker(new Set())).toThrowError(
+    expect(() => new ClusterWorker(new Set())).toThrow(
       new TypeError(
         'taskFunctions parameter is not a function or a plain object'
       )
     )
-    expect(() => new ClusterWorker(new WeakMap())).toThrowError(
+    expect(() => new ClusterWorker(new WeakMap())).toThrow(
       new TypeError(
         'taskFunctions parameter is not a function or a plain object'
       )
     )
-    expect(() => new ClusterWorker(new WeakSet())).toThrowError(
+    expect(() => new ClusterWorker(new WeakSet())).toThrow(
       new TypeError(
         'taskFunctions parameter is not a function or a plain object'
       )
@@ -128,7 +124,7 @@ describe('Abstract worker test suite', () => {
   })
 
   it('Verify that taskFunctions parameter is not an empty object', () => {
-    expect(() => new ClusterWorker({})).toThrowError(
+    expect(() => new ClusterWorker({})).toThrow(
       new Error('taskFunctions parameter object is empty')
     )
   })
@@ -148,10 +144,10 @@ describe('Abstract worker test suite', () => {
       return 1
     }
     const fn2 = ''
-    expect(() => new ThreadWorker({ '': fn1 })).toThrowError(
+    expect(() => new ThreadWorker({ '': fn1 })).toThrow(
       new TypeError('A taskFunctions parameter object key is an empty string')
     )
-    expect(() => new ThreadWorker({ fn1, fn2 })).toThrowError(
+    expect(() => new ThreadWorker({ fn1, fn2 })).toThrow(
       new TypeError('A taskFunctions parameter object value is not a function')
     )
   })
@@ -186,7 +182,7 @@ describe('Abstract worker test suite', () => {
   it('Verify that getMainWorker() throw error if main worker is not set', () => {
     expect(() =>
       new StubWorkerWithMainWorker(() => {}).getMainWorker()
-    ).toThrowError('Main worker not set')
+    ).toThrow('Main worker not set')
   })
 
   it('Verify that hasTaskFunction() is working', () => {

@@ -30,13 +30,13 @@ describe('Circular array test suite', () => {
   })
 
   it('Verify that circular array size is valid at instance creation', () => {
-    expect(() => new CircularArray(0.25)).toThrowError(
+    expect(() => new CircularArray(0.25)).toThrow(
       new TypeError('Invalid circular array size: 0.25 is not a safe integer')
     )
-    expect(() => new CircularArray(-1)).toThrowError(
+    expect(() => new CircularArray(-1)).toThrow(
       new RangeError('Invalid circular array size: -1 < 0')
     )
-    expect(() => new CircularArray(Number.MAX_SAFE_INTEGER + 1)).toThrowError(
+    expect(() => new CircularArray(Number.MAX_SAFE_INTEGER + 1)).toThrow(
       new TypeError(
         `Invalid circular array size: ${
           Number.MAX_SAFE_INTEGER + 1
@@ -116,15 +116,15 @@ describe('Circular array test suite', () => {
   })
 
   it('Verify that circular array resize works as intended', () => {
-    expect(() => new CircularArray().resize(0.25)).toThrowError(
+    expect(() => new CircularArray().resize(0.25)).toThrow(
       new TypeError('Invalid circular array size: 0.25 is not a safe integer')
     )
-    expect(() => new CircularArray().resize(-1)).toThrowError(
+    expect(() => new CircularArray().resize(-1)).toThrow(
       new RangeError('Invalid circular array size: -1 < 0')
     )
     expect(() =>
       new CircularArray().resize(Number.MAX_SAFE_INTEGER + 1)
-    ).toThrowError(
+    ).toThrow(
       new TypeError(
         `Invalid circular array size: ${
           Number.MAX_SAFE_INTEGER + 1

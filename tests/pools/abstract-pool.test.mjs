@@ -48,7 +48,7 @@ describe('Abstract pool test suite', () => {
             errorHandler: e => console.error(e)
           }
         )
-    ).toThrowError(
+    ).toThrow(
       new Error(
         'Cannot start a pool from a worker with the same type as the pool'
       )
@@ -66,12 +66,12 @@ describe('Abstract pool test suite', () => {
   })
 
   it('Verify that filePath is checked', () => {
-    expect(() => new FixedThreadPool(numberOfWorkers)).toThrowError(
+    expect(() => new FixedThreadPool(numberOfWorkers)).toThrow(
       new Error("Cannot find the worker file 'undefined'")
     )
     expect(
       () => new FixedThreadPool(numberOfWorkers, './dummyWorker.ts')
-    ).toThrowError(new Error("Cannot find the worker file './dummyWorker.ts'"))
+    ).toThrow(new Error("Cannot find the worker file './dummyWorker.ts'"))
   })
 
   it('Verify that numberOfWorkers is checked', () => {
@@ -81,7 +81,7 @@ describe('Abstract pool test suite', () => {
           undefined,
           './tests/worker-files/thread/testWorker.mjs'
         )
-    ).toThrowError(
+    ).toThrow(
       new Error(
         'Cannot instantiate a pool without specifying the number of workers'
       )
@@ -92,7 +92,7 @@ describe('Abstract pool test suite', () => {
     expect(
       () =>
         new FixedClusterPool(-1, './tests/worker-files/cluster/testWorker.js')
-    ).toThrowError(
+    ).toThrow(
       new RangeError(
         'Cannot instantiate a pool with a negative number of workers'
       )
@@ -103,7 +103,7 @@ describe('Abstract pool test suite', () => {
     expect(
       () =>
         new FixedThreadPool(0.25, './tests/worker-files/thread/testWorker.mjs')
-    ).toThrowError(
+    ).toThrow(
       new TypeError(
         'Cannot instantiate a pool with a non safe integer number of workers'
       )
@@ -118,7 +118,7 @@ describe('Abstract pool test suite', () => {
           undefined,
           './tests/worker-files/cluster/testWorker.js'
         )
-    ).toThrowError(
+    ).toThrow(
       new TypeError(
         'Cannot instantiate a dynamic pool without specifying the maximum pool size'
       )
@@ -130,7 +130,7 @@ describe('Abstract pool test suite', () => {
           1,
           './tests/worker-files/thread/testWorker.mjs'
         )
-    ).toThrowError(
+    ).toThrow(
       new TypeError(
         'Cannot instantiate a pool with a non safe integer number of workers'
       )
@@ -142,7 +142,7 @@ describe('Abstract pool test suite', () => {
           0.5,
           './tests/worker-files/cluster/testWorker.js'
         )
-    ).toThrowError(
+    ).toThrow(
       new TypeError(
         'Cannot instantiate a dynamic pool with a non safe integer maximum pool size'
       )
@@ -154,7 +154,7 @@ describe('Abstract pool test suite', () => {
           1,
           './tests/worker-files/thread/testWorker.mjs'
         )
-    ).toThrowError(
+    ).toThrow(
       new RangeError(
         'Cannot instantiate a dynamic pool with a maximum pool size inferior to the minimum pool size'
       )
@@ -166,7 +166,7 @@ describe('Abstract pool test suite', () => {
           0,
           './tests/worker-files/thread/testWorker.mjs'
         )
-    ).toThrowError(
+    ).toThrow(
       new RangeError(
         'Cannot instantiate a dynamic pool with a maximum pool size equal to zero'
       )
@@ -178,7 +178,7 @@ describe('Abstract pool test suite', () => {
           1,
           './tests/worker-files/cluster/testWorker.js'
         )
-    ).toThrowError(
+    ).toThrow(
       new RangeError(
         'Cannot instantiate a dynamic pool with a minimum pool size equal to the maximum pool size. Use a fixed pool instead'
       )
@@ -295,9 +295,7 @@ describe('Abstract pool test suite', () => {
             workerChoiceStrategy: 'invalidStrategy'
           }
         )
-    ).toThrowError(
-      new Error("Invalid worker choice strategy 'invalidStrategy'")
-    )
+    ).toThrow(new Error("Invalid worker choice strategy 'invalidStrategy'"))
     expect(
       () =>
         new FixedThreadPool(
@@ -309,7 +307,7 @@ describe('Abstract pool test suite', () => {
             }
           }
         )
-    ).toThrowError(
+    ).toThrow(
       new TypeError(
         'Invalid worker choice strategy options: retries must be an integer'
       )
@@ -325,7 +323,7 @@ describe('Abstract pool test suite', () => {
             }
           }
         )
-    ).toThrowError(
+    ).toThrow(
       new RangeError(
         "Invalid worker choice strategy options: retries '-1' must be greater or equal than zero"
       )
@@ -339,7 +337,7 @@ describe('Abstract pool test suite', () => {
             workerChoiceStrategyOptions: { weights: {} }
           }
         )
-    ).toThrowError(
+    ).toThrow(
       new Error(
         'Invalid worker choice strategy options: must have a weight for each worker node'
       )
@@ -353,7 +351,7 @@ describe('Abstract pool test suite', () => {
             workerChoiceStrategyOptions: { measurement: 'invalidMeasurement' }
           }
         )
-    ).toThrowError(
+    ).toThrow(
       new Error(
         "Invalid worker choice strategy options: invalid measurement 'invalidMeasurement'"
       )
@@ -368,7 +366,7 @@ describe('Abstract pool test suite', () => {
             tasksQueueOptions: 'invalidTasksQueueOptions'
           }
         )
-    ).toThrowError(
+    ).toThrow(
       new TypeError('Invalid tasks queue options: must be a plain object')
     )
     expect(
@@ -381,7 +379,7 @@ describe('Abstract pool test suite', () => {
             tasksQueueOptions: { concurrency: 0 }
           }
         )
-    ).toThrowError(
+    ).toThrow(
       new RangeError(
         'Invalid worker node tasks concurrency: 0 is a negative integer or zero'
       )
@@ -396,7 +394,7 @@ describe('Abstract pool test suite', () => {
             tasksQueueOptions: { concurrency: -1 }
           }
         )
-    ).toThrowError(
+    ).toThrow(
       new RangeError(
         'Invalid worker node tasks concurrency: -1 is a negative integer or zero'
       )
@@ -411,7 +409,7 @@ describe('Abstract pool test suite', () => {
             tasksQueueOptions: { concurrency: 0.2 }
           }
         )
-    ).toThrowError(
+    ).toThrow(
       new TypeError('Invalid worker node tasks concurrency: must be an integer')
     )
     expect(
@@ -424,7 +422,7 @@ describe('Abstract pool test suite', () => {
             tasksQueueOptions: { size: 0 }
           }
         )
-    ).toThrowError(
+    ).toThrow(
       new RangeError(
         'Invalid worker node tasks queue size: 0 is a negative integer or zero'
       )
@@ -439,7 +437,7 @@ describe('Abstract pool test suite', () => {
             tasksQueueOptions: { size: -1 }
           }
         )
-    ).toThrowError(
+    ).toThrow(
       new RangeError(
         'Invalid worker node tasks queue size: -1 is a negative integer or zero'
       )
@@ -454,7 +452,7 @@ describe('Abstract pool test suite', () => {
             tasksQueueOptions: { size: 0.2 }
           }
         )
-    ).toThrowError(
+    ).toThrow(
       new TypeError('Invalid worker node tasks queue size: must be an integer')
     )
   })
@@ -595,7 +593,7 @@ describe('Abstract pool test suite', () => {
     })
     expect(() =>
       pool.setWorkerChoiceStrategyOptions('invalidWorkerChoiceStrategyOptions')
-    ).toThrowError(
+    ).toThrow(
       new TypeError(
         'Invalid worker choice strategy options: must be a plain object'
       )
@@ -604,28 +602,24 @@ describe('Abstract pool test suite', () => {
       pool.setWorkerChoiceStrategyOptions({
         retries: 'invalidChoiceRetries'
       })
-    ).toThrowError(
+    ).toThrow(
       new TypeError(
         'Invalid worker choice strategy options: retries must be an integer'
       )
     )
-    expect(() =>
-      pool.setWorkerChoiceStrategyOptions({ retries: -1 })
-    ).toThrowError(
+    expect(() => pool.setWorkerChoiceStrategyOptions({ retries: -1 })).toThrow(
       new RangeError(
         "Invalid worker choice strategy options: retries '-1' must be greater or equal than zero"
       )
     )
-    expect(() =>
-      pool.setWorkerChoiceStrategyOptions({ weights: {} })
-    ).toThrowError(
+    expect(() => pool.setWorkerChoiceStrategyOptions({ weights: {} })).toThrow(
       new Error(
         'Invalid worker choice strategy options: must have a weight for each worker node'
       )
     )
     expect(() =>
       pool.setWorkerChoiceStrategyOptions({ measurement: 'invalidMeasurement' })
-    ).toThrowError(
+    ).toThrow(
       new Error(
         "Invalid worker choice strategy options: invalid measurement 'invalidMeasurement'"
       )
@@ -734,35 +728,33 @@ describe('Abstract pool test suite', () => {
       expect(workerNode.onEmptyQueue).toBeInstanceOf(Function)
       expect(workerNode.onBackPressure).toBeInstanceOf(Function)
     }
-    expect(() =>
-      pool.setTasksQueueOptions('invalidTasksQueueOptions')
-    ).toThrowError(
+    expect(() => pool.setTasksQueueOptions('invalidTasksQueueOptions')).toThrow(
       new TypeError('Invalid tasks queue options: must be a plain object')
     )
-    expect(() => pool.setTasksQueueOptions({ concurrency: 0 })).toThrowError(
+    expect(() => pool.setTasksQueueOptions({ concurrency: 0 })).toThrow(
       new RangeError(
         'Invalid worker node tasks concurrency: 0 is a negative integer or zero'
       )
     )
-    expect(() => pool.setTasksQueueOptions({ concurrency: -1 })).toThrowError(
+    expect(() => pool.setTasksQueueOptions({ concurrency: -1 })).toThrow(
       new RangeError(
         'Invalid worker node tasks concurrency: -1 is a negative integer or zero'
       )
     )
-    expect(() => pool.setTasksQueueOptions({ concurrency: 0.2 })).toThrowError(
+    expect(() => pool.setTasksQueueOptions({ concurrency: 0.2 })).toThrow(
       new TypeError('Invalid worker node tasks concurrency: must be an integer')
     )
-    expect(() => pool.setTasksQueueOptions({ size: 0 })).toThrowError(
+    expect(() => pool.setTasksQueueOptions({ size: 0 })).toThrow(
       new RangeError(
         'Invalid worker node tasks queue size: 0 is a negative integer or zero'
       )
     )
-    expect(() => pool.setTasksQueueOptions({ size: -1 })).toThrowError(
+    expect(() => pool.setTasksQueueOptions({ size: -1 })).toThrow(
       new RangeError(
         'Invalid worker node tasks queue size: -1 is a negative integer or zero'
       )
     )
-    expect(() => pool.setTasksQueueOptions({ size: 0.2 })).toThrowError(
+    expect(() => pool.setTasksQueueOptions({ size: 0.2 })).toThrow(
       new TypeError('Invalid worker node tasks queue size: must be an integer')
     )
     await pool.destroy()
@@ -918,7 +910,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.info.started).toBe(false)
     expect(pool.info.ready).toBe(false)
     expect(pool.workerNodes).toStrictEqual([])
-    await expect(pool.execute()).rejects.toThrowError(
+    await expect(pool.execute()).rejects.toThrow(
       new Error('Cannot execute a task on not started pool')
     )
     pool.start()
@@ -936,20 +928,20 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.js'
     )
-    await expect(pool.execute(undefined, 0)).rejects.toThrowError(
+    await expect(pool.execute(undefined, 0)).rejects.toThrow(
       new TypeError('name argument must be a string')
     )
-    await expect(pool.execute(undefined, '')).rejects.toThrowError(
+    await expect(pool.execute(undefined, '')).rejects.toThrow(
       new TypeError('name argument must not be an empty string')
     )
-    await expect(pool.execute(undefined, undefined, {})).rejects.toThrowError(
+    await expect(pool.execute(undefined, undefined, {})).rejects.toThrow(
       new TypeError('transferList argument must be an array')
     )
     await expect(pool.execute(undefined, 'unknown')).rejects.toBe(
       "Task function 'unknown' not found"
     )
     await pool.destroy()
-    await expect(pool.execute()).rejects.toThrowError(
+    await expect(pool.execute()).rejects.toThrow(
       new Error('Cannot execute a task on not started pool')
     )
   })
@@ -1300,18 +1292,18 @@ describe('Abstract pool test suite', () => {
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
     await expect(
       dynamicThreadPool.addTaskFunction(0, () => {})
-    ).rejects.toThrowError(new TypeError('name argument must be a string'))
+    ).rejects.toThrow(new TypeError('name argument must be a string'))
     await expect(
       dynamicThreadPool.addTaskFunction('', () => {})
-    ).rejects.toThrowError(
+    ).rejects.toThrow(
       new TypeError('name argument must not be an empty string')
     )
-    await expect(
-      dynamicThreadPool.addTaskFunction('test', 0)
-    ).rejects.toThrowError(new TypeError('fn argument must be a function'))
-    await expect(
-      dynamicThreadPool.addTaskFunction('test', '')
-    ).rejects.toThrowError(new TypeError('fn argument must be a function'))
+    await expect(dynamicThreadPool.addTaskFunction('test', 0)).rejects.toThrow(
+      new TypeError('fn argument must be a function')
+    )
+    await expect(dynamicThreadPool.addTaskFunction('test', '')).rejects.toThrow(
+      new TypeError('fn argument must be a function')
+    )
     expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
       DEFAULT_TASK_NAME,
       'test'
@@ -1373,9 +1365,7 @@ describe('Abstract pool test suite', () => {
       DEFAULT_TASK_NAME,
       'test'
     ])
-    await expect(
-      dynamicThreadPool.removeTaskFunction('test')
-    ).rejects.toThrowError(
+    await expect(dynamicThreadPool.removeTaskFunction('test')).rejects.toThrow(
       new Error('Cannot remove a task function not handled on the pool side')
     )
     const echoTaskFunction = data => {
@@ -1438,23 +1428,21 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testMultipleTaskFunctionsWorker.mjs'
     )
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
-    await expect(
-      dynamicThreadPool.setDefaultTaskFunction(0)
-    ).rejects.toThrowError(
+    await expect(dynamicThreadPool.setDefaultTaskFunction(0)).rejects.toThrow(
       new Error(
         "Task function operation 'default' failed on worker 31 with error: 'TypeError: name parameter is not a string'"
       )
     )
     await expect(
       dynamicThreadPool.setDefaultTaskFunction(DEFAULT_TASK_NAME)
-    ).rejects.toThrowError(
+    ).rejects.toThrow(
       new Error(
         "Task function operation 'default' failed on worker 31 with error: 'Error: Cannot set the default task function reserved name as the default task function'"
       )
     )
     await expect(
       dynamicThreadPool.setDefaultTaskFunction('unknown')
-    ).rejects.toThrowError(
+    ).rejects.toThrow(
       new Error(
         "Task function operation 'default' failed on worker 31 with error: 'Error: Cannot set the default task function to a non-existing task function'"
       )

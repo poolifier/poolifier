@@ -14,32 +14,32 @@ describe('Worker node test suite', () => {
   const clusterWorkerNode = new WorkerNode(clusterWorker, 12)
 
   it('Worker node instantiation', () => {
-    expect(() => new WorkerNode()).toThrowError(
+    expect(() => new WorkerNode()).toThrow(
       new TypeError('Cannot construct a worker node without a worker')
     )
-    expect(() => new WorkerNode(threadWorker)).toThrowError(
+    expect(() => new WorkerNode(threadWorker)).toThrow(
       new TypeError(
         'Cannot construct a worker node without a tasks queue back pressure size'
       )
     )
     expect(
       () => new WorkerNode(threadWorker, 'invalidTasksQueueBackPressureSize')
-    ).toThrowError(
+    ).toThrow(
       new TypeError(
         'Cannot construct a worker node with a tasks queue back pressure size that is not an integer'
       )
     )
-    expect(() => new WorkerNode(threadWorker, 0.2)).toThrowError(
+    expect(() => new WorkerNode(threadWorker, 0.2)).toThrow(
       new TypeError(
         'Cannot construct a worker node with a tasks queue back pressure size that is not an integer'
       )
     )
-    expect(() => new WorkerNode(threadWorker, 0)).toThrowError(
+    expect(() => new WorkerNode(threadWorker, 0)).toThrow(
       new RangeError(
         'Cannot construct a worker node with a tasks queue back pressure size that is not a positive integer'
       )
     )
-    expect(() => new WorkerNode(threadWorker, -1)).toThrowError(
+    expect(() => new WorkerNode(threadWorker, -1)).toThrow(
       new RangeError(
         'Cannot construct a worker node with a tasks queue back pressure size that is not a positive integer'
       )
@@ -134,7 +134,7 @@ describe('Worker node test suite', () => {
   it('Worker node getTaskFunctionWorkerUsage()', () => {
     expect(() =>
       threadWorkerNode.getTaskFunctionWorkerUsage('invalidTaskFunction')
-    ).toThrowError(
+    ).toThrow(
       new TypeError(
         "Cannot get task function worker usage for task function name 'invalidTaskFunction' when task function names list is not yet defined"
       )
@@ -142,7 +142,7 @@ describe('Worker node test suite', () => {
     threadWorkerNode.info.taskFunctionNames = [DEFAULT_TASK_NAME, 'fn1']
     expect(() =>
       threadWorkerNode.getTaskFunctionWorkerUsage('invalidTaskFunction')
-    ).toThrowError(
+    ).toThrow(
       new TypeError(
         "Cannot get task function worker usage for task function name 'invalidTaskFunction' when task function names list has less than 3 elements"
       )
