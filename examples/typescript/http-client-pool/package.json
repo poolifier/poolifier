@@ -22,7 +22,7 @@
   "dependencies": {
     "axios": "^1.5.1",
     "node-fetch": "^3.3.2",
-    "poolifier": "^2.7.5"
+    "poolifier": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.8.2",
