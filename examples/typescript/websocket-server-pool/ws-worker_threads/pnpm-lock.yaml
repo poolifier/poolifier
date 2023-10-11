@@ -25,8 +25,8 @@ devDependencies:
     specifier: ^20.8.4
     version: 20.8.4
   '@types/ws':
-    specifier: ^8.5.6
-    version: 8.5.6
+    specifier: ^8.5.7
+    version: 8.5.7
   typescript:
     specifier: ^5.2.2
     version: 5.2.2
@@ -39,8 +39,8 @@ packages:
       undici-types: 5.25.3
     dev: true
 
-  /@types/ws@8.5.6:
-    resolution: {integrity: sha512-8B5EO9jLVCy+B58PLHvLDuOD8DRVMgQzq8d55SjLCOn9kqGyqOvy27exVaTio1q1nX5zLu8/6N0n2ThSxOM6tg==}
+  /@types/ws@8.5.7:
+    resolution: {integrity: sha512-6UrLjiDUvn40CMrAubXuIVtj2PEfKDffJS7ychvnPU44j+KVeXmdHHTgqcM/dxLUTHxlXHiFM8Skmb8ozGdTnQ==}
     dependencies:
       '@types/node': 20.8.4
     dev: true
