@@ -1366,13 +1366,13 @@ export abstract class AbstractPool<
       if (this.opts.tasksQueueOptions?.taskStealing === true) {
         this.workerNodes[workerNodeKey].addEventListener(
           'emptyqueue',
-          this.handleEmptyQueueEvent.bind(this)
+          this.handleEmptyQueueEvent
         )
       }
       if (this.opts.tasksQueueOptions?.tasksStealingOnBackPressure === true) {
         this.workerNodes[workerNodeKey].addEventListener(
           'backpressure',
-          this.handleBackPressureEvent.bind(this)
+          this.handleBackPressureEvent
         )
       }
     }
