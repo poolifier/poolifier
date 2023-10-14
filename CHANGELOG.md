@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Switch the worker node eventing code to `EventTarget` API .
+
 ## [3.0.0] - 2023-10-08
 
 ### Changed
