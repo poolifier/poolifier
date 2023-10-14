@@ -34,6 +34,7 @@ import type {
   IWorker,
   IWorkerNode,
   WorkerInfo,
+  WorkerNodeEventDetail,
   WorkerType,
   WorkerUsage
 } from './worker'
@@ -619,27 +620,37 @@ export abstract class AbstractPool<
 
   private setTaskStealing (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
-      this.workerNodes[workerNodeKey].onEmptyQueue =
-        this.taskStealingOnEmptyQueue.bind(this)
+      this.workerNodes[workerNodeKey].addEventListener(
+        'emptyqueue',
+        this.handleEmptyQueueEvent as EventListener
+      )
     }
   }
 
   private unsetTaskStealing (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
-      delete this.workerNodes[workerNodeKey].onEmptyQueue
+      this.workerNodes[workerNodeKey].removeEventListener(
+        'emptyqueue',
+        this.handleEmptyQueueEvent as EventListener
+      )
     }
   }
 
   private setTasksStealingOnBackPressure (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
-      this.workerNodes[workerNodeKey].onBackPressure =
-        this.tasksStealingOnBackPressure.bind(this)
+      this.workerNodes[workerNodeKey].addEventListener(
+        'backpressure',
+        this.handleBackPressureEvent as EventListener
+      )
     }
   }
 
   private unsetTasksStealingOnBackPressure (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
-      delete this.workerNodes[workerNodeKey].onBackPressure
+      this.workerNodes[workerNodeKey].removeEventListener(
+        'backpressure',
+        this.handleBackPressureEvent as EventListener
+      )
     }
   }
 
@@ -1353,12 +1364,16 @@ export abstract class AbstractPool<
     this.sendStatisticsMessageToWorker(workerNodeKey)
     if (this.opts.enableTasksQueue === true) {
       if (this.opts.tasksQueueOptions?.taskStealing === true) {
-        this.workerNodes[workerNodeKey].onEmptyQueue =
-          this.taskStealingOnEmptyQueue.bind(this)
+        this.workerNodes[workerNodeKey].addEventListener(
+          'emptyqueue',
+          this.handleEmptyQueueEvent as EventListener
+        )
       }
       if (this.opts.tasksQueueOptions?.tasksStealingOnBackPressure === true) {
-        this.workerNodes[workerNodeKey].onBackPressure =
-          this.tasksStealingOnBackPressure.bind(this)
+        this.workerNodes[workerNodeKey].addEventListener(
+          'backpressure',
+          this.handleBackPressureEvent as EventListener
+        )
       }
     }
   }
@@ -1427,8 +1442,12 @@ export abstract class AbstractPool<
     }
   }
 
-  private taskStealingOnEmptyQueue (workerId: number): void {
-    const destinationWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+  private readonly handleEmptyQueueEvent = (
+    event: CustomEvent<WorkerNodeEventDetail>
+  ): void => {
+    const destinationWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(
+      event.detail.workerId
+    )
     const workerNodes = this.workerNodes
       .slice()
       .sort(
@@ -1438,7 +1457,7 @@ export abstract class AbstractPool<
     const sourceWorkerNode = workerNodes.find(
       workerNode =>
         workerNode.info.ready &&
-        workerNode.info.id !== workerId &&
+        workerNode.info.id !== event.detail.workerId &&
         workerNode.usage.tasks.queued > 0
     )
     if (sourceWorkerNode != null) {
@@ -1455,13 +1474,15 @@ export abstract class AbstractPool<
     }
   }
 
-  private tasksStealingOnBackPressure (workerId: number): void {
+  private readonly handleBackPressureEvent = (
+    event: CustomEvent<WorkerNodeEventDetail>
+  ): void => {
     const sizeOffset = 1
     if ((this.opts.tasksQueueOptions?.size as number) <= sizeOffset) {
       return
     }
     const sourceWorkerNode =
-      this.workerNodes[this.getWorkerNodeKeyByWorkerId(workerId)]
+      this.workerNodes[this.getWorkerNodeKeyByWorkerId(event.detail.workerId)]
     const workerNodes = this.workerNodes
       .slice()
       .sort(
@@ -1472,7 +1493,7 @@ export abstract class AbstractPool<
       if (
         sourceWorkerNode.usage.tasks.queued > 0 &&
         workerNode.info.ready &&
-        workerNode.info.id !== workerId &&
+        workerNode.info.id !== event.detail.workerId &&
         workerNode.usage.tasks.queued <
           (this.opts.tasksQueueOptions?.size as number) - sizeOffset
       ) {

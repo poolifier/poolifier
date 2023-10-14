@@ -15,7 +15,7 @@ import {
   type IWorkerNode,
   type StrategyData,
   type WorkerInfo,
-  type WorkerNodeEventCallback,
+  type WorkerNodeEventDetail,
   type WorkerType,
   WorkerTypes,
   type WorkerUsage
@@ -29,7 +29,8 @@ import { checkWorkerNodeArguments } from './utils'
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  */
 export class WorkerNode<Worker extends IWorker, Data = unknown>
-implements IWorkerNode<Worker, Data> {
+  extends EventTarget
+  implements IWorkerNode<Worker, Data> {
   /** @inheritdoc */
   public readonly worker: Worker
   /** @inheritdoc */
@@ -42,10 +43,6 @@ implements IWorkerNode<Worker, Data> {
   public messageChannel?: MessageChannel
   /** @inheritdoc */
   public tasksQueueBackPressureSize: number
-  /** @inheritdoc */
-  public onBackPressure?: WorkerNodeEventCallback
-  /** @inheritdoc */
-  public onEmptyQueue?: WorkerNodeEventCallback
   private readonly tasksQueue: Deque<Task<Data>>
   private onBackPressureStarted: boolean
   private onEmptyQueueCount: number
@@ -58,6 +55,7 @@ implements IWorkerNode<Worker, Data> {
    * @param tasksQueueBackPressureSize - The tasks queue back pressure size.
    */
   constructor (worker: Worker, tasksQueueBackPressureSize: number) {
+    super()
     checkWorkerNodeArguments<Worker>(worker, tasksQueueBackPressureSize)
     this.worker = worker
     this.info = this.initWorkerInfo(worker)
@@ -80,13 +78,13 @@ implements IWorkerNode<Worker, Data> {
   /** @inheritdoc */
   public enqueueTask (task: Task<Data>): number {
     const tasksQueueSize = this.tasksQueue.push(task)
-    if (
-      this.onBackPressure != null &&
-      this.hasBackPressure() &&
-      !this.onBackPressureStarted
-    ) {
+    if (this.hasBackPressure() && !this.onBackPressureStarted) {
       this.onBackPressureStarted = true
-      this.onBackPressure(this.info.id as number)
+      this.dispatchEvent(
+        new CustomEvent<WorkerNodeEventDetail>('backpressure', {
+          detail: { workerId: this.info.id as number }
+        })
+      )
       this.onBackPressureStarted = false
     }
     return tasksQueueSize
@@ -95,13 +93,13 @@ implements IWorkerNode<Worker, Data> {
   /** @inheritdoc */
   public unshiftTask (task: Task<Data>): number {
     const tasksQueueSize = this.tasksQueue.unshift(task)
-    if (
-      this.onBackPressure != null &&
-      this.hasBackPressure() &&
-      !this.onBackPressureStarted
-    ) {
+    if (this.hasBackPressure() && !this.onBackPressureStarted) {
       this.onBackPressureStarted = true
-      this.onBackPressure(this.info.id as number)
+      this.dispatchEvent(
+        new CustomEvent<WorkerNodeEventDetail>('backpressure', {
+          detail: { workerId: this.info.id as number }
+        })
+      )
       this.onBackPressureStarted = false
     }
     return tasksQueueSize
@@ -110,11 +108,7 @@ implements IWorkerNode<Worker, Data> {
   /** @inheritdoc */
   public dequeueTask (): Task<Data> | undefined {
     const task = this.tasksQueue.shift()
-    if (
-      this.onEmptyQueue != null &&
-      this.tasksQueue.size === 0 &&
-      this.onEmptyQueueCount === 0
-    ) {
+    if (this.tasksQueue.size === 0 && this.onEmptyQueueCount === 0) {
       this.startOnEmptyQueue().catch(EMPTY_FUNCTION)
     }
     return task
@@ -123,11 +117,7 @@ implements IWorkerNode<Worker, Data> {
   /** @inheritdoc */
   public popTask (): Task<Data> | undefined {
     const task = this.tasksQueue.pop()
-    if (
-      this.onEmptyQueue != null &&
-      this.tasksQueue.size === 0 &&
-      this.onEmptyQueueCount === 0
-    ) {
+    if (this.tasksQueue.size === 0 && this.onEmptyQueueCount === 0) {
       this.startOnEmptyQueue().catch(EMPTY_FUNCTION)
     }
     return task
@@ -198,7 +188,11 @@ implements IWorkerNode<Worker, Data> {
       return
     }
     ++this.onEmptyQueueCount
-    this.onEmptyQueue?.(this.info.id as number)
+    this.dispatchEvent(
+      new CustomEvent<WorkerNodeEventDetail>('emptyqueue', {
+        detail: { workerId: this.info.id as number }
+      })
+    )
     await sleep(exponentialDelay(this.onEmptyQueueCount))
     await this.startOnEmptyQueue()
   }

@@ -209,12 +209,13 @@ export interface IWorker {
 }
 
 /**
- * Worker node event callback.
+ * Worker node event detail.
  *
- * @param workerId - The worker id.
  * @internal
  */
-export type WorkerNodeEventCallback = (workerId: number) => void
+export interface WorkerNodeEventDetail {
+  workerId: number
+}
 
 /**
  * Worker node interface.
@@ -223,7 +224,8 @@ export type WorkerNodeEventCallback = (workerId: number) => void
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @internal
  */
-export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
+export interface IWorkerNode<Worker extends IWorker, Data = unknown>
+  extends EventTarget {
   /**
    * Worker.
    */
@@ -250,14 +252,6 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown> {
    * This is the number of tasks that can be enqueued before the worker node has back pressure.
    */
   tasksQueueBackPressureSize: number
-  /**
-   * Callback invoked when worker node tasks queue is back pressured.
-   */
-  onBackPressure?: WorkerNodeEventCallback
-  /**
-   * Callback invoked when worker node tasks queue is empty.
-   */
-  onEmptyQueue?: WorkerNodeEventCallback
   /**
    * Tasks queue size.
    *
