@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Workaround possible race condition at work nodes array element removal and querying. See [issue #1468](https://github.com/poolifier/poolifier/issues/1468).
+- Workaround possible race condition at work nodes array element removal and querying. See issue [#1468](https://github.com/poolifier/poolifier/issues/1468).
 
 ### Changed
 
