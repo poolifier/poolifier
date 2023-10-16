@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Workaround possible race condition at work nodes array element removal and querying. See [issue #1468](https://github.com/poolifier/poolifier/issues/1468).
+
 ### Changed
 
 - Switch the worker node eventing code to `EventTarget` API .

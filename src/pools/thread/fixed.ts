@@ -82,7 +82,7 @@ export class FixedThreadPool<
     (
       this.workerNodes[workerNodeKey].messageChannel as MessageChannel
     ).port1.postMessage(
-      { ...message, workerId: this.workerNodes[workerNodeKey].info.id },
+      { ...message, workerId: this.getWorkerInfo(workerNodeKey).id },
       transferList
     )
   }
@@ -95,7 +95,7 @@ export class FixedThreadPool<
     workerNode.worker.postMessage(
       {
         ready: false,
-        workerId: workerNode.info.id,
+        workerId: this.getWorkerInfo(workerNodeKey).id,
         port: port2
       },
       [port2]

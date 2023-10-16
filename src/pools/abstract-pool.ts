@@ -1601,7 +1601,7 @@ export abstract class AbstractPool<
    * @returns The worker information.
    */
   protected getWorkerInfo (workerNodeKey: number): WorkerInfo {
-    return this.workerNodes[workerNodeKey].info
+    return this.workerNodes[workerNodeKey]?.info
   }
 
   /**

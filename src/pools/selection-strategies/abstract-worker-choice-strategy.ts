@@ -123,7 +123,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @returns Whether the worker node is ready or not.
    */
   private isWorkerNodeReady (workerNodeKey: number): boolean {
-    return this.pool.workerNodes[workerNodeKey].info.ready
+    return this.pool.workerNodes[workerNodeKey]?.info.ready
   }
 
   /**
