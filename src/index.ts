@@ -52,8 +52,8 @@ export { ThreadWorker } from './worker/thread-worker'
 export { KillBehaviors } from './worker/worker-options'
 export type {
   KillBehavior,
-  WorkerOptions,
-  KillHandler
+  KillHandler,
+  WorkerOptions
 } from './worker/worker-options'
 export type {
   TaskAsyncFunction,
@@ -66,8 +66,8 @@ export type {
   MessageValue,
   PromiseResponseWrapper,
   Task,
-  WorkerError,
   TaskPerformance,
+  WorkerError,
   WorkerStatistics,
   Writable
 } from './utility-types'
