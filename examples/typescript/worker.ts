@@ -11,8 +11,7 @@ export interface MyResponse {
 
 class MyThreadWorker extends ThreadWorker<MyData, Promise<MyResponse>> {
   constructor () {
-    // eslint-disable-next-line @typescript-eslint/promise-function-async
-    super((data: MyData) => this.process(data), {
+    super(async (data: MyData) => await this.process(data), {
       maxInactiveTime: 60000
     })
   }
