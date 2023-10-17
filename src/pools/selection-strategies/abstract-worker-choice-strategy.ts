@@ -122,8 +122,8 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @param workerNodeKey - The worker node key.
    * @returns Whether the worker node is ready or not.
    */
-  private isWorkerNodeReady (workerNodeKey: number): boolean {
-    return this.pool.workerNodes[workerNodeKey]?.info.ready
+  protected isWorkerNodeReady (workerNodeKey: number): boolean {
+    return this.pool.workerNodes[workerNodeKey]?.info.ready ?? false
   }
 
   /**
@@ -132,24 +132,8 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @param workerNodeKey - The worker node key.
    * @returns `true` if the worker node has back pressure, `false` otherwise.
    */
-  private hasWorkerNodeBackPressure (workerNodeKey: number): boolean {
+  protected hasWorkerNodeBackPressure (workerNodeKey: number): boolean {
     return this.pool.hasWorkerNodeBackPressure(workerNodeKey)
-  }
-
-  /**
-   * Whether the worker node is eligible or not.
-   * A worker node is eligible if it is ready and does not have back pressure.
-   *
-   * @param workerNodeKey - The worker node key.
-   * @returns `true` if the worker node is eligible, `false` otherwise.
-   * @see {@link isWorkerNodeReady}
-   * @see {@link hasWorkerNodeBackPressure}
-   */
-  protected isWorkerNodeEligible (workerNodeKey: number): boolean {
-    return (
-      this.isWorkerNodeReady(workerNodeKey) &&
-      !this.hasWorkerNodeBackPressure(workerNodeKey)
-    )
   }
 
   /**
@@ -201,15 +185,6 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected setPreviousWorkerNodeKey (workerNodeKey: number | undefined): void {
     this.previousWorkerNodeKey = workerNodeKey ?? this.previousWorkerNodeKey
-  }
-
-  /**
-   * Check the next worker node eligibility.
-   */
-  protected checkNextWorkerNodeEligibility (): void {
-    if (!this.isWorkerNodeEligible(this.nextWorkerNodeKey as number)) {
-      delete this.nextWorkerNodeKey
-    }
   }
 
   protected computeDefaultWorkerWeight (): number {

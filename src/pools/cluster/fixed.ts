@@ -61,6 +61,7 @@ export class FixedClusterPool<
 
   /** @inheritDoc */
   protected async destroyWorkerNode (workerNodeKey: number): Promise<void> {
+    this.flagWorkerNodeAsNotReady(workerNodeKey)
     this.flushTasksQueue(workerNodeKey)
     // FIXME: wait for tasks to be finished
     const workerNode = this.workerNodes[workerNodeKey]

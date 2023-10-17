@@ -55,12 +55,13 @@ export class LeastUsedWorkerChoiceStrategy<
   private leastUsedNextWorkerNodeKey (): number | undefined {
     return this.pool.workerNodes.reduce(
       (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
-        return workerNode.usage.tasks.executed +
-          workerNode.usage.tasks.executing +
-          workerNode.usage.tasks.queued <
-          workerNodes[minWorkerNodeKey].usage.tasks.executed +
-            workerNodes[minWorkerNodeKey].usage.tasks.executing +
-            workerNodes[minWorkerNodeKey].usage.tasks.queued
+        return this.isWorkerNodeReady(workerNodeKey) &&
+          workerNode.usage.tasks.executed +
+            workerNode.usage.tasks.executing +
+            workerNode.usage.tasks.queued <
+            workerNodes[minWorkerNodeKey].usage.tasks.executed +
+              workerNodes[minWorkerNodeKey].usage.tasks.executing +
+              workerNodes[minWorkerNodeKey].usage.tasks.queued
           ? workerNodeKey
           : minWorkerNodeKey
       },

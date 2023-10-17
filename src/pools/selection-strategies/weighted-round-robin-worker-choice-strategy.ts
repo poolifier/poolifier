@@ -95,23 +95,25 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   private weightedRoundRobinNextWorkerNodeKey (): number | undefined {
-    const workerWeight =
-      this.opts.weights?.[
-        this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
-      ] ?? this.defaultWorkerWeight
-    if (this.workerNodeVirtualTaskRunTime < workerWeight) {
-      this.workerNodeVirtualTaskRunTime =
-        this.workerNodeVirtualTaskRunTime +
-        this.getWorkerNodeTaskRunTime(
+    do {
+      const workerWeight =
+        this.opts.weights?.[
           this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
-        )
-    } else {
-      this.nextWorkerNodeKey =
-        this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
-          ? 0
-          : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
-      this.workerNodeVirtualTaskRunTime = 0
-    }
+        ] ?? this.defaultWorkerWeight
+      if (this.workerNodeVirtualTaskRunTime < workerWeight) {
+        this.workerNodeVirtualTaskRunTime =
+          this.workerNodeVirtualTaskRunTime +
+          this.getWorkerNodeTaskRunTime(
+            this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
+          )
+      } else {
+        this.nextWorkerNodeKey =
+          this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
+            ? 0
+            : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
+        this.workerNodeVirtualTaskRunTime = 0
+      }
+    } while (!this.isWorkerNodeReady(this.nextWorkerNodeKey as number))
     return this.nextWorkerNodeKey
   }
 }
