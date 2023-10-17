@@ -58,6 +58,7 @@ export class FixedThreadPool<
 
   /** @inheritDoc */
   protected async destroyWorkerNode (workerNodeKey: number): Promise<void> {
+    this.flagWorkerNodeAsNotReady(workerNodeKey)
     this.flushTasksQueue(workerNodeKey)
     // FIXME: wait for tasks to be finished
     const workerNode = this.workerNodes[workerNodeKey]
@@ -80,7 +81,7 @@ export class FixedThreadPool<
     transferList?: TransferListItem[]
   ): void {
     (
-      this.workerNodes[workerNodeKey].messageChannel as MessageChannel
+      this.workerNodes[workerNodeKey]?.messageChannel as MessageChannel
     ).port1.postMessage(
       { ...message, workerId: this.getWorkerInfo(workerNodeKey).id },
       transferList
@@ -108,7 +109,7 @@ export class FixedThreadPool<
     listener: (message: MessageValue<Message>) => void
   ): void {
     (
-      this.workerNodes[workerNodeKey].messageChannel as MessageChannel
+      this.workerNodes[workerNodeKey]?.messageChannel as MessageChannel
     ).port1.on('message', listener)
   }
 
@@ -118,7 +119,7 @@ export class FixedThreadPool<
     listener: (message: MessageValue<Message>) => void
   ): void {
     (
-      this.workerNodes[workerNodeKey].messageChannel as MessageChannel
+      this.workerNodes[workerNodeKey]?.messageChannel as MessageChannel
     ).port1.once('message', listener)
   }
 
@@ -128,7 +129,7 @@ export class FixedThreadPool<
     listener: (message: MessageValue<Message>) => void
   ): void {
     (
-      this.workerNodes[workerNodeKey].messageChannel as MessageChannel
+      this.workerNodes[workerNodeKey]?.messageChannel as MessageChannel
     ).port1.off('message', listener)
   }
 

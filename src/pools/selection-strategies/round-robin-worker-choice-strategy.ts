@@ -70,10 +70,12 @@ export class RoundRobinWorkerChoiceStrategy<
   }
 
   private roundRobinNextWorkerNodeKey (): number | undefined {
-    this.nextWorkerNodeKey =
-      this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
-        ? 0
-        : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
+    do {
+      this.nextWorkerNodeKey =
+        this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
+          ? 0
+          : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
+    } while (!this.isWorkerNodeReady(this.nextWorkerNodeKey))
     return this.nextWorkerNodeKey
   }
 }
