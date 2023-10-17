@@ -10,12 +10,12 @@ dependencies:
     version: 3.0.0
   ws:
     specifier: ^8.14.2
-    version: 8.14.2(bufferutil@4.0.7)(utf-8-validate@6.0.3)
+    version: 8.14.2(bufferutil@4.0.8)(utf-8-validate@6.0.3)
 
 optionalDependencies:
   bufferutil:
-    specifier: ^4.0.7
-    version: 4.0.7
+    specifier: ^4.0.8
+    version: 4.0.8
   utf-8-validate:
     specifier: ^6.0.3
     version: 6.0.3
@@ -45,8 +45,8 @@ packages:
       '@types/node': 20.8.6
     dev: true
 
-  /bufferutil@4.0.7:
-    resolution: {integrity: sha512-kukuqc39WOHtdxtw4UScxF/WVnMFVSQVKhtx3AjZJzhd0RGZZldcrfSEbVsWWe6KNH253574cq5F+wpv0G9pJw==}
+  /bufferutil@4.0.8:
+    resolution: {integrity: sha512-4T53u4PdgsXqKaIctwF8ifXlRTTmEPJ8iEPWFdGZvcf7sbwYo6FKFEX9eNNAnzFZ7EzJAQ3CJeOtCRA4rDp7Pw==}
     engines: {node: '>=6.14.2'}
     requiresBuild: true
     dependencies:
@@ -83,7 +83,7 @@ packages:
       node-gyp-build: 4.6.1
     dev: false
 
-  /ws@8.14.2(bufferutil@4.0.7)(utf-8-validate@6.0.3):
+  /ws@8.14.2(bufferutil@4.0.8)(utf-8-validate@6.0.3):
     resolution: {integrity: sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
@@ -95,6 +95,6 @@ packages:
       utf-8-validate:
         optional: true
     dependencies:
-      bufferutil: 4.0.7
+      bufferutil: 4.0.8
       utf-8-validate: 6.0.3
     dev: false
