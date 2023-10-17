@@ -127,16 +127,6 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /**
-   * Whether the worker node has back pressure or not (i.e. its tasks queue is full).
-   *
-   * @param workerNodeKey - The worker node key.
-   * @returns `true` if the worker node has back pressure, `false` otherwise.
-   */
-  protected hasWorkerNodeBackPressure (workerNodeKey: number): boolean {
-    return this.pool.hasWorkerNodeBackPressure(workerNodeKey)
-  }
-
-  /**
    * Gets the worker node task runtime.
    * If the task statistics require the average runtime, the average runtime is returned.
    * If the task statistics require the median runtime , the median runtime is returned.
