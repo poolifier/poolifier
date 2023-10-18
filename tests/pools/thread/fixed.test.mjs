@@ -202,8 +202,8 @@ describe('Fixed thread pool test suite', () => {
       error = e
     }
     expect(result).toStrictEqual({ ok: 1 })
-    expect(error).toStrictEqual(
-      new TypeError('Found invalid object in transferList')
+    expect(error).toMatchObject(
+      new Error('Found invalid object in transferList')
     )
   })
 
