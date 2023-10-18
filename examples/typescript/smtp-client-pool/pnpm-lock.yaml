@@ -17,8 +17,8 @@ devDependencies:
     specifier: ^20.8.7
     version: 20.8.7
   '@types/nodemailer':
-    specifier: ^6.4.12
-    version: 6.4.12
+    specifier: ^6.4.13
+    version: 6.4.13
   typescript:
     specifier: ^5.2.2
     version: 5.2.2
@@ -31,8 +31,8 @@ packages:
       undici-types: 5.25.3
     dev: true
 
-  /@types/nodemailer@6.4.12:
-    resolution: {integrity: sha512-FMXpf8/U9tpcjGwwOh2nSPKiPmxmIDEwHjYyUMMKYlHn7WSeJeDtT61pnpcjk1QDK9+5ktnyuxXVsTvvTx1zoA==}
+  /@types/nodemailer@6.4.13:
+    resolution: {integrity: sha512-889Vq/77eEpidCwh52sVWpbnqQmIwL8yVBekNbrztVEaWKOCRH3Eq6hjIJh1jwsGDEAJEH0RR+YhpH9mfELLKA==}
     dependencies:
       '@types/node': 20.8.7
     dev: true
