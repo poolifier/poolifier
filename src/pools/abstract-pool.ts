@@ -1276,6 +1276,8 @@ export abstract class AbstractPool<
               workerUsage.tasks.executing === 0 &&
               this.tasksQueueSize(localWorkerNodeKey) === 0)))
       ) {
+        // Flag the worker node as not ready immediately
+        this.flagWorkerNodeAsNotReady(localWorkerNodeKey)
         this.destroyWorkerNode(localWorkerNodeKey).catch(error => {
           this.emitter?.emit(PoolEvents.error, error)
         })
@@ -1639,6 +1641,10 @@ export abstract class AbstractPool<
       this.workerNodes.splice(workerNodeKey, 1)
       this.workerChoiceStrategyContext.remove(workerNodeKey)
     }
+  }
+
+  protected flagWorkerNodeAsNotReady (workerNodeKey: number): void {
+    this.getWorkerInfo(workerNodeKey).ready = false
   }
 
   /** @inheritDoc */

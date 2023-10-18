@@ -70,8 +70,9 @@ export class LeastEluWorkerChoiceStrategy<
   private leastEluNextWorkerNodeKey (): number | undefined {
     return this.pool.workerNodes.reduce(
       (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
-        return (workerNode.usage.elu.active.aggregate ?? 0) <
-          (workerNodes[minWorkerNodeKey].usage.elu.active.aggregate ?? 0)
+        return this.isWorkerNodeReady(workerNodeKey) &&
+          (workerNode.usage.elu.active.aggregate ?? 0) <
+            (workerNodes[minWorkerNodeKey].usage.elu.active.aggregate ?? 0)
           ? workerNodeKey
           : minWorkerNodeKey
       },

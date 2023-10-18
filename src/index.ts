@@ -13,7 +13,7 @@ export type {
   PoolType,
   TasksQueueOptions
 } from './pools/pool'
-export { WorkerTypes } from './pools/worker'
+export { type WorkerNodeEventDetail, WorkerTypes } from './pools/worker'
 export type {
   ErrorHandler,
   EventLoopUtilizationMeasurementStatistics,
@@ -52,8 +52,8 @@ export { ThreadWorker } from './worker/thread-worker'
 export { KillBehaviors } from './worker/worker-options'
 export type {
   KillBehavior,
-  WorkerOptions,
-  KillHandler
+  KillHandler,
+  WorkerOptions
 } from './worker/worker-options'
 export type {
   TaskAsyncFunction,
@@ -66,8 +66,8 @@ export type {
   MessageValue,
   PromiseResponseWrapper,
   Task,
-  WorkerError,
   TaskPerformance,
+  WorkerError,
   WorkerStatistics,
   Writable
 } from './utility-types'
