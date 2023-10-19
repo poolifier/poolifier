@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Avoid null exception at sending message to worker.
+
 ## [3.0.2] - 2023-10-17
 
 ### Fixed
 
-- Fix race condition at dynamic worker node task assignment and scheduled removal. See issue [#1468](https://github.com/poolifier/poolifier/issues/1468) and [#1496](https://github.com/poolifier/poolifier/issues/1496)
+- Fix race condition at dynamic worker node task assignment and scheduled removal. See issue [#1468](https://github.com/poolifier/poolifier/issues/1468) and [#1496](https://github.com/poolifier/poolifier/issues/1496).
 
 ## [3.0.1] - 2023-10-16
 
@@ -21,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Switch the worker node eventing code to `EventTarget` API .
+- Switch the worker node eventing code to `EventTarget` API.
 
 ## [3.0.0] - 2023-10-08
 
