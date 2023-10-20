@@ -71,7 +71,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public choose (): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    return this.weightedRoundRobinNextWorkerNodeKey()
+    this.weightedRoundRobinNextWorkerNodeKey()
+    this.checkNextWorkerNodeReadiness()
+    return this.nextWorkerNodeKey
   }
 
   /** @inheritDoc */
@@ -95,25 +97,23 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   private weightedRoundRobinNextWorkerNodeKey (): number | undefined {
-    do {
-      const workerWeight =
-        this.opts.weights?.[
+    const workerWeight =
+      this.opts.weights?.[
+        this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
+      ] ?? this.defaultWorkerWeight
+    if (this.workerNodeVirtualTaskRunTime < workerWeight) {
+      this.workerNodeVirtualTaskRunTime =
+        this.workerNodeVirtualTaskRunTime +
+        this.getWorkerNodeTaskRunTime(
           this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
-        ] ?? this.defaultWorkerWeight
-      if (this.workerNodeVirtualTaskRunTime < workerWeight) {
-        this.workerNodeVirtualTaskRunTime =
-          this.workerNodeVirtualTaskRunTime +
-          this.getWorkerNodeTaskRunTime(
-            this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
-          )
-      } else {
-        this.nextWorkerNodeKey =
-          this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
-            ? 0
-            : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
-        this.workerNodeVirtualTaskRunTime = 0
-      }
-    } while (!this.isWorkerNodeReady(this.nextWorkerNodeKey as number))
+        )
+    } else {
+      this.nextWorkerNodeKey =
+        this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
+          ? 0
+          : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
+      this.workerNodeVirtualTaskRunTime = 0
+    }
     return this.nextWorkerNodeKey
   }
 }

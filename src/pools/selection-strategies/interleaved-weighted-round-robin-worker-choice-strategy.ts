@@ -122,20 +122,18 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   }
 
   private interleavedWeightedRoundRobinNextWorkerNodeId (): void {
-    do {
-      if (
-        this.roundId === this.roundWeights.length - 1 &&
-        this.workerNodeId === this.pool.workerNodes.length - 1
-      ) {
-        this.roundId = 0
-        this.workerNodeId = 0
-      } else if (this.workerNodeId === this.pool.workerNodes.length - 1) {
-        this.roundId = this.roundId + 1
-        this.workerNodeId = 0
-      } else {
-        this.workerNodeId = this.workerNodeId + 1
-      }
-    } while (!this.isWorkerNodeReady(this.workerNodeId))
+    if (
+      this.roundId === this.roundWeights.length - 1 &&
+      this.workerNodeId === this.pool.workerNodes.length - 1
+    ) {
+      this.roundId = 0
+      this.workerNodeId = 0
+    } else if (this.workerNodeId === this.pool.workerNodes.length - 1) {
+      this.roundId = this.roundId + 1
+      this.workerNodeId = 0
+    } else {
+      this.workerNodeId = this.workerNodeId + 1
+    }
   }
 
   /** @inheritDoc */
