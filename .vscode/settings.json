@@ -58,7 +58,7 @@
     "workerpool"
   ],
   "sonarlint.connectedMode.project": {
-    "connectionId": "pioardi",
-    "projectKey": "pioardi_poolifier"
+    "connectionId": "poolifier",
+    "projectKey": "poolifier_poolifier"
   }
 }

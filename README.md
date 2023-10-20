@@ -13,8 +13,8 @@
 [![GitHub commit activity (master)](https://img.shields.io/github/commit-activity/m/poolifier/poolifier/master?color=brightgreen&logo=github)](https://github.com/poolifier/poolifier/graphs/commit-activity)
 [![Weekly Downloads](https://badgen.net/npm/dw/poolifier?icon=npm)](https://www.npmjs.com/package/poolifier)
 [![CI Workflow](https://github.com/poolifier/poolifier/actions/workflows/ci.yml/badge.svg)](https://github.com/poolifier/poolifier/actions/workflows/ci.yml)
-[![Code Coverage](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=coverage)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=alert_status)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
+[![Code Coverage](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=coverage)](https://sonarcloud.io/dashboard?id=poolifier_poolifier)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=alert_status)](https://sonarcloud.io/dashboard?id=poolifier_poolifier)
 [![Javascript Standard Style Guide](<https://badgen.net/static/code style/standard/green>)](https://standardjs.com)
 [![Discord](https://badgen.net/discord/online-members/vXxZhyb3b6?icon=discord&label=discord&color=green)](https://discord.gg/vXxZhyb3b6)
 [![Open Collective](https://opencollective.com/poolifier/tiers/badge.svg)](https://opencollective.com/poolifier)
@@ -51,13 +51,13 @@ Please consult our [general guidelines](#general-guidelines).
 - Error handling out of the box :white_check_mark:
 - Widely tested :white_check_mark:
 - Active community :white_check_mark:
-- Code quality [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=bugs)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
-  [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=code_smells)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
-  [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
-  [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
-  [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
-  [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=sqale_index)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
-- Code security [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=security_rating)](https://sonarcloud.io/dashboard?id=pioardi_poolifier) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pioardi_poolifier&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=pioardi_poolifier)
+- Code quality [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=bugs)](https://sonarcloud.io/dashboard?id=poolifier_poolifier)
+  [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=code_smells)](https://sonarcloud.io/dashboard?id=poolifier_poolifier)
+  [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=poolifier_poolifier)
+  [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=poolifier_poolifier)
+  [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=poolifier_poolifier)
+  [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=sqale_index)](https://sonarcloud.io/dashboard?id=poolifier_poolifier)
+- Code security [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=security_rating)](https://sonarcloud.io/dashboard?id=poolifier_poolifier) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=poolifier_poolifier)
 
 ## Table of contents
 

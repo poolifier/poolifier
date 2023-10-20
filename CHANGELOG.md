@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.3] - 2023-10-19
+
 ### Fixed
 
 - Avoid null exception at sending message to worker.
+- Avoid null exception at checking worker node readiness.
 
 ## [3.0.2] - 2023-10-17
 

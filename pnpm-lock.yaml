@@ -9,8 +9,8 @@ overrides:
 
 devDependencies:
   '@biomejs/biome':
-    specifier: ^1.2.2
-    version: 1.2.2
+    specifier: ^1.3.0
+    version: 1.3.0
   '@commitlint/cli':
     specifier: ^17.8.0
     version: 17.8.0
@@ -84,8 +84,8 @@ devDependencies:
     specifier: ^8.0.3
     version: 8.0.3
   lint-staged:
-    specifier: ^15.0.1
-    version: 15.0.1
+    specifier: ^15.0.2
+    version: 15.0.2
   microtime:
     specifier: ^3.1.1
     version: 3.1.1
@@ -117,8 +117,8 @@ devDependencies:
     specifier: ^6.1.0
     version: 6.1.0(rollup@4.1.4)(typescript@5.2.2)
   sinon:
-    specifier: ^16.1.1
-    version: 16.1.1
+    specifier: ^16.1.3
+    version: 16.1.3
   source-map-support:
     specifier: ^0.5.21
     version: 0.5.21
@@ -167,22 +167,22 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@biomejs/biome@1.2.2:
-    resolution: {integrity: sha512-fXwXi56ZdaKO/N3rTmhWw41UxstoviODk+wia4WWNSlm23r8xJ/NxjaZ88scV2IsmsFHqc8rmwb2dkrStAdIEw==}
+  /@biomejs/biome@1.3.0:
+    resolution: {integrity: sha512-IKe8eGhiW5PfD4B3GMerS9YucvL1cqEqocVdeBi/Q8o63znqy7aLU2Xc4DAw1qg9OurWxemAp2RQorSqYHwMow==}
     engines: {node: '>=14.*'}
     hasBin: true
     requiresBuild: true
     optionalDependencies:
-      '@biomejs/cli-darwin-arm64': 1.2.2
-      '@biomejs/cli-darwin-x64': 1.2.2
-      '@biomejs/cli-linux-arm64': 1.2.2
-      '@biomejs/cli-linux-x64': 1.2.2
-      '@biomejs/cli-win32-arm64': 1.2.2
-      '@biomejs/cli-win32-x64': 1.2.2
+      '@biomejs/cli-darwin-arm64': 1.3.0
+      '@biomejs/cli-darwin-x64': 1.3.0
+      '@biomejs/cli-linux-arm64': 1.3.0
+      '@biomejs/cli-linux-x64': 1.3.0
+      '@biomejs/cli-win32-arm64': 1.3.0
+      '@biomejs/cli-win32-x64': 1.3.0
     dev: true
 
-  /@biomejs/cli-darwin-arm64@1.2.2:
-    resolution: {integrity: sha512-Fx1IURKhoqH6wPawtKLT6wcfMSjRRcNK8+VWau0iDOjXvNtjJpSmICbU89B7Vt/gZRwPqkfDMBkFwm6V5vFTSQ==}
+  /@biomejs/cli-darwin-arm64@1.3.0:
+    resolution: {integrity: sha512-O2NhR3ZXw1QknvoKAxwn76U9q/RYvLsZwbYl6+iY79gnL2SL1bljuFMUzRS5R1nNs3H/LOrHUq/JpleKjOwGUw==}
     engines: {node: '>=14.*'}
     cpu: [arm64]
     os: [darwin]
@@ -190,8 +190,8 @@ packages:
     dev: true
     optional: true
 
-  /@biomejs/cli-darwin-x64@1.2.2:
-    resolution: {integrity: sha512-JNaAFOI/ZisnmzvcFNd73geJxaFaN2L4YsWM6cgBeKyLY/ycl9C/PBTFfEmeB1c7f5XIIal8P2cj47kLJpN5Ig==}
+  /@biomejs/cli-darwin-x64@1.3.0:
+    resolution: {integrity: sha512-8rljS+4nLVuSPuPmuFp64bMZqwmGv9O/6wKoVk0kzeaVD1elSzMz+ZoTrRodbI1Hl8kItDdGf431L7S1EqRokQ==}
     engines: {node: '>=14.*'}
     cpu: [x64]
     os: [darwin]
@@ -199,8 +199,8 @@ packages:
     dev: true
     optional: true
 
-  /@biomejs/cli-linux-arm64@1.2.2:
-    resolution: {integrity: sha512-JHXRnfhOLx8UO/Fcyn2c5pFRri0XKqRZm2wf5oH5GSfLVpckDw2X15dYGbu3nmfM/3pcAaTV46pUpjrCnaAieg==}
+  /@biomejs/cli-linux-arm64@1.3.0:
+    resolution: {integrity: sha512-vQIEaXQf1pPJPetcd4jfM3118sG4AfZvbDuLnU/4lCUIs0XuwPYMcx2KzwXu2m0tn6J4xQsZHvNQyHpiBbp9vA==}
     engines: {node: '>=14.*'}
     cpu: [arm64]
     os: [linux]
@@ -208,8 +208,8 @@ packages:
     dev: true
     optional: true
 
-  /@biomejs/cli-linux-x64@1.2.2:
-    resolution: {integrity: sha512-5Zr+iM7lUKsw81p9PkXRESuH2/AhRZ6RCWkgE+FSLcxMhXy/4RDR+o2YQDsJM6cWKIzOJM05vDHTGrDq7vXE4A==}
+  /@biomejs/cli-linux-x64@1.3.0:
+    resolution: {integrity: sha512-ZH+PvgAZ3nr69O8Tb+MO+08k+0PhG0paWhkIaUW1AUlD7ruIpk+dlHp3DjHauSPFDZkNIxj6utwI1c5lP8hF9w==}
     engines: {node: '>=14.*'}
     cpu: [x64]
     os: [linux]
@@ -217,8 +217,8 @@ packages:
     dev: true
     optional: true
 
-  /@biomejs/cli-win32-arm64@1.2.2:
-    resolution: {integrity: sha512-HvUcG2p++RvYP0zfOqh+DgiUUH+JI/uETr0kzWlOJ9F3lsG525pkywg4RSd4OvJd7Wpd3wt3UpN/A4IEJaVmbA==}
+  /@biomejs/cli-win32-arm64@1.3.0:
+    resolution: {integrity: sha512-Mfo1oWXnuOL4zWidx0A7jQSs6+uZZYZB4wuD9lBCbuoQoRNFobGEs11z/iy8XW5mucx+MW4ylTAcDAS+5/2kEw==}
     engines: {node: '>=14.*'}
     cpu: [arm64]
     os: [win32]
@@ -226,8 +226,8 @@ packages:
     dev: true
     optional: true
 
-  /@biomejs/cli-win32-x64@1.2.2:
-    resolution: {integrity: sha512-bfaFJwqJ9ApFga2o88OaROSd3pasYRzRGXHJWAE9VUUKdSNSTYxHOqVrNvV54yYPtL6Kt9xkuZa4HNu9it3TaA==}
+  /@biomejs/cli-win32-x64@1.3.0:
+    resolution: {integrity: sha512-t2EPg+zeMzimBoURfj9CKeNObCZ/MbFxdQj0+K5Q+LR41fUaevG/wOrM+Swh5emRXdSBUm0qsTq3xiyv77C3Ww==}
     engines: {node: '>=14.*'}
     cpu: [x64]
     os: [win32]
@@ -507,7 +507,7 @@ packages:
       '@types/istanbul-lib-coverage': 2.0.5
       '@types/istanbul-reports': 3.0.3
       '@types/node': 20.8.7
-      '@types/yargs': 17.0.28
+      '@types/yargs': 17.0.29
       chalk: 4.1.2
     dev: true
 
@@ -1040,22 +1040,22 @@ packages:
     resolution: {integrity: sha512-ehPtgRgaULsFG8x0NeYJvmyH1hmlfsNLujHe9dQEia/7MAJYdzMSi19JtchUHjmBA6XC/75dK55mzZH+RyieSg==}
     dev: true
 
-  /@types/semver@7.5.3:
-    resolution: {integrity: sha512-OxepLK9EuNEIPxWNME+C6WwbRAOOI2o2BaQEGzz5Lu2e4Z5eDnEo+/aVEDMIXywoJitJ7xWd641wrGLZdtwRyw==}
+  /@types/semver@7.5.4:
+    resolution: {integrity: sha512-MMzuxN3GdFwskAnb6fz0orFvhfqi752yjaXylr0Rp4oDg5H0Zn1IuyRhDVvYOwAXoJirx2xuS16I3WjxnAIHiQ==}
     dev: true
 
   /@types/stack-utils@2.0.2:
     resolution: {integrity: sha512-g7CK9nHdwjK2n0ymT2CW698FuWJRIx+RP6embAzZ2Qi8/ilIrA1Imt2LVSeHUzKvpoi7BhmmQcXz95eS0f2JXw==}
     dev: true
 
-  /@types/yargs-parser@21.0.1:
-    resolution: {integrity: sha512-axdPBuLuEJt0c4yI5OZssC19K2Mq1uKdrfZBzuxLvaztgqUtFYZUNw7lETExPYJR9jdEoIg4mb7RQKRQzOkeGQ==}
+  /@types/yargs-parser@21.0.2:
+    resolution: {integrity: sha512-5qcvofLPbfjmBfKaLfj/+f+Sbd6pN4zl7w7VSVI5uz7m9QZTuB2aZAa2uo1wHFBNN2x6g/SoTkXmd8mQnQF2Cw==}
     dev: true
 
-  /@types/yargs@17.0.28:
-    resolution: {integrity: sha512-N3e3fkS86hNhtk6BEnc0rj3zcehaxx8QWhCROJkqpl5Zaoi7nAic3jH8q94jVD3zu5LGk+PUB6KAiDmimYOEQw==}
+  /@types/yargs@17.0.29:
+    resolution: {integrity: sha512-nacjqA3ee9zRF/++a3FUY1suHTFKZeHba2n8WeDw9cCVdmzmHpIxyzOJBcpHvvEmS8E9KqWlSnWHUkOrkhWcvA==}
     dependencies:
-      '@types/yargs-parser': 21.0.1
+      '@types/yargs-parser': 21.0.2
     dev: true
 
   /@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.51.0)(typescript@5.2.2):
@@ -1272,7 +1272,7 @@ packages:
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.51.0)
       '@types/json-schema': 7.0.14
-      '@types/semver': 7.5.3
+      '@types/semver': 7.5.4
       '@typescript-eslint/scope-manager': 5.62.0
       '@typescript-eslint/types': 5.62.0
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.2.2)
@@ -1292,7 +1292,7 @@ packages:
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.51.0)
       '@types/json-schema': 7.0.14
-      '@types/semver': 7.5.3
+      '@types/semver': 7.5.4
       '@typescript-eslint/scope-manager': 6.8.0
       '@typescript-eslint/types': 6.8.0
       '@typescript-eslint/typescript-estree': 6.8.0(typescript@5.2.2)
@@ -4272,8 +4272,8 @@ packages:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
     dev: true
 
-  /lint-staged@15.0.1:
-    resolution: {integrity: sha512-2IU5OWmCaxch0X0+IBF4/v7sutpB+F3qoXbro43pYjQTOo5wumckjxoxn47pQBqqBsCWrD5HnI2uG/zJA7isew==}
+  /lint-staged@15.0.2:
+    resolution: {integrity: sha512-vnEy7pFTHyVuDmCAIFKR5QDO8XLVlPFQQyujQ/STOxe40ICWqJ6knS2wSJ/ffX/Lw0rz83luRDh+ET7toN+rOw==}
     engines: {node: '>=18.12.0'}
     hasBin: true
     dependencies:
@@ -4282,17 +4282,17 @@ packages:
       debug: 4.3.4(supports-color@8.1.1)
       execa: 8.0.1
       lilconfig: 2.1.0
-      listr2: 7.0.1
+      listr2: 7.0.2
       micromatch: 4.0.5
       pidtree: 0.6.0
       string-argv: 0.3.2
-      yaml: 2.3.2
+      yaml: 2.3.3
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /listr2@7.0.1:
-    resolution: {integrity: sha512-nz+7hwgbDp8eWNoDgzdl4hA/xDSLrNRzPu1TLgOYs6l5Y+Ma6zVWWy9Oyt9TQFONwKoSPoka3H50D3vD5EuNwg==}
+  /listr2@7.0.2:
+    resolution: {integrity: sha512-rJysbR9GKIalhTbVL2tYbF2hVyDnrf7pFUZBwjPaMIdadYHmeT+EVi/Bu3qd7ETQPahTotg2WRCatXwRBW554g==}
     engines: {node: '>=16.0.0'}
     dependencies:
       cli-truncate: 3.1.0
@@ -5732,8 +5732,8 @@ packages:
     engines: {node: '>=14'}
     dev: true
 
-  /sinon@16.1.1:
-    resolution: {integrity: sha512-tu0DS1g4Rm2xHT9mWK5g5aTogTXWwGGz3fQK/L5fnECPkcAQ3YcbAbJ4XxOkpDDnV4EV5n+lee5neq5QyVxoSg==}
+  /sinon@16.1.3:
+    resolution: {integrity: sha512-mjnWWeyxcAf9nC0bXcPmiDut+oE8HYridTNzBbF98AYVLmWwGRp2ISEpyhYflG1ifILT+eNn3BmKUJPxjXUPlA==}
     requiresBuild: true
     dependencies:
       '@sinonjs/commons': 3.0.0
@@ -6577,8 +6577,8 @@ packages:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
     dev: true
 
-  /yaml@2.3.2:
-    resolution: {integrity: sha512-N/lyzTPaJasoDmfV7YTrYCI0G/3ivm/9wdG0aHuheKowWQwGTsK0Eoiw6utmzAnI6pkJa0DUVygvp3spqqEKXg==}
+  /yaml@2.3.3:
+    resolution: {integrity: sha512-zw0VAJxgeZ6+++/su5AFoqBbZbrEakwu+X0M5HmcwUiBL7AzcuPKjj5we4xfQLp78LkEMpD0cOnUhmgOVy3KdQ==}
     engines: {node: '>= 14'}
     dev: true
 
