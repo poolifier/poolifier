@@ -21,9 +21,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^4.24.2",
+    "fastify": "^4.24.3",
     "fastify-plugin": "^4.5.1",
-    "poolifier": "^3.0.2"
+    "poolifier": "^3.0.3"
   },
   "devDependencies": {
     "@types/node": "^20.8.7",
