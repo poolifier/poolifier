@@ -6,14 +6,15 @@ on:
     branches:
       - master
 
-permissions:
-  contents: write
-  deployments: write
-
 jobs:
   internal-benchmark:
     if: github.repository == 'poolifier/poolifier'
     runs-on: [self-hosted, internal-benchmark]
+    env:
+      BENCHER_PROJECT: poolifier
+      BENCHER_API_TOKEN: ${{ secrets.BENCHER_API_TOKEN }}
+      BENCHER_ADAPTER: js_benchmark
+      BENCHER_TESTBED: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,18 +29,13 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --ignore-scripts --frozen-lockfile
+      - uses: bencherdev/bencher@main
       - name: Run production benchmark
-        run: pnpm benchmark:prod | tee ./benchmarks/internal/output.txt
-      - name: Store production benchmark result
-        uses: benchmark-action/github-action-benchmark@v1
-        with:
-          name: Internal benchmark
-          tool: 'benchmarkjs'
-          output-file-path: ./benchmarks/internal/output.txt
-          github-token: ${{ secrets.BENCHMARK_RESULTS_TOKEN }}
-          auto-push: true
-          alert-threshold: '200%'
-          comment-on-alert: true
-          fail-on-alert: true
-          max-items-in-chart: 100
-          gh-repository: 'github.com/poolifier/benchmark-results'
+        run: |
+          bencher run \
+          --if-branch "$GITHUB_REF_NAME" \
+          --else-if-branch "$GITHUB_BASE_REF" \
+          --else-if-branch master \
+          --err \
+          --github-actions ${{ secrets.GITHUB_TOKEN }} \
+          "pnpm benchmark:prod"
