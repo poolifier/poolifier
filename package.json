@@ -113,7 +113,7 @@
     "@typescript-eslint/parser": "^6.8.0",
     "benchmark": "^2.1.4",
     "c8": "^8.0.1",
-    "eslint": "^8.51.0",
+    "eslint": "^8.52.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-config-standard-with-typescript": "^39.1.1",
     "eslint-define-config": "^1.24.1",
