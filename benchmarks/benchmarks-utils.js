@@ -76,12 +76,15 @@ const runPoolifierPool = async (pool, { taskExecutions, workerData }) => {
 
 const runPoolifierPoolBenchmark = async (
   name,
-  pool,
+  workerType,
+  poolType,
+  poolSize,
   { taskExecutions, workerData }
 ) => {
+  const pool = buildPoolifierPool(workerType, poolType, poolSize)
+  const suite = new Benchmark.Suite(name)
   return await new Promise((resolve, reject) => {
     try {
-      const suite = new Benchmark.Suite(name)
       for (const workerChoiceStrategy of Object.values(
         WorkerChoiceStrategies
       )) {
@@ -151,12 +154,16 @@ const runPoolifierPoolBenchmark = async (
               LIST_FORMATTER.format(this.filter('fastest').map('name'))
           )
           await pool.destroy()
-          pool = undefined
           resolve()
         })
         .run({ async: true })
     } catch (error) {
-      reject(error)
+      pool
+        .destroy()
+        .then(() => {
+          return reject(error)
+        })
+        .catch(() => {})
     }
   })
 }
@@ -249,7 +256,6 @@ const executeTaskFunction = data => {
 
 module.exports = {
   LIST_FORMATTER,
-  buildPoolifierPool,
   executeTaskFunction,
   generateRandomInteger,
   runPoolifierPoolBenchmark

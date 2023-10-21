@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.4] - 2023-10-20
+
+### Changed
+
+- Switch to Bencher for benchmarking: [https://bencher.dev/perf/poolifier](https://bencher.dev/perf/poolifier).
+- Use builtin retry mechanism in worker choice strategies instead of custom one.
+
 ## [3.0.3] - 2023-10-19
 
 ### Fixed

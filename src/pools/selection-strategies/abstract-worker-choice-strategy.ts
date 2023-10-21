@@ -127,6 +127,15 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /**
+   * Check the next worker node readiness.
+   */
+  protected checkNextWorkerNodeReadiness (): void {
+    if (!this.isWorkerNodeReady(this.nextWorkerNodeKey as number)) {
+      delete this.nextWorkerNodeKey
+    }
+  }
+
+  /**
    * Gets the worker node task runtime.
    * If the task statistics require the average runtime, the average runtime is returned.
    * If the task statistics require the median runtime , the median runtime is returned.
