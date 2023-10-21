@@ -15,7 +15,7 @@ const workerData = {
 
 // FixedThreadPool
 await runPoolifierPoolBenchmark(
-  'Poolifier FixedThreadPool',
+  'FixedThreadPool',
   WorkerTypes.thread,
   PoolTypes.fixed,
   poolSize,
@@ -27,7 +27,7 @@ await runPoolifierPoolBenchmark(
 
 // DynamicThreadPool
 await runPoolifierPoolBenchmark(
-  'Poolifier DynamicThreadPool',
+  'DynamicThreadPool',
   WorkerTypes.thread,
   PoolTypes.dynamic,
   poolSize,
@@ -39,7 +39,7 @@ await runPoolifierPoolBenchmark(
 
 // FixedClusterPool
 await runPoolifierPoolBenchmark(
-  'Poolifier FixedClusterPool',
+  'FixedClusterPool',
   WorkerTypes.cluster,
   PoolTypes.fixed,
   poolSize,
@@ -51,7 +51,7 @@ await runPoolifierPoolBenchmark(
 
 // DynamicClusterPool
 await runPoolifierPoolBenchmark(
-  'Poolifier DynamicClusterPool',
+  'DynamicClusterPool',
   WorkerTypes.cluster,
   PoolTypes.dynamic,
   poolSize,
