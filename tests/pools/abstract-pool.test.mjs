@@ -38,7 +38,16 @@ describe('Abstract pool test suite', () => {
     restore()
   })
 
-  it('Simulate pool creation from a non main thread/process', () => {
+  it('Verify that pool can be created and destroyed', async () => {
+    const pool = new FixedThreadPool(
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.mjs'
+    )
+    expect(pool).toBeInstanceOf(FixedThreadPool)
+    await pool.destroy()
+  })
+
+  it('Verify that pool cannot be created from a non main thread/process', () => {
     expect(
       () =>
         new StubPoolWithIsMain(
@@ -1408,21 +1417,21 @@ describe('Abstract pool test suite', () => {
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
     await expect(dynamicThreadPool.setDefaultTaskFunction(0)).rejects.toThrow(
       new Error(
-        "Task function operation 'default' failed on worker 31 with error: 'TypeError: name parameter is not a string'"
+        "Task function operation 'default' failed on worker 33 with error: 'TypeError: name parameter is not a string'"
       )
     )
     await expect(
       dynamicThreadPool.setDefaultTaskFunction(DEFAULT_TASK_NAME)
     ).rejects.toThrow(
       new Error(
-        "Task function operation 'default' failed on worker 31 with error: 'Error: Cannot set the default task function reserved name as the default task function'"
+        "Task function operation 'default' failed on worker 33 with error: 'Error: Cannot set the default task function reserved name as the default task function'"
       )
     )
     await expect(
       dynamicThreadPool.setDefaultTaskFunction('unknown')
     ).rejects.toThrow(
       new Error(
-        "Task function operation 'default' failed on worker 31 with error: 'Error: Cannot set the default task function to a non-existing task function'"
+        "Task function operation 'default' failed on worker 33 with error: 'Error: Cannot set the default task function to a non-existing task function'"
       )
     )
     expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
