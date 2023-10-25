@@ -250,3 +250,27 @@ export const min = (...args: number[]): number =>
  */
 export const max = (...args: number[]): number =>
   args.reduce((maximum, num) => (maximum > num ? maximum : num), -Infinity)
+
+/**
+ * Wraps a function so that it can only be called once.
+ *
+ * @param fn - The function to wrap.
+ * @param context - The context to bind the function to.
+ * @returns The wrapped function.
+ * @internal
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const once = <T, A extends any[], R>(
+  fn: (...args: A) => R,
+  context: T
+): ((...args: A) => R) => {
+  let result: R
+  return (...args: A) => {
+    if (fn != null) {
+      result = fn.apply<T, A, R>(context, args)
+      ;(fn as unknown as undefined) = (context as unknown as undefined) =
+        undefined
+    }
+    return result
+  }
+}

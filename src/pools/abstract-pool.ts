@@ -17,6 +17,7 @@ import {
   max,
   median,
   min,
+  once,
   round
 } from '../utils'
 import { KillBehaviors } from '../worker/worker-options'
@@ -1539,10 +1540,21 @@ export abstract class AbstractPool<
     const workerInfo = this.getWorkerInfo(
       this.getWorkerNodeKeyByWorkerId(message.workerId)
     )
+    if (!this.started && workerInfo.ready) {
+      throw new Error(
+        `Ready response already received by worker ${
+          message.workerId as number
+        }`
+      )
+    }
     workerInfo.ready = message.ready as boolean
     workerInfo.taskFunctionNames = message.taskFunctionNames
     if (this.ready) {
-      this.emitter?.emit(PoolEvents.ready, this.info)
+      const emitPoolReadyEventOnce = once(
+        () => this.emitter?.emit(PoolEvents.ready, this.info),
+        this
+      )
+      emitPoolReadyEventOnce()
     }
   }
 
