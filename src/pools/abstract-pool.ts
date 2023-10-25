@@ -974,6 +974,7 @@ export abstract class AbstractPool<
           )
         }
       }
+      // FIXME: should be registered only once
       this.registerWorkerMessageListener(workerNodeKey, killMessageListener)
       this.sendToWorker(workerNodeKey, { kill: true })
     })
