@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Ensure worker ready response can be received only once.
 - Ensure pool ready event can be emitted only once.
 
 ## [3.0.4] - 2023-10-20

@@ -1540,13 +1540,6 @@ export abstract class AbstractPool<
     const workerInfo = this.getWorkerInfo(
       this.getWorkerNodeKeyByWorkerId(message.workerId)
     )
-    if (!this.started && workerInfo.ready) {
-      throw new Error(
-        `Ready response already received by worker ${
-          message.workerId as number
-        }`
-      )
-    }
     workerInfo.ready = message.ready as boolean
     workerInfo.taskFunctionNames = message.taskFunctionNames
     if (this.ready) {
