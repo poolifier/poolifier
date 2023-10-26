@@ -4,11 +4,15 @@ import type { Task } from '../utility-types'
 
 /**
  * Callback invoked when the worker has started successfully.
+ *
+ * @typeParam Worker - Type of worker.
  */
 export type OnlineHandler<Worker extends IWorker> = (this: Worker) => void
 
 /**
  * Callback invoked if the worker has received a message.
+ *
+ * @typeParam Worker - Type of worker.
  */
 export type MessageHandler<Worker extends IWorker> = (
   this: Worker,
@@ -17,6 +21,8 @@ export type MessageHandler<Worker extends IWorker> = (
 
 /**
  * Callback invoked if the worker raised an error.
+ *
+ * @typeParam Worker - Type of worker.
  */
 export type ErrorHandler<Worker extends IWorker> = (
   this: Worker,
@@ -25,6 +31,8 @@ export type ErrorHandler<Worker extends IWorker> = (
 
 /**
  * Callback invoked when the worker exits successfully.
+ *
+ * @typeParam Worker - Type of worker.
  */
 export type ExitHandler<Worker extends IWorker> = (
   this: Worker,

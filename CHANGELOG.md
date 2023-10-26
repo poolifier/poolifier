@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Ensure pool ready event can be emitted only once.
+
 ## [3.0.4] - 2023-10-20
 
 ### Changed
