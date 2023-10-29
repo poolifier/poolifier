@@ -86,8 +86,8 @@ export default defineConfig([
       del({
         targets: ['./lib/*']
       }),
-      isAnalyzeBuild && analyze(),
-      isDocumentationBuild && command('pnpm typedoc')
+      Boolean(isAnalyzeBuild) && analyze(),
+      Boolean(isDocumentationBuild) && command('pnpm typedoc')
     ]
   },
   {
@@ -106,7 +106,7 @@ export default defineConfig([
         targets: ['./lib/dts'],
         hook: 'buildEnd'
       }),
-      isAnalyzeBuild && analyze()
+      Boolean(isAnalyzeBuild) && analyze()
     ]
   }
 ])
