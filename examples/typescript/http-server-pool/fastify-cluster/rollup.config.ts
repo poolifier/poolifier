@@ -1,4 +1,3 @@
-/* eslint-disable n/no-unpublished-import */
 import typescript from '@rollup/plugin-typescript'
 import del from 'rollup-plugin-delete'
 import { defineConfig } from 'rollup'
@@ -20,7 +19,7 @@ export default defineConfig({
       sourcemap: true
     }
   ],
-  external: ['express', 'node:path', 'node:url', 'poolifier'],
+  external: ['fastify', 'node:path', 'node:url', 'poolifier'],
   plugins: [
     typescript(),
     del({

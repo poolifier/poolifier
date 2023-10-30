@@ -10,7 +10,7 @@
     "pnpm": "8.10.0"
   },
   "scripts": {
-    "build": "rollup --config",
+    "build": "rollup --config --configPlugin typescript",
     "start": "node dist/main.cjs",
     "start:esm": "node dist/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
