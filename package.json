@@ -109,8 +109,8 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.5",
     "@types/node": "^20.8.9",
-    "@typescript-eslint/eslint-plugin": "^6.9.0",
-    "@typescript-eslint/parser": "^6.9.0",
+    "@typescript-eslint/eslint-plugin": "^6.9.1",
+    "@typescript-eslint/parser": "^6.9.1",
     "benchmark": "^2.1.4",
     "c8": "^8.0.1",
     "eslint": "^8.52.0",
@@ -140,7 +140,7 @@
     "sinon": "^17.0.0",
     "source-map-support": "^0.5.21",
     "ts-standard": "^12.0.2",
-    "typedoc": "^0.25.2",
+    "typedoc": "^0.25.3",
     "typescript": "~5.2.2"
   }
 }
