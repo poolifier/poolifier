@@ -1,14 +1,9 @@
-/* eslint-disable n/no-unpublished-import */
 import typescript from '@rollup/plugin-typescript'
 import del from 'rollup-plugin-delete'
 import { defineConfig } from 'rollup'
 
 export default defineConfig({
-  input: [
-    './src/main.ts',
-    './src/websocket-server-worker.ts',
-    './src/request-handler-worker.ts'
-  ],
+  input: ['./src/main.ts', './src/worker.ts'],
   strictDeprecations: true,
   output: [
     {
@@ -24,7 +19,7 @@ export default defineConfig({
       sourcemap: true
     }
   ],
-  external: ['node:path', 'node:url', 'poolifier', 'ws'],
+  external: ['express', 'node:path', 'node:url', 'poolifier'],
   plugins: [
     typescript(),
     del({

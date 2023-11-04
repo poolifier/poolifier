@@ -1,4 +1,3 @@
-/* eslint-disable n/no-unpublished-import */
 import typescript from '@rollup/plugin-typescript'
 import del from 'rollup-plugin-delete'
 import { defineConfig } from 'rollup'
@@ -6,7 +5,7 @@ import { defineConfig } from 'rollup'
 export default defineConfig({
   input: [
     './src/main.ts',
-    './src/express-worker.ts',
+    './src/fastify-worker.ts',
     './src/request-handler-worker.ts'
   ],
   strictDeprecations: true,
@@ -24,7 +23,7 @@ export default defineConfig({
       sourcemap: true
     }
   ],
-  external: ['express', 'node:path', 'node:url', 'poolifier'],
+  external: ['fastify', 'fastify-plugin', 'node:path', 'node:url', 'poolifier'],
   plugins: [
     typescript(),
     del({

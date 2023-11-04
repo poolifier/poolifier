@@ -43,7 +43,7 @@
   },
   "volta": {
     "node": "20.9.0",
-    "pnpm": "8.9.2"
+    "pnpm": "8.10.2"
   },
   "repository": {
     "type": "git",
@@ -101,16 +101,16 @@
     }
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.3.1",
+    "@biomejs/biome": "^1.3.3",
     "@commitlint/cli": "^18.2.0",
     "@commitlint/config-conventional": "^18.1.0",
     "@release-it/bumper": "^5.1.0",
     "@release-it/keep-a-changelog": "^4.0.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.5",
-    "@types/node": "^20.8.9",
-    "@typescript-eslint/eslint-plugin": "^6.9.0",
-    "@typescript-eslint/parser": "^6.9.0",
+    "@types/node": "^20.8.10",
+    "@typescript-eslint/eslint-plugin": "^6.9.1",
+    "@typescript-eslint/parser": "^6.9.1",
     "benchmark": "^2.1.4",
     "c8": "^8.0.1",
     "eslint": "^8.52.0",
@@ -132,15 +132,15 @@
     "mochawesome": "^7.1.3",
     "prettier": "^3.0.3",
     "release-it": "^16.2.1",
-    "rollup": "^4.1.4",
+    "rollup": "^4.2.0",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^6.1.0",
-    "sinon": "^17.0.0",
+    "sinon": "^17.0.1",
     "source-map-support": "^0.5.21",
     "ts-standard": "^12.0.2",
-    "typedoc": "^0.25.2",
+    "typedoc": "^0.25.3",
     "typescript": "~5.2.2"
   }
 }
