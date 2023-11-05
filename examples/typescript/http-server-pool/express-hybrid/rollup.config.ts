@@ -23,7 +23,7 @@ export default defineConfig({
       sourcemap: true
     }
   ],
-  external: ['express', /node:*/, 'poolifier'],
+  external: ['express', /^node:*/, 'poolifier'],
   plugins: [
     typescript(),
     del({

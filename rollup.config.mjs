@@ -66,7 +66,7 @@ export default defineConfig([
         })
       }
     ],
-    external: [/node:*/],
+    external: [/^node:*/],
     plugins: [
       typescript({
         tsconfig: './tsconfig.build.json',
@@ -84,7 +84,7 @@ export default defineConfig([
   {
     input: './lib/dts/index.d.ts',
     output: [{ format: 'esm', file: './lib/index.d.ts' }],
-    external: [/node:*/],
+    external: [/^node:*/],
     plugins: [
       dts(),
       del({
