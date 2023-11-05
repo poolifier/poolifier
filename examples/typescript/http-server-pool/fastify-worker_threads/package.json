@@ -12,7 +12,7 @@
   "scripts": {
     "build": "pnpm build:clean && tsc",
     "build:clean": "tsc --build --clean",
-    "start": "node dist/main.js",
+    "start": "node --enable-source-maps dist/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "benchmark:echo": "autocannon -c 100 -d 30 -p 10 -m POST -H Content-Type=application/json -b '{\"key1\":\"value1\", \"key2\":\"value2\"}' http://localhost:8080/api/echo",
     "benchmark:factorial": "autocannon -c 100 -d 30 -p 10 http://localhost:8080/api/factorial/30"

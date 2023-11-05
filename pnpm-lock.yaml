@@ -119,9 +119,6 @@ devDependencies:
   sinon:
     specifier: ^17.0.1
     version: 17.0.1
-  source-map-support:
-    specifier: ^0.5.21
-    version: 0.5.21
   ts-standard:
     specifier: ^12.0.2
     version: 12.0.2(eslint-import-resolver-typescript@3.6.1)(typescript@5.2.2)
