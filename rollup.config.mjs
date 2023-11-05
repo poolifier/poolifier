@@ -66,16 +66,7 @@ export default defineConfig([
         })
       }
     ],
-    external: [
-      'node:async_hooks',
-      'node:cluster',
-      'node:crypto',
-      'node:events',
-      'node:fs',
-      'node:os',
-      'node:perf_hooks',
-      'node:worker_threads'
-    ],
+    external: [/node:*/],
     plugins: [
       typescript({
         tsconfig: './tsconfig.build.json',
@@ -93,13 +84,7 @@ export default defineConfig([
   {
     input: './lib/dts/index.d.ts',
     output: [{ format: 'esm', file: './lib/index.d.ts' }],
-    external: [
-      'node:async_hooks',
-      'node:cluster',
-      'node:events',
-      'node:perf_hooks',
-      'node:worker_threads'
-    ],
+    external: [/node:*/],
     plugins: [
       dts(),
       del({
