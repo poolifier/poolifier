@@ -12,7 +12,7 @@
   "scripts": {
     "build": "pnpm build:clean && tsc",
     "build:clean": "tsc --build --clean",
-    "start": "node dist/main.js",
+    "start": "node --enable-source-maps dist/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

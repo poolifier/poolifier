@@ -23,7 +23,7 @@ export default defineConfig({
       sourcemap: true
     }
   ],
-  external: ['fastify', 'fastify-plugin', 'node:path', 'node:url', 'poolifier'],
+  external: ['fastify', 'fastify-plugin', /^node:*/, 'poolifier'],
   plugins: [
     typescript(),
     del({

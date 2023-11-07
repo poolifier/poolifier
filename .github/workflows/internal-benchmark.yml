@@ -38,6 +38,7 @@ jobs:
           --if-branch "$GITHUB_REF_NAME" \
           --else-if-branch "$GITHUB_BASE_REF" \
           --else-if-branch master \
+          --hash "$GITHUB_SHA" \
           --err \
           --github-actions ${{ secrets.GITHUB_TOKEN }} \
           "pnpm benchmark:prod"
