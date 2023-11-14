@@ -6,9 +6,10 @@ examples=$(find . -maxdepth 3 -name "package.json" -exec dirname {} \;)
 
 for example in $examples
 do
-  echo -e "Building $example"
   cd $example
+  echo -e "Installing dependencies in $example"
   pnpm install --ignore-scripts --frozen-lockfile
+  echo -e "Building $(basename $example)"
   pnpm build
   cd -
 done
