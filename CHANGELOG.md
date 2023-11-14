@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Ensure pool statuses are checked at initialization, `start()` or `destroy()`
+
 ## [3.0.5] - 2023-10-27
 
 ### Fixed
