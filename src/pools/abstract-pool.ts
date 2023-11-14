@@ -1266,11 +1266,7 @@ export abstract class AbstractPool<
           this.createAndSetupWorkerNode()
         }
       }
-      if (
-        this.started &&
-        !this.destroying &&
-        this.opts.enableTasksQueue === true
-      ) {
+      if (this.started && this.opts.enableTasksQueue === true) {
         this.redistributeQueuedTasks(workerNodeKey)
       }
     })
