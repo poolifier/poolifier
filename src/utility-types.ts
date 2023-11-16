@@ -70,10 +70,6 @@ export interface WorkerStatistics {
  */
 export interface Task<Data = unknown> {
   /**
-   * Worker id.
-   */
-  readonly workerId?: number
-  /**
    * Task name.
    */
   readonly name?: string
@@ -104,6 +100,10 @@ export interface Task<Data = unknown> {
  */
 export interface MessageValue<Data = unknown, ErrorData = unknown>
   extends Task<Data> {
+  /**
+   * Worker id.
+   */
+  readonly workerId?: number
   /**
    * Kill code.
    */
