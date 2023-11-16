@@ -86,6 +86,10 @@ export interface Task<Data = unknown> {
    */
   readonly timestamp?: number
   /**
+   * Abort signal.
+   */
+  readonly abortSignal?: AbortSignal
+  /**
    * Task UUID.
    */
   readonly taskId?: string

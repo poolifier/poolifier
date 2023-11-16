@@ -884,7 +884,8 @@ export abstract class AbstractPool<
   public async execute (
     data?: Data,
     name?: string,
-    transferList?: TransferListItem[]
+    transferList?: TransferListItem[],
+    abortSignal?: AbortSignal
   ): Promise<Response> {
     return await new Promise<Response>((resolve, reject) => {
       if (!this.started) {
@@ -913,12 +914,14 @@ export abstract class AbstractPool<
       }
       const timestamp = performance.now()
       const workerNodeKey = this.chooseWorkerNode()
+      abortSignal?.addEventListener('abort', () => {}, { once: true })
       const task: Task<Data> = {
         name: name ?? DEFAULT_TASK_NAME,
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         data: data ?? ({} as Data),
         transferList,
         timestamp,
+        abortSignal,
         taskId: randomUUID()
       }
       this.promiseResponseMap.set(task.taskId as string, {
@@ -1704,6 +1707,13 @@ export abstract class AbstractPool<
    * @param task - The task to execute.
    */
   private executeTask (workerNodeKey: number, task: Task<Data>): void {
+    const { abortSignal } = task
+    if (abortSignal?.aborted === true) {
+      // this.promiseResponseMap.get(task.taskId as string)?.reject(
+      //   new Error('Cannot execute an already aborted task')
+      // )
+      return
+    }
     this.beforeTaskExecutionHook(workerNodeKey, task)
     this.sendToWorker(workerNodeKey, task, task.transferList)
     this.checkAndEmitTaskExecutionEvents()

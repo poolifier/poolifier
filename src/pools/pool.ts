@@ -242,12 +242,14 @@ export interface IPool<
    * @param data - The optional task input data for the specified task function. This can only be structured-cloneable data.
    * @param name - The optional name of the task function to execute. If not specified, the default task function will be executed.
    * @param transferList - An optional array of transferable objects to transfer ownership of. Ownership of the transferred objects is given to the chosen pool's worker_threads worker and they should not be used in the main thread afterwards.
+   * @param abortSignal - An optional AbortSignal to abort the task.
    * @returns Promise that will be fulfilled when the task is completed.
    */
   readonly execute: (
     data?: Data,
     name?: string,
-    transferList?: TransferListItem[]
+    transferList?: TransferListItem[],
+    abortSignal?: AbortSignal
   ) => Promise<Response>
   /**
    * Starts the minimum number of workers in this pool.
