@@ -1585,13 +1585,13 @@ export abstract class AbstractPool<
     const { taskId, workerError, data } = message
     const promiseResponse = this.promiseResponseMap.get(taskId as string)
     if (promiseResponse != null) {
+      const { resolve, reject, workerNodeKey } = promiseResponse
       if (workerError != null) {
         this.emitter?.emit(PoolEvents.taskError, workerError)
-        promiseResponse.reject(workerError.message)
+        reject(workerError.message)
       } else {
-        promiseResponse.resolve(data as Response)
+        resolve(data as Response)
       }
-      const workerNodeKey = promiseResponse.workerNodeKey
       this.afterTaskExecutionHook(workerNodeKey, message)
       this.workerChoiceStrategyContext.update(workerNodeKey)
       this.promiseResponseMap.delete(taskId as string)
