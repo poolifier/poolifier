@@ -624,7 +624,7 @@ export abstract class AbstractPool<
   private setTaskStealing (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
       this.workerNodes[workerNodeKey].addEventListener(
-        'emptyqueue',
+        'emptyQueue',
         this.handleEmptyQueueEvent as EventListener
       )
     }
@@ -633,7 +633,7 @@ export abstract class AbstractPool<
   private unsetTaskStealing (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
       this.workerNodes[workerNodeKey].removeEventListener(
-        'emptyqueue',
+        'emptyQueue',
         this.handleEmptyQueueEvent as EventListener
       )
     }
@@ -642,7 +642,7 @@ export abstract class AbstractPool<
   private setTasksStealingOnBackPressure (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
       this.workerNodes[workerNodeKey].addEventListener(
-        'backpressure',
+        'backPressure',
         this.handleBackPressureEvent as EventListener
       )
     }
@@ -651,7 +651,7 @@ export abstract class AbstractPool<
   private unsetTasksStealingOnBackPressure (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
       this.workerNodes[workerNodeKey].removeEventListener(
-        'backpressure',
+        'backPressure',
         this.handleBackPressureEvent as EventListener
       )
     }
@@ -1396,13 +1396,13 @@ export abstract class AbstractPool<
     if (this.opts.enableTasksQueue === true) {
       if (this.opts.tasksQueueOptions?.taskStealing === true) {
         this.workerNodes[workerNodeKey].addEventListener(
-          'emptyqueue',
+          'emptyQueue',
           this.handleEmptyQueueEvent as EventListener
         )
       }
       if (this.opts.tasksQueueOptions?.tasksStealingOnBackPressure === true) {
         this.workerNodes[workerNodeKey].addEventListener(
-          'backpressure',
+          'backPressure',
           this.handleBackPressureEvent as EventListener
         )
       }
@@ -1476,9 +1476,8 @@ export abstract class AbstractPool<
   private readonly handleEmptyQueueEvent = (
     event: CustomEvent<WorkerNodeEventDetail>
   ): void => {
-    const destinationWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(
-      event.detail.workerId
-    )
+    const { workerId } = event.detail
+    const destinationWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
     const workerNodes = this.workerNodes
       .slice()
       .sort(
@@ -1488,7 +1487,7 @@ export abstract class AbstractPool<
     const sourceWorkerNode = workerNodes.find(
       workerNode =>
         workerNode.info.ready &&
-        workerNode.info.id !== event.detail.workerId &&
+        workerNode.info.id !== workerId &&
         workerNode.usage.tasks.queued > 0
     )
     if (sourceWorkerNode != null) {
@@ -1508,12 +1507,13 @@ export abstract class AbstractPool<
   private readonly handleBackPressureEvent = (
     event: CustomEvent<WorkerNodeEventDetail>
   ): void => {
+    const { workerId } = event.detail
     const sizeOffset = 1
     if ((this.opts.tasksQueueOptions?.size as number) <= sizeOffset) {
       return
     }
     const sourceWorkerNode =
-      this.workerNodes[this.getWorkerNodeKeyByWorkerId(event.detail.workerId)]
+      this.workerNodes[this.getWorkerNodeKeyByWorkerId(workerId)]
     const workerNodes = this.workerNodes
       .slice()
       .sort(
@@ -1524,7 +1524,7 @@ export abstract class AbstractPool<
       if (
         sourceWorkerNode.usage.tasks.queued > 0 &&
         workerNode.info.ready &&
-        workerNode.info.id !== event.detail.workerId &&
+        workerNode.info.id !== workerId &&
         workerNode.usage.tasks.queued <
           (this.opts.tasksQueueOptions?.size as number) - sizeOffset
       ) {
