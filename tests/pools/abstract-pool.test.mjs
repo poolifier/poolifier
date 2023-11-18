@@ -943,6 +943,9 @@ describe('Abstract pool test suite', () => {
     await expect(pool.execute(undefined, undefined, {})).rejects.toThrow(
       new TypeError('transferList argument must be an array')
     )
+    await expect(pool.execute(undefined, undefined, [], {})).rejects.toThrow(
+      new TypeError('abortSignal argument must be an AbortSignal')
+    )
     await expect(pool.execute(undefined, 'unknown')).rejects.toBe(
       "Task function 'unknown' not found"
     )

@@ -912,6 +912,10 @@ export abstract class AbstractPool<
         reject(new TypeError('transferList argument must be an array'))
         return
       }
+      if (abortSignal != null && !(abortSignal instanceof AbortSignal)) {
+        reject(new TypeError('abortSignal argument must be an AbortSignal'))
+        return
+      }
       const timestamp = performance.now()
       const workerNodeKey = this.chooseWorkerNode()
       const task: Task<Data> = {
