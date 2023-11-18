@@ -1,7 +1,7 @@
-import { AsyncResource } from 'node:async_hooks'
 import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
 import { performance } from 'node:perf_hooks'
+import { AsyncResource } from 'node:async_hooks'
 import type {
   MessageValue,
   Task,
@@ -27,6 +27,10 @@ import {
   checkValidTaskFunctionEntry,
   checkValidWorkerOptions
 } from './utils'
+
+interface AbortTaskEventDetail {
+  taskId: string
+}
 
 const DEFAULT_MAX_INACTIVE_TIME = 60000
 const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
@@ -66,6 +70,14 @@ export abstract class AbstractWorker<
    */
   protected taskFunctions!: Map<string, TaskFunction<Data, Response>>
   /**
+   * Task abort functions processed by the worker when task operation 'abort' is received.
+   */
+  protected taskAbortFunctions!: Map<string, () => void>
+  /**
+   * Event target used for worker event dispatching.
+   */
+  protected eventTarget: EventTarget
+  /**
    * Timestamp of the last task processed by this worker.
    */
   protected lastTaskTimestamp!: number
@@ -98,6 +110,17 @@ export abstract class AbstractWorker<
       throw new Error('isMain parameter is mandatory')
     }
     this.checkTaskFunctions(taskFunctions)
+    this.taskAbortFunctions = new Map<string, () => void>()
+    this.eventTarget = new EventTarget()
+    this.eventTarget.addEventListener('abortTask', ((
+      event: CustomEvent<AbortTaskEventDetail>
+    ) => {
+      const { taskId } = event.detail
+      if (this.taskAbortFunctions.has(taskId)) {
+        this.taskAbortFunctions.get(taskId)?.()
+        this.taskAbortFunctions.delete(taskId)
+      }
+    }) as EventListener)
     this.checkWorkerOptions(this.opts)
     if (!this.isMain) {
       // Should be once() but Node.js on windows has a bug that prevents it from working
@@ -317,6 +340,13 @@ export abstract class AbstractWorker<
     } else if (message.taskId != null && message.data != null) {
       // Task message received
       this.run(message)
+    } else if (message.taskOperation === 'abort' && message.taskId != null) {
+      // Abort task operation message received
+      this.eventTarget.dispatchEvent(
+        new CustomEvent<AbortTaskEventDetail>('abortTask', {
+          detail: { taskId: message.taskId }
+        })
+      )
     } else if (message.kill === true) {
       // Kill message received
       this.handleKillMessage(message)
@@ -492,9 +522,8 @@ export abstract class AbstractWorker<
    * @param task - The task to execute.
    */
   protected run (task: Task<Data>): void {
-    const { name, taskId, data } = task
-    const fn = this.taskFunctions.get(name ?? DEFAULT_TASK_NAME)
-    if (fn == null) {
+    const { name, data, abortable, taskId } = task
+    if (!this.taskFunctions.has(name ?? DEFAULT_TASK_NAME)) {
       this.sendToMainWorker({
         workerError: {
           name: name as string,
@@ -504,6 +533,27 @@ export abstract class AbstractWorker<
         taskId
       })
       return
+    }
+    let fn: TaskFunction<Data, Response>
+    if (abortable === true) {
+      fn = async (data?: Data) =>
+        await new Promise((resolve, reject) => {
+          this.taskAbortFunctions.set(taskId as string, () => {
+            reject(
+              new Error(`Task ${name as string} id ${taskId as string} aborted`)
+            )
+          })
+          resolve(
+            this.taskFunctions.get(name ?? DEFAULT_TASK_NAME)?.(
+              data
+            ) as Response
+          )
+        })
+    } else {
+      fn = this.taskFunctions.get(name ?? DEFAULT_TASK_NAME) as TaskFunction<
+      Data,
+      Response
+      >
     }
     if (isAsyncFunction(fn)) {
       this.runInAsyncScope(this.runAsync.bind(this), this, fn, task)
@@ -522,7 +572,7 @@ export abstract class AbstractWorker<
     fn: TaskSyncFunction<Data, Response>,
     task: Task<Data>
   ): void {
-    const { name, taskId, data } = task
+    const { name, data, abortable, taskId } = task
     try {
       let taskPerformance = this.beginTaskPerformance(name)
       const res = fn(data)
@@ -543,6 +593,9 @@ export abstract class AbstractWorker<
       })
     } finally {
       this.updateLastTaskTimestamp()
+      if (abortable === true) {
+        this.taskAbortFunctions.delete(taskId as string)
+      }
     }
   }
 
@@ -556,7 +609,7 @@ export abstract class AbstractWorker<
     fn: TaskAsyncFunction<Data, Response>,
     task: Task<Data>
   ): void {
-    const { name, taskId, data } = task
+    const { name, data, abortable, taskId } = task
     let taskPerformance = this.beginTaskPerformance(name)
     fn(data)
       .then(res => {
@@ -580,6 +633,9 @@ export abstract class AbstractWorker<
       })
       .finally(() => {
         this.updateLastTaskTimestamp()
+        if (abortable === true) {
+          this.taskAbortFunctions.delete(taskId as string)
+        }
       })
       .catch(EMPTY_FUNCTION)
   }
