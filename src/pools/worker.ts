@@ -1,6 +1,7 @@
 import type { MessageChannel } from 'node:worker_threads'
 import type { CircularArray } from '../circular-array'
 import type { Task } from '../utility-types'
+import type { Deque } from '../deque'
 
 /**
  * Callback invoked when the worker has started successfully.
@@ -223,6 +224,7 @@ export interface IWorker {
  */
 export interface WorkerNodeEventDetail {
   workerId: number
+  taskId?: string
 }
 
 /**
@@ -255,6 +257,10 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    * Message channel (worker_threads only).
    */
   readonly messageChannel?: MessageChannel
+  /**
+   * Tasks queue.
+   */
+  readonly tasksQueue: Deque<Task<Data>>
   /**
    * Tasks queue back pressure size.
    * This is the number of tasks that can be enqueued before the worker node has back pressure.
@@ -292,6 +298,12 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    * @returns The popped task.
    */
   readonly popTask: () => Task<Data> | undefined
+  /**
+   * Deletes a task from the tasks queue.
+   *
+   * @returns `true` if the task was deleted, `false` otherwise.
+   */
+  readonly deleteTask: (task: Task<Data>) => boolean
   /**
    * Clears tasks queue.
    */

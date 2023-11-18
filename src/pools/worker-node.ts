@@ -42,8 +42,9 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   /** @inheritdoc */
   public messageChannel?: MessageChannel
   /** @inheritdoc */
+  public readonly tasksQueue: Deque<Task<Data>>
+  /** @inheritdoc */
   public tasksQueueBackPressureSize: number
-  private readonly tasksQueue: Deque<Task<Data>>
   private onBackPressureStarted: boolean
   private onEmptyQueueCount: number
   private readonly taskFunctionsUsage: Map<string, WorkerUsage>
@@ -81,7 +82,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     if (this.hasBackPressure() && !this.onBackPressureStarted) {
       this.onBackPressureStarted = true
       this.dispatchEvent(
-        new CustomEvent<WorkerNodeEventDetail>('backpressure', {
+        new CustomEvent<WorkerNodeEventDetail>('backPressure', {
           detail: { workerId: this.info.id as number }
         })
       )
@@ -96,7 +97,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     if (this.hasBackPressure() && !this.onBackPressureStarted) {
       this.onBackPressureStarted = true
       this.dispatchEvent(
-        new CustomEvent<WorkerNodeEventDetail>('backpressure', {
+        new CustomEvent<WorkerNodeEventDetail>('backPressure', {
           detail: { workerId: this.info.id as number }
         })
       )
@@ -121,6 +122,15 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
       this.startOnEmptyQueue().catch(EMPTY_FUNCTION)
     }
     return task
+  }
+
+  /** @inheritdoc */
+  public deleteTask (task: Task<Data>): boolean {
+    const deleted = this.tasksQueue.delete(task)
+    if (this.tasksQueue.size === 0 && this.onEmptyQueueCount === 0) {
+      this.startOnEmptyQueue().catch(EMPTY_FUNCTION)
+    }
+    return deleted
   }
 
   /** @inheritdoc */
@@ -189,7 +199,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     }
     ++this.onEmptyQueueCount
     this.dispatchEvent(
-      new CustomEvent<WorkerNodeEventDetail>('emptyqueue', {
+      new CustomEvent<WorkerNodeEventDetail>('emptyQueue', {
         detail: { workerId: this.info.id as number }
       })
     )

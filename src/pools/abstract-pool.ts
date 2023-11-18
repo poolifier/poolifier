@@ -624,7 +624,7 @@ export abstract class AbstractPool<
   private setTaskStealing (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
       this.workerNodes[workerNodeKey].addEventListener(
-        'emptyqueue',
+        'emptyQueue',
         this.handleEmptyQueueEvent as EventListener
       )
     }
@@ -633,7 +633,7 @@ export abstract class AbstractPool<
   private unsetTaskStealing (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
       this.workerNodes[workerNodeKey].removeEventListener(
-        'emptyqueue',
+        'emptyQueue',
         this.handleEmptyQueueEvent as EventListener
       )
     }
@@ -642,7 +642,7 @@ export abstract class AbstractPool<
   private setTasksStealingOnBackPressure (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
       this.workerNodes[workerNodeKey].addEventListener(
-        'backpressure',
+        'backPressure',
         this.handleBackPressureEvent as EventListener
       )
     }
@@ -651,7 +651,7 @@ export abstract class AbstractPool<
   private unsetTasksStealingOnBackPressure (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
       this.workerNodes[workerNodeKey].removeEventListener(
-        'backpressure',
+        'backPressure',
         this.handleBackPressureEvent as EventListener
       )
     }
@@ -914,20 +914,34 @@ export abstract class AbstractPool<
       }
       const timestamp = performance.now()
       const workerNodeKey = this.chooseWorkerNode()
-      abortSignal?.addEventListener('abort', () => {}, { once: true })
       const task: Task<Data> = {
         name: name ?? DEFAULT_TASK_NAME,
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         data: data ?? ({} as Data),
         transferList,
         timestamp,
-        abortSignal,
+        abortable: abortSignal != null,
         taskId: randomUUID()
       }
+      abortSignal?.addEventListener(
+        'abort',
+        () => {
+          this.workerNodes[workerNodeKey].dispatchEvent(
+            new CustomEvent<WorkerNodeEventDetail>('abortTask', {
+              detail: {
+                workerId: this.getWorkerInfo(workerNodeKey).id as number,
+                taskId: task.taskId
+              }
+            })
+          )
+        },
+        { once: true }
+      )
       this.promiseResponseMap.set(task.taskId as string, {
         resolve,
         reject,
-        workerNodeKey
+        workerNodeKey,
+        abortSignal
       })
       if (
         this.opts.enableTasksQueue === false ||
@@ -1380,6 +1394,26 @@ export abstract class AbstractPool<
     listener: (message: MessageValue<Message>) => void
   ): void
 
+  private readonly abortTask = (
+    event: CustomEvent<WorkerNodeEventDetail>
+  ): void => {
+    const { workerId, taskId } = event.detail
+    const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+    for (const task of this.workerNodes[workerNodeKey].tasksQueue) {
+      if (taskId === task.taskId && task.abortable === true) {
+        this.workerNodes[workerNodeKey].deleteTask(task)
+        return
+      }
+    }
+    const { reject, abortSignal } = this.promiseResponseMap.get(
+      taskId as string
+    ) as PromiseResponseWrapper<Response>
+    if (abortSignal != null) {
+      this.sendToWorker(workerNodeKey, { taskId, taskOperation: 'abort' })
+      reject(new Error(`Task ${taskId as string} aborted`))
+    }
+  }
+
   /**
    * Method hooked up after a worker node has been newly created.
    * Can be overridden.
@@ -1399,17 +1433,21 @@ export abstract class AbstractPool<
     if (this.opts.enableTasksQueue === true) {
       if (this.opts.tasksQueueOptions?.taskStealing === true) {
         this.workerNodes[workerNodeKey].addEventListener(
-          'emptyqueue',
+          'emptyQueue',
           this.handleEmptyQueueEvent as EventListener
         )
       }
       if (this.opts.tasksQueueOptions?.tasksStealingOnBackPressure === true) {
         this.workerNodes[workerNodeKey].addEventListener(
-          'backpressure',
+          'backPressure',
           this.handleBackPressureEvent as EventListener
         )
       }
     }
+    this.workerNodes[workerNodeKey].addEventListener(
+      'abortTask',
+      this.abortTask as EventListener
+    )
   }
 
   /**
@@ -1479,9 +1517,8 @@ export abstract class AbstractPool<
   private readonly handleEmptyQueueEvent = (
     event: CustomEvent<WorkerNodeEventDetail>
   ): void => {
-    const destinationWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(
-      event.detail.workerId
-    )
+    const { workerId } = event.detail
+    const destinationWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
     const workerNodes = this.workerNodes
       .slice()
       .sort(
@@ -1491,7 +1528,7 @@ export abstract class AbstractPool<
     const sourceWorkerNode = workerNodes.find(
       workerNode =>
         workerNode.info.ready &&
-        workerNode.info.id !== event.detail.workerId &&
+        workerNode.info.id !== workerId &&
         workerNode.usage.tasks.queued > 0
     )
     if (sourceWorkerNode != null) {
@@ -1511,12 +1548,13 @@ export abstract class AbstractPool<
   private readonly handleBackPressureEvent = (
     event: CustomEvent<WorkerNodeEventDetail>
   ): void => {
+    const { workerId } = event.detail
     const sizeOffset = 1
     if ((this.opts.tasksQueueOptions?.size as number) <= sizeOffset) {
       return
     }
     const sourceWorkerNode =
-      this.workerNodes[this.getWorkerNodeKeyByWorkerId(event.detail.workerId)]
+      this.workerNodes[this.getWorkerNodeKeyByWorkerId(workerId)]
     const workerNodes = this.workerNodes
       .slice()
       .sort(
@@ -1527,7 +1565,7 @@ export abstract class AbstractPool<
       if (
         sourceWorkerNode.usage.tasks.queued > 0 &&
         workerNode.info.ready &&
-        workerNode.info.id !== event.detail.workerId &&
+        workerNode.info.id !== workerId &&
         workerNode.usage.tasks.queued <
           (this.opts.tasksQueueOptions?.size as number) - sizeOffset
       ) {
@@ -1707,15 +1745,18 @@ export abstract class AbstractPool<
    * @param task - The task to execute.
    */
   private executeTask (workerNodeKey: number, task: Task<Data>): void {
-    const { abortSignal } = task
-    if (abortSignal?.aborted === true) {
-      // this.promiseResponseMap.get(task.taskId as string)?.reject(
-      //   new Error('Cannot execute an already aborted task')
-      // )
+    const { taskId, transferList } = task
+    if (
+      this.promiseResponseMap.get(taskId as string)?.abortSignal?.aborted ===
+      true
+    ) {
+      this.promiseResponseMap
+        .get(taskId as string)
+        ?.reject(new Error('Cannot execute an already aborted task'))
       return
     }
     this.beforeTaskExecutionHook(workerNodeKey, task)
-    this.sendToWorker(workerNodeKey, task, task.transferList)
+    this.sendToWorker(workerNodeKey, task, transferList)
     this.checkAndEmitTaskExecutionEvents()
   }
 

@@ -86,9 +86,9 @@ export interface Task<Data = unknown> {
    */
   readonly timestamp?: number
   /**
-   * Abort signal.
+   * Whether the task is abortable or not.
    */
-  readonly abortSignal?: AbortSignal
+  readonly abortable?: boolean
   /**
    * Task UUID.
    */
@@ -116,6 +116,11 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    * Worker error.
    */
   readonly workerError?: WorkerError<ErrorData>
+  /**
+   * Task operation:
+   * - `'abort'` - Abort a task.
+   */
+  readonly taskOperation?: 'abort'
   /**
    * Task performance.
    */
@@ -180,6 +185,10 @@ export interface PromiseResponseWrapper<Response = unknown> {
    * The worker node key executing the task.
    */
   readonly workerNodeKey: number
+  /**
+   * The abort signal.
+   */
+  readonly abortSignal?: AbortSignal
 }
 
 export type Writable<T> = { -readonly [P in keyof T]: T[P] }

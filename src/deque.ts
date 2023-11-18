@@ -126,6 +126,34 @@ export class Deque<T> {
   }
 
   /**
+   * Deletes the given data from the deque.
+   *
+   * @param data - Data to delete.
+   * @returns `true` if the data was deleted, `false` otherwise.
+   */
+  public delete (data: T): boolean {
+    let node = this.head
+    while (node != null) {
+      if (node.data === data) {
+        if (node.prev == null) {
+          this.head = node.next
+        } else {
+          node.prev.next = node.next
+        }
+        if (node.next == null) {
+          this.tail = node.prev
+        } else {
+          node.next.prev = node.prev
+        }
+        --this.size
+        return true
+      }
+      node = node.next
+    }
+    return false
+  }
+
+  /**
    * Clears the deque.
    */
   public clear (): void {

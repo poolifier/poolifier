@@ -116,6 +116,27 @@ describe('Deque test suite', () => {
     expect(deque.size).toBe(3)
   })
 
+  it('Verify delete() behavior', () => {
+    const deque = new Deque()
+    deque.push(1)
+    deque.push(2)
+    deque.push(3)
+    expect(deque.size).toBe(3)
+    expect(deque.delete(2)).toBe(true)
+    expect(deque.size).toBe(2)
+    expect(deque.head).toMatchObject({ data: 1 })
+    expect(deque.tail).toMatchObject({ data: 3 })
+    expect(deque.delete(3)).toBe(true)
+    expect(deque.size).toBe(1)
+    expect(deque.head).toMatchObject({ data: 1 })
+    expect(deque.tail).toMatchObject({ data: 1 })
+    expect(deque.delete(1)).toBe(true)
+    expect(deque.size).toBe(0)
+    expect(deque.head).toBeUndefined()
+    expect(deque.tail).toBeUndefined()
+    expect(deque.delete(2)).toBe(false)
+  })
+
   it('Verify clear() behavior', () => {
     const deque = new Deque()
     deque.push(1)
