@@ -1746,13 +1746,11 @@ export abstract class AbstractPool<
    */
   private executeTask (workerNodeKey: number, task: Task<Data>): void {
     const { taskId, transferList } = task
-    if (
-      this.promiseResponseMap.get(taskId as string)?.abortSignal?.aborted ===
-      true
-    ) {
-      this.promiseResponseMap
-        .get(taskId as string)
-        ?.reject(new Error('Cannot execute an already aborted task'))
+    const { reject, abortSignal } = this.promiseResponseMap.get(
+      taskId as string
+    ) as PromiseResponseWrapper<Response>
+    if (abortSignal?.aborted === true) {
+      reject(new Error('Cannot execute an already aborted task'))
       return
     }
     this.beforeTaskExecutionHook(workerNodeKey, task)
