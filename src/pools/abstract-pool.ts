@@ -1402,19 +1402,25 @@ export abstract class AbstractPool<
     event: CustomEvent<WorkerNodeEventDetail>
   ): void => {
     const { workerId, taskId } = event.detail
-    const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
-    for (const task of this.workerNodes[workerNodeKey].tasksQueue) {
-      if (taskId === task.taskId && task.abortable === true) {
-        this.workerNodes[workerNodeKey].deleteTask(task)
-        return
-      }
-    }
     const { reject, abortSignal } = this.promiseResponseMap.get(
       taskId as string
     ) as PromiseResponseWrapper<Response>
+    const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+    if (this.opts.enableTasksQueue === true) {
+      for (const task of this.workerNodes[workerNodeKey].tasksQueue) {
+        const { name, abortable } = task
+        if (taskId === task.taskId && abortable === true) {
+          this.workerNodes[workerNodeKey].deleteTask(task)
+          this.promiseResponseMap.delete(taskId as string)
+          reject(
+            new Error(`Task ${name as string} id ${taskId as string} aborted`)
+          )
+          return
+        }
+      }
+    }
     if (abortSignal != null) {
       this.sendToWorker(workerNodeKey, { taskId, taskOperation: 'abort' })
-      reject(new Error(`Task ${taskId as string} aborted`))
     }
   }
 
