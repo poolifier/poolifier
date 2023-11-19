@@ -72,7 +72,7 @@ export abstract class AbstractWorker<
   /**
    * Task abort functions processed by the worker when task operation 'abort' is received.
    */
-  protected taskAbortFunctions!: Map<string, () => void>
+  protected taskAbortFunctions: Map<string, () => void>
   /**
    * Event target used for worker event dispatching.
    */
@@ -516,6 +516,26 @@ export abstract class AbstractWorker<
     return error instanceof Error ? error.message : error
   }
 
+  private getAbortableTaskFunction (
+    name: string,
+    taskId: string
+  ): TaskAsyncFunction<Data, Response> {
+    return async (data?: Data): Promise<Response> =>
+      await new Promise<Response>((resolve, reject) => {
+        this.taskAbortFunctions.set(taskId, () => {
+          reject(new Error(`Task ${name} id ${taskId} aborted`))
+        })
+        const taskFunction = this.taskFunctions.get(name ?? DEFAULT_TASK_NAME)
+        if (isAsyncFunction(taskFunction)) {
+          (taskFunction as TaskAsyncFunction<Data, Response>)?.(data)
+            .then(resolve)
+            .catch(reject)
+        } else {
+          resolve((taskFunction as TaskSyncFunction<Data, Response>)?.(data))
+        }
+      })
+  }
+
   /**
    * Runs the given task.
    *
@@ -536,19 +556,7 @@ export abstract class AbstractWorker<
     }
     let fn: TaskFunction<Data, Response>
     if (abortable === true) {
-      fn = async (data?: Data) =>
-        await new Promise((resolve, reject) => {
-          this.taskAbortFunctions.set(taskId as string, () => {
-            reject(
-              new Error(`Task ${name as string} id ${taskId as string} aborted`)
-            )
-          })
-          resolve(
-            this.taskFunctions.get(name ?? DEFAULT_TASK_NAME)?.(
-              data
-            ) as Response
-          )
-        })
+      fn = this.getAbortableTaskFunction(name as string, taskId as string)
     } else {
       fn = this.taskFunctions.get(name ?? DEFAULT_TASK_NAME) as TaskFunction<
       Data,
