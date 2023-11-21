@@ -24,7 +24,7 @@ The worker weights are maximum tasks execution time. Once the worker has reached
 
 ### Interleaved weighted round robin (experimental)
 
-The worker weights are maximum tasks execution time. The rounds are the deduplicated worker weights.  
+The worker weights are maximum tasks execution time. The rounds are the deduplicated worker weights in descending order.  
 During a round, if the worker weight is superior or equal to the current round weight and its tasks execution time is inferior to the current round weight, the task is assigned to the worker. Once all workers weight have been tested, the next round starts.  
 The default worker weights is the same for each and computed given the CPU cores speed and theirs numbers. So the default 'rounds' consists of a unique worker weight.
 

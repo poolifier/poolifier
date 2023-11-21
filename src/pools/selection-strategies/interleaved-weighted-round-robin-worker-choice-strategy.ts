@@ -170,7 +170,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
       ...new Set(
         Object.values(this.opts.weights)
           .slice()
-          .sort((a, b) => a - b)
+          .sort((a, b) => b - a)
       )
     ]
   }
