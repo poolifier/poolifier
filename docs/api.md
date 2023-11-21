@@ -5,7 +5,7 @@
 - [Pool](#pool)
   - [`pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`](#pool--new-fixedthreadpoolfixedclusterpoolnumberofthreadsnumberofworkers-filepath-opts)
   - [`pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`](#pool--new-dynamicthreadpooldynamicclusterpoolmin-max-filepath-opts)
-  - [`pool.execute(data, name, transferList)`](#poolexecutedata-name-transferlist)
+  - [`pool.execute(data, name, transferList, abortSignal)`](#poolexecutedata-name-transferlist-abortsignal)
   - [`pool.start()`](#poolstart)
   - [`pool.destroy()`](#pooldestroy)
   - [`pool.hasTaskFunction(name)`](#poolhastaskfunctionname)
@@ -39,11 +39,12 @@
 `filePath` (mandatory) Path to a file with a worker implementation.  
 `opts` (optional) An object with the pool options properties described below.
 
-### `pool.execute(data, name, transferList)`
+### `pool.execute(data, name, transferList, abortSignal)`
 
-`data` (optional) An object that you want to pass to your worker implementation.  
+`data` (optional) An object that you want to pass to your worker task function implementation.  
 `name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
 `transferList` (optional) An array of transferable objects that you want to transfer to your [worker_threads](https://nodejs.org/api/worker_threads.html) worker implementation.
+`abortSignal` (optional) An abort signal to stop the task function execution.
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
 
