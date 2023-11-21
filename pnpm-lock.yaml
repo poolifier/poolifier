@@ -1563,8 +1563,8 @@ packages:
       platform: 1.3.6
     dev: true
 
-  /big-integer@1.6.51:
-    resolution: {integrity: sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==}
+  /big-integer@1.6.52:
+    resolution: {integrity: sha512-QxD8cf2eVqJOOz63z6JIN9BzvVs/dlySa5HGSBH5xtR8dPteIRQnBxxKqkNTiT6jbDTF6jAfrd4oMcND9RGbQg==}
     engines: {node: '>=0.6'}
     dev: true
 
@@ -1607,7 +1607,7 @@ packages:
     resolution: {integrity: sha512-z0M+byMThzQmD9NILRniCUXYsYpjwnlO8N5uCFaCqIOpqRsJCrQL9NK3JsD67CN5a08nF5oIL2bD6loTdHOuKw==}
     engines: {node: '>= 5.10.0'}
     dependencies:
-      big-integer: 1.6.51
+      big-integer: 1.6.52
     dev: true
 
   /brace-expansion@1.1.11:
