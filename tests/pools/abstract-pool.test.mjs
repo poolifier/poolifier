@@ -915,6 +915,7 @@ describe('Abstract pool test suite', () => {
     )
     expect(pool.info.started).toBe(false)
     expect(pool.info.ready).toBe(false)
+    expect(pool.readyEventEmitted).toBe(false)
     expect(pool.workerNodes).toStrictEqual([])
     await expect(pool.execute()).rejects.toThrow(
       new Error('Cannot execute a task on not started pool')
@@ -922,6 +923,8 @@ describe('Abstract pool test suite', () => {
     pool.start()
     expect(pool.info.started).toBe(true)
     expect(pool.info.ready).toBe(true)
+    await waitPoolEvents(pool, PoolEvents.ready, 1)
+    expect(pool.readyEventEmitted).toBe(true)
     expect(pool.workerNodes.length).toBe(numberOfWorkers)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode).toBeInstanceOf(WorkerNode)

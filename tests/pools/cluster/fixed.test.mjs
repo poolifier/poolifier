@@ -262,6 +262,7 @@ describe('Fixed cluster pool test suite', () => {
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
     expect(pool.started).toBe(false)
+    expect(pool.readyEventEmitted).toBe(false)
     expect(pool.workerNodes.length).toBe(0)
     expect(numberOfExitEvents).toBe(numberOfWorkers)
     expect(poolDestroy).toBe(1)
