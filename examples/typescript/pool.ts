@@ -1,11 +1,11 @@
 import { dirname, extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { MyData, MyResponse } from './worker'
 import {
   DynamicThreadPool,
   FixedThreadPool,
   availableParallelism
 } from 'poolifier'
+import type { MyData, MyResponse } from './worker'
 
 const workerFile = join(
   dirname(fileURLToPath(import.meta.url)),
