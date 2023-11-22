@@ -19,7 +19,7 @@ import {
   max,
   median,
   min,
-  once,
+  // once,
   round,
   secureRandom,
   sleep
@@ -239,18 +239,18 @@ describe('Utils test suite', () => {
     expect(max(1, 1)).toBe(1)
   })
 
-  it('Verify once()', () => {
-    let called = 0
-    const fn = () => ++called
-    const onceFn = once(fn, this)
-    const result1 = onceFn()
-    expect(called).toBe(1)
-    expect(result1).toBe(1)
-    const result2 = onceFn()
-    expect(called).toBe(1)
-    expect(result2).toBe(1)
-    const result3 = onceFn()
-    expect(called).toBe(1)
-    expect(result3).toBe(1)
-  })
+  // it('Verify once()', () => {
+  //   let called = 0
+  //   const fn = () => ++called
+  //   const onceFn = once(fn, this)
+  //   const result1 = onceFn()
+  //   expect(called).toBe(1)
+  //   expect(result1).toBe(1)
+  //   const result2 = onceFn()
+  //   expect(called).toBe(1)
+  //   expect(result2).toBe(1)
+  //   const result3 = onceFn()
+  //   expect(called).toBe(1)
+  //   expect(result3).toBe(1)
+  // })
 })

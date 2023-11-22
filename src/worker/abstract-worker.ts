@@ -525,7 +525,7 @@ export abstract class AbstractWorker<
         this.taskAbortFunctions.set(taskId, () => {
           reject(new Error(`Task ${name} id ${taskId} aborted`))
         })
-        const taskFunction = this.taskFunctions.get(name ?? DEFAULT_TASK_NAME)
+        const taskFunction = this.taskFunctions.get(name)
         if (isAsyncFunction(taskFunction)) {
           (taskFunction as TaskAsyncFunction<Data, Response>)?.(data)
             .then(resolve)
@@ -543,7 +543,8 @@ export abstract class AbstractWorker<
    */
   protected run (task: Task<Data>): void {
     const { name, data, abortable, taskId } = task
-    if (!this.taskFunctions.has(name ?? DEFAULT_TASK_NAME)) {
+    const taskFunctionName = name ?? DEFAULT_TASK_NAME
+    if (!this.taskFunctions.has(taskFunctionName)) {
       this.sendToMainWorker({
         workerError: {
           name: name as string,
@@ -556,9 +557,9 @@ export abstract class AbstractWorker<
     }
     let fn: TaskFunction<Data, Response>
     if (abortable === true) {
-      fn = this.getAbortableTaskFunction(name as string, taskId as string)
+      fn = this.getAbortableTaskFunction(taskFunctionName, taskId as string)
     } else {
-      fn = this.taskFunctions.get(name ?? DEFAULT_TASK_NAME) as TaskFunction<
+      fn = this.taskFunctions.get(taskFunctionName) as TaskFunction<
       Data,
       Response
       >

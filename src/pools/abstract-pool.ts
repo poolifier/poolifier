@@ -17,7 +17,6 @@ import {
   max,
   median,
   min,
-  once,
   round
 } from '../utils'
 import { KillBehaviors } from '../worker/worker-options'
@@ -118,6 +117,10 @@ export abstract class AbstractPool<
    */
   private destroying: boolean
   /**
+   * Whether the pool ready event has been emitted or not.
+   */
+  private readyEventEmitted: boolean
+  /**
    * The start timestamp of the pool.
    */
   private readonly startTimestamp
@@ -167,6 +170,7 @@ export abstract class AbstractPool<
     this.started = false
     this.starting = false
     this.destroying = false
+    this.readyEventEmitted = false
     if (this.opts.startWorkers === true) {
       this.start()
     }
@@ -1003,6 +1007,7 @@ export abstract class AbstractPool<
     )
     this.emitter?.emit(PoolEvents.destroy, this.info)
     this.emitter?.emitDestroy()
+    this.readyEventEmitted = false
     this.destroying = false
     this.started = false
   }
@@ -1623,12 +1628,9 @@ export abstract class AbstractPool<
     )
     workerInfo.ready = message.ready as boolean
     workerInfo.taskFunctionNames = message.taskFunctionNames
-    if (this.ready) {
-      const emitPoolReadyEventOnce = once(
-        () => this.emitter?.emit(PoolEvents.ready, this.info),
-        this
-      )
-      emitPoolReadyEventOnce()
+    if (!this.readyEventEmitted && this.ready) {
+      this.readyEventEmitted = true
+      this.emitter?.emit(PoolEvents.ready, this.info)
     }
   }
 

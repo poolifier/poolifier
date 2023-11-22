@@ -14,12 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Ensure pool statuses are checked at initialization, `start()` or `destroy()`.
+- Ensure pool `ready` event can be emitted after several `start()/destroy()` cycles.
 
 ## [3.0.5] - 2023-10-27
 
 ### Fixed
 
-- Ensure pool ready event can be emitted only once.
+- Ensure pool `ready` event can be emitted only once.
 
 ## [3.0.4] - 2023-10-20
 
@@ -276,7 +277,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix race condition between ready and task functions worker message handling at startup.
+- Fix race condition between readiness and task functions worker message handling at startup.
 - Fix duplicate task function worker usage statistics computation per task function.
 - Update task function worker usage statistics if and only if there's at least two different task functions.
 - Fix race condition at task function worker usage executing task computation leading to negative value.
