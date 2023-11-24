@@ -628,8 +628,8 @@ export abstract class AbstractPool<
   private setTaskStealing (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
       this.workerNodes[workerNodeKey].addEventListener(
-        'emptyQueue',
-        this.handleEmptyQueueEvent as EventListener
+        'idleWorkerNode',
+        this.handleIdleWorkerNodeEvent as EventListener
       )
     }
   }
@@ -637,8 +637,8 @@ export abstract class AbstractPool<
   private unsetTaskStealing (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
       this.workerNodes[workerNodeKey].removeEventListener(
-        'emptyQueue',
-        this.handleEmptyQueueEvent as EventListener
+        'idleWorkerNode',
+        this.handleIdleWorkerNodeEvent as EventListener
       )
     }
   }
@@ -1401,8 +1401,8 @@ export abstract class AbstractPool<
     if (this.opts.enableTasksQueue === true) {
       if (this.opts.tasksQueueOptions?.taskStealing === true) {
         this.workerNodes[workerNodeKey].addEventListener(
-          'emptyQueue',
-          this.handleEmptyQueueEvent as EventListener
+          'idleWorkerNode',
+          this.handleIdleWorkerNodeEvent as EventListener
         )
       }
       if (this.opts.tasksQueueOptions?.tasksStealingOnBackPressure === true) {
@@ -1478,7 +1478,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private readonly handleEmptyQueueEvent = (
+  private readonly handleIdleWorkerNodeEvent = (
     event: CustomEvent<WorkerNodeEventDetail>
   ): void => {
     const { workerId } = event.detail
