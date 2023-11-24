@@ -105,6 +105,10 @@ export interface TaskStatistics {
    */
   readonly maxQueued?: number
   /**
+   * Number of sequentially stolen tasks.
+   */
+  sequentiallyStolen: number
+  /**
    * Number of stolen tasks.
    */
   stolen: number
@@ -223,6 +227,7 @@ export interface IWorker {
  */
 export interface WorkerNodeEventDetail {
   workerId: number
+  workerNodeKey?: number
 }
 
 /**

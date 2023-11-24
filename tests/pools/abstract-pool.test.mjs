@@ -807,6 +807,7 @@ describe('Abstract pool test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          sequentiallyStolen: 0,
           stolen: 0,
           failed: 0
         },
@@ -972,6 +973,7 @@ describe('Abstract pool test suite', () => {
           executing: maxMultiplier,
           queued: 0,
           maxQueued: 0,
+          sequentiallyStolen: 0,
           stolen: 0,
           failed: 0
         },
@@ -999,6 +1001,7 @@ describe('Abstract pool test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          sequentiallyStolen: 0,
           stolen: 0,
           failed: 0
         },
@@ -1040,6 +1043,7 @@ describe('Abstract pool test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          sequentiallyStolen: 0,
           stolen: 0,
           failed: 0
         },
@@ -1075,6 +1079,7 @@ describe('Abstract pool test suite', () => {
           executing: 0,
           queued: 0,
           maxQueued: 0,
+          sequentiallyStolen: 0,
           stolen: 0,
           failed: 0
         },
@@ -1342,6 +1347,7 @@ describe('Abstract pool test suite', () => {
           executing: 0,
           queued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: {
@@ -1516,6 +1522,7 @@ describe('Abstract pool test suite', () => {
             executing: 0,
             failed: 0,
             queued: 0,
+            sequentiallyStolen: 0,
             stolen: 0
           },
           runTime: {

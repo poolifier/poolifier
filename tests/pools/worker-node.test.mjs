@@ -58,6 +58,7 @@ describe('Worker node test suite', () => {
         executing: 0,
         queued: 0,
         maxQueued: 0,
+        sequentiallyStolen: 0,
         stolen: 0,
         failed: 0
       },
@@ -84,7 +85,6 @@ describe('Worker node test suite', () => {
       threadWorkerNode.tasksQueue.size
     )
     expect(threadWorkerNode.onBackPressureStarted).toBe(false)
-    expect(threadWorkerNode.onIdleWorkerNodeCount).toBe(0)
     expect(threadWorkerNode.taskFunctionsUsage).toBeInstanceOf(Map)
 
     expect(clusterWorkerNode).toBeInstanceOf(WorkerNode)
@@ -101,6 +101,7 @@ describe('Worker node test suite', () => {
         executing: 0,
         queued: 0,
         maxQueued: 0,
+        sequentiallyStolen: 0,
         stolen: 0,
         failed: 0
       },
@@ -127,7 +128,6 @@ describe('Worker node test suite', () => {
       clusterWorkerNode.tasksQueue.size
     )
     expect(clusterWorkerNode.onBackPressureStarted).toBe(false)
-    expect(clusterWorkerNode.onIdleWorkerNodeCount).toBe(0)
     expect(clusterWorkerNode.taskFunctionsUsage).toBeInstanceOf(Map)
   })
 
@@ -156,6 +156,7 @@ describe('Worker node test suite', () => {
         executing: 0,
         queued: 0,
         stolen: 0,
+        sequentiallyStolen: 0,
         failed: 0
       },
       runTime: {
@@ -179,6 +180,7 @@ describe('Worker node test suite', () => {
         executing: 0,
         queued: 0,
         stolen: 0,
+        sequentiallyStolen: 0,
         failed: 0
       },
       runTime: {
@@ -202,6 +204,7 @@ describe('Worker node test suite', () => {
         executing: 0,
         queued: 0,
         stolen: 0,
+        sequentiallyStolen: 0,
         failed: 0
       },
       runTime: {
