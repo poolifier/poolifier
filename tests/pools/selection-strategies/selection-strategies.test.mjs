@@ -278,6 +278,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: {
@@ -333,6 +334,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: {
@@ -558,6 +560,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: {
@@ -616,6 +619,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: {
@@ -755,6 +759,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: expect.objectContaining({
@@ -823,6 +828,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: expect.objectContaining({
@@ -972,6 +978,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: {
@@ -1046,6 +1053,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: {
@@ -1201,6 +1209,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: expect.objectContaining({
@@ -1286,6 +1295,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: expect.objectContaining({
@@ -1376,6 +1386,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: expect.objectContaining({
@@ -1576,6 +1587,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: expect.objectContaining({
@@ -1654,6 +1666,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: expect.objectContaining({
@@ -1737,6 +1750,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: expect.objectContaining({
@@ -1999,6 +2013,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: expect.objectContaining({
@@ -2084,6 +2099,7 @@ describe('Selection strategies test suite', () => {
           queued: 0,
           maxQueued: 0,
           stolen: 0,
+          sequentiallyStolen: 0,
           failed: 0
         },
         runTime: expect.objectContaining({
