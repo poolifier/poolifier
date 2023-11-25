@@ -1346,8 +1346,8 @@ describe('Abstract pool test suite', () => {
           executed: expect.any(Number),
           executing: 0,
           queued: 0,
-          stolen: 0,
           sequentiallyStolen: 0,
+          stolen: 0,
           failed: 0
         },
         runTime: {
