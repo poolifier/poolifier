@@ -110,7 +110,7 @@ export interface TasksQueueOptions {
    */
   readonly concurrency?: number
   /**
-   * Whether to enable task stealing on empty queue.
+   * Whether to enable task stealing on idle.
    *
    * @defaultValue true
    */

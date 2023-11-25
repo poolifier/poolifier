@@ -84,7 +84,7 @@ describe('Worker node test suite', () => {
       threadWorkerNode.tasksQueue.size
     )
     expect(threadWorkerNode.onBackPressureStarted).toBe(false)
-    expect(threadWorkerNode.onEmptyQueueCount).toBe(0)
+    expect(threadWorkerNode.onIdleWorkerNodeCount).toBe(0)
     expect(threadWorkerNode.taskFunctionsUsage).toBeInstanceOf(Map)
 
     expect(clusterWorkerNode).toBeInstanceOf(WorkerNode)
@@ -127,7 +127,7 @@ describe('Worker node test suite', () => {
       clusterWorkerNode.tasksQueue.size
     )
     expect(clusterWorkerNode.onBackPressureStarted).toBe(false)
-    expect(clusterWorkerNode.onEmptyQueueCount).toBe(0)
+    expect(clusterWorkerNode.onIdleWorkerNodeCount).toBe(0)
     expect(clusterWorkerNode.taskFunctionsUsage).toBeInstanceOf(Map)
   })
 
