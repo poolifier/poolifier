@@ -2,6 +2,7 @@ import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
 import { performance } from 'node:perf_hooks'
 import { AsyncResource } from 'node:async_hooks'
+import { EventEmitter } from 'node:events'
 import type {
   MessageValue,
   Task,
@@ -74,9 +75,9 @@ export abstract class AbstractWorker<
    */
   protected taskAbortFunctions: Map<string, () => void>
   /**
-   * Event target used for worker event dispatching.
+   * Event emitter used for worker event.
    */
-  protected eventTarget: EventTarget
+  protected eventEmitter: EventEmitter
   /**
    * Timestamp of the last task processed by this worker.
    */
@@ -111,16 +112,14 @@ export abstract class AbstractWorker<
     }
     this.checkTaskFunctions(taskFunctions)
     this.taskAbortFunctions = new Map<string, () => void>()
-    this.eventTarget = new EventTarget()
-    this.eventTarget.addEventListener('abortTask', ((
-      event: CustomEvent<AbortTaskEventDetail>
-    ) => {
-      const { taskId } = event.detail
+    this.eventEmitter = new EventEmitter()
+    this.eventEmitter.on('abortTask', (eventDetail: AbortTaskEventDetail) => {
+      const { taskId } = eventDetail
       if (this.taskAbortFunctions.has(taskId)) {
         this.taskAbortFunctions.get(taskId)?.()
         this.taskAbortFunctions.delete(taskId)
       }
-    }) as EventListener)
+    })
     this.checkWorkerOptions(this.opts)
     if (!this.isMain) {
       // Should be once() but Node.js on windows has a bug that prevents it from working
@@ -342,11 +341,7 @@ export abstract class AbstractWorker<
       this.run(message)
     } else if (message.taskOperation === 'abort' && message.taskId != null) {
       // Abort task operation message received
-      this.eventTarget.dispatchEvent(
-        new CustomEvent<AbortTaskEventDetail>('abortTask', {
-          detail: { taskId: message.taskId }
-        })
-      )
+      this.eventEmitter.emit('abortTask', { taskId: message.taskId })
     } else if (message.kill === true) {
       // Kill message received
       this.handleKillMessage(message)

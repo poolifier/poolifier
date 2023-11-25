@@ -1402,10 +1402,8 @@ export abstract class AbstractPool<
     listener: (message: MessageValue<Message>) => void
   ): void
 
-  private readonly abortTask = (
-    event: CustomEvent<WorkerNodeEventDetail>
-  ): void => {
-    const { workerId, taskId } = event.detail
+  private readonly abortTask = (eventDetail: WorkerNodeEventDetail): void => {
+    const { workerId, taskId } = eventDetail
     const { reject, abortSignal } = this.promiseResponseMap.get(
       taskId as string
     ) as PromiseResponseWrapper<Response>
@@ -1458,10 +1456,7 @@ export abstract class AbstractPool<
         )
       }
     }
-    this.workerNodes[workerNodeKey].on(
-      'abortTask',
-      this.abortTask as EventListener
-    )
+    this.workerNodes[workerNodeKey].on('abortTask', this.abortTask)
   }
 
   /**
