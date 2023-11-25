@@ -630,36 +630,36 @@ export abstract class AbstractPool<
 
   private setTaskStealing (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
-      this.workerNodes[workerNodeKey].addEventListener(
+      this.workerNodes[workerNodeKey].on(
         'idleWorkerNode',
-        this.handleIdleWorkerNodeEvent as EventListener
+        this.handleIdleWorkerNodeEvent
       )
     }
   }
 
   private unsetTaskStealing (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
-      this.workerNodes[workerNodeKey].removeEventListener(
+      this.workerNodes[workerNodeKey].off(
         'idleWorkerNode',
-        this.handleIdleWorkerNodeEvent as EventListener
+        this.handleIdleWorkerNodeEvent
       )
     }
   }
 
   private setTasksStealingOnBackPressure (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
-      this.workerNodes[workerNodeKey].addEventListener(
+      this.workerNodes[workerNodeKey].on(
         'backPressure',
-        this.handleBackPressureEvent as EventListener
+        this.handleBackPressureEvent
       )
     }
   }
 
   private unsetTasksStealingOnBackPressure (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
-      this.workerNodes[workerNodeKey].removeEventListener(
+      this.workerNodes[workerNodeKey].off(
         'backPressure',
-        this.handleBackPressureEvent as EventListener
+        this.handleBackPressureEvent
       )
     }
   }
@@ -1403,15 +1403,15 @@ export abstract class AbstractPool<
     this.sendStatisticsMessageToWorker(workerNodeKey)
     if (this.opts.enableTasksQueue === true) {
       if (this.opts.tasksQueueOptions?.taskStealing === true) {
-        this.workerNodes[workerNodeKey].addEventListener(
+        this.workerNodes[workerNodeKey].on(
           'idleWorkerNode',
-          this.handleIdleWorkerNodeEvent as EventListener
+          this.handleIdleWorkerNodeEvent
         )
       }
       if (this.opts.tasksQueueOptions?.tasksStealingOnBackPressure === true) {
-        this.workerNodes[workerNodeKey].addEventListener(
+        this.workerNodes[workerNodeKey].on(
           'backPressure',
-          this.handleBackPressureEvent as EventListener
+          this.handleBackPressureEvent
         )
       }
     }
@@ -1532,10 +1532,10 @@ export abstract class AbstractPool<
   }
 
   private readonly handleIdleWorkerNodeEvent = (
-    event: CustomEvent<WorkerNodeEventDetail>,
+    eventDetail: WorkerNodeEventDetail,
     previousStolenTask?: Task<Data>
   ): void => {
-    const { workerNodeKey } = event.detail
+    const { workerNodeKey } = eventDetail
     if (workerNodeKey == null) {
       throw new Error(
         'WorkerNode event detail workerNodeKey attribute must be defined'
@@ -1586,7 +1586,7 @@ export abstract class AbstractPool<
     }
     sleep(exponentialDelay(workerNodeTasksUsage.sequentiallyStolen))
       .then(() => {
-        this.handleIdleWorkerNodeEvent(event, stolenTask)
+        this.handleIdleWorkerNodeEvent(eventDetail, stolenTask)
         return undefined
       })
       .catch(EMPTY_FUNCTION)
@@ -1624,9 +1624,9 @@ export abstract class AbstractPool<
   }
 
   private readonly handleBackPressureEvent = (
-    event: CustomEvent<WorkerNodeEventDetail>
+    eventDetail: WorkerNodeEventDetail
   ): void => {
-    const { workerId } = event.detail
+    const { workerId } = eventDetail
     const sizeOffset = 1
     if ((this.opts.tasksQueueOptions?.size as number) <= sizeOffset) {
       return
@@ -1728,11 +1728,10 @@ export abstract class AbstractPool<
           this.tasksQueueSize(workerNodeKey) === 0 &&
           workerNodeTasksUsage.sequentiallyStolen === 0
         ) {
-          this.workerNodes[workerNodeKey].dispatchEvent(
-            new CustomEvent<WorkerNodeEventDetail>('idleWorkerNode', {
-              detail: { workerId: workerId as number, workerNodeKey }
-            })
-          )
+          this.workerNodes[workerNodeKey].emit('idleWorkerNode', {
+            workerId: workerId as number,
+            workerNodeKey
+          })
         }
       }
     }

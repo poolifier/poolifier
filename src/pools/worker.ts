@@ -1,4 +1,5 @@
 import type { MessageChannel } from 'node:worker_threads'
+import type { EventEmitter } from 'node:events'
 import type { CircularArray } from '../circular-array'
 import type { Task } from '../utility-types'
 
@@ -238,7 +239,7 @@ export interface WorkerNodeEventDetail {
  * @internal
  */
 export interface IWorkerNode<Worker extends IWorker, Data = unknown>
-  extends EventTarget {
+  extends EventEmitter {
   /**
    * Worker.
    */
