@@ -13,6 +13,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Ensure continuous tasks stealing on idle start at worker node idling
+
+## [3.0.7] - 2023-11-24
+
+### Changed
+
+- Make continuous tasks stealing start at worker node idling.
+
+## [3.0.6] - 2023-11-24
+
+### Fixed
+
 - Ensure pool statuses are checked at initialization, `start()` or `destroy()`.
 - Ensure pool `ready` event can be emitted after several `start()/destroy()` cycles.
 

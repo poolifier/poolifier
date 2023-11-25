@@ -24,7 +24,6 @@ const availableParallelism = () => {
 const isDevelopmentBuild = env.BUILD === 'development'
 const isAnalyzeBuild = env.ANALYZE
 const isDocumentationBuild = env.DOCUMENTATION
-const sourcemap = env.SOURCEMAP !== 'false'
 
 const maxWorkers = Math.floor(availableParallelism() / 2)
 
@@ -35,6 +34,7 @@ export default defineConfig([
     output: [
       {
         format: 'cjs',
+        sourcemap: true,
         ...(isDevelopmentBuild && {
           dir: './lib',
           preserveModules: true,
@@ -43,13 +43,11 @@ export default defineConfig([
         ...(!isDevelopmentBuild && {
           file: './lib/index.js',
           plugins: [terser({ maxWorkers })]
-        }),
-        ...(sourcemap && {
-          sourcemap
         })
       },
       {
         format: 'esm',
+        sourcemap: true,
         ...(isDevelopmentBuild && {
           dir: './lib',
           entryFileNames: '[name].mjs',
@@ -60,9 +58,6 @@ export default defineConfig([
         ...(!isDevelopmentBuild && {
           file: './lib/index.mjs',
           plugins: [terser({ maxWorkers })]
-        }),
-        ...(sourcemap && {
-          sourcemap
         })
       }
     ],
@@ -71,7 +66,7 @@ export default defineConfig([
       typescript({
         tsconfig: './tsconfig.build.json',
         compilerOptions: {
-          sourceMap: sourcemap
+          sourceMap: true
         }
       }),
       del({

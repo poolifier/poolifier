@@ -1,4 +1,5 @@
 import type { MessageChannel } from 'node:worker_threads'
+import type { EventEmitter } from 'node:events'
 import type { CircularArray } from '../circular-array'
 import type { Task } from '../utility-types'
 import type { Deque } from '../deque'
@@ -105,6 +106,10 @@ export interface TaskStatistics {
    * Maximum number of queued tasks.
    */
   readonly maxQueued?: number
+  /**
+   * Number of sequentially stolen tasks.
+   */
+  sequentiallyStolen: number
   /**
    * Number of stolen tasks.
    */
@@ -224,6 +229,7 @@ export interface IWorker {
  */
 export interface WorkerNodeEventDetail {
   workerId: number
+  workerNodeKey?: number
   taskId?: string
 }
 
@@ -235,7 +241,7 @@ export interface WorkerNodeEventDetail {
  * @internal
  */
 export interface IWorkerNode<Worker extends IWorker, Data = unknown>
-  extends EventTarget {
+  extends EventEmitter {
   /**
    * Worker.
    */

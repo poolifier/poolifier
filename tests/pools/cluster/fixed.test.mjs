@@ -130,6 +130,7 @@ describe('Fixed cluster pool test suite', () => {
       expect(workerNode.usage.tasks.maxQueued).toBe(
         maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency
       )
+      expect(workerNode.usage.tasks.sequentiallyStolen).toBe(0)
       expect(workerNode.usage.tasks.stolen).toBe(0)
     }
     expect(queuePool.info.executedTasks).toBe(0)
@@ -156,6 +157,12 @@ describe('Fixed cluster pool test suite', () => {
       expect(workerNode.usage.tasks.queued).toBe(0)
       expect(workerNode.usage.tasks.maxQueued).toBe(
         maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency
+      )
+      expect(workerNode.usage.tasks.sequentiallyStolen).toBeGreaterThanOrEqual(
+        0
+      )
+      expect(workerNode.usage.tasks.sequentiallyStolen).toBeLessThanOrEqual(
+        numberOfWorkers * maxMultiplier
       )
       expect(workerNode.usage.tasks.stolen).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.stolen).toBeLessThanOrEqual(
