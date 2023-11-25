@@ -419,6 +419,7 @@ export abstract class AbstractWorker<
         this.emitDestroy()
       }
     }
+    this.eventEmitter.removeAllListeners()
   }
 
   /**

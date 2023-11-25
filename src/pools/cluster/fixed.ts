@@ -75,6 +75,7 @@ export class FixedClusterPool<
       worker.kill()
     })
     await this.sendKillMessageToWorker(workerNodeKey)
+    workerNode.removeAllListeners()
     worker.disconnect()
     await waitWorkerExit
   }

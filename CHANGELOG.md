@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add fine grained task abortion support.
 
+### Fixed
+
+- Remove all pool events listener at pool destroying.
+- Remove all worker node events listener at worker node destroying.
+
 ## [3.0.8] - 2023-11-25
 
 ### Fixed
