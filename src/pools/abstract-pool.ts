@@ -1666,17 +1666,18 @@ export abstract class AbstractPool<
    */
   protected workerMessageListener (message: MessageValue<Response>): void {
     this.checkMessageWorkerId(message)
-    if (message.ready != null && message.taskFunctionNames != null) {
+    const { workerId, ready, taskId, taskFunctionNames } = message
+    if (ready != null && taskFunctionNames != null) {
       // Worker ready response received from worker
       this.handleWorkerReadyResponse(message)
-    } else if (message.taskId != null) {
+    } else if (taskId != null) {
       // Task execution response received from worker
       this.handleTaskExecutionResponse(message)
-    } else if (message.taskFunctionNames != null) {
+    } else if (taskFunctionNames != null) {
       // Task function names message received from worker
       this.getWorkerInfo(
-        this.getWorkerNodeKeyByWorkerId(message.workerId)
-      ).taskFunctionNames = message.taskFunctionNames
+        this.getWorkerNodeKeyByWorkerId(workerId)
+      ).taskFunctionNames = taskFunctionNames
     }
   }
 
