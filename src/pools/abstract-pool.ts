@@ -983,7 +983,7 @@ export abstract class AbstractPool<
     }
     this.destroying = true
     await Promise.all(
-      this.workerNodes.map(async (_, workerNodeKey) => {
+      this.workerNodes.map(async (_workerNode, workerNodeKey) => {
         await this.destroyWorkerNode(workerNodeKey)
       })
     )
