@@ -1,3 +1,4 @@
+import { exit } from 'node:process'
 import {
   PoolTypes,
   WorkerTypes,
@@ -60,3 +61,5 @@ await runPoolifierPoolBenchmark(
     workerData
   }
 )
+
+exit()
