@@ -81,9 +81,9 @@ const runPoolifierPoolBenchmark = async (
   poolSize,
   { taskExecutions, workerData }
 ) => {
-  const pool = buildPoolifierPool(workerType, poolType, poolSize)
-  const suite = new Benchmark.Suite(name)
   return await new Promise((resolve, reject) => {
+    const pool = buildPoolifierPool(workerType, poolType, poolSize)
+    const suite = new Benchmark.Suite(name)
     try {
       for (const workerChoiceStrategy of Object.values(
         WorkerChoiceStrategies
