@@ -1,4 +1,5 @@
 import { MessageChannel } from 'node:worker_threads'
+import { EventEmitter } from 'node:events'
 import { CircularArray } from '../circular-array'
 import type { Task } from '../utility-types'
 import { DEFAULT_TASK_NAME, getWorkerId, getWorkerType } from '../utils'
@@ -8,7 +9,6 @@ import {
   type IWorkerNode,
   type StrategyData,
   type WorkerInfo,
-  type WorkerNodeEventDetail,
   type WorkerType,
   WorkerTypes,
   type WorkerUsage
@@ -22,7 +22,7 @@ import { checkWorkerNodeArguments } from './utils'
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  */
 export class WorkerNode<Worker extends IWorker, Data = unknown>
-  extends EventTarget
+  extends EventEmitter
   implements IWorkerNode<Worker, Data> {
   /** @inheritdoc */
   public readonly worker: Worker
@@ -71,11 +71,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     const tasksQueueSize = this.tasksQueue.push(task)
     if (this.hasBackPressure() && !this.onBackPressureStarted) {
       this.onBackPressureStarted = true
-      this.dispatchEvent(
-        new CustomEvent<WorkerNodeEventDetail>('backPressure', {
-          detail: { workerId: this.info.id as number }
-        })
-      )
+      this.emit('backPressure', { workerId: this.info.id as number })
       this.onBackPressureStarted = false
     }
     return tasksQueueSize
@@ -86,11 +82,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     const tasksQueueSize = this.tasksQueue.unshift(task)
     if (this.hasBackPressure() && !this.onBackPressureStarted) {
       this.onBackPressureStarted = true
-      this.dispatchEvent(
-        new CustomEvent<WorkerNodeEventDetail>('backPressure', {
-          detail: { workerId: this.info.id as number }
-        })
-      )
+      this.emit('backPressure', { workerId: this.info.id as number })
       this.onBackPressureStarted = false
     }
     return tasksQueueSize

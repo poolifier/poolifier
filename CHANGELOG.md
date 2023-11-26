@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Remove all pool events listener at pool destroying.
+- Remove all worker node events listener at worker node destroying.
+
+## [3.0.8] - 2023-11-25
+
+### Fixed
+
 - Ensure continuous tasks stealing on idle start at worker node idling
 
 ## [3.0.7] - 2023-11-24

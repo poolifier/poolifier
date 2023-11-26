@@ -35,6 +35,7 @@ import {
 import type {
   IWorker,
   IWorkerNode,
+  TaskStatistics,
   WorkerInfo,
   WorkerNodeEventDetail,
   WorkerType,
@@ -629,36 +630,36 @@ export abstract class AbstractPool<
 
   private setTaskStealing (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
-      this.workerNodes[workerNodeKey].addEventListener(
+      this.workerNodes[workerNodeKey].on(
         'idleWorkerNode',
-        this.handleIdleWorkerNodeEvent as EventListener
+        this.handleIdleWorkerNodeEvent
       )
     }
   }
 
   private unsetTaskStealing (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
-      this.workerNodes[workerNodeKey].removeEventListener(
+      this.workerNodes[workerNodeKey].off(
         'idleWorkerNode',
-        this.handleIdleWorkerNodeEvent as EventListener
+        this.handleIdleWorkerNodeEvent
       )
     }
   }
 
   private setTasksStealingOnBackPressure (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
-      this.workerNodes[workerNodeKey].addEventListener(
+      this.workerNodes[workerNodeKey].on(
         'backPressure',
-        this.handleBackPressureEvent as EventListener
+        this.handleBackPressureEvent
       )
     }
   }
 
   private unsetTasksStealingOnBackPressure (): void {
     for (const [workerNodeKey] of this.workerNodes.entries()) {
-      this.workerNodes[workerNodeKey].removeEventListener(
+      this.workerNodes[workerNodeKey].off(
         'backPressure',
-        this.handleBackPressureEvent as EventListener
+        this.handleBackPressureEvent
       )
     }
   }
@@ -982,12 +983,13 @@ export abstract class AbstractPool<
     }
     this.destroying = true
     await Promise.all(
-      this.workerNodes.map(async (_, workerNodeKey) => {
+      this.workerNodes.map(async (_workerNode, workerNodeKey) => {
         await this.destroyWorkerNode(workerNodeKey)
       })
     )
     this.emitter?.emit(PoolEvents.destroy, this.info)
     this.emitter?.emitDestroy()
+    this.emitter?.removeAllListeners()
     this.readyEventEmitted = false
     this.destroying = false
     this.started = false
@@ -1402,15 +1404,15 @@ export abstract class AbstractPool<
     this.sendStatisticsMessageToWorker(workerNodeKey)
     if (this.opts.enableTasksQueue === true) {
       if (this.opts.tasksQueueOptions?.taskStealing === true) {
-        this.workerNodes[workerNodeKey].addEventListener(
+        this.workerNodes[workerNodeKey].on(
           'idleWorkerNode',
-          this.handleIdleWorkerNodeEvent as EventListener
+          this.handleIdleWorkerNodeEvent
         )
       }
       if (this.opts.tasksQueueOptions?.tasksStealingOnBackPressure === true) {
-        this.workerNodes[workerNodeKey].addEventListener(
+        this.workerNodes[workerNodeKey].on(
           'backPressure',
-          this.handleBackPressureEvent as EventListener
+          this.handleBackPressureEvent
         )
       }
     }
@@ -1481,13 +1483,19 @@ export abstract class AbstractPool<
   }
 
   private updateTaskSequentiallyStolenStatisticsWorkerUsage (
-    workerNodeKey: number,
-    taskName: string
+    workerNodeKey: number
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
     if (workerNode?.usage != null) {
       ++workerNode.usage.tasks.sequentiallyStolen
     }
+  }
+
+  private updateTaskSequentiallyStolenStatisticsTaskFunctionWorkerUsage (
+    workerNodeKey: number,
+    taskName: string
+  ): void {
+    const workerNode = this.workerNodes[workerNodeKey]
     if (
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
@@ -1500,13 +1508,19 @@ export abstract class AbstractPool<
   }
 
   private resetTaskSequentiallyStolenStatisticsWorkerUsage (
-    workerNodeKey: number,
-    taskName: string
+    workerNodeKey: number
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
     if (workerNode?.usage != null) {
       workerNode.usage.tasks.sequentiallyStolen = 0
     }
+  }
+
+  private resetTaskSequentiallyStolenStatisticsTaskFunctionWorkerUsage (
+    workerNodeKey: number,
+    taskName: string
+  ): void {
+    const workerNode = this.workerNodes[workerNodeKey]
     if (
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
@@ -1519,10 +1533,10 @@ export abstract class AbstractPool<
   }
 
   private readonly handleIdleWorkerNodeEvent = (
-    event: CustomEvent<WorkerNodeEventDetail>,
+    eventDetail: WorkerNodeEventDetail,
     previousStolenTask?: Task<Data>
   ): void => {
-    const { workerNodeKey } = event.detail
+    const { workerNodeKey } = eventDetail
     if (workerNodeKey == null) {
       throw new Error(
         'WorkerNode event detail workerNodeKey attribute must be defined'
@@ -1535,16 +1549,45 @@ export abstract class AbstractPool<
       (workerNodeTasksUsage.executing > 0 ||
         this.tasksQueueSize(workerNodeKey) > 0)
     ) {
-      this.resetTaskSequentiallyStolenStatisticsWorkerUsage(
-        workerNodeKey,
-        previousStolenTask.name as string
-      )
+      for (const taskName of this.workerNodes[workerNodeKey].info
+        .taskFunctionNames as string[]) {
+        this.resetTaskSequentiallyStolenStatisticsTaskFunctionWorkerUsage(
+          workerNodeKey,
+          taskName
+        )
+      }
+      this.resetTaskSequentiallyStolenStatisticsWorkerUsage(workerNodeKey)
       return
     }
     const stolenTask = this.workerNodeStealTask(workerNodeKey)
+    if (
+      this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
+      stolenTask != null
+    ) {
+      const taskFunctionTasksWorkerUsage = this.workerNodes[
+        workerNodeKey
+      ].getTaskFunctionWorkerUsage(stolenTask.name as string)
+        ?.tasks as TaskStatistics
+      if (
+        taskFunctionTasksWorkerUsage.sequentiallyStolen === 0 ||
+        (previousStolenTask != null &&
+          previousStolenTask.name === stolenTask.name &&
+          taskFunctionTasksWorkerUsage.sequentiallyStolen > 0)
+      ) {
+        this.updateTaskSequentiallyStolenStatisticsTaskFunctionWorkerUsage(
+          workerNodeKey,
+          stolenTask.name as string
+        )
+      } else {
+        this.resetTaskSequentiallyStolenStatisticsTaskFunctionWorkerUsage(
+          workerNodeKey,
+          stolenTask.name as string
+        )
+      }
+    }
     sleep(exponentialDelay(workerNodeTasksUsage.sequentiallyStolen))
       .then(() => {
-        this.handleIdleWorkerNodeEvent(event, stolenTask)
+        this.handleIdleWorkerNodeEvent(eventDetail, stolenTask)
         return undefined
       })
       .catch(EMPTY_FUNCTION)
@@ -1572,10 +1615,7 @@ export abstract class AbstractPool<
       } else {
         this.enqueueTask(workerNodeKey, task)
       }
-      this.updateTaskSequentiallyStolenStatisticsWorkerUsage(
-        workerNodeKey,
-        task.name as string
-      )
+      this.updateTaskSequentiallyStolenStatisticsWorkerUsage(workerNodeKey)
       this.updateTaskStolenStatisticsWorkerUsage(
         workerNodeKey,
         task.name as string
@@ -1585,9 +1625,9 @@ export abstract class AbstractPool<
   }
 
   private readonly handleBackPressureEvent = (
-    event: CustomEvent<WorkerNodeEventDetail>
+    eventDetail: WorkerNodeEventDetail
   ): void => {
-    const { workerId } = event.detail
+    const { workerId } = eventDetail
     const sizeOffset = 1
     if ((this.opts.tasksQueueOptions?.size as number) <= sizeOffset) {
       return
@@ -1627,17 +1667,18 @@ export abstract class AbstractPool<
    */
   protected workerMessageListener (message: MessageValue<Response>): void {
     this.checkMessageWorkerId(message)
-    if (message.ready != null && message.taskFunctionNames != null) {
+    const { workerId, ready, taskId, taskFunctionNames } = message
+    if (ready != null && taskFunctionNames != null) {
       // Worker ready response received from worker
       this.handleWorkerReadyResponse(message)
-    } else if (message.taskId != null) {
+    } else if (taskId != null) {
       // Task execution response received from worker
       this.handleTaskExecutionResponse(message)
-    } else if (message.taskFunctionNames != null) {
+    } else if (taskFunctionNames != null) {
       // Task function names message received from worker
       this.getWorkerInfo(
-        this.getWorkerNodeKeyByWorkerId(message.workerId)
-      ).taskFunctionNames = message.taskFunctionNames
+        this.getWorkerNodeKeyByWorkerId(workerId)
+      ).taskFunctionNames = taskFunctionNames
     }
   }
 
@@ -1688,11 +1729,10 @@ export abstract class AbstractPool<
           this.tasksQueueSize(workerNodeKey) === 0 &&
           workerNodeTasksUsage.sequentiallyStolen === 0
         ) {
-          this.workerNodes[workerNodeKey].dispatchEvent(
-            new CustomEvent<WorkerNodeEventDetail>('idleWorkerNode', {
-              detail: { workerId: workerId as number, workerNodeKey }
-            })
-          )
+          this.workerNodes[workerNodeKey].emit('idleWorkerNode', {
+            workerId: workerId as number,
+            workerNodeKey
+          })
         }
       }
     }

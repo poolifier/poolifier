@@ -155,8 +155,8 @@ describe('Worker node test suite', () => {
         executed: 0,
         executing: 0,
         queued: 0,
-        stolen: 0,
         sequentiallyStolen: 0,
+        stolen: 0,
         failed: 0
       },
       runTime: {
@@ -179,8 +179,8 @@ describe('Worker node test suite', () => {
         executed: 0,
         executing: 0,
         queued: 0,
-        stolen: 0,
         sequentiallyStolen: 0,
+        stolen: 0,
         failed: 0
       },
       runTime: {
@@ -203,8 +203,8 @@ describe('Worker node test suite', () => {
         executed: 0,
         executing: 0,
         queued: 0,
-        stolen: 0,
         sequentiallyStolen: 0,
+        stolen: 0,
         failed: 0
       },
       runTime: {
