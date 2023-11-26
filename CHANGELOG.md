@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove all pool events listener at pool destroying.
 - Remove all worker node events listener at worker node destroying.
+- Fix worker node event emitter listeners handling memory leak at pool options runtime change.
 
 ## [3.0.8] - 2023-11-25
 

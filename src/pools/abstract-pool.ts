@@ -594,11 +594,13 @@ export abstract class AbstractPool<
         this.buildTasksQueueOptions(tasksQueueOptions)
       this.setTasksQueueSize(this.opts.tasksQueueOptions.size as number)
       if (this.opts.tasksQueueOptions.taskStealing === true) {
+        this.unsetTaskStealing()
         this.setTaskStealing()
       } else {
         this.unsetTaskStealing()
       }
       if (this.opts.tasksQueueOptions.tasksStealingOnBackPressure === true) {
+        this.unsetTasksStealingOnBackPressure()
         this.setTasksStealingOnBackPressure()
       } else {
         this.unsetTasksStealingOnBackPressure()
