@@ -148,13 +148,24 @@ const runPoolifierPoolBenchmark = async (
         .on('cycle', event => {
           console.info(event.target.toString())
         })
-        .on('complete', async function () {
+        .on('complete', function () {
           console.info(
             'Fastest is ' +
               LIST_FORMATTER.format(this.filter('fastest').map('name'))
           )
-          await pool.destroy()
-          resolve()
+          // FIXME: destroy() hangs
+          const destroyTimeout = setTimeout(() => {
+            resolve()
+            clearTimeout(destroyTimeout)
+          }, 30000)
+          pool
+            .destroy()
+            .then(resolve)
+            .catch(reject)
+            .finally(() => {
+              clearTimeout(destroyTimeout)
+            })
+            .catch(() => {})
         })
         .run({ async: true })
     } catch (error) {
