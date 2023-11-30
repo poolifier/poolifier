@@ -98,7 +98,6 @@ module.exports = defineConfig({
           'unlink',
           'unref',
           'utf8',
-          'webcrypto',
           'workerpool',
           'ws',
           'wss',

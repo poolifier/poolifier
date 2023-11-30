@@ -1,6 +1,12 @@
-const crypto = require('node:crypto')
-const assert = require('node:assert')
-const fs = require('node:fs')
+const { randomInt } = require('node:crypto')
+const { strictEqual } = require('node:assert')
+const {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync
+} = require('node:fs')
 const Benchmark = require('benchmark')
 const {
   DynamicClusterPool,
@@ -103,15 +109,12 @@ const runPoolifierPoolBenchmark = async (
                     measurement
                   })
                   pool.enableTasksQueue(enableTasksQueue)
-                  assert.strictEqual(
+                  strictEqual(
                     pool.opts.workerChoiceStrategy,
                     workerChoiceStrategy
                   )
-                  assert.strictEqual(
-                    pool.opts.enableTasksQueue,
-                    enableTasksQueue
-                  )
-                  assert.strictEqual(
+                  strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
+                  strictEqual(
                     pool.opts.workerChoiceStrategyOptions.measurement,
                     measurement
                   )
@@ -130,11 +133,11 @@ const runPoolifierPoolBenchmark = async (
               async () => {
                 pool.setWorkerChoiceStrategy(workerChoiceStrategy)
                 pool.enableTasksQueue(enableTasksQueue)
-                assert.strictEqual(
+                strictEqual(
                   pool.opts.workerChoiceStrategy,
                   workerChoiceStrategy
                 )
-                assert.strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
+                strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
                 await runPoolifierPool(pool, {
                   taskExecutions,
                   workerData
@@ -229,23 +232,21 @@ const factorial = n => {
 
 const readWriteFiles = (
   n,
-  baseDirectory = `/tmp/poolifier-benchmarks/${crypto.randomInt(
-    281474976710655
-  )}`
+  baseDirectory = `/tmp/poolifier-benchmarks/${randomInt(281474976710655)}`
 ) => {
-  if (fs.existsSync(baseDirectory) === true) {
-    fs.rmSync(baseDirectory, { recursive: true })
+  if (existsSync(baseDirectory) === true) {
+    rmSync(baseDirectory, { recursive: true })
   }
-  fs.mkdirSync(baseDirectory, { recursive: true })
+  mkdirSync(baseDirectory, { recursive: true })
   for (let i = 0; i < n; i++) {
     const filePath = `${baseDirectory}/${i}`
-    fs.writeFileSync(filePath, i.toString(), {
+    writeFileSync(filePath, i.toString(), {
       encoding: 'utf8',
       flag: 'a'
     })
-    fs.readFileSync(filePath, 'utf8')
+    readFileSync(filePath, 'utf8')
   }
-  fs.rmSync(baseDirectory, { recursive: true })
+  rmSync(baseDirectory, { recursive: true })
   return { ok: 1 }
 }
 

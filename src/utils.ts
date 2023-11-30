@@ -1,5 +1,5 @@
 import * as os from 'node:os'
-import { webcrypto } from 'node:crypto'
+import { getRandomValues } from 'node:crypto'
 import { Worker as ClusterWorker } from 'node:cluster'
 import { Worker as ThreadWorker } from 'node:worker_threads'
 import type {
@@ -226,7 +226,7 @@ export const isAsyncFunction = (
  * @internal
  */
 export const secureRandom = (): number => {
-  return webcrypto.getRandomValues(new Uint32Array(1))[0] / 0x100000000
+  return getRandomValues(new Uint32Array(1))[0] / 0x100000000
 }
 
 /**
