@@ -4,6 +4,6 @@ module.exports = {
     'ts-standard --fix',
     'eslint --cache --fix'
   ],
-  '**/*.json': ['biome format --write'],
+  '**/!(package.json)*.json': ['biome format --write'],
   '**/*.{md,yml,yaml}': ['prettier --cache --write']
 }
