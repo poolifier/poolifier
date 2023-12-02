@@ -35,7 +35,14 @@
     "prepublishOnly": "pnpm build:prod"
   },
   "ts-standard": {
-    "globals": ["describe", "it", "after", "before", "afterEach", "beforeEach"]
+    "globals": [
+      "describe",
+      "it",
+      "after",
+      "before",
+      "afterEach",
+      "beforeEach"
+    ]
   },
   "engines": {
     "node": ">=18.0.0",
@@ -94,14 +101,16 @@
     "url": "https://github.com/poolifier/poolifier/issues"
   },
   "homepage": "https://github.com/poolifier/poolifier#readme",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "pnpm": {
     "overrides": {
       "semver": "^7.5.3"
     }
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.4.0",
+    "@biomejs/biome": "^1.4.1",
     "@commitlint/cli": "^18.4.3",
     "@commitlint/config-conventional": "^18.4.3",
     "@release-it/bumper": "^6.0.1",
@@ -132,7 +141,7 @@
     "mochawesome": "^7.1.3",
     "prettier": "^3.1.0",
     "release-it": "^17.0.0",
-    "rollup": "^4.6.0",
+    "rollup": "^4.6.1",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",
     "rollup-plugin-delete": "^2.0.0",
