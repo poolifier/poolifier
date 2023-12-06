@@ -28,6 +28,6 @@
     "@types/express": "^4.17.21",
     "@types/node": "^20.10.3",
     "autocannon": "^7.14.0",
-    "typescript": "^5.3.2"
+    "typescript": "^5.3.3"
   }
 }
