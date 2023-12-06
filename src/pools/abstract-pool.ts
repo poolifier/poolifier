@@ -1487,6 +1487,9 @@ export abstract class AbstractPool<
   }
 
   private redistributeQueuedTasks (workerNodeKey: number): void {
+    if (this.workerNodes.length <= 1) {
+      return
+    }
     while (this.tasksQueueSize(workerNodeKey) > 0) {
       const destinationWorkerNodeKey = this.workerNodes.reduce(
         (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
@@ -1580,6 +1583,9 @@ export abstract class AbstractPool<
     eventDetail: WorkerNodeEventDetail,
     previousStolenTask?: Task<Data>
   ): void => {
+    if (this.workerNodes.length <= 1) {
+      return
+    }
     const { workerNodeKey } = eventDetail
     if (workerNodeKey == null) {
       throw new Error(
@@ -1671,6 +1677,9 @@ export abstract class AbstractPool<
   private readonly handleBackPressureEvent = (
     eventDetail: WorkerNodeEventDetail
   ): void => {
+    if (this.workerNodes.length <= 1) {
+      return
+    }
     const { workerId } = eventDetail
     const sizeOffset = 1
     if ((this.opts.tasksQueueOptions?.size as number) <= sizeOffset) {
