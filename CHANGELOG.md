@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.10] - 2023-12-08
+
 ### Changed
 
 - Add a fastpath when tasks stealing or redistribution is impossible
