@@ -1,5 +1,6 @@
 import type { EventLoopUtilization } from 'node:perf_hooks'
 import type { MessagePort, TransferListItem } from 'node:worker_threads'
+import type { AsyncResource } from 'node:async_hooks'
 import type { KillBehavior } from './worker/worker-options'
 
 /**
@@ -186,7 +187,11 @@ export interface PromiseResponseWrapper<Response = unknown> {
    */
   readonly workerNodeKey: number
   /**
-   * The abort signal.
+   * The asynchronous resource used to track the task execution.
+   */
+  readonly asyncResource?: AsyncResource
+  /**
+   * The task abort signal.
    */
   readonly abortSignal?: AbortSignal
 }

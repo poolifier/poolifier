@@ -1,7 +1,6 @@
 import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
 import { performance } from 'node:perf_hooks'
-import { AsyncResource } from 'node:async_hooks'
 import { EventEmitter } from 'node:events'
 import type {
   MessageValue,
@@ -61,7 +60,7 @@ export abstract class AbstractWorker<
   MainWorker extends Worker | MessagePort,
   Data = unknown,
   Response = unknown
-> extends AsyncResource {
+> {
   /**
    * Worker id.
    */
@@ -93,20 +92,17 @@ export abstract class AbstractWorker<
   /**
    * Constructs a new poolifier worker.
    *
-   * @param type - The type of async event.
    * @param isMain - Whether this is the main worker or not.
    * @param mainWorker - Reference to main worker.
    * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked. The first function is the default function.
    * @param opts - Options for the worker.
    */
   public constructor (
-    type: string,
     protected readonly isMain: boolean,
     private readonly mainWorker: MainWorker,
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     protected opts: WorkerOptions = DEFAULT_WORKER_OPTIONS
   ) {
-    super(type)
     if (this.isMain == null) {
       throw new Error('isMain parameter is mandatory')
     }
@@ -404,10 +400,6 @@ export abstract class AbstractWorker<
         .catch(() => {
           this.sendToMainWorker({ kill: 'failure' })
         })
-        .finally(() => {
-          this.emitDestroy()
-        })
-        .catch(EMPTY_FUNCTION)
     } else {
       try {
         // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
@@ -415,8 +407,6 @@ export abstract class AbstractWorker<
         this.sendToMainWorker({ kill: 'success' })
       } catch {
         this.sendToMainWorker({ kill: 'failure' })
-      } finally {
-        this.emitDestroy()
       }
     }
     this.eventEmitter.removeAllListeners()
@@ -537,7 +527,7 @@ export abstract class AbstractWorker<
    *
    * @param task - The task to execute.
    */
-  protected run (task: Task<Data>): void {
+  protected readonly run = (task: Task<Data>): void => {
     const { name, data, abortable, taskId } = task
     const taskFunctionName = name ?? DEFAULT_TASK_NAME
     if (!this.taskFunctions.has(taskFunctionName)) {
@@ -561,9 +551,9 @@ export abstract class AbstractWorker<
       >
     }
     if (isAsyncFunction(fn)) {
-      this.runInAsyncScope(this.runAsync.bind(this), this, fn, task)
+      this.runAsync(fn as TaskAsyncFunction<Data, Response>, task)
     } else {
-      this.runInAsyncScope(this.runSync.bind(this), this, fn, task)
+      this.runSync(fn as TaskSyncFunction<Data, Response>, task)
     }
   }
 
@@ -573,10 +563,10 @@ export abstract class AbstractWorker<
    * @param fn - Task function that will be executed.
    * @param task - Input data for the task function.
    */
-  protected runSync (
+  protected readonly runSync = (
     fn: TaskSyncFunction<Data, Response>,
     task: Task<Data>
-  ): void {
+  ): void => {
     const { name, data, abortable, taskId } = task
     try {
       let taskPerformance = this.beginTaskPerformance(name)
@@ -610,10 +600,10 @@ export abstract class AbstractWorker<
    * @param fn - Task function that will be executed.
    * @param task - Input data for the task function.
    */
-  protected runAsync (
+  protected readonly runAsync = (
     fn: TaskAsyncFunction<Data, Response>,
     task: Task<Data>
-  ): void {
+  ): void => {
     const { name, data, abortable, taskId } = task
     let taskPerformance = this.beginTaskPerformance(name)
     fn(data)

@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { performance } from 'node:perf_hooks'
 import type { TransferListItem } from 'node:worker_threads'
 import { EventEmitterAsyncResource } from 'node:events'
+import { AsyncResource } from 'node:async_hooks'
 import type {
   MessageValue,
   PromiseResponseWrapper,
@@ -950,6 +951,12 @@ export abstract class AbstractPool<
         resolve,
         reject,
         workerNodeKey,
+        ...(this.emitter != null && {
+          asyncResource: new AsyncResource('poolifier:task', {
+            triggerAsyncId: this.emitter.asyncId,
+            requireManualDestroy: true
+          })
+        }),
         abortSignal
       })
       if (
@@ -1757,13 +1764,22 @@ export abstract class AbstractPool<
     const { workerId, taskId, workerError, data } = message
     const promiseResponse = this.promiseResponseMap.get(taskId as string)
     if (promiseResponse != null) {
-      const { resolve, reject, workerNodeKey } = promiseResponse
+      const { resolve, reject, workerNodeKey, asyncResource } = promiseResponse
       if (workerError != null) {
         this.emitter?.emit(PoolEvents.taskError, workerError)
-        reject(workerError.message)
+        asyncResource != null
+          ? asyncResource.runInAsyncScope(
+            reject,
+            this.emitter,
+            workerError.message
+          )
+          : reject(workerError.message)
       } else {
-        resolve(data as Response)
+        asyncResource != null
+          ? asyncResource.runInAsyncScope(resolve, this.emitter, data)
+          : resolve(data as Response)
       }
+      asyncResource?.emitDestroy()
       this.afterTaskExecutionHook(workerNodeKey, message)
       this.workerChoiceStrategyContext.update(workerNodeKey)
       this.promiseResponseMap.delete(taskId as string)
