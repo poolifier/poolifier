@@ -60,7 +60,7 @@ export abstract class AbstractWorker<
   MainWorker extends Worker | MessagePort,
   Data = unknown,
   Response = unknown
-> {
+> extends EventEmitter {
   /**
    * Worker id.
    */
@@ -73,10 +73,6 @@ export abstract class AbstractWorker<
    * Task abort functions processed by the worker when task operation 'abort' is received.
    */
   protected taskAbortFunctions: Map<string, () => void>
-  /**
-   * Event emitter used for worker event.
-   */
-  protected eventEmitter: EventEmitter
   /**
    * Timestamp of the last task processed by this worker.
    */
@@ -103,13 +99,13 @@ export abstract class AbstractWorker<
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     protected opts: WorkerOptions = DEFAULT_WORKER_OPTIONS
   ) {
+    super()
     if (this.isMain == null) {
       throw new Error('isMain parameter is mandatory')
     }
     this.checkTaskFunctions(taskFunctions)
     this.taskAbortFunctions = new Map<string, () => void>()
-    this.eventEmitter = new EventEmitter()
-    this.eventEmitter.on('abortTask', (eventDetail: AbortTaskEventDetail) => {
+    this.on('abortTask', (eventDetail: AbortTaskEventDetail) => {
       const { taskId } = eventDetail
       if (this.taskAbortFunctions.has(taskId)) {
         this.taskAbortFunctions.get(taskId)?.()
@@ -337,7 +333,7 @@ export abstract class AbstractWorker<
       this.run(message)
     } else if (message.taskOperation === 'abort' && message.taskId != null) {
       // Abort task operation message received
-      this.eventEmitter.emit('abortTask', { taskId: message.taskId })
+      this.emit('abortTask', { taskId: message.taskId })
     } else if (message.kill === true) {
       // Kill message received
       this.handleKillMessage(message)
@@ -409,7 +405,7 @@ export abstract class AbstractWorker<
         this.sendToMainWorker({ kill: 'failure' })
       }
     }
-    this.eventEmitter.removeAllListeners()
+    this.removeAllListeners()
   }
 
   /**
