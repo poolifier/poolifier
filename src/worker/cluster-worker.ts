@@ -32,13 +32,7 @@ export class ClusterWorker<
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     opts: WorkerOptions = {}
   ) {
-    super(
-      'poolifier:cluster-worker',
-      cluster.isPrimary,
-      cluster.worker as Worker,
-      taskFunctions,
-      opts
-    )
+    super(cluster.isPrimary, cluster.worker as Worker, taskFunctions, opts)
   }
 
   /** @inheritDoc */

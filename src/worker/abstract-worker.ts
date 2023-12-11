@@ -86,13 +86,11 @@ export abstract class AbstractWorker<
    * @param opts - Options for the worker.
    */
   public constructor (
-    type: string,
     protected readonly isMain: boolean,
     private readonly mainWorker: MainWorker,
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     protected opts: WorkerOptions = DEFAULT_WORKER_OPTIONS
   ) {
-    // super(type)
     if (this.isMain == null) {
       throw new Error('isMain parameter is mandatory')
     }

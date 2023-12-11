@@ -41,13 +41,7 @@ export class ThreadWorker<
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     opts: WorkerOptions = {}
   ) {
-    super(
-      'poolifier:thread-worker',
-      isMainThread,
-      parentPort as MessagePort,
-      taskFunctions,
-      opts
-    )
+    super(isMainThread, parentPort as MessagePort, taskFunctions)
   }
 
   /** @inheritDoc */
