@@ -1,5 +1,6 @@
 import type { EventLoopUtilization } from 'node:perf_hooks'
 import type { MessagePort, TransferListItem } from 'node:worker_threads'
+import type { AsyncResource } from 'node:async_hooks'
 import type { KillBehavior } from './worker/worker-options'
 
 /**
@@ -176,6 +177,10 @@ export interface PromiseResponseWrapper<Response = unknown> {
    * The worker node key executing the task.
    */
   readonly workerNodeKey: number
+  /**
+   * The asynchronous resource used to track the task execution.
+   */
+  readonly asyncResource?: AsyncResource
 }
 
 export type Writable<T> = { -readonly [P in keyof T]: T[P] }
