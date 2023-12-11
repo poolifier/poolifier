@@ -1291,17 +1291,18 @@ describe('Abstract pool test suite', () => {
         if (executionAsyncId() === taskAsyncId) resolveCalls++
       }
     })
-    hook.enable()
     const pool = new FixedThreadPool(
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.mjs'
     )
+    hook.enable()
     await pool.execute()
     hook.disable()
     expect(initCalls).toBe(1)
     expect(beforeCalls).toBe(1)
     expect(afterCalls).toBe(1)
     expect(resolveCalls).toBe(1)
+    await pool.destroy()
   })
 
   it('Verify that hasTaskFunction() is working', async () => {
