@@ -17,6 +17,7 @@ const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(
   Math.round(availableParallelism() / 2),
   webSocketServerWorkerFile,
   {
+    enableEvents: false,
     onlineHandler: () => {
       pool
         .execute({

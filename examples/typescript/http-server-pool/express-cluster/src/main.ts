@@ -12,6 +12,7 @@ const pool = new FixedClusterPool<WorkerData, WorkerResponse>(
   availableParallelism(),
   workerFile,
   {
+    enableEvents: false,
     onlineHandler: () => {
       pool
         .execute({ port: 8080 })
