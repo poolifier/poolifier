@@ -59,7 +59,9 @@ export class ClusterWorker<
   }
 
   /** @inheritDoc */
-  protected sendToMainWorker (message: MessageValue<Response>): void {
+  protected readonly sendToMainWorker = (
+    message: MessageValue<Response>
+  ): void => {
     this.getMainWorker().send({ ...message, workerId: this.id })
   }
 }

@@ -80,7 +80,9 @@ export class ThreadWorker<
   }
 
   /** @inheritDoc */
-  protected sendToMainWorker (message: MessageValue<Response>): void {
+  protected readonly sendToMainWorker = (
+    message: MessageValue<Response>
+  ): void => {
     this.port?.postMessage({ ...message, workerId: this.id })
   }
 
