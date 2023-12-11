@@ -122,10 +122,7 @@ module.exports = defineConfig({
         'standard-with-typescript'
       ],
       rules: {
-        '@typescript-eslint/no-inferrable-types': [
-          'error',
-          { ignoreProperties: true }
-        ],
+        '@typescript-eslint/non-nullable-type-assertion-style': 'off',
         'tsdoc/syntax': 'warn'
       }
     },
