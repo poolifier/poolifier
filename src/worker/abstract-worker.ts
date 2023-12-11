@@ -1,4 +1,3 @@
-import { AsyncResource } from 'node:async_hooks'
 import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
 import { performance } from 'node:perf_hooks'
@@ -56,7 +55,7 @@ export abstract class AbstractWorker<
   MainWorker extends Worker | MessagePort,
   Data = unknown,
   Response = unknown
-> extends AsyncResource {
+> {
   /**
    * Worker id.
    */
@@ -93,7 +92,7 @@ export abstract class AbstractWorker<
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     protected opts: WorkerOptions = DEFAULT_WORKER_OPTIONS
   ) {
-    super(type)
+    // super(type)
     if (this.isMain == null) {
       throw new Error('isMain parameter is mandatory')
     }
@@ -379,10 +378,6 @@ export abstract class AbstractWorker<
         .catch(() => {
           this.sendToMainWorker({ kill: 'failure' })
         })
-        .finally(() => {
-          this.emitDestroy()
-        })
-        .catch(EMPTY_FUNCTION)
     } else {
       try {
         // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
@@ -390,8 +385,6 @@ export abstract class AbstractWorker<
         this.sendToMainWorker({ kill: 'success' })
       } catch {
         this.sendToMainWorker({ kill: 'failure' })
-      } finally {
-        this.emitDestroy()
       }
     }
   }
@@ -507,9 +500,9 @@ export abstract class AbstractWorker<
     }
     const fn = this.taskFunctions.get(taskFunctionName)
     if (isAsyncFunction(fn)) {
-      this.runInAsyncScope(this.runAsync.bind(this), this, fn, task)
+      this.runAsync(fn as TaskAsyncFunction<Data, Response>, task)
     } else {
-      this.runInAsyncScope(this.runSync.bind(this), this, fn, task)
+      this.runSync(fn as TaskSyncFunction<Data, Response>, task)
     }
   }
 
