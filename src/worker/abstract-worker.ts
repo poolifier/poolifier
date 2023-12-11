@@ -79,7 +79,6 @@ export abstract class AbstractWorker<
   /**
    * Constructs a new poolifier worker.
    *
-   * @param type - The type of async event.
    * @param isMain - Whether this is the main worker or not.
    * @param mainWorker - Reference to main worker.
    * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked. The first function is the default function.

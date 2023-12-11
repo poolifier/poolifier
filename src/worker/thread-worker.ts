@@ -30,7 +30,7 @@ export class ThreadWorker<
   /**
    * Message port used to communicate with the main worker.
    */
-  private port!: MessagePort
+  private port?: MessagePort
   /**
    * Constructs a new poolifier thread worker.
    *
@@ -41,7 +41,7 @@ export class ThreadWorker<
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     opts: WorkerOptions = {}
   ) {
-    super(isMainThread, parentPort as MessagePort, taskFunctions)
+    super(isMainThread, parentPort as MessagePort, taskFunctions, opts)
   }
 
   /** @inheritDoc */
@@ -81,7 +81,7 @@ export class ThreadWorker<
 
   /** @inheritDoc */
   protected sendToMainWorker (message: MessageValue<Response>): void {
-    this.port.postMessage({ ...message, workerId: this.id })
+    this.port?.postMessage({ ...message, workerId: this.id })
   }
 
   /**
