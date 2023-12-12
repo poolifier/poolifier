@@ -178,7 +178,8 @@ export class WorkerChoiceStrategyContext<
     ).choose()
     if (
       workerNodeKey == null &&
-      this.retriesCount < (this.opts.retries as number)
+      (this.retriesCount < (this.opts.retries as number) ||
+        this.opts.retries === Infinity)
     ) {
       this.retriesCount++
       return this.execute()
