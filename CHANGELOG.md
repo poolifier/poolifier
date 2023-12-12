@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Ensure worker choice strategy wait for worker nodes readiness.
+
+### Changed
+
+- Remove infinite retries support in worker choice strategy to avoid configuration leading to possible infinite recursion or loop.
+
 ## [3.0.12] - 2023-12-12
 
 ### Changed
