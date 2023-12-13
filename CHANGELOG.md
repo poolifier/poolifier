@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix possible null exception with worker_threads pools.
+
 ## [3.0.13] - 2023-12-12
 
 ### Fixed
