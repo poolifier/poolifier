@@ -7,17 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.14] - 2023-12-13
+
+### Fixed
+
+- Fix possible null exception with worker_threads pools.
+
+## [3.0.13] - 2023-12-12
+
+### Fixed
+
+- Ensure worker choice strategy wait for worker nodes readiness.
+
+### Changed
+
+- Remove infinite retries support in worker choice strategy to avoid configuration leading to possible infinite recursion or loop.
+
+## [3.0.12] - 2023-12-12
+
+### Changed
+
+- Add infinite retries support in worker choice strategy.
+
 ## [3.0.11] - 2023-12-11
 
 ### Fixed
 
-- Ensure pool asynchronous resource properly track tasks execution
+- Ensure pool asynchronous resource properly track tasks execution.
 
 ## [3.0.10] - 2023-12-08
 
 ### Changed
 
-- Add a fastpath when tasks stealing or redistribution is impossible
+- Add a fastpath when tasks stealing or redistribution is impossible.
 
 ### Added
 
@@ -35,7 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Ensure continuous tasks stealing on idle start at worker node idling
+- Ensure continuous tasks stealing on idle start at worker node idling.
 
 ## [3.0.7] - 2023-11-24
 

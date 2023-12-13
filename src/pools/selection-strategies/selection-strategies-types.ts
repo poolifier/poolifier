@@ -208,4 +208,10 @@ export interface IWorkerChoiceStrategy {
    * @param opts - The worker choice strategy options.
    */
   readonly setOptions: (opts: WorkerChoiceStrategyOptions) => void
+  /**
+   * Whether the pool has worker nodes ready or not.
+   *
+   * @returns Whether the pool has worker nodes ready or not.
+   */
+  readonly hasPoolWorkerNodesReady: () => boolean
 }

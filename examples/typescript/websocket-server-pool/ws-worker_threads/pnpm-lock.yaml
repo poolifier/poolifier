@@ -6,11 +6,11 @@ settings:
 
 dependencies:
   poolifier:
-    specifier: ^3.0.11
-    version: 3.0.11
+    specifier: ^3.0.13
+    version: 3.0.13
   ws:
-    specifier: ^8.15.0
-    version: 8.15.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
+    specifier: ^8.15.1
+    version: 8.15.1(bufferutil@4.0.8)(utf-8-validate@6.0.3)
 
 optionalDependencies:
   bufferutil:
@@ -59,8 +59,8 @@ packages:
     requiresBuild: true
     dev: false
 
-  /poolifier@3.0.11:
-    resolution: {integrity: sha512-7Y29WNMbnXfG6iW3U6yeQD7B8h7NP3BqoDae1sf/if1exF0ONJaDwlL5s4cGA9qcwvzMTaTsLhAbHwbv58+1Rg==}
+  /poolifier@3.0.13:
+    resolution: {integrity: sha512-OvO5FlZ54BZo6EyO405346SVSJtBEAENLI7mCWIfNrPJdULYjyWu7cIjrjStZR+AMNjqIJIkVfOM8c4SrQ+W4A==}
     engines: {node: '>=18.0.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
@@ -83,8 +83,8 @@ packages:
       node-gyp-build: 4.7.1
     dev: false
 
-  /ws@8.15.0(bufferutil@4.0.8)(utf-8-validate@6.0.3):
-    resolution: {integrity: sha512-H/Z3H55mrcrgjFwI+5jKavgXvwQLtfPCUEp6pi35VhoB0pfcHnSoyuTzkBEZpzq49g1193CUEwIvmsjcotenYw==}
+  /ws@8.15.1(bufferutil@4.0.8)(utf-8-validate@6.0.3):
+    resolution: {integrity: sha512-W5OZiCjXEmk0yZ66ZN82beM5Sz7l7coYxpRkzS+p9PP+ToQry8szKh+61eNktr7EA9DOwvFGhfC605jDHbP6QQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1

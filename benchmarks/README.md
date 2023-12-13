@@ -22,7 +22,7 @@ We chose to use this tool because it allows to run isolated Node.js processes so
 
   Those are our results:
 
-  - CPU Intensive task with 100k operations submitted to each pool: [https://poolifier.github.io/benchmark](https://poolifier.github.io/benchmark).
+  - CPU Intensive task with 100k operations submitted to each pool: [https://bencher.dev/perf/poolifier-benchmark](https://bencher.dev/perf/poolifier-benchmark).
 
 - External pools with which we used to compare the poolifier results:
 
