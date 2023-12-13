@@ -164,7 +164,7 @@ export class WorkerChoiceStrategyContext<
    *
    * @returns The key of the worker node.
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If after configured retries the worker node key is null or undefined.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the maximum consecutive worker choice strategy executions has been reached.
+   * @throws {@link https://nodejs.org/api/errors.html#class-rangeerror} If the maximum consecutive worker choice strategy executions has been reached.
    */
   public execute (): number {
     const workerChoiceStrategy = this.workerChoiceStrategies.get(

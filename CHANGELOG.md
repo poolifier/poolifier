@@ -27,13 +27,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Ensure pool asynchronous resource properly track tasks execution
+- Ensure pool asynchronous resource properly track tasks execution.
 
 ## [3.0.10] - 2023-12-08
 
 ### Changed
 
-- Add a fastpath when tasks stealing or redistribution is impossible
+- Add a fastpath when tasks stealing or redistribution is impossible.
 
 ## [3.0.9] - 2023-11-26
 
@@ -47,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Ensure continuous tasks stealing on idle start at worker node idling
+- Ensure continuous tasks stealing on idle start at worker node idling.
 
 ## [3.0.7] - 2023-11-24
 
