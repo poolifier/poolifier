@@ -37,10 +37,10 @@ describe('Dynamic cluster pool test suite', () => {
     expect(poolBusy).toBe(1)
     const numberOfExitEvents = await waitWorkerEvents(pool, 'exit', max - min)
     expect(numberOfExitEvents).toBe(max - min)
+    expect(pool.workerNodes.length).toBe(min)
   })
 
   it('Verify scale worker up and down is working', async () => {
-    expect(pool.workerNodes.length).toBe(min)
     for (let i = 0; i < max * 2; i++) {
       pool.execute()
     }

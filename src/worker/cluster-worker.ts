@@ -32,13 +32,7 @@ export class ClusterWorker<
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     opts: WorkerOptions = {}
   ) {
-    super(
-      'poolifier:cluster-worker',
-      cluster.isPrimary,
-      cluster.worker as Worker,
-      taskFunctions,
-      opts
-    )
+    super(cluster.isPrimary, cluster.worker as Worker, taskFunctions, opts)
   }
 
   /** @inheritDoc */
@@ -65,7 +59,9 @@ export class ClusterWorker<
   }
 
   /** @inheritDoc */
-  protected sendToMainWorker (message: MessageValue<Response>): void {
+  protected readonly sendToMainWorker = (
+    message: MessageValue<Response>
+  ): void => {
     this.getMainWorker().send({ ...message, workerId: this.id })
   }
 }

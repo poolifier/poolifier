@@ -17,6 +17,7 @@ const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(
   availableParallelism(),
   expressWorkerFile,
   {
+    enableEvents: false,
     onlineHandler: () => {
       pool
         .execute({

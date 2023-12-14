@@ -2,6 +2,7 @@ import { EventEmitterAsyncResource } from 'node:events'
 import { dirname, join } from 'node:path'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { createHook, executionAsyncId } from 'node:async_hooks'
 import { expect } from 'expect'
 import { restore, stub } from 'sinon'
 import {
@@ -1264,6 +1265,43 @@ describe('Abstract pool test suite', () => {
       failedTasks: expect.any(Number)
     })
     expect(pool.hasBackPressure.called).toBe(true)
+    await pool.destroy()
+  })
+
+  it('Verify that pool asynchronous resource track tasks execution', async () => {
+    let taskAsyncId
+    let initCalls = 0
+    let beforeCalls = 0
+    let afterCalls = 0
+    let resolveCalls = 0
+    const hook = createHook({
+      init (asyncId, type) {
+        if (type === 'poolifier:task') {
+          initCalls++
+          taskAsyncId = asyncId
+        }
+      },
+      before (asyncId) {
+        if (asyncId === taskAsyncId) beforeCalls++
+      },
+      after (asyncId) {
+        if (asyncId === taskAsyncId) afterCalls++
+      },
+      promiseResolve () {
+        if (executionAsyncId() === taskAsyncId) resolveCalls++
+      }
+    })
+    const pool = new FixedThreadPool(
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.mjs'
+    )
+    hook.enable()
+    await pool.execute()
+    hook.disable()
+    expect(initCalls).toBe(1)
+    expect(beforeCalls).toBe(1)
+    expect(afterCalls).toBe(1)
+    expect(resolveCalls).toBe(1)
     await pool.destroy()
   })
 
