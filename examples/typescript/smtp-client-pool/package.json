@@ -20,7 +20,7 @@
   "license": "ISC",
   "dependencies": {
     "nodemailer": "^6.9.7",
-    "poolifier": "^3.0.13"
+    "poolifier": "^3.0.14"
   },
   "devDependencies": {
     "@types/node": "^20.10.4",
