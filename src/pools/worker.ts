@@ -208,27 +208,39 @@ export interface IWorker {
    * @param event - The event.
    * @param handler - The event handler.
    */
-  readonly on: ((event: 'online', handler: OnlineHandler<this>) => void) &
-  ((event: 'message', handler: MessageHandler<this>) => void) &
-  ((event: 'error', handler: ErrorHandler<this>) => void) &
-  ((event: 'exit', handler: ExitHandler<this>) => void)
+  readonly on: (
+    event: string,
+    handler:
+    | OnlineHandler<this>
+    | MessageHandler<this>
+    | ErrorHandler<this>
+    | ExitHandler<this>
+  ) => void
   /**
-   * Registers a listener to the exit event that will only be performed once.
+   * Registers once an event listener.
    *
-   * @param event - The `'exit'` event.
-   * @param handler - The exit handler.
+   * @param event - The event.
+   * @param handler - The event handler.
    */
-  readonly once: (event: 'exit', handler: ExitHandler<this>) => void
+  readonly once: (
+    event: string,
+    handler:
+    | OnlineHandler<this>
+    | MessageHandler<this>
+    | ErrorHandler<this>
+    | ExitHandler<this>
+  ) => void
 }
 
 /**
- * Worker node event detail.
+ * Worker node options.
  *
  * @internal
  */
-export interface WorkerNodeEventDetail {
-  workerId: number
-  workerNodeKey?: number
+export interface WorkerNodeOptions {
+  workerOptions?: WorkerOptions
+  env?: Record<string, unknown>
+  tasksQueueBackPressureSize: number
 }
 
 /**
@@ -317,6 +329,34 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   readonly closeChannel: () => void
   /**
+   * Registers a worker event handler.
+   *
+   * @param event - The event.
+   * @param listener - The event listener.
+   */
+  readonly registerWorkerEventHandler: (
+    event: string,
+    listener:
+    | OnlineHandler<Worker>
+    | MessageHandler<Worker>
+    | ErrorHandler<Worker>
+    | ExitHandler<Worker>
+  ) => void
+  /**
+   * Registers once a worker event handler.
+   *
+   * @param event - The event.
+   * @param listener - The event listener.
+   */
+  readonly registerOnceWorkerEventHandler: (
+    event: string,
+    listener:
+    | OnlineHandler<Worker>
+    | MessageHandler<Worker>
+    | ErrorHandler<Worker>
+    | ExitHandler<Worker>
+  ) => void
+  /**
    * Gets task function worker usage statistics.
    *
    * @param name - The task function name.
@@ -330,4 +370,14 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    * @returns `true` if the task function worker usage statistics were deleted, `false` otherwise.
    */
   readonly deleteTaskFunctionWorkerUsage: (name: string) => boolean
+}
+
+/**
+ * Worker node event detail.
+ *
+ * @internal
+ */
+export interface WorkerNodeEventDetail {
+  workerId: number
+  workerNodeKey?: number
 }

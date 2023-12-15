@@ -14,8 +14,6 @@
   - [`pool.listTaskFunctionNames()`](#poollisttaskfunctionnames)
   - [`pool.setDefaultTaskFunction(name)`](#poolsetdefaulttaskfunctionname)
   - [`PoolOptions`](#pooloptions)
-    - [`ThreadPoolOptions extends PoolOptions`](#threadpooloptions-extends-pooloptions)
-    - [`ClusterPoolOptions extends PoolOptions`](#clusterpooloptions-extends-pooloptions)
 - [Worker](#worker)
   - [`class YourWorker extends ThreadWorker/ClusterWorker`](#class-yourworker-extends-threadworkerclusterworker)
     - [`YourWorker.hasTaskFunction(name)`](#yourworkerhastaskfunctionname)
@@ -141,11 +139,7 @@ An object with these properties:
 
   Default: `{ size: (pool maximum size)^2, concurrency: 1, taskStealing: true, tasksStealingOnBackPressure: true }`
 
-#### `ThreadPoolOptions extends PoolOptions`
-
 - `workerOptions` (optional) - An object with the worker options to pass to worker. See [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_new_worker_filename_options) for more details.
-
-#### `ClusterPoolOptions extends PoolOptions`
 
 - `env` (optional) - An object with the environment variables to pass to worker. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_fork_env) for more details.
 

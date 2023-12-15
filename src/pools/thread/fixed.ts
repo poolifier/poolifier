@@ -1,28 +1,14 @@
 import {
   type MessageChannel,
   type MessagePort,
-  SHARE_ENV,
   type TransferListItem,
-  Worker,
-  type WorkerOptions,
+  type Worker,
   isMainThread
 } from 'node:worker_threads'
 import type { MessageValue } from '../../utility-types'
 import { AbstractPool } from '../abstract-pool'
 import { type PoolOptions, type PoolType, PoolTypes } from '../pool'
 import { type WorkerType, WorkerTypes } from '../worker'
-
-/**
- * Options for a poolifier thread pool.
- */
-export interface ThreadPoolOptions extends PoolOptions<Worker> {
-  /**
-   * Worker options.
-   *
-   * @see https://nodejs.org/api/worker_threads.html#new-workerfilename-options
-   */
-  workerOptions?: WorkerOptions
-}
 
 /**
  * A thread pool with a fixed number of threads.
@@ -46,7 +32,7 @@ export class FixedThreadPool<
   public constructor (
     numberOfThreads: number,
     filePath: string,
-    protected readonly opts: ThreadPoolOptions = {}
+    protected readonly opts: PoolOptions<Worker> = {}
   ) {
     super(numberOfThreads, filePath, opts)
   }
@@ -62,16 +48,15 @@ export class FixedThreadPool<
     this.flushTasksQueue(workerNodeKey)
     // FIXME: wait for tasks to be finished
     const workerNode = this.workerNodes[workerNodeKey]
-    const worker = workerNode.worker
     const waitWorkerExit = new Promise<void>(resolve => {
-      worker.once('exit', () => {
+      workerNode.registerOnceWorkerEventHandler('exit', () => {
         resolve()
       })
     })
     await this.sendKillMessageToWorker(workerNodeKey)
     workerNode.closeChannel()
     workerNode.removeAllListeners()
-    await worker.terminate()
+    await workerNode.worker.terminate()
     await waitWorkerExit
   }
 
@@ -133,14 +118,6 @@ export class FixedThreadPool<
       'message',
       listener
     )
-  }
-
-  /** @inheritDoc */
-  protected createWorker (): Worker {
-    return new Worker(this.filePath, {
-      env: SHARE_ENV,
-      ...this.opts.workerOptions
-    })
   }
 
   /** @inheritDoc */
