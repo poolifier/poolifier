@@ -49,7 +49,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
    * Constructs a new worker node.
    *
    * @param type - The worker type.
-   * @param filePath - The worker file path.
+   * @param filePath - Path to the worker file.
    * @param opts - The worker node options.
    */
   constructor (type: WorkerType, filePath: string, opts: WorkerNodeOptions) {

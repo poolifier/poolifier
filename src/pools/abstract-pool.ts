@@ -1285,7 +1285,6 @@ export abstract class AbstractPool<
       this.opts.errorHandler ?? EMPTY_FUNCTION
     )
     workerNode.registerWorkerEventHandler('error', (error: Error) => {
-      const workerNodeKey = this.getWorkerNodeKeyByWorker(workerNode.worker)
       workerNode.info.ready = false
       this.emitter?.emit(PoolEvents.error, error)
       if (
@@ -1301,7 +1300,7 @@ export abstract class AbstractPool<
         }
       }
       if (this.started && this.opts.enableTasksQueue === true) {
-        this.redistributeQueuedTasks(workerNodeKey)
+        this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
       }
       workerNode.terminate().catch(error => {
         this.emitter?.emit(PoolEvents.error, error)
@@ -1312,7 +1311,7 @@ export abstract class AbstractPool<
       this.opts.exitHandler ?? EMPTY_FUNCTION
     )
     workerNode.registerOnceWorkerEventHandler('exit', () => {
-      this.removeWorkerNode(workerNode.worker)
+      this.removeWorkerNode(workerNode)
     })
     const workerNodeKey = this.addWorkerNode(workerNode)
     this.afterWorkerNodeSetup(workerNodeKey)
@@ -1854,12 +1853,12 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Removes the worker node associated to the given worker from the pool worker nodes.
+   * Removes the worker node from the pool worker nodes.
    *
-   * @param worker - The worker.
+   * @param workerNode - The worker node.
    */
-  private removeWorkerNode (worker: Worker): void {
-    const workerNodeKey = this.getWorkerNodeKeyByWorker(worker)
+  private removeWorkerNode (workerNode: IWorkerNode<Worker, Data>): void {
+    const workerNodeKey = this.workerNodes.indexOf(workerNode)
     if (workerNodeKey !== -1) {
       this.workerNodes.splice(workerNodeKey, 1)
       this.workerChoiceStrategyContext.remove(workerNodeKey)

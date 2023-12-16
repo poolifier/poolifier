@@ -119,7 +119,7 @@ export const checkWorkerNodeArguments = (
       'Cannot construct a worker node without worker node options'
     )
   }
-  if (opts != null && !isPlainObject(opts)) {
+  if (!isPlainObject(opts)) {
     throw new TypeError(
       'Cannot construct a worker node with invalid options: must be a plain object'
     )

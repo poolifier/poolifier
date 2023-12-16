@@ -1,4 +1,5 @@
-import { MessageChannel } from 'node:worker_threads'
+import { MessageChannel, Worker as ThreadWorker } from 'node:worker_threads'
+import { Worker as ClusterWorker } from 'node:cluster'
 import { expect } from 'expect'
 import { WorkerNode } from '../../lib/pools/worker-node.js'
 import { WorkerTypes } from '../../lib/index.js'
@@ -118,6 +119,7 @@ describe('Worker node test suite', () => {
       )
     )
     expect(threadWorkerNode).toBeInstanceOf(WorkerNode)
+    expect(threadWorkerNode.worker).toBeInstanceOf(ThreadWorker)
     expect(threadWorkerNode.info).toStrictEqual({
       id: threadWorkerNode.worker.threadId,
       type: WorkerTypes.thread,
@@ -160,6 +162,7 @@ describe('Worker node test suite', () => {
     expect(threadWorkerNode.taskFunctionsUsage).toBeInstanceOf(Map)
 
     expect(clusterWorkerNode).toBeInstanceOf(WorkerNode)
+    expect(clusterWorkerNode.worker).toBeInstanceOf(ClusterWorker)
     expect(clusterWorkerNode.info).toStrictEqual({
       id: clusterWorkerNode.worker.id,
       type: WorkerTypes.cluster,
