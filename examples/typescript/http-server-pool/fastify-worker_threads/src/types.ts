@@ -1,4 +1,4 @@
-import type { Worker } from 'worker_threads'
+import type { Worker } from 'node:worker_threads'
 import type { PoolOptions } from 'poolifier'
 
 export interface BodyPayload {

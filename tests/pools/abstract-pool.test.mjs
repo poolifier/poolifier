@@ -1270,7 +1270,7 @@ describe('Abstract pool test suite', () => {
       stolenTasks: expect.any(Number),
       failedTasks: expect.any(Number)
     })
-    expect(pool.hasBackPressure.called).toBe(true)
+    expect(pool.hasBackPressure.callCount).toBe(5)
     await pool.destroy()
   })
 
