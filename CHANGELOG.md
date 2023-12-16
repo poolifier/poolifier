@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.1.0] - 2023-12-16
 
+### Fixed
+
+- Fix pool options TS type definition.
+
 ### Changed
 
 - TypeScript breaking change: merge ThreadPoolOptions and ClusterPoolOptions types into PoolOptions type.

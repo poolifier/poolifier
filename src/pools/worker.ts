@@ -1,4 +1,4 @@
-import type { MessageChannel } from 'node:worker_threads'
+import type { MessageChannel, WorkerOptions } from 'node:worker_threads'
 import type { EventEmitter } from 'node:events'
 import type { CircularArray } from '../circular-array'
 import type { Task } from '../utility-types'

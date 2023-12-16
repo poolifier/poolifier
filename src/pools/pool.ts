@@ -1,4 +1,4 @@
-import type { TransferListItem } from 'node:worker_threads'
+import type { TransferListItem, WorkerOptions } from 'node:worker_threads'
 import type { EventEmitterAsyncResource } from 'node:events'
 import type { ClusterSettings } from 'node:cluster'
 import type { TaskFunction } from '../worker/task-functions'
