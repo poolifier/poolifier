@@ -42,26 +42,6 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
-  protected async destroyWorkerNode (workerNodeKey: number): Promise<void> {
-    this.flagWorkerNodeAsNotReady(workerNodeKey)
-    this.flushTasksQueue(workerNodeKey)
-    // FIXME: wait for tasks to be finished
-    const workerNode = this.workerNodes[workerNodeKey]
-    const waitWorkerExit = new Promise<void>(resolve => {
-      workerNode.registerOnceWorkerEventHandler('exit', () => {
-        resolve()
-      })
-    })
-    workerNode.registerOnceWorkerEventHandler('disconnect', () => {
-      workerNode.worker.kill()
-    })
-    await this.sendKillMessageToWorker(workerNodeKey)
-    workerNode.removeAllListeners()
-    workerNode.worker.disconnect()
-    await waitWorkerExit
-  }
-
-  /** @inheritDoc */
   protected sendToWorker (
     workerNodeKey: number,
     message: MessageValue<Data>

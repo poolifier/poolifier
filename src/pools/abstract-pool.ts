@@ -1043,7 +1043,14 @@ export abstract class AbstractPool<
    *
    * @param workerNodeKey - The worker node key.
    */
-  protected abstract destroyWorkerNode (workerNodeKey: number): Promise<void>
+  protected async destroyWorkerNode (workerNodeKey: number): Promise<void> {
+    this.flagWorkerNodeAsNotReady(workerNodeKey)
+    this.flushTasksQueue(workerNodeKey)
+    // FIXME: wait for tasks to be finished
+    const workerNode = this.workerNodes[workerNodeKey]
+    await this.sendKillMessageToWorker(workerNodeKey)
+    await workerNode.terminate()
+  }
 
   /**
    * Setup hook to execute code before worker nodes are created in the abstract constructor.
@@ -1279,17 +1286,15 @@ export abstract class AbstractPool<
     )
     workerNode.registerWorkerEventHandler('error', (error: Error) => {
       const workerNodeKey = this.getWorkerNodeKeyByWorker(workerNode.worker)
-      this.flagWorkerNodeAsNotReady(workerNodeKey)
-      const workerInfo = this.getWorkerInfo(workerNodeKey)
+      workerNode.info.ready = false
       this.emitter?.emit(PoolEvents.error, error)
-      this.workerNodes[workerNodeKey].closeChannel()
       if (
         this.started &&
         !this.starting &&
         !this.destroying &&
         this.opts.restartWorkerOnError === true
       ) {
-        if (workerInfo.dynamic) {
+        if (workerNode.info.dynamic) {
           this.createAndSetupDynamicWorkerNode()
         } else {
           this.createAndSetupWorkerNode()
@@ -1298,6 +1303,9 @@ export abstract class AbstractPool<
       if (this.started && this.opts.enableTasksQueue === true) {
         this.redistributeQueuedTasks(workerNodeKey)
       }
+      workerNode.terminate().catch(error => {
+        this.emitter?.emit(PoolEvents.error, error)
+      })
     })
     workerNode.registerWorkerEventHandler(
       'exit',
@@ -1846,7 +1854,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Removes the worker node associated to the give given worker from the pool worker nodes.
+   * Removes the worker node associated to the given worker from the pool worker nodes.
    *
    * @param worker - The worker.
    */

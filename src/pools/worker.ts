@@ -198,9 +198,12 @@ export interface StrategyData {
  */
 export interface IWorker {
   /**
-   * Worker id.
+   * Cluster worker id.
    */
   readonly id?: number
+  /**
+   * Worker thread worker id.
+   */
   readonly threadId?: number
   /**
    * Registers an event listener.
@@ -230,6 +233,19 @@ export interface IWorker {
     | ErrorHandler<this>
     | ExitHandler<this>
   ) => void
+  /**
+   * Stop all JavaScript execution in the worker thread as soon as possible.
+   * Returns a Promise for the exit code that is fulfilled when the `'exit' event` is emitted.
+   */
+  readonly terminate?: () => Promise<number>
+  /**
+   * Cluster worker disconnect.
+   */
+  readonly disconnect?: () => void
+  /**
+   * Cluster worker kill.
+   */
+  readonly kill?: (signal?: string) => void
 }
 
 /**
@@ -270,7 +286,7 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   strategyData?: StrategyData
   /**
-   * Message channel (worker_threads only).
+   * Message channel (worker thread only).
    */
   readonly messageChannel?: MessageChannel
   /**
@@ -325,9 +341,9 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   readonly resetUsage: () => void
   /**
-   * Closes communication channel.
+   * Terminates the worker node.
    */
-  readonly closeChannel: () => void
+  readonly terminate: () => Promise<void>
   /**
    * Registers a worker event handler.
    *

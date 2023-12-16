@@ -124,14 +124,23 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   }
 
   /** @inheritdoc */
-  public closeChannel (): void {
-    if (this.messageChannel != null) {
-      this.messageChannel.port1.unref()
-      this.messageChannel.port2.unref()
-      this.messageChannel.port1.close()
-      this.messageChannel.port2.close()
-      delete this.messageChannel
+  public async terminate (): Promise<void> {
+    const waitWorkerExit = new Promise<void>(resolve => {
+      this.registerOnceWorkerEventHandler('exit', () => {
+        resolve()
+      })
+    })
+    this.closeMessageChannel()
+    this.removeAllListeners()
+    if (this.info.type === WorkerTypes.thread) {
+      await this.worker.terminate?.()
+    } else if (this.info.type === WorkerTypes.cluster) {
+      this.registerOnceWorkerEventHandler('disconnect', () => {
+        this.worker.kill?.()
+      })
+      this.worker.disconnect?.()
     }
+    await waitWorkerExit
   }
 
   /** @inheritdoc */
@@ -185,6 +194,16 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   /** @inheritdoc */
   public deleteTaskFunctionWorkerUsage (name: string): boolean {
     return this.taskFunctionsUsage.delete(name)
+  }
+
+  private closeMessageChannel (): void {
+    if (this.messageChannel != null) {
+      this.messageChannel.port1.unref()
+      this.messageChannel.port2.unref()
+      this.messageChannel.port1.close()
+      this.messageChannel.port2.close()
+      delete this.messageChannel
+    }
   }
 
   private initWorkerInfo (worker: Worker): WorkerInfo {
