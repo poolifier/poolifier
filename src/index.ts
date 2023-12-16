@@ -10,7 +10,7 @@ export type {
   PoolType,
   TasksQueueOptions
 } from './pools/pool'
-export { type WorkerNodeEventDetail, WorkerTypes } from './pools/worker'
+export { WorkerTypes } from './pools/worker'
 export type {
   ErrorHandler,
   EventLoopUtilizationMeasurementStatistics,
@@ -23,6 +23,7 @@ export type {
   StrategyData,
   TaskStatistics,
   WorkerInfo,
+  WorkerNodeEventDetail,
   WorkerNodeOptions,
   WorkerType,
   WorkerUsage
