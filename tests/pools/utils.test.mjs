@@ -1,9 +1,15 @@
+import { Worker as ThreadWorker } from 'node:worker_threads'
+import { Worker as ClusterWorker } from 'node:cluster'
 import { expect } from 'expect'
 import {
   CircularArray,
   DEFAULT_CIRCULAR_ARRAY_SIZE
 } from '../../lib/circular-array.js'
-import { updateMeasurementStatistics } from '../../lib/pools/utils.js'
+import {
+  createWorker,
+  updateMeasurementStatistics
+} from '../../lib/pools/utils.js'
+import { WorkerTypes } from '../../lib/index.js'
 
 describe('Pool utils test suite', () => {
   it('Verify updateMeasurementStatistics() behavior', () => {
@@ -91,5 +97,20 @@ describe('Pool utils test suite', () => {
         0.01
       )
     })
+  })
+
+  it('Verify createWorker() behavior', () => {
+    expect(
+      createWorker(
+        WorkerTypes.thread,
+        './tests/worker-files/thread/testWorker.mjs'
+      )
+    ).toBeInstanceOf(ThreadWorker)
+    expect(
+      createWorker(
+        WorkerTypes.cluster,
+        './tests/worker-files/cluster/testWorker.mjs'
+      )
+    ).toBeInstanceOf(ClusterWorker)
   })
 })

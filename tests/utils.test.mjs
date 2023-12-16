@@ -83,9 +83,10 @@ describe('Utils test suite', () => {
 
   it('Verify sleep() behavior', async () => {
     const start = performance.now()
-    await sleep(1000)
+    const sleepMs = 1000
+    await sleep(sleepMs)
     const elapsed = performance.now() - start
-    expect(elapsed).toBeGreaterThanOrEqual(999)
+    expect(elapsed).toBeGreaterThanOrEqual(sleepMs - 1)
   })
 
   it('Verify exponentialDelay() behavior', () => {

@@ -1,4 +1,6 @@
 import { existsSync } from 'node:fs'
+import cluster from 'node:cluster'
+import { SHARE_ENV, Worker, type WorkerOptions } from 'node:worker_threads'
 import { average, isPlainObject, max, median, min } from '../utils'
 import {
   type MeasurementStatisticsRequirements,
@@ -6,9 +8,21 @@ import {
   type WorkerChoiceStrategy
 } from './selection-strategies/selection-strategies-types'
 import type { TasksQueueOptions } from './pool'
-import type { IWorker, MeasurementStatistics } from './worker'
+import {
+  type IWorker,
+  type MeasurementStatistics,
+  type WorkerNodeOptions,
+  type WorkerType,
+  WorkerTypes
+} from './worker'
 
 export const checkFilePath = (filePath: string): void => {
+  if (filePath == null) {
+    throw new TypeError('The worker file path must be specified')
+  }
+  if (typeof filePath !== 'string') {
+    throw new TypeError('The worker file path must be a string')
+  }
   if (!existsSync(filePath)) {
     throw new Error(`Cannot find the worker file '${filePath}'`)
   }
@@ -86,26 +100,43 @@ export const checkValidTasksQueueOptions = (
   }
 }
 
-export const checkWorkerNodeArguments = <Worker extends IWorker>(
-  worker: Worker,
-  tasksQueueBackPressureSize: number
+export const checkWorkerNodeArguments = (
+  type: WorkerType,
+  filePath: string,
+  opts: WorkerNodeOptions
 ): void => {
-  if (worker == null) {
-    throw new TypeError('Cannot construct a worker node without a worker')
+  if (type == null) {
+    throw new TypeError('Cannot construct a worker node without a worker type')
   }
-  if (tasksQueueBackPressureSize == null) {
+  if (!Object.values(WorkerTypes).includes(type)) {
     throw new TypeError(
-      'Cannot construct a worker node without a tasks queue back pressure size'
+      `Cannot construct a worker node with an invalid worker type '${type}'`
     )
   }
-  if (!Number.isSafeInteger(tasksQueueBackPressureSize)) {
+  checkFilePath(filePath)
+  if (opts == null) {
     throw new TypeError(
-      'Cannot construct a worker node with a tasks queue back pressure size that is not an integer'
+      'Cannot construct a worker node without worker node options'
     )
   }
-  if (tasksQueueBackPressureSize <= 0) {
+  if (!isPlainObject(opts)) {
+    throw new TypeError(
+      'Cannot construct a worker node with invalid options: must be a plain object'
+    )
+  }
+  if (opts.tasksQueueBackPressureSize == null) {
+    throw new TypeError(
+      'Cannot construct a worker node without a tasks queue back pressure size option'
+    )
+  }
+  if (!Number.isSafeInteger(opts.tasksQueueBackPressureSize)) {
+    throw new TypeError(
+      'Cannot construct a worker node with a tasks queue back pressure size option that is not an integer'
+    )
+  }
+  if (opts.tasksQueueBackPressureSize <= 0) {
     throw new RangeError(
-      'Cannot construct a worker node with a tasks queue back pressure size that is not a positive integer'
+      'Cannot construct a worker node with a tasks queue back pressure size option that is not a positive integer'
     )
   }
 }
@@ -151,5 +182,24 @@ export const updateMeasurementStatistics = (
         delete measurementStatistics.median
       }
     }
+  }
+}
+
+export const createWorker = <Worker extends IWorker>(
+  type: WorkerType,
+  filePath: string,
+  opts: { env?: Record<string, unknown>, workerOptions?: WorkerOptions }
+): Worker => {
+  switch (type) {
+    case WorkerTypes.thread:
+      return new Worker(filePath, {
+        env: SHARE_ENV,
+        ...opts?.workerOptions
+      }) as unknown as Worker
+    case WorkerTypes.cluster:
+      return cluster.fork(opts?.env) as unknown as Worker
+    default:
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      throw new Error(`Unknown worker type '${type}'`)
   }
 }

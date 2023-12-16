@@ -1,4 +1,4 @@
-import type { MessageChannel } from 'node:worker_threads'
+import type { MessageChannel, WorkerOptions } from 'node:worker_threads'
 import type { EventEmitter } from 'node:events'
 import type { CircularArray } from '../circular-array'
 import type { Task } from '../utility-types'
@@ -199,38 +199,65 @@ export interface StrategyData {
  */
 export interface IWorker {
   /**
-   * Worker id.
+   * Cluster worker id.
    */
   readonly id?: number
+  /**
+   * Worker thread worker id.
+   */
   readonly threadId?: number
   /**
-   * Registers an event listener.
+   * Registers an event handler.
    *
    * @param event - The event.
    * @param handler - The event handler.
    */
-  readonly on: ((event: 'online', handler: OnlineHandler<this>) => void) &
-  ((event: 'message', handler: MessageHandler<this>) => void) &
-  ((event: 'error', handler: ErrorHandler<this>) => void) &
-  ((event: 'exit', handler: ExitHandler<this>) => void)
+  readonly on: (
+    event: string,
+    handler:
+    | OnlineHandler<this>
+    | MessageHandler<this>
+    | ErrorHandler<this>
+    | ExitHandler<this>
+  ) => void
   /**
-   * Registers a listener to the exit event that will only be performed once.
+   * Registers once an event handler.
    *
-   * @param event - The `'exit'` event.
-   * @param handler - The exit handler.
+   * @param event - The event.
+   * @param handler - The event handler.
    */
-  readonly once: (event: 'exit', handler: ExitHandler<this>) => void
+  readonly once: (
+    event: string,
+    handler:
+    | OnlineHandler<this>
+    | MessageHandler<this>
+    | ErrorHandler<this>
+    | ExitHandler<this>
+  ) => void
+  /**
+   * Stop all JavaScript execution in the worker thread as soon as possible.
+   * Returns a Promise for the exit code that is fulfilled when the `'exit' event` is emitted.
+   */
+  readonly terminate?: () => Promise<number>
+  /**
+   * Cluster worker disconnect.
+   */
+  readonly disconnect?: () => void
+  /**
+   * Cluster worker kill.
+   */
+  readonly kill?: (signal?: string) => void
 }
 
 /**
- * Worker node event detail.
+ * Worker node options.
  *
  * @internal
  */
-export interface WorkerNodeEventDetail {
-  workerId: number
-  workerNodeKey?: number
-  taskId?: string
+export interface WorkerNodeOptions {
+  workerOptions?: WorkerOptions
+  env?: Record<string, unknown>
+  tasksQueueBackPressureSize: number
 }
 
 /**
@@ -260,7 +287,7 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   strategyData?: StrategyData
   /**
-   * Message channel (worker_threads only).
+   * Message channel (worker thread only).
    */
   readonly messageChannel?: MessageChannel
   /**
@@ -325,9 +352,37 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   readonly resetUsage: () => void
   /**
-   * Closes communication channel.
+   * Terminates the worker node.
    */
-  readonly closeChannel: () => void
+  readonly terminate: () => Promise<void>
+  /**
+   * Registers a worker event handler.
+   *
+   * @param event - The event.
+   * @param handler - The event handler.
+   */
+  readonly registerWorkerEventHandler: (
+    event: string,
+    handler:
+    | OnlineHandler<Worker>
+    | MessageHandler<Worker>
+    | ErrorHandler<Worker>
+    | ExitHandler<Worker>
+  ) => void
+  /**
+   * Registers once a worker event handler.
+   *
+   * @param event - The event.
+   * @param handler - The event handler.
+   */
+  readonly registerOnceWorkerEventHandler: (
+    event: string,
+    handler:
+    | OnlineHandler<Worker>
+    | MessageHandler<Worker>
+    | ErrorHandler<Worker>
+    | ExitHandler<Worker>
+  ) => void
   /**
    * Gets task function worker usage statistics.
    *
@@ -342,4 +397,15 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    * @returns `true` if the task function worker usage statistics were deleted, `false` otherwise.
    */
   readonly deleteTaskFunctionWorkerUsage: (name: string) => boolean
+}
+
+/**
+ * Worker node event detail.
+ *
+ * @internal
+ */
+export interface WorkerNodeEventDetail {
+  workerId: number
+  workerNodeKey?: number
+  taskId?: string
 }
