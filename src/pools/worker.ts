@@ -206,7 +206,7 @@ export interface IWorker {
    */
   readonly threadId?: number
   /**
-   * Registers an event listener.
+   * Registers an event handler.
    *
    * @param event - The event.
    * @param handler - The event handler.
@@ -220,7 +220,7 @@ export interface IWorker {
     | ExitHandler<this>
   ) => void
   /**
-   * Registers once an event listener.
+   * Registers once an event handler.
    *
    * @param event - The event.
    * @param handler - The event handler.
@@ -348,11 +348,11 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    * Registers a worker event handler.
    *
    * @param event - The event.
-   * @param listener - The event listener.
+   * @param handler - The event handler.
    */
   readonly registerWorkerEventHandler: (
     event: string,
-    listener:
+    handler:
     | OnlineHandler<Worker>
     | MessageHandler<Worker>
     | ErrorHandler<Worker>
@@ -362,11 +362,11 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    * Registers once a worker event handler.
    *
    * @param event - The event.
-   * @param listener - The event listener.
+   * @param handler - The event handler.
    */
   readonly registerOnceWorkerEventHandler: (
     event: string,
-    listener:
+    handler:
     | OnlineHandler<Worker>
     | MessageHandler<Worker>
     | ErrorHandler<Worker>

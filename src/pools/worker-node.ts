@@ -146,25 +146,25 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   /** @inheritdoc */
   public registerWorkerEventHandler (
     event: string,
-    listener:
+    handler:
     | OnlineHandler<Worker>
     | MessageHandler<Worker>
     | ErrorHandler<Worker>
     | ExitHandler<Worker>
   ): void {
-    this.worker.on(event, listener)
+    this.worker.on(event, handler)
   }
 
   /** @inheritdoc */
   public registerOnceWorkerEventHandler (
     event: string,
-    listener:
+    handler:
     | OnlineHandler<Worker>
     | MessageHandler<Worker>
     | ErrorHandler<Worker>
     | ExitHandler<Worker>
   ): void {
-    this.worker.once(event, listener)
+    this.worker.once(event, handler)
   }
 
   /** @inheritdoc */
