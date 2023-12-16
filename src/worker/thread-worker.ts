@@ -31,6 +31,7 @@ export class ThreadWorker<
    * Message port used to communicate with the main worker.
    */
   private port?: MessagePort
+
   /**
    * Constructs a new poolifier thread worker.
    *
