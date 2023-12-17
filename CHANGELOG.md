@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.2] - 2023-12-17
+
+### Fixed
+
+- Wait for queued tasks to end at worker termination.
+
 ## [3.1.1] - 2023-12-16
 
 ### Fixed

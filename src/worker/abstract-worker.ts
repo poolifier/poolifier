@@ -85,6 +85,7 @@ export abstract class AbstractWorker<
    * Handler id of the `activeInterval` worker activity check.
    */
   protected activeInterval?: NodeJS.Timeout
+
   /**
    * Constructs a new poolifier worker.
    *
