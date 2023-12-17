@@ -62,7 +62,7 @@ This method is available on both pool implementations and returns a boolean.
 
 ### `pool.addTaskFunction(name, fn)`
 
-`name` (mandatory) The task function name.
+`name` (mandatory) The task function name.  
 `fn` (mandatory) The task function.
 
 This method is available on both pool implementations and returns a boolean promise.
