@@ -10,6 +10,7 @@ import {
 import type { TasksQueueOptions } from './pool'
 import {
   type IWorker,
+  type IWorkerNode,
   type MeasurementStatistics,
   type WorkerNodeOptions,
   type WorkerType,
@@ -202,4 +203,27 @@ export const createWorker = <Worker extends IWorker>(
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`Unknown worker type '${type}'`)
   }
+}
+
+export const waitWorkerNodeEvents = async <
+  Worker extends IWorker,
+  Data = unknown
+>(
+  workerNode: IWorkerNode<Worker, Data>,
+  workerNodeEvent: string,
+  numberOfEventsToWait: number
+): Promise<number> => {
+  return await new Promise<number>(resolve => {
+    let events = 0
+    if (numberOfEventsToWait === 0) {
+      resolve(events)
+      return
+    }
+    workerNode.on(workerNodeEvent, () => {
+      ++events
+      if (events === numberOfEventsToWait) {
+        resolve(events)
+      }
+    })
+  })
 }
