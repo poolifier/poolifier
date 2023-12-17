@@ -1759,7 +1759,7 @@ export abstract class AbstractPool<
       this.afterTaskExecutionHook(workerNodeKey, message)
       this.workerChoiceStrategyContext.update(workerNodeKey)
       this.promiseResponseMap.delete(taskId as string)
-      workerNode.emit('taskFinished', taskId)
+      workerNode?.emit('taskFinished', taskId)
       if (this.opts.enableTasksQueue === true) {
         const workerNodeTasksUsage = workerNode.usage.tasks
         if (
