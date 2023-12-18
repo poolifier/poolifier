@@ -29,7 +29,7 @@ export const getDefaultTasksQueueOptions = (
     concurrency: 1,
     taskStealing: true,
     tasksStealingOnBackPressure: true,
-    tasksFinishedTimeout: 1000
+    tasksFinishedTimeout: 2000
   }
 }
 

@@ -20,7 +20,7 @@ describe('Pool utils test suite', () => {
       size: Math.pow(poolMaxSize, 2),
       taskStealing: true,
       tasksStealingOnBackPressure: true,
-      tasksFinishedTimeout: 1000
+      tasksFinishedTimeout: 2000
     })
   })
 
