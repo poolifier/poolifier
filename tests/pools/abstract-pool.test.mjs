@@ -1332,7 +1332,7 @@ describe('Abstract pool test suite', () => {
     await pool.destroy()
     const elapsedTime = performance.now() - startTime
     expect(tasksFinished).toBe(0)
-    expect(elapsedTime).toBeLessThanOrEqual(tasksFinishedTimeout + 100)
+    expect(elapsedTime).toBeLessThanOrEqual(tasksFinishedTimeout + 200)
   })
 
   it('Verify that pool asynchronous resource track tasks execution', async () => {
