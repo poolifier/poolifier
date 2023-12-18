@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add fine grained task abortion support.
+
 ## [3.1.3] - 2023-12-17
 
 ### Fixed
@@ -64,10 +68,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Add a fastpath when tasks stealing or redistribution is impossible.
-
-### Added
-
-- Add fine grained task abortion support.
 
 ## [3.0.9] - 2023-11-26
 
