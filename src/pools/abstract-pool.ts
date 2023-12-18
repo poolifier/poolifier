@@ -43,7 +43,6 @@ import type {
   WorkerUsage
 } from './worker'
 import {
-  type MeasurementStatisticsRequirements,
   Measurements,
   WorkerChoiceStrategies,
   type WorkerChoiceStrategy,
@@ -56,7 +55,10 @@ import {
   checkFilePath,
   checkValidTasksQueueOptions,
   checkValidWorkerChoiceStrategy,
-  updateMeasurementStatistics,
+  updateEluWorkerUsage,
+  updateRunTimeWorkerUsage,
+  updateTaskStatisticsWorkerUsage,
+  updateWaitTimeWorkerUsage,
   waitWorkerNodeEvents
 } from './utils'
 
@@ -1082,7 +1084,11 @@ export abstract class AbstractPool<
     if (this.workerNodes[workerNodeKey]?.usage != null) {
       const workerUsage = this.workerNodes[workerNodeKey].usage
       ++workerUsage.tasks.executing
-      this.updateWaitTimeWorkerUsage(workerUsage, task)
+      updateWaitTimeWorkerUsage(
+        this.workerChoiceStrategyContext,
+        workerUsage,
+        task
+      )
     }
     if (
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
@@ -1094,7 +1100,11 @@ export abstract class AbstractPool<
         workerNodeKey
       ].getTaskFunctionWorkerUsage(task.name as string) as WorkerUsage
       ++taskFunctionWorkerUsage.tasks.executing
-      this.updateWaitTimeWorkerUsage(taskFunctionWorkerUsage, task)
+      updateWaitTimeWorkerUsage(
+        this.workerChoiceStrategyContext,
+        taskFunctionWorkerUsage,
+        task
+      )
     }
   }
 
@@ -1109,11 +1119,21 @@ export abstract class AbstractPool<
     workerNodeKey: number,
     message: MessageValue<Response>
   ): void {
+    let needWorkerChoiceStrategyUpdate = false
     if (this.workerNodes[workerNodeKey]?.usage != null) {
       const workerUsage = this.workerNodes[workerNodeKey].usage
-      this.updateTaskStatisticsWorkerUsage(workerUsage, message)
-      this.updateRunTimeWorkerUsage(workerUsage, message)
-      this.updateEluWorkerUsage(workerUsage, message)
+      updateTaskStatisticsWorkerUsage(workerUsage, message)
+      updateRunTimeWorkerUsage(
+        this.workerChoiceStrategyContext,
+        workerUsage,
+        message
+      )
+      updateEluWorkerUsage(
+        this.workerChoiceStrategyContext,
+        workerUsage,
+        message
+      )
+      needWorkerChoiceStrategyUpdate = true
     }
     if (
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
@@ -1126,9 +1146,21 @@ export abstract class AbstractPool<
       ].getTaskFunctionWorkerUsage(
         message.taskPerformance?.name as string
       ) as WorkerUsage
-      this.updateTaskStatisticsWorkerUsage(taskFunctionWorkerUsage, message)
-      this.updateRunTimeWorkerUsage(taskFunctionWorkerUsage, message)
-      this.updateEluWorkerUsage(taskFunctionWorkerUsage, message)
+      updateTaskStatisticsWorkerUsage(taskFunctionWorkerUsage, message)
+      updateRunTimeWorkerUsage(
+        this.workerChoiceStrategyContext,
+        taskFunctionWorkerUsage,
+        message
+      )
+      updateEluWorkerUsage(
+        this.workerChoiceStrategyContext,
+        taskFunctionWorkerUsage,
+        message
+      )
+      needWorkerChoiceStrategyUpdate = true
+    }
+    if (needWorkerChoiceStrategyUpdate) {
+      this.workerChoiceStrategyContext.update(workerNodeKey)
     }
   }
 
@@ -1145,84 +1177,6 @@ export abstract class AbstractPool<
       Array.isArray(workerInfo.taskFunctionNames) &&
       workerInfo.taskFunctionNames.length > 2
     )
-  }
-
-  private updateTaskStatisticsWorkerUsage (
-    workerUsage: WorkerUsage,
-    message: MessageValue<Response>
-  ): void {
-    const workerTaskStatistics = workerUsage.tasks
-    if (
-      workerTaskStatistics.executing != null &&
-      workerTaskStatistics.executing > 0
-    ) {
-      --workerTaskStatistics.executing
-    }
-    if (message.workerError == null) {
-      ++workerTaskStatistics.executed
-    } else {
-      ++workerTaskStatistics.failed
-    }
-  }
-
-  private updateRunTimeWorkerUsage (
-    workerUsage: WorkerUsage,
-    message: MessageValue<Response>
-  ): void {
-    if (message.workerError != null) {
-      return
-    }
-    updateMeasurementStatistics(
-      workerUsage.runTime,
-      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime,
-      message.taskPerformance?.runTime ?? 0
-    )
-  }
-
-  private updateWaitTimeWorkerUsage (
-    workerUsage: WorkerUsage,
-    task: Task<Data>
-  ): void {
-    const timestamp = performance.now()
-    const taskWaitTime = timestamp - (task.timestamp ?? timestamp)
-    updateMeasurementStatistics(
-      workerUsage.waitTime,
-      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().waitTime,
-      taskWaitTime
-    )
-  }
-
-  private updateEluWorkerUsage (
-    workerUsage: WorkerUsage,
-    message: MessageValue<Response>
-  ): void {
-    if (message.workerError != null) {
-      return
-    }
-    const eluTaskStatisticsRequirements: MeasurementStatisticsRequirements =
-      this.workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
-    updateMeasurementStatistics(
-      workerUsage.elu.active,
-      eluTaskStatisticsRequirements,
-      message.taskPerformance?.elu?.active ?? 0
-    )
-    updateMeasurementStatistics(
-      workerUsage.elu.idle,
-      eluTaskStatisticsRequirements,
-      message.taskPerformance?.elu?.idle ?? 0
-    )
-    if (eluTaskStatisticsRequirements.aggregate) {
-      if (message.taskPerformance?.elu != null) {
-        if (workerUsage.elu.utilization != null) {
-          workerUsage.elu.utilization =
-            (workerUsage.elu.utilization +
-              message.taskPerformance.elu.utilization) /
-            2
-        } else {
-          workerUsage.elu.utilization = message.taskPerformance.elu.utilization
-        }
-      }
-    }
   }
 
   /**
@@ -1757,7 +1711,6 @@ export abstract class AbstractPool<
       }
       asyncResource?.emitDestroy()
       this.afterTaskExecutionHook(workerNodeKey, message)
-      this.workerChoiceStrategyContext.update(workerNodeKey)
       this.promiseResponseMap.delete(taskId as string)
       workerNode?.emit('taskFinished', taskId)
       if (this.opts.enableTasksQueue === true) {
