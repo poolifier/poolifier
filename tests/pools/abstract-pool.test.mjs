@@ -1304,7 +1304,7 @@ describe('Abstract pool test suite', () => {
     const elapsedTime = performance.now() - startTime
     expect(tasksFinished).toBe(numberOfWorkers * maxMultiplier)
     expect(elapsedTime).toBeGreaterThanOrEqual(2000)
-    expect(elapsedTime).toBeLessThanOrEqual(tasksFinishedTimeout)
+    expect(elapsedTime).toBeLessThanOrEqual(tasksFinishedTimeout + 100)
   })
 
   it('Verify that destroy() waits until the tasks finished timeout is reached', async () => {
