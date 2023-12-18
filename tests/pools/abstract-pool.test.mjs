@@ -264,7 +264,8 @@ describe('Abstract pool test suite', () => {
         concurrency: 2,
         size: Math.pow(numberOfWorkers, 2),
         taskStealing: true,
-        tasksStealingOnBackPressure: true
+        tasksStealingOnBackPressure: true,
+        tasksFinishedTimeout: 1000
       },
       workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
       workerChoiceStrategyOptions: {
@@ -654,7 +655,8 @@ describe('Abstract pool test suite', () => {
       concurrency: 1,
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
-      tasksStealingOnBackPressure: true
+      tasksStealingOnBackPressure: true,
+      tasksFinishedTimeout: 1000
     })
     pool.enableTasksQueue(true, { concurrency: 2 })
     expect(pool.opts.enableTasksQueue).toBe(true)
@@ -662,7 +664,8 @@ describe('Abstract pool test suite', () => {
       concurrency: 2,
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
-      tasksStealingOnBackPressure: true
+      tasksStealingOnBackPressure: true,
+      tasksFinishedTimeout: 1000
     })
     pool.enableTasksQueue(false)
     expect(pool.opts.enableTasksQueue).toBe(false)
@@ -680,7 +683,8 @@ describe('Abstract pool test suite', () => {
       concurrency: 1,
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
-      tasksStealingOnBackPressure: true
+      tasksStealingOnBackPressure: true,
+      tasksFinishedTimeout: 1000
     })
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksQueueBackPressureSize).toBe(
@@ -691,13 +695,15 @@ describe('Abstract pool test suite', () => {
       concurrency: 2,
       size: 2,
       taskStealing: false,
-      tasksStealingOnBackPressure: false
+      tasksStealingOnBackPressure: false,
+      tasksFinishedTimeout: 2000
     })
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 2,
       size: 2,
       taskStealing: false,
-      tasksStealingOnBackPressure: false
+      tasksStealingOnBackPressure: false,
+      tasksFinishedTimeout: 2000
     })
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksQueueBackPressureSize).toBe(
@@ -713,7 +719,8 @@ describe('Abstract pool test suite', () => {
       concurrency: 1,
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
-      tasksStealingOnBackPressure: true
+      tasksStealingOnBackPressure: true,
+      tasksFinishedTimeout: 1000
     })
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksQueueBackPressureSize).toBe(

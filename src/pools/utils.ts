@@ -21,6 +21,18 @@ import {
 } from './worker'
 import type { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
 
+export const getDefaultTasksQueueOptions = (
+  poolMaxSize: number
+): Required<TasksQueueOptions> => {
+  return {
+    size: Math.pow(poolMaxSize, 2),
+    concurrency: 1,
+    taskStealing: true,
+    tasksStealingOnBackPressure: true,
+    tasksFinishedTimeout: 1000
+  }
+}
+
 export const checkFilePath = (filePath: string): void => {
   if (filePath == null) {
     throw new TypeError('The worker file path must be specified')
@@ -324,7 +336,8 @@ export const waitWorkerNodeEvents = async <
 >(
   workerNode: IWorkerNode<Worker, Data>,
   workerNodeEvent: string,
-  numberOfEventsToWait: number
+  numberOfEventsToWait: number,
+  timeout: number
 ): Promise<number> => {
   return await new Promise<number>(resolve => {
     let events = 0
@@ -338,5 +351,10 @@ export const waitWorkerNodeEvents = async <
         resolve(events)
       }
     })
+    if (timeout > 0) {
+      setTimeout(() => {
+        resolve(events)
+      }, timeout)
+    }
   })
 }
