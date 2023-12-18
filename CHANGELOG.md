@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.5] - 2023-12-18
+
 ### Added
 
 - Add queued tasks end timeout support to worker node termination.
