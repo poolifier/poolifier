@@ -12,8 +12,8 @@ dependencies:
     specifier: ^3.3.2
     version: 3.3.2
   poolifier:
-    specifier: ^3.1.5
-    version: 3.1.5
+    specifier: ^3.1.6
+    version: 3.1.6
 
 devDependencies:
   '@types/node':
@@ -122,8 +122,8 @@ packages:
       formdata-polyfill: 4.0.10
     dev: false
 
-  /poolifier@3.1.5:
-    resolution: {integrity: sha512-YWeiqgHYX7iVQtqEp4FwmLZosDrh066TMqWBkUTW+Sh56BlWF19KymXS0a3fd28Or0ooRX2izFLQceLlfDzlKA==}
+  /poolifier@3.1.6:
+    resolution: {integrity: sha512-OXISds0E1+gJ66HMIaU0NQOeLmhuI5LwS/VWZd392rreuEjV8MrapvKdtHujFcnOGSd4qJiyknF8nr8AMqVFQA==}
     engines: {node: '>=18.0.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
