@@ -7,7 +7,6 @@ import {
   WorkerChoiceStrategies
 } from '../../../lib/index.js'
 import { CircularArray } from '../../../lib/circular-array.js'
-import { sleep } from '../../test-utils.js'
 
 describe('Selection strategies test suite', () => {
   const min = 0
@@ -181,7 +180,6 @@ describe('Selection strategies test suite', () => {
       max,
       './tests/worker-files/thread/testWorker.mjs'
     )
-    await sleep(600)
     expect(pool.starting).toBe(false)
     expect(pool.workerNodes.length).toBe(min)
     const maxMultiplier = 10000
