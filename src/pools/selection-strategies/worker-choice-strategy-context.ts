@@ -47,7 +47,11 @@ export class WorkerChoiceStrategyContext<
     private opts?: InternalWorkerChoiceStrategyOptions
   ) {
     this.opts = {
-      ...getDefaultInternalWorkerChoiceStrategyOptions(pool.info.maxSize),
+      ...getDefaultInternalWorkerChoiceStrategyOptions(
+        pool.info.maxSize +
+          Object.keys((this.opts?.weights as Record<number, number>) ?? {})
+            .length
+      ),
       ...this.opts
     }
     this.execute = this.execute.bind(this)
@@ -232,7 +236,10 @@ export class WorkerChoiceStrategyContext<
     opts?: InternalWorkerChoiceStrategyOptions
   ): void {
     this.opts = {
-      ...getDefaultInternalWorkerChoiceStrategyOptions(pool.info.maxSize),
+      ...getDefaultInternalWorkerChoiceStrategyOptions(
+        pool.info.maxSize +
+          Object.keys((opts?.weights as Record<number, number>) ?? {}).length
+      ),
       ...opts
     }
     for (const workerChoiceStrategy of this.workerChoiceStrategies.values()) {

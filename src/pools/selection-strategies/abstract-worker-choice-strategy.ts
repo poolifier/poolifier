@@ -113,7 +113,10 @@ export abstract class AbstractWorkerChoiceStrategy<
   /** @inheritDoc */
   public setOptions (opts: InternalWorkerChoiceStrategyOptions): void {
     this.opts = {
-      ...getDefaultInternalWorkerChoiceStrategyOptions(this.pool.info.maxSize),
+      ...getDefaultInternalWorkerChoiceStrategyOptions(
+        this.pool.info.maxSize +
+          Object.keys((opts?.weights as Record<number, number>) ?? {}).length
+      ),
       ...opts
     }
     this.setTaskStatisticsRequirements(this.opts)

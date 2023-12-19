@@ -288,7 +288,9 @@ describe('Abstract pool test suite', () => {
       exitHandler: testHandler
     })
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-      retries: pool.info.maxSize,
+      retries:
+        pool.info.maxSize +
+        Object.keys(pool.opts.workerChoiceStrategyOptions.weights).length,
       runTime: { median: true },
       waitTime: { median: false },
       elu: { median: false },
@@ -297,7 +299,9 @@ describe('Abstract pool test suite', () => {
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        retries: pool.info.maxSize,
+        retries:
+          pool.info.maxSize +
+          Object.keys(pool.opts.workerChoiceStrategyOptions.weights).length,
         runTime: { median: true },
         waitTime: { median: false },
         elu: { median: false },

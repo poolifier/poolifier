@@ -22,16 +22,16 @@ export const EMPTY_FUNCTION: () => void = Object.freeze(() => {
 })
 
 /**
- * Default worker choice strategy options.
+ * Gets default worker choice strategy options.
  *
- * @param poolMaxSize - The pool maximum size.
+ * @param retries - The number of worker choice retries.
  * @returns The default worker choice strategy options.
  */
 export const getDefaultInternalWorkerChoiceStrategyOptions = (
-  poolMaxSize: number
+  retries: number
 ): InternalWorkerChoiceStrategyOptions => {
   return {
-    retries: poolMaxSize,
+    retries,
     runTime: { median: false },
     waitTime: { median: false },
     elu: { median: false }
