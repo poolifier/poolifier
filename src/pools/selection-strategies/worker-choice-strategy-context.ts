@@ -170,7 +170,7 @@ export class WorkerChoiceStrategyContext<
       this.workerChoiceStrategy
     ) as IWorkerChoiceStrategy
     if (!workerChoiceStrategy.hasPoolWorkerNodesReady()) {
-      // wait for a worker node to be ready without blocking the event loop
+      return this.execute()
     }
     return this.executeStrategy(workerChoiceStrategy)
   }

@@ -7,6 +7,7 @@ import {
   WorkerChoiceStrategies
 } from '../../../lib/index.js'
 import { CircularArray } from '../../../lib/circular-array.js'
+import { sleep } from '../../test-utils.js'
 
 describe('Selection strategies test suite', () => {
   const min = 0
@@ -171,6 +172,26 @@ describe('Selection strategies test suite', () => {
         ])
       }
     }
+    await pool.destroy()
+  })
+
+  it('Verify strategies wait for worker node readiness in dynamic pool', async () => {
+    const pool = new DynamicThreadPool(
+      min,
+      max,
+      './tests/worker-files/thread/testWorker.mjs'
+    )
+    await sleep(600)
+    expect(pool.starting).toBe(false)
+    expect(pool.workerNodes.length).toBe(min)
+    const maxMultiplier = 10000
+    const promises = new Set()
+    for (let i = 0; i < max * maxMultiplier; i++) {
+      promises.add(pool.execute())
+    }
+    await Promise.all(promises)
+    expect(pool.workerNodes.length).toBe(max)
+    // We need to clean up the resources after our test
     await pool.destroy()
   })
 

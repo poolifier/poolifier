@@ -131,12 +131,6 @@ describe('Worker choice strategy context test suite', () => {
           .returns(false)
           .onCall(4)
           .returns(false)
-          .onCall(6)
-          .returns(false)
-          .onCall(7)
-          .returns(false)
-          .onCall(8)
-          .returns(false)
           .returns(true),
         choose: stub().returns(1)
       }
@@ -153,7 +147,7 @@ describe('Worker choice strategy context test suite', () => {
       workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategyContext.workerChoiceStrategy
       ).hasPoolWorkerNodesReady.callCount
-    ).toBe(12)
+    ).toBe(6)
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategyContext.workerChoiceStrategy
@@ -162,7 +156,7 @@ describe('Worker choice strategy context test suite', () => {
     expect(chosenWorkerKey).toBe(1)
   })
 
-  it('Verify that execute() throws error if worker choice strategy consecutive executions has been reached', () => {
+  it('Verify that execute() throws error if worker choice strategy recursion reach the maximum depth', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       fixedPool
     )
@@ -181,9 +175,7 @@ describe('Worker choice strategy context test suite', () => {
       workerChoiceStrategyStub
     )
     expect(() => workerChoiceStrategyContext.execute()).toThrow(
-      new RangeError(
-        'Worker choice strategy consecutive executions has exceeded the maximum of 10000'
-      )
+      new RangeError('Maximum call stack size exceeded')
     )
   })
 
