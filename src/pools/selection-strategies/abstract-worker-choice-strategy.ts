@@ -114,8 +114,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   public setOptions (opts: InternalWorkerChoiceStrategyOptions): void {
     this.opts = {
       ...getDefaultInternalWorkerChoiceStrategyOptions(
-        this.pool.info.maxSize +
-          Object.keys((opts?.weights as Record<number, number>) ?? {}).length
+        this.pool.info.maxSize + Object.keys(opts?.weights ?? {}).length
       ),
       ...opts
     }

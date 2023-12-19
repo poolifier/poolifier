@@ -48,9 +48,7 @@ export class WorkerChoiceStrategyContext<
   ) {
     this.opts = {
       ...getDefaultInternalWorkerChoiceStrategyOptions(
-        pool.info.maxSize +
-          Object.keys((this.opts?.weights as Record<number, number>) ?? {})
-            .length
+        pool.info.maxSize + Object.keys(this.opts?.weights ?? {}).length
       ),
       ...this.opts
     }
@@ -237,8 +235,7 @@ export class WorkerChoiceStrategyContext<
   ): void {
     this.opts = {
       ...getDefaultInternalWorkerChoiceStrategyOptions(
-        pool.info.maxSize +
-          Object.keys((opts?.weights as Record<number, number>) ?? {}).length
+        pool.info.maxSize + Object.keys(opts?.weights ?? {}).length
       ),
       ...opts
     }
