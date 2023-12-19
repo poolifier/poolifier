@@ -224,6 +224,7 @@ export class WorkerChoiceStrategyContext<
   /**
    * Sets the worker choice strategies in the context options.
    *
+   * @param pool - The pool instance.
    * @param opts - The worker choice strategy options.
    */
   public setOptions (
