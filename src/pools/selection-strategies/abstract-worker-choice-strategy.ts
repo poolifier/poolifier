@@ -1,16 +1,16 @@
 import { cpus } from 'node:os'
 import {
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-  DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+  getDefaultInternalWorkerChoiceStrategyOptions
 } from '../../utils'
 import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import type {
   IWorkerChoiceStrategy,
+  InternalWorkerChoiceStrategyOptions,
   MeasurementStatisticsRequirements,
   StrategyPolicy,
-  TaskStatisticsRequirements,
-  WorkerChoiceStrategyOptions
+  TaskStatisticsRequirements
 } from './selection-strategies-types'
 
 /**
@@ -56,14 +56,14 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   public constructor (
     protected readonly pool: IPool<Worker, Data, Response>,
-    protected opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+    protected opts: InternalWorkerChoiceStrategyOptions
   ) {
-    this.opts = { ...DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS, ...opts }
+    this.setOptions(this.opts)
     this.choose = this.choose.bind(this)
   }
 
   protected setTaskStatisticsRequirements (
-    opts: WorkerChoiceStrategyOptions
+    opts: InternalWorkerChoiceStrategyOptions
   ): void {
     this.toggleMedianMeasurementStatisticsRequirements(
       this.taskStatisticsRequirements.runTime,
@@ -111,8 +111,11 @@ export abstract class AbstractWorkerChoiceStrategy<
   public abstract remove (workerNodeKey: number): boolean
 
   /** @inheritDoc */
-  public setOptions (opts: WorkerChoiceStrategyOptions): void {
-    this.opts = { ...DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS, ...opts }
+  public setOptions (opts: InternalWorkerChoiceStrategyOptions): void {
+    this.opts = {
+      ...getDefaultInternalWorkerChoiceStrategyOptions(this.pool.info.maxSize),
+      ...opts
+    }
     this.setTaskStatisticsRequirements(this.opts)
   }
 

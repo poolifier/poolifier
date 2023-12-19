@@ -6,11 +6,11 @@ import { expect } from 'expect'
 import {
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   DEFAULT_TASK_NAME,
-  DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
   EMPTY_FUNCTION,
   availableParallelism,
   average,
   exponentialDelay,
+  getDefaultInternalWorkerChoiceStrategyOptions,
   getWorkerId,
   getWorkerType,
   isAsyncFunction,
@@ -35,9 +35,12 @@ describe('Utils test suite', () => {
     expect(EMPTY_FUNCTION).toStrictEqual(expect.any(Function))
   })
 
-  it('Verify DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS values', () => {
-    expect(DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS).toStrictEqual({
-      retries: 6,
+  it('Verify getDefaultInternalWorkerChoiceStrategyOptions() values', () => {
+    const poolMaxSize = 10
+    expect(
+      getDefaultInternalWorkerChoiceStrategyOptions(poolMaxSize)
+    ).toStrictEqual({
+      retries: poolMaxSize,
       runTime: { median: false },
       waitTime: { median: false },
       elu: { median: false }

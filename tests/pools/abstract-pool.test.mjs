@@ -124,6 +124,22 @@ describe('Abstract pool test suite', () => {
     )
   })
 
+  it('Verify that pool arguments number and pool type are checked', () => {
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.mjs',
+          undefined,
+          numberOfWorkers * 2
+        )
+    ).toThrow(
+      new Error(
+        'Cannot instantiate a fixed pool with a maximum number of workers specified at initialization'
+      )
+    )
+  })
+
   it('Verify that dynamic pool sizing is checked', () => {
     expect(
       () =>
@@ -210,16 +226,10 @@ describe('Abstract pool test suite', () => {
       enableEvents: true,
       restartWorkerOnError: true,
       enableTasksQueue: false,
-      workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
-      workerChoiceStrategyOptions: {
-        retries: 6,
-        runTime: { median: false },
-        waitTime: { median: false },
-        elu: { median: false }
-      }
+      workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN
     })
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-      retries: 6,
+      retries: pool.info.maxSize,
       runTime: { median: false },
       waitTime: { median: false },
       elu: { median: false }
@@ -227,7 +237,7 @@ describe('Abstract pool test suite', () => {
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        retries: 6,
+        retries: pool.info.maxSize,
         runTime: { median: false },
         waitTime: { median: false },
         elu: { median: false }
@@ -269,10 +279,7 @@ describe('Abstract pool test suite', () => {
       },
       workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
       workerChoiceStrategyOptions: {
-        retries: 6,
         runTime: { median: true },
-        waitTime: { median: false },
-        elu: { median: false },
         weights: { 0: 300, 1: 200 }
       },
       onlineHandler: testHandler,
@@ -281,7 +288,7 @@ describe('Abstract pool test suite', () => {
       exitHandler: testHandler
     })
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-      retries: 6,
+      retries: pool.info.maxSize,
       runTime: { median: true },
       waitTime: { median: false },
       elu: { median: false },
@@ -290,7 +297,7 @@ describe('Abstract pool test suite', () => {
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        retries: 6,
+        retries: pool.info.maxSize,
         runTime: { median: true },
         waitTime: { median: false },
         elu: { median: false },
@@ -311,38 +318,6 @@ describe('Abstract pool test suite', () => {
           }
         )
     ).toThrow(new Error("Invalid worker choice strategy 'invalidStrategy'"))
-    expect(
-      () =>
-        new FixedThreadPool(
-          numberOfWorkers,
-          './tests/worker-files/thread/testWorker.mjs',
-          {
-            workerChoiceStrategyOptions: {
-              retries: 'invalidChoiceRetries'
-            }
-          }
-        )
-    ).toThrow(
-      new TypeError(
-        'Invalid worker choice strategy options: retries must be an integer'
-      )
-    )
-    expect(
-      () =>
-        new FixedThreadPool(
-          numberOfWorkers,
-          './tests/worker-files/thread/testWorker.mjs',
-          {
-            workerChoiceStrategyOptions: {
-              retries: -1
-            }
-          }
-        )
-    ).toThrow(
-      new RangeError(
-        "Invalid worker choice strategy options: retries '-1' must be greater or equal than zero"
-      )
-    )
     expect(
       () =>
         new FixedThreadPool(
@@ -478,14 +453,9 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
     )
-    expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      retries: 6,
-      runTime: { median: false },
-      waitTime: { median: false },
-      elu: { median: false }
-    })
+    expect(pool.opts.workerChoiceStrategyOptions).toBeUndefined()
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-      retries: 6,
+      retries: pool.info.maxSize,
       runTime: { median: false },
       waitTime: { median: false },
       elu: { median: false }
@@ -493,7 +463,7 @@ describe('Abstract pool test suite', () => {
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        retries: 6,
+        retries: pool.info.maxSize,
         runTime: { median: false },
         waitTime: { median: false },
         elu: { median: false }
@@ -523,13 +493,11 @@ describe('Abstract pool test suite', () => {
       elu: { median: true }
     })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      retries: 6,
       runTime: { median: true },
-      waitTime: { median: false },
       elu: { median: true }
     })
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-      retries: 6,
+      retries: pool.info.maxSize,
       runTime: { median: true },
       waitTime: { median: false },
       elu: { median: true }
@@ -537,7 +505,7 @@ describe('Abstract pool test suite', () => {
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        retries: 6,
+        retries: pool.info.maxSize,
         runTime: { median: true },
         waitTime: { median: false },
         elu: { median: true }
@@ -567,13 +535,11 @@ describe('Abstract pool test suite', () => {
       elu: { median: false }
     })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      retries: 6,
       runTime: { median: false },
-      waitTime: { median: false },
       elu: { median: false }
     })
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-      retries: 6,
+      retries: pool.info.maxSize,
       runTime: { median: false },
       waitTime: { median: false },
       elu: { median: false }
@@ -581,7 +547,7 @@ describe('Abstract pool test suite', () => {
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        retries: 6,
+        retries: pool.info.maxSize,
         runTime: { median: false },
         waitTime: { median: false },
         elu: { median: false }
@@ -611,20 +577,6 @@ describe('Abstract pool test suite', () => {
     ).toThrow(
       new TypeError(
         'Invalid worker choice strategy options: must be a plain object'
-      )
-    )
-    expect(() =>
-      pool.setWorkerChoiceStrategyOptions({
-        retries: 'invalidChoiceRetries'
-      })
-    ).toThrow(
-      new TypeError(
-        'Invalid worker choice strategy options: retries must be an integer'
-      )
-    )
-    expect(() => pool.setWorkerChoiceStrategyOptions({ retries: -1 })).toThrow(
-      new RangeError(
-        "Invalid worker choice strategy options: retries '-1' must be greater or equal than zero"
       )
     )
     expect(() => pool.setWorkerChoiceStrategyOptions({ weights: {} })).toThrow(

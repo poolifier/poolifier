@@ -1,4 +1,4 @@
-import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
+import { getDefaultInternalWorkerChoiceStrategyOptions } from '../../utils'
 import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strategy'
@@ -9,10 +9,10 @@ import { LeastEluWorkerChoiceStrategy } from './least-elu-worker-choice-strategy
 import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
+  InternalWorkerChoiceStrategyOptions,
   StrategyPolicy,
   TaskStatisticsRequirements,
-  WorkerChoiceStrategy,
-  WorkerChoiceStrategyOptions
+  WorkerChoiceStrategy
 } from './selection-strategies-types'
 import { WorkerChoiceStrategies } from './selection-strategies-types'
 import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-worker-choice-strategy'
@@ -44,9 +44,12 @@ export class WorkerChoiceStrategyContext<
   public constructor (
     pool: IPool<Worker, Data, Response>,
     private workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN,
-    private opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+    private opts?: InternalWorkerChoiceStrategyOptions
   ) {
-    this.opts = { ...DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS, ...opts }
+    this.opts = {
+      ...getDefaultInternalWorkerChoiceStrategyOptions(pool.info.maxSize),
+      ...this.opts
+    }
     this.execute = this.execute.bind(this)
     this.workerChoiceStrategies = new Map<
     WorkerChoiceStrategy,
@@ -56,35 +59,35 @@ export class WorkerChoiceStrategyContext<
         WorkerChoiceStrategies.ROUND_ROBIN,
         new (RoundRobinWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
           pool,
-          opts
+          this.opts
         )
       ],
       [
         WorkerChoiceStrategies.LEAST_USED,
         new (LeastUsedWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
           pool,
-          opts
+          this.opts
         )
       ],
       [
         WorkerChoiceStrategies.LEAST_BUSY,
         new (LeastBusyWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
           pool,
-          opts
+          this.opts
         )
       ],
       [
         WorkerChoiceStrategies.LEAST_ELU,
         new (LeastEluWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
           pool,
-          opts
+          this.opts
         )
       ],
       [
         WorkerChoiceStrategies.FAIR_SHARE,
         new (FairShareWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
           pool,
-          opts
+          this.opts
         )
       ],
       [
@@ -93,7 +96,7 @@ export class WorkerChoiceStrategyContext<
         Worker,
         Data,
         Response
-        >(pool, opts)
+        >(pool, this.opts)
       ],
       [
         WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN,
@@ -101,7 +104,7 @@ export class WorkerChoiceStrategyContext<
         Worker,
         Data,
         Response
-        >(pool, opts)
+        >(pool, this.opts)
       ]
     ])
   }
@@ -194,7 +197,7 @@ export class WorkerChoiceStrategyContext<
       chooseCount++
     } while (
       workerNodeKey == null &&
-      retriesCount < (this.opts.retries as number)
+      retriesCount < (this.opts?.retries as number)
     )
     if (workerNodeKey == null) {
       throw new Error(
@@ -223,10 +226,16 @@ export class WorkerChoiceStrategyContext<
    *
    * @param opts - The worker choice strategy options.
    */
-  public setOptions (opts: WorkerChoiceStrategyOptions): void {
-    this.opts = { ...DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS, ...opts }
+  public setOptions (
+    pool: IPool<Worker, Data, Response>,
+    opts?: InternalWorkerChoiceStrategyOptions
+  ): void {
+    this.opts = {
+      ...getDefaultInternalWorkerChoiceStrategyOptions(pool.info.maxSize),
+      ...opts
+    }
     for (const workerChoiceStrategy of this.workerChoiceStrategies.values()) {
-      workerChoiceStrategy.setOptions(opts)
+      workerChoiceStrategy.setOptions(this.opts)
     }
   }
 }

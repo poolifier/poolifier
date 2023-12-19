@@ -3,8 +3,8 @@ import { getRandomValues } from 'node:crypto'
 import { Worker as ClusterWorker } from 'node:cluster'
 import { Worker as ThreadWorker } from 'node:worker_threads'
 import type {
-  MeasurementStatisticsRequirements,
-  WorkerChoiceStrategyOptions
+  InternalWorkerChoiceStrategyOptions,
+  MeasurementStatisticsRequirements
 } from './pools/selection-strategies/selection-strategies-types'
 import type { KillBehavior } from './worker/worker-options'
 import { type IWorker, type WorkerType, WorkerTypes } from './pools/worker'
@@ -23,14 +23,20 @@ export const EMPTY_FUNCTION: () => void = Object.freeze(() => {
 
 /**
  * Default worker choice strategy options.
+ *
+ * @param poolMaxSize - The pool maximum size.
+ * @returns The default worker choice strategy options.
  */
-export const DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS: WorkerChoiceStrategyOptions =
-  {
-    retries: 6,
+export const getDefaultInternalWorkerChoiceStrategyOptions = (
+  poolMaxSize: number
+): InternalWorkerChoiceStrategyOptions => {
+  return {
+    retries: poolMaxSize,
     runTime: { median: false },
     waitTime: { median: false },
     elu: { median: false }
   }
+}
 
 /**
  * Default measurement statistics requirements.

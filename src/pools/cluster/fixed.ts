@@ -26,9 +26,10 @@ export class FixedClusterPool<
   public constructor (
     numberOfWorkers: number,
     filePath: string,
-    protected readonly opts: PoolOptions<Worker> = {}
+    opts: PoolOptions<Worker> = {},
+    maximumNumberOfWorkers?: number
   ) {
-    super(numberOfWorkers, filePath, opts)
+    super(numberOfWorkers, filePath, opts, maximumNumberOfWorkers)
   }
 
   /** @inheritDoc */

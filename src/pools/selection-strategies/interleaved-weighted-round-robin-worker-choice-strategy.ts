@@ -1,14 +1,11 @@
 import type { IWorker } from '../worker'
 import type { IPool } from '../pool'
-import {
-  DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-  DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
-} from '../../utils'
+import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../../utils'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
-  TaskStatisticsRequirements,
-  WorkerChoiceStrategyOptions
+  InternalWorkerChoiceStrategyOptions,
+  TaskStatisticsRequirements
 } from './selection-strategies-types'
 
 /**
@@ -60,7 +57,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
-    opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+    opts: InternalWorkerChoiceStrategyOptions
   ) {
     super(pool, opts)
     this.setTaskStatisticsRequirements(this.opts)
@@ -157,7 +154,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public setOptions (opts: WorkerChoiceStrategyOptions): void {
+  public setOptions (opts: InternalWorkerChoiceStrategyOptions): void {
     super.setOptions(opts)
     this.roundWeights = this.getRoundWeights()
   }

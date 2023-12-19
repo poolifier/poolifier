@@ -66,14 +66,9 @@ describe('Selection strategies test suite', () => {
       expect(pool.workerChoiceStrategyContext.workerChoiceStrategy).toBe(
         workerChoiceStrategy
       )
-      expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-        retries: 6,
-        runTime: { median: false },
-        waitTime: { median: false },
-        elu: { median: false }
-      })
+      expect(pool.opts.workerChoiceStrategyOptions).toBeUndefined()
       expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-        retries: 6,
+        retries: pool.info.maxSize,
         runTime: { median: false },
         waitTime: { median: false },
         elu: { median: false }
@@ -86,19 +81,14 @@ describe('Selection strategies test suite', () => {
         max,
         './tests/worker-files/cluster/testWorker.js'
       )
-      pool.setWorkerChoiceStrategy(workerChoiceStrategy, { retries: 3 })
+      pool.setWorkerChoiceStrategy(workerChoiceStrategy)
       expect(pool.opts.workerChoiceStrategy).toBe(workerChoiceStrategy)
       expect(pool.workerChoiceStrategyContext.workerChoiceStrategy).toBe(
         workerChoiceStrategy
       )
-      expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-        retries: 3,
-        runTime: { median: false },
-        waitTime: { median: false },
-        elu: { median: false }
-      })
+      expect(pool.opts.workerChoiceStrategyOptions).toBeUndefined()
       expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-        retries: 3,
+        retries: pool.info.maxSize,
         runTime: { median: false },
         waitTime: { median: false },
         elu: { median: false }
