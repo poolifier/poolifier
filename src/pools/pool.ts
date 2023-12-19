@@ -122,6 +122,12 @@ export interface TasksQueueOptions {
    * @defaultValue true
    */
   readonly tasksStealingOnBackPressure?: boolean
+  /**
+   * Queued tasks finished timeout in milliseconds at worker node termination.
+   *
+   * @defaultValue 2000
+   */
+  readonly tasksFinishedTimeout?: number
 }
 
 /**

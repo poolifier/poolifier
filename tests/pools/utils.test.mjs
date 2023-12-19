@@ -7,11 +7,23 @@ import {
 } from '../../lib/circular-array.js'
 import {
   createWorker,
+  getDefaultTasksQueueOptions,
   updateMeasurementStatistics
 } from '../../lib/pools/utils.js'
 import { WorkerTypes } from '../../lib/index.js'
 
 describe('Pool utils test suite', () => {
+  it('Verify getDefaultTasksQueueOptions() behavior', () => {
+    const poolMaxSize = 4
+    expect(getDefaultTasksQueueOptions(poolMaxSize)).toStrictEqual({
+      concurrency: 1,
+      size: Math.pow(poolMaxSize, 2),
+      taskStealing: true,
+      tasksStealingOnBackPressure: true,
+      tasksFinishedTimeout: 2000
+    })
+  })
+
   it('Verify updateMeasurementStatistics() behavior', () => {
     const measurementStatistics = {
       history: new CircularArray()
