@@ -164,36 +164,38 @@ export class WorkerChoiceStrategyContext<
    *
    * @returns The key of the worker node.
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If after configured retries the worker node key is null or undefined.
-   * @throws {@link https://nodejs.org/api/errors.html#class-rangeerror} If the maximum consecutive worker choice strategy executions has been reached.
    */
   public execute (): number {
     const workerChoiceStrategy = this.workerChoiceStrategies.get(
       this.workerChoiceStrategy
     ) as IWorkerChoiceStrategy
+    if (!workerChoiceStrategy.hasPoolWorkerNodesReady()) {
+      // wait for a worker node to be ready without blocking the event loop
+    }
+    return this.executeStrategy(workerChoiceStrategy)
+  }
+
+  /**
+   * Executes the given worker choice strategy.
+   *
+   * @param workerChoiceStrategy - The worker choice strategy.
+   * @returns The key of the worker node.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If after configured retries the worker node key is null or undefined.
+   */
+  private executeStrategy (workerChoiceStrategy: IWorkerChoiceStrategy): number {
     let workerNodeKey: number | undefined
-    const maxExecutionCount = 10000
-    let executionCount = 0
     let chooseCount = 0
     let retriesCount = 0
     do {
-      if (workerChoiceStrategy.hasPoolWorkerNodesReady()) {
-        workerNodeKey = workerChoiceStrategy.choose()
-        if (chooseCount > 0) {
-          retriesCount++
-        }
-        chooseCount++
+      workerNodeKey = workerChoiceStrategy.choose()
+      if (workerNodeKey == null && chooseCount > 0) {
+        retriesCount++
       }
-      executionCount++
+      chooseCount++
     } while (
-      executionCount < maxExecutionCount &&
-      (!workerChoiceStrategy.hasPoolWorkerNodesReady() ||
-        (workerNodeKey == null && retriesCount < (this.opts.retries as number)))
+      workerNodeKey == null &&
+      retriesCount < (this.opts.retries as number)
     )
-    if (executionCount >= maxExecutionCount) {
-      throw new RangeError(
-        `Worker choice strategy consecutive executions has exceeded the maximum of ${maxExecutionCount}`
-      )
-    }
     if (workerNodeKey == null) {
       throw new Error(
         `Worker node key chosen is null or undefined after ${retriesCount} retries`
