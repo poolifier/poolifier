@@ -291,12 +291,12 @@ export const buildInternalWorkerChoiceStrategyOptions = (
   opts?: InternalWorkerChoiceStrategyOptions
 ): InternalWorkerChoiceStrategyOptions => {
   opts = clone(opts ?? {})
-  if (opts.weights == null) {
+  if (opts?.weights == null) {
     opts.weights = getDefaultWeights(poolMaxSize)
   }
   return {
     ...getDefaultInternalWorkerChoiceStrategyOptions(
-      poolMaxSize + Object.keys(opts?.weights ?? {}).length
+      poolMaxSize + Object.keys(opts.weights).length
     ),
     ...opts
   }
