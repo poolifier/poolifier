@@ -57,7 +57,6 @@ export abstract class AbstractWorkerChoiceStrategy<
     protected readonly pool: IPool<Worker, Data, Response>,
     protected opts: InternalWorkerChoiceStrategyOptions
   ) {
-    // this.setOptions(this.opts)
     this.opts = buildInternalWorkerChoiceStrategyOptions(
       this.pool.info.maxSize,
       this.opts

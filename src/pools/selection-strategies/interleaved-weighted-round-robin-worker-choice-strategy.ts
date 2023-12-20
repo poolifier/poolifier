@@ -40,7 +40,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   /**
    * Round weights.
    */
-  private roundWeights!: number[]
+  private roundWeights: number[]
   /**
    * Worker node id.
    */
