@@ -45,7 +45,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     opts: InternalWorkerChoiceStrategyOptions
   ) {
     super(pool, opts)
-    this.setOptions(this.opts)
+    this.setTaskStatisticsRequirements(this.opts)
   }
 
   /** @inheritDoc */
