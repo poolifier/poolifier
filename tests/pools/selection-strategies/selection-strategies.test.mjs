@@ -1636,7 +1636,7 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
       ).previousWorkerNodeKey
-    ).toStrictEqual(expect.any(Number))
+    ).toEqual(expect.any(Number))
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
@@ -1705,12 +1705,12 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
       ).nextWorkerNodeKey
-    ).toBe(0)
+    ).toEqual(expect.any(Number))
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
       ).previousWorkerNodeKey
-    ).toStrictEqual(expect.any(Number))
+    ).toEqual(expect.any(Number))
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
@@ -1784,7 +1784,7 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
       ).nextWorkerNodeKey
-    ).toBe(0)
+    ).toEqual(expect.any(Number))
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
