@@ -7,6 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.6] - 2023-12-18
+
+### Fixed
+
+- Fix pool destroying with tasks queuing enabled.
+
+## [3.1.5] - 2023-12-18
+
+### Added
+
+- Add queued tasks end timeout support to worker node termination.
+
+## [3.1.4] - 2023-12-18
+
+### Fixed
+
+- Make more robust the fix for possible null exception at handling task execution response.
+
+## [3.1.3] - 2023-12-17
+
+### Fixed
+
+- Fix possible null exception at handling task execution response.
+
+## [3.1.2] - 2023-12-17
+
+### Fixed
+
+- Wait for queued tasks to end at worker node termination.
+
+## [3.1.1] - 2023-12-16
+
+### Fixed
+
+- Fix pool options TS type definition.
+
+## [3.1.0] - 2023-12-16
+
+### Changed
+
+- TypeScript breaking change: merge ThreadPoolOptions and ClusterPoolOptions types into PoolOptions type.
+
 ## [3.0.14] - 2023-12-13
 
 ### Fixed

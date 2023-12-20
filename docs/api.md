@@ -14,8 +14,6 @@
   - [`pool.listTaskFunctionNames()`](#poollisttaskfunctionnames)
   - [`pool.setDefaultTaskFunction(name)`](#poolsetdefaulttaskfunctionname)
   - [`PoolOptions`](#pooloptions)
-    - [`ThreadPoolOptions extends PoolOptions`](#threadpooloptions-extends-pooloptions)
-    - [`ClusterPoolOptions extends PoolOptions`](#clusterpooloptions-extends-pooloptions)
 - [Worker](#worker)
   - [`class YourWorker extends ThreadWorker/ClusterWorker`](#class-yourworker-extends-threadworkerclusterworker)
     - [`YourWorker.hasTaskFunction(name)`](#yourworkerhastaskfunctionname)
@@ -63,7 +61,7 @@ This method is available on both pool implementations and returns a boolean.
 
 ### `pool.addTaskFunction(name, fn)`
 
-`name` (mandatory) The task function name.
+`name` (mandatory) The task function name.  
 `fn` (mandatory) The task function.
 
 This method is available on both pool implementations and returns a boolean promise.
@@ -138,14 +136,11 @@ An object with these properties:
   - `concurrency` (optional) - The maximum number of tasks that can be executed concurrently on a worker. It must be a positive integer.
   - `taskStealing` (optional) - Task stealing enablement on idle.
   - `tasksStealingOnBackPressure` (optional) - Tasks stealing enablement under back pressure.
+  - `tasksFinishedTimeout` (optional) - Queued tasks finished timeout in milliseconds at worker termination.
 
-  Default: `{ size: (pool maximum size)^2, concurrency: 1, taskStealing: true, tasksStealingOnBackPressure: true }`
-
-#### `ThreadPoolOptions extends PoolOptions`
+  Default: `{ size: (pool maximum size)^2, concurrency: 1, taskStealing: true, tasksStealingOnBackPressure: true, tasksFinishedTimeout: 2000 }`
 
 - `workerOptions` (optional) - An object with the worker options to pass to worker. See [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_new_worker_filename_options) for more details.
-
-#### `ClusterPoolOptions extends PoolOptions`
 
 - `env` (optional) - An object with the environment variables to pass to worker. See [cluster](https://nodejs.org/api/cluster.html#cluster_cluster_fork_env) for more details.
 

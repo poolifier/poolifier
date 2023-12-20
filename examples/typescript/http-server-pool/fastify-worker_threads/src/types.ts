@@ -1,4 +1,5 @@
-import type { ThreadPoolOptions } from 'poolifier'
+import type { Worker } from 'node:worker_threads'
+import type { PoolOptions } from 'poolifier'
 
 export interface BodyPayload {
   number?: number
@@ -12,7 +13,7 @@ export interface WorkerResponse<T = unknown> {
   body: T
 }
 
-export interface FastifyPoolifierOptions extends ThreadPoolOptions {
+export interface FastifyPoolifierOptions extends PoolOptions<Worker> {
   workerFile: string
   minWorkers?: number
   maxWorkers?: number

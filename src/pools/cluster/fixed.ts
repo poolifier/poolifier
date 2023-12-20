@@ -1,26 +1,8 @@
-import cluster, { type ClusterSettings, type Worker } from 'node:cluster'
+import cluster, { type Worker } from 'node:cluster'
 import type { MessageValue } from '../../utility-types'
 import { AbstractPool } from '../abstract-pool'
 import { type PoolOptions, type PoolType, PoolTypes } from '../pool'
 import { type WorkerType, WorkerTypes } from '../worker'
-
-/**
- * Options for a poolifier cluster pool.
- */
-export interface ClusterPoolOptions extends PoolOptions<Worker> {
-  /**
-   * Key/value pairs to add to worker process environment.
-   *
-   * @see https://nodejs.org/api/cluster.html#cluster_cluster_fork_env
-   */
-  env?: Record<string, unknown>
-  /**
-   * Cluster settings.
-   *
-   * @see https://nodejs.org/api/cluster.html#cluster_cluster_settings
-   */
-  settings?: ClusterSettings
-}
 
 /**
  * A cluster pool with a fixed number of workers.
@@ -44,7 +26,7 @@ export class FixedClusterPool<
   public constructor (
     numberOfWorkers: number,
     filePath: string,
-    protected readonly opts: ClusterPoolOptions = {}
+    protected readonly opts: PoolOptions<Worker> = {}
   ) {
     super(numberOfWorkers, filePath, opts)
   }
@@ -57,27 +39,6 @@ export class FixedClusterPool<
   /** @inheritDoc */
   protected isMain (): boolean {
     return cluster.isPrimary
-  }
-
-  /** @inheritDoc */
-  protected async destroyWorkerNode (workerNodeKey: number): Promise<void> {
-    this.flagWorkerNodeAsNotReady(workerNodeKey)
-    this.flushTasksQueue(workerNodeKey)
-    // FIXME: wait for tasks to be finished
-    const workerNode = this.workerNodes[workerNodeKey]
-    const worker = workerNode.worker
-    const waitWorkerExit = new Promise<void>(resolve => {
-      worker.once('exit', () => {
-        resolve()
-      })
-    })
-    worker.once('disconnect', () => {
-      worker.kill()
-    })
-    await this.sendKillMessageToWorker(workerNodeKey)
-    workerNode.removeAllListeners()
-    worker.disconnect()
-    await waitWorkerExit
   }
 
   /** @inheritDoc */
@@ -120,11 +81,6 @@ export class FixedClusterPool<
     listener: (message: MessageValue<Message>) => void
   ): void {
     this.workerNodes[workerNodeKey].worker.off('message', listener)
-  }
-
-  /** @inheritDoc */
-  protected createWorker (): Worker {
-    return cluster.fork(this.opts.env)
   }
 
   /** @inheritDoc */

@@ -1,5 +1,6 @@
-import type { TransferListItem } from 'node:worker_threads'
+import type { TransferListItem, WorkerOptions } from 'node:worker_threads'
 import type { EventEmitterAsyncResource } from 'node:events'
+import type { ClusterSettings } from 'node:cluster'
 import type { TaskFunction } from '../worker/task-functions'
 import type {
   ErrorHandler,
@@ -121,6 +122,12 @@ export interface TasksQueueOptions {
    * @defaultValue true
    */
   readonly tasksStealingOnBackPressure?: boolean
+  /**
+   * Queued tasks finished timeout in milliseconds at worker node termination.
+   *
+   * @defaultValue 2000
+   */
+  readonly tasksFinishedTimeout?: number
 }
 
 /**
@@ -189,6 +196,24 @@ export interface PoolOptions<Worker extends IWorker> {
    * Pool worker node tasks queue options.
    */
   tasksQueueOptions?: TasksQueueOptions
+  /**
+   * Worker options.
+   *
+   * @see https://nodejs.org/api/worker_threads.html#new-workerfilename-options
+   */
+  workerOptions?: WorkerOptions
+  /**
+   * Key/value pairs to add to worker process environment.
+   *
+   * @see https://nodejs.org/api/cluster.html#cluster_cluster_fork_env
+   */
+  env?: Record<string, unknown>
+  /**
+   * Cluster settings.
+   *
+   * @see https://nodejs.org/api/cluster.html#cluster_cluster_settings
+   */
+  settings?: ClusterSettings
 }
 
 /**

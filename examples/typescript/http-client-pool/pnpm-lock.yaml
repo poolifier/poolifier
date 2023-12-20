@@ -12,21 +12,21 @@ dependencies:
     specifier: ^3.3.2
     version: 3.3.2
   poolifier:
-    specifier: ^3.0.14
-    version: 3.0.14
+    specifier: ^3.1.6
+    version: 3.1.6
 
 devDependencies:
   '@types/node':
-    specifier: ^20.10.4
-    version: 20.10.4
+    specifier: ^20.10.5
+    version: 20.10.5
   typescript:
     specifier: ^5.3.3
     version: 5.3.3
 
 packages:
 
-  /@types/node@20.10.4:
-    resolution: {integrity: sha512-D08YG6rr8X90YB56tSIuBaddy/UXAA9RKJoFvrsnogAum/0pmjkgi4+2nx96A330FmioegBWmEYQ+syqCFaveg==}
+  /@types/node@20.10.5:
+    resolution: {integrity: sha512-nNPsNE65wjMxEKI93yOP+NPGGBJz/PoN3kZsVLee0XMiJolxSekEVD8wRwBUBqkwc7UWop0edW50yrCQW4CyRw==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -122,8 +122,8 @@ packages:
       formdata-polyfill: 4.0.10
     dev: false
 
-  /poolifier@3.0.14:
-    resolution: {integrity: sha512-bER0wR3NADyvQpexHY6fbVd+rikk4hxt1tzIhKkwOcoJcqkoD+eAtN+2sVbAIUYFqwhNdeaZQwmpxcDlZ2jv3Q==}
+  /poolifier@3.1.6:
+    resolution: {integrity: sha512-OXISds0E1+gJ66HMIaU0NQOeLmhuI5LwS/VWZd392rreuEjV8MrapvKdtHujFcnOGSd4qJiyknF8nr8AMqVFQA==}
     engines: {node: '>=18.0.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false

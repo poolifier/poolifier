@@ -1,14 +1,45 @@
 import { existsSync } from 'node:fs'
+import cluster from 'node:cluster'
+import { SHARE_ENV, Worker, type WorkerOptions } from 'node:worker_threads'
+import { env } from 'node:process'
 import { average, isPlainObject, max, median, min } from '../utils'
+import type { MessageValue, Task } from '../utility-types'
 import {
   type MeasurementStatisticsRequirements,
   WorkerChoiceStrategies,
   type WorkerChoiceStrategy
 } from './selection-strategies/selection-strategies-types'
 import type { TasksQueueOptions } from './pool'
-import type { IWorker, MeasurementStatistics } from './worker'
+import {
+  type IWorker,
+  type IWorkerNode,
+  type MeasurementStatistics,
+  type WorkerNodeOptions,
+  type WorkerType,
+  WorkerTypes,
+  type WorkerUsage
+} from './worker'
+import type { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
+
+export const getDefaultTasksQueueOptions = (
+  poolMaxSize: number
+): Required<TasksQueueOptions> => {
+  return {
+    size: Math.pow(poolMaxSize, 2),
+    concurrency: 1,
+    taskStealing: true,
+    tasksStealingOnBackPressure: true,
+    tasksFinishedTimeout: 2000
+  }
+}
 
 export const checkFilePath = (filePath: string): void => {
+  if (filePath == null) {
+    throw new TypeError('The worker file path must be specified')
+  }
+  if (typeof filePath !== 'string') {
+    throw new TypeError('The worker file path must be a string')
+  }
   if (!existsSync(filePath)) {
     throw new Error(`Cannot find the worker file '${filePath}'`)
   }
@@ -86,26 +117,43 @@ export const checkValidTasksQueueOptions = (
   }
 }
 
-export const checkWorkerNodeArguments = <Worker extends IWorker>(
-  worker: Worker,
-  tasksQueueBackPressureSize: number
+export const checkWorkerNodeArguments = (
+  type: WorkerType,
+  filePath: string,
+  opts: WorkerNodeOptions
 ): void => {
-  if (worker == null) {
-    throw new TypeError('Cannot construct a worker node without a worker')
+  if (type == null) {
+    throw new TypeError('Cannot construct a worker node without a worker type')
   }
-  if (tasksQueueBackPressureSize == null) {
+  if (!Object.values(WorkerTypes).includes(type)) {
     throw new TypeError(
-      'Cannot construct a worker node without a tasks queue back pressure size'
+      `Cannot construct a worker node with an invalid worker type '${type}'`
     )
   }
-  if (!Number.isSafeInteger(tasksQueueBackPressureSize)) {
+  checkFilePath(filePath)
+  if (opts == null) {
     throw new TypeError(
-      'Cannot construct a worker node with a tasks queue back pressure size that is not an integer'
+      'Cannot construct a worker node without worker node options'
     )
   }
-  if (tasksQueueBackPressureSize <= 0) {
+  if (!isPlainObject(opts)) {
+    throw new TypeError(
+      'Cannot construct a worker node with invalid options: must be a plain object'
+    )
+  }
+  if (opts.tasksQueueBackPressureSize == null) {
+    throw new TypeError(
+      'Cannot construct a worker node without a tasks queue back pressure size option'
+    )
+  }
+  if (!Number.isSafeInteger(opts.tasksQueueBackPressureSize)) {
+    throw new TypeError(
+      'Cannot construct a worker node with a tasks queue back pressure size option that is not an integer'
+    )
+  }
+  if (opts.tasksQueueBackPressureSize <= 0) {
     throw new RangeError(
-      'Cannot construct a worker node with a tasks queue back pressure size that is not a positive integer'
+      'Cannot construct a worker node with a tasks queue back pressure size option that is not a positive integer'
     )
   }
 }
@@ -119,7 +167,7 @@ export const checkWorkerNodeArguments = <Worker extends IWorker>(
  * @param numberOfMeasurements - The number of measurements.
  * @internal
  */
-export const updateMeasurementStatistics = (
+const updateMeasurementStatistics = (
   measurementStatistics: MeasurementStatistics,
   measurementRequirements: MeasurementStatisticsRequirements,
   measurementValue: number
@@ -152,4 +200,161 @@ export const updateMeasurementStatistics = (
       }
     }
   }
+}
+if (env.NODE_ENV === 'test') {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  exports.updateMeasurementStatistics = updateMeasurementStatistics
+}
+
+export const updateWaitTimeWorkerUsage = <
+  Worker extends IWorker,
+  Data = unknown,
+  Response = unknown
+>(
+    workerChoiceStrategyContext: WorkerChoiceStrategyContext<
+    Worker,
+    Data,
+    Response
+    >,
+    workerUsage: WorkerUsage,
+    task: Task<Data>
+  ): void => {
+  const timestamp = performance.now()
+  const taskWaitTime = timestamp - (task.timestamp ?? timestamp)
+  updateMeasurementStatistics(
+    workerUsage.waitTime,
+    workerChoiceStrategyContext.getTaskStatisticsRequirements().waitTime,
+    taskWaitTime
+  )
+}
+
+export const updateTaskStatisticsWorkerUsage = <Response = unknown>(
+  workerUsage: WorkerUsage,
+  message: MessageValue<Response>
+): void => {
+  const workerTaskStatistics = workerUsage.tasks
+  if (
+    workerTaskStatistics.executing != null &&
+    workerTaskStatistics.executing > 0
+  ) {
+    --workerTaskStatistics.executing
+  }
+  if (message.workerError == null) {
+    ++workerTaskStatistics.executed
+  } else {
+    ++workerTaskStatistics.failed
+  }
+}
+
+export const updateRunTimeWorkerUsage = <
+  Worker extends IWorker,
+  Data = unknown,
+  Response = unknown
+>(
+    workerChoiceStrategyContext: WorkerChoiceStrategyContext<
+    Worker,
+    Data,
+    Response
+    >,
+    workerUsage: WorkerUsage,
+    message: MessageValue<Response>
+  ): void => {
+  if (message.workerError != null) {
+    return
+  }
+  updateMeasurementStatistics(
+    workerUsage.runTime,
+    workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime,
+    message.taskPerformance?.runTime ?? 0
+  )
+}
+
+export const updateEluWorkerUsage = <
+  Worker extends IWorker,
+  Data = unknown,
+  Response = unknown
+>(
+    workerChoiceStrategyContext: WorkerChoiceStrategyContext<
+    Worker,
+    Data,
+    Response
+    >,
+    workerUsage: WorkerUsage,
+    message: MessageValue<Response>
+  ): void => {
+  if (message.workerError != null) {
+    return
+  }
+  const eluTaskStatisticsRequirements: MeasurementStatisticsRequirements =
+    workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
+  updateMeasurementStatistics(
+    workerUsage.elu.active,
+    eluTaskStatisticsRequirements,
+    message.taskPerformance?.elu?.active ?? 0
+  )
+  updateMeasurementStatistics(
+    workerUsage.elu.idle,
+    eluTaskStatisticsRequirements,
+    message.taskPerformance?.elu?.idle ?? 0
+  )
+  if (eluTaskStatisticsRequirements.aggregate) {
+    if (message.taskPerformance?.elu != null) {
+      if (workerUsage.elu.utilization != null) {
+        workerUsage.elu.utilization =
+          (workerUsage.elu.utilization +
+            message.taskPerformance.elu.utilization) /
+          2
+      } else {
+        workerUsage.elu.utilization = message.taskPerformance.elu.utilization
+      }
+    }
+  }
+}
+
+export const createWorker = <Worker extends IWorker>(
+  type: WorkerType,
+  filePath: string,
+  opts: { env?: Record<string, unknown>, workerOptions?: WorkerOptions }
+): Worker => {
+  switch (type) {
+    case WorkerTypes.thread:
+      return new Worker(filePath, {
+        env: SHARE_ENV,
+        ...opts?.workerOptions
+      }) as unknown as Worker
+    case WorkerTypes.cluster:
+      return cluster.fork(opts?.env) as unknown as Worker
+    default:
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      throw new Error(`Unknown worker type '${type}'`)
+  }
+}
+
+export const waitWorkerNodeEvents = async <
+  Worker extends IWorker,
+  Data = unknown
+>(
+  workerNode: IWorkerNode<Worker, Data>,
+  workerNodeEvent: string,
+  numberOfEventsToWait: number,
+  timeout: number
+): Promise<number> => {
+  return await new Promise<number>(resolve => {
+    let events = 0
+    if (numberOfEventsToWait === 0) {
+      resolve(events)
+      return
+    }
+    workerNode.on(workerNodeEvent, () => {
+      ++events
+      if (events === numberOfEventsToWait) {
+        resolve(events)
+      }
+    })
+    if (timeout >= 0) {
+      setTimeout(() => {
+        resolve(events)
+      }, timeout)
+    }
+  })
 }
