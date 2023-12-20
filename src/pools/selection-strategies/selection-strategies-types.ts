@@ -95,7 +95,7 @@ export interface WorkerChoiceStrategyOptions {
    *
    * @defaultValue Weights computed automatically given the CPU performance.
    */
-  readonly weights?: Record<number, number>
+  weights?: Record<number, number>
 }
 
 /**

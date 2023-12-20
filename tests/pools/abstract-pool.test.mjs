@@ -229,18 +229,30 @@ describe('Abstract pool test suite', () => {
       workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN
     })
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-      retries: pool.info.maxSize,
+      retries:
+        pool.info.maxSize +
+        Object.keys(pool.workerChoiceStrategyContext.opts.weights).length,
       runTime: { median: false },
       waitTime: { median: false },
-      elu: { median: false }
+      elu: { median: false },
+      weights: expect.objectContaining({
+        0: expect.any(Number),
+        [pool.info.maxSize - 1]: expect.any(Number)
+      })
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        retries: pool.info.maxSize,
+        retries:
+          pool.info.maxSize +
+          Object.keys(workerChoiceStrategy.opts.weights).length,
         runTime: { median: false },
         waitTime: { median: false },
-        elu: { median: false }
+        elu: { median: false },
+        weights: expect.objectContaining({
+          0: expect.any(Number),
+          [pool.info.maxSize - 1]: expect.any(Number)
+        })
       })
     }
     await pool.destroy()
@@ -459,18 +471,30 @@ describe('Abstract pool test suite', () => {
     )
     expect(pool.opts.workerChoiceStrategyOptions).toBeUndefined()
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-      retries: pool.info.maxSize,
+      retries:
+        pool.info.maxSize +
+        Object.keys(pool.workerChoiceStrategyContext.opts.weights).length,
       runTime: { median: false },
       waitTime: { median: false },
-      elu: { median: false }
+      elu: { median: false },
+      weights: expect.objectContaining({
+        0: expect.any(Number),
+        [pool.info.maxSize - 1]: expect.any(Number)
+      })
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        retries: pool.info.maxSize,
+        retries:
+          pool.info.maxSize +
+          Object.keys(workerChoiceStrategy.opts.weights).length,
         runTime: { median: false },
         waitTime: { median: false },
-        elu: { median: false }
+        elu: { median: false },
+        weights: expect.objectContaining({
+          0: expect.any(Number),
+          [pool.info.maxSize - 1]: expect.any(Number)
+        })
       })
     }
     expect(
@@ -501,18 +525,30 @@ describe('Abstract pool test suite', () => {
       elu: { median: true }
     })
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-      retries: pool.info.maxSize,
+      retries:
+        pool.info.maxSize +
+        Object.keys(pool.workerChoiceStrategyContext.opts.weights).length,
       runTime: { median: true },
       waitTime: { median: false },
-      elu: { median: true }
+      elu: { median: true },
+      weights: expect.objectContaining({
+        0: expect.any(Number),
+        [pool.info.maxSize - 1]: expect.any(Number)
+      })
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        retries: pool.info.maxSize,
+        retries:
+          pool.info.maxSize +
+          Object.keys(workerChoiceStrategy.opts.weights).length,
         runTime: { median: true },
         waitTime: { median: false },
-        elu: { median: true }
+        elu: { median: true },
+        weights: expect.objectContaining({
+          0: expect.any(Number),
+          [pool.info.maxSize - 1]: expect.any(Number)
+        })
       })
     }
     expect(
@@ -543,18 +579,30 @@ describe('Abstract pool test suite', () => {
       elu: { median: false }
     })
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-      retries: pool.info.maxSize,
+      retries:
+        pool.info.maxSize +
+        Object.keys(pool.workerChoiceStrategyContext.opts.weights).length,
       runTime: { median: false },
       waitTime: { median: false },
-      elu: { median: false }
+      elu: { median: false },
+      weights: expect.objectContaining({
+        0: expect.any(Number),
+        [pool.info.maxSize - 1]: expect.any(Number)
+      })
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        retries: pool.info.maxSize,
+        retries:
+          pool.info.maxSize +
+          Object.keys(workerChoiceStrategy.opts.weights).length,
         runTime: { median: false },
         waitTime: { median: false },
-        elu: { median: false }
+        elu: { median: false },
+        weights: expect.objectContaining({
+          0: expect.any(Number),
+          [pool.info.maxSize - 1]: expect.any(Number)
+        })
       })
     }
     expect(

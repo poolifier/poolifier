@@ -35,10 +35,6 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /**
-   * Default worker weight.
-   */
-  private readonly defaultWorkerWeight: number
-  /**
    * Worker node virtual task runtime.
    */
   private workerNodeVirtualTaskRunTime: number = 0
@@ -49,8 +45,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     opts: InternalWorkerChoiceStrategyOptions
   ) {
     super(pool, opts)
-    this.setTaskStatisticsRequirements(this.opts)
-    this.defaultWorkerWeight = this.computeDefaultWorkerWeight()
+    this.setOptions(this.opts)
   }
 
   /** @inheritDoc */
@@ -94,10 +89,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   private weightedRoundRobinNextWorkerNodeKey (): number | undefined {
-    const workerWeight =
-      this.opts.weights?.[
-        this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
-      ] ?? this.defaultWorkerWeight
+    const workerWeight = this.opts.weights?.[
+      this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
+    ] as number
     if (this.workerNodeVirtualTaskRunTime < workerWeight) {
       this.workerNodeVirtualTaskRunTime =
         this.workerNodeVirtualTaskRunTime +

@@ -38,13 +38,9 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
    */
   private roundId: number = 0
   /**
-   * Default worker weight.
-   */
-  private readonly defaultWorkerWeight: number
-  /**
    * Round weights.
    */
-  private roundWeights: number[]
+  private roundWeights!: number[]
   /**
    * Worker node id.
    */
@@ -60,9 +56,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
     opts: InternalWorkerChoiceStrategyOptions
   ) {
     super(pool, opts)
-    this.setTaskStatisticsRequirements(this.opts)
-    this.defaultWorkerWeight = this.computeDefaultWorkerWeight()
-    this.roundWeights = this.getRoundWeights()
+    this.setOptions(this.opts)
   }
 
   /** @inheritDoc */
@@ -99,8 +93,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
         ) {
           this.workerNodeVirtualTaskRunTime = 0
         }
-        const workerWeight =
-          this.opts.weights?.[workerNodeKey] ?? this.defaultWorkerWeight
+        const workerWeight = this.opts.weights?.[workerNodeKey] as number
         if (
           this.isWorkerNodeReady(workerNodeKey) &&
           workerWeight >= this.roundWeights[roundIndex] &&
@@ -160,12 +153,9 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   }
 
   private getRoundWeights (): number[] {
-    if (this.opts.weights == null) {
-      return [this.defaultWorkerWeight]
-    }
     return [
       ...new Set(
-        Object.values(this.opts.weights)
+        Object.values(this.opts.weights as Record<number, number>)
           .slice()
           .sort((a, b) => a - b)
       )

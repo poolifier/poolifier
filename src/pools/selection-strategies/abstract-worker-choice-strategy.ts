@@ -1,7 +1,6 @@
-import { cpus } from 'node:os'
 import {
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-  getDefaultInternalWorkerChoiceStrategyOptions
+  buildInternalWorkerChoiceStrategyOptions
 } from '../../utils'
 import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
@@ -112,12 +111,10 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public setOptions (opts: InternalWorkerChoiceStrategyOptions): void {
-    this.opts = {
-      ...getDefaultInternalWorkerChoiceStrategyOptions(
-        this.pool.info.maxSize + Object.keys(opts?.weights ?? {}).length
-      ),
-      ...opts
-    }
+    this.opts = buildInternalWorkerChoiceStrategyOptions(
+      this.pool.info.maxSize,
+      opts
+    )
     this.setTaskStatisticsRequirements(this.opts)
   }
 
@@ -194,16 +191,5 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected setPreviousWorkerNodeKey (workerNodeKey: number | undefined): void {
     this.previousWorkerNodeKey = workerNodeKey ?? this.previousWorkerNodeKey
-  }
-
-  protected computeDefaultWorkerWeight (): number {
-    let cpusCycleTimeWeight = 0
-    for (const cpu of cpus()) {
-      // CPU estimated cycle time
-      const numberOfDigits = cpu.speed.toString().length - 1
-      const cpuCycleTime = 1 / (cpu.speed / Math.pow(10, numberOfDigits))
-      cpusCycleTimeWeight += cpuCycleTime * Math.pow(10, numberOfDigits)
-    }
-    return Math.round(cpusCycleTimeWeight / cpus().length)
   }
 }

@@ -1,4 +1,4 @@
-import { getDefaultInternalWorkerChoiceStrategyOptions } from '../../utils'
+import { buildInternalWorkerChoiceStrategyOptions } from '../../utils'
 import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strategy'
@@ -46,12 +46,10 @@ export class WorkerChoiceStrategyContext<
     private workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN,
     private opts?: InternalWorkerChoiceStrategyOptions
   ) {
-    this.opts = {
-      ...getDefaultInternalWorkerChoiceStrategyOptions(
-        pool.info.maxSize + Object.keys(this.opts?.weights ?? {}).length
-      ),
-      ...this.opts
-    }
+    this.opts = buildInternalWorkerChoiceStrategyOptions(
+      pool.info.maxSize,
+      this.opts
+    )
     this.execute = this.execute.bind(this)
     this.workerChoiceStrategies = new Map<
     WorkerChoiceStrategy,
@@ -233,12 +231,10 @@ export class WorkerChoiceStrategyContext<
     pool: IPool<Worker, Data, Response>,
     opts?: InternalWorkerChoiceStrategyOptions
   ): void {
-    this.opts = {
-      ...getDefaultInternalWorkerChoiceStrategyOptions(
-        pool.info.maxSize + Object.keys(opts?.weights ?? {}).length
-      ),
-      ...opts
-    }
+    this.opts = buildInternalWorkerChoiceStrategyOptions(
+      pool.info.maxSize,
+      opts
+    )
     for (const workerChoiceStrategy of this.workerChoiceStrategies.values()) {
       workerChoiceStrategy.setOptions(this.opts)
     }
