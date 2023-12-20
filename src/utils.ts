@@ -304,8 +304,9 @@ export const buildInternalWorkerChoiceStrategyOptions = (
 
 const getDefaultWeights = (
   poolMaxSize: number,
-  defaultWorkerWeight: number = getDefaultWorkerWeight()
+  defaultWorkerWeight?: number
 ): Record<number, number> => {
+  defaultWorkerWeight = defaultWorkerWeight ?? getDefaultWorkerWeight()
   const weights: Record<number, number> = {}
   for (let workerNodeKey = 0; workerNodeKey < poolMaxSize; workerNodeKey++) {
     weights[workerNodeKey] = defaultWorkerWeight
