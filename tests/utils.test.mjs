@@ -6,10 +6,10 @@ import { expect } from 'expect'
 import {
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   DEFAULT_TASK_NAME,
-  DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS,
   EMPTY_FUNCTION,
   availableParallelism,
   average,
+  buildInternalWorkerChoiceStrategyOptions,
   exponentialDelay,
   getWorkerId,
   getWorkerType,
@@ -33,15 +33,6 @@ describe('Utils test suite', () => {
 
   it('Verify EMPTY_FUNCTION value', () => {
     expect(EMPTY_FUNCTION).toStrictEqual(expect.any(Function))
-  })
-
-  it('Verify DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS values', () => {
-    expect(DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS).toStrictEqual({
-      retries: 6,
-      runTime: { median: false },
-      waitTime: { median: false },
-      elu: { median: false }
-    })
   })
 
   it('Verify DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS values', () => {
@@ -238,6 +229,24 @@ describe('Utils test suite', () => {
     expect(max(1, 2)).toBe(2)
     expect(max(2, 1)).toBe(2)
     expect(max(1, 1)).toBe(1)
+  })
+
+  it('Verify buildInternalWorkerChoiceStrategyOptions() behavior', () => {
+    const poolMaxSize = 10
+    const internalWorkerChoiceStrategyOptions =
+      buildInternalWorkerChoiceStrategyOptions(poolMaxSize)
+    expect(internalWorkerChoiceStrategyOptions).toStrictEqual({
+      retries:
+        poolMaxSize +
+        Object.keys(internalWorkerChoiceStrategyOptions.weights).length,
+      runTime: { median: false },
+      waitTime: { median: false },
+      elu: { median: false },
+      weights: expect.objectContaining({
+        0: expect.any(Number),
+        [poolMaxSize - 1]: expect.any(Number)
+      })
+    })
   })
 
   // it('Verify once()', () => {
