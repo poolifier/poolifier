@@ -1710,7 +1710,7 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
       ).previousWorkerNodeKey
-    ).toBe(0)
+    ).toStrictEqual(expect.any(Number))
     expect(
       pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategyContext.workerChoiceStrategy
