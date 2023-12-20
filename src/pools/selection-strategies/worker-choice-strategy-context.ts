@@ -107,7 +107,6 @@ export class WorkerChoiceStrategyContext<
         >(pool, this.opts)
       ]
     ])
-    this.setOptions(pool, this.opts)
   }
 
   /**
