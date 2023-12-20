@@ -28,12 +28,15 @@ export class DynamicClusterPool<
    */
   public constructor (
     min: number,
-    protected readonly max: number,
+    max: number,
     filePath: string,
     opts: PoolOptions<Worker> = {}
   ) {
-    super(min, filePath, opts)
-    checkDynamicPoolSize(this.numberOfWorkers, this.max)
+    super(min, filePath, opts, max)
+    checkDynamicPoolSize(
+      this.minimumNumberOfWorkers,
+      this.maximumNumberOfWorkers as number
+    )
   }
 
   /** @inheritDoc */

@@ -15,7 +15,7 @@ server
 
         console.info(`==== ${request.method} ${request.url} ====`)
         console.info('> Headers')
-        console.log(request.headers)
+        console.info(request.headers)
 
         console.info('> Body')
         console.info(body)

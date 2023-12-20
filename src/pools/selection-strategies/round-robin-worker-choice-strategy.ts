@@ -1,10 +1,9 @@
-import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
 import type { IPool } from '../pool'
 import type { IWorker } from '../worker'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
 import type {
   IWorkerChoiceStrategy,
-  WorkerChoiceStrategyOptions
+  InternalWorkerChoiceStrategyOptions
 } from './selection-strategies-types'
 
 /**
@@ -24,10 +23,9 @@ export class RoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
-    opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+    opts: InternalWorkerChoiceStrategyOptions
   ) {
     super(pool, opts)
-    this.setTaskStatisticsRequirements(this.opts)
   }
 
   /** @inheritDoc */

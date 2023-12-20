@@ -2,9 +2,10 @@ import * as os from 'node:os'
 import { getRandomValues } from 'node:crypto'
 import { Worker as ClusterWorker } from 'node:cluster'
 import { Worker as ThreadWorker } from 'node:worker_threads'
+import { cpus } from 'node:os'
 import type {
-  MeasurementStatisticsRequirements,
-  WorkerChoiceStrategyOptions
+  InternalWorkerChoiceStrategyOptions,
+  MeasurementStatisticsRequirements
 } from './pools/selection-strategies/selection-strategies-types'
 import type { KillBehavior } from './worker/worker-options'
 import { type IWorker, type WorkerType, WorkerTypes } from './pools/worker'
@@ -22,15 +23,21 @@ export const EMPTY_FUNCTION: () => void = Object.freeze(() => {
 })
 
 /**
- * Default worker choice strategy options.
+ * Gets default worker choice strategy options.
+ *
+ * @param retries - The number of worker choice retries.
+ * @returns The default worker choice strategy options.
  */
-export const DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS: WorkerChoiceStrategyOptions =
-  {
-    retries: 6,
+const getDefaultInternalWorkerChoiceStrategyOptions = (
+  retries: number
+): InternalWorkerChoiceStrategyOptions => {
+  return {
+    retries,
     runTime: { median: false },
     waitTime: { median: false },
     elu: { median: false }
   }
+}
 
 /**
  * Default measurement statistics requirements.
@@ -273,4 +280,46 @@ export const once = <T, A extends any[], R>(
     }
     return result
   }
+}
+
+const clone = <T extends object>(object: T): T => {
+  return JSON.parse(JSON.stringify(object)) as T
+}
+
+export const buildInternalWorkerChoiceStrategyOptions = (
+  poolMaxSize: number,
+  opts?: InternalWorkerChoiceStrategyOptions
+): InternalWorkerChoiceStrategyOptions => {
+  opts = clone(opts ?? {})
+  if (opts?.weights == null) {
+    opts.weights = getDefaultWeights(poolMaxSize)
+  }
+  return {
+    ...getDefaultInternalWorkerChoiceStrategyOptions(
+      poolMaxSize + Object.keys(opts.weights).length
+    ),
+    ...opts
+  }
+}
+
+const getDefaultWeights = (
+  poolMaxSize: number,
+  defaultWorkerWeight: number = getDefaultWorkerWeight()
+): Record<number, number> => {
+  const weights: Record<number, number> = {}
+  for (let workerNodeKey = 0; workerNodeKey < poolMaxSize; workerNodeKey++) {
+    weights[workerNodeKey] = defaultWorkerWeight
+  }
+  return weights
+}
+
+const getDefaultWorkerWeight = (): number => {
+  let cpusCycleTimeWeight = 0
+  for (const cpu of cpus()) {
+    // CPU estimated cycle time
+    const numberOfDigits = cpu.speed.toString().length - 1
+    const cpuCycleTime = 1 / (cpu.speed / Math.pow(10, numberOfDigits))
+    cpusCycleTimeWeight += cpuCycleTime * Math.pow(10, numberOfDigits)
+  }
+  return Math.round(cpusCycleTimeWeight / cpus().length)
 }
