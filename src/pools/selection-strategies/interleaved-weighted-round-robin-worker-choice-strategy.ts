@@ -56,7 +56,6 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
     opts: InternalWorkerChoiceStrategyOptions
   ) {
     super(pool, opts)
-    // this.setOptions(this.opts)
     this.setTaskStatisticsRequirements(this.opts)
     this.roundWeights = this.getRoundWeights()
   }
