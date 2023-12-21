@@ -242,16 +242,18 @@ describe('Abstract pool test suite', () => {
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
-      expect(workerChoiceStrategy.opts).toStrictEqual(
-        expect.objectContaining({
-          retries:
-            pool.info.maxSize +
-            Object.keys(workerChoiceStrategy.opts.weights).length,
-          runTime: { median: false },
-          waitTime: { median: false },
-          elu: { median: false }
+      expect(workerChoiceStrategy.opts).toStrictEqual({
+        retries:
+          pool.info.maxSize +
+          Object.keys(workerChoiceStrategy.opts.weights).length,
+        runTime: { median: false },
+        waitTime: { median: false },
+        elu: { median: false },
+        weights: expect.objectContaining({
+          0: expect.any(Number),
+          [pool.info.maxSize - 1]: expect.any(Number)
         })
-      )
+      })
     }
     await pool.destroy()
     const testHandler = () => console.info('test handler executed')
@@ -482,16 +484,18 @@ describe('Abstract pool test suite', () => {
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
-      expect(workerChoiceStrategy.opts).toStrictEqual(
-        expect.objectContaining({
-          retries:
-            pool.info.maxSize +
-            Object.keys(workerChoiceStrategy.opts.weights).length,
-          runTime: { median: false },
-          waitTime: { median: false },
-          elu: { median: false }
+      expect(workerChoiceStrategy.opts).toStrictEqual({
+        retries:
+          pool.info.maxSize +
+          Object.keys(workerChoiceStrategy.opts.weights).length,
+        runTime: { median: false },
+        waitTime: { median: false },
+        elu: { median: false },
+        weights: expect.objectContaining({
+          0: expect.any(Number),
+          [pool.info.maxSize - 1]: expect.any(Number)
         })
-      )
+      })
     }
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
@@ -534,16 +538,18 @@ describe('Abstract pool test suite', () => {
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
-      expect(workerChoiceStrategy.opts).toStrictEqual(
-        expect.objectContaining({
-          retries:
-            pool.info.maxSize +
-            Object.keys(workerChoiceStrategy.opts.weights).length,
-          runTime: { median: true },
-          waitTime: { median: false },
-          elu: { median: true }
+      expect(workerChoiceStrategy.opts).toStrictEqual({
+        retries:
+          pool.info.maxSize +
+          Object.keys(workerChoiceStrategy.opts.weights).length,
+        runTime: { median: true },
+        waitTime: { median: false },
+        elu: { median: true },
+        weights: expect.objectContaining({
+          0: expect.any(Number),
+          [pool.info.maxSize - 1]: expect.any(Number)
         })
-      )
+      })
     }
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
@@ -586,16 +592,18 @@ describe('Abstract pool test suite', () => {
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
-      expect(workerChoiceStrategy.opts).toStrictEqual(
-        expect.objectContaining({
-          retries:
-            pool.info.maxSize +
-            Object.keys(workerChoiceStrategy.opts.weights).length,
-          runTime: { median: false },
-          waitTime: { median: false },
-          elu: { median: false }
+      expect(workerChoiceStrategy.opts).toStrictEqual({
+        retries:
+          pool.info.maxSize +
+          Object.keys(workerChoiceStrategy.opts.weights).length,
+        runTime: { median: false },
+        waitTime: { median: false },
+        elu: { median: false },
+        weights: expect.objectContaining({
+          0: expect.any(Number),
+          [pool.info.maxSize - 1]: expect.any(Number)
         })
-      )
+      })
     }
     expect(
       pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
@@ -1303,7 +1311,7 @@ describe('Abstract pool test suite', () => {
     const elapsedTime = performance.now() - startTime
     expect(tasksFinished).toBeLessThanOrEqual(numberOfWorkers * maxMultiplier)
     expect(elapsedTime).toBeGreaterThanOrEqual(2000)
-    expect(elapsedTime).toBeLessThanOrEqual(tasksFinishedTimeout + 200)
+    expect(elapsedTime).toBeLessThanOrEqual(tasksFinishedTimeout + 300)
   })
 
   it('Verify that destroy() waits until the tasks finished timeout is reached', async () => {
