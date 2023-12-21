@@ -985,7 +985,7 @@ export abstract class AbstractPool<
   private async sendKillMessageToWorker (workerNodeKey: number): Promise<void> {
     await new Promise<void>((resolve, reject) => {
       if (this.workerNodes?.[workerNodeKey] == null) {
-        reject(new Error(`Invalid worker node key '${workerNodeKey}'`))
+        resolve()
         return
       }
       const killMessageListener = (message: MessageValue<Response>): void => {

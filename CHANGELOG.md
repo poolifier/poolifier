@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix default worker weight computation.
+- Fix possible null exception at pool destroying.
+
 ## [3.1.7] - 2023-12-20
 
 ### Fixed

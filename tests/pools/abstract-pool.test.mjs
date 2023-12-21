@@ -1666,11 +1666,6 @@ describe('Abstract pool test suite', () => {
     await expect(
       pool.sendKillMessageToWorker(workerNodeKey)
     ).resolves.toBeUndefined()
-    await expect(
-      pool.sendKillMessageToWorker(numberOfWorkers)
-    ).rejects.toStrictEqual(
-      new Error(`Invalid worker node key '${numberOfWorkers}'`)
-    )
     await pool.destroy()
   })
 
