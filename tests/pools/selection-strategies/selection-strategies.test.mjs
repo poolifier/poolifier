@@ -157,6 +157,13 @@ describe('Selection strategies test suite', () => {
             workerChoiceStrategy
           ).roundWeights.length
         ).toBe(1)
+        expect(
+          Number.isSafeInteger(
+            pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+              workerChoiceStrategy
+            ).roundWeights[0]
+          )
+        ).toBe(true)
       }
     }
     await pool.destroy()
@@ -1961,7 +1968,7 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it.skip('Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy can be run in a fixed pool', async () => {
+  it('Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy can be run in a fixed pool', async () => {
     const pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.mjs',
@@ -2033,11 +2040,18 @@ describe('Selection strategies test suite', () => {
         pool.workerChoiceStrategyContext.workerChoiceStrategy
       ).roundWeights.length
     ).toBe(1)
+    expect(
+      Number.isSafeInteger(
+        pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+          pool.workerChoiceStrategyContext.workerChoiceStrategy
+        ).roundWeights[0]
+      )
+    ).toBe(true)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
 
-  it.skip('Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy can be run in a dynamic pool', async () => {
+  it('Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy can be run in a dynamic pool', async () => {
     const pool = new DynamicThreadPool(
       min,
       max,
@@ -2110,6 +2124,13 @@ describe('Selection strategies test suite', () => {
         pool.workerChoiceStrategyContext.workerChoiceStrategy
       ).roundWeights.length
     ).toBe(1)
+    expect(
+      Number.isSafeInteger(
+        pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+          pool.workerChoiceStrategyContext.workerChoiceStrategy
+        ).roundWeights[0]
+      )
+    ).toBe(true)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -2172,6 +2193,13 @@ describe('Selection strategies test suite', () => {
         pool.workerChoiceStrategyContext.workerChoiceStrategy
       ).roundWeights.length
     ).toBe(1)
+    expect(
+      Number.isSafeInteger(
+        pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+          pool.workerChoiceStrategyContext.workerChoiceStrategy
+        ).roundWeights[0]
+      )
+    ).toBe(true)
     await pool.destroy()
     pool = new DynamicThreadPool(
       min,
@@ -2229,6 +2257,13 @@ describe('Selection strategies test suite', () => {
         pool.workerChoiceStrategyContext.workerChoiceStrategy
       ).roundWeights.length
     ).toBe(1)
+    expect(
+      Number.isSafeInteger(
+        pool.workerChoiceStrategyContext.workerChoiceStrategies.get(
+          pool.workerChoiceStrategyContext.workerChoiceStrategy
+        ).roundWeights[0]
+      )
+    ).toBe(true)
     // We need to clean up the resources after our test
     await pool.destroy()
   })

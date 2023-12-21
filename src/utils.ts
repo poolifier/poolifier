@@ -1,5 +1,5 @@
 import * as os from 'node:os'
-import { getRandomValues } from 'node:crypto'
+import { getRandomValues, randomInt } from 'node:crypto'
 import { Worker as ClusterWorker } from 'node:cluster'
 import { Worker as ThreadWorker } from 'node:worker_threads'
 import { cpus } from 'node:os'
@@ -315,8 +315,14 @@ const getDefaultWeights = (
 }
 
 const getDefaultWorkerWeight = (): number => {
+  const cpuSpeed = randomInt(500, 2500)
   let cpusCycleTimeWeight = 0
   for (const cpu of cpus()) {
+    if (cpu.speed == null || cpu.speed === 0) {
+      cpu.speed =
+        cpus().find(cpu => cpu.speed != null && cpu.speed !== 0)?.speed ??
+        cpuSpeed
+    }
     // CPU estimated cycle time
     const numberOfDigits = cpu.speed.toString().length - 1
     const cpuCycleTime = 1 / (cpu.speed / Math.pow(10, numberOfDigits))
