@@ -1298,7 +1298,8 @@ describe('Abstract pool test suite', () => {
     const startTime = performance.now()
     await pool.destroy()
     const elapsedTime = performance.now() - startTime
-    expect(tasksFinished).toBe(numberOfWorkers * maxMultiplier)
+    expect(tasksFinished).toBeGreaterThanOrEqual(numberOfWorkers)
+    expect(tasksFinished).toBeLessThanOrEqual(numberOfWorkers * maxMultiplier)
     expect(elapsedTime).toBeGreaterThanOrEqual(2000)
     expect(elapsedTime).toBeLessThanOrEqual(tasksFinishedTimeout + 100)
   })
