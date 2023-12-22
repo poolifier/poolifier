@@ -1,5 +1,5 @@
 import { checkDynamicPoolSize } from '../utils'
-import { type PoolType, PoolTypes } from '../pool'
+import { PoolEvents, type PoolType, PoolTypes } from '../pool'
 import { type ClusterPoolOptions, FixedClusterPool } from './fixed'
 
 /**
@@ -41,6 +41,13 @@ export class DynamicClusterPool<
   /** @inheritDoc */
   protected shallCreateDynamicWorker (): boolean {
     return !this.full && this.internalBusy()
+  }
+
+  /** @inheritDoc */
+  protected checkAndEmitDynamicWorkerCreationEvents (): void {
+    if (this.full) {
+      this.emitter?.emit(PoolEvents.full, this.info)
+    }
   }
 
   /** @inheritDoc */

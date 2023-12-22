@@ -95,6 +95,9 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
+  protected checkAndEmitDynamicWorkerCreationEvents (): void {}
+
+  /** @inheritDoc */
   protected get type (): PoolType {
     return PoolTypes.fixed
   }
