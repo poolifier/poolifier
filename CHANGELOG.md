@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add fine grained task abortion support.
 
+## [3.1.9] - 2023-12-22
+
+### Changed
+
+- Readd ThreadPoolOptions and ClusterPoolOptions TS type aliases to PoolOptions.
+
 ## [3.1.8] - 2023-12-21
 
 ### Fixed
