@@ -1,5 +1,4 @@
-import type { Worker } from 'node:worker_threads'
-import type { PoolOptions } from 'poolifier'
+import type { ThreadPoolOptions } from 'poolifier'
 
 export interface ClusterWorkerData extends FastifyPoolifierOptions {
   port: number
@@ -22,7 +21,7 @@ export interface ThreadWorkerResponse<T = unknown> {
   data: T
 }
 
-export interface FastifyPoolifierOptions extends PoolOptions<Worker> {
+export interface FastifyPoolifierOptions extends ThreadPoolOptions {
   workerFile: string
   minWorkers?: number
   maxWorkers?: number
