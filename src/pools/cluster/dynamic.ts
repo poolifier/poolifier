@@ -39,6 +39,11 @@ export class DynamicClusterPool<
   }
 
   /** @inheritDoc */
+  protected shallCreateDynamicWorker (): boolean {
+    return !this.full && this.internalBusy()
+  }
+
+  /** @inheritDoc */
   protected get type (): PoolType {
     return PoolTypes.dynamic
   }
