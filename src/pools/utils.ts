@@ -164,7 +164,6 @@ export const checkWorkerNodeArguments = (
  * @param measurementStatistics - The measurement statistics to update.
  * @param measurementRequirements - The measurement statistics requirements.
  * @param measurementValue - The measurement value.
- * @param numberOfMeasurements - The number of measurements.
  * @internal
  */
 const updateMeasurementStatistics = (

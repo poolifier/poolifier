@@ -138,13 +138,16 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     })
     this.closeMessageChannel()
     this.removeAllListeners()
-    if (this.info.type === WorkerTypes.thread) {
-      await this.worker.terminate?.()
-    } else if (this.info.type === WorkerTypes.cluster) {
-      this.registerOnceWorkerEventHandler('disconnect', () => {
-        this.worker.kill?.()
-      })
-      this.worker.disconnect?.()
+    switch (this.info.type) {
+      case WorkerTypes.thread:
+        await this.worker.terminate?.()
+        break
+      case WorkerTypes.cluster:
+        this.registerOnceWorkerEventHandler('disconnect', () => {
+          this.worker.kill?.()
+        })
+        this.worker.disconnect?.()
+        break
     }
     await waitWorkerExit
   }

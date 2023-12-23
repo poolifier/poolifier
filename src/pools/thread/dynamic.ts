@@ -1,4 +1,4 @@
-import { type PoolType, PoolTypes } from '../pool'
+import { PoolEvents, type PoolType, PoolTypes } from '../pool'
 import { checkDynamicPoolSize } from '../utils'
 import { FixedThreadPool, type ThreadPoolOptions } from './fixed'
 
@@ -36,6 +36,18 @@ export class DynamicThreadPool<
       this.minimumNumberOfWorkers,
       this.maximumNumberOfWorkers as number
     )
+  }
+
+  /** @inheritDoc */
+  protected shallCreateDynamicWorker (): boolean {
+    return !this.full && this.internalBusy()
+  }
+
+  /** @inheritDoc */
+  protected checkAndEmitDynamicWorkerCreationEvents (): void {
+    if (this.full) {
+      this.emitter?.emit(PoolEvents.full, this.info)
+    }
   }
 
   /** @inheritDoc */
