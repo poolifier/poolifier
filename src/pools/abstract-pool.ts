@@ -1224,7 +1224,6 @@ export abstract class AbstractPool<
       this.emitter?.emit(PoolEvents.error, error)
       if (
         this.started &&
-        !this.starting &&
         !this.destroying &&
         this.opts.restartWorkerOnError === true
       ) {
@@ -1234,7 +1233,11 @@ export abstract class AbstractPool<
           this.createAndSetupWorkerNode()
         }
       }
-      if (this.started && this.opts.enableTasksQueue === true) {
+      if (
+        this.started &&
+        !this.destroying &&
+        this.opts.enableTasksQueue === true
+      ) {
         this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
       }
       workerNode?.terminate().catch(error => {
