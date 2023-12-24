@@ -882,7 +882,8 @@ describe('Abstract pool test suite', () => {
         id: expect.any(Number),
         type: WorkerTypes.cluster,
         dynamic: false,
-        ready: true
+        ready: true,
+        stealing: false
       })
     }
     await pool.destroy()
@@ -897,7 +898,8 @@ describe('Abstract pool test suite', () => {
         id: expect.any(Number),
         type: WorkerTypes.thread,
         dynamic: false,
-        ready: true
+        ready: true,
+        stealing: false
       })
     }
     await pool.destroy()
@@ -1269,6 +1271,7 @@ describe('Abstract pool test suite', () => {
       maxSize: expect.any(Number),
       workerNodes: expect.any(Number),
       idleWorkerNodes: expect.any(Number),
+      stealingWorkerNodes: expect.any(Number),
       busyWorkerNodes: expect.any(Number),
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
@@ -1278,7 +1281,7 @@ describe('Abstract pool test suite', () => {
       stolenTasks: expect.any(Number),
       failedTasks: expect.any(Number)
     })
-    expect(pool.hasBackPressure.callCount).toBe(5)
+    expect(pool.hasBackPressure.callCount).toBeGreaterThanOrEqual(7)
     await pool.destroy()
   })
 

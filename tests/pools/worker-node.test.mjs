@@ -124,7 +124,8 @@ describe('Worker node test suite', () => {
       id: threadWorkerNode.worker.threadId,
       type: WorkerTypes.thread,
       dynamic: false,
-      ready: false
+      ready: false,
+      stealing: false
     })
     expect(threadWorkerNode.usage).toStrictEqual({
       tasks: {
@@ -167,7 +168,8 @@ describe('Worker node test suite', () => {
       id: clusterWorkerNode.worker.id,
       type: WorkerTypes.cluster,
       dynamic: false,
-      ready: false
+      ready: false,
+      stealing: false
     })
     expect(clusterWorkerNode.usage).toStrictEqual({
       tasks: {

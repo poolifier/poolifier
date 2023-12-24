@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Avoid worker node cross tasks stealing.
+- Ensure only half the pool worker nodes can steal tasks.
+
 ## [3.1.10] - 2023-12-23
 
 ### Changed
