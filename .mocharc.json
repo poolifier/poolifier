@@ -6,7 +6,7 @@
   "timeout": 20000,
   "full-trace": true,
   "exit": true,
-  "enable-source-maps": false,
+  "enable-source-maps": true,
   "reporter": "mochawesome",
   "reporter-options": "reportDir=outputs/mochawesome-report,json=false",
   "require": ["mochawesome/register"]

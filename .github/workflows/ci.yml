@@ -57,11 +57,6 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '20.x' }}
         run: pnpm coverage
 
-      # - name: Fix Coverage Report Paths
-      #   if: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '20.x' }}
-      #   working-directory: ./coverage
-      #   run: sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' lcov.info
-
       - name: Check for SonarCloud Token Availability
         id: sonar-token
         shell: bash

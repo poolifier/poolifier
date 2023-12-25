@@ -22,7 +22,7 @@
     "benchmark": "pnpm build && node --max-old-space-size=8192 --enable-source-maps benchmarks/internal/bench.mjs",
     "benchmark:prod": "pnpm build:prod && node --max-old-space-size=8192 --enable-source-maps benchmarks/internal/bench.mjs",
     "benchmark:debug": "pnpm build && node --max-old-space-size=8192 --enable-source-maps --inspect benchmarks/internal/bench.mjs",
-    "test": "pnpm build --environment SOURCEMAP:true && cross-env NODE_ENV=test c8 mocha 'tests/**/*.test.mjs'",
+    "test": "pnpm build --environment SOURCEMAP:false && cross-env NODE_ENV=test c8 mocha 'tests/**/*.test.mjs'",
     "test:debug": "pnpm build && cross-env NODE_ENV=test mocha --no-parallel --inspect 'tests/**/*.test.mjs'",
     "coverage": "c8 report --reporter=lcov",
     "coverage:html": "c8 report --reporter=html",
