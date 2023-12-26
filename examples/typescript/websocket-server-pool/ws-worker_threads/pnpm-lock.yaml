@@ -9,8 +9,8 @@ dependencies:
     specifier: ^3.1.11
     version: 3.1.11
   ws:
-    specifier: ^8.15.1
-    version: 8.15.1(bufferutil@4.0.8)(utf-8-validate@6.0.3)
+    specifier: ^8.16.0
+    version: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
 
 optionalDependencies:
   bufferutil:
@@ -83,8 +83,8 @@ packages:
       node-gyp-build: 4.7.1
     dev: false
 
-  /ws@8.15.1(bufferutil@4.0.8)(utf-8-validate@6.0.3):
-    resolution: {integrity: sha512-W5OZiCjXEmk0yZ66ZN82beM5Sz7l7coYxpRkzS+p9PP+ToQry8szKh+61eNktr7EA9DOwvFGhfC605jDHbP6QQ==}
+  /ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3):
+    resolution: {integrity: sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
