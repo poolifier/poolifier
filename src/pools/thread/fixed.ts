@@ -11,6 +11,11 @@ import { type PoolOptions, type PoolType, PoolTypes } from '../pool'
 import { type WorkerType, WorkerTypes } from '../worker'
 
 /**
+ * Options for a poolifier thread pool.
+ */
+export type ThreadPoolOptions = PoolOptions<Worker>
+
+/**
  * A thread pool with a fixed number of threads.
  *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
@@ -32,7 +37,7 @@ export class FixedThreadPool<
   public constructor (
     numberOfThreads: number,
     filePath: string,
-    opts: PoolOptions<Worker> = {},
+    opts: ThreadPoolOptions = {},
     maximumNumberOfThreads?: number
   ) {
     super(numberOfThreads, filePath, opts, maximumNumberOfThreads)
@@ -101,6 +106,16 @@ export class FixedThreadPool<
       'message',
       listener
     )
+  }
+
+  /** @inheritDoc */
+  protected shallCreateDynamicWorker (): boolean {
+    return false
+  }
+
+  /** @inheritDoc */
+  protected checkAndEmitDynamicWorkerCreationEvents (): void {
+    /* noop */
   }
 
   /** @inheritDoc */

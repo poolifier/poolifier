@@ -5,6 +5,11 @@ import { type PoolOptions, type PoolType, PoolTypes } from '../pool'
 import { type WorkerType, WorkerTypes } from '../worker'
 
 /**
+ * Options for a poolifier cluster pool.
+ */
+export type ClusterPoolOptions = PoolOptions<Worker>
+
+/**
  * A cluster pool with a fixed number of workers.
  *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
@@ -26,7 +31,7 @@ export class FixedClusterPool<
   public constructor (
     numberOfWorkers: number,
     filePath: string,
-    opts: PoolOptions<Worker> = {},
+    opts: ClusterPoolOptions = {},
     maximumNumberOfWorkers?: number
   ) {
     super(numberOfWorkers, filePath, opts, maximumNumberOfWorkers)
@@ -82,6 +87,16 @@ export class FixedClusterPool<
     listener: (message: MessageValue<Message>) => void
   ): void {
     this.workerNodes[workerNodeKey].worker.off('message', listener)
+  }
+
+  /** @inheritDoc */
+  protected shallCreateDynamicWorker (): boolean {
+    return false
+  }
+
+  /** @inheritDoc */
+  protected checkAndEmitDynamicWorkerCreationEvents (): void {
+    /* noop */
   }
 
   /** @inheritDoc */

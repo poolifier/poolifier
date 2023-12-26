@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.11] - 2023-12-24
+
+### Fixed
+
+- Avoid worker node cross tasks stealing.
+- Ensure only half the pool worker nodes can steal tasks.
+
+## [3.1.10] - 2023-12-23
+
+### Changed
+
+- Avoid useless branching on pool type.
+
+## [3.1.9] - 2023-12-22
+
+### Changed
+
+- Readd ThreadPoolOptions and ClusterPoolOptions TS type aliases to PoolOptions.
+
 ## [3.1.8] - 2023-12-21
 
 ### Fixed

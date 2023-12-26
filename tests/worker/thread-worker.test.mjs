@@ -4,13 +4,6 @@ import { ThreadWorker } from '../../lib/index.js'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.js'
 
 describe('Thread worker test suite', () => {
-  class SpyWorker extends ThreadWorker {
-    constructor (fn) {
-      super(fn)
-      this.port = { postMessage: stub().returns() }
-    }
-  }
-
   afterEach(() => {
     restore()
   })
@@ -40,6 +33,9 @@ describe('Thread worker test suite', () => {
       return 2
     }
     const worker = new ThreadWorker({ fn1, fn2 })
+    worker.port = {
+      postMessage: stub().returns()
+    }
     expect(worker.removeTaskFunction(0, fn1)).toStrictEqual({
       status: false,
       error: new TypeError('name parameter is not a string')
@@ -48,9 +44,6 @@ describe('Thread worker test suite', () => {
       status: false,
       error: new TypeError('name parameter is an empty string')
     })
-    worker.port = {
-      postMessage: stub().returns()
-    }
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Function)
@@ -87,8 +80,9 @@ describe('Thread worker test suite', () => {
     expect(worker.handleError(errorMessage)).toStrictEqual(errorMessage)
   })
 
-  it('Verify worker invokes the postMessage() method on port property', () => {
-    const worker = new SpyWorker(() => {})
+  it('Verify that sendToMainWorker() method invokes the port property postMessage() method', () => {
+    const worker = new ThreadWorker(() => {})
+    worker.port = { postMessage: stub().returns() }
     worker.sendToMainWorker({ ok: 1 })
     expect(worker.port.postMessage.calledOnce).toBe(true)
   })

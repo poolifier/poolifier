@@ -13,7 +13,7 @@
   - [`pool.removeTaskFunction(name)`](#poolremovetaskfunctionname)
   - [`pool.listTaskFunctionNames()`](#poollisttaskfunctionnames)
   - [`pool.setDefaultTaskFunction(name)`](#poolsetdefaulttaskfunctionname)
-  - [`PoolOptions`](#pooloptions)
+  - [Pool options](#pool-options)
 - [Worker](#worker)
   - [`class YourWorker extends ThreadWorker/ClusterWorker`](#class-yourworker-extends-threadworkerclusterworker)
     - [`YourWorker.hasTaskFunction(name)`](#yourworkerhastaskfunctionname)
@@ -82,7 +82,7 @@ This method is available on both pool implementations and returns an array of th
 
 This method is available on both pool implementations and returns a boolean promise.
 
-### `PoolOptions`
+### Pool options
 
 An object with these properties:
 

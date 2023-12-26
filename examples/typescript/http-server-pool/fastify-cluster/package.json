@@ -21,8 +21,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^4.25.1",
-    "poolifier": "^3.1.7"
+    "fastify": "^4.25.2",
+    "poolifier": "^3.1.11"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.5",

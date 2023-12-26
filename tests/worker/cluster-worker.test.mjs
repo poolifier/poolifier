@@ -4,13 +4,6 @@ import { ClusterWorker } from '../../lib/index.js'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.js'
 
 describe('Cluster worker test suite', () => {
-  const sendStub = stub().returns()
-  class SpyWorker extends ClusterWorker {
-    getMainWorker () {
-      return { send: sendStub }
-    }
-  }
-
   afterEach(() => {
     restore()
   })
@@ -25,6 +18,7 @@ describe('Cluster worker test suite', () => {
       send: stub().returns()
     })
     worker.handleKillMessage()
+    expect(worker.getMainWorker.calledTwice).toBe(true)
     expect(worker.getMainWorker().send.calledOnce).toBe(true)
     expect(worker.opts.killHandler.calledOnce).toBe(true)
   })
@@ -37,6 +31,10 @@ describe('Cluster worker test suite', () => {
       return 2
     }
     const worker = new ClusterWorker({ fn1, fn2 })
+    worker.getMainWorker = stub().returns({
+      id: 1,
+      send: stub().returns()
+    })
     expect(worker.removeTaskFunction(0, fn1)).toStrictEqual({
       status: false,
       error: new TypeError('name parameter is not a string')
@@ -44,10 +42,6 @@ describe('Cluster worker test suite', () => {
     expect(worker.removeTaskFunction('', fn1)).toStrictEqual({
       status: false,
       error: new TypeError('name parameter is an empty string')
-    })
-    worker.getMainWorker = stub().returns({
-      id: 1,
-      send: stub().returns()
     })
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
@@ -73,6 +67,7 @@ describe('Cluster worker test suite', () => {
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
     expect(worker.taskFunctions.get('fn2')).toBeUndefined()
     expect(worker.taskFunctions.size).toBe(2)
+    expect(worker.getMainWorker.calledTwice).toBe(true)
     expect(worker.getMainWorker().send.calledOnce).toBe(true)
   })
 
@@ -85,9 +80,13 @@ describe('Cluster worker test suite', () => {
     expect(worker.handleError(errorMessage)).toStrictEqual(errorMessage)
   })
 
-  it('Verify worker invokes the getMainWorker() and send() methods', () => {
-    const worker = new SpyWorker(() => {})
+  it('Verify that sendToMainWorker() method invokes the getMainWorker() and send() methods', () => {
+    const worker = new ClusterWorker(() => {})
+    worker.getMainWorker = stub().returns({
+      send: stub().returns()
+    })
     worker.sendToMainWorker({ ok: 1 })
+    expect(worker.getMainWorker.calledTwice).toBe(true)
     expect(worker.getMainWorker().send.calledOnce).toBe(true)
   })
 })

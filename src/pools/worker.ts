@@ -155,6 +155,11 @@ export interface WorkerInfo {
    */
   ready: boolean
   /**
+   * Stealing flag.
+   * This flag is set to `true` when worker node is stealing tasks from another worker node.
+   */
+  stealing: boolean
+  /**
    * Task function names.
    */
   taskFunctionNames?: string[]

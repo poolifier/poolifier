@@ -1,7 +1,6 @@
-import { type Worker } from 'node:worker_threads'
-import { type PoolOptions, type PoolType, PoolTypes } from '../pool'
+import { PoolEvents, type PoolType, PoolTypes } from '../pool'
 import { checkDynamicPoolSize } from '../utils'
-import { FixedThreadPool } from './fixed'
+import { FixedThreadPool, type ThreadPoolOptions } from './fixed'
 
 /**
  * A thread pool with a dynamic number of threads, but a guaranteed minimum number of threads.
@@ -30,13 +29,25 @@ export class DynamicThreadPool<
     min: number,
     max: number,
     filePath: string,
-    opts: PoolOptions<Worker> = {}
+    opts: ThreadPoolOptions = {}
   ) {
     super(min, filePath, opts, max)
     checkDynamicPoolSize(
       this.minimumNumberOfWorkers,
       this.maximumNumberOfWorkers as number
     )
+  }
+
+  /** @inheritDoc */
+  protected shallCreateDynamicWorker (): boolean {
+    return !this.full && this.internalBusy()
+  }
+
+  /** @inheritDoc */
+  protected checkAndEmitDynamicWorkerCreationEvents (): void {
+    if (this.full) {
+      this.emitter?.emit(PoolEvents.full, this.info)
+    }
   }
 
   /** @inheritDoc */

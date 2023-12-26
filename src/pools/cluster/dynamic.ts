@@ -1,7 +1,6 @@
-import { type Worker } from 'node:cluster'
-import { type PoolOptions, type PoolType, PoolTypes } from '../pool'
 import { checkDynamicPoolSize } from '../utils'
-import { FixedClusterPool } from './fixed'
+import { PoolEvents, type PoolType, PoolTypes } from '../pool'
+import { type ClusterPoolOptions, FixedClusterPool } from './fixed'
 
 /**
  * A cluster pool with a dynamic number of workers, but a guaranteed minimum number of workers.
@@ -30,13 +29,25 @@ export class DynamicClusterPool<
     min: number,
     max: number,
     filePath: string,
-    opts: PoolOptions<Worker> = {}
+    opts: ClusterPoolOptions = {}
   ) {
     super(min, filePath, opts, max)
     checkDynamicPoolSize(
       this.minimumNumberOfWorkers,
       this.maximumNumberOfWorkers as number
     )
+  }
+
+  /** @inheritDoc */
+  protected shallCreateDynamicWorker (): boolean {
+    return !this.full && this.internalBusy()
+  }
+
+  /** @inheritDoc */
+  protected checkAndEmitDynamicWorkerCreationEvents (): void {
+    if (this.full) {
+      this.emitter?.emit(PoolEvents.full, this.info)
+    }
   }
 
   /** @inheritDoc */
