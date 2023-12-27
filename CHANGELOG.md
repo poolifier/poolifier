@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix tasks redistribution triggers at pool destroying.
+
+### Changed
+
+- Switch TypeScript module resolution to Node16.
+
 ## [3.1.12-0] - 2023-12-27
 
 ### Fixed
