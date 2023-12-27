@@ -1,22 +1,22 @@
 import { expect } from 'expect'
-import { FixedClusterPool, PoolEvents } from '../../../lib/index.js'
-import { TaskFunctions } from '../../test-types.js'
-import { waitPoolEvents, waitWorkerEvents } from '../../test-utils.js'
-import { DEFAULT_TASK_NAME } from '../../../lib/utils.js'
+import { FixedClusterPool, PoolEvents } from '../../../lib/index.cjs'
+import { TaskFunctions } from '../../test-types.cjs'
+import { waitPoolEvents, waitWorkerEvents } from '../../test-utils.cjs'
+import { DEFAULT_TASK_NAME } from '../../../lib/utils.cjs'
 
 describe('Fixed cluster pool test suite', () => {
   const numberOfWorkers = 8
   const tasksConcurrency = 2
   const pool = new FixedClusterPool(
     numberOfWorkers,
-    './tests/worker-files/cluster/testWorker.js',
+    './tests/worker-files/cluster/testWorker.cjs',
     {
       errorHandler: e => console.error(e)
     }
   )
   const queuePool = new FixedClusterPool(
     numberOfWorkers,
-    './tests/worker-files/cluster/testWorker.js',
+    './tests/worker-files/cluster/testWorker.cjs',
     {
       enableTasksQueue: true,
       tasksQueueOptions: {
@@ -27,30 +27,30 @@ describe('Fixed cluster pool test suite', () => {
   )
   const emptyPool = new FixedClusterPool(
     numberOfWorkers,
-    './tests/worker-files/cluster/emptyWorker.js',
+    './tests/worker-files/cluster/emptyWorker.cjs',
     { exitHandler: () => console.info('empty pool worker exited') }
   )
   const echoPool = new FixedClusterPool(
     numberOfWorkers,
-    './tests/worker-files/cluster/echoWorker.js'
+    './tests/worker-files/cluster/echoWorker.cjs'
   )
   const errorPool = new FixedClusterPool(
     numberOfWorkers,
-    './tests/worker-files/cluster/errorWorker.js',
+    './tests/worker-files/cluster/errorWorker.cjs',
     {
       errorHandler: e => console.error(e)
     }
   )
   const asyncErrorPool = new FixedClusterPool(
     numberOfWorkers,
-    './tests/worker-files/cluster/asyncErrorWorker.js',
+    './tests/worker-files/cluster/asyncErrorWorker.cjs',
     {
       errorHandler: e => console.error(e)
     }
   )
   const asyncPool = new FixedClusterPool(
     numberOfWorkers,
-    './tests/worker-files/cluster/asyncWorker.js'
+    './tests/worker-files/cluster/asyncWorker.cjs'
   )
 
   after('Destroy all pools', async () => {
@@ -82,7 +82,7 @@ describe('Fixed cluster pool test suite', () => {
   it("Verify that 'ready' event is emitted", async () => {
     const pool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js',
+      './tests/worker-files/cluster/testWorker.cjs',
       {
         errorHandler: e => console.error(e)
       }
@@ -277,7 +277,7 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it('Verify that cluster pool options are checked', async () => {
-    const workerFilePath = './tests/worker-files/cluster/testWorker.js'
+    const workerFilePath = './tests/worker-files/cluster/testWorker.cjs'
     let pool = new FixedClusterPool(numberOfWorkers, workerFilePath)
     expect(pool.opts.env).toBeUndefined()
     expect(pool.opts.settings).toBeUndefined()
@@ -300,7 +300,7 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it('Should work even without opts in input', async () => {
-    const workerFilePath = './tests/worker-files/cluster/testWorker.js'
+    const workerFilePath = './tests/worker-files/cluster/testWorker.cjs'
     const pool = new FixedClusterPool(numberOfWorkers, workerFilePath)
     const res = await pool.execute()
     expect(res).toStrictEqual({ ok: 1 })
@@ -309,7 +309,7 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it('Verify destroyWorkerNode()', async () => {
-    const workerFilePath = './tests/worker-files/cluster/testWorker.js'
+    const workerFilePath = './tests/worker-files/cluster/testWorker.cjs'
     const pool = new FixedClusterPool(numberOfWorkers, workerFilePath)
     const workerNodeKey = 0
     let disconnectEvent = 0
@@ -330,7 +330,7 @@ describe('Fixed cluster pool test suite', () => {
   it('Verify that a pool with zero worker fails', () => {
     expect(
       () =>
-        new FixedClusterPool(0, './tests/worker-files/cluster/testWorker.js')
+        new FixedClusterPool(0, './tests/worker-files/cluster/testWorker.cjs')
     ).toThrow('Cannot instantiate a fixed pool with zero worker')
   })
 })

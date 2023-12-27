@@ -90,8 +90,7 @@ npm install poolifier --save
 You can implement a [worker_threads](https://nodejs.org/api/worker_threads.html#class-worker) worker in a simple way by extending the class _ThreadWorker_:
 
 ```js
-'use strict'
-const { ThreadWorker } = require('poolifier')
+import { ThreadWorker } from 'poolifier'
 
 function yourFunction(data) {
   // this will be executed in the worker thread,
@@ -107,8 +106,7 @@ module.exports = new ThreadWorker(yourFunction, {
 Instantiate your pool based on your needs :
 
 ```js
-'use strict'
-const { DynamicThreadPool, FixedThreadPool, PoolEvents, availableParallelism } = require('poolifier')
+import { DynamicThreadPool, FixedThreadPool, PoolEvents, availableParallelism } from 'poolifier'
 
 // a fixed worker_threads pool
 const pool = new FixedThreadPool(availableParallelism(), './yourWorker.js', {

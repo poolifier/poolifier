@@ -1,7 +1,7 @@
 import { expect } from 'expect'
-import { FixedThreadPool } from '../../../lib/index.js'
-import { WeightedRoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy.js'
-import { generateRandomInteger } from '../../test-utils.js'
+import { FixedThreadPool } from '../../../lib/index.cjs'
+import { WeightedRoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy.cjs'
+import { generateRandomInteger } from '../../test-utils.cjs'
 
 describe('Weighted round robin strategy worker choice strategy test suite', () => {
   // const min = 1

@@ -4,11 +4,12 @@
   "version": "3.1.11",
   "description": "Fast and small Node.js Worker_Threads and Cluster Worker Pool",
   "license": "MIT",
-  "main": "./lib/index.js",
+  "type": "module",
+  "main": "./lib/index.cjs",
   "exports": {
     ".": {
       "types": "./lib/index.d.ts",
-      "require": "./lib/index.js",
+      "require": "./lib/index.cjs",
       "import": "./lib/index.mjs"
     }
   },

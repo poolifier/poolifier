@@ -1,5 +1,5 @@
 'use strict'
-const { ClusterWorker, KillBehaviors } = require('../../../lib')
+const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
 
 function test () {}
 

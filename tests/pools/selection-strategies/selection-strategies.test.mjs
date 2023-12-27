@@ -5,8 +5,8 @@ import {
   FixedClusterPool,
   FixedThreadPool,
   WorkerChoiceStrategies
-} from '../../../lib/index.js'
-import { CircularArray } from '../../../lib/circular-array.js'
+} from '../../../lib/index.cjs'
+import { CircularArray } from '../../../lib/circular-array.cjs'
 
 describe('Selection strategies test suite', () => {
   const min = 0
@@ -85,7 +85,7 @@ describe('Selection strategies test suite', () => {
       const pool = new DynamicClusterPool(
         min,
         max,
-        './tests/worker-files/cluster/testWorker.js'
+        './tests/worker-files/cluster/testWorker.cjs'
       )
       pool.setWorkerChoiceStrategy(workerChoiceStrategy)
       expect(pool.opts.workerChoiceStrategy).toBe(workerChoiceStrategy)
@@ -389,7 +389,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
     let pool = new FixedClusterPool(
       max,
-      './tests/worker-files/cluster/testWorker.js',
+      './tests/worker-files/cluster/testWorker.cjs',
       { workerChoiceStrategy }
     )
     let results = new Set()

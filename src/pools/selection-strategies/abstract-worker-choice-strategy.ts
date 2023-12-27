@@ -1,16 +1,16 @@
 import {
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   buildInternalWorkerChoiceStrategyOptions
-} from '../../utils'
-import type { IPool } from '../pool'
-import type { IWorker } from '../worker'
+} from '../../utils.js'
+import type { IPool } from '../pool.js'
+import type { IWorker } from '../worker.js'
 import type {
   IWorkerChoiceStrategy,
   InternalWorkerChoiceStrategyOptions,
   MeasurementStatisticsRequirements,
   StrategyPolicy,
   TaskStatisticsRequirements
-} from './selection-strategies-types'
+} from './selection-strategies-types.js'
 
 /**
  * Worker choice strategy abstract base class.

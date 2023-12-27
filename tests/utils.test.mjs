@@ -23,8 +23,8 @@ import {
   round,
   secureRandom,
   sleep
-} from '../lib/utils.js'
-import { KillBehaviors, WorkerTypes } from '../lib/index.js'
+} from '../lib/utils.cjs'
+import { KillBehaviors, WorkerTypes } from '../lib/index.cjs'
 
 describe('Utils test suite', () => {
   it('Verify DEFAULT_TASK_NAME value', () => {

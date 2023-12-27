@@ -2,7 +2,7 @@ import { expect } from 'expect'
 import {
   CircularArray,
   DEFAULT_CIRCULAR_ARRAY_SIZE
-} from '../lib/circular-array.js'
+} from '../lib/circular-array.cjs'
 
 describe('Circular array test suite', () => {
   it('Verify that circular array can be instantiated', () => {

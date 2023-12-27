@@ -14,12 +14,12 @@ import {
   PoolTypes,
   WorkerChoiceStrategies,
   WorkerTypes
-} from '../../lib/index.js'
-import { CircularArray } from '../../lib/circular-array.js'
-import { Deque } from '../../lib/deque.js'
-import { DEFAULT_TASK_NAME } from '../../lib/utils.js'
-import { waitPoolEvents } from '../test-utils.js'
-import { WorkerNode } from '../../lib/pools/worker-node.js'
+} from '../../lib/index.cjs'
+import { CircularArray } from '../../lib/circular-array.cjs'
+import { Deque } from '../../lib/deque.cjs'
+import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
+import { waitPoolEvents } from '../test-utils.cjs'
+import { WorkerNode } from '../../lib/pools/worker-node.cjs'
 
 describe('Abstract pool test suite', () => {
   const version = JSON.parse(
@@ -105,7 +105,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that a negative number of workers is checked', () => {
     expect(
       () =>
-        new FixedClusterPool(-1, './tests/worker-files/cluster/testWorker.js')
+        new FixedClusterPool(-1, './tests/worker-files/cluster/testWorker.cjs')
     ).toThrow(
       new RangeError(
         'Cannot instantiate a pool with a negative number of workers'
@@ -146,7 +146,7 @@ describe('Abstract pool test suite', () => {
         new DynamicClusterPool(
           1,
           undefined,
-          './tests/worker-files/cluster/testWorker.js'
+          './tests/worker-files/cluster/testWorker.cjs'
         )
     ).toThrow(
       new TypeError(
@@ -170,7 +170,7 @@ describe('Abstract pool test suite', () => {
         new DynamicClusterPool(
           0,
           0.5,
-          './tests/worker-files/cluster/testWorker.js'
+          './tests/worker-files/cluster/testWorker.cjs'
         )
     ).toThrow(
       new TypeError(
@@ -206,7 +206,7 @@ describe('Abstract pool test suite', () => {
         new DynamicClusterPool(
           1,
           1,
-          './tests/worker-files/cluster/testWorker.js'
+          './tests/worker-files/cluster/testWorker.cjs'
         )
     ).toThrow(
       new RangeError(
@@ -788,7 +788,7 @@ describe('Abstract pool test suite', () => {
     pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     expect(pool.info).toStrictEqual({
       version,
@@ -812,7 +812,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool worker tasks usage are initialized', async () => {
     const pool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     for (const workerNode of pool.workerNodes) {
       expect(workerNode).toBeInstanceOf(WorkerNode)
@@ -848,7 +848,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool worker tasks queue are initialized', async () => {
     let pool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     for (const workerNode of pool.workerNodes) {
       expect(workerNode).toBeInstanceOf(WorkerNode)
@@ -874,7 +874,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool worker info are initialized', async () => {
     let pool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     for (const workerNode of pool.workerNodes) {
       expect(workerNode).toBeInstanceOf(WorkerNode)
@@ -926,7 +926,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool can be started after initialization', async () => {
     const pool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js',
+      './tests/worker-files/cluster/testWorker.cjs',
       {
         startWorkers: false
       }
@@ -953,7 +953,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool execute() arguments are checked', async () => {
     const pool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     await expect(pool.execute(undefined, 0)).rejects.toThrow(
       new TypeError('name argument must be a string')
@@ -976,7 +976,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool worker tasks usage are computed', async () => {
     const pool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     const promises = new Set()
     const maxMultiplier = 2
@@ -1127,7 +1127,7 @@ describe('Abstract pool test suite', () => {
     const pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     expect(pool.emitter.eventNames()).toStrictEqual([])
     let poolInfo
@@ -1396,7 +1396,7 @@ describe('Abstract pool test suite', () => {
     await dynamicThreadPool.destroy()
     const fixedClusterPool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.js'
+      './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.cjs'
     )
     await waitPoolEvents(fixedClusterPool, PoolEvents.ready, 1)
     expect(fixedClusterPool.hasTaskFunction(DEFAULT_TASK_NAME)).toBe(true)
@@ -1536,7 +1536,7 @@ describe('Abstract pool test suite', () => {
     await dynamicThreadPool.destroy()
     const fixedClusterPool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.js'
+      './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.cjs'
     )
     await waitPoolEvents(fixedClusterPool, PoolEvents.ready, 1)
     expect(fixedClusterPool.listTaskFunctionNames()).toStrictEqual([
@@ -1606,7 +1606,7 @@ describe('Abstract pool test suite', () => {
     const pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.js'
+      './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.cjs'
     )
     const data = { n: 10 }
     const result0 = await pool.execute(data)
@@ -1671,7 +1671,7 @@ describe('Abstract pool test suite', () => {
     const pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     const workerNodeKey = 0
     await expect(
@@ -1684,7 +1684,7 @@ describe('Abstract pool test suite', () => {
     const pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     const workerNodeKey = 0
     await expect(
@@ -1704,7 +1704,7 @@ describe('Abstract pool test suite', () => {
     const pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     await expect(
       pool.sendTaskFunctionOperationToWorkers({

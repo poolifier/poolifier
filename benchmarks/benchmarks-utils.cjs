@@ -17,8 +17,8 @@ const {
   PoolTypes,
   WorkerChoiceStrategies,
   WorkerTypes
-} = require('../lib/index.js')
-const { TaskFunctions } = require('./benchmarks-types.js')
+} = require('../lib/index.cjs')
+const { TaskFunctions } = require('./benchmarks-types.cjs')
 
 const buildPoolifierPool = (workerType, poolType, poolSize, poolOptions) => {
   switch (poolType) {
@@ -33,7 +33,7 @@ const buildPoolifierPool = (workerType, poolType, poolSize, poolOptions) => {
         case WorkerTypes.cluster:
           return new FixedClusterPool(
             poolSize,
-            './benchmarks/internal/cluster-worker.js',
+            './benchmarks/internal/cluster-worker.cjs',
             poolOptions
           )
       }
@@ -51,7 +51,7 @@ const buildPoolifierPool = (workerType, poolType, poolSize, poolOptions) => {
           return new DynamicClusterPool(
             Math.floor(poolSize / 2),
             poolSize,
-            './benchmarks/internal/cluster-worker.js',
+            './benchmarks/internal/cluster-worker.cjs',
             poolOptions
           )
       }

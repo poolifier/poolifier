@@ -6,9 +6,9 @@ import { cpus } from 'node:os'
 import type {
   InternalWorkerChoiceStrategyOptions,
   MeasurementStatisticsRequirements
-} from './pools/selection-strategies/selection-strategies-types'
-import type { KillBehavior } from './worker/worker-options'
-import { type IWorker, type WorkerType, WorkerTypes } from './pools/worker'
+} from './pools/selection-strategies/selection-strategies-types.js'
+import type { KillBehavior } from './worker/worker-options.js'
+import { type IWorker, type WorkerType, WorkerTypes } from './pools/worker.js'
 
 /**
  * Default task name.

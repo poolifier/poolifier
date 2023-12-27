@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   '**/*.{ts,tsx,js,jsx,cjs,mjs}': [
     'biome format --write',
     'ts-standard --fix',

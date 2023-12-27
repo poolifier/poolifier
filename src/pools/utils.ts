@@ -2,14 +2,14 @@ import { existsSync } from 'node:fs'
 import cluster from 'node:cluster'
 import { SHARE_ENV, Worker, type WorkerOptions } from 'node:worker_threads'
 import { env } from 'node:process'
-import { average, isPlainObject, max, median, min } from '../utils'
-import type { MessageValue, Task } from '../utility-types'
+import { average, isPlainObject, max, median, min } from '../utils.js'
+import type { MessageValue, Task } from '../utility-types.js'
 import {
   type MeasurementStatisticsRequirements,
   WorkerChoiceStrategies,
   type WorkerChoiceStrategy
-} from './selection-strategies/selection-strategies-types'
-import type { TasksQueueOptions } from './pool'
+} from './selection-strategies/selection-strategies-types.js'
+import type { TasksQueueOptions } from './pool.js'
 import {
   type IWorker,
   type IWorkerNode,
@@ -18,8 +18,8 @@ import {
   type WorkerType,
   WorkerTypes,
   type WorkerUsage
-} from './worker'
-import type { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
+} from './worker.js'
+import type { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context.js'
 
 export const getDefaultTasksQueueOptions = (
   poolMaxSize: number

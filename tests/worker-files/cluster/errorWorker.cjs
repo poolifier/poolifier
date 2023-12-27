@@ -1,5 +1,5 @@
 'use strict'
-const { ClusterWorker, KillBehaviors } = require('../../../lib')
+const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
 
 function error () {
   throw new Error('Error Message from ClusterWorker')

@@ -1,7 +1,7 @@
 import { expect } from 'expect'
-import { DynamicClusterPool, PoolEvents } from '../../../lib/index.js'
-import { TaskFunctions } from '../../test-types.js'
-import { sleep, waitWorkerEvents } from '../../test-utils.js'
+import { DynamicClusterPool, PoolEvents } from '../../../lib/index.cjs'
+import { TaskFunctions } from '../../test-types.cjs'
+import { sleep, waitWorkerEvents } from '../../test-utils.cjs'
 
 describe('Dynamic cluster pool test suite', () => {
   const min = 1
@@ -9,7 +9,7 @@ describe('Dynamic cluster pool test suite', () => {
   const pool = new DynamicClusterPool(
     min,
     max,
-    './tests/worker-files/cluster/testWorker.js',
+    './tests/worker-files/cluster/testWorker.cjs',
     {
       errorHandler: e => console.error(e)
     }
@@ -84,7 +84,7 @@ describe('Dynamic cluster pool test suite', () => {
     const pool = new DynamicClusterPool(
       min,
       max,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     const result = await pool.execute()
     expect(result).toStrictEqual({ ok: 1 })
@@ -96,7 +96,7 @@ describe('Dynamic cluster pool test suite', () => {
     const longRunningPool = new DynamicClusterPool(
       min,
       max,
-      './tests/worker-files/cluster/longRunningWorkerHardBehavior.js',
+      './tests/worker-files/cluster/longRunningWorkerHardBehavior.cjs',
       {
         errorHandler: e => console.error(e),
         onlineHandler: () => console.info('long executing worker is online'),
@@ -123,7 +123,7 @@ describe('Dynamic cluster pool test suite', () => {
     const longRunningPool = new DynamicClusterPool(
       min,
       max,
-      './tests/worker-files/cluster/longRunningWorkerSoftBehavior.js',
+      './tests/worker-files/cluster/longRunningWorkerSoftBehavior.cjs',
       {
         errorHandler: e => console.error(e),
         onlineHandler: () => console.info('long executing worker is online'),
@@ -146,7 +146,7 @@ describe('Dynamic cluster pool test suite', () => {
     const pool = new DynamicClusterPool(
       0,
       max,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     expect(pool).toBeInstanceOf(DynamicClusterPool)
     // We need to clean up the resources after our test

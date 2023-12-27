@@ -1,12 +1,12 @@
-import type { IWorker } from '../worker'
-import type { IPool } from '../pool'
-import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../../utils'
-import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
+import type { IWorker } from '../worker.js'
+import type { IPool } from '../pool.js'
+import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../../utils.js'
+import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
   InternalWorkerChoiceStrategyOptions,
   TaskStatisticsRequirements
-} from './selection-strategies-types'
+} from './selection-strategies-types.js'
 
 /**
  * Selects the next worker with a weighted round robin scheduling algorithm.

@@ -4,8 +4,8 @@ import {
   WorkerTypes,
   availableParallelism
 } from '../../lib/index.mjs'
-import { TaskFunctions } from '../benchmarks-types.js'
-import { runPoolifierPoolBenchmark } from '../benchmarks-utils.js'
+import { TaskFunctions } from '../benchmarks-types.cjs'
+import { runPoolifierPoolBenchmark } from '../benchmarks-utils.cjs'
 
 const poolSize = availableParallelism()
 const taskExecutions = 1

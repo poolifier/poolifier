@@ -1,21 +1,21 @@
-import { buildInternalWorkerChoiceStrategyOptions } from '../../utils'
-import type { IPool } from '../pool'
-import type { IWorker } from '../worker'
-import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strategy'
-import { InterleavedWeightedRoundRobinWorkerChoiceStrategy } from './interleaved-weighted-round-robin-worker-choice-strategy'
-import { LeastBusyWorkerChoiceStrategy } from './least-busy-worker-choice-strategy'
-import { LeastUsedWorkerChoiceStrategy } from './least-used-worker-choice-strategy'
-import { LeastEluWorkerChoiceStrategy } from './least-elu-worker-choice-strategy'
-import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy'
+import { buildInternalWorkerChoiceStrategyOptions } from '../../utils.js'
+import type { IPool } from '../pool.js'
+import type { IWorker } from '../worker.js'
+import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strategy.js'
+import { InterleavedWeightedRoundRobinWorkerChoiceStrategy } from './interleaved-weighted-round-robin-worker-choice-strategy.js'
+import { LeastBusyWorkerChoiceStrategy } from './least-busy-worker-choice-strategy.js'
+import { LeastUsedWorkerChoiceStrategy } from './least-used-worker-choice-strategy.js'
+import { LeastEluWorkerChoiceStrategy } from './least-elu-worker-choice-strategy.js'
+import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
   InternalWorkerChoiceStrategyOptions,
   StrategyPolicy,
   TaskStatisticsRequirements,
   WorkerChoiceStrategy
-} from './selection-strategies-types'
-import { WorkerChoiceStrategies } from './selection-strategies-types'
-import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-worker-choice-strategy'
+} from './selection-strategies-types.js'
+import { WorkerChoiceStrategies } from './selection-strategies-types.js'
+import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-worker-choice-strategy.js'
 
 /**
  * The worker choice strategy context.

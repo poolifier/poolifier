@@ -1,7 +1,7 @@
 import { expect } from 'expect'
 import { restore, stub } from 'sinon'
-import { ClusterWorker } from '../../lib/index.js'
-import { DEFAULT_TASK_NAME } from '../../lib/utils.js'
+import { ClusterWorker } from '../../lib/index.cjs'
+import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 
 describe('Cluster worker test suite', () => {
   afterEach(() => {

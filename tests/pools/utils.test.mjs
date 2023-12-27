@@ -4,13 +4,13 @@ import { expect } from 'expect'
 import {
   CircularArray,
   DEFAULT_CIRCULAR_ARRAY_SIZE
-} from '../../lib/circular-array.js'
+} from '../../lib/circular-array.cjs'
 import {
   createWorker,
   getDefaultTasksQueueOptions,
   updateMeasurementStatistics
-} from '../../lib/pools/utils.js'
-import { WorkerTypes } from '../../lib/index.js'
+} from '../../lib/pools/utils.cjs'
+import { WorkerTypes } from '../../lib/index.cjs'
 
 describe('Pool utils test suite', () => {
   it('Verify getDefaultTasksQueueOptions() behavior', () => {

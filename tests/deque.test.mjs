@@ -1,5 +1,5 @@
 import { expect } from 'expect'
-import { Deque } from '../lib/deque.js'
+import { Deque } from '../lib/deque.cjs'
 
 describe('Deque test suite', () => {
   it('Verify push() behavior', () => {

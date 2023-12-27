@@ -1,6 +1,6 @@
-import { PoolEvents, type PoolType, PoolTypes } from '../pool'
-import { checkDynamicPoolSize } from '../utils'
-import { FixedThreadPool, type ThreadPoolOptions } from './fixed'
+import { PoolEvents, type PoolType, PoolTypes } from '../pool.js'
+import { checkDynamicPoolSize } from '../utils.js'
+import { FixedThreadPool, type ThreadPoolOptions } from './fixed.js'
 
 /**
  * A thread pool with a dynamic number of threads, but a guaranteed minimum number of threads.

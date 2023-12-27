@@ -1,6 +1,6 @@
 'use strict'
-const { ClusterWorker, KillBehaviors } = require('../../../lib')
-const { sleepTaskFunction } = require('../../test-utils.js')
+const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
+const { sleepTaskFunction } = require('../../test-utils.cjs')
 
 async function sleep (data) {
   return sleepTaskFunction(data, 50000)

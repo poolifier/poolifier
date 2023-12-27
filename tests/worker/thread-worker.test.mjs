@@ -1,7 +1,7 @@
 import { expect } from 'expect'
 import { restore, stub } from 'sinon'
-import { ThreadWorker } from '../../lib/index.js'
-import { DEFAULT_TASK_NAME } from '../../lib/utils.js'
+import { ThreadWorker } from '../../lib/index.cjs'
+import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 
 describe('Thread worker test suite', () => {
   afterEach(() => {

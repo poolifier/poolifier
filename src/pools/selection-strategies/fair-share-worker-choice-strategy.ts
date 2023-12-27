@@ -1,13 +1,13 @@
-import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../../utils'
-import type { IPool } from '../pool'
-import type { IWorker, StrategyData } from '../worker'
-import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
+import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../../utils.js'
+import type { IPool } from '../pool.js'
+import type { IWorker, StrategyData } from '../worker.js'
+import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import {
   type IWorkerChoiceStrategy,
   type InternalWorkerChoiceStrategyOptions,
   Measurements,
   type TaskStatisticsRequirements
-} from './selection-strategies-types'
+} from './selection-strategies-types.js'
 
 /**
  * Selects the next worker with a fair share scheduling algorithm.

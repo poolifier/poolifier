@@ -6,26 +6,26 @@ import type {
   Task,
   TaskPerformance,
   WorkerStatistics
-} from '../utility-types'
+} from '../utility-types.js'
 import {
   DEFAULT_TASK_NAME,
   EMPTY_FUNCTION,
   isAsyncFunction,
   isPlainObject
-} from '../utils'
-import { KillBehaviors, type WorkerOptions } from './worker-options'
+} from '../utils.js'
+import { KillBehaviors, type WorkerOptions } from './worker-options.js'
 import type {
   TaskAsyncFunction,
   TaskFunction,
   TaskFunctionOperationResult,
   TaskFunctions,
   TaskSyncFunction
-} from './task-functions'
+} from './task-functions.js'
 import {
   checkTaskFunctionName,
   checkValidTaskFunctionEntry,
   checkValidWorkerOptions
-} from './utils'
+} from './utils.js'
 
 const DEFAULT_MAX_INACTIVE_TIME = 60000
 const DEFAULT_WORKER_OPTIONS: WorkerOptions = {

@@ -1,6 +1,6 @@
-import { checkDynamicPoolSize } from '../utils'
-import { PoolEvents, type PoolType, PoolTypes } from '../pool'
-import { type ClusterPoolOptions, FixedClusterPool } from './fixed'
+import { checkDynamicPoolSize } from '../utils.js'
+import { PoolEvents, type PoolType, PoolTypes } from '../pool.js'
+import { type ClusterPoolOptions, FixedClusterPool } from './fixed.js'
 
 /**
  * A cluster pool with a dynamic number of workers, but a guaranteed minimum number of workers.

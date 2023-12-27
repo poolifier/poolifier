@@ -1,8 +1,8 @@
 import cluster, { type Worker } from 'node:cluster'
-import type { MessageValue } from '../../utility-types'
-import { AbstractPool } from '../abstract-pool'
-import { type PoolOptions, type PoolType, PoolTypes } from '../pool'
-import { type WorkerType, WorkerTypes } from '../worker'
+import type { MessageValue } from '../../utility-types.js'
+import { AbstractPool } from '../abstract-pool.js'
+import { type PoolOptions, type PoolType, PoolTypes } from '../pool.js'
+import { type WorkerType, WorkerTypes } from '../worker.js'
 
 /**
  * Options for a poolifier cluster pool.

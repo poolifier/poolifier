@@ -1,11 +1,11 @@
 import { MessageChannel, Worker as ThreadWorker } from 'node:worker_threads'
 import { Worker as ClusterWorker } from 'node:cluster'
 import { expect } from 'expect'
-import { WorkerNode } from '../../lib/pools/worker-node.js'
-import { WorkerTypes } from '../../lib/index.js'
-import { CircularArray } from '../../lib/circular-array.js'
-import { Deque } from '../../lib/deque.js'
-import { DEFAULT_TASK_NAME } from '../../lib/utils.js'
+import { WorkerNode } from '../../lib/pools/worker-node.cjs'
+import { WorkerTypes } from '../../lib/index.cjs'
+import { CircularArray } from '../../lib/circular-array.cjs'
+import { Deque } from '../../lib/deque.cjs'
+import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 
 describe('Worker node test suite', () => {
   const threadWorkerNode = new WorkerNode(
@@ -15,7 +15,7 @@ describe('Worker node test suite', () => {
   )
   const clusterWorkerNode = new WorkerNode(
     WorkerTypes.cluster,
-    './tests/worker-files/cluster/testWorker.js',
+    './tests/worker-files/cluster/testWorker.cjs',
     { tasksQueueBackPressureSize: 12 }
   )
 

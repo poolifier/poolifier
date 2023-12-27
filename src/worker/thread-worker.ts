@@ -4,10 +4,10 @@ import {
   parentPort,
   threadId
 } from 'node:worker_threads'
-import type { MessageValue } from '../utility-types'
-import { AbstractWorker } from './abstract-worker'
-import type { WorkerOptions } from './worker-options'
-import type { TaskFunction, TaskFunctions } from './task-functions'
+import type { MessageValue } from '../utility-types.js'
+import { AbstractWorker } from './abstract-worker.js'
+import type { WorkerOptions } from './worker-options.js'
+import type { TaskFunction, TaskFunctions } from './task-functions.js'
 
 /**
  * A thread worker used by a poolifier `ThreadPool`.

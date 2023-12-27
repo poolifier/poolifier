@@ -1,5 +1,5 @@
-import { KillBehaviors, ThreadWorker } from '../../../lib/index.js'
-import { sleepTaskFunction } from '../../test-utils.js'
+import { KillBehaviors, ThreadWorker } from '../../../lib/index.cjs'
+import { sleepTaskFunction } from '../../test-utils.cjs'
 
 /**
  *

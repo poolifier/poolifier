@@ -5,7 +5,7 @@ const {
   availableParallelism
 } = require('poolifier')
 
-const pool = new FixedThreadPool(availableParallelism(), './yourWorker.js', {
+const pool = new FixedThreadPool(availableParallelism(), './yourWorker.cjs', {
   errorHandler: e => console.error(e),
   onlineHandler: () => console.info('worker is online')
 })

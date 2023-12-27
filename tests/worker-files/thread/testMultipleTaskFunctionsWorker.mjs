@@ -1,9 +1,9 @@
-import { KillBehaviors, ThreadWorker } from '../../../lib/index.js'
+import { KillBehaviors, ThreadWorker } from '../../../lib/index.cjs'
 import {
   factorial,
   fibonacci,
   jsonIntegerSerialization
-} from '../../test-utils.js'
+} from '../../test-utils.cjs'
 
 export default new ThreadWorker(
   {

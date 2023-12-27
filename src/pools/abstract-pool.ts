@@ -7,7 +7,7 @@ import type {
   MessageValue,
   PromiseResponseWrapper,
   Task
-} from '../utility-types'
+} from '../utility-types.js'
 import {
   DEFAULT_TASK_NAME,
   EMPTY_FUNCTION,
@@ -20,9 +20,9 @@ import {
   min,
   round,
   sleep
-} from '../utils'
-import { KillBehaviors } from '../worker/worker-options'
-import type { TaskFunction } from '../worker/task-functions'
+} from '../utils.js'
+import { KillBehaviors } from '../worker/worker-options.js'
+import type { TaskFunction } from '../worker/task-functions.js'
 import {
   type IPool,
   PoolEvents,
@@ -31,7 +31,7 @@ import {
   type PoolType,
   PoolTypes,
   type TasksQueueOptions
-} from './pool'
+} from './pool.js'
 import type {
   IWorker,
   IWorkerNode,
@@ -40,16 +40,16 @@ import type {
   WorkerNodeEventDetail,
   WorkerType,
   WorkerUsage
-} from './worker'
+} from './worker.js'
 import {
   Measurements,
   WorkerChoiceStrategies,
   type WorkerChoiceStrategy,
   type WorkerChoiceStrategyOptions
-} from './selection-strategies/selection-strategies-types'
-import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context'
-import { version } from './version'
-import { WorkerNode } from './worker-node'
+} from './selection-strategies/selection-strategies-types.js'
+import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context.js'
+import { version } from './version.js'
+import { WorkerNode } from './worker-node.js'
 import {
   checkFilePath,
   checkValidTasksQueueOptions,
@@ -60,7 +60,7 @@ import {
   updateTaskStatisticsWorkerUsage,
   updateWaitTimeWorkerUsage,
   waitWorkerNodeEvents
-} from './utils'
+} from './utils.js'
 
 /**
  * Base class that implements some shared logic for all poolifier pools.

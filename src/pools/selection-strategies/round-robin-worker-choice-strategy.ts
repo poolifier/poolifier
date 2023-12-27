@@ -1,10 +1,10 @@
-import type { IPool } from '../pool'
-import type { IWorker } from '../worker'
-import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
+import type { IPool } from '../pool.js'
+import type { IWorker } from '../worker.js'
+import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
   InternalWorkerChoiceStrategyOptions
-} from './selection-strategies-types'
+} from './selection-strategies-types.js'
 
 /**
  * Selects the next worker in a round robin fashion.

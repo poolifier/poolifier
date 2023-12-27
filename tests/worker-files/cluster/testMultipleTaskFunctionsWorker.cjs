@@ -1,10 +1,10 @@
 'use strict'
-const { ClusterWorker, KillBehaviors } = require('../../../lib')
+const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
 const {
   jsonIntegerSerialization,
   factorial,
   fibonacci
-} = require('../../test-utils.js')
+} = require('../../test-utils.cjs')
 
 module.exports = new ClusterWorker(
   {

@@ -1,7 +1,7 @@
 import { expect } from 'expect'
-import { DynamicThreadPool, PoolEvents } from '../../../lib/index.js'
-import { TaskFunctions } from '../../test-types.js'
-import { sleep, waitWorkerEvents } from '../../test-utils.js'
+import { DynamicThreadPool, PoolEvents } from '../../../lib/index.cjs'
+import { TaskFunctions } from '../../test-types.cjs'
+import { sleep, waitWorkerEvents } from '../../test-utils.cjs'
 
 describe('Dynamic thread pool test suite', () => {
   const min = 1
