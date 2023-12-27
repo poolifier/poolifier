@@ -6,19 +6,19 @@ settings:
 
 dependencies:
   fastify:
-    specifier: ^4.25.1
-    version: 4.25.1
+    specifier: ^4.25.2
+    version: 4.25.2
   fastify-plugin:
     specifier: ^4.5.1
     version: 4.5.1
   poolifier:
-    specifier: ^3.1.1
-    version: 3.1.1
+    specifier: ^3.1.12
+    version: 3.1.12
 
 devDependencies:
   '@types/node':
-    specifier: ^20.10.4
-    version: 20.10.4
+    specifier: ^20.10.5
+    version: 20.10.5
   autocannon:
     specifier: ^7.14.0
     version: 7.14.0
@@ -58,11 +58,11 @@ packages:
   /@fastify/fast-json-stringify-compiler@4.3.0:
     resolution: {integrity: sha512-aZAXGYo6m22Fk1zZzEUKBvut/CIIQe/BapEORnxiD5Qr0kPHqqI69NtEMCme74h+at72sPhbkb4ZrLd1W3KRLA==}
     dependencies:
-      fast-json-stringify: 5.9.1
+      fast-json-stringify: 5.9.2
     dev: false
 
-  /@types/node@20.10.4:
-    resolution: {integrity: sha512-D08YG6rr8X90YB56tSIuBaddy/UXAA9RKJoFvrsnogAum/0pmjkgi4+2nx96A330FmioegBWmEYQ+syqCFaveg==}
+  /@types/node@20.10.5:
+    resolution: {integrity: sha512-nNPsNE65wjMxEKI93yOP+NPGGBJz/PoN3kZsVLee0XMiJolxSekEVD8wRwBUBqkwc7UWop0edW50yrCQW4CyRw==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -157,7 +157,7 @@ packages:
     dependencies:
       archy: 1.0.0
       debug: 4.3.4
-      fastq: 1.15.0
+      fastq: 1.16.0
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -268,8 +268,8 @@ packages:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
     dev: false
 
-  /fast-json-stringify@5.9.1:
-    resolution: {integrity: sha512-NMrf+uU9UJnTzfxaumMDXK1NWqtPCfGoM9DYIE+ESlaTQqjlANFBy0VAbsm6FB88Mx0nceyi18zTo5kIEUlzxg==}
+  /fast-json-stringify@5.9.2:
+    resolution: {integrity: sha512-SwHnT5PL2BawF0ccL+8b800QovvopUPgV/qzhBY+vw5ZniDH9boewbzBXYox+SetfD2dlxAgeZKSnELzrA+2hg==}
     dependencies:
       '@fastify/deepmerge': 1.3.0
       ajv: 8.12.0
@@ -299,8 +299,8 @@ packages:
     resolution: {integrity: sha512-stRHYGeuqpEZTL1Ef0Ovr2ltazUT9g844X5z/zEBFLG8RYlpDiOCIG+ATvYEp+/zmc7sN29mcIMp8gvYplYPIQ==}
     dev: false
 
-  /fastify@4.25.1:
-    resolution: {integrity: sha512-D8d0rv61TwqoAS7lom2tvIlgVMlx88lLsiwXyWNjA7CU/LC/mx/Gp2WAlC0S/ABq19U+y/aRvYFG5xLUu2aMrg==}
+  /fastify@4.25.2:
+    resolution: {integrity: sha512-SywRouGleDHvRh054onj+lEZnbC1sBCLkR0UY3oyJwjD4BdZJUrxBqfkfCaqn74pVCwBaRHGuL3nEWeHbHzAfw==}
     dependencies:
       '@fastify/ajv-compiler': 3.5.0
       '@fastify/error': 3.4.1
@@ -308,10 +308,10 @@ packages:
       abstract-logging: 2.0.1
       avvio: 8.2.1
       fast-content-type-parse: 1.1.0
-      fast-json-stringify: 5.9.1
+      fast-json-stringify: 5.9.2
       find-my-way: 7.7.0
       light-my-request: 5.11.0
-      pino: 8.17.1
+      pino: 8.17.2
       process-warning: 3.0.0
       proxy-addr: 2.0.7
       rfdc: 1.3.0
@@ -322,8 +322,8 @@ packages:
       - supports-color
     dev: false
 
-  /fastq@1.15.0:
-    resolution: {integrity: sha512-wBrocU2LCXXa+lWBt8RoIRD89Fi8OdABODa/kEnyeyjS5aZO5/GNvI5sEINADqP/h8M29UHTHUb53sUu5Ihqdw==}
+  /fastq@1.16.0:
+    resolution: {integrity: sha512-ifCoaXsDrsdkWTtiNJX5uzHDsrck5TzfKKDcuFFTIrrc/BS076qgEIfoIy1VeZqViznfKiysPYTh/QeHtnIsYA==}
     dependencies:
       reusify: 1.0.4
     dev: false
@@ -475,7 +475,7 @@ packages:
   /pino-abstract-transport@1.1.0:
     resolution: {integrity: sha512-lsleG3/2a/JIWUtf9Q5gUNErBqwIu1tUKTT3dUzaf5DySw9ra1wcqKjJjLX1VTY64Wk1eEOYsVGSaGfCK85ekA==}
     dependencies:
-      readable-stream: 4.4.2
+      readable-stream: 4.5.1
       split2: 4.2.0
     dev: false
 
@@ -483,8 +483,8 @@ packages:
     resolution: {integrity: sha512-cHjPPsE+vhj/tnhCy/wiMh3M3z3h/j15zHQX+S9GkTBgqJuTuJzYJ4gUyACLhDaJ7kk9ba9iRDmbH2tJU03OiA==}
     dev: false
 
-  /pino@8.17.1:
-    resolution: {integrity: sha512-YoN7/NJgnsJ+fkADZqjhRt96iepWBndQHeClmSBH0sQWCb8zGD74t00SK4eOtKFi/f8TUmQnfmgglEhd2kI1RQ==}
+  /pino@8.17.2:
+    resolution: {integrity: sha512-LA6qKgeDMLr2ux2y/YiUt47EfgQ+S9LznBWOJdN3q1dx2sv0ziDLUBeVpyVv17TEcGCBuWf0zNtg3M5m1NhhWQ==}
     hasBin: true
     dependencies:
       atomic-sleep: 1.0.0
@@ -492,7 +492,7 @@ packages:
       on-exit-leak-free: 2.1.2
       pino-abstract-transport: 1.1.0
       pino-std-serializers: 6.2.2
-      process-warning: 2.3.2
+      process-warning: 3.0.0
       quick-format-unescaped: 4.0.4
       real-require: 0.2.0
       safe-stable-stringify: 2.4.3
@@ -500,8 +500,8 @@ packages:
       thread-stream: 2.4.1
     dev: false
 
-  /poolifier@3.1.1:
-    resolution: {integrity: sha512-EaskwRSQt5jUJP8hc+H7PD4LojZrfseD9jBmUV/uCmm8Lk9EDFLTQpUL9391SDeE/8zhngl+53BTZKIxBbJS2g==}
+  /poolifier@3.1.12:
+    resolution: {integrity: sha512-sTLseHNtt8+prF5k17S9xOMSZzZZOCXRMwo7tfJwhn6w7NWYGC+a/2T4ivBJikpIaPkxJoshgnxA4dSLKuWEog==}
     engines: {node: '>=18.0.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
@@ -546,8 +546,8 @@ packages:
     resolution: {integrity: sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg==}
     dev: false
 
-  /readable-stream@4.4.2:
-    resolution: {integrity: sha512-Lk/fICSyIhodxy1IDK2HazkeGjSmezAWX2egdtJnYhtzKEsBPJowlI6F6LPb5tqIQILrMbx22S5o3GuJavPusA==}
+  /readable-stream@4.5.1:
+    resolution: {integrity: sha512-uQjbf34vmf/asGnOHQEw07Q4llgMACQZTWWa4MmICS0IKJoHbLwKCy71H3eR99Dw5iYejc6W+pqZZEeqRtUFAw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       abort-controller: 3.0.0

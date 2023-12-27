@@ -1,9 +1,9 @@
 import { MessageChannel } from 'node:worker_threads'
 import { EventEmitter } from 'node:events'
-import { CircularArray } from '../circular-array'
-import type { Task } from '../utility-types'
-import { DEFAULT_TASK_NAME, getWorkerId, getWorkerType } from '../utils'
-import { Deque } from '../deque'
+import { CircularArray } from '../circular-array.js'
+import type { Task } from '../utility-types.js'
+import { DEFAULT_TASK_NAME, getWorkerId, getWorkerType } from '../utils.js'
+import { Deque } from '../deque.js'
 import {
   type ErrorHandler,
   type ExitHandler,
@@ -17,8 +17,8 @@ import {
   type WorkerType,
   WorkerTypes,
   type WorkerUsage
-} from './worker'
-import { checkWorkerNodeArguments, createWorker } from './utils'
+} from './worker.js'
+import { checkWorkerNodeArguments, createWorker } from './utils.js'
 
 /**
  * Worker node.
@@ -138,13 +138,16 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     })
     this.closeMessageChannel()
     this.removeAllListeners()
-    if (this.info.type === WorkerTypes.thread) {
-      await this.worker.terminate?.()
-    } else if (this.info.type === WorkerTypes.cluster) {
-      this.registerOnceWorkerEventHandler('disconnect', () => {
-        this.worker.kill?.()
-      })
-      this.worker.disconnect?.()
+    switch (this.info.type) {
+      case WorkerTypes.thread:
+        await this.worker.terminate?.()
+        break
+      case WorkerTypes.cluster:
+        this.registerOnceWorkerEventHandler('disconnect', () => {
+          this.worker.kill?.()
+        })
+        this.worker.disconnect?.()
+        break
     }
     await waitWorkerExit
   }
@@ -217,7 +220,8 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
       id: getWorkerId(worker),
       type: getWorkerType(worker) as WorkerType,
       dynamic: false,
-      ready: false
+      ready: false,
+      stealing: false
     }
   }
 

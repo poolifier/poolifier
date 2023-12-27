@@ -1,7 +1,7 @@
 import type { TransferListItem, WorkerOptions } from 'node:worker_threads'
 import type { EventEmitterAsyncResource } from 'node:events'
 import type { ClusterSettings } from 'node:cluster'
-import type { TaskFunction } from '../worker/task-functions'
+import type { TaskFunction } from '../worker/task-functions.js'
 import type {
   ErrorHandler,
   ExitHandler,
@@ -10,11 +10,11 @@ import type {
   MessageHandler,
   OnlineHandler,
   WorkerType
-} from './worker'
+} from './worker.js'
 import type {
   WorkerChoiceStrategy,
   WorkerChoiceStrategyOptions
-} from './selection-strategies/selection-strategies-types'
+} from './selection-strategies/selection-strategies-types.js'
 
 /**
  * Enumeration of pool types.
@@ -69,6 +69,8 @@ export interface PoolInfo {
   readonly utilization?: number
   /** Pool total worker nodes. */
   readonly workerNodes: number
+  /** Pool stealing worker nodes. */
+  readonly stealingWorkerNodes?: number
   /** Pool idle worker nodes. */
   readonly idleWorkerNodes: number
   /** Pool busy worker nodes. */
@@ -122,6 +124,12 @@ export interface TasksQueueOptions {
    * @defaultValue true
    */
   readonly tasksStealingOnBackPressure?: boolean
+  /**
+   * Queued tasks finished timeout in milliseconds at worker node termination.
+   *
+   * @defaultValue 2000
+   */
+  readonly tasksFinishedTimeout?: number
 }
 
 /**

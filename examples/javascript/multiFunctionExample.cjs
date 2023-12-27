@@ -3,7 +3,7 @@ const { FixedThreadPool, availableParallelism } = require('poolifier')
 
 const pool = new FixedThreadPool(
   availableParallelism(),
-  './multiFunctionWorker.js',
+  './multiFunctionWorker.cjs',
   {
     errorHandler: e => console.error(e),
     onlineHandler: () => console.info('worker is online')

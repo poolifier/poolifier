@@ -1,8 +1,8 @@
 import type { MessageChannel, WorkerOptions } from 'node:worker_threads'
 import type { EventEmitter } from 'node:events'
-import type { CircularArray } from '../circular-array'
-import type { Task } from '../utility-types'
-import type { Deque } from '../deque'
+import type { CircularArray } from '../circular-array.js'
+import type { Task } from '../utility-types.js'
+import type { Deque } from '../deque.js'
 
 /**
  * Callback invoked when the worker has started successfully.
@@ -155,6 +155,11 @@ export interface WorkerInfo {
    * Ready flag.
    */
   ready: boolean
+  /**
+   * Stealing flag.
+   * This flag is set to `true` when worker node is stealing tasks from another worker node.
+   */
+  stealing: boolean
   /**
    * Task function names.
    */

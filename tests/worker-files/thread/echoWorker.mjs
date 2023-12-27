@@ -1,4 +1,4 @@
-import { KillBehaviors, ThreadWorker } from '../../../lib/index.js'
+import { KillBehaviors, ThreadWorker } from '../../../lib/index.cjs'
 
 /**
  *

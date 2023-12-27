@@ -14,12 +14,12 @@ import {
   PoolTypes,
   WorkerChoiceStrategies,
   WorkerTypes
-} from '../../lib/index.js'
-import { CircularArray } from '../../lib/circular-array.js'
-import { Deque } from '../../lib/deque.js'
-import { DEFAULT_TASK_NAME } from '../../lib/utils.js'
-import { waitPoolEvents } from '../test-utils.js'
-import { WorkerNode } from '../../lib/pools/worker-node.js'
+} from '../../lib/index.cjs'
+import { CircularArray } from '../../lib/circular-array.cjs'
+import { Deque } from '../../lib/deque.cjs'
+import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
+import { waitPoolEvents } from '../test-utils.cjs'
+import { WorkerNode } from '../../lib/pools/worker-node.cjs'
 
 describe('Abstract pool test suite', () => {
   const version = JSON.parse(
@@ -105,7 +105,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that a negative number of workers is checked', () => {
     expect(
       () =>
-        new FixedClusterPool(-1, './tests/worker-files/cluster/testWorker.js')
+        new FixedClusterPool(-1, './tests/worker-files/cluster/testWorker.cjs')
     ).toThrow(
       new RangeError(
         'Cannot instantiate a pool with a negative number of workers'
@@ -124,13 +124,29 @@ describe('Abstract pool test suite', () => {
     )
   })
 
+  it('Verify that pool arguments number and pool type are checked', () => {
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.mjs',
+          undefined,
+          numberOfWorkers * 2
+        )
+    ).toThrow(
+      new Error(
+        'Cannot instantiate a fixed pool with a maximum number of workers specified at initialization'
+      )
+    )
+  })
+
   it('Verify that dynamic pool sizing is checked', () => {
     expect(
       () =>
         new DynamicClusterPool(
           1,
           undefined,
-          './tests/worker-files/cluster/testWorker.js'
+          './tests/worker-files/cluster/testWorker.cjs'
         )
     ).toThrow(
       new TypeError(
@@ -154,7 +170,7 @@ describe('Abstract pool test suite', () => {
         new DynamicClusterPool(
           0,
           0.5,
-          './tests/worker-files/cluster/testWorker.js'
+          './tests/worker-files/cluster/testWorker.cjs'
         )
     ).toThrow(
       new TypeError(
@@ -190,7 +206,7 @@ describe('Abstract pool test suite', () => {
         new DynamicClusterPool(
           1,
           1,
-          './tests/worker-files/cluster/testWorker.js'
+          './tests/worker-files/cluster/testWorker.cjs'
         )
     ).toThrow(
       new RangeError(
@@ -210,27 +226,33 @@ describe('Abstract pool test suite', () => {
       enableEvents: true,
       restartWorkerOnError: true,
       enableTasksQueue: false,
-      workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
-      workerChoiceStrategyOptions: {
-        retries: 6,
-        runTime: { median: false },
-        waitTime: { median: false },
-        elu: { median: false }
-      }
+      workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN
     })
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-      retries: 6,
+      retries:
+        pool.info.maxSize +
+        Object.keys(pool.workerChoiceStrategyContext.opts.weights).length,
       runTime: { median: false },
       waitTime: { median: false },
-      elu: { median: false }
+      elu: { median: false },
+      weights: expect.objectContaining({
+        0: expect.any(Number),
+        [pool.info.maxSize - 1]: expect.any(Number)
+      })
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        retries: 6,
+        retries:
+          pool.info.maxSize +
+          Object.keys(workerChoiceStrategy.opts.weights).length,
         runTime: { median: false },
         waitTime: { median: false },
-        elu: { median: false }
+        elu: { median: false },
+        weights: expect.objectContaining({
+          0: expect.any(Number),
+          [pool.info.maxSize - 1]: expect.any(Number)
+        })
       })
     }
     await pool.destroy()
@@ -264,14 +286,12 @@ describe('Abstract pool test suite', () => {
         concurrency: 2,
         size: Math.pow(numberOfWorkers, 2),
         taskStealing: true,
-        tasksStealingOnBackPressure: true
+        tasksStealingOnBackPressure: true,
+        tasksFinishedTimeout: 2000
       },
       workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
       workerChoiceStrategyOptions: {
-        retries: 6,
         runTime: { median: true },
-        waitTime: { median: false },
-        elu: { median: false },
         weights: { 0: 300, 1: 200 }
       },
       onlineHandler: testHandler,
@@ -280,7 +300,9 @@ describe('Abstract pool test suite', () => {
       exitHandler: testHandler
     })
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-      retries: 6,
+      retries:
+        pool.info.maxSize +
+        Object.keys(pool.opts.workerChoiceStrategyOptions.weights).length,
       runTime: { median: true },
       waitTime: { median: false },
       elu: { median: false },
@@ -289,7 +311,9 @@ describe('Abstract pool test suite', () => {
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        retries: 6,
+        retries:
+          pool.info.maxSize +
+          Object.keys(pool.opts.workerChoiceStrategyOptions.weights).length,
         runTime: { median: true },
         waitTime: { median: false },
         elu: { median: false },
@@ -310,38 +334,6 @@ describe('Abstract pool test suite', () => {
           }
         )
     ).toThrow(new Error("Invalid worker choice strategy 'invalidStrategy'"))
-    expect(
-      () =>
-        new FixedThreadPool(
-          numberOfWorkers,
-          './tests/worker-files/thread/testWorker.mjs',
-          {
-            workerChoiceStrategyOptions: {
-              retries: 'invalidChoiceRetries'
-            }
-          }
-        )
-    ).toThrow(
-      new TypeError(
-        'Invalid worker choice strategy options: retries must be an integer'
-      )
-    )
-    expect(
-      () =>
-        new FixedThreadPool(
-          numberOfWorkers,
-          './tests/worker-files/thread/testWorker.mjs',
-          {
-            workerChoiceStrategyOptions: {
-              retries: -1
-            }
-          }
-        )
-    ).toThrow(
-      new RangeError(
-        "Invalid worker choice strategy options: retries '-1' must be greater or equal than zero"
-      )
-    )
     expect(
       () =>
         new FixedThreadPool(
@@ -477,25 +469,32 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
     )
-    expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      retries: 6,
-      runTime: { median: false },
-      waitTime: { median: false },
-      elu: { median: false }
-    })
+    expect(pool.opts.workerChoiceStrategyOptions).toBeUndefined()
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-      retries: 6,
+      retries:
+        pool.info.maxSize +
+        Object.keys(pool.workerChoiceStrategyContext.opts.weights).length,
       runTime: { median: false },
       waitTime: { median: false },
-      elu: { median: false }
+      elu: { median: false },
+      weights: expect.objectContaining({
+        0: expect.any(Number),
+        [pool.info.maxSize - 1]: expect.any(Number)
+      })
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        retries: 6,
+        retries:
+          pool.info.maxSize +
+          Object.keys(workerChoiceStrategy.opts.weights).length,
         runTime: { median: false },
         waitTime: { median: false },
-        elu: { median: false }
+        elu: { median: false },
+        weights: expect.objectContaining({
+          0: expect.any(Number),
+          [pool.info.maxSize - 1]: expect.any(Number)
+        })
       })
     }
     expect(
@@ -522,24 +521,34 @@ describe('Abstract pool test suite', () => {
       elu: { median: true }
     })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      retries: 6,
       runTime: { median: true },
-      waitTime: { median: false },
       elu: { median: true }
     })
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-      retries: 6,
+      retries:
+        pool.info.maxSize +
+        Object.keys(pool.workerChoiceStrategyContext.opts.weights).length,
       runTime: { median: true },
       waitTime: { median: false },
-      elu: { median: true }
+      elu: { median: true },
+      weights: expect.objectContaining({
+        0: expect.any(Number),
+        [pool.info.maxSize - 1]: expect.any(Number)
+      })
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        retries: 6,
+        retries:
+          pool.info.maxSize +
+          Object.keys(workerChoiceStrategy.opts.weights).length,
         runTime: { median: true },
         waitTime: { median: false },
-        elu: { median: true }
+        elu: { median: true },
+        weights: expect.objectContaining({
+          0: expect.any(Number),
+          [pool.info.maxSize - 1]: expect.any(Number)
+        })
       })
     }
     expect(
@@ -566,24 +575,34 @@ describe('Abstract pool test suite', () => {
       elu: { median: false }
     })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
-      retries: 6,
       runTime: { median: false },
-      waitTime: { median: false },
       elu: { median: false }
     })
     expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-      retries: 6,
+      retries:
+        pool.info.maxSize +
+        Object.keys(pool.workerChoiceStrategyContext.opts.weights).length,
       runTime: { median: false },
       waitTime: { median: false },
-      elu: { median: false }
+      elu: { median: false },
+      weights: expect.objectContaining({
+        0: expect.any(Number),
+        [pool.info.maxSize - 1]: expect.any(Number)
+      })
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
-        retries: 6,
+        retries:
+          pool.info.maxSize +
+          Object.keys(workerChoiceStrategy.opts.weights).length,
         runTime: { median: false },
         waitTime: { median: false },
-        elu: { median: false }
+        elu: { median: false },
+        weights: expect.objectContaining({
+          0: expect.any(Number),
+          [pool.info.maxSize - 1]: expect.any(Number)
+        })
       })
     }
     expect(
@@ -610,20 +629,6 @@ describe('Abstract pool test suite', () => {
     ).toThrow(
       new TypeError(
         'Invalid worker choice strategy options: must be a plain object'
-      )
-    )
-    expect(() =>
-      pool.setWorkerChoiceStrategyOptions({
-        retries: 'invalidChoiceRetries'
-      })
-    ).toThrow(
-      new TypeError(
-        'Invalid worker choice strategy options: retries must be an integer'
-      )
-    )
-    expect(() => pool.setWorkerChoiceStrategyOptions({ retries: -1 })).toThrow(
-      new RangeError(
-        "Invalid worker choice strategy options: retries '-1' must be greater or equal than zero"
       )
     )
     expect(() => pool.setWorkerChoiceStrategyOptions({ weights: {} })).toThrow(
@@ -654,7 +659,8 @@ describe('Abstract pool test suite', () => {
       concurrency: 1,
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
-      tasksStealingOnBackPressure: true
+      tasksStealingOnBackPressure: true,
+      tasksFinishedTimeout: 2000
     })
     pool.enableTasksQueue(true, { concurrency: 2 })
     expect(pool.opts.enableTasksQueue).toBe(true)
@@ -662,7 +668,8 @@ describe('Abstract pool test suite', () => {
       concurrency: 2,
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
-      tasksStealingOnBackPressure: true
+      tasksStealingOnBackPressure: true,
+      tasksFinishedTimeout: 2000
     })
     pool.enableTasksQueue(false)
     expect(pool.opts.enableTasksQueue).toBe(false)
@@ -680,7 +687,8 @@ describe('Abstract pool test suite', () => {
       concurrency: 1,
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
-      tasksStealingOnBackPressure: true
+      tasksStealingOnBackPressure: true,
+      tasksFinishedTimeout: 2000
     })
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksQueueBackPressureSize).toBe(
@@ -691,13 +699,15 @@ describe('Abstract pool test suite', () => {
       concurrency: 2,
       size: 2,
       taskStealing: false,
-      tasksStealingOnBackPressure: false
+      tasksStealingOnBackPressure: false,
+      tasksFinishedTimeout: 3000
     })
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 2,
       size: 2,
       taskStealing: false,
-      tasksStealingOnBackPressure: false
+      tasksStealingOnBackPressure: false,
+      tasksFinishedTimeout: 3000
     })
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksQueueBackPressureSize).toBe(
@@ -713,7 +723,8 @@ describe('Abstract pool test suite', () => {
       concurrency: 1,
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
-      tasksStealingOnBackPressure: true
+      tasksStealingOnBackPressure: true,
+      tasksFinishedTimeout: 2000
     })
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksQueueBackPressureSize).toBe(
@@ -777,7 +788,7 @@ describe('Abstract pool test suite', () => {
     pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     expect(pool.info).toStrictEqual({
       version,
@@ -801,7 +812,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool worker tasks usage are initialized', async () => {
     const pool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     for (const workerNode of pool.workerNodes) {
       expect(workerNode).toBeInstanceOf(WorkerNode)
@@ -837,7 +848,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool worker tasks queue are initialized', async () => {
     let pool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     for (const workerNode of pool.workerNodes) {
       expect(workerNode).toBeInstanceOf(WorkerNode)
@@ -863,7 +874,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool worker info are initialized', async () => {
     let pool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     for (const workerNode of pool.workerNodes) {
       expect(workerNode).toBeInstanceOf(WorkerNode)
@@ -871,7 +882,8 @@ describe('Abstract pool test suite', () => {
         id: expect.any(Number),
         type: WorkerTypes.cluster,
         dynamic: false,
-        ready: true
+        ready: true,
+        stealing: false
       })
     }
     await pool.destroy()
@@ -886,7 +898,8 @@ describe('Abstract pool test suite', () => {
         id: expect.any(Number),
         type: WorkerTypes.thread,
         dynamic: false,
-        ready: true
+        ready: true,
+        stealing: false
       })
     }
     await pool.destroy()
@@ -913,7 +926,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool can be started after initialization', async () => {
     const pool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js',
+      './tests/worker-files/cluster/testWorker.cjs',
       {
         startWorkers: false
       }
@@ -940,7 +953,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool execute() arguments are checked', async () => {
     const pool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     await expect(pool.execute(undefined, 0)).rejects.toThrow(
       new TypeError('name argument must be a string')
@@ -966,7 +979,7 @@ describe('Abstract pool test suite', () => {
   it('Verify that pool worker tasks usage are computed', async () => {
     const pool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     const promises = new Set()
     const maxMultiplier = 2
@@ -1117,7 +1130,7 @@ describe('Abstract pool test suite', () => {
     const pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     expect(pool.emitter.eventNames()).toStrictEqual([])
     let poolInfo
@@ -1261,6 +1274,7 @@ describe('Abstract pool test suite', () => {
       maxSize: expect.any(Number),
       workerNodes: expect.any(Number),
       idleWorkerNodes: expect.any(Number),
+      stealingWorkerNodes: expect.any(Number),
       busyWorkerNodes: expect.any(Number),
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
@@ -1270,8 +1284,65 @@ describe('Abstract pool test suite', () => {
       stolenTasks: expect.any(Number),
       failedTasks: expect.any(Number)
     })
-    expect(pool.hasBackPressure.callCount).toBe(5)
+    expect(pool.hasBackPressure.callCount).toBeGreaterThanOrEqual(7)
     await pool.destroy()
+  })
+
+  it('Verify that destroy() waits for queued tasks to finish', async () => {
+    const tasksFinishedTimeout = 2500
+    const pool = new FixedThreadPool(
+      numberOfWorkers,
+      './tests/worker-files/thread/asyncWorker.mjs',
+      {
+        enableTasksQueue: true,
+        tasksQueueOptions: { tasksFinishedTimeout }
+      }
+    )
+    const maxMultiplier = 4
+    let tasksFinished = 0
+    for (const workerNode of pool.workerNodes) {
+      workerNode.on('taskFinished', () => {
+        ++tasksFinished
+      })
+    }
+    for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
+      pool.execute()
+    }
+    expect(pool.info.queuedTasks).toBeGreaterThan(0)
+    const startTime = performance.now()
+    await pool.destroy()
+    const elapsedTime = performance.now() - startTime
+    expect(tasksFinished).toBeLessThanOrEqual(numberOfWorkers * maxMultiplier)
+    expect(elapsedTime).toBeGreaterThanOrEqual(2000)
+    expect(elapsedTime).toBeLessThanOrEqual(tasksFinishedTimeout + 400)
+  })
+
+  it('Verify that destroy() waits until the tasks finished timeout is reached', async () => {
+    const tasksFinishedTimeout = 1000
+    const pool = new FixedThreadPool(
+      numberOfWorkers,
+      './tests/worker-files/thread/asyncWorker.mjs',
+      {
+        enableTasksQueue: true,
+        tasksQueueOptions: { tasksFinishedTimeout }
+      }
+    )
+    const maxMultiplier = 4
+    let tasksFinished = 0
+    for (const workerNode of pool.workerNodes) {
+      workerNode.on('taskFinished', () => {
+        ++tasksFinished
+      })
+    }
+    for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
+      pool.execute()
+    }
+    expect(pool.info.queuedTasks).toBeGreaterThan(0)
+    const startTime = performance.now()
+    await pool.destroy()
+    const elapsedTime = performance.now() - startTime
+    expect(tasksFinished).toBe(0)
+    expect(elapsedTime).toBeLessThanOrEqual(tasksFinishedTimeout + 800)
   })
 
   it('Verify that pool asynchronous resource track tasks execution', async () => {
@@ -1328,7 +1399,7 @@ describe('Abstract pool test suite', () => {
     await dynamicThreadPool.destroy()
     const fixedClusterPool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.js'
+      './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.cjs'
     )
     await waitPoolEvents(fixedClusterPool, PoolEvents.ready, 1)
     expect(fixedClusterPool.hasTaskFunction(DEFAULT_TASK_NAME)).toBe(true)
@@ -1468,7 +1539,7 @@ describe('Abstract pool test suite', () => {
     await dynamicThreadPool.destroy()
     const fixedClusterPool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.js'
+      './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.cjs'
     )
     await waitPoolEvents(fixedClusterPool, PoolEvents.ready, 1)
     expect(fixedClusterPool.listTaskFunctionNames()).toStrictEqual([
@@ -1538,7 +1609,7 @@ describe('Abstract pool test suite', () => {
     const pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.js'
+      './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.cjs'
     )
     const data = { n: 10 }
     const result0 = await pool.execute(data)
@@ -1603,7 +1674,7 @@ describe('Abstract pool test suite', () => {
     const pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     const workerNodeKey = 0
     await expect(
@@ -1616,7 +1687,7 @@ describe('Abstract pool test suite', () => {
     const pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     const workerNodeKey = 0
     await expect(
@@ -1636,7 +1707,7 @@ describe('Abstract pool test suite', () => {
     const pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.js'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     await expect(
       pool.sendTaskFunctionOperationToWorkers({

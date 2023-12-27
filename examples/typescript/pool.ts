@@ -1,6 +1,6 @@
 import { dirname, extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { MyData, MyResponse } from './worker'
+import type { MyData, MyResponse } from './worker.js'
 import {
   DynamicThreadPool,
   FixedThreadPool,

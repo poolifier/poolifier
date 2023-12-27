@@ -1,15 +1,12 @@
-import {
-  DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-  DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
-} from '../../utils'
-import type { IPool } from '../pool'
-import type { IWorker } from '../worker'
-import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
+import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../../utils.js'
+import type { IPool } from '../pool.js'
+import type { IWorker } from '../worker.js'
+import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
-  TaskStatisticsRequirements,
-  WorkerChoiceStrategyOptions
-} from './selection-strategies-types'
+  InternalWorkerChoiceStrategyOptions,
+  TaskStatisticsRequirements
+} from './selection-strategies-types.js'
 
 /**
  * Selects the worker with the least ELU.
@@ -39,7 +36,7 @@ export class LeastEluWorkerChoiceStrategy<
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
-    opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+    opts: InternalWorkerChoiceStrategyOptions
   ) {
     super(pool, opts)
     this.setTaskStatisticsRequirements(this.opts)

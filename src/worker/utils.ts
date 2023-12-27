@@ -1,6 +1,6 @@
-import { isPlainObject } from '../utils'
-import type { TaskFunction } from './task-functions'
-import { KillBehaviors, type WorkerOptions } from './worker-options'
+import { isPlainObject } from '../utils.js'
+import type { TaskFunction } from './task-functions.js'
+import { KillBehaviors, type WorkerOptions } from './worker-options.js'
 
 export const checkValidWorkerOptions = (opts: WorkerOptions): void => {
   if (opts != null && !isPlainObject(opts)) {

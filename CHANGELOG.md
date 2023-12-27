@@ -11,6 +11,72 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add fine grained task abortion support.
 
+## [3.1.12] - 2023-12-27
+
+### Fixed
+
+- Fix tasks redistribution triggers at pool destroying.
+
+### Changed
+
+- Switch TypeScript module resolution to Node16.
+
+## [3.1.12-0] - 2023-12-27
+
+### Fixed
+
+- Fix tasks redistribution triggers at pool destroying.
+
+## [3.1.11] - 2023-12-24
+
+### Fixed
+
+- Avoid worker node cross tasks stealing.
+- Ensure only half the pool worker nodes can steal tasks.
+
+## [3.1.10] - 2023-12-23
+
+### Changed
+
+- Avoid useless branching on pool type.
+
+## [3.1.9] - 2023-12-22
+
+### Changed
+
+- Readd ThreadPoolOptions and ClusterPoolOptions TS type aliases to PoolOptions.
+
+## [3.1.8] - 2023-12-21
+
+### Fixed
+
+- Fix default worker weight computation.
+- Fix possible null exception at pool destroying.
+
+## [3.1.7] - 2023-12-20
+
+### Fixed
+
+- Ensure worker choice strategies implementation wait for worker node readiness: [#1748](https://github.com/poolifier/poolifier/issues/1748).
+
+## [3.1.6] - 2023-12-18
+
+### Fixed
+
+- Fix pool destroying with tasks queuing enabled.
+
+## [3.1.5] - 2023-12-18
+
+### Added
+
+- Add queued tasks end timeout support to worker node termination.
+
+## [3.1.4] - 2023-12-18
+
+### Fixed
+
+- Make more robust the fix for possible null exception at handling task execution response.
+
 ## [3.1.3] - 2023-12-17
 
 ### Fixed
@@ -21,7 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Wait for queued tasks to end at worker termination.
+- Wait for queued tasks to end at worker node termination.
 
 ## [3.1.1] - 2023-12-16
 

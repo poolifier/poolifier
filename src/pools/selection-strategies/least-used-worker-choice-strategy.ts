@@ -1,11 +1,10 @@
-import { DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS } from '../../utils'
-import type { IPool } from '../pool'
-import type { IWorker } from '../worker'
-import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy'
+import type { IPool } from '../pool.js'
+import type { IWorker } from '../worker.js'
+import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
-  WorkerChoiceStrategyOptions
-} from './selection-strategies-types'
+  InternalWorkerChoiceStrategyOptions
+} from './selection-strategies-types.js'
 
 /**
  * Selects the least used worker.
@@ -24,10 +23,9 @@ export class LeastUsedWorkerChoiceStrategy<
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
-    opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+    opts: InternalWorkerChoiceStrategyOptions
   ) {
     super(pool, opts)
-    this.setTaskStatisticsRequirements(this.opts)
   }
 
   /** @inheritDoc */

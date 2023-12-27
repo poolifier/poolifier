@@ -1,8 +1,13 @@
 import cluster, { type Worker } from 'node:cluster'
-import type { MessageValue } from '../../utility-types'
-import { AbstractPool } from '../abstract-pool'
-import { type PoolOptions, type PoolType, PoolTypes } from '../pool'
-import { type WorkerType, WorkerTypes } from '../worker'
+import type { MessageValue } from '../../utility-types.js'
+import { AbstractPool } from '../abstract-pool.js'
+import { type PoolOptions, type PoolType, PoolTypes } from '../pool.js'
+import { type WorkerType, WorkerTypes } from '../worker.js'
+
+/**
+ * Options for a poolifier cluster pool.
+ */
+export type ClusterPoolOptions = PoolOptions<Worker>
 
 /**
  * A cluster pool with a fixed number of workers.
@@ -26,9 +31,10 @@ export class FixedClusterPool<
   public constructor (
     numberOfWorkers: number,
     filePath: string,
-    protected readonly opts: PoolOptions<Worker> = {}
+    opts: ClusterPoolOptions = {},
+    maximumNumberOfWorkers?: number
   ) {
-    super(numberOfWorkers, filePath, opts)
+    super(numberOfWorkers, filePath, opts, maximumNumberOfWorkers)
   }
 
   /** @inheritDoc */
@@ -81,6 +87,16 @@ export class FixedClusterPool<
     listener: (message: MessageValue<Message>) => void
   ): void {
     this.workerNodes[workerNodeKey].worker.off('message', listener)
+  }
+
+  /** @inheritDoc */
+  protected shallCreateDynamicWorker (): boolean {
+    return false
+  }
+
+  /** @inheritDoc */
+  protected checkAndEmitDynamicWorkerCreationEvents (): void {
+    /* noop */
   }
 
   /** @inheritDoc */

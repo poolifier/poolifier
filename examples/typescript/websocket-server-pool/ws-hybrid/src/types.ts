@@ -1,5 +1,4 @@
-import type { Worker } from 'node:worker_threads'
-import type { PoolOptions } from 'poolifier'
+import type { ThreadPoolOptions } from 'poolifier'
 
 export enum MessageType {
   echo = 'echo',
@@ -15,7 +14,7 @@ export interface DataPayload {
   number?: number
 }
 
-export interface ClusterWorkerData extends PoolOptions<Worker> {
+export interface ClusterWorkerData extends ThreadPoolOptions {
   port: number
   workerFile: string
   minWorkers?: number

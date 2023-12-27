@@ -156,24 +156,28 @@ module.exports = defineConfig({
       }
     },
     {
-      files: ['**/*.js', '**/*.mjs'],
+      files: ['**/*.cjs', '**/*.js', '**/*.mjs'],
       plugins: ['jsdoc'],
       extends: ['plugin:n/recommended', 'plugin:jsdoc/recommended', 'standard']
     },
     {
-      files: ['tests/**/*.js', 'tests/**/*.mjs'],
+      files: ['tests/**/*.cjs', 'tests/**/*.js', 'tests/**/*.mjs'],
       rules: {
         'jsdoc/require-jsdoc': 'off'
       }
     },
     {
-      files: ['benchmarks/**/*.js', 'benchmarks/**/*.mjs'],
+      files: [
+        'benchmarks/**/*.cjs',
+        'benchmarks/**/*.js',
+        'benchmarks/**/*.mjs'
+      ],
       rules: {
         'jsdoc/require-jsdoc': 'off'
       }
     },
     {
-      files: ['examples/javascript/**/*.js'],
+      files: ['examples/javascript/**/*.cjs', 'examples/javascript/**/*.js'],
       rules: {
         'jsdoc/require-jsdoc': 'off'
       }

@@ -1,4 +1,4 @@
-const { TaskFunctions } = require('./test-types.js')
+const { TaskFunctions } = require('./test-types.cjs')
 
 const waitWorkerEvents = async (pool, workerEvent, numberOfEventsToWait) => {
   return await new Promise(resolve => {

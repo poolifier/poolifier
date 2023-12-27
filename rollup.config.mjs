@@ -37,11 +37,13 @@ export default defineConfig([
         format: 'cjs',
         ...(isDevelopmentBuild && {
           dir: './lib',
+          entryFileNames: '[name].cjs',
+          chunkFileNames: '[name]-[hash].cjs',
           preserveModules: true,
           preserveModulesRoot: './src'
         }),
         ...(!isDevelopmentBuild && {
-          file: './lib/index.js',
+          file: './lib/index.cjs',
           plugins: [terser({ maxWorkers })]
         }),
         ...(sourcemap && {

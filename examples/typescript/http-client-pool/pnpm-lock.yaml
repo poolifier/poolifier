@@ -6,27 +6,27 @@ settings:
 
 dependencies:
   axios:
-    specifier: ^1.6.2
-    version: 1.6.2
+    specifier: ^1.6.3
+    version: 1.6.3
   node-fetch:
     specifier: ^3.3.2
     version: 3.3.2
   poolifier:
-    specifier: ^3.1.1
-    version: 3.1.1
+    specifier: ^3.1.12
+    version: 3.1.12
 
 devDependencies:
   '@types/node':
-    specifier: ^20.10.4
-    version: 20.10.4
+    specifier: ^20.10.5
+    version: 20.10.5
   typescript:
     specifier: ^5.3.3
     version: 5.3.3
 
 packages:
 
-  /@types/node@20.10.4:
-    resolution: {integrity: sha512-D08YG6rr8X90YB56tSIuBaddy/UXAA9RKJoFvrsnogAum/0pmjkgi4+2nx96A330FmioegBWmEYQ+syqCFaveg==}
+  /@types/node@20.10.5:
+    resolution: {integrity: sha512-nNPsNE65wjMxEKI93yOP+NPGGBJz/PoN3kZsVLee0XMiJolxSekEVD8wRwBUBqkwc7UWop0edW50yrCQW4CyRw==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -35,8 +35,8 @@ packages:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
     dev: false
 
-  /axios@1.6.2:
-    resolution: {integrity: sha512-7i24Ri4pmDRfJTR7LDBhsOTtcm+9kjX5WiY1X3wIisx6G9So3pfMkEiU7emUBe46oceVImccTEM3k6C5dbVW8A==}
+  /axios@1.6.3:
+    resolution: {integrity: sha512-fWyNdeawGam70jXSVlKl+SUNVcL6j6W79CuSIPfi6HnDUmSCH6gyUys/HrqHeA/wU0Az41rRgean494d0Jb+ww==}
     dependencies:
       follow-redirects: 1.15.3
       form-data: 4.0.0
@@ -122,8 +122,8 @@ packages:
       formdata-polyfill: 4.0.10
     dev: false
 
-  /poolifier@3.1.1:
-    resolution: {integrity: sha512-EaskwRSQt5jUJP8hc+H7PD4LojZrfseD9jBmUV/uCmm8Lk9EDFLTQpUL9391SDeE/8zhngl+53BTZKIxBbJS2g==}
+  /poolifier@3.1.12:
+    resolution: {integrity: sha512-sTLseHNtt8+prF5k17S9xOMSZzZZOCXRMwo7tfJwhn6w7NWYGC+a/2T4ivBJikpIaPkxJoshgnxA4dSLKuWEog==}
     engines: {node: '>=18.0.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false

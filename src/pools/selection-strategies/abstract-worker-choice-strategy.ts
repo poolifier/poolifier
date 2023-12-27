@@ -1,17 +1,16 @@
-import { cpus } from 'node:os'
 import {
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-  DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
-} from '../../utils'
-import type { IPool } from '../pool'
-import type { IWorker } from '../worker'
+  buildInternalWorkerChoiceStrategyOptions
+} from '../../utils.js'
+import type { IPool } from '../pool.js'
+import type { IWorker } from '../worker.js'
 import type {
   IWorkerChoiceStrategy,
+  InternalWorkerChoiceStrategyOptions,
   MeasurementStatisticsRequirements,
   StrategyPolicy,
-  TaskStatisticsRequirements,
-  WorkerChoiceStrategyOptions
-} from './selection-strategies-types'
+  TaskStatisticsRequirements
+} from './selection-strategies-types.js'
 
 /**
  * Worker choice strategy abstract base class.
@@ -56,14 +55,18 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   public constructor (
     protected readonly pool: IPool<Worker, Data, Response>,
-    protected opts: WorkerChoiceStrategyOptions = DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS
+    protected opts: InternalWorkerChoiceStrategyOptions
   ) {
-    this.opts = { ...DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS, ...opts }
+    this.opts = buildInternalWorkerChoiceStrategyOptions(
+      this.pool.info.maxSize,
+      this.opts
+    )
+    this.setTaskStatisticsRequirements(this.opts)
     this.choose = this.choose.bind(this)
   }
 
   protected setTaskStatisticsRequirements (
-    opts: WorkerChoiceStrategyOptions
+    opts: InternalWorkerChoiceStrategyOptions
   ): void {
     this.toggleMedianMeasurementStatisticsRequirements(
       this.taskStatisticsRequirements.runTime,
@@ -111,8 +114,11 @@ export abstract class AbstractWorkerChoiceStrategy<
   public abstract remove (workerNodeKey: number): boolean
 
   /** @inheritDoc */
-  public setOptions (opts: WorkerChoiceStrategyOptions): void {
-    this.opts = { ...DEFAULT_WORKER_CHOICE_STRATEGY_OPTIONS, ...opts }
+  public setOptions (opts: InternalWorkerChoiceStrategyOptions): void {
+    this.opts = buildInternalWorkerChoiceStrategyOptions(
+      this.pool.info.maxSize,
+      opts
+    )
     this.setTaskStatisticsRequirements(this.opts)
   }
 
@@ -189,16 +195,5 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected setPreviousWorkerNodeKey (workerNodeKey: number | undefined): void {
     this.previousWorkerNodeKey = workerNodeKey ?? this.previousWorkerNodeKey
-  }
-
-  protected computeDefaultWorkerWeight (): number {
-    let cpusCycleTimeWeight = 0
-    for (const cpu of cpus()) {
-      // CPU estimated cycle time
-      const numberOfDigits = cpu.speed.toString().length - 1
-      const cpuCycleTime = 1 / (cpu.speed / Math.pow(10, numberOfDigits))
-      cpusCycleTimeWeight += cpuCycleTime * Math.pow(10, numberOfDigits)
-    }
-    return Math.round(cpusCycleTimeWeight / cpus().length)
   }
 }
