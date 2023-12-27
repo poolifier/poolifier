@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.12-0] - 2023-12-27
+
 ### Fixed
 
 - Fix tasks redistribution triggers at pool destroying.
