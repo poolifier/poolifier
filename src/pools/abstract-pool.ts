@@ -936,7 +936,8 @@ export abstract class AbstractPool<
         'abort',
         () => {
           this.workerNodes[workerNodeKey].emit('abortTask', {
-            workerId: this.getWorkerInfo(workerNodeKey).id as number,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            workerId: this.getWorkerInfo(workerNodeKey).id!,
             taskId: task.taskId
           })
         },
@@ -1383,19 +1384,16 @@ export abstract class AbstractPool<
 
   private readonly abortTask = (eventDetail: WorkerNodeEventDetail): void => {
     const { workerId, taskId } = eventDetail
-    const { reject, abortSignal } = this.promiseResponseMap.get(
-      taskId as string
-    ) as PromiseResponseWrapper<Response>
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const { reject, abortSignal } = this.promiseResponseMap.get(taskId)!
     const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
     if (this.opts.enableTasksQueue === true) {
       for (const task of this.workerNodes[workerNodeKey].tasksQueue) {
         const { name, abortable } = task
         if (taskId === task.taskId && abortable === true) {
           this.workerNodes[workerNodeKey].deleteTask(task)
-          this.promiseResponseMap.delete(taskId as string)
-          reject(
-            new Error(`Task ${name as string} id ${taskId as string} aborted`)
-          )
+          this.promiseResponseMap.delete(taskId)
+          reject(new Error(`Task ${name} id ${taskId} aborted`))
           return
         }
       }
@@ -1917,9 +1915,11 @@ export abstract class AbstractPool<
    */
   private executeTask (workerNodeKey: number, task: Task<Data>): void {
     const { taskId, transferList } = task
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { reject, abortSignal } = this.promiseResponseMap.get(
-      taskId as string
-    ) as PromiseResponseWrapper<Response>
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      taskId!
+    )!
     if (abortSignal?.aborted === true) {
       reject(new Error('Cannot execute an already aborted task'))
       return

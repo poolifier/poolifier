@@ -544,12 +544,11 @@ export abstract class AbstractWorker<
     }
     let fn: TaskFunction<Data, Response>
     if (abortable === true) {
-      fn = this.getAbortableTaskFunction(taskFunctionName, taskId as string)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      fn = this.getAbortableTaskFunction(taskFunctionName, taskId!)
     } else {
-      fn = this.taskFunctions.get(taskFunctionName) as TaskFunction<
-      Data,
-      Response
-      >
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      fn = this.taskFunctions.get(taskFunctionName)!
     }
     if (isAsyncFunction(fn)) {
       this.runAsync(fn as TaskAsyncFunction<Data, Response>, task)
@@ -591,7 +590,8 @@ export abstract class AbstractWorker<
     } finally {
       this.updateLastTaskTimestamp()
       if (abortable === true) {
-        this.taskAbortFunctions.delete(taskId as string)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.taskAbortFunctions.delete(taskId!)
       }
     }
   }
@@ -632,7 +632,8 @@ export abstract class AbstractWorker<
       .finally(() => {
         this.updateLastTaskTimestamp()
         if (abortable === true) {
-          this.taskAbortFunctions.delete(taskId as string)
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.taskAbortFunctions.delete(taskId!)
         }
       })
       .catch(EMPTY_FUNCTION)
