@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Reduce branching in several hot code paths.
+- Use faster object cloning implementation.
+
 ## [3.1.12] - 2023-12-27
 
 ### Fixed
