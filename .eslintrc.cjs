@@ -69,6 +69,7 @@ module.exports = defineConfig({
           'inheritDoc',
           'javascript',
           'jsdoc',
+          'linebreak',
           'localhost',
           'microjob',
           'mjs',
