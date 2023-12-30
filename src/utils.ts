@@ -282,8 +282,8 @@ export const once = <T, A extends any[], R>(
   }
 }
 
-const clone = <T extends object>(object: T): T => {
-  return JSON.parse(JSON.stringify(object)) as T
+const clone = <T>(object: T): T => {
+  return structuredClone<T>(object)
 }
 
 export const buildInternalWorkerChoiceStrategyOptions = (
