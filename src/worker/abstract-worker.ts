@@ -295,10 +295,8 @@ export abstract class AbstractWorker<
           'Cannot set the default task function to a non-existing task function'
         )
       }
-      this.taskFunctions.set(
-        DEFAULT_TASK_NAME,
-        this.taskFunctions.get(name) as TaskFunction<Data, Response>
-      )
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.taskFunctions.set(DEFAULT_TASK_NAME, this.taskFunctions.get(name)!)
       this.sendTaskFunctionNamesToMainWorker()
       return { status: true }
     } catch (error) {
@@ -349,19 +347,22 @@ export abstract class AbstractWorker<
     switch (taskFunctionOperation) {
       case 'add':
         response = this.addTaskFunction(
-          taskFunctionName as string,
-          // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
-          new Function(`return ${taskFunction as string}`)() as TaskFunction<
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          taskFunctionName!,
+          // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func, @typescript-eslint/no-non-null-assertion
+          new Function(`return ${taskFunction!}`)() as TaskFunction<
           Data,
           Response
           >
         )
         break
       case 'remove':
-        response = this.removeTaskFunction(taskFunctionName as string)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        response = this.removeTaskFunction(taskFunctionName!)
         break
       case 'default':
-        response = this.setDefaultTaskFunction(taskFunctionName as string)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        response = this.setDefaultTaskFunction(taskFunctionName!)
         break
       default:
         response = { status: false, error: new Error('Unknown task operation') }
@@ -374,7 +375,8 @@ export abstract class AbstractWorker<
       ...(!response.status &&
         response?.error != null && {
         workerError: {
-          name: taskFunctionName as string,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          name: taskFunctionName!,
           message: this.handleError(response.error as Error | string)
         }
       })
@@ -530,8 +532,10 @@ export abstract class AbstractWorker<
     if (!this.taskFunctions.has(taskFunctionName)) {
       this.sendToMainWorker({
         workerError: {
-          name: name as string,
-          message: `Task function '${name as string}' not found`,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          name: name!,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          message: `Task function '${name!}' not found`,
           data
         },
         taskId
@@ -577,7 +581,8 @@ export abstract class AbstractWorker<
     } catch (error) {
       this.sendToMainWorker({
         workerError: {
-          name: name as string,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          name: name!,
           message: this.handleError(error as Error | string),
           data
         },
@@ -616,7 +621,8 @@ export abstract class AbstractWorker<
       .catch(error => {
         this.sendToMainWorker({
           workerError: {
-            name: name as string,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            name: name!,
             message: this.handleError(error as Error | string),
             data
           },

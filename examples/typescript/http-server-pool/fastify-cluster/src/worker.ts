@@ -16,7 +16,7 @@ class FastifyWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static readonly startFastify = async (
     workerData?: WorkerData
   ): Promise<WorkerResponse> => {
-    const { port } = workerData as WorkerData
+    const { port } = workerData!
 
     FastifyWorker.fastify = Fastify({
       logger: true

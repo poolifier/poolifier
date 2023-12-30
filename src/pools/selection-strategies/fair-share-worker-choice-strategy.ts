@@ -1,6 +1,6 @@
 import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../../utils.js'
 import type { IPool } from '../pool.js'
-import type { IWorker, StrategyData } from '../worker.js'
+import type { IWorker } from '../worker.js'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import {
   type IWorkerChoiceStrategy,
@@ -87,9 +87,10 @@ export class FairShareWorkerChoiceStrategy<
           }
         }
         return this.isWorkerNodeReady(workerNodeKey) &&
-          (workerNode.strategyData.virtualTaskEndTimestamp as number) <
-            ((workerNodes[minWorkerNodeKey].strategyData as StrategyData)
-              .virtualTaskEndTimestamp as number)
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          workerNode.strategyData.virtualTaskEndTimestamp! <
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            workerNodes[minWorkerNodeKey].strategyData!.virtualTaskEndTimestamp!
           ? workerNodeKey
           : minWorkerNodeKey
       },
@@ -131,7 +132,8 @@ export class FairShareWorkerChoiceStrategy<
         ?.virtualTaskEndTimestamp
     const now = performance.now()
     return now < (virtualTaskEndTimestamp ?? -Infinity)
-      ? (virtualTaskEndTimestamp as number)
+      ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      virtualTaskEndTimestamp!
       : now
   }
 }

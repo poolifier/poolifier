@@ -21,7 +21,7 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static readonly startWebSocketServer = (
     workerData?: WorkerData
   ): WorkerResponse => {
-    const { port } = workerData as WorkerData
+    const { port } = workerData!
 
     WebSocketServerWorker.wss = new WebSocketServer({ port }, () => {
       console.info(
@@ -50,7 +50,7 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
               JSON.stringify({
                 type: MessageType.factorial,
                 data: {
-                  number: WebSocketServerWorker.factorial(data.number as number)
+                  number: WebSocketServerWorker.factorial(data.number!)
                 }
               })
             )

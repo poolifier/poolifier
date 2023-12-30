@@ -70,15 +70,18 @@ export abstract class AbstractWorkerChoiceStrategy<
   ): void {
     this.toggleMedianMeasurementStatisticsRequirements(
       this.taskStatisticsRequirements.runTime,
-      opts.runTime?.median as boolean
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      opts.runTime!.median
     )
     this.toggleMedianMeasurementStatisticsRequirements(
       this.taskStatisticsRequirements.waitTime,
-      opts.waitTime?.median as boolean
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      opts.waitTime!.median
     )
     this.toggleMedianMeasurementStatisticsRequirements(
       this.taskStatisticsRequirements.elu,
-      opts.elu?.median as boolean
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      opts.elu!.median
     )
   }
 
@@ -141,7 +144,8 @@ export abstract class AbstractWorkerChoiceStrategy<
    * Check the next worker node readiness.
    */
   protected checkNextWorkerNodeReadiness (): void {
-    if (!this.isWorkerNodeReady(this.nextWorkerNodeKey as number)) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    if (!this.isWorkerNodeReady(this.nextWorkerNodeKey!)) {
       delete this.nextWorkerNodeKey
     }
   }

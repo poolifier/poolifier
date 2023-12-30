@@ -79,7 +79,8 @@ export class Deque<T> {
       return
     }
     const tail = this.tail
-    this.tail = (this.tail as Node<T>).prev
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.tail = this.tail!.prev
     if (this.tail == null) {
       delete this.head
     } else {
@@ -183,7 +184,8 @@ export class Deque<T> {
           value: node.data,
           done: false
         }
-        node = node.next as Node<T>
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        node = node.next!
         return ret
       }
     }
@@ -211,7 +213,8 @@ export class Deque<T> {
               value: node.data,
               done: false
             }
-            node = node.prev as Node<T>
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            node = node.prev!
             return ret
           }
         }
