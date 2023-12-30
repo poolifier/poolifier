@@ -32,7 +32,7 @@ ClusterWorkerResponse
     workerData?: ClusterWorkerData
   ): ClusterWorkerResponse => {
     const { port, workerFile, minWorkers, maxWorkers, ...poolOptions } =
-      workerData as ClusterWorkerData
+      workerData!
 
     ExpressWorker.requestHandlerPool = new DynamicThreadPool<
     ThreadWorkerData<DataPayload>,

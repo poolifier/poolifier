@@ -17,7 +17,7 @@ class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static readonly startExpress = (
     workerData?: WorkerData
   ): WorkerResponse => {
-    const { port } = workerData as WorkerData
+    const { port } = workerData!
 
     const application: Express = express()
 

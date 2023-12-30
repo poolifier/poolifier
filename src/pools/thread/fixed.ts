@@ -1,5 +1,4 @@
 import {
-  type MessageChannel,
   type MessagePort,
   type TransferListItem,
   type Worker,
@@ -63,8 +62,8 @@ export class FixedThreadPool<
   /** @inheritDoc */
   protected sendStartupMessageToWorker (workerNodeKey: number): void {
     const workerNode = this.workerNodes[workerNodeKey]
-    const port2: MessagePort = (workerNode.messageChannel as MessageChannel)
-      .port2
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const port2: MessagePort = workerNode.messageChannel!.port2
     workerNode.worker.postMessage(
       {
         ready: false,

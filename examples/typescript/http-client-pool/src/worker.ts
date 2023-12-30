@@ -11,7 +11,7 @@ class HttpClientWorker extends ThreadWorker<WorkerData, WorkerResponse> {
     super({
       node_fetch: async (workerData?: WorkerData) => {
         const response = await nodeFetch(
-          (workerData as WorkerData).input as URL | NodeFetchRequestInfo,
+          workerData!.input as URL | NodeFetchRequestInfo,
           workerData?.init as NodeFetchRequestInit
         )
         // The response is not structured-cloneable, so we return the response text body instead.
@@ -21,7 +21,7 @@ class HttpClientWorker extends ThreadWorker<WorkerData, WorkerResponse> {
       },
       fetch: async (workerData?: WorkerData) => {
         const response = await fetch(
-          (workerData as WorkerData).input as URL | RequestInfo,
+          workerData!.input as URL | RequestInfo,
           workerData?.init as RequestInit
         )
         // The response is not structured-cloneable, so we return the response text body instead.
@@ -32,7 +32,7 @@ class HttpClientWorker extends ThreadWorker<WorkerData, WorkerResponse> {
       axios: async (workerData?: WorkerData) => {
         const response = await axios({
           method: 'get',
-          url: (workerData as WorkerData).input as string,
+          url: workerData!.input as string,
           ...workerData?.axiosRequestConfig
         })
         return {

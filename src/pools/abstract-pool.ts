@@ -35,11 +35,9 @@ import {
 import type {
   IWorker,
   IWorkerNode,
-  TaskStatistics,
   WorkerInfo,
   WorkerNodeEventDetail,
-  WorkerType,
-  WorkerUsage
+  WorkerType
 } from './worker.js'
 import {
   Measurements,
@@ -212,13 +210,13 @@ export abstract class AbstractPool<
   private checkPoolOptions (opts: PoolOptions<Worker>): void {
     if (isPlainObject(opts)) {
       this.opts.startWorkers = opts.startWorkers ?? true
-      checkValidWorkerChoiceStrategy(
-        opts.workerChoiceStrategy as WorkerChoiceStrategy
-      )
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      checkValidWorkerChoiceStrategy(opts.workerChoiceStrategy!)
       this.opts.workerChoiceStrategy =
         opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
       this.checkValidWorkerChoiceStrategyOptions(
-        opts.workerChoiceStrategyOptions as WorkerChoiceStrategyOptions
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        opts.workerChoiceStrategyOptions!
       )
       if (opts.workerChoiceStrategyOptions != null) {
         this.opts.workerChoiceStrategyOptions = opts.workerChoiceStrategyOptions
@@ -227,9 +225,11 @@ export abstract class AbstractPool<
       this.opts.enableEvents = opts.enableEvents ?? true
       this.opts.enableTasksQueue = opts.enableTasksQueue ?? false
       if (this.opts.enableTasksQueue) {
-        checkValidTasksQueueOptions(opts.tasksQueueOptions as TasksQueueOptions)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        checkValidTasksQueueOptions(opts.tasksQueueOptions!)
         this.opts.tasksQueueOptions = this.buildTasksQueueOptions(
-          opts.tasksQueueOptions as TasksQueueOptions
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          opts.tasksQueueOptions!
         )
       }
     } else {
@@ -283,7 +283,8 @@ export abstract class AbstractPool<
       worker: this.worker,
       started: this.started,
       ready: this.ready,
-      strategy: this.opts.workerChoiceStrategy as WorkerChoiceStrategy,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      strategy: this.opts.workerChoiceStrategy!,
       minSize: this.minimumNumberOfWorkers,
       maxSize: this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers,
       ...(this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()
@@ -559,7 +560,8 @@ export abstract class AbstractPool<
       this.flushTasksQueues()
     }
     this.opts.enableTasksQueue = enable
-    this.setTasksQueueOptions(tasksQueueOptions as TasksQueueOptions)
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.setTasksQueueOptions(tasksQueueOptions!)
   }
 
   /** @inheritDoc */
@@ -568,7 +570,8 @@ export abstract class AbstractPool<
       checkValidTasksQueueOptions(tasksQueueOptions)
       this.opts.tasksQueueOptions =
         this.buildTasksQueueOptions(tasksQueueOptions)
-      this.setTasksQueueSize(this.opts.tasksQueueOptions.size as number)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.setTasksQueueSize(this.opts.tasksQueueOptions.size!)
       if (this.opts.tasksQueueOptions.taskStealing === true) {
         this.unsetTaskStealing()
         this.setTaskStealing()
@@ -670,7 +673,8 @@ export abstract class AbstractPool<
           workerNode =>
             workerNode.info.ready &&
             workerNode.usage.tasks.executing <
-              (this.opts.tasksQueueOptions?.concurrency as number)
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              this.opts.tasksQueueOptions!.concurrency!
         ) === -1
       )
     }
@@ -686,7 +690,8 @@ export abstract class AbstractPool<
     if (this.opts.enableTasksQueue === true) {
       return (
         this.workerNodes[workerNodeKey].usage.tasks.executing >=
-        (this.opts.tasksQueueOptions?.concurrency as number)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.opts.tasksQueueOptions!.concurrency!
       )
     }
     return this.workerNodes[workerNodeKey].usage.tasks.executing > 0
@@ -701,7 +706,8 @@ export abstract class AbstractPool<
         message: MessageValue<Response>
       ): void => {
         this.checkMessageWorkerId(message)
-        const workerId = this.getWorkerInfo(workerNodeKey).id as number
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const workerId = this.getWorkerInfo(workerNodeKey).id!
         if (
           message.taskFunctionOperationStatus != null &&
           message.workerId === workerId
@@ -713,8 +719,10 @@ export abstract class AbstractPool<
               new Error(
                 `Task function operation '${
                   message.taskFunctionOperation as string
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 }' failed on worker ${message.workerId} with error: '${
-                  message.workerError?.message as string
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  message.workerError!.message
                 }'`
               )
             )
@@ -763,10 +771,11 @@ export abstract class AbstractPool<
                 new Error(
                   `Task function operation '${
                     message.taskFunctionOperation as string
-                  }' failed on worker ${
-                    errorResponse?.workerId as number
-                  } with error: '${
-                    errorResponse?.workerError?.message as string
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  }' failed on worker ${errorResponse!
+                    .workerId!} with error: '${
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    errorResponse!.workerError!.message
                   }'`
                 )
               )
@@ -871,7 +880,8 @@ export abstract class AbstractPool<
     return (
       this.tasksQueueSize(workerNodeKey) === 0 &&
       this.workerNodes[workerNodeKey].usage.tasks.executing <
-        (this.opts.tasksQueueOptions?.concurrency as number)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.opts.tasksQueueOptions!.concurrency!
     )
   }
 
@@ -916,7 +926,8 @@ export abstract class AbstractPool<
         timestamp,
         taskId: randomUUID()
       }
-      this.promiseResponseMap.set(task.taskId as string, {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.promiseResponseMap.set(task.taskId!, {
         resolve,
         reject,
         workerNodeKey,
@@ -1002,9 +1013,8 @@ export abstract class AbstractPool<
         } else if (message.kill === 'failure') {
           reject(
             new Error(
-              `Kill message handling failed on worker ${
-                message.workerId as number
-              }`
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              `Kill message handling failed on worker ${message.workerId!}`
             )
           )
         }
@@ -1074,13 +1084,15 @@ export abstract class AbstractPool<
     }
     if (
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
-      this.workerNodes[workerNodeKey].getTaskFunctionWorkerUsage(
-        task.name as string
-      ) != null
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.workerNodes[workerNodeKey].getTaskFunctionWorkerUsage(task.name!) !=
+        null
     ) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const taskFunctionWorkerUsage = this.workerNodes[
         workerNodeKey
-      ].getTaskFunctionWorkerUsage(task.name as string) as WorkerUsage
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      ].getTaskFunctionWorkerUsage(task.name!)!
       ++taskFunctionWorkerUsage.tasks.executing
       updateWaitTimeWorkerUsage(
         this.workerChoiceStrategyContext,
@@ -1120,14 +1132,15 @@ export abstract class AbstractPool<
     if (
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       this.workerNodes[workerNodeKey].getTaskFunctionWorkerUsage(
-        message.taskPerformance?.name as string
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        message.taskPerformance!.name
       ) != null
     ) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const taskFunctionWorkerUsage = this.workerNodes[
         workerNodeKey
-      ].getTaskFunctionWorkerUsage(
-        message.taskPerformance?.name as string
-      ) as WorkerUsage
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      ].getTaskFunctionWorkerUsage(message.taskPerformance!.name)!
       updateTaskStatisticsWorkerUsage(taskFunctionWorkerUsage, message)
       updateRunTimeWorkerUsage(
         this.workerChoiceStrategyContext,
@@ -1436,7 +1449,8 @@ export abstract class AbstractPool<
       )
       this.handleTask(
         destinationWorkerNodeKey,
-        this.dequeueTask(workerNodeKey) as Task<Data>
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.dequeueTask(workerNodeKey)!
       )
     }
   }
@@ -1453,9 +1467,9 @@ export abstract class AbstractPool<
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
     ) {
-      const taskFunctionWorkerUsage = workerNode.getTaskFunctionWorkerUsage(
-        taskName
-      ) as WorkerUsage
+      const taskFunctionWorkerUsage =
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        workerNode.getTaskFunctionWorkerUsage(taskName)!
       ++taskFunctionWorkerUsage.tasks.stolen
     }
   }
@@ -1478,9 +1492,9 @@ export abstract class AbstractPool<
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
     ) {
-      const taskFunctionWorkerUsage = workerNode.getTaskFunctionWorkerUsage(
-        taskName
-      ) as WorkerUsage
+      const taskFunctionWorkerUsage =
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        workerNode.getTaskFunctionWorkerUsage(taskName)!
       ++taskFunctionWorkerUsage.tasks.sequentiallyStolen
     }
   }
@@ -1503,9 +1517,9 @@ export abstract class AbstractPool<
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
     ) {
-      const taskFunctionWorkerUsage = workerNode.getTaskFunctionWorkerUsage(
-        taskName
-      ) as WorkerUsage
+      const taskFunctionWorkerUsage =
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        workerNode.getTaskFunctionWorkerUsage(taskName)!
       taskFunctionWorkerUsage.tasks.sequentiallyStolen = 0
     }
   }
@@ -1522,8 +1536,8 @@ export abstract class AbstractPool<
     }
     if (
       this.cannotStealTask() ||
-      (this.info.stealingWorkerNodes as number) >
-        Math.floor(this.workerNodes.length / 2)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.info.stealingWorkerNodes! > Math.floor(this.workerNodes.length / 2)
     ) {
       if (previousStolenTask != null) {
         this.getWorkerInfo(workerNodeKey).stealing = false
@@ -1538,8 +1552,9 @@ export abstract class AbstractPool<
         this.tasksQueueSize(workerNodeKey) > 0)
     ) {
       this.getWorkerInfo(workerNodeKey).stealing = false
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       for (const taskName of this.workerNodes[workerNodeKey].info
-        .taskFunctionNames as string[]) {
+        .taskFunctionNames!) {
         this.resetTaskSequentiallyStolenStatisticsTaskFunctionWorkerUsage(
           workerNodeKey,
           taskName
@@ -1554,10 +1569,11 @@ export abstract class AbstractPool<
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       stolenTask != null
     ) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const taskFunctionTasksWorkerUsage = this.workerNodes[
         workerNodeKey
-      ].getTaskFunctionWorkerUsage(stolenTask.name as string)
-        ?.tasks as TaskStatistics
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      ].getTaskFunctionWorkerUsage(stolenTask.name!)!.tasks
       if (
         taskFunctionTasksWorkerUsage.sequentiallyStolen === 0 ||
         (previousStolenTask != null &&
@@ -1566,12 +1582,14 @@ export abstract class AbstractPool<
       ) {
         this.updateTaskSequentiallyStolenStatisticsTaskFunctionWorkerUsage(
           workerNodeKey,
-          stolenTask.name as string
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          stolenTask.name!
         )
       } else {
         this.resetTaskSequentiallyStolenStatisticsTaskFunctionWorkerUsage(
           workerNodeKey,
-          stolenTask.name as string
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          stolenTask.name!
         )
       }
     }
@@ -1600,13 +1618,12 @@ export abstract class AbstractPool<
         sourceWorkerNode.usage.tasks.queued > 0
     )
     if (sourceWorkerNode != null) {
-      const task = sourceWorkerNode.popTask() as Task<Data>
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const task = sourceWorkerNode.popTask()!
       this.handleTask(workerNodeKey, task)
       this.updateTaskSequentiallyStolenStatisticsWorkerUsage(workerNodeKey)
-      this.updateTaskStolenStatisticsWorkerUsage(
-        workerNodeKey,
-        task.name as string
-      )
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.updateTaskStolenStatisticsWorkerUsage(workerNodeKey, task.name!)
       return task
     }
   }
@@ -1616,14 +1633,15 @@ export abstract class AbstractPool<
   ): void => {
     if (
       this.cannotStealTask() ||
-      (this.info.stealingWorkerNodes as number) >
-        Math.floor(this.workerNodes.length / 2)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.info.stealingWorkerNodes! > Math.floor(this.workerNodes.length / 2)
     ) {
       return
     }
     const { workerId } = eventDetail
     const sizeOffset = 1
-    if ((this.opts.tasksQueueOptions?.size as number) <= sizeOffset) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    if (this.opts.tasksQueueOptions!.size! <= sizeOffset) {
       return
     }
     const sourceWorkerNode =
@@ -1641,15 +1659,15 @@ export abstract class AbstractPool<
         !workerNode.info.stealing &&
         workerNode.info.id !== workerId &&
         workerNode.usage.tasks.queued <
-          (this.opts.tasksQueueOptions?.size as number) - sizeOffset
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.opts.tasksQueueOptions!.size! - sizeOffset
       ) {
         this.getWorkerInfo(workerNodeKey).stealing = true
-        const task = sourceWorkerNode.popTask() as Task<Data>
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const task = sourceWorkerNode.popTask()!
         this.handleTask(workerNodeKey, task)
-        this.updateTaskStolenStatisticsWorkerUsage(
-          workerNodeKey,
-          task.name as string
-        )
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.updateTaskStolenStatisticsWorkerUsage(workerNodeKey, task.name!)
         this.getWorkerInfo(workerNodeKey).stealing = false
       }
     }
@@ -1680,7 +1698,8 @@ export abstract class AbstractPool<
   private handleWorkerReadyResponse (message: MessageValue<Response>): void {
     const { workerId, ready, taskFunctionNames } = message
     if (ready === false) {
-      throw new Error(`Worker ${workerId as number} failed to initialize`)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      throw new Error(`Worker ${workerId!} failed to initialize`)
     }
     const workerInfo = this.getWorkerInfo(
       this.getWorkerNodeKeyByWorkerId(workerId)
@@ -1695,7 +1714,8 @@ export abstract class AbstractPool<
 
   private handleTaskExecutionResponse (message: MessageValue<Response>): void {
     const { workerId, taskId, workerError, data } = message
-    const promiseResponse = this.promiseResponseMap.get(taskId as string)
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const promiseResponse = this.promiseResponseMap.get(taskId!)
     if (promiseResponse != null) {
       const { resolve, reject, workerNodeKey, asyncResource } = promiseResponse
       const workerNode = this.workerNodes[workerNodeKey]
@@ -1715,19 +1735,19 @@ export abstract class AbstractPool<
       }
       asyncResource?.emitDestroy()
       this.afterTaskExecutionHook(workerNodeKey, message)
-      this.promiseResponseMap.delete(taskId as string)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.promiseResponseMap.delete(taskId!)
       workerNode?.emit('taskFinished', taskId)
       if (this.opts.enableTasksQueue === true && !this.destroying) {
         const workerNodeTasksUsage = workerNode.usage.tasks
         if (
           this.tasksQueueSize(workerNodeKey) > 0 &&
           workerNodeTasksUsage.executing <
-            (this.opts.tasksQueueOptions?.concurrency as number)
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.opts.tasksQueueOptions!.concurrency!
         ) {
-          this.executeTask(
-            workerNodeKey,
-            this.dequeueTask(workerNodeKey) as Task<Data>
-          )
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.executeTask(workerNodeKey, this.dequeueTask(workerNodeKey)!)
         }
         if (
           workerNodeTasksUsage.executing === 0 &&
@@ -1735,7 +1755,8 @@ export abstract class AbstractPool<
           workerNodeTasksUsage.sequentiallyStolen === 0
         ) {
           workerNode.emit('idleWorkerNode', {
-            workerId: workerId as number,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            workerId: workerId!,
             workerNodeKey
           })
         }
@@ -1875,10 +1896,8 @@ export abstract class AbstractPool<
   protected flushTasksQueue (workerNodeKey: number): number {
     let flushedTasks = 0
     while (this.tasksQueueSize(workerNodeKey) > 0) {
-      this.executeTask(
-        workerNodeKey,
-        this.dequeueTask(workerNodeKey) as Task<Data>
-      )
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.executeTask(workerNodeKey, this.dequeueTask(workerNodeKey)!)
       ++flushedTasks
     }
     this.workerNodes[workerNodeKey].clearTasksQueue()

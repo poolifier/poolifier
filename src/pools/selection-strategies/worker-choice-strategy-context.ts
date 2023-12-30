@@ -115,11 +115,9 @@ export class WorkerChoiceStrategyContext<
    * @returns The strategy policy.
    */
   public getStrategyPolicy (): StrategyPolicy {
-    return (
-      this.workerChoiceStrategies.get(
-        this.workerChoiceStrategy
-      ) as IWorkerChoiceStrategy
-    ).strategyPolicy
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return this.workerChoiceStrategies.get(this.workerChoiceStrategy)!
+      .strategyPolicy
   }
 
   /**
@@ -128,11 +126,9 @@ export class WorkerChoiceStrategyContext<
    * @returns The task statistics requirements.
    */
   public getTaskStatisticsRequirements (): TaskStatisticsRequirements {
-    return (
-      this.workerChoiceStrategies.get(
-        this.workerChoiceStrategy
-      ) as IWorkerChoiceStrategy
-    ).taskStatisticsRequirements
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return this.workerChoiceStrategies.get(this.workerChoiceStrategy)!
+      .taskStatisticsRequirements
   }
 
   /**
@@ -155,11 +151,10 @@ export class WorkerChoiceStrategyContext<
    * @returns `true` if the update is successful, `false` otherwise.
    */
   public update (workerNodeKey: number): boolean {
-    return (
-      this.workerChoiceStrategies.get(
-        this.workerChoiceStrategy
-      ) as IWorkerChoiceStrategy
-    ).update(workerNodeKey)
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return this.workerChoiceStrategies
+      .get(this.workerChoiceStrategy)!
+      .update(workerNodeKey)
   }
 
   /**
@@ -169,9 +164,10 @@ export class WorkerChoiceStrategyContext<
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If after configured retries the worker node key is null or undefined.
    */
   public execute (): number {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const workerChoiceStrategy = this.workerChoiceStrategies.get(
       this.workerChoiceStrategy
-    ) as IWorkerChoiceStrategy
+    )!
     if (!workerChoiceStrategy.hasPoolWorkerNodesReady()) {
       return this.execute()
     }
@@ -195,10 +191,8 @@ export class WorkerChoiceStrategyContext<
         retriesCount++
       }
       chooseCount++
-    } while (
-      workerNodeKey == null &&
-      retriesCount < (this.opts?.retries as number)
-    )
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    } while (workerNodeKey == null && retriesCount < this.opts!.retries!)
     if (workerNodeKey == null) {
       throw new Error(
         `Worker node key chosen is null or undefined after ${retriesCount} retries`
@@ -214,11 +208,10 @@ export class WorkerChoiceStrategyContext<
    * @returns `true` if the removal is successful, `false` otherwise.
    */
   public remove (workerNodeKey: number): boolean {
-    return (
-      this.workerChoiceStrategies.get(
-        this.workerChoiceStrategy
-      ) as IWorkerChoiceStrategy
-    ).remove(workerNodeKey)
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return this.workerChoiceStrategies
+      .get(this.workerChoiceStrategy)!
+      .remove(workerNodeKey)
   }
 
   /**

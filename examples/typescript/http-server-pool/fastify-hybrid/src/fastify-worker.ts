@@ -13,7 +13,7 @@ ClusterWorkerResponse
   private static readonly startFastify = async (
     workerData?: ClusterWorkerData
   ): Promise<ClusterWorkerResponse> => {
-    const { port, ...fastifyPoolifierOptions } = workerData as ClusterWorkerData
+    const { port, ...fastifyPoolifierOptions } = workerData!
 
     FastifyWorker.fastify = Fastify({
       logger: true

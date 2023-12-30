@@ -121,7 +121,7 @@ module.exports = defineConfig({
         'standard-with-typescript'
       ],
       rules: {
-        '@typescript-eslint/non-nullable-type-assertion-style': 'off',
+        'operator-linebreak': 'off',
         'tsdoc/syntax': 'warn'
       }
     },
@@ -151,7 +151,8 @@ module.exports = defineConfig({
         '@typescript-eslint/no-unnecessary-type-assertion': 'off',
         '@typescript-eslint/no-redundant-type-constituents': 'off',
         '@typescript-eslint/strict-boolean-expressions': 'off',
-        '@typescript-eslint/return-await': 'off'
+        // '@typescript-eslint/return-await': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off'
       }
     },
     {

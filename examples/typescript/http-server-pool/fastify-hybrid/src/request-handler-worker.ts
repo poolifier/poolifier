@@ -24,9 +24,7 @@ class RequestHandlerWorker<
       factorial: (workerData?: Data) => {
         return {
           data: {
-            number: RequestHandlerWorker.factorial(
-              workerData?.data?.number as number
-            )
+            number: RequestHandlerWorker.factorial(workerData!.data.number!)
           }
         } as unknown as Response
       }

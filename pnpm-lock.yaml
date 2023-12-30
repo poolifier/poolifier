@@ -52,10 +52,10 @@ devDependencies:
     version: 8.56.0
   eslint-config-standard:
     specifier: ^17.1.0
-    version: 17.1.0(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.5.0)(eslint-plugin-promise@6.1.1)(eslint@8.56.0)
+    version: 17.1.0(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.6.0)(eslint-plugin-promise@6.1.1)(eslint@8.56.0)
   eslint-config-standard-with-typescript:
     specifier: ^43.0.0
-    version: 43.0.0(@typescript-eslint/eslint-plugin@6.16.0)(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.5.0)(eslint-plugin-promise@6.1.1)(eslint@8.56.0)(typescript@5.3.3)
+    version: 43.0.0(@typescript-eslint/eslint-plugin@6.16.0)(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.6.0)(eslint-plugin-promise@6.1.1)(eslint@8.56.0)(typescript@5.3.3)
   eslint-define-config:
     specifier: ^2.1.0
     version: 2.1.0
@@ -69,8 +69,8 @@ devDependencies:
     specifier: ^46.9.1
     version: 46.9.1(eslint@8.56.0)
   eslint-plugin-n:
-    specifier: ^16.5.0
-    version: 16.5.0(eslint@8.56.0)
+    specifier: ^16.6.0
+    version: 16.6.0(eslint@8.56.0)
   eslint-plugin-promise:
     specifier: ^6.1.1
     version: 6.1.1(eslint@8.56.0)
@@ -1298,16 +1298,16 @@ packages:
       through: 2.3.8
     dev: true
 
-  /acorn-jsx@5.3.2(acorn@8.11.2):
+  /acorn-jsx@5.3.2(acorn@8.11.3):
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
     dependencies:
-      acorn: 8.11.2
+      acorn: 8.11.3
     dev: true
 
-  /acorn@8.11.2:
-    resolution: {integrity: sha512-nc0Axzp/0FILLEVsm4fNwLCwMttvhEI263QtVPQcbpfZZ3ts0hLsZGOpE6czNlid7CJ9MlyH8reXkpsf3YUY4w==}
+  /acorn@8.11.3:
+    resolution: {integrity: sha512-Y9rRfJG5jcKOE0CLisYbojUjIrIEE7AGMzA/Sm4BslANhbS+cDMpgBdcPT91oJ7OuJ9hYJBx59RjbhxVnrF8Xg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
     dev: true
@@ -2458,7 +2458,7 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-config-standard-with-typescript@43.0.0(@typescript-eslint/eslint-plugin@6.16.0)(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.5.0)(eslint-plugin-promise@6.1.1)(eslint@8.56.0)(typescript@5.3.3):
+  /eslint-config-standard-with-typescript@43.0.0(@typescript-eslint/eslint-plugin@6.16.0)(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.6.0)(eslint-plugin-promise@6.1.1)(eslint@8.56.0)(typescript@5.3.3):
     resolution: {integrity: sha512-AT0qK01M5bmsWiE3UZvaQO5da1y1n6uQckAKqGNe6zPW5IOzgMLXZxw77nnFm+C11nxAZXsCPrbsgJhSrGfX6Q==}
     peerDependencies:
       '@typescript-eslint/eslint-plugin': ^6.4.0
@@ -2471,9 +2471,9 @@ packages:
       '@typescript-eslint/eslint-plugin': 6.16.0(@typescript-eslint/parser@6.16.0)(eslint@8.56.0)(typescript@5.3.3)
       '@typescript-eslint/parser': 6.16.0(eslint@8.56.0)(typescript@5.3.3)
       eslint: 8.56.0
-      eslint-config-standard: 17.1.0(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.5.0)(eslint-plugin-promise@6.1.1)(eslint@8.56.0)
+      eslint-config-standard: 17.1.0(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.6.0)(eslint-plugin-promise@6.1.1)(eslint@8.56.0)
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.16.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
-      eslint-plugin-n: 16.5.0(eslint@8.56.0)
+      eslint-plugin-n: 16.6.0(eslint@8.56.0)
       eslint-plugin-promise: 6.1.1(eslint@8.56.0)
       typescript: 5.3.3
     transitivePeerDependencies:
@@ -2494,7 +2494,7 @@ packages:
       eslint-plugin-promise: 6.1.1(eslint@8.56.0)
     dev: true
 
-  /eslint-config-standard@17.1.0(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.5.0)(eslint-plugin-promise@6.1.1)(eslint@8.56.0):
+  /eslint-config-standard@17.1.0(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.6.0)(eslint-plugin-promise@6.1.1)(eslint@8.56.0):
     resolution: {integrity: sha512-IwHwmaBNtDK4zDHQukFDW5u/aTb8+meQWZvNFWkiGmbWjD6bqyuSSBxxXKkCftCUzc1zwCH2m/baCNDLGmuO5Q==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -2505,7 +2505,7 @@ packages:
     dependencies:
       eslint: 8.56.0
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.16.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
-      eslint-plugin-n: 16.5.0(eslint@8.56.0)
+      eslint-plugin-n: 16.6.0(eslint@8.56.0)
       eslint-plugin-promise: 6.1.1(eslint@8.56.0)
     dev: true
 
@@ -2737,8 +2737,8 @@ packages:
       semver: 7.5.4
     dev: true
 
-  /eslint-plugin-n@16.5.0(eslint@8.56.0):
-    resolution: {integrity: sha512-Hw02Bj1QrZIlKyj471Tb1jSReTl4ghIMHGuBGiMVmw+s0jOPbI4CBuYpGbZr+tdQ+VAvSK6FDSta3J4ib/SKHQ==}
+  /eslint-plugin-n@16.6.0(eslint@8.56.0):
+    resolution: {integrity: sha512-Ag3tYFF90lYU8JdHEl9qSSpeLYbVnO+Oj7sgPUarWUacv1mPL3d5h5yG4Bv3tLe71hrcxmgTi7oByYwKXaVatw==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       eslint: '>=7.0.0'
@@ -2748,6 +2748,7 @@ packages:
       eslint: 8.56.0
       eslint-plugin-es-x: 7.5.0(eslint@8.56.0)
       get-tsconfig: 4.7.2
+      globals: 13.24.0
       ignore: 5.3.0
       is-builtin-module: 3.2.1
       is-core-module: 2.13.1
@@ -2907,8 +2908,8 @@ packages:
     resolution: {integrity: sha512-oruZaFkjorTpF32kDSI5/75ViwGeZginGGy2NoOSg3Q9bnwlnmDm4HLnkl0RE3n+njDXR037aY1+x58Z/zFdwQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
-      acorn: 8.11.2
-      acorn-jsx: 5.3.2(acorn@8.11.2)
+      acorn: 8.11.3
+      acorn-jsx: 5.3.2(acorn@8.11.3)
       eslint-visitor-keys: 3.4.3
     dev: true
 
@@ -6052,7 +6053,7 @@ packages:
     hasBin: true
     dependencies:
       '@jridgewell/source-map': 0.3.5
-      acorn: 8.11.2
+      acorn: 8.11.3
       commander: 2.20.3
       source-map-support: 0.5.21
     dev: true
