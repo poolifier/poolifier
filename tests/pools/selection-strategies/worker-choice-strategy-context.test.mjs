@@ -161,37 +161,9 @@ describe('Worker choice strategy context test suite', () => {
     expect(
       workerChoiceStrategyContext.workerChoiceStrategies.get(
         workerChoiceStrategyContext.workerChoiceStrategy
-      ).hasPoolWorkerNodesReady.callCount
-    ).toBe(6)
-    expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategyContext.workerChoiceStrategy
       ).choose.callCount
     ).toBe(1)
     expect(chosenWorkerKey).toBe(1)
-  })
-
-  it('Verify that execute() throws error if worker choice strategy recursion reach the maximum depth', () => {
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
-      fixedPool
-    )
-    const workerChoiceStrategyStub = createStubInstance(
-      RoundRobinWorkerChoiceStrategy,
-      {
-        hasPoolWorkerNodesReady: stub().returns(false),
-        choose: stub().returns(0)
-      }
-    )
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.ROUND_ROBIN
-    )
-    workerChoiceStrategyContext.workerChoiceStrategies.set(
-      workerChoiceStrategyContext.workerChoiceStrategy,
-      workerChoiceStrategyStub
-    )
-    expect(() => workerChoiceStrategyContext.execute()).toThrow(
-      new RangeError('Maximum call stack size exceeded')
-    )
   })
 
   it('Verify that execute() return the worker node key chosen by the strategy with dynamic pool', () => {

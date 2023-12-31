@@ -169,14 +169,10 @@ export class WorkerChoiceStrategyContext<
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If after configured retries the worker node key is null or undefined.
    */
   public execute (): number {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const workerChoiceStrategy = this.workerChoiceStrategies.get(
-      this.workerChoiceStrategy
-    )!
-    if (!workerChoiceStrategy.hasPoolWorkerNodesReady()) {
-      return this.execute()
-    }
-    return this.executeStrategy(workerChoiceStrategy)
+    return this.executeStrategy(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.workerChoiceStrategies.get(this.workerChoiceStrategy)!
+    )
   }
 
   /**
@@ -184,7 +180,7 @@ export class WorkerChoiceStrategyContext<
    *
    * @param workerChoiceStrategy - The worker choice strategy.
    * @returns The key of the worker node.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If after configured retries the worker node key is null or undefined.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If after computed retries the worker node key is null or undefined.
    */
   private executeStrategy (workerChoiceStrategy: IWorkerChoiceStrategy): number {
     let workerNodeKey: number | undefined

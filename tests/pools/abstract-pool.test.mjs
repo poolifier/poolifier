@@ -221,6 +221,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.mjs'
     )
     expect(pool.emitter).toBeInstanceOf(EventEmitterAsyncResource)
+    expect(pool.emitter.eventNames()).toStrictEqual([])
     expect(pool.opts).toStrictEqual({
       startWorkers: true,
       enableEvents: true,
