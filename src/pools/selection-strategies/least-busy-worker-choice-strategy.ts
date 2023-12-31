@@ -4,8 +4,8 @@ import type { IWorker } from '../worker.js'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
-  InternalWorkerChoiceStrategyOptions,
-  TaskStatisticsRequirements
+  TaskStatisticsRequirements,
+  WorkerChoiceStrategyOptions
 } from './selection-strategies-types.js'
 
 /**
@@ -40,7 +40,7 @@ export class LeastBusyWorkerChoiceStrategy<
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
-    opts: InternalWorkerChoiceStrategyOptions
+    opts?: WorkerChoiceStrategyOptions
   ) {
     super(pool, opts)
     this.setTaskStatisticsRequirements(this.opts)

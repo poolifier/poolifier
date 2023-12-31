@@ -1,6 +1,6 @@
-import { buildInternalWorkerChoiceStrategyOptions } from '../../utils.js'
 import type { IPool } from '../pool.js'
 import type { IWorker } from '../worker.js'
+import { getWorkerChoiceStrategyRetries } from '../../utils.js'
 import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strategy.js'
 import { InterleavedWeightedRoundRobinWorkerChoiceStrategy } from './interleaved-weighted-round-robin-worker-choice-strategy.js'
 import { LeastBusyWorkerChoiceStrategy } from './least-busy-worker-choice-strategy.js'
@@ -9,10 +9,10 @@ import { LeastEluWorkerChoiceStrategy } from './least-elu-worker-choice-strategy
 import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
-  InternalWorkerChoiceStrategyOptions,
   StrategyPolicy,
   TaskStatisticsRequirements,
-  WorkerChoiceStrategy
+  WorkerChoiceStrategy,
+  WorkerChoiceStrategyOptions
 } from './selection-strategies-types.js'
 import { WorkerChoiceStrategies } from './selection-strategies-types.js'
 import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-worker-choice-strategy.js'
@@ -29,10 +29,18 @@ export class WorkerChoiceStrategyContext<
   Data = unknown,
   Response = unknown
 > {
+  /**
+   * The worker choice strategies registered in the context.
+   */
   private readonly workerChoiceStrategies: Map<
   WorkerChoiceStrategy,
   IWorkerChoiceStrategy
   >
+
+  /**
+   * The number of worker choice strategy execution retries.
+   */
+  private readonly retries: number
 
   /**
    * Worker choice strategy context constructor.
@@ -44,12 +52,8 @@ export class WorkerChoiceStrategyContext<
   public constructor (
     pool: IPool<Worker, Data, Response>,
     private workerChoiceStrategy: WorkerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN,
-    private opts?: InternalWorkerChoiceStrategyOptions
+    opts?: WorkerChoiceStrategyOptions
   ) {
-    this.opts = buildInternalWorkerChoiceStrategyOptions(
-      pool.info.maxSize,
-      this.opts
-    )
     this.execute = this.execute.bind(this)
     this.workerChoiceStrategies = new Map<
     WorkerChoiceStrategy,
@@ -59,35 +63,35 @@ export class WorkerChoiceStrategyContext<
         WorkerChoiceStrategies.ROUND_ROBIN,
         new (RoundRobinWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
           pool,
-          this.opts
+          opts
         )
       ],
       [
         WorkerChoiceStrategies.LEAST_USED,
         new (LeastUsedWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
           pool,
-          this.opts
+          opts
         )
       ],
       [
         WorkerChoiceStrategies.LEAST_BUSY,
         new (LeastBusyWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
           pool,
-          this.opts
+          opts
         )
       ],
       [
         WorkerChoiceStrategies.LEAST_ELU,
         new (LeastEluWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
           pool,
-          this.opts
+          opts
         )
       ],
       [
         WorkerChoiceStrategies.FAIR_SHARE,
         new (FairShareWorkerChoiceStrategy.bind(this))<Worker, Data, Response>(
           pool,
-          this.opts
+          opts
         )
       ],
       [
@@ -96,7 +100,7 @@ export class WorkerChoiceStrategyContext<
         Worker,
         Data,
         Response
-        >(pool, this.opts)
+        >(pool, opts)
       ],
       [
         WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN,
@@ -104,9 +108,10 @@ export class WorkerChoiceStrategyContext<
         Worker,
         Data,
         Response
-        >(pool, this.opts)
+        >(pool, opts)
       ]
     ])
+    this.retries = getWorkerChoiceStrategyRetries(pool, opts)
   }
 
   /**
@@ -191,8 +196,7 @@ export class WorkerChoiceStrategyContext<
         retriesCount++
       }
       chooseCount++
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    } while (workerNodeKey == null && retriesCount < this.opts!.retries!)
+    } while (workerNodeKey == null && retriesCount < this.retries)
     if (workerNodeKey == null) {
       throw new Error(
         `Worker node key chosen is null or undefined after ${retriesCount} retries`
@@ -217,19 +221,11 @@ export class WorkerChoiceStrategyContext<
   /**
    * Sets the worker choice strategies in the context options.
    *
-   * @param pool - The pool instance.
    * @param opts - The worker choice strategy options.
    */
-  public setOptions (
-    pool: IPool<Worker, Data, Response>,
-    opts?: InternalWorkerChoiceStrategyOptions
-  ): void {
-    this.opts = buildInternalWorkerChoiceStrategyOptions(
-      pool.info.maxSize,
-      opts
-    )
+  public setOptions (opts: WorkerChoiceStrategyOptions | undefined): void {
     for (const workerChoiceStrategy of this.workerChoiceStrategies.values()) {
-      workerChoiceStrategy.setOptions(this.opts)
+      workerChoiceStrategy.setOptions(opts)
     }
   }
 }

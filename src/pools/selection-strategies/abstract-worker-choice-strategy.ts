@@ -1,15 +1,15 @@
 import {
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-  buildInternalWorkerChoiceStrategyOptions
+  buildWorkerChoiceStrategyOptions
 } from '../../utils.js'
 import type { IPool } from '../pool.js'
 import type { IWorker } from '../worker.js'
 import type {
   IWorkerChoiceStrategy,
-  InternalWorkerChoiceStrategyOptions,
   MeasurementStatisticsRequirements,
   StrategyPolicy,
-  TaskStatisticsRequirements
+  TaskStatisticsRequirements,
+  WorkerChoiceStrategyOptions
 } from './selection-strategies-types.js'
 
 /**
@@ -55,10 +55,10 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   public constructor (
     protected readonly pool: IPool<Worker, Data, Response>,
-    protected opts: InternalWorkerChoiceStrategyOptions
+    protected opts?: WorkerChoiceStrategyOptions
   ) {
-    this.opts = buildInternalWorkerChoiceStrategyOptions(
-      this.pool.info.maxSize,
+    this.opts = buildWorkerChoiceStrategyOptions<Worker, Data, Response>(
+      this.pool,
       this.opts
     )
     this.setTaskStatisticsRequirements(this.opts)
@@ -66,22 +66,22 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   protected setTaskStatisticsRequirements (
-    opts: InternalWorkerChoiceStrategyOptions
+    opts: WorkerChoiceStrategyOptions | undefined
   ): void {
     this.toggleMedianMeasurementStatisticsRequirements(
       this.taskStatisticsRequirements.runTime,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      opts.runTime!.median
+      opts!.runTime!.median
     )
     this.toggleMedianMeasurementStatisticsRequirements(
       this.taskStatisticsRequirements.waitTime,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      opts.waitTime!.median
+      opts!.waitTime!.median
     )
     this.toggleMedianMeasurementStatisticsRequirements(
       this.taskStatisticsRequirements.elu,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      opts.elu!.median
+      opts!.elu!.median
     )
   }
 
@@ -117,9 +117,9 @@ export abstract class AbstractWorkerChoiceStrategy<
   public abstract remove (workerNodeKey: number): boolean
 
   /** @inheritDoc */
-  public setOptions (opts: InternalWorkerChoiceStrategyOptions): void {
-    this.opts = buildInternalWorkerChoiceStrategyOptions(
-      this.pool.info.maxSize,
+  public setOptions (opts: WorkerChoiceStrategyOptions | undefined): void {
+    this.opts = buildWorkerChoiceStrategyOptions<Worker, Data, Response>(
+      this.pool,
       opts
     )
     this.setTaskStatisticsRequirements(this.opts)

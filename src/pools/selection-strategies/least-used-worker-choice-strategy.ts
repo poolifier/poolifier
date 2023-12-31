@@ -3,7 +3,7 @@ import type { IWorker } from '../worker.js'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
-  InternalWorkerChoiceStrategyOptions
+  WorkerChoiceStrategyOptions
 } from './selection-strategies-types.js'
 
 /**
@@ -23,7 +23,7 @@ export class LeastUsedWorkerChoiceStrategy<
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
-    opts: InternalWorkerChoiceStrategyOptions
+    opts?: WorkerChoiceStrategyOptions
   ) {
     super(pool, opts)
   }

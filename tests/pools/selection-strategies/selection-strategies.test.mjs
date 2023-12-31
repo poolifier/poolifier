@@ -66,19 +66,6 @@ describe('Selection strategies test suite', () => {
       expect(pool.workerChoiceStrategyContext.workerChoiceStrategy).toBe(
         workerChoiceStrategy
       )
-      expect(pool.opts.workerChoiceStrategyOptions).toBeUndefined()
-      expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-        retries:
-          pool.info.maxSize +
-          Object.keys(pool.workerChoiceStrategyContext.opts.weights).length,
-        runTime: { median: false },
-        waitTime: { median: false },
-        elu: { median: false },
-        weights: expect.objectContaining({
-          0: expect.any(Number),
-          [pool.info.maxSize - 1]: expect.any(Number)
-        })
-      })
       await pool.destroy()
     }
     for (const workerChoiceStrategy of Object.values(WorkerChoiceStrategies)) {
@@ -92,19 +79,6 @@ describe('Selection strategies test suite', () => {
       expect(pool.workerChoiceStrategyContext.workerChoiceStrategy).toBe(
         workerChoiceStrategy
       )
-      expect(pool.opts.workerChoiceStrategyOptions).toBeUndefined()
-      expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-        retries:
-          pool.info.maxSize +
-          Object.keys(pool.workerChoiceStrategyContext.opts.weights).length,
-        runTime: { median: false },
-        waitTime: { median: false },
-        elu: { median: false },
-        weights: expect.objectContaining({
-          0: expect.any(Number),
-          [pool.info.maxSize - 1]: expect.any(Number)
-        })
-      })
       await pool.destroy()
     }
   })

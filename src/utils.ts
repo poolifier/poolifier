@@ -4,11 +4,12 @@ import { Worker as ClusterWorker } from 'node:cluster'
 import { Worker as ThreadWorker } from 'node:worker_threads'
 import { cpus } from 'node:os'
 import type {
-  InternalWorkerChoiceStrategyOptions,
-  MeasurementStatisticsRequirements
+  MeasurementStatisticsRequirements,
+  WorkerChoiceStrategyOptions
 } from './pools/selection-strategies/selection-strategies-types.js'
 import type { KillBehavior } from './worker/worker-options.js'
 import { type IWorker, type WorkerType, WorkerTypes } from './pools/worker.js'
+import type { IPool } from './pools/pool.js'
 
 /**
  * Default task name.
@@ -21,23 +22,6 @@ export const DEFAULT_TASK_NAME = 'default'
 export const EMPTY_FUNCTION: () => void = Object.freeze(() => {
   /* Intentionally empty */
 })
-
-/**
- * Gets default worker choice strategy options.
- *
- * @param retries - The number of worker choice retries.
- * @returns The default worker choice strategy options.
- */
-const getDefaultInternalWorkerChoiceStrategyOptions = (
-  retries: number
-): InternalWorkerChoiceStrategyOptions => {
-  return {
-    retries,
-    runTime: { median: false },
-    waitTime: { median: false },
-    elu: { median: false }
-  }
-}
 
 /**
  * Default measurement statistics requirements.
@@ -282,22 +266,40 @@ export const once = <T, A extends any[], R>(
   }
 }
 
+export const getWorkerChoiceStrategyRetries = <
+  Worker extends IWorker,
+  Data,
+  Response
+>(
+    pool: IPool<Worker, Data, Response>,
+    opts?: WorkerChoiceStrategyOptions
+  ): number => {
+  return (
+    pool.info.maxSize +
+    Object.keys(opts?.weights ?? getDefaultWeights(pool.info.maxSize)).length
+  )
+}
+
 const clone = <T>(object: T): T => {
   return structuredClone<T>(object)
 }
 
-export const buildInternalWorkerChoiceStrategyOptions = (
-  poolMaxSize: number,
-  opts?: InternalWorkerChoiceStrategyOptions
-): InternalWorkerChoiceStrategyOptions => {
+export const buildWorkerChoiceStrategyOptions = <
+  Worker extends IWorker,
+  Data,
+  Response
+>(
+    pool: IPool<Worker, Data, Response>,
+    opts?: WorkerChoiceStrategyOptions
+  ): WorkerChoiceStrategyOptions => {
   opts = clone(opts ?? {})
-  if (opts?.weights == null) {
-    opts.weights = getDefaultWeights(poolMaxSize)
-  }
+  opts.weights = opts?.weights ?? getDefaultWeights(pool.info.maxSize)
   return {
-    ...getDefaultInternalWorkerChoiceStrategyOptions(
-      poolMaxSize + Object.keys(opts.weights).length
-    ),
+    ...{
+      runTime: { median: false },
+      waitTime: { median: false },
+      elu: { median: false }
+    },
     ...opts
   }
 }
