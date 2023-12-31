@@ -121,11 +121,6 @@ export abstract class AbstractWorkerChoiceStrategy<
     this.setTaskStatisticsRequirements(this.opts)
   }
 
-  /** @inheritDoc */
-  public hasPoolWorkerNodesReady (): boolean {
-    return this.pool.workerNodes.some(workerNode => workerNode.info.ready)
-  }
-
   /**
    * Whether the worker node is ready or not.
    *
