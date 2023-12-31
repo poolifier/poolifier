@@ -30,7 +30,7 @@ export class WorkerChoiceStrategyContext<
   Response = unknown
 > {
   /**
-   * The worker choice strategies registered in the context.
+   * The worker choice strategy instances registered in the context.
    */
   private readonly workerChoiceStrategies: Map<
   WorkerChoiceStrategy,
