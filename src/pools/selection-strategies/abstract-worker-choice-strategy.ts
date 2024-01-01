@@ -57,8 +57,8 @@ export abstract class AbstractWorkerChoiceStrategy<
     protected readonly pool: IPool<Worker, Data, Response>,
     protected opts?: WorkerChoiceStrategyOptions
   ) {
-    this.setOptions(this.opts)
     this.choose = this.choose.bind(this)
+    this.setOptions(this.opts)
   }
 
   protected setTaskStatisticsRequirements (

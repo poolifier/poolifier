@@ -1845,14 +1845,6 @@ export abstract class AbstractPool<
     this.getWorkerInfo(workerNodeKey).ready = false
   }
 
-  /** @inheritDoc */
-  public hasWorkerNodeBackPressure (workerNodeKey: number): boolean {
-    return (
-      this.opts.enableTasksQueue === true &&
-      this.workerNodes[workerNodeKey].hasBackPressure()
-    )
-  }
-
   private hasBackPressure (): boolean {
     return (
       this.opts.enableTasksQueue === true &&
