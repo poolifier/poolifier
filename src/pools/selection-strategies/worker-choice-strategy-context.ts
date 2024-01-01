@@ -166,7 +166,7 @@ export class WorkerChoiceStrategyContext<
    * Executes the worker choice strategy in the context algorithm.
    *
    * @returns The key of the worker node.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If after configured retries the worker node key is null or undefined.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If after computed retries the worker node key is null or undefined.
    */
   public execute (): number {
     return this.executeStrategy(
