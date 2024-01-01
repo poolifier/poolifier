@@ -5,7 +5,6 @@
     "EditorConfig.EditorConfig",
     "dbaeumer.vscode-eslint",
     "sonarsource.sonarlint-vscode",
-    "standard.vscode-standard",
     "streetsidesoftware.code-spell-checker"
   ]
 }
