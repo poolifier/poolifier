@@ -241,14 +241,6 @@ export interface IPool<
    */
   readonly workerNodes: Array<IWorkerNode<Worker, Data>>
   /**
-   * Whether the worker node has back pressure (i.e. its tasks queue is full).
-   *
-   * @param workerNodeKey - The worker node key.
-   * @returns `true` if the worker node has back pressure, `false` otherwise.
-   * @internal
-   */
-  readonly hasWorkerNodeBackPressure: (workerNodeKey: number) => boolean
-  /**
    * Event emitter integrated with async resource on which events can be listened to.
    * The async tracking tooling identifier is `poolifier:<PoolType>-<WorkerType>-pool`.
    *

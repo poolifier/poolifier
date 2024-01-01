@@ -1742,8 +1742,8 @@ export abstract class AbstractPool<
     workerNode.info.ready = ready
     workerNode.info.taskFunctionNames = taskFunctionNames
     if (!this.readyEventEmitted && this.ready) {
-      this.readyEventEmitted = true
       this.emitter?.emit(PoolEvents.ready, this.info)
+      this.readyEventEmitted = true
     }
   }
 
@@ -1883,14 +1883,6 @@ export abstract class AbstractPool<
 
   protected flagWorkerNodeAsNotReady (workerNodeKey: number): void {
     this.getWorkerInfo(workerNodeKey).ready = false
-  }
-
-  /** @inheritDoc */
-  public hasWorkerNodeBackPressure (workerNodeKey: number): boolean {
-    return (
-      this.opts.enableTasksQueue === true &&
-      this.workerNodes[workerNodeKey].hasBackPressure()
-    )
   }
 
   private hasBackPressure (): boolean {

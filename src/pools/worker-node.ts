@@ -5,12 +5,9 @@ import type { Task } from '../utility-types.js'
 import { DEFAULT_TASK_NAME, getWorkerId, getWorkerType } from '../utils.js'
 import { Deque } from '../deque.js'
 import {
-  type ErrorHandler,
-  type ExitHandler,
+  type EventHandler,
   type IWorker,
   type IWorkerNode,
-  type MessageHandler,
-  type OnlineHandler,
   type StrategyData,
   type WorkerInfo,
   type WorkerNodeOptions,
@@ -157,11 +154,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   /** @inheritdoc */
   public registerWorkerEventHandler (
     event: string,
-    handler:
-    | OnlineHandler<Worker>
-    | MessageHandler<Worker>
-    | ErrorHandler<Worker>
-    | ExitHandler<Worker>
+    handler: EventHandler<Worker>
   ): void {
     this.worker.on(event, handler)
   }
@@ -169,11 +162,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   /** @inheritdoc */
   public registerOnceWorkerEventHandler (
     event: string,
-    handler:
-    | OnlineHandler<Worker>
-    | MessageHandler<Worker>
-    | ErrorHandler<Worker>
-    | ExitHandler<Worker>
+    handler: EventHandler<Worker>
   ): void {
     this.worker.once(event, handler)
   }
