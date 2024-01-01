@@ -41,6 +41,17 @@ export type ExitHandler<Worker extends IWorker> = (
 ) => void
 
 /**
+ * Worker event handler.
+ *
+ * @typeParam Worker - Type of worker.
+ */
+export type EventHandler<Worker extends IWorker> =
+  | OnlineHandler<Worker>
+  | MessageHandler<Worker>
+  | ErrorHandler<Worker>
+  | ExitHandler<Worker>
+
+/**
  * Measurement statistics.
  *
  * @internal
@@ -216,28 +227,14 @@ export interface IWorker {
    * @param event - The event.
    * @param handler - The event handler.
    */
-  readonly on: (
-    event: string,
-    handler:
-    | OnlineHandler<this>
-    | MessageHandler<this>
-    | ErrorHandler<this>
-    | ExitHandler<this>
-  ) => void
+  readonly on: (event: string, handler: EventHandler<this>) => void
   /**
    * Registers once an event handler.
    *
    * @param event - The event.
    * @param handler - The event handler.
    */
-  readonly once: (
-    event: string,
-    handler:
-    | OnlineHandler<this>
-    | MessageHandler<this>
-    | ErrorHandler<this>
-    | ExitHandler<this>
-  ) => void
+  readonly once: (event: string, handler: EventHandler<this>) => void
   /**
    * Stop all JavaScript execution in the worker thread as soon as possible.
    * Returns a Promise for the exit code that is fulfilled when the `'exit' event` is emitted.
@@ -357,11 +354,7 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   readonly registerWorkerEventHandler: (
     event: string,
-    handler:
-    | OnlineHandler<Worker>
-    | MessageHandler<Worker>
-    | ErrorHandler<Worker>
-    | ExitHandler<Worker>
+    handler: EventHandler<Worker>
   ) => void
   /**
    * Registers once a worker event handler.
@@ -371,11 +364,7 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   readonly registerOnceWorkerEventHandler: (
     event: string,
-    handler:
-    | OnlineHandler<Worker>
-    | MessageHandler<Worker>
-    | ErrorHandler<Worker>
-    | ExitHandler<Worker>
+    handler: EventHandler<Worker>
   ) => void
   /**
    * Gets task function worker usage statistics.
