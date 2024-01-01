@@ -4,9 +4,9 @@ import type { IWorker } from '../worker.js'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import {
   type IWorkerChoiceStrategy,
-  type InternalWorkerChoiceStrategyOptions,
   Measurements,
-  type TaskStatisticsRequirements
+  type TaskStatisticsRequirements,
+  type WorkerChoiceStrategyOptions
 } from './selection-strategies-types.js'
 
 /**
@@ -42,7 +42,7 @@ export class FairShareWorkerChoiceStrategy<
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
-    opts: InternalWorkerChoiceStrategyOptions
+    opts?: WorkerChoiceStrategyOptions
   ) {
     super(pool, opts)
     this.setTaskStatisticsRequirements(this.opts)
@@ -78,6 +78,9 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   private fairShareNextWorkerNodeKey (): number | undefined {
+    if (this.pool.workerNodes.length === 0) {
+      return undefined
+    }
     return this.pool.workerNodes.reduce(
       (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
         if (workerNode.strategyData?.virtualTaskEndTimestamp == null) {
@@ -118,7 +121,8 @@ export class FairShareWorkerChoiceStrategy<
     workerNodeVirtualTaskStartTimestamp: number
   ): number {
     const workerNodeTaskRunTime =
-      this.opts.measurement === Measurements.elu
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.opts!.measurement === Measurements.elu
         ? this.getWorkerNodeTaskElu(workerNodeKey)
         : this.getWorkerNodeTaskRunTime(workerNodeKey)
     return workerNodeVirtualTaskStartTimestamp + workerNodeTaskRunTime

@@ -41,12 +41,99 @@ describe('Worker choice strategy context test suite', () => {
   })
 
   it('Verify that constructor() initializes the context with all the available worker choice strategies', () => {
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
-      fixedPool
-    )
+    let workerChoiceStrategyContext = new WorkerChoiceStrategyContext(fixedPool)
     expect(workerChoiceStrategyContext.workerChoiceStrategies.size).toBe(
       Object.keys(WorkerChoiceStrategies).length
     )
+    workerChoiceStrategyContext = new WorkerChoiceStrategyContext(dynamicPool)
+    expect(workerChoiceStrategyContext.workerChoiceStrategies.size).toBe(
+      Object.keys(WorkerChoiceStrategies).length
+    )
+  })
+
+  it('Verify that constructor() initializes the context with retries attribute properly set', () => {
+    let workerChoiceStrategyContext = new WorkerChoiceStrategyContext(fixedPool)
+    expect(workerChoiceStrategyContext.retries).toBe(fixedPool.info.maxSize * 2)
+    workerChoiceStrategyContext = new WorkerChoiceStrategyContext(dynamicPool)
+    expect(workerChoiceStrategyContext.retries).toBe(
+      dynamicPool.info.maxSize * 2
+    )
+  })
+
+  it('Verify that execute() throws error if null or undefined is returned after retries', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
+      WorkerChoiceStrategies.ROUND_ROBIN
+    )
+    const workerChoiceStrategyUndefinedStub = createStubInstance(
+      RoundRobinWorkerChoiceStrategy,
+      {
+        choose: stub().returns(undefined)
+      }
+    )
+    workerChoiceStrategyContext.workerChoiceStrategies.set(
+      workerChoiceStrategyContext.workerChoiceStrategy,
+      workerChoiceStrategyUndefinedStub
+    )
+    expect(() => workerChoiceStrategyContext.execute()).toThrow(
+      new Error(
+        `Worker node key chosen is null or undefined after ${workerChoiceStrategyContext.retries} retries`
+      )
+    )
+    const workerChoiceStrategyNullStub = createStubInstance(
+      RoundRobinWorkerChoiceStrategy,
+      {
+        choose: stub().returns(null)
+      }
+    )
+    workerChoiceStrategyContext.workerChoiceStrategies.set(
+      workerChoiceStrategyContext.workerChoiceStrategy,
+      workerChoiceStrategyNullStub
+    )
+    expect(() => workerChoiceStrategyContext.execute()).toThrow(
+      new Error(
+        `Worker node key chosen is null or undefined after ${workerChoiceStrategyContext.retries} retries`
+      )
+    )
+  })
+
+  it('Verify that execute() retry until a worker node is chosen', () => {
+    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+      fixedPool
+    )
+    const workerChoiceStrategyStub = createStubInstance(
+      RoundRobinWorkerChoiceStrategy,
+      {
+        choose: stub()
+          .onCall(0)
+          .returns(undefined)
+          .onCall(1)
+          .returns(undefined)
+          .onCall(2)
+          .returns(undefined)
+          .onCall(3)
+          .returns(undefined)
+          .onCall(4)
+          .returns(undefined)
+          .returns(1)
+      }
+    )
+    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
+      WorkerChoiceStrategies.ROUND_ROBIN
+    )
+    workerChoiceStrategyContext.workerChoiceStrategies.set(
+      workerChoiceStrategyContext.workerChoiceStrategy,
+      workerChoiceStrategyStub
+    )
+    const chosenWorkerKey = workerChoiceStrategyContext.execute()
+    expect(
+      workerChoiceStrategyContext.workerChoiceStrategies.get(
+        workerChoiceStrategyContext.workerChoiceStrategy
+      ).choose.callCount
+    ).toBe(6)
+    expect(chosenWorkerKey).toBe(1)
   })
 
   it('Verify that execute() return the worker node key chosen by the strategy with fixed pool', () => {
@@ -56,7 +143,6 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyStub = createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
-        hasPoolWorkerNodesReady: stub().returns(true),
         choose: stub().returns(0)
       }
     )
@@ -76,119 +162,6 @@ describe('Worker choice strategy context test suite', () => {
     expect(chosenWorkerKey).toBe(0)
   })
 
-  it('Verify that execute() throws error if null or undefined is returned after retries', () => {
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
-      fixedPool
-    )
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.ROUND_ROBIN
-    )
-    const workerChoiceStrategyUndefinedStub = createStubInstance(
-      RoundRobinWorkerChoiceStrategy,
-      {
-        hasPoolWorkerNodesReady: stub().returns(true),
-        choose: stub().returns(undefined)
-      }
-    )
-    workerChoiceStrategyContext.workerChoiceStrategies.set(
-      workerChoiceStrategyContext.workerChoiceStrategy,
-      workerChoiceStrategyUndefinedStub
-    )
-    expect(() => workerChoiceStrategyContext.execute()).toThrow(
-      new Error(
-        `Worker node key chosen is null or undefined after ${
-          fixedPool.info.maxSize +
-          Object.keys(workerChoiceStrategyContext.opts.weights).length
-        } retries`
-      )
-    )
-    const workerChoiceStrategyNullStub = createStubInstance(
-      RoundRobinWorkerChoiceStrategy,
-      {
-        hasPoolWorkerNodesReady: stub().returns(true),
-        choose: stub().returns(null)
-      }
-    )
-    workerChoiceStrategyContext.workerChoiceStrategies.set(
-      workerChoiceStrategyContext.workerChoiceStrategy,
-      workerChoiceStrategyNullStub
-    )
-    expect(() => workerChoiceStrategyContext.execute()).toThrow(
-      new Error(
-        `Worker node key chosen is null or undefined after ${
-          fixedPool.info.maxSize +
-          Object.keys(workerChoiceStrategyContext.opts.weights).length
-        } retries`
-      )
-    )
-  })
-
-  it('Verify that execute() retry until a worker node is ready and chosen', () => {
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
-      fixedPool
-    )
-    const workerChoiceStrategyStub = createStubInstance(
-      RoundRobinWorkerChoiceStrategy,
-      {
-        hasPoolWorkerNodesReady: stub()
-          .onCall(0)
-          .returns(false)
-          .onCall(1)
-          .returns(false)
-          .onCall(2)
-          .returns(false)
-          .onCall(3)
-          .returns(false)
-          .onCall(4)
-          .returns(false)
-          .returns(true),
-        choose: stub().returns(1)
-      }
-    )
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.ROUND_ROBIN
-    )
-    workerChoiceStrategyContext.workerChoiceStrategies.set(
-      workerChoiceStrategyContext.workerChoiceStrategy,
-      workerChoiceStrategyStub
-    )
-    const chosenWorkerKey = workerChoiceStrategyContext.execute()
-    expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategyContext.workerChoiceStrategy
-      ).hasPoolWorkerNodesReady.callCount
-    ).toBe(6)
-    expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategyContext.workerChoiceStrategy
-      ).choose.callCount
-    ).toBe(1)
-    expect(chosenWorkerKey).toBe(1)
-  })
-
-  it('Verify that execute() throws error if worker choice strategy recursion reach the maximum depth', () => {
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
-      fixedPool
-    )
-    const workerChoiceStrategyStub = createStubInstance(
-      RoundRobinWorkerChoiceStrategy,
-      {
-        hasPoolWorkerNodesReady: stub().returns(false),
-        choose: stub().returns(0)
-      }
-    )
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.ROUND_ROBIN
-    )
-    workerChoiceStrategyContext.workerChoiceStrategies.set(
-      workerChoiceStrategyContext.workerChoiceStrategy,
-      workerChoiceStrategyStub
-    )
-    expect(() => workerChoiceStrategyContext.execute()).toThrow(
-      new RangeError('Maximum call stack size exceeded')
-    )
-  })
-
   it('Verify that execute() return the worker node key chosen by the strategy with dynamic pool', () => {
     const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
       dynamicPool
@@ -196,7 +169,6 @@ describe('Worker choice strategy context test suite', () => {
     const workerChoiceStrategyStub = createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
-        hasPoolWorkerNodesReady: stub().returns(true),
         choose: stub().returns(0)
       }
     )

@@ -99,21 +99,6 @@ export interface WorkerChoiceStrategyOptions {
 }
 
 /**
- * Worker choice strategy internal options.
- *
- * @internal
- */
-export interface InternalWorkerChoiceStrategyOptions
-  extends WorkerChoiceStrategyOptions {
-  /**
-   * Number of worker choice retries to perform if no worker is eligible.
-   *
-   * @defaultValue pool maximum size
-   */
-  readonly retries?: number
-}
-
-/**
  * Measurement statistics requirements.
  *
  * @internal
@@ -216,11 +201,5 @@ export interface IWorkerChoiceStrategy {
    *
    * @param opts - The worker choice strategy options.
    */
-  readonly setOptions: (opts: WorkerChoiceStrategyOptions) => void
-  /**
-   * Whether the pool has worker nodes ready or not.
-   *
-   * @returns Whether the pool has worker nodes ready or not.
-   */
-  readonly hasPoolWorkerNodesReady: () => boolean
+  readonly setOptions: (opts: WorkerChoiceStrategyOptions | undefined) => void
 }

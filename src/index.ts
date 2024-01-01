@@ -35,7 +35,6 @@ export {
 } from './pools/selection-strategies/selection-strategies-types.js'
 export type {
   IWorkerChoiceStrategy,
-  InternalWorkerChoiceStrategyOptions,
   Measurement,
   MeasurementOptions,
   MeasurementStatisticsRequirements,

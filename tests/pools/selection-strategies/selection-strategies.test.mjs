@@ -66,19 +66,6 @@ describe('Selection strategies test suite', () => {
       expect(pool.workerChoiceStrategyContext.workerChoiceStrategy).toBe(
         workerChoiceStrategy
       )
-      expect(pool.opts.workerChoiceStrategyOptions).toBeUndefined()
-      expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-        retries:
-          pool.info.maxSize +
-          Object.keys(pool.workerChoiceStrategyContext.opts.weights).length,
-        runTime: { median: false },
-        waitTime: { median: false },
-        elu: { median: false },
-        weights: expect.objectContaining({
-          0: expect.any(Number),
-          [pool.info.maxSize - 1]: expect.any(Number)
-        })
-      })
       await pool.destroy()
     }
     for (const workerChoiceStrategy of Object.values(WorkerChoiceStrategies)) {
@@ -92,19 +79,6 @@ describe('Selection strategies test suite', () => {
       expect(pool.workerChoiceStrategyContext.workerChoiceStrategy).toBe(
         workerChoiceStrategy
       )
-      expect(pool.opts.workerChoiceStrategyOptions).toBeUndefined()
-      expect(pool.workerChoiceStrategyContext.opts).toStrictEqual({
-        retries:
-          pool.info.maxSize +
-          Object.keys(pool.workerChoiceStrategyContext.opts.weights).length,
-        runTime: { median: false },
-        waitTime: { median: false },
-        elu: { median: false },
-        weights: expect.objectContaining({
-          0: expect.any(Number),
-          [pool.info.maxSize - 1]: expect.any(Number)
-        })
-      })
       await pool.destroy()
     }
   })
@@ -166,25 +140,6 @@ describe('Selection strategies test suite', () => {
         ).toBe(true)
       }
     }
-    await pool.destroy()
-  })
-
-  it('Verify strategies wait for worker node readiness in dynamic pool', async () => {
-    const pool = new DynamicThreadPool(
-      min,
-      max,
-      './tests/worker-files/thread/testWorker.mjs'
-    )
-    expect(pool.starting).toBe(false)
-    expect(pool.workerNodes.length).toBe(min)
-    const maxMultiplier = 10000
-    const promises = new Set()
-    for (let i = 0; i < max * maxMultiplier; i++) {
-      promises.add(pool.execute())
-    }
-    await Promise.all(promises)
-    expect(pool.workerNodes.length).toBe(max)
-    // We need to clean up the resources after our test
     await pool.destroy()
   })
 

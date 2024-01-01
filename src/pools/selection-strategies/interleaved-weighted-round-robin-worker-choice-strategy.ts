@@ -4,8 +4,8 @@ import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../../utils.js'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
-  InternalWorkerChoiceStrategyOptions,
-  TaskStatisticsRequirements
+  TaskStatisticsRequirements,
+  WorkerChoiceStrategyOptions
 } from './selection-strategies-types.js'
 
 /**
@@ -53,7 +53,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
-    opts: InternalWorkerChoiceStrategyOptions
+    opts?: WorkerChoiceStrategyOptions
   ) {
     super(pool, opts)
     this.setTaskStatisticsRequirements(this.opts)
@@ -95,7 +95,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
           this.workerNodeVirtualTaskRunTime = 0
         }
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const workerWeight = this.opts.weights![workerNodeKey]!
+        const workerWeight = this.opts!.weights![workerNodeKey]!
         if (
           this.isWorkerNodeReady(workerNodeKey) &&
           workerWeight >= this.roundWeights[roundIndex] &&
@@ -149,7 +149,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public setOptions (opts: InternalWorkerChoiceStrategyOptions): void {
+  public setOptions (opts: WorkerChoiceStrategyOptions | undefined): void {
     super.setOptions(opts)
     this.roundWeights = this.getRoundWeights()
   }
@@ -158,7 +158,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
     return [
       ...new Set(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        Object.values(this.opts.weights!)
+        Object.values(this.opts!.weights!)
           .slice()
           .sort((a, b) => a - b)
       )

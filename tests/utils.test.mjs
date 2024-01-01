@@ -9,8 +9,9 @@ import {
   EMPTY_FUNCTION,
   availableParallelism,
   average,
-  buildInternalWorkerChoiceStrategyOptions,
+  buildWorkerChoiceStrategyOptions,
   exponentialDelay,
+  getWorkerChoiceStrategyRetries,
   getWorkerId,
   getWorkerType,
   isAsyncFunction,
@@ -24,7 +25,12 @@ import {
   secureRandom,
   sleep
 } from '../lib/utils.cjs'
-import { KillBehaviors, WorkerTypes } from '../lib/index.cjs'
+import {
+  FixedClusterPool,
+  FixedThreadPool,
+  KillBehaviors,
+  WorkerTypes
+} from '../lib/index.cjs'
 
 describe('Utils test suite', () => {
   it('Verify DEFAULT_TASK_NAME value', () => {
@@ -231,22 +237,59 @@ describe('Utils test suite', () => {
     expect(max(1, 1)).toBe(1)
   })
 
-  it('Verify buildInternalWorkerChoiceStrategyOptions() behavior', () => {
-    const poolMaxSize = 10
-    const internalWorkerChoiceStrategyOptions =
-      buildInternalWorkerChoiceStrategyOptions(poolMaxSize)
-    expect(internalWorkerChoiceStrategyOptions).toStrictEqual({
-      retries:
-        poolMaxSize +
-        Object.keys(internalWorkerChoiceStrategyOptions.weights).length,
+  it('Verify getWorkerChoiceStrategyRetries() behavior', async () => {
+    const numberOfThreads = 4
+    const pool = new FixedThreadPool(
+      numberOfThreads,
+      './tests/worker-files/thread/testWorker.mjs'
+    )
+    expect(getWorkerChoiceStrategyRetries(pool)).toBe(pool.info.maxSize * 2)
+    const workerChoiceStrategyOptions = {
+      runTime: { median: true },
+      waitTime: { median: true },
+      elu: { median: true },
+      weights: {
+        0: 100,
+        1: 100
+      }
+    }
+    expect(
+      getWorkerChoiceStrategyRetries(pool, workerChoiceStrategyOptions)
+    ).toBe(
+      pool.info.maxSize +
+        Object.keys(workerChoiceStrategyOptions.weights).length
+    )
+    await pool.destroy()
+  })
+
+  it('Verify buildWorkerChoiceStrategyOptions() behavior', async () => {
+    const numberOfWorkers = 4
+    const pool = new FixedClusterPool(
+      numberOfWorkers,
+      './tests/worker-files/cluster/testWorker.cjs'
+    )
+    expect(buildWorkerChoiceStrategyOptions(pool)).toStrictEqual({
       runTime: { median: false },
       waitTime: { median: false },
       elu: { median: false },
       weights: expect.objectContaining({
         0: expect.any(Number),
-        [poolMaxSize - 1]: expect.any(Number)
+        [pool.info.maxSize - 1]: expect.any(Number)
       })
     })
+    const workerChoiceStrategyOptions = {
+      runTime: { median: true },
+      waitTime: { median: true },
+      elu: { median: true },
+      weights: {
+        0: 100,
+        1: 100
+      }
+    }
+    expect(
+      buildWorkerChoiceStrategyOptions(pool, workerChoiceStrategyOptions)
+    ).toStrictEqual(workerChoiceStrategyOptions)
+    await pool.destroy()
   })
 
   // it('Verify once()', () => {

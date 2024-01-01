@@ -55,18 +55,6 @@ const sleepTaskFunction = async (
   })
 }
 
-const generateRandomInteger = (max = Number.MAX_SAFE_INTEGER, min = 0) => {
-  if (max < min || max < 0 || min < 0) {
-    throw new RangeError('Invalid interval')
-  }
-  max = Math.floor(max)
-  if (min != null && min !== 0) {
-    min = Math.ceil(min)
-    return Math.floor(Math.random() * (max - min + 1)) + min
-  }
-  return Math.floor(Math.random() * (max + 1))
-}
-
 const jsonIntegerSerialization = n => {
   for (let i = 0; i < n; i++) {
     const o = {
@@ -116,7 +104,6 @@ module.exports = {
   executeTaskFunction,
   factorial,
   fibonacci,
-  generateRandomInteger,
   jsonIntegerSerialization,
   sleep,
   sleepTaskFunction,
