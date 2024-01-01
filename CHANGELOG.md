@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.14] - 2024-01-01
+
 ### Fixed
 
 - Properly handle dynamic pool with zero minimum size.
