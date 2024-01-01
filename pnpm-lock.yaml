@@ -66,8 +66,8 @@ devDependencies:
     specifier: ^2.29.1
     version: 2.29.1(@typescript-eslint/parser@6.16.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
   eslint-plugin-jsdoc:
-    specifier: ^46.10.1
-    version: 46.10.1(eslint@8.56.0)
+    specifier: ^47.0.2
+    version: 47.0.2(eslint@8.56.0)
   eslint-plugin-n:
     specifier: ^16.6.0
     version: 16.6.0(eslint@8.56.0)
@@ -123,8 +123,8 @@ devDependencies:
     specifier: ^17.0.1
     version: 17.0.1
   typedoc:
-    specifier: ^0.25.4
-    version: 0.25.4(typescript@5.3.3)
+    specifier: ^0.25.5
+    version: 0.25.5(typescript@5.3.3)
   typescript:
     specifier: ~5.3.3
     version: 5.3.3
@@ -2410,8 +2410,8 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-plugin-jsdoc@46.10.1(eslint@8.56.0):
-    resolution: {integrity: sha512-x8wxIpv00Y50NyweDUpa+58ffgSAI5sqe+zcZh33xphD0AVh+1kqr1ombaTRb7Fhpove1zfUuujlX9DWWBP5ag==}
+  /eslint-plugin-jsdoc@47.0.2(eslint@8.56.0):
+    resolution: {integrity: sha512-sIq81Pv+yrhhwY0m1JH79rdZRgDNunehv3S0Yv0UfewpoeJyPkODFn2o4o20nofVoI2tjku9/QBcCYUmmeWFXA==}
     engines: {node: '>=16'}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0 || ^9.0.0
@@ -5620,8 +5620,8 @@ packages:
       is-typedarray: 1.0.0
     dev: true
 
-  /typedoc@0.25.4(typescript@5.3.3):
-    resolution: {integrity: sha512-Du9ImmpBCw54bX275yJrxPVnjdIyJO/84co0/L9mwe0R3G4FSR6rQ09AlXVRvZEGMUg09+z/usc8mgygQ1aidA==}
+  /typedoc@0.25.5(typescript@5.3.3):
+    resolution: {integrity: sha512-K9HzybxB2pqZwUkJvOCbdGEIvOidMdUoUtJavpzw/rnw8Rm5bM6HugIKbGLveCmeojUEUqYO8Fqgdmnp0R2Vqg==}
     engines: {node: '>= 16'}
     hasBin: true
     peerDependencies:
