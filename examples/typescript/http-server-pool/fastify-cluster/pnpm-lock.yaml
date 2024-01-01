@@ -9,8 +9,8 @@ dependencies:
     specifier: ^4.25.2
     version: 4.25.2
   poolifier:
-    specifier: ^3.1.13
-    version: 3.1.13
+    specifier: ^3.1.14
+    version: 3.1.14
 
 devDependencies:
   '@rollup/plugin-typescript':
@@ -926,8 +926,8 @@ packages:
       thread-stream: 2.4.1
     dev: false
 
-  /poolifier@3.1.13:
-    resolution: {integrity: sha512-AZqwaS7fWyolIVLMGZg7ZIq8ih0kt76QNfCjVBinHR2L10OX68Mol5TwhVuU+kAlbCbbtfG+ZhXuJ3267u2dew==}
+  /poolifier@3.1.14:
+    resolution: {integrity: sha512-TibQiiWOAuJVRWFKpZmvj0Yq1IH5qLZ2up+vK0jVDR/U1fodsmyOhnnV43cn+YGdTCZPHk4Pybkgz6aETrWGvQ==}
     engines: {node: '>=18.0.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
