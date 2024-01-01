@@ -1702,8 +1702,8 @@ export abstract class AbstractPool<
     workerNode.info.ready = ready
     workerNode.info.taskFunctionNames = taskFunctionNames
     if (!this.readyEventEmitted && this.ready) {
-      this.readyEventEmitted = true
       this.emitter?.emit(PoolEvents.ready, this.info)
+      this.readyEventEmitted = true
     }
   }
 
