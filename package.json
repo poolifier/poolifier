@@ -6,6 +6,7 @@
   "license": "MIT",
   "type": "module",
   "main": "./lib/index.cjs",
+  "types": "./lib/index.d.ts",
   "exports": {
     ".": {
       "types": "./lib/index.d.ts",
@@ -13,7 +14,6 @@
       "import": "./lib/index.mjs"
     }
   },
-  "types": "./lib/index.d.ts",
   "scripts": {
     "preinstall": "npx --yes only-allow pnpm",
     "prepare": "node prepare.mjs",
