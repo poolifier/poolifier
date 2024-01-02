@@ -13,6 +13,7 @@
       "import": "./lib/index.mjs"
     }
   },
+  "types": "./lib/index.d.ts",
   "scripts": {
     "preinstall": "npx --yes only-allow pnpm",
     "prepare": "node prepare.mjs",
