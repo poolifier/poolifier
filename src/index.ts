@@ -14,6 +14,7 @@ export type {
 export { WorkerTypes } from './pools/worker.js'
 export type {
   ErrorHandler,
+  EventHandler,
   EventLoopUtilizationMeasurementStatistics,
   ExitHandler,
   IWorker,
