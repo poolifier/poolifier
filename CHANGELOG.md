@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix CommonJS support with TypeScript: [#1821](https://github.com/poolifier/poolifier/issues/1821).
+
 ## [3.1.15-0] - 2024-01-02
 
 ### Fixed
 
-- Fix CommonJS support with TypeScript.
+- Fix CommonJS support with TypeScript: [#1821](https://github.com/poolifier/poolifier/issues/1821).
 
 ## [3.1.14] - 2024-01-01
 
