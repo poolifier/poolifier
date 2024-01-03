@@ -1061,7 +1061,7 @@ export abstract class AbstractPool<
     task: Task<Data>
   ): void {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (this.workerNodes[workerNodeKey].usage != null) {
+    if (this.workerNodes[workerNodeKey]?.usage != null) {
       const workerUsage = this.workerNodes[workerNodeKey].usage
       ++workerUsage.tasks.executing
       updateWaitTimeWorkerUsage(
@@ -1103,7 +1103,7 @@ export abstract class AbstractPool<
   ): void {
     let needWorkerChoiceStrategyUpdate = false
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (this.workerNodes[workerNodeKey].usage != null) {
+    if (this.workerNodes[workerNodeKey]?.usage != null) {
       const workerUsage = this.workerNodes[workerNodeKey].usage
       updateTaskStatisticsWorkerUsage(workerUsage, message)
       updateRunTimeWorkerUsage(
@@ -1454,7 +1454,7 @@ export abstract class AbstractPool<
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (workerNode.usage != null) {
+    if (workerNode?.usage != null) {
       ++workerNode.usage.tasks.stolen
     }
     if (
@@ -1473,7 +1473,7 @@ export abstract class AbstractPool<
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (workerNode.usage != null) {
+    if (workerNode?.usage != null) {
       ++workerNode.usage.tasks.sequentiallyStolen
     }
   }
@@ -1499,7 +1499,7 @@ export abstract class AbstractPool<
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (workerNode.usage != null) {
+    if (workerNode?.usage != null) {
       workerNode.usage.tasks.sequentiallyStolen = 0
     }
   }
