@@ -1,11 +1,12 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "poolifier",
-  "version": "3.1.14",
+  "version": "3.1.16",
   "description": "Fast and small Node.js Worker_Threads and Cluster Worker Pool",
   "license": "MIT",
   "type": "module",
   "main": "./lib/index.cjs",
+  "types": "./lib/index.d.ts",
   "exports": {
     ".": {
       "types": "./lib/index.d.ts",
@@ -120,8 +121,8 @@
     "eslint-define-config": "^2.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jsdoc": "^47.0.2",
-    "eslint-plugin-n": "^16.6.0",
+    "eslint-plugin-jsdoc": "^48.0.2",
+    "eslint-plugin-n": "^16.6.1",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-spellcheck": "^0.0.20",
     "eslint-plugin-tsdoc": "^0.2.17",
