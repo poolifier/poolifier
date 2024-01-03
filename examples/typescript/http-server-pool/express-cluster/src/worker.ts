@@ -35,13 +35,12 @@ class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
 
     ExpressWorker.server = application.listen(port, () => {
       console.info(
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `⚡️[express server]: Express server is started in cluster worker at http://localhost:${port}/`
       )
     })
     return {
       status: true,
-      port: (ExpressWorker.server.address() as AddressInfo)?.port ?? port
+      port: (ExpressWorker.server.address() as AddressInfo).port
     }
   }
 

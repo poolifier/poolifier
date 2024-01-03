@@ -37,7 +37,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   /**
    * Worker node virtual task runtime.
    */
-  private workerNodeVirtualTaskRunTime: number = 0
+  private workerNodeVirtualTaskRunTime = 0
 
   /** @inheritDoc */
   public constructor (

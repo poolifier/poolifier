@@ -32,7 +32,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   /**
    * The previous worker node key.
    */
-  protected previousWorkerNodeKey: number = 0
+  protected previousWorkerNodeKey = 0
 
   /** @inheritDoc */
   public readonly strategyPolicy: StrategyPolicy = {

@@ -54,8 +54,7 @@ export class FixedClusterPool<
   ): void {
     this.workerNodes[workerNodeKey].worker.send({
       ...message,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      workerId: this.getWorkerInfo(workerNodeKey).id!
+      workerId: this.getWorkerInfo(workerNodeKey).id
     })
   }
 

@@ -36,7 +36,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   /**
    * Round id.
    */
-  private roundId: number = 0
+  private roundId = 0
   /**
    * Round weights.
    */
@@ -44,11 +44,11 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   /**
    * Worker node id.
    */
-  private workerNodeId: number = 0
+  private workerNodeId = 0
   /**
    * Worker node virtual task runtime.
    */
-  private workerNodeVirtualTaskRunTime: number = 0
+  private workerNodeVirtualTaskRunTime = 0
 
   /** @inheritDoc */
   public constructor (

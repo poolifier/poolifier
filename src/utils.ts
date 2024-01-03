@@ -178,7 +178,7 @@ export const round = (num: number, scale = 2): number => {
 export const isPlainObject = (obj: unknown): boolean =>
   typeof obj === 'object' &&
   obj !== null &&
-  obj?.constructor === Object &&
+  obj.constructor === Object &&
   Object.prototype.toString.call(obj) === '[object Object]'
 
 /**
@@ -257,6 +257,7 @@ export const once = <T, A extends any[], R>(
 ): ((...args: A) => R) => {
   let result: R
   return (...args: A) => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (fn != null) {
       result = fn.apply<T, A, R>(context, args)
       ;(fn as unknown as undefined) = (context as unknown as undefined) =
@@ -293,7 +294,7 @@ export const buildWorkerChoiceStrategyOptions = <
     opts?: WorkerChoiceStrategyOptions
   ): WorkerChoiceStrategyOptions => {
   opts = clone(opts ?? {})
-  opts.weights = opts?.weights ?? getDefaultWeights(pool.info.maxSize)
+  opts.weights = opts.weights ?? getDefaultWeights(pool.info.maxSize)
   return {
     ...{
       runTime: { median: false },
@@ -320,8 +321,10 @@ const getDefaultWorkerWeight = (): number => {
   const cpuSpeed = randomInt(500, 2500)
   let cpusCycleTimeWeight = 0
   for (const cpu of cpus()) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (cpu.speed == null || cpu.speed === 0) {
       cpu.speed =
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         cpus().find(cpu => cpu.speed != null && cpu.speed !== 0)?.speed ??
         cpuSpeed
     }

@@ -33,7 +33,7 @@ export const getDefaultTasksQueueOptions = (
   }
 }
 
-export const checkFilePath = (filePath: string): void => {
+export const checkFilePath = (filePath: string | undefined): void => {
   if (filePath == null) {
     throw new TypeError('The worker file path must be specified')
   }
@@ -45,7 +45,10 @@ export const checkFilePath = (filePath: string): void => {
   }
 }
 
-export const checkDynamicPoolSize = (min: number, max: number): void => {
+export const checkDynamicPoolSize = (
+  min: number,
+  max: number | undefined
+): void => {
   if (max == null) {
     throw new TypeError(
       'Cannot instantiate a dynamic pool without specifying the maximum pool size'
@@ -70,7 +73,7 @@ export const checkDynamicPoolSize = (min: number, max: number): void => {
 }
 
 export const checkValidWorkerChoiceStrategy = (
-  workerChoiceStrategy: WorkerChoiceStrategy
+  workerChoiceStrategy: WorkerChoiceStrategy | undefined
 ): void => {
   if (
     workerChoiceStrategy != null &&
@@ -81,7 +84,7 @@ export const checkValidWorkerChoiceStrategy = (
 }
 
 export const checkValidTasksQueueOptions = (
-  tasksQueueOptions: TasksQueueOptions
+  tasksQueueOptions: TasksQueueOptions | undefined
 ): void => {
   if (tasksQueueOptions != null && !isPlainObject(tasksQueueOptions)) {
     throw new TypeError('Invalid tasks queue options: must be a plain object')
@@ -118,9 +121,9 @@ export const checkValidTasksQueueOptions = (
 }
 
 export const checkWorkerNodeArguments = (
-  type: WorkerType,
-  filePath: string,
-  opts: WorkerNodeOptions
+  type: WorkerType | undefined,
+  filePath: string | undefined,
+  opts: WorkerNodeOptions | undefined
 ): void => {
   if (type == null) {
     throw new TypeError('Cannot construct a worker node without a worker type')
@@ -168,10 +171,14 @@ export const checkWorkerNodeArguments = (
  */
 const updateMeasurementStatistics = (
   measurementStatistics: MeasurementStatistics,
-  measurementRequirements: MeasurementStatisticsRequirements,
-  measurementValue: number
+  measurementRequirements: MeasurementStatisticsRequirements | undefined,
+  measurementValue: number | undefined
 ): void => {
-  if (measurementRequirements.aggregate) {
+  if (
+    measurementRequirements != null &&
+    measurementValue != null &&
+    measurementRequirements.aggregate
+  ) {
     measurementStatistics.aggregate =
       (measurementStatistics.aggregate ?? 0) + measurementValue
     measurementStatistics.minimum = min(
@@ -182,10 +189,7 @@ const updateMeasurementStatistics = (
       measurementValue,
       measurementStatistics.maximum ?? -Infinity
     )
-    if (
-      (measurementRequirements.average || measurementRequirements.median) &&
-      measurementValue != null
-    ) {
+    if (measurementRequirements.average || measurementRequirements.median) {
       measurementStatistics.history.push(measurementValue)
       if (measurementRequirements.average) {
         measurementStatistics.average = average(measurementStatistics.history)
@@ -210,11 +214,9 @@ export const updateWaitTimeWorkerUsage = <
   Data = unknown,
   Response = unknown
 >(
-    workerChoiceStrategyContext: WorkerChoiceStrategyContext<
-    Worker,
-    Data,
-    Response
-    >,
+    workerChoiceStrategyContext:
+    | WorkerChoiceStrategyContext<Worker, Data, Response>
+    | undefined,
     workerUsage: WorkerUsage,
     task: Task<Data>
   ): void => {
@@ -222,7 +224,7 @@ export const updateWaitTimeWorkerUsage = <
   const taskWaitTime = timestamp - (task.timestamp ?? timestamp)
   updateMeasurementStatistics(
     workerUsage.waitTime,
-    workerChoiceStrategyContext.getTaskStatisticsRequirements().waitTime,
+    workerChoiceStrategyContext?.getTaskStatisticsRequirements()?.waitTime,
     taskWaitTime
   )
 }
@@ -233,6 +235,7 @@ export const updateTaskStatisticsWorkerUsage = <Response = unknown>(
 ): void => {
   const workerTaskStatistics = workerUsage.tasks
   if (
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     workerTaskStatistics.executing != null &&
     workerTaskStatistics.executing > 0
   ) {
@@ -250,11 +253,9 @@ export const updateRunTimeWorkerUsage = <
   Data = unknown,
   Response = unknown
 >(
-    workerChoiceStrategyContext: WorkerChoiceStrategyContext<
-    Worker,
-    Data,
-    Response
-    >,
+    workerChoiceStrategyContext:
+    | WorkerChoiceStrategyContext<Worker, Data, Response>
+    | undefined,
     workerUsage: WorkerUsage,
     message: MessageValue<Response>
   ): void => {
@@ -263,7 +264,7 @@ export const updateRunTimeWorkerUsage = <
   }
   updateMeasurementStatistics(
     workerUsage.runTime,
-    workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime,
+    workerChoiceStrategyContext?.getTaskStatisticsRequirements()?.runTime,
     message.taskPerformance?.runTime ?? 0
   )
 }
@@ -273,19 +274,17 @@ export const updateEluWorkerUsage = <
   Data = unknown,
   Response = unknown
 >(
-    workerChoiceStrategyContext: WorkerChoiceStrategyContext<
-    Worker,
-    Data,
-    Response
-    >,
+    workerChoiceStrategyContext:
+    | WorkerChoiceStrategyContext<Worker, Data, Response>
+    | undefined,
     workerUsage: WorkerUsage,
     message: MessageValue<Response>
   ): void => {
   if (message.workerError != null) {
     return
   }
-  const eluTaskStatisticsRequirements: MeasurementStatisticsRequirements =
-    workerChoiceStrategyContext.getTaskStatisticsRequirements().elu
+  const eluTaskStatisticsRequirements =
+    workerChoiceStrategyContext?.getTaskStatisticsRequirements()?.elu
   updateMeasurementStatistics(
     workerUsage.elu.active,
     eluTaskStatisticsRequirements,
@@ -296,7 +295,7 @@ export const updateEluWorkerUsage = <
     eluTaskStatisticsRequirements,
     message.taskPerformance?.elu?.idle ?? 0
   )
-  if (eluTaskStatisticsRequirements.aggregate) {
+  if (eluTaskStatisticsRequirements?.aggregate === true) {
     if (message.taskPerformance?.elu != null) {
       if (workerUsage.elu.utilization != null) {
         workerUsage.elu.utilization =
@@ -319,10 +318,10 @@ export const createWorker = <Worker extends IWorker>(
     case WorkerTypes.thread:
       return new Worker(filePath, {
         env: SHARE_ENV,
-        ...opts?.workerOptions
+        ...opts.workerOptions
       }) as unknown as Worker
     case WorkerTypes.cluster:
-      return cluster.fork(opts?.env) as unknown as Worker
+      return cluster.fork(opts.env) as unknown as Worker
     default:
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`Unknown worker type '${type}'`)

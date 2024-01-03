@@ -32,8 +32,7 @@ export class ClusterWorker<
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     opts: WorkerOptions = {}
   ) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    super(cluster.isPrimary, cluster.worker!, taskFunctions, opts)
+    super(cluster.isPrimary, cluster.worker, taskFunctions, opts)
   }
 
   /** @inheritDoc */

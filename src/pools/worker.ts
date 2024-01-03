@@ -258,7 +258,7 @@ export interface IWorker {
 export interface WorkerNodeOptions {
   workerOptions?: WorkerOptions
   env?: Record<string, unknown>
-  tasksQueueBackPressureSize: number
+  tasksQueueBackPressureSize: number | undefined
 }
 
 /**
