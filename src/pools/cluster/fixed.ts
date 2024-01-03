@@ -54,7 +54,7 @@ export class FixedClusterPool<
   ): void {
     this.workerNodes[workerNodeKey].worker.send({
       ...message,
-      workerId: this.getWorkerInfo(workerNodeKey).id
+      workerId: this.getWorkerInfo(workerNodeKey)?.id
     })
   }
 

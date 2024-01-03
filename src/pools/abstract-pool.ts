@@ -703,7 +703,7 @@ export abstract class AbstractPool<
         message: MessageValue<Response>
       ): void => {
         this.checkMessageWorkerId(message)
-        const workerId = this.getWorkerInfo(workerNodeKey).id
+        const workerId = this.getWorkerInfo(workerNodeKey)?.id
         if (
           message.taskFunctionOperationStatus != null &&
           message.workerId === workerId
@@ -1157,6 +1157,7 @@ export abstract class AbstractPool<
   private shallUpdateTaskFunctionWorkerUsage (workerNodeKey: number): boolean {
     const workerInfo = this.getWorkerInfo(workerNodeKey)
     return (
+      workerInfo != null &&
       Array.isArray(workerInfo.taskFunctionNames) &&
       workerInfo.taskFunctionNames.length > 2
     )
@@ -1536,13 +1537,14 @@ export abstract class AbstractPool<
       (this.info.stealingWorkerNodes ?? 0) >
         Math.floor(this.workerNodes.length / 2)
     ) {
-      if (previousStolenTask != null) {
+      if (workerInfo != null && previousStolenTask != null) {
         workerInfo.stealing = false
       }
       return
     }
     const workerNodeTasksUsage = this.workerNodes[workerNodeKey].usage.tasks
     if (
+      workerInfo != null &&
       previousStolenTask != null &&
       workerNodeTasksUsage.sequentiallyStolen > 0 &&
       (workerNodeTasksUsage.executing > 0 ||
@@ -1559,6 +1561,11 @@ export abstract class AbstractPool<
       }
       this.resetTaskSequentiallyStolenStatisticsWorkerUsage(workerNodeKey)
       return
+    }
+    if (workerInfo == null) {
+      throw new Error(
+        `Worker node with key '${workerNodeKey}' not found in pool`
+      )
     }
     workerInfo.stealing = true
     const stolenTask = this.workerNodeStealTask(workerNodeKey)
@@ -1660,6 +1667,11 @@ export abstract class AbstractPool<
           this.opts.tasksQueueOptions!.size! - sizeOffset
       ) {
         const workerInfo = this.getWorkerInfo(workerNodeKey)
+        if (workerInfo == null) {
+          throw new Error(
+            `Worker node with key '${workerNodeKey}' not found in pool`
+          )
+        }
         workerInfo.stealing = true
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const task = sourceWorkerNode.popTask()!
@@ -1687,9 +1699,12 @@ export abstract class AbstractPool<
       this.handleTaskExecutionResponse(message)
     } else if (taskFunctionNames != null) {
       // Task function names message received from worker
-      this.getWorkerInfo(
+      const workerInfo = this.getWorkerInfo(
         this.getWorkerNodeKeyByWorkerId(workerId)
-      ).taskFunctionNames = taskFunctionNames
+      )
+      if (workerInfo != null) {
+        workerInfo.taskFunctionNames = taskFunctionNames
+      }
     }
   }
 
@@ -1783,13 +1798,8 @@ export abstract class AbstractPool<
    * @param workerNodeKey - The worker node key.
    * @returns The worker information.
    */
-  protected getWorkerInfo (workerNodeKey: number): WorkerInfo {
-    const workerInfo = this.workerNodes[workerNodeKey]?.info
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (workerInfo == null) {
-      throw new Error(`Worker node with key '${workerNodeKey}' not found`)
-    }
-    return workerInfo
+  protected getWorkerInfo (workerNodeKey: number): WorkerInfo | undefined {
+    return this.workerNodes[workerNodeKey]?.info
   }
 
   /**
@@ -1848,7 +1858,10 @@ export abstract class AbstractPool<
   }
 
   protected flagWorkerNodeAsNotReady (workerNodeKey: number): void {
-    this.getWorkerInfo(workerNodeKey).ready = false
+    const workerInfo = this.getWorkerInfo(workerNodeKey)
+    if (workerInfo != null) {
+      workerInfo.ready = false
+    }
   }
 
   private hasBackPressure (): boolean {
