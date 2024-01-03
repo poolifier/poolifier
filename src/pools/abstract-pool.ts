@@ -1180,7 +1180,7 @@ export abstract class AbstractPool<
       }
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.workerChoiceStrategyContext!.execute()!
+    return this.workerChoiceStrategyContext!.execute()
   }
 
   /**
