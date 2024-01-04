@@ -78,8 +78,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     const tasksQueueSize = this.tasksQueue.push(task)
     if (this.hasBackPressure() && !this.onBackPressureStarted) {
       this.onBackPressureStarted = true
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.emit('backPressure', { workerId: this.info.id! })
+      this.emit('backPressure', { workerId: this.info.id })
       this.onBackPressureStarted = false
     }
     return tasksQueueSize
@@ -90,8 +89,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     const tasksQueueSize = this.tasksQueue.unshift(task)
     if (this.hasBackPressure() && !this.onBackPressureStarted) {
       this.onBackPressureStarted = true
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.emit('backPressure', { workerId: this.info.id! })
+      this.emit('backPressure', { workerId: this.info.id })
       this.onBackPressureStarted = false
     }
     return tasksQueueSize

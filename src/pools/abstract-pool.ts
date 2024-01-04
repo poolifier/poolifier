@@ -1768,8 +1768,7 @@ export abstract class AbstractPool<
           workerNodeTasksUsage.sequentiallyStolen === 0
         ) {
           workerNode.emit('idle', {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            workerId: workerId!,
+            workerId,
             workerNodeKey
           })
         }

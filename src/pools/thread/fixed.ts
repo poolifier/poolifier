@@ -1,5 +1,4 @@
 import {
-  type MessagePort,
   type TransferListItem,
   type Worker,
   isMainThread
@@ -63,7 +62,7 @@ export class FixedThreadPool<
   protected sendStartupMessageToWorker (workerNodeKey: number): void {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const port2: MessagePort = workerNode.messageChannel!.port2
+    const port2 = workerNode.messageChannel!.port2
     workerNode.worker.postMessage(
       {
         ready: false,

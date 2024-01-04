@@ -95,7 +95,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
           this.workerNodeVirtualTaskRunTime = 0
         }
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const workerWeight = this.opts!.weights![workerNodeKey]!
+        const workerWeight = this.opts!.weights![workerNodeKey]
         if (
           this.isWorkerNodeReady(workerNodeKey) &&
           workerWeight >= this.roundWeights[roundIndex] &&
