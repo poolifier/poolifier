@@ -42,8 +42,7 @@ export class ThreadWorker<
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     opts: WorkerOptions = {}
   ) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    super(isMainThread, parentPort!, taskFunctions, opts)
+    super(isMainThread, parentPort, taskFunctions, opts)
   }
 
   /** @inheritDoc */

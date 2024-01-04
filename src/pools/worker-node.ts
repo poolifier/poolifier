@@ -61,7 +61,8 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     if (this.info.type === WorkerTypes.thread) {
       this.messageChannel = new MessageChannel()
     }
-    this.tasksQueueBackPressureSize = opts.tasksQueueBackPressureSize
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.tasksQueueBackPressureSize = opts.tasksQueueBackPressureSize!
     this.tasksQueue = new Deque<Task<Data>>()
     this.onBackPressureStarted = false
     this.taskFunctionsUsage = new Map<string, WorkerUsage>()

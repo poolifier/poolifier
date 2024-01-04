@@ -34,8 +34,7 @@ export class DynamicClusterPool<
     super(min, filePath, opts, max)
     checkDynamicPoolSize(
       this.minimumNumberOfWorkers,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.maximumNumberOfWorkers!
+      this.maximumNumberOfWorkers
     )
   }
 

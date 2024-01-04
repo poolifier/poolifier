@@ -53,8 +53,8 @@ export class FixedThreadPool<
     message: MessageValue<Data>,
     transferList?: TransferListItem[]
   ): void {
-    this.workerNodes[workerNodeKey].messageChannel?.port1?.postMessage(
-      { ...message, workerId: this.getWorkerInfo(workerNodeKey).id },
+    this.workerNodes[workerNodeKey].messageChannel?.port1.postMessage(
+      { ...message, workerId: this.getWorkerInfo(workerNodeKey)?.id },
       transferList
     )
   }
@@ -67,7 +67,7 @@ export class FixedThreadPool<
     workerNode.worker.postMessage(
       {
         ready: false,
-        workerId: this.getWorkerInfo(workerNodeKey).id,
+        workerId: this.getWorkerInfo(workerNodeKey)?.id,
         port: port2
       },
       [port2]
@@ -79,7 +79,7 @@ export class FixedThreadPool<
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
   ): void {
-    this.workerNodes[workerNodeKey].messageChannel?.port1?.on(
+    this.workerNodes[workerNodeKey].messageChannel?.port1.on(
       'message',
       listener
     )
@@ -90,7 +90,7 @@ export class FixedThreadPool<
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
   ): void {
-    this.workerNodes[workerNodeKey].messageChannel?.port1?.once(
+    this.workerNodes[workerNodeKey].messageChannel?.port1.once(
       'message',
       listener
     )
@@ -101,7 +101,7 @@ export class FixedThreadPool<
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
   ): void {
-    this.workerNodes[workerNodeKey].messageChannel?.port1?.off(
+    this.workerNodes[workerNodeKey].messageChannel?.port1.off(
       'message',
       listener
     )
