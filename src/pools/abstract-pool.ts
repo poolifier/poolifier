@@ -1244,7 +1244,8 @@ export abstract class AbstractPool<
       ) {
         this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
       }
-      workerNode.terminate().catch(error => {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      workerNode?.terminate().catch(error => {
         this.emitter?.emit(PoolEvents.error, error)
       })
     })
