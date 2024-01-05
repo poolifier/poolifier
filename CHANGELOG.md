@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.17] - 2024-01-05
+
 ### Changed
 
 - Improve performance by clean up unneeded condition checks on hot code paths.
