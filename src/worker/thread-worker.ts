@@ -84,7 +84,10 @@ export class ThreadWorker<
   protected readonly sendToMainWorker = (
     message: MessageValue<Response>
   ): void => {
-    this.port?.postMessage({ ...message, workerId: this.id })
+    this.port?.postMessage({
+      ...message,
+      workerId: this.id
+    } satisfies MessageValue<Response>)
   }
 
   /**

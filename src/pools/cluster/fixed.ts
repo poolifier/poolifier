@@ -55,7 +55,7 @@ export class FixedClusterPool<
     this.workerNodes[workerNodeKey].worker.send({
       ...message,
       workerId: this.getWorkerInfo(workerNodeKey)?.id
-    })
+    } satisfies MessageValue<Data>)
   }
 
   /** @inheritDoc */
