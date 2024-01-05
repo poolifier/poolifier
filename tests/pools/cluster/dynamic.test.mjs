@@ -157,15 +157,17 @@ describe('Dynamic cluster pool test suite', () => {
     await pool.destroy()
   })
 
-  it.skip('Verify that a pool with zero worker works', async () => {
-    const pool = new DynamicClusterPool(
-      0,
-      max,
-      './tests/worker-files/thread/testWorker.mjs'
-    )
-    expect(pool.starting).toBe(false)
+  it('Verify that a pool with zero worker works', async () => {
     for (const workerChoiceStrategy of Object.values(WorkerChoiceStrategies)) {
-      pool.setWorkerChoiceStrategy(workerChoiceStrategy)
+      const pool = new DynamicClusterPool(
+        0,
+        max,
+        './tests/worker-files/cluster/testWorker.cjs',
+        {
+          workerChoiceStrategy
+        }
+      )
+      expect(pool.starting).toBe(false)
       expect(pool.readyEventEmitted).toBe(false)
       for (let run = 0; run < 2; run++) {
         run % 2 !== 0 && pool.enableTasksQueue(true)
@@ -183,8 +185,8 @@ describe('Dynamic cluster pool test suite', () => {
         expect(pool.readyEventEmitted).toBe(false)
         expect(pool.workerNodes.length).toBe(pool.info.minSize)
       }
+      // We need to clean up the resources after our test
+      await pool.destroy()
     }
-    // We need to clean up the resources after our test
-    await pool.destroy()
   })
 })

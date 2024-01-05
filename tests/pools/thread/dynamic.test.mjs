@@ -158,14 +158,16 @@ describe('Dynamic thread pool test suite', () => {
   })
 
   it('Verify that a pool with zero worker works', async () => {
-    const pool = new DynamicThreadPool(
-      0,
-      max,
-      './tests/worker-files/thread/testWorker.mjs'
-    )
-    expect(pool.starting).toBe(false)
     for (const workerChoiceStrategy of Object.values(WorkerChoiceStrategies)) {
-      pool.setWorkerChoiceStrategy(workerChoiceStrategy)
+      const pool = new DynamicThreadPool(
+        0,
+        max,
+        './tests/worker-files/thread/testWorker.mjs',
+        {
+          workerChoiceStrategy
+        }
+      )
+      expect(pool.starting).toBe(false)
       expect(pool.readyEventEmitted).toBe(false)
       for (let run = 0; run < 2; run++) {
         run % 2 !== 0 && pool.enableTasksQueue(true)
@@ -183,8 +185,8 @@ describe('Dynamic thread pool test suite', () => {
         expect(pool.readyEventEmitted).toBe(false)
         expect(pool.workerNodes.length).toBe(pool.info.minSize)
       }
+      // We need to clean up the resources after our test
+      await pool.destroy()
     }
-    // We need to clean up the resources after our test
-    await pool.destroy()
   })
 })
