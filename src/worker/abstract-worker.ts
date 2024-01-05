@@ -516,11 +516,11 @@ export abstract class AbstractWorker<
         })
         const taskFunction = this.taskFunctions.get(name)
         if (isAsyncFunction(taskFunction)) {
-          (taskFunction as TaskAsyncFunction<Data, Response>)?.(data)
+          (taskFunction as TaskAsyncFunction<Data, Response>)(data)
             .then(resolve)
             .catch(reject)
         } else {
-          resolve((taskFunction as TaskSyncFunction<Data, Response>)?.(data))
+          resolve((taskFunction as TaskSyncFunction<Data, Response>)(data))
         }
       })
   }
