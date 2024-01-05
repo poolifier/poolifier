@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix dynamic pool with minimum number of workers set to zero: [#1748](https://github.com/poolifier/poolifier/issues/1748).
+
 ## [3.1.17] - 2024-01-05
 
 ### Changed

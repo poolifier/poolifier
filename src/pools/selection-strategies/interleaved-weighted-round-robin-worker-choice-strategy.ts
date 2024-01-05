@@ -114,7 +114,9 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   }
 
   private interleavedWeightedRoundRobinNextWorkerNodeId (): void {
-    if (
+    if (this.pool.workerNodes.length === 0) {
+      this.workerNodeId = 0
+    } else if (
       this.roundId === this.roundWeights.length - 1 &&
       this.workerNodeId === this.pool.workerNodes.length - 1
     ) {
