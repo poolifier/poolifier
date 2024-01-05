@@ -1603,7 +1603,9 @@ export abstract class AbstractPool<
         this.handleWorkerNodeIdleEvent(eventDetail, stolenTask)
         return undefined
       })
-      .catch(EMPTY_FUNCTION)
+      .catch(error => {
+        this.emitter?.emit(PoolEvents.error, error)
+      })
   }
 
   private readonly workerNodeStealTask = (
