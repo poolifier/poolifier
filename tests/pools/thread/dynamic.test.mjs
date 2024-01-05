@@ -168,6 +168,17 @@ describe('Dynamic thread pool test suite', () => {
     }
     await Promise.all(promises)
     expect(pool.workerNodes.length).toBe(max)
+    await waitWorkerEvents(pool, 'exit', max)
+    expect(pool.workerNodes.length).toBe(pool.info.minSize)
+    // pool.enableTasksQueue(true, { concurrency: 2 })
+    promises.clear()
+    for (let i = 0; i < max * maxMultiplier; i++) {
+      promises.add(pool.execute())
+    }
+    await Promise.all(promises)
+    expect(pool.workerNodes.length).toBe(max)
+    await waitWorkerEvents(pool, 'exit', max)
+    expect(pool.workerNodes.length).toBe(pool.info.minSize)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
