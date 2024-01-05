@@ -1,7 +1,11 @@
 import { expect } from 'expect'
-import { DynamicClusterPool, PoolEvents } from '../../../lib/index.cjs'
+import {
+  DynamicClusterPool,
+  PoolEvents,
+  WorkerChoiceStrategies
+} from '../../../lib/index.cjs'
 import { TaskFunctions } from '../../test-types.cjs'
-import { sleep, waitWorkerEvents } from '../../test-utils.cjs'
+import { sleep, waitPoolEvents, waitWorkerEvents } from '../../test-utils.cjs'
 
 describe('Dynamic cluster pool test suite', () => {
   const min = 1
@@ -160,18 +164,25 @@ describe('Dynamic cluster pool test suite', () => {
       './tests/worker-files/thread/testWorker.mjs'
     )
     expect(pool.starting).toBe(false)
-    expect(pool.workerNodes.length).toBe(pool.info.minSize)
-    for (let run = 0; run < 4; run++) {
-      // pool.enableTasksQueue(true, { concurrency: 2 })
-      const maxMultiplier = 10000
-      const promises = new Set()
-      for (let i = 0; i < max * maxMultiplier; i++) {
-        promises.add(pool.execute())
+    for (const workerChoiceStrategy of Object.values(WorkerChoiceStrategies)) {
+      pool.setWorkerChoiceStrategy(workerChoiceStrategy)
+      expect(pool.readyEventEmitted).toBe(false)
+      for (let run = 0; run < 2; run++) {
+        run % 2 !== 0 && pool.enableTasksQueue(true)
+        const maxMultiplier = 4
+        const promises = new Set()
+        expect(pool.workerNodes.length).toBe(pool.info.minSize)
+        for (let i = 0; i < max * maxMultiplier; i++) {
+          promises.add(pool.execute())
+        }
+        await Promise.all(promises)
+        expect(pool.readyEventEmitted).toBe(true)
+        expect(pool.workerNodes.length).toBeGreaterThan(pool.info.minSize)
+        expect(pool.workerNodes.length).toBeLessThanOrEqual(pool.info.maxSize)
+        await waitPoolEvents(pool, PoolEvents.empty, 1)
+        expect(pool.readyEventEmitted).toBe(false)
+        expect(pool.workerNodes.length).toBe(pool.info.minSize)
       }
-      await Promise.all(promises)
-      expect(pool.workerNodes.length).toBe(max)
-      await waitWorkerEvents(pool, 'exit', max)
-      expect(pool.workerNodes.length).toBe(pool.info.minSize)
     }
     // We need to clean up the resources after our test
     await pool.destroy()

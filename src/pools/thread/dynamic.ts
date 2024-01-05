@@ -40,10 +40,7 @@ export class DynamicThreadPool<
 
   /** @inheritDoc */
   protected shallCreateDynamicWorker (): boolean {
-    return (
-      (!this.full && this.internalBusy()) ||
-      (this.minimumNumberOfWorkers === 0 && this.workerNodes.length === 0)
-    )
+    return (!this.full && this.internalBusy()) || this.empty
   }
 
   /** @inheritDoc */
