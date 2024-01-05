@@ -91,7 +91,7 @@ export abstract class AbstractPool<
   /**
    * Worker choice strategy context referencing a worker choice algorithm implementation.
    */
-  protected workerChoiceStrategyContext: WorkerChoiceStrategyContext<
+  protected workerChoiceStrategyContext?: WorkerChoiceStrategyContext<
   Worker,
   Data,
   Response
@@ -189,7 +189,9 @@ export abstract class AbstractPool<
     }
   }
 
-  private checkMinimumNumberOfWorkers (minimumNumberOfWorkers: number): void {
+  private checkMinimumNumberOfWorkers (
+    minimumNumberOfWorkers: number | undefined
+  ): void {
     if (minimumNumberOfWorkers == null) {
       throw new Error(
         'Cannot instantiate a pool without specifying the number of workers'
@@ -210,13 +212,11 @@ export abstract class AbstractPool<
   private checkPoolOptions (opts: PoolOptions<Worker>): void {
     if (isPlainObject(opts)) {
       this.opts.startWorkers = opts.startWorkers ?? true
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      checkValidWorkerChoiceStrategy(opts.workerChoiceStrategy!)
+      checkValidWorkerChoiceStrategy(opts.workerChoiceStrategy)
       this.opts.workerChoiceStrategy =
         opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
       this.checkValidWorkerChoiceStrategyOptions(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        opts.workerChoiceStrategyOptions!
+        opts.workerChoiceStrategyOptions
       )
       if (opts.workerChoiceStrategyOptions != null) {
         this.opts.workerChoiceStrategyOptions = opts.workerChoiceStrategyOptions
@@ -225,11 +225,9 @@ export abstract class AbstractPool<
       this.opts.enableEvents = opts.enableEvents ?? true
       this.opts.enableTasksQueue = opts.enableTasksQueue ?? false
       if (this.opts.enableTasksQueue) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        checkValidTasksQueueOptions(opts.tasksQueueOptions!)
+        checkValidTasksQueueOptions(opts.tasksQueueOptions)
         this.opts.tasksQueueOptions = this.buildTasksQueueOptions(
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          opts.tasksQueueOptions!
+          opts.tasksQueueOptions
         )
       }
     } else {
@@ -238,7 +236,7 @@ export abstract class AbstractPool<
   }
 
   private checkValidWorkerChoiceStrategyOptions (
-    workerChoiceStrategyOptions: WorkerChoiceStrategyOptions
+    workerChoiceStrategyOptions: WorkerChoiceStrategyOptions | undefined
   ): void {
     if (
       workerChoiceStrategyOptions != null &&
@@ -288,9 +286,11 @@ export abstract class AbstractPool<
       minSize: this.minimumNumberOfWorkers,
       maxSize: this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers,
       ...(this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()
-        .runTime.aggregate &&
-        this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()
-          .waitTime.aggregate && { utilization: round(this.utilization) }),
+        ?.runTime.aggregate === true &&
+        this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+          .waitTime.aggregate && {
+        utilization: round(this.utilization)
+      }),
       workerNodes: this.workerNodes.length,
       idleWorkerNodes: this.workerNodes.reduce(
         (accumulator, workerNode) =>
@@ -331,7 +331,7 @@ export abstract class AbstractPool<
       ...(this.opts.enableTasksQueue === true && {
         maxQueuedTasks: this.workerNodes.reduce(
           (accumulator, workerNode) =>
-            accumulator + (workerNode.usage.tasks?.maxQueued ?? 0),
+            accumulator + (workerNode.usage.tasks.maxQueued ?? 0),
           0
         )
       }),
@@ -351,23 +351,23 @@ export abstract class AbstractPool<
         0
       ),
       ...(this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()
-        .runTime.aggregate && {
+        ?.runTime.aggregate === true && {
         runTime: {
           minimum: round(
             min(
               ...this.workerNodes.map(
-                workerNode => workerNode.usage.runTime?.minimum ?? Infinity
+                workerNode => workerNode.usage.runTime.minimum ?? Infinity
               )
             )
           ),
           maximum: round(
             max(
               ...this.workerNodes.map(
-                workerNode => workerNode.usage.runTime?.maximum ?? -Infinity
+                workerNode => workerNode.usage.runTime.maximum ?? -Infinity
               )
             )
           ),
-          ...(this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()
+          ...(this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
             .runTime.average && {
             average: round(
               average(
@@ -379,7 +379,7 @@ export abstract class AbstractPool<
               )
             )
           }),
-          ...(this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()
+          ...(this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
             .runTime.median && {
             median: round(
               median(
@@ -394,23 +394,23 @@ export abstract class AbstractPool<
         }
       }),
       ...(this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()
-        .waitTime.aggregate && {
+        ?.waitTime.aggregate === true && {
         waitTime: {
           minimum: round(
             min(
               ...this.workerNodes.map(
-                workerNode => workerNode.usage.waitTime?.minimum ?? Infinity
+                workerNode => workerNode.usage.waitTime.minimum ?? Infinity
               )
             )
           ),
           maximum: round(
             max(
               ...this.workerNodes.map(
-                workerNode => workerNode.usage.waitTime?.maximum ?? -Infinity
+                workerNode => workerNode.usage.waitTime.maximum ?? -Infinity
               )
             )
           ),
-          ...(this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()
+          ...(this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
             .waitTime.average && {
             average: round(
               average(
@@ -422,7 +422,7 @@ export abstract class AbstractPool<
               )
             )
           }),
-          ...(this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()
+          ...(this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
             .waitTime.median && {
             median: round(
               median(
@@ -465,12 +465,12 @@ export abstract class AbstractPool<
       (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers)
     const totalTasksRunTime = this.workerNodes.reduce(
       (accumulator, workerNode) =>
-        accumulator + (workerNode.usage.runTime?.aggregate ?? 0),
+        accumulator + (workerNode.usage.runTime.aggregate ?? 0),
       0
     )
     const totalTasksWaitTime = this.workerNodes.reduce(
       (accumulator, workerNode) =>
-        accumulator + (workerNode.usage.waitTime?.aggregate ?? 0),
+        accumulator + (workerNode.usage.waitTime.aggregate ?? 0),
       0
     )
     return (totalTasksRunTime + totalTasksWaitTime) / poolTimeCapacity
@@ -523,7 +523,7 @@ export abstract class AbstractPool<
   ): void {
     checkValidWorkerChoiceStrategy(workerChoiceStrategy)
     this.opts.workerChoiceStrategy = workerChoiceStrategy
-    this.workerChoiceStrategyContext.setWorkerChoiceStrategy(
+    this.workerChoiceStrategyContext?.setWorkerChoiceStrategy(
       this.opts.workerChoiceStrategy
     )
     if (workerChoiceStrategyOptions != null) {
@@ -537,13 +537,13 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public setWorkerChoiceStrategyOptions (
-    workerChoiceStrategyOptions: WorkerChoiceStrategyOptions
+    workerChoiceStrategyOptions: WorkerChoiceStrategyOptions | undefined
   ): void {
     this.checkValidWorkerChoiceStrategyOptions(workerChoiceStrategyOptions)
     if (workerChoiceStrategyOptions != null) {
       this.opts.workerChoiceStrategyOptions = workerChoiceStrategyOptions
     }
-    this.workerChoiceStrategyContext.setOptions(
+    this.workerChoiceStrategyContext?.setOptions(
       this.opts.workerChoiceStrategyOptions
     )
   }
@@ -559,12 +559,13 @@ export abstract class AbstractPool<
       this.flushTasksQueues()
     }
     this.opts.enableTasksQueue = enable
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.setTasksQueueOptions(tasksQueueOptions!)
+    this.setTasksQueueOptions(tasksQueueOptions)
   }
 
   /** @inheritDoc */
-  public setTasksQueueOptions (tasksQueueOptions: TasksQueueOptions): void {
+  public setTasksQueueOptions (
+    tasksQueueOptions: TasksQueueOptions | undefined
+  ): void {
     if (this.opts.enableTasksQueue === true) {
       checkValidTasksQueueOptions(tasksQueueOptions)
       this.opts.tasksQueueOptions =
@@ -589,7 +590,7 @@ export abstract class AbstractPool<
   }
 
   private buildTasksQueueOptions (
-    tasksQueueOptions: TasksQueueOptions
+    tasksQueueOptions: TasksQueueOptions | undefined
   ): TasksQueueOptions {
     return {
       ...getDefaultTasksQueueOptions(
@@ -702,24 +703,17 @@ export abstract class AbstractPool<
         message: MessageValue<Response>
       ): void => {
         this.checkMessageWorkerId(message)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const workerId = this.getWorkerInfo(workerNodeKey).id!
+        const workerId = this.getWorkerInfo(workerNodeKey)?.id
         if (
           message.taskFunctionOperationStatus != null &&
           message.workerId === workerId
         ) {
           if (message.taskFunctionOperationStatus) {
             resolve(true)
-          } else if (!message.taskFunctionOperationStatus) {
+          } else {
             reject(
               new Error(
-                `Task function operation '${
-                  message.taskFunctionOperation as string
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                }' failed on worker ${message.workerId} with error: '${
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  message.workerError!.message
-                }'`
+                `Task function operation '${message.taskFunctionOperation}' failed on worker ${message.workerId} with error: '${message.workerError?.message}'`
               )
             )
           }
@@ -767,11 +761,8 @@ export abstract class AbstractPool<
                 new Error(
                   `Task function operation '${
                     message.taskFunctionOperation as string
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  }' failed on worker ${errorResponse!
-                    .workerId!} with error: '${
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    errorResponse!.workerError!.message
+                  }' failed on worker ${errorResponse?.workerId} with error: '${
+                    errorResponse?.workerError?.message
                   }'`
                 )
               )
@@ -1016,7 +1007,8 @@ export abstract class AbstractPool<
 
   private async sendKillMessageToWorker (workerNodeKey: number): Promise<void> {
     await new Promise<void>((resolve, reject) => {
-      if (this.workerNodes?.[workerNodeKey] == null) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (this.workerNodes[workerNodeKey] == null) {
         resolve()
         return
       }
@@ -1027,8 +1019,7 @@ export abstract class AbstractPool<
         } else if (message.kill === 'failure') {
           reject(
             new Error(
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              `Kill message handling failed on worker ${message.workerId!}`
+              `Kill message handling failed on worker ${message.workerId}`
             )
           )
         }
@@ -1087,6 +1078,7 @@ export abstract class AbstractPool<
     workerNodeKey: number,
     task: Task<Data>
   ): void {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.workerNodes[workerNodeKey]?.usage != null) {
       const workerUsage = this.workerNodes[workerNodeKey].usage
       ++workerUsage.tasks.executing
@@ -1128,6 +1120,7 @@ export abstract class AbstractPool<
     message: MessageValue<Response>
   ): void {
     let needWorkerChoiceStrategyUpdate = false
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.workerNodes[workerNodeKey]?.usage != null) {
       const workerUsage = this.workerNodes[workerNodeKey].usage
       updateTaskStatisticsWorkerUsage(workerUsage, message)
@@ -1169,7 +1162,7 @@ export abstract class AbstractPool<
       needWorkerChoiceStrategyUpdate = true
     }
     if (needWorkerChoiceStrategyUpdate) {
-      this.workerChoiceStrategyContext.update(workerNodeKey)
+      this.workerChoiceStrategyContext?.update(workerNodeKey)
     }
   }
 
@@ -1199,12 +1192,14 @@ export abstract class AbstractPool<
     if (this.shallCreateDynamicWorker()) {
       const workerNodeKey = this.createAndSetupDynamicWorkerNode()
       if (
-        this.workerChoiceStrategyContext.getStrategyPolicy().dynamicWorkerUsage
+        this.workerChoiceStrategyContext?.getStrategyPolicy()
+          .dynamicWorkerUsage === true
       ) {
         return workerNodeKey
       }
     }
-    return this.workerChoiceStrategyContext.execute()
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return this.workerChoiceStrategyContext!.execute()
   }
 
   /**
@@ -1267,6 +1262,7 @@ export abstract class AbstractPool<
       ) {
         this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
       }
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       workerNode?.terminate().catch(error => {
         this.emitter?.emit(PoolEvents.error, error)
       })
@@ -1295,7 +1291,7 @@ export abstract class AbstractPool<
       const localWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(
         message.workerId
       )
-      const workerUsage = this.workerNodes[localWorkerNodeKey].usage
+      const workerUsage = this.workerNodes[localWorkerNodeKey]?.usage
       // Kill message received from worker
       if (
         isKillBehavior(KillBehaviors.HARD, message.kill) ||
@@ -1330,8 +1326,10 @@ export abstract class AbstractPool<
     const workerNode = this.workerNodes[workerNodeKey]
     workerNode.info.dynamic = true
     if (
-      this.workerChoiceStrategyContext.getStrategyPolicy().dynamicWorkerReady ||
-      this.workerChoiceStrategyContext.getStrategyPolicy().dynamicWorkerUsage
+      this.workerChoiceStrategyContext?.getStrategyPolicy()
+        .dynamicWorkerReady === true ||
+      this.workerChoiceStrategyContext?.getStrategyPolicy()
+        .dynamicWorkerUsage === true
     ) {
       workerNode.info.ready = true
     }
@@ -1448,10 +1446,11 @@ export abstract class AbstractPool<
     this.sendToWorker(workerNodeKey, {
       statistics: {
         runTime:
-          this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
-            .runTime.aggregate,
-        elu: this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
-          .elu.aggregate
+          this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()
+            ?.runTime.aggregate ?? false,
+        elu:
+          this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()?.elu
+            .aggregate ?? false
       }
     })
   }
@@ -1496,6 +1495,7 @@ export abstract class AbstractPool<
     taskName: string
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (workerNode?.usage != null) {
       ++workerNode.usage.tasks.stolen
     }
@@ -1514,6 +1514,7 @@ export abstract class AbstractPool<
     workerNodeKey: number
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (workerNode?.usage != null) {
       ++workerNode.usage.tasks.sequentiallyStolen
     }
@@ -1539,6 +1540,7 @@ export abstract class AbstractPool<
     workerNodeKey: number
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (workerNode?.usage != null) {
       workerNode.usage.tasks.sequentiallyStolen = 0
     }
@@ -1567,27 +1569,29 @@ export abstract class AbstractPool<
     const { workerNodeKey } = eventDetail
     if (workerNodeKey == null) {
       throw new Error(
-        'WorkerNode event detail workerNodeKey property must be defined'
+        "WorkerNode event detail 'workerNodeKey' property must be defined"
       )
     }
+    const workerInfo = this.getWorkerInfo(workerNodeKey)
     if (
       this.cannotStealTask() ||
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.info.stealingWorkerNodes! > Math.floor(this.workerNodes.length / 2)
+      (this.info.stealingWorkerNodes ?? 0) >
+        Math.floor(this.workerNodes.length / 2)
     ) {
-      if (previousStolenTask != null) {
-        this.getWorkerInfo(workerNodeKey).stealing = false
+      if (workerInfo != null && previousStolenTask != null) {
+        workerInfo.stealing = false
       }
       return
     }
     const workerNodeTasksUsage = this.workerNodes[workerNodeKey].usage.tasks
     if (
+      workerInfo != null &&
       previousStolenTask != null &&
       workerNodeTasksUsage.sequentiallyStolen > 0 &&
       (workerNodeTasksUsage.executing > 0 ||
         this.tasksQueueSize(workerNodeKey) > 0)
     ) {
-      this.getWorkerInfo(workerNodeKey).stealing = false
+      workerInfo.stealing = false
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       for (const taskName of this.workerNodes[workerNodeKey].info
         .taskFunctionNames!) {
@@ -1599,7 +1603,12 @@ export abstract class AbstractPool<
       this.resetTaskSequentiallyStolenStatisticsWorkerUsage(workerNodeKey)
       return
     }
-    this.getWorkerInfo(workerNodeKey).stealing = true
+    if (workerInfo == null) {
+      throw new Error(
+        `Worker node with key '${workerNodeKey}' not found in pool`
+      )
+    }
+    workerInfo.stealing = true
     const stolenTask = this.workerNodeStealTask(workerNodeKey)
     if (
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
@@ -1634,7 +1643,9 @@ export abstract class AbstractPool<
         this.handleWorkerNodeIdleEvent(eventDetail, stolenTask)
         return undefined
       })
-      .catch(EMPTY_FUNCTION)
+      .catch(error => {
+        this.emitter?.emit(PoolEvents.error, error)
+      })
   }
 
   private readonly workerNodeStealTask = (
@@ -1669,8 +1680,8 @@ export abstract class AbstractPool<
   ): void => {
     if (
       this.cannotStealTask() ||
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.info.stealingWorkerNodes! > Math.floor(this.workerNodes.length / 2)
+      (this.info.stealingWorkerNodes ?? 0) >
+        Math.floor(this.workerNodes.length / 2)
     ) {
       return
     }
@@ -1698,13 +1709,19 @@ export abstract class AbstractPool<
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.opts.tasksQueueOptions!.size! - sizeOffset
       ) {
-        this.getWorkerInfo(workerNodeKey).stealing = true
+        const workerInfo = this.getWorkerInfo(workerNodeKey)
+        if (workerInfo == null) {
+          throw new Error(
+            `Worker node with key '${workerNodeKey}' not found in pool`
+          )
+        }
+        workerInfo.stealing = true
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const task = sourceWorkerNode.popTask()!
         this.handleTask(workerNodeKey, task)
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.updateTaskStolenStatisticsWorkerUsage(workerNodeKey, task.name!)
-        this.getWorkerInfo(workerNodeKey).stealing = false
+        workerInfo.stealing = false
       }
     }
   }
@@ -1725,17 +1742,19 @@ export abstract class AbstractPool<
       this.handleTaskExecutionResponse(message)
     } else if (taskFunctionNames != null) {
       // Task function names message received from worker
-      this.getWorkerInfo(
+      const workerInfo = this.getWorkerInfo(
         this.getWorkerNodeKeyByWorkerId(workerId)
-      ).taskFunctionNames = taskFunctionNames
+      )
+      if (workerInfo != null) {
+        workerInfo.taskFunctionNames = taskFunctionNames
+      }
     }
   }
 
   private handleWorkerReadyResponse (message: MessageValue<Response>): void {
     const { workerId, ready, taskFunctionNames } = message
     if (ready == null || !ready) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      throw new Error(`Worker ${workerId!} failed to initialize`)
+      throw new Error(`Worker ${workerId} failed to initialize`)
     }
     const workerNode =
       this.workerNodes[this.getWorkerNodeKeyByWorkerId(workerId)]
@@ -1772,6 +1791,7 @@ export abstract class AbstractPool<
       this.afterTaskExecutionHook(workerNodeKey, message)
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.promiseResponseMap.delete(taskId!)
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       workerNode?.emit('taskFinished', taskId)
       if (this.opts.enableTasksQueue === true && !this.destroying) {
         const workerNodeTasksUsage = workerNode.usage.tasks
@@ -1790,8 +1810,7 @@ export abstract class AbstractPool<
           workerNodeTasksUsage.sequentiallyStolen === 0
         ) {
           workerNode.emit('idle', {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            workerId: workerId!,
+            workerId,
             workerNodeKey
           })
         }
@@ -1822,7 +1841,7 @@ export abstract class AbstractPool<
    * @param workerNodeKey - The worker node key.
    * @returns The worker information.
    */
-  protected getWorkerInfo (workerNodeKey: number): WorkerInfo {
+  protected getWorkerInfo (workerNodeKey: number): WorkerInfo | undefined {
     return this.workerNodes[workerNodeKey]?.info
   }
 
@@ -1877,12 +1896,15 @@ export abstract class AbstractPool<
     const workerNodeKey = this.workerNodes.indexOf(workerNode)
     if (workerNodeKey !== -1) {
       this.workerNodes.splice(workerNodeKey, 1)
-      this.workerChoiceStrategyContext.remove(workerNodeKey)
+      this.workerChoiceStrategyContext?.remove(workerNodeKey)
     }
   }
 
   protected flagWorkerNodeAsNotReady (workerNodeKey: number): void {
-    this.getWorkerInfo(workerNodeKey).ready = false
+    const workerInfo = this.getWorkerInfo(workerNodeKey)
+    if (workerInfo != null) {
+      workerInfo.ready = false
+    }
   }
 
   private hasBackPressure (): boolean {

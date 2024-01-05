@@ -36,7 +36,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   /**
    * Round id.
    */
-  private roundId: number = 0
+  private roundId = 0
   /**
    * Round weights.
    */
@@ -44,11 +44,11 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   /**
    * Worker node id.
    */
-  private workerNodeId: number = 0
+  private workerNodeId = 0
   /**
    * Worker node virtual task runtime.
    */
-  private workerNodeVirtualTaskRunTime: number = 0
+  private workerNodeVirtualTaskRunTime = 0
 
   /** @inheritDoc */
   public constructor (
@@ -95,7 +95,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
           this.workerNodeVirtualTaskRunTime = 0
         }
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const workerWeight = this.opts!.weights![workerNodeKey]!
+        const workerWeight = this.opts!.weights![workerNodeKey]
         if (
           this.isWorkerNodeReady(workerNodeKey) &&
           workerWeight >= this.roundWeights[roundIndex] &&

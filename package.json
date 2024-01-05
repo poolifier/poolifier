@@ -1,11 +1,12 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "poolifier",
-  "version": "3.1.16",
+  "version": "3.1.17",
   "description": "Fast and small Node.js Worker_Threads and Cluster Worker Pool",
   "license": "MIT",
   "type": "module",
   "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
   "types": "./lib/index.d.ts",
   "exports": {
     ".": {
@@ -42,7 +43,7 @@
   },
   "volta": {
     "node": "20.10.0",
-    "pnpm": "8.13.1"
+    "pnpm": "8.14.0"
   },
   "repository": {
     "type": "git",
@@ -103,8 +104,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.4.1",
-    "@commitlint/cli": "^18.4.3",
-    "@commitlint/config-conventional": "^18.4.3",
+    "@commitlint/cli": "^18.4.4",
+    "@commitlint/config-conventional": "^18.4.4",
     "@release-it/bumper": "^6.0.1",
     "@release-it/keep-a-changelog": "^5.0.0",
     "@rollup/plugin-terser": "^0.4.4",
@@ -113,7 +114,7 @@
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "@typescript-eslint/parser": "^6.17.0",
     "benchmark": "^2.1.4",
-    "c8": "^8.0.1",
+    "c8": "^9.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.56.0",
     "eslint-config-standard": "^17.1.0",
@@ -134,7 +135,7 @@
     "mochawesome": "^7.1.3",
     "prettier": "^3.1.1",
     "release-it": "^17.0.1",
-    "rollup": "^4.9.2",
+    "rollup": "^4.9.3",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",
     "rollup-plugin-delete": "^2.0.0",

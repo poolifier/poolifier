@@ -62,7 +62,8 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     if (this.info.type === WorkerTypes.thread) {
       this.messageChannel = new MessageChannel()
     }
-    this.tasksQueueBackPressureSize = opts.tasksQueueBackPressureSize
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.tasksQueueBackPressureSize = opts.tasksQueueBackPressureSize!
     this.tasksQueue = new Deque<Task<Data>>()
     this.onBackPressureStarted = false
     this.taskFunctionsUsage = new Map<string, WorkerUsage>()
@@ -78,8 +79,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     const tasksQueueSize = this.tasksQueue.push(task)
     if (this.hasBackPressure() && !this.onBackPressureStarted) {
       this.onBackPressureStarted = true
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.emit('backPressure', { workerId: this.info.id! })
+      this.emit('backPressure', { workerId: this.info.id })
       this.onBackPressureStarted = false
     }
     return tasksQueueSize
@@ -90,8 +90,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     const tasksQueueSize = this.tasksQueue.unshift(task)
     if (this.hasBackPressure() && !this.onBackPressureStarted) {
       this.onBackPressureStarted = true
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.emit('backPressure', { workerId: this.info.id! })
+      this.emit('backPressure', { workerId: this.info.id })
       this.onBackPressureStarted = false
     }
     return tasksQueueSize

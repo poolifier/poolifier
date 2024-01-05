@@ -32,8 +32,7 @@ export class ClusterWorker<
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     opts: WorkerOptions = {}
   ) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    super(cluster.isPrimary, cluster.worker!, taskFunctions, opts)
+    super(cluster.isPrimary, cluster.worker, taskFunctions, opts)
   }
 
   /** @inheritDoc */
@@ -63,6 +62,9 @@ export class ClusterWorker<
   protected readonly sendToMainWorker = (
     message: MessageValue<Response>
   ): void => {
-    this.getMainWorker().send({ ...message, workerId: this.id })
+    this.getMainWorker().send({
+      ...message,
+      workerId: this.id
+    } satisfies MessageValue<Response>)
   }
 }

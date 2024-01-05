@@ -115,13 +115,15 @@ describe('Pool utils test suite', () => {
     expect(
       createWorker(
         WorkerTypes.thread,
-        './tests/worker-files/thread/testWorker.mjs'
+        './tests/worker-files/thread/testWorker.mjs',
+        {}
       )
     ).toBeInstanceOf(ThreadWorker)
     expect(
       createWorker(
         WorkerTypes.cluster,
-        './tests/worker-files/cluster/testWorker.mjs'
+        './tests/worker-files/cluster/testWorker.mjs',
+        {}
       )
     ).toBeInstanceOf(ClusterWorker)
   })

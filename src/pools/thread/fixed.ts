@@ -1,5 +1,4 @@
 import {
-  type MessagePort,
   type TransferListItem,
   type Worker,
   isMainThread
@@ -53,8 +52,11 @@ export class FixedThreadPool<
     message: MessageValue<Data>,
     transferList?: TransferListItem[]
   ): void {
-    this.workerNodes[workerNodeKey].messageChannel?.port1?.postMessage(
-      { ...message, workerId: this.getWorkerInfo(workerNodeKey).id },
+    this.workerNodes[workerNodeKey].messageChannel?.port1.postMessage(
+      {
+        ...message,
+        workerId: this.getWorkerInfo(workerNodeKey)?.id
+      } satisfies MessageValue<Data>,
       transferList
     )
   }
@@ -63,13 +65,13 @@ export class FixedThreadPool<
   protected sendStartupMessageToWorker (workerNodeKey: number): void {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const port2: MessagePort = workerNode.messageChannel!.port2
+    const port2 = workerNode.messageChannel!.port2
     workerNode.worker.postMessage(
       {
         ready: false,
-        workerId: this.getWorkerInfo(workerNodeKey).id,
+        workerId: this.getWorkerInfo(workerNodeKey)?.id,
         port: port2
-      },
+      } satisfies MessageValue<Data>,
       [port2]
     )
   }
@@ -79,7 +81,7 @@ export class FixedThreadPool<
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
   ): void {
-    this.workerNodes[workerNodeKey].messageChannel?.port1?.on(
+    this.workerNodes[workerNodeKey].messageChannel?.port1.on(
       'message',
       listener
     )
@@ -90,7 +92,7 @@ export class FixedThreadPool<
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
   ): void {
-    this.workerNodes[workerNodeKey].messageChannel?.port1?.once(
+    this.workerNodes[workerNodeKey].messageChannel?.port1.once(
       'message',
       listener
     )
@@ -101,7 +103,7 @@ export class FixedThreadPool<
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
   ): void {
-    this.workerNodes[workerNodeKey].messageChannel?.port1?.off(
+    this.workerNodes[workerNodeKey].messageChannel?.port1.off(
       'message',
       listener
     )

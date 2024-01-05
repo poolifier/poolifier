@@ -80,7 +80,7 @@ export abstract class AbstractWorker<
   /**
    * Performance statistics computation requirements.
    */
-  protected statistics!: WorkerStatistics
+  protected statistics?: WorkerStatistics
   /**
    * Handler id of the `activeInterval` worker activity check.
    */
@@ -95,8 +95,8 @@ export abstract class AbstractWorker<
    * @param opts - Options for the worker.
    */
   public constructor (
-    protected readonly isMain: boolean,
-    private readonly mainWorker: MainWorker,
+    protected readonly isMain: boolean | undefined,
+    private readonly mainWorker: MainWorker | undefined | null,
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     protected opts: WorkerOptions = DEFAULT_WORKER_OPTIONS
   ) {
@@ -131,7 +131,10 @@ export abstract class AbstractWorker<
    * @param taskFunctions - The task function(s) parameter that should be checked.
    */
   private checkTaskFunctions (
-    taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>
+    taskFunctions:
+    | TaskFunction<Data, Response>
+    | TaskFunctions<Data, Response>
+    | undefined
   ): void {
     if (taskFunctions == null) {
       throw new Error('taskFunctions parameter is mandatory')
@@ -256,8 +259,8 @@ export abstract class AbstractWorker<
    * @returns The names of the worker's task functions.
    */
   public listTaskFunctionNames (): string[] {
-    const names: string[] = [...this.taskFunctions.keys()]
-    let defaultTaskFunctionName: string = DEFAULT_TASK_NAME
+    const names = [...this.taskFunctions.keys()]
+    let defaultTaskFunctionName = DEFAULT_TASK_NAME
     for (const [name, fn] of this.taskFunctions) {
       if (
         name !== DEFAULT_TASK_NAME &&
@@ -343,26 +346,28 @@ export abstract class AbstractWorker<
     message: MessageValue<Data>
   ): void {
     const { taskFunctionOperation, taskFunctionName, taskFunction } = message
-    let response!: TaskFunctionOperationResult
+    if (taskFunctionName == null) {
+      throw new Error(
+        'Cannot handle task function operation message without a task function name'
+      )
+    }
+    let response: TaskFunctionOperationResult
     switch (taskFunctionOperation) {
       case 'add':
         response = this.addTaskFunction(
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          taskFunctionName!,
-          // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func, @typescript-eslint/no-non-null-assertion
-          new Function(`return ${taskFunction!}`)() as TaskFunction<
+          taskFunctionName,
+          // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
+          new Function(`return ${taskFunction}`)() as TaskFunction<
           Data,
           Response
           >
         )
         break
       case 'remove':
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        response = this.removeTaskFunction(taskFunctionName!)
+        response = this.removeTaskFunction(taskFunctionName)
         break
       case 'default':
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        response = this.setDefaultTaskFunction(taskFunctionName!)
+        response = this.setDefaultTaskFunction(taskFunctionName)
         break
       default:
         response = { status: false, error: new Error('Unknown task operation') }
@@ -373,10 +378,9 @@ export abstract class AbstractWorker<
       taskFunctionOperationStatus: response.status,
       taskFunctionName,
       ...(!response.status &&
-        response?.error != null && {
+        response.error != null && {
         workerError: {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          name: taskFunctionName!,
+          name: taskFunctionName,
           message: this.handleError(response.error as Error | string)
         }
       })
@@ -391,7 +395,7 @@ export abstract class AbstractWorker<
   protected handleKillMessage (_message: MessageValue<Data>): void {
     this.stopCheckActive()
     if (isAsyncFunction(this.opts.killHandler)) {
-      (this.opts.killHandler?.() as Promise<void>)
+      (this.opts.killHandler() as Promise<void>)
         .then(() => {
           this.sendToMainWorker({ kill: 'success' })
           return undefined
@@ -534,8 +538,7 @@ export abstract class AbstractWorker<
         workerError: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           name: name!,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          message: `Task function '${name!}' not found`,
+          message: `Task function '${name}' not found`,
           data
         },
         taskId
@@ -640,18 +643,24 @@ export abstract class AbstractWorker<
   }
 
   private beginTaskPerformance (name?: string): TaskPerformance {
-    this.checkStatistics()
+    if (this.statistics == null) {
+      throw new Error('Performance statistics computation requirements not set')
+    }
     return {
       name: name ?? DEFAULT_TASK_NAME,
       timestamp: performance.now(),
-      ...(this.statistics.elu && { elu: performance.eventLoopUtilization() })
+      ...(this.statistics.elu && {
+        elu: performance.eventLoopUtilization()
+      })
     }
   }
 
   private endTaskPerformance (
     taskPerformance: TaskPerformance
   ): TaskPerformance {
-    this.checkStatistics()
+    if (this.statistics == null) {
+      throw new Error('Performance statistics computation requirements not set')
+    }
     return {
       ...taskPerformance,
       ...(this.statistics.runTime && {
@@ -660,12 +669,6 @@ export abstract class AbstractWorker<
       ...(this.statistics.elu && {
         elu: performance.eventLoopUtilization(taskPerformance.elu)
       })
-    }
-  }
-
-  private checkStatistics (): void {
-    if (this.statistics == null) {
-      throw new Error('Performance statistics computation requirements not set')
     }
   }
 

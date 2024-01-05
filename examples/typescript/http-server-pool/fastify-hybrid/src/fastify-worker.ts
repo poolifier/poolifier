@@ -42,7 +42,7 @@ ClusterWorkerResponse
     await FastifyWorker.fastify.listen({ port })
     return {
       status: true,
-      port: (FastifyWorker.fastify.server.address() as AddressInfo)?.port
+      port: (FastifyWorker.fastify.server.address() as AddressInfo).port
     }
   }
 

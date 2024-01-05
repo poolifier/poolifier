@@ -42,8 +42,7 @@ export class ThreadWorker<
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     opts: WorkerOptions = {}
   ) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    super(isMainThread, parentPort!, taskFunctions, opts)
+    super(isMainThread, parentPort, taskFunctions, opts)
   }
 
   /** @inheritDoc */
@@ -85,7 +84,10 @@ export class ThreadWorker<
   protected readonly sendToMainWorker = (
     message: MessageValue<Response>
   ): void => {
-    this.port?.postMessage({ ...message, workerId: this.id })
+    this.port?.postMessage({
+      ...message,
+      workerId: this.id
+    } satisfies MessageValue<Response>)
   }
 
   /**

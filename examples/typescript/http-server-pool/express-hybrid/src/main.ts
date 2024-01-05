@@ -38,8 +38,7 @@ const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(
         .then(response => {
           if (response.status) {
             console.info(
-              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              `Express is listening in cluster worker on port ${response?.port}`
+              `Express is listening in cluster worker on port ${response.port}`
             )
           }
           return undefined
