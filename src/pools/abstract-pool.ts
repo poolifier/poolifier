@@ -461,10 +461,7 @@ export abstract class AbstractPool<
    * The pool emptiness boolean status.
    */
   protected get empty (): boolean {
-    if (this.minimumNumberOfWorkers === 0 && this.workerNodes.length === 0) {
-      return true
-    }
-    return false
+    return this.minimumNumberOfWorkers === 0 && this.workerNodes.length === 0
   }
 
   /**
