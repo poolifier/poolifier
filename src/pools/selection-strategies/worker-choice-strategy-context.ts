@@ -188,6 +188,9 @@ export class WorkerChoiceStrategyContext<
     let retriesCount = 0
     do {
       workerNodeKey = workerChoiceStrategy.choose()
+      if (workerNodeKey != null && workerNodeKey < 0) {
+        workerNodeKey = undefined
+      }
       if (workerNodeKey == null && chooseCount > 0) {
         retriesCount++
       }
