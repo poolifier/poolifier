@@ -1244,7 +1244,8 @@ export abstract class AbstractPool<
       ) {
         this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
       }
-      workerNode.terminate().catch(error => {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      workerNode?.terminate().catch(error => {
         this.emitter?.emit(PoolEvents.error, error)
       })
     })
@@ -1272,7 +1273,7 @@ export abstract class AbstractPool<
       const localWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(
         message.workerId
       )
-      const workerUsage = this.workerNodes[localWorkerNodeKey].usage
+      const workerUsage = this.workerNodes[localWorkerNodeKey]?.usage
       // Kill message received from worker
       if (
         isKillBehavior(KillBehaviors.HARD, message.kill) ||
@@ -1602,7 +1603,9 @@ export abstract class AbstractPool<
         this.handleWorkerNodeIdleEvent(eventDetail, stolenTask)
         return undefined
       })
-      .catch(EMPTY_FUNCTION)
+      .catch(error => {
+        this.emitter?.emit(PoolEvents.error, error)
+      })
   }
 
   private readonly workerNodeStealTask = (
@@ -1767,8 +1770,7 @@ export abstract class AbstractPool<
           workerNodeTasksUsage.sequentiallyStolen === 0
         ) {
           workerNode.emit('idle', {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            workerId: workerId!,
+            workerId,
             workerNodeKey
           })
         }

@@ -241,8 +241,8 @@ export abstract class AbstractWorker<
    * @returns The names of the worker's task functions.
    */
   public listTaskFunctionNames (): string[] {
-    const names: string[] = [...this.taskFunctions.keys()]
-    let defaultTaskFunctionName: string = DEFAULT_TASK_NAME
+    const names = [...this.taskFunctions.keys()]
+    let defaultTaskFunctionName = DEFAULT_TASK_NAME
     for (const [name, fn] of this.taskFunctions) {
       if (
         name !== DEFAULT_TASK_NAME &&
@@ -325,26 +325,28 @@ export abstract class AbstractWorker<
     message: MessageValue<Data>
   ): void {
     const { taskFunctionOperation, taskFunctionName, taskFunction } = message
-    let response!: TaskFunctionOperationResult
+    if (taskFunctionName == null) {
+      throw new Error(
+        'Cannot handle task function operation message without a task function name'
+      )
+    }
+    let response: TaskFunctionOperationResult
     switch (taskFunctionOperation) {
       case 'add':
         response = this.addTaskFunction(
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          taskFunctionName!,
-          // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func, @typescript-eslint/no-non-null-assertion
-          new Function(`return ${taskFunction!}`)() as TaskFunction<
+          taskFunctionName,
+          // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
+          new Function(`return ${taskFunction}`)() as TaskFunction<
           Data,
           Response
           >
         )
         break
       case 'remove':
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        response = this.removeTaskFunction(taskFunctionName!)
+        response = this.removeTaskFunction(taskFunctionName)
         break
       case 'default':
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        response = this.setDefaultTaskFunction(taskFunctionName!)
+        response = this.setDefaultTaskFunction(taskFunctionName)
         break
       default:
         response = { status: false, error: new Error('Unknown task operation') }
@@ -357,8 +359,7 @@ export abstract class AbstractWorker<
       ...(!response.status &&
         response.error != null && {
         workerError: {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          name: taskFunctionName!,
+          name: taskFunctionName,
           message: this.handleError(response.error as Error | string)
         }
       })

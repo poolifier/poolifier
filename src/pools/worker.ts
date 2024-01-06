@@ -388,6 +388,6 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
  * @internal
  */
 export interface WorkerNodeEventDetail {
-  workerId: number
+  workerId?: number
   workerNodeKey?: number
 }
