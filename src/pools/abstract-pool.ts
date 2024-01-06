@@ -443,6 +443,9 @@ export abstract class AbstractPool<
    * The pool readiness boolean status.
    */
   private get ready (): boolean {
+    if (this.empty) {
+      return false
+    }
     return (
       this.workerNodes.reduce(
         (accumulator, workerNode) =>
@@ -452,6 +455,13 @@ export abstract class AbstractPool<
         0
       ) >= this.minimumNumberOfWorkers
     )
+  }
+
+  /**
+   * The pool emptiness boolean status.
+   */
+  protected get empty (): boolean {
+    return this.minimumNumberOfWorkers === 0 && this.workerNodes.length === 0
   }
 
   /**
@@ -1751,6 +1761,13 @@ export abstract class AbstractPool<
     }
   }
 
+  private checkAndEmitReadyEvent (): void {
+    if (!this.readyEventEmitted && this.ready) {
+      this.emitter?.emit(PoolEvents.ready, this.info)
+      this.readyEventEmitted = true
+    }
+  }
+
   private handleWorkerReadyResponse (message: MessageValue<Response>): void {
     const { workerId, ready, taskFunctionNames } = message
     if (ready == null || !ready) {
@@ -1760,10 +1777,7 @@ export abstract class AbstractPool<
       this.workerNodes[this.getWorkerNodeKeyByWorkerId(workerId)]
     workerNode.info.ready = ready
     workerNode.info.taskFunctionNames = taskFunctionNames
-    if (!this.readyEventEmitted && this.ready) {
-      this.emitter?.emit(PoolEvents.ready, this.info)
-      this.readyEventEmitted = true
-    }
+    this.checkAndEmitReadyEvent()
   }
 
   private handleTaskExecutionResponse (message: MessageValue<Response>): void {
@@ -1887,6 +1901,13 @@ export abstract class AbstractPool<
     return workerNodeKey
   }
 
+  private checkAndEmitEmptyEvent (): void {
+    if (this.empty) {
+      this.emitter?.emit(PoolEvents.empty, this.info)
+      this.readyEventEmitted = false
+    }
+  }
+
   /**
    * Removes the worker node from the pool worker nodes.
    *
@@ -1898,6 +1919,7 @@ export abstract class AbstractPool<
       this.workerNodes.splice(workerNodeKey, 1)
       this.workerChoiceStrategyContext?.remove(workerNodeKey)
     }
+    this.checkAndEmitEmptyEvent()
   }
 
   protected flagWorkerNodeAsNotReady (workerNodeKey: number): void {
