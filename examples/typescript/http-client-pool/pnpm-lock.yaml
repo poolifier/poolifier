@@ -6,14 +6,14 @@ settings:
 
 dependencies:
   axios:
-    specifier: ^1.6.4
-    version: 1.6.4
+    specifier: ^1.6.5
+    version: 1.6.5
   node-fetch:
     specifier: ^3.3.2
     version: 3.3.2
   poolifier:
-    specifier: ^3.1.16
-    version: 3.1.16
+    specifier: ^3.1.18
+    version: 3.1.18
 
 devDependencies:
   '@types/node':
@@ -35,8 +35,8 @@ packages:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
     dev: false
 
-  /axios@1.6.4:
-    resolution: {integrity: sha512-heJnIs6N4aa1eSthhN9M5ioILu8Wi8vmQW9iHQ9NUvfkJb0lEEDUiIdQNAuBtfUt3FxReaKdpQA5DbmMOqzF/A==}
+  /axios@1.6.5:
+    resolution: {integrity: sha512-Ii012v05KEVuUoFWmMW/UQv9aRIc3ZwkWDcM+h5Il8izZCtRVpDUfwpoFf7eOtajT3QiGR4yDUx7lPqHJULgbg==}
     dependencies:
       follow-redirects: 1.15.4
       form-data: 4.0.0
@@ -122,8 +122,8 @@ packages:
       formdata-polyfill: 4.0.10
     dev: false
 
-  /poolifier@3.1.16:
-    resolution: {integrity: sha512-OA1uMbCRb+DL8Me6DQ6nKp7VfEmRCoa3+NzAc/2KpGXx4Z/0bmlekH/Y6CDjrC2fc5fN6hq8lhRC7C6B7iqWtA==}
+  /poolifier@3.1.18:
+    resolution: {integrity: sha512-g+TtkVp5oOOZAa1ibTJBOksstPiAp+jAsHMaQMR6TxIVFm4uqpifGCI2qXonBU1p5WIZbVU+kpk9S3bbyCeHCw==}
     engines: {node: '>=18.0.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
