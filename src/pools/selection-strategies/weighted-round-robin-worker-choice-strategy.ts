@@ -72,6 +72,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   public remove (workerNodeKey: number): boolean {
     if (this.pool.workerNodes.length === 0) {
       this.reset()
+      return true
     }
     if (this.nextWorkerNodeKey === workerNodeKey) {
       this.workerNodeVirtualTaskRunTime = 0
