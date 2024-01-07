@@ -198,7 +198,7 @@ export class WorkerChoiceStrategyContext<
         ++retriesCount
         ++this.retriesCount
       }
-      chooseCount++
+      ++chooseCount
     } while (workerNodeKey == null && retriesCount < this.retries)
     if (workerNodeKey == null) {
       throw new Error(
