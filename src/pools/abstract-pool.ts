@@ -283,6 +283,7 @@ export abstract class AbstractPool<
       ready: this.ready,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       strategy: this.opts.workerChoiceStrategy!,
+      strategyRetries: this.workerChoiceStrategyContext?.retriesCount ?? 0,
       minSize: this.minimumNumberOfWorkers,
       maxSize: this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers,
       ...(this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()
