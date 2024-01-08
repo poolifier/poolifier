@@ -127,7 +127,7 @@ export abstract class AbstractWorker<
       this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)
       this.taskFunctions.set(
         typeof taskFunctions.name === 'string' &&
-        taskFunctions.name.trim().length > 0
+          taskFunctions.name.trim().length > 0
           ? taskFunctions.name
           : 'fn1',
         boundFn
