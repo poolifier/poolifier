@@ -224,7 +224,7 @@ export const updateWaitTimeWorkerUsage = <
   const taskWaitTime = timestamp - (task.timestamp ?? timestamp)
   updateMeasurementStatistics(
     workerUsage.waitTime,
-    workerChoiceStrategyContext?.getTaskStatisticsRequirements()?.waitTime,
+    workerChoiceStrategyContext?.getTaskStatisticsRequirements().waitTime,
     taskWaitTime
   )
 }
@@ -264,7 +264,7 @@ export const updateRunTimeWorkerUsage = <
   }
   updateMeasurementStatistics(
     workerUsage.runTime,
-    workerChoiceStrategyContext?.getTaskStatisticsRequirements()?.runTime,
+    workerChoiceStrategyContext?.getTaskStatisticsRequirements().runTime,
     message.taskPerformance?.runTime ?? 0
   )
 }
@@ -284,7 +284,7 @@ export const updateEluWorkerUsage = <
     return
   }
   const eluTaskStatisticsRequirements =
-    workerChoiceStrategyContext?.getTaskStatisticsRequirements()?.elu
+    workerChoiceStrategyContext?.getTaskStatisticsRequirements().elu
   updateMeasurementStatistics(
     workerUsage.elu.active,
     eluTaskStatisticsRequirements,
