@@ -268,7 +268,7 @@ packages:
     engines: {node: '>=6.14.2'}
     requiresBuild: true
     dependencies:
-      node-gyp-build: 4.7.1
+      node-gyp-build: 4.8.0
     dev: false
 
   /clean-stack@2.2.0:
@@ -461,8 +461,8 @@ packages:
       brace-expansion: 1.1.11
     dev: true
 
-  /node-gyp-build@4.7.1:
-    resolution: {integrity: sha512-wTSrZ+8lsRRa3I3H8Xr65dLWSgCvY2l4AOnaeKdPA9TB/WYMPaTcrzf3rXvFoVvjKNVnu0CcWSx54qq9GKRUYg==}
+  /node-gyp-build@4.8.0:
+    resolution: {integrity: sha512-u6fs2AEUljNho3EYTJNBfImO5QTo/J/1Etd+NVdCj7qWKUSN/bSLkZwhDv7I+w/MSC6qJ4cknepkAYykDdK8og==}
     hasBin: true
     requiresBuild: true
     dev: false
@@ -602,7 +602,7 @@ packages:
     engines: {node: '>=6.14.2'}
     requiresBuild: true
     dependencies:
-      node-gyp-build: 4.7.1
+      node-gyp-build: 4.8.0
     dev: false
 
   /wrappy@1.0.2:
