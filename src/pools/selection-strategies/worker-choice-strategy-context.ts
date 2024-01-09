@@ -30,6 +30,11 @@ export class WorkerChoiceStrategyContext<
   Response = unknown
 > {
   /**
+   * The number of worker choice strategy execution retries.
+   */
+  public retriesCount: number
+
+  /**
    * The worker choice strategy instances registered in the context.
    */
   private readonly workerChoiceStrategies: Map<
@@ -38,7 +43,7 @@ export class WorkerChoiceStrategyContext<
   >
 
   /**
-   * The number of worker choice strategy execution retries.
+   * The maximum number of worker choice strategy execution retries.
    */
   private readonly retries: number
 
@@ -111,6 +116,7 @@ export class WorkerChoiceStrategyContext<
         >(pool, opts)
       ]
     ])
+    this.retriesCount = 0
     this.retries = getWorkerChoiceStrategyRetries(pool, opts)
   }
 
@@ -189,9 +195,10 @@ export class WorkerChoiceStrategyContext<
     do {
       workerNodeKey = workerChoiceStrategy.choose()
       if (workerNodeKey == null && chooseCount > 0) {
-        retriesCount++
+        ++retriesCount
+        ++this.retriesCount
       }
-      chooseCount++
+      ++chooseCount
     } while (workerNodeKey == null && retriesCount < this.retries)
     if (workerNodeKey == null) {
       throw new Error(

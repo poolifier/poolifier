@@ -283,10 +283,11 @@ export abstract class AbstractPool<
       ready: this.ready,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       strategy: this.opts.workerChoiceStrategy!,
+      strategyRetries: this.workerChoiceStrategyContext?.retriesCount ?? 0,
       minSize: this.minimumNumberOfWorkers,
       maxSize: this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers,
       ...(this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()
-        ?.runTime.aggregate === true &&
+        .runTime.aggregate === true &&
         this.workerChoiceStrategyContext.getTaskStatisticsRequirements()
           .waitTime.aggregate && {
         utilization: round(this.utilization)
@@ -351,7 +352,7 @@ export abstract class AbstractPool<
         0
       ),
       ...(this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()
-        ?.runTime.aggregate === true && {
+        .runTime.aggregate === true && {
         runTime: {
           minimum: round(
             min(
@@ -394,7 +395,7 @@ export abstract class AbstractPool<
         }
       }),
       ...(this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()
-        ?.waitTime.aggregate === true && {
+        .waitTime.aggregate === true && {
         waitTime: {
           minimum: round(
             min(
@@ -1457,9 +1458,9 @@ export abstract class AbstractPool<
       statistics: {
         runTime:
           this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()
-            ?.runTime.aggregate ?? false,
+            .runTime.aggregate ?? false,
         elu:
-          this.workerChoiceStrategyContext?.getTaskStatisticsRequirements()?.elu
+          this.workerChoiceStrategyContext?.getTaskStatisticsRequirements().elu
             .aggregate ?? false
       }
     })

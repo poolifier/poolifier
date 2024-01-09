@@ -64,6 +64,7 @@ export interface PoolInfo {
   readonly started: boolean
   readonly ready: boolean
   readonly strategy: WorkerChoiceStrategy
+  readonly strategyRetries: number
   readonly minSize: number
   readonly maxSize: number
   /** Pool utilization. */
