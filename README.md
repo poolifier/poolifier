@@ -110,7 +110,7 @@ import { DynamicThreadPool, FixedThreadPool, PoolEvents, availableParallelism } 
 
 // a fixed worker_threads pool
 const pool = new FixedThreadPool(availableParallelism(), './yourWorker.js', {
-  errorHandler: (e) => console.error(e),
+  errorHandler: e => console.error(e),
   onlineHandler: () => console.info('worker is online')
 })
 
@@ -119,7 +119,7 @@ pool.emitter?.on(PoolEvents.busy, () => console.info('Pool is busy'))
 
 // or a dynamic worker_threads pool
 const pool = new DynamicThreadPool(Math.floor(availableParallelism() / 2), availableParallelism(), './yourWorker.js', {
-  errorHandler: (e) => console.error(e),
+  errorHandler: e => console.error(e),
   onlineHandler: () => console.info('worker is online')
 })
 
@@ -131,10 +131,10 @@ pool.emitter?.on(PoolEvents.busy, () => console.info('Pool is busy'))
 // so you can easily switch from one to another
 pool
   .execute()
-  .then((res) => {
+  .then(res => {
     console.info(res)
   })
-  .catch((err) => {
+  .catch(err => {
     console.error(err)
   })
 ```
