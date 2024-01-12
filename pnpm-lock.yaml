@@ -42,8 +42,8 @@ devDependencies:
     specifier: ^2.1.4
     version: 2.1.4
   c8:
-    specifier: ^9.0.0
-    version: 9.0.0
+    specifier: ^9.1.0
+    version: 9.1.0
   cross-env:
     specifier: ^7.0.3
     version: 7.0.3
@@ -99,8 +99,8 @@ devDependencies:
     specifier: ^7.1.3
     version: 7.1.3(mocha@10.2.0)
   prettier:
-    specifier: ^3.1.1
-    version: 3.1.1
+    specifier: ^3.2.0
+    version: 3.2.0
   release-it:
     specifier: ^17.0.1
     version: 17.0.1(typescript@5.3.3)
@@ -1539,8 +1539,8 @@ packages:
       run-applescript: 5.0.0
     dev: true
 
-  /c8@9.0.0:
-    resolution: {integrity: sha512-nFJhU2Cz6Frh2awk3IW7wwk3wx27/U2v8ojQCHGc1GWTCHS6aMu4lal327/ZnnYj7oSThGF1X3qUP1yzAJBcOQ==}
+  /c8@9.1.0:
+    resolution: {integrity: sha512-mBWcT5iqNir1zIkzSPyI3NCR9EZCVI3WUD+AVO17MVWTSFNyUueXE82qTeampNtTr+ilN/5Ua3j24LgbCKjDVg==}
     engines: {node: '>=14.14.0'}
     hasBin: true
     dependencies:
@@ -4616,8 +4616,8 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier@3.1.1:
-    resolution: {integrity: sha512-22UbSzg8luF4UuZtzgiUOfcGM8s4tjBv6dJRT7j275NXsy2jb4aJa4NNveul5x4eqlF1wuhuR2RElK71RvmVaw==}
+  /prettier@3.2.0:
+    resolution: {integrity: sha512-/vBUecTGaPlRVwyZVROVC58bYIScqaoEJzZmzQXXrZOzqn0TwWz0EnOozOlFO/YAImRnb7XsKpTCd3m1SjS2Ww==}
     engines: {node: '>=14'}
     hasBin: true
     dev: true
