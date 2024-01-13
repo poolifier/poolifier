@@ -1,19 +1,12 @@
-import { Worker } from 'node:worker_threads'
-import cluster from 'node:cluster'
 import os from 'node:os'
 import { randomInt } from 'node:crypto'
 import { expect } from 'expect'
 import {
-  DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   DEFAULT_TASK_NAME,
   EMPTY_FUNCTION,
   availableParallelism,
   average,
-  buildWorkerChoiceStrategyOptions,
   exponentialDelay,
-  getWorkerChoiceStrategyRetries,
-  getWorkerId,
-  getWorkerType,
   isAsyncFunction,
   isKillBehavior,
   isPlainObject,
@@ -25,12 +18,7 @@ import {
   secureRandom,
   sleep
 } from '../lib/utils.cjs'
-import {
-  FixedClusterPool,
-  FixedThreadPool,
-  KillBehaviors,
-  WorkerTypes
-} from '../lib/index.cjs'
+import { KillBehaviors } from '../lib/index.cjs'
 
 describe('Utils test suite', () => {
   it('Verify DEFAULT_TASK_NAME value', () => {
@@ -39,14 +27,6 @@ describe('Utils test suite', () => {
 
   it('Verify EMPTY_FUNCTION value', () => {
     expect(EMPTY_FUNCTION).toStrictEqual(expect.any(Function))
-  })
-
-  it('Verify DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS values', () => {
-    expect(DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS).toStrictEqual({
-      aggregate: false,
-      average: false,
-      median: false
-    })
   })
 
   it('Verify availableParallelism() behavior', () => {
@@ -60,22 +40,6 @@ describe('Utils test suite', () => {
       expectedParallelism = os.cpus().length
     }
     expect(parallelism).toBe(expectedParallelism)
-  })
-
-  it('Verify getWorkerType() behavior', () => {
-    expect(
-      getWorkerType(new Worker('./tests/worker-files/thread/testWorker.mjs'))
-    ).toBe(WorkerTypes.thread)
-    expect(getWorkerType(cluster.fork())).toBe(WorkerTypes.cluster)
-  })
-
-  it('Verify getWorkerId() behavior', () => {
-    const threadWorker = new Worker(
-      './tests/worker-files/thread/testWorker.mjs'
-    )
-    const clusterWorker = cluster.fork()
-    expect(getWorkerId(threadWorker)).toBe(threadWorker.threadId)
-    expect(getWorkerId(clusterWorker)).toBe(clusterWorker.id)
   })
 
   it('Verify sleep() behavior', async () => {
@@ -235,61 +199,6 @@ describe('Utils test suite', () => {
     expect(max(1, 2)).toBe(2)
     expect(max(2, 1)).toBe(2)
     expect(max(1, 1)).toBe(1)
-  })
-
-  it('Verify getWorkerChoiceStrategyRetries() behavior', async () => {
-    const numberOfThreads = 4
-    const pool = new FixedThreadPool(
-      numberOfThreads,
-      './tests/worker-files/thread/testWorker.mjs'
-    )
-    expect(getWorkerChoiceStrategyRetries(pool)).toBe(pool.info.maxSize * 2)
-    const workerChoiceStrategyOptions = {
-      runTime: { median: true },
-      waitTime: { median: true },
-      elu: { median: true },
-      weights: {
-        0: 100,
-        1: 100
-      }
-    }
-    expect(
-      getWorkerChoiceStrategyRetries(pool, workerChoiceStrategyOptions)
-    ).toBe(
-      pool.info.maxSize +
-        Object.keys(workerChoiceStrategyOptions.weights).length
-    )
-    await pool.destroy()
-  })
-
-  it('Verify buildWorkerChoiceStrategyOptions() behavior', async () => {
-    const numberOfWorkers = 4
-    const pool = new FixedClusterPool(
-      numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.cjs'
-    )
-    expect(buildWorkerChoiceStrategyOptions(pool)).toStrictEqual({
-      runTime: { median: false },
-      waitTime: { median: false },
-      elu: { median: false },
-      weights: expect.objectContaining({
-        0: expect.any(Number),
-        [pool.info.maxSize - 1]: expect.any(Number)
-      })
-    })
-    const workerChoiceStrategyOptions = {
-      runTime: { median: true },
-      waitTime: { median: true },
-      elu: { median: true },
-      weights: {
-        0: 100,
-        1: 100
-      }
-    }
-    expect(
-      buildWorkerChoiceStrategyOptions(pool, workerChoiceStrategyOptions)
-    ).toStrictEqual(workerChoiceStrategyOptions)
-    await pool.destroy()
   })
 
   // it('Verify once()', () => {

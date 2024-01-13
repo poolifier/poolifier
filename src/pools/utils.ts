@@ -1,15 +1,22 @@
 import { existsSync } from 'node:fs'
-import cluster from 'node:cluster'
-import { SHARE_ENV, Worker, type WorkerOptions } from 'node:worker_threads'
+import cluster, { Worker as ClusterWorker } from 'node:cluster'
+import {
+  SHARE_ENV,
+  Worker as ThreadWorker,
+  type WorkerOptions
+} from 'node:worker_threads'
 import { env } from 'node:process'
+import { randomInt } from 'node:crypto'
+import { cpus } from 'node:os'
 import { average, isPlainObject, max, median, min } from '../utils.js'
 import type { MessageValue, Task } from '../utility-types.js'
 import {
   type MeasurementStatisticsRequirements,
   WorkerChoiceStrategies,
-  type WorkerChoiceStrategy
+  type WorkerChoiceStrategy,
+  type WorkerChoiceStrategyOptions
 } from './selection-strategies/selection-strategies-types.js'
-import type { TasksQueueOptions } from './pool.js'
+import type { IPool, TasksQueueOptions } from './pool.js'
 import {
   type IWorker,
   type IWorkerNode,
@@ -21,6 +28,16 @@ import {
 } from './worker.js'
 import type { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context.js'
 
+/**
+ * Default measurement statistics requirements.
+ */
+export const DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS: MeasurementStatisticsRequirements =
+  {
+    aggregate: false,
+    average: false,
+    median: false
+  }
+
 export const getDefaultTasksQueueOptions = (
   poolMaxSize: number
 ): Required<TasksQueueOptions> => {
@@ -31,6 +48,75 @@ export const getDefaultTasksQueueOptions = (
     tasksStealingOnBackPressure: true,
     tasksFinishedTimeout: 2000
   }
+}
+
+export const getWorkerChoiceStrategyRetries = <
+  Worker extends IWorker,
+  Data,
+  Response
+>(
+    pool: IPool<Worker, Data, Response>,
+    opts?: WorkerChoiceStrategyOptions
+  ): number => {
+  return (
+    pool.info.maxSize +
+    Object.keys(opts?.weights ?? getDefaultWeights(pool.info.maxSize)).length
+  )
+}
+
+export const buildWorkerChoiceStrategyOptions = <
+  Worker extends IWorker,
+  Data,
+  Response
+>(
+    pool: IPool<Worker, Data, Response>,
+    opts?: WorkerChoiceStrategyOptions
+  ): WorkerChoiceStrategyOptions => {
+  opts = clone(opts ?? {})
+  opts.weights = opts.weights ?? getDefaultWeights(pool.info.maxSize)
+  return {
+    ...{
+      runTime: { median: false },
+      waitTime: { median: false },
+      elu: { median: false }
+    },
+    ...opts
+  }
+}
+
+const clone = <T>(object: T): T => {
+  return structuredClone<T>(object)
+}
+
+const getDefaultWeights = (
+  poolMaxSize: number,
+  defaultWorkerWeight?: number
+): Record<number, number> => {
+  defaultWorkerWeight = defaultWorkerWeight ?? getDefaultWorkerWeight()
+  const weights: Record<number, number> = {}
+  for (let workerNodeKey = 0; workerNodeKey < poolMaxSize; workerNodeKey++) {
+    weights[workerNodeKey] = defaultWorkerWeight
+  }
+  return weights
+}
+
+const getDefaultWorkerWeight = (): number => {
+  const cpuSpeed = randomInt(500, 2500)
+  let cpusCycleTimeWeight = 0
+  for (const cpu of cpus()) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (cpu.speed == null || cpu.speed === 0) {
+      cpu.speed =
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        cpus().find(cpu => cpu.speed != null && cpu.speed !== 0)?.speed ??
+        cpuSpeed
+    }
+    // CPU estimated cycle time
+    const numberOfDigits = cpu.speed.toString().length - 1
+    const cpuCycleTime = 1 / (cpu.speed / Math.pow(10, numberOfDigits))
+    cpusCycleTimeWeight += cpuCycleTime * Math.pow(10, numberOfDigits)
+  }
+  return Math.round(cpusCycleTimeWeight / cpus().length)
 }
 
 export const checkFilePath = (filePath: string | undefined): void => {
@@ -316,7 +402,7 @@ export const createWorker = <Worker extends IWorker>(
 ): Worker => {
   switch (type) {
     case WorkerTypes.thread:
-      return new Worker(filePath, {
+      return new ThreadWorker(filePath, {
         env: SHARE_ENV,
         ...opts.workerOptions
       }) as unknown as Worker
@@ -325,6 +411,36 @@ export const createWorker = <Worker extends IWorker>(
     default:
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`Unknown worker type '${type}'`)
+  }
+}
+
+/**
+ * Returns the worker type of the given worker.
+ *
+ * @param worker - The worker to get the type of.
+ * @returns The worker type of the given worker.
+ * @internal
+ */
+export const getWorkerType = (worker: IWorker): WorkerType | undefined => {
+  if (worker instanceof ThreadWorker) {
+    return WorkerTypes.thread
+  } else if (worker instanceof ClusterWorker) {
+    return WorkerTypes.cluster
+  }
+}
+
+/**
+ * Returns the worker id of the given worker.
+ *
+ * @param worker - The worker to get the id of.
+ * @returns The worker id of the given worker.
+ * @internal
+ */
+export const getWorkerId = (worker: IWorker): number | undefined => {
+  if (worker instanceof ThreadWorker) {
+    return worker.threadId
+  } else if (worker instanceof ClusterWorker) {
+    return worker.id
   }
 }
 

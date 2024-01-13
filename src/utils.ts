@@ -1,15 +1,6 @@
 import * as os from 'node:os'
-import { getRandomValues, randomInt } from 'node:crypto'
-import { Worker as ClusterWorker } from 'node:cluster'
-import { Worker as ThreadWorker } from 'node:worker_threads'
-import { cpus } from 'node:os'
-import type {
-  MeasurementStatisticsRequirements,
-  WorkerChoiceStrategyOptions
-} from './pools/selection-strategies/selection-strategies-types.js'
+import { getRandomValues } from 'node:crypto'
 import type { KillBehavior } from './worker/worker-options.js'
-import { type IWorker, type WorkerType, WorkerTypes } from './pools/worker.js'
-import type { IPool } from './pools/pool.js'
 
 /**
  * Default task name.
@@ -22,16 +13,6 @@ export const DEFAULT_TASK_NAME = 'default'
 export const EMPTY_FUNCTION: () => void = Object.freeze(() => {
   /* Intentionally empty */
 })
-
-/**
- * Default measurement statistics requirements.
- */
-export const DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS: MeasurementStatisticsRequirements =
-  {
-    aggregate: false,
-    average: false,
-    median: false
-  }
 
 /**
  * Returns safe host OS optimized estimate of the default amount of parallelism a pool should use.
@@ -50,36 +31,6 @@ export const availableParallelism = (): number => {
     }
   }
   return availableParallelism
-}
-
-/**
- * Returns the worker type of the given worker.
- *
- * @param worker - The worker to get the type of.
- * @returns The worker type of the given worker.
- * @internal
- */
-export const getWorkerType = (worker: IWorker): WorkerType | undefined => {
-  if (worker instanceof ThreadWorker) {
-    return WorkerTypes.thread
-  } else if (worker instanceof ClusterWorker) {
-    return WorkerTypes.cluster
-  }
-}
-
-/**
- * Returns the worker id of the given worker.
- *
- * @param worker - The worker to get the id of.
- * @returns The worker id of the given worker.
- * @internal
- */
-export const getWorkerId = (worker: IWorker): number | undefined => {
-  if (worker instanceof ThreadWorker) {
-    return worker.threadId
-  } else if (worker instanceof ClusterWorker) {
-    return worker.id
-  }
 }
 
 /**
@@ -122,8 +73,7 @@ export const exponentialDelay = (
 export const average = (dataSet: number[]): number => {
   if (Array.isArray(dataSet) && dataSet.length === 0) {
     return 0
-  }
-  if (Array.isArray(dataSet) && dataSet.length === 1) {
+  } else if (Array.isArray(dataSet) && dataSet.length === 1) {
     return dataSet[0]
   }
   return (
@@ -142,8 +92,7 @@ export const average = (dataSet: number[]): number => {
 export const median = (dataSet: number[]): number => {
   if (Array.isArray(dataSet) && dataSet.length === 0) {
     return 0
-  }
-  if (Array.isArray(dataSet) && dataSet.length === 1) {
+  } else if (Array.isArray(dataSet) && dataSet.length === 1) {
     return dataSet[0]
   }
   const sortedDataSet = dataSet.slice().sort((a, b) => a - b)
@@ -175,7 +124,7 @@ export const round = (num: number, scale = 2): number => {
  * @returns `true` if the given object is a plain object, `false` otherwise.
  * @internal
  */
-export const isPlainObject = (obj: unknown): boolean =>
+export const isPlainObject = (obj: unknown): obj is object =>
   typeof obj === 'object' &&
   obj !== null &&
   obj.constructor === Object &&
@@ -200,7 +149,7 @@ export const isKillBehavior = <KB extends KillBehavior>(
 /**
  * Detects whether the given value is an asynchronous function or not.
  *
- * @param fn - Any value.
+ * @param fn - Unknown value.
  * @returns `true` if `fn` was an asynchronous function, otherwise `false`.
  * @internal
  */
@@ -265,73 +214,4 @@ export const once = <T, A extends any[], R>(
     }
     return result
   }
-}
-
-export const getWorkerChoiceStrategyRetries = <
-  Worker extends IWorker,
-  Data,
-  Response
->(
-    pool: IPool<Worker, Data, Response>,
-    opts?: WorkerChoiceStrategyOptions
-  ): number => {
-  return (
-    pool.info.maxSize +
-    Object.keys(opts?.weights ?? getDefaultWeights(pool.info.maxSize)).length
-  )
-}
-
-const clone = <T>(object: T): T => {
-  return structuredClone<T>(object)
-}
-
-export const buildWorkerChoiceStrategyOptions = <
-  Worker extends IWorker,
-  Data,
-  Response
->(
-    pool: IPool<Worker, Data, Response>,
-    opts?: WorkerChoiceStrategyOptions
-  ): WorkerChoiceStrategyOptions => {
-  opts = clone(opts ?? {})
-  opts.weights = opts.weights ?? getDefaultWeights(pool.info.maxSize)
-  return {
-    ...{
-      runTime: { median: false },
-      waitTime: { median: false },
-      elu: { median: false }
-    },
-    ...opts
-  }
-}
-
-const getDefaultWeights = (
-  poolMaxSize: number,
-  defaultWorkerWeight?: number
-): Record<number, number> => {
-  defaultWorkerWeight = defaultWorkerWeight ?? getDefaultWorkerWeight()
-  const weights: Record<number, number> = {}
-  for (let workerNodeKey = 0; workerNodeKey < poolMaxSize; workerNodeKey++) {
-    weights[workerNodeKey] = defaultWorkerWeight
-  }
-  return weights
-}
-
-const getDefaultWorkerWeight = (): number => {
-  const cpuSpeed = randomInt(500, 2500)
-  let cpusCycleTimeWeight = 0
-  for (const cpu of cpus()) {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (cpu.speed == null || cpu.speed === 0) {
-      cpu.speed =
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        cpus().find(cpu => cpu.speed != null && cpu.speed !== 0)?.speed ??
-        cpuSpeed
-    }
-    // CPU estimated cycle time
-    const numberOfDigits = cpu.speed.toString().length - 1
-    const cpuCycleTime = 1 / (cpu.speed / Math.pow(10, numberOfDigits))
-    cpusCycleTimeWeight += cpuCycleTime * Math.pow(10, numberOfDigits)
-  }
-  return Math.round(cpusCycleTimeWeight / cpus().length)
 }
