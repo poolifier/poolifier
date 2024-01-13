@@ -118,17 +118,17 @@ export const round = (num: number, scale = 2): number => {
 }
 
 /**
- * Is the given object a plain object?
+ * Is the given value a plain object?
  *
- * @param obj - The object to check.
- * @returns `true` if the given object is a plain object, `false` otherwise.
+ * @param value - The value to check.
+ * @returns `true` if the given value is a plain object, `false` otherwise.
  * @internal
  */
-export const isPlainObject = (obj: unknown): obj is object =>
-  typeof obj === 'object' &&
-  obj !== null &&
-  obj.constructor === Object &&
-  Object.prototype.toString.call(obj) === '[object Object]'
+export const isPlainObject = (value: unknown): value is object =>
+  typeof value === 'object' &&
+  value !== null &&
+  value.constructor === Object &&
+  Object.prototype.toString.call(value) === '[object Object]'
 
 /**
  * Detects whether the given value is a kill behavior or not.
