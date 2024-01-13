@@ -135,7 +135,7 @@ export const isPlainObject = (value: unknown): value is object =>
  *
  * @typeParam KB - Which specific KillBehavior type to test against.
  * @param killBehavior - Which kind of kill behavior to detect.
- * @param value - Any value.
+ * @param value - Unknown value.
  * @returns `true` if `value` was strictly equals to `killBehavior`, otherwise `false`.
  * @internal
  */
