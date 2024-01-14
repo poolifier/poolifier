@@ -12,7 +12,7 @@ const workerFile = join(
 export const smtpClientPool = new DynamicThreadPool<
 WorkerData,
 SMTPTransport.SentMessageInfo
->(1, availableParallelism(), workerFile, {
+>(0, availableParallelism(), workerFile, {
   enableTasksQueue: true,
   tasksQueueOptions: {
     concurrency: 8
