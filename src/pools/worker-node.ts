@@ -2,7 +2,7 @@ import { MessageChannel } from 'node:worker_threads'
 import { EventEmitter } from 'node:events'
 import { CircularArray } from '../circular-array.js'
 import type { Task } from '../utility-types.js'
-import { DEFAULT_TASK_NAME, getWorkerId, getWorkerType } from '../utils.js'
+import { DEFAULT_TASK_NAME } from '../utils.js'
 import { Deque } from '../deque.js'
 import {
   type EventHandler,
@@ -15,7 +15,12 @@ import {
   WorkerTypes,
   type WorkerUsage
 } from './worker.js'
-import { checkWorkerNodeArguments, createWorker } from './utils.js'
+import {
+  checkWorkerNodeArguments,
+  createWorker,
+  getWorkerId,
+  getWorkerType
+} from './utils.js'
 
 /**
  * Worker node.
