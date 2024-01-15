@@ -9,7 +9,7 @@ const workerFile = join(
 )
 
 export const httpClientPool = new DynamicThreadPool<WorkerData, WorkerResponse>(
-  1,
+  0,
   availableParallelism(),
   workerFile,
   {
