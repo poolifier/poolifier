@@ -1,4 +1,4 @@
-// Copyright Jerome Benoit. 2023. All Rights Reserved.
+// Copyright Jerome Benoit. 2023-2024. All Rights Reserved.
 
 /**
  * Linked list node interface.
