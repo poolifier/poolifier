@@ -38,10 +38,11 @@ export class Deque<T> {
    * @returns The new size of the queue.
    */
   public push (data: T): number {
-    const node = { data, prev: this.tail }
+    const node: ILinkedListNode<T> = { data }
     if (this.tail == null) {
       this.head = this.tail = node
     } else {
+      node.prev = this.tail
       this.tail = this.tail.next = node
     }
     return this.incrementSize()
@@ -54,10 +55,11 @@ export class Deque<T> {
    * @returns The new size of the queue.
    */
   public unshift (data: T): number {
-    const node = { data, next: this.head }
+    const node: ILinkedListNode<T> = { data }
     if (this.head == null) {
       this.head = this.tail = node
     } else {
+      node.next = this.head
       this.head = this.head.prev = node
     }
     return this.incrementSize()
