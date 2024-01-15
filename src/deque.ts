@@ -1,19 +1,15 @@
 // Copyright Jerome Benoit. 2023. All Rights Reserved.
 
 /**
- * Linked list node.
+ * Linked list node interface.
  *
  * @typeParam T - Type of linked list node data.
  * @internal
  */
-export class LinkedListNode<T> {
-  public data: T
-  public next?: LinkedListNode<T>
-  public prev?: LinkedListNode<T>
-
-  public constructor (data: T) {
-    this.data = data
-  }
+export interface ILinkedListNode<T> {
+  data: T
+  next?: ILinkedListNode<T>
+  prev?: ILinkedListNode<T>
 }
 
 /**
@@ -24,8 +20,8 @@ export class LinkedListNode<T> {
  * @internal
  */
 export class Deque<T> {
-  private head?: LinkedListNode<T>
-  private tail?: LinkedListNode<T>
+  private head?: ILinkedListNode<T>
+  private tail?: ILinkedListNode<T>
   /** The size of the deque. */
   public size!: number
   /** The maximum size of the deque. */
@@ -42,11 +38,10 @@ export class Deque<T> {
    * @returns The new size of the queue.
    */
   public push (data: T): number {
-    const node = new LinkedListNode(data)
+    const node = { data, prev: this.tail }
     if (this.tail == null) {
       this.head = this.tail = node
     } else {
-      node.prev = this.tail
       this.tail = this.tail.next = node
     }
     return this.incrementSize()
@@ -59,11 +54,10 @@ export class Deque<T> {
    * @returns The new size of the queue.
    */
   public unshift (data: T): number {
-    const node = new LinkedListNode(data)
+    const node = { data, next: this.head }
     if (this.head == null) {
       this.head = this.tail = node
     } else {
-      node.next = this.head
       this.head = this.head.prev = node
     }
     return this.incrementSize()

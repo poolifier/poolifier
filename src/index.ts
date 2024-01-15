@@ -74,5 +74,5 @@ export type {
   Writable
 } from './utility-types.js'
 export type { CircularArray } from './circular-array.js'
-export type { Deque, LinkedListNode } from './deque.js'
+export type { Deque, ILinkedListNode } from './deque.js'
 export { availableParallelism } from './utils.js'
