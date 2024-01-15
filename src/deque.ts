@@ -1,15 +1,15 @@
 // Copyright Jerome Benoit. 2023. All Rights Reserved.
 
 /**
- * Node.
+ * Linked list node.
  *
- * @typeParam T - Type of node data.
+ * @typeParam T - Type of linked list node data.
  * @internal
  */
-export class Node<T> {
+export class LinkedListNode<T> {
   public data: T
-  public next?: Node<T>
-  public prev?: Node<T>
+  public next?: LinkedListNode<T>
+  public prev?: LinkedListNode<T>
 
   public constructor (data: T) {
     this.data = data
@@ -24,8 +24,8 @@ export class Node<T> {
  * @internal
  */
 export class Deque<T> {
-  private head?: Node<T>
-  private tail?: Node<T>
+  private head?: LinkedListNode<T>
+  private tail?: LinkedListNode<T>
   /** The size of the deque. */
   public size!: number
   /** The maximum size of the deque. */
@@ -42,7 +42,7 @@ export class Deque<T> {
    * @returns The new size of the queue.
    */
   public push (data: T): number {
-    const node = new Node(data)
+    const node = new LinkedListNode(data)
     if (this.tail == null) {
       this.head = this.tail = node
     } else {
@@ -59,7 +59,7 @@ export class Deque<T> {
    * @returns The new size of the queue.
    */
   public unshift (data: T): number {
-    const node = new Node(data)
+    const node = new LinkedListNode(data)
     if (this.head == null) {
       this.head = this.tail = node
     } else {
