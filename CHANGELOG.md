@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix possible null exception at task finishing handling.
+
 ## [3.1.18] - 2024-01-06
 
 ### Fixed
