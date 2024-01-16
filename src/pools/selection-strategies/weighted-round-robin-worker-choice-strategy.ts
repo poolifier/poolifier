@@ -1,6 +1,6 @@
 import type { IWorker } from '../worker.js'
 import type { IPool } from '../pool.js'
-import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../../utils.js'
+import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../utils.js'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
@@ -92,7 +92,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   private weightedRoundRobinNextWorkerNodeKey (): number | undefined {
     const workerWeight =
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.opts!.weights![this.nextWorkerNodeKey ?? this.previousWorkerNodeKey]!
+      this.opts!.weights![this.nextWorkerNodeKey ?? this.previousWorkerNodeKey]
     if (this.workerNodeVirtualTaskRunTime < workerWeight) {
       this.workerNodeVirtualTaskRunTime =
         this.workerNodeVirtualTaskRunTime +

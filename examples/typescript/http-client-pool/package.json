@@ -6,8 +6,8 @@
   "main": "dist/main.js",
   "type": "module",
   "volta": {
-    "node": "20.10.0",
-    "pnpm": "8.14.0"
+    "node": "20.11.0",
+    "pnpm": "8.14.1"
   },
   "scripts": {
     "build": "pnpm build:clean && tsc",
@@ -25,7 +25,7 @@
     "poolifier": "^3.1.18"
   },
   "devDependencies": {
-    "@types/node": "^20.10.7",
+    "@types/node": "^20.11.0",
     "typescript": "^5.3.3"
   }
 }

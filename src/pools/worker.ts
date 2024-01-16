@@ -212,7 +212,7 @@ export interface StrategyData {
 /**
  * Worker interface.
  */
-export interface IWorker {
+export interface IWorker extends EventEmitter {
   /**
    * Cluster worker id.
    */
@@ -227,14 +227,14 @@ export interface IWorker {
    * @param event - The event.
    * @param handler - The event handler.
    */
-  readonly on: (event: string, handler: EventHandler<this>) => void
+  readonly on: (event: string, handler: EventHandler<this>) => this
   /**
    * Registers once an event handler.
    *
    * @param event - The event.
    * @param handler - The event handler.
    */
-  readonly once: (event: string, handler: EventHandler<this>) => void
+  readonly once: (event: string, handler: EventHandler<this>) => this
   /**
    * Stop all JavaScript execution in the worker thread as soon as possible.
    * Returns a Promise for the exit code that is fulfilled when the `'exit' event` is emitted.

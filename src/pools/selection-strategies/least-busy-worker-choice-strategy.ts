@@ -1,5 +1,5 @@
-import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../../utils.js'
 import type { IPool } from '../pool.js'
+import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../utils.js'
 import type { IWorker } from '../worker.js'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import type {

@@ -1,19 +1,15 @@
-// Copyright Jerome Benoit. 2023. All Rights Reserved.
+// Copyright Jerome Benoit. 2023-2024. All Rights Reserved.
 
 /**
- * Node.
+ * Linked list node interface.
  *
- * @typeParam T - Type of node data.
+ * @typeParam T - Type of linked list node data.
  * @internal
  */
-export class Node<T> {
-  public data: T
-  public next?: Node<T>
-  public prev?: Node<T>
-
-  public constructor (data: T) {
-    this.data = data
-  }
+export interface ILinkedListNode<T> {
+  data: T
+  next?: ILinkedListNode<T>
+  prev?: ILinkedListNode<T>
 }
 
 /**
@@ -24,8 +20,8 @@ export class Node<T> {
  * @internal
  */
 export class Deque<T> {
-  private head?: Node<T>
-  private tail?: Node<T>
+  private head?: ILinkedListNode<T>
+  private tail?: ILinkedListNode<T>
   /** The size of the deque. */
   public size!: number
   /** The maximum size of the deque. */
@@ -42,7 +38,7 @@ export class Deque<T> {
    * @returns The new size of the queue.
    */
   public push (data: T): number {
-    const node = new Node(data)
+    const node: ILinkedListNode<T> = { data }
     if (this.tail == null) {
       this.head = this.tail = node
     } else {
@@ -59,7 +55,7 @@ export class Deque<T> {
    * @returns The new size of the queue.
    */
   public unshift (data: T): number {
-    const node = new Node(data)
+    const node: ILinkedListNode<T> = { data }
     if (this.head == null) {
       this.head = this.tail = node
     } else {
