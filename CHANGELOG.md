@@ -11,6 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add fine grained task abortion support.
 
+## [3.1.19] - 2024-01-16
+
+### Fixed
+
+- Fix possible null exception at task finishing handling.
+
+### Changed
+
+- Optimize Deque implementation to improve tasks queueing performance.
+
 ## [3.1.18] - 2024-01-06
 
 ### Fixed

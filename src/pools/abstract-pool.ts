@@ -1808,7 +1808,12 @@ export abstract class AbstractPool<
       this.promiseResponseMap.delete(taskId!)
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       workerNode?.emit('taskFinished', taskId)
-      if (this.opts.enableTasksQueue === true && !this.destroying) {
+      if (
+        this.opts.enableTasksQueue === true &&
+        !this.destroying &&
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        workerNode != null
+      ) {
         const workerNodeTasksUsage = workerNode.usage.tasks
         if (
           this.tasksQueueSize(workerNodeKey) > 0 &&
