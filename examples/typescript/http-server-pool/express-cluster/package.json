@@ -7,7 +7,7 @@
   "type": "module",
   "volta": {
     "node": "20.11.0",
-    "pnpm": "8.14.2"
+    "pnpm": "8.14.3"
   },
   "scripts": {
     "build": "rollup --config --configPlugin typescript",
