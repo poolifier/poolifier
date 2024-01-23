@@ -7,7 +7,7 @@
   "type": "module",
   "volta": {
     "node": "20.11.0",
-    "pnpm": "8.14.1"
+    "pnpm": "8.14.2"
   },
   "scripts": {
     "build": "rollup --config --configPlugin typescript",
@@ -20,14 +20,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "poolifier": "^3.1.18",
+    "poolifier": "^3.1.19",
     "ws": "^8.16.0"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/node": "^20.11.2",
+    "@types/node": "^20.11.5",
     "@types/ws": "^8.5.10",
-    "rollup": "^4.9.5",
+    "rollup": "^4.9.6",
     "rollup-plugin-delete": "^2.0.0",
     "tslib": "^2.6.2",
     "typescript": "^5.3.3"
