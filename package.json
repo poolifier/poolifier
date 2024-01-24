@@ -110,7 +110,7 @@
     "@release-it/keep-a-changelog": "^5.0.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/node": "^20.11.5",
+    "@types/node": "^20.11.6",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
     "benchmark": "^2.1.4",
