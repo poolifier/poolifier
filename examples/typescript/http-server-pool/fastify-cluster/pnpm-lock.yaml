@@ -17,8 +17,8 @@ devDependencies:
     specifier: ^11.1.6
     version: 11.1.6(rollup@4.9.6)(tslib@2.6.2)(typescript@5.3.3)
   '@types/node':
-    specifier: ^20.11.5
-    version: 20.11.5
+    specifier: ^20.11.10
+    version: 20.11.10
   autocannon:
     specifier: ^7.14.0
     version: 7.14.0
@@ -88,7 +88,7 @@ packages:
     engines: {node: '>= 8'}
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
-      fastq: 1.16.0
+      fastq: 1.17.0
     dev: true
 
   /@rollup/plugin-typescript@11.1.6(rollup@4.9.6)(tslib@2.6.2)(typescript@5.3.3):
@@ -238,15 +238,15 @@ packages:
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 20.11.5
+      '@types/node': 20.11.10
     dev: true
 
   /@types/minimatch@5.1.2:
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
     dev: true
 
-  /@types/node@20.11.5:
-    resolution: {integrity: sha512-g557vgQjUUfN76MZAN/dt1z3dzcUsimuysco0KeluHgrPdJXkP/XdAURgyO2W9fZWHRtRBiVKzKn8vyOAwlG+w==}
+  /@types/node@20.11.10:
+    resolution: {integrity: sha512-rZEfe/hJSGYmdfX9tvcPMYeYPW2sNl50nsw4jZmRcaG0HIAb0WYEpsB05GOb53vjqpyE9GUhlDQ4jLSoB5q9kg==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -354,7 +354,7 @@ packages:
     dependencies:
       archy: 1.0.0
       debug: 4.3.4
-      fastq: 1.16.0
+      fastq: 1.17.0
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -585,8 +585,8 @@ packages:
       - supports-color
     dev: false
 
-  /fastq@1.16.0:
-    resolution: {integrity: sha512-ifCoaXsDrsdkWTtiNJX5uzHDsrck5TzfKKDcuFFTIrrc/BS076qgEIfoIy1VeZqViznfKiysPYTh/QeHtnIsYA==}
+  /fastq@1.17.0:
+    resolution: {integrity: sha512-zGygtijUMT7jnk3h26kUms3BkSDp4IfIKjmnqI2tvx6nuBfiF1UqOxbnLfzdv+apBy+53oaImsKtMw/xYbW+1w==}
     dependencies:
       reusify: 1.0.4
 

@@ -17,8 +17,8 @@ dependencies:
 
 devDependencies:
   '@types/node':
-    specifier: ^20.11.5
-    version: 20.11.5
+    specifier: ^20.11.10
+    version: 20.11.10
   autocannon:
     specifier: ^7.14.0
     version: 7.14.0
@@ -61,8 +61,8 @@ packages:
       fast-json-stringify: 5.10.0
     dev: false
 
-  /@types/node@20.11.5:
-    resolution: {integrity: sha512-g557vgQjUUfN76MZAN/dt1z3dzcUsimuysco0KeluHgrPdJXkP/XdAURgyO2W9fZWHRtRBiVKzKn8vyOAwlG+w==}
+  /@types/node@20.11.10:
+    resolution: {integrity: sha512-rZEfe/hJSGYmdfX9tvcPMYeYPW2sNl50nsw4jZmRcaG0HIAb0WYEpsB05GOb53vjqpyE9GUhlDQ4jLSoB5q9kg==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -157,7 +157,7 @@ packages:
     dependencies:
       archy: 1.0.0
       debug: 4.3.4
-      fastq: 1.16.0
+      fastq: 1.17.0
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -329,8 +329,8 @@ packages:
       - supports-color
     dev: false
 
-  /fastq@1.16.0:
-    resolution: {integrity: sha512-ifCoaXsDrsdkWTtiNJX5uzHDsrck5TzfKKDcuFFTIrrc/BS076qgEIfoIy1VeZqViznfKiysPYTh/QeHtnIsYA==}
+  /fastq@1.17.0:
+    resolution: {integrity: sha512-zGygtijUMT7jnk3h26kUms3BkSDp4IfIKjmnqI2tvx6nuBfiF1UqOxbnLfzdv+apBy+53oaImsKtMw/xYbW+1w==}
     dependencies:
       reusify: 1.0.4
     dev: false

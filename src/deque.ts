@@ -35,7 +35,7 @@ export class Deque<T> {
    * Appends data to the deque.
    *
    * @param data - Data to append.
-   * @returns The new size of the queue.
+   * @returns The new size of the deque.
    */
   public push (data: T): number {
     const node: ILinkedListNode<T> = { data }
@@ -52,7 +52,7 @@ export class Deque<T> {
    * Prepends data to the deque.
    *
    * @param data - Data to prepend.
-   * @returns The new size of the queue.
+   * @returns The new size of the deque.
    */
   public unshift (data: T): number {
     const node: ILinkedListNode<T> = { data }
