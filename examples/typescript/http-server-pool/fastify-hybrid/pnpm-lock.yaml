@@ -20,8 +20,8 @@ devDependencies:
     specifier: ^11.1.6
     version: 11.1.6(rollup@4.9.6)(tslib@2.6.2)(typescript@5.3.3)
   '@types/node':
-    specifier: ^20.11.10
-    version: 20.11.10
+    specifier: ^20.11.11
+    version: 20.11.11
   autocannon:
     specifier: ^7.14.0
     version: 7.14.0
@@ -241,15 +241,15 @@ packages:
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 20.11.10
+      '@types/node': 20.11.11
     dev: true
 
   /@types/minimatch@5.1.2:
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
     dev: true
 
-  /@types/node@20.11.10:
-    resolution: {integrity: sha512-rZEfe/hJSGYmdfX9tvcPMYeYPW2sNl50nsw4jZmRcaG0HIAb0WYEpsB05GOb53vjqpyE9GUhlDQ4jLSoB5q9kg==}
+  /@types/node@20.11.11:
+    resolution: {integrity: sha512-PlJCXfb57Jrman0H1BxO2+Q7qwih2Mwk7T6Gvixj+SK4mqs4RWOGMMoP6p/LFa3UrP2CZOO6ai6otd7J/TB6Ug==}
     dependencies:
       undici-types: 5.26.5
     dev: true

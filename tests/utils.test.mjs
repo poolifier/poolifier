@@ -217,7 +217,7 @@ describe('Utils test suite', () => {
     expect(max(1, 1)).toBe(1)
   })
 
-  // it('Verify once()', () => {
+  // it('Verify once() behavior', () => {
   //   let called = 0
   //   const fn = () => ++called
   //   const onceFn = once(fn, this)
