@@ -19,11 +19,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nodemailer": "^6.9.8",
+    "nodemailer": "^6.9.9",
     "poolifier": "^3.1.19"
   },
   "devDependencies": {
-    "@types/node": "^20.11.15",
+    "@types/node": "^20.11.16",
     "@types/nodemailer": "^6.4.14",
     "typescript": "^5.3.3"
   }
