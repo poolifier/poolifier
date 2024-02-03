@@ -12,7 +12,7 @@ const workerFile = join(
   `worker${extname(fileURLToPath(import.meta.url))}`
 )
 
-export const fixedPool = new FixedThreadPool<MyData, Promise<MyResponse>>(
+export const fixedPool = new FixedThreadPool<MyData, MyResponse>(
   availableParallelism(),
   workerFile,
   {
@@ -25,7 +25,7 @@ export const fixedPool = new FixedThreadPool<MyData, Promise<MyResponse>>(
   }
 )
 
-export const dynamicPool = new DynamicThreadPool<MyData, Promise<MyResponse>>(
+export const dynamicPool = new DynamicThreadPool<MyData, MyResponse>(
   Math.floor(availableParallelism() / 2),
   availableParallelism(),
   workerFile,
