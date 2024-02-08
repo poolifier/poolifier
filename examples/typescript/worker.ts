@@ -6,17 +6,17 @@ export interface MyData {
 
 export interface MyResponse {
   message: string
-  data: MyData
+  data?: MyData
 }
 
-class MyThreadWorker extends ThreadWorker<MyData, Promise<MyResponse>> {
+class MyThreadWorker extends ThreadWorker<MyData, MyResponse> {
   constructor () {
-    super(async (data: MyData) => await this.process(data), {
+    super(async (data?: MyData) => await this.process(data), {
       maxInactiveTime: 60000
     })
   }
 
-  private async process (data: MyData): Promise<MyResponse> {
+  private async process (data?: MyData): Promise<MyResponse> {
     return await new Promise(resolve => {
       setTimeout(() => {
         resolve({ message: 'Hello from Worker :)', data })
