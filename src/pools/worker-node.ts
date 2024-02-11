@@ -137,6 +137,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     this.removeAllListeners()
     switch (this.info.type) {
       case WorkerTypes.thread:
+        this.worker.unref?.()
         await this.worker.terminate?.()
         break
       case WorkerTypes.cluster:

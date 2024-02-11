@@ -236,6 +236,12 @@ export interface IWorker extends EventEmitter {
    */
   readonly once: (event: string, handler: EventHandler<this>) => this
   /**
+   * Calling `unref()` on a worker allows the thread to exit if this is the only
+   * active handle in the event system. If the worker is already `unref()`ed calling`unref()` again has no effect.
+   * @since v10.5.0
+   */
+  readonly unref?: () => void
+  /**
    * Stop all JavaScript execution in the worker thread as soon as possible.
    * Returns a Promise for the exit code that is fulfilled when the `'exit' event` is emitted.
    */
