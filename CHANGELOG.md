@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add fine grained task abortion support.
 
+## [3.1.20] - 2024-02-11
+
+### Fixed
+
+- Ensure `worker_threads` workers are unreferenced at termination.
+
 ## [3.1.19] - 2024-01-16
 
 ### Fixed
