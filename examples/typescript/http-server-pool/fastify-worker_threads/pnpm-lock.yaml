@@ -6,14 +6,14 @@ settings:
 
 dependencies:
   fastify:
-    specifier: ^4.26.0
-    version: 4.26.0
+    specifier: ^4.26.1
+    version: 4.26.1
   fastify-plugin:
     specifier: ^4.5.1
     version: 4.5.1
   poolifier:
-    specifier: ^3.1.19
-    version: 3.1.19
+    specifier: ^3.1.20
+    version: 3.1.20
 
 devDependencies:
   '@types/node':
@@ -309,8 +309,8 @@ packages:
     resolution: {integrity: sha512-stRHYGeuqpEZTL1Ef0Ovr2ltazUT9g844X5z/zEBFLG8RYlpDiOCIG+ATvYEp+/zmc7sN29mcIMp8gvYplYPIQ==}
     dev: false
 
-  /fastify@4.26.0:
-    resolution: {integrity: sha512-Fq/7ziWKc6pYLYLIlCRaqJqEVTIZ5tZYfcW/mDK2AQ9v/sqjGFpj0On0/7hU50kbPVjLO4de+larPA1WwPZSfw==}
+  /fastify@4.26.1:
+    resolution: {integrity: sha512-tznA/G55dsxzM5XChBfcvVSloG2ejeeotfPPJSFaWmHyCDVGMpvf3nRNbsCb/JTBF9RmQFBfuujWt3Nphjesng==}
     dependencies:
       '@fastify/ajv-compiler': 3.5.0
       '@fastify/error': 3.4.1
@@ -510,8 +510,8 @@ packages:
       thread-stream: 2.4.1
     dev: false
 
-  /poolifier@3.1.19:
-    resolution: {integrity: sha512-H/tg/7FNLdZvL0vkJLy2hkjVQWp7QYaDJ0/lJbb4m1ZDtEhOQ4sKsQLlGGI4+jjyWqFlfieqP7FmJC98r4wWyw==}
+  /poolifier@3.1.20:
+    resolution: {integrity: sha512-UmT6eHbCwb22J+8cDtcjPJaDc7CMpNaTtJ+7QArTOo6F1DMApXBJny8qGllhwYpAscJT6VoMVoQlN1EHksdQOw==}
     engines: {node: '>=18.0.0', pnpm: '>=8.6.0'}
     requiresBuild: true
     dev: false
