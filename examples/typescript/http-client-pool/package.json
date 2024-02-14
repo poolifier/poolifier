@@ -7,7 +7,7 @@
   "type": "module",
   "volta": {
     "node": "20.11.0",
-    "pnpm": "8.15.1"
+    "pnpm": "8.15.2"
   },
   "scripts": {
     "build": "pnpm build:clean && tsc",
