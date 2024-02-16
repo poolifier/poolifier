@@ -17,16 +17,16 @@ dependencies:
 
 devDependencies:
   '@types/node':
-    specifier: ^20.11.18
-    version: 20.11.18
+    specifier: ^20.11.19
+    version: 20.11.19
   typescript:
     specifier: ^5.3.3
     version: 5.3.3
 
 packages:
 
-  /@types/node@20.11.18:
-    resolution: {integrity: sha512-ABT5VWnnYneSBcNWYSCuR05M826RoMyMSGiFivXGx6ZUIsXb9vn4643IEwkg2zbEOSgAiSogtapN2fgc4mAPlw==}
+  /@types/node@20.11.19:
+    resolution: {integrity: sha512-7xMnVEcZFu0DikYjWOlRq7NTPETrm7teqUT2WkQjrTIkEgUyyGdWsj/Zg8bEJt5TNklzbPD1X3fqfsHw3SpapQ==}
     dependencies:
       undici-types: 5.26.5
     dev: true
