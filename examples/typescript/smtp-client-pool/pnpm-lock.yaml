@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   nodemailer:
-    specifier: ^6.9.9
-    version: 6.9.9
+    specifier: ^6.9.10
+    version: 6.9.10
   poolifier:
     specifier: ^3.1.20
     version: 3.1.20
@@ -37,8 +37,8 @@ packages:
       '@types/node': 20.11.19
     dev: true
 
-  /nodemailer@6.9.9:
-    resolution: {integrity: sha512-dexTll8zqQoVJEZPwQAKzxxtFn0qTnjdQTchoU6Re9BUUGBJiOy3YMn/0ShTW6J5M0dfQ1NeDeRTTl4oIWgQMA==}
+  /nodemailer@6.9.10:
+    resolution: {integrity: sha512-qtoKfGFhvIFW5kLfrkw2R6Nm6Ur4LNUMykyqu6n9BRKJuyQrqEGwdXXUAbwWEKt33dlWUGXb7rzmJP/p4+O+CA==}
     engines: {node: '>=6.0.0'}
     dev: false
 
