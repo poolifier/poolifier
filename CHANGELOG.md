@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.21] - 2024-02-22
+
 ### Fixed
 
 - Fix null exception regression: [#1496](https://github.com/poolifier/poolifier/issues/1496).
