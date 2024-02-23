@@ -1604,8 +1604,7 @@ export abstract class AbstractPool<
     ) {
       workerInfo.stealing = false
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      for (const taskName of this.workerNodes[workerNodeKey].info
-        .taskFunctionNames!) {
+      for (const taskName of workerInfo.taskFunctionNames!) {
         this.resetTaskSequentiallyStolenStatisticsTaskFunctionWorkerUsage(
           workerNodeKey,
           taskName

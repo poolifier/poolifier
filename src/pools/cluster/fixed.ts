@@ -52,7 +52,7 @@ export class FixedClusterPool<
     workerNodeKey: number,
     message: MessageValue<Data>
   ): void {
-    this.workerNodes[workerNodeKey].worker.send({
+    this.workerNodes[workerNodeKey]?.worker.send({
       ...message,
       workerId: this.getWorkerInfo(workerNodeKey)?.id
     } satisfies MessageValue<Data>)
