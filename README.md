@@ -87,7 +87,7 @@ npm install poolifier --save
 
 ## Usage
 
-You can implement a [worker_threads](https://nodejs.org/api/worker_threads.html#class-worker) worker in a simple way by extending the class _ThreadWorker_:
+You can implement a poolifier [worker_threads](https://nodejs.org/api/worker_threads.html#class-worker) worker in a simple way by extending the class _ThreadWorker_:
 
 ```js
 import { ThreadWorker } from 'poolifier'
