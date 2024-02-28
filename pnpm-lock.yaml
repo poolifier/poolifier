@@ -13,7 +13,7 @@ devDependencies:
     version: 1.5.3
   '@commitlint/cli':
     specifier: ^19.0.1
-    version: 19.0.1(@types/node@20.11.20)(typescript@5.3.3)
+    version: 19.0.1(@types/node@20.11.22)(typescript@5.3.3)
   '@commitlint/config-conventional':
     specifier: ^19.0.0
     version: 19.0.0
@@ -30,8 +30,8 @@ devDependencies:
     specifier: ^11.1.6
     version: 11.1.6(rollup@4.12.0)(typescript@5.3.3)
   '@types/node':
-    specifier: ^20.11.20
-    version: 20.11.20
+    specifier: ^20.11.22
+    version: 20.11.22
   '@typescript-eslint/eslint-plugin':
     specifier: ^7.1.0
     version: 7.1.0(@typescript-eslint/parser@7.1.0)(eslint@8.57.0)(typescript@5.3.3)
@@ -252,14 +252,14 @@ packages:
     dev: true
     optional: true
 
-  /@commitlint/cli@19.0.1(@types/node@20.11.20)(typescript@5.3.3):
+  /@commitlint/cli@19.0.1(@types/node@20.11.22)(typescript@5.3.3):
     resolution: {integrity: sha512-6D+KT/RasFPF92M549I3lABSBWXAdmKvBfxtYWlWO5JdYFSK+B6jY6XyE/hN/DNSYvwwcuNk+CzbqQcy+EbrCw==}
     engines: {node: '>=v18'}
     hasBin: true
     dependencies:
       '@commitlint/format': 19.0.0
       '@commitlint/lint': 19.0.0
-      '@commitlint/load': 19.0.1(@types/node@20.11.20)(typescript@5.3.3)
+      '@commitlint/load': 19.0.1(@types/node@20.11.22)(typescript@5.3.3)
       '@commitlint/read': 19.0.0
       '@commitlint/types': 19.0.0
       execa: 8.0.1
@@ -328,7 +328,7 @@ packages:
       '@commitlint/types': 19.0.0
     dev: true
 
-  /@commitlint/load@19.0.1(@types/node@20.11.20)(typescript@5.3.3):
+  /@commitlint/load@19.0.1(@types/node@20.11.22)(typescript@5.3.3):
     resolution: {integrity: sha512-5w5RHhtidRPMRm8ktph+NKypt1Wu5Z2jbU1Lc+1IS9Azy83JWRBQ9xKBbW9gF66R/TwHF0v6Jy8KOqRS8I/GgA==}
     engines: {node: '>=v18'}
     dependencies:
@@ -338,7 +338,7 @@ packages:
       '@commitlint/types': 19.0.0
       chalk: 5.3.0
       cosmiconfig: 8.3.6(typescript@5.3.3)
-      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.11.20)(cosmiconfig@8.3.6)(typescript@5.3.3)
+      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.11.22)(cosmiconfig@8.3.6)(typescript@5.3.3)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -508,7 +508,7 @@ packages:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 20.11.20
+      '@types/node': 20.11.22
       '@types/yargs': 17.0.32
       chalk: 4.1.2
     dev: true
@@ -958,7 +958,7 @@ packages:
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 20.11.20
+      '@types/node': 20.11.22
     dev: true
 
   /@types/http-cache-semantics@4.0.4:
@@ -993,8 +993,8 @@ packages:
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
     dev: true
 
-  /@types/node@20.11.20:
-    resolution: {integrity: sha512-7/rR21OS+fq8IyHTgtLkDK949uzsa6n8BkziAKtPVpugIkO6D+/ooXMvzXxDnZrmtXVfjb1bKQafYpb8s89LOg==}
+  /@types/node@20.11.22:
+    resolution: {integrity: sha512-/G+IxWxma6V3E+pqK1tSl2Fo1kl41pK1yeCyDsgkF9WlVAme4j5ISYM2zR11bgLFJGLN5sVK40T4RJNuiZbEjA==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -1846,7 +1846,7 @@ packages:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
     dev: true
 
-  /cosmiconfig-typescript-loader@5.0.0(@types/node@20.11.20)(cosmiconfig@8.3.6)(typescript@5.3.3):
+  /cosmiconfig-typescript-loader@5.0.0(@types/node@20.11.22)(cosmiconfig@8.3.6)(typescript@5.3.3):
     resolution: {integrity: sha512-+8cK7jRAReYkMwMiG+bxhcNKiHJDM6bR9FD/nGBXOWdMLuYawjF5cGrtLilJ+LGd3ZjCXnJjR5DkfWPoIVlqJA==}
     engines: {node: '>=v16'}
     peerDependencies:
@@ -1854,7 +1854,7 @@ packages:
       cosmiconfig: '>=8.2'
       typescript: '>=4'
     dependencies:
-      '@types/node': 20.11.20
+      '@types/node': 20.11.22
       cosmiconfig: 8.3.6(typescript@5.3.3)
       jiti: 1.21.0
       typescript: 5.3.3
@@ -3679,7 +3679,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.11.20
+      '@types/node': 20.11.22
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
