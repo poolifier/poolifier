@@ -22,8 +22,8 @@ const availableParallelism = () => {
 }
 
 const isDevelopmentBuild = env.BUILD === 'development'
-const isAnalyzeBuild = env.ANALYZE
-const isDocumentationBuild = env.DOCUMENTATION
+const isAnalyzeBuild = Boolean(env.ANALYZE)
+const isDocumentationBuild = Boolean(env.DOCUMENTATION)
 const sourcemap = env.SOURCEMAP !== 'false'
 
 const maxWorkers = Math.floor(availableParallelism() / 2)
@@ -35,34 +35,36 @@ export default defineConfig([
     output: [
       {
         format: 'cjs',
-        ...(isDevelopmentBuild && {
-          dir: './lib',
-          entryFileNames: '[name].cjs',
-          chunkFileNames: '[name]-[hash].cjs',
-          preserveModules: true,
-          preserveModulesRoot: './src'
-        }),
-        ...(!isDevelopmentBuild && {
-          file: './lib/index.cjs',
-          plugins: [terser({ maxWorkers })]
-        }),
+        ...(isDevelopmentBuild
+          ? {
+              dir: './lib',
+              entryFileNames: '[name].cjs',
+              chunkFileNames: '[name]-[hash].cjs',
+              preserveModules: true,
+              preserveModulesRoot: './src'
+            }
+          : {
+              file: './lib/index.cjs',
+              plugins: [terser({ maxWorkers })]
+            }),
         ...(sourcemap && {
           sourcemap
         })
       },
       {
         format: 'esm',
-        ...(isDevelopmentBuild && {
-          dir: './lib',
-          entryFileNames: '[name].mjs',
-          chunkFileNames: '[name]-[hash].mjs',
-          preserveModules: true,
-          preserveModulesRoot: './src'
-        }),
-        ...(!isDevelopmentBuild && {
-          file: './lib/index.mjs',
-          plugins: [terser({ maxWorkers })]
-        }),
+        ...(isDevelopmentBuild
+          ? {
+              dir: './lib',
+              entryFileNames: '[name].mjs',
+              chunkFileNames: '[name]-[hash].mjs',
+              preserveModules: true,
+              preserveModulesRoot: './src'
+            }
+          : {
+              file: './lib/index.mjs',
+              plugins: [terser({ maxWorkers })]
+            }),
         ...(sourcemap && {
           sourcemap
         })
@@ -79,12 +81,13 @@ export default defineConfig([
       del({
         targets: ['./lib/*']
       }),
-      Boolean(isAnalyzeBuild) && analyze(),
-      Boolean(isDocumentationBuild) && command('pnpm typedoc')
+      isAnalyzeBuild && analyze(),
+      isDocumentationBuild && command('pnpm typedoc')
     ]
   },
   {
     input: './lib/dts/index.d.ts',
+    strictDeprecations: true,
     output: [{ format: 'esm', file: './lib/index.d.ts' }],
     external: [/^node:*/],
     plugins: [
@@ -93,7 +96,7 @@ export default defineConfig([
         targets: ['./lib/dts'],
         hook: 'buildEnd'
       }),
-      Boolean(isAnalyzeBuild) && analyze()
+      isAnalyzeBuild && analyze()
     ]
   }
 ])
