@@ -112,7 +112,7 @@
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.11.24",
     "@typescript-eslint/eslint-plugin": "^7.1.0",
-    "@typescript-eslint/parser": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.1",
     "benchmark": "^2.1.4",
     "c8": "^9.1.0",
     "cross-env": "^7.0.3",
@@ -141,7 +141,7 @@
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^6.1.0",
     "sinon": "^17.0.1",
-    "typedoc": "^0.25.9",
+    "typedoc": "^0.25.10",
     "typescript": "~5.3.3"
   }
 }
