@@ -1,6 +1,8 @@
 import { dirname, extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { DynamicThreadPool, availableParallelism } from 'poolifier'
+
+import { availableParallelism, DynamicThreadPool } from 'poolifier'
+
 import {
   type DataPayload,
   type WorkerData,

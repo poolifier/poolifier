@@ -1,7 +1,9 @@
 import type { Server } from 'node:http'
 import type { AddressInfo } from 'node:net'
-import { ClusterWorker } from 'poolifier'
+
 import express, { type Express, type Request, type Response } from 'express'
+import { ClusterWorker } from 'poolifier'
+
 import type { WorkerData, WorkerResponse } from './types.js'
 
 class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {

@@ -1,11 +1,13 @@
 import type { Server } from 'node:http'
 import type { AddressInfo } from 'node:net'
-import {
-  ClusterWorker,
-  DynamicThreadPool,
-  availableParallelism
-} from 'poolifier'
+
 import express, { type Express, type Request, type Response } from 'express'
+import {
+  availableParallelism,
+  ClusterWorker,
+  DynamicThreadPool
+} from 'poolifier'
+
 import {
   type ClusterWorkerData,
   type ClusterWorkerResponse,

@@ -1,7 +1,8 @@
 import { isMainThread } from 'node:worker_threads'
+
 import { ThreadWorker } from '../../lib/index.mjs'
-import { executeTaskFunction } from '../benchmarks-utils.cjs'
 import { TaskFunctions } from '../benchmarks-types.cjs'
+import { executeTaskFunction } from '../benchmarks-utils.cjs'
 
 const taskFunction = data => {
   data = data || {}

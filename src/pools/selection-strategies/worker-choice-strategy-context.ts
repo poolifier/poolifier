@@ -1,11 +1,11 @@
 import type { IPool } from '../pool.js'
-import type { IWorker } from '../worker.js'
 import { getWorkerChoiceStrategyRetries } from '../utils.js'
+import type { IWorker } from '../worker.js'
 import { FairShareWorkerChoiceStrategy } from './fair-share-worker-choice-strategy.js'
 import { InterleavedWeightedRoundRobinWorkerChoiceStrategy } from './interleaved-weighted-round-robin-worker-choice-strategy.js'
 import { LeastBusyWorkerChoiceStrategy } from './least-busy-worker-choice-strategy.js'
-import { LeastUsedWorkerChoiceStrategy } from './least-used-worker-choice-strategy.js'
 import { LeastEluWorkerChoiceStrategy } from './least-elu-worker-choice-strategy.js'
+import { LeastUsedWorkerChoiceStrategy } from './least-used-worker-choice-strategy.js'
 import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,

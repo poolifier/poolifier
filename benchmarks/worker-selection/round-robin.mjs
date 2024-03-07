@@ -1,4 +1,5 @@
 import Benchmark from 'benchmark'
+
 import { LIST_FORMATTER } from '../benchmarks-utils.cjs'
 
 function generateWorkersArray (numberOfWorkers) {

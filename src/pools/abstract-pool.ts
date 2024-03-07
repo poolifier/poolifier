@@ -1,17 +1,18 @@
+import { AsyncResource } from 'node:async_hooks'
 import { randomUUID } from 'node:crypto'
+import { EventEmitterAsyncResource } from 'node:events'
 import { performance } from 'node:perf_hooks'
 import type { TransferListItem } from 'node:worker_threads'
-import { EventEmitterAsyncResource } from 'node:events'
-import { AsyncResource } from 'node:async_hooks'
+
 import type {
   MessageValue,
   PromiseResponseWrapper,
   Task
 } from '../utility-types.js'
 import {
+  average,
   DEFAULT_TASK_NAME,
   EMPTY_FUNCTION,
-  average,
   exponentialDelay,
   isKillBehavior,
   isPlainObject,
@@ -21,8 +22,8 @@ import {
   round,
   sleep
 } from '../utils.js'
-import { KillBehaviors } from '../worker/worker-options.js'
 import type { TaskFunction } from '../worker/task-functions.js'
+import { KillBehaviors } from '../worker/worker-options.js'
 import {
   type IPool,
   PoolEvents,
@@ -32,13 +33,6 @@ import {
   PoolTypes,
   type TasksQueueOptions
 } from './pool.js'
-import type {
-  IWorker,
-  IWorkerNode,
-  WorkerInfo,
-  WorkerNodeEventDetail,
-  WorkerType
-} from './worker.js'
 import {
   Measurements,
   WorkerChoiceStrategies,
@@ -46,8 +40,6 @@ import {
   type WorkerChoiceStrategyOptions
 } from './selection-strategies/selection-strategies-types.js'
 import { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context.js'
-import { version } from './version.js'
-import { WorkerNode } from './worker-node.js'
 import {
   checkFilePath,
   checkValidTasksQueueOptions,
@@ -59,6 +51,15 @@ import {
   updateWaitTimeWorkerUsage,
   waitWorkerNodeEvents
 } from './utils.js'
+import { version } from './version.js'
+import type {
+  IWorker,
+  IWorkerNode,
+  WorkerInfo,
+  WorkerNodeEventDetail,
+  WorkerType
+} from './worker.js'
+import { WorkerNode } from './worker-node.js'
 
 /**
  * Base class that implements some shared logic for all poolifier pools.

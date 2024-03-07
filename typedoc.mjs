@@ -1,7 +1,7 @@
+import { execSync } from 'node:child_process'
 import { copyFileSync, mkdirSync, readdirSync, rmSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { execSync } from 'node:child_process'
 
 try {
   mkdirSync(join(dirname(fileURLToPath(import.meta.url)), 'tmp'), {

@@ -1,4 +1,5 @@
 import { ThreadWorker } from 'poolifier'
+
 import {
   type BodyPayload,
   type WorkerData,

@@ -1,6 +1,8 @@
 import type { AddressInfo } from 'node:net'
-import { ClusterWorker } from 'poolifier'
+
 import Fastify, { type FastifyInstance } from 'fastify'
+import { ClusterWorker } from 'poolifier'
+
 import type { WorkerData, WorkerResponse } from './types.js'
 
 class FastifyWorker extends ClusterWorker<WorkerData, WorkerResponse> {

@@ -1,5 +1,6 @@
-import * as os from 'node:os'
 import { getRandomValues } from 'node:crypto'
+import * as os from 'node:os'
+
 import type { KillBehavior } from './worker/worker-options.js'
 
 /**

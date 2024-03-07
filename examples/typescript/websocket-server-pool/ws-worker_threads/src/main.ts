@@ -1,6 +1,7 @@
 import { type RawData, WebSocketServer } from 'ws'
-import { type DataPayload, type MessagePayload, MessageType } from './types.js'
+
 import { requestHandlerPool } from './pool.js'
+import { type DataPayload, type MessagePayload, MessageType } from './types.js'
 
 const port = 8080
 const wss = new WebSocketServer({ port }, () => {

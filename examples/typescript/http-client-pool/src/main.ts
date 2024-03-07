@@ -1,4 +1,5 @@
 import { availableParallelism } from 'poolifier'
+
 import { httpClientPool } from './pool.js'
 import type { WorkerResponse } from './types.js'
 

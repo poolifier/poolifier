@@ -1,8 +1,9 @@
 import { exit } from 'node:process'
+
 import {
+  availableParallelism,
   PoolTypes,
-  WorkerTypes,
-  availableParallelism
+  WorkerTypes
 } from '../../lib/index.mjs'
 import { TaskFunctions } from '../benchmarks-types.cjs'
 import { runPoolifierPoolBenchmark } from '../benchmarks-utils.cjs'

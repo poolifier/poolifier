@@ -1,4 +1,5 @@
 import type SMTPTransport from 'nodemailer/lib/smtp-transport/index.js'
+
 import { smtpClientPool } from './pool.js'
 
 const tos = ['bar@example.com, baz@example.com']

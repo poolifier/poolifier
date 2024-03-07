@@ -1,9 +1,10 @@
-import { ThreadWorker } from 'poolifier'
+import axios from 'axios'
 import nodeFetch, {
   type RequestInfo as NodeFetchRequestInfo,
   type ResponseInit as NodeFetchRequestInit
 } from 'node-fetch'
-import axios from 'axios'
+import { ThreadWorker } from 'poolifier'
+
 import type { WorkerData, WorkerResponse } from './types.js'
 
 class HttpClientWorker extends ThreadWorker<WorkerData, WorkerResponse> {

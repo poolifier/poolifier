@@ -1,7 +1,9 @@
 import { dirname, extname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { exit } from 'node:process'
+import { fileURLToPath } from 'node:url'
+
 import Fastify from 'fastify'
+
 import { fastifyPoolifier } from './fastify-poolifier.js'
 
 /**
