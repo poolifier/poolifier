@@ -1,12 +1,13 @@
 import * as os from 'node:os'
 import { env } from 'node:process'
-import { dts } from 'rollup-plugin-dts'
+
 import terser from '@rollup/plugin-terser'
 import typescript from '@rollup/plugin-typescript'
+import { defineConfig } from 'rollup'
 import analyze from 'rollup-plugin-analyzer'
 import command from 'rollup-plugin-command'
 import del from 'rollup-plugin-delete'
-import { defineConfig } from 'rollup'
+import { dts } from 'rollup-plugin-dts'
 
 const availableParallelism = () => {
   let availableParallelism = 1

@@ -1,6 +1,6 @@
 import typescript from '@rollup/plugin-typescript'
-import del from 'rollup-plugin-delete'
 import { defineConfig } from 'rollup'
+import del from 'rollup-plugin-delete'
 
 export default defineConfig({
   input: [

@@ -1,8 +1,9 @@
-import type { MessageChannel, WorkerOptions } from 'node:worker_threads'
 import type { EventEmitter } from 'node:events'
+import type { MessageChannel, WorkerOptions } from 'node:worker_threads'
+
 import type { CircularArray } from '../circular-array.js'
-import type { Task } from '../utility-types.js'
 import type { Deque } from '../deque.js'
+import type { Task } from '../utility-types.js'
 
 /**
  * Callback invoked when the worker has started successfully.

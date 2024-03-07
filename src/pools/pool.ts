@@ -1,7 +1,12 @@
-import type { TransferListItem, WorkerOptions } from 'node:worker_threads'
-import type { EventEmitterAsyncResource } from 'node:events'
 import type { ClusterSettings } from 'node:cluster'
+import type { EventEmitterAsyncResource } from 'node:events'
+import type { TransferListItem, WorkerOptions } from 'node:worker_threads'
+
 import type { TaskFunction } from '../worker/task-functions.js'
+import type {
+  WorkerChoiceStrategy,
+  WorkerChoiceStrategyOptions
+} from './selection-strategies/selection-strategies-types.js'
 import type {
   ErrorHandler,
   ExitHandler,
@@ -11,10 +16,6 @@ import type {
   OnlineHandler,
   WorkerType
 } from './worker.js'
-import type {
-  WorkerChoiceStrategy,
-  WorkerChoiceStrategyOptions
-} from './selection-strategies/selection-strategies-types.js'
 
 /**
  * Enumeration of pool types.

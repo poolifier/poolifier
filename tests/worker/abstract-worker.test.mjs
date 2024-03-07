@@ -1,5 +1,6 @@
 import { expect } from 'expect'
 import { restore, stub } from 'sinon'
+
 import { ClusterWorker, KillBehaviors, ThreadWorker } from '../../lib/index.cjs'
 import { DEFAULT_TASK_NAME, EMPTY_FUNCTION } from '../../lib/utils.cjs'
 

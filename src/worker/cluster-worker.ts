@@ -1,8 +1,9 @@
 import cluster, { type Worker } from 'node:cluster'
+
 import type { MessageValue } from '../utility-types.js'
 import { AbstractWorker } from './abstract-worker.js'
-import type { WorkerOptions } from './worker-options.js'
 import type { TaskFunction, TaskFunctions } from './task-functions.js'
+import type { WorkerOptions } from './worker-options.js'
 
 /**
  * A cluster worker used by a poolifier `ClusterPool`.

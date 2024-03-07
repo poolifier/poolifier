@@ -1,4 +1,6 @@
 import { expect } from 'expect'
+
+import { CircularArray } from '../../../lib/circular-array.cjs'
 import {
   DynamicClusterPool,
   DynamicThreadPool,
@@ -6,7 +8,6 @@ import {
   FixedThreadPool,
   WorkerChoiceStrategies
 } from '../../../lib/index.cjs'
-import { CircularArray } from '../../../lib/circular-array.cjs'
 
 describe('Selection strategies test suite', () => {
   const min = 0

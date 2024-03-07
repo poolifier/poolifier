@@ -1,5 +1,6 @@
 import { expect } from 'expect'
 import { restore, stub } from 'sinon'
+
 import { ClusterWorker } from '../../lib/index.cjs'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 

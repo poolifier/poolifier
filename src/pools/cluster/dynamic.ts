@@ -1,5 +1,5 @@
-import { checkDynamicPoolSize } from '../utils.js'
 import { PoolEvents, type PoolType, PoolTypes } from '../pool.js'
+import { checkDynamicPoolSize } from '../utils.js'
 import { type ClusterPoolOptions, FixedClusterPool } from './fixed.js'
 
 /**

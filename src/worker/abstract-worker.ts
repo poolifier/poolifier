@@ -1,7 +1,8 @@
 import type { Worker } from 'node:cluster'
-import type { MessagePort } from 'node:worker_threads'
-import { performance } from 'node:perf_hooks'
 import { EventEmitter } from 'node:events'
+import { performance } from 'node:perf_hooks'
+import type { MessagePort } from 'node:worker_threads'
+
 import type {
   MessageValue,
   Task,
@@ -14,7 +15,6 @@ import {
   isAsyncFunction,
   isPlainObject
 } from '../utils.js'
-import { KillBehaviors, type WorkerOptions } from './worker-options.js'
 import type {
   TaskAsyncFunction,
   TaskFunction,
@@ -27,6 +27,7 @@ import {
   checkValidTaskFunctionEntry,
   checkValidWorkerOptions
 } from './utils.js'
+import { KillBehaviors, type WorkerOptions } from './worker-options.js'
 
 interface AbortTaskEventDetail {
   taskId: string

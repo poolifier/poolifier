@@ -1,7 +1,7 @@
 import type { IPool } from '../pool.js'
 import {
-  DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-  buildWorkerChoiceStrategyOptions
+  buildWorkerChoiceStrategyOptions,
+  DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS
 } from '../utils.js'
 import type { IWorker } from '../worker.js'
 import type {

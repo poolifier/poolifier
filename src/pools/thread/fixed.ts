@@ -1,8 +1,9 @@
 import {
+  isMainThread,
   type TransferListItem,
-  type Worker,
-  isMainThread
+  type Worker
 } from 'node:worker_threads'
+
 import type { MessageValue } from '../../utility-types.js'
 import { AbstractPool } from '../abstract-pool.js'
 import { type PoolOptions, type PoolType, PoolTypes } from '../pool.js'

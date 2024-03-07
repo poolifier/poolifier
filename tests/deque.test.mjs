@@ -1,4 +1,5 @@
 import { expect } from 'expect'
+
 import { Deque } from '../lib/deque.cjs'
 
 describe('Deque test suite', () => {

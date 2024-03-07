@@ -8,10 +8,10 @@ module.exports = defineConfig({
     mocha: true
   },
   parserOptions: {
-    ecmaVersion: 2022,
-    sourceType: 'module'
+    sourceType: 'module',
+    ecmaVersion: 2022
   },
-  plugins: ['promise', 'spellcheck'],
+  plugins: ['simple-import-sort', 'promise', 'spellcheck'],
   extends: [
     'eslint:recommended',
     'plugin:import/recommended',
@@ -25,13 +25,8 @@ module.exports = defineConfig({
     }
   },
   rules: {
-    'sort-imports': [
-      'error',
-      {
-        ignoreDeclarationSort: true
-      }
-    ],
-    'import/order': 'error',
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
 
     'spellcheck/spell-checker': [
       'warn',

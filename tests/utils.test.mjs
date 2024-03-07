@@ -1,11 +1,14 @@
-import os from 'node:os'
 import { randomInt } from 'node:crypto'
+import os from 'node:os'
+
 import { expect } from 'expect'
+
+import { KillBehaviors } from '../lib/index.cjs'
 import {
-  DEFAULT_TASK_NAME,
-  EMPTY_FUNCTION,
   availableParallelism,
   average,
+  DEFAULT_TASK_NAME,
+  EMPTY_FUNCTION,
   exponentialDelay,
   isAsyncFunction,
   isKillBehavior,
@@ -18,7 +21,6 @@ import {
   secureRandom,
   sleep
 } from '../lib/utils.cjs'
-import { KillBehaviors } from '../lib/index.cjs'
 
 describe('Utils test suite', () => {
   it('Verify DEFAULT_TASK_NAME value', () => {

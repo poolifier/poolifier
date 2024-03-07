@@ -1,6 +1,7 @@
+import type { AsyncResource } from 'node:async_hooks'
 import type { EventLoopUtilization } from 'node:perf_hooks'
 import type { MessagePort, TransferListItem } from 'node:worker_threads'
-import type { AsyncResource } from 'node:async_hooks'
+
 import type { KillBehavior } from './worker/worker-options.js'
 
 /**

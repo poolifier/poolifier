@@ -1,9 +1,10 @@
 import {
+  availableParallelism,
   ClusterWorker,
-  DynamicThreadPool,
-  availableParallelism
+  DynamicThreadPool
 } from 'poolifier'
 import { type RawData, WebSocketServer } from 'ws'
+
 import {
   type ClusterWorkerData,
   type ClusterWorkerResponse,

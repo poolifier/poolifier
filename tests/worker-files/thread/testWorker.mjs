@@ -1,6 +1,6 @@
 import { KillBehaviors, ThreadWorker } from '../../../lib/index.cjs'
-import { executeTaskFunction } from '../../test-utils.cjs'
 import { TaskFunctions } from '../../test-types.cjs'
+import { executeTaskFunction } from '../../test-utils.cjs'
 
 /**
  *

@@ -1,10 +1,14 @@
-import { EventEmitterAsyncResource } from 'node:events'
-import { dirname, join } from 'node:path'
-import { readFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
 import { createHook, executionAsyncId } from 'node:async_hooks'
+import { EventEmitterAsyncResource } from 'node:events'
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
 import { expect } from 'expect'
 import { restore, stub } from 'sinon'
+
+import { CircularArray } from '../../lib/circular-array.cjs'
+import { Deque } from '../../lib/deque.cjs'
 import {
   DynamicClusterPool,
   DynamicThreadPool,
@@ -15,11 +19,9 @@ import {
   WorkerChoiceStrategies,
   WorkerTypes
 } from '../../lib/index.cjs'
-import { CircularArray } from '../../lib/circular-array.cjs'
-import { Deque } from '../../lib/deque.cjs'
+import { WorkerNode } from '../../lib/pools/worker-node.cjs'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 import { waitPoolEvents } from '../test-utils.cjs'
-import { WorkerNode } from '../../lib/pools/worker-node.cjs'
 
 describe('Abstract pool test suite', () => {
   const version = JSON.parse(

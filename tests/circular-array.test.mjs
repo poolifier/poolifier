@@ -1,4 +1,5 @@
 import { expect } from 'expect'
+
 import {
   CircularArray,
   DEFAULT_CIRCULAR_ARRAY_SIZE

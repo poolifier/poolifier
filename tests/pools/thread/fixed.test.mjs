@@ -1,8 +1,9 @@
 import { expect } from 'expect'
+
 import { FixedThreadPool, PoolEvents } from '../../../lib/index.cjs'
+import { DEFAULT_TASK_NAME } from '../../../lib/utils.cjs'
 import { TaskFunctions } from '../../test-types.cjs'
 import { waitPoolEvents, waitWorkerEvents } from '../../test-utils.cjs'
-import { DEFAULT_TASK_NAME } from '../../../lib/utils.cjs'
 
 describe('Fixed thread pool test suite', () => {
   const numberOfThreads = 6

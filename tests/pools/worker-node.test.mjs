@@ -1,10 +1,12 @@
-import { MessageChannel, Worker as ThreadWorker } from 'node:worker_threads'
 import { Worker as ClusterWorker } from 'node:cluster'
+import { MessageChannel, Worker as ThreadWorker } from 'node:worker_threads'
+
 import { expect } from 'expect'
-import { WorkerNode } from '../../lib/pools/worker-node.cjs'
-import { WorkerTypes } from '../../lib/index.cjs'
+
 import { CircularArray } from '../../lib/circular-array.cjs'
 import { Deque } from '../../lib/deque.cjs'
+import { WorkerTypes } from '../../lib/index.cjs'
+import { WorkerNode } from '../../lib/pools/worker-node.cjs'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 
 describe('Worker node test suite', () => {

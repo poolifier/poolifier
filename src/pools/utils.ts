@@ -1,22 +1,24 @@
-import { existsSync } from 'node:fs'
 import cluster, { Worker as ClusterWorker } from 'node:cluster'
+import { randomInt } from 'node:crypto'
+import { existsSync } from 'node:fs'
+import { cpus } from 'node:os'
+import { env } from 'node:process'
 import {
   SHARE_ENV,
   Worker as ThreadWorker,
   type WorkerOptions
 } from 'node:worker_threads'
-import { env } from 'node:process'
-import { randomInt } from 'node:crypto'
-import { cpus } from 'node:os'
-import { average, isPlainObject, max, median, min } from '../utils.js'
+
 import type { MessageValue, Task } from '../utility-types.js'
+import { average, isPlainObject, max, median, min } from '../utils.js'
+import type { IPool, TasksQueueOptions } from './pool.js'
 import {
   type MeasurementStatisticsRequirements,
   WorkerChoiceStrategies,
   type WorkerChoiceStrategy,
   type WorkerChoiceStrategyOptions
 } from './selection-strategies/selection-strategies-types.js'
-import type { IPool, TasksQueueOptions } from './pool.js'
+import type { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context.js'
 import {
   type IWorker,
   type IWorkerNode,
@@ -26,7 +28,6 @@ import {
   WorkerTypes,
   type WorkerUsage
 } from './worker.js'
-import type { WorkerChoiceStrategyContext } from './selection-strategies/worker-choice-strategy-context.js'
 
 /**
  * Default measurement statistics requirements.

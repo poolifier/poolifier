@@ -1,25 +1,27 @@
-import { Worker as ThreadWorker } from 'node:worker_threads'
 import cluster, { Worker as ClusterWorker } from 'node:cluster'
+import { Worker as ThreadWorker } from 'node:worker_threads'
+
 import { expect } from 'expect'
+
 import {
   CircularArray,
   DEFAULT_CIRCULAR_ARRAY_SIZE
 } from '../../lib/circular-array.cjs'
 import {
-  DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+  FixedClusterPool,
+  FixedThreadPool,
+  WorkerTypes
+} from '../../lib/index.cjs'
+import {
   buildWorkerChoiceStrategyOptions,
   createWorker,
+  DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   getDefaultTasksQueueOptions,
   getWorkerChoiceStrategyRetries,
   getWorkerId,
   getWorkerType,
   updateMeasurementStatistics
 } from '../../lib/pools/utils.cjs'
-import {
-  FixedClusterPool,
-  FixedThreadPool,
-  WorkerTypes
-} from '../../lib/index.cjs'
 
 describe('Pool utils test suite', () => {
   it('Verify DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS values', () => {
