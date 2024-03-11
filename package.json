@@ -140,7 +140,7 @@
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^6.1.0",
     "sinon": "^17.0.1",
-    "typedoc": "^0.25.11",
+    "typedoc": "^0.25.12",
     "typescript": "~5.4.2"
   }
 }
