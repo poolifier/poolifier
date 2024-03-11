@@ -94,16 +94,14 @@
     "url": "https://github.com/poolifier/poolifier/issues"
   },
   "homepage": "https://github.com/poolifier/poolifier#readme",
-  "files": [
-    "lib"
-  ],
+  "files": ["lib"],
   "pnpm": {
     "overrides": {
       "semver": "^7.5.3"
     }
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.5.3",
+    "@biomejs/biome": "^1.6.0",
     "@commitlint/cli": "^19.0.3",
     "@commitlint/config-conventional": "^19.0.3",
     "@release-it/bumper": "^6.0.1",
@@ -111,8 +109,8 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.11.25",
-    "@typescript-eslint/eslint-plugin": "^7.1.1",
-    "@typescript-eslint/parser": "^7.1.1",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
     "benchmark": "^2.1.4",
     "c8": "^9.1.0",
     "cross-env": "^7.0.3",
@@ -142,7 +140,7 @@
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^6.1.0",
     "sinon": "^17.0.1",
-    "typedoc": "^0.25.11",
+    "typedoc": "^0.25.12",
     "typescript": "~5.4.2"
   }
 }
