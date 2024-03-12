@@ -201,7 +201,7 @@ export const max = (...args: number[]): number =>
  * @internal
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const once = <T, A extends any[], R>(
+export const once = <A extends any[], R, T>(
   fn: (...args: A) => R,
   context: T
 ): ((...args: A) => R) => {
