@@ -72,7 +72,10 @@ describe('Dynamic cluster pool test suite', () => {
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
     expect(pool.started).toBe(false)
-    expect(pool.emitter.eventNames()).toStrictEqual(['busy', 'destroy'])
+    expect(pool.emitter.eventNames()).toStrictEqual([
+      PoolEvents.busy,
+      PoolEvents.destroy
+    ])
     expect(pool.readyEventEmitted).toBe(false)
     expect(pool.workerNodes.length).toBe(0)
     expect(numberOfExitEvents).toBe(min)
