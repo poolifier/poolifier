@@ -244,7 +244,7 @@ export interface IPool<
    */
   readonly workerNodes: Array<IWorkerNode<Worker, Data>>
   /**
-   * Event emitter integrated with async resource on which events can be listened to.
+   * Pool event emitter integrated with async resource.
    * The async tracking tooling identifier is `poolifier:<PoolType>-<WorkerType>-pool`.
    *
    * Events that can currently be listened to:

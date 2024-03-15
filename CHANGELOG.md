@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix pool event emitter registered callbacks removal at `destroy()`.
+
 ## [3.1.21] - 2024-02-22
 
 ### Fixed

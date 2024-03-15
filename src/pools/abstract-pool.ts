@@ -993,7 +993,6 @@ export abstract class AbstractPool<
     )
     this.emitter?.emit(PoolEvents.destroy, this.info)
     this.emitter?.emitDestroy()
-    this.emitter?.removeAllListeners()
     this.readyEventEmitted = false
     this.destroying = false
     this.started = false

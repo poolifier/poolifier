@@ -123,7 +123,7 @@ An object with these properties:
   Default: `true`
 - `restartWorkerOnError` (optional) - Restart worker on uncaught error in this pool.  
   Default: `true`
-- `enableEvents` (optional) - Events integrated with async resource emission enablement in this pool.  
+- `enableEvents` (optional) - Pool events integrated with async resource emission enablement.  
   Default: `true`
 - `enableTasksQueue` (optional) - Tasks queue per worker enablement in this pool.  
   Default: `false`
