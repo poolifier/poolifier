@@ -114,7 +114,7 @@ module.exports = defineConfig({
         'plugin:@typescript-eslint/strict-type-checked',
         'plugin:@typescript-eslint/stylistic-type-checked',
         'plugin:import/typescript',
-        'standard-with-typescript'
+        'love'
       ],
       rules: {
         'operator-linebreak': 'off',
