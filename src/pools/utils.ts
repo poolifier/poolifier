@@ -1,5 +1,4 @@
 import cluster, { Worker as ClusterWorker } from 'node:cluster'
-import { randomInt } from 'node:crypto'
 import { existsSync } from 'node:fs'
 import { cpus } from 'node:os'
 import { env } from 'node:process'
@@ -101,8 +100,19 @@ const getDefaultWeights = (
   return weights
 }
 
-const getDefaultWorkerWeight = (): number => {
-  const cpuSpeed = randomInt(500, 2500)
+const estimatedCpuSpeed = (): number => {
+  const runs = 150000000
+  const begin = performance.now()
+  // eslint-disable-next-line no-empty
+  for (let i = runs; i > 0; i--) {}
+  const end = performance.now()
+  const duration = end - begin
+  return Math.trunc(runs / duration / 1000) // in MHz
+}
+
+const estCpuSpeed = estimatedCpuSpeed()
+
+const getDefaultWorkerWeight = (estimatedCpuSpeed = estCpuSpeed): number => {
   let cpusCycleTimeWeight = 0
   for (const cpu of cpus()) {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -110,7 +120,7 @@ const getDefaultWorkerWeight = (): number => {
       cpu.speed =
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         cpus().find(cpu => cpu.speed != null && cpu.speed !== 0)?.speed ??
-        cpuSpeed
+        estimatedCpuSpeed
     }
     // CPU estimated cycle time
     const numberOfDigits = cpu.speed.toString().length - 1
