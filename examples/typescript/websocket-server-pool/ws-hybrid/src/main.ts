@@ -45,7 +45,7 @@ const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(
           }
           return undefined
         })
-        .catch(error => {
+        .catch((error: unknown) => {
           console.error(
             'WebSocket server failed to start in cluster worker:',
             error
