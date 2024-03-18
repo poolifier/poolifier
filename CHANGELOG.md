@@ -10,7 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add fine grained task abortion support.
-- 
+
+## [3.1.22] - 2024-03-15
+
+### Fixed
+
+- Fix pool event emitter registered callbacks removal at `destroy()`.
+
 ## [3.1.21] - 2024-02-22
 
 ### Fixed

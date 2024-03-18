@@ -7,7 +7,7 @@
   "type": "module",
   "volta": {
     "node": "20.11.1",
-    "pnpm": "8.15.4"
+    "pnpm": "8.15.5"
   },
   "scripts": {
     "build": "pnpm build:clean && tsc",
@@ -22,7 +22,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.3",
-    "poolifier": "^3.1.21"
+    "poolifier": "^3.1.22"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
