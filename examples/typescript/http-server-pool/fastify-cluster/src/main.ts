@@ -26,7 +26,7 @@ const pool = new FixedClusterPool<WorkerData, WorkerResponse>(
           }
           return undefined
         })
-        .catch(error => {
+        .catch((error: unknown) => {
           console.error('Fastify failed to start in cluster worker:', error)
         })
     },

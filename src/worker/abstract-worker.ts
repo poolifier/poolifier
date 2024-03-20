@@ -569,7 +569,7 @@ export abstract class AbstractWorker<
         })
         return undefined
       })
-      .catch(error => {
+      .catch((error: unknown) => {
         this.sendToMainWorker({
           workerError: {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

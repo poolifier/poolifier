@@ -7,7 +7,7 @@
   "type": "module",
   "volta": {
     "node": "20.11.1",
-    "pnpm": "8.15.4"
+    "pnpm": "8.15.5"
   },
   "scripts": {
     "build": "rollup --config --configPlugin typescript",
@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/node": "^20.11.28",
+    "@types/node": "^20.11.29",
     "autocannon": "^7.15.0",
     "rollup": "^4.13.0",
     "rollup-plugin-delete": "^2.0.0",
