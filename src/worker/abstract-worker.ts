@@ -511,19 +511,21 @@ export abstract class AbstractWorker<
     taskId: string
   ): TaskAsyncFunction<Data, Response> {
     return async (data?: Data): Promise<Response> =>
-      await new Promise<Response>((resolve, reject) => {
-        this.taskAbortFunctions.set(taskId, () => {
-          reject(new Error(`Task ${name} id ${taskId} aborted`))
-        })
-        const taskFunction = this.taskFunctions.get(name)
-        if (isAsyncFunction(taskFunction)) {
-          (taskFunction as TaskAsyncFunction<Data, Response>)(data)
-            .then(resolve)
-            .catch(reject)
-        } else {
-          resolve((taskFunction as TaskSyncFunction<Data, Response>)(data))
+      await new Promise<Response>(
+        (resolve, reject: (reason?: unknown) => void) => {
+          this.taskAbortFunctions.set(taskId, () => {
+            reject(new Error(`Task ${name} id ${taskId} aborted`))
+          })
+          const taskFunction = this.taskFunctions.get(name)
+          if (isAsyncFunction(taskFunction)) {
+            (taskFunction as TaskAsyncFunction<Data, Response>)(data)
+              .then(resolve)
+              .catch(reject)
+          } else {
+            resolve((taskFunction as TaskSyncFunction<Data, Response>)(data))
+          }
         }
-      })
+      )
   }
 
   /**
