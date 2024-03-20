@@ -1274,7 +1274,7 @@ export abstract class AbstractPool<
         this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
       }
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      workerNode?.terminate().catch(error => {
+      workerNode?.terminate().catch((error: unknown) => {
         this.emitter?.emit(PoolEvents.error, error)
       })
     })
@@ -1315,7 +1315,7 @@ export abstract class AbstractPool<
       ) {
         // Flag the worker node as not ready immediately
         this.flagWorkerNodeAsNotReady(localWorkerNodeKey)
-        this.destroyWorkerNode(localWorkerNodeKey).catch(error => {
+        this.destroyWorkerNode(localWorkerNodeKey).catch((error: unknown) => {
           this.emitter?.emit(PoolEvents.error, error)
         })
       }
@@ -1329,7 +1329,7 @@ export abstract class AbstractPool<
           taskFunctionOperation: 'add',
           taskFunctionName,
           taskFunction: taskFunction.toString()
-        }).catch(error => {
+        }).catch((error: unknown) => {
           this.emitter?.emit(PoolEvents.error, error)
         })
       }
@@ -1653,7 +1653,7 @@ export abstract class AbstractPool<
         this.handleWorkerNodeIdleEvent(eventDetail, stolenTask)
         return undefined
       })
-      .catch(error => {
+      .catch((error: unknown) => {
         this.emitter?.emit(PoolEvents.error, error)
       })
   }

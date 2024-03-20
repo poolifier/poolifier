@@ -27,7 +27,7 @@
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/express": "^4.17.21",
-    "@types/node": "^20.11.28",
+    "@types/node": "^20.11.30",
     "autocannon": "^7.15.0",
     "rollup": "^4.13.0",
     "rollup-plugin-delete": "^2.0.0",
