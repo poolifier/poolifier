@@ -28,6 +28,6 @@
   "devDependencies": {
     "@types/node": "^20.11.30",
     "autocannon": "^7.15.0",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.3"
   }
 }
