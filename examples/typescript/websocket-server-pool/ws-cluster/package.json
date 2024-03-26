@@ -25,12 +25,12 @@
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/node": "^20.11.29",
+    "@types/node": "^20.11.30",
     "@types/ws": "^8.5.10",
     "rollup": "^4.13.0",
     "rollup-plugin-delete": "^2.0.0",
     "tslib": "^2.6.2",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.3"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8",

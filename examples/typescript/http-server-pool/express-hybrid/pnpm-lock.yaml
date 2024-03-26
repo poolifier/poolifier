@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   express:
-    specifier: ^4.18.3
-    version: 4.18.3
+    specifier: ^4.19.1
+    version: 4.19.1
   poolifier:
     specifier: ^3.1.22
     version: 3.1.22
@@ -15,7 +15,7 @@ dependencies:
 devDependencies:
   '@rollup/plugin-typescript':
     specifier: ^11.1.6
-    version: 11.1.6(rollup@4.13.0)(tslib@2.6.2)(typescript@5.4.2)
+    version: 11.1.6(rollup@4.13.0)(tslib@2.6.2)(typescript@5.4.3)
   '@types/express':
     specifier: ^4.17.21
     version: 4.17.21
@@ -35,8 +35,8 @@ devDependencies:
     specifier: ^2.6.2
     version: 2.6.2
   typescript:
-    specifier: ^5.4.2
-    version: 5.4.2
+    specifier: ^5.4.3
+    version: 5.4.3
 
 packages:
 
@@ -72,7 +72,7 @@ packages:
       fastq: 1.17.1
     dev: true
 
-  /@rollup/plugin-typescript@11.1.6(rollup@4.13.0)(tslib@2.6.2)(typescript@5.4.2):
+  /@rollup/plugin-typescript@11.1.6(rollup@4.13.0)(tslib@2.6.2)(typescript@5.4.3):
     resolution: {integrity: sha512-R92yOmIACgYdJ7dJ97p4K69I8gg6IEHt8M7dUBxN3W6nrO8uUxX5ixl0yU/N3aZTi8WhPuICvOHXQvF6FaykAA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -89,7 +89,7 @@ packages:
       resolve: 1.22.8
       rollup: 4.13.0
       tslib: 2.6.2
-      typescript: 5.4.2
+      typescript: 5.4.3
     dev: true
 
   /@rollup/pluginutils@5.1.0(rollup@4.13.0):
@@ -232,7 +232,7 @@ packages:
     resolution: {integrity: sha512-oaYtiBirUOPQGSWNGPWnzyAFJ0BP3cwvN4oWZQY+zUBwpVIGsKUkpBpSztp74drYcjavs7SKFZ4DX1V2QeN8rg==}
     dependencies:
       '@types/node': 20.11.30
-      '@types/qs': 6.9.13
+      '@types/qs': 6.9.14
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
     dev: true
@@ -242,7 +242,7 @@ packages:
     dependencies:
       '@types/body-parser': 1.19.5
       '@types/express-serve-static-core': 4.17.43
-      '@types/qs': 6.9.13
+      '@types/qs': 6.9.14
       '@types/serve-static': 1.15.5
     dev: true
 
@@ -275,8 +275,8 @@ packages:
       undici-types: 5.26.5
     dev: true
 
-  /@types/qs@6.9.13:
-    resolution: {integrity: sha512-iLR+1vTTJ3p0QaOUq6ACbY1mzKTODFDT/XedZI8BksOotFmL4ForwDfRQ/DZeuTHR7/2i4lI1D203gdfxuqTlA==}
+  /@types/qs@6.9.14:
+    resolution: {integrity: sha512-5khscbd3SwWMhFqylJBLQ0zIu7c1K6Vz0uBIt915BI3zV0q1nfjRQD3RqSBcPaO6PHEF4ov/t9y89fSiyThlPA==}
     dev: true
 
   /@types/range-parser@1.2.7:
@@ -345,7 +345,7 @@ packages:
     dependencies:
       chalk: 4.1.2
       char-spinner: 1.0.1
-      cli-table3: 0.6.3
+      cli-table3: 0.6.4
       color-support: 1.1.3
       cross-argv: 2.0.0
       form-data: 4.0.0
@@ -450,8 +450,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /cli-table3@0.6.3:
-    resolution: {integrity: sha512-w5Jac5SykAeZJKntOxJCrm63Eg5/4dhMWIcuTbo9rpE+brgaSZo0RuNJZeOyMgsUdhDeojvgyQLmjI+K50ZGyg==}
+  /cli-table3@0.6.4:
+    resolution: {integrity: sha512-Lm3L0p+/npIQWNIiyF/nAn7T5dnOwR3xNTHXYEBFBFVPXzCVNZ5lqEC/1eo/EVfpDsQ1I+TX4ORPQgp+UI0CRw==}
     engines: {node: 10.* || >= 12.*}
     dependencies:
       string-width: 4.2.3
@@ -502,8 +502,8 @@ packages:
     resolution: {integrity: sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ==}
     dev: false
 
-  /cookie@0.5.0:
-    resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
+  /cookie@0.6.0:
+    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
     dev: false
 
@@ -605,8 +605,8 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
-  /express@4.18.3:
-    resolution: {integrity: sha512-6VyCijWQ+9O7WuVMTRBTl+cjNNIzD5cY5mQ1WM8r/LEkI2u8EYpOotESNwzNlyCn3g+dmjKYI6BmNneSr/FSRw==}
+  /express@4.19.1:
+    resolution: {integrity: sha512-K4w1/Bp7y8iSiVObmCrtq8Cs79XjJc/RU2YYkZQ7wpUu5ZyZ7MtPHkqoMz4pf+mgXfNvo2qft8D9OnrH2ABk9w==}
     engines: {node: '>= 0.10.0'}
     dependencies:
       accepts: 1.3.8
@@ -614,7 +614,7 @@ packages:
       body-parser: 1.20.2
       content-disposition: 0.5.4
       content-type: 1.0.5
-      cookie: 0.5.0
+      cookie: 0.6.0
       cookie-signature: 1.0.6
       debug: 2.6.9
       depd: 2.0.0
@@ -1324,8 +1324,8 @@ packages:
       mime-types: 2.1.35
     dev: false
 
-  /typescript@5.4.2:
-    resolution: {integrity: sha512-+2/g0Fds1ERlP6JsakQQDXjZdZMM+rqpamFZJEKh4kwTIn3iDkgKtby0CeNd5ATNZ4Ry1ax15TMx0W2V+miizQ==}
+  /typescript@5.4.3:
+    resolution: {integrity: sha512-KrPd3PKaCLr78MalgiwJnA25Nm8HAmdwN3mYUYZgG/wizIo9EainNVQI9/yDavtVFRN2h3k8uf3GLHuhDMgEHg==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
