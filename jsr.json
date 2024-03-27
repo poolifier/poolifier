@@ -9,6 +9,7 @@
       "README.md",
       "jsr.json",
       "lib/**/*.mjs",
+      "lib/**/*.mjs.map",
       "lib/**/*.ts"
     ]
   }
