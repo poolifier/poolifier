@@ -1,4 +1,4 @@
-name: Publish npm package
+name: Publish package
 
 on:
   release:
@@ -36,6 +36,43 @@ jobs:
 
       - name: Production Build
         run: pnpm build:prod
+
+  publish-jsr:
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # - name: Setup pnpm
+      #   uses: pnpm/action-setup@v3
+      #   with:
+      #     version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          # cache: 'pnpm'
+
+      # - name: Install Dependencies
+      #   run: pnpm install --ignore-scripts --frozen-lockfile
+
+      - name: Read package.json version
+        id: package-version
+        uses: jaywcjlove/github-action-package@main
+
+      # - name: Production Build
+      #   run: pnpm build:prod
+
+      - name: Publish Release
+        if: ${{ contains(steps.package-version.outputs.version, '-') == false }}
+        run: npx jsr publish --allow-dirty
 
   publish-npm:
     needs: build
@@ -81,51 +118,3 @@ jobs:
         run: pnpm publish --no-git-checks --tag beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  # publish-gpr:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #     packages: write
-
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-
-  #     - name: Setup pnpm
-  #       uses: pnpm/action-setup@v3
-  #       with:
-  #         version: 8
-
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: '20.x'
-  #         registry-url: https://npm.pkg.github.com
-  #         cache: 'pnpm'
-
-  #     - name: Install Dependencies
-  #       run: pnpm install --ignore-scripts --frozen-lockfile
-
-  #     - name: Read package.json version
-  #       id: package-version
-  #       uses: jaywcjlove/github-action-package@main
-
-  #     - name: Publish Release
-  #       if: ${{ contains(steps.package-version.outputs.version, '-') == false }}
-  #       run: pnpm publish --no-git-checks
-  #       env:
-  #         NODE_AUTH_TOKEN: ${{ secrets.GPR_TOKEN }}
-
-  #     - name: Publish Pre-Release
-  #       if: ${{ contains(steps.package-version.outputs.version, '-') == true && contains(steps.package-version.outputs.version, '-beta') == false }}
-  #       run: pnpm publish --no-git-checks --tag next
-  #       env:
-  #         NODE_AUTH_TOKEN: ${{ secrets.GPR_TOKEN }}
-
-  #     - name: Publish Beta Release
-  #       if: ${{ contains(steps.package-version.outputs.version, '-beta') == true }}
-  #       run: pnpm publish --no-git-checks --tag beta
-  #       env:
-  #         NODE_AUTH_TOKEN: ${{ secrets.GPR_TOKEN }}

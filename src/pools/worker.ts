@@ -135,10 +135,11 @@ export interface TaskStatistics {
 /**
  * Enumeration of worker types.
  */
-export const WorkerTypes = Object.freeze({
-  thread: 'thread',
-  cluster: 'cluster'
-} as const)
+export const WorkerTypes: Readonly<{ thread: 'thread', cluster: 'cluster' }> =
+  Object.freeze({
+    thread: 'thread',
+    cluster: 'cluster'
+  } as const)
 
 /**
  * Worker type.
