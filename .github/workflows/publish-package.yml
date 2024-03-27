@@ -72,7 +72,7 @@ jobs:
 
       - name: Publish Release
         if: ${{ contains(steps.package-version.outputs.version, '-') == false }}
-        run: npx jsr publish
+        run: npx jsr publish --allow-dirty
 
   publish-npm:
     needs: build
