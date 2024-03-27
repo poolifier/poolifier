@@ -1,0 +1,15 @@
+{
+  "$schema": "https://jsr.io/schema/config-file.v1.json",
+  "name": "@poolifier/poolifier",
+  "version": "3.1.22",
+  "exports": "./lib/index.mjs",
+  "publish": {
+    "include": [
+      "LICENSE",
+      "README.md",
+      "jsr.json",
+      "lib/**/*.mjs",
+      "lib/**/*.ts"
+    ]
+  }
+}
