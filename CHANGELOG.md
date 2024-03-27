@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add fine grained task abortion support.
+
 ## [3.1.27] - 2024-03-27
 
 ### Fixed

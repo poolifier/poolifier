@@ -43,8 +43,9 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   /** @inheritdoc */
   public messageChannel?: MessageChannel
   /** @inheritdoc */
+  public readonly tasksQueue: Deque<Task<Data>>
+  /** @inheritdoc */
   public tasksQueueBackPressureSize: number
-  private readonly tasksQueue: Deque<Task<Data>>
   private onBackPressureStarted: boolean
   private readonly taskFunctionsUsage: Map<string, WorkerUsage>
 
@@ -109,6 +110,11 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   /** @inheritdoc */
   public popTask (): Task<Data> | undefined {
     return this.tasksQueue.pop()
+  }
+
+  /** @inheritdoc */
+  public deleteTask (task: Task<Data>): boolean {
+    return this.tasksQueue.delete(task)
   }
 
   /** @inheritdoc */
