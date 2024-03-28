@@ -197,25 +197,36 @@ const jsonIntegerSerialization = n => {
 }
 
 /**
- * Intentionally inefficient implementation.
  * @param {number} n - The number of fibonacci numbers to generate.
  * @returns {number} - The nth fibonacci number.
  */
 const fibonacci = n => {
-  if (n <= 1) return n
-  return fibonacci(n - 1) + fibonacci(n - 2)
+  n = BigInt(n)
+  let current = 1n
+  let previous = 0n
+  while (--n) {
+    const tmp = current
+    current += previous
+    previous = tmp
+  }
+  return current
 }
 
 /**
- * Intentionally inefficient implementation.
  * @param {number} n - The number to calculate the factorial of.
  * @returns {number} - The factorial of n.
  */
 const factorial = n => {
-  if (n === 0) {
-    return 1
+  if (n === 0 || n === 1) {
+    return 1n
+  } else {
+    n = BigInt(n)
+    let factorial = 1n
+    for (let i = 1n; i <= n; i++) {
+      factorial *= i
+    }
+    return factorial
   }
-  return factorial(n - 1) * n
 }
 
 const readWriteFiles = (
