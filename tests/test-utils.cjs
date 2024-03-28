@@ -66,25 +66,34 @@ const jsonIntegerSerialization = n => {
 }
 
 /**
- * Intentionally inefficient implementation.
  * @param {number} n - The number of fibonacci numbers to generate.
  * @returns {number} - The nth fibonacci number.
  */
 const fibonacci = n => {
-  if (n <= 1) return n
-  return fibonacci(n - 1) + fibonacci(n - 2)
+  let current = 1
+  let previous = 0
+  while (--n) {
+    const tmp = current
+    current += previous
+    previous = tmp
+  }
+  return current
 }
 
 /**
- * Intentionally inefficient implementation.
  * @param {number} n - The number to calculate the factorial of.
  * @returns {number} - The factorial of n.
  */
 const factorial = n => {
-  if (n === 0) {
+  if (n === 0 || n === 1) {
     return 1
+  } else {
+    let factorial = 1
+    for (let i = 1; i <= n; i++) {
+      factorial *= i
+    }
+    return factorial
   }
-  return factorial(n - 1) * n
 }
 
 const executeTaskFunction = data => {
@@ -92,7 +101,7 @@ const executeTaskFunction = data => {
     case TaskFunctions.jsonIntegerSerialization:
       return jsonIntegerSerialization(data.n || 100)
     case TaskFunctions.fibonacci:
-      return fibonacci(data.n || 25)
+      return fibonacci(data.n || 100)
     case TaskFunctions.factorial:
       return factorial(data.n || 100)
     default:

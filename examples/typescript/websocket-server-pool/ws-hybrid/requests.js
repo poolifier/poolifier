@@ -12,7 +12,7 @@ ws.on('open', () => {
     )
   }
   for (let i = 0; i < 60; i++) {
-    ws.send(JSON.stringify({ type: 'factorial', data: { number: 30 } }))
+    ws.send(JSON.stringify({ type: 'factorial', data: { number: 50000 } }))
   }
 })
 

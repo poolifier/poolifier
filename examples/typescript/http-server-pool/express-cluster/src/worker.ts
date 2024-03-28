@@ -9,11 +9,17 @@ import type { WorkerData, WorkerResponse } from './types.js'
 class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static server: Server
 
-  private static readonly factorial = (n: number): number => {
-    if (n === 0) {
-      return 1
+  private static readonly factorial = (n: number | bigint): bigint => {
+    if (n === 0 || n === 1) {
+      return 1n
+    } else {
+      n = BigInt(n)
+      let factorial = 1n
+      for (let i = 1n; i <= n; i++) {
+        factorial *= i
+      }
+      return factorial
     }
-    return ExpressWorker.factorial(n - 1) * n
   }
 
   private static readonly startExpress = (
@@ -32,7 +38,9 @@ class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
 
     application.get('/api/factorial/:number', (req: Request, res: Response) => {
       const { number } = req.params
-      res.send({ number: ExpressWorker.factorial(parseInt(number)) }).end()
+      res
+        .send({ number: ExpressWorker.factorial(parseInt(number)).toString() })
+        .end()
     })
 
     ExpressWorker.server = application.listen(port, () => {

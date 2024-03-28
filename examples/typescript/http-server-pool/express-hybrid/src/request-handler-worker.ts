@@ -10,11 +10,17 @@ class RequestHandlerWorker<
   Data extends ThreadWorkerData<DataPayload>,
   Response extends ThreadWorkerResponse<DataPayload>
 > extends ThreadWorker<Data, Response> {
-  private static readonly factorial = (n: number): number => {
-    if (n === 0) {
-      return 1
+  private static readonly factorial = (n: number | bigint): bigint => {
+    if (n === 0 || n === 1) {
+      return 1n
+    } else {
+      n = BigInt(n)
+      let factorial = 1n
+      for (let i = 1n; i <= n; i++) {
+        factorial *= i
+      }
+      return factorial
     }
-    return RequestHandlerWorker.factorial(n - 1) * n
   }
 
   public constructor () {
@@ -25,7 +31,9 @@ class RequestHandlerWorker<
       factorial: (workerData?: Data) => {
         return {
           data: {
-            number: RequestHandlerWorker.factorial(workerData!.data.number!)
+            number: RequestHandlerWorker.factorial(
+              workerData!.data.number!
+            ).toString()
           }
         } as unknown as Response
       }

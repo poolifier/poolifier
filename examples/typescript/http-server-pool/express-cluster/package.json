@@ -15,7 +15,7 @@
     "start:esm": "node --enable-source-maps dist/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "benchmark:echo": "autocannon -c 100 -d 30 -p 10 -m POST -H Content-Type=application/json -b '{\"key1\":\"value1\", \"key2\":\"value2\"}' http://localhost:8080/api/echo",
-    "benchmark:factorial": "autocannon -c 100 -d 30 -p 10 http://localhost:8080/api/factorial/30"
+    "benchmark:factorial": "autocannon -c 100 -d 30 -p 10 http://localhost:8080/api/factorial/50000"
   },
   "keywords": [],
   "author": "",
@@ -29,7 +29,7 @@
     "@types/express": "^4.17.21",
     "@types/node": "^20.11.30",
     "autocannon": "^7.15.0",
-    "rollup": "^4.13.1",
+    "rollup": "^4.13.2",
     "rollup-plugin-delete": "^2.0.0",
     "tslib": "^2.6.2",
     "typescript": "^5.4.3"

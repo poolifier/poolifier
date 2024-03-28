@@ -11,8 +11,8 @@ import { runPoolifierPoolBenchmark } from '../benchmarks-utils.cjs'
 const poolSize = availableParallelism()
 const taskExecutions = 1
 const workerData = {
-  function: TaskFunctions.jsonIntegerSerialization,
-  taskSize: 1000
+  function: TaskFunctions.factorial,
+  taskSize: 50000
 }
 
 // FixedThreadPool
