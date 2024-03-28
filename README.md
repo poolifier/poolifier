@@ -13,7 +13,7 @@
 [![GitHub commit activity (master)](https://img.shields.io/github/commit-activity/m/poolifier/poolifier/master?color=brightgreen&logo=github)](https://github.com/poolifier/poolifier/graphs/commit-activity)
 [![Npm Version](https://badgen.net/npm/v/poolifier?icon=npm)](https://www.npmjs.com/package/poolifier)
 [![Npm Weekly Downloads](https://badgen.net/npm/dw/poolifier?icon=npm)](https://www.npmjs.com/package/poolifier)
-[![JSR Version](https://jsr.io/badges/@poolifier/poolifier)](https://jsr.io/@poolifier/poolifier)
+[![JSR Version](https://jsr.io/badges/@poolifier/poolifier-web-worker)](https://jsr.io/@poolifier/poolifier)
 [![CI Workflow](https://github.com/poolifier/poolifier/actions/workflows/ci.yml/badge.svg)](https://github.com/poolifier/poolifier/actions/workflows/ci.yml)
 [![Code Coverage](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=coverage)](https://sonarcloud.io/dashboard?id=poolifier_poolifier)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=alert_status)](https://sonarcloud.io/dashboard?id=poolifier_poolifier)
