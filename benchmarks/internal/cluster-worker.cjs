@@ -5,7 +5,7 @@ const { TaskFunctions } = require('../benchmarks-types.cjs')
 
 const taskFunction = data => {
   data = data || {}
-  data.function = data.function || TaskFunctions.jsonIntegerSerialization
+  data.function = data.function || TaskFunctions.factorial
   data.debug = data.debug || false
   const res = executeTaskFunction(data)
   data.debug === true && console.debug(`This is the main thread ${isPrimary}`)
