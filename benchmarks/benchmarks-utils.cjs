@@ -209,7 +209,8 @@ const fibonacci = n => {
     current += previous
     previous = tmp
   }
-  return current
+  // cluster worker do not support BigInt
+  return current.toString()
 }
 
 /**
@@ -225,7 +226,8 @@ const factorial = n => {
     for (let i = 1n; i <= n; i++) {
       factorial *= i
     }
-    return factorial
+    // cluster worker do not support BigInt
+    return factorial.toString()
   }
 }
 
