@@ -13,6 +13,7 @@ import {
   WorkerChoiceStrategies,
   WorkerTypes
 } from '../lib/index.mjs'
+import { executeTaskFunction } from './benchmarks-utils.cjs'
 
 const buildPoolifierPool = (workerType, poolType, poolSize, poolOptions) => {
   switch (poolType) {
@@ -249,3 +250,5 @@ const LIST_FORMATTER = new Intl.ListFormat('en-US', {
   style: 'long',
   type: 'conjunction'
 })
+
+export { executeTaskFunction }

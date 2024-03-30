@@ -21,24 +21,23 @@ const workerData = {
   taskSize: 50000
 }
 
-const options = {
-  type: {
-    type: 'string',
-    short: 't'
-  }
-}
-const { values } = parseArgs({
-  args: process.argv,
-  options,
-  strict: true,
-  allowPositionals: true
-})
-
 let fixedThreadPool
 let dynamicThreadPool
 let fixedClusterPool
 let dynamicClusterPool
-switch (values.type) {
+switch (
+  parseArgs({
+    args: process.argv,
+    options: {
+      type: {
+        type: 'string',
+        short: 't'
+      }
+    },
+    strict: true,
+    allowPositionals: true
+  }).values.type
+) {
   case 'mitata':
     fixedThreadPool = buildPoolifierBenchmarkMitata(
       'FixedThreadPool',
