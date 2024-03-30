@@ -1,6 +1,4 @@
-import Benchmark from 'benchmark'
-
-import { LIST_FORMATTER } from '../benchmarks-utils.cjs'
+import { bench, group, run } from 'mitata'
 
 function generateWorkersArray (numberOfWorkers) {
   return [...Array(numberOfWorkers).keys()]
@@ -38,29 +36,23 @@ function roundRobinIncrementModulo () {
   return chosenWorker
 }
 
-new Benchmark.Suite('Round robin tasks distribution')
-  .add('Ternary off by one', () => {
+group('Round robin tasks distribution', () => {
+  bench('Ternary off by one', () => {
     nextWorkerIndex = 0
     roundRobinTernaryOffByOne()
   })
-  .add('Ternary with negation', () => {
+  bench('Ternary with negation', () => {
     nextWorkerIndex = 0
     roundRobinTernaryWithNegation()
   })
-  .add('Ternary with pre-choosing', () => {
+  bench('Ternary with pre-choosing', () => {
     nextWorkerIndex = 0
     roundRobinTernaryWithPreChoosing()
   })
-  .add('Increment+Modulo', () => {
+  bench('Increment+Modulo', () => {
     nextWorkerIndex = 0
     roundRobinIncrementModulo()
   })
-  .on('cycle', event => {
-    console.info(event.target.toString())
-  })
-  .on('complete', function () {
-    console.info(
-      'Fastest is ' + LIST_FORMATTER.format(this.filter('fastest').map('name'))
-    )
-  })
-  .run()
+})
+
+await run({ units: true })
