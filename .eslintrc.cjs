@@ -90,6 +90,8 @@ module.exports = defineConfig({
           'threadjs',
           'threadwork',
           'tinypool',
+          'tld',
+          'tos',
           'tsconfig',
           'tsdoc',
           'typedoc',
