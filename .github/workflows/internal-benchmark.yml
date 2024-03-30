@@ -42,4 +42,4 @@ jobs:
           --hash "$GITHUB_SHA" \
           --err \
           --github-actions ${{ secrets.GITHUB_TOKEN }} \
-          "pnpm benchmark:prod"
+          "pnpm benchmark:benchmark.js:prod"

@@ -1,8 +1,6 @@
 import { randomInt } from 'node:crypto'
 
-import Benchmark from 'benchmark'
-
-import { LIST_FORMATTER } from '../benchmarks-utils.cjs'
+import { bench, group, run } from 'mitata'
 
 function generateRandomTasksMap (
   numberOfWorkers,
@@ -170,31 +168,25 @@ function quickSelectRecursionRandomPivot (tasksMap) {
   )
 }
 
-new Benchmark.Suite('Least used worker tasks distribution')
-  .add('Loop select', () => {
+group('Least used worker tasks distribution', () => {
+  bench('Loop select', () => {
     loopSelect(tasksMap)
   })
-  .add('Array sort select', () => {
+  bench('Array sort select', () => {
     arraySortSelect(tasksMap)
   })
-  .add('Quick select loop', () => {
+  bench('Quick select loop', () => {
     quickSelectLoop(tasksMap)
   })
-  .add('Quick select loop with random pivot', () => {
+  bench('Quick select loop with random pivot', () => {
     quickSelectLoopRandomPivot(tasksMap)
   })
-  .add('Quick select recursion', () => {
+  bench('Quick select recursion', () => {
     quickSelectRecursion(tasksMap)
   })
-  .add('Quick select recursion with random pivot', () => {
+  bench('Quick select recursion with random pivot', () => {
     quickSelectRecursionRandomPivot(tasksMap)
   })
-  .on('cycle', event => {
-    console.info(event.target.toString())
-  })
-  .on('complete', function () {
-    console.info(
-      'Fastest is ' + LIST_FORMATTER.format(this.filter('fastest').map('name'))
-    )
-  })
-  .run()
+})
+
+await run({ units: true })

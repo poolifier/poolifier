@@ -1,4 +1,7 @@
 import { exit } from 'node:process'
+import { parseArgs } from 'node:util'
+
+import { run } from 'mitata'
 
 import {
   availableParallelism,
@@ -6,7 +9,10 @@ import {
   WorkerTypes
 } from '../../lib/index.mjs'
 import { TaskFunctions } from '../benchmarks-types.cjs'
-import { runPoolifierPoolBenchmark } from '../benchmarks-utils.cjs'
+import {
+  buildPoolifierBenchmarkMitata,
+  runPoolifierBenchmarkBenchmarkJs
+} from '../benchmarks-utils.mjs'
 
 const poolSize = availableParallelism()
 const taskExecutions = 1
@@ -15,52 +21,114 @@ const workerData = {
   taskSize: 50000
 }
 
-// FixedThreadPool
-await runPoolifierPoolBenchmark(
-  'FixedThreadPool',
-  WorkerTypes.thread,
-  PoolTypes.fixed,
-  poolSize,
-  {
-    taskExecutions,
-    workerData
+const options = {
+  type: {
+    type: 'string',
+    short: 't'
   }
-)
+}
+const { values } = parseArgs({
+  args: process.argv,
+  options,
+  strict: true,
+  allowPositionals: true
+})
 
-// DynamicThreadPool
-await runPoolifierPoolBenchmark(
-  'DynamicThreadPool',
-  WorkerTypes.thread,
-  PoolTypes.dynamic,
-  poolSize,
-  {
-    taskExecutions,
-    workerData
-  }
-)
-
-// FixedClusterPool
-await runPoolifierPoolBenchmark(
-  'FixedClusterPool',
-  WorkerTypes.cluster,
-  PoolTypes.fixed,
-  poolSize,
-  {
-    taskExecutions,
-    workerData
-  }
-)
-
-// DynamicClusterPool
-await runPoolifierPoolBenchmark(
-  'DynamicClusterPool',
-  WorkerTypes.cluster,
-  PoolTypes.dynamic,
-  poolSize,
-  {
-    taskExecutions,
-    workerData
-  }
-)
+let fixedThreadPool
+let dynamicThreadPool
+let fixedClusterPool
+let dynamicClusterPool
+switch (values.type) {
+  case 'mitata':
+    fixedThreadPool = buildPoolifierBenchmarkMitata(
+      'FixedThreadPool',
+      WorkerTypes.thread,
+      PoolTypes.fixed,
+      poolSize,
+      {
+        taskExecutions,
+        workerData
+      }
+    )
+    dynamicThreadPool = buildPoolifierBenchmarkMitata(
+      'DynamicThreadPool',
+      WorkerTypes.thread,
+      PoolTypes.dynamic,
+      poolSize,
+      {
+        taskExecutions,
+        workerData
+      }
+    )
+    fixedClusterPool = buildPoolifierBenchmarkMitata(
+      'FixedClusterPool',
+      WorkerTypes.cluster,
+      PoolTypes.fixed,
+      poolSize,
+      {
+        taskExecutions,
+        workerData
+      }
+    )
+    dynamicClusterPool = buildPoolifierBenchmarkMitata(
+      'DynamicClusterPool',
+      WorkerTypes.cluster,
+      PoolTypes.dynamic,
+      poolSize,
+      {
+        taskExecutions,
+        workerData
+      }
+    )
+    await run()
+    await fixedThreadPool.destroy()
+    await dynamicThreadPool.destroy()
+    await fixedClusterPool.destroy()
+    await dynamicClusterPool.destroy()
+    break
+  case 'benchmark.js':
+  default:
+    await runPoolifierBenchmarkBenchmarkJs(
+      'FixedThreadPool',
+      WorkerTypes.thread,
+      PoolTypes.fixed,
+      poolSize,
+      {
+        taskExecutions,
+        workerData
+      }
+    )
+    await runPoolifierBenchmarkBenchmarkJs(
+      'DynamicThreadPool',
+      WorkerTypes.thread,
+      PoolTypes.dynamic,
+      poolSize,
+      {
+        taskExecutions,
+        workerData
+      }
+    )
+    await runPoolifierBenchmarkBenchmarkJs(
+      'FixedClusterPool',
+      WorkerTypes.cluster,
+      PoolTypes.fixed,
+      poolSize,
+      {
+        taskExecutions,
+        workerData
+      }
+    )
+    await runPoolifierBenchmarkBenchmarkJs(
+      'DynamicClusterPool',
+      WorkerTypes.cluster,
+      PoolTypes.dynamic,
+      poolSize,
+      {
+        taskExecutions,
+        workerData
+      }
+    )
+    break
+}
 
 exit()
