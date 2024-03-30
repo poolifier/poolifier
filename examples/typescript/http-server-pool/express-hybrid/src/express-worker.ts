@@ -70,14 +70,16 @@ ClusterWorkerResponse
         .catch(emptyFunction)
     })
 
+    let listenerPort: number | undefined
     ExpressWorker.server = application.listen(port, () => {
+      listenerPort = (ExpressWorker.server.address() as AddressInfo).port
       console.info(
-        `⚡️[express server]: Express server is started in cluster worker at http://localhost:${port}/`
+        `⚡️[express server]: Express server is started in cluster worker at http://localhost:${listenerPort}/`
       )
     })
     return {
       status: true,
-      port: (ExpressWorker.server.address() as AddressInfo).port
+      port: listenerPort ?? port
     }
   }
 
