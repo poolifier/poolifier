@@ -80,6 +80,77 @@ export const runPoolifierBenchmarkBenchmarkJs = async (
   workerType,
   poolType,
   poolSize,
+  poolOptions,
+  { taskExecutions, workerData }
+) => {
+  return await new Promise((resolve, reject) => {
+    const pool = buildPoolifierPool(workerType, poolType, poolSize, poolOptions)
+    let workerChoiceStrategy
+    let enableTasksQueue
+    let workerChoiceStrategyOptions
+    if (poolOptions != null) {
+      ({
+        workerChoiceStrategy,
+        enableTasksQueue,
+        workerChoiceStrategyOptions
+      } = poolOptions)
+    }
+    const measurement = workerChoiceStrategyOptions?.measurement
+    new Benchmark(
+      `${name} with ${workerChoiceStrategy ?? pool.opts.workerChoiceStrategy}${
+        measurement != null ? `, with ${measurement}` : ''
+      } and ${enableTasksQueue ? 'with' : 'without'} tasks queue`,
+      async () => {
+        await runPoolifierPool(pool, {
+          taskExecutions,
+          workerData
+        })
+      },
+      {
+        onStart: () => {
+          if (workerChoiceStrategy != null) {
+            strictEqual(pool.opts.workerChoiceStrategy, workerChoiceStrategy)
+          }
+          if (enableTasksQueue != null) {
+            strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
+          }
+          if (measurement != null) {
+            strictEqual(
+              pool.opts.workerChoiceStrategyOptions.measurement,
+              measurement
+            )
+          }
+        },
+        onComplete: event => {
+          console.info(event.target.toString())
+          if (pool.started && !pool.destroying) {
+            pool.destroy().then(resolve).catch(reject)
+          } else {
+            resolve()
+          }
+        },
+        onError: event => {
+          if (pool.started && !pool.destroying) {
+            pool
+              .destroy()
+              .then(() => {
+                return reject(event.target.error)
+              })
+              .catch(() => {})
+          } else {
+            reject(event.target.error)
+          }
+        }
+      }
+    ).run()
+  })
+}
+
+export const runPoolifierBenchmarkBenchmarkJsSuite = async (
+  name,
+  workerType,
+  poolType,
+  poolSize,
   { taskExecutions, workerData }
 ) => {
   return await new Promise((resolve, reject) => {
@@ -113,7 +184,7 @@ export const runPoolifierBenchmarkBenchmarkJs = async (
         if (workerChoiceStrategy === WorkerChoiceStrategies.FAIR_SHARE) {
           for (const measurement of [Measurements.runTime, Measurements.elu]) {
             suite.add(
-              `${name} with ${workerChoiceStrategy}, with measurement ${measurement} and ${
+              `${name} with ${workerChoiceStrategy}, with ${measurement} and ${
                 enableTasksQueue ? 'with' : 'without'
               } tasks queue`,
               async () => {
