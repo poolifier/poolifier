@@ -184,7 +184,7 @@ export const runPoolifierBenchmarkBenchmarkJs = async (
               LIST_FORMATTER.format(this.filter('fastest').map('name'))
           )
         })
-        .run({ async: true, queued: true })
+        .run({ async: true })
     } catch (error) {
       pool
         .destroy()
