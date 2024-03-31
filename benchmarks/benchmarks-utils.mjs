@@ -100,23 +100,27 @@ export const runPoolifierBenchmarkBenchmarkJs = async (
                   enableTasksQueue ? 'with' : 'without'
                 } tasks queue`,
                 async () => {
-                  pool.setWorkerChoiceStrategy(workerChoiceStrategy, {
-                    measurement
-                  })
-                  pool.enableTasksQueue(enableTasksQueue)
-                  strictEqual(
-                    pool.opts.workerChoiceStrategy,
-                    workerChoiceStrategy
-                  )
-                  strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
-                  strictEqual(
-                    pool.opts.workerChoiceStrategyOptions.measurement,
-                    measurement
-                  )
                   await runPoolifierPool(pool, {
                     taskExecutions,
                     workerData
                   })
+                },
+                {
+                  onStart: () => {
+                    pool.setWorkerChoiceStrategy(workerChoiceStrategy, {
+                      measurement
+                    })
+                    pool.enableTasksQueue(enableTasksQueue)
+                    strictEqual(
+                      pool.opts.workerChoiceStrategy,
+                      workerChoiceStrategy
+                    )
+                    strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
+                    strictEqual(
+                      pool.opts.workerChoiceStrategyOptions.measurement,
+                      measurement
+                    )
+                  }
                 }
               )
             }
@@ -126,17 +130,21 @@ export const runPoolifierBenchmarkBenchmarkJs = async (
                 enableTasksQueue ? 'with' : 'without'
               } tasks queue`,
               async () => {
-                pool.setWorkerChoiceStrategy(workerChoiceStrategy)
-                pool.enableTasksQueue(enableTasksQueue)
-                strictEqual(
-                  pool.opts.workerChoiceStrategy,
-                  workerChoiceStrategy
-                )
-                strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
                 await runPoolifierPool(pool, {
                   taskExecutions,
                   workerData
                 })
+              },
+              {
+                onStart: () => {
+                  pool.setWorkerChoiceStrategy(workerChoiceStrategy)
+                  pool.enableTasksQueue(enableTasksQueue)
+                  strictEqual(
+                    pool.opts.workerChoiceStrategy,
+                    workerChoiceStrategy
+                  )
+                  strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
+                }
               }
             )
           }
