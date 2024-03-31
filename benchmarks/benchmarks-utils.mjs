@@ -83,34 +83,30 @@ export const runPoolifierBenchmarkBenchmarkJs = async (
   { taskExecutions, workerData }
 ) => {
   return await new Promise((resolve, reject) => {
-    let pool = buildPoolifierPool(workerType, poolType, poolSize)
+    const pool = buildPoolifierPool(workerType, poolType, poolSize)
     try {
       const suite = new Benchmark.Suite(name, {
         onComplete: () => {
-          const destroyTimeout = setTimeout(() => {
-            console.error('Pool destroy timeout reached (30s)')
+          if (pool.started && !pool.destroying) {
+            pool.destroy().then(resolve).catch(reject)
+          } else {
             resolve()
-            pool = undefined
-          }, 30000)
-          pool
-            .destroy()
-            .then(resolve)
-            .catch(reject)
-            .finally(() => {
-              clearTimeout(destroyTimeout)
-            })
-            .catch(() => {})
+          }
         },
         onCycle: event => {
           console.info(event.target.toString())
         },
         onError: event => {
-          pool
-            .destroy()
-            .then(() => {
-              return reject(event.target.error)
-            })
-            .catch(() => {})
+          if (pool.started && !pool.destroying) {
+            pool
+              .destroy()
+              .then(() => {
+                return reject(event.target.error)
+              })
+              .catch(() => {})
+          } else {
+            reject(event.target.error)
+          }
         }
       })
       for (const workerChoiceStrategy of Object.values(
