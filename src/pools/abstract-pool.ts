@@ -118,6 +118,10 @@ export abstract class AbstractPool<
    */
   private destroying: boolean
   /**
+   * Whether the minimum number of workers is starting or not.
+   */
+  private startingMinimumNumberOfWorkers: boolean
+  /**
    * Whether the pool ready event has been emitted or not.
    */
   private readyEventEmitted: boolean
@@ -175,6 +179,7 @@ export abstract class AbstractPool<
     this.starting = false
     this.destroying = false
     this.readyEventEmitted = false
+    this.startingMinimumNumberOfWorkers = false
     if (this.opts.startWorkers === true) {
       this.start()
     }
@@ -953,6 +958,7 @@ export abstract class AbstractPool<
    * Starts the minimum number of workers.
    */
   private startMinimumNumberOfWorkers (): void {
+    this.startingMinimumNumberOfWorkers = true
     while (
       this.workerNodes.reduce(
         (accumulator, workerNode) =>
@@ -962,6 +968,7 @@ export abstract class AbstractPool<
     ) {
       this.createAndSetupWorkerNode()
     }
+    this.startingMinimumNumberOfWorkers = false
   }
 
   /** @inheritdoc */
@@ -1251,7 +1258,7 @@ export abstract class AbstractPool<
       ) {
         if (workerNode.info.dynamic) {
           this.createAndSetupDynamicWorkerNode()
-        } else {
+        } else if (!this.startingMinimumNumberOfWorkers) {
           this.startMinimumNumberOfWorkers()
         }
       }
@@ -1273,7 +1280,11 @@ export abstract class AbstractPool<
     )
     workerNode.registerOnceWorkerEventHandler('exit', () => {
       this.removeWorkerNode(workerNode)
-      if (this.started && !this.destroying) {
+      if (
+        this.started &&
+        !this.startingMinimumNumberOfWorkers &&
+        !this.destroying
+      ) {
         this.startMinimumNumberOfWorkers()
       }
     })
