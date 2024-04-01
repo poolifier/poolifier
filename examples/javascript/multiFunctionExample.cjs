@@ -5,8 +5,8 @@ const pool = new FixedThreadPool(
   availableParallelism(),
   './multiFunctionWorker.cjs',
   {
-    errorHandler: e => console.error(e),
-    onlineHandler: () => console.info('worker is online')
+    onlineHandler: () => console.info('worker is online'),
+    errorHandler: e => console.error(e)
   }
 )
 

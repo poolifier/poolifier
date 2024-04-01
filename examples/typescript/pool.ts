@@ -18,11 +18,11 @@ const fixedPool = new FixedThreadPool<MyData, MyResponse>(
   availableParallelism(),
   workerFile,
   {
-    errorHandler: (e: Error) => {
-      console.error(e)
-    },
     onlineHandler: () => {
       console.info('Worker is online')
+    },
+    errorHandler: (e: Error) => {
+      console.error(e)
     }
   }
 )
@@ -34,11 +34,11 @@ const dynamicPool = new DynamicThreadPool<MyData, MyResponse>(
   availableParallelism(),
   workerFile,
   {
-    errorHandler: (e: Error) => {
-      console.error(e)
-    },
     onlineHandler: () => {
       console.info('Worker is online')
+    },
+    errorHandler: (e: Error) => {
+      console.error(e)
     }
   }
 )
