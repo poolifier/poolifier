@@ -142,7 +142,7 @@ export const runPoolifierBenchmarkBenchmarkJs = async (
           }
         }
       }
-    ).run()
+    ).run({ async: true })
   })
 }
 
