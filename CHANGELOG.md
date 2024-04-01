@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix possible race condition at worker node recreation on worker `error` and `exit` events.
+
 ## [3.1.28] - 2024-04-01
 
 ### Fixed
