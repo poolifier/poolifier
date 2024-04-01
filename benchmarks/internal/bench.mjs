@@ -11,7 +11,7 @@ import {
 import { TaskFunctions } from '../benchmarks-types.cjs'
 import {
   buildPoolifierBenchmarkMitata,
-  runPoolifierBenchmarkBenchmarkJs
+  runPoolifierBenchmarkBenchmarkJsSuite
 } from '../benchmarks-utils.mjs'
 
 const poolSize = availableParallelism()
@@ -87,7 +87,7 @@ switch (
     break
   case 'benchmark.js':
   default:
-    await runPoolifierBenchmarkBenchmarkJs(
+    await runPoolifierBenchmarkBenchmarkJsSuite(
       'FixedThreadPool',
       WorkerTypes.thread,
       PoolTypes.fixed,
@@ -97,7 +97,7 @@ switch (
         workerData
       }
     )
-    await runPoolifierBenchmarkBenchmarkJs(
+    await runPoolifierBenchmarkBenchmarkJsSuite(
       'DynamicThreadPool',
       WorkerTypes.thread,
       PoolTypes.dynamic,
@@ -107,7 +107,7 @@ switch (
         workerData
       }
     )
-    await runPoolifierBenchmarkBenchmarkJs(
+    await runPoolifierBenchmarkBenchmarkJsSuite(
       'FixedClusterPool',
       WorkerTypes.cluster,
       PoolTypes.fixed,
@@ -117,7 +117,7 @@ switch (
         workerData
       }
     )
-    await runPoolifierBenchmarkBenchmarkJs(
+    await runPoolifierBenchmarkBenchmarkJsSuite(
       'DynamicClusterPool',
       WorkerTypes.cluster,
       PoolTypes.dynamic,
