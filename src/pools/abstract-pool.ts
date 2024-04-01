@@ -1241,7 +1241,7 @@ export abstract class AbstractPool<
       'error',
       this.opts.errorHandler ?? EMPTY_FUNCTION
     )
-    workerNode.registerWorkerEventHandler('error', (error: Error) => {
+    workerNode.registerOnceWorkerEventHandler('error', (error: Error) => {
       workerNode.info.ready = false
       this.emitter?.emit(PoolEvents.error, error)
       if (
