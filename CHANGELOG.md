@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.28] - 2024-04-01
+
 ### Fixed
 
 - Ensure the minimum number of workers on a started pool is guaranteed.
