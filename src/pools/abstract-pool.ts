@@ -949,6 +949,21 @@ export abstract class AbstractPool<
     })
   }
 
+  /**
+   * Starts the minimum number of workers.
+   */
+  private startMinimumNumberOfWorkers (): void {
+    while (
+      this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          !workerNode.info.dynamic ? accumulator + 1 : accumulator,
+        0
+      ) < this.minimumNumberOfWorkers
+    ) {
+      this.createAndSetupWorkerNode()
+    }
+  }
+
   /** @inheritdoc */
   public start (): void {
     if (this.started) {
@@ -961,15 +976,7 @@ export abstract class AbstractPool<
       throw new Error('Cannot start a destroying pool')
     }
     this.starting = true
-    while (
-      this.workerNodes.reduce(
-        (accumulator, workerNode) =>
-          !workerNode.info.dynamic ? accumulator + 1 : accumulator,
-        0
-      ) < this.minimumNumberOfWorkers
-    ) {
-      this.createAndSetupWorkerNode()
-    }
+    this.startMinimumNumberOfWorkers()
     this.starting = false
     this.started = true
   }
@@ -1266,6 +1273,9 @@ export abstract class AbstractPool<
     )
     workerNode.registerOnceWorkerEventHandler('exit', () => {
       this.removeWorkerNode(workerNode)
+      if (this.started && !this.destroying) {
+        this.startMinimumNumberOfWorkers()
+      }
     })
     const workerNodeKey = this.addWorkerNode(workerNode)
     this.afterWorkerNodeSetup(workerNodeKey)
