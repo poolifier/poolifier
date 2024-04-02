@@ -32,7 +32,7 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --ignore-scripts --frozen-lockfile
-      - uses: bencherdev/bencher@main
+      # - uses: bencherdev/bencher@main
       # - name: Run production benchmark
       #   run: |
       #     bencher run \
