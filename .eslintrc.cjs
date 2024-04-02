@@ -32,6 +32,7 @@ module.exports = defineConfig({
       'warn',
       {
         skipWords: [
+          'argv',
           'axios',
           'benoit',
           'browserslist',
@@ -67,6 +68,7 @@ module.exports = defineConfig({
           'linebreak',
           'localhost',
           'microjob',
+          'mitata',
           'mjs',
           'nodemailer',
           'npx',
@@ -78,6 +80,7 @@ module.exports = defineConfig({
           'poolifier',
           'prepend',
           'prepends',
+          'positionals',
           'readdir',
           'readonly',
           'req',
@@ -87,6 +90,8 @@ module.exports = defineConfig({
           'threadjs',
           'threadwork',
           'tinypool',
+          'tld',
+          'tos',
           'tsconfig',
           'tsdoc',
           'typedoc',

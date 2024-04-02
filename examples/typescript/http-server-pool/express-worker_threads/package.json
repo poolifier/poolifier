@@ -6,7 +6,7 @@
   "main": "dist/main.js",
   "type": "module",
   "volta": {
-    "node": "20.11.1",
+    "node": "20.12.0",
     "pnpm": "8.15.5"
   },
   "scripts": {
@@ -15,18 +15,18 @@
     "start": "node --enable-source-maps dist/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "benchmark:echo": "autocannon -c 100 -d 30 -p 10 -m POST -H Content-Type=application/json -b '{\"key1\":\"value1\", \"key2\":\"value2\"}' http://localhost:8080/api/echo",
-    "benchmark:factorial": "autocannon -c 100 -d 30 -p 10 http://localhost:8080/api/factorial/30"
+    "benchmark:factorial": "autocannon -c 100 -d 30 -p 10 http://localhost:8080/api/factorial/50000"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.19.2",
-    "poolifier": "^3.1.22"
+    "poolifier": "^3.1.27"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
-    "@types/node": "^20.11.30",
+    "@types/node": "^20.12.2",
     "autocannon": "^7.15.0",
     "typescript": "^5.4.3"
   }

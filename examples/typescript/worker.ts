@@ -20,7 +20,7 @@ class MyThreadWorker extends ThreadWorker<MyData, MyResponse> {
     return await new Promise(resolve => {
       setTimeout(() => {
         resolve({ message: 'Hello from Worker :)', data })
-      }, 10000)
+      }, 1000)
     })
   }
 }

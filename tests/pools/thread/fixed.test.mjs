@@ -68,7 +68,7 @@ describe('Fixed thread pool test suite', () => {
     let result = await pool.execute({
       function: TaskFunctions.fibonacci
     })
-    expect(result).toBe(75025)
+    expect(result).toBe(354224848179262000000)
     result = await pool.execute({
       function: TaskFunctions.factorial
     })
@@ -348,7 +348,8 @@ describe('Fixed thread pool test suite', () => {
     })
     await expect(pool.destroyWorkerNode(workerNodeKey)).resolves.toBeUndefined()
     expect(exitEvent).toBe(1)
-    expect(pool.workerNodes.length).toBe(numberOfThreads - 1)
+    // Simulates an illegitimate worker node destroy and the minimum number of worker nodes is guaranteed
+    expect(pool.workerNodes.length).toBe(numberOfThreads)
     await pool.destroy()
   })
 

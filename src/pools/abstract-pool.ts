@@ -118,6 +118,10 @@ export abstract class AbstractPool<
    */
   private destroying: boolean
   /**
+   * Whether the minimum number of workers is starting or not.
+   */
+  private startingMinimumNumberOfWorkers: boolean
+  /**
    * Whether the pool ready event has been emitted or not.
    */
   private readyEventEmitted: boolean
@@ -175,6 +179,7 @@ export abstract class AbstractPool<
     this.starting = false
     this.destroying = false
     this.readyEventEmitted = false
+    this.startingMinimumNumberOfWorkers = false
     if (this.opts.startWorkers === true) {
       this.start()
     }
@@ -949,6 +954,23 @@ export abstract class AbstractPool<
     })
   }
 
+  /**
+   * Starts the minimum number of workers.
+   */
+  private startMinimumNumberOfWorkers (): void {
+    this.startingMinimumNumberOfWorkers = true
+    while (
+      this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          !workerNode.info.dynamic ? accumulator + 1 : accumulator,
+        0
+      ) < this.minimumNumberOfWorkers
+    ) {
+      this.createAndSetupWorkerNode()
+    }
+    this.startingMinimumNumberOfWorkers = false
+  }
+
   /** @inheritdoc */
   public start (): void {
     if (this.started) {
@@ -961,15 +983,7 @@ export abstract class AbstractPool<
       throw new Error('Cannot start a destroying pool')
     }
     this.starting = true
-    while (
-      this.workerNodes.reduce(
-        (accumulator, workerNode) =>
-          !workerNode.info.dynamic ? accumulator + 1 : accumulator,
-        0
-      ) < this.minimumNumberOfWorkers
-    ) {
-      this.createAndSetupWorkerNode()
-    }
+    this.startMinimumNumberOfWorkers()
     this.starting = false
     this.started = true
   }
@@ -1234,7 +1248,7 @@ export abstract class AbstractPool<
       'error',
       this.opts.errorHandler ?? EMPTY_FUNCTION
     )
-    workerNode.registerWorkerEventHandler('error', (error: Error) => {
+    workerNode.registerOnceWorkerEventHandler('error', (error: Error) => {
       workerNode.info.ready = false
       this.emitter?.emit(PoolEvents.error, error)
       if (
@@ -1244,8 +1258,8 @@ export abstract class AbstractPool<
       ) {
         if (workerNode.info.dynamic) {
           this.createAndSetupDynamicWorkerNode()
-        } else {
-          this.createAndSetupWorkerNode()
+        } else if (!this.startingMinimumNumberOfWorkers) {
+          this.startMinimumNumberOfWorkers()
         }
       }
       if (
@@ -1266,6 +1280,13 @@ export abstract class AbstractPool<
     )
     workerNode.registerOnceWorkerEventHandler('exit', () => {
       this.removeWorkerNode(workerNode)
+      if (
+        this.started &&
+        !this.startingMinimumNumberOfWorkers &&
+        !this.destroying
+      ) {
+        this.startMinimumNumberOfWorkers()
+      }
     })
     const workerNodeKey = this.addWorkerNode(workerNode)
     this.afterWorkerNodeSetup(workerNodeKey)

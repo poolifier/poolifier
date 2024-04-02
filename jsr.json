@@ -1,0 +1,9 @@
+{
+  "$schema": "https://jsr.io/schema/config-file.v1.json",
+  "name": "@poolifier/poolifier",
+  "version": "3.1.28",
+  "exports": "./src/index.ts",
+  "publish": {
+    "include": ["LICENSE", "README.md", "jsr.json", "src/**/*.ts"]
+  }
+}

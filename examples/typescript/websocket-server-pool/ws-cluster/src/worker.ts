@@ -12,11 +12,17 @@ import {
 class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static wss: WebSocketServer
 
-  private static readonly factorial = (n: number): number => {
-    if (n === 0) {
-      return 1
+  private static readonly factorial = (n: number | bigint): bigint => {
+    if (n === 0 || n === 1) {
+      return 1n
+    } else {
+      n = BigInt(n)
+      let factorial = 1n
+      for (let i = 1n; i <= n; i++) {
+        factorial *= i
+      }
+      return factorial
     }
-    return WebSocketServerWorker.factorial(n - 1) * n
   }
 
   private static readonly startWebSocketServer = (
@@ -48,12 +54,15 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
             break
           case MessageType.factorial:
             ws.send(
-              JSON.stringify({
-                type: MessageType.factorial,
-                data: {
-                  number: WebSocketServerWorker.factorial(data.number!)
-                }
-              })
+              JSON.stringify(
+                {
+                  type: MessageType.factorial,
+                  data: {
+                    number: WebSocketServerWorker.factorial(data.number!)
+                  }
+                },
+                (_, v) => (typeof v === 'bigint' ? v.toString() : v)
+              )
             )
             break
         }

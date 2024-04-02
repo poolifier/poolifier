@@ -15,7 +15,7 @@
   },
   "plugins": {
     "@release-it/bumper": {
-      "out": ["sonar-project.properties", "src/pools/version.ts"]
+      "out": ["src/pools/version.ts", "sonar-project.properties", "jsr.json"]
     },
     "@release-it/keep-a-changelog": {
       "filename": "CHANGELOG.md",

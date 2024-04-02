@@ -78,10 +78,13 @@ ClusterWorkerResponse
               .execute({ data }, 'factorial')
               .then(response => {
                 ws.send(
-                  JSON.stringify({
-                    type: MessageType.factorial,
-                    data: response.data
-                  })
+                  JSON.stringify(
+                    {
+                      type: MessageType.factorial,
+                      data: response.data
+                    },
+                    (_, v) => (typeof v === 'bigint' ? v.toString() : v)
+                  )
                 )
                 return undefined
               })

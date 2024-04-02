@@ -24,7 +24,7 @@ describe('Dynamic thread pool test suite', () => {
     let result = await pool.execute({
       function: TaskFunctions.fibonacci
     })
-    expect(result).toBe(75025)
+    expect(result).toBe(354224848179262000000)
     result = await pool.execute({
       function: TaskFunctions.factorial
     })

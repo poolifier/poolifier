@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix possible race condition at worker node recreation on worker `error` and `exit` events.
+
+## [3.1.28] - 2024-04-01
+
+### Fixed
+
+- Ensure the minimum number of workers on a started pool is guaranteed.
+
+## [3.1.27] - 2024-03-27
+
+### Fixed
+
+- Fix publishing on JSR, take 4.
+
+## [3.1.26] - 2024-03-27
+
+### Fixed
+
+- Fix publishing on JSR, take 3.
+
+## [3.1.25] - 2024-03-27
+
+### Fixed
+
+- Fix publishing on JSR, take 2.
+
+## [3.1.24] - 2024-03-27
+
+### Fixed
+
+- Fix publishing on JSR.
+
+## [3.1.23] - 2024-03-27
+
+### Changed
+
+- Publish on JSR.
+
 ## [3.1.22] - 2024-03-15
 
 ### Fixed

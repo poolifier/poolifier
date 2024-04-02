@@ -14,32 +14,36 @@ const workerFile = join(
   `worker${extname(fileURLToPath(import.meta.url))}`
 )
 
-export const fixedPool = new FixedThreadPool<MyData, MyResponse>(
+const fixedPool = new FixedThreadPool<MyData, MyResponse>(
   availableParallelism(),
   workerFile,
   {
-    errorHandler: (e: Error) => {
-      console.error(e)
-    },
     onlineHandler: () => {
       console.info('Worker is online')
+    },
+    errorHandler: (e: Error) => {
+      console.error(e)
     }
   }
 )
 
-export const dynamicPool = new DynamicThreadPool<MyData, MyResponse>(
+await fixedPool.execute()
+
+const dynamicPool = new DynamicThreadPool<MyData, MyResponse>(
   Math.floor(availableParallelism() / 2),
   availableParallelism(),
   workerFile,
   {
-    errorHandler: (e: Error) => {
-      console.error(e)
-    },
     onlineHandler: () => {
       console.info('Worker is online')
+    },
+    errorHandler: (e: Error) => {
+      console.error(e)
     }
   }
 )
+
+await dynamicPool.execute()
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 setTimeout(async () => {

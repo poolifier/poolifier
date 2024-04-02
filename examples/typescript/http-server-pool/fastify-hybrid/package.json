@@ -6,7 +6,7 @@
   "main": "dist/main.js",
   "type": "module",
   "volta": {
-    "node": "20.11.1",
+    "node": "20.12.0",
     "pnpm": "8.15.5"
   },
   "scripts": {
@@ -15,7 +15,7 @@
     "start:esm": "node --enable-source-maps dist/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "benchmark:echo": "autocannon -c 100 -d 30 -p 10 -m POST -H Content-Type=application/json -b '{\"key1\":\"value1\", \"key2\":\"value2\"}' http://localhost:8080/api/echo",
-    "benchmark:factorial": "autocannon -c 100 -d 30 -p 10 http://localhost:8080/api/factorial/30"
+    "benchmark:factorial": "autocannon -c 100 -d 30 -p 10 http://localhost:8080/api/factorial/50000"
   },
   "keywords": [],
   "author": "",
@@ -23,13 +23,13 @@
   "dependencies": {
     "fastify": "^4.26.2",
     "fastify-plugin": "^4.5.1",
-    "poolifier": "^3.1.22"
+    "poolifier": "^3.1.27"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/node": "^20.11.30",
+    "@types/node": "^20.12.2",
     "autocannon": "^7.15.0",
-    "rollup": "^4.13.0",
+    "rollup": "^4.13.2",
     "rollup-plugin-delete": "^2.0.0",
     "tslib": "^2.6.2",
     "typescript": "^5.4.3"

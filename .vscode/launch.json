@@ -17,10 +17,20 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Benchmarks Debug",
+      "name": "Launch Benchmark.js Benchmark Debug",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["run", "benchmark:debug"],
+      "runtimeArgs": ["run", "benchmark:benchmark.js:debug"],
+      "skipFiles": ["<node_internals>/**"],
+      "stopOnEntry": true
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Mitata Benchmark Debug",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "benchmark:mitata:debug"],
       "skipFiles": ["<node_internals>/**"],
       "stopOnEntry": true
     }

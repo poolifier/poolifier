@@ -11,7 +11,9 @@
 <div align="center">
 
 [![GitHub commit activity (master)](https://img.shields.io/github/commit-activity/m/poolifier/poolifier/master?color=brightgreen&logo=github)](https://github.com/poolifier/poolifier/graphs/commit-activity)
+[![Npm Version](https://badgen.net/npm/v/poolifier?icon=npm)](https://www.npmjs.com/package/poolifier)
 [![Npm Weekly Downloads](https://badgen.net/npm/dw/poolifier?icon=npm)](https://www.npmjs.com/package/poolifier)
+[![JSR Version](https://jsr.io/badges/@poolifier/poolifier)](https://jsr.io/@poolifier/poolifier)
 [![CI Workflow](https://github.com/poolifier/poolifier/actions/workflows/ci.yml/badge.svg)](https://github.com/poolifier/poolifier/actions/workflows/ci.yml)
 [![Code Coverage](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=coverage)](https://sonarcloud.io/dashboard?id=poolifier_poolifier)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=alert_status)](https://sonarcloud.io/dashboard?id=poolifier_poolifier)
@@ -81,8 +83,16 @@ You have to implement your worker by extending the _ThreadWorker_ or _ClusterWor
 
 ## Installation
 
+### npm
+
 ```shell
 npm install poolifier --save
+```
+
+### jsr
+
+```shell
+npx jsr add @poolifier/poolifier
 ```
 
 ## Usage
@@ -110,8 +120,8 @@ import { DynamicThreadPool, FixedThreadPool, PoolEvents, availableParallelism } 
 
 // a fixed worker_threads pool
 const pool = new FixedThreadPool(availableParallelism(), './yourWorker.js', {
-  errorHandler: e => console.error(e),
-  onlineHandler: () => console.info('worker is online')
+  onlineHandler: () => console.info('worker is online'),
+  errorHandler: e => console.error(e)
 })
 
 pool.emitter?.on(PoolEvents.ready, () => console.info('Pool is ready'))
@@ -119,8 +129,8 @@ pool.emitter?.on(PoolEvents.busy, () => console.info('Pool is busy'))
 
 // or a dynamic worker_threads pool
 const pool = new DynamicThreadPool(Math.floor(availableParallelism() / 2), availableParallelism(), './yourWorker.js', {
-  errorHandler: e => console.error(e),
-  onlineHandler: () => console.info('worker is online')
+  onlineHandler: () => console.info('worker is online'),
+  errorHandler: e => console.error(e)
 })
 
 pool.emitter?.on(PoolEvents.full, () => console.info('Pool is full'))

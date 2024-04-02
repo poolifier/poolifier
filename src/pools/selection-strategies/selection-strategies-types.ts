@@ -1,7 +1,15 @@
 /**
  * Enumeration of worker choice strategies.
  */
-export const WorkerChoiceStrategies = Object.freeze({
+export const WorkerChoiceStrategies: Readonly<{
+  ROUND_ROBIN: 'ROUND_ROBIN'
+  LEAST_USED: 'LEAST_USED'
+  LEAST_BUSY: 'LEAST_BUSY'
+  LEAST_ELU: 'LEAST_ELU'
+  FAIR_SHARE: 'FAIR_SHARE'
+  WEIGHTED_ROUND_ROBIN: 'WEIGHTED_ROUND_ROBIN'
+  INTERLEAVED_WEIGHTED_ROUND_ROBIN: 'INTERLEAVED_WEIGHTED_ROUND_ROBIN'
+}> = Object.freeze({
   /**
    * Round robin worker selection strategy.
    */
@@ -42,7 +50,11 @@ export type WorkerChoiceStrategy = keyof typeof WorkerChoiceStrategies
 /**
  * Enumeration of measurements.
  */
-export const Measurements = Object.freeze({
+export const Measurements: Readonly<{
+  runTime: 'runTime'
+  waitTime: 'waitTime'
+  elu: 'elu'
+}> = Object.freeze({
   runTime: 'runTime',
   waitTime: 'waitTime',
   elu: 'elu'
