@@ -9,6 +9,7 @@
     "node": "20.12.0",
     "pnpm": "8.15.6"
   },
+  "packageManager": "pnpm@8.15.6",
   "scripts": {
     "build": "rollup --config --configPlugin typescript",
     "start": "node --enable-source-maps dist/main.cjs",
