@@ -1088,7 +1088,9 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Should return whether the worker is the main worker or not.
+   * Returns whether the worker is the main worker or not.
+   *
+   * @returns `true` if the worker is the main worker, `false` otherwise.
    */
   protected abstract isMain (): boolean
 

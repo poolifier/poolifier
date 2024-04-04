@@ -6,9 +6,10 @@
   "main": "dist/main.js",
   "type": "module",
   "volta": {
-    "node": "20.12.0",
+    "node": "20.12.1",
     "pnpm": "8.15.6"
   },
+  "packageManager": "pnpm@8.15.6",
   "scripts": {
     "build": "pnpm build:clean && tsc",
     "build:clean": "tsc --build --clean",
@@ -23,10 +24,10 @@
   "dependencies": {
     "fastify": "^4.26.2",
     "fastify-plugin": "^4.5.1",
-    "poolifier": "^3.1.28"
+    "poolifier": "^3.1.29"
   },
   "devDependencies": {
-    "@types/node": "^20.12.2",
+    "@types/node": "^20.12.3",
     "autocannon": "^7.15.0",
     "typescript": "^5.4.3"
   }
