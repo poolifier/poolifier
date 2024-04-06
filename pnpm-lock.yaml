@@ -97,7 +97,7 @@ devDependencies:
     version: 3.1.1
   mitata:
     specifier: github:poolifier/mitata#master
-    version: github.com/poolifier/mitata/e2a0e660f0c0974620bf53a2b9d6ef93e706bd34(typescript@5.4.4)
+    version: github.com/poolifier/mitata/b2a1891fc415a3191712872a6a99ed0fd74effb9(typescript@5.4.4)
   mocha:
     specifier: ^10.4.0
     version: 10.4.0
@@ -5777,9 +5777,9 @@ packages:
     engines: {node: '>=12.20'}
     dev: true
 
-  github.com/poolifier/mitata/e2a0e660f0c0974620bf53a2b9d6ef93e706bd34(typescript@5.4.4):
-    resolution: {tarball: https://codeload.github.com/poolifier/mitata/tar.gz/e2a0e660f0c0974620bf53a2b9d6ef93e706bd34}
-    id: github.com/poolifier/mitata/e2a0e660f0c0974620bf53a2b9d6ef93e706bd34
+  github.com/poolifier/mitata/b2a1891fc415a3191712872a6a99ed0fd74effb9(typescript@5.4.4):
+    resolution: {tarball: https://codeload.github.com/poolifier/mitata/tar.gz/b2a1891fc415a3191712872a6a99ed0fd74effb9}
+    id: github.com/poolifier/mitata/b2a1891fc415a3191712872a6a99ed0fd74effb9
     name: mitata
     version: 0.1.11
     requiresBuild: true
