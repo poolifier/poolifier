@@ -1,7 +1,7 @@
 import { strictEqual } from 'node:assert'
 
 import Benchmark from 'benchmark'
-import { bench, group } from 'mitata'
+import { bench, clear, group, run } from 'mitata'
 
 import {
   DynamicClusterPool,
@@ -249,7 +249,7 @@ export const runPoolifierBenchmarkBenchmarkJsSuite = async (
   })
 }
 
-export const buildPoolifierBenchmarkMitata = (
+export const runPoolifierBenchmarkMitata = async (
   name,
   workerType,
   poolType,
@@ -313,7 +313,9 @@ export const buildPoolifierBenchmarkMitata = (
         }
       }
     }
-    return pool
+    await run()
+    await pool.destroy()
+    clear()
   } catch (error) {
     console.error(error)
   }
