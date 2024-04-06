@@ -133,7 +133,7 @@
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "microtime": "^3.1.1",
-    "mitata": "github:jerome-benoit/mitata#master",
+    "mitata": "github:poolifier/mitata#master",
     "mocha": "^10.4.0",
     "mochawesome": "^7.1.3",
     "prettier": "^3.2.5",

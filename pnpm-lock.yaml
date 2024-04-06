@@ -96,8 +96,8 @@ devDependencies:
     specifier: ^3.1.1
     version: 3.1.1
   mitata:
-    specifier: github:jerome-benoit/mitata#master
-    version: github.com/jerome-benoit/mitata/07d9e3698201592d5babe9b8eaa58534ddeb6bd2(typescript@5.4.4)
+    specifier: github:poolifier/mitata#master
+    version: github.com/poolifier/mitata/e2a0e660f0c0974620bf53a2b9d6ef93e706bd34(typescript@5.4.4)
   mocha:
     specifier: ^10.4.0
     version: 10.4.0
@@ -5777,9 +5777,9 @@ packages:
     engines: {node: '>=12.20'}
     dev: true
 
-  github.com/jerome-benoit/mitata/07d9e3698201592d5babe9b8eaa58534ddeb6bd2(typescript@5.4.4):
-    resolution: {tarball: https://codeload.github.com/jerome-benoit/mitata/tar.gz/07d9e3698201592d5babe9b8eaa58534ddeb6bd2}
-    id: github.com/jerome-benoit/mitata/07d9e3698201592d5babe9b8eaa58534ddeb6bd2
+  github.com/poolifier/mitata/e2a0e660f0c0974620bf53a2b9d6ef93e706bd34(typescript@5.4.4):
+    resolution: {tarball: https://codeload.github.com/poolifier/mitata/tar.gz/e2a0e660f0c0974620bf53a2b9d6ef93e706bd34}
+    id: github.com/poolifier/mitata/e2a0e660f0c0974620bf53a2b9d6ef93e706bd34
     name: mitata
     version: 0.1.11
     requiresBuild: true
