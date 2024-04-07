@@ -68,7 +68,6 @@ module.exports = defineConfig({
           'linebreak',
           'localhost',
           'microjob',
-          'mitata',
           'mjs',
           'nodemailer',
           'npx',

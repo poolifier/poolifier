@@ -1,6 +1,6 @@
 import { randomInt } from 'node:crypto'
 
-import { bench, group, run } from 'mitata'
+import { bench, group, run } from 'tatami-ng'
 
 function generateRandomTasksMap (
   numberOfWorkers,
