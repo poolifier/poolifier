@@ -51,8 +51,8 @@ devDependencies:
     specifier: ^8.57.0
     version: 8.57.0
   eslint-config-love:
-    specifier: ^44.0.0
-    version: 44.0.0(@typescript-eslint/eslint-plugin@7.5.0)(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.6.2)(eslint-plugin-promise@6.1.1)(eslint@8.57.0)(typescript@5.4.4)
+    specifier: ^46.0.0
+    version: 46.0.0(@typescript-eslint/eslint-plugin@7.5.0)(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.6.2)(eslint-plugin-promise@6.1.1)(eslint@8.57.0)(typescript@5.4.4)
   eslint-config-standard:
     specifier: ^17.1.0
     version: 17.1.0(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.6.2)(eslint-plugin-promise@6.1.1)(eslint@8.57.0)
@@ -126,8 +126,8 @@ devDependencies:
     specifier: ^17.0.1
     version: 17.0.1
   tatami-ng:
-    specifier: ^0.2.0
-    version: 0.2.0(typescript@5.4.4)
+    specifier: ^0.2.1
+    version: 0.2.1(typescript@5.4.4)
   typedoc:
     specifier: ^0.25.12
     version: 0.25.12(typescript@5.4.4)
@@ -2293,8 +2293,8 @@ packages:
       semver: 7.6.0
     dev: true
 
-  /eslint-config-love@44.0.0(@typescript-eslint/eslint-plugin@7.5.0)(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.6.2)(eslint-plugin-promise@6.1.1)(eslint@8.57.0)(typescript@5.4.4):
-    resolution: {integrity: sha512-SKEMIUUrKUs/SGgfMqnTFOhkJ2UN+kxzDgXRKLM+2SADP2UxMjPHGhmZnKSsXtYKhP/4J+L5hvsV1oEyxx2e4A==}
+  /eslint-config-love@46.0.0(@typescript-eslint/eslint-plugin@7.5.0)(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.6.2)(eslint-plugin-promise@6.1.1)(eslint@8.57.0)(typescript@5.4.4):
+    resolution: {integrity: sha512-BHMRiIUs+zekERZ6WJoHkXkWaO+jZKeM8RIzFv9FGxHe0Ebo0En03yMGuRj/JY3rMfhqxivoXMW5XcaYLOi/Hw==}
     peerDependencies:
       '@typescript-eslint/eslint-plugin': ^7.0.1
       eslint: ^8.0.1
@@ -2306,7 +2306,6 @@ packages:
       '@typescript-eslint/eslint-plugin': 7.5.0(@typescript-eslint/parser@7.5.0)(eslint@8.57.0)(typescript@5.4.4)
       '@typescript-eslint/parser': 7.5.0(eslint@8.57.0)(typescript@5.4.4)
       eslint: 8.57.0
-      eslint-config-standard: 17.1.0(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.6.2)(eslint-plugin-promise@6.1.1)(eslint@8.57.0)
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.5.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       eslint-plugin-n: 16.6.2(eslint@8.57.0)
       eslint-plugin-promise: 6.1.1(eslint@8.57.0)
@@ -5316,8 +5315,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /tatami-ng@0.2.0(typescript@5.4.4):
-    resolution: {integrity: sha512-01WuN89KtrKcdbdpM90IazywSfNr+Cp6zjwTW/QM6z4LUqqVRJrWpbNl30qRQts2CzZElnXfVQ2rfVg08Q91ow==}
+  /tatami-ng@0.2.1(typescript@5.4.4):
+    resolution: {integrity: sha512-s1Ju+70VJzaBh6q0oZTjeimf+CDYFN9FHuhwmZbVmXJ8/65SYjnpJdaP3RyXKwgBdGCRQQvoewP2ZWZC8TszMA==}
     peerDependencies:
       typescript: ^5.0.0
     dependencies:

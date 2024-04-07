@@ -118,7 +118,7 @@
     "c8": "^9.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
-    "eslint-config-love": "^44.0.0",
+    "eslint-config-love": "^46.0.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-define-config": "^2.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
@@ -143,7 +143,7 @@
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^6.1.0",
     "sinon": "^17.0.1",
-    "tatami-ng": "^0.2.0",
+    "tatami-ng": "^0.2.1",
     "typedoc": "^0.25.12",
     "typescript": "~5.4.4"
   }
