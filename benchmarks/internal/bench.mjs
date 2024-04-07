@@ -9,7 +9,7 @@ import {
 import { TaskFunctions } from '../benchmarks-types.cjs'
 import {
   runPoolifierBenchmarkBenchmarkJsSuite,
-  runPoolifierBenchmarkMitata
+  runPoolifierBenchmarkTatamiNg
 } from '../benchmarks-utils.mjs'
 
 const poolSize = availableParallelism()
@@ -33,7 +33,7 @@ switch (
   }).values.type
 ) {
   case 'tatami-ng':
-    await runPoolifierBenchmarkMitata(
+    await runPoolifierBenchmarkTatamiNg(
       'FixedThreadPool',
       WorkerTypes.thread,
       PoolTypes.fixed,
@@ -43,7 +43,7 @@ switch (
         workerData
       }
     )
-    await runPoolifierBenchmarkMitata(
+    await runPoolifierBenchmarkTatamiNg(
       'DynamicThreadPool',
       WorkerTypes.thread,
       PoolTypes.dynamic,
@@ -53,7 +53,7 @@ switch (
         workerData
       }
     )
-    await runPoolifierBenchmarkMitata(
+    await runPoolifierBenchmarkTatamiNg(
       'FixedClusterPool',
       WorkerTypes.cluster,
       PoolTypes.fixed,
@@ -63,7 +63,7 @@ switch (
         workerData
       }
     )
-    await runPoolifierBenchmarkMitata(
+    await runPoolifierBenchmarkTatamiNg(
       'DynamicClusterPool',
       WorkerTypes.cluster,
       PoolTypes.dynamic,

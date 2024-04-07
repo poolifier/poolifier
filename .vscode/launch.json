@@ -27,7 +27,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Mitata Benchmark Debug",
+      "name": "Launch Tatami NG Benchmark Debug",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["run", "benchmark:tatami-ng:debug"],

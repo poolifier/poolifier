@@ -249,7 +249,7 @@ export const runPoolifierBenchmarkBenchmarkJsSuite = async (
   })
 }
 
-export const runPoolifierBenchmarkMitata = async (
+export const runPoolifierBenchmarkTatamiNg = async (
   name,
   workerType,
   poolType,
