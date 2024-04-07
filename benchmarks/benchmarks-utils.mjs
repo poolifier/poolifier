@@ -1,7 +1,7 @@
 import { strictEqual } from 'node:assert'
 
 import Benchmark from 'benchmark'
-import { bench, clear, group, run } from 'mitata'
+import { bench, clear, group, run } from 'tatami-ng'
 
 import {
   DynamicClusterPool,

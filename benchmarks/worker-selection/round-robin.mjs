@@ -1,4 +1,4 @@
-import { bench, group, run } from 'mitata'
+import { bench, group, run } from 'tatami-ng'
 
 function generateWorkersArray (numberOfWorkers) {
   return [...Array(numberOfWorkers).keys()]

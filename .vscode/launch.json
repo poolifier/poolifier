@@ -30,7 +30,7 @@
       "name": "Launch Mitata Benchmark Debug",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["run", "benchmark:mitata:debug"],
+      "runtimeArgs": ["run", "benchmark:tatami-ng:debug"],
       "skipFiles": ["<node_internals>/**"],
       "stopOnEntry": true
     }

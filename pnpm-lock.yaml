@@ -95,9 +95,6 @@ devDependencies:
   microtime:
     specifier: ^3.1.1
     version: 3.1.1
-  mitata:
-    specifier: github:poolifier/mitata#master
-    version: github.com/poolifier/mitata/5fa0fd7c17c51c4e95350a018f5c2653e2cdf8bd(typescript@5.4.4)
   mocha:
     specifier: ^10.4.0
     version: 10.4.0
@@ -128,6 +125,9 @@ devDependencies:
   sinon:
     specifier: ^17.0.1
     version: 17.0.1
+  tatami-ng:
+    specifier: ^0.2.0
+    version: 0.2.0(typescript@5.4.4)
   typedoc:
     specifier: ^0.25.12
     version: 0.25.12(typescript@5.4.4)
@@ -5316,6 +5316,14 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
+  /tatami-ng@0.2.0(typescript@5.4.4):
+    resolution: {integrity: sha512-01WuN89KtrKcdbdpM90IazywSfNr+Cp6zjwTW/QM6z4LUqqVRJrWpbNl30qRQts2CzZElnXfVQ2rfVg08Q91ow==}
+    peerDependencies:
+      typescript: ^5.0.0
+    dependencies:
+      typescript: 5.4.4
+    dev: true
+
   /tcomb-validation@3.4.1:
     resolution: {integrity: sha512-urVVMQOma4RXwiVCa2nM2eqrAomHROHvWPuj6UkDGz/eb5kcy0x6P0dVt6kzpUZtYMNoAqJLWmz1BPtxrtjtrA==}
     dependencies:
@@ -5775,16 +5783,4 @@ packages:
   /yocto-queue@1.0.0:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
-    dev: true
-
-  github.com/poolifier/mitata/5fa0fd7c17c51c4e95350a018f5c2653e2cdf8bd(typescript@5.4.4):
-    resolution: {tarball: https://codeload.github.com/poolifier/mitata/tar.gz/5fa0fd7c17c51c4e95350a018f5c2653e2cdf8bd}
-    id: github.com/poolifier/mitata/5fa0fd7c17c51c4e95350a018f5c2653e2cdf8bd
-    name: mitata
-    version: 0.1.11
-    requiresBuild: true
-    peerDependencies:
-      typescript: ^5.0.0
-    dependencies:
-      typescript: 5.4.4
     dev: true

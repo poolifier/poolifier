@@ -32,7 +32,7 @@ switch (
     allowPositionals: true
   }).values.type
 ) {
-  case 'mitata':
+  case 'tatami-ng':
     await runPoolifierBenchmarkMitata(
       'FixedThreadPool',
       WorkerTypes.thread,
