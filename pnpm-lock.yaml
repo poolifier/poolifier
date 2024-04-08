@@ -126,11 +126,11 @@ devDependencies:
     specifier: ^17.0.1
     version: 17.0.1
   tatami-ng:
-    specifier: ^0.2.1
-    version: 0.2.1(typescript@5.4.4)
+    specifier: ^0.2.2
+    version: 0.2.2(typescript@5.4.4)
   typedoc:
-    specifier: ^0.25.12
-    version: 0.25.12(typescript@5.4.4)
+    specifier: ^0.25.13
+    version: 0.25.13(typescript@5.4.4)
   typescript:
     specifier: ~5.4.4
     version: 5.4.4
@@ -1529,8 +1529,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /builtins@5.0.1:
-    resolution: {integrity: sha512-qwVpFEHNfhYJIzNRBvd2C1kyo6jz3ZSMPyyuR47OPdiKWlbYnZNyDWuyR175qDnAJLiCo5fBBqPb3RiXgWlkOQ==}
+  /builtins@5.1.0:
+    resolution: {integrity: sha512-SW9lzGTLvWTP1AY8xeAMZimqDrIaSdLQUcVr9DMef51niJ022Ri87SwRRKYm4A6iHfkPaiVUu/Duw2Wc4J7kKg==}
     dependencies:
       semver: 7.6.0
     dev: true
@@ -2471,7 +2471,7 @@ packages:
       eslint: '>=7.0.0'
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
-      builtins: 5.0.1
+      builtins: 5.1.0
       eslint: 8.57.0
       eslint-plugin-es-x: 7.6.0(eslint@8.57.0)
       get-tsconfig: 4.7.3
@@ -5315,8 +5315,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /tatami-ng@0.2.1(typescript@5.4.4):
-    resolution: {integrity: sha512-s1Ju+70VJzaBh6q0oZTjeimf+CDYFN9FHuhwmZbVmXJ8/65SYjnpJdaP3RyXKwgBdGCRQQvoewP2ZWZC8TszMA==}
+  /tatami-ng@0.2.2(typescript@5.4.4):
+    resolution: {integrity: sha512-2q0XjVY+hIgPmN4YQYGDCEtYdD9fXMm/EU6GIHq3CeMXCzLDvS6H4OdguU/lLkmCvp7ToAqRg+6W0AUZIxMHAA==}
     peerDependencies:
       typescript: ^5.0.0
     dependencies:
@@ -5484,8 +5484,8 @@ packages:
       is-typedarray: 1.0.0
     dev: true
 
-  /typedoc@0.25.12(typescript@5.4.4):
-    resolution: {integrity: sha512-F+qhkK2VoTweDXd1c42GS/By2DvI2uDF4/EpG424dTexSHdtCH52C6IcAvMA6jR3DzAWZjHpUOW+E02kyPNUNw==}
+  /typedoc@0.25.13(typescript@5.4.4):
+    resolution: {integrity: sha512-pQqiwiJ+Z4pigfOnnysObszLiU3mVLWAExSPf+Mu06G/qsc3wzbuM56SZQvONhHLncLUhYzOVkjFFpFfL5AzhQ==}
     engines: {node: '>= 16'}
     hasBin: true
     peerDependencies:
