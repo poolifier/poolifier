@@ -1,7 +1,7 @@
 import { strictEqual } from 'node:assert'
 
 import Benchmark from 'benchmark'
-import { bench, group } from 'mitata'
+import { bench, clear, group, run } from 'tatami-ng'
 
 import {
   DynamicClusterPool,
@@ -249,7 +249,7 @@ export const runPoolifierBenchmarkBenchmarkJsSuite = async (
   })
 }
 
-export const buildPoolifierBenchmarkMitata = (
+export const runPoolifierBenchmarkTatamiNg = async (
   name,
   workerType,
   poolType,
@@ -268,23 +268,27 @@ export const buildPoolifierBenchmarkMitata = (
                   enableTasksQueue ? 'with' : 'without'
                 } tasks queue`,
                 async () => {
-                  pool.setWorkerChoiceStrategy(workerChoiceStrategy, {
-                    measurement
-                  })
-                  pool.enableTasksQueue(enableTasksQueue)
-                  strictEqual(
-                    pool.opts.workerChoiceStrategy,
-                    workerChoiceStrategy
-                  )
-                  strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
-                  strictEqual(
-                    pool.opts.workerChoiceStrategyOptions.measurement,
-                    measurement
-                  )
                   await runPoolifierPool(pool, {
                     taskExecutions,
                     workerData
                   })
+                },
+                {
+                  before: () => {
+                    pool.setWorkerChoiceStrategy(workerChoiceStrategy, {
+                      measurement
+                    })
+                    pool.enableTasksQueue(enableTasksQueue)
+                    strictEqual(
+                      pool.opts.workerChoiceStrategy,
+                      workerChoiceStrategy
+                    )
+                    strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
+                    strictEqual(
+                      pool.opts.workerChoiceStrategyOptions.measurement,
+                      measurement
+                    )
+                  }
                 }
               )
             })
@@ -296,24 +300,30 @@ export const buildPoolifierBenchmarkMitata = (
                 enableTasksQueue ? 'with' : 'without'
               } tasks queue`,
               async () => {
-                pool.setWorkerChoiceStrategy(workerChoiceStrategy)
-                pool.enableTasksQueue(enableTasksQueue)
-                strictEqual(
-                  pool.opts.workerChoiceStrategy,
-                  workerChoiceStrategy
-                )
-                strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
                 await runPoolifierPool(pool, {
                   taskExecutions,
                   workerData
                 })
+              },
+              {
+                before: () => {
+                  pool.setWorkerChoiceStrategy(workerChoiceStrategy)
+                  pool.enableTasksQueue(enableTasksQueue)
+                  strictEqual(
+                    pool.opts.workerChoiceStrategy,
+                    workerChoiceStrategy
+                  )
+                  strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
+                }
               }
             )
           })
         }
       }
     }
-    return pool
+    await run()
+    clear()
+    await pool.destroy()
   } catch (error) {
     console.error(error)
   }
