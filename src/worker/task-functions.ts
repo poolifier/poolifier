@@ -2,6 +2,7 @@
  * Task synchronous function that can be executed.
  *
  * @param data - Data sent to the worker.
+ * @returns Execution response.
  *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
@@ -15,6 +16,7 @@ export type TaskSyncFunction<Data = unknown, Response = unknown> = (
  * This function must return a promise.
  *
  * @param data - Data sent to the worker.
+ * @returns Execution response promise.
  *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.

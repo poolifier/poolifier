@@ -9,6 +9,14 @@ describe('Cluster worker test suite', () => {
     restore()
   })
 
+  it('Verify worker properties value after initialization', () => {
+    const worker = new ClusterWorker(() => {})
+    expect(worker.isMain).toBe(true)
+    expect(worker.mainWorker).toBe(undefined)
+    expect(worker.taskFunctions).toBeInstanceOf(Map)
+    expect(worker.taskFunctions.size).toBe(2)
+  })
+
   it('Verify that sync kill handler is called when worker is killed', () => {
     const worker = new ClusterWorker(() => {}, {
       killHandler: stub().returns()

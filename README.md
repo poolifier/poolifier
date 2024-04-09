@@ -83,13 +83,13 @@ You have to implement your worker by extending the _ThreadWorker_ or _ClusterWor
 
 ## Installation
 
-### npm
+### npmjs
 
 ```shell
 npm install poolifier --save
 ```
 
-### jsr
+### JSR
 
 ```shell
 npx jsr add @poolifier/poolifier
