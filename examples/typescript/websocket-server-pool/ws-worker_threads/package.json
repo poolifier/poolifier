@@ -27,7 +27,7 @@
   "devDependencies": {
     "@types/node": "^20.12.7",
     "@types/ws": "^8.5.10",
-    "typescript": "^5.4.4"
+    "typescript": "^5.4.5"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8",
