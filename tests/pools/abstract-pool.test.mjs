@@ -1,3 +1,4 @@
+// eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { createHook, executionAsyncId } from 'node:async_hooks'
 import { EventEmitterAsyncResource } from 'node:events'
 import { readFileSync } from 'node:fs'

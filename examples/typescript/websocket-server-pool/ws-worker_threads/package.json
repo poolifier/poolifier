@@ -6,7 +6,7 @@
   "main": "dist/main.js",
   "type": "module",
   "volta": {
-    "node": "20.12.1",
+    "node": "20.12.2",
     "pnpm": "8.15.6"
   },
   "packageManager": "pnpm@8.15.6",
@@ -25,9 +25,9 @@
     "ws": "^8.16.0"
   },
   "devDependencies": {
-    "@types/node": "^20.12.5",
+    "@types/node": "^20.12.7",
     "@types/ws": "^8.5.10",
-    "typescript": "^5.4.4"
+    "typescript": "^5.4.5"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8",
