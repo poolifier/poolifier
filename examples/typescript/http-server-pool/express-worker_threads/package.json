@@ -29,6 +29,6 @@
     "@types/express": "^4.17.21",
     "@types/node": "^20.12.7",
     "autocannon": "^7.15.0",
-    "typescript": "^5.4.4"
+    "typescript": "^5.4.5"
   }
 }
