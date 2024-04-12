@@ -331,7 +331,7 @@ packages:
       fast-content-type-parse: 1.1.0
       fast-json-stringify: 5.14.1
       find-my-way: 8.1.0
-      light-my-request: 5.12.0
+      light-my-request: 5.13.0
       pino: 8.20.0
       process-warning: 3.0.0
       proxy-addr: 2.0.7
@@ -429,8 +429,8 @@ packages:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
     dev: false
 
-  /light-my-request@5.12.0:
-    resolution: {integrity: sha512-P526OX6E7aeCIfw/9UyJNsAISfcFETghysaWHQAlQYayynShT08MOj4c6fBCvTWBrHXSvqBAKDp3amUPSCQI4w==}
+  /light-my-request@5.13.0:
+    resolution: {integrity: sha512-9IjUN9ZyCS9pTG+KqTDEQo68Sui2lHsYBrfMyVUTTZ3XhH8PMZq7xO94Kr+eP9dhi/kcKsx4N41p2IXEBil1pQ==}
     dependencies:
       cookie: 0.6.0
       process-warning: 3.0.0
