@@ -75,8 +75,8 @@ devDependencies:
     specifier: ^6.1.1
     version: 6.1.1(eslint@8.57.0)
   eslint-plugin-simple-import-sort:
-    specifier: ^12.0.0
-    version: 12.0.0(eslint@8.57.0)
+    specifier: ^12.1.0
+    version: 12.1.0(eslint@8.57.0)
   eslint-plugin-spellcheck:
     specifier: ^0.0.20
     version: 0.0.20(eslint@8.57.0)
@@ -126,8 +126,8 @@ devDependencies:
     specifier: ^17.0.1
     version: 17.0.1
   tatami-ng:
-    specifier: ^0.3.1
-    version: 0.3.1(typescript@5.4.5)
+    specifier: ^0.3.2
+    version: 0.3.2(typescript@5.4.5)
   typedoc:
     specifier: ^0.25.13
     version: 0.25.13(typescript@5.4.5)
@@ -2484,8 +2484,8 @@ packages:
       eslint: 8.57.0
     dev: true
 
-  /eslint-plugin-simple-import-sort@12.0.0(eslint@8.57.0):
-    resolution: {integrity: sha512-8o0dVEdAkYap0Cn5kNeklaKcT1nUsa3LITWEuFk3nJifOoD+5JQGoyDUW2W/iPWwBsNBJpyJS9y4je/BgxLcyQ==}
+  /eslint-plugin-simple-import-sort@12.1.0(eslint@8.57.0):
+    resolution: {integrity: sha512-Y2fqAfC11TcG/WP3TrI1Gi3p3nc8XJyEOJYHyEPEGI/UAgNx6akxxlX74p7SbAQdLcgASKhj8M0GKvH3vq/+ig==}
     peerDependencies:
       eslint: '>=5.0.0'
     dependencies:
@@ -5304,8 +5304,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /tatami-ng@0.3.1(typescript@5.4.5):
-    resolution: {integrity: sha512-Ufqw8bt9RcOrnKt4f2i+VTVkj1PzWpifxUi8L3w/rPmaWcjKJFHHEGLUpSEsN3dv9zrl8OYS/Pu7HKDKzJGcog==}
+  /tatami-ng@0.3.2(typescript@5.4.5):
+    resolution: {integrity: sha512-66vEGvBP2D3E8m7en6CFqFlGFzdQy6yK6LiIR3OijX3gBstVSPfQWeCN6/aXyfZ6CjTXiLoCH3CLDpGQxGE4Ig==}
     peerDependencies:
       typescript: ^5.0.0
     dependencies:

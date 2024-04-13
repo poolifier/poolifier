@@ -45,7 +45,7 @@
   },
   "volta": {
     "node": "20.12.2",
-    "pnpm": "8.15.6"
+    "pnpm": "8.15.7"
   },
   "packageManager": "pnpm@8.15.6",
   "repository": {
@@ -126,7 +126,7 @@
     "eslint-plugin-jsdoc": "^48.2.3",
     "eslint-plugin-n": "^17.2.0",
     "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-simple-import-sort": "^12.0.0",
+    "eslint-plugin-simple-import-sort": "^12.1.0",
     "eslint-plugin-spellcheck": "^0.0.20",
     "eslint-plugin-tsdoc": "^0.2.17",
     "expect": "^29.7.0",
@@ -143,7 +143,7 @@
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^6.1.0",
     "sinon": "^17.0.1",
-    "tatami-ng": "^0.3.1",
+    "tatami-ng": "^0.3.2",
     "typedoc": "^0.25.13",
     "typescript": "~5.4.5"
   }
