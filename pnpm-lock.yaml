@@ -126,8 +126,8 @@ devDependencies:
     specifier: ^17.0.1
     version: 17.0.1
   tatami-ng:
-    specifier: ^0.3.0
-    version: 0.3.0(typescript@5.4.5)
+    specifier: ^0.3.1
+    version: 0.3.1(typescript@5.4.5)
   typedoc:
     specifier: ^0.25.13
     version: 0.25.13(typescript@5.4.5)
@@ -5304,8 +5304,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /tatami-ng@0.3.0(typescript@5.4.5):
-    resolution: {integrity: sha512-YkRRQX4NdFe1wZfv2E42FE7djd4jO/0QlVzB7dd7tnuCIRRMVOO5xQpSwd/WjjiIZey8Mi5NVHMqfcFi/rrMYw==}
+  /tatami-ng@0.3.1(typescript@5.4.5):
+    resolution: {integrity: sha512-Ufqw8bt9RcOrnKt4f2i+VTVkj1PzWpifxUi8L3w/rPmaWcjKJFHHEGLUpSEsN3dv9zrl8OYS/Pu7HKDKzJGcog==}
     peerDependencies:
       typescript: ^5.0.0
     dependencies:
