@@ -1,89 +1,70 @@
-lockfileVersion: '6.0'
+lockfileVersion: '9.0'
 
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-dependencies:
-  poolifier:
-    specifier: ^3.1.29
-    version: 3.1.29
-  ws:
-    specifier: ^8.16.0
-    version: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
+importers:
 
-optionalDependencies:
-  bufferutil:
-    specifier: ^4.0.8
-    version: 4.0.8
-  utf-8-validate:
-    specifier: ^6.0.3
-    version: 6.0.3
-
-devDependencies:
-  '@types/node':
-    specifier: ^20.12.7
-    version: 20.12.7
-  '@types/ws':
-    specifier: ^8.5.10
-    version: 8.5.10
-  typescript:
-    specifier: ^5.4.5
-    version: 5.4.5
+  .:
+    dependencies:
+      poolifier:
+        specifier: ^3.1.29
+        version: 3.1.29
+      ws:
+        specifier: ^8.16.0
+        version: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
+    optionalDependencies:
+      bufferutil:
+        specifier: ^4.0.8
+        version: 4.0.8
+      utf-8-validate:
+        specifier: ^6.0.3
+        version: 6.0.3
+    devDependencies:
+      '@types/node':
+        specifier: ^20.12.7
+        version: 20.12.7
+      '@types/ws':
+        specifier: ^8.5.10
+        version: 8.5.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
 
 packages:
 
-  /@types/node@20.12.7:
+  '@types/node@20.12.7':
     resolution: {integrity: sha512-wq0cICSkRLVaf3UGLMGItu/PtdY7oaXaI/RVU+xliKVOtRna3PRY57ZDfztpDL0n11vfymMUnXv8QwYCO7L1wg==}
-    dependencies:
-      undici-types: 5.26.5
-    dev: true
 
-  /@types/ws@8.5.10:
+  '@types/ws@8.5.10':
     resolution: {integrity: sha512-vmQSUcfalpIq0R9q7uTo2lXs6eGIpt9wtnLdMv9LVpIjCA/+ufZRozlVoVelIYixx1ugCBKDhn89vnsEGOCx9A==}
-    dependencies:
-      '@types/node': 20.12.7
-    dev: true
 
-  /bufferutil@4.0.8:
+  bufferutil@4.0.8:
     resolution: {integrity: sha512-4T53u4PdgsXqKaIctwF8ifXlRTTmEPJ8iEPWFdGZvcf7sbwYo6FKFEX9eNNAnzFZ7EzJAQ3CJeOtCRA4rDp7Pw==}
     engines: {node: '>=6.14.2'}
-    requiresBuild: true
-    dependencies:
-      node-gyp-build: 4.8.0
-    dev: false
 
-  /node-gyp-build@4.8.0:
+  node-gyp-build@4.8.0:
     resolution: {integrity: sha512-u6fs2AEUljNho3EYTJNBfImO5QTo/J/1Etd+NVdCj7qWKUSN/bSLkZwhDv7I+w/MSC6qJ4cknepkAYykDdK8og==}
     hasBin: true
-    requiresBuild: true
-    dev: false
 
-  /poolifier@3.1.29:
+  poolifier@3.1.29:
     resolution: {integrity: sha512-7yUcXh8Gvis13F9vwIbDdjPmY7d5MNNXVt+ccBwfCrWSUdpa7cHuc4rVXASYM7V4Hq7VAEEKbdmv/DO+Ry9Y3Q==}
     engines: {node: '>=18.0.0', pnpm: '>=8.6.0'}
-    requiresBuild: true
-    dev: false
 
-  /typescript@5.4.5:
+  typescript@5.4.5:
     resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
     engines: {node: '>=14.17'}
     hasBin: true
-    dev: true
 
-  /undici-types@5.26.5:
+  undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
-    dev: true
 
-  /utf-8-validate@6.0.3:
+  utf-8-validate@6.0.3:
     resolution: {integrity: sha512-uIuGf9TWQ/y+0Lp+KGZCMuJWc3N9BHA+l/UmHd/oUHwJJDeysyTRxNQVkbzsIWfGFbRe3OcgML/i0mvVRPOyDA==}
     engines: {node: '>=6.14.2'}
-    requiresBuild: true
-    dependencies:
-      node-gyp-build: 4.8.0
-    dev: false
 
-  /ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3):
+  ws@8.16.0:
     resolution: {integrity: sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
@@ -94,7 +75,37 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+
+snapshots:
+
+  '@types/node@20.12.7':
     dependencies:
+      undici-types: 5.26.5
+
+  '@types/ws@8.5.10':
+    dependencies:
+      '@types/node': 20.12.7
+
+  bufferutil@4.0.8:
+    dependencies:
+      node-gyp-build: 4.8.0
+    optional: true
+
+  node-gyp-build@4.8.0:
+    optional: true
+
+  poolifier@3.1.29: {}
+
+  typescript@5.4.5: {}
+
+  undici-types@5.26.5: {}
+
+  utf-8-validate@6.0.3:
+    dependencies:
+      node-gyp-build: 4.8.0
+    optional: true
+
+  ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3):
+    optionalDependencies:
       bufferutil: 4.0.8
       utf-8-validate: 6.0.3
-    dev: false
