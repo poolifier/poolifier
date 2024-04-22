@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.30] - 2024-04-22
+
 ### Fixed:
 
 - Fix `transferList` argument type definition.
