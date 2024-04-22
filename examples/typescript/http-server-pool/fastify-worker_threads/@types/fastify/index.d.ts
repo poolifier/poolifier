@@ -11,7 +11,7 @@ declare module 'fastify' {
     execute: (
       data?: WorkerData,
       name?: string,
-      transferList?: TransferListItem[]
+      transferList?: readonly TransferListItem[]
     ) => Promise<WorkerResponse>
   }
 }

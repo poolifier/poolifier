@@ -893,7 +893,7 @@ export abstract class AbstractPool<
   public async execute (
     data?: Data,
     name?: string,
-    transferList?: TransferListItem[]
+    transferList?: readonly TransferListItem[]
   ): Promise<Response> {
     return await new Promise<Response>((resolve, reject) => {
       if (!this.started) {
@@ -1228,7 +1228,7 @@ export abstract class AbstractPool<
   protected abstract sendToWorker (
     workerNodeKey: number,
     message: MessageValue<Data>,
-    transferList?: TransferListItem[]
+    transferList?: readonly TransferListItem[]
   ): void
 
   /**

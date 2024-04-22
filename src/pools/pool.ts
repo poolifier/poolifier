@@ -282,7 +282,7 @@ export interface IPool<
   readonly execute: (
     data?: Data,
     name?: string,
-    transferList?: TransferListItem[]
+    transferList?: readonly TransferListItem[]
   ) => Promise<Response>
   /**
    * Starts the minimum number of workers in this pool.

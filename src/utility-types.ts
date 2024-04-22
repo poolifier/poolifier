@@ -82,7 +82,7 @@ export interface Task<Data = unknown> {
   /**
    * Array of transferable objects.
    */
-  readonly transferList?: TransferListItem[]
+  readonly transferList?: readonly TransferListItem[]
   /**
    * Timestamp.
    */
