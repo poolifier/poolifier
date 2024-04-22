@@ -38,7 +38,7 @@ const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
       async (
         data?: ThreadWorkerData,
         name?: string,
-        transferList?: TransferListItem[]
+        transferList?: readonly TransferListItem[]
       ): Promise<ThreadWorkerResponse> =>
         await pool.execute(data, name, transferList)
     )

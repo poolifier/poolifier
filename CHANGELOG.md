@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add fine grained task abortion support.
 
+## [3.1.30] - 2024-04-22
+
+### Fixed:
+
+- Fix `transferList` argument type definition.
+
 ## [3.1.29] - 2024-04-02
 
 ### Fixed

@@ -283,7 +283,7 @@ export interface IPool<
   readonly execute: (
     data?: Data,
     name?: string,
-    transferList?: TransferListItem[],
+    transferList?: readonly TransferListItem[],
     abortSignal?: AbortSignal
   ) => Promise<Response>
   /**
