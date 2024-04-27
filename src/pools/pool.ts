@@ -2,6 +2,7 @@ import type { ClusterSettings } from 'node:cluster'
 import type { EventEmitterAsyncResource } from 'node:events'
 import type { TransferListItem, WorkerOptions } from 'node:worker_threads'
 
+import type { TaskFunctionProperties } from '../utility-types.js'
 import type { TaskFunction } from '../worker/task-functions.js'
 import type {
   WorkerChoiceStrategy,
@@ -321,11 +322,11 @@ export interface IPool<
    */
   readonly removeTaskFunction: (name: string) => Promise<boolean>
   /**
-   * Lists the names of task function available in this pool.
+   * Lists the properties of task functions available in this pool.
    *
-   * @returns The names of task function available in this pool.
+   * @returns The properties of task functions available in this pool.
    */
-  readonly listTaskFunctionNames: () => string[]
+  readonly listTaskFunctionsProperties: () => TaskFunctionProperties[]
   /**
    * Sets the default task function in this pool.
    *

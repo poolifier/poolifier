@@ -11,7 +11,7 @@
   - [`pool.hasTaskFunction(name)`](#poolhastaskfunctionname)
   - [`pool.addTaskFunction(name, fn)`](#pooladdtaskfunctionname-fn)
   - [`pool.removeTaskFunction(name)`](#poolremovetaskfunctionname)
-  - [`pool.listTaskFunctionNames()`](#poollisttaskfunctionnames)
+  - [`pool.listTaskFunctionsProperties()`](#poollisttaskfunctionsproperties)
   - [`pool.setDefaultTaskFunction(name)`](#poolsetdefaulttaskfunctionname)
   - [Pool options](#pool-options)
 - [Worker](#worker)
@@ -19,7 +19,7 @@
     - [`YourWorker.hasTaskFunction(name)`](#yourworkerhastaskfunctionname)
     - [`YourWorker.addTaskFunction(name, fn)`](#yourworkeraddtaskfunctionname-fn)
     - [`YourWorker.removeTaskFunction(name)`](#yourworkerremovetaskfunctionname)
-    - [`YourWorker.listTaskFunctionNames()`](#yourworkerlisttaskfunctionnames)
+    - [`YourWorker.listTaskFunctionsProperties()`](#yourworkerlisttaskfunctionsproperties)
     - [`YourWorker.setDefaultTaskFunction(name)`](#yourworkersetdefaulttaskfunctionname)
 
 ## Pool
@@ -72,9 +72,9 @@ This method is available on both pool implementations and returns a boolean prom
 
 This method is available on both pool implementations and returns a boolean promise.
 
-### `pool.listTaskFunctionNames()`
+### `pool.listTaskFunctionsProperties()`
 
-This method is available on both pool implementations and returns an array of the task function names.
+This method is available on both pool implementations and returns an array of the task function properties.
 
 ### `pool.setDefaultTaskFunction(name)`
 
@@ -186,9 +186,9 @@ This method is available on both worker implementations and returns `{ status: b
 
 This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
 
-#### `YourWorker.listTaskFunctionNames()`
+#### `YourWorker.listTaskFunctionsProperties()`
 
-This method is available on both worker implementations and returns an array of the task function names.
+This method is available on both worker implementations and returns an array of the task function properties.
 
 #### `YourWorker.setDefaultTaskFunction(name)`
 

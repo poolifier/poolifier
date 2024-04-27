@@ -187,6 +187,11 @@ export class Deque<T> {
     }
   }
 
+  /**
+   * Increments the size of the deque.
+   *
+   * @returns The new size of the deque.
+   */
   private incrementSize (): number {
     ++this.size
     if (this.size > this.maxSize) {

@@ -53,9 +53,9 @@ describe('Thread worker test suite', () => {
       status: false,
       error: new TypeError('name parameter is an empty string')
     })
-    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
-    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
-    expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Object)
+    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Object)
+    expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Object)
     expect(worker.taskFunctions.size).toBe(3)
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
@@ -73,8 +73,8 @@ describe('Thread worker test suite', () => {
       )
     })
     worker.removeTaskFunction('fn2')
-    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
-    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Object)
+    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Object)
     expect(worker.taskFunctions.get('fn2')).toBeUndefined()
     expect(worker.taskFunctions.size).toBe(2)
     expect(worker.port.postMessage.calledOnce).toBe(true)

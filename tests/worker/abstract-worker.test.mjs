@@ -132,8 +132,8 @@ describe('Abstract worker test suite', () => {
 
   it('Verify that taskFunctions parameter with unique function is taken', () => {
     const worker = new ThreadWorker(() => {})
-    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
-    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Object)
+    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Object)
     expect(worker.taskFunctions.size).toBe(2)
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
@@ -149,7 +149,9 @@ describe('Abstract worker test suite', () => {
       new TypeError('A taskFunctions parameter object key is an empty string')
     )
     expect(() => new ThreadWorker({ fn1, fn2 })).toThrow(
-      new TypeError('A taskFunctions parameter object value is not a function')
+      new TypeError(
+        "taskFunction object 'taskFunction' property 'undefined' is not a function"
+      )
     )
   })
 
@@ -161,9 +163,9 @@ describe('Abstract worker test suite', () => {
       return 2
     }
     const worker = new ClusterWorker({ fn1, fn2 })
-    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
-    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
-    expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Object)
+    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Object)
+    expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Object)
     expect(worker.taskFunctions.size).toBe(3)
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
@@ -231,10 +233,12 @@ describe('Abstract worker test suite', () => {
     })
     expect(worker.addTaskFunction('fn3', '')).toStrictEqual({
       status: false,
-      error: new TypeError('fn parameter is not a function')
+      error: new TypeError(
+        "taskFunction object 'taskFunction' property 'undefined' is not a function"
+      )
     })
-    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
-    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Object)
+    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Object)
     expect(worker.taskFunctions.size).toBe(2)
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
@@ -246,17 +250,17 @@ describe('Abstract worker test suite', () => {
       )
     })
     worker.addTaskFunction('fn2', fn2)
-    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
-    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
-    expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Object)
+    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Object)
+    expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Object)
     expect(worker.taskFunctions.size).toBe(3)
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
     )
     worker.addTaskFunction('fn1', fn1Replacement)
-    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
-    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
-    expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Object)
+    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Object)
+    expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Object)
     expect(worker.taskFunctions.size).toBe(3)
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')
@@ -271,10 +275,10 @@ describe('Abstract worker test suite', () => {
       return 2
     }
     const worker = new ClusterWorker({ fn1, fn2 })
-    expect(worker.listTaskFunctionNames()).toStrictEqual([
-      DEFAULT_TASK_NAME,
-      'fn1',
-      'fn2'
+    expect(worker.listTaskFunctionsProperties()).toStrictEqual([
+      { name: DEFAULT_TASK_NAME },
+      { name: 'fn1' },
+      { name: 'fn2' }
     ])
   })
 
@@ -294,9 +298,9 @@ describe('Abstract worker test suite', () => {
       status: false,
       error: new TypeError('name parameter is an empty string')
     })
-    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Function)
-    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Function)
-    expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Function)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Object)
+    expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Object)
+    expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Object)
     expect(worker.taskFunctions.size).toBe(3)
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')

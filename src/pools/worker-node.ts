@@ -169,21 +169,21 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
 
   /** @inheritdoc */
   public getTaskFunctionWorkerUsage (name: string): WorkerUsage | undefined {
-    if (!Array.isArray(this.info.taskFunctionNames)) {
+    if (!Array.isArray(this.info.taskFunctionsProperties)) {
       throw new Error(
-        `Cannot get task function worker usage for task function name '${name}' when task function names list is not yet defined`
+        `Cannot get task function worker usage for task function name '${name}' when task function properties list is not yet defined`
       )
     }
     if (
-      Array.isArray(this.info.taskFunctionNames) &&
-      this.info.taskFunctionNames.length < 3
+      Array.isArray(this.info.taskFunctionsProperties) &&
+      this.info.taskFunctionsProperties.length < 3
     ) {
       throw new Error(
-        `Cannot get task function worker usage for task function name '${name}' when task function names list has less than 3 elements`
+        `Cannot get task function worker usage for task function name '${name}' when task function properties list has less than 3 elements`
       )
     }
     if (name === DEFAULT_TASK_NAME) {
-      name = this.info.taskFunctionNames[1]
+      name = this.info.taskFunctionsProperties[1].name
     }
     if (!this.taskFunctionsUsage.has(name)) {
       this.taskFunctionsUsage.set(name, this.initTaskFunctionWorkerUsage(name))
@@ -262,7 +262,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
         if (
           (task.name === DEFAULT_TASK_NAME &&
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            name === this.info.taskFunctionNames![1]) ||
+            name === this.info.taskFunctionsProperties![1].name) ||
           (task.name !== DEFAULT_TASK_NAME && name === task.name)
         ) {
           ++taskFunctionQueueSize

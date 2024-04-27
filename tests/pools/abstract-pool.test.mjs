@@ -1363,14 +1363,14 @@ describe('Abstract pool test suite', () => {
       new TypeError('name argument must not be an empty string')
     )
     await expect(dynamicThreadPool.addTaskFunction('test', 0)).rejects.toThrow(
-      new TypeError('fn argument must be a function')
+      new TypeError('taskFunction property must be a function')
     )
     await expect(dynamicThreadPool.addTaskFunction('test', '')).rejects.toThrow(
-      new TypeError('fn argument must be a function')
+      new TypeError('taskFunction property must be a function')
     )
-    expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
-      DEFAULT_TASK_NAME,
-      'test'
+    expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
+      { name: DEFAULT_TASK_NAME },
+      { name: 'test' }
     ])
     const echoTaskFunction = data => {
       return data
@@ -1379,13 +1379,13 @@ describe('Abstract pool test suite', () => {
       dynamicThreadPool.addTaskFunction('echo', echoTaskFunction)
     ).resolves.toBe(true)
     expect(dynamicThreadPool.taskFunctions.size).toBe(1)
-    expect(dynamicThreadPool.taskFunctions.get('echo')).toStrictEqual(
-      echoTaskFunction
-    )
-    expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
-      DEFAULT_TASK_NAME,
-      'test',
-      'echo'
+    expect(dynamicThreadPool.taskFunctions.get('echo')).toStrictEqual({
+      taskFunction: echoTaskFunction
+    })
+    expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
+      { name: DEFAULT_TASK_NAME },
+      { name: 'test' },
+      { name: 'echo' }
     ])
     const taskFunctionData = { test: 'test' }
     const echoResult = await dynamicThreadPool.execute(taskFunctionData, 'echo')
@@ -1426,9 +1426,9 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.mjs'
     )
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
-    expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
-      DEFAULT_TASK_NAME,
-      'test'
+    expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
+      { name: DEFAULT_TASK_NAME },
+      { name: 'test' }
     ])
     await expect(dynamicThreadPool.removeTaskFunction('test')).rejects.toThrow(
       new Error('Cannot remove a task function not handled on the pool side')
@@ -1438,22 +1438,22 @@ describe('Abstract pool test suite', () => {
     }
     await dynamicThreadPool.addTaskFunction('echo', echoTaskFunction)
     expect(dynamicThreadPool.taskFunctions.size).toBe(1)
-    expect(dynamicThreadPool.taskFunctions.get('echo')).toStrictEqual(
-      echoTaskFunction
-    )
-    expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
-      DEFAULT_TASK_NAME,
-      'test',
-      'echo'
+    expect(dynamicThreadPool.taskFunctions.get('echo')).toStrictEqual({
+      taskFunction: echoTaskFunction
+    })
+    expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
+      { name: DEFAULT_TASK_NAME },
+      { name: 'test' },
+      { name: 'echo' }
     ])
     await expect(dynamicThreadPool.removeTaskFunction('echo')).resolves.toBe(
       true
     )
     expect(dynamicThreadPool.taskFunctions.size).toBe(0)
     expect(dynamicThreadPool.taskFunctions.get('echo')).toBeUndefined()
-    expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
-      DEFAULT_TASK_NAME,
-      'test'
+    expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
+      { name: DEFAULT_TASK_NAME },
+      { name: 'test' }
     ])
     await dynamicThreadPool.destroy()
   })
@@ -1465,11 +1465,11 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testMultipleTaskFunctionsWorker.mjs'
     )
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
-    expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
-      DEFAULT_TASK_NAME,
-      'jsonIntegerSerialization',
-      'factorial',
-      'fibonacci'
+    expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
+      { name: DEFAULT_TASK_NAME },
+      { name: 'jsonIntegerSerialization' },
+      { name: 'factorial' },
+      { name: 'fibonacci' }
     ])
     await dynamicThreadPool.destroy()
     const fixedClusterPool = new FixedClusterPool(
@@ -1477,11 +1477,11 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/cluster/testMultipleTaskFunctionsWorker.cjs'
     )
     await waitPoolEvents(fixedClusterPool, PoolEvents.ready, 1)
-    expect(fixedClusterPool.listTaskFunctionNames()).toStrictEqual([
-      DEFAULT_TASK_NAME,
-      'jsonIntegerSerialization',
-      'factorial',
-      'fibonacci'
+    expect(fixedClusterPool.listTaskFunctionsProperties()).toStrictEqual([
+      { name: DEFAULT_TASK_NAME },
+      { name: 'jsonIntegerSerialization' },
+      { name: 'factorial' },
+      { name: 'fibonacci' }
     ])
     await fixedClusterPool.destroy()
   })
@@ -1513,29 +1513,29 @@ describe('Abstract pool test suite', () => {
         `Task function operation 'default' failed on worker ${workerId} with error: 'Error: Cannot set the default task function to a non-existing task function'`
       )
     )
-    expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
-      DEFAULT_TASK_NAME,
-      'jsonIntegerSerialization',
-      'factorial',
-      'fibonacci'
+    expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
+      { name: DEFAULT_TASK_NAME },
+      { name: 'jsonIntegerSerialization' },
+      { name: 'factorial' },
+      { name: 'fibonacci' }
     ])
     await expect(
       dynamicThreadPool.setDefaultTaskFunction('factorial')
     ).resolves.toBe(true)
-    expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
-      DEFAULT_TASK_NAME,
-      'factorial',
-      'jsonIntegerSerialization',
-      'fibonacci'
+    expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
+      { name: DEFAULT_TASK_NAME },
+      { name: 'factorial' },
+      { name: 'jsonIntegerSerialization' },
+      { name: 'fibonacci' }
     ])
     await expect(
       dynamicThreadPool.setDefaultTaskFunction('fibonacci')
     ).resolves.toBe(true)
-    expect(dynamicThreadPool.listTaskFunctionNames()).toStrictEqual([
-      DEFAULT_TASK_NAME,
-      'fibonacci',
-      'jsonIntegerSerialization',
-      'factorial'
+    expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
+      { name: DEFAULT_TASK_NAME },
+      { name: 'fibonacci' },
+      { name: 'jsonIntegerSerialization' },
+      { name: 'factorial' }
     ])
     await dynamicThreadPool.destroy()
   })
@@ -1558,15 +1558,17 @@ describe('Abstract pool test suite', () => {
     expect(pool.info.executingTasks).toBe(0)
     expect(pool.info.executedTasks).toBe(4)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.info.taskFunctionNames).toStrictEqual([
-        DEFAULT_TASK_NAME,
-        'jsonIntegerSerialization',
-        'factorial',
-        'fibonacci'
+      expect(workerNode.info.taskFunctionsProperties).toStrictEqual([
+        { name: DEFAULT_TASK_NAME },
+        { name: 'jsonIntegerSerialization' },
+        { name: 'factorial' },
+        { name: 'fibonacci' }
       ])
       expect(workerNode.taskFunctionsUsage.size).toBe(3)
-      for (const name of pool.listTaskFunctionNames()) {
-        expect(workerNode.getTaskFunctionWorkerUsage(name)).toStrictEqual({
+      for (const taskFunctionProperties of pool.listTaskFunctionsProperties()) {
+        expect(
+          workerNode.getTaskFunctionWorkerUsage(taskFunctionProperties.name)
+        ).toStrictEqual({
           tasks: {
             executed: expect.any(Number),
             executing: 0,
@@ -1591,14 +1593,15 @@ describe('Abstract pool test suite', () => {
           }
         })
         expect(
-          workerNode.getTaskFunctionWorkerUsage(name).tasks.executed
+          workerNode.getTaskFunctionWorkerUsage(taskFunctionProperties.name)
+            .tasks.executed
         ).toBeGreaterThan(0)
       }
       expect(
         workerNode.getTaskFunctionWorkerUsage(DEFAULT_TASK_NAME)
       ).toStrictEqual(
         workerNode.getTaskFunctionWorkerUsage(
-          workerNode.info.taskFunctionNames[1]
+          workerNode.info.taskFunctionsProperties[1].name
         )
       )
     }
@@ -1628,13 +1631,17 @@ describe('Abstract pool test suite', () => {
     await expect(
       pool.sendTaskFunctionOperationToWorker(workerNodeKey, {
         taskFunctionOperation: 'add',
-        taskFunctionName: 'empty',
+        taskFunctionProperties: { name: 'empty' },
         taskFunction: (() => {}).toString()
       })
     ).resolves.toBe(true)
     expect(
-      pool.workerNodes[workerNodeKey].info.taskFunctionNames
-    ).toStrictEqual([DEFAULT_TASK_NAME, 'test', 'empty'])
+      pool.workerNodes[workerNodeKey].info.taskFunctionsProperties
+    ).toStrictEqual([
+      { name: DEFAULT_TASK_NAME },
+      { name: 'test' },
+      { name: 'empty' }
+    ])
     await pool.destroy()
   })
 
@@ -1647,15 +1654,15 @@ describe('Abstract pool test suite', () => {
     await expect(
       pool.sendTaskFunctionOperationToWorkers({
         taskFunctionOperation: 'add',
-        taskFunctionName: 'empty',
+        taskFunctionProperties: { name: 'empty' },
         taskFunction: (() => {}).toString()
       })
     ).resolves.toBe(true)
     for (const workerNode of pool.workerNodes) {
-      expect(workerNode.info.taskFunctionNames).toStrictEqual([
-        DEFAULT_TASK_NAME,
-        'test',
-        'empty'
+      expect(workerNode.info.taskFunctionsProperties).toStrictEqual([
+        { name: DEFAULT_TASK_NAME },
+        { name: 'test' },
+        { name: 'empty' }
       ])
     }
     await pool.destroy()
