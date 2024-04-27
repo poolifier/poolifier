@@ -408,8 +408,8 @@ packages:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
 
-  thread-stream@2.6.0:
-    resolution: {integrity: sha512-t4eNiKdGwd1EV6tx76mRbrOqwvkxz+ssOiQXEXw88m4p/Xp6679vg16sf39BAstRjHOiWIqp5+J2ylHk3pU30g==}
+  thread-stream@2.7.0:
+    resolution: {integrity: sha512-qQiRWsU/wvNolI6tbbCKd9iKaTnCXsTwVxhhKM6nctPdujTyztjlbUkUTUymidWcMnZ5pWR0ej4a0tjsW021vw==}
 
   timestring@6.0.0:
     resolution: {integrity: sha512-wMctrWD2HZZLuIlchlkE2dfXJh7J2KDI9Dwl+2abPYg0mswQHfOAyQW3jJg1pY5VfttSINZuKcXoB3FGypVklA==}
@@ -738,7 +738,7 @@ snapshots:
       real-require: 0.2.0
       safe-stable-stringify: 2.4.3
       sonic-boom: 3.8.1
-      thread-stream: 2.6.0
+      thread-stream: 2.7.0
 
   poolifier@3.1.30: {}
 
@@ -825,7 +825,7 @@ snapshots:
     dependencies:
       has-flag: 4.0.0
 
-  thread-stream@2.6.0:
+  thread-stream@2.7.0:
     dependencies:
       real-require: 0.2.0
 
