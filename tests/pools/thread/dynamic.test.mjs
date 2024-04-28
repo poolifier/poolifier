@@ -119,8 +119,9 @@ describe('Dynamic thread pool test suite', () => {
     await waitWorkerEvents(longRunningPool, 'exit', max - min)
     expect(longRunningPool.workerNodes.length).toBe(min)
     expect(
-      longRunningPool.workerChoiceStrategyContext.workerChoiceStrategies.get(
-        longRunningPool.workerChoiceStrategyContext.workerChoiceStrategy
+      longRunningPool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        longRunningPool.workerChoiceStrategiesContext
+          .defaultWorkerChoiceStrategy
       ).nextWorkerNodeKey
     ).toBeLessThan(longRunningPool.workerNodes.length)
     // We need to clean up the resources after our test

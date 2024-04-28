@@ -77,7 +77,7 @@ export interface PoolInfo {
   readonly worker: WorkerType
   readonly started: boolean
   readonly ready: boolean
-  readonly strategy: WorkerChoiceStrategy
+  readonly defaultStrategy: WorkerChoiceStrategy
   readonly strategyRetries: number
   readonly minSize: number
   readonly maxSize: number
@@ -185,7 +185,7 @@ export interface PoolOptions<Worker extends IWorker> {
    */
   startWorkers?: boolean
   /**
-   * The worker choice strategy to use in this pool.
+   * The default worker choice strategy to use in this pool.
    *
    * @defaultValue WorkerChoiceStrategies.ROUND_ROBIN
    */
@@ -335,9 +335,9 @@ export interface IPool<
    */
   readonly setDefaultTaskFunction: (name: string) => Promise<boolean>
   /**
-   * Sets the worker choice strategy in this pool.
+   * Sets the default worker choice strategy in this pool.
    *
-   * @param workerChoiceStrategy - The worker choice strategy.
+   * @param workerChoiceStrategy - The default worker choice strategy.
    * @param workerChoiceStrategyOptions - The worker choice strategy options.
    */
   readonly setWorkerChoiceStrategy: (

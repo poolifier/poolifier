@@ -13,7 +13,7 @@ import { LeastEluWorkerChoiceStrategy } from '../../../lib/pools/selection-strat
 import { LeastUsedWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/least-used-worker-choice-strategy.cjs'
 import { RoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/round-robin-worker-choice-strategy.cjs'
 import { WeightedRoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy.cjs'
-import { WorkerChoiceStrategyContext } from '../../../lib/pools/selection-strategies/worker-choice-strategy-context.cjs'
+import { WorkerChoiceStrategiesContext } from '../../../lib/pools/selection-strategies/worker-choice-strategies-context.cjs'
 
 describe('Worker choice strategy context test suite', () => {
   const min = 1
@@ -41,31 +41,47 @@ describe('Worker choice strategy context test suite', () => {
     await dynamicPool.destroy()
   })
 
-  it('Verify that constructor() initializes the context with all the available worker choice strategies', () => {
-    let workerChoiceStrategyContext = new WorkerChoiceStrategyContext(fixedPool)
-    expect(workerChoiceStrategyContext.workerChoiceStrategies.size).toBe(
-      Object.keys(WorkerChoiceStrategies).length
+  it('Verify that constructor() initializes the context with the default choice strategy', () => {
+    let workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
+      fixedPool
     )
-    workerChoiceStrategyContext = new WorkerChoiceStrategyContext(dynamicPool)
-    expect(workerChoiceStrategyContext.workerChoiceStrategies.size).toBe(
-      Object.keys(WorkerChoiceStrategies).length
+    expect(workerChoiceStrategiesContext.workerChoiceStrategies.size).toBe(1)
+    expect(
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
+      )
+    ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
+    workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
+      dynamicPool
     )
+    expect(workerChoiceStrategiesContext.workerChoiceStrategies.size).toBe(1)
+    expect(
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
+      )
+    ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
   })
 
   it('Verify that constructor() initializes the context with retries attribute properly set', () => {
-    let workerChoiceStrategyContext = new WorkerChoiceStrategyContext(fixedPool)
-    expect(workerChoiceStrategyContext.retries).toBe(fixedPool.info.maxSize * 2)
-    workerChoiceStrategyContext = new WorkerChoiceStrategyContext(dynamicPool)
-    expect(workerChoiceStrategyContext.retries).toBe(
+    let workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
+      fixedPool
+    )
+    expect(workerChoiceStrategiesContext.retries).toBe(
+      fixedPool.info.maxSize * 2
+    )
+    workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
+      dynamicPool
+    )
+    expect(workerChoiceStrategiesContext.retries).toBe(
       dynamicPool.info.maxSize * 2
     )
   })
 
   it('Verify that execute() throws error if null or undefined is returned after retries', () => {
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool
     )
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
+    expect(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
     const workerChoiceStrategyUndefinedStub = createStubInstance(
@@ -74,13 +90,13 @@ describe('Worker choice strategy context test suite', () => {
         choose: stub().returns(undefined)
       }
     )
-    workerChoiceStrategyContext.workerChoiceStrategies.set(
-      workerChoiceStrategyContext.workerChoiceStrategy,
+    workerChoiceStrategiesContext.workerChoiceStrategies.set(
+      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
       workerChoiceStrategyUndefinedStub
     )
-    expect(() => workerChoiceStrategyContext.execute()).toThrow(
+    expect(() => workerChoiceStrategiesContext.execute()).toThrow(
       new Error(
-        `Worker node key chosen is null or undefined after ${workerChoiceStrategyContext.retries} retries`
+        `Worker node key chosen is null or undefined after ${workerChoiceStrategiesContext.retries} retries`
       )
     )
     const workerChoiceStrategyNullStub = createStubInstance(
@@ -89,19 +105,19 @@ describe('Worker choice strategy context test suite', () => {
         choose: stub().returns(null)
       }
     )
-    workerChoiceStrategyContext.workerChoiceStrategies.set(
-      workerChoiceStrategyContext.workerChoiceStrategy,
+    workerChoiceStrategiesContext.workerChoiceStrategies.set(
+      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
       workerChoiceStrategyNullStub
     )
-    expect(() => workerChoiceStrategyContext.execute()).toThrow(
+    expect(() => workerChoiceStrategiesContext.execute()).toThrow(
       new Error(
-        `Worker node key chosen is null or undefined after ${workerChoiceStrategyContext.retries} retries`
+        `Worker node key chosen is null or undefined after ${workerChoiceStrategiesContext.retries} retries`
       )
     )
   })
 
   it('Verify that execute() retry until a worker node is chosen', () => {
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool
     )
     const workerChoiceStrategyStub = createStubInstance(
@@ -121,24 +137,24 @@ describe('Worker choice strategy context test suite', () => {
           .returns(1)
       }
     )
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
+    expect(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
-    workerChoiceStrategyContext.workerChoiceStrategies.set(
-      workerChoiceStrategyContext.workerChoiceStrategy,
+    workerChoiceStrategiesContext.workerChoiceStrategies.set(
+      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
       workerChoiceStrategyStub
     )
-    const chosenWorkerKey = workerChoiceStrategyContext.execute()
+    const chosenWorkerKey = workerChoiceStrategiesContext.execute()
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategyContext.workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       ).choose.callCount
     ).toBe(6)
     expect(chosenWorkerKey).toBe(1)
   })
 
   it('Verify that execute() return the worker node key chosen by the strategy with fixed pool', () => {
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool
     )
     const workerChoiceStrategyStub = createStubInstance(
@@ -147,24 +163,24 @@ describe('Worker choice strategy context test suite', () => {
         choose: stub().returns(0)
       }
     )
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
+    expect(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
-    workerChoiceStrategyContext.workerChoiceStrategies.set(
-      workerChoiceStrategyContext.workerChoiceStrategy,
+    workerChoiceStrategiesContext.workerChoiceStrategies.set(
+      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
       workerChoiceStrategyStub
     )
-    const chosenWorkerKey = workerChoiceStrategyContext.execute()
+    const chosenWorkerKey = workerChoiceStrategiesContext.execute()
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategyContext.workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       ).choose.calledOnce
     ).toBe(true)
     expect(chosenWorkerKey).toBe(0)
   })
 
   it('Verify that execute() return the worker node key chosen by the strategy with dynamic pool', () => {
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       dynamicPool
     )
     const workerChoiceStrategyStub = createStubInstance(
@@ -173,322 +189,290 @@ describe('Worker choice strategy context test suite', () => {
         choose: stub().returns(0)
       }
     )
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
+    expect(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
-    workerChoiceStrategyContext.workerChoiceStrategies.set(
-      workerChoiceStrategyContext.workerChoiceStrategy,
+    workerChoiceStrategiesContext.workerChoiceStrategies.set(
+      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
       workerChoiceStrategyStub
     )
-    const chosenWorkerKey = workerChoiceStrategyContext.execute()
+    const chosenWorkerKey = workerChoiceStrategiesContext.execute()
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategyContext.workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       ).choose.calledOnce
     ).toBe(true)
     expect(chosenWorkerKey).toBe(0)
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with ROUND_ROBIN and fixed pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  it('Verify that setDefaultWorkerChoiceStrategy() works with ROUND_ROBIN and fixed pool', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool
     )
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
+    workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
+      WorkerChoiceStrategies.ROUND_ROBIN
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
-    )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with ROUND_ROBIN and dynamic pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  it('Verify that setDefaultWorkerChoiceStrategy() works with ROUND_ROBIN and dynamic pool', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       dynamicPool
     )
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
+    workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
+      WorkerChoiceStrategies.ROUND_ROBIN
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
-    )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with LEAST_USED and fixed pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_USED
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  it('Verify that setDefaultWorkerChoiceStrategy() works with LEAST_USED and fixed pool', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
+      WorkerChoiceStrategies.LEAST_USED
+    )
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(LeastUsedWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
-    )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with LEAST_USED and dynamic pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_USED
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  it('Verify that setDefaultWorkerChoiceStrategy() works with LEAST_USED and dynamic pool', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       dynamicPool
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
+      WorkerChoiceStrategies.LEAST_USED
+    )
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(LeastUsedWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
-    )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with LEAST_BUSY and fixed pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_BUSY
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  it('Verify that setDefaultWorkerChoiceStrategy() works with LEAST_BUSY and fixed pool', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
+      WorkerChoiceStrategies.LEAST_BUSY
+    )
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(LeastBusyWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
-    )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with LEAST_BUSY and dynamic pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_BUSY
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  it('Verify that setDefaultWorkerChoiceStrategy() works with LEAST_BUSY and dynamic pool', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       dynamicPool
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
+      WorkerChoiceStrategies.LEAST_BUSY
+    )
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(LeastBusyWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
-    )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with LEAST_ELU and fixed pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_ELU
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  it('Verify that setDefaultWorkerChoiceStrategy() works with LEAST_ELU and fixed pool', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
+      WorkerChoiceStrategies.LEAST_ELU
+    )
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(LeastEluWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
-    )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with LEAST_ELU and dynamic pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.LEAST_ELU
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  it('Verify that setDefaultWorkerChoiceStrategy() works with LEAST_ELU and dynamic pool', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       dynamicPool
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
+      WorkerChoiceStrategies.LEAST_ELU
+    )
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(LeastEluWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
-    )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with FAIR_SHARE and fixed pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  it('Verify that setDefaultWorkerChoiceStrategy() works with FAIR_SHARE and fixed pool', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
+      WorkerChoiceStrategies.FAIR_SHARE
+    )
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(FairShareWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
-    )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with FAIR_SHARE and dynamic pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  it('Verify that setDefaultWorkerChoiceStrategy() works with FAIR_SHARE and dynamic pool', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       dynamicPool
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
+      WorkerChoiceStrategies.FAIR_SHARE
+    )
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(FairShareWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
-    )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with WEIGHTED_ROUND_ROBIN and fixed pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  it('Verify that setDefaultWorkerChoiceStrategy() works with WEIGHTED_ROUND_ROBIN and fixed pool', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
+      WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+    )
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(WeightedRoundRobinWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
-    )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with WEIGHTED_ROUND_ROBIN and dynamic pool', () => {
-    const workerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  it('Verify that setDefaultWorkerChoiceStrategy() works with WEIGHTED_ROUND_ROBIN and dynamic pool', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       dynamicPool
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
+      WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
+    )
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(WeightedRoundRobinWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
-    )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with INTERLEAVED_WEIGHTED_ROUND_ROBIN and fixed pool', () => {
-    const workerChoiceStrategy =
-      WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  it('Verify that setDefaultWorkerChoiceStrategy() works with INTERLEAVED_WEIGHTED_ROUND_ROBIN and fixed pool', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
+      WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
+    )
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(InterleavedWeightedRoundRobinWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
-    )
   })
 
-  it('Verify that setWorkerChoiceStrategy() works with INTERLEAVED_WEIGHTED_ROUND_ROBIN and dynamic pool', () => {
-    const workerChoiceStrategy =
-      WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
-    const workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+  it('Verify that setDefaultWorkerChoiceStrategy() works with INTERLEAVED_WEIGHTED_ROUND_ROBIN and dynamic pool', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       dynamicPool
     )
-    workerChoiceStrategyContext.setWorkerChoiceStrategy(workerChoiceStrategy)
+    workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
+      WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
+    )
     expect(
-      workerChoiceStrategyContext.workerChoiceStrategies.get(
-        workerChoiceStrategy
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
     ).toBeInstanceOf(InterleavedWeightedRoundRobinWorkerChoiceStrategy)
-    expect(workerChoiceStrategyContext.workerChoiceStrategy).toBe(
-      workerChoiceStrategy
-    )
   })
 
   it('Verify that worker choice strategy options enable median runtime pool statistics', () => {
     const wwrWorkerChoiceStrategy = WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
-    let workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+    let workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool,
-      wwrWorkerChoiceStrategy,
+      [wwrWorkerChoiceStrategy],
       {
         runTime: { median: true }
       }
     )
     expect(
-      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().runTime
         .average
     ).toBe(false)
     expect(
-      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime.median
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().runTime
+        .median
     ).toBe(true)
-    workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+    workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       dynamicPool,
-      wwrWorkerChoiceStrategy,
+      [wwrWorkerChoiceStrategy],
       {
         runTime: { median: true }
       }
     )
     expect(
-      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().runTime
         .average
     ).toBe(false)
     expect(
-      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime.median
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().runTime
+        .median
     ).toBe(true)
     const fsWorkerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
-    workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+    workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool,
-      fsWorkerChoiceStrategy,
+      [fsWorkerChoiceStrategy],
       {
         runTime: { median: true }
       }
     )
     expect(
-      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().runTime
         .average
     ).toBe(false)
     expect(
-      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime.median
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().runTime
+        .median
     ).toBe(true)
-    workerChoiceStrategyContext = new WorkerChoiceStrategyContext(
+    workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       dynamicPool,
-      fsWorkerChoiceStrategy,
+      [fsWorkerChoiceStrategy],
       {
         runTime: { median: true }
       }
     )
     expect(
-      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().runTime
         .average
     ).toBe(false)
     expect(
-      workerChoiceStrategyContext.getTaskStatisticsRequirements().runTime.median
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().runTime
+        .median
     ).toBe(true)
   })
 })

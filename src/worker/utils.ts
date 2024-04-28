@@ -33,10 +33,13 @@ export const checkValidWorkerOptions = (
   }
 }
 
-export const checkValidTaskFunctionEntry = <Data = unknown, Response = unknown>(
-  name: string,
-  fnObj: TaskFunctionObject<Data, Response>
-): void => {
+export const checkValidTaskFunctionObjectEntry = <
+  Data = unknown,
+  Response = unknown
+>(
+    name: string,
+    fnObj: TaskFunctionObject<Data, Response>
+  ): void => {
   if (typeof name !== 'string') {
     throw new TypeError('A taskFunctions parameter object key is not a string')
   }

@@ -95,7 +95,7 @@ An object with these properties:
 - `exitHandler` (optional) - A function that will listen for exit event on each worker.  
   Default: `() => {}`
 
-- `workerChoiceStrategy` (optional) - The worker choice strategy to use in this pool:
+- `workerChoiceStrategy` (optional) - The default worker choice strategy to use in this pool:
 
   - `WorkerChoiceStrategies.ROUND_ROBIN`: Submit tasks to worker in a round robin fashion
   - `WorkerChoiceStrategies.LEAST_USED`: Submit tasks to the worker with the minimum number of executed, executing and queued tasks

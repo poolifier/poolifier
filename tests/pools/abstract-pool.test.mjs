@@ -232,7 +232,7 @@ describe('Abstract pool test suite', () => {
       enableTasksQueue: false,
       workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN
     })
-    for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
+    for (const [, workerChoiceStrategy] of pool.workerChoiceStrategiesContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
         runTime: { median: false },
@@ -288,7 +288,7 @@ describe('Abstract pool test suite', () => {
       errorHandler: testHandler,
       exitHandler: testHandler
     })
-    for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
+    for (const [, workerChoiceStrategy] of pool.workerChoiceStrategiesContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
         runTime: { median: true },
@@ -447,7 +447,7 @@ describe('Abstract pool test suite', () => {
       { workerChoiceStrategy: WorkerChoiceStrategies.FAIR_SHARE }
     )
     expect(pool.opts.workerChoiceStrategyOptions).toBeUndefined()
-    for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
+    for (const [, workerChoiceStrategy] of pool.workerChoiceStrategiesContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
         runTime: { median: false },
@@ -460,7 +460,7 @@ describe('Abstract pool test suite', () => {
       })
     }
     expect(
-      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+      pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
       runTime: {
         aggregate: true,
@@ -486,7 +486,7 @@ describe('Abstract pool test suite', () => {
       runTime: { median: true },
       elu: { median: true }
     })
-    for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
+    for (const [, workerChoiceStrategy] of pool.workerChoiceStrategiesContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
         runTime: { median: true },
@@ -499,7 +499,7 @@ describe('Abstract pool test suite', () => {
       })
     }
     expect(
-      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+      pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
       runTime: {
         aggregate: true,
@@ -525,7 +525,7 @@ describe('Abstract pool test suite', () => {
       runTime: { median: false },
       elu: { median: false }
     })
-    for (const [, workerChoiceStrategy] of pool.workerChoiceStrategyContext
+    for (const [, workerChoiceStrategy] of pool.workerChoiceStrategiesContext
       .workerChoiceStrategies) {
       expect(workerChoiceStrategy.opts).toStrictEqual({
         runTime: { median: false },
@@ -538,7 +538,7 @@ describe('Abstract pool test suite', () => {
       })
     }
     expect(
-      pool.workerChoiceStrategyContext.getTaskStatisticsRequirements()
+      pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
       runTime: {
         aggregate: true,
@@ -706,7 +706,7 @@ describe('Abstract pool test suite', () => {
       worker: WorkerTypes.thread,
       started: true,
       ready: true,
-      strategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
       strategyRetries: 0,
       minSize: numberOfWorkers,
       maxSize: numberOfWorkers,
@@ -729,7 +729,7 @@ describe('Abstract pool test suite', () => {
       worker: WorkerTypes.cluster,
       started: true,
       ready: true,
-      strategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
       strategyRetries: 0,
       minSize: Math.floor(numberOfWorkers / 2),
       maxSize: numberOfWorkers,
@@ -975,7 +975,7 @@ describe('Abstract pool test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify that pool worker tasks usage are reset at worker choice strategy change', async () => {
+  it("Verify that pool worker tasks usage aren't reset at worker choice strategy change", async () => {
     const pool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
@@ -1026,7 +1026,7 @@ describe('Abstract pool test suite', () => {
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
         tasks: {
-          executed: 0,
+          executed: expect.any(Number),
           executing: 0,
           queued: 0,
           maxQueued: 0,
@@ -1049,6 +1049,10 @@ describe('Abstract pool test suite', () => {
           }
         }
       })
+      expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
+        numberOfWorkers * maxMultiplier
+      )
       expect(workerNode.usage.runTime.history.length).toBe(0)
       expect(workerNode.usage.waitTime.history.length).toBe(0)
       expect(workerNode.usage.elu.idle.history.length).toBe(0)
@@ -1079,7 +1083,7 @@ describe('Abstract pool test suite', () => {
       worker: WorkerTypes.cluster,
       started: true,
       ready: true,
-      strategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
       strategyRetries: expect.any(Number),
       minSize: expect.any(Number),
       maxSize: expect.any(Number),
@@ -1120,7 +1124,7 @@ describe('Abstract pool test suite', () => {
       worker: WorkerTypes.thread,
       started: true,
       ready: true,
-      strategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
       strategyRetries: expect.any(Number),
       minSize: expect.any(Number),
       maxSize: expect.any(Number),
@@ -1160,7 +1164,7 @@ describe('Abstract pool test suite', () => {
       worker: WorkerTypes.thread,
       started: true,
       ready: true,
-      strategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
       strategyRetries: expect.any(Number),
       minSize: expect.any(Number),
       maxSize: expect.any(Number),
@@ -1203,7 +1207,7 @@ describe('Abstract pool test suite', () => {
       worker: WorkerTypes.thread,
       started: true,
       ready: true,
-      strategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
       strategyRetries: expect.any(Number),
       minSize: expect.any(Number),
       maxSize: expect.any(Number),

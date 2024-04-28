@@ -27,7 +27,7 @@ export {
   Measurements,
   WorkerChoiceStrategies
 } from './pools/selection-strategies/selection-strategies-types.js'
-export type { WorkerChoiceStrategyContext } from './pools/selection-strategies/worker-choice-strategy-context.js'
+export type { WorkerChoiceStrategiesContext } from './pools/selection-strategies/worker-choice-strategies-context.js'
 export { DynamicThreadPool } from './pools/thread/dynamic.js'
 export type { ThreadPoolOptions } from './pools/thread/fixed.js'
 export { FixedThreadPool } from './pools/thread/fixed.js'

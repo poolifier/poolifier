@@ -26,7 +26,7 @@ import type {
 } from './task-functions.js'
 import {
   checkTaskFunctionName,
-  checkValidTaskFunctionEntry,
+  checkValidTaskFunctionObjectEntry,
   checkValidWorkerOptions
 } from './utils.js'
 import { KillBehaviors, type WorkerOptions } from './worker-options.js'
@@ -145,7 +145,7 @@ export abstract class AbstractWorker<
           Response
           >
         }
-        checkValidTaskFunctionEntry<Data, Response>(name, fnObj)
+        checkValidTaskFunctionObjectEntry<Data, Response>(name, fnObj)
         fnObj.taskFunction = fnObj.taskFunction.bind(this)
         if (firstEntry) {
           this.taskFunctions.set(DEFAULT_TASK_NAME, fnObj)
@@ -200,7 +200,7 @@ export abstract class AbstractWorker<
       if (typeof fn === 'function') {
         fn = { taskFunction: fn } satisfies TaskFunctionObject<Data, Response>
       }
-      checkValidTaskFunctionEntry<Data, Response>(name, fn)
+      checkValidTaskFunctionObjectEntry<Data, Response>(name, fn)
       fn.taskFunction = fn.taskFunction.bind(this)
       if (
         this.taskFunctions.get(name) ===
