@@ -15,7 +15,7 @@ import { RoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-str
 import { WeightedRoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy.cjs'
 import { WorkerChoiceStrategiesContext } from '../../../lib/pools/selection-strategies/worker-choice-strategies-context.cjs'
 
-describe('Worker choice strategy context test suite', () => {
+describe('Worker choice strategies context test suite', () => {
   const min = 1
   const max = 3
   let fixedPool, dynamicPool
