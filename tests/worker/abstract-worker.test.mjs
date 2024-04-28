@@ -352,7 +352,7 @@ describe('Abstract worker test suite', () => {
     )
   })
 
-  it('Verify that listTaskFunctionNames() is working', () => {
+  it('Verify that listTaskFunctionsProperties() is working', () => {
     const fn1 = () => {
       return 1
     }

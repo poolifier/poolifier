@@ -1376,20 +1376,33 @@ describe('Abstract pool test suite', () => {
       { name: DEFAULT_TASK_NAME },
       { name: 'test' }
     ])
+    expect([
+      ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys()
+    ]).toStrictEqual([WorkerChoiceStrategies.ROUND_ROBIN])
     const echoTaskFunction = data => {
       return data
     }
     await expect(
-      dynamicThreadPool.addTaskFunction('echo', echoTaskFunction)
+      dynamicThreadPool.addTaskFunction('echo', {
+        taskFunction: echoTaskFunction,
+        strategy: WorkerChoiceStrategies.LEAST_ELU
+      })
     ).resolves.toBe(true)
     expect(dynamicThreadPool.taskFunctions.size).toBe(1)
     expect(dynamicThreadPool.taskFunctions.get('echo')).toStrictEqual({
-      taskFunction: echoTaskFunction
+      taskFunction: echoTaskFunction,
+      strategy: WorkerChoiceStrategies.LEAST_ELU
     })
+    expect([
+      ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys()
+    ]).toStrictEqual([
+      WorkerChoiceStrategies.ROUND_ROBIN,
+      WorkerChoiceStrategies.LEAST_ELU
+    ])
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
       { name: 'test' },
-      { name: 'echo' }
+      { name: 'echo', strategy: WorkerChoiceStrategies.LEAST_ELU }
     ])
     const taskFunctionData = { test: 'test' }
     const echoResult = await dynamicThreadPool.execute(taskFunctionData, 'echo')
@@ -1412,9 +1425,15 @@ describe('Abstract pool test suite', () => {
         },
         elu: {
           idle: {
+            aggregate: 0,
+            maximum: 0,
+            minimum: 0,
             history: new CircularArray()
           },
           active: {
+            aggregate: 0,
+            maximum: 0,
+            minimum: 0,
             history: new CircularArray()
           }
         }
@@ -1440,21 +1459,34 @@ describe('Abstract pool test suite', () => {
     const echoTaskFunction = data => {
       return data
     }
-    await dynamicThreadPool.addTaskFunction('echo', echoTaskFunction)
+    await dynamicThreadPool.addTaskFunction('echo', {
+      taskFunction: echoTaskFunction,
+      strategy: WorkerChoiceStrategies.LEAST_ELU
+    })
     expect(dynamicThreadPool.taskFunctions.size).toBe(1)
     expect(dynamicThreadPool.taskFunctions.get('echo')).toStrictEqual({
-      taskFunction: echoTaskFunction
+      taskFunction: echoTaskFunction,
+      strategy: WorkerChoiceStrategies.LEAST_ELU
     })
+    expect([
+      ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys()
+    ]).toStrictEqual([
+      WorkerChoiceStrategies.ROUND_ROBIN,
+      WorkerChoiceStrategies.LEAST_ELU
+    ])
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
       { name: 'test' },
-      { name: 'echo' }
+      { name: 'echo', strategy: WorkerChoiceStrategies.LEAST_ELU }
     ])
     await expect(dynamicThreadPool.removeTaskFunction('echo')).resolves.toBe(
       true
     )
     expect(dynamicThreadPool.taskFunctions.size).toBe(0)
     expect(dynamicThreadPool.taskFunctions.get('echo')).toBeUndefined()
+    expect([
+      ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys()
+    ]).toStrictEqual([WorkerChoiceStrategies.ROUND_ROBIN])
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
       { name: 'test' }
@@ -1462,7 +1494,7 @@ describe('Abstract pool test suite', () => {
     await dynamicThreadPool.destroy()
   })
 
-  it('Verify that listTaskFunctionNames() is working', async () => {
+  it('Verify that listTaskFunctionsProperties() is working', async () => {
     const dynamicThreadPool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
