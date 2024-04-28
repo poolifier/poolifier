@@ -14,6 +14,7 @@
     "cloneable",
     "codeql",
     "commitlint",
+    "deduped",
     "Dependabot",
     "deque",
     "deregisters",

@@ -17,10 +17,6 @@ import {
 import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-worker-choice-strategy.js'
 import type { WorkerChoiceStrategiesContext } from './worker-choice-strategies-context.js'
 
-const clone = <T>(object: T): T => {
-  return structuredClone<T>(object)
-}
-
 const estimatedCpuSpeed = (): number => {
   const runs = 150000000
   const begin = performance.now()
@@ -90,7 +86,7 @@ export const buildWorkerChoiceStrategyOptions = <
     pool: IPool<Worker, Data, Response>,
     opts?: WorkerChoiceStrategyOptions
   ): WorkerChoiceStrategyOptions => {
-  opts = clone(opts ?? {})
+  opts = structuredClone(opts ?? {})
   opts.weights = opts.weights ?? getDefaultWeights(pool.info.maxSize)
   return {
     ...{

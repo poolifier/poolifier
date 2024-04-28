@@ -548,13 +548,22 @@ export abstract class AbstractPool<
     workerChoiceStrategyOptions?: WorkerChoiceStrategyOptions
   ): void {
     checkValidWorkerChoiceStrategy(workerChoiceStrategy)
-    this.opts.workerChoiceStrategy = workerChoiceStrategy
-    this.workerChoiceStrategiesContext?.setDefaultWorkerChoiceStrategy(
-      this.opts.workerChoiceStrategy,
-      workerChoiceStrategyOptions
-    )
-    for (const [workerNodeKey] of this.workerNodes.entries()) {
-      this.sendStatisticsMessageToWorker(workerNodeKey)
+    if (workerChoiceStrategyOptions != null) {
+      this.setWorkerChoiceStrategyOptions(workerChoiceStrategyOptions)
+    }
+    if (workerChoiceStrategy !== this.opts.workerChoiceStrategy) {
+      this.opts.workerChoiceStrategy = workerChoiceStrategy
+      this.workerChoiceStrategiesContext?.setDefaultWorkerChoiceStrategy(
+        this.opts.workerChoiceStrategy,
+        this.opts.workerChoiceStrategyOptions
+      )
+      this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
+        this.getWorkerWorkerChoiceStrategies(),
+        this.opts.workerChoiceStrategyOptions
+      )
+      for (const [workerNodeKey] of this.workerNodes.entries()) {
+        this.sendStatisticsMessageToWorker(workerNodeKey)
+      }
     }
   }
 
@@ -809,17 +818,9 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public hasTaskFunction (name: string): boolean {
-    for (const workerNode of this.workerNodes) {
-      if (
-        Array.isArray(workerNode.info.taskFunctionsProperties) &&
-        workerNode.info.taskFunctionsProperties.some(
-          taskFunctionProperties => taskFunctionProperties.name === name
-        )
-      ) {
-        return true
-      }
-    }
-    return false
+    return this.listTaskFunctionsProperties().some(
+      taskFunctionProperties => taskFunctionProperties.name === name
+    )
   }
 
   /** @inheritDoc */
@@ -845,6 +846,9 @@ export abstract class AbstractPool<
       taskFunction: fn.taskFunction.toString()
     })
     this.taskFunctions.set(name, fn)
+    this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
+      this.getWorkerWorkerChoiceStrategies()
+    )
     return opResult
   }
 
@@ -864,6 +868,9 @@ export abstract class AbstractPool<
     })
     this.deleteTaskFunctionWorkerUsages(name)
     this.taskFunctions.delete(name)
+    this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
+      this.getWorkerWorkerChoiceStrategies()
+    )
     return opResult
   }
 
@@ -896,6 +903,27 @@ export abstract class AbstractPool<
       )?.strategy
     }
   }
+
+  /**
+   * Gets the worker choice strategies registered in this pool.
+   *
+   * @returns The worker choice strategies.
+   */
+  private readonly getWorkerWorkerChoiceStrategies =
+    (): Set<WorkerChoiceStrategy> => {
+      return new Set([
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.opts.workerChoiceStrategy!,
+        ...(this.listTaskFunctionsProperties()
+          .map(
+            (taskFunctionProperties: TaskFunctionProperties) =>
+              taskFunctionProperties.strategy
+          )
+          .filter(
+            (strategy: WorkerChoiceStrategy | undefined) => strategy != null
+          ) as WorkerChoiceStrategy[])
+      ])
+    }
 
   /** @inheritDoc */
   public async setDefaultTaskFunction (name: string): Promise<boolean> {

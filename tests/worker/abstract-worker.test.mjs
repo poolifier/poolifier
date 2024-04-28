@@ -174,13 +174,13 @@ describe('Abstract worker test suite', () => {
     )
     expect(
       () => new ThreadWorker({ fn1: { taskFunction: fn1, priority: '' } })
-    ).toThrow(new TypeError("Invalid priority ''"))
+    ).toThrow(new TypeError("Invalid property 'priority': ''"))
     expect(
       () => new ThreadWorker({ fn1: { taskFunction: fn1, priority: -21 } })
-    ).toThrow(new TypeError('Property priority must be between -20 and 19'))
+    ).toThrow(new TypeError("Property 'priority' must be between -20 and 19"))
     expect(
       () => new ThreadWorker({ fn1: { taskFunction: fn1, priority: 20 } })
-    ).toThrow(new RangeError('Property priority must be between -20 and 19'))
+    ).toThrow(new RangeError("Property 'priority' must be between -20 and 19"))
     expect(
       () =>
         new ThreadWorker({

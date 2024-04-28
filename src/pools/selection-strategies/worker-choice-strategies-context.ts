@@ -79,7 +79,7 @@ export class WorkerChoiceStrategiesContext<
   }
 
   /**
-   * Gets the active worker choice strategies policy in the context.
+   * Gets the active worker choice strategies in the context policy.
    *
    * @returns The strategies policy.
    */
@@ -135,8 +135,10 @@ export class WorkerChoiceStrategiesContext<
     workerChoiceStrategy: WorkerChoiceStrategy,
     opts?: WorkerChoiceStrategyOptions
   ): void {
-    this.defaultWorkerChoiceStrategy = workerChoiceStrategy
-    this.addWorkerChoiceStrategy(workerChoiceStrategy, this.pool, opts)
+    if (workerChoiceStrategy !== this.defaultWorkerChoiceStrategy) {
+      this.defaultWorkerChoiceStrategy = workerChoiceStrategy
+      this.addWorkerChoiceStrategy(workerChoiceStrategy, this.pool, opts)
+    }
   }
 
   /**
@@ -221,6 +223,35 @@ export class WorkerChoiceStrategiesContext<
     }
   }
 
+  /**
+   * Synchronizes the active worker choice strategies in the context with the given worker choice strategies.
+   *
+   * @param workerChoiceStrategies - The worker choice strategies to synchronize.
+   * @param opts - The worker choice strategy options.
+   */
+  public syncWorkerChoiceStrategies (
+    workerChoiceStrategies: Set<WorkerChoiceStrategy>,
+    opts?: WorkerChoiceStrategyOptions
+  ): void {
+    for (const workerChoiceStrategy of this.workerChoiceStrategies.keys()) {
+      if (!workerChoiceStrategies.has(workerChoiceStrategy)) {
+        this.removeWorkerChoiceStrategy(workerChoiceStrategy)
+      }
+    }
+    for (const workerChoiceStrategy of workerChoiceStrategies) {
+      if (!this.workerChoiceStrategies.has(workerChoiceStrategy)) {
+        this.addWorkerChoiceStrategy(workerChoiceStrategy, this.pool, opts)
+      }
+    }
+  }
+
+  /**
+   * Adds a worker choice strategy to the context.
+   *
+   * @param workerChoiceStrategy - The worker choice strategy to add.
+   * @param opts - The worker choice strategy options.
+   * @returns The worker choice strategies.
+   */
   private addWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy,
     pool: IPool<Worker, Data, Response>,
@@ -240,9 +271,15 @@ export class WorkerChoiceStrategiesContext<
     return this.workerChoiceStrategies
   }
 
-  // private removeWorkerChoiceStrategy (
-  //   workerChoiceStrategy: WorkerChoiceStrategy
-  // ): boolean {
-  //   return this.workerChoiceStrategies.delete(workerChoiceStrategy)
-  // }
+  /**
+   * Removes a worker choice strategy from the context.
+   *
+   * @param workerChoiceStrategy - The worker choice strategy to remove.
+   * @returns `true` if the worker choice strategy is removed, `false` otherwise.
+   */
+  private removeWorkerChoiceStrategy (
+    workerChoiceStrategy: WorkerChoiceStrategy
+  ): boolean {
+    return this.workerChoiceStrategies.delete(workerChoiceStrategy)
+  }
 }
