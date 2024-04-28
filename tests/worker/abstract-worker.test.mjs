@@ -1,7 +1,12 @@
 import { expect } from 'expect'
 import { restore, stub } from 'sinon'
 
-import { ClusterWorker, KillBehaviors, ThreadWorker } from '../../lib/index.cjs'
+import {
+  ClusterWorker,
+  KillBehaviors,
+  ThreadWorker,
+  WorkerChoiceStrategies
+} from '../../lib/index.cjs'
 import { DEFAULT_TASK_NAME, EMPTY_FUNCTION } from '../../lib/utils.cjs'
 
 describe('Abstract worker test suite', () => {
@@ -153,6 +158,33 @@ describe('Abstract worker test suite', () => {
         "taskFunction object 'taskFunction' property 'undefined' is not a function"
       )
     )
+    expect(() => new ThreadWorker({ fn1: { fn1 } })).toThrow(
+      new TypeError(
+        "taskFunction object 'taskFunction' property 'undefined' is not a function"
+      )
+    )
+    expect(() => new ThreadWorker({ fn2: { taskFunction: fn2 } })).toThrow(
+      new TypeError(
+        "taskFunction object 'taskFunction' property '' is not a function"
+      )
+    )
+    expect(
+      () => new ThreadWorker({ fn1: { taskFunction: fn1, priority: '' } })
+    ).toThrow(new TypeError("Invalid priority ''"))
+    expect(
+      () => new ThreadWorker({ fn1: { taskFunction: fn1, priority: -21 } })
+    ).toThrow(new TypeError('Property priority must be between -20 and 19'))
+    expect(
+      () => new ThreadWorker({ fn1: { taskFunction: fn1, priority: 20 } })
+    ).toThrow(new RangeError('Property priority must be between -20 and 19'))
+    expect(
+      () =>
+        new ThreadWorker({
+          fn1: { taskFunction: fn1, strategy: 'invalidStrategy' }
+        })
+    ).toThrow(
+      new RangeError("Invalid worker choice strategy 'invalidStrategy'")
+    )
   })
 
   it('Verify that taskFunctions parameter with multiple task functions is taken', () => {
@@ -166,6 +198,33 @@ describe('Abstract worker test suite', () => {
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeInstanceOf(Object)
     expect(worker.taskFunctions.get('fn1')).toBeInstanceOf(Object)
     expect(worker.taskFunctions.get('fn2')).toBeInstanceOf(Object)
+    expect(worker.taskFunctions.size).toBe(3)
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
+      worker.taskFunctions.get('fn1')
+    )
+  })
+
+  it('Verify that taskFunctions parameter with multiple task functions object is taken', () => {
+    const fn1Obj = {
+      taskFunction: () => {
+        return 1
+      },
+      priority: 5
+    }
+    const fn2Obj = {
+      taskFunction: () => {
+        return 2
+      },
+      priority: 6,
+      strategy: WorkerChoiceStrategies.LESS_BUSY
+    }
+    const worker = new ThreadWorker({
+      fn1: fn1Obj,
+      fn2: fn2Obj
+    })
+    expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(fn1Obj)
+    expect(worker.taskFunctions.get('fn1')).toStrictEqual(fn1Obj)
+    expect(worker.taskFunctions.get('fn2')).toStrictEqual(fn2Obj)
     expect(worker.taskFunctions.size).toBe(3)
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
       worker.taskFunctions.get('fn1')

@@ -1,4 +1,7 @@
-import { checkValidWorkerChoiceStrategy } from '../pools/utils.js'
+import {
+  checkValidPriority,
+  checkValidWorkerChoiceStrategy
+} from '../pools/utils.js'
 import { isPlainObject } from '../utils.js'
 import type { TaskFunctionObject } from './task-functions.js'
 import { KillBehaviors, type WorkerOptions } from './worker-options.js'
@@ -54,11 +57,7 @@ export const checkValidTaskFunctionObjectEntry = <
       `taskFunction object 'taskFunction' property '${fnObj.taskFunction}' is not a function`
     )
   }
-  if (fnObj.priority != null && !Number.isSafeInteger(fnObj.priority)) {
-    throw new TypeError(
-      `taskFunction object 'priority' property '${fnObj.priority}' is not an integer`
-    )
-  }
+  checkValidPriority(fnObj.priority)
   checkValidWorkerChoiceStrategy(fnObj.strategy)
 }
 

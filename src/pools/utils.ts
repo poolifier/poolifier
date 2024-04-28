@@ -87,6 +87,19 @@ export const checkDynamicPoolSize = (
   }
 }
 
+export const checkValidPriority = (priority: number | undefined): void => {
+  if (priority != null && !Number.isSafeInteger(priority)) {
+    throw new TypeError(`Invalid priority '${priority}'`)
+  }
+  if (
+    priority != null &&
+    Number.isSafeInteger(priority) &&
+    (priority < -20 || priority > 19)
+  ) {
+    throw new RangeError('Property priority must be between -20 and 19')
+  }
+}
+
 export const checkValidWorkerChoiceStrategy = (
   workerChoiceStrategy: WorkerChoiceStrategy | undefined
 ): void => {

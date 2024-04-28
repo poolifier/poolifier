@@ -72,7 +72,10 @@ export class WorkerChoiceStrategiesContext<
       this.addWorkerChoiceStrategy(workerChoiceStrategy, this.pool, opts)
     }
     this.retriesCount = 0
-    this.retries = getWorkerChoiceStrategiesRetries(this.pool, opts)
+    this.retries = getWorkerChoiceStrategiesRetries<Worker, Data, Response>(
+      this.pool,
+      opts
+    )
   }
 
   /**
