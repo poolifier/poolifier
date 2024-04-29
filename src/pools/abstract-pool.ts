@@ -551,7 +551,7 @@ export abstract class AbstractPool<
     let requireSync = false
     checkValidWorkerChoiceStrategy(workerChoiceStrategy)
     if (workerChoiceStrategyOptions != null) {
-      requireSync = this.setWorkerChoiceStrategyOptions(
+      requireSync = !this.setWorkerChoiceStrategyOptions(
         workerChoiceStrategyOptions
       )
     }
