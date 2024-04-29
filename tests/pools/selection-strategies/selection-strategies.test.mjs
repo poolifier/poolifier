@@ -2079,7 +2079,7 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it("Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy internals aren't resets after setting it", async () => {
+  it("Verify INTERLEAVED_WEIGHTED_ROUND_ROBIN strategy internals aren't reset after setting it", async () => {
     const workerChoiceStrategy =
       WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
     let pool = new FixedThreadPool(
