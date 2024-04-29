@@ -27,8 +27,14 @@ export class PriorityQueue<T> {
    * @param k - Prioritized bucket size.
    */
   public constructor (k = Infinity) {
-    this.clear()
+    if (k !== Infinity && !Number.isSafeInteger(k)) {
+      throw new TypeError('k must be an integer')
+    }
+    if (k < 1) {
+      throw new RangeError('k must be greater than or equal to 1')
+    }
     this.k = k
+    this.clear()
   }
 
   /**
@@ -40,9 +46,13 @@ export class PriorityQueue<T> {
    */
   public enqueue (data: T, priority?: number): number {
     priority = priority ?? 0
+    const startIndex =
+      this.k === Infinity || this.nodeArray.length / this.k < 1
+        ? 0
+        : Math.trunc(this.nodeArray.length / this.k) * this.k
     let inserted = false
-    for (const [index, node] of this.nodeArray.entries()) {
-      if (node.priority > priority) {
+    for (let index = startIndex; index < this.nodeArray.length; index++) {
+      if (this.nodeArray[index].priority > priority) {
         this.nodeArray.splice(index, 0, { data, priority })
         inserted = true
         break

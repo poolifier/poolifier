@@ -3,6 +3,7 @@ import { MessageChannel } from 'node:worker_threads'
 
 import { CircularArray } from '../circular-array.js'
 import { Deque } from '../deque.js'
+import { PriorityQueue } from '../priority-queue.js'
 import type { Task } from '../utility-types.js'
 import { DEFAULT_TASK_NAME } from '../utils.js'
 import {
@@ -45,6 +46,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   /** @inheritdoc */
   public tasksQueueBackPressureSize: number
   private readonly tasksQueue: Deque<Task<Data>>
+  private readonly tasksQueue2 = new PriorityQueue<Task<Data>>()
   private onBackPressureStarted: boolean
   private readonly taskFunctionsUsage: Map<string, WorkerUsage>
 
