@@ -122,12 +122,6 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   }
 
   /** @inheritdoc */
-  public resetUsage (): void {
-    this.usage = this.initWorkerUsage()
-    this.taskFunctionsUsage.clear()
-  }
-
-  /** @inheritdoc */
   public async terminate (): Promise<void> {
     const waitWorkerExit = new Promise<void>(resolve => {
       this.registerOnceWorkerEventHandler('exit', () => {
