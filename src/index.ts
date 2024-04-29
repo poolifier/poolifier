@@ -1,5 +1,4 @@
 export type { CircularArray } from './circular-array.js'
-export type { Deque, ILinkedListNode } from './deque.js'
 export type { AbstractPool } from './pools/abstract-pool.js'
 export { DynamicClusterPool } from './pools/cluster/dynamic.js'
 export type { ClusterPoolOptions } from './pools/cluster/fixed.js'
@@ -50,7 +49,7 @@ export type {
   WorkerUsage
 } from './pools/worker.js'
 export { WorkerTypes } from './pools/worker.js'
-export type { PriorityQueue } from './priority-queue.js'
+export type { PriorityQueue, PriorityQueueNode } from './priority-queue.js'
 export type {
   MessageValue,
   PromiseResponseWrapper,

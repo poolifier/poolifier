@@ -2,7 +2,6 @@ import { EventEmitter } from 'node:events'
 import { MessageChannel } from 'node:worker_threads'
 
 import { CircularArray } from '../circular-array.js'
-import { Deque } from '../deque.js'
 import { PriorityQueue } from '../priority-queue.js'
 import type { Task } from '../utility-types.js'
 import { DEFAULT_TASK_NAME } from '../utils.js'
@@ -45,8 +44,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   public messageChannel?: MessageChannel
   /** @inheritdoc */
   public tasksQueueBackPressureSize: number
-  private readonly tasksQueue: Deque<Task<Data>>
-  private readonly tasksQueue2 = new PriorityQueue<Task<Data>>()
+  private readonly tasksQueue: PriorityQueue<Task<Data>>
   private onBackPressureStarted: boolean
   private readonly taskFunctionsUsage: Map<string, WorkerUsage>
 
@@ -71,7 +69,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.tasksQueueBackPressureSize = opts.tasksQueueBackPressureSize!
-    this.tasksQueue = new Deque<Task<Data>>()
+    this.tasksQueue = new PriorityQueue<Task<Data>>(opts.tasksQueueBucketSize)
     this.onBackPressureStarted = false
     this.taskFunctionsUsage = new Map<string, WorkerUsage>()
   }
@@ -83,7 +81,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
 
   /** @inheritdoc */
   public enqueueTask (task: Task<Data>): number {
-    const tasksQueueSize = this.tasksQueue.push(task)
+    const tasksQueueSize = this.tasksQueue.enqueue(task, task.priority)
     if (this.hasBackPressure() && !this.onBackPressureStarted) {
       this.onBackPressureStarted = true
       this.emit('backPressure', { workerId: this.info.id })
@@ -93,24 +91,8 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   }
 
   /** @inheritdoc */
-  public unshiftTask (task: Task<Data>): number {
-    const tasksQueueSize = this.tasksQueue.unshift(task)
-    if (this.hasBackPressure() && !this.onBackPressureStarted) {
-      this.onBackPressureStarted = true
-      this.emit('backPressure', { workerId: this.info.id })
-      this.onBackPressureStarted = false
-    }
-    return tasksQueueSize
-  }
-
-  /** @inheritdoc */
-  public dequeueTask (): Task<Data> | undefined {
-    return this.tasksQueue.shift()
-  }
-
-  /** @inheritdoc */
-  public popTask (): Task<Data> | undefined {
-    return this.tasksQueue.pop()
+  public dequeueTask (bucket?: number): Task<Data> | undefined {
+    return this.tasksQueue.dequeue(bucket)
   }
 
   /** @inheritdoc */

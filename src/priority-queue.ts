@@ -1,13 +1,18 @@
+// Copyright Jerome Benoit. 2024. All Rights Reserved.
+
 /**
+ * Priority queue node.
+ *
+ * @typeParam T - Type of priority queue node data.
  * @internal
  */
-interface PriorityQueueNode<T> {
+export interface PriorityQueueNode<T> {
   data: T
   priority: number
 }
 
 /**
- * k-priority queue.
+ * Priority queue.
  *
  * @typeParam T - Type of priority queue data.
  * @internal
@@ -22,7 +27,7 @@ export class PriorityQueue<T> {
   public maxSize!: number
 
   /**
-   * Constructs a k-priority queue.
+   * Constructs a priority queue.
    *
    * @param k - Prioritized bucket size.
    */
@@ -67,9 +72,21 @@ export class PriorityQueue<T> {
   /**
    * Dequeue data from the priority queue.
    *
+   * @param bucket - The prioritized bucket to dequeue from. @defaultValue 0
    * @returns The dequeued data or `undefined` if the priority queue is empty.
    */
-  public dequeue (): T | undefined {
+  public dequeue (bucket = 0): T | undefined {
+    if (this.k !== Infinity && bucket > 0) {
+      while (bucket > 0) {
+        const index = bucket * this.k
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (this.nodeArray[index] != null) {
+          --this.size
+          return this.nodeArray.splice(index, 1)[0].data
+        }
+        --bucket
+      }
+    }
     if (this.size > 0) {
       --this.size
     }
@@ -102,9 +119,35 @@ export class PriorityQueue<T> {
   }
 
   /**
-   * Increments the size of the deque.
+   * Returns an iterator for the priority queue.
    *
-   * @returns The new size of the deque.
+   * @returns An iterator for the deque.
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
+   */
+  [Symbol.iterator] (): Iterator<T> {
+    let i = 0
+    return {
+      next: () => {
+        if (i >= this.nodeArray.length) {
+          return {
+            value: undefined,
+            done: true
+          }
+        }
+        const value = this.nodeArray[i].data
+        i++
+        return {
+          value,
+          done: false
+        }
+      }
+    }
+  }
+
+  /**
+   * Increments the size of the priority queue.
+   *
+   * @returns The new size of the priority queue.
    */
   private incrementSize (): number {
     ++this.size

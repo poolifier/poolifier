@@ -1,9 +1,8 @@
 import { expect } from 'expect'
 
-// eslint-disable-next-line n/no-missing-import, import/no-unresolved
 import { PriorityQueue } from '../lib/priority-queue.cjs'
 
-describe.skip('Priority queue test suite', () => {
+describe('Priority queue test suite', () => {
   it('Verify constructor() behavior', () => {
     expect(() => new PriorityQueue('')).toThrow(
       new TypeError('k must be an integer')
@@ -175,6 +174,18 @@ describe.skip('Priority queue test suite', () => {
     expect(priorityQueue.size).toBe(3)
     expect(priorityQueue.peekLast()).toBe(3)
     expect(priorityQueue.size).toBe(3)
+  })
+
+  it('Verify iterator behavior', () => {
+    const priorityQueue = new PriorityQueue()
+    priorityQueue.enqueue(1)
+    priorityQueue.enqueue(2)
+    priorityQueue.enqueue(3)
+    let i = 1
+    for (const value of priorityQueue) {
+      expect(value).toBe(i)
+      ++i
+    }
   })
 
   it('Verify clear() behavior', () => {

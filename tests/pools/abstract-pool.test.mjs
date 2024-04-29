@@ -9,7 +9,6 @@ import { expect } from 'expect'
 import { restore, stub } from 'sinon'
 
 import { CircularArray } from '../../lib/circular-array.cjs'
-import { Deque } from '../../lib/deque.cjs'
 import {
   DynamicClusterPool,
   DynamicThreadPool,
@@ -21,6 +20,7 @@ import {
   WorkerTypes
 } from '../../lib/index.cjs'
 import { WorkerNode } from '../../lib/pools/worker-node.cjs'
+import { PriorityQueue } from '../../lib/priority-queue.cjs'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 import { waitPoolEvents } from '../test-utils.cjs'
 
@@ -786,7 +786,7 @@ describe('Abstract pool test suite', () => {
     )
     for (const workerNode of pool.workerNodes) {
       expect(workerNode).toBeInstanceOf(WorkerNode)
-      expect(workerNode.tasksQueue).toBeInstanceOf(Deque)
+      expect(workerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
       expect(workerNode.tasksQueue.size).toBe(0)
       expect(workerNode.tasksQueue.maxSize).toBe(0)
     }
@@ -798,7 +798,7 @@ describe('Abstract pool test suite', () => {
     )
     for (const workerNode of pool.workerNodes) {
       expect(workerNode).toBeInstanceOf(WorkerNode)
-      expect(workerNode.tasksQueue).toBeInstanceOf(Deque)
+      expect(workerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
       expect(workerNode.tasksQueue.size).toBe(0)
       expect(workerNode.tasksQueue.maxSize).toBe(0)
     }

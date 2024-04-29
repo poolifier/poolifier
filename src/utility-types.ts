@@ -101,6 +101,16 @@ export interface Task<Data = unknown> {
    */
   readonly data?: Data
   /**
+   * Task priority. Lower values have higher priority.
+   *
+   * @defaultValue 0
+   */
+  readonly priority?: number
+  /**
+   * Task worker choice strategy.
+   */
+  readonly strategy?: WorkerChoiceStrategy
+  /**
    * Array of transferable objects.
    */
   readonly transferList?: readonly TransferListItem[]
@@ -111,7 +121,7 @@ export interface Task<Data = unknown> {
   /**
    * Task UUID.
    */
-  readonly taskId?: string
+  readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
 }
 
 /**

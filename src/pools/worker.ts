@@ -267,6 +267,7 @@ export interface WorkerNodeOptions {
   workerOptions?: WorkerOptions
   env?: Record<string, unknown>
   tasksQueueBackPressureSize: number | undefined
+  tasksQueueBucketSize: number | undefined
 }
 
 /**
@@ -318,24 +319,12 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   readonly enqueueTask: (task: Task<Data>) => number
   /**
-   * Prepends a task to the tasks queue.
-   *
-   * @param task - The task to prepend.
-   * @returns The tasks queue size.
-   */
-  readonly unshiftTask: (task: Task<Data>) => number
-  /**
    * Dequeue task.
    *
+   * @param bucket - The prioritized bucket to dequeue from. @defaultValue 0
    * @returns The dequeued task.
    */
-  readonly dequeueTask: () => Task<Data> | undefined
-  /**
-   * Pops a task from the tasks queue.
-   *
-   * @returns The popped task.
-   */
-  readonly popTask: () => Task<Data> | undefined
+  readonly dequeueTask: (bucket?: number) => Task<Data> | undefined
   /**
    * Clears tasks queue.
    */
