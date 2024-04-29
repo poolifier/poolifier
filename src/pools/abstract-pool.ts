@@ -547,9 +547,12 @@ export abstract class AbstractPool<
     workerChoiceStrategy: WorkerChoiceStrategy,
     workerChoiceStrategyOptions?: WorkerChoiceStrategyOptions
   ): void {
+    let requireSync = false
     checkValidWorkerChoiceStrategy(workerChoiceStrategy)
     if (workerChoiceStrategyOptions != null) {
-      this.setWorkerChoiceStrategyOptions(workerChoiceStrategyOptions)
+      requireSync = this.setWorkerChoiceStrategyOptions(
+        workerChoiceStrategyOptions
+      )
     }
     if (workerChoiceStrategy !== this.opts.workerChoiceStrategy) {
       this.opts.workerChoiceStrategy = workerChoiceStrategy
@@ -557,11 +560,14 @@ export abstract class AbstractPool<
         this.opts.workerChoiceStrategy,
         this.opts.workerChoiceStrategyOptions
       )
+      requireSync = true
+    }
+    if (requireSync) {
       this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
         this.getWorkerWorkerChoiceStrategies(),
         this.opts.workerChoiceStrategyOptions
       )
-      for (const [workerNodeKey] of this.workerNodes.entries()) {
+      for (const workerNodeKey of this.workerNodes.keys()) {
         this.sendStatisticsMessageToWorker(workerNodeKey)
       }
     }
@@ -570,14 +576,23 @@ export abstract class AbstractPool<
   /** @inheritDoc */
   public setWorkerChoiceStrategyOptions (
     workerChoiceStrategyOptions: WorkerChoiceStrategyOptions | undefined
-  ): void {
+  ): boolean {
     this.checkValidWorkerChoiceStrategyOptions(workerChoiceStrategyOptions)
     if (workerChoiceStrategyOptions != null) {
       this.opts.workerChoiceStrategyOptions = workerChoiceStrategyOptions
+      this.workerChoiceStrategiesContext?.setOptions(
+        this.opts.workerChoiceStrategyOptions
+      )
+      this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
+        this.getWorkerWorkerChoiceStrategies(),
+        this.opts.workerChoiceStrategyOptions
+      )
+      for (const workerNodeKey of this.workerNodes.keys()) {
+        this.sendStatisticsMessageToWorker(workerNodeKey)
+      }
+      return true
     }
-    this.workerChoiceStrategiesContext?.setOptions(
-      this.opts.workerChoiceStrategyOptions
-    )
+    return false
   }
 
   /** @inheritDoc */
@@ -639,13 +654,13 @@ export abstract class AbstractPool<
   }
 
   private setTaskStealing (): void {
-    for (const [workerNodeKey] of this.workerNodes.entries()) {
+    for (const workerNodeKey of this.workerNodes.keys()) {
       this.workerNodes[workerNodeKey].on('idle', this.handleWorkerNodeIdleEvent)
     }
   }
 
   private unsetTaskStealing (): void {
-    for (const [workerNodeKey] of this.workerNodes.entries()) {
+    for (const workerNodeKey of this.workerNodes.keys()) {
       this.workerNodes[workerNodeKey].off(
         'idle',
         this.handleWorkerNodeIdleEvent
@@ -654,7 +669,7 @@ export abstract class AbstractPool<
   }
 
   private setTasksStealingOnBackPressure (): void {
-    for (const [workerNodeKey] of this.workerNodes.entries()) {
+    for (const workerNodeKey of this.workerNodes.keys()) {
       this.workerNodes[workerNodeKey].on(
         'backPressure',
         this.handleWorkerNodeBackPressureEvent
@@ -663,7 +678,7 @@ export abstract class AbstractPool<
   }
 
   private unsetTasksStealingOnBackPressure (): void {
-    for (const [workerNodeKey] of this.workerNodes.entries()) {
+    for (const workerNodeKey of this.workerNodes.keys()) {
       this.workerNodes[workerNodeKey].off(
         'backPressure',
         this.handleWorkerNodeBackPressureEvent
@@ -806,7 +821,7 @@ export abstract class AbstractPool<
           }
         }
       }
-      for (const [workerNodeKey] of this.workerNodes.entries()) {
+      for (const workerNodeKey of this.workerNodes.keys()) {
         this.registerWorkerMessageListener(
           workerNodeKey,
           taskFunctionOperationsListener
@@ -2032,7 +2047,7 @@ export abstract class AbstractPool<
   }
 
   private flushTasksQueues (): void {
-    for (const [workerNodeKey] of this.workerNodes.entries()) {
+    for (const workerNodeKey of this.workerNodes.keys()) {
       this.flushTasksQueue(workerNodeKey)
     }
   }

@@ -348,10 +348,11 @@ export interface IPool<
    * Sets the worker choice strategy options in this pool.
    *
    * @param workerChoiceStrategyOptions - The worker choice strategy options.
+   * @returns `true` if the worker choice strategy options were set, `false` otherwise.
    */
   readonly setWorkerChoiceStrategyOptions: (
     workerChoiceStrategyOptions: WorkerChoiceStrategyOptions
-  ) => void
+  ) => boolean
   /**
    * Enables/disables the worker node tasks queue in this pool.
    *

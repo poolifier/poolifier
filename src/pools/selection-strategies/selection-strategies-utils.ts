@@ -10,6 +10,8 @@ import { LeastUsedWorkerChoiceStrategy } from './least-used-worker-choice-strate
 import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy.js'
 import {
   type IWorkerChoiceStrategy,
+  type StrategyPolicy,
+  type TaskStatisticsRequirements,
   WorkerChoiceStrategies,
   type WorkerChoiceStrategy,
   type WorkerChoiceStrategyOptions
@@ -95,6 +97,47 @@ export const buildWorkerChoiceStrategyOptions = <
       elu: { median: false }
     },
     ...opts
+  }
+}
+
+export const buildWorkerChoiceStrategiesPolicy = (
+  workerChoiceStrategies: Map<WorkerChoiceStrategy, IWorkerChoiceStrategy>
+): StrategyPolicy => {
+  const policies: StrategyPolicy[] = []
+  for (const workerChoiceStrategy of workerChoiceStrategies.values()) {
+    policies.push(workerChoiceStrategy.strategyPolicy)
+  }
+  return {
+    dynamicWorkerUsage: policies.some(p => p.dynamicWorkerUsage),
+    dynamicWorkerReady: policies.some(p => p.dynamicWorkerReady)
+  }
+}
+
+export const buildWorkerChoiceStrategiesTaskStatisticsRequirements = (
+  workerChoiceStrategies: Map<WorkerChoiceStrategy, IWorkerChoiceStrategy>
+): TaskStatisticsRequirements => {
+  const taskStatisticsRequirements: TaskStatisticsRequirements[] = []
+  for (const workerChoiceStrategy of workerChoiceStrategies.values()) {
+    taskStatisticsRequirements.push(
+      workerChoiceStrategy.taskStatisticsRequirements
+    )
+  }
+  return {
+    runTime: {
+      aggregate: taskStatisticsRequirements.some(r => r.runTime.aggregate),
+      average: taskStatisticsRequirements.some(r => r.runTime.average),
+      median: taskStatisticsRequirements.some(r => r.runTime.median)
+    },
+    waitTime: {
+      aggregate: taskStatisticsRequirements.some(r => r.waitTime.aggregate),
+      average: taskStatisticsRequirements.some(r => r.waitTime.average),
+      median: taskStatisticsRequirements.some(r => r.waitTime.median)
+    },
+    elu: {
+      aggregate: taskStatisticsRequirements.some(r => r.elu.aggregate),
+      average: taskStatisticsRequirements.some(r => r.elu.average),
+      median: taskStatisticsRequirements.some(r => r.elu.median)
+    }
   }
 }
 

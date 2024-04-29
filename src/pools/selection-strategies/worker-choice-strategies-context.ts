@@ -9,6 +9,8 @@ import type {
 } from './selection-strategies-types.js'
 import { WorkerChoiceStrategies } from './selection-strategies-types.js'
 import {
+  buildWorkerChoiceStrategiesPolicy,
+  buildWorkerChoiceStrategiesTaskStatisticsRequirements,
   getWorkerChoiceStrategiesRetries,
   getWorkerChoiceStrategy
 } from './selection-strategies-utils.js'
@@ -44,6 +46,16 @@ export class WorkerChoiceStrategiesContext<
   >
 
   /**
+   * The active worker choice strategies in the context policy.
+   */
+  private workerChoiceStrategiesPolicy: StrategyPolicy
+
+  /**
+   * The active worker choice strategies in the context task statistics requirements.
+   */
+  private workerChoiceStrategiesTaskStatisticsRequirements: TaskStatisticsRequirements
+
+  /**
    * The maximum number of worker choice strategies execution retries.
    */
   private readonly retries: number
@@ -71,6 +83,13 @@ export class WorkerChoiceStrategiesContext<
     for (const workerChoiceStrategy of workerChoiceStrategies) {
       this.addWorkerChoiceStrategy(workerChoiceStrategy, this.pool, opts)
     }
+    this.workerChoiceStrategiesPolicy = buildWorkerChoiceStrategiesPolicy(
+      this.workerChoiceStrategies
+    )
+    this.workerChoiceStrategiesTaskStatisticsRequirements =
+      buildWorkerChoiceStrategiesTaskStatisticsRequirements(
+        this.workerChoiceStrategies
+      )
     this.retriesCount = 0
     this.retries = getWorkerChoiceStrategiesRetries<Worker, Data, Response>(
       this.pool,
@@ -84,45 +103,16 @@ export class WorkerChoiceStrategiesContext<
    * @returns The strategies policy.
    */
   public getPolicy (): StrategyPolicy {
-    const policies: StrategyPolicy[] = []
-    for (const workerChoiceStrategy of this.workerChoiceStrategies.values()) {
-      policies.push(workerChoiceStrategy.strategyPolicy)
-    }
-    return {
-      dynamicWorkerUsage: policies.some(p => p.dynamicWorkerUsage),
-      dynamicWorkerReady: policies.some(p => p.dynamicWorkerReady)
-    }
+    return this.workerChoiceStrategiesPolicy
   }
 
   /**
    * Gets the active worker choice strategies in the context task statistics requirements.
    *
-   * @returns The task statistics requirements.
+   * @returns The strategies task statistics requirements.
    */
   public getTaskStatisticsRequirements (): TaskStatisticsRequirements {
-    const taskStatisticsRequirements: TaskStatisticsRequirements[] = []
-    for (const workerChoiceStrategy of this.workerChoiceStrategies.values()) {
-      taskStatisticsRequirements.push(
-        workerChoiceStrategy.taskStatisticsRequirements
-      )
-    }
-    return {
-      runTime: {
-        aggregate: taskStatisticsRequirements.some(r => r.runTime.aggregate),
-        average: taskStatisticsRequirements.some(r => r.runTime.average),
-        median: taskStatisticsRequirements.some(r => r.runTime.median)
-      },
-      waitTime: {
-        aggregate: taskStatisticsRequirements.some(r => r.waitTime.aggregate),
-        average: taskStatisticsRequirements.some(r => r.waitTime.average),
-        median: taskStatisticsRequirements.some(r => r.waitTime.median)
-      },
-      elu: {
-        aggregate: taskStatisticsRequirements.some(r => r.elu.aggregate),
-        average: taskStatisticsRequirements.some(r => r.elu.average),
-        median: taskStatisticsRequirements.some(r => r.elu.median)
-      }
-    }
+    return this.workerChoiceStrategiesTaskStatisticsRequirements
   }
 
   /**
@@ -155,7 +145,7 @@ export class WorkerChoiceStrategiesContext<
   }
 
   /**
-   * Executes the worker choice strategy in the context algorithm.
+   * Executes the given worker choice strategy in the context algorithm.
    *
    * @param workerChoiceStrategy - The worker choice strategy algorithm to execute. @defaultValue this.defaultWorkerChoiceStrategy
    * @returns The key of the worker node.
@@ -243,6 +233,13 @@ export class WorkerChoiceStrategiesContext<
         this.addWorkerChoiceStrategy(workerChoiceStrategy, this.pool, opts)
       }
     }
+    this.workerChoiceStrategiesPolicy = buildWorkerChoiceStrategiesPolicy(
+      this.workerChoiceStrategies
+    )
+    this.workerChoiceStrategiesTaskStatisticsRequirements =
+      buildWorkerChoiceStrategiesTaskStatisticsRequirements(
+        this.workerChoiceStrategies
+      )
   }
 
   /**
