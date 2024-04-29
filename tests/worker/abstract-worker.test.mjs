@@ -136,7 +136,7 @@ describe('Abstract worker test suite', () => {
   })
 
   it('Verify that taskFunctions parameter with unique function is taken', () => {
-    const worker = new ThreadWorker(EMPTY_FUNCTION)
+    const worker = new ThreadWorker(() => {})
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual({
       taskFunction: expect.any(Function)
     })
