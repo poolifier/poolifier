@@ -624,13 +624,13 @@ export abstract class AbstractPool<
   }
 
   private setTaskStealing (): void {
-    for (const [workerNodeKey] of this.workerNodes.entries()) {
+    for (const workerNodeKey of this.workerNodes.keys()) {
       this.workerNodes[workerNodeKey].on('idle', this.handleWorkerNodeIdleEvent)
     }
   }
 
   private unsetTaskStealing (): void {
-    for (const [workerNodeKey] of this.workerNodes.entries()) {
+    for (const workerNodeKey of this.workerNodes.keys()) {
       this.workerNodes[workerNodeKey].off(
         'idle',
         this.handleWorkerNodeIdleEvent
@@ -639,7 +639,7 @@ export abstract class AbstractPool<
   }
 
   private setTasksStealingOnBackPressure (): void {
-    for (const [workerNodeKey] of this.workerNodes.entries()) {
+    for (const workerNodeKey of this.workerNodes.keys()) {
       this.workerNodes[workerNodeKey].on(
         'backPressure',
         this.handleWorkerNodeBackPressureEvent
@@ -648,7 +648,7 @@ export abstract class AbstractPool<
   }
 
   private unsetTasksStealingOnBackPressure (): void {
-    for (const [workerNodeKey] of this.workerNodes.entries()) {
+    for (const workerNodeKey of this.workerNodes.keys()) {
       this.workerNodes[workerNodeKey].off(
         'backPressure',
         this.handleWorkerNodeBackPressureEvent
@@ -791,7 +791,7 @@ export abstract class AbstractPool<
           }
         }
       }
-      for (const [workerNodeKey] of this.workerNodes.entries()) {
+      for (const workerNodeKey of this.workerNodes.keys()) {
         this.registerWorkerMessageListener(
           workerNodeKey,
           taskFunctionOperationsListener
@@ -2014,7 +2014,7 @@ export abstract class AbstractPool<
   }
 
   private flushTasksQueues (): void {
-    for (const [workerNodeKey] of this.workerNodes.entries()) {
+    for (const workerNodeKey of this.workerNodes.keys()) {
       this.flushTasksQueue(workerNodeKey)
     }
   }
