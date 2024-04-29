@@ -50,6 +50,7 @@ export type {
   WorkerUsage
 } from './pools/worker.js'
 export { WorkerTypes } from './pools/worker.js'
+export type { PriorityQueue } from './priority-queue.js'
 export type {
   MessageValue,
   PromiseResponseWrapper,

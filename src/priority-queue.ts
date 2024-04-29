@@ -7,20 +7,28 @@ interface PriorityQueueNode<T> {
 }
 
 /**
- * Priority queue.
+ * k-priority queue.
  *
  * @typeParam T - Type of priority queue data.
  * @internal
  */
 export class PriorityQueue<T> {
   private nodeArray!: Array<PriorityQueueNode<T>>
+  /** Prioritized bucket size. */
+  private readonly k: number
   /** The size of the priority queue. */
   public size!: number
   /** The maximum size of the priority queue. */
   public maxSize!: number
 
-  public constructor () {
+  /**
+   * Constructs a k-priority queue.
+   *
+   * @param k - Prioritized bucket size.
+   */
+  public constructor (k = Infinity) {
     this.clear()
+    this.k = k
   }
 
   /**
