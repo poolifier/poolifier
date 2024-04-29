@@ -177,7 +177,7 @@ describe('Abstract worker test suite', () => {
     ).toThrow(new TypeError("Invalid property 'priority': ''"))
     expect(
       () => new ThreadWorker({ fn1: { taskFunction: fn1, priority: -21 } })
-    ).toThrow(new TypeError("Property 'priority' must be between -20 and 19"))
+    ).toThrow(new RangeError("Property 'priority' must be between -20 and 19"))
     expect(
       () => new ThreadWorker({ fn1: { taskFunction: fn1, priority: 20 } })
     ).toThrow(new RangeError("Property 'priority' must be between -20 and 19"))
@@ -186,9 +186,7 @@ describe('Abstract worker test suite', () => {
         new ThreadWorker({
           fn1: { taskFunction: fn1, strategy: 'invalidStrategy' }
         })
-    ).toThrow(
-      new RangeError("Invalid worker choice strategy 'invalidStrategy'")
-    )
+    ).toThrow(new Error("Invalid worker choice strategy 'invalidStrategy'"))
   })
 
   it('Verify that taskFunctions parameter with multiple task functions is taken', () => {
@@ -300,11 +298,50 @@ describe('Abstract worker test suite', () => {
       status: false,
       error: new TypeError('name parameter is an empty string')
     })
+    expect(worker.addTaskFunction('fn2', 0)).toStrictEqual({
+      status: false,
+      error: new TypeError(
+        "taskFunction object 'taskFunction' property 'undefined' is not a function"
+      )
+    })
     expect(worker.addTaskFunction('fn3', '')).toStrictEqual({
       status: false,
       error: new TypeError(
         "taskFunction object 'taskFunction' property 'undefined' is not a function"
       )
+    })
+    expect(worker.addTaskFunction('fn2', { taskFunction: 0 })).toStrictEqual({
+      status: false,
+      error: new TypeError(
+        "taskFunction object 'taskFunction' property '0' is not a function"
+      )
+    })
+    expect(worker.addTaskFunction('fn3', { taskFunction: '' })).toStrictEqual({
+      status: false,
+      error: new TypeError(
+        "taskFunction object 'taskFunction' property '' is not a function"
+      )
+    })
+    expect(
+      worker.addTaskFunction('fn2', { taskFunction: () => {}, priority: -21 })
+    ).toStrictEqual({
+      status: false,
+      error: new RangeError("Property 'priority' must be between -20 and 19")
+    })
+    expect(
+      worker.addTaskFunction('fn3', { taskFunction: () => {}, priority: 20 })
+    ).toStrictEqual({
+      status: false,
+      error: new RangeError("Property 'priority' must be between -20 and 19")
+    })
+    expect(
+      worker.addTaskFunction('fn2', {
+        taskFunction: () => {},
+        strategy: 'invalidStrategy'
+      })
+    ).toStrictEqual({
+      status: false,
+      error: new Error("Invalid worker choice strategy 'invalidStrategy'")
     })
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual({
       taskFunction: expect.any(Function)

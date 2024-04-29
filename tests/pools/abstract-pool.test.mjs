@@ -1372,6 +1372,36 @@ describe('Abstract pool test suite', () => {
     await expect(dynamicThreadPool.addTaskFunction('test', '')).rejects.toThrow(
       new TypeError('taskFunction property must be a function')
     )
+    await expect(
+      dynamicThreadPool.addTaskFunction('test', { taskFunction: 0 })
+    ).rejects.toThrow(new TypeError('taskFunction property must be a function'))
+    await expect(
+      dynamicThreadPool.addTaskFunction('test', { taskFunction: '' })
+    ).rejects.toThrow(new TypeError('taskFunction property must be a function'))
+    await expect(
+      dynamicThreadPool.addTaskFunction('test', {
+        taskFunction: () => {},
+        priority: -21
+      })
+    ).rejects.toThrow(
+      new RangeError("Property 'priority' must be between -20 and 19")
+    )
+    await expect(
+      dynamicThreadPool.addTaskFunction('test', {
+        taskFunction: () => {},
+        priority: 20
+      })
+    ).rejects.toThrow(
+      new RangeError("Property 'priority' must be between -20 and 19")
+    )
+    await expect(
+      dynamicThreadPool.addTaskFunction('test', {
+        taskFunction: () => {},
+        strategy: 'invalidStrategy'
+      })
+    ).rejects.toThrow(
+      new Error("Invalid worker choice strategy 'invalidStrategy'")
+    )
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
       { name: 'test' }
