@@ -10,6 +10,7 @@ import { LeastUsedWorkerChoiceStrategy } from './least-used-worker-choice-strate
 import { RoundRobinWorkerChoiceStrategy } from './round-robin-worker-choice-strategy.js'
 import {
   type IWorkerChoiceStrategy,
+  type MeasurementStatisticsRequirements,
   type StrategyPolicy,
   type TaskStatisticsRequirements,
   WorkerChoiceStrategies,
@@ -97,6 +98,20 @@ export const buildWorkerChoiceStrategyOptions = <
       elu: { median: false }
     },
     ...opts
+  }
+}
+
+export const toggleMedianMeasurementStatisticsRequirements = (
+  measurementStatisticsRequirements: MeasurementStatisticsRequirements,
+  toggleMedian: boolean
+): void => {
+  if (measurementStatisticsRequirements.average && toggleMedian) {
+    measurementStatisticsRequirements.average = false
+    measurementStatisticsRequirements.median = toggleMedian
+  }
+  if (measurementStatisticsRequirements.median && !toggleMedian) {
+    measurementStatisticsRequirements.average = true
+    measurementStatisticsRequirements.median = toggleMedian
   }
 }
 
