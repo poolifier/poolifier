@@ -46,7 +46,7 @@ Please consult our [general guidelines](#general-guidelines).
   - Task stealing on idle :white_check_mark:
   - Tasks stealing under back pressure :white_check_mark:
   - Tasks redistribution on worker error :white_check_mark:
-- Support for sync and async task functions :white_check_mark:
+- Support for sync and async task function :white_check_mark:
 - Support for multiple task functions with per task function queuing priority and tasks distribution strategy :white_check_mark:
 - Support for task functions [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) operations at runtime :white_check_mark:
 - General guidelines on pool choice :white_check_mark:
