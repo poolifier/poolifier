@@ -40,7 +40,7 @@ Please consult our [general guidelines](#general-guidelines).
 - Proper integration with Node.js [async_hooks](https://nodejs.org/api/async_hooks.html) :white_check_mark:
 - Support for CommonJS, ESM and TypeScript :white_check_mark:
 - Support for [worker_threads](https://nodejs.org/api/worker_threads.html) and [cluster](https://nodejs.org/api/cluster.html) Node.js modules :white_check_mark:
-- Support for multiple task functions :white_check_mark:
+- Support for multiple task functions with per task function queuing priority and tasks distribution strategy :white_check_mark:
 - Support for task functions [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) operations at runtime :white_check_mark:
 - Support for sync and async task functions :white_check_mark:
 - Tasks distribution strategies :white_check_mark:
