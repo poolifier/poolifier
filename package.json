@@ -40,7 +40,7 @@
     "prepublishOnly": "pnpm build:prod"
   },
   "engines": {
-    "node": ">=18.14.0",
+    "node": ">=18.0.0",
     "pnpm": ">=9.0.0"
   },
   "volta": {
