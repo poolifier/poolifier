@@ -117,7 +117,7 @@ describe('Priority queue test suite', () => {
       { data: 3, priority: 0 },
       { data: 1, priority: 1 }
     ])
-    rtSize = priorityQueue.enqueue(2, -2)
+    rtSize = priorityQueue.enqueue(3, -2)
     expect(priorityQueue.size).toBe(6)
     expect(priorityQueue.maxSize).toBe(6)
     expect(rtSize).toBe(priorityQueue.size)
@@ -126,12 +126,12 @@ describe('Priority queue test suite', () => {
       { data: 2, priority: 0 },
       { data: 3, priority: -1 },
       { data: 3, priority: 0 },
-      { data: 2, priority: -2 },
+      { data: 3, priority: -2 },
       { data: 1, priority: 1 }
     ])
   })
 
-  it('Verify dequeue() behavior', () => {
+  it('Verify default k dequeue() behavior', () => {
     const priorityQueue = new PriorityQueue()
     priorityQueue.enqueue(1)
     priorityQueue.enqueue(2, -1)
@@ -152,6 +152,64 @@ describe('Priority queue test suite', () => {
     rtItem = priorityQueue.dequeue()
     expect(priorityQueue.size).toBe(0)
     expect(priorityQueue.maxSize).toBe(3)
+    expect(rtItem).toBe(3)
+    expect(priorityQueue.nodeArray).toStrictEqual([])
+  })
+
+  it('Verify k=2 dequeue() behavior', () => {
+    const priorityQueue = new PriorityQueue(2)
+    priorityQueue.enqueue(1)
+    priorityQueue.enqueue(2)
+    priorityQueue.enqueue(3)
+    priorityQueue.enqueue(3, -1)
+    priorityQueue.enqueue(1, 1)
+    priorityQueue.enqueue(3, -2)
+    let rtItem = priorityQueue.dequeue(3)
+    expect(priorityQueue.size).toBe(5)
+    expect(priorityQueue.maxSize).toBe(6)
+    expect(rtItem).toBe(3)
+    expect(priorityQueue.nodeArray).toStrictEqual([
+      { data: 1, priority: 0 },
+      { data: 2, priority: 0 },
+      { data: 3, priority: -1 },
+      { data: 3, priority: 0 },
+      { data: 1, priority: 1 }
+    ])
+    rtItem = priorityQueue.dequeue()
+    expect(priorityQueue.size).toBe(4)
+    expect(priorityQueue.maxSize).toBe(6)
+    expect(rtItem).toBe(1)
+    expect(priorityQueue.nodeArray).toStrictEqual([
+      { data: 2, priority: 0 },
+      { data: 3, priority: -1 },
+      { data: 3, priority: 0 },
+      { data: 1, priority: 1 }
+    ])
+    rtItem = priorityQueue.dequeue(2)
+    expect(priorityQueue.size).toBe(3)
+    expect(priorityQueue.maxSize).toBe(6)
+    expect(rtItem).toBe(3)
+    expect(priorityQueue.nodeArray).toStrictEqual([
+      { data: 2, priority: 0 },
+      { data: 3, priority: -1 },
+      { data: 1, priority: 1 }
+    ])
+    rtItem = priorityQueue.dequeue(2)
+    expect(priorityQueue.size).toBe(2)
+    expect(priorityQueue.maxSize).toBe(6)
+    expect(rtItem).toBe(1)
+    expect(priorityQueue.nodeArray).toStrictEqual([
+      { data: 2, priority: 0 },
+      { data: 3, priority: -1 }
+    ])
+    rtItem = priorityQueue.dequeue(2)
+    expect(priorityQueue.size).toBe(1)
+    expect(priorityQueue.maxSize).toBe(6)
+    expect(rtItem).toBe(2)
+    expect(priorityQueue.nodeArray).toStrictEqual([{ data: 3, priority: -1 }])
+    rtItem = priorityQueue.dequeue()
+    expect(priorityQueue.size).toBe(0)
+    expect(priorityQueue.maxSize).toBe(6)
     expect(rtItem).toBe(3)
     expect(priorityQueue.nodeArray).toStrictEqual([])
   })
