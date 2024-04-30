@@ -1088,9 +1088,9 @@ export abstract class AbstractPool<
     }
     this.starting = true
     this.startMinimumNumberOfWorkers()
+    this.startTimestamp = performance.now()
     this.starting = false
     this.started = true
-    this.startTimestamp = performance.now()
   }
 
   /** @inheritDoc */
@@ -1113,9 +1113,9 @@ export abstract class AbstractPool<
     this.emitter?.emit(PoolEvents.destroy, this.info)
     this.emitter?.emitDestroy()
     this.readyEventEmitted = false
+    delete this.startTimestamp
     this.destroying = false
     this.started = false
-    delete this.startTimestamp
   }
 
   private async sendKillMessageToWorker (workerNodeKey: number): Promise<void> {
