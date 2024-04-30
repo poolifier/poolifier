@@ -5,10 +5,12 @@ import type { MessagePort } from 'node:worker_threads'
 import type {
   MessageValue,
   Task,
+  TaskFunctionProperties,
   TaskPerformance,
   WorkerStatistics
 } from '../utility-types.js'
 import {
+  buildTaskFunctionProperties,
   DEFAULT_TASK_NAME,
   EMPTY_FUNCTION,
   isAsyncFunction,
@@ -17,13 +19,14 @@ import {
 import type {
   TaskAsyncFunction,
   TaskFunction,
+  TaskFunctionObject,
   TaskFunctionOperationResult,
   TaskFunctions,
   TaskSyncFunction
 } from './task-functions.js'
 import {
   checkTaskFunctionName,
-  checkValidTaskFunctionEntry,
+  checkValidTaskFunctionObjectEntry,
   checkValidWorkerOptions
 } from './utils.js'
 import { KillBehaviors, type WorkerOptions } from './worker-options.js'
@@ -62,9 +65,9 @@ export abstract class AbstractWorker<
    */
   protected abstract id: number
   /**
-   * Task function(s) processed by the worker when the pool's `execution` function is invoked.
+   * Task function object(s) processed by the worker when the pool's `execution` function is invoked.
    */
-  protected taskFunctions!: Map<string, TaskFunction<Data, Response>>
+  protected taskFunctions!: Map<string, TaskFunctionObject<Data, Response>>
   /**
    * Timestamp of the last task processed by this worker.
    */
@@ -122,27 +125,33 @@ export abstract class AbstractWorker<
     if (taskFunctions == null) {
       throw new Error('taskFunctions parameter is mandatory')
     }
-    this.taskFunctions = new Map<string, TaskFunction<Data, Response>>()
+    this.taskFunctions = new Map<string, TaskFunctionObject<Data, Response>>()
     if (typeof taskFunctions === 'function') {
-      const boundFn = taskFunctions.bind(this)
-      this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)
+      const fnObj = { taskFunction: taskFunctions.bind(this) }
+      this.taskFunctions.set(DEFAULT_TASK_NAME, fnObj)
       this.taskFunctions.set(
         typeof taskFunctions.name === 'string' &&
           taskFunctions.name.trim().length > 0
           ? taskFunctions.name
           : 'fn1',
-        boundFn
+        fnObj
       )
     } else if (isPlainObject(taskFunctions)) {
       let firstEntry = true
-      for (const [name, fn] of Object.entries(taskFunctions)) {
-        checkValidTaskFunctionEntry<Data, Response>(name, fn)
-        const boundFn = fn.bind(this)
+      for (let [name, fnObj] of Object.entries(taskFunctions)) {
+        if (typeof fnObj === 'function') {
+          fnObj = { taskFunction: fnObj } satisfies TaskFunctionObject<
+          Data,
+          Response
+          >
+        }
+        checkValidTaskFunctionObjectEntry<Data, Response>(name, fnObj)
+        fnObj.taskFunction = fnObj.taskFunction.bind(this)
         if (firstEntry) {
-          this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)
+          this.taskFunctions.set(DEFAULT_TASK_NAME, fnObj)
           firstEntry = false
         }
-        this.taskFunctions.set(name, boundFn)
+        this.taskFunctions.set(name, fnObj)
       }
       if (firstEntry) {
         throw new Error('taskFunctions parameter object is empty')
@@ -179,7 +188,7 @@ export abstract class AbstractWorker<
    */
   public addTaskFunction (
     name: string,
-    fn: TaskFunction<Data, Response>
+    fn: TaskFunction<Data, Response> | TaskFunctionObject<Data, Response>
   ): TaskFunctionOperationResult {
     try {
       checkTaskFunctionName(name)
@@ -188,18 +197,19 @@ export abstract class AbstractWorker<
           'Cannot add a task function with the default reserved name'
         )
       }
-      if (typeof fn !== 'function') {
-        throw new TypeError('fn parameter is not a function')
+      if (typeof fn === 'function') {
+        fn = { taskFunction: fn } satisfies TaskFunctionObject<Data, Response>
       }
-      const boundFn = fn.bind(this)
+      checkValidTaskFunctionObjectEntry<Data, Response>(name, fn)
+      fn.taskFunction = fn.taskFunction.bind(this)
       if (
         this.taskFunctions.get(name) ===
         this.taskFunctions.get(DEFAULT_TASK_NAME)
       ) {
-        this.taskFunctions.set(DEFAULT_TASK_NAME, boundFn)
+        this.taskFunctions.set(DEFAULT_TASK_NAME, fn)
       }
-      this.taskFunctions.set(name, boundFn)
-      this.sendTaskFunctionNamesToMainWorker()
+      this.taskFunctions.set(name, fn)
+      this.sendTaskFunctionsPropertiesToMainWorker()
       return { status: true }
     } catch (error) {
       return { status: false, error: error as Error }
@@ -229,7 +239,7 @@ export abstract class AbstractWorker<
         )
       }
       const deleteStatus = this.taskFunctions.delete(name)
-      this.sendTaskFunctionNamesToMainWorker()
+      this.sendTaskFunctionsPropertiesToMainWorker()
       return { status: deleteStatus }
     } catch (error) {
       return { status: false, error: error as Error }
@@ -237,28 +247,38 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Lists the names of the worker's task functions.
+   * Lists the properties of the worker's task functions.
    *
-   * @returns The names of the worker's task functions.
+   * @returns The properties of the worker's task functions.
    */
-  public listTaskFunctionNames (): string[] {
-    const names = [...this.taskFunctions.keys()]
+  public listTaskFunctionsProperties (): TaskFunctionProperties[] {
     let defaultTaskFunctionName = DEFAULT_TASK_NAME
-    for (const [name, fn] of this.taskFunctions) {
+    for (const [name, fnObj] of this.taskFunctions) {
       if (
         name !== DEFAULT_TASK_NAME &&
-        fn === this.taskFunctions.get(DEFAULT_TASK_NAME)
+        fnObj === this.taskFunctions.get(DEFAULT_TASK_NAME)
       ) {
         defaultTaskFunctionName = name
         break
       }
     }
+    const taskFunctionsProperties: TaskFunctionProperties[] = []
+    for (const [name, fnObj] of this.taskFunctions) {
+      if (name === DEFAULT_TASK_NAME || name === defaultTaskFunctionName) {
+        continue
+      }
+      taskFunctionsProperties.push(buildTaskFunctionProperties(name, fnObj))
+    }
     return [
-      names[names.indexOf(DEFAULT_TASK_NAME)],
-      defaultTaskFunctionName,
-      ...names.filter(
-        name => name !== DEFAULT_TASK_NAME && name !== defaultTaskFunctionName
-      )
+      buildTaskFunctionProperties(
+        DEFAULT_TASK_NAME,
+        this.taskFunctions.get(DEFAULT_TASK_NAME)
+      ),
+      buildTaskFunctionProperties(
+        defaultTaskFunctionName,
+        this.taskFunctions.get(defaultTaskFunctionName)
+      ),
+      ...taskFunctionsProperties
     ]
   }
 
@@ -283,7 +303,7 @@ export abstract class AbstractWorker<
       }
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.taskFunctions.set(DEFAULT_TASK_NAME, this.taskFunctions.get(name)!)
-      this.sendTaskFunctionNamesToMainWorker()
+      this.sendTaskFunctionsPropertiesToMainWorker()
       return { status: true }
     } catch (error) {
       return { status: false, error: error as Error }
@@ -325,29 +345,34 @@ export abstract class AbstractWorker<
   protected handleTaskFunctionOperationMessage (
     message: MessageValue<Data>
   ): void {
-    const { taskFunctionOperation, taskFunctionName, taskFunction } = message
-    if (taskFunctionName == null) {
+    const { taskFunctionOperation, taskFunctionProperties, taskFunction } =
+      message
+    if (taskFunctionProperties == null) {
       throw new Error(
-        'Cannot handle task function operation message without a task function name'
+        'Cannot handle task function operation message without task function properties'
       )
     }
     let response: TaskFunctionOperationResult
     switch (taskFunctionOperation) {
       case 'add':
-        response = this.addTaskFunction(
-          taskFunctionName,
+        response = this.addTaskFunction(taskFunctionProperties.name, {
           // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
-          new Function(`return ${taskFunction}`)() as TaskFunction<
-          Data,
-          Response
-          >
-        )
+          taskFunction: new Function(
+            `return ${taskFunction}`
+          )() as TaskFunction<Data, Response>,
+          ...(taskFunctionProperties.priority != null && {
+            priority: taskFunctionProperties.priority
+          }),
+          ...(taskFunctionProperties.strategy != null && {
+            strategy: taskFunctionProperties.strategy
+          })
+        })
         break
       case 'remove':
-        response = this.removeTaskFunction(taskFunctionName)
+        response = this.removeTaskFunction(taskFunctionProperties.name)
         break
       case 'default':
-        response = this.setDefaultTaskFunction(taskFunctionName)
+        response = this.setDefaultTaskFunction(taskFunctionProperties.name)
         break
       default:
         response = { status: false, error: new Error('Unknown task operation') }
@@ -356,11 +381,11 @@ export abstract class AbstractWorker<
     this.sendToMainWorker({
       taskFunctionOperation,
       taskFunctionOperationStatus: response.status,
-      taskFunctionName,
+      taskFunctionProperties,
       ...(!response.status &&
         response.error != null && {
         workerError: {
-          name: taskFunctionName,
+          name: taskFunctionProperties.name,
           message: this.handleError(response.error as Error | string)
         }
       })
@@ -466,11 +491,11 @@ export abstract class AbstractWorker<
   ): void
 
   /**
-   * Sends task function names to the main worker.
+   * Sends task functions properties to the main worker.
    */
-  protected sendTaskFunctionNamesToMainWorker (): void {
+  protected sendTaskFunctionsPropertiesToMainWorker (): void {
     this.sendToMainWorker({
-      taskFunctionNames: this.listTaskFunctionNames()
+      taskFunctionsProperties: this.listTaskFunctionsProperties()
     })
   }
 
@@ -504,7 +529,7 @@ export abstract class AbstractWorker<
       })
       return
     }
-    const fn = this.taskFunctions.get(taskFunctionName)
+    const fn = this.taskFunctions.get(taskFunctionName)?.taskFunction
     if (isAsyncFunction(fn)) {
       this.runAsync(fn as TaskAsyncFunction<Data, Response>, task)
     } else {

@@ -7,9 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Support per task function(s) priority and worker choice strategy definition via a task function object: `{ taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy }`.
+- Add priority queue based tasks queueing. One priority queue is divided into prioritized buckets to avoid queued tasks starvation under load.
+- BREAKING CHANGE: `listTaskFunctionNames()` to `listTaskFunctionsProperties()` in pool and worker API returning registered task functions properties.
+- BREAKING CHANGE: `strategy` field in pool information renamed to `defaultStrategy`.
+
+### Fixed
+
+- Ensure worker choice strategy options changes at runtime are propagated to poolifier workers.
+
 ## [3.1.30] - 2024-04-22
 
-### Fixed:
+### Fixed
 
 - Fix `transferList` argument type definition.
 

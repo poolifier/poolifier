@@ -2,6 +2,7 @@ import type { ClusterSettings } from 'node:cluster'
 import type { EventEmitterAsyncResource } from 'node:events'
 import type { TransferListItem, WorkerOptions } from 'node:worker_threads'
 
+import type { TaskFunctionProperties } from '../utility-types.js'
 import type { TaskFunction } from '../worker/task-functions.js'
 import type {
   WorkerChoiceStrategy,
@@ -76,7 +77,7 @@ export interface PoolInfo {
   readonly worker: WorkerType
   readonly started: boolean
   readonly ready: boolean
-  readonly strategy: WorkerChoiceStrategy
+  readonly defaultStrategy: WorkerChoiceStrategy
   readonly strategyRetries: number
   readonly minSize: number
   readonly maxSize: number
@@ -184,7 +185,7 @@ export interface PoolOptions<Worker extends IWorker> {
    */
   startWorkers?: boolean
   /**
-   * The worker choice strategy to use in this pool.
+   * The default worker choice strategy to use in this pool.
    *
    * @defaultValue WorkerChoiceStrategies.ROUND_ROBIN
    */
@@ -321,11 +322,11 @@ export interface IPool<
    */
   readonly removeTaskFunction: (name: string) => Promise<boolean>
   /**
-   * Lists the names of task function available in this pool.
+   * Lists the properties of task functions available in this pool.
    *
-   * @returns The names of task function available in this pool.
+   * @returns The properties of task functions available in this pool.
    */
-  readonly listTaskFunctionNames: () => string[]
+  readonly listTaskFunctionsProperties: () => TaskFunctionProperties[]
   /**
    * Sets the default task function in this pool.
    *
@@ -334,9 +335,9 @@ export interface IPool<
    */
   readonly setDefaultTaskFunction: (name: string) => Promise<boolean>
   /**
-   * Sets the worker choice strategy in this pool.
+   * Sets the default worker choice strategy in this pool.
    *
-   * @param workerChoiceStrategy - The worker choice strategy.
+   * @param workerChoiceStrategy - The default worker choice strategy.
    * @param workerChoiceStrategyOptions - The worker choice strategy options.
    */
   readonly setWorkerChoiceStrategy: (
@@ -347,10 +348,11 @@ export interface IPool<
    * Sets the worker choice strategy options in this pool.
    *
    * @param workerChoiceStrategyOptions - The worker choice strategy options.
+   * @returns `true` if the worker choice strategy options were set, `false` otherwise.
    */
   readonly setWorkerChoiceStrategyOptions: (
     workerChoiceStrategyOptions: WorkerChoiceStrategyOptions
-  ) => void
+  ) => boolean
   /**
    * Enables/disables the worker node tasks queue in this pool.
    *
