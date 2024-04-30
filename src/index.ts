@@ -54,6 +54,7 @@ export type {
   MessageValue,
   PromiseResponseWrapper,
   Task,
+  TaskFunctionProperties,
   TaskPerformance,
   WorkerError,
   WorkerStatistics,
@@ -65,6 +66,7 @@ export { ClusterWorker } from './worker/cluster-worker.js'
 export type {
   TaskAsyncFunction,
   TaskFunction,
+  TaskFunctionObject,
   TaskFunctionOperationResult,
   TaskFunctions,
   TaskSyncFunction

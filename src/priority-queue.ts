@@ -29,7 +29,7 @@ export class PriorityQueue<T> {
   /**
    * Constructs a priority queue.
    *
-   * @param k - Prioritized bucket size.
+   * @param k - Prioritized bucket size. @defaultValue Infinity
    */
   public constructor (k = Infinity) {
     if (k !== Infinity && !Number.isSafeInteger(k)) {
@@ -121,7 +121,7 @@ export class PriorityQueue<T> {
   /**
    * Returns an iterator for the priority queue.
    *
-   * @returns An iterator for the deque.
+   * @returns An iterator for the priority queue.
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
    */
   [Symbol.iterator] (): Iterator<T> {

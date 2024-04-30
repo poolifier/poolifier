@@ -1294,7 +1294,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Chooses a worker node for the next task.
+   * Chooses a worker node for the next task given the worker choice strategy.
    *
    * @param workerChoiceStrategy - The worker choice strategy.
    * @returns The chosen worker node key

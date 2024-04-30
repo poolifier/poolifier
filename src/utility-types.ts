@@ -67,22 +67,20 @@ export interface WorkerStatistics {
 
 /**
  * Task function properties.
- *
- * @internal
  */
 export interface TaskFunctionProperties {
   /**
    * Task function name.
    */
-  name: string
+  readonly name: string
   /**
    * Task function priority. Lower values have higher priority.
    */
-  priority?: number
+  readonly priority?: number
   /**
    * Task function worker choice strategy.
    */
-  strategy?: WorkerChoiceStrategy
+  readonly strategy?: WorkerChoiceStrategy
 }
 
 /**
