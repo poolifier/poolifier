@@ -62,7 +62,7 @@ export interface TaskFunctionObject<Data = unknown, Response = unknown> {
 /**
  * Tasks functions that can be executed.
  * The key is the name of the task function or task function object.
- * The value is the function or task function object.
+ * The value is the task function or task function object.
  *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
