@@ -33,7 +33,7 @@ describe('Weighted round robin strategy worker choice strategy test suite', () =
     expect(strategy.reset()).toBe(true)
     expect(strategy.nextWorkerNodeKey).toBe(0)
     expect(strategy.previousWorkerNodeKey).toBe(0)
-    expect(strategy.workerNodeVirtualTaskRunTime).toBe(0)
+    expect(strategy.workerNodeVirtualTaskExecutionTime).toBe(0)
   })
 
   it('Verify that IWRR reset() resets internals', () => {
@@ -53,6 +53,6 @@ describe('Weighted round robin strategy worker choice strategy test suite', () =
     expect(strategy.previousWorkerNodeKey).toBe(0)
     expect(strategy.roundId).toBe(0)
     expect(strategy.workerNodeId).toBe(0)
-    expect(strategy.workerNodeVirtualTaskRunTime).toBe(0)
+    expect(strategy.workerNodeVirtualTaskExecutionTime).toBe(0)
   })
 })

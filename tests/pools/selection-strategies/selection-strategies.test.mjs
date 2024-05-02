@@ -112,7 +112,7 @@ describe('Selection strategies test suite', () => {
         expect(
           pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
             workerChoiceStrategy
-          ).workerNodeVirtualTaskRunTime
+          ).workerNodeVirtualTaskExecutionTime
         ).toBe(0)
       } else if (
         workerChoiceStrategy ===
@@ -121,7 +121,7 @@ describe('Selection strategies test suite', () => {
         expect(
           pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
             workerChoiceStrategy
-          ).workerNodeVirtualTaskRunTime
+          ).workerNodeVirtualTaskExecutionTime
         ).toBe(0)
         expect(
           pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
@@ -1116,8 +1116,8 @@ describe('Selection strategies test suite', () => {
         median: false
       },
       waitTime: {
-        aggregate: false,
-        average: false,
+        aggregate: true,
+        average: true,
         median: false
       },
       elu: {
@@ -1142,8 +1142,8 @@ describe('Selection strategies test suite', () => {
         median: false
       },
       waitTime: {
-        aggregate: false,
-        average: false,
+        aggregate: true,
+        average: true,
         median: false
       },
       elu: {
@@ -1183,9 +1183,9 @@ describe('Selection strategies test suite', () => {
         runTime: expect.objectContaining({
           history: expect.any(CircularArray)
         }),
-        waitTime: {
-          history: new CircularArray()
-        },
+        waitTime: expect.objectContaining({
+          history: expect.any(CircularArray)
+        }),
         elu: expect.objectContaining({
           idle: expect.objectContaining({
             history: expect.any(CircularArray)
@@ -1208,6 +1208,16 @@ describe('Selection strategies test suite', () => {
         expect(workerNode.usage.runTime.average).toBeUndefined()
       } else {
         expect(workerNode.usage.runTime.average).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.waitTime.aggregate == null) {
+        expect(workerNode.usage.waitTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.waitTime.average == null) {
+        expect(workerNode.usage.waitTime.average).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.average).toBeGreaterThan(0)
       }
       if (workerNode.usage.elu.active.aggregate == null) {
         expect(workerNode.usage.elu.active.aggregate).toBeUndefined()
@@ -1269,9 +1279,9 @@ describe('Selection strategies test suite', () => {
         runTime: expect.objectContaining({
           history: expect.any(CircularArray)
         }),
-        waitTime: {
-          history: new CircularArray()
-        },
+        waitTime: expect.objectContaining({
+          history: expect.any(CircularArray)
+        }),
         elu: expect.objectContaining({
           idle: expect.objectContaining({
             history: expect.any(CircularArray)
@@ -1294,6 +1304,16 @@ describe('Selection strategies test suite', () => {
         expect(workerNode.usage.runTime.average).toBeUndefined()
       } else {
         expect(workerNode.usage.runTime.average).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.waitTime.aggregate == null) {
+        expect(workerNode.usage.waitTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.waitTime.average == null) {
+        expect(workerNode.usage.waitTime.average).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.average).toBeGreaterThan(0)
       }
       if (workerNode.usage.elu.active.aggregate == null) {
         expect(workerNode.usage.elu.active.aggregate).toBeUndefined()
@@ -1360,9 +1380,9 @@ describe('Selection strategies test suite', () => {
         runTime: expect.objectContaining({
           history: expect.any(CircularArray)
         }),
-        waitTime: {
-          history: new CircularArray()
-        },
+        waitTime: expect.objectContaining({
+          history: expect.any(CircularArray)
+        }),
         elu: expect.objectContaining({
           idle: expect.objectContaining({
             history: expect.any(CircularArray)
@@ -1385,6 +1405,16 @@ describe('Selection strategies test suite', () => {
         expect(workerNode.usage.runTime.median).toBeUndefined()
       } else {
         expect(workerNode.usage.runTime.median).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.waitTime.aggregate == null) {
+        expect(workerNode.usage.waitTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.waitTime.median == null) {
+        expect(workerNode.usage.waitTime.median).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.median).toBeGreaterThan(0)
       }
       if (workerNode.usage.elu.active.aggregate == null) {
         expect(workerNode.usage.elu.active.aggregate).toBeUndefined()
@@ -1494,8 +1524,8 @@ describe('Selection strategies test suite', () => {
         median: false
       },
       waitTime: {
-        aggregate: false,
-        average: false,
+        aggregate: true,
+        average: true,
         median: false
       },
       elu: {
@@ -1520,8 +1550,8 @@ describe('Selection strategies test suite', () => {
         median: false
       },
       waitTime: {
-        aggregate: false,
-        average: false,
+        aggregate: true,
+        average: true,
         median: false
       },
       elu: {
@@ -1561,9 +1591,9 @@ describe('Selection strategies test suite', () => {
         runTime: expect.objectContaining({
           history: expect.any(CircularArray)
         }),
-        waitTime: {
-          history: new CircularArray()
-        },
+        waitTime: expect.objectContaining({
+          history: expect.any(CircularArray)
+        }),
         elu: {
           idle: {
             history: new CircularArray()
@@ -1587,6 +1617,16 @@ describe('Selection strategies test suite', () => {
       } else {
         expect(workerNode.usage.runTime.average).toBeGreaterThan(0)
       }
+      if (workerNode.usage.waitTime.aggregate == null) {
+        expect(workerNode.usage.waitTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.waitTime.average == null) {
+        expect(workerNode.usage.waitTime.average).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.average).toBeGreaterThan(0)
+      }
     }
     expect(
       pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
@@ -1601,7 +1641,7 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-      ).workerNodeVirtualTaskRunTime
+      ).workerNodeVirtualTaskExecutionTime
     ).toBeGreaterThanOrEqual(0)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -1635,9 +1675,9 @@ describe('Selection strategies test suite', () => {
         runTime: expect.objectContaining({
           history: expect.any(CircularArray)
         }),
-        waitTime: {
-          history: new CircularArray()
-        },
+        waitTime: expect.objectContaining({
+          history: expect.any(CircularArray)
+        }),
         elu: {
           idle: {
             history: new CircularArray()
@@ -1661,6 +1701,16 @@ describe('Selection strategies test suite', () => {
       } else {
         expect(workerNode.usage.runTime.average).toBeGreaterThan(0)
       }
+      if (workerNode.usage.waitTime.aggregate == null) {
+        expect(workerNode.usage.waitTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.waitTime.average == null) {
+        expect(workerNode.usage.waitTime.average).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.average).toBeGreaterThan(0)
+      }
     }
     expect(
       pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
@@ -1675,7 +1725,7 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-      ).workerNodeVirtualTaskRunTime
+      ).workerNodeVirtualTaskExecutionTime
     ).toBeGreaterThanOrEqual(0)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -1714,9 +1764,9 @@ describe('Selection strategies test suite', () => {
         runTime: expect.objectContaining({
           history: expect.any(CircularArray)
         }),
-        waitTime: {
-          history: new CircularArray()
-        },
+        waitTime: expect.objectContaining({
+          history: expect.any(CircularArray)
+        }),
         elu: {
           idle: {
             history: new CircularArray()
@@ -1740,6 +1790,16 @@ describe('Selection strategies test suite', () => {
       } else {
         expect(workerNode.usage.runTime.median).toBeGreaterThan(0)
       }
+      if (workerNode.usage.waitTime.aggregate == null) {
+        expect(workerNode.usage.waitTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.waitTime.median == null) {
+        expect(workerNode.usage.waitTime.median).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.median).toBeGreaterThan(0)
+      }
     }
     expect(
       pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
@@ -1754,7 +1814,7 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-      ).workerNodeVirtualTaskRunTime
+      ).workerNodeVirtualTaskExecutionTime
     ).toBeGreaterThanOrEqual(0)
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -1872,8 +1932,8 @@ describe('Selection strategies test suite', () => {
         median: false
       },
       waitTime: {
-        aggregate: false,
-        average: false,
+        aggregate: true,
+        average: true,
         median: false
       },
       elu: {
@@ -1898,8 +1958,8 @@ describe('Selection strategies test suite', () => {
         median: false
       },
       waitTime: {
-        aggregate: false,
-        average: false,
+        aggregate: true,
+        average: true,
         median: false
       },
       elu: {
@@ -1942,9 +2002,9 @@ describe('Selection strategies test suite', () => {
         runTime: expect.objectContaining({
           history: expect.any(CircularArray)
         }),
-        waitTime: {
-          history: new CircularArray()
-        },
+        waitTime: expect.objectContaining({
+          history: expect.any(CircularArray)
+        }),
         elu: {
           idle: {
             history: new CircularArray()
@@ -1958,6 +2018,26 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
+      if (workerNode.usage.runTime.aggregate == null) {
+        expect(workerNode.usage.runTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.runTime.average == null) {
+        expect(workerNode.usage.runTime.average).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.average).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.waitTime.aggregate == null) {
+        expect(workerNode.usage.waitTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.waitTime.average == null) {
+        expect(workerNode.usage.waitTime.average).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.average).toBeGreaterThan(0)
+      }
     }
     expect(
       pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
@@ -2026,9 +2106,9 @@ describe('Selection strategies test suite', () => {
         runTime: expect.objectContaining({
           history: expect.any(CircularArray)
         }),
-        waitTime: {
-          history: new CircularArray()
-        },
+        waitTime: expect.objectContaining({
+          history: expect.any(CircularArray)
+        }),
         elu: {
           idle: {
             history: new CircularArray()
@@ -2042,6 +2122,26 @@ describe('Selection strategies test suite', () => {
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
+      if (workerNode.usage.runTime.aggregate == null) {
+        expect(workerNode.usage.runTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.runTime.average == null) {
+        expect(workerNode.usage.runTime.average).toBeUndefined()
+      } else {
+        expect(workerNode.usage.runTime.average).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.waitTime.aggregate == null) {
+        expect(workerNode.usage.waitTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.aggregate).toBeGreaterThan(0)
+      }
+      if (workerNode.usage.waitTime.average == null) {
+        expect(workerNode.usage.waitTime.average).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.average).toBeGreaterThan(0)
+      }
     }
     expect(
       pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(

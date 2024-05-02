@@ -133,7 +133,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   /**
    * Gets the worker node task runtime.
    * If the task statistics require the average runtime, the average runtime is returned.
-   * If the task statistics require the median runtime , the median runtime is returned.
+   * If the task statistics require the median runtime, the median runtime is returned.
    *
    * @param workerNodeKey - The worker node key.
    * @returns The worker node task runtime.

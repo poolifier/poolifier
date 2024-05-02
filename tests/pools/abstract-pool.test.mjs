@@ -468,8 +468,8 @@ describe('Abstract pool test suite', () => {
         median: false
       },
       waitTime: {
-        aggregate: false,
-        average: false,
+        aggregate: true,
+        average: true,
         median: false
       },
       elu: {
@@ -507,8 +507,8 @@ describe('Abstract pool test suite', () => {
         median: true
       },
       waitTime: {
-        aggregate: false,
-        average: false,
+        aggregate: true,
+        average: true,
         median: false
       },
       elu: {
@@ -546,8 +546,8 @@ describe('Abstract pool test suite', () => {
         median: false
       },
       waitTime: {
-        aggregate: false,
-        average: false,
+        aggregate: true,
+        average: true,
         median: false
       },
       elu: {

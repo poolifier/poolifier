@@ -75,10 +75,10 @@ export class LeastBusyWorkerChoiceStrategy<
     return this.pool.workerNodes.reduce(
       (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
         return this.isWorkerNodeReady(workerNodeKey) &&
-          (workerNode.usage.runTime.aggregate ?? 0) +
-            (workerNode.usage.waitTime.aggregate ?? 0) <
-            (workerNodes[minWorkerNodeKey].usage.runTime.aggregate ?? 0) +
-              (workerNodes[minWorkerNodeKey].usage.waitTime.aggregate ?? 0)
+          (workerNode.usage.waitTime.aggregate ?? 0) +
+            (workerNode.usage.runTime.aggregate ?? 0) <
+            (workerNodes[minWorkerNodeKey].usage.waitTime.aggregate ?? 0) +
+              (workerNodes[minWorkerNodeKey].usage.runTime.aggregate ?? 0)
           ? workerNodeKey
           : minWorkerNodeKey
       },
