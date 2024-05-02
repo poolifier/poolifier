@@ -242,7 +242,7 @@ export const updateWaitTimeWorkerUsage = <
   Data = unknown,
   Response = unknown
 >(
-    workerChoiceStrategyContext:
+    workerChoiceStrategiesContext:
     | WorkerChoiceStrategiesContext<Worker, Data, Response>
     | undefined,
     workerUsage: WorkerUsage,
@@ -252,7 +252,7 @@ export const updateWaitTimeWorkerUsage = <
   const taskWaitTime = timestamp - (task.timestamp ?? timestamp)
   updateMeasurementStatistics(
     workerUsage.waitTime,
-    workerChoiceStrategyContext?.getTaskStatisticsRequirements().waitTime,
+    workerChoiceStrategiesContext?.getTaskStatisticsRequirements().waitTime,
     taskWaitTime
   )
 }
@@ -281,7 +281,7 @@ export const updateRunTimeWorkerUsage = <
   Data = unknown,
   Response = unknown
 >(
-    workerChoiceStrategyContext:
+    workerChoiceStrategiesContext:
     | WorkerChoiceStrategiesContext<Worker, Data, Response>
     | undefined,
     workerUsage: WorkerUsage,
@@ -292,7 +292,7 @@ export const updateRunTimeWorkerUsage = <
   }
   updateMeasurementStatistics(
     workerUsage.runTime,
-    workerChoiceStrategyContext?.getTaskStatisticsRequirements().runTime,
+    workerChoiceStrategiesContext?.getTaskStatisticsRequirements().runTime,
     message.taskPerformance?.runTime ?? 0
   )
 }
@@ -302,7 +302,7 @@ export const updateEluWorkerUsage = <
   Data = unknown,
   Response = unknown
 >(
-    workerChoiceStrategyContext:
+    workerChoiceStrategiesContext:
     | WorkerChoiceStrategiesContext<Worker, Data, Response>
     | undefined,
     workerUsage: WorkerUsage,
@@ -312,7 +312,7 @@ export const updateEluWorkerUsage = <
     return
   }
   const eluTaskStatisticsRequirements =
-    workerChoiceStrategyContext?.getTaskStatisticsRequirements().elu
+    workerChoiceStrategiesContext?.getTaskStatisticsRequirements().elu
   updateMeasurementStatistics(
     workerUsage.elu.active,
     eluTaskStatisticsRequirements,
