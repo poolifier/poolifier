@@ -303,8 +303,8 @@ packages:
   minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
 
-  node-gyp-build@4.8.0:
-    resolution: {integrity: sha512-u6fs2AEUljNho3EYTJNBfImO5QTo/J/1Etd+NVdCj7qWKUSN/bSLkZwhDv7I+w/MSC6qJ4cknepkAYykDdK8og==}
+  node-gyp-build@4.8.1:
+    resolution: {integrity: sha512-OSs33Z9yWr148JZcbZd5WiAXhh/n9z8TxQcdMhIOlpN9AhWpLfvVFO73+m77bBABQMaY9XSvIa+qk0jlI7Gcaw==}
     hasBin: true
 
   once@1.4.0:
@@ -518,7 +518,7 @@ snapshots:
 
   bufferutil@4.0.8:
     dependencies:
-      node-gyp-build: 4.8.0
+      node-gyp-build: 4.8.1
     optional: true
 
   clean-stack@2.2.0: {}
@@ -633,7 +633,7 @@ snapshots:
     dependencies:
       brace-expansion: 1.1.11
 
-  node-gyp-build@4.8.0:
+  node-gyp-build@4.8.1:
     optional: true
 
   once@1.4.0:
@@ -714,7 +714,7 @@ snapshots:
 
   utf-8-validate@6.0.3:
     dependencies:
-      node-gyp-build: 4.8.0
+      node-gyp-build: 4.8.1
     optional: true
 
   wrappy@1.0.2: {}
