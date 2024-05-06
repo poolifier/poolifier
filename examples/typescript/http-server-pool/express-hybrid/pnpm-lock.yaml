@@ -12,8 +12,8 @@ importers:
         specifier: ^4.19.2
         version: 4.19.2
       poolifier:
-        specifier: ^4.0.1
-        version: 4.0.1
+        specifier: ^4.0.2
+        version: 4.0.2
     devDependencies:
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
@@ -635,8 +635,8 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
-  poolifier@4.0.1:
-    resolution: {integrity: sha512-1izVxQOC3yonTN1I51tualsPfZ0iUN+r5zaKY/+vEWIa0cUJMPgi1hN86DL4kwCTwr65JZ42ZrxnQWRmdnzRpA==}
+  poolifier@4.0.2:
+    resolution: {integrity: sha512-hDVMaPN2DCyUcbIRdmTGSAvNx3tidMvp1Z7cPQepnaHGoYftfuDuGqsxkE8y6z0+Olo6ei/aqQjQRZ+cH8fA8A==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   pretty-bytes@5.6.0:
@@ -1398,7 +1398,7 @@ snapshots:
 
   picomatch@2.3.1: {}
 
-  poolifier@4.0.1: {}
+  poolifier@4.0.2: {}
 
   pretty-bytes@5.6.0: {}
 
