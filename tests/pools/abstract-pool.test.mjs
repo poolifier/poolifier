@@ -1453,21 +1453,55 @@ describe('Abstract pool test suite', () => {
         waitTime: {
           history: new CircularArray()
         },
-        elu: {
-          idle: {
-            aggregate: 0,
-            maximum: 0,
-            minimum: 0,
-            history: new CircularArray()
-          },
-          active: {
-            aggregate: 0,
-            maximum: 0,
-            minimum: 0,
-            history: new CircularArray()
-          }
-        }
+        elu: expect.objectContaining({
+          idle: expect.objectContaining({
+            history: expect.any(CircularArray)
+          }),
+          active: expect.objectContaining({
+            history: expect.any(CircularArray)
+          })
+        })
       })
+      expect(
+        workerNode.getTaskFunctionWorkerUsage('echo').tasks.executed
+      ).toBeGreaterThan(0)
+      if (
+        workerNode.getTaskFunctionWorkerUsage('echo').elu.active.aggregate ==
+        null
+      ) {
+        expect(
+          workerNode.getTaskFunctionWorkerUsage('echo').elu.active.aggregate
+        ).toBeUndefined()
+      } else {
+        expect(
+          workerNode.getTaskFunctionWorkerUsage('echo').elu.active.aggregate
+        ).toBeGreaterThan(0)
+      }
+      if (
+        workerNode.getTaskFunctionWorkerUsage('echo').elu.idle.aggregate == null
+      ) {
+        expect(
+          workerNode.getTaskFunctionWorkerUsage('echo').elu.idle.aggregate
+        ).toBeUndefined()
+      } else {
+        expect(
+          workerNode.getTaskFunctionWorkerUsage('echo').elu.idle.aggregate
+        ).toBeGreaterThanOrEqual(0)
+      }
+      if (
+        workerNode.getTaskFunctionWorkerUsage('echo').elu.utilization == null
+      ) {
+        expect(
+          workerNode.getTaskFunctionWorkerUsage('echo').elu.utilization
+        ).toBeUndefined()
+      } else {
+        expect(
+          workerNode.getTaskFunctionWorkerUsage('echo').elu.utilization
+        ).toBeGreaterThanOrEqual(0)
+        expect(
+          workerNode.getTaskFunctionWorkerUsage('echo').elu.utilization
+        ).toBeLessThanOrEqual(1)
+      }
     }
     await dynamicThreadPool.destroy()
   })

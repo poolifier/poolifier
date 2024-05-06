@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Ensure poolifier worker task performance measurement requirements are synchronized with task function objects' worker choice strategies.
+
 ## [4.0.1] - 2024-05-02
 
 ### Fixed

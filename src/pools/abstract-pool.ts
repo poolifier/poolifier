@@ -868,6 +868,9 @@ export abstract class AbstractPool<
     this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
       this.getWorkerWorkerChoiceStrategies()
     )
+    for (const workerNodeKey of this.workerNodes.keys()) {
+      this.sendStatisticsMessageToWorker(workerNodeKey)
+    }
     return opResult
   }
 
@@ -885,11 +888,16 @@ export abstract class AbstractPool<
         this.taskFunctions.get(name)
       )
     })
-    this.deleteTaskFunctionWorkerUsages(name)
+    for (const workerNode of this.workerNodes) {
+      workerNode.deleteTaskFunctionWorkerUsage(name)
+    }
     this.taskFunctions.delete(name)
     this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
       this.getWorkerWorkerChoiceStrategies()
     )
+    for (const workerNodeKey of this.workerNodes.keys()) {
+      this.sendStatisticsMessageToWorker(workerNodeKey)
+    }
     return opResult
   }
 
@@ -972,12 +980,6 @@ export abstract class AbstractPool<
         this.taskFunctions.get(name)
       )
     })
-  }
-
-  private deleteTaskFunctionWorkerUsages (name: string): void {
-    for (const workerNode of this.workerNodes) {
-      workerNode.deleteTaskFunctionWorkerUsage(name)
-    }
   }
 
   private shallExecuteTask (workerNodeKey: number): boolean {
@@ -1236,7 +1238,7 @@ export abstract class AbstractPool<
     workerNodeKey: number,
     message: MessageValue<Response>
   ): void {
-    let needWorkerChoiceStrategyUpdate = false
+    let needWorkerChoiceStrategiesUpdate = false
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.workerNodes[workerNodeKey]?.usage != null) {
       const workerUsage = this.workerNodes[workerNodeKey].usage
@@ -1251,7 +1253,7 @@ export abstract class AbstractPool<
         workerUsage,
         message
       )
-      needWorkerChoiceStrategyUpdate = true
+      needWorkerChoiceStrategiesUpdate = true
     }
     if (
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
@@ -1276,9 +1278,9 @@ export abstract class AbstractPool<
         taskFunctionWorkerUsage,
         message
       )
-      needWorkerChoiceStrategyUpdate = true
+      needWorkerChoiceStrategiesUpdate = true
     }
-    if (needWorkerChoiceStrategyUpdate) {
+    if (needWorkerChoiceStrategiesUpdate) {
       this.workerChoiceStrategiesContext?.update(workerNodeKey)
     }
   }
@@ -1883,11 +1885,11 @@ export abstract class AbstractPool<
       this.handleWorkerReadyResponse(message)
     } else if (taskFunctionsProperties != null) {
       // Task function properties message received from worker
-      const workerInfo = this.getWorkerInfo(
-        this.getWorkerNodeKeyByWorkerId(workerId)
-      )
+      const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+      const workerInfo = this.getWorkerInfo(workerNodeKey)
       if (workerInfo != null) {
         workerInfo.taskFunctionsProperties = taskFunctionsProperties
+        this.sendStatisticsMessageToWorker(workerNodeKey)
       }
     } else if (taskId != null) {
       // Task execution response received from worker
@@ -1907,10 +1909,11 @@ export abstract class AbstractPool<
     if (ready == null || !ready) {
       throw new Error(`Worker ${workerId} failed to initialize`)
     }
-    const workerNode =
-      this.workerNodes[this.getWorkerNodeKeyByWorkerId(workerId)]
+    const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+    const workerNode = this.workerNodes[workerNodeKey]
     workerNode.info.ready = ready
     workerNode.info.taskFunctionsProperties = taskFunctionsProperties
+    this.sendStatisticsMessageToWorker(workerNodeKey)
     this.checkAndEmitReadyEvent()
   }
 
