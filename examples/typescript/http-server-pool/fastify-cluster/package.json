@@ -23,7 +23,7 @@
   "license": "ISC",
   "dependencies": {
     "fastify": "^4.26.2",
-    "poolifier": "^4.0.1"
+    "poolifier": "^4.0.2"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
