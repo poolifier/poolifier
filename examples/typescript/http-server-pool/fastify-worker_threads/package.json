@@ -24,7 +24,7 @@
   "dependencies": {
     "fastify": "^4.26.2",
     "fastify-plugin": "^4.5.1",
-    "poolifier": "^4.0.1"
+    "poolifier": "^4.0.2"
   },
   "devDependencies": {
     "@types/node": "^20.12.8",
