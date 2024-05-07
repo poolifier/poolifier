@@ -333,6 +333,7 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
   /**
    * Deletes a task from the tasks queue.
    *
+   * @param task - The task to delete.
    * @returns `true` if the task was deleted, `false` otherwise.
    */
   readonly deleteTask: (task: Task<Data>) => boolean
