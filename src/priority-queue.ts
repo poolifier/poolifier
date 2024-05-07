@@ -94,6 +94,20 @@ export class PriorityQueue<T> {
   }
 
   /**
+   * Deletes the given data from the priority queue.
+   *
+   * @param data - Data to delete.
+   */
+  public delete (data: T): boolean {
+    return (
+      this.nodeArray.splice(
+        this.nodeArray.findIndex(node => node.data === data),
+        1
+      ).length > 0
+    )
+  }
+
+  /**
    * Peeks at the first data.
    * @returns The first data or `undefined` if the priority queue is empty.
    */

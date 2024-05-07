@@ -98,8 +98,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
 
   /** @inheritdoc */
   public deleteTask (task: Task<Data>): boolean {
-    // return this.tasksQueue.delete(task)
-    return false
+    return this.tasksQueue.delete(task)
   }
 
   /** @inheritdoc */
