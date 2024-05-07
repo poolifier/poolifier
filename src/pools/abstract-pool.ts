@@ -92,8 +92,13 @@ export abstract class AbstractPool<
    *
    * When we receive a message from the worker, we get a map entry with the promise resolve/reject bound to the message id.
    */
-  protected promiseResponseMap: Map<string, PromiseResponseWrapper<Response>> =
-    new Map<string, PromiseResponseWrapper<Response>>()
+  protected promiseResponseMap: Map<
+    `${string}-${string}-${string}-${string}-${string}`,
+  PromiseResponseWrapper<Response>
+  > = new Map<
+    `${string}-${string}-${string}-${string}-${string}`,
+    PromiseResponseWrapper<Response>
+    >()
 
   /**
    * Worker choice strategies context referencing worker choice algorithms implementation.
