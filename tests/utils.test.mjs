@@ -37,6 +37,7 @@ describe('Utils test suite', () => {
     expect(Number.isSafeInteger(parallelism)).toBe(true)
     let expectedParallelism = 1
     try {
+      // eslint-disable-next-line n/no-unsupported-features/node-builtins
       expectedParallelism = os.availableParallelism()
     } catch {
       expectedParallelism = os.cpus().length

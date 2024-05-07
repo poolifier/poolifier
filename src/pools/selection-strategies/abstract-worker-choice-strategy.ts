@@ -1,16 +1,16 @@
 import type { IPool } from '../pool.js'
-import {
-  buildWorkerChoiceStrategyOptions,
-  DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS
-} from '../utils.js'
+import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../utils.js'
 import type { IWorker } from '../worker.js'
 import type {
   IWorkerChoiceStrategy,
-  MeasurementStatisticsRequirements,
   StrategyPolicy,
   TaskStatisticsRequirements,
   WorkerChoiceStrategyOptions
 } from './selection-strategies-types.js'
+import {
+  buildWorkerChoiceStrategyOptions,
+  toggleMedianMeasurementStatisticsRequirements
+} from './selection-strategies-utils.js'
 
 /**
  * Worker choice strategy abstract base class.
@@ -64,35 +64,21 @@ export abstract class AbstractWorkerChoiceStrategy<
   protected setTaskStatisticsRequirements (
     opts: WorkerChoiceStrategyOptions | undefined
   ): void {
-    this.toggleMedianMeasurementStatisticsRequirements(
+    toggleMedianMeasurementStatisticsRequirements(
       this.taskStatisticsRequirements.runTime,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       opts!.runTime!.median
     )
-    this.toggleMedianMeasurementStatisticsRequirements(
+    toggleMedianMeasurementStatisticsRequirements(
       this.taskStatisticsRequirements.waitTime,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       opts!.waitTime!.median
     )
-    this.toggleMedianMeasurementStatisticsRequirements(
+    toggleMedianMeasurementStatisticsRequirements(
       this.taskStatisticsRequirements.elu,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       opts!.elu!.median
     )
-  }
-
-  private toggleMedianMeasurementStatisticsRequirements (
-    measurementStatisticsRequirements: MeasurementStatisticsRequirements,
-    toggleMedian: boolean
-  ): void {
-    if (measurementStatisticsRequirements.average && toggleMedian) {
-      measurementStatisticsRequirements.average = false
-      measurementStatisticsRequirements.median = toggleMedian
-    }
-    if (measurementStatisticsRequirements.median && !toggleMedian) {
-      measurementStatisticsRequirements.average = true
-      measurementStatisticsRequirements.median = toggleMedian
-    }
   }
 
   protected resetWorkerNodeKeyProperties (): void {
@@ -147,7 +133,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   /**
    * Gets the worker node task runtime.
    * If the task statistics require the average runtime, the average runtime is returned.
-   * If the task statistics require the median runtime , the median runtime is returned.
+   * If the task statistics require the median runtime, the median runtime is returned.
    *
    * @param workerNodeKey - The worker node key.
    * @returns The worker node task runtime.

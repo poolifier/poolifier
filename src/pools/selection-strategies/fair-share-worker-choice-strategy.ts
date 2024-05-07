@@ -1,5 +1,4 @@
 import type { IPool } from '../pool.js'
-import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../utils.js'
 import type { IWorker } from '../worker.js'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import {
@@ -31,7 +30,11 @@ export class FairShareWorkerChoiceStrategy<
       average: true,
       median: false
     },
-    waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+    waitTime: {
+      aggregate: true,
+      average: true,
+      median: false
+    },
     elu: {
       aggregate: true,
       average: true,
@@ -120,12 +123,13 @@ export class FairShareWorkerChoiceStrategy<
     workerNodeKey: number,
     workerNodeVirtualTaskStartTimestamp: number
   ): number {
-    const workerNodeTaskRunTime =
+    const workerNodeTaskExecutionTime =
+      this.getWorkerNodeTaskWaitTime(workerNodeKey) +
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.opts!.measurement === Measurements.elu
+      (this.opts!.measurement === Measurements.elu
         ? this.getWorkerNodeTaskElu(workerNodeKey)
-        : this.getWorkerNodeTaskRunTime(workerNodeKey)
-    return workerNodeVirtualTaskStartTimestamp + workerNodeTaskRunTime
+        : this.getWorkerNodeTaskRunTime(workerNodeKey))
+    return workerNodeVirtualTaskStartTimestamp + workerNodeTaskExecutionTime
   }
 
   private getWorkerNodeVirtualTaskStartTimestamp (

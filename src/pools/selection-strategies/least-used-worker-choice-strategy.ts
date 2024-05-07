@@ -57,11 +57,8 @@ export class LeastUsedWorkerChoiceStrategy<
     return this.pool.workerNodes.reduce(
       (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
         return this.isWorkerNodeReady(workerNodeKey) &&
-          workerNode.usage.tasks.executed +
-            workerNode.usage.tasks.executing +
-            workerNode.usage.tasks.queued <
-            workerNodes[minWorkerNodeKey].usage.tasks.executed +
-              workerNodes[minWorkerNodeKey].usage.tasks.executing +
+          workerNode.usage.tasks.executing + workerNode.usage.tasks.queued <
+            workerNodes[minWorkerNodeKey].usage.tasks.executing +
               workerNodes[minWorkerNodeKey].usage.tasks.queued
           ? workerNodeKey
           : minWorkerNodeKey
