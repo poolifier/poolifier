@@ -43,12 +43,12 @@ export class ClusterWorker<
         this.getMainWorker().on('message', this.messageListener.bind(this))
         this.sendToMainWorker({
           ready: true,
-          taskFunctionNames: this.listTaskFunctionNames()
+          taskFunctionsProperties: this.listTaskFunctionsProperties()
         })
       } catch {
         this.sendToMainWorker({
           ready: false,
-          taskFunctionNames: this.listTaskFunctionNames()
+          taskFunctionsProperties: this.listTaskFunctionsProperties()
         })
       }
     }

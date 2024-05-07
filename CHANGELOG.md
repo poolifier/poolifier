@@ -11,9 +11,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add fine grained task abortion support.
 
+## [4.0.2] - 2024-05-06
+
+### Fixed
+
+- Ensure poolifier worker task performance measurement requirements are synchronized with task function objects' worker choice strategies.
+
+## [4.0.1] - 2024-05-02
+
+### Fixed
+
+- Ensure dynamic worker node are initialized with sensible worker node usage default values to avoid worker choice strategies biased decisions.
+- Account for tasks wait time in task execution time computation in worker choice strategies to avoid biased decisions under load with several prioritized task functions and tasks queue enabled.
+
+## [4.0.0] - 2024-04-30
+
+### Changed
+
+- Support per task function(s) priority and worker choice strategy definition via a task function object: `{ taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy }`.
+- Add priority queue based tasks queueing. One priority queue is divided into prioritized buckets to avoid queued tasks starvation under load.
+- BREAKING CHANGE: `listTaskFunctionNames()` to `listTaskFunctionsProperties()` in pool and worker API returning registered task functions properties.
+- BREAKING CHANGE: `strategy` field in pool information renamed to `defaultStrategy`.
+
+### Fixed
+
+- Ensure worker choice strategy options changes at runtime are propagated to poolifier workers.
+
 ## [3.1.30] - 2024-04-22
 
-### Fixed:
+### Fixed
 
 - Fix `transferList` argument type definition.
 

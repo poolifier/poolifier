@@ -11,7 +11,7 @@
   - [`pool.hasTaskFunction(name)`](#poolhastaskfunctionname)
   - [`pool.addTaskFunction(name, fn)`](#pooladdtaskfunctionname-fn)
   - [`pool.removeTaskFunction(name)`](#poolremovetaskfunctionname)
-  - [`pool.listTaskFunctionNames()`](#poollisttaskfunctionnames)
+  - [`pool.listTaskFunctionsProperties()`](#poollisttaskfunctionsproperties)
   - [`pool.setDefaultTaskFunction(name)`](#poolsetdefaulttaskfunctionname)
   - [Pool options](#pool-options)
 - [Worker](#worker)
@@ -19,7 +19,7 @@
     - [`YourWorker.hasTaskFunction(name)`](#yourworkerhastaskfunctionname)
     - [`YourWorker.addTaskFunction(name, fn)`](#yourworkeraddtaskfunctionname-fn)
     - [`YourWorker.removeTaskFunction(name)`](#yourworkerremovetaskfunctionname)
-    - [`YourWorker.listTaskFunctionNames()`](#yourworkerlisttaskfunctionnames)
+    - [`YourWorker.listTaskFunctionsProperties()`](#yourworkerlisttaskfunctionsproperties)
     - [`YourWorker.setDefaultTaskFunction(name)`](#yourworkersetdefaulttaskfunctionname)
 
 ## Pool
@@ -63,7 +63,7 @@ This method is available on both pool implementations and returns a boolean.
 ### `pool.addTaskFunction(name, fn)`
 
 `name` (mandatory) The task function name.  
-`fn` (mandatory) The task function.
+`fn` (mandatory) The task function `(data?: Data) => Response | Promise<Response>` or task function object `{ taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy }`. Priority range is the same as Unix nice levels.
 
 This method is available on both pool implementations and returns a boolean promise.
 
@@ -73,9 +73,9 @@ This method is available on both pool implementations and returns a boolean prom
 
 This method is available on both pool implementations and returns a boolean promise.
 
-### `pool.listTaskFunctionNames()`
+### `pool.listTaskFunctionsProperties()`
 
-This method is available on both pool implementations and returns an array of the task function names.
+This method is available on both pool implementations and returns an array of the task function properties.
 
 ### `pool.setDefaultTaskFunction(name)`
 
@@ -96,11 +96,11 @@ An object with these properties:
 - `exitHandler` (optional) - A function that will listen for exit event on each worker.  
   Default: `() => {}`
 
-- `workerChoiceStrategy` (optional) - The worker choice strategy to use in this pool:
+- `workerChoiceStrategy` (optional) - The default worker choice strategy to use in this pool:
 
   - `WorkerChoiceStrategies.ROUND_ROBIN`: Submit tasks to worker in a round robin fashion
-  - `WorkerChoiceStrategies.LEAST_USED`: Submit tasks to the worker with the minimum number of executed, executing and queued tasks
-  - `WorkerChoiceStrategies.LEAST_BUSY`: Submit tasks to the worker with the minimum tasks total execution and wait time
+  - `WorkerChoiceStrategies.LEAST_USED`: Submit tasks to the worker with the minimum number of executing and queued tasks
+  - `WorkerChoiceStrategies.LEAST_BUSY`: Submit tasks to the worker with the minimum tasks execution time
   - `WorkerChoiceStrategies.LEAST_ELU`: Submit tasks to the worker with the minimum event loop utilization (ELU)
   - `WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN`: Submit tasks to worker by using a [weighted round robin scheduling algorithm](./worker-choice-strategies.md#weighted-round-robin) based on tasks execution time
   - `WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN`: Submit tasks to worker by using an [interleaved weighted round robin scheduling algorithm](./worker-choice-strategies.md#interleaved-weighted-round-robin-experimental) based on tasks execution time (experimental)
@@ -116,7 +116,7 @@ An object with these properties:
   - `runTime` (optional) - Use the tasks [simple moving median](./worker-choice-strategies.md#simple-moving-median) runtime instead of the tasks simple moving average runtime in worker choice strategies.
   - `waitTime` (optional) - Use the tasks [simple moving median](./worker-choice-strategies.md#simple-moving-median) wait time instead of the tasks simple moving average wait time in worker choice strategies.
   - `elu` (optional) - Use the tasks [simple moving median](./worker-choice-strategies.md#simple-moving-median) ELU instead of the tasks simple moving average ELU in worker choice strategies.
-  - `weights` (optional) - The worker weights to use in weighted round robin worker choice strategies: `{ 0: 200, 1: 300, ..., n: 100 }`.
+  - `weights` (optional) - The worker weights to use in weighted round robin worker choice strategies: `Record<number, number>`.
 
   Default: `{ runTime: { median: false }, waitTime: { median: false }, elu: { median: false } }`
 
@@ -150,7 +150,7 @@ An object with these properties:
 
 ### `class YourWorker extends ThreadWorker/ClusterWorker`
 
-`taskFunctions` (mandatory) The task function or task functions object `{ name_1: fn_1, ..., name_n: fn_n }` that you want to execute on the worker.  
+`taskFunctions` (mandatory) The task function or task functions object `Record<string, (data?: Data) => Response | Promise<Response> | { taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy }>` that you want to execute on the worker. Priority range is the same as Unix nice levels.  
 `opts` (optional) An object with these properties:
 
 - `killBehavior` (optional) - Dictates if your worker will be deleted in case a task is active on it.  
@@ -177,7 +177,7 @@ This method is available on both worker implementations and returns `{ status: b
 #### `YourWorker.addTaskFunction(name, fn)`
 
 `name` (mandatory) The task function name.  
-`fn` (mandatory) The task function.
+`fn` (mandatory) The task function `(data?: Data) => Response | Promise<Response>` or task function object `{ taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy }`. Priority range is the same as Unix nice levels.
 
 This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
 
@@ -187,9 +187,9 @@ This method is available on both worker implementations and returns `{ status: b
 
 This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
 
-#### `YourWorker.listTaskFunctionNames()`
+#### `YourWorker.listTaskFunctionsProperties()`
 
-This method is available on both worker implementations and returns an array of the task function names.
+This method is available on both worker implementations and returns an array of the task function properties.
 
 #### `YourWorker.setDefaultTaskFunction(name)`
 

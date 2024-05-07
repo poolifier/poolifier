@@ -2,6 +2,7 @@ import type { AsyncResource } from 'node:async_hooks'
 import type { EventLoopUtilization } from 'node:perf_hooks'
 import type { MessagePort, TransferListItem } from 'node:worker_threads'
 
+import type { WorkerChoiceStrategy } from './pools/selection-strategies/selection-strategies-types.js'
 import type { KillBehavior } from './worker/worker-options.js'
 
 /**
@@ -65,6 +66,24 @@ export interface WorkerStatistics {
 }
 
 /**
+ * Task function properties.
+ */
+export interface TaskFunctionProperties {
+  /**
+   * Task function name.
+   */
+  readonly name: string
+  /**
+   * Task function priority. Lower values have higher priority.
+   */
+  readonly priority?: number
+  /**
+   * Task function worker choice strategy.
+   */
+  readonly strategy?: WorkerChoiceStrategy
+}
+
+/**
  * Message object that is passed as a task between main worker and worker.
  *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
@@ -80,6 +99,16 @@ export interface Task<Data = unknown> {
    */
   readonly data?: Data
   /**
+   * Task priority. Lower values have higher priority.
+   *
+   * @defaultValue 0
+   */
+  readonly priority?: number
+  /**
+   * Task worker choice strategy.
+   */
+  readonly strategy?: WorkerChoiceStrategy
+  /**
    * Array of transferable objects.
    */
   readonly transferList?: readonly TransferListItem[]
@@ -94,7 +123,7 @@ export interface Task<Data = unknown> {
   /**
    * Task UUID.
    */
-  readonly taskId?: string
+  readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
 }
 
 /**
@@ -139,17 +168,17 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    */
   readonly taskFunctionOperationStatus?: boolean
   /**
+   * Task function properties.
+   */
+  readonly taskFunctionProperties?: TaskFunctionProperties
+  /**
    * Task function serialized to string.
    */
   readonly taskFunction?: string
   /**
-   * Task function name.
+   * Task functions properties.
    */
-  readonly taskFunctionName?: string
-  /**
-   * Task function names.
-   */
-  readonly taskFunctionNames?: string[]
+  readonly taskFunctionsProperties?: TaskFunctionProperties[]
   /**
    * Whether the worker computes the given statistics or not.
    */

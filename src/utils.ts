@@ -1,6 +1,8 @@
 import { getRandomValues } from 'node:crypto'
 import * as os from 'node:os'
 
+import type { TaskFunctionProperties } from './utility-types.js'
+import type { TaskFunctionObject } from './worker/task-functions.js'
 import type { KillBehavior } from './worker/worker-options.js'
 
 /**
@@ -205,7 +207,7 @@ export const max = (...args: number[]): number =>
  * @internal
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const once = <A extends any[], R, C>(
+export const once = <A extends any[], R, C extends ThisType<any>>(
   fn: (...args: A) => R,
   context: C
 ): ((...args: A) => R) => {
@@ -218,5 +220,20 @@ export const once = <A extends any[], R, C>(
         undefined
     }
     return result
+  }
+}
+
+export const buildTaskFunctionProperties = <Data, Response>(
+  name: string,
+  taskFunctionObject: TaskFunctionObject<Data, Response> | undefined
+): TaskFunctionProperties => {
+  return {
+    name,
+    ...(taskFunctionObject?.priority != null && {
+      priority: taskFunctionObject.priority
+    }),
+    ...(taskFunctionObject?.strategy != null && {
+      strategy: taskFunctionObject.strategy
+    })
   }
 }

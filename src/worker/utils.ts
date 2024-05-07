@@ -1,5 +1,9 @@
+import {
+  checkValidPriority,
+  checkValidWorkerChoiceStrategy
+} from '../pools/utils.js'
 import { isPlainObject } from '../utils.js'
-import type { TaskFunction } from './task-functions.js'
+import type { TaskFunctionObject } from './task-functions.js'
 import { KillBehaviors, type WorkerOptions } from './worker-options.js'
 
 export const checkValidWorkerOptions = (
@@ -32,10 +36,13 @@ export const checkValidWorkerOptions = (
   }
 }
 
-export const checkValidTaskFunctionEntry = <Data = unknown, Response = unknown>(
-  name: string,
-  fn: TaskFunction<Data, Response>
-): void => {
+export const checkValidTaskFunctionObjectEntry = <
+  Data = unknown,
+  Response = unknown
+>(
+    name: string,
+    fnObj: TaskFunctionObject<Data, Response>
+  ): void => {
   if (typeof name !== 'string') {
     throw new TypeError('A taskFunctions parameter object key is not a string')
   }
@@ -44,11 +51,14 @@ export const checkValidTaskFunctionEntry = <Data = unknown, Response = unknown>(
       'A taskFunctions parameter object key is an empty string'
     )
   }
-  if (typeof fn !== 'function') {
+  if (typeof fnObj.taskFunction !== 'function') {
     throw new TypeError(
-      'A taskFunctions parameter object value is not a function'
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      `taskFunction object 'taskFunction' property '${fnObj.taskFunction}' is not a function`
     )
   }
+  checkValidPriority(fnObj.priority)
+  checkValidWorkerChoiceStrategy(fnObj.strategy)
 }
 
 export const checkTaskFunctionName = (name: string): void => {

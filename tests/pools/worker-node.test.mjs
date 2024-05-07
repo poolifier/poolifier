@@ -4,9 +4,9 @@ import { MessageChannel, Worker as ThreadWorker } from 'node:worker_threads'
 import { expect } from 'expect'
 
 import { CircularArray } from '../../lib/circular-array.cjs'
-import { Deque } from '../../lib/deque.cjs'
 import { WorkerTypes } from '../../lib/index.cjs'
 import { WorkerNode } from '../../lib/pools/worker-node.cjs'
+import { PriorityQueue } from '../../lib/priority-queue.cjs'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 
 describe('Worker node test suite', () => {
@@ -156,7 +156,7 @@ describe('Worker node test suite', () => {
     })
     expect(threadWorkerNode.messageChannel).toBeInstanceOf(MessageChannel)
     expect(threadWorkerNode.tasksQueueBackPressureSize).toBe(12)
-    expect(threadWorkerNode.tasksQueue).toBeInstanceOf(Deque)
+    expect(threadWorkerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
     expect(threadWorkerNode.tasksQueue.size).toBe(0)
     expect(threadWorkerNode.tasksQueueSize()).toBe(
       threadWorkerNode.tasksQueue.size
@@ -200,7 +200,7 @@ describe('Worker node test suite', () => {
     })
     expect(clusterWorkerNode.messageChannel).toBeUndefined()
     expect(clusterWorkerNode.tasksQueueBackPressureSize).toBe(12)
-    expect(clusterWorkerNode.tasksQueue).toBeInstanceOf(Deque)
+    expect(clusterWorkerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
     expect(clusterWorkerNode.tasksQueue.size).toBe(0)
     expect(clusterWorkerNode.tasksQueueSize()).toBe(
       clusterWorkerNode.tasksQueue.size
@@ -214,18 +214,25 @@ describe('Worker node test suite', () => {
       threadWorkerNode.getTaskFunctionWorkerUsage('invalidTaskFunction')
     ).toThrow(
       new TypeError(
-        "Cannot get task function worker usage for task function name 'invalidTaskFunction' when task function names list is not yet defined"
+        "Cannot get task function worker usage for task function name 'invalidTaskFunction' when task function properties list is not yet defined"
       )
     )
-    threadWorkerNode.info.taskFunctionNames = [DEFAULT_TASK_NAME, 'fn1']
+    threadWorkerNode.info.taskFunctionsProperties = [
+      { name: DEFAULT_TASK_NAME },
+      { name: 'fn1' }
+    ]
     expect(() =>
       threadWorkerNode.getTaskFunctionWorkerUsage('invalidTaskFunction')
     ).toThrow(
       new TypeError(
-        "Cannot get task function worker usage for task function name 'invalidTaskFunction' when task function names list has less than 3 elements"
+        "Cannot get task function worker usage for task function name 'invalidTaskFunction' when task function properties list has less than 3 elements"
       )
     )
-    threadWorkerNode.info.taskFunctionNames = [DEFAULT_TASK_NAME, 'fn1', 'fn2']
+    threadWorkerNode.info.taskFunctionsProperties = [
+      { name: DEFAULT_TASK_NAME },
+      { name: 'fn1' },
+      { name: 'fn2' }
+    ]
     expect(
       threadWorkerNode.getTaskFunctionWorkerUsage(DEFAULT_TASK_NAME)
     ).toStrictEqual({
@@ -304,10 +311,10 @@ describe('Worker node test suite', () => {
   })
 
   it('Worker node deleteTaskFunctionWorkerUsage()', () => {
-    expect(threadWorkerNode.info.taskFunctionNames).toStrictEqual([
-      DEFAULT_TASK_NAME,
-      'fn1',
-      'fn2'
+    expect(threadWorkerNode.info.taskFunctionsProperties).toStrictEqual([
+      { name: DEFAULT_TASK_NAME },
+      { name: 'fn1' },
+      { name: 'fn2' }
     ])
     expect(threadWorkerNode.taskFunctionsUsage.size).toBe(2)
     expect(

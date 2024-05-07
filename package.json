@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "poolifier",
-  "version": "3.1.30",
+  "version": "4.0.2",
   "description": "Fast and small Node.js Worker_Threads and Cluster Worker Pool",
   "license": "MIT",
   "type": "module",
@@ -44,10 +44,10 @@
     "pnpm": ">=9.0.0"
   },
   "volta": {
-    "node": "22.0.0",
-    "pnpm": "9.0.6"
+    "node": "22.1.0",
+    "pnpm": "9.1.0"
   },
-  "packageManager": "pnpm@9.0.6",
+  "packageManager": "pnpm@9.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/poolifier/poolifier.git"
@@ -104,14 +104,14 @@
     }
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.7.2",
+    "@biomejs/biome": "^1.7.3",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@release-it/bumper": "^6.0.1",
     "@release-it/keep-a-changelog": "^5.0.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/node": "^20.12.7",
+    "@types/node": "^20.12.10",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
     "benchmark": "^2.1.4",
@@ -124,7 +124,7 @@
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsdoc": "^48.2.3",
-    "eslint-plugin-n": "^17.4.0",
+    "eslint-plugin-n": "^17.5.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-simple-import-sort": "^12.1.0",
     "eslint-plugin-spellcheck": "^0.0.20",

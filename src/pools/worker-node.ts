@@ -2,7 +2,7 @@ import { EventEmitter } from 'node:events'
 import { MessageChannel } from 'node:worker_threads'
 
 import { CircularArray } from '../circular-array.js'
-import { Deque } from '../deque.js'
+import { PriorityQueue } from '../priority-queue.js'
 import type { Task } from '../utility-types.js'
 import { DEFAULT_TASK_NAME } from '../utils.js'
 import {
@@ -43,7 +43,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   /** @inheritdoc */
   public messageChannel?: MessageChannel
   /** @inheritdoc */
-  public readonly tasksQueue: Deque<Task<Data>>
+  public readonly tasksQueue: PriorityQueue<Task<Data>>
   /** @inheritdoc */
   public tasksQueueBackPressureSize: number
   private onBackPressureStarted: boolean
@@ -70,7 +70,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.tasksQueueBackPressureSize = opts.tasksQueueBackPressureSize!
-    this.tasksQueue = new Deque<Task<Data>>()
+    this.tasksQueue = new PriorityQueue<Task<Data>>(opts.tasksQueueBucketSize)
     this.onBackPressureStarted = false
     this.taskFunctionsUsage = new Map<string, WorkerUsage>()
   }
@@ -82,7 +82,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
 
   /** @inheritdoc */
   public enqueueTask (task: Task<Data>): number {
-    const tasksQueueSize = this.tasksQueue.push(task)
+    const tasksQueueSize = this.tasksQueue.enqueue(task, task.priority)
     if (this.hasBackPressure() && !this.onBackPressureStarted) {
       this.onBackPressureStarted = true
       this.emit('backPressure', { workerId: this.info.id })
@@ -92,29 +92,14 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   }
 
   /** @inheritdoc */
-  public unshiftTask (task: Task<Data>): number {
-    const tasksQueueSize = this.tasksQueue.unshift(task)
-    if (this.hasBackPressure() && !this.onBackPressureStarted) {
-      this.onBackPressureStarted = true
-      this.emit('backPressure', { workerId: this.info.id })
-      this.onBackPressureStarted = false
-    }
-    return tasksQueueSize
-  }
-
-  /** @inheritdoc */
-  public dequeueTask (): Task<Data> | undefined {
-    return this.tasksQueue.shift()
-  }
-
-  /** @inheritdoc */
-  public popTask (): Task<Data> | undefined {
-    return this.tasksQueue.pop()
+  public dequeueTask (bucket?: number): Task<Data> | undefined {
+    return this.tasksQueue.dequeue(bucket)
   }
 
   /** @inheritdoc */
   public deleteTask (task: Task<Data>): boolean {
-    return this.tasksQueue.delete(task)
+    // return this.tasksQueue.delete(task)
+    return false
   }
 
   /** @inheritdoc */
@@ -125,12 +110,6 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   /** @inheritdoc */
   public hasBackPressure (): boolean {
     return this.tasksQueue.size >= this.tasksQueueBackPressureSize
-  }
-
-  /** @inheritdoc */
-  public resetUsage (): void {
-    this.usage = this.initWorkerUsage()
-    this.taskFunctionsUsage.clear()
   }
 
   /** @inheritdoc */
@@ -175,21 +154,21 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
 
   /** @inheritdoc */
   public getTaskFunctionWorkerUsage (name: string): WorkerUsage | undefined {
-    if (!Array.isArray(this.info.taskFunctionNames)) {
+    if (!Array.isArray(this.info.taskFunctionsProperties)) {
       throw new Error(
-        `Cannot get task function worker usage for task function name '${name}' when task function names list is not yet defined`
+        `Cannot get task function worker usage for task function name '${name}' when task function properties list is not yet defined`
       )
     }
     if (
-      Array.isArray(this.info.taskFunctionNames) &&
-      this.info.taskFunctionNames.length < 3
+      Array.isArray(this.info.taskFunctionsProperties) &&
+      this.info.taskFunctionsProperties.length < 3
     ) {
       throw new Error(
-        `Cannot get task function worker usage for task function name '${name}' when task function names list has less than 3 elements`
+        `Cannot get task function worker usage for task function name '${name}' when task function properties list has less than 3 elements`
       )
     }
     if (name === DEFAULT_TASK_NAME) {
-      name = this.info.taskFunctionNames[1]
+      name = this.info.taskFunctionsProperties[1].name
     }
     if (!this.taskFunctionsUsage.has(name)) {
       this.taskFunctionsUsage.set(name, this.initTaskFunctionWorkerUsage(name))
@@ -268,7 +247,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
         if (
           (task.name === DEFAULT_TASK_NAME &&
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            name === this.info.taskFunctionNames![1]) ||
+            name === this.info.taskFunctionsProperties![1].name) ||
           (task.name !== DEFAULT_TASK_NAME && name === task.name)
         ) {
           ++taskFunctionQueueSize

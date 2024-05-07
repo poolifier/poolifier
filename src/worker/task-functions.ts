@@ -1,3 +1,5 @@
+import type { WorkerChoiceStrategy } from '../pools/selection-strategies/selection-strategies-types.js'
+
 /**
  * Task synchronous function that can be executed.
  *
@@ -37,17 +39,37 @@ export type TaskFunction<Data = unknown, Response = unknown> =
   | TaskAsyncFunction<Data, Response>
 
 /**
+ * Task function object.
+ *
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
+ */
+export interface TaskFunctionObject<Data = unknown, Response = unknown> {
+  /**
+   * Task function.
+   */
+  taskFunction: TaskFunction<Data, Response>
+  /**
+   * Task function priority. Lower values have higher priority.
+   */
+  priority?: number
+  /**
+   * Task function worker choice strategy.
+   */
+  strategy?: WorkerChoiceStrategy
+}
+
+/**
  * Tasks functions that can be executed.
- * This object can contain synchronous or asynchronous functions.
- * The key is the name of the function.
- * The value is the function itself.
+ * The key is the name of the task function or task function object.
+ * The value is the task function or task function object.
  *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  */
 export type TaskFunctions<Data = unknown, Response = unknown> = Record<
 string,
-TaskFunction<Data, Response>
+TaskFunction<Data, Response> | TaskFunctionObject<Data, Response>
 >
 
 /**

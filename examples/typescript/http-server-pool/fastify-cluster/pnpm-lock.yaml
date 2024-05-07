@@ -12,15 +12,15 @@ importers:
         specifier: ^4.26.2
         version: 4.26.2
       poolifier:
-        specifier: ^3.1.30
-        version: 3.1.30
+        specifier: ^4.0.2
+        version: 4.0.2
     devDependencies:
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
         version: 11.1.6(rollup@4.17.2)(tslib@2.6.2)(typescript@5.4.5)
       '@types/node':
-        specifier: ^20.12.7
-        version: 20.12.7
+        specifier: ^20.12.10
+        version: 20.12.10
       autocannon:
         specifier: ^7.15.0
         version: 7.15.0
@@ -181,8 +181,8 @@ packages:
   '@types/minimatch@5.1.2':
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
 
-  '@types/node@20.12.7':
-    resolution: {integrity: sha512-wq0cICSkRLVaf3UGLMGItu/PtdY7oaXaI/RVU+xliKVOtRna3PRY57ZDfztpDL0n11vfymMUnXv8QwYCO7L1wg==}
+  '@types/node@20.12.10':
+    resolution: {integrity: sha512-Eem5pH9pmWBHoGAT8Dr5fdc5rYA+4NAovdM4EktRPVAAiJhmWWfQrA0cFhAbOsQdSfIHjAud6YdkbL69+zSKjw==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -350,8 +350,8 @@ packages:
     resolution: {integrity: sha512-oX2ruAFQwf/Orj8m737Y5adxDQO0LAB7/S5MnxCdTNDd4p6BsyIVsv9JQsATbTSq8KHRpLwIHbVlUNatxd+1Ow==}
     engines: {node: '>=8.6.0'}
 
-  fast-json-stringify@5.15.0:
-    resolution: {integrity: sha512-BUEAAyDKb64u+kmkINYfXUUiKjBKerSmVu/dzotfaWSHBxR44JFrOZgkhMO6VxDhDfiuAoi8mx4drd5nvNdA4Q==}
+  fast-json-stringify@5.15.1:
+    resolution: {integrity: sha512-JopGtkvvguRqrS4gHXSSA2jf4pDgOZkeBAkLO1LbzOpiOMo7/kugoR+KiWifpLpluaVeYDkAuxCJOj4Gyc6L9A==}
 
   fast-querystring@1.1.2:
     resolution: {integrity: sha512-g6KuKWmFXc0fID8WWH0jit4g0AGBoJhCkJMb1RmbsSEUNvQ+ZC8D6CUZ+GtF8nMzSPXnhiePyyqqipzNNEnHjg==}
@@ -575,8 +575,8 @@ packages:
     resolution: {integrity: sha512-ip4qdzjkAyDDZklUaZkcRFb2iA118H9SgRh8yzTkSQK8HilsOJF7rSY8HoW5+I0M46AZgX/pxbprf2vvzQCE0Q==}
     hasBin: true
 
-  poolifier@3.1.30:
-    resolution: {integrity: sha512-LxjkhsmqifKGz8R4+vQlaLlP3Uiy8GQsyJokhE9VugqzllZkSULnYgL9SgsKPo8XSHtFVRyyqrG+A1Cw8u8Wfw==}
+  poolifier@4.0.2:
+    resolution: {integrity: sha512-hDVMaPN2DCyUcbIRdmTGSAvNx3tidMvp1Z7cPQepnaHGoYftfuDuGqsxkE8y6z0+Olo6ei/aqQjQRZ+cH8fA8A==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   pretty-bytes@5.6.0:
@@ -770,7 +770,7 @@ snapshots:
 
   '@fastify/fast-json-stringify-compiler@4.3.0':
     dependencies:
-      fast-json-stringify: 5.15.0
+      fast-json-stringify: 5.15.1
 
   '@fastify/merge-json-schemas@0.1.1':
     dependencies:
@@ -858,11 +858,11 @@ snapshots:
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 20.12.7
+      '@types/node': 20.12.10
 
   '@types/minimatch@5.1.2': {}
 
-  '@types/node@20.12.7':
+  '@types/node@20.12.10':
     dependencies:
       undici-types: 5.26.5
 
@@ -1040,7 +1040,7 @@ snapshots:
       merge2: 1.4.1
       micromatch: 4.0.5
 
-  fast-json-stringify@5.15.0:
+  fast-json-stringify@5.15.1:
     dependencies:
       '@fastify/merge-json-schemas': 0.1.1
       ajv: 8.13.0
@@ -1066,7 +1066,7 @@ snapshots:
       abstract-logging: 2.0.1
       avvio: 8.3.0
       fast-content-type-parse: 1.1.0
-      fast-json-stringify: 5.15.0
+      fast-json-stringify: 5.15.1
       find-my-way: 8.2.0
       light-my-request: 5.13.0
       pino: 8.21.0
@@ -1279,7 +1279,7 @@ snapshots:
       sonic-boom: 3.8.1
       thread-stream: 2.7.0
 
-  poolifier@3.1.30: {}
+  poolifier@4.0.2: {}
 
   pretty-bytes@5.6.0: {}
 

@@ -2,8 +2,8 @@ import type { EventEmitter } from 'node:events'
 import type { MessageChannel, WorkerOptions } from 'node:worker_threads'
 
 import type { CircularArray } from '../circular-array.js'
-import type { Deque } from '../deque.js'
-import type { Task } from '../utility-types.js'
+import type { PriorityQueue } from '../priority-queue.js'
+import type { Task, TaskFunctionProperties } from '../utility-types.js'
 
 /**
  * Callback invoked when the worker has started successfully.
@@ -174,9 +174,9 @@ export interface WorkerInfo {
    */
   stealing: boolean
   /**
-   * Task function names.
+   * Task functions properties.
    */
-  taskFunctionNames?: string[]
+  taskFunctionsProperties?: TaskFunctionProperties[]
 }
 
 /**
@@ -268,6 +268,7 @@ export interface WorkerNodeOptions {
   workerOptions?: WorkerOptions
   env?: Record<string, unknown>
   tasksQueueBackPressureSize: number | undefined
+  tasksQueueBucketSize: number | undefined
 }
 
 /**
@@ -303,7 +304,7 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
   /**
    * Tasks queue.
    */
-  readonly tasksQueue: Deque<Task<Data>>
+  readonly tasksQueue: PriorityQueue<Task<Data>>
   /**
    * Tasks queue back pressure size.
    * This is the number of tasks that can be enqueued before the worker node has back pressure.
@@ -323,24 +324,12 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   readonly enqueueTask: (task: Task<Data>) => number
   /**
-   * Prepends a task to the tasks queue.
-   *
-   * @param task - The task to prepend.
-   * @returns The tasks queue size.
-   */
-  readonly unshiftTask: (task: Task<Data>) => number
-  /**
    * Dequeue task.
    *
+   * @param bucket - The prioritized bucket to dequeue from. @defaultValue 0
    * @returns The dequeued task.
    */
-  readonly dequeueTask: () => Task<Data> | undefined
-  /**
-   * Pops a task from the tasks queue.
-   *
-   * @returns The popped task.
-   */
-  readonly popTask: () => Task<Data> | undefined
+  readonly dequeueTask: (bucket?: number) => Task<Data> | undefined
   /**
    * Deletes a task from the tasks queue.
    *
@@ -357,10 +346,6 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    * @returns `true` if the worker node has back pressure, `false` otherwise.
    */
   readonly hasBackPressure: () => boolean
-  /**
-   * Resets usage statistics.
-   */
-  readonly resetUsage: () => void
   /**
    * Terminates the worker node.
    */
@@ -409,5 +394,5 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
 export interface WorkerNodeEventDetail {
   workerId?: number
   workerNodeKey?: number
-  taskId?: string
+  taskId?: `${string}-${string}-${string}-${string}-${string}`
 }
