@@ -97,14 +97,19 @@ export class PriorityQueue<T> {
    * Deletes the given data from the priority queue.
    *
    * @param data - Data to delete.
+   * @returns `true` if the data was deleted, `false` otherwise.
    */
   public delete (data: T): boolean {
-    return (
+    if (
       this.nodeArray.splice(
         this.nodeArray.findIndex(node => node.data === data),
         1
       ).length > 0
-    )
+    ) {
+      --this.size
+      return true
+    }
+    return false
   }
 
   /**

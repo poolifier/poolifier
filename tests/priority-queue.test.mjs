@@ -214,6 +214,27 @@ describe('Priority queue test suite', () => {
     expect(priorityQueue.nodeArray).toStrictEqual([])
   })
 
+  it('Verify delete() behavior', () => {
+    const priorityQueue = new PriorityQueue()
+    priorityQueue.enqueue(1)
+    priorityQueue.enqueue(2)
+    priorityQueue.enqueue(3)
+    expect(priorityQueue.size).toBe(3)
+    expect(priorityQueue.delete(2)).toBe(true)
+    expect(priorityQueue.size).toBe(2)
+    expect(priorityQueue.nodeArray).toStrictEqual([
+      { data: 1, priority: 0 },
+      { data: 3, priority: 0 }
+    ])
+    expect(priorityQueue.delete(3)).toBe(true)
+    expect(priorityQueue.size).toBe(1)
+    expect(priorityQueue.nodeArray).toStrictEqual([{ data: 1, priority: 0 }])
+    expect(priorityQueue.delete(1)).toBe(true)
+    expect(priorityQueue.size).toBe(0)
+    expect(priorityQueue.nodeArray).toStrictEqual([])
+    expect(priorityQueue.delete(2)).toBe(false)
+  })
+
   it('Verify peekFirst() behavior', () => {
     const priorityQueue = new PriorityQueue()
     priorityQueue.enqueue(1)

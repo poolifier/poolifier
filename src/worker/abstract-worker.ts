@@ -33,7 +33,7 @@ import {
 import { KillBehaviors, type WorkerOptions } from './worker-options.js'
 
 interface AbortTaskEventDetail {
-  taskId: string
+  taskId: `${string}-${string}-${string}-${string}`
 }
 
 const DEFAULT_MAX_INACTIVE_TIME = 60000
@@ -76,7 +76,11 @@ export abstract class AbstractWorker<
   /**
    * Task abort functions processed by the worker when task operation 'abort' is received.
    */
-  protected taskAbortFunctions: Map<string, () => void>
+  protected taskAbortFunctions: Map<
+    `${string}-${string}-${string}-${string}`,
+  () => void
+  >
+
   /**
    * Timestamp of the last task processed by this worker.
    */
@@ -109,7 +113,10 @@ export abstract class AbstractWorker<
       throw new Error('isMain parameter is mandatory')
     }
     this.checkTaskFunctions(taskFunctions)
-    this.taskAbortFunctions = new Map<string, () => void>()
+    this.taskAbortFunctions = new Map<
+      `${string}-${string}-${string}-${string}`,
+    () => void
+    >()
     this.on('abortTask', (eventDetail: AbortTaskEventDetail) => {
       const { taskId } = eventDetail
       if (this.taskAbortFunctions.has(taskId)) {
@@ -533,7 +540,7 @@ export abstract class AbstractWorker<
 
   private getAbortableTaskFunction (
     name: string,
-    taskId: string
+    taskId: `${string}-${string}-${string}-${string}`
   ): TaskAsyncFunction<Data, Response> {
     return async (data?: Data): Promise<Response> =>
       await new Promise<Response>(
