@@ -212,8 +212,8 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
       type: getWorkerType(worker)!,
       dynamic: false,
       ready: false,
-      backPressure: false,
-      stealing: false
+      stealing: false,
+      backPressure: false
     }
   }
 

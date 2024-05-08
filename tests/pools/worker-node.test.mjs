@@ -192,8 +192,8 @@ describe('Worker node test suite', () => {
       type: WorkerTypes.thread,
       dynamic: false,
       ready: false,
-      backPressure: false,
-      stealing: false
+      stealing: false,
+      backPressure: false
     })
     expect(threadWorkerNode.usage).toStrictEqual({
       tasks: {
@@ -238,8 +238,8 @@ describe('Worker node test suite', () => {
       type: WorkerTypes.cluster,
       dynamic: false,
       ready: false,
-      backPressure: false,
-      stealing: false
+      stealing: false,
+      backPressure: false
     })
     expect(clusterWorkerNode.usage).toStrictEqual({
       tasks: {

@@ -819,8 +819,8 @@ describe('Abstract pool test suite', () => {
         type: WorkerTypes.cluster,
         dynamic: false,
         ready: true,
-        backPressure: false,
-        stealing: false
+        stealing: false,
+        backPressure: false
       })
     }
     await pool.destroy()
@@ -836,8 +836,8 @@ describe('Abstract pool test suite', () => {
         type: WorkerTypes.thread,
         dynamic: false,
         ready: true,
-        backPressure: false,
-        stealing: false
+        stealing: false,
+        backPressure: false
       })
     }
     await pool.destroy()
