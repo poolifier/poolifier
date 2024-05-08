@@ -1817,7 +1817,7 @@ export abstract class AbstractPool<
     )
     if (sourceWorkerNode != null) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const task = sourceWorkerNode.dequeueLastBucketTask()!
+      const task = sourceWorkerNode.dequeueLastPrioritizedTask()!
       this.handleTask(workerNodeKey, task)
       this.updateTaskSequentiallyStolenStatisticsWorkerUsage(workerNodeKey)
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -1831,6 +1831,7 @@ export abstract class AbstractPool<
   ): void => {
     if (
       this.cannotStealTask() ||
+      this.hasBackPressure() ||
       (this.info.stealingWorkerNodes ?? 0) >
         Math.floor(this.workerNodes.length / 2)
     ) {
@@ -1868,7 +1869,7 @@ export abstract class AbstractPool<
         }
         workerInfo.stealing = true
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const task = sourceWorkerNode.dequeueLastBucketTask()!
+        const task = sourceWorkerNode.dequeueLastPrioritizedTask()!
         this.handleTask(workerNodeKey, task)
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.updateTaskStolenStatisticsWorkerUsage(workerNodeKey, task.name!)

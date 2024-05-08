@@ -192,6 +192,7 @@ describe('Worker node test suite', () => {
       type: WorkerTypes.thread,
       dynamic: false,
       ready: false,
+      backPressure: false,
       stealing: false
     })
     expect(threadWorkerNode.usage).toStrictEqual({
@@ -227,7 +228,7 @@ describe('Worker node test suite', () => {
     expect(threadWorkerNode.tasksQueueSize()).toBe(
       threadWorkerNode.tasksQueue.size
     )
-    expect(threadWorkerNode.onBackPressureStarted).toBe(false)
+    expect(threadWorkerNode.setBackPressureFlag).toBe(false)
     expect(threadWorkerNode.taskFunctionsUsage).toBeInstanceOf(Map)
 
     expect(clusterWorkerNode).toBeInstanceOf(WorkerNode)
@@ -237,6 +238,7 @@ describe('Worker node test suite', () => {
       type: WorkerTypes.cluster,
       dynamic: false,
       ready: false,
+      backPressure: false,
       stealing: false
     })
     expect(clusterWorkerNode.usage).toStrictEqual({
@@ -272,7 +274,7 @@ describe('Worker node test suite', () => {
     expect(clusterWorkerNode.tasksQueueSize()).toBe(
       clusterWorkerNode.tasksQueue.size
     )
-    expect(clusterWorkerNode.onBackPressureStarted).toBe(false)
+    expect(clusterWorkerNode.setBackPressureFlag).toBe(false)
     expect(clusterWorkerNode.taskFunctionsUsage).toBeInstanceOf(Map)
   })
 

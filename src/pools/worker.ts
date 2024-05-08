@@ -173,6 +173,11 @@ export interface WorkerInfo {
    */
   stealing: boolean
   /**
+   * Back pressure flag.
+   * This flag is set to `true` when worker node tasks queue has back pressure.
+   */
+  backPressure: boolean
+  /**
    * Task functions properties.
    */
   taskFunctionsProperties?: TaskFunctionProperties[]
@@ -326,11 +331,11 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   readonly dequeueTask: (bucket?: number) => Task<Data> | undefined
   /**
-   * Dequeue last bucket task.
+   * Dequeue last prioritized task.
    *
    * @returns The dequeued task.
    */
-  readonly dequeueLastBucketTask: () => Task<Data> | undefined
+  readonly dequeueLastPrioritizedTask: () => Task<Data> | undefined
   /**
    * Clears tasks queue.
    */

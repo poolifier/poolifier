@@ -275,7 +275,7 @@ describe('Abstract pool test suite', () => {
         concurrency: 2,
         size: Math.pow(numberOfWorkers, 2),
         taskStealing: true,
-        tasksStealingOnBackPressure: true,
+        tasksStealingOnBackPressure: false,
         tasksFinishedTimeout: 2000
       },
       workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
@@ -591,7 +591,7 @@ describe('Abstract pool test suite', () => {
       concurrency: 1,
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
-      tasksStealingOnBackPressure: true,
+      tasksStealingOnBackPressure: false,
       tasksFinishedTimeout: 2000
     })
     pool.enableTasksQueue(true, { concurrency: 2 })
@@ -600,7 +600,7 @@ describe('Abstract pool test suite', () => {
       concurrency: 2,
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
-      tasksStealingOnBackPressure: true,
+      tasksStealingOnBackPressure: false,
       tasksFinishedTimeout: 2000
     })
     pool.enableTasksQueue(false)
@@ -619,7 +619,7 @@ describe('Abstract pool test suite', () => {
       concurrency: 1,
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
-      tasksStealingOnBackPressure: true,
+      tasksStealingOnBackPressure: false,
       tasksFinishedTimeout: 2000
     })
     for (const workerNode of pool.workerNodes) {
@@ -819,6 +819,7 @@ describe('Abstract pool test suite', () => {
         type: WorkerTypes.cluster,
         dynamic: false,
         ready: true,
+        backPressure: false,
         stealing: false
       })
     }
@@ -835,6 +836,7 @@ describe('Abstract pool test suite', () => {
         type: WorkerTypes.thread,
         dynamic: false,
         ready: true,
+        backPressure: false,
         stealing: false
       })
     }
