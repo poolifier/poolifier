@@ -24,10 +24,10 @@
   "dependencies": {
     "fastify": "^4.27.0",
     "fastify-plugin": "^4.5.1",
-    "poolifier": "^4.0.2"
+    "poolifier": "^4.0.4"
   },
   "devDependencies": {
-    "@types/node": "^20.12.10",
+    "@types/node": "^20.12.11",
     "autocannon": "^7.15.0",
     "typescript": "^5.4.5"
   }
