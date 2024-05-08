@@ -326,6 +326,12 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   readonly dequeueTask: (bucket?: number) => Task<Data> | undefined
   /**
+   * Dequeue last bucket task.
+   *
+   * @returns The dequeued task.
+   */
+  readonly dequeueLastBucketTask: () => Task<Data> | undefined
+  /**
    * Clears tasks queue.
    */
   readonly clearTasksQueue: () => void

@@ -96,6 +96,12 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   }
 
   /** @inheritdoc */
+  public dequeueLastBucketTask (): Task<Data> | undefined {
+    // Start from the last empty or partially filled bucket
+    return this.tasksQueue.dequeue(this.tasksQueue.buckets + 1)
+  }
+
+  /** @inheritdoc */
   public clearTasksQueue (): void {
     this.tasksQueue.clear()
   }
