@@ -90,8 +90,8 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
       this.setBackPressureFlag = true
       this.info.backPressure = true
       this.emit('backPressure', { workerId: this.info.id })
+      this.setBackPressureFlag = false
     }
-    this.setBackPressureFlag = false
     return tasksQueueSize
   }
 
@@ -105,8 +105,8 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     ) {
       this.setBackPressureFlag = true
       this.info.backPressure = false
+      this.setBackPressureFlag = false
     }
-    this.setBackPressureFlag = false
     return task
   }
 
