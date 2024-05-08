@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.4] - 2024-05-08
+
 ### Fixed
 
 - Disable `tasksStealingOnBackPressure` by default until performance issues under heavy load are sorted out.
