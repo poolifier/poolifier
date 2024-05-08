@@ -789,6 +789,7 @@ describe('Abstract pool test suite', () => {
       expect(workerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
       expect(workerNode.tasksQueue.size).toBe(0)
       expect(workerNode.tasksQueue.maxSize).toBe(0)
+      expect(workerNode.tasksQueue.k).toBe(numberOfWorkers * 2)
     }
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -801,6 +802,7 @@ describe('Abstract pool test suite', () => {
       expect(workerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
       expect(workerNode.tasksQueue.size).toBe(0)
       expect(workerNode.tasksQueue.maxSize).toBe(0)
+      expect(workerNode.tasksQueue.k).toBe(numberOfWorkers * 2)
     }
     await pool.destroy()
   })

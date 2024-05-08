@@ -13,12 +13,12 @@ describe('Worker node test suite', () => {
   const threadWorkerNode = new WorkerNode(
     WorkerTypes.thread,
     './tests/worker-files/thread/testWorker.mjs',
-    { tasksQueueBackPressureSize: 12 }
+    { tasksQueueBackPressureSize: 12, tasksQueueBucketSize: 6 }
   )
   const clusterWorkerNode = new WorkerNode(
     WorkerTypes.cluster,
     './tests/worker-files/cluster/testWorker.cjs',
-    { tasksQueueBackPressureSize: 12 }
+    { tasksQueueBackPressureSize: 12, tasksQueueBucketSize: 6 }
   )
 
   it('Worker node instantiation', () => {
@@ -120,6 +120,71 @@ describe('Worker node test suite', () => {
         'Cannot construct a worker node with a tasks queue back pressure size option that is not a positive integer'
       )
     )
+    expect(
+      () =>
+        new WorkerNode(
+          WorkerTypes.thread,
+          './tests/worker-files/thread/testWorker.mjs',
+          {
+            tasksQueueBackPressureSize: 12
+          }
+        )
+    ).toThrow(
+      new TypeError(
+        'Cannot construct a worker node without a tasks queue bucket size option'
+      )
+    )
+    expect(
+      () =>
+        new WorkerNode(
+          WorkerTypes.thread,
+          './tests/worker-files/thread/testWorker.mjs',
+          {
+            tasksQueueBackPressureSize: 12,
+            tasksQueueBucketSize: 'invalidTasksQueueBucketSize'
+          }
+        )
+    ).toThrow(
+      new TypeError(
+        'Cannot construct a worker node with a tasks queue bucket size option that is not an integer'
+      )
+    )
+    expect(
+      () =>
+        new WorkerNode(
+          WorkerTypes.thread,
+          './tests/worker-files/thread/testWorker.mjs',
+          { tasksQueueBackPressureSize: 12, tasksQueueBucketSize: 0.2 }
+        )
+    ).toThrow(
+      new TypeError(
+        'Cannot construct a worker node with a tasks queue bucket size option that is not an integer'
+      )
+    )
+    expect(
+      () =>
+        new WorkerNode(
+          WorkerTypes.thread,
+          './tests/worker-files/thread/testWorker.mjs',
+          { tasksQueueBackPressureSize: 12, tasksQueueBucketSize: 0 }
+        )
+    ).toThrow(
+      new RangeError(
+        'Cannot construct a worker node with a tasks queue bucket size option that is not a positive integer'
+      )
+    )
+    expect(
+      () =>
+        new WorkerNode(
+          WorkerTypes.thread,
+          './tests/worker-files/thread/testWorker.mjs',
+          { tasksQueueBackPressureSize: 12, tasksQueueBucketSize: -1 }
+        )
+    ).toThrow(
+      new RangeError(
+        'Cannot construct a worker node with a tasks queue bucket size option that is not a positive integer'
+      )
+    )
     expect(threadWorkerNode).toBeInstanceOf(WorkerNode)
     expect(threadWorkerNode.worker).toBeInstanceOf(ThreadWorker)
     expect(threadWorkerNode.info).toStrictEqual({
@@ -158,6 +223,7 @@ describe('Worker node test suite', () => {
     expect(threadWorkerNode.tasksQueueBackPressureSize).toBe(12)
     expect(threadWorkerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
     expect(threadWorkerNode.tasksQueue.size).toBe(0)
+    expect(threadWorkerNode.tasksQueue.k).toBe(6)
     expect(threadWorkerNode.tasksQueueSize()).toBe(
       threadWorkerNode.tasksQueue.size
     )
@@ -202,6 +268,7 @@ describe('Worker node test suite', () => {
     expect(clusterWorkerNode.tasksQueueBackPressureSize).toBe(12)
     expect(clusterWorkerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
     expect(clusterWorkerNode.tasksQueue.size).toBe(0)
+    expect(clusterWorkerNode.tasksQueue.k).toBe(6)
     expect(clusterWorkerNode.tasksQueueSize()).toBe(
       clusterWorkerNode.tasksQueue.size
     )
