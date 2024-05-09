@@ -1670,7 +1670,7 @@ export abstract class AbstractPool<
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (workerNode.usage != null) {
+    if (workerNode?.usage != null) {
       ++workerNode.usage.tasks.sequentiallyStolen
     }
     const taskFunctionWorkerUsage =
