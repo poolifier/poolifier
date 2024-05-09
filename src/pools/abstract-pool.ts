@@ -1656,17 +1656,15 @@ export abstract class AbstractPool<
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
     ) {
-      const taskFunctionWorkerUsage =
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        workerNode.getTaskFunctionWorkerUsage(taskName)!
-      ++taskFunctionWorkerUsage.tasks.stolen
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      ++workerNode.getTaskFunctionWorkerUsage(taskName)!.tasks.stolen
     }
   }
 
   private updateTaskSequentiallyStolenStatisticsWorkerUsage (
     workerNodeKey: number,
     taskName: string,
-    previousStolenTaskName: string
+    previousTaskName?: string
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -1679,13 +1677,15 @@ export abstract class AbstractPool<
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       taskFunctionWorkerUsage != null &&
       (taskFunctionWorkerUsage.tasks.sequentiallyStolen === 0 ||
-        (previousStolenTaskName === taskName &&
+        (previousTaskName != null &&
+          previousTaskName === taskName &&
           taskFunctionWorkerUsage.tasks.sequentiallyStolen > 0))
     ) {
       ++taskFunctionWorkerUsage.tasks.sequentiallyStolen
     } else if (
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
-      taskFunctionWorkerUsage != null
+      taskFunctionWorkerUsage != null &&
+      taskFunctionWorkerUsage.tasks.sequentiallyStolen > 0
     ) {
       taskFunctionWorkerUsage.tasks.sequentiallyStolen = 0
     }
@@ -1704,10 +1704,10 @@ export abstract class AbstractPool<
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
     ) {
-      const taskFunctionWorkerUsage =
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        workerNode.getTaskFunctionWorkerUsage(taskName)!
-      taskFunctionWorkerUsage.tasks.sequentiallyStolen = 0
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      workerNode.getTaskFunctionWorkerUsage(
+        taskName
+      )!.tasks.sequentiallyStolen = 0
     }
   }
 
@@ -1759,13 +1759,12 @@ export abstract class AbstractPool<
     }
     workerInfo.stealing = true
     const stolenTask = this.workerNodeStealTask(workerNodeKey)
-    if (stolenTask != null && previousStolenTask != null) {
+    if (stolenTask != null) {
       this.updateTaskSequentiallyStolenStatisticsWorkerUsage(
         workerNodeKey,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         stolenTask.name!,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        previousStolenTask.name!
+        previousStolenTask?.name
       )
     }
     sleep(exponentialDelay(workerNodeTasksUsage.sequentiallyStolen))
