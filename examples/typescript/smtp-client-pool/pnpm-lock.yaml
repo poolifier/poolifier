@@ -12,8 +12,8 @@ importers:
         specifier: ^6.9.13
         version: 6.9.13
       poolifier:
-        specifier: ^4.0.4
-        version: 4.0.4
+        specifier: ^4.0.5
+        version: 4.0.5
     devDependencies:
       '@types/node':
         specifier: ^20.12.11
@@ -37,8 +37,8 @@ packages:
     resolution: {integrity: sha512-7o38Yogx6krdoBf3jCAqnIN4oSQFx+fMa0I7dK1D+me9kBxx12D+/33wSb+fhOCtIxvYJ+4x4IMEhmhCKfAiOA==}
     engines: {node: '>=6.0.0'}
 
-  poolifier@4.0.4:
-    resolution: {integrity: sha512-HpMujmrqovQfO0UZ/ZY5DtRCNiv56lQWPXPvD4PFS5QLzoU7/e812EnMxWMSlSeCLjIS4Nh/LGVMalA5pHpQHg==}
+  poolifier@4.0.5:
+    resolution: {integrity: sha512-kCmN8XPkmloDX6zEu2HPihne+sbSrp+DFKnmHMypqDq3TF0epIRkhlccewOcZiYEjTzNL9frzamDjDcSSHcC9Q==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   typescript@5.4.5:
@@ -61,7 +61,7 @@ snapshots:
 
   nodemailer@6.9.13: {}
 
-  poolifier@4.0.4: {}
+  poolifier@4.0.5: {}
 
   typescript@5.4.5: {}
 
