@@ -15,20 +15,20 @@ importers:
         specifier: ^3.3.2
         version: 3.3.2
       poolifier:
-        specifier: ^4.0.2
-        version: 4.0.2
+        specifier: ^4.0.5
+        version: 4.0.5
     devDependencies:
       '@types/node':
-        specifier: ^20.12.10
-        version: 20.12.10
+        specifier: ^20.12.11
+        version: 20.12.11
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
 
 packages:
 
-  '@types/node@20.12.10':
-    resolution: {integrity: sha512-Eem5pH9pmWBHoGAT8Dr5fdc5rYA+4NAovdM4EktRPVAAiJhmWWfQrA0cFhAbOsQdSfIHjAud6YdkbL69+zSKjw==}
+  '@types/node@20.12.11':
+    resolution: {integrity: sha512-vDg9PZ/zi+Nqp6boSOT7plNuthRugEKixDv5sFTIpkE89MmNtEArAShI4mxuX2+UrLEe9pxC1vm2cjm9YlWbJw==}
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
@@ -85,8 +85,8 @@ packages:
     resolution: {integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  poolifier@4.0.2:
-    resolution: {integrity: sha512-hDVMaPN2DCyUcbIRdmTGSAvNx3tidMvp1Z7cPQepnaHGoYftfuDuGqsxkE8y6z0+Olo6ei/aqQjQRZ+cH8fA8A==}
+  poolifier@4.0.5:
+    resolution: {integrity: sha512-kCmN8XPkmloDX6zEu2HPihne+sbSrp+DFKnmHMypqDq3TF0epIRkhlccewOcZiYEjTzNL9frzamDjDcSSHcC9Q==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   proxy-from-env@1.1.0:
@@ -106,7 +106,7 @@ packages:
 
 snapshots:
 
-  '@types/node@20.12.10':
+  '@types/node@20.12.11':
     dependencies:
       undici-types: 5.26.5
 
@@ -159,7 +159,7 @@ snapshots:
       fetch-blob: 3.2.0
       formdata-polyfill: 4.0.10
 
-  poolifier@4.0.2: {}
+  poolifier@4.0.5: {}
 
   proxy-from-env@1.1.0: {}
 

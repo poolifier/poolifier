@@ -27,6 +27,13 @@ export class PriorityQueue<T> {
   public maxSize!: number
 
   /**
+   * The number of filled prioritized buckets.
+   */
+  public get buckets (): number {
+    return this.k === Infinity ? 1 : Math.trunc(this.nodeArray.length / this.k)
+  }
+
+  /**
    * Constructs a priority queue.
    *
    * @param k - Prioritized bucket size. @defaultValue Infinity
@@ -51,10 +58,7 @@ export class PriorityQueue<T> {
    */
   public enqueue (data: T, priority?: number): number {
     priority = priority ?? 0
-    const startIndex =
-      this.k === Infinity || this.nodeArray.length / this.k < 1
-        ? 0
-        : Math.trunc(this.nodeArray.length / this.k) * this.k
+    const startIndex = this.k === Infinity ? 0 : this.buckets * this.k
     let inserted = false
     for (let index = startIndex; index < this.nodeArray.length; index++) {
       if (this.nodeArray[index].priority > priority) {

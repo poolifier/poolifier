@@ -43,7 +43,7 @@ export const getDefaultTasksQueueOptions = (
     size: Math.pow(poolMaxSize, 2),
     concurrency: 1,
     taskStealing: true,
-    tasksStealingOnBackPressure: true,
+    tasksStealingOnBackPressure: false,
     tasksFinishedTimeout: 2000
   }
 }
@@ -185,6 +185,21 @@ export const checkWorkerNodeArguments = (
   if (opts.tasksQueueBackPressureSize <= 0) {
     throw new RangeError(
       'Cannot construct a worker node with a tasks queue back pressure size option that is not a positive integer'
+    )
+  }
+  if (opts.tasksQueueBucketSize == null) {
+    throw new TypeError(
+      'Cannot construct a worker node without a tasks queue bucket size option'
+    )
+  }
+  if (!Number.isSafeInteger(opts.tasksQueueBucketSize)) {
+    throw new TypeError(
+      'Cannot construct a worker node with a tasks queue bucket size option that is not an integer'
+    )
+  }
+  if (opts.tasksQueueBucketSize <= 0) {
+    throw new RangeError(
+      'Cannot construct a worker node with a tasks queue bucket size option that is not a positive integer'
     )
   }
 }

@@ -22,13 +22,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^4.26.2",
+    "fastify": "^4.27.0",
     "fastify-plugin": "^4.5.1",
-    "poolifier": "^4.0.2"
+    "poolifier": "^4.0.5"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/node": "^20.12.10",
+    "@types/node": "^20.12.11",
     "autocannon": "^7.15.0",
     "rollup": "^4.17.2",
     "rollup-plugin-delete": "^2.0.0",

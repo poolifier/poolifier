@@ -32,7 +32,7 @@ describe('Pool utils test suite', () => {
       concurrency: 1,
       size: Math.pow(poolMaxSize, 2),
       taskStealing: true,
-      tasksStealingOnBackPressure: true,
+      tasksStealingOnBackPressure: false,
       tasksFinishedTimeout: 2000
     })
   })

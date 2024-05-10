@@ -3,7 +3,10 @@ import type { EventEmitterAsyncResource } from 'node:events'
 import type { TransferListItem, WorkerOptions } from 'node:worker_threads'
 
 import type { TaskFunctionProperties } from '../utility-types.js'
-import type { TaskFunction } from '../worker/task-functions.js'
+import type {
+  TaskFunction,
+  TaskFunctionObject
+} from '../worker/task-functions.js'
 import type {
   WorkerChoiceStrategy,
   WorkerChoiceStrategyOptions
@@ -137,7 +140,7 @@ export interface TasksQueueOptions {
   /**
    * Whether to enable tasks stealing under back pressure.
    *
-   * @defaultValue true
+   * @defaultValue false
    */
   readonly tasksStealingOnBackPressure?: boolean
   /**
@@ -310,11 +313,11 @@ export interface IPool<
    * @param fn - The task function.
    * @returns `true` if the task function was added, `false` otherwise.
    * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string or an empty string.
-   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `fn` parameter is not a function.
+   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `fn` parameter is not a function or task function object.
    */
   readonly addTaskFunction: (
     name: string,
-    fn: TaskFunction<Data, Response>
+    fn: TaskFunction<Data, Response> | TaskFunctionObject<Data, Response>
   ) => Promise<boolean>
   /**
    * Removes a task function from this pool.
