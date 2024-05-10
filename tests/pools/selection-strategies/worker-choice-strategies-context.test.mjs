@@ -417,7 +417,8 @@ describe('Worker choice strategies context test suite', () => {
       fixedPool,
       [wwrWorkerChoiceStrategy],
       {
-        runTime: { median: true }
+        runTime: { median: true },
+        waitTime: { median: true }
       }
     )
     expect(
@@ -428,11 +429,20 @@ describe('Worker choice strategies context test suite', () => {
       workerChoiceStrategiesContext.getTaskStatisticsRequirements().runTime
         .median
     ).toBe(true)
+    expect(
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().waitTime
+        .average
+    ).toBe(false)
+    expect(
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().waitTime
+        .median
+    ).toBe(true)
     workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       dynamicPool,
       [wwrWorkerChoiceStrategy],
       {
-        runTime: { median: true }
+        runTime: { median: true },
+        waitTime: { median: true }
       }
     )
     expect(
@@ -441,6 +451,14 @@ describe('Worker choice strategies context test suite', () => {
     ).toBe(false)
     expect(
       workerChoiceStrategiesContext.getTaskStatisticsRequirements().runTime
+        .median
+    ).toBe(true)
+    expect(
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().waitTime
+        .average
+    ).toBe(false)
+    expect(
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().waitTime
         .median
     ).toBe(true)
     const fsWorkerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
@@ -448,7 +466,8 @@ describe('Worker choice strategies context test suite', () => {
       fixedPool,
       [fsWorkerChoiceStrategy],
       {
-        runTime: { median: true }
+        runTime: { median: true },
+        waitTime: { median: true }
       }
     )
     expect(
@@ -459,11 +478,20 @@ describe('Worker choice strategies context test suite', () => {
       workerChoiceStrategiesContext.getTaskStatisticsRequirements().runTime
         .median
     ).toBe(true)
+    expect(
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().waitTime
+        .average
+    ).toBe(false)
+    expect(
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().waitTime
+        .median
+    ).toBe(true)
     workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       dynamicPool,
       [fsWorkerChoiceStrategy],
       {
-        runTime: { median: true }
+        runTime: { median: true },
+        waitTime: { median: true }
       }
     )
     expect(
@@ -472,6 +500,14 @@ describe('Worker choice strategies context test suite', () => {
     ).toBe(false)
     expect(
       workerChoiceStrategiesContext.getTaskStatisticsRequirements().runTime
+        .median
+    ).toBe(true)
+    expect(
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().waitTime
+        .average
+    ).toBe(false)
+    expect(
+      workerChoiceStrategiesContext.getTaskStatisticsRequirements().waitTime
         .median
     ).toBe(true)
   })

@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.5] - 2024-05-09
+
+### Fixed
+
+- Avoid queued tasks redistribution on the errored worker node.
+
+## [4.0.4] - 2024-05-08
+
+### Fixed
+
+- Disable `tasksStealingOnBackPressure` by default until performance issues under heavy load are sorted out.
+
+## [4.0.3] - 2024-05-08
+
+### Changed
+
+- Optimize task(s) stealing by dequeuing task(s) from the last prioritized bucket.
+
 ## [4.0.2] - 2024-05-06
 
 ### Fixed
@@ -404,7 +422,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `startWorkers` to pool options to whether start the minimum number of workers at pool initialization or not.
 - Add `start()` method to pool API to start the minimum number of workers.
-- Add `taskStealing` and `tasksStealingOnPressure` to tasks queue options to whether enable task stealing or not and whether enable tasks stealing under back pressure or not.
+- Add `taskStealing` and `tasksStealingOnBackPressure` to tasks queue options to whether enable task stealing or not and whether enable tasks stealing under back pressure or not.
 - Continuous internal benchmarking: [https://poolifier.github.io/benchmark-results/dev/bench](https://poolifier.github.io/benchmark-results/dev/bench).
 
 ## [2.6.44] - 2023-09-08

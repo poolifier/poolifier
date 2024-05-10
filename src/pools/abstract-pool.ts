@@ -92,8 +92,13 @@ export abstract class AbstractPool<
    *
    * When we receive a message from the worker, we get a map entry with the promise resolve/reject bound to the message id.
    */
-  protected promiseResponseMap: Map<string, PromiseResponseWrapper<Response>> =
-    new Map<string, PromiseResponseWrapper<Response>>()
+  protected promiseResponseMap: Map<
+    `${string}-${string}-${string}-${string}-${string}`,
+  PromiseResponseWrapper<Response>
+  > = new Map<
+    `${string}-${string}-${string}-${string}-${string}`,
+    PromiseResponseWrapper<Response>
+    >()
 
   /**
    * Worker choice strategies context referencing worker choice algorithms implementation.
@@ -1614,14 +1619,15 @@ export abstract class AbstractPool<
     }
   }
 
-  private redistributeQueuedTasks (workerNodeKey: number): void {
-    if (workerNodeKey === -1 || this.cannotStealTask()) {
+  private redistributeQueuedTasks (sourceWorkerNodeKey: number): void {
+    if (sourceWorkerNodeKey === -1 || this.cannotStealTask()) {
       return
     }
-    while (this.tasksQueueSize(workerNodeKey) > 0) {
+    while (this.tasksQueueSize(sourceWorkerNodeKey) > 0) {
       const destinationWorkerNodeKey = this.workerNodes.reduce(
         (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
-          return workerNode.info.ready &&
+          return sourceWorkerNodeKey !== workerNodeKey &&
+            workerNode.info.ready &&
             workerNode.usage.tasks.queued <
               workerNodes[minWorkerNodeKey].usage.tasks.queued
             ? workerNodeKey
@@ -1632,7 +1638,7 @@ export abstract class AbstractPool<
       this.handleTask(
         destinationWorkerNodeKey,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.dequeueTask(workerNodeKey)!
+        this.dequeueTask(sourceWorkerNodeKey)!
       )
     }
   }
@@ -1650,28 +1656,21 @@ export abstract class AbstractPool<
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
     ) {
-      const taskFunctionWorkerUsage =
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        workerNode.getTaskFunctionWorkerUsage(taskName)!
-      ++taskFunctionWorkerUsage.tasks.stolen
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      ++workerNode.getTaskFunctionWorkerUsage(taskName)!.tasks.stolen
     }
   }
 
   private updateTaskSequentiallyStolenStatisticsWorkerUsage (
-    workerNodeKey: number
+    workerNodeKey: number,
+    taskName: string,
+    previousTaskName?: string
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (workerNode?.usage != null) {
       ++workerNode.usage.tasks.sequentiallyStolen
     }
-  }
-
-  private updateTaskSequentiallyStolenStatisticsTaskFunctionWorkerUsage (
-    workerNodeKey: number,
-    taskName: string
-  ): void {
-    const workerNode = this.workerNodes[workerNodeKey]
     if (
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
@@ -1679,33 +1678,36 @@ export abstract class AbstractPool<
       const taskFunctionWorkerUsage =
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         workerNode.getTaskFunctionWorkerUsage(taskName)!
-      ++taskFunctionWorkerUsage.tasks.sequentiallyStolen
+      if (
+        taskFunctionWorkerUsage.tasks.sequentiallyStolen === 0 ||
+        (previousTaskName != null &&
+          previousTaskName === taskName &&
+          taskFunctionWorkerUsage.tasks.sequentiallyStolen > 0)
+      ) {
+        ++taskFunctionWorkerUsage.tasks.sequentiallyStolen
+      } else if (taskFunctionWorkerUsage.tasks.sequentiallyStolen > 0) {
+        taskFunctionWorkerUsage.tasks.sequentiallyStolen = 0
+      }
     }
   }
 
   private resetTaskSequentiallyStolenStatisticsWorkerUsage (
-    workerNodeKey: number
+    workerNodeKey: number,
+    taskName: string
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (workerNode?.usage != null) {
       workerNode.usage.tasks.sequentiallyStolen = 0
     }
-  }
-
-  private resetTaskSequentiallyStolenStatisticsTaskFunctionWorkerUsage (
-    workerNodeKey: number,
-    taskName: string
-  ): void {
-    const workerNode = this.workerNodes[workerNodeKey]
     if (
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
     ) {
-      const taskFunctionWorkerUsage =
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        workerNode.getTaskFunctionWorkerUsage(taskName)!
-      taskFunctionWorkerUsage.tasks.sequentiallyStolen = 0
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      workerNode.getTaskFunctionWorkerUsage(
+        taskName
+      )!.tasks.sequentiallyStolen = 0
     }
   }
 
@@ -1727,6 +1729,11 @@ export abstract class AbstractPool<
     ) {
       if (workerInfo != null && previousStolenTask != null) {
         workerInfo.stealing = false
+        this.resetTaskSequentiallyStolenStatisticsWorkerUsage(
+          workerNodeKey,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          previousStolenTask.name!
+        )
       }
       return
     }
@@ -1734,19 +1741,15 @@ export abstract class AbstractPool<
     if (
       workerInfo != null &&
       previousStolenTask != null &&
-      workerNodeTasksUsage.sequentiallyStolen > 0 &&
       (workerNodeTasksUsage.executing > 0 ||
         this.tasksQueueSize(workerNodeKey) > 0)
     ) {
       workerInfo.stealing = false
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      for (const taskFunctionProperties of workerInfo.taskFunctionsProperties!) {
-        this.resetTaskSequentiallyStolenStatisticsTaskFunctionWorkerUsage(
-          workerNodeKey,
-          taskFunctionProperties.name
-        )
-      }
-      this.resetTaskSequentiallyStolenStatisticsWorkerUsage(workerNodeKey)
+      this.resetTaskSequentiallyStolenStatisticsWorkerUsage(
+        workerNodeKey,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        previousStolenTask.name!
+      )
       return
     }
     if (workerInfo == null) {
@@ -1756,33 +1759,13 @@ export abstract class AbstractPool<
     }
     workerInfo.stealing = true
     const stolenTask = this.workerNodeStealTask(workerNodeKey)
-    if (
-      this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
-      stolenTask != null
-    ) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const taskFunctionTasksWorkerUsage = this.workerNodes[
-        workerNodeKey
+    if (stolenTask != null) {
+      this.updateTaskSequentiallyStolenStatisticsWorkerUsage(
+        workerNodeKey,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      ].getTaskFunctionWorkerUsage(stolenTask.name!)!.tasks
-      if (
-        taskFunctionTasksWorkerUsage.sequentiallyStolen === 0 ||
-        (previousStolenTask != null &&
-          previousStolenTask.name === stolenTask.name &&
-          taskFunctionTasksWorkerUsage.sequentiallyStolen > 0)
-      ) {
-        this.updateTaskSequentiallyStolenStatisticsTaskFunctionWorkerUsage(
-          workerNodeKey,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          stolenTask.name!
-        )
-      } else {
-        this.resetTaskSequentiallyStolenStatisticsTaskFunctionWorkerUsage(
-          workerNodeKey,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          stolenTask.name!
-        )
-      }
+        stolenTask.name!,
+        previousStolenTask?.name
+      )
     }
     sleep(exponentialDelay(workerNodeTasksUsage.sequentiallyStolen))
       .then(() => {
@@ -1812,9 +1795,8 @@ export abstract class AbstractPool<
     )
     if (sourceWorkerNode != null) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const task = sourceWorkerNode.dequeueTask(1)!
+      const task = sourceWorkerNode.dequeueLastPrioritizedTask()!
       this.handleTask(workerNodeKey, task)
-      this.updateTaskSequentiallyStolenStatisticsWorkerUsage(workerNodeKey)
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.updateTaskStolenStatisticsWorkerUsage(workerNodeKey, task.name!)
       return task
@@ -1826,6 +1808,7 @@ export abstract class AbstractPool<
   ): void => {
     if (
       this.cannotStealTask() ||
+      this.hasBackPressure() ||
       (this.info.stealingWorkerNodes ?? 0) >
         Math.floor(this.workerNodes.length / 2)
     ) {
@@ -1863,7 +1846,7 @@ export abstract class AbstractPool<
         }
         workerInfo.stealing = true
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const task = sourceWorkerNode.dequeueTask(1)!
+        const task = sourceWorkerNode.dequeueLastPrioritizedTask()!
         this.handleTask(workerNodeKey, task)
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.updateTaskStolenStatisticsWorkerUsage(workerNodeKey, task.name!)
@@ -2100,11 +2083,8 @@ export abstract class AbstractPool<
     return tasksQueueSize
   }
 
-  private dequeueTask (
-    workerNodeKey: number,
-    bucket?: number
-  ): Task<Data> | undefined {
-    return this.workerNodes[workerNodeKey].dequeueTask(bucket)
+  private dequeueTask (workerNodeKey: number): Task<Data> | undefined {
+    return this.workerNodes[workerNodeKey].dequeueTask()
   }
 
   private tasksQueueSize (workerNodeKey: number): number {
