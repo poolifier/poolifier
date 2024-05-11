@@ -45,6 +45,7 @@ module.exports = defineConfig({
           'cpus',
           'cryptographically',
           'ctx',
+          'decrement',
           'deprecations',
           'deque',
           'dequeue',
