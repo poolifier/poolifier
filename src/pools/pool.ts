@@ -113,6 +113,20 @@ export interface PoolInfo {
     readonly average?: number
     readonly median?: number
   }
+  readonly elu?: {
+    idle: {
+      readonly minimum: number
+      readonly maximum: number
+      readonly average?: number
+      readonly median?: number
+    }
+    active: {
+      readonly minimum: number
+      readonly maximum: number
+      readonly average?: number
+      readonly median?: number
+    }
+  }
 }
 
 /**
