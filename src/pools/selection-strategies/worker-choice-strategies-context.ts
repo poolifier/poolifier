@@ -137,11 +137,10 @@ export class WorkerChoiceStrategiesContext<
    * @returns `true` if the update is successful, `false` otherwise.
    */
   public update (workerNodeKey: number): boolean {
-    const res: boolean[] = []
-    for (const workerChoiceStrategy of this.workerChoiceStrategies.values()) {
-      res.push(workerChoiceStrategy.update(workerNodeKey))
-    }
-    return res.every(r => r)
+    return Array.from(
+      this.workerChoiceStrategies,
+      ([_, workerChoiceStrategy]) => workerChoiceStrategy.update(workerNodeKey)
+    ).every(r => r)
   }
 
   /**
@@ -195,11 +194,10 @@ export class WorkerChoiceStrategiesContext<
    * @returns `true` if the removal is successful, `false` otherwise.
    */
   public remove (workerNodeKey: number): boolean {
-    const res: boolean[] = []
-    for (const workerChoiceStrategy of this.workerChoiceStrategies.values()) {
-      res.push(workerChoiceStrategy.remove(workerNodeKey))
-    }
-    return res.every(r => r)
+    return Array.from(
+      this.workerChoiceStrategies,
+      ([_, workerChoiceStrategy]) => workerChoiceStrategy.remove(workerNodeKey)
+    ).every(r => r)
   }
 
   /**

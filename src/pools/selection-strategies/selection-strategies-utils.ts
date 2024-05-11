@@ -118,10 +118,10 @@ export const toggleMedianMeasurementStatisticsRequirements = (
 export const buildWorkerChoiceStrategiesPolicy = (
   workerChoiceStrategies: Map<WorkerChoiceStrategy, IWorkerChoiceStrategy>
 ): StrategyPolicy => {
-  const policies: StrategyPolicy[] = []
-  for (const workerChoiceStrategy of workerChoiceStrategies.values()) {
-    policies.push(workerChoiceStrategy.strategyPolicy)
-  }
+  const policies: StrategyPolicy[] = Array.from(
+    workerChoiceStrategies,
+    ([_, workerChoiceStrategy]) => workerChoiceStrategy.strategyPolicy
+  )
   return {
     dynamicWorkerUsage: policies.some(p => p.dynamicWorkerUsage),
     dynamicWorkerReady: policies.some(p => p.dynamicWorkerReady)
@@ -131,12 +131,11 @@ export const buildWorkerChoiceStrategiesPolicy = (
 export const buildWorkerChoiceStrategiesTaskStatisticsRequirements = (
   workerChoiceStrategies: Map<WorkerChoiceStrategy, IWorkerChoiceStrategy>
 ): TaskStatisticsRequirements => {
-  const taskStatisticsRequirements: TaskStatisticsRequirements[] = []
-  for (const workerChoiceStrategy of workerChoiceStrategies.values()) {
-    taskStatisticsRequirements.push(
+  const taskStatisticsRequirements: TaskStatisticsRequirements[] = Array.from(
+    workerChoiceStrategies,
+    ([_, workerChoiceStrategy]) =>
       workerChoiceStrategy.taskStatisticsRequirements
-    )
-  }
+  )
   return {
     runTime: {
       aggregate: taskStatisticsRequirements.some(r => r.runTime.aggregate),
