@@ -30,14 +30,14 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --ignore-scripts --frozen-lockfile
-      # - uses: bencherdev/bencher@main
-      # - name: Run production benchmark
-      #   run: |
-      #     bencher run \
-      #     --if-branch "$GITHUB_REF_NAME" \
-      #     --else-if-branch "$GITHUB_BASE_REF" \
-      #     --else-if-branch master \
-      #     --hash "$GITHUB_SHA" \
-      #     --err \
-      #     --github-actions ${{ secrets.GITHUB_TOKEN }} \
-      #     "pnpm benchmark:benchmark.js:prod"
+      - uses: bencherdev/bencher@main
+      - name: Run production benchmark
+        run: |
+          bencher run \
+          --if-branch "$GITHUB_REF_NAME" \
+          --else-if-branch "$GITHUB_BASE_REF" \
+          --else-if-branch master \
+          --hash "$GITHUB_SHA" \
+          --err \
+          --github-actions ${{ secrets.GITHUB_TOKEN }} \
+          "pnpm benchmark:benchmark.js:prod"

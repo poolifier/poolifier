@@ -17,7 +17,7 @@ const poolSize = availableParallelism()
 const taskExecutions = 1
 const workerData = {
   function: TaskFunctions.factorial,
-  taskSize: 50000
+  taskSize: 1000
 }
 
 switch (
