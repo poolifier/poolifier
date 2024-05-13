@@ -54,24 +54,9 @@ const buildPoolifierPool = (workerType, poolType, poolSize, poolOptions) => {
 }
 
 const runPoolifierPool = async (pool, { taskExecutions, workerData }) => {
-  return await new Promise((resolve, reject) => {
-    let executions = 0
-    for (let i = 1; i <= taskExecutions; i++) {
-      pool
-        .execute(workerData)
-        .then(() => {
-          ++executions
-          if (executions === taskExecutions) {
-            resolve({ ok: 1 })
-          }
-          return undefined
-        })
-        .catch(err => {
-          console.error(err)
-          reject(err)
-        })
-    }
-  })
+  for (let i = 1; i <= taskExecutions; i++) {
+    await pool.execute(workerData)
+  }
 }
 
 export const runPoolifierBenchmarkTatamiNg = async (
