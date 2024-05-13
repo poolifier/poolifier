@@ -109,8 +109,8 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.12.11",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
-    "@typescript-eslint/parser": "^7.8.0",
+    "@typescript-eslint/eslint-plugin": "^7.9.0",
+    "@typescript-eslint/parser": "^7.9.0",
     "c8": "^9.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
@@ -139,7 +139,7 @@
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^6.1.0",
     "sinon": "^17.0.2",
-    "tatami-ng": "^0.4.8",
+    "tatami-ng": "^0.4.9",
     "typedoc": "^0.25.13",
     "typescript": "~5.4.5"
   }
