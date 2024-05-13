@@ -21,9 +21,6 @@
     "build:prod": "rollup --config",
     "build:typedoc": "rollup --config --environment DOCUMENTATION,BUILD:development",
     "build:analyze": "rollup --config --environment ANALYZE,BUILD:development",
-    "benchmark:benchmark.js": "pnpm build && node --enable-source-maps benchmarks/internal/bench.mjs -t benchmark.js",
-    "benchmark:benchmark.js:prod": "pnpm build:prod && node --enable-source-maps benchmarks/internal/bench.mjs -t benchmark.js",
-    "benchmark:benchmark.js:debug": "pnpm build && node --enable-source-maps --inspect benchmarks/internal/bench.mjs -t benchmark.js",
     "benchmark:tatami-ng": "pnpm build && node --enable-source-maps benchmarks/internal/bench.mjs -t tatami-ng",
     "benchmark:tatami-ng:prod": "pnpm build:prod && node --enable-source-maps benchmarks/internal/bench.mjs -t tatami-ng",
     "benchmark:tatami-ng:debug": "pnpm build && node --enable-source-maps --inspect benchmarks/internal/bench.mjs -t tatami-ng",
@@ -114,7 +111,6 @@
     "@types/node": "^20.12.11",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
-    "benchmark": "^2.1.4",
     "c8": "^9.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
@@ -143,7 +139,7 @@
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^6.1.0",
     "sinon": "^17.0.2",
-    "tatami-ng": "^0.4.6",
+    "tatami-ng": "^0.4.8",
     "typedoc": "^0.25.13",
     "typescript": "~5.4.5"
   }

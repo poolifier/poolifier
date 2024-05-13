@@ -38,6 +38,7 @@ jobs:
           --else-if-branch "$GITHUB_BASE_REF" \
           --else-if-branch master \
           --hash "$GITHUB_SHA" \
+          --file benchmark-report.json \
           --err \
           --github-actions ${{ secrets.GITHUB_TOKEN }} \
           "pnpm benchmark:tatami-ng:prod"

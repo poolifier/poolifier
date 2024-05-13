@@ -24,7 +24,6 @@ See the dedicated repository [README.md](https://github.com/poolifier/benchmark#
 
 To run the internal benchmark, you just need to navigate to the root of poolifier cloned repository and run:
 
-- `pnpm benchmark:benchmark.js` or
 - `pnpm benchmark:tatami-ng`
 
 ### [Results](https://bencher.dev/perf/poolifier)

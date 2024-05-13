@@ -35,6 +35,7 @@ module.exports = defineConfig({
           'argv',
           'axios',
           'benoit',
+          'bmf',
           'browserslist',
           'builtins',
           'christopher',
