@@ -1,5 +1,5 @@
 import { writeFileSync } from 'node:fs'
-import { env, exit } from 'node:process'
+import { env } from 'node:process'
 // eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { parseArgs } from 'node:util'
 
@@ -99,5 +99,3 @@ switch (
       writeFileSync(benchmarkReportFile, JSON.stringify(benchmarkReport))
     break
 }
-
-exit()
