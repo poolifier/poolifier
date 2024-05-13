@@ -13,4 +13,3 @@ do
   pnpm build
   cd -
 done
-
