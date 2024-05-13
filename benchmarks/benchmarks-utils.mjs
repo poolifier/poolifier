@@ -1,4 +1,5 @@
 import { strictEqual } from 'node:assert'
+import { env } from 'node:process'
 
 import Benchmark from 'benchmark'
 import { bench, clear, group, run } from 'tatami-ng'
@@ -321,7 +322,9 @@ export const runPoolifierBenchmarkTatamiNg = async (
         }
       }
     }
-    await run()
+    await run({
+      json: env.CI != null ? 'bmf' : false
+    })
     clear()
     await pool.destroy()
   } catch (error) {

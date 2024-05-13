@@ -129,8 +129,8 @@ importers:
         specifier: ^17.0.2
         version: 17.0.2
       tatami-ng:
-        specifier: ^0.4.4
-        version: 0.4.4(typescript@5.4.5)
+        specifier: ^0.4.6
+        version: 0.4.6(typescript@5.4.5)
       typedoc:
         specifier: ^0.25.13
         version: 0.25.13(typescript@5.4.5)
@@ -2765,6 +2765,7 @@ packages:
 
   sinon@17.0.2:
     resolution: {integrity: sha512-uihLiaB9FhzesElPDFZA7hDcNABzsVHwr3YfmM9sBllVwab3l0ltGlRV1XhpNfIacNDLGD1QRZNLs5nU5+hTuA==}
+    deprecated: There
 
   slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
@@ -2913,8 +2914,8 @@ packages:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
 
-  tatami-ng@0.4.4:
-    resolution: {integrity: sha512-/YSab/Z35+RcEBSxOn6tbQqdk00Yfr0l0Wlnp+TGyr7vGzuGV4Pod1oZARZ8iG7fOI9CASNlzifV0FELii7NAg==}
+  tatami-ng@0.4.6:
+    resolution: {integrity: sha512-DR59y8nC6r+u9YbYY5objx8o+DJah0NgxktO9Ib6jMk/tETzsCfqaPOOMt6GhWi/msZ2i6mFV6D2pur5HTBkzw==}
     peerDependencies:
       typescript: ^5.0.0
 
@@ -6241,7 +6242,7 @@ snapshots:
 
   tapable@2.2.1: {}
 
-  tatami-ng@0.4.4(typescript@5.4.5):
+  tatami-ng@0.4.6(typescript@5.4.5):
     dependencies:
       typescript: 5.4.5
 
