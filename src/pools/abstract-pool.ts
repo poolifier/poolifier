@@ -327,7 +327,7 @@ export abstract class AbstractPool<
         )
       }),
       busyWorkerNodes: this.workerNodes.reduce(
-        (accumulator, _workerNode, workerNodeKey) =>
+        (accumulator, _, workerNodeKey) =>
           this.isWorkerNodeBusy(workerNodeKey) ? accumulator + 1 : accumulator,
         0
       ),
@@ -454,6 +454,91 @@ export abstract class AbstractPool<
               )
             )
           })
+        }
+      }),
+      ...(this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements()
+        .elu.aggregate === true && {
+        elu: {
+          idle: {
+            minimum: round(
+              min(
+                ...this.workerNodes.map(
+                  workerNode => workerNode.usage.elu.idle.minimum ?? Infinity
+                )
+              )
+            ),
+            maximum: round(
+              max(
+                ...this.workerNodes.map(
+                  workerNode => workerNode.usage.elu.idle.maximum ?? -Infinity
+                )
+              )
+            ),
+            ...(this.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
+              .elu.average && {
+              average: round(
+                average(
+                  this.workerNodes.reduce<number[]>(
+                    (accumulator, workerNode) =>
+                      accumulator.concat(workerNode.usage.elu.idle.history),
+                    []
+                  )
+                )
+              )
+            }),
+            ...(this.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
+              .elu.median && {
+              median: round(
+                median(
+                  this.workerNodes.reduce<number[]>(
+                    (accumulator, workerNode) =>
+                      accumulator.concat(workerNode.usage.elu.idle.history),
+                    []
+                  )
+                )
+              )
+            })
+          },
+          active: {
+            minimum: round(
+              min(
+                ...this.workerNodes.map(
+                  workerNode => workerNode.usage.elu.active.minimum ?? Infinity
+                )
+              )
+            ),
+            maximum: round(
+              max(
+                ...this.workerNodes.map(
+                  workerNode => workerNode.usage.elu.active.maximum ?? -Infinity
+                )
+              )
+            ),
+            ...(this.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
+              .elu.average && {
+              average: round(
+                average(
+                  this.workerNodes.reduce<number[]>(
+                    (accumulator, workerNode) =>
+                      accumulator.concat(workerNode.usage.elu.active.history),
+                    []
+                  )
+                )
+              )
+            }),
+            ...(this.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
+              .elu.median && {
+              median: round(
+                median(
+                  this.workerNodes.reduce<number[]>(
+                    (accumulator, workerNode) =>
+                      accumulator.concat(workerNode.usage.elu.active.history),
+                    []
+                  )
+                )
+              )
+            })
+          }
         }
       })
     }
@@ -1115,7 +1200,7 @@ export abstract class AbstractPool<
     }
     this.destroying = true
     await Promise.all(
-      this.workerNodes.map(async (_workerNode, workerNodeKey) => {
+      this.workerNodes.map(async (_, workerNodeKey) => {
         await this.destroyWorkerNode(workerNodeKey)
       })
     )

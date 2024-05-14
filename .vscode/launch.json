@@ -17,16 +17,6 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Benchmark.js Benchmark Debug",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["run", "benchmark:benchmark.js:debug"],
-      "skipFiles": ["<node_internals>/**"],
-      "stopOnEntry": true
-    },
-    {
-      "type": "node",
-      "request": "launch",
       "name": "Launch Tatami NG Benchmark Debug",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "pnpm",
