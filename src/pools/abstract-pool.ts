@@ -1899,12 +1899,12 @@ export abstract class AbstractPool<
     ) {
       return
     }
-    const { workerId } = eventDetail
     const sizeOffset = 1
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (this.opts.tasksQueueOptions!.size! <= sizeOffset) {
       return
     }
+    const { workerId } = eventDetail
     const sourceWorkerNode =
       this.workerNodes[this.getWorkerNodeKeyByWorkerId(workerId)]
     const workerNodes = this.workerNodes
