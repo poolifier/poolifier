@@ -1807,12 +1807,17 @@ export abstract class AbstractPool<
       )
     }
     const workerInfo = this.getWorkerInfo(workerNodeKey)
+    if (workerInfo == null) {
+      throw new Error(
+        `Worker node with key '${workerNodeKey}' not found in pool`
+      )
+    }
     if (
       this.cannotStealTask() ||
       (this.info.stealingWorkerNodes ?? 0) >
         Math.floor(this.workerNodes.length / 2)
     ) {
-      if (workerInfo != null && previousStolenTask != null) {
+      if (previousStolenTask != null) {
         workerInfo.stealing = false
         this.resetTaskSequentiallyStolenStatisticsWorkerUsage(
           workerNodeKey,
@@ -1824,7 +1829,6 @@ export abstract class AbstractPool<
     }
     const workerNodeTasksUsage = this.workerNodes[workerNodeKey].usage.tasks
     if (
-      workerInfo != null &&
       previousStolenTask != null &&
       (workerNodeTasksUsage.executing > 0 ||
         this.tasksQueueSize(workerNodeKey) > 0)
@@ -1836,11 +1840,6 @@ export abstract class AbstractPool<
         previousStolenTask.name!
       )
       return
-    }
-    if (workerInfo == null) {
-      throw new Error(
-        `Worker node with key '${workerNodeKey}' not found in pool`
-      )
     }
     workerInfo.stealing = true
     const stolenTask = this.workerNodeStealTask(workerNodeKey)
