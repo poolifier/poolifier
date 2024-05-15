@@ -40,10 +40,10 @@ export class RoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (affinity?: number[]): number | undefined {
+  public choose (workerNodes?: number[]): number | undefined {
     const chosenWorkerNodeKey = this.nextWorkerNodeKey
     this.setPreviousWorkerNodeKey(chosenWorkerNodeKey)
-    this.roundRobinNextWorkerNodeKey(affinity)
+    this.roundRobinNextWorkerNodeKey(workerNodes)
     this.checkNextWorkerNodeKey()
     return chosenWorkerNodeKey
   }
@@ -69,14 +69,16 @@ export class RoundRobinWorkerChoiceStrategy<
     return true
   }
 
-  private roundRobinNextWorkerNodeKey (affinity?: number[]): number | undefined {
-    affinity = this.checkAffinity(affinity)
-    if (affinity.length === 1) {
-      return affinity[0]
+  private roundRobinNextWorkerNodeKey (
+    workerNodes?: number[]
+  ): number | undefined {
+    workerNodes = this.checkWorkerNodes(workerNodes)
+    if (workerNodes.length === 1) {
+      return workerNodes[0]
     }
     do {
       this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
-    } while (!affinity.includes(this.nextWorkerNodeKey))
+    } while (!workerNodes.includes(this.nextWorkerNodeKey))
     return this.nextWorkerNodeKey
   }
 }

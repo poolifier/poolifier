@@ -65,9 +65,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (affinity?: number[]): number | undefined {
+  public choose (workerNodes?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.weightedRoundRobinNextWorkerNodeKey(affinity)
+    this.weightedRoundRobinNextWorkerNodeKey(workerNodes)
     this.checkNextWorkerNodeKey()
     return this.nextWorkerNodeKey
   }
@@ -94,9 +94,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   private weightedRoundRobinNextWorkerNodeKey (
-    affinity?: number[]
+    workerNodes?: number[]
   ): number | undefined {
-    affinity = this.checkAffinity(affinity)
+    workerNodes = this.checkWorkerNodes(workerNodes)
     const workerWeight =
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.opts!.weights![this.nextWorkerNodeKey ?? this.previousWorkerNodeKey]
@@ -111,7 +111,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     } else {
       do {
         this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
-      } while (!affinity.includes(this.nextWorkerNodeKey))
+      } while (!workerNodes.includes(this.nextWorkerNodeKey))
       this.workerNodeVirtualTaskExecutionTime = 0
     }
     return this.nextWorkerNodeKey

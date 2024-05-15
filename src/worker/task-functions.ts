@@ -60,7 +60,7 @@ export interface TaskFunctionObject<Data = unknown, Response = unknown> {
   /**
    * Task function worker node keys affinity.
    */
-  affinity?: number[]
+  workerNodes?: number[]
 }
 
 /**

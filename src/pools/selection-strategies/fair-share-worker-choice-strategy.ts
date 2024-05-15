@@ -69,9 +69,9 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (affinity?: number[]): number | undefined {
+  public choose (workerNodes?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey(affinity)
+    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey(workerNodes)
     return this.nextWorkerNodeKey
   }
 
@@ -80,10 +80,12 @@ export class FairShareWorkerChoiceStrategy<
     return true
   }
 
-  private fairShareNextWorkerNodeKey (affinity?: number[]): number | undefined {
-    affinity = this.checkAffinity(affinity)
-    if (affinity.length === 1) {
-      return affinity[0]
+  private fairShareNextWorkerNodeKey (
+    workerNodeKeys?: number[]
+  ): number | undefined {
+    workerNodeKeys = this.checkWorkerNodes(workerNodeKeys)
+    if (workerNodeKeys.length === 1) {
+      return workerNodeKeys[0]
     }
     return this.pool.workerNodes.reduce(
       (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
@@ -94,7 +96,7 @@ export class FairShareWorkerChoiceStrategy<
           }
         }
         return this.isWorkerNodeReady(workerNodeKey) &&
-          affinity.includes(workerNodeKey) &&
+          workerNodeKeys.includes(workerNodeKey) &&
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           workerNode.strategyData.virtualTaskEndTimestamp! <
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

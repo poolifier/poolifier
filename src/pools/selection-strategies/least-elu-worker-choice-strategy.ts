@@ -53,9 +53,9 @@ export class LeastEluWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (affinity?: number[]): number | undefined {
+  public choose (workerNodes?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.leastEluNextWorkerNodeKey(affinity)
+    this.nextWorkerNodeKey = this.leastEluNextWorkerNodeKey(workerNodes)
     return this.nextWorkerNodeKey
   }
 
@@ -64,15 +64,17 @@ export class LeastEluWorkerChoiceStrategy<
     return true
   }
 
-  private leastEluNextWorkerNodeKey (affinity?: number[]): number | undefined {
-    affinity = this.checkAffinity(affinity)
-    if (affinity.length === 1) {
-      return affinity[0]
+  private leastEluNextWorkerNodeKey (
+    workerNodeKeys?: number[]
+  ): number | undefined {
+    workerNodeKeys = this.checkWorkerNodes(workerNodeKeys)
+    if (workerNodeKeys.length === 1) {
+      return workerNodeKeys[0]
     }
     return this.pool.workerNodes.reduce(
       (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
         return this.isWorkerNodeReady(workerNodeKey) &&
-          affinity.includes(workerNodeKey) &&
+          workerNodeKeys.includes(workerNodeKey) &&
           (workerNode.usage.elu.active.aggregate ?? 0) <
             (workerNodes[minWorkerNodeKey].usage.elu.active.aggregate ?? 0)
           ? workerNodeKey

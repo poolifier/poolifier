@@ -1052,7 +1052,7 @@ export abstract class AbstractPool<
     return this.listTaskFunctionsProperties().find(
       (taskFunctionProperties: TaskFunctionProperties) =>
         taskFunctionProperties.name === name
-    )?.affinity
+    )?.workerNodes
   }
 
   /**
