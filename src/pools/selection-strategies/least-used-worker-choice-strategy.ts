@@ -39,9 +39,9 @@ export class LeastUsedWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number | undefined {
+  public choose (affinity?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.leastUsedNextWorkerNodeKey()
+    this.nextWorkerNodeKey = this.leastUsedNextWorkerNodeKey(affinity)
     return this.nextWorkerNodeKey
   }
 
@@ -50,13 +50,15 @@ export class LeastUsedWorkerChoiceStrategy<
     return true
   }
 
-  private leastUsedNextWorkerNodeKey (): number | undefined {
-    if (this.pool.workerNodes.length === 0) {
-      return undefined
+  private leastUsedNextWorkerNodeKey (affinity?: number[]): number | undefined {
+    affinity = this.checkAffinity(affinity)
+    if (affinity.length === 1) {
+      return affinity[0]
     }
     return this.pool.workerNodes.reduce(
       (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
         return this.isWorkerNodeReady(workerNodeKey) &&
+          affinity.includes(workerNodeKey) &&
           workerNode.usage.tasks.executing + workerNode.usage.tasks.queued <
             workerNodes[minWorkerNodeKey].usage.tasks.executing +
               workerNodes[minWorkerNodeKey].usage.tasks.queued

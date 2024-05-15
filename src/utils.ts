@@ -234,6 +234,9 @@ export const buildTaskFunctionProperties = <Data, Response>(
     }),
     ...(taskFunctionObject?.strategy != null && {
       strategy: taskFunctionObject.strategy
+    }),
+    ...(taskFunctionObject?.affinity != null && {
+      affinity: taskFunctionObject.affinity
     })
   }
 }

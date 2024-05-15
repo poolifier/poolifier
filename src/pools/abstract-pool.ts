@@ -1041,6 +1041,21 @@ export abstract class AbstractPool<
   }
 
   /**
+   * Gets task function worker node keys affinity, if any.
+   *
+   * @param name - The task function name.
+   * @returns The task function worker node keys affinity if the task function worker node keys affinity is defined, `undefined` otherwise.
+   */
+  private readonly getTaskFunctionAffinity = (
+    name?: string
+  ): number[] | undefined => {
+    return this.listTaskFunctionsProperties().find(
+      (taskFunctionProperties: TaskFunctionProperties) =>
+        taskFunctionProperties.name === name
+    )?.affinity
+  }
+
+  /**
    * Gets the worker choice strategies registered in this pool.
    *
    * @returns The worker choice strategies.
@@ -1115,7 +1130,7 @@ export abstract class AbstractPool<
       const timestamp = performance.now()
       const taskFunctionStrategy =
         this.getTaskFunctionWorkerWorkerChoiceStrategy(name)
-      const workerNodeKey = this.chooseWorkerNode(taskFunctionStrategy)
+      const workerNodeKey = this.chooseWorkerNode(taskFunctionStrategy, name)
       const task: Task<Data> = {
         name: name ?? DEFAULT_TASK_NAME,
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -1394,10 +1409,12 @@ export abstract class AbstractPool<
    * Chooses a worker node for the next task given the worker choice strategy.
    *
    * @param workerChoiceStrategy - The worker choice strategy.
+   * @param name - The task function name.
    * @returns The chosen worker node key
    */
   private chooseWorkerNode (
-    workerChoiceStrategy?: WorkerChoiceStrategy
+    workerChoiceStrategy?: WorkerChoiceStrategy,
+    name?: string
   ): number {
     if (this.shallCreateDynamicWorker()) {
       const workerNodeKey = this.createAndSetupDynamicWorkerNode()
@@ -1409,7 +1426,10 @@ export abstract class AbstractPool<
       }
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.workerChoiceStrategiesContext!.execute(workerChoiceStrategy)
+    return this.workerChoiceStrategiesContext!.execute(
+      workerChoiceStrategy,
+      this.getTaskFunctionAffinity(name)
+    )
   }
 
   /**

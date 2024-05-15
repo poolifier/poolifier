@@ -93,7 +93,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   public abstract update (workerNodeKey: number): boolean
 
   /** @inheritDoc */
-  public abstract choose (): number | undefined
+  public abstract choose (affinity?: number[]): number | undefined
 
   /** @inheritDoc */
   public abstract remove (workerNodeKey: number): boolean
@@ -128,6 +128,32 @@ export abstract class AbstractWorkerChoiceStrategy<
     ) {
       delete this.nextWorkerNodeKey
     }
+  }
+
+  /**
+   * Check worker node keys affinity.
+   *
+   * @param affinity - Worker node keys affinity
+   * @returns
+   */
+  protected checkAffinity (affinity?: number[]): number[] {
+    if (affinity == null) {
+      return this.pool.workerNodes.map((_, index) => index)
+    }
+    if (!Array.isArray(affinity)) {
+      throw new Error()
+    }
+    return affinity
+  }
+
+  /**
+   *
+   * @returns
+   */
+  protected getRoundRobinNextWorkerNodeKey (): number {
+    return this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
+      ? 0
+      : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
   }
 
   /**

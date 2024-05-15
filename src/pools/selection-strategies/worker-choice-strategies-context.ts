@@ -147,16 +147,19 @@ export class WorkerChoiceStrategiesContext<
    * Executes the given worker choice strategy in the context algorithm.
    *
    * @param workerChoiceStrategy - The worker choice strategy algorithm to execute. @defaultValue this.defaultWorkerChoiceStrategy
+   * @param affinity - Worker node keys affinity.
    * @returns The key of the worker node.
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If after computed retries the worker node key is null or undefined.
    */
   public execute (
     workerChoiceStrategy: WorkerChoiceStrategy = this
-      .defaultWorkerChoiceStrategy
+      .defaultWorkerChoiceStrategy,
+    affinity?: number[]
   ): number {
     return this.executeStrategy(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.workerChoiceStrategies.get(workerChoiceStrategy)!
+      this.workerChoiceStrategies.get(workerChoiceStrategy)!,
+      affinity
     )
   }
 
@@ -164,15 +167,19 @@ export class WorkerChoiceStrategiesContext<
    * Executes the given worker choice strategy.
    *
    * @param workerChoiceStrategy - The worker choice strategy.
+   * @param affinity - Worker node keys affinity.
    * @returns The key of the worker node.
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If after computed retries the worker node key is null or undefined.
    */
-  private executeStrategy (workerChoiceStrategy: IWorkerChoiceStrategy): number {
+  private executeStrategy (
+    workerChoiceStrategy: IWorkerChoiceStrategy,
+    affinity?: number[]
+  ): number {
     let workerNodeKey: number | undefined
     let chooseCount = 0
     let retriesCount = 0
     do {
-      workerNodeKey = workerChoiceStrategy.choose()
+      workerNodeKey = workerChoiceStrategy.choose(affinity)
       if (workerNodeKey == null && chooseCount > 0) {
         ++retriesCount
         ++this.retriesCount

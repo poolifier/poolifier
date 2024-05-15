@@ -198,9 +198,10 @@ export interface IWorkerChoiceStrategy {
    * If no worker nodes are not eligible, `undefined` is returned.
    * If `undefined` is returned, the caller retry.
    *
+   * @param affinity - Worker node keys affinity.
    * @returns The worker node key or `undefined`.
    */
-  readonly choose: () => number | undefined
+  readonly choose: (affinity?: number[]) => number | undefined
   /**
    * Removes the worker node key from strategy internals.
    *

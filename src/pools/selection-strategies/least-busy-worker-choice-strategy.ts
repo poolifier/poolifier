@@ -57,9 +57,9 @@ export class LeastBusyWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number | undefined {
+  public choose (affinity?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.leastBusyNextWorkerNodeKey()
+    this.nextWorkerNodeKey = this.leastBusyNextWorkerNodeKey(affinity)
     return this.nextWorkerNodeKey
   }
 
@@ -68,13 +68,15 @@ export class LeastBusyWorkerChoiceStrategy<
     return true
   }
 
-  private leastBusyNextWorkerNodeKey (): number | undefined {
-    if (this.pool.workerNodes.length === 0) {
-      return undefined
+  private leastBusyNextWorkerNodeKey (affinity?: number[]): number | undefined {
+    affinity = this.checkAffinity(affinity)
+    if (affinity.length === 1) {
+      return affinity[0]
     }
     return this.pool.workerNodes.reduce(
       (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
         return this.isWorkerNodeReady(workerNodeKey) &&
+          affinity.includes(workerNodeKey) &&
           (workerNode.usage.waitTime.aggregate ?? 0) +
             (workerNode.usage.runTime.aggregate ?? 0) <
             (workerNodes[minWorkerNodeKey].usage.waitTime.aggregate ?? 0) +

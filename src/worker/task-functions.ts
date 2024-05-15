@@ -57,6 +57,10 @@ export interface TaskFunctionObject<Data = unknown, Response = unknown> {
    * Task function worker choice strategy.
    */
   strategy?: WorkerChoiceStrategy
+  /**
+   * Task function worker node keys affinity.
+   */
+  affinity?: number[]
 }
 
 /**
