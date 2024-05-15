@@ -1085,7 +1085,7 @@ export abstract class AbstractPool<
    *
    * @param workerNodeKey - The worker node key.
    * @param name - The task function name.
-   * @returns The task function worker choice priority if the task function worker choice priority is defined, `undefined` otherwise.
+   * @returns The worker node task function priority if the worker node task function priority is defined, `undefined` otherwise.
    */
   private readonly getWorkerNodeTaskFunctionPriority = (
     workerNodeKey: number,
