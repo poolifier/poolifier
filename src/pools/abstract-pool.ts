@@ -951,6 +951,15 @@ export abstract class AbstractPool<
     checkValidPriority(fn.priority)
     checkValidWorkerChoiceStrategy(fn.strategy)
     checkValidWorkerNodes(fn.workerNodes)
+    if (
+      fn.workerNodes != null &&
+      fn.workerNodes.length >
+        (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers)
+    ) {
+      throw new Error(
+        'Cannot add a task function with more worker node keys affinity than the maximum number of workers'
+      )
+    }
     const opResult = await this.sendTaskFunctionOperationToWorkers({
       taskFunctionOperation: 'add',
       taskFunctionProperties: buildTaskFunctionProperties(name, fn),
@@ -1048,7 +1057,7 @@ export abstract class AbstractPool<
    * @param name - The task function name.
    * @returns The task function worker node keys affinity if the task function worker node keys affinity is defined, `undefined` otherwise.
    */
-  private readonly getTaskFunctionAffinity = (
+  private readonly getTaskFunctionWorkerNodes = (
     name?: string
   ): number[] | undefined => {
     return this.listTaskFunctionsProperties().find(
@@ -1430,7 +1439,7 @@ export abstract class AbstractPool<
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.workerChoiceStrategiesContext!.execute(
       workerChoiceStrategy,
-      this.getTaskFunctionAffinity(name)
+      this.getTaskFunctionWorkerNodes(name)
     )
   }
 

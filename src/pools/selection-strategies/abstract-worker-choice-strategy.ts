@@ -141,7 +141,7 @@ export abstract class AbstractWorkerChoiceStrategy<
       return this.pool.workerNodes.map((_, index) => index)
     }
     if (!Array.isArray(workerNodes)) {
-      throw new Error()
+      throw new TypeError('Worker nodes must be an array of numbers')
     }
     return workerNodes
   }
