@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add fine grained task abortion support.
 
+## [4.0.7] - 2024-05-13
+
+### Changed
+
+- Add ELU statistics to pool information.
+
 ## [4.0.6] - 2024-05-10
 
 ### Fixed

@@ -15,7 +15,7 @@ jobs:
     env:
       BENCHER_PROJECT: poolifier
       BENCHER_API_TOKEN: ${{ secrets.BENCHER_API_TOKEN }}
-      BENCHER_ADAPTER: js_benchmark
+      BENCHER_ADAPTER: json
       BENCHER_TESTBED: self-hosted
     steps:
       - name: Checkout
@@ -30,14 +30,15 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --ignore-scripts --frozen-lockfile
-      # - uses: bencherdev/bencher@main
-      # - name: Run production benchmark
-      #   run: |
-      #     bencher run \
-      #     --if-branch "$GITHUB_REF_NAME" \
-      #     --else-if-branch "$GITHUB_BASE_REF" \
-      #     --else-if-branch master \
-      #     --hash "$GITHUB_SHA" \
-      #     --err \
-      #     --github-actions ${{ secrets.GITHUB_TOKEN }} \
-      #     "pnpm benchmark:benchmark.js:prod"
+      - uses: bencherdev/bencher@main
+      - name: Run production benchmark
+        run: |
+          bencher run \
+          --if-branch "$GITHUB_REF_NAME" \
+          --else-if-branch "$GITHUB_BASE_REF" \
+          --else-if-branch master \
+          --hash "$GITHUB_SHA" \
+          --file benchmark-report.json \
+          --err \
+          --github-actions ${{ secrets.GITHUB_TOKEN }} \
+          "pnpm benchmark:tatami-ng:prod"

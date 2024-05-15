@@ -91,9 +91,7 @@ export class PriorityQueue<T> {
         --bucket
       }
     }
-    if (this.size > 0) {
-      --this.size
-    }
+    this.decrementSize()
     return this.nodeArray.shift()?.data
   }
 
@@ -176,6 +174,18 @@ export class PriorityQueue<T> {
     ++this.size
     if (this.size > this.maxSize) {
       this.maxSize = this.size
+    }
+    return this.size
+  }
+
+  /**
+   * Decrements the size of the priority queue.
+   *
+   * @returns The new size of the priority queue.
+   */
+  private decrementSize (): number {
+    if (this.size > 0) {
+      --this.size
     }
     return this.size
   }

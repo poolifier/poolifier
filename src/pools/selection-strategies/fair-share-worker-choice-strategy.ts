@@ -81,9 +81,6 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   private fairShareNextWorkerNodeKey (): number | undefined {
-    if (this.pool.workerNodes.length === 0) {
-      return undefined
-    }
     return this.pool.workerNodes.reduce(
       (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
         if (workerNode.strategyData?.virtualTaskEndTimestamp == null) {
