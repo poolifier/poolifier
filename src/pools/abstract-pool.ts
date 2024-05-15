@@ -657,7 +657,7 @@ export abstract class AbstractPool<
     }
     if (requireSync) {
       this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
-        this.getWorkerWorkerChoiceStrategies(),
+        this.getWorkerChoiceStrategies(),
         this.opts.workerChoiceStrategyOptions
       )
       for (const workerNodeKey of this.workerNodes.keys()) {
@@ -677,7 +677,7 @@ export abstract class AbstractPool<
         this.opts.workerChoiceStrategyOptions
       )
       this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
-        this.getWorkerWorkerChoiceStrategies(),
+        this.getWorkerChoiceStrategies(),
         this.opts.workerChoiceStrategyOptions
       )
       for (const workerNodeKey of this.workerNodes.keys()) {
@@ -967,7 +967,7 @@ export abstract class AbstractPool<
     })
     this.taskFunctions.set(name, fn)
     this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
-      this.getWorkerWorkerChoiceStrategies()
+      this.getWorkerChoiceStrategies()
     )
     for (const workerNodeKey of this.workerNodes.keys()) {
       this.sendStatisticsMessageToWorker(workerNodeKey)
@@ -994,7 +994,7 @@ export abstract class AbstractPool<
     }
     this.taskFunctions.delete(name)
     this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
-      this.getWorkerWorkerChoiceStrategies()
+      this.getWorkerChoiceStrategies()
     )
     for (const workerNodeKey of this.workerNodes.keys()) {
       this.sendStatisticsMessageToWorker(workerNodeKey)
@@ -1016,20 +1016,23 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Gets task function strategy, if any.
+   * Gets task function worker choice strategy, if any.
    *
    * @param name - The task function name.
    * @returns The task function worker choice strategy if the task function worker choice strategy is defined, `undefined` otherwise.
    */
-  private readonly getTaskFunctionWorkerWorkerChoiceStrategy = (
+  private readonly getTaskFunctionWorkerChoiceStrategy = (
     name?: string
   ): WorkerChoiceStrategy | undefined => {
-    if (name != null) {
-      return this.listTaskFunctionsProperties().find(
-        (taskFunctionProperties: TaskFunctionProperties) =>
-          taskFunctionProperties.name === name
-      )?.strategy
+    name = name ?? DEFAULT_TASK_NAME
+    const taskFunctionsProperties = this.listTaskFunctionsProperties()
+    if (name === DEFAULT_TASK_NAME) {
+      name = taskFunctionsProperties[1]?.name
     }
+    return taskFunctionsProperties.find(
+      (taskFunctionProperties: TaskFunctionProperties) =>
+        taskFunctionProperties.name === name
+    )?.strategy
   }
 
   /**
@@ -1043,12 +1046,18 @@ export abstract class AbstractPool<
     workerNodeKey: number,
     name?: string
   ): number | undefined => {
-    if (name != null) {
-      return this.getWorkerInfo(workerNodeKey)?.taskFunctionsProperties?.find(
-        (taskFunctionProperties: TaskFunctionProperties) =>
-          taskFunctionProperties.name === name
-      )?.priority
+    name = name ?? DEFAULT_TASK_NAME
+    const workerInfo = this.getWorkerInfo(workerNodeKey)
+    if (workerInfo == null) {
+      return
     }
+    if (name === DEFAULT_TASK_NAME) {
+      name = workerInfo.taskFunctionsProperties?.[1]?.name
+    }
+    return workerInfo.taskFunctionsProperties?.find(
+      (taskFunctionProperties: TaskFunctionProperties) =>
+        taskFunctionProperties.name === name
+    )?.priority
   }
 
   /**
@@ -1060,7 +1069,12 @@ export abstract class AbstractPool<
   private readonly getTaskFunctionWorkerNodes = (
     name?: string
   ): number[] | undefined => {
-    return this.listTaskFunctionsProperties().find(
+    name = name ?? DEFAULT_TASK_NAME
+    const taskFunctionsProperties = this.listTaskFunctionsProperties()
+    if (name === DEFAULT_TASK_NAME) {
+      name = taskFunctionsProperties[1]?.name
+    }
+    return taskFunctionsProperties.find(
       (taskFunctionProperties: TaskFunctionProperties) =>
         taskFunctionProperties.name === name
     )?.workerNodes
@@ -1071,7 +1085,7 @@ export abstract class AbstractPool<
    *
    * @returns The worker choice strategies.
    */
-  private readonly getWorkerWorkerChoiceStrategies =
+  private readonly getWorkerChoiceStrategies =
     (): Set<WorkerChoiceStrategy> => {
       return new Set([
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -1139,15 +1153,13 @@ export abstract class AbstractPool<
         return
       }
       const timestamp = performance.now()
-      const taskFunctionStrategy =
-        this.getTaskFunctionWorkerWorkerChoiceStrategy(name)
-      const workerNodeKey = this.chooseWorkerNode(taskFunctionStrategy, name)
+      const workerNodeKey = this.chooseWorkerNode(name)
       const task: Task<Data> = {
         name: name ?? DEFAULT_TASK_NAME,
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         data: data ?? ({} as Data),
         priority: this.getWorkerNodeTaskFunctionPriority(workerNodeKey, name),
-        strategy: taskFunctionStrategy,
+        strategy: this.getTaskFunctionWorkerChoiceStrategy(name),
         transferList,
         timestamp,
         taskId: randomUUID()
@@ -1417,16 +1429,12 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Chooses a worker node for the next task given the worker choice strategy.
+   * Chooses a worker node for the next task.
    *
-   * @param workerChoiceStrategy - The worker choice strategy.
    * @param name - The task function name.
    * @returns The chosen worker node key
    */
-  private chooseWorkerNode (
-    workerChoiceStrategy?: WorkerChoiceStrategy,
-    name?: string
-  ): number {
+  private chooseWorkerNode (name?: string): number {
     if (this.shallCreateDynamicWorker()) {
       const workerNodeKey = this.createAndSetupDynamicWorkerNode()
       if (
@@ -1438,7 +1446,7 @@ export abstract class AbstractPool<
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.workerChoiceStrategiesContext!.execute(
-      workerChoiceStrategy,
+      this.getTaskFunctionWorkerChoiceStrategy(name),
       this.getTaskFunctionWorkerNodes(name)
     )
   }
