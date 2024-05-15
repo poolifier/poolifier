@@ -137,11 +137,19 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @returns Worker node keys affinity
    */
   protected checkWorkerNodes (workerNodes?: number[]): number[] {
+    const poolWorkerNodesKeys = this.pool.workerNodes.map((_, index) => index)
     if (workerNodes == null) {
-      return this.pool.workerNodes.map((_, index) => index)
+      return poolWorkerNodesKeys
     }
     if (!Array.isArray(workerNodes)) {
-      throw new TypeError('Worker nodes must be an array of numbers')
+      throw new TypeError('Worker nodes must be an array')
+    }
+    if (
+      workerNodes.filter(workerNodeKey =>
+        poolWorkerNodesKeys.includes(workerNodeKey)
+      ).length === 0
+    ) {
+      throw new Error('Worker nodes must be part of the pool worker nodes')
     }
     return workerNodes
   }
