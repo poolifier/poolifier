@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add fine grained task abortion support.
 
+## [4.0.8] - 2024-05-15
+
+### Fixed
+
+- Fix default task function worker choice strategy and priority handling.
+
 ## [4.0.7] - 2024-05-13
 
 ### Changed
