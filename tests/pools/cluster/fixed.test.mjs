@@ -287,6 +287,10 @@ describe('Fixed cluster pool test suite', () => {
     let pool = new FixedClusterPool(numberOfWorkers, workerFilePath)
     expect(pool.opts.env).toBeUndefined()
     expect(pool.opts.settings).toBeUndefined()
+    expect(cluster.settings).toMatchObject({
+      exec: workerFilePath,
+      silent: false
+    })
     await pool.destroy()
     pool = new FixedClusterPool(numberOfWorkers, workerFilePath, {
       env: { TEST: 'test' },
@@ -296,11 +300,6 @@ describe('Fixed cluster pool test suite', () => {
     expect(pool.opts.settings).toStrictEqual({
       args: ['--use', 'http'],
       silent: true
-    })
-    expect({ ...pool.opts.settings, exec: workerFilePath }).toStrictEqual({
-      args: ['--use', 'http'],
-      silent: true,
-      exec: workerFilePath
     })
     expect(cluster.settings).toMatchObject({
       args: ['--use', 'http'],
