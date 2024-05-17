@@ -1,3 +1,5 @@
+import cluster from 'node:cluster'
+
 import { expect } from 'expect'
 
 import { FixedClusterPool, PoolEvents } from '../../../lib/index.cjs'
@@ -296,6 +298,11 @@ describe('Fixed cluster pool test suite', () => {
       silent: true
     })
     expect({ ...pool.opts.settings, exec: workerFilePath }).toStrictEqual({
+      args: ['--use', 'http'],
+      silent: true,
+      exec: workerFilePath
+    })
+    expect(cluster.settings).toMatchObject({
       args: ['--use', 'http'],
       silent: true,
       exec: workerFilePath
