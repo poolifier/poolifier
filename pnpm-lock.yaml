@@ -120,14 +120,14 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       rollup-plugin-dts:
-        specifier: ^6.1.0
-        version: 6.1.0(rollup@4.17.2)(typescript@5.4.5)
+        specifier: ^6.1.1
+        version: 6.1.1(rollup@4.17.2)(typescript@5.4.5)
       sinon:
         specifier: ^18.0.0
         version: 18.0.0
       tatami-ng:
-        specifier: ^0.4.11
-        version: 0.4.11(typescript@5.4.5)
+        specifier: ^0.4.12
+        version: 0.4.12(typescript@5.4.5)
       typedoc:
         specifier: ^0.25.13
         version: 0.25.13(typescript@5.4.5)
@@ -2661,8 +2661,8 @@ packages:
     resolution: {integrity: sha512-/VpLMtDy+8wwRlDANuYmDa9ss/knGsAgrDhM+tEwB1npHwNu4DYNmDfUL55csse/GHs9Q+SMT/rw9uiaZ3pnzA==}
     engines: {node: '>=10'}
 
-  rollup-plugin-dts@6.1.0:
-    resolution: {integrity: sha512-ijSCPICkRMDKDLBK9torss07+8dl9UpY9z1N/zTeA1cIqdzMlpkV3MOOC7zukyvQfDyxa1s3Dl2+DeiP/G6DOw==}
+  rollup-plugin-dts@6.1.1:
+    resolution: {integrity: sha512-aSHRcJ6KG2IHIioYlvAOcEq6U99sVtqDDKVhnwt70rW6tsz3tv5OSjEiWcgzfsHdLyGXZ/3b/7b/+Za3Y6r1XA==}
     engines: {node: '>=16'}
     peerDependencies:
       rollup: ^3.29.4 || ^4
@@ -2901,8 +2901,8 @@ packages:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
 
-  tatami-ng@0.4.11:
-    resolution: {integrity: sha512-pGwx/vYK0LHwAzSZkahS5nfFqXSeHVo2QJI6tPp9jcR0eQ2BeTg7U5F1fvf10JvOJVPpkH6O9kNem1t9Rwhgtg==}
+  tatami-ng@0.4.12:
+    resolution: {integrity: sha512-b0zGVioJY2QYvJHxQahYYVUkOPp7a0n0/uqv0x2KSyXXiu25LAHTtnaeFHsauNsmo+2qBGmFdTGiJZBQOdUwdw==}
     peerDependencies:
       typescript: ^5.0.0
 
@@ -5947,7 +5947,7 @@ snapshots:
     dependencies:
       del: 5.1.0
 
-  rollup-plugin-dts@6.1.0(rollup@4.17.2)(typescript@5.4.5):
+  rollup-plugin-dts@6.1.1(rollup@4.17.2)(typescript@5.4.5):
     dependencies:
       magic-string: 0.30.10
       rollup: 4.17.2
@@ -6215,7 +6215,7 @@ snapshots:
 
   tapable@2.2.1: {}
 
-  tatami-ng@0.4.11(typescript@5.4.5):
+  tatami-ng@0.4.12(typescript@5.4.5):
     dependencies:
       typescript: 5.4.5
 
