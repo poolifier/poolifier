@@ -5,29 +5,29 @@ import { PriorityQueue } from '../lib/priority-queue.cjs'
 describe('Priority queue test suite', () => {
   it('Verify constructor() behavior', () => {
     expect(() => new PriorityQueue('')).toThrow(
-      new TypeError('k must be an integer')
+      new TypeError('bucketSize must be an integer')
     )
     expect(() => new PriorityQueue(-1)).toThrow(
-      new RangeError('k must be greater than or equal to 1')
+      new RangeError('bucketSize must be greater than or equal to 1')
     )
     expect(() => new PriorityQueue(0)).toThrow(
-      new RangeError('k must be greater than or equal to 1')
+      new RangeError('bucketSize must be greater than or equal to 1')
     )
     let priorityQueue = new PriorityQueue()
-    expect(priorityQueue.k).toBe(Infinity)
+    expect(priorityQueue.bucketSize).toBe(Infinity)
     expect(priorityQueue.buckets).toBe(1)
     expect(priorityQueue.size).toBe(0)
     expect(priorityQueue.maxSize).toBe(0)
     expect(priorityQueue.nodeArray).toStrictEqual([])
     priorityQueue = new PriorityQueue(2)
-    expect(priorityQueue.k).toBe(2)
+    expect(priorityQueue.bucketSize).toBe(2)
     expect(priorityQueue.buckets).toBe(0)
     expect(priorityQueue.size).toBe(0)
     expect(priorityQueue.maxSize).toBe(0)
     expect(priorityQueue.nodeArray).toStrictEqual([])
   })
 
-  it('Verify default k enqueue() behavior', () => {
+  it('Verify default bucketSize enqueue() behavior', () => {
     const priorityQueue = new PriorityQueue()
     let rtSize = priorityQueue.enqueue(1)
     expect(priorityQueue.buckets).toBe(1)
@@ -79,7 +79,7 @@ describe('Priority queue test suite', () => {
     ])
   })
 
-  it('Verify k=2 enqueue() behavior', () => {
+  it('Verify bucketSize=2 enqueue() behavior', () => {
     const priorityQueue = new PriorityQueue(2)
     let rtSize = priorityQueue.enqueue(1)
     expect(priorityQueue.buckets).toBe(0)
@@ -144,7 +144,7 @@ describe('Priority queue test suite', () => {
     ])
   })
 
-  it('Verify default k dequeue() behavior', () => {
+  it('Verify default bucketSize dequeue() behavior', () => {
     const priorityQueue = new PriorityQueue()
     priorityQueue.enqueue(1)
     priorityQueue.enqueue(2, -1)
@@ -175,7 +175,7 @@ describe('Priority queue test suite', () => {
     expect(priorityQueue.nodeArray).toStrictEqual([])
   })
 
-  it('Verify k=2 dequeue() behavior', () => {
+  it('Verify bucketSize=2 dequeue() behavior', () => {
     const priorityQueue = new PriorityQueue(2)
     priorityQueue.enqueue(1)
     priorityQueue.enqueue(2)
