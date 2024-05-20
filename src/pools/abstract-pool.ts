@@ -539,6 +539,22 @@ export abstract class AbstractPool<
                 )
               )
             })
+          },
+          utilization: {
+            average: round(
+              average(
+                this.workerNodes.map(
+                  workerNode => workerNode.usage.elu.utilization ?? 0
+                )
+              )
+            ),
+            median: round(
+              median(
+                this.workerNodes.map(
+                  workerNode => workerNode.usage.elu.utilization ?? 0
+                )
+              )
+            )
           }
         }
       })

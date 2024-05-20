@@ -120,14 +120,14 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       rollup-plugin-dts:
-        specifier: ^6.1.0
-        version: 6.1.0(rollup@4.17.2)(typescript@5.4.5)
+        specifier: ^6.1.1
+        version: 6.1.1(rollup@4.17.2)(typescript@5.4.5)
       sinon:
         specifier: ^18.0.0
         version: 18.0.0
       tatami-ng:
-        specifier: ^0.4.9
-        version: 0.4.9(typescript@5.4.5)
+        specifier: ^0.4.12
+        version: 0.4.12(typescript@5.4.5)
       typedoc:
         specifier: ^0.25.13
         version: 0.25.13(typescript@5.4.5)
@@ -310,8 +310,8 @@ packages:
   '@iarna/toml@2.2.5':
     resolution: {integrity: sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==}
 
-  '@inquirer/figures@1.0.1':
-    resolution: {integrity: sha512-mtup3wVKia3ZwULPHcbs4Mor8Voi+iIXEWD7wCNbIO6lYR62oPCTQyrddi5OMYVXHzeCSoneZwJuS8sBvlEwDw==}
+  '@inquirer/figures@1.0.2':
+    resolution: {integrity: sha512-4F1MBwVr3c/m4bAUef6LgkvBfSjzwH+OfldgHqcuacWwSUetFebM2wi58WfG9uk1rR98U6GwLed4asLJbwdV5w==}
     engines: {node: '>=18'}
 
   '@istanbuljs/schema@0.1.3':
@@ -1608,8 +1608,8 @@ packages:
     resolution: {integrity: sha512-AhO5QUcj8llrbG09iWhPU2B204J1xnPeL8kQmVorSsy+Sjj1sk8gIyh6cUocGmH4L0UuhAJy+hJMRA4mgA4mFQ==}
     engines: {node: '>=8'}
 
-  globals@15.2.0:
-    resolution: {integrity: sha512-FQ5YwCHZM3nCmtb5FzEWwdUc9K5d3V/w9mzcz8iGD1gC/aOTHc6PouYu0kkKipNJqHAT7m51sqzQjEjIP+cK0A==}
+  globals@15.3.0:
+    resolution: {integrity: sha512-cCdyVjIUVTtX8ZsPkq1oCsOsLmGIswqnjZYMJJTGaNApj1yHtLSymKhwH51ttirREn75z3p4k051clwg7rvNKA==}
     engines: {node: '>=18'}
 
   globalthis@1.0.4:
@@ -2661,8 +2661,8 @@ packages:
     resolution: {integrity: sha512-/VpLMtDy+8wwRlDANuYmDa9ss/knGsAgrDhM+tEwB1npHwNu4DYNmDfUL55csse/GHs9Q+SMT/rw9uiaZ3pnzA==}
     engines: {node: '>=10'}
 
-  rollup-plugin-dts@6.1.0:
-    resolution: {integrity: sha512-ijSCPICkRMDKDLBK9torss07+8dl9UpY9z1N/zTeA1cIqdzMlpkV3MOOC7zukyvQfDyxa1s3Dl2+DeiP/G6DOw==}
+  rollup-plugin-dts@6.1.1:
+    resolution: {integrity: sha512-aSHRcJ6KG2IHIioYlvAOcEq6U99sVtqDDKVhnwt70rW6tsz3tv5OSjEiWcgzfsHdLyGXZ/3b/7b/+Za3Y6r1XA==}
     engines: {node: '>=16'}
     peerDependencies:
       rollup: ^3.29.4 || ^4
@@ -2901,8 +2901,8 @@ packages:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
 
-  tatami-ng@0.4.9:
-    resolution: {integrity: sha512-BaejWck6GRVSqeThdLltnd8Zh1wtTHCpn2OPsz3arN/hR73TdT1SNRJ3GvzFSEbl/NN4+x55yTban5h/e/hsDA==}
+  tatami-ng@0.4.12:
+    resolution: {integrity: sha512-b0zGVioJY2QYvJHxQahYYVUkOPp7a0n0/uqv0x2KSyXXiu25LAHTtnaeFHsauNsmo+2qBGmFdTGiJZBQOdUwdw==}
     peerDependencies:
       typescript: ^5.0.0
 
@@ -3368,7 +3368,7 @@ snapshots:
 
   '@iarna/toml@2.2.5': {}
 
-  '@inquirer/figures@1.0.1': {}
+  '@inquirer/figures@1.0.2': {}
 
   '@istanbuljs/schema@0.1.3': {}
 
@@ -4530,7 +4530,7 @@ snapshots:
       eslint: 8.57.0
       eslint-plugin-es-x: 7.6.0(eslint@8.57.0)
       get-tsconfig: 4.7.5
-      globals: 15.2.0
+      globals: 15.3.0
       ignore: 5.3.1
       minimatch: 9.0.4
       semver: 7.6.2
@@ -4851,7 +4851,7 @@ snapshots:
     dependencies:
       type-fest: 0.20.2
 
-  globals@15.2.0: {}
+  globals@15.3.0: {}
 
   globalthis@1.0.4:
     dependencies:
@@ -5018,7 +5018,7 @@ snapshots:
 
   inquirer@9.2.19:
     dependencies:
-      '@inquirer/figures': 1.0.1
+      '@inquirer/figures': 1.0.2
       '@ljharb/through': 2.3.13
       ansi-escapes: 4.3.2
       chalk: 5.3.0
@@ -5947,7 +5947,7 @@ snapshots:
     dependencies:
       del: 5.1.0
 
-  rollup-plugin-dts@6.1.0(rollup@4.17.2)(typescript@5.4.5):
+  rollup-plugin-dts@6.1.1(rollup@4.17.2)(typescript@5.4.5):
     dependencies:
       magic-string: 0.30.10
       rollup: 4.17.2
@@ -6215,7 +6215,7 @@ snapshots:
 
   tapable@2.2.1: {}
 
-  tatami-ng@0.4.9(typescript@5.4.5):
+  tatami-ng@0.4.12(typescript@5.4.5):
     dependencies:
       typescript: 5.4.5
 

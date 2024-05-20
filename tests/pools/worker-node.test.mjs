@@ -224,7 +224,7 @@ describe('Worker node test suite', () => {
     expect(threadWorkerNode.tasksQueueBackPressureSize).toBe(12)
     expect(threadWorkerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
     expect(threadWorkerNode.tasksQueue.size).toBe(0)
-    expect(threadWorkerNode.tasksQueue.k).toBe(6)
+    expect(threadWorkerNode.tasksQueue.bucketSize).toBe(6)
     expect(threadWorkerNode.tasksQueueSize()).toBe(
       threadWorkerNode.tasksQueue.size
     )
@@ -270,7 +270,7 @@ describe('Worker node test suite', () => {
     expect(clusterWorkerNode.tasksQueueBackPressureSize).toBe(12)
     expect(clusterWorkerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
     expect(clusterWorkerNode.tasksQueue.size).toBe(0)
-    expect(clusterWorkerNode.tasksQueue.k).toBe(6)
+    expect(clusterWorkerNode.tasksQueue.bucketSize).toBe(6)
     expect(clusterWorkerNode.tasksQueueSize()).toBe(
       clusterWorkerNode.tasksQueue.size
     )

@@ -6,7 +6,7 @@
   "main": "dist/main.js",
   "type": "module",
   "volta": {
-    "node": "22.1.0",
+    "node": "22.2.0",
     "pnpm": "9.1.1"
   },
   "packageManager": "pnpm@9.1.1",
@@ -21,7 +21,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "poolifier": "^4.0.8",
+    "poolifier": "^4.0.9",
     "ws": "^8.17.0"
   },
   "devDependencies": {
