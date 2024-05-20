@@ -416,12 +416,20 @@ export const waitWorkerNodeEvents = async <
       resolve(events)
       return
     }
-    workerNode.on(workerNodeEvent, () => {
-      ++events
-      if (events === numberOfEventsToWait) {
-        resolve(events)
-      }
-    })
+    switch (workerNodeEvent) {
+      case 'idle':
+      case 'backPressure':
+      case 'taskFinished':
+        workerNode.on(workerNodeEvent, () => {
+          ++events
+          if (events === numberOfEventsToWait) {
+            resolve(events)
+          }
+        })
+        break
+      default:
+        throw new Error('Invalid worker node event')
+    }
     if (timeout >= 0) {
       setTimeout(() => {
         resolve(events)

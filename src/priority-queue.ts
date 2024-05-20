@@ -20,7 +20,7 @@ export interface PriorityQueueNode<T> {
 export class PriorityQueue<T> {
   private nodeArray!: Array<PriorityQueueNode<T>>
   /** Prioritized bucket size. */
-  private readonly k: number
+  private readonly bucketSize: number
   /** The size of the priority queue. */
   public size!: number
   /** The maximum size of the priority queue. */
@@ -30,22 +30,24 @@ export class PriorityQueue<T> {
    * The number of filled prioritized buckets.
    */
   public get buckets (): number {
-    return this.k === Infinity ? 1 : Math.trunc(this.nodeArray.length / this.k)
+    return this.bucketSize === Infinity
+      ? 1
+      : Math.trunc(this.nodeArray.length / this.bucketSize)
   }
 
   /**
    * Constructs a priority queue.
    *
-   * @param k - Prioritized bucket size. @defaultValue Infinity
+   * @param bucketSize - Prioritized bucket size. @defaultValue Infinity
    */
-  public constructor (k = Infinity) {
-    if (k !== Infinity && !Number.isSafeInteger(k)) {
-      throw new TypeError('k must be an integer')
+  public constructor (bucketSize = Infinity) {
+    if (bucketSize !== Infinity && !Number.isSafeInteger(bucketSize)) {
+      throw new TypeError('bucketSize must be an integer')
     }
-    if (k < 1) {
-      throw new RangeError('k must be greater than or equal to 1')
+    if (bucketSize < 1) {
+      throw new RangeError('bucketSize must be greater than or equal to 1')
     }
-    this.k = k
+    this.bucketSize = bucketSize
     this.clear()
   }
 
@@ -58,7 +60,8 @@ export class PriorityQueue<T> {
    */
   public enqueue (data: T, priority?: number): number {
     priority = priority ?? 0
-    const startIndex = this.k === Infinity ? 0 : this.buckets * this.k
+    const startIndex =
+      this.bucketSize === Infinity ? 0 : this.buckets * this.bucketSize
     let inserted = false
     for (let index = startIndex; index < this.nodeArray.length; index++) {
       if (this.nodeArray[index].priority > priority) {
@@ -80,9 +83,9 @@ export class PriorityQueue<T> {
    * @returns The dequeued data or `undefined` if the priority queue is empty.
    */
   public dequeue (bucket = 0): T | undefined {
-    if (this.k !== Infinity && bucket > 0) {
+    if (this.bucketSize !== Infinity && bucket > 0) {
       while (bucket > 0) {
-        const index = bucket * this.k
+        const index = bucket * this.bucketSize
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (this.nodeArray[index] != null) {
           --this.size

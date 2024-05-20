@@ -126,6 +126,10 @@ export interface PoolInfo {
       readonly average?: number
       readonly median?: number
     }
+    utilization: {
+      readonly average?: number
+      readonly median?: number
+    }
   }
 }
 
