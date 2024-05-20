@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.10] - 2024-05-20
+
+### Fixed
+
+- Ensure tasks stealing dynamic worker node is not destroyed on inactivity.
+
 ## [4.0.9] - 2024-05-19
 
 ### Changed

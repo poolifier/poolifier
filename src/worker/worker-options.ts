@@ -4,11 +4,11 @@
 export const KillBehaviors: Readonly<{ SOFT: 'SOFT', HARD: 'HARD' }> =
   Object.freeze({
     /**
-     * If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker **wont** be deleted.
+     * If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but the worker is stealing tasks or a task is executing or queued, then the worker **wont** be deleted.
      */
     SOFT: 'SOFT',
     /**
-     * If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker will be deleted.
+     * If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but the worker is stealing tasks or a task is executing or queued, then the worker will be deleted.
      */
     HARD: 'HARD'
   } as const)
@@ -30,8 +30,8 @@ export interface WorkerOptions {
   /**
    * `killBehavior` dictates if your worker will be deleted in case a task is active on it.
    *
-   * - SOFT: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker **won't** be deleted.
-   * - HARD: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but a task is still executing or queued, then the worker will be deleted.
+   * - SOFT: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but the worker is stealing tasks or a task is executing or queued, then the worker **won't** be deleted.
+   * - HARD: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but the worker is stealing tasks or a task is executing or queued, then the worker will be deleted.
    *
    * This option only apply to the newly created workers.
    *

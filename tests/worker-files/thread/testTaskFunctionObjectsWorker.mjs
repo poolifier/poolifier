@@ -1,5 +1,4 @@
 import { KillBehaviors, ThreadWorker } from '../../../lib/index.cjs'
-// import { TaskFunctions } from '../../test-types.cjs'
 import {
   factorial,
   fibonacci,
