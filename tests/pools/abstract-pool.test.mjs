@@ -1732,8 +1732,8 @@ describe('Abstract pool test suite', () => {
     expect(pool.info.executedTasks).toBe(4)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.info.taskFunctionsProperties).toStrictEqual([
-        { name: DEFAULT_TASK_NAME, priority: -10, workerNodes: [0] },
-        { name: 'jsonIntegerSerialization', priority: -10, workerNodes: [0] },
+        { name: DEFAULT_TASK_NAME },
+        { name: 'jsonIntegerSerialization' },
         { name: 'factorial' },
         { name: 'fibonacci' }
       ])

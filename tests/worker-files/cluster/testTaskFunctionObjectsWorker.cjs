@@ -9,9 +9,7 @@ const {
 module.exports = new ThreadWorker(
   {
     jsonIntegerSerialization: {
-      taskFunction: data => jsonIntegerSerialization(data.n),
-      priority: -10,
-      workerNodes: [0]
+      taskFunction: data => jsonIntegerSerialization(data.n)
     },
     factorial: { taskFunction: data => factorial(data.n) },
     fibonacci: { taskFunction: data => fibonacci(data.n) }
