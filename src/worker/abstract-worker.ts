@@ -547,6 +547,14 @@ export abstract class AbstractWorker<
     return error instanceof Error ? error.message : error
   }
 
+  /**
+   * Abortable task function.
+   * An abortable promise is built to permit the task to be aborted.
+   *
+   * @param name - The name of the task.
+   * @param taskId - The task id.
+   * @returns The abortable task function.
+   */
   private getAbortableTaskFunction (
     name: string,
     taskId: `${string}-${string}-${string}-${string}`
