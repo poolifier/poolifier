@@ -1669,6 +1669,7 @@ describe('Abstract pool test suite', () => {
         { name: 'fibonacci' }
       ])
       expect(workerNode.taskFunctionsUsage.size).toBe(3)
+      expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
       for (const taskFunctionProperties of pool.listTaskFunctionsProperties()) {
         expect(
           workerNode.getTaskFunctionWorkerUsage(taskFunctionProperties.name)
