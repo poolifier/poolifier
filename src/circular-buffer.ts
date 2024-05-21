@@ -27,7 +27,7 @@ export class CircularBuffer<T> {
   /**
    * Puts data into buffer
    *
-   * @param data - Data to push
+   * @param data - Data to put into buffer
    */
   public put (data: T): void {
     this.items[this.writeIdx] = data
