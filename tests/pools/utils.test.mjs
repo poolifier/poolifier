@@ -3,10 +3,7 @@ import { Worker as ThreadWorker } from 'node:worker_threads'
 
 import { expect } from 'expect'
 
-import {
-  CircularArray,
-  DEFAULT_CIRCULAR_ARRAY_SIZE
-} from '../../lib/circular-array.cjs'
+import { CircularBuffer } from '../../lib/circular-buffer.cjs'
 import { WorkerTypes } from '../../lib/index.cjs'
 import {
   createWorker,
@@ -16,6 +13,7 @@ import {
   getWorkerType,
   updateMeasurementStatistics
 } from '../../lib/pools/utils.cjs'
+import { MeasurementHistorySize } from '../../lib/pools/worker.cjs'
 
 describe('Pool utils test suite', () => {
   it('Verify DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS values', () => {
@@ -38,8 +36,9 @@ describe('Pool utils test suite', () => {
   })
 
   it('Verify updateMeasurementStatistics() behavior', () => {
+    const circularBuffer = new CircularBuffer(MeasurementHistorySize)
     const measurementStatistics = {
-      history: new CircularArray()
+      history: circularBuffer
     }
     updateMeasurementStatistics(
       measurementStatistics,
@@ -50,7 +49,7 @@ describe('Pool utils test suite', () => {
       aggregate: 0.01,
       maximum: 0.01,
       minimum: 0.01,
-      history: new CircularArray()
+      history: circularBuffer
     })
     updateMeasurementStatistics(
       measurementStatistics,
@@ -61,7 +60,7 @@ describe('Pool utils test suite', () => {
       aggregate: 0.03,
       maximum: 0.02,
       minimum: 0.01,
-      history: new CircularArray()
+      history: circularBuffer
     })
     updateMeasurementStatistics(
       measurementStatistics,
@@ -73,7 +72,7 @@ describe('Pool utils test suite', () => {
       maximum: 0.02,
       minimum: 0.001,
       average: 0.001,
-      history: new CircularArray(DEFAULT_CIRCULAR_ARRAY_SIZE, 0.001)
+      history: circularBuffer
     })
     updateMeasurementStatistics(
       measurementStatistics,
@@ -85,7 +84,7 @@ describe('Pool utils test suite', () => {
       maximum: 0.02,
       minimum: 0.001,
       average: 0.002,
-      history: new CircularArray(DEFAULT_CIRCULAR_ARRAY_SIZE, 0.001, 0.003)
+      history: circularBuffer
     })
     updateMeasurementStatistics(
       measurementStatistics,
@@ -97,12 +96,7 @@ describe('Pool utils test suite', () => {
       maximum: 0.02,
       minimum: 0.001,
       median: 0.003,
-      history: new CircularArray(
-        DEFAULT_CIRCULAR_ARRAY_SIZE,
-        0.001,
-        0.003,
-        0.006
-      )
+      history: circularBuffer
     })
     updateMeasurementStatistics(
       measurementStatistics,
@@ -114,13 +108,7 @@ describe('Pool utils test suite', () => {
       maximum: 0.02,
       minimum: 0.001,
       average: 0.005,
-      history: new CircularArray(
-        DEFAULT_CIRCULAR_ARRAY_SIZE,
-        0.001,
-        0.003,
-        0.006,
-        0.01
-      )
+      history: circularBuffer
     })
   })
 

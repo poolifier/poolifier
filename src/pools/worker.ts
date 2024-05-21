@@ -1,7 +1,7 @@
 import type { EventEmitter } from 'node:events'
 import type { MessageChannel, WorkerOptions } from 'node:worker_threads'
 
-import type { CircularArray } from '../circular-array.js'
+import type { CircularBuffer } from '../circular-buffer.js'
 import type { Task, TaskFunctionProperties } from '../utility-types.js'
 
 /**
@@ -53,6 +53,11 @@ export type EventHandler<Worker extends IWorker> =
   | ExitHandler<Worker>
 
 /**
+ * Measurement history size.
+ */
+export const MeasurementHistorySize = 386
+
+/**
  * Measurement statistics.
  *
  * @internal
@@ -81,7 +86,7 @@ export interface MeasurementStatistics {
   /**
    * Measurement history.
    */
-  readonly history: CircularArray<number>
+  readonly history: CircularBuffer<number>
 }
 
 /**

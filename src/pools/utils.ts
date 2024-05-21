@@ -233,14 +233,18 @@ const updateMeasurementStatistics = (
       measurementStatistics.maximum ?? Number.NEGATIVE_INFINITY
     )
     if (measurementRequirements.average || measurementRequirements.median) {
-      measurementStatistics.history.push(measurementValue)
+      measurementStatistics.history.put(measurementValue)
       if (measurementRequirements.average) {
-        measurementStatistics.average = average(measurementStatistics.history)
+        measurementStatistics.average = average(
+          measurementStatistics.history.toArray()
+        )
       } else if (measurementStatistics.average != null) {
         delete measurementStatistics.average
       }
       if (measurementRequirements.median) {
-        measurementStatistics.median = median(measurementStatistics.history)
+        measurementStatistics.median = median(
+          measurementStatistics.history.toArray()
+        )
       } else if (measurementStatistics.median != null) {
         delete measurementStatistics.median
       }

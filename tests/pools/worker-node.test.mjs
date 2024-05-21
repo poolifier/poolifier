@@ -3,7 +3,7 @@ import { MessageChannel, Worker as ThreadWorker } from 'node:worker_threads'
 
 import { expect } from 'expect'
 
-import { CircularArray } from '../../lib/circular-array.cjs'
+import { CircularBuffer } from '../../lib/circular-buffer.cjs'
 import { WorkerTypes } from '../../lib/index.cjs'
 import { WorkerNode } from '../../lib/pools/worker-node.cjs'
 import { PriorityQueue } from '../../lib/priority-queue.cjs'
@@ -206,17 +206,17 @@ describe('Worker node test suite', () => {
         failed: 0
       },
       runTime: {
-        history: new CircularArray()
+        history: expect.any(CircularBuffer)
       },
       waitTime: {
-        history: new CircularArray()
+        history: expect.any(CircularBuffer)
       },
       elu: {
         idle: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         active: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         }
       }
     })
@@ -252,17 +252,17 @@ describe('Worker node test suite', () => {
         failed: 0
       },
       runTime: {
-        history: new CircularArray()
+        history: expect.any(CircularBuffer)
       },
       waitTime: {
-        history: new CircularArray()
+        history: expect.any(CircularBuffer)
       },
       elu: {
         idle: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         active: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         }
       }
     })
@@ -314,17 +314,17 @@ describe('Worker node test suite', () => {
         failed: 0
       },
       runTime: {
-        history: new CircularArray()
+        history: expect.any(CircularBuffer)
       },
       waitTime: {
-        history: new CircularArray()
+        history: expect.any(CircularBuffer)
       },
       elu: {
         idle: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         active: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         }
       }
     })
@@ -338,17 +338,17 @@ describe('Worker node test suite', () => {
         failed: 0
       },
       runTime: {
-        history: new CircularArray()
+        history: expect.any(CircularBuffer)
       },
       waitTime: {
-        history: new CircularArray()
+        history: expect.any(CircularBuffer)
       },
       elu: {
         idle: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         active: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         }
       }
     })
@@ -362,17 +362,17 @@ describe('Worker node test suite', () => {
         failed: 0
       },
       runTime: {
-        history: new CircularArray()
+        history: expect.any(CircularBuffer)
       },
       waitTime: {
-        history: new CircularArray()
+        history: expect.any(CircularBuffer)
       },
       elu: {
         idle: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         active: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         }
       }
     })

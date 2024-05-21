@@ -64,6 +64,7 @@ module.exports = defineConfig({
           'fp',
           'fs',
           'func',
+          'idx',
           'inheritDoc',
           'javascript',
           'jsdoc',

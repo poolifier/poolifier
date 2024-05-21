@@ -395,7 +395,9 @@ export abstract class AbstractPool<
               average(
                 this.workerNodes.reduce<number[]>(
                   (accumulator, workerNode) =>
-                    accumulator.concat(workerNode.usage.runTime.history),
+                    accumulator.concat(
+                      workerNode.usage.runTime.history.toArray()
+                    ),
                   []
                 )
               )
@@ -407,7 +409,9 @@ export abstract class AbstractPool<
               median(
                 this.workerNodes.reduce<number[]>(
                   (accumulator, workerNode) =>
-                    accumulator.concat(workerNode.usage.runTime.history),
+                    accumulator.concat(
+                      workerNode.usage.runTime.history.toArray()
+                    ),
                   []
                 )
               )
@@ -440,7 +444,9 @@ export abstract class AbstractPool<
               average(
                 this.workerNodes.reduce<number[]>(
                   (accumulator, workerNode) =>
-                    accumulator.concat(workerNode.usage.waitTime.history),
+                    accumulator.concat(
+                      workerNode.usage.waitTime.history.toArray()
+                    ),
                   []
                 )
               )
@@ -452,7 +458,9 @@ export abstract class AbstractPool<
               median(
                 this.workerNodes.reduce<number[]>(
                   (accumulator, workerNode) =>
-                    accumulator.concat(workerNode.usage.waitTime.history),
+                    accumulator.concat(
+                      workerNode.usage.waitTime.history.toArray()
+                    ),
                   []
                 )
               )
@@ -488,7 +496,9 @@ export abstract class AbstractPool<
                 average(
                   this.workerNodes.reduce<number[]>(
                     (accumulator, workerNode) =>
-                      accumulator.concat(workerNode.usage.elu.idle.history),
+                      accumulator.concat(
+                        workerNode.usage.elu.idle.history.toArray()
+                      ),
                     []
                   )
                 )
@@ -500,7 +510,9 @@ export abstract class AbstractPool<
                 median(
                   this.workerNodes.reduce<number[]>(
                     (accumulator, workerNode) =>
-                      accumulator.concat(workerNode.usage.elu.idle.history),
+                      accumulator.concat(
+                        workerNode.usage.elu.idle.history.toArray()
+                      ),
                     []
                   )
                 )
@@ -532,7 +544,9 @@ export abstract class AbstractPool<
                 average(
                   this.workerNodes.reduce<number[]>(
                     (accumulator, workerNode) =>
-                      accumulator.concat(workerNode.usage.elu.active.history),
+                      accumulator.concat(
+                        workerNode.usage.elu.active.history.toArray()
+                      ),
                     []
                   )
                 )
@@ -544,7 +558,9 @@ export abstract class AbstractPool<
                 median(
                   this.workerNodes.reduce<number[]>(
                     (accumulator, workerNode) =>
-                      accumulator.concat(workerNode.usage.elu.active.history),
+                      accumulator.concat(
+                        workerNode.usage.elu.active.history.toArray()
+                      ),
                     []
                   )
                 )
