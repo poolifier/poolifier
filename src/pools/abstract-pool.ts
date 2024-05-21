@@ -1473,7 +1473,7 @@ export abstract class AbstractPool<
    * Chooses a worker node for the next task.
    *
    * @param name - The task function name.
-   * @returns The chosen worker node key
+   * @returns The chosen worker node key.
    */
   private chooseWorkerNode (name?: string): number {
     if (this.shallCreateDynamicWorker()) {
