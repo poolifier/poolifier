@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Switch to optimized circular buffer implementation to store tasks execution measurements.
+- Switch to optimized circular buffer implementation to store task execution measurements.
 
 ## [4.0.10] - 2024-05-20
 
