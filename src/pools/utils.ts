@@ -226,11 +226,11 @@ const updateMeasurementStatistics = (
       (measurementStatistics.aggregate ?? 0) + measurementValue
     measurementStatistics.minimum = min(
       measurementValue,
-      measurementStatistics.minimum ?? Infinity
+      measurementStatistics.minimum ?? Number.POSITIVE_INFINITY
     )
     measurementStatistics.maximum = max(
       measurementValue,
-      measurementStatistics.maximum ?? -Infinity
+      measurementStatistics.maximum ?? Number.NEGATIVE_INFINITY
     )
     if (measurementRequirements.average || measurementRequirements.median) {
       measurementStatistics.history.push(measurementValue)
