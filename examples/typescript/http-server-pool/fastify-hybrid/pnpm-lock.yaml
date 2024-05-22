@@ -15,8 +15,8 @@ importers:
         specifier: ^4.5.1
         version: 4.5.1
       poolifier:
-        specifier: ^4.0.10
-        version: 4.0.10
+        specifier: ^4.0.11
+        version: 4.0.11
     devDependencies:
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
@@ -562,8 +562,8 @@ packages:
     resolution: {integrity: sha512-qUcgfrlyOtjwhNLdbhoL7NR4NkHjzykAPw0V2QLFbvu/zss29h4NkRnibyFzBrNCbzCOY3WZ9hhKSwfOkNggYA==}
     hasBin: true
 
-  poolifier@4.0.10:
-    resolution: {integrity: sha512-PSitQC7KbzqnPrHLOLl0nebqDbGtEPN1fNVZgAdYPK7jmswAiDaW9z4VDr1fW45mkPio654bEg77QvsScUG+WQ==}
+  poolifier@4.0.11:
+    resolution: {integrity: sha512-TW2Nik3Q7+KgwsiqUHmzeCYRsO20TGZnxXSAhaySEMD+wAmtNFOkCAOwcKCCs0XPByJkiGvEVtkaaDGeC6vuRg==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   pretty-bytes@5.6.0:
@@ -1247,7 +1247,7 @@ snapshots:
       sonic-boom: 4.0.1
       thread-stream: 3.0.0
 
-  poolifier@4.0.10: {}
+  poolifier@4.0.11: {}
 
   pretty-bytes@5.6.0: {}
 
