@@ -57,4 +57,15 @@ describe('Circular buffer test suite', t => {
     expect(circularBuffer.items).toMatchObject([5, 6, 3, 4])
     expect(circularBuffer.writeIdx).toBe(2)
   })
+
+  it('Verify that circular buffer toArray() works as intended', () => {
+    const circularBuffer = new CircularBuffer(4)
+    circularBuffer.put(1)
+    circularBuffer.put(2)
+    circularBuffer.put(3)
+    circularBuffer.put(4)
+    circularBuffer.put(5)
+    circularBuffer.put(6)
+    expect(circularBuffer.toArray()).toStrictEqual([5, 6, 3, 4])
+  })
 })
