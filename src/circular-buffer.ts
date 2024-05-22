@@ -1,10 +1,13 @@
 /**
- * Default buffer size
+ * Default buffer size.
  */
 export const defaultBufferSize = 2048
 
 /**
  * Circular buffer
+ *
+ * @typeParam T - Type of buffer data.
+ * @internal
  */
 export class CircularBuffer<T> {
   private readonly readIdx: number
@@ -13,8 +16,8 @@ export class CircularBuffer<T> {
   private readonly maxArrayIdx: number
 
   /**
-   * @param size - Buffer size
-   * @returns CircularBuffer
+   * @param size - Buffer size. @defaultValue defaultBufferSize
+   * @returns CircularBuffer.
    */
   constructor (size: number = defaultBufferSize) {
     this.checkSize(size)
@@ -25,9 +28,9 @@ export class CircularBuffer<T> {
   }
 
   /**
-   * Puts data into buffer
+   * Puts data into buffer.
    *
-   * @param data - Data to push
+   * @param data - Data to put into buffer.
    */
   public put (data: T): void {
     this.items[this.writeIdx] = data
@@ -35,9 +38,9 @@ export class CircularBuffer<T> {
   }
 
   /**
-   * Returns buffer as array
+   * Returns buffer as array.
    *
-   * @returns T[]
+   * @returns Array of buffer data.
    */
   public toArray (): T[] {
     return this.items.filter(item => item != null) as T[]
