@@ -18,7 +18,7 @@ const tasksMap = generateRandomTasksMap(60, 20)
 
 function loopSelect (tasksMap) {
   let minKey
-  let minValue = Infinity
+  let minValue = Number.POSITIVE_INFINITY
   for (const [key, value] of tasksMap) {
     if (value === 0) {
       return key

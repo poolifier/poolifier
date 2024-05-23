@@ -33,7 +33,7 @@ expressApp.all('/api/echo', (req: Request, res: Response) => {
 expressApp.get('/api/factorial/:number', (req: Request, res: Response) => {
   const { number } = req.params
   requestHandlerPool
-    .execute({ body: { number: parseInt(number) } }, 'factorial')
+    .execute({ body: { number: Number.parseInt(number) } }, 'factorial')
     .then(response => {
       return res.send(response.body).end()
     })

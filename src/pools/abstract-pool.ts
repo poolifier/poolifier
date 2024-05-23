@@ -376,14 +376,16 @@ export abstract class AbstractPool<
           minimum: round(
             min(
               ...this.workerNodes.map(
-                workerNode => workerNode.usage.runTime.minimum ?? Infinity
+                workerNode =>
+                  workerNode.usage.runTime.minimum ?? Number.POSITIVE_INFINITY
               )
             )
           ),
           maximum: round(
             max(
               ...this.workerNodes.map(
-                workerNode => workerNode.usage.runTime.maximum ?? -Infinity
+                workerNode =>
+                  workerNode.usage.runTime.maximum ?? Number.NEGATIVE_INFINITY
               )
             )
           ),
@@ -393,7 +395,9 @@ export abstract class AbstractPool<
               average(
                 this.workerNodes.reduce<number[]>(
                   (accumulator, workerNode) =>
-                    accumulator.concat(workerNode.usage.runTime.history),
+                    accumulator.concat(
+                      workerNode.usage.runTime.history.toArray()
+                    ),
                   []
                 )
               )
@@ -405,7 +409,9 @@ export abstract class AbstractPool<
               median(
                 this.workerNodes.reduce<number[]>(
                   (accumulator, workerNode) =>
-                    accumulator.concat(workerNode.usage.runTime.history),
+                    accumulator.concat(
+                      workerNode.usage.runTime.history.toArray()
+                    ),
                   []
                 )
               )
@@ -419,14 +425,16 @@ export abstract class AbstractPool<
           minimum: round(
             min(
               ...this.workerNodes.map(
-                workerNode => workerNode.usage.waitTime.minimum ?? Infinity
+                workerNode =>
+                  workerNode.usage.waitTime.minimum ?? Number.POSITIVE_INFINITY
               )
             )
           ),
           maximum: round(
             max(
               ...this.workerNodes.map(
-                workerNode => workerNode.usage.waitTime.maximum ?? -Infinity
+                workerNode =>
+                  workerNode.usage.waitTime.maximum ?? Number.NEGATIVE_INFINITY
               )
             )
           ),
@@ -436,7 +444,9 @@ export abstract class AbstractPool<
               average(
                 this.workerNodes.reduce<number[]>(
                   (accumulator, workerNode) =>
-                    accumulator.concat(workerNode.usage.waitTime.history),
+                    accumulator.concat(
+                      workerNode.usage.waitTime.history.toArray()
+                    ),
                   []
                 )
               )
@@ -448,7 +458,9 @@ export abstract class AbstractPool<
               median(
                 this.workerNodes.reduce<number[]>(
                   (accumulator, workerNode) =>
-                    accumulator.concat(workerNode.usage.waitTime.history),
+                    accumulator.concat(
+                      workerNode.usage.waitTime.history.toArray()
+                    ),
                   []
                 )
               )
@@ -463,14 +475,18 @@ export abstract class AbstractPool<
             minimum: round(
               min(
                 ...this.workerNodes.map(
-                  workerNode => workerNode.usage.elu.idle.minimum ?? Infinity
+                  workerNode =>
+                    workerNode.usage.elu.idle.minimum ??
+                    Number.POSITIVE_INFINITY
                 )
               )
             ),
             maximum: round(
               max(
                 ...this.workerNodes.map(
-                  workerNode => workerNode.usage.elu.idle.maximum ?? -Infinity
+                  workerNode =>
+                    workerNode.usage.elu.idle.maximum ??
+                    Number.NEGATIVE_INFINITY
                 )
               )
             ),
@@ -480,7 +496,9 @@ export abstract class AbstractPool<
                 average(
                   this.workerNodes.reduce<number[]>(
                     (accumulator, workerNode) =>
-                      accumulator.concat(workerNode.usage.elu.idle.history),
+                      accumulator.concat(
+                        workerNode.usage.elu.idle.history.toArray()
+                      ),
                     []
                   )
                 )
@@ -492,7 +510,9 @@ export abstract class AbstractPool<
                 median(
                   this.workerNodes.reduce<number[]>(
                     (accumulator, workerNode) =>
-                      accumulator.concat(workerNode.usage.elu.idle.history),
+                      accumulator.concat(
+                        workerNode.usage.elu.idle.history.toArray()
+                      ),
                     []
                   )
                 )
@@ -503,14 +523,18 @@ export abstract class AbstractPool<
             minimum: round(
               min(
                 ...this.workerNodes.map(
-                  workerNode => workerNode.usage.elu.active.minimum ?? Infinity
+                  workerNode =>
+                    workerNode.usage.elu.active.minimum ??
+                    Number.POSITIVE_INFINITY
                 )
               )
             ),
             maximum: round(
               max(
                 ...this.workerNodes.map(
-                  workerNode => workerNode.usage.elu.active.maximum ?? -Infinity
+                  workerNode =>
+                    workerNode.usage.elu.active.maximum ??
+                    Number.NEGATIVE_INFINITY
                 )
               )
             ),
@@ -520,7 +544,9 @@ export abstract class AbstractPool<
                 average(
                   this.workerNodes.reduce<number[]>(
                     (accumulator, workerNode) =>
-                      accumulator.concat(workerNode.usage.elu.active.history),
+                      accumulator.concat(
+                        workerNode.usage.elu.active.history.toArray()
+                      ),
                     []
                   )
                 )
@@ -532,7 +558,9 @@ export abstract class AbstractPool<
                 median(
                   this.workerNodes.reduce<number[]>(
                     (accumulator, workerNode) =>
-                      accumulator.concat(workerNode.usage.elu.active.history),
+                      accumulator.concat(
+                        workerNode.usage.elu.active.history.toArray()
+                      ),
                     []
                   )
                 )
@@ -1463,7 +1491,7 @@ export abstract class AbstractPool<
    * Chooses a worker node for the next task.
    *
    * @param name - The task function name.
-   * @returns The chosen worker node key
+   * @returns The chosen worker node key.
    */
   private chooseWorkerNode (name?: string): number {
     if (this.shallCreateDynamicWorker()) {
@@ -1513,7 +1541,8 @@ export abstract class AbstractPool<
     ) {
       workerNode.usage.runTime.aggregate = min(
         ...this.workerNodes.map(
-          workerNode => workerNode.usage.runTime.aggregate ?? Infinity
+          workerNode =>
+            workerNode.usage.runTime.aggregate ?? Number.POSITIVE_INFINITY
         )
       )
     }
@@ -1523,7 +1552,8 @@ export abstract class AbstractPool<
     ) {
       workerNode.usage.waitTime.aggregate = min(
         ...this.workerNodes.map(
-          workerNode => workerNode.usage.waitTime.aggregate ?? Infinity
+          workerNode =>
+            workerNode.usage.waitTime.aggregate ?? Number.POSITIVE_INFINITY
         )
       )
     }
@@ -1533,7 +1563,8 @@ export abstract class AbstractPool<
     ) {
       workerNode.usage.elu.active.aggregate = min(
         ...this.workerNodes.map(
-          workerNode => workerNode.usage.elu.active.aggregate ?? Infinity
+          workerNode =>
+            workerNode.usage.elu.active.aggregate ?? Number.POSITIVE_INFINITY
         )
       )
     }

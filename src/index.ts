@@ -1,4 +1,4 @@
-export type { CircularArray } from './circular-array.js'
+export type { CircularBuffer } from './circular-buffer.js'
 export type { AbstractPool } from './pools/abstract-pool.js'
 export { DynamicClusterPool } from './pools/cluster/dynamic.js'
 export type { ClusterPoolOptions } from './pools/cluster/fixed.js'

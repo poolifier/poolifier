@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events'
 import { MessageChannel } from 'node:worker_threads'
 
-import { CircularArray } from '../circular-array.js'
+import { CircularBuffer } from '../circular-buffer.js'
 import { PriorityQueue } from '../priority-queue.js'
 import type { Task } from '../utility-types.js'
 import { DEFAULT_TASK_NAME } from '../utils.js'
@@ -15,6 +15,7 @@ import {
   type EventHandler,
   type IWorker,
   type IWorkerNode,
+  MeasurementHistorySize,
   type StrategyData,
   type WorkerInfo,
   type WorkerNodeOptions,
@@ -245,17 +246,17 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
         failed: 0
       },
       runTime: {
-        history: new CircularArray<number>()
+        history: new CircularBuffer<number>(MeasurementHistorySize)
       },
       waitTime: {
-        history: new CircularArray<number>()
+        history: new CircularBuffer<number>(MeasurementHistorySize)
       },
       elu: {
         idle: {
-          history: new CircularArray<number>()
+          history: new CircularBuffer<number>(MeasurementHistorySize)
         },
         active: {
-          history: new CircularArray<number>()
+          history: new CircularBuffer<number>(MeasurementHistorySize)
         }
       }
     }
@@ -288,17 +289,17 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
         failed: 0
       },
       runTime: {
-        history: new CircularArray<number>()
+        history: new CircularBuffer<number>(MeasurementHistorySize)
       },
       waitTime: {
-        history: new CircularArray<number>()
+        history: new CircularBuffer<number>(MeasurementHistorySize)
       },
       elu: {
         idle: {
-          history: new CircularArray<number>()
+          history: new CircularBuffer<number>(MeasurementHistorySize)
         },
         active: {
-          history: new CircularArray<number>()
+          history: new CircularBuffer<number>(MeasurementHistorySize)
         }
       }
     }

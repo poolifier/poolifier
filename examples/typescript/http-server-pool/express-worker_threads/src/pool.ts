@@ -3,11 +3,7 @@ import { fileURLToPath } from 'node:url'
 
 import { availableParallelism, DynamicThreadPool } from 'poolifier'
 
-import {
-  type BodyPayload,
-  type WorkerData,
-  type WorkerResponse
-} from './types.js'
+import type { BodyPayload, WorkerData, WorkerResponse } from './types.js'
 
 const workerFile = join(
   dirname(fileURLToPath(import.meta.url)),

@@ -1,10 +1,6 @@
 import { ThreadWorker } from 'poolifier'
 
-import {
-  type BodyPayload,
-  type WorkerData,
-  type WorkerResponse
-} from './types.js'
+import type { BodyPayload, WorkerData, WorkerResponse } from './types.js'
 
 class RequestHandlerWorker<
   Data extends WorkerData<BodyPayload>,

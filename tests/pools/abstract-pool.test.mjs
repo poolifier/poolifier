@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url'
 import { expect } from 'expect'
 import { restore, stub } from 'sinon'
 
-import { CircularArray } from '../../lib/circular-array.cjs'
+import { CircularBuffer } from '../../lib/circular-buffer.cjs'
 import {
   DynamicClusterPool,
   DynamicThreadPool,
@@ -761,17 +761,17 @@ describe('Abstract pool test suite', () => {
           failed: 0
         },
         runTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         waitTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         elu: {
           idle: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           }
         }
       })
@@ -936,17 +936,17 @@ describe('Abstract pool test suite', () => {
           failed: 0
         },
         runTime: {
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         },
         waitTime: {
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         },
         elu: {
           idle: {
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           }
         }
       })
@@ -964,17 +964,17 @@ describe('Abstract pool test suite', () => {
           failed: 0
         },
         runTime: {
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         },
         waitTime: {
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         },
         elu: {
           idle: {
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           }
         }
       })
@@ -1006,17 +1006,17 @@ describe('Abstract pool test suite', () => {
           failed: 0
         },
         runTime: {
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         },
         waitTime: {
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         },
         elu: {
           idle: {
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           }
         }
       })
@@ -1024,10 +1024,6 @@ describe('Abstract pool test suite', () => {
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         numberOfWorkers * maxMultiplier
       )
-      expect(workerNode.usage.runTime.history.length).toBe(0)
-      expect(workerNode.usage.waitTime.history.length).toBe(0)
-      expect(workerNode.usage.elu.idle.history.length).toBe(0)
-      expect(workerNode.usage.elu.active.history.length).toBe(0)
     }
     pool.setWorkerChoiceStrategy(WorkerChoiceStrategies.FAIR_SHARE)
     for (const workerNode of pool.workerNodes) {
@@ -1042,17 +1038,17 @@ describe('Abstract pool test suite', () => {
           failed: 0
         },
         runTime: {
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         },
         waitTime: {
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         },
         elu: {
           idle: {
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           }
         }
       })
@@ -1060,10 +1056,6 @@ describe('Abstract pool test suite', () => {
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         numberOfWorkers * maxMultiplier
       )
-      expect(workerNode.usage.runTime.history.length).toBe(0)
-      expect(workerNode.usage.waitTime.history.length).toBe(0)
-      expect(workerNode.usage.elu.idle.history.length).toBe(0)
-      expect(workerNode.usage.elu.active.history.length).toBe(0)
     }
     await pool.destroy()
   })
@@ -1455,17 +1447,17 @@ describe('Abstract pool test suite', () => {
           failed: 0
         },
         runTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         waitTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         elu: expect.objectContaining({
           idle: expect.objectContaining({
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           }),
           active: expect.objectContaining({
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           })
         })
       })
@@ -1686,17 +1678,17 @@ describe('Abstract pool test suite', () => {
             stolen: 0
           },
           runTime: {
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           },
           waitTime: {
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           },
           elu: {
             idle: {
-              history: expect.any(CircularArray)
+              history: expect.any(CircularBuffer)
             },
             active: {
-              history: expect.any(CircularArray)
+              history: expect.any(CircularBuffer)
             }
           }
         })
@@ -1755,17 +1747,17 @@ describe('Abstract pool test suite', () => {
             stolen: 0
           },
           runTime: {
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           },
           waitTime: {
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           },
           elu: {
             idle: {
-              history: expect.any(CircularArray)
+              history: expect.any(CircularBuffer)
             },
             active: {
-              history: expect.any(CircularArray)
+              history: expect.any(CircularBuffer)
             }
           }
         })

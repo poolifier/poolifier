@@ -151,7 +151,7 @@ describe('Utils test suite', () => {
     expect(isAsyncFunction([])).toBe(false)
     expect(isAsyncFunction(new Date())).toBe(false)
     // eslint-disable-next-line prefer-regex-literals
-    expect(isAsyncFunction(new RegExp('[a-z]', 'i'))).toBe(false)
+    expect(isAsyncFunction(/[a-z]/i)).toBe(false)
     expect(isAsyncFunction(new Error())).toBe(false)
     expect(isAsyncFunction(new Map())).toBe(false)
     expect(isAsyncFunction(new Set())).toBe(false)
@@ -207,14 +207,14 @@ describe('Utils test suite', () => {
   })
 
   it('Verify min() behavior', () => {
-    expect(min()).toBe(Infinity)
+    expect(min()).toBe(Number.POSITIVE_INFINITY)
     expect(min(1, 2)).toBe(1)
     expect(min(2, 1)).toBe(1)
     expect(min(1, 1)).toBe(1)
   })
 
   it('Verify max() behavior', () => {
-    expect(max()).toBe(-Infinity)
+    expect(max()).toBe(Number.NEGATIVE_INFINITY)
     expect(max(1, 2)).toBe(2)
     expect(max(2, 1)).toBe(2)
     expect(max(1, 1)).toBe(1)
