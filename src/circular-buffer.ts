@@ -4,7 +4,7 @@
 export const defaultBufferSize = 2048
 
 /**
- * Circular buffer
+ * Circular buffer.
  *
  * @typeParam T - Type of buffer data.
  * @internal
