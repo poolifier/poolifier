@@ -8,12 +8,12 @@ import {
   DynamicThreadPool
 } from 'poolifier'
 
-import {
-  type ClusterWorkerData,
-  type ClusterWorkerResponse,
-  type DataPayload,
-  type ThreadWorkerData,
-  type ThreadWorkerResponse
+import type {
+  ClusterWorkerData,
+  ClusterWorkerResponse,
+  DataPayload,
+  ThreadWorkerData,
+  ThreadWorkerResponse
 } from './types.js'
 
 const emptyFunction = (): void => {
@@ -63,7 +63,7 @@ ClusterWorkerResponse
     application.get('/api/factorial/:number', (req: Request, res: Response) => {
       const { number } = req.params
       ExpressWorker.requestHandlerPool
-        .execute({ data: { number: parseInt(number) } }, 'factorial')
+        .execute({ data: { number: Number.parseInt(number) } }, 'factorial')
         .then(response => {
           return res.send(response.data).end()
         })

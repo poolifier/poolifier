@@ -143,7 +143,7 @@ export class FairShareWorkerChoiceStrategy<
       this.pool.workerNodes[workerNodeKey]?.strategyData
         ?.virtualTaskEndTimestamp
     const now = performance.now()
-    return now < (virtualTaskEndTimestamp ?? -Infinity)
+    return now < (virtualTaskEndTimestamp ?? Number.NEGATIVE_INFINITY)
       ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       virtualTaskEndTimestamp!
       : now

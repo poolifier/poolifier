@@ -4,10 +4,10 @@ import type { FastifyPluginCallback } from 'fastify'
 import fp from 'fastify-plugin'
 import { availableParallelism, DynamicThreadPool } from 'poolifier'
 
-import {
-  type FastifyPoolifierOptions,
-  type WorkerData,
-  type WorkerResponse
+import type {
+  FastifyPoolifierOptions,
+  WorkerData,
+  WorkerResponse
 } from './types.js'
 
 const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (

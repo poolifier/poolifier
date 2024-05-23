@@ -1,9 +1,9 @@
 import type { URL } from 'node:url'
 
 import type { AxiosRequestConfig } from 'axios'
-import {
-  type RequestInfo as NodeFetchRequestInfo,
-  type RequestInit as NodeFetchRequestInit
+import type {
+  RequestInfo as NodeFetchRequestInfo,
+  RequestInit as NodeFetchRequestInit
 } from 'node-fetch'
 
 export interface WorkerData {

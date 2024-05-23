@@ -30,7 +30,7 @@ export class PriorityQueue<T> {
    * The number of filled prioritized buckets.
    */
   public get buckets (): number {
-    return this.bucketSize === Infinity
+    return this.bucketSize === Number.POSITIVE_INFINITY
       ? 1
       : Math.trunc(this.nodeArray.length / this.bucketSize)
   }
@@ -38,10 +38,13 @@ export class PriorityQueue<T> {
   /**
    * Constructs a priority queue.
    *
-   * @param bucketSize - Prioritized bucket size. @defaultValue Infinity
+   * @param bucketSize - Prioritized bucket size. @defaultValue Number.POSITIVE_INFINITY
    */
-  public constructor (bucketSize = Infinity) {
-    if (bucketSize !== Infinity && !Number.isSafeInteger(bucketSize)) {
+  public constructor (bucketSize = Number.POSITIVE_INFINITY) {
+    if (
+      bucketSize !== Number.POSITIVE_INFINITY &&
+      !Number.isSafeInteger(bucketSize)
+    ) {
       throw new TypeError('bucketSize must be an integer')
     }
     if (bucketSize < 1) {
@@ -61,7 +64,9 @@ export class PriorityQueue<T> {
   public enqueue (data: T, priority?: number): number {
     priority = priority ?? 0
     const startIndex =
-      this.bucketSize === Infinity ? 0 : this.buckets * this.bucketSize
+      this.bucketSize === Number.POSITIVE_INFINITY
+        ? 0
+        : this.buckets * this.bucketSize
     let inserted = false
     for (let index = startIndex; index < this.nodeArray.length; index++) {
       if (this.nodeArray[index].priority > priority) {
@@ -83,7 +88,7 @@ export class PriorityQueue<T> {
    * @returns The dequeued data or `undefined` if the priority queue is empty.
    */
   public dequeue (bucket = 0): T | undefined {
-    if (this.bucketSize !== Infinity && bucket > 0) {
+    if (this.bucketSize !== Number.POSITIVE_INFINITY && bucket > 0) {
       while (bucket > 0) {
         const index = bucket * this.bucketSize
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

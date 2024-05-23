@@ -2,7 +2,7 @@ import { randomInt } from 'node:crypto'
 
 import { expect } from 'expect'
 
-import { CircularArray } from '../../../lib/circular-array.cjs'
+import { CircularBuffer } from '../../../lib/circular-buffer.cjs'
 import {
   DynamicClusterPool,
   DynamicThreadPool,
@@ -258,17 +258,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         waitTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         elu: {
           idle: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           }
         }
       })
@@ -314,17 +314,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         waitTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         elu: {
           idle: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           }
         }
       })
@@ -532,17 +532,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         waitTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         elu: {
           idle: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           }
         }
       })
@@ -591,17 +591,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         waitTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         elu: {
           idle: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           }
         }
       })
@@ -731,17 +731,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         waitTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         elu: {
           idle: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           }
         }
       })
@@ -800,17 +800,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         waitTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         elu: {
           idle: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           }
         }
       })
@@ -950,17 +950,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         waitTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         elu: expect.objectContaining({
           idle: expect.objectContaining({
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           }),
           active: expect.objectContaining({
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           })
         })
       })
@@ -1025,17 +1025,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         waitTime: {
-          history: new CircularArray()
+          history: expect.any(CircularBuffer)
         },
         elu: expect.objectContaining({
           idle: expect.objectContaining({
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           }),
           active: expect.objectContaining({
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           })
         })
       })
@@ -1181,17 +1181,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         waitTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         elu: expect.objectContaining({
           idle: expect.objectContaining({
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           }),
           active: expect.objectContaining({
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           })
         })
       })
@@ -1277,17 +1277,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         waitTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         elu: expect.objectContaining({
           idle: expect.objectContaining({
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           }),
           active: expect.objectContaining({
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           })
         })
       })
@@ -1378,17 +1378,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         waitTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         elu: expect.objectContaining({
           idle: expect.objectContaining({
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           }),
           active: expect.objectContaining({
-            history: expect.any(CircularArray)
+            history: expect.any(CircularBuffer)
           })
         })
       })
@@ -1589,17 +1589,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         waitTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         elu: {
           idle: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           }
         }
       })
@@ -1673,17 +1673,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         waitTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         elu: {
           idle: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           }
         }
       })
@@ -1762,17 +1762,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         waitTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         elu: {
           idle: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           }
         }
       })
@@ -2000,17 +2000,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         waitTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         elu: {
           idle: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           }
         }
       })
@@ -2104,17 +2104,17 @@ describe('Selection strategies test suite', () => {
           failed: 0
         },
         runTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         waitTime: expect.objectContaining({
-          history: expect.any(CircularArray)
+          history: expect.any(CircularBuffer)
         }),
         elu: {
           idle: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           },
           active: {
-            history: new CircularArray()
+            history: expect.any(CircularBuffer)
           }
         }
       })
