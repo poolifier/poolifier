@@ -36,7 +36,6 @@ describe('Pool utils test suite', () => {
   })
 
   it('Verify updateMeasurementStatistics() behavior', () => {
-    // const circularBuffer = new CircularBuffer(MeasurementHistorySize)
     const measurementStatistics = {
       history: new CircularBuffer(MeasurementHistorySize)
     }
