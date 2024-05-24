@@ -10,10 +10,11 @@ export const defaultBufferSize = 2048
  * @internal
  */
 export class CircularBuffer<T> {
-  private readonly readIdx: number
+  private readIdx: number
   private writeIdx: number
   private items: Array<T | undefined>
   private readonly maxArrayIdx: number
+  public size: number
 
   /**
    * @param size - Buffer size. @defaultValue defaultBufferSize
@@ -24,7 +25,26 @@ export class CircularBuffer<T> {
     this.readIdx = 0
     this.writeIdx = 0
     this.maxArrayIdx = size - 1
+    this.size = 0
     this.items = new Array<T | undefined>(size)
+  }
+
+  /**
+   * Checks whether the buffer is empty.
+   *
+   * @returns Whether the buffer is empty.
+   */
+  public empty (): boolean {
+    return this.size === 0
+  }
+
+  /**
+   * Checks whether the buffer is full.
+   *
+   * @returns Whether the buffer is full.
+   */
+  public full (): boolean {
+    return this.size === this.items.length
   }
 
   /**
@@ -35,6 +55,25 @@ export class CircularBuffer<T> {
   public put (data: T): void {
     this.items[this.writeIdx] = data
     this.writeIdx = this.writeIdx === this.maxArrayIdx ? 0 : this.writeIdx + 1
+    if (this.size < this.items.length) {
+      ++this.size
+    }
+  }
+
+  /**
+   * Gets data from buffer.
+   *
+   * @returns Data from buffer.
+   */
+  public get (): T | undefined {
+    const data = this.items[this.readIdx]
+    if (data == null) {
+      return
+    }
+    this.items[this.readIdx] = undefined
+    this.readIdx = this.readIdx === this.maxArrayIdx ? 0 : this.readIdx + 1
+    --this.size
+    return data
   }
 
   /**
