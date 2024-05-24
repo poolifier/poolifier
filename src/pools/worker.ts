@@ -86,7 +86,7 @@ export interface MeasurementStatistics {
   /**
    * Measurement history.
    */
-  readonly history: CircularBuffer<number>
+  readonly history: CircularBuffer
 }
 
 /**
