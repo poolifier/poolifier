@@ -14,6 +14,7 @@ export class CircularBuffer<T> {
   private writeIdx: number
   private items: Array<T | undefined>
   private readonly maxArrayIdx: number
+  /* Buffer number of elements */
   public size: number
 
   /**
