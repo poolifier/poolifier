@@ -65,14 +65,14 @@ export class CircularBuffer {
    * @returns Number from buffer.
    */
   public get (): number | undefined {
-    const data = this.items[this.readIdx]
-    if (data === -1) {
+    const number = this.items[this.readIdx]
+    if (number === -1) {
       return
     }
     this.items[this.readIdx] = -1
     this.readIdx = this.readIdx === this.maxArrayIdx ? 0 : this.readIdx + 1
     --this.size
-    return data
+    return number
   }
 
   /**
