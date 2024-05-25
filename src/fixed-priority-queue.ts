@@ -14,6 +14,12 @@ export interface PriorityQueueNode<T> {
   priority: number
 }
 
+/**
+ * Fixed priority queue.
+ *
+ * @typeParam T - Type of fixed priority queue data.
+ * @internal
+ */
 export class FixedPriorityQueue<T> {
   private start!: number
   private readonly nodeArray: Array<PriorityQueueNode<T>>
@@ -39,18 +45,21 @@ export class FixedPriorityQueue<T> {
       throw new Error('Priority queue is full')
     }
     priority = priority ?? 0
+    const nodeArrayLength = this.nodeArray.length
     let inserted = false
-    for (let index = this.start; index < this.nodeArray.length; index++) {
+    for (let index = this.start; index < nodeArrayLength; index++) {
       if (this.nodeArray[index]?.priority > priority) {
         this.nodeArray.splice(index, 0, { data, priority })
         inserted = true
         break
       }
     }
+    this.nodeArray.length !== nodeArrayLength &&
+      (this.nodeArray.length = nodeArrayLength)
     if (!inserted) {
       let index = this.start + this.size
-      if (index >= this.nodeArray.length) {
-        index -= this.nodeArray.length
+      if (index >= nodeArrayLength) {
+        index -= nodeArrayLength
       }
       this.nodeArray[index] = { data, priority }
     }
