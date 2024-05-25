@@ -130,7 +130,7 @@ export class FixedPriorityQueue<T> {
   private checkSize (size: number): void {
     if (!Number.isSafeInteger(size)) {
       throw new TypeError(
-        `Invalid fixed priority queue size: ${size} is not an integer`
+        `Invalid fixed priority queue size: '${size}' is not an integer`
       )
     }
     if (size < 0) {
