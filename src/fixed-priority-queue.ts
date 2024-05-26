@@ -54,7 +54,7 @@ export class FixedPriorityQueue<T> {
         inserted = true
         break
       }
-      index++
+      ++index
       if (index === nodeArrayLength) {
         index = 0
       }
@@ -111,8 +111,8 @@ export class FixedPriorityQueue<T> {
           }
         }
         const value = this.nodeArray[index].data
-        index++
-        i++
+        ++index
+        ++i
         if (index === this.nodeArray.length) {
           index = 0
         }
