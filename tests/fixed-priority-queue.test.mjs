@@ -8,7 +8,7 @@
 // describe('Fixed priority queue test suite', () => {
 //   it('Verify constructor() behavior', () => {
 //     expect(() => new FixedPriorityQueue('')).toThrow(
-//       new TypeError('Invalid fixed priority queue size: '' is not an integer')
+//       new TypeError("Invalid fixed priority queue size: '' is not an integer")
 //     )
 //     expect(() => new FixedPriorityQueue(-1)).toThrow(
 //       new RangeError('Invalid fixed priority queue size: -1 < 0')

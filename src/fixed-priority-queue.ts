@@ -46,12 +46,17 @@ export class FixedPriorityQueue<T> {
     }
     priority = priority ?? 0
     const nodeArrayLength = this.nodeArray.length
+    let index = this.start
     let inserted = false
-    for (let index = this.start; index < nodeArrayLength; index++) {
+    for (let i = 0; i < this.size; i++) {
       if (this.nodeArray[index]?.priority > priority) {
         this.nodeArray.splice(index, 0, { data, priority })
         inserted = true
         break
+      }
+      index++
+      if (index === nodeArrayLength) {
+        index = 0
       }
     }
     this.nodeArray.length !== nodeArrayLength &&
@@ -95,7 +100,8 @@ export class FixedPriorityQueue<T> {
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
    */
   [Symbol.iterator] (): Iterator<T> {
-    let i = this.start
+    let index = this.start
+    let i = 0
     return {
       next: () => {
         if (i >= this.size) {
@@ -104,8 +110,12 @@ export class FixedPriorityQueue<T> {
             done: true
           }
         }
-        const value = this.nodeArray[i].data
+        const value = this.nodeArray[index].data
+        index++
         i++
+        if (index === this.nodeArray.length) {
+          index = 0
+        }
         return {
           value,
           done: false
