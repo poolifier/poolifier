@@ -27,6 +27,7 @@ export class PriorityQueue<T> {
   private head!: PriorityQueueNode<T>
   private tail!: PriorityQueueNode<T>
   private readonly bucketSize: number
+  /** The priority queue maximum size. */
   public maxSize!: number
 
   /**
@@ -49,7 +50,7 @@ export class PriorityQueue<T> {
   }
 
   /**
-   * The size of the priority queue.
+   * The priority queue size.
    */
   public get size (): number {
     let node: PriorityQueueNode<T> | undefined = this.tail

@@ -65,6 +65,7 @@ export class FixedPriorityQueue<T> {
    * @param data - Data to enqueue.
    * @param priority - Priority of the data. Lower values have higher priority.
    * @returns The new size of the priority queue.
+   * @throws If the fixed priority queue is full.
    */
   public enqueue (data: T, priority?: number): number {
     if (this.full()) {
@@ -74,8 +75,10 @@ export class FixedPriorityQueue<T> {
     let index = this.start
     let inserted = false
     for (let i = 0; i < this.size; i++) {
-      if (this.nodeArray[index]?.priority > priority) {
+      if (this.nodeArray[index].priority > priority) {
         this.nodeArray.splice(index, 0, { data, priority })
+        this.nodeArray.length !== this.capacity &&
+          (this.nodeArray.length = this.capacity)
         inserted = true
         break
       }
@@ -84,8 +87,6 @@ export class FixedPriorityQueue<T> {
         index = 0
       }
     }
-    this.nodeArray.length !== this.capacity &&
-      (this.nodeArray.length = this.capacity)
     if (!inserted) {
       let index = this.start + this.size
       if (index >= this.capacity) {
