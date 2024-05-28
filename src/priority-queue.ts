@@ -95,22 +95,25 @@ export class PriorityQueue<T> {
    */
   public dequeue (bucket?: number): T | undefined {
     let tail: PriorityQueueNode<T> | undefined = this.tail
-    if (bucket != null) {
-      let currentBucket = 0
+    let tailChanged = false
+    if (bucket != null && bucket > 0) {
+      let currentBucket = 1
       while (tail != null) {
-        ++currentBucket
         if (currentBucket === bucket) {
           break
         }
+        ++currentBucket
         tail = tail.next
+        tailChanged = true
       }
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const data = tail!.dequeue()
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (tail!.empty() && tail!.next != null) {
-      if (tail === this.tail) {
-        this.tail = tail.next
+      if (!tailChanged) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.tail = tail!.next
       } else {
         let node: PriorityQueueNode<T> | undefined = this.tail
         while (node != null) {
@@ -143,21 +146,21 @@ export class PriorityQueue<T> {
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
    */
   public [Symbol.iterator] (): Iterator<T> {
-    let i = 0
+    let index = 0
     let node = this.tail
     return {
       next: () => {
-        if (node.empty() || (i >= node.capacity && node.next == null)) {
+        const value = node.get(index) as T
+        if (value == null) {
           return {
             value: undefined,
             done: true
           }
         }
-        const value = node.dequeue() as T
-        ++i
-        if (i === node.capacity && node.next != null) {
+        ++index
+        if (index === node.capacity && node.next != null) {
           node = node.next
-          i = 0
+          index = 0
         }
         return {
           value,

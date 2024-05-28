@@ -96,6 +96,23 @@ export class FixedPriorityQueue<T> {
   }
 
   /**
+   * Gets data from the fixed priority queue.
+   *
+   * @param index - The index of the data to get.
+   * @returns The data at the index or `undefined` if the fixed priority queue is empty or the index is out of bounds.
+   */
+  public get (index: number): T | undefined {
+    if (this.empty() || index >= this.size) {
+      return undefined
+    }
+    index += this.start
+    if (index >= this.capacity) {
+      index -= this.capacity
+    }
+    return this.nodeArray[index].data
+  }
+
+  /**
    * Dequeue data from the fixed priority queue.
    *
    * @returns The dequeued data or `undefined` if the priority queue is empty.
