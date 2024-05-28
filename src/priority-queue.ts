@@ -36,11 +36,19 @@ export class PriorityQueue<T> {
    * @returns PriorityQueue.
    */
   public constructor (bucketSize: number = defaultBucketSize) {
+    if (!Number.isSafeInteger(bucketSize)) {
+      throw new TypeError('bucketSize must be an integer')
+    }
+    if (bucketSize < 1) {
+      throw new RangeError('bucketSize must be greater than or equal to 1')
+    }
     this.bucketSize = bucketSize
     this.clear()
   }
 
-  /** The size of the priority queue. */
+  /**
+   * The size of the priority queue.
+   */
   public get size (): number {
     let node: PriorityQueueNode<T> | undefined = this.tail
     let size = 0
@@ -49,6 +57,13 @@ export class PriorityQueue<T> {
       node = node.next
     }
     return size
+  }
+
+  /**
+   * The number of filled prioritized buckets.
+   */
+  public get buckets (): number {
+    return Math.trunc(this.size / this.bucketSize)
   }
 
   /**

@@ -114,7 +114,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   /** @inheritdoc */
   public dequeueLastPrioritizedTask (): Task<Data> | undefined {
     // Start from the last empty or partially filled bucket
-    return this.dequeueTask()
+    return this.dequeueTask(this.tasksQueue.buckets + 1)
   }
 
   /** @inheritdoc */

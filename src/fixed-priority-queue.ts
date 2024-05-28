@@ -40,14 +40,31 @@ export class FixedPriorityQueue<T> {
     this.clear()
   }
 
+  /**
+   * Checks if the fixed priority queue is empty.
+   *
+   * @returns `true` if the fixed priority queue is empty, `false` otherwise.
+   */
   public empty (): boolean {
     return this.size === 0
   }
 
+  /**
+   * Checks if the fixed priority queue is full.
+   *
+   * @returns `true` if the fixed priority queue is full, `false` otherwise.
+   */
   public full (): boolean {
     return this.size === this.capacity
   }
 
+  /**
+   * Enqueue data into the fixed priority queue.
+   *
+   * @param data - Data to enqueue.
+   * @param priority - Priority of the data. Lower values have higher priority.
+   * @returns The new size of the priority queue.
+   */
   public enqueue (data: T, priority?: number): number {
     if (this.full()) {
       throw new Error('Priority queue is full')
@@ -78,6 +95,11 @@ export class FixedPriorityQueue<T> {
     return this.incrementSize()
   }
 
+  /**
+   * Dequeue data from the fixed priority queue.
+   *
+   * @returns The dequeued data or `undefined` if the priority queue is empty.
+   */
   public dequeue (): T | undefined {
     if (this.empty()) {
       return undefined
@@ -144,6 +166,11 @@ export class FixedPriorityQueue<T> {
     return this.size
   }
 
+  /**
+   * Checks the size.
+   *
+   * @param size - The size to check.
+   */
   private checkSize (size: number): void {
     if (!Number.isSafeInteger(size)) {
       throw new TypeError(
