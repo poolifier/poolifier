@@ -83,6 +83,17 @@ describe('Fixed priority queue test suite', () => {
     )
   })
 
+  it('Verify get() behavior', () => {
+    const fixedPriorityQueue = new FixedPriorityQueue()
+    fixedPriorityQueue.enqueue(1)
+    fixedPriorityQueue.enqueue(2, -1)
+    fixedPriorityQueue.enqueue(3)
+    expect(fixedPriorityQueue.get(0)).toBe(2)
+    expect(fixedPriorityQueue.get(1)).toBe(1)
+    expect(fixedPriorityQueue.get(2)).toBe(3)
+    expect(fixedPriorityQueue.get(3)).toBe(undefined)
+  })
+
   it('Verify dequeue() behavior', () => {
     const queueSize = 5
     const fixedPriorityQueue = new FixedPriorityQueue(queueSize)
