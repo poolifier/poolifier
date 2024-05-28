@@ -6,13 +6,10 @@ import { defaultBucketSize, PriorityQueue } from '../lib/priority-queue.cjs'
 describe('Priority queue test suite', () => {
   it('Verify constructor() behavior', () => {
     expect(() => new PriorityQueue('')).toThrow(
-      new TypeError('bucketSize must be an integer')
+      new TypeError("Invalid bucket size: '' is not an integer")
     )
     expect(() => new PriorityQueue(-1)).toThrow(
-      new RangeError('bucketSize must be greater than or equal to 1')
-    )
-    expect(() => new PriorityQueue(0)).toThrow(
-      new RangeError('bucketSize must be greater than or equal to 1')
+      new RangeError('Invalid bucket size: -1 < 0')
     )
     let priorityQueue = new PriorityQueue()
     expect(priorityQueue.bucketSize).toBe(defaultBucketSize)

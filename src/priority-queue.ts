@@ -37,10 +37,12 @@ export class PriorityQueue<T> {
    */
   public constructor (bucketSize: number = defaultBucketSize) {
     if (!Number.isSafeInteger(bucketSize)) {
-      throw new TypeError('bucketSize must be an integer')
+      throw new TypeError(
+        `Invalid bucket size: '${bucketSize}' is not an integer`
+      )
     }
-    if (bucketSize < 1) {
-      throw new RangeError('bucketSize must be greater than or equal to 1')
+    if (bucketSize < 0) {
+      throw new RangeError(`Invalid bucket size: ${bucketSize} < 0`)
     }
     this.bucketSize = bucketSize
     this.clear()
