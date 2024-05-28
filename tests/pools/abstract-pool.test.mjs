@@ -20,7 +20,7 @@ import {
   WorkerTypes
 } from '../../lib/index.cjs'
 import { WorkerNode } from '../../lib/pools/worker-node.cjs'
-import { PriorityQueue } from '../../lib/priority-queue.cjs'
+import { defaultBucketSize, PriorityQueue } from '../../lib/priority-queue.cjs'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 import { waitPoolEvents } from '../test-utils.cjs'
 
@@ -789,7 +789,7 @@ describe('Abstract pool test suite', () => {
       expect(workerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
       expect(workerNode.tasksQueue.size).toBe(0)
       expect(workerNode.tasksQueue.maxSize).toBe(0)
-      expect(workerNode.tasksQueue.bucketSize).toBe(numberOfWorkers * 2)
+      expect(workerNode.tasksQueue.bucketSize).toBe(defaultBucketSize)
     }
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -802,7 +802,7 @@ describe('Abstract pool test suite', () => {
       expect(workerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
       expect(workerNode.tasksQueue.size).toBe(0)
       expect(workerNode.tasksQueue.maxSize).toBe(0)
-      expect(workerNode.tasksQueue.bucketSize).toBe(numberOfWorkers * 2)
+      expect(workerNode.tasksQueue.bucketSize).toBe(defaultBucketSize)
     }
     await pool.destroy()
   })

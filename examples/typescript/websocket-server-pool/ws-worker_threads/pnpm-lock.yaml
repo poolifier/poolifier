@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       poolifier:
-        specifier: ^4.0.11
-        version: 4.0.11
+        specifier: ^4.0.12
+        version: 4.0.12
       ws:
         specifier: ^8.17.0
         version: 8.17.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
@@ -48,8 +48,8 @@ packages:
     resolution: {integrity: sha512-OSs33Z9yWr148JZcbZd5WiAXhh/n9z8TxQcdMhIOlpN9AhWpLfvVFO73+m77bBABQMaY9XSvIa+qk0jlI7Gcaw==}
     hasBin: true
 
-  poolifier@4.0.11:
-    resolution: {integrity: sha512-TW2Nik3Q7+KgwsiqUHmzeCYRsO20TGZnxXSAhaySEMD+wAmtNFOkCAOwcKCCs0XPByJkiGvEVtkaaDGeC6vuRg==}
+  poolifier@4.0.12:
+    resolution: {integrity: sha512-35JkkUGoJ6NdirvSjXrpdb1XIm1RyFLb3UMheS2IPrab/OceE/cqXCGDeCumNwg9Mg3+ZztD9tHxIKXizUmSXA==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   typescript@5.4.5:
@@ -94,7 +94,7 @@ snapshots:
   node-gyp-build@4.8.1:
     optional: true
 
-  poolifier@4.0.11: {}
+  poolifier@4.0.12: {}
 
   typescript@5.4.5: {}
 

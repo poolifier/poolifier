@@ -1,4 +1,8 @@
 export type { CircularBuffer } from './circular-buffer.js'
+export type {
+  FixedPriorityQueue,
+  FixedPriorityQueueNode
+} from './fixed-priority-queue.js'
 export type { AbstractPool } from './pools/abstract-pool.js'
 export { DynamicClusterPool } from './pools/cluster/dynamic.js'
 export type { ClusterPoolOptions } from './pools/cluster/fixed.js'

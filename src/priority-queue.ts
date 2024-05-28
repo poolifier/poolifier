@@ -1,14 +1,20 @@
 // Copyright Jerome Benoit. 2024. All Rights Reserved.
 
+import { FixedPriorityQueue } from './fixed-priority-queue.js'
+
+/**
+ * Default bucket size.
+ */
+export const defaultBucketSize = 2048
+
 /**
  * Priority queue node.
  *
  * @typeParam T - Type of priority queue node data.
  * @internal
  */
-export interface PriorityQueueNode<T> {
-  data: T
-  priority: number
+export interface PriorityQueueNode<T> extends FixedPriorityQueue<T> {
+  next?: FixedPriorityQueue<T>
 }
 
 /**
@@ -18,40 +24,49 @@ export interface PriorityQueueNode<T> {
  * @internal
  */
 export class PriorityQueue<T> {
-  private nodeArray!: Array<PriorityQueueNode<T>>
-  /** Prioritized bucket size. */
+  private head!: PriorityQueueNode<T>
+  private tail!: PriorityQueueNode<T>
   private readonly bucketSize: number
-  /** The size of the priority queue. */
-  public size!: number
-  /** The maximum size of the priority queue. */
+  /** The priority queue maximum size. */
   public maxSize!: number
+
+  /**
+   * Constructs a priority queue.
+   *
+   * @param bucketSize - Prioritized bucket size. @defaultValue defaultBucketSize
+   * @returns PriorityQueue.
+   */
+  public constructor (bucketSize: number = defaultBucketSize) {
+    if (!Number.isSafeInteger(bucketSize)) {
+      throw new TypeError(
+        `Invalid bucket size: '${bucketSize}' is not an integer`
+      )
+    }
+    if (bucketSize < 0) {
+      throw new RangeError(`Invalid bucket size: ${bucketSize} < 0`)
+    }
+    this.bucketSize = bucketSize
+    this.clear()
+  }
+
+  /**
+   * The priority queue size.
+   */
+  public get size (): number {
+    let node: PriorityQueueNode<T> | undefined = this.tail
+    let size = 0
+    while (node != null) {
+      size += node.size
+      node = node.next
+    }
+    return size
+  }
 
   /**
    * The number of filled prioritized buckets.
    */
   public get buckets (): number {
-    return this.bucketSize === Number.POSITIVE_INFINITY
-      ? 1
-      : Math.trunc(this.nodeArray.length / this.bucketSize)
-  }
-
-  /**
-   * Constructs a priority queue.
-   *
-   * @param bucketSize - Prioritized bucket size. @defaultValue Number.POSITIVE_INFINITY
-   */
-  public constructor (bucketSize = Number.POSITIVE_INFINITY) {
-    if (
-      bucketSize !== Number.POSITIVE_INFINITY &&
-      !Number.isSafeInteger(bucketSize)
-    ) {
-      throw new TypeError('bucketSize must be an integer')
-    }
-    if (bucketSize < 1) {
-      throw new RangeError('bucketSize must be greater than or equal to 1')
-    }
-    this.bucketSize = bucketSize
-    this.clear()
+    return Math.trunc(this.size / this.bucketSize)
   }
 
   /**
@@ -62,69 +77,66 @@ export class PriorityQueue<T> {
    * @returns The new size of the priority queue.
    */
   public enqueue (data: T, priority?: number): number {
-    priority = priority ?? 0
-    const startIndex =
-      this.bucketSize === Number.POSITIVE_INFINITY
-        ? 0
-        : this.buckets * this.bucketSize
-    let inserted = false
-    for (let index = startIndex; index < this.nodeArray.length; index++) {
-      if (this.nodeArray[index].priority > priority) {
-        this.nodeArray.splice(index, 0, { data, priority })
-        inserted = true
-        break
-      }
+    if (this.head.full()) {
+      this.head = this.head.next = new FixedPriorityQueue(this.bucketSize)
     }
-    if (!inserted) {
-      this.nodeArray.push({ data, priority })
+    this.head.enqueue(data, priority)
+    const size = this.size
+    if (size > this.maxSize) {
+      this.maxSize = size
     }
-    return this.incrementSize()
+    return size
   }
 
   /**
    * Dequeue data from the priority queue.
    *
-   * @param bucket - The prioritized bucket to dequeue from. @defaultValue 0
+   * @param bucket - The prioritized bucket to dequeue from.
    * @returns The dequeued data or `undefined` if the priority queue is empty.
    */
-  public dequeue (bucket = 0): T | undefined {
-    if (this.bucketSize !== Number.POSITIVE_INFINITY && bucket > 0) {
-      while (bucket > 0) {
-        const index = bucket * this.bucketSize
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (this.nodeArray[index] != null) {
-          --this.size
-          return this.nodeArray.splice(index, 1)[0].data
+  public dequeue (bucket?: number): T | undefined {
+    let tail: PriorityQueueNode<T> | undefined = this.tail
+    let tailChanged = false
+    if (bucket != null && bucket > 0) {
+      let currentBucket = 1
+      while (tail != null) {
+        if (currentBucket === bucket) {
+          break
         }
-        --bucket
+        ++currentBucket
+        tail = tail.next
+        tailChanged = true
       }
     }
-    this.decrementSize()
-    return this.nodeArray.shift()?.data
-  }
-
-  /**
-   * Peeks at the first data.
-   * @returns The first data or `undefined` if the priority queue is empty.
-   */
-  public peekFirst (): T | undefined {
-    return this.nodeArray[0]?.data
-  }
-
-  /**
-   * Peeks at the last data.
-   * @returns The last data or `undefined` if the priority queue is empty.
-   */
-  public peekLast (): T | undefined {
-    return this.nodeArray[this.nodeArray.length - 1]?.data
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const data = tail!.dequeue()
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    if (tail!.empty() && tail!.next != null) {
+      if (!tailChanged) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.tail = tail!.next
+      } else {
+        let node: PriorityQueueNode<T> | undefined = this.tail
+        while (node != null) {
+          if (node.next === tail) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            node.next = tail!.next
+            break
+          }
+          node = node.next
+        }
+      }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      delete tail!.next
+    }
+    return data
   }
 
   /**
    * Clears the priority queue.
    */
   public clear (): void {
-    this.nodeArray = []
-    this.size = 0
+    this.head = this.tail = new FixedPriorityQueue(this.bucketSize)
     this.maxSize = 0
   }
 
@@ -134,48 +146,28 @@ export class PriorityQueue<T> {
    * @returns An iterator for the priority queue.
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
    */
-  [Symbol.iterator] (): Iterator<T> {
-    let i = 0
+  public [Symbol.iterator] (): Iterator<T> {
+    let index = 0
+    let node = this.tail
     return {
       next: () => {
-        if (i >= this.nodeArray.length) {
+        const value = node.get(index) as T
+        if (value == null) {
           return {
             value: undefined,
             done: true
           }
         }
-        const value = this.nodeArray[i].data
-        i++
+        ++index
+        if (index === node.capacity && node.next != null) {
+          node = node.next
+          index = 0
+        }
         return {
           value,
           done: false
         }
       }
     }
-  }
-
-  /**
-   * Increments the size of the priority queue.
-   *
-   * @returns The new size of the priority queue.
-   */
-  private incrementSize (): number {
-    ++this.size
-    if (this.size > this.maxSize) {
-      this.maxSize = this.size
-    }
-    return this.size
-  }
-
-  /**
-   * Decrements the size of the priority queue.
-   *
-   * @returns The new size of the priority queue.
-   */
-  private decrementSize (): number {
-    if (this.size > 0) {
-      --this.size
-    }
-    return this.size
   }
 }
