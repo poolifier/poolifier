@@ -4,12 +4,12 @@
 export const defaultQueueSize = 2048
 
 /**
- * Priority queue node.
+ * Fixed priority queue node.
  *
  * @typeParam T - Type of priority queue node data.
  * @internal
  */
-interface PriorityQueueNode<T> {
+export interface FixedPriorityQueueNode<T> {
   data: T
   priority: number
 }
@@ -22,7 +22,7 @@ interface PriorityQueueNode<T> {
  */
 export class FixedPriorityQueue<T> {
   private start!: number
-  private readonly nodeArray: Array<PriorityQueueNode<T>>
+  private readonly nodeArray: Array<FixedPriorityQueueNode<T>>
   public readonly capacity: number
   public size!: number
   public maxSize!: number
@@ -36,7 +36,7 @@ export class FixedPriorityQueue<T> {
   constructor (size: number = defaultQueueSize) {
     this.checkSize(size)
     this.capacity = size
-    this.nodeArray = new Array<PriorityQueueNode<T>>(this.capacity)
+    this.nodeArray = new Array<FixedPriorityQueueNode<T>>(this.capacity)
     this.clear()
   }
 
