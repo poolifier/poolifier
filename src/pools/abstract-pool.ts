@@ -4,6 +4,7 @@ import { EventEmitterAsyncResource } from 'node:events'
 import { performance } from 'node:perf_hooks'
 import type { TransferListItem } from 'node:worker_threads'
 
+import { defaultBucketSize } from '../priority-queue.js'
 import type {
   MessageValue,
   PromiseResponseWrapper,
@@ -2170,8 +2171,7 @@ export abstract class AbstractPool<
           getDefaultTasksQueueOptions(
             this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers
           ).size,
-        tasksQueueBucketSize:
-          (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers) * 2
+        tasksQueueBucketSize: defaultBucketSize
       }
     )
     // Flag the worker node as ready at pool startup.

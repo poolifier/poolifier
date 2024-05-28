@@ -9,7 +9,7 @@ export const defaultQueueSize = 2048
  * @typeParam T - Type of priority queue node data.
  * @internal
  */
-export interface PriorityQueueNode<T> {
+interface PriorityQueueNode<T> {
   data: T
   priority: number
 }
@@ -23,12 +23,20 @@ export interface PriorityQueueNode<T> {
 export class FixedPriorityQueue<T> {
   private start!: number
   private readonly nodeArray: Array<PriorityQueueNode<T>>
+  public readonly capacity: number
   public size!: number
   public maxSize!: number
 
+  /**
+   * Constructs a fixed priority queue.
+   *
+   * @param size - Fixed priority queue size. @defaultValue defaultQueueSize
+   * @returns FixedPriorityQueue.
+   */
   constructor (size: number = defaultQueueSize) {
     this.checkSize(size)
-    this.nodeArray = new Array<PriorityQueueNode<T>>(size)
+    this.capacity = size
+    this.nodeArray = new Array<PriorityQueueNode<T>>(this.capacity)
     this.clear()
   }
 
@@ -37,7 +45,7 @@ export class FixedPriorityQueue<T> {
   }
 
   public full (): boolean {
-    return this.size === this.nodeArray.length
+    return this.size === this.capacity
   }
 
   public enqueue (data: T, priority?: number): number {
@@ -45,7 +53,6 @@ export class FixedPriorityQueue<T> {
       throw new Error('Priority queue is full')
     }
     priority = priority ?? 0
-    const nodeArrayLength = this.nodeArray.length
     let index = this.start
     let inserted = false
     for (let i = 0; i < this.size; i++) {
@@ -55,16 +62,16 @@ export class FixedPriorityQueue<T> {
         break
       }
       ++index
-      if (index === nodeArrayLength) {
+      if (index === this.capacity) {
         index = 0
       }
     }
-    this.nodeArray.length !== nodeArrayLength &&
-      (this.nodeArray.length = nodeArrayLength)
+    this.nodeArray.length !== this.capacity &&
+      (this.nodeArray.length = this.capacity)
     if (!inserted) {
       let index = this.start + this.size
-      if (index >= nodeArrayLength) {
-        index -= nodeArrayLength
+      if (index >= this.capacity) {
+        index -= this.capacity
       }
       this.nodeArray[index] = { data, priority }
     }
@@ -78,7 +85,7 @@ export class FixedPriorityQueue<T> {
     const index = this.start
     --this.size
     ++this.start
-    if (this.start === this.nodeArray.length) {
+    if (this.start === this.capacity) {
       this.start = 0
     }
     return this.nodeArray[index].data
@@ -99,7 +106,7 @@ export class FixedPriorityQueue<T> {
    * @returns An iterator for the fixed priority queue.
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
    */
-  [Symbol.iterator] (): Iterator<T> {
+  public [Symbol.iterator] (): Iterator<T> {
     let index = this.start
     let i = 0
     return {
@@ -113,7 +120,7 @@ export class FixedPriorityQueue<T> {
         const value = this.nodeArray[index].data
         ++index
         ++i
-        if (index === this.nodeArray.length) {
+        if (index === this.capacity) {
           index = 0
         }
         return {
