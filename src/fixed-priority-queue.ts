@@ -23,9 +23,10 @@ export interface FixedPriorityQueueNode<T> {
 export class FixedPriorityQueue<T> {
   private start!: number
   private readonly nodeArray: Array<FixedPriorityQueueNode<T>>
+  /** The fixed priority queue capacity. */
   public readonly capacity: number
+  /** The fixed priority queue size */
   public size!: number
-  public maxSize!: number
 
   /**
    * Constructs a fixed priority queue.
@@ -92,7 +93,7 @@ export class FixedPriorityQueue<T> {
       }
       this.nodeArray[index] = { data, priority }
     }
-    return this.incrementSize()
+    return ++this.size
   }
 
   /**
@@ -136,7 +137,6 @@ export class FixedPriorityQueue<T> {
   public clear (): void {
     this.start = 0
     this.size = 0
-    this.maxSize = 0
   }
 
   /**
@@ -168,19 +168,6 @@ export class FixedPriorityQueue<T> {
         }
       }
     }
-  }
-
-  /**
-   * Increments the size of the fixed priority queue.
-   *
-   * @returns The new size of the fixed priority queue.
-   */
-  private incrementSize (): number {
-    ++this.size
-    if (this.size > this.maxSize) {
-      this.maxSize = this.size
-    }
-    return this.size
   }
 
   /**
