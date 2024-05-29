@@ -790,6 +790,7 @@ describe('Abstract pool test suite', () => {
       expect(workerNode.tasksQueue.size).toBe(0)
       expect(workerNode.tasksQueue.maxSize).toBe(0)
       expect(workerNode.tasksQueue.bucketSize).toBe(defaultBucketSize)
+      expect(workerNode.tasksQueue.enablePriority).toBe(false)
     }
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -803,6 +804,7 @@ describe('Abstract pool test suite', () => {
       expect(workerNode.tasksQueue.size).toBe(0)
       expect(workerNode.tasksQueue.maxSize).toBe(0)
       expect(workerNode.tasksQueue.bucketSize).toBe(defaultBucketSize)
+      expect(workerNode.tasksQueue.enablePriority).toBe(false)
     }
     await pool.destroy()
   })
@@ -1662,6 +1664,7 @@ describe('Abstract pool test suite', () => {
       ])
       expect(workerNode.taskFunctionsUsage.size).toBe(3)
       expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.tasksQueue.enablePriority).toBe(false)
       for (const taskFunctionProperties of pool.listTaskFunctionsProperties()) {
         expect(
           workerNode.getTaskFunctionWorkerUsage(taskFunctionProperties.name)
@@ -1727,10 +1730,11 @@ describe('Abstract pool test suite', () => {
         { name: DEFAULT_TASK_NAME },
         { name: 'jsonIntegerSerialization' },
         { name: 'factorial' },
-        { name: 'fibonacci' }
+        { name: 'fibonacci', priority: -5 }
       ])
       expect(workerNode.taskFunctionsUsage.size).toBe(3)
       expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.tasksQueue.enablePriority).toBe(true)
       for (const taskFunctionProperties of pool.listTaskFunctionsProperties()) {
         expect(
           workerNode.getTaskFunctionWorkerUsage(taskFunctionProperties.name)

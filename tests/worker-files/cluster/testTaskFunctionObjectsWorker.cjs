@@ -1,18 +1,18 @@
 'use strict'
-const { KillBehaviors, ThreadWorker } = require('../../../lib/index.cjs')
+const { KillBehaviors, ClusterWorker } = require('../../../lib/index.cjs')
 const {
   factorial,
   fibonacci,
   jsonIntegerSerialization
 } = require('../../test-utils.cjs')
 
-module.exports = new ThreadWorker(
+module.exports = new ClusterWorker(
   {
     jsonIntegerSerialization: {
       taskFunction: data => jsonIntegerSerialization(data.n)
     },
     factorial: { taskFunction: data => factorial(data.n) },
-    fibonacci: { taskFunction: data => fibonacci(data.n) }
+    fibonacci: { taskFunction: data => fibonacci(data.n), priority: -5 }
   },
   {
     killBehavior: KillBehaviors.HARD,

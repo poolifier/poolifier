@@ -70,9 +70,17 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.tasksQueueBackPressureSize = opts.tasksQueueBackPressureSize!
-    this.tasksQueue = new PriorityQueue<Task<Data>>(opts.tasksQueueBucketSize)
+    this.tasksQueue = new PriorityQueue<Task<Data>>(
+      opts.tasksQueueBucketSize,
+      opts.tasksQueuePriority
+    )
     this.setBackPressureFlag = false
     this.taskFunctionsUsage = new Map<string, WorkerUsage>()
+  }
+
+  /** @inheritdoc */
+  public setTasksQueuePriority (enablePriority: boolean): void {
+    this.tasksQueue.enablePriority = enablePriority
   }
 
   /** @inheritdoc */

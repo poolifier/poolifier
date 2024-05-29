@@ -11,7 +11,7 @@ export const defaultBufferSize = 2048
 export class CircularBuffer {
   private readIdx: number
   private writeIdx: number
-  private items: Float32Array
+  private readonly items: Float32Array
   private readonly maxArrayIdx: number
   public size: number
 
@@ -84,6 +84,11 @@ export class CircularBuffer {
     return Array.from(this.items.filter(item => item !== -1))
   }
 
+  /**
+   * Checks the buffer size.
+   *
+   * @param size - Buffer size.
+   */
   private checkSize (size: number): void {
     if (!Number.isSafeInteger(size)) {
       throw new TypeError(

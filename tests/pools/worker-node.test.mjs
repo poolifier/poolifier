@@ -13,12 +13,20 @@ describe('Worker node test suite', () => {
   const threadWorkerNode = new WorkerNode(
     WorkerTypes.thread,
     './tests/worker-files/thread/testWorker.mjs',
-    { tasksQueueBackPressureSize: 12, tasksQueueBucketSize: 6 }
+    {
+      tasksQueueBackPressureSize: 12,
+      tasksQueueBucketSize: 6,
+      tasksQueuePriority: true
+    }
   )
   const clusterWorkerNode = new WorkerNode(
     WorkerTypes.cluster,
     './tests/worker-files/cluster/testWorker.cjs',
-    { tasksQueueBackPressureSize: 12, tasksQueueBucketSize: 6 }
+    {
+      tasksQueueBackPressureSize: 12,
+      tasksQueueBucketSize: 6,
+      tasksQueuePriority: true
+    }
   )
 
   it('Worker node instantiation', () => {
@@ -29,8 +37,7 @@ describe('Worker node test suite', () => {
       () =>
         new WorkerNode(
           'invalidWorkerType',
-          './tests/worker-files/thread/testWorker.mjs',
-          { tasksQueueBackPressureSize: 12 }
+          './tests/worker-files/thread/testWorker.mjs'
         )
     ).toThrow(
       new TypeError(
@@ -57,7 +64,7 @@ describe('Worker node test suite', () => {
         )
     ).toThrow(
       new TypeError(
-        'Cannot construct a worker node with invalid options: must be a plain object'
+        'Cannot construct a worker node with invalid worker node options: must be a plain object'
       )
     )
     expect(
@@ -185,6 +192,37 @@ describe('Worker node test suite', () => {
         'Cannot construct a worker node with a tasks queue bucket size option that is not a positive integer'
       )
     )
+    expect(
+      () =>
+        new WorkerNode(
+          WorkerTypes.thread,
+          './tests/worker-files/thread/testWorker.mjs',
+          {
+            tasksQueueBackPressureSize: 12,
+            tasksQueueBucketSize: 6
+          }
+        )
+    ).toThrow(
+      new RangeError(
+        'Cannot construct a worker node without a tasks queue priority option'
+      )
+    )
+    expect(
+      () =>
+        new WorkerNode(
+          WorkerTypes.thread,
+          './tests/worker-files/thread/testWorker.mjs',
+          {
+            tasksQueueBackPressureSize: 12,
+            tasksQueueBucketSize: 6,
+            tasksQueuePriority: 'invalidTasksQueuePriority'
+          }
+        )
+    ).toThrow(
+      new RangeError(
+        'Cannot construct a worker node with a tasks queue priority option that is not a boolean'
+      )
+    )
     expect(threadWorkerNode).toBeInstanceOf(WorkerNode)
     expect(threadWorkerNode.worker).toBeInstanceOf(ThreadWorker)
     expect(threadWorkerNode.info).toStrictEqual({
@@ -225,6 +263,7 @@ describe('Worker node test suite', () => {
     expect(threadWorkerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
     expect(threadWorkerNode.tasksQueue.size).toBe(0)
     expect(threadWorkerNode.tasksQueue.bucketSize).toBe(6)
+    expect(threadWorkerNode.tasksQueue.enablePriority).toBe(true)
     expect(threadWorkerNode.tasksQueueSize()).toBe(
       threadWorkerNode.tasksQueue.size
     )
@@ -271,6 +310,7 @@ describe('Worker node test suite', () => {
     expect(clusterWorkerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
     expect(clusterWorkerNode.tasksQueue.size).toBe(0)
     expect(clusterWorkerNode.tasksQueue.bucketSize).toBe(6)
+    expect(clusterWorkerNode.tasksQueue.enablePriority).toBe(true)
     expect(clusterWorkerNode.tasksQueueSize()).toBe(
       clusterWorkerNode.tasksQueue.size
     )

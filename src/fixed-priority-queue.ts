@@ -25,18 +25,22 @@ export class FixedPriorityQueue<T> {
   private readonly nodeArray: Array<FixedPriorityQueueNode<T>>
   /** The fixed priority queue capacity. */
   public readonly capacity: number
-  /** The fixed priority queue size */
+  /** The fixed priority queue size. */
   public size!: number
+  /** Whether to enable priority. */
+  public enablePriority: boolean
 
   /**
    * Constructs a fixed priority queue.
    *
    * @param size - Fixed priority queue size. @defaultValue defaultQueueSize
+   * @param enablePriority - Whether to enable priority. @defaultValue false
    * @returns FixedPriorityQueue.
    */
-  constructor (size: number = defaultQueueSize) {
+  constructor (size: number = defaultQueueSize, enablePriority = false) {
     this.checkSize(size)
     this.capacity = size
+    this.enablePriority = enablePriority
     this.nodeArray = new Array<FixedPriorityQueueNode<T>>(this.capacity)
     this.clear()
   }
@@ -72,19 +76,21 @@ export class FixedPriorityQueue<T> {
       throw new Error('Priority queue is full')
     }
     priority = priority ?? 0
-    let index = this.start
     let inserted = false
-    for (let i = 0; i < this.size; i++) {
-      if (this.nodeArray[index].priority > priority) {
-        this.nodeArray.splice(index, 0, { data, priority })
-        this.nodeArray.length !== this.capacity &&
-          (this.nodeArray.length = this.capacity)
-        inserted = true
-        break
-      }
-      ++index
-      if (index === this.capacity) {
-        index = 0
+    if (this.enablePriority) {
+      let index = this.start
+      for (let i = 0; i < this.size; i++) {
+        if (this.nodeArray[index].priority > priority) {
+          this.nodeArray.splice(index, 0, { data, priority })
+          this.nodeArray.length !== this.capacity &&
+            (this.nodeArray.length = this.capacity)
+          inserted = true
+          break
+        }
+        ++index
+        if (index === this.capacity) {
+          index = 0
+        }
       }
     }
     if (!inserted) {
@@ -172,9 +178,9 @@ export class FixedPriorityQueue<T> {
   }
 
   /**
-   * Checks the size.
+   * Checks the queue size.
    *
-   * @param size - The size to check.
+   * @param size - Queue size.
    */
   private checkSize (size: number): void {
     if (!Number.isSafeInteger(size)) {

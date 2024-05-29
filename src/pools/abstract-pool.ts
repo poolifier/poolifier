@@ -2025,6 +2025,12 @@ export abstract class AbstractPool<
     }
   }
 
+  private setTasksQueuePriority (workerNodeKey: number): void {
+    this.workerNodes[workerNodeKey].setTasksQueuePriority(
+      this.getTasksQueuePriority()
+    )
+  }
+
   /**
    * This method is the message listener registered on each worker.
    */
@@ -2043,6 +2049,7 @@ export abstract class AbstractPool<
       if (workerInfo != null) {
         workerInfo.taskFunctionsProperties = taskFunctionsProperties
         this.sendStatisticsMessageToWorker(workerNodeKey)
+        this.setTasksQueuePriority(workerNodeKey)
       }
     } else if (taskId != null) {
       // Task execution response received from worker
@@ -2067,6 +2074,7 @@ export abstract class AbstractPool<
     workerNode.info.ready = ready
     workerNode.info.taskFunctionsProperties = taskFunctionsProperties
     this.sendStatisticsMessageToWorker(workerNodeKey)
+    this.setTasksQueuePriority(workerNodeKey)
     this.checkAndEmitReadyEvent()
   }
 
@@ -2154,6 +2162,12 @@ export abstract class AbstractPool<
     return this.workerNodes[workerNodeKey]?.info
   }
 
+  private getTasksQueuePriority (): boolean {
+    return this.listTaskFunctionsProperties().some(
+      taskFunctionProperties => taskFunctionProperties.priority != null
+    )
+  }
+
   /**
    * Creates a worker node.
    *
@@ -2171,7 +2185,8 @@ export abstract class AbstractPool<
           getDefaultTasksQueueOptions(
             this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers
           ).size,
-        tasksQueueBucketSize: defaultBucketSize
+        tasksQueueBucketSize: defaultBucketSize,
+        tasksQueuePriority: this.getTasksQueuePriority()
       }
     )
     // Flag the worker node as ready at pool startup.

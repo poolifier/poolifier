@@ -34,9 +34,13 @@ export class PriorityQueue<T> {
    * Constructs a priority queue.
    *
    * @param bucketSize - Prioritized bucket size. @defaultValue defaultBucketSize
+   * @param enablePriority - Whether to enable priority. @defaultValue false
    * @returns PriorityQueue.
    */
-  public constructor (bucketSize: number = defaultBucketSize) {
+  public constructor (
+    bucketSize: number = defaultBucketSize,
+    enablePriority = false
+  ) {
     if (!Number.isSafeInteger(bucketSize)) {
       throw new TypeError(
         `Invalid bucket size: '${bucketSize}' is not an integer`
@@ -46,7 +50,11 @@ export class PriorityQueue<T> {
       throw new RangeError(`Invalid bucket size: ${bucketSize} < 0`)
     }
     this.bucketSize = bucketSize
-    this.clear()
+    this.head = this.tail = new FixedPriorityQueue(
+      this.bucketSize,
+      enablePriority
+    )
+    this.maxSize = 0
   }
 
   /**
@@ -60,6 +68,21 @@ export class PriorityQueue<T> {
       node = node.next
     }
     return size
+  }
+
+  public get enablePriority (): boolean {
+    return this.head.enablePriority
+  }
+
+  public set enablePriority (enablePriority: boolean) {
+    if (this.head.enablePriority === enablePriority) {
+      return
+    }
+    let node: PriorityQueueNode<T> | undefined = this.tail
+    while (node != null) {
+      node.enablePriority = enablePriority
+      node = node.next
+    }
   }
 
   /**
@@ -78,7 +101,10 @@ export class PriorityQueue<T> {
    */
   public enqueue (data: T, priority?: number): number {
     if (this.head.full()) {
-      this.head = this.head.next = new FixedPriorityQueue(this.bucketSize)
+      this.head = this.head.next = new FixedPriorityQueue(
+        this.bucketSize,
+        this.enablePriority
+      )
     }
     this.head.enqueue(data, priority)
     const size = this.size
@@ -136,7 +162,10 @@ export class PriorityQueue<T> {
    * Clears the priority queue.
    */
   public clear (): void {
-    this.head = this.tail = new FixedPriorityQueue(this.bucketSize)
+    this.head = this.tail = new FixedPriorityQueue(
+      this.bucketSize,
+      this.enablePriority
+    )
     this.maxSize = 0
   }
 

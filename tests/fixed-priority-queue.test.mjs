@@ -18,16 +18,18 @@ describe('Fixed priority queue test suite', () => {
     expect(fixedPriorityQueue.size).toBe(0)
     expect(fixedPriorityQueue.nodeArray).toBeInstanceOf(Array)
     expect(fixedPriorityQueue.capacity).toBe(defaultQueueSize)
-    fixedPriorityQueue = new FixedPriorityQueue(2)
+    expect(fixedPriorityQueue.enablePriority).toBe(false)
+    fixedPriorityQueue = new FixedPriorityQueue(2, true)
     expect(fixedPriorityQueue.start).toBe(0)
     expect(fixedPriorityQueue.size).toBe(0)
     expect(fixedPriorityQueue.nodeArray).toBeInstanceOf(Array)
     expect(fixedPriorityQueue.capacity).toBe(2)
+    expect(fixedPriorityQueue.enablePriority).toBe(true)
   })
 
   it('Verify enqueue() behavior', () => {
     const queueSize = 5
-    const fixedPriorityQueue = new FixedPriorityQueue(queueSize)
+    const fixedPriorityQueue = new FixedPriorityQueue(queueSize, true)
     let rtSize = fixedPriorityQueue.enqueue(1)
     expect(fixedPriorityQueue.start).toBe(0)
     expect(fixedPriorityQueue.size).toBe(1)
@@ -84,7 +86,7 @@ describe('Fixed priority queue test suite', () => {
   })
 
   it('Verify get() behavior', () => {
-    const fixedPriorityQueue = new FixedPriorityQueue()
+    const fixedPriorityQueue = new FixedPriorityQueue(defaultQueueSize, true)
     fixedPriorityQueue.enqueue(1)
     fixedPriorityQueue.enqueue(2, -1)
     fixedPriorityQueue.enqueue(3)
@@ -96,7 +98,7 @@ describe('Fixed priority queue test suite', () => {
 
   it('Verify dequeue() behavior', () => {
     const queueSize = 5
-    const fixedPriorityQueue = new FixedPriorityQueue(queueSize)
+    const fixedPriorityQueue = new FixedPriorityQueue(queueSize, true)
     fixedPriorityQueue.enqueue(1)
     fixedPriorityQueue.enqueue(2, -1)
     fixedPriorityQueue.enqueue(3)

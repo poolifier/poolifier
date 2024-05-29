@@ -169,7 +169,7 @@ export const checkWorkerNodeArguments = (
   }
   if (!isPlainObject(opts)) {
     throw new TypeError(
-      'Cannot construct a worker node with invalid options: must be a plain object'
+      'Cannot construct a worker node with invalid worker node options: must be a plain object'
     )
   }
   if (opts.tasksQueueBackPressureSize == null) {
@@ -200,6 +200,16 @@ export const checkWorkerNodeArguments = (
   if (opts.tasksQueueBucketSize <= 0) {
     throw new RangeError(
       'Cannot construct a worker node with a tasks queue bucket size option that is not a positive integer'
+    )
+  }
+  if (opts.tasksQueuePriority == null) {
+    throw new TypeError(
+      'Cannot construct a worker node without a tasks queue priority option'
+    )
+  }
+  if (typeof opts.tasksQueuePriority !== 'boolean') {
+    throw new TypeError(
+      'Cannot construct a worker node with a tasks queue priority option that is not a boolean'
     )
   }
 }
