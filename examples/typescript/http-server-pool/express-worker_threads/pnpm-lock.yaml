@@ -43,8 +43,8 @@ packages:
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
 
-  '@types/express-serve-static-core@4.19.1':
-    resolution: {integrity: sha512-ej0phymbFLoCB26dbbq5PGScsf2JAJ4IJHjG10LalgUV36XKTmA4GdA+PVllKvRk0sEKt64X8975qFnkSi0hqA==}
+  '@types/express-serve-static-core@4.19.3':
+    resolution: {integrity: sha512-KOzM7MhcBFlmnlr/fzISFF5vGWVSvN6fTd4T+ExOt08bA/dA5kpSzY52nMsI1KDFmUREpJelPYyuslLRSjjgCg==}
 
   '@types/express@4.17.21':
     resolution: {integrity: sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==}
@@ -498,7 +498,7 @@ snapshots:
     dependencies:
       '@types/node': 20.12.13
 
-  '@types/express-serve-static-core@4.19.1':
+  '@types/express-serve-static-core@4.19.3':
     dependencies:
       '@types/node': 20.12.13
       '@types/qs': 6.9.15
@@ -508,7 +508,7 @@ snapshots:
   '@types/express@4.17.21':
     dependencies:
       '@types/body-parser': 1.19.5
-      '@types/express-serve-static-core': 4.19.1
+      '@types/express-serve-static-core': 4.19.3
       '@types/qs': 6.9.15
       '@types/serve-static': 1.15.7
 
