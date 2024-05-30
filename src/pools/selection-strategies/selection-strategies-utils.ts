@@ -33,7 +33,6 @@ const estimatedCpuSpeed = (): number => {
 const getDefaultWorkerWeight = (): number => {
   const currentCpus = cpus()
   let estCpuSpeed: number | undefined
-
   if (currentCpus.every(cpu => cpu.speed == null || cpu.speed === 0)) {
     estCpuSpeed = estimatedCpuSpeed()
   }

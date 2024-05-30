@@ -1185,7 +1185,6 @@ export abstract class AbstractPool<
       const workerNodeKey = this.chooseWorkerNode(name)
       const task: Task<Data> = {
         name: name ?? DEFAULT_TASK_NAME,
-
         data: data ?? ({} as Data),
         priority: this.getWorkerNodeTaskFunctionPriority(workerNodeKey, name),
         strategy: this.getWorkerNodeTaskFunctionWorkerChoiceStrategy(
@@ -1222,7 +1221,7 @@ export abstract class AbstractPool<
 
   /**
    * Starts the minimum number of workers.
-   * @param initWorkerNodeUsage
+   * @param initWorkerNodeUsage - Whether to initialize the worker node usage or not. @defaultValue false
    */
   private startMinimumNumberOfWorkers (initWorkerNodeUsage = false): void {
     this.startingMinimumNumberOfWorkers = true
@@ -1392,7 +1391,6 @@ export abstract class AbstractPool<
     message: MessageValue<Response>
   ): void {
     let needWorkerChoiceStrategiesUpdate = false
-
     if (this.workerNodes[workerNodeKey]?.usage != null) {
       const workerUsage = this.workerNodes[workerNodeKey].usage
       updateTaskStatisticsWorkerUsage(workerUsage, message)
@@ -1570,7 +1568,6 @@ export abstract class AbstractPool<
       ) {
         this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
       }
-
       workerNode?.terminate().catch((error: unknown) => {
         this.emitter?.emit(PoolEvents.error, error)
       })
@@ -1789,7 +1786,6 @@ export abstract class AbstractPool<
     taskName: string
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
-
     if (workerNode?.usage != null) {
       ++workerNode.usage.tasks.stolen
     }
@@ -1808,7 +1804,6 @@ export abstract class AbstractPool<
     previousTaskName?: string
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
-
     if (workerNode?.usage != null) {
       ++workerNode.usage.tasks.sequentiallyStolen
     }
@@ -1837,7 +1832,6 @@ export abstract class AbstractPool<
     taskName: string
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
-
     if (workerNode?.usage != null) {
       workerNode.usage.tasks.sequentiallyStolen = 0
     }
@@ -2003,7 +1997,7 @@ export abstract class AbstractPool<
 
   /**
    * This method is the message listener registered on each worker.
-   * @param message
+   * @param message - The message received from the worker.
    */
   protected readonly workerMessageListener = (
     message: MessageValue<Response>
