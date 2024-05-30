@@ -47,7 +47,12 @@ export default defineFlatConfig([
     files: ['examples/**/*.js', 'examples/**/*.cjs'],
     rules: {
       'no-undef': 'off',
-      'n/no-missing-import': 'off',
+      'n/no-missing-import': [
+        'error',
+        {
+          allowModules: ['ws'],
+        },
+      ],
       '@typescript-eslint/no-require-imports': 'off',
     },
   },
