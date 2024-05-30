@@ -31,6 +31,24 @@ export default defineFlatConfig([
       'simple-import-sort': simpleImportSort,
     },
     rules: {
+      '@cspell/spellchecker': [
+        'warn',
+        {
+          autoFix: true,
+          cspell: {
+            words: [
+              'Alessandro',
+              'Ardizio',
+              'Benoit',
+              'IWRR',
+              'Quadflieg',
+              'neostandard',
+              'poolifier',
+              'tseslint',
+            ],
+          },
+        },
+      ],
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
     },
