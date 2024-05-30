@@ -4,7 +4,7 @@ import { env } from 'node:process'
 import {
   SHARE_ENV,
   Worker as ThreadWorker,
-  type WorkerOptions
+  type WorkerOptions,
 } from 'node:worker_threads'
 
 import type { MessageValue, Task } from '../utility-types.js'
@@ -13,7 +13,7 @@ import type { TasksQueueOptions } from './pool.js'
 import {
   type MeasurementStatisticsRequirements,
   WorkerChoiceStrategies,
-  type WorkerChoiceStrategy
+  type WorkerChoiceStrategy,
 } from './selection-strategies/selection-strategies-types.js'
 import type { WorkerChoiceStrategiesContext } from './selection-strategies/worker-choice-strategies-context.js'
 import {
@@ -23,7 +23,7 @@ import {
   type WorkerNodeOptions,
   type WorkerType,
   WorkerTypes,
-  type WorkerUsage
+  type WorkerUsage,
 } from './worker.js'
 
 /**
@@ -33,7 +33,7 @@ export const DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS: MeasurementStatisticsR
   {
     aggregate: false,
     average: false,
-    median: false
+    median: false,
   }
 
 export const getDefaultTasksQueueOptions = (
@@ -44,7 +44,7 @@ export const getDefaultTasksQueueOptions = (
     concurrency: 1,
     taskStealing: true,
     tasksStealingOnBackPressure: false,
-    tasksFinishedTimeout: 2000
+    tasksFinishedTimeout: 2000,
   }
 }
 
@@ -216,7 +216,6 @@ export const checkWorkerNodeArguments = (
 
 /**
  * Updates the given measurement statistics.
- *
  * @param measurementStatistics - The measurement statistics to update.
  * @param measurementRequirements - The measurement statistics requirements.
  * @param measurementValue - The measurement value.
@@ -262,7 +261,6 @@ const updateMeasurementStatistics = (
   }
 }
 if (env.NODE_ENV === 'test') {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   exports.updateMeasurementStatistics = updateMeasurementStatistics
 }
 
@@ -292,7 +290,6 @@ export const updateTaskStatisticsWorkerUsage = <Response = unknown>(
 ): void => {
   const workerTaskStatistics = workerUsage.tasks
   if (
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     workerTaskStatistics.executing != null &&
     workerTaskStatistics.executing > 0
   ) {
@@ -369,25 +366,23 @@ export const updateEluWorkerUsage = <
 export const createWorker = <Worker extends IWorker>(
   type: WorkerType,
   filePath: string,
-  opts: { env?: Record<string, unknown>, workerOptions?: WorkerOptions }
+  opts: { env?: Record<string, unknown>; workerOptions?: WorkerOptions }
 ): Worker => {
   switch (type) {
     case WorkerTypes.thread:
       return new ThreadWorker(filePath, {
         env: SHARE_ENV,
-        ...opts.workerOptions
+        ...opts.workerOptions,
       }) as unknown as Worker
     case WorkerTypes.cluster:
       return cluster.fork(opts.env) as unknown as Worker
     default:
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`Unknown worker type '${type}'`)
   }
 }
 
 /**
  * Returns the worker type of the given worker.
- *
  * @param worker - The worker to get the type of.
  * @returns The worker type of the given worker.
  * @internal
@@ -402,7 +397,6 @@ export const getWorkerType = (worker: IWorker): WorkerType | undefined => {
 
 /**
  * Returns the worker id of the given worker.
- *
  * @param worker - The worker to get the id of.
  * @returns The worker id of the given worker.
  * @internal

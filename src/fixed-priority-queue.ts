@@ -5,7 +5,6 @@ export const defaultQueueSize = 2048
 
 /**
  * Fixed priority queue node.
- *
  * @typeParam T - Type of priority queue node data.
  * @internal
  */
@@ -16,13 +15,12 @@ export interface FixedPriorityQueueNode<T> {
 
 /**
  * Fixed priority queue.
- *
  * @typeParam T - Type of fixed priority queue data.
  * @internal
  */
 export class FixedPriorityQueue<T> {
   private start!: number
-  private readonly nodeArray: Array<FixedPriorityQueueNode<T>>
+  private readonly nodeArray: FixedPriorityQueueNode<T>[]
   /** The fixed priority queue capacity. */
   public readonly capacity: number
   /** The fixed priority queue size. */
@@ -32,7 +30,6 @@ export class FixedPriorityQueue<T> {
 
   /**
    * Constructs a fixed priority queue.
-   *
    * @param size - Fixed priority queue size. @defaultValue defaultQueueSize
    * @param enablePriority - Whether to enable priority. @defaultValue false
    * @returns FixedPriorityQueue.
@@ -47,7 +44,6 @@ export class FixedPriorityQueue<T> {
 
   /**
    * Checks if the fixed priority queue is empty.
-   *
    * @returns `true` if the fixed priority queue is empty, `false` otherwise.
    */
   public empty (): boolean {
@@ -56,7 +52,6 @@ export class FixedPriorityQueue<T> {
 
   /**
    * Checks if the fixed priority queue is full.
-   *
    * @returns `true` if the fixed priority queue is full, `false` otherwise.
    */
   public full (): boolean {
@@ -65,7 +60,6 @@ export class FixedPriorityQueue<T> {
 
   /**
    * Enqueue data into the fixed priority queue.
-   *
    * @param data - Data to enqueue.
    * @param priority - Priority of the data. Lower values have higher priority.
    * @returns The new size of the priority queue.
@@ -105,7 +99,6 @@ export class FixedPriorityQueue<T> {
 
   /**
    * Gets data from the fixed priority queue.
-   *
    * @param index - The index of the data to get.
    * @returns The data at the index or `undefined` if the fixed priority queue is empty or the index is out of bounds.
    */
@@ -122,7 +115,6 @@ export class FixedPriorityQueue<T> {
 
   /**
    * Dequeue data from the fixed priority queue.
-   *
    * @returns The dequeued data or `undefined` if the priority queue is empty.
    */
   public dequeue (): T | undefined {
@@ -148,7 +140,6 @@ export class FixedPriorityQueue<T> {
 
   /**
    * Returns an iterator for the fixed priority queue.
-   *
    * @returns An iterator for the fixed priority queue.
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
    */
@@ -160,7 +151,7 @@ export class FixedPriorityQueue<T> {
         if (i >= this.size) {
           return {
             value: undefined,
-            done: true
+            done: true,
           }
         }
         const value = this.nodeArray[index].data
@@ -171,15 +162,14 @@ export class FixedPriorityQueue<T> {
         }
         return {
           value,
-          done: false
+          done: false,
         }
-      }
+      },
     }
   }
 
   /**
    * Checks the queue size.
-   *
    * @param size - Queue size.
    */
   private checkSize (size: number): void {

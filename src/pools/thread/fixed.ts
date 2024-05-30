@@ -1,7 +1,7 @@
 import {
   isMainThread,
   type TransferListItem,
-  type Worker
+  type Worker,
 } from 'node:worker_threads'
 
 import type { MessageValue } from '../../utility-types.js'
@@ -16,7 +16,6 @@ export type ThreadPoolOptions = PoolOptions<Worker>
 
 /**
  * A thread pool with a fixed number of threads.
- *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
@@ -28,10 +27,10 @@ export class FixedThreadPool<
 > extends AbstractPool<Worker, Data, Response> {
   /**
    * Constructs a new poolifier fixed thread pool.
-   *
    * @param numberOfThreads - Number of threads for this pool.
    * @param filePath - Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
    * @param opts - Options for this fixed thread pool.
+   * @param maximumNumberOfThreads
    */
   public constructor (
     numberOfThreads: number,
@@ -56,7 +55,7 @@ export class FixedThreadPool<
     this.workerNodes[workerNodeKey]?.messageChannel?.port1.postMessage(
       {
         ...message,
-        workerId: this.getWorkerInfo(workerNodeKey)?.id
+        workerId: this.getWorkerInfo(workerNodeKey)?.id,
       } satisfies MessageValue<Data>,
       transferList
     )
@@ -71,7 +70,7 @@ export class FixedThreadPool<
       {
         ready: false,
         workerId: this.getWorkerInfo(workerNodeKey)?.id,
-        port: port2
+        port: port2,
       } satisfies MessageValue<Data>,
       [port2]
     )

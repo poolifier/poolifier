@@ -12,7 +12,6 @@ export type ClusterPoolOptions = PoolOptions<Worker>
 
 /**
  * A cluster pool with a fixed number of workers.
- *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
@@ -24,10 +23,10 @@ export class FixedClusterPool<
 > extends AbstractPool<Worker, Data, Response> {
   /**
    * Constructs a new poolifier fixed cluster pool.
-   *
    * @param numberOfWorkers - Number of workers for this pool.
    * @param filePath - Path to an implementation of a `ClusterWorker` file, which can be relative or absolute.
    * @param opts - Options for this fixed cluster pool.
+   * @param maximumNumberOfWorkers
    */
   public constructor (
     numberOfWorkers: number,
@@ -55,14 +54,14 @@ export class FixedClusterPool<
   ): void {
     this.workerNodes[workerNodeKey]?.worker.send({
       ...message,
-      workerId: this.getWorkerInfo(workerNodeKey)?.id
+      workerId: this.getWorkerInfo(workerNodeKey)?.id,
     } satisfies MessageValue<Data>)
   }
 
   /** @inheritDoc */
   protected sendStartupMessageToWorker (workerNodeKey: number): void {
     this.sendToWorker(workerNodeKey, {
-      ready: false
+      ready: false,
     })
   }
 

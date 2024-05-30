@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import {
   availableParallelism,
   DynamicThreadPool,
-  FixedThreadPool
+  FixedThreadPool,
 } from 'poolifier'
 
 import type { MyData, MyResponse } from './worker.js'
@@ -23,7 +23,7 @@ const fixedPool = new FixedThreadPool<MyData, MyResponse>(
     },
     errorHandler: (e: Error) => {
       console.error(e)
-    }
+    },
   }
 )
 
@@ -39,13 +39,12 @@ const dynamicPool = new DynamicThreadPool<MyData, MyResponse>(
     },
     errorHandler: (e: Error) => {
       console.error(e)
-    }
+    },
   }
 )
 
 await dynamicPool.execute()
 
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 setTimeout(async () => {
   await fixedPool.destroy()
   await dynamicPool.destroy()

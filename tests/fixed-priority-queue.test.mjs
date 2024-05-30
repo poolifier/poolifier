@@ -2,7 +2,7 @@ import { expect } from 'expect'
 
 import {
   defaultQueueSize,
-  FixedPriorityQueue
+  FixedPriorityQueue,
 } from '../lib/fixed-priority-queue.cjs'
 
 describe('Fixed priority queue test suite', () => {
@@ -35,7 +35,7 @@ describe('Fixed priority queue test suite', () => {
     expect(fixedPriorityQueue.size).toBe(1)
     expect(rtSize).toBe(fixedPriorityQueue.size)
     expect(fixedPriorityQueue.nodeArray).toMatchObject([
-      { data: 1, priority: 0 }
+      { data: 1, priority: 0 },
     ])
     expect(fixedPriorityQueue.capacity).toBe(queueSize)
     rtSize = fixedPriorityQueue.enqueue(2)
@@ -44,7 +44,7 @@ describe('Fixed priority queue test suite', () => {
     expect(rtSize).toBe(fixedPriorityQueue.size)
     expect(fixedPriorityQueue.nodeArray).toMatchObject([
       { data: 1, priority: 0 },
-      { data: 2, priority: 0 }
+      { data: 2, priority: 0 },
     ])
     expect(fixedPriorityQueue.capacity).toBe(queueSize)
     rtSize = fixedPriorityQueue.enqueue(3)
@@ -54,7 +54,7 @@ describe('Fixed priority queue test suite', () => {
     expect(fixedPriorityQueue.nodeArray).toMatchObject([
       { data: 1, priority: 0 },
       { data: 2, priority: 0 },
-      { data: 3, priority: 0 }
+      { data: 3, priority: 0 },
     ])
     expect(fixedPriorityQueue.capacity).toBe(queueSize)
     rtSize = fixedPriorityQueue.enqueue(3, -1)
@@ -65,7 +65,7 @@ describe('Fixed priority queue test suite', () => {
       { data: 3, priority: -1 },
       { data: 1, priority: 0 },
       { data: 2, priority: 0 },
-      { data: 3, priority: 0 }
+      { data: 3, priority: 0 },
     ])
     expect(fixedPriorityQueue.capacity).toBe(queueSize)
     rtSize = fixedPriorityQueue.enqueue(1, 1)
@@ -77,7 +77,7 @@ describe('Fixed priority queue test suite', () => {
       { data: 1, priority: 0 },
       { data: 2, priority: 0 },
       { data: 3, priority: 0 },
-      { data: 1, priority: 1 }
+      { data: 1, priority: 1 },
     ])
     expect(fixedPriorityQueue.capacity).toBe(queueSize)
     expect(() => fixedPriorityQueue.enqueue(4)).toThrow(
@@ -112,7 +112,7 @@ describe('Fixed priority queue test suite', () => {
     expect(fixedPriorityQueue.nodeArray).toMatchObject([
       { data: 2, priority: -1 },
       { data: 1, priority: 0 },
-      { data: 3, priority: 0 }
+      { data: 3, priority: 0 },
     ])
     expect(fixedPriorityQueue.capacity).toBe(queueSize)
     rtItem = fixedPriorityQueue.dequeue()
@@ -122,7 +122,7 @@ describe('Fixed priority queue test suite', () => {
     expect(fixedPriorityQueue.nodeArray).toMatchObject([
       { data: 2, priority: -1 },
       { data: 1, priority: 0 },
-      { data: 3, priority: 0 }
+      { data: 3, priority: 0 },
     ])
     expect(fixedPriorityQueue.capacity).toBe(queueSize)
     rtItem = fixedPriorityQueue.dequeue()
@@ -132,7 +132,7 @@ describe('Fixed priority queue test suite', () => {
     expect(fixedPriorityQueue.nodeArray).toMatchObject([
       { data: 2, priority: -1 },
       { data: 1, priority: 0 },
-      { data: 3, priority: 0 }
+      { data: 3, priority: 0 },
     ])
     expect(fixedPriorityQueue.capacity).toBe(queueSize)
     rtItem = fixedPriorityQueue.dequeue()
@@ -142,7 +142,7 @@ describe('Fixed priority queue test suite', () => {
     expect(fixedPriorityQueue.nodeArray).toMatchObject([
       { data: 2, priority: -1 },
       { data: 1, priority: 0 },
-      { data: 3, priority: 0 }
+      { data: 3, priority: 0 },
     ])
     expect(fixedPriorityQueue.capacity).toBe(queueSize)
   })
@@ -191,14 +191,14 @@ describe('Fixed priority queue test suite', () => {
     fixedPriorityQueue.size = 2
     fixedPriorityQueue.nodeArray = [
       { data: 2, priority: 0 },
-      { data: 3, priority: 0 }
+      { data: 3, priority: 0 },
     ]
     fixedPriorityQueue.clear()
     expect(fixedPriorityQueue.start).toBe(0)
     expect(fixedPriorityQueue.size).toBe(0)
     expect(fixedPriorityQueue.nodeArray).toMatchObject([
       { data: 2, priority: 0 },
-      { data: 3, priority: 0 }
+      { data: 3, priority: 0 },
     ])
   })
 })

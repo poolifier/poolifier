@@ -6,7 +6,7 @@ const pool = new FixedThreadPool(
   './multiFunctionWorker.cjs',
   {
     onlineHandler: () => console.info('worker is online'),
-    errorHandler: e => console.error(e)
+    errorHandler: e => console.error(e),
   }
 )
 

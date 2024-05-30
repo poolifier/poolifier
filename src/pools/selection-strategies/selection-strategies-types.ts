@@ -36,10 +36,9 @@ export const WorkerChoiceStrategies: Readonly<{
   WEIGHTED_ROUND_ROBIN: 'WEIGHTED_ROUND_ROBIN',
   /**
    * Interleaved weighted round robin worker selection strategy.
-   *
    * @experimental
    */
-  INTERLEAVED_WEIGHTED_ROUND_ROBIN: 'INTERLEAVED_WEIGHTED_ROUND_ROBIN'
+  INTERLEAVED_WEIGHTED_ROUND_ROBIN: 'INTERLEAVED_WEIGHTED_ROUND_ROBIN',
 } as const)
 
 /**
@@ -57,7 +56,7 @@ export const Measurements: Readonly<{
 }> = Object.freeze({
   runTime: 'runTime',
   waitTime: 'waitTime',
-  elu: 'elu'
+  elu: 'elu',
 } as const)
 
 /**
@@ -85,26 +84,22 @@ export interface WorkerChoiceStrategyOptions {
   readonly measurement?: Measurement
   /**
    * Runtime options.
-   *
    * @defaultValue \{ median: false \}
    */
   readonly runTime?: MeasurementOptions
   /**
    * Wait time options.
-   *
    * @defaultValue \{ median: false \}
    */
   readonly waitTime?: MeasurementOptions
   /**
    * Event loop utilization options.
-   *
    * @defaultValue \{ median: false \}
    */
   readonly elu?: MeasurementOptions
   /**
    * Worker weights to use for weighted round robin worker selection strategies.
    * A weight is tasks maximum execution time in milliseconds for a worker node.
-   *
    * @defaultValue Weights computed automatically given the CPU performance.
    */
   weights?: Record<number, number>
@@ -112,7 +107,6 @@ export interface WorkerChoiceStrategyOptions {
 
 /**
  * Measurement statistics requirements.
- *
  * @internal
  */
 export interface MeasurementStatisticsRequirements {
@@ -132,7 +126,6 @@ export interface MeasurementStatisticsRequirements {
 
 /**
  * Pool worker node worker usage statistics requirements.
- *
  * @internal
  */
 export interface TaskStatisticsRequirements {
@@ -152,7 +145,6 @@ export interface TaskStatisticsRequirements {
 
 /**
  * Strategy policy.
- *
  * @internal
  */
 export interface StrategyPolicy {
@@ -168,7 +160,6 @@ export interface StrategyPolicy {
 
 /**
  * Worker choice strategy interface.
- *
  * @internal
  */
 export interface IWorkerChoiceStrategy {
@@ -182,14 +173,12 @@ export interface IWorkerChoiceStrategy {
   readonly taskStatisticsRequirements: TaskStatisticsRequirements
   /**
    * Resets strategy internals.
-   *
    * @returns `true` if the reset is successful, `false` otherwise.
    */
   readonly reset: () => boolean
   /**
    * Updates the worker node key strategy internals.
    * This is called after a task has been executed on a worker node.
-   *
    * @returns `true` if the update is successful, `false` otherwise.
    */
   readonly update: (workerNodeKey: number) => boolean
@@ -197,20 +186,17 @@ export interface IWorkerChoiceStrategy {
    * Chooses a worker node in the pool and returns its key.
    * If no worker nodes are not eligible, `undefined` is returned.
    * If `undefined` is returned, the caller retry.
-   *
    * @returns The worker node key or `undefined`.
    */
   readonly choose: () => number | undefined
   /**
    * Removes the worker node key from strategy internals.
-   *
    * @param workerNodeKey - The worker node key.
    * @returns `true` if the worker node key is removed, `false` otherwise.
    */
   readonly remove: (workerNodeKey: number) => boolean
   /**
    * Sets the worker choice strategy options.
-   *
    * @param opts - The worker choice strategy options.
    */
   readonly setOptions: (opts: WorkerChoiceStrategyOptions | undefined) => void

@@ -3,7 +3,7 @@ import { ThreadWorker } from 'poolifier'
 import type {
   DataPayload,
   ThreadWorkerData,
-  ThreadWorkerResponse
+  ThreadWorkerResponse,
 } from './types.js'
 
 class RequestHandlerWorker<
@@ -32,16 +32,17 @@ class RequestHandlerWorker<
         return {
           data: {
             number: RequestHandlerWorker.factorial(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               workerData!.data.number!
-            ).toString()
-          }
+            ).toString(),
+          },
         } as unknown as Response
-      }
+      },
     })
   }
 }
 
 export const requestHandlerWorker = new RequestHandlerWorker<
-ThreadWorkerData<DataPayload>,
-ThreadWorkerResponse<DataPayload>
+  ThreadWorkerData<DataPayload>,
+  ThreadWorkerResponse<DataPayload>
 >()

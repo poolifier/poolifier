@@ -25,6 +25,7 @@ class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static readonly startExpress = (
     workerData?: WorkerData
   ): WorkerResponse => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { port } = workerData!
 
     const application: Express = express()
@@ -40,7 +41,7 @@ class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
       const { number } = req.params
       res
         .send({
-          number: ExpressWorker.factorial(Number.parseInt(number)).toString()
+          number: ExpressWorker.factorial(Number.parseInt(number)).toString(),
         })
         .end()
     })
@@ -54,7 +55,7 @@ class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
     })
     return {
       status: true,
-      port: listenerPort ?? port
+      port: listenerPort ?? port,
     }
   }
 
@@ -62,7 +63,7 @@ class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
     super(ExpressWorker.startExpress, {
       killHandler: () => {
         ExpressWorker.server.close()
-      }
+      },
     })
   }
 }

@@ -5,12 +5,11 @@ import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.
 import type {
   IWorkerChoiceStrategy,
   TaskStatisticsRequirements,
-  WorkerChoiceStrategyOptions
+  WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
 
 /**
  * Selects the least busy worker.
- *
  * @typeParam Worker - Type of worker which manages the strategy.
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
@@ -27,14 +26,14 @@ export class LeastBusyWorkerChoiceStrategy<
     runTime: {
       aggregate: true,
       average: false,
-      median: false
+      median: false,
     },
     waitTime: {
       aggregate: true,
       average: false,
-      median: false
+      median: false,
     },
-    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS
+    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   }
 
   /** @inheritDoc */

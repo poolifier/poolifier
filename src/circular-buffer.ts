@@ -5,7 +5,6 @@ export const defaultBufferSize = 2048
 
 /**
  * Circular buffer designed for positive numbers.
- *
  * @internal
  */
 export class CircularBuffer {
@@ -30,7 +29,6 @@ export class CircularBuffer {
 
   /**
    * Checks whether the buffer is empty.
-   *
    * @returns Whether the buffer is empty.
    */
   public empty (): boolean {
@@ -39,7 +37,6 @@ export class CircularBuffer {
 
   /**
    * Checks whether the buffer is full.
-   *
    * @returns Whether the buffer is full.
    */
   public full (): boolean {
@@ -48,7 +45,6 @@ export class CircularBuffer {
 
   /**
    * Puts number into buffer.
-   *
    * @param number - Number to put into buffer.
    */
   public put (number: number): void {
@@ -61,7 +57,6 @@ export class CircularBuffer {
 
   /**
    * Gets number from buffer.
-   *
    * @returns Number from buffer.
    */
   public get (): number | undefined {
@@ -77,7 +72,6 @@ export class CircularBuffer {
 
   /**
    * Returns buffer as numbers' array.
-   *
    * @returns Numbers' array.
    */
   public toArray (): number[] {
@@ -86,7 +80,6 @@ export class CircularBuffer {
 
   /**
    * Checks the buffer size.
-   *
    * @param size - Buffer size.
    */
   private checkSize (size: number): void {

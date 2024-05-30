@@ -9,7 +9,6 @@ export const defaultBucketSize = 2048
 
 /**
  * Priority queue node.
- *
  * @typeParam T - Type of priority queue node data.
  * @internal
  */
@@ -19,7 +18,6 @@ export interface PriorityQueueNode<T> extends FixedPriorityQueue<T> {
 
 /**
  * Priority queue.
- *
  * @typeParam T - Type of priority queue data.
  * @internal
  */
@@ -32,7 +30,6 @@ export class PriorityQueue<T> {
 
   /**
    * Constructs a priority queue.
-   *
    * @param bucketSize - Prioritized bucket size. @defaultValue defaultBucketSize
    * @param enablePriority - Whether to enable priority. @defaultValue false
    * @returns PriorityQueue.
@@ -94,7 +91,6 @@ export class PriorityQueue<T> {
 
   /**
    * Enqueue data into the priority queue.
-   *
    * @param data - Data to enqueue.
    * @param priority - Priority of the data. Lower values have higher priority.
    * @returns The new size of the priority queue.
@@ -116,7 +112,6 @@ export class PriorityQueue<T> {
 
   /**
    * Dequeue data from the priority queue.
-   *
    * @param bucket - The prioritized bucket to dequeue from.
    * @returns The dequeued data or `undefined` if the priority queue is empty.
    */
@@ -171,7 +166,6 @@ export class PriorityQueue<T> {
 
   /**
    * Returns an iterator for the priority queue.
-   *
    * @returns An iterator for the priority queue.
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
    */
@@ -184,7 +178,7 @@ export class PriorityQueue<T> {
         if (value == null) {
           return {
             value: undefined,
-            done: true
+            done: true,
           }
         }
         ++index
@@ -194,9 +188,9 @@ export class PriorityQueue<T> {
         }
         return {
           value,
-          done: false
+          done: false,
         }
-      }
+      },
     }
   }
 }

@@ -1,5 +1,9 @@
 import { bench, group, run } from 'tatami-ng'
 
+/**
+ *
+ * @param numberOfWorkers
+ */
 function generateWorkersArray (numberOfWorkers) {
   return [...Array(numberOfWorkers).keys()]
 }
@@ -8,12 +12,18 @@ const workers = generateWorkersArray(60)
 
 let nextWorkerIndex
 
+/**
+ *
+ */
 function roundRobinTernaryOffByOne () {
   nextWorkerIndex =
     workers.length - 1 === nextWorkerIndex ? 0 : nextWorkerIndex + 1
   return workers[nextWorkerIndex]
 }
 
+/**
+ *
+ */
 function roundRobinTernaryWithNegation () {
   nextWorkerIndex =
     !nextWorkerIndex || workers.length - 1 === nextWorkerIndex
@@ -22,6 +32,9 @@ function roundRobinTernaryWithNegation () {
   return workers[nextWorkerIndex]
 }
 
+/**
+ *
+ */
 function roundRobinTernaryWithPreChoosing () {
   const chosenWorker = workers[nextWorkerIndex]
   nextWorkerIndex =
@@ -29,6 +42,9 @@ function roundRobinTernaryWithPreChoosing () {
   return chosenWorker
 }
 
+/**
+ *
+ */
 function roundRobinIncrementModulo () {
   const chosenWorker = workers[nextWorkerIndex]
   nextWorkerIndex++

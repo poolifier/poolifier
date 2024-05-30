@@ -32,6 +32,6 @@ const pool = new FixedClusterPool<WorkerData, WorkerResponse>(
     },
     errorHandler: (e: Error) => {
       console.error('Cluster worker error:', e)
-    }
+    },
   }
 )

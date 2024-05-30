@@ -6,19 +6,19 @@ import { parseArgs } from 'node:util'
 import {
   availableParallelism,
   PoolTypes,
-  WorkerTypes
+  WorkerTypes,
 } from '../../lib/index.mjs'
 import { TaskFunctions } from '../benchmarks-types.cjs'
 import {
   convertTatamiNgToBmf,
-  runPoolifierBenchmarkTatamiNg
+  runPoolifierBenchmarkTatamiNg,
 } from '../benchmarks-utils.mjs'
 
 const poolSize = availableParallelism()
 const taskExecutions = 1
 const workerData = {
   function: TaskFunctions.factorial,
-  taskSize: 1000
+  taskSize: 1000,
 }
 const benchmarkReportFile = 'benchmark-report.json'
 let benchmarkReport
@@ -29,11 +29,11 @@ switch (
     options: {
       type: {
         type: 'string',
-        short: 't'
-      }
+        short: 't',
+      },
     },
     strict: true,
-    allowPositionals: true
+    allowPositionals: true,
   }).values.type
 ) {
   case 'tatami-ng':
@@ -46,7 +46,7 @@ switch (
         poolSize,
         {
           taskExecutions,
-          workerData
+          workerData,
         }
       )
     )
@@ -60,10 +60,10 @@ switch (
           poolSize,
           {
             taskExecutions,
-            workerData
+            workerData,
           }
         )
-      )
+      ),
     }
     benchmarkReport = {
       ...benchmarkReport,
@@ -75,10 +75,10 @@ switch (
           poolSize,
           {
             taskExecutions,
-            workerData
+            workerData,
           }
         )
-      )
+      ),
     }
     benchmarkReport = {
       ...benchmarkReport,
@@ -90,11 +90,12 @@ switch (
           poolSize,
           {
             taskExecutions,
-            workerData
+            workerData,
           }
         )
-      )
+      ),
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     env.CI != null &&
       writeFileSync(benchmarkReportFile, JSON.stringify(benchmarkReport))
     break

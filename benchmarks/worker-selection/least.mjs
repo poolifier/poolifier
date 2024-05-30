@@ -2,6 +2,11 @@ import { randomInt } from 'node:crypto'
 
 import { bench, group, run } from 'tatami-ng'
 
+/**
+ *
+ * @param numberOfWorkers
+ * @param maxNumberOfTasksPerWorker
+ */
 function generateRandomTasksMap (
   numberOfWorkers,
   maxNumberOfTasksPerWorker = 10
@@ -16,6 +21,10 @@ function generateRandomTasksMap (
 
 const tasksMap = generateRandomTasksMap(60, 20)
 
+/**
+ *
+ * @param tasksMap
+ */
 function loopSelect (tasksMap) {
   let minKey
   let minValue = Number.POSITIVE_INFINITY
@@ -30,6 +39,10 @@ function loopSelect (tasksMap) {
   return [minKey, minValue]
 }
 
+/**
+ *
+ * @param tasksMap
+ */
 function arraySortSelect (tasksMap) {
   const tasksArray = Array.from(tasksMap)
   return tasksArray.sort((a, b) => {
@@ -54,12 +67,26 @@ const randomPivotIndexSelect = (leftIndex, rightIndex) => {
   return randomInt(leftIndex, rightIndex)
 }
 
+/**
+ *
+ * @param array
+ * @param index1
+ * @param index2
+ */
 function swap (array, index1, index2) {
   const tmp = array[index1]
   array[index1] = array[index2]
   array[index2] = tmp
 }
 
+/**
+ *
+ * @param array
+ * @param leftIndex
+ * @param rightIndex
+ * @param pivotIndex
+ * @param compare
+ */
 function partition (
   array,
   leftIndex,
@@ -80,6 +107,15 @@ function partition (
   return storeIndex
 }
 
+/**
+ *
+ * @param array
+ * @param k
+ * @param leftIndex
+ * @param rightIndex
+ * @param compare
+ * @param pivotIndexSelect
+ */
 function selectLoop (
   array,
   k,
@@ -102,6 +138,15 @@ function selectLoop (
   }
 }
 
+/**
+ *
+ * @param array
+ * @param k
+ * @param leftIndex
+ * @param rightIndex
+ * @param compare
+ * @param pivotIndexSelect
+ */
 function selectRecursion (
   array,
   k,
@@ -122,6 +167,10 @@ function selectRecursion (
   }
 }
 
+/**
+ *
+ * @param tasksMap
+ */
 function quickSelectLoop (tasksMap) {
   const tasksArray = Array.from(tasksMap)
 
@@ -130,6 +179,10 @@ function quickSelectLoop (tasksMap) {
   })
 }
 
+/**
+ *
+ * @param tasksMap
+ */
 function quickSelectLoopRandomPivot (tasksMap) {
   const tasksArray = Array.from(tasksMap)
 
@@ -145,6 +198,10 @@ function quickSelectLoopRandomPivot (tasksMap) {
   )
 }
 
+/**
+ *
+ * @param tasksMap
+ */
 function quickSelectRecursion (tasksMap) {
   const tasksArray = Array.from(tasksMap)
 
@@ -153,6 +210,10 @@ function quickSelectRecursion (tasksMap) {
   })
 }
 
+/**
+ *
+ * @param tasksMap
+ */
 function quickSelectRecursionRandomPivot (tasksMap) {
   const tasksArray = Array.from(tasksMap)
 

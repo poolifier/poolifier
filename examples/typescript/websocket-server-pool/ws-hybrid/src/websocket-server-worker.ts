@@ -1,7 +1,7 @@
 import {
   availableParallelism,
   ClusterWorker,
-  DynamicThreadPool
+  DynamicThreadPool,
 } from 'poolifier'
 import { type RawData, WebSocketServer } from 'ws'
 
@@ -12,7 +12,7 @@ import {
   type MessagePayload,
   MessageType,
   type ThreadWorkerData,
-  type ThreadWorkerResponse
+  type ThreadWorkerResponse,
 } from './types.js'
 
 const emptyFunction = (): void => {
@@ -20,24 +20,25 @@ const emptyFunction = (): void => {
 }
 
 class WebSocketServerWorker extends ClusterWorker<
-ClusterWorkerData,
-ClusterWorkerResponse
+  ClusterWorkerData,
+  ClusterWorkerResponse
 > {
   private static wss: WebSocketServer
   private static requestHandlerPool: DynamicThreadPool<
-  ThreadWorkerData<DataPayload>,
-  ThreadWorkerResponse<DataPayload>
+    ThreadWorkerData<DataPayload>,
+    ThreadWorkerResponse<DataPayload>
   >
 
   private static readonly startWebSocketServer = (
     workerData?: ClusterWorkerData
   ): ClusterWorkerResponse => {
     const { port, workerFile, minWorkers, maxWorkers, ...poolOptions } =
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       workerData!
 
     WebSocketServerWorker.requestHandlerPool = new DynamicThreadPool<
-    ThreadWorkerData<DataPayload>,
-    ThreadWorkerResponse<DataPayload>
+      ThreadWorkerData<DataPayload>,
+      ThreadWorkerResponse<DataPayload>
     >(
       minWorkers ?? 1,
       maxWorkers ?? availableParallelism(),
@@ -55,7 +56,6 @@ ClusterWorkerResponse
       ws.on('error', console.error)
       ws.on('message', (message: RawData) => {
         const { type, data } = JSON.parse(
-          // eslint-disable-next-line @typescript-eslint/no-base-to-string
           message.toString()
         ) as MessagePayload<DataPayload>
         switch (type) {
@@ -66,7 +66,7 @@ ClusterWorkerResponse
                 ws.send(
                   JSON.stringify({
                     type: MessageType.echo,
-                    data: response.data
+                    data: response.data,
                   })
                 )
                 return undefined
@@ -81,7 +81,7 @@ ClusterWorkerResponse
                   JSON.stringify(
                     {
                       type: MessageType.factorial,
-                      data: response.data
+                      data: response.data,
                     },
                     (_, v) => (typeof v === 'bigint' ? v.toString() : v)
                   )
@@ -95,7 +95,7 @@ ClusterWorkerResponse
     })
     return {
       status: true,
-      port: WebSocketServerWorker.wss.options.port
+      port: WebSocketServerWorker.wss.options.port,
     }
   }
 
@@ -104,7 +104,7 @@ ClusterWorkerResponse
       killHandler: async () => {
         await WebSocketServerWorker.requestHandlerPool.destroy()
         WebSocketServerWorker.wss.close()
-      }
+      },
     })
   }
 }

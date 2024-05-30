@@ -14,16 +14,16 @@ for (const to of tos) {
         secure: true,
         auth: {
           user: 'REPLACE-WITH-YOUR-ALIAS@DOMAIN.TLD',
-          pass: 'REPLACE-WITH-YOUR-GENERATED-PASSWORD'
-        }
+          pass: 'REPLACE-WITH-YOUR-GENERATED-PASSWORD',
+        },
       },
       mail: {
         from: '"Foo" <foo@domain.tld>',
         to,
         subject: 'Hello',
         text: 'Hello world?',
-        html: '<b>Hello world?</b>'
-      }
+        html: '<b>Hello world?</b>',
+      },
     })
   )
 }

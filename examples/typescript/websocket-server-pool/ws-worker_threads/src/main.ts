@@ -18,7 +18,6 @@ wss.on('connection', ws => {
   ws.on('error', console.error)
   ws.on('message', (message: RawData) => {
     const { type, data } = JSON.parse(
-      // eslint-disable-next-line @typescript-eslint/no-base-to-string
       message.toString()
     ) as MessagePayload<DataPayload>
     switch (type) {
@@ -29,7 +28,7 @@ wss.on('connection', ws => {
             ws.send(
               JSON.stringify({
                 type: MessageType.echo,
-                data: response.data
+                data: response.data,
               })
             )
             return undefined
@@ -44,7 +43,7 @@ wss.on('connection', ws => {
               JSON.stringify(
                 {
                   type: MessageType.factorial,
-                  data: response.data
+                  data: response.data,
                 },
                 (_, v) => (typeof v === 'bigint' ? v.toString() : v)
               )

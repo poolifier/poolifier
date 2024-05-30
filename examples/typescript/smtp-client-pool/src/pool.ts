@@ -12,14 +12,14 @@ const workerFile = join(
 )
 
 export const smtpClientPool = new DynamicThreadPool<
-WorkerData,
-SMTPTransport.SentMessageInfo
+  WorkerData,
+  SMTPTransport.SentMessageInfo
 >(0, availableParallelism(), workerFile, {
   enableTasksQueue: true,
   tasksQueueOptions: {
-    concurrency: 8
+    concurrency: 8,
   },
   errorHandler: (e: Error) => {
     console.error('Thread worker error:', e)
-  }
+  },
 })

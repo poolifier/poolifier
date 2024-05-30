@@ -16,7 +16,7 @@ describe('Worker node test suite', () => {
     {
       tasksQueueBackPressureSize: 12,
       tasksQueueBucketSize: 6,
-      tasksQueuePriority: true
+      tasksQueuePriority: true,
     }
   )
   const clusterWorkerNode = new WorkerNode(
@@ -25,7 +25,7 @@ describe('Worker node test suite', () => {
     {
       tasksQueueBackPressureSize: 12,
       tasksQueueBucketSize: 6,
-      tasksQueuePriority: true
+      tasksQueuePriority: true,
     }
   )
 
@@ -133,7 +133,7 @@ describe('Worker node test suite', () => {
           WorkerTypes.thread,
           './tests/worker-files/thread/testWorker.mjs',
           {
-            tasksQueueBackPressureSize: 12
+            tasksQueueBackPressureSize: 12,
           }
         )
     ).toThrow(
@@ -148,7 +148,7 @@ describe('Worker node test suite', () => {
           './tests/worker-files/thread/testWorker.mjs',
           {
             tasksQueueBackPressureSize: 12,
-            tasksQueueBucketSize: 'invalidTasksQueueBucketSize'
+            tasksQueueBucketSize: 'invalidTasksQueueBucketSize',
           }
         )
     ).toThrow(
@@ -199,7 +199,7 @@ describe('Worker node test suite', () => {
           './tests/worker-files/thread/testWorker.mjs',
           {
             tasksQueueBackPressureSize: 12,
-            tasksQueueBucketSize: 6
+            tasksQueueBucketSize: 6,
           }
         )
     ).toThrow(
@@ -215,7 +215,7 @@ describe('Worker node test suite', () => {
           {
             tasksQueueBackPressureSize: 12,
             tasksQueueBucketSize: 6,
-            tasksQueuePriority: 'invalidTasksQueuePriority'
+            tasksQueuePriority: 'invalidTasksQueuePriority',
           }
         )
     ).toThrow(
@@ -231,7 +231,7 @@ describe('Worker node test suite', () => {
       dynamic: false,
       ready: false,
       stealing: false,
-      backPressure: false
+      backPressure: false,
     })
     expect(threadWorkerNode.usage).toStrictEqual({
       tasks: {
@@ -241,22 +241,22 @@ describe('Worker node test suite', () => {
         maxQueued: 0,
         sequentiallyStolen: 0,
         stolen: 0,
-        failed: 0
+        failed: 0,
       },
       runTime: {
-        history: expect.any(CircularBuffer)
+        history: expect.any(CircularBuffer),
       },
       waitTime: {
-        history: expect.any(CircularBuffer)
+        history: expect.any(CircularBuffer),
       },
       elu: {
         idle: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         active: {
-          history: expect.any(CircularBuffer)
-        }
-      }
+          history: expect.any(CircularBuffer),
+        },
+      },
     })
     expect(threadWorkerNode.messageChannel).toBeInstanceOf(MessageChannel)
     expect(threadWorkerNode.tasksQueueBackPressureSize).toBe(12)
@@ -278,7 +278,7 @@ describe('Worker node test suite', () => {
       dynamic: false,
       ready: false,
       stealing: false,
-      backPressure: false
+      backPressure: false,
     })
     expect(clusterWorkerNode.usage).toStrictEqual({
       tasks: {
@@ -288,22 +288,22 @@ describe('Worker node test suite', () => {
         maxQueued: 0,
         sequentiallyStolen: 0,
         stolen: 0,
-        failed: 0
+        failed: 0,
       },
       runTime: {
-        history: expect.any(CircularBuffer)
+        history: expect.any(CircularBuffer),
       },
       waitTime: {
-        history: expect.any(CircularBuffer)
+        history: expect.any(CircularBuffer),
       },
       elu: {
         idle: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         active: {
-          history: expect.any(CircularBuffer)
-        }
-      }
+          history: expect.any(CircularBuffer),
+        },
+      },
     })
     expect(clusterWorkerNode.messageChannel).toBeUndefined()
     expect(clusterWorkerNode.tasksQueueBackPressureSize).toBe(12)
@@ -328,7 +328,7 @@ describe('Worker node test suite', () => {
     )
     threadWorkerNode.info.taskFunctionsProperties = [
       { name: DEFAULT_TASK_NAME },
-      { name: 'fn1' }
+      { name: 'fn1' },
     ]
     expect(() =>
       threadWorkerNode.getTaskFunctionWorkerUsage('invalidTaskFunction')
@@ -340,7 +340,7 @@ describe('Worker node test suite', () => {
     threadWorkerNode.info.taskFunctionsProperties = [
       { name: DEFAULT_TASK_NAME },
       { name: 'fn1' },
-      { name: 'fn2' }
+      { name: 'fn2' },
     ]
     expect(
       threadWorkerNode.getTaskFunctionWorkerUsage(DEFAULT_TASK_NAME)
@@ -351,22 +351,22 @@ describe('Worker node test suite', () => {
         queued: 0,
         sequentiallyStolen: 0,
         stolen: 0,
-        failed: 0
+        failed: 0,
       },
       runTime: {
-        history: expect.any(CircularBuffer)
+        history: expect.any(CircularBuffer),
       },
       waitTime: {
-        history: expect.any(CircularBuffer)
+        history: expect.any(CircularBuffer),
       },
       elu: {
         idle: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         active: {
-          history: expect.any(CircularBuffer)
-        }
-      }
+          history: expect.any(CircularBuffer),
+        },
+      },
     })
     expect(threadWorkerNode.getTaskFunctionWorkerUsage('fn1')).toStrictEqual({
       tasks: {
@@ -375,22 +375,22 @@ describe('Worker node test suite', () => {
         queued: 0,
         sequentiallyStolen: 0,
         stolen: 0,
-        failed: 0
+        failed: 0,
       },
       runTime: {
-        history: expect.any(CircularBuffer)
+        history: expect.any(CircularBuffer),
       },
       waitTime: {
-        history: expect.any(CircularBuffer)
+        history: expect.any(CircularBuffer),
       },
       elu: {
         idle: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         active: {
-          history: expect.any(CircularBuffer)
-        }
-      }
+          history: expect.any(CircularBuffer),
+        },
+      },
     })
     expect(threadWorkerNode.getTaskFunctionWorkerUsage('fn2')).toStrictEqual({
       tasks: {
@@ -399,22 +399,22 @@ describe('Worker node test suite', () => {
         queued: 0,
         sequentiallyStolen: 0,
         stolen: 0,
-        failed: 0
+        failed: 0,
       },
       runTime: {
-        history: expect.any(CircularBuffer)
+        history: expect.any(CircularBuffer),
       },
       waitTime: {
-        history: expect.any(CircularBuffer)
+        history: expect.any(CircularBuffer),
       },
       elu: {
         idle: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         active: {
-          history: expect.any(CircularBuffer)
-        }
-      }
+          history: expect.any(CircularBuffer),
+        },
+      },
     })
     expect(threadWorkerNode.taskFunctionsUsage.size).toBe(2)
   })
@@ -423,7 +423,7 @@ describe('Worker node test suite', () => {
     expect(threadWorkerNode.info.taskFunctionsProperties).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
       { name: 'fn1' },
-      { name: 'fn2' }
+      { name: 'fn2' },
     ])
     expect(threadWorkerNode.taskFunctionsUsage.size).toBe(2)
     expect(

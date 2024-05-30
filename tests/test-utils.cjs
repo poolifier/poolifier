@@ -58,7 +58,7 @@ const sleepTaskFunction = async (
 const jsonIntegerSerialization = n => {
   for (let i = 0; i < n; i++) {
     const o = {
-      a: i
+      a: i,
     }
     JSON.stringify(o)
   }
@@ -66,8 +66,8 @@ const jsonIntegerSerialization = n => {
 }
 
 /**
- * @param {number} n - The number of fibonacci numbers to generate.
- * @returns {number} - The nth fibonacci number.
+ * @param n - The number of fibonacci numbers to generate.
+ * @returns - The nth fibonacci number.
  */
 const fibonacci = n => {
   let current = 1
@@ -81,8 +81,8 @@ const fibonacci = n => {
 }
 
 /**
- * @param {number} n - The number to calculate the factorial of.
- * @returns {number} - The factorial of n.
+ * @param n - The number to calculate the factorial of.
+ * @returns - The factorial of n.
  */
 const factorial = n => {
   if (n === 0 || n === 1) {
@@ -117,5 +117,5 @@ module.exports = {
   sleep,
   sleepTaskFunction,
   waitPoolEvents,
-  waitWorkerEvents
+  waitWorkerEvents,
 }

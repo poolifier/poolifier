@@ -3,7 +3,7 @@ import { expect } from 'expect'
 import {
   DynamicClusterPool,
   PoolEvents,
-  WorkerChoiceStrategies
+  WorkerChoiceStrategies,
 } from '../../../lib/index.cjs'
 import { TaskFunctions } from '../../test-types.cjs'
 import { sleep, waitPoolEvents, waitWorkerEvents } from '../../test-utils.cjs'
@@ -16,17 +16,17 @@ describe('Dynamic cluster pool test suite', () => {
     max,
     './tests/worker-files/cluster/testWorker.cjs',
     {
-      errorHandler: e => console.error(e)
+      errorHandler: e => console.error(e),
     }
   )
 
   it('Verify that the function is executed in a worker cluster', async () => {
     let result = await pool.execute({
-      function: TaskFunctions.fibonacci
+      function: TaskFunctions.fibonacci,
     })
     expect(result).toBe(354224848179262000000)
     result = await pool.execute({
-      function: TaskFunctions.factorial
+      function: TaskFunctions.factorial,
     })
     expect(result).toBe(9.33262154439441e157)
   })
@@ -67,14 +67,14 @@ describe('Dynamic cluster pool test suite', () => {
     pool.emitter.on(PoolEvents.destroy, () => ++poolDestroy)
     expect(pool.emitter.eventNames()).toStrictEqual([
       PoolEvents.busy,
-      PoolEvents.destroy
+      PoolEvents.destroy,
     ])
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
     expect(pool.started).toBe(false)
     expect(pool.emitter.eventNames()).toStrictEqual([
       PoolEvents.busy,
-      PoolEvents.destroy
+      PoolEvents.destroy,
     ])
     expect(pool.readyEventEmitted).toBe(false)
     expect(pool.workerNodes.length).toBe(0)
@@ -108,7 +108,7 @@ describe('Dynamic cluster pool test suite', () => {
       {
         errorHandler: e => console.error(e),
         onlineHandler: () => console.info('long executing worker is online'),
-        exitHandler: () => console.info('long executing worker exited')
+        exitHandler: () => console.info('long executing worker exited'),
       }
     )
     expect(longRunningPool.workerNodes.length).toBe(min)
@@ -136,7 +136,7 @@ describe('Dynamic cluster pool test suite', () => {
       {
         errorHandler: e => console.error(e),
         onlineHandler: () => console.info('long executing worker is online'),
-        exitHandler: () => console.info('long executing worker exited')
+        exitHandler: () => console.info('long executing worker exited'),
       }
     )
     expect(longRunningPool.workerNodes.length).toBe(min)
@@ -169,12 +169,13 @@ describe('Dynamic cluster pool test suite', () => {
         max,
         './tests/worker-files/cluster/testWorker.cjs',
         {
-          workerChoiceStrategy
+          workerChoiceStrategy,
         }
       )
       expect(pool.starting).toBe(false)
       expect(pool.readyEventEmitted).toBe(false)
       for (let run = 0; run < 2; run++) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         run % 2 !== 0 && pool.enableTasksQueue(true)
         const maxMultiplier = 4
         const promises = new Set()

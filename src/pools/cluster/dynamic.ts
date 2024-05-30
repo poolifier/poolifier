@@ -7,7 +7,6 @@ import { type ClusterPoolOptions, FixedClusterPool } from './fixed.js'
  *
  * This cluster pool creates new workers when the others are busy, up to the maximum number of workers.
  * When the maximum number of workers is reached and workers are busy, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
- *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
@@ -19,7 +18,6 @@ export class DynamicClusterPool<
 > extends FixedClusterPool<Data, Response> {
   /**
    * Constructs a new poolifier dynamic cluster pool.
-   *
    * @param min - Minimum number of workers which are always active.
    * @param max - Maximum number of workers that can be created by this pool.
    * @param filePath - Path to an implementation of a `ClusterWorker` file, which can be relative or absolute.
