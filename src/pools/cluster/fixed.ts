@@ -26,7 +26,7 @@ export class FixedClusterPool<
    * @param numberOfWorkers - Number of workers for this pool.
    * @param filePath - Path to an implementation of a `ClusterWorker` file, which can be relative or absolute.
    * @param opts - Options for this fixed cluster pool.
-   * @param maximumNumberOfWorkers
+   * @param maximumNumberOfWorkers - The maximum number of workers for this pool.
    */
   public constructor (
     numberOfWorkers: number,

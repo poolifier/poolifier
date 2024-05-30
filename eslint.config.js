@@ -44,14 +44,23 @@ export default defineFlatConfig([
     },
   },
   {
-    files: ['tests/**/*.cjs', 'benchmarks/**/*.cjs', 'examples/**/*.cjs'],
+    files: ['examples/**/*.js', 'examples/**/*.cjs'],
+    rules: {
+      'no-undef': 'off',
+      'n/no-missing-import': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
+  {
+    files: ['benchmarks/**/*.cjs'],
     rules: {
       '@typescript-eslint/no-require-imports': 'off',
     },
   },
   {
-    files: ['tests/**/*.cjs', 'tests/**/*.js', 'tests/**/*.mjs'],
+    files: ['tests/**/*.js', 'tests/**/*.mjs', 'tests/**/*.cjs'],
     rules: {
+      '@typescript-eslint/no-require-imports': 'off',
       '@typescript-eslint/no-empty-function': 'off',
     },
   },

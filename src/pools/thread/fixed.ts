@@ -30,7 +30,7 @@ export class FixedThreadPool<
    * @param numberOfThreads - Number of threads for this pool.
    * @param filePath - Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
    * @param opts - Options for this fixed thread pool.
-   * @param maximumNumberOfThreads
+   * @param maximumNumberOfThreads - The maximum number of threads for this pool.
    */
   public constructor (
     numberOfThreads: number,
