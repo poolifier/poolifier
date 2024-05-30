@@ -52,7 +52,6 @@ export default defineFlatConfig([
   {
     files: ['examples/**/*.js', 'examples/**/*.cjs'],
     rules: {
-      'no-undef': 'off',
       'n/no-missing-import': [
         'error',
         {
