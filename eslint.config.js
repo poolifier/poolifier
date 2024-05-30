@@ -44,6 +44,12 @@ export default defineFlatConfig([
     },
   },
   {
+    files: ['examples/**/*.ts'],
+    rules: {
+      'no-undef': 'off',
+    },
+  },
+  {
     files: ['examples/**/*.js', 'examples/**/*.cjs'],
     rules: {
       'no-undef': 'off',
