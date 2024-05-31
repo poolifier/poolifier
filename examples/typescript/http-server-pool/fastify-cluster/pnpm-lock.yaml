@@ -19,8 +19,8 @@ importers:
         specifier: ^11.1.6
         version: 11.1.6(rollup@4.18.0)(tslib@2.6.2)(typescript@5.4.5)
       '@types/node':
-        specifier: ^20.12.13
-        version: 20.12.13
+        specifier: ^20.13.0
+        version: 20.13.0
       autocannon:
         specifier: ^7.15.0
         version: 7.15.0
@@ -181,8 +181,8 @@ packages:
   '@types/minimatch@5.1.2':
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
 
-  '@types/node@20.12.13':
-    resolution: {integrity: sha512-gBGeanV41c1L171rR7wjbMiEpEI/l5XFQdLLfhr/REwpgDy/4U8y89+i8kRiLzDyZdOkXh+cRaTetUnCYutoXA==}
+  '@types/node@20.13.0':
+    resolution: {integrity: sha512-FM6AOb3khNkNIXPnHFDYaHerSv8uN22C91z098AnGccVu+Pcdhi+pNUFDi0iLmPIsVE0JBD0KVS7mzUYt4nRzQ==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -695,8 +695,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  thread-stream@3.0.1:
-    resolution: {integrity: sha512-O5O/RbdV3CjhtwFa4slXvrb/26lzsf4/NMts3QFIRniIsi+584QSneJXaHXasqcZO+B7pWZkr+4h9knhnAQevg==}
+  thread-stream@3.0.2:
+    resolution: {integrity: sha512-cBL4xF2A3lSINV4rD5tyqnKH4z/TgWPvT+NaVhJDSwK962oo/Ye7cHSMbDzwcu7tAE1SfU6Q4XtV6Hucmi6Hlw==}
 
   timestring@6.0.0:
     resolution: {integrity: sha512-wMctrWD2HZZLuIlchlkE2dfXJh7J2KDI9Dwl+2abPYg0mswQHfOAyQW3jJg1pY5VfttSINZuKcXoB3FGypVklA==}
@@ -839,11 +839,11 @@ snapshots:
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 20.12.13
+      '@types/node': 20.13.0
 
   '@types/minimatch@5.1.2': {}
 
-  '@types/node@20.12.13':
+  '@types/node@20.13.0':
     dependencies:
       undici-types: 5.26.5
 
@@ -1240,7 +1240,7 @@ snapshots:
       real-require: 0.2.0
       safe-stable-stringify: 2.4.3
       sonic-boom: 4.0.1
-      thread-stream: 3.0.1
+      thread-stream: 3.0.2
 
   poolifier@4.0.13: {}
 
@@ -1371,7 +1371,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  thread-stream@3.0.1:
+  thread-stream@3.0.2:
     dependencies:
       real-require: 0.2.0
 
