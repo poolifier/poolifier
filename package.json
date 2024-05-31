@@ -110,7 +110,7 @@
     "@release-it/keep-a-changelog": "^5.0.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/node": "^20.12.13",
+    "@types/node": "^20.13.0",
     "c8": "^9.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^9.3.0",
