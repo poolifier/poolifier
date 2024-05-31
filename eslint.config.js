@@ -76,12 +76,14 @@ export default defineFlatConfig([
     ...tseslint.configs.disableTypeChecked,
   },
   // examples specific configuration
-  // {
-  //   files: ['examples/**/*.ts'],
-  //   rules: {
-  //     'no-undef': 'off',
-  //   },
-  // },
+  {
+    files: ['examples/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+    },
+  },
   {
     files: ['examples/**/*.js', 'examples/**/*.cjs'],
     rules: {
