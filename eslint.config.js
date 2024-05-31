@@ -17,7 +17,6 @@ export default defineFlatConfig([
   js.configs.recommended,
   ...nodePlugin.configs['flat/mixed-esm-and-cjs'],
   jsdoc.configs['flat/recommended-typescript'],
-  // ...tseslint.config(...tseslint.configs.strictTypeChecked, ...tseslint.configs.stylisticTypeChecked),
   ...tseslint.config(...tseslint.configs.strict, ...tseslint.configs.stylistic),
   ...neostandard({
     ts: true,
@@ -26,6 +25,18 @@ export default defineFlatConfig([
       ...globals.mocha,
     },
   }),
+  // ...tseslint.config(
+  //   ...tseslint.configs.strictTypeChecked,
+  //   ...tseslint.configs.stylisticTypeChecked,
+  //   {
+  //     languageOptions: {
+  //       parserOptions: {
+  //         project: true,
+  //         tsconfigRootDir: import.meta.dirname,
+  //       },
+  //     },
+  //   }
+  // ),
   {
     plugins: {
       'simple-import-sort': simpleImportSort,
