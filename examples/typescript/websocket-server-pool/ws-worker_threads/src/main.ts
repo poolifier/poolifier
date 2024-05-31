@@ -6,7 +6,7 @@ import { type DataPayload, type MessagePayload, MessageType } from './types.js'
 const port = 8080
 const wss = new WebSocketServer({ port }, () => {
   console.info(
-    `⚡️[ws server]: WebSocket server is started at ws://localhost:${port}/`
+    `⚡️[ws server]: WebSocket server is started at ws://localhost:${port.toString()}/`
   )
 })
 
@@ -18,6 +18,7 @@ wss.on('connection', ws => {
   ws.on('error', console.error)
   ws.on('message', (message: RawData) => {
     const { type, data } = JSON.parse(
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string
       message.toString()
     ) as MessagePayload<DataPayload>
     switch (type) {
@@ -45,7 +46,7 @@ wss.on('connection', ws => {
                   type: MessageType.factorial,
                   data: response.data,
                 },
-                (_, v) => (typeof v === 'bigint' ? v.toString() : v)
+                (_, v: unknown) => (typeof v === 'bigint' ? v.toString() : v)
               )
             )
             return undefined

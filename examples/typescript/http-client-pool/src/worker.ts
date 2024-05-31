@@ -40,6 +40,7 @@ class HttpClientWorker extends ThreadWorker<WorkerData, WorkerResponse> {
           ...workerData?.axiosRequestConfig,
         })
         return {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           text: response.data,
         }
       },

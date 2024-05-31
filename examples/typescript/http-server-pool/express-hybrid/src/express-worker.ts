@@ -54,6 +54,7 @@ class ExpressWorker extends ClusterWorker<
 
     application.all('/api/echo', (req: Request, res: Response) => {
       ExpressWorker.requestHandlerPool
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         .execute({ data: req.body }, 'echo')
         .then(response => {
           return res.send(response.data).end()
@@ -75,7 +76,7 @@ class ExpressWorker extends ClusterWorker<
     ExpressWorker.server = application.listen(port, () => {
       listenerPort = (ExpressWorker.server.address() as AddressInfo).port
       console.info(
-        `⚡️[express server]: Express server is started in cluster worker at http://localhost:${listenerPort}/`
+        `⚡️[express server]: Express server is started in cluster worker at http://localhost:${listenerPort.toString()}/`
       )
     })
     return {

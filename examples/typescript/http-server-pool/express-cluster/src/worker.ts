@@ -50,7 +50,7 @@ class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
     ExpressWorker.server = application.listen(port, () => {
       listenerPort = (ExpressWorker.server.address() as AddressInfo).port
       console.info(
-        `⚡️[express server]: Express server is started in cluster worker at http://localhost:${listenerPort}/`
+        `⚡️[express server]: Express server is started in cluster worker at http://localhost:${listenerPort.toString()}/`
       )
     })
     return {

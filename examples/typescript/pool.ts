@@ -45,6 +45,7 @@ const dynamicPool = new DynamicThreadPool<MyData, MyResponse>(
 
 await dynamicPool.execute()
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 setTimeout(async () => {
   await fixedPool.destroy()
   await dynamicPool.destroy()

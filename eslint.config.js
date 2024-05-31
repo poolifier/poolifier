@@ -17,7 +17,10 @@ export default defineFlatConfig([
   js.configs.recommended,
   ...nodePlugin.configs['flat/mixed-esm-and-cjs'],
   jsdoc.configs['flat/recommended-typescript'],
-  ...tseslint.config(...tseslint.configs.strict, ...tseslint.configs.stylistic),
+  ...tseslint.config(
+    ...tseslint.configs.strictTypeChecked,
+    ...tseslint.configs.stylisticTypeChecked
+  ),
   ...neostandard({
     ts: true,
     globals: {
@@ -25,18 +28,14 @@ export default defineFlatConfig([
       ...globals.mocha,
     },
   }),
-  // ...tseslint.config(
-  //   ...tseslint.configs.strictTypeChecked,
-  //   ...tseslint.configs.stylisticTypeChecked,
-  //   {
-  //     languageOptions: {
-  //       parserOptions: {
-  //         project: true,
-  //         tsconfigRootDir: import.meta.dirname,
-  //       },
-  //     },
-  //   }
-  // ),
+  {
+    languageOptions: {
+      parserOptions: {
+        project: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
   {
     plugins: {
       'simple-import-sort': simpleImportSort,
@@ -73,11 +72,16 @@ export default defineFlatConfig([
     },
   },
   {
-    files: ['examples/**/*.ts'],
-    rules: {
-      'no-undef': 'off',
-    },
+    files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
+    ...tseslint.configs.disableTypeChecked,
   },
+  // examples specific configuration
+  // {
+  //   files: ['examples/**/*.ts'],
+  //   rules: {
+  //     'no-undef': 'off',
+  //   },
+  // },
   {
     files: ['examples/**/*.js', 'examples/**/*.cjs'],
     rules: {
@@ -90,12 +94,14 @@ export default defineFlatConfig([
       '@typescript-eslint/no-require-imports': 'off',
     },
   },
+  // benchmarks specific configuration
   {
     files: ['benchmarks/**/*.cjs'],
     rules: {
       '@typescript-eslint/no-require-imports': 'off',
     },
   },
+  // tests specific configuration
   {
     files: ['tests/**/*.js', 'tests/**/*.mjs', 'tests/**/*.cjs'],
     rules: {

@@ -40,11 +40,11 @@ export class PriorityQueue<T> {
   ) {
     if (!Number.isSafeInteger(bucketSize)) {
       throw new TypeError(
-        `Invalid bucket size: '${bucketSize}' is not an integer`
+        `Invalid bucket size: '${bucketSize.toString()}' is not an integer`
       )
     }
     if (bucketSize < 0) {
-      throw new RangeError(`Invalid bucket size: ${bucketSize} < 0`)
+      throw new RangeError(`Invalid bucket size: ${bucketSize.toString()} < 0`)
     }
     this.bucketSize = bucketSize
     this.head = this.tail = new FixedPriorityQueue(

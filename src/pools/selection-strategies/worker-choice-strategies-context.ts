@@ -174,7 +174,7 @@ export class WorkerChoiceStrategiesContext<
     } while (workerNodeKey == null && retriesCount < this.retries)
     if (workerNodeKey == null) {
       throw new Error(
-        `Worker node key chosen is null or undefined after ${retriesCount} retries`
+        `Worker node key chosen is null or undefined after ${retriesCount.toString()} retries`
       )
     }
     return workerNodeKey

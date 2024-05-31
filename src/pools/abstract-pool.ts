@@ -658,7 +658,7 @@ export abstract class AbstractPool<
       throw new Error('Worker message received without worker id')
     } else if (this.getWorkerNodeKeyByWorkerId(message.workerId) === -1) {
       throw new Error(
-        `Worker message received from unknown worker '${message.workerId}'`
+        `Worker message received from unknown worker '${message.workerId.toString()}'`
       )
     }
   }
@@ -891,7 +891,11 @@ export abstract class AbstractPool<
           } else {
             reject(
               new Error(
-                `Task function operation '${message.taskFunctionOperation}' failed on worker ${message.workerId} with error: '${message.workerError?.message}'`
+                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                `Task function operation '${message.taskFunctionOperation?.toString()}' failed on worker ${message.workerId?.toString()} with error: '${
+                  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                  message.workerError?.message
+                }'`
               )
             )
           }
@@ -939,7 +943,9 @@ export abstract class AbstractPool<
                 new Error(
                   `Task function operation '${
                     message.taskFunctionOperation as string
-                  }' failed on worker ${errorResponse?.workerId} with error: '${
+                    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                  }' failed on worker ${errorResponse?.workerId?.toString()} with error: '${
+                    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                     errorResponse?.workerError?.message
                   }'`
                 )
@@ -1284,6 +1290,7 @@ export abstract class AbstractPool<
 
   private async sendKillMessageToWorker (workerNodeKey: number): Promise<void> {
     await new Promise<void>((resolve, reject) => {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (this.workerNodes[workerNodeKey] == null) {
         resolve()
         return
@@ -1295,7 +1302,8 @@ export abstract class AbstractPool<
         } else if (message.kill === 'failure') {
           reject(
             new Error(
-              `Kill message handling failed on worker ${message.workerId}`
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `Kill message handling failed on worker ${message.workerId?.toString()}`
             )
           )
         }
@@ -1351,6 +1359,7 @@ export abstract class AbstractPool<
     workerNodeKey: number,
     task: Task<Data>
   ): void {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.workerNodes[workerNodeKey]?.usage != null) {
       const workerUsage = this.workerNodes[workerNodeKey].usage
       ++workerUsage.tasks.executing
@@ -1391,6 +1400,7 @@ export abstract class AbstractPool<
     message: MessageValue<Response>
   ): void {
     let needWorkerChoiceStrategiesUpdate = false
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.workerNodes[workerNodeKey]?.usage != null) {
       const workerUsage = this.workerNodes[workerNodeKey].usage
       updateTaskStatisticsWorkerUsage(workerUsage, message)
@@ -1568,6 +1578,7 @@ export abstract class AbstractPool<
       ) {
         this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
       }
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       workerNode?.terminate().catch((error: unknown) => {
         this.emitter?.emit(PoolEvents.error, error)
       })
@@ -1786,6 +1797,7 @@ export abstract class AbstractPool<
     taskName: string
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (workerNode?.usage != null) {
       ++workerNode.usage.tasks.stolen
     }
@@ -1804,6 +1816,7 @@ export abstract class AbstractPool<
     previousTaskName?: string
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (workerNode?.usage != null) {
       ++workerNode.usage.tasks.sequentiallyStolen
     }
@@ -1832,6 +1845,7 @@ export abstract class AbstractPool<
     taskName: string
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (workerNode?.usage != null) {
       workerNode.usage.tasks.sequentiallyStolen = 0
     }
@@ -1859,7 +1873,7 @@ export abstract class AbstractPool<
     const workerInfo = this.getWorkerInfo(workerNodeKey)
     if (workerInfo == null) {
       throw new Error(
-        `Worker node with key '${workerNodeKey}' not found in pool`
+        `Worker node with key '${workerNodeKey.toString()}' not found in pool`
       )
     }
     if (
@@ -1975,7 +1989,7 @@ export abstract class AbstractPool<
         const workerInfo = this.getWorkerInfo(workerNodeKey)
         if (workerInfo == null) {
           throw new Error(
-            `Worker node with key '${workerNodeKey}' not found in pool`
+            `Worker node with key '${workerNodeKey.toString()}' not found in pool`
           )
         }
         workerInfo.stealing = true
@@ -2032,7 +2046,8 @@ export abstract class AbstractPool<
   private handleWorkerReadyResponse (message: MessageValue<Response>): void {
     const { workerId, ready, taskFunctionsProperties } = message
     if (ready == null || !ready) {
-      throw new Error(`Worker ${workerId} failed to initialize`)
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      throw new Error(`Worker ${workerId?.toString()} failed to initialize`)
     }
     const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
     const workerNode = this.workerNodes[workerNodeKey]
@@ -2068,10 +2083,12 @@ export abstract class AbstractPool<
       this.afterTaskExecutionHook(workerNodeKey, message)
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.promiseResponseMap.delete(taskId!)
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       workerNode?.emit('taskFinished', taskId)
       if (
         this.opts.enableTasksQueue === true &&
         !this.destroying &&
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         workerNode != null
       ) {
         const workerNodeTasksUsage = workerNode.usage.tasks

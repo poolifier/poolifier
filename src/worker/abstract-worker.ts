@@ -355,9 +355,10 @@ export abstract class AbstractWorker<
     switch (taskFunctionOperation) {
       case 'add':
         response = this.addTaskFunction(taskFunctionProperties.name, {
-          // eslint-disable-next-line no-new-func
+          // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
           taskFunction: new Function(
-            `return ${taskFunction}`
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            `return ${taskFunction!}`
           )() as TaskFunction<Data, Response>,
           ...(taskFunctionProperties.priority != null && {
             priority: taskFunctionProperties.priority,
@@ -408,7 +409,7 @@ export abstract class AbstractWorker<
         })
     } else {
       try {
-        this.opts.killHandler?.()
+        ;(this.opts.killHandler as (() => void) | undefined)?.()
         this.sendToMainWorker({ kill: 'success' })
       } catch {
         this.sendToMainWorker({ kill: 'failure' })
@@ -426,7 +427,7 @@ export abstract class AbstractWorker<
       throw new Error('Message worker id is not set')
     } else if (message.workerId !== this.id) {
       throw new Error(
-        `Message worker id ${message.workerId} does not match the worker id ${this.id}`
+        `Message worker id ${message.workerId.toString()} does not match the worker id ${this.id.toString()}`
       )
     }
   }
@@ -514,7 +515,8 @@ export abstract class AbstractWorker<
         workerError: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           name: name!,
-          message: `Task function '${name}' not found`,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          message: `Task function '${name!}' not found`,
           data,
         },
         taskId,
@@ -553,7 +555,7 @@ export abstract class AbstractWorker<
         workerError: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           name: name!,
-          message: this.handleError(error as Error | string),
+          message: this.handleError(error),
           data,
         },
         taskId,

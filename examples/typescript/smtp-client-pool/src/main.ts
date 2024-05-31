@@ -32,9 +32,9 @@ try {
   await Promise.all(smtpClientPoolPromises)
   const elapsedTime = performance.now() - now
   console.info(
-    `Send in parallel in ${elapsedTime.toFixed(2)}ms ${
-      tos.length
-    } mails with SMTP client pool`
+    `Send in parallel in ${elapsedTime.toFixed(
+      2
+    )}ms ${tos.length.toString()} mails with SMTP client pool`
   )
 } catch (error) {
   console.error(error)

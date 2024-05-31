@@ -23,6 +23,7 @@ expressApp.use(express.json())
 
 expressApp.all('/api/echo', (req: Request, res: Response) => {
   requestHandlerPool
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     .execute({ body: req.body }, 'echo')
     .then(response => {
       return res.send(response.body).end()
@@ -43,7 +44,7 @@ expressApp.get('/api/factorial/:number', (req: Request, res: Response) => {
 try {
   expressApp.listen(port, () => {
     console.info(
-      `⚡️[express server]: Express server is started at http://localhost:${port}/`
+      `⚡️[express server]: Express server is started at http://localhost:${port.toString()}/`
     )
   })
 } catch (err) {

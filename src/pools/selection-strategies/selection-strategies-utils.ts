@@ -33,13 +33,16 @@ const estimatedCpuSpeed = (): number => {
 const getDefaultWorkerWeight = (): number => {
   const currentCpus = cpus()
   let estCpuSpeed: number | undefined
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (currentCpus.every(cpu => cpu.speed == null || cpu.speed === 0)) {
     estCpuSpeed = estimatedCpuSpeed()
   }
   let cpusCycleTimeWeight = 0
   for (const cpu of currentCpus) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (cpu.speed == null || cpu.speed === 0) {
       cpu.speed =
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         currentCpus.find(cpu => cpu.speed != null && cpu.speed !== 0)?.speed ??
         estCpuSpeed ??
         2000
@@ -180,6 +183,7 @@ export const getWorkerChoiceStrategy = <Worker extends IWorker, Data, Response>(
       ))(pool, opts)
     default:
       throw new Error(
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `Worker choice strategy '${workerChoiceStrategy}' is not valid`
       )
   }

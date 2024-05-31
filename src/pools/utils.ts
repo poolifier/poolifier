@@ -89,7 +89,7 @@ export const checkDynamicPoolSize = (
 
 export const checkValidPriority = (priority: number | undefined): void => {
   if (priority != null && !Number.isSafeInteger(priority)) {
-    throw new TypeError(`Invalid property 'priority': '${priority}'`)
+    throw new TypeError(`Invalid property 'priority': '${priority.toString()}'`)
   }
   if (
     priority != null &&
@@ -130,7 +130,7 @@ export const checkValidTasksQueueOptions = (
     tasksQueueOptions.concurrency <= 0
   ) {
     throw new RangeError(
-      `Invalid worker node tasks concurrency: ${tasksQueueOptions.concurrency} is a negative integer or zero`
+      `Invalid worker node tasks concurrency: ${tasksQueueOptions.concurrency.toString()} is a negative integer or zero`
     )
   }
   if (
@@ -143,7 +143,7 @@ export const checkValidTasksQueueOptions = (
   }
   if (tasksQueueOptions?.size != null && tasksQueueOptions.size <= 0) {
     throw new RangeError(
-      `Invalid worker node tasks queue size: ${tasksQueueOptions.size} is a negative integer or zero`
+      `Invalid worker node tasks queue size: ${tasksQueueOptions.size.toString()} is a negative integer or zero`
     )
   }
 }
@@ -261,6 +261,7 @@ const updateMeasurementStatistics = (
   }
 }
 if (env.NODE_ENV === 'test') {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   exports.updateMeasurementStatistics = updateMeasurementStatistics
 }
 
@@ -290,6 +291,7 @@ export const updateTaskStatisticsWorkerUsage = <Response = unknown>(
 ): void => {
   const workerTaskStatistics = workerUsage.tasks
   if (
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     workerTaskStatistics.executing != null &&
     workerTaskStatistics.executing > 0
   ) {
@@ -377,6 +379,7 @@ export const createWorker = <Worker extends IWorker>(
     case WorkerTypes.cluster:
       return cluster.fork(opts.env) as unknown as Worker
     default:
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`Unknown worker type '${type}'`)
   }
 }

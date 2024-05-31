@@ -33,7 +33,7 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
 
     WebSocketServerWorker.wss = new WebSocketServer({ port }, () => {
       console.info(
-        `⚡️[ws server]: WebSocket server is started in cluster worker at ws://localhost:${port}/`
+        `⚡️[ws server]: WebSocket server is started in cluster worker at ws://localhost:${port.toString()}/`
       )
     })
 
@@ -41,6 +41,7 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
       ws.on('error', console.error)
       ws.on('message', (message: RawData) => {
         const { type, data } = JSON.parse(
+          // eslint-disable-next-line @typescript-eslint/no-base-to-string
           message.toString()
         ) as MessagePayload<DataPayload>
         switch (type) {
@@ -62,7 +63,7 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
                     number: WebSocketServerWorker.factorial(data.number!),
                   },
                 },
-                (_, v) => (typeof v === 'bigint' ? v.toString() : v)
+                (_, v: unknown) => (typeof v === 'bigint' ? v.toString() : v)
               )
             )
             break

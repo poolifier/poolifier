@@ -53,6 +53,7 @@ export const checkValidTaskFunctionObjectEntry = <
   }
   if (typeof fnObj.taskFunction !== 'function') {
     throw new TypeError(
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       `taskFunction object 'taskFunction' property '${fnObj.taskFunction}' is not a function`
     )
   }

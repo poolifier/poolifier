@@ -85,11 +85,13 @@ export class CircularBuffer {
   private checkSize (size: number): void {
     if (!Number.isSafeInteger(size)) {
       throw new TypeError(
-        `Invalid circular buffer size: '${size}' is not an integer`
+        `Invalid circular buffer size: '${size.toString()}' is not an integer`
       )
     }
     if (size < 0) {
-      throw new RangeError(`Invalid circular buffer size: ${size} < 0`)
+      throw new RangeError(
+        `Invalid circular buffer size: ${size.toString()} < 0`
+      )
     }
   }
 }

@@ -205,6 +205,7 @@ export const once = <A extends any[], R, C extends ThisType<any>>(
 ): ((...args: A) => R) => {
   let result: R
   return (...args: A) => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (fn != null) {
       result = fn.apply<C, A, R>(context, args)
       ;(fn as unknown as undefined) = (context as unknown as undefined) =
