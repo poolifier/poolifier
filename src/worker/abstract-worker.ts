@@ -555,7 +555,7 @@ export abstract class AbstractWorker<
         workerError: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           name: name!,
-          message: this.handleError(error),
+          message: this.handleError(error as Error | string),
           data,
         },
         taskId,
