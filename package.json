@@ -105,7 +105,7 @@
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@cspell/eslint-plugin": "^8.8.3",
-    "@eslint/js": "^9.3.0",
+    "@eslint/js": "^9.4.0",
     "@release-it/bumper": "^6.0.1",
     "@release-it/keep-a-changelog": "^5.0.0",
     "@rollup/plugin-terser": "^0.4.4",
