@@ -23,7 +23,6 @@ expressApp.use(express.json())
 
 expressApp.all('/api/echo', (req: Request, res: Response) => {
   requestHandlerPool
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     .execute({ body: req.body }, 'echo')
     .then(response => {
       return res.send(response.body).end()
