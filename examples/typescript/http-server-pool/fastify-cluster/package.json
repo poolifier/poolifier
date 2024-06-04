@@ -31,7 +31,7 @@
     "autocannon": "^7.15.0",
     "rollup": "^4.18.0",
     "rollup-plugin-delete": "^2.0.0",
-    "tslib": "^2.6.2",
+    "tslib": "^2.6.3",
     "typescript": "^5.4.5"
   }
 }
