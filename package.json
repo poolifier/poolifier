@@ -42,9 +42,9 @@
   },
   "volta": {
     "node": "22.2.0",
-    "pnpm": "9.1.4"
+    "pnpm": "9.2.0"
   },
-  "packageManager": "pnpm@9.1.4",
+  "packageManager": "pnpm@9.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/poolifier/poolifier.git"
@@ -115,7 +115,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^9.4.0",
     "eslint-define-config": "^2.1.0",
-    "eslint-plugin-jsdoc": "^48.2.7",
+    "eslint-plugin-jsdoc": "^48.2.8",
     "eslint-plugin-n": "^17.8.0",
     "eslint-plugin-simple-import-sort": "^12.1.0",
     "expect": "^29.7.0",
