@@ -24,7 +24,7 @@
     "poolifier": "^4.0.13"
   },
   "devDependencies": {
-    "@types/node": "^20.14.1",
+    "@types/node": "^20.14.2",
     "@types/nodemailer": "^6.4.15",
     "typescript": "^5.4.5"
   }
