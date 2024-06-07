@@ -78,7 +78,6 @@ export abstract class AbstractWorker<
   /**
    * Handler id of the `activeInterval` worker activity check.
    */
-  // eslint-disable-next-line no-undef
   protected activeInterval?: NodeJS.Timeout
 
   /**
@@ -378,15 +377,16 @@ export abstract class AbstractWorker<
         response = { status: false, error: new Error('Unknown task operation') }
         break
     }
+    const { status, error } = response
     this.sendToMainWorker({
       taskFunctionOperation,
-      taskFunctionOperationStatus: response.status,
+      taskFunctionOperationStatus: status,
       taskFunctionProperties,
-      ...(!response.status &&
-        response.error != null && {
+      ...(!status &&
+        error != null && {
         workerError: {
           name: taskFunctionProperties.name,
-          message: this.handleError(response.error as Error | string),
+          message: this.handleError(error as Error | string),
         },
       }),
     })
