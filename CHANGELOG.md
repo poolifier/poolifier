@@ -9,8 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Add mapExecute() helper to execute a task function on an iterable data's input
-  and return an array of responses.
+- Add mapExecute() helper to execute a task function on an iterable data's input.
 
 ## [4.0.13] - 2024-05-29
 
