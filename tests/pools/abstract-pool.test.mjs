@@ -1708,7 +1708,7 @@ describe('Abstract pool test suite', () => {
     await pool.destroy()
   })
 
-  it('Verify mapExecute() is working', async () => {
+  it('Verify that mapExecute() is working', async () => {
     const pool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
