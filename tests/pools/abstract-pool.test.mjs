@@ -1714,7 +1714,16 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testMultipleTaskFunctionsWorker.mjs'
     )
-    const results = await pool.mapExecute([{ n: 10 }, { n: 20 }, { n: 30 }, { n: 40 }], 'factorial')
+    let results = await pool.mapExecute([{}, {}, {}, {}])
+    expect(results).toStrictEqual([
+      { ok: 1 },
+      { ok: 1 },
+      { ok: 1 },
+      { ok: 1 },
+    ])
+    expect(pool.info.executingTasks).toBe(0)
+    expect(pool.info.executedTasks).toBe(4)
+    results = await pool.mapExecute([{ n: 10 }, { n: 20 }, { n: 30 }, { n: 40 }], 'factorial')
     expect(results).toStrictEqual([
       3628800,
       2432902008176640000,
@@ -1722,7 +1731,7 @@ describe('Abstract pool test suite', () => {
       8.159152832478977e+47,
     ])
     expect(pool.info.executingTasks).toBe(0)
-    expect(pool.info.executedTasks).toBe(4)
+    expect(pool.info.executedTasks).toBe(8)
     await pool.destroy()
   })
 
