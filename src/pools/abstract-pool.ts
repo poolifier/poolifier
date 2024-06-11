@@ -1225,6 +1225,18 @@ export abstract class AbstractPool<
     })
   }
 
+
+  /** @inheritDoc */
+  public mapExecute (
+    data: Iterable<Data>,
+    name?: string,
+    transferList?: readonly TransferListItem[]
+  ): Promise<Response[]> {
+    return Promise.all(
+      [...data].map(data => this.execute(data, name, transferList))
+    )
+  }
+
   /**
    * Starts the minimum number of workers.
    * @param initWorkerNodeUsage - Whether to initialize the worker node usage or not. @defaultValue false
