@@ -42,8 +42,8 @@ importers:
         specifier: ^20.14.2
         version: 20.14.2
       c8:
-        specifier: ^10.0.0
-        version: 10.0.0
+        specifier: ^10.1.1
+        version: 10.1.1
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -72,8 +72,8 @@ importers:
         specifier: ^9.0.11
         version: 9.0.11
       lint-staged:
-        specifier: ^15.2.5
-        version: 15.2.5
+        specifier: ^15.2.6
+        version: 15.2.6
       mocha:
         specifier: ^10.4.0
         version: 10.4.0
@@ -408,14 +408,14 @@ packages:
   '@cspell/dict-ruby@5.0.2':
     resolution: {integrity: sha512-cIh8KTjpldzFzKGgrqUX4bFyav5lC52hXDKo4LbRuMVncs3zg4hcSf4HtURY+f2AfEZzN6ZKzXafQpThq3dl2g==}
 
-  '@cspell/dict-rust@4.0.3':
-    resolution: {integrity: sha512-8DFCzkFQ+2k3fDaezWc/D+0AyiBBiOGYfSDUfrTNU7wpvUvJ6cRcAUshMI/cn2QW/mmxTspRgVlXsE6GUMz00Q==}
+  '@cspell/dict-rust@4.0.4':
+    resolution: {integrity: sha512-v9/LcZknt/Xq7m1jdTWiQEtmkVVKdE1etAfGL2sgcWpZYewEa459HeWndNA0gfzQrpWX9sYay18mt7pqClJEdA==}
 
   '@cspell/dict-scala@5.0.2':
     resolution: {integrity: sha512-v97ClgidZt99JUm7OjhQugDHmhx4U8fcgunHvD/BsXWjXNj4cTr0m0YjofyZoL44WpICsNuFV9F/sv9OM5HUEw==}
 
-  '@cspell/dict-software-terms@3.4.4':
-    resolution: {integrity: sha512-GgKwgqqu9FcO81KKDKHixjhrSTYRMHOvcThrMKSnZzR0oND2MnG/j3cHBle+Xv3mtsnZl1DK9lKyYXaCvAnPpQ==}
+  '@cspell/dict-software-terms@3.4.5':
+    resolution: {integrity: sha512-CAOeZKvvj27bJTNKzPD7jYg/iK4LPwn3NmolAfoFnxtnCBxA6d20Car6IbPx9g4U6Ik3Vnk4CT3ziXeeBDB2Kw==}
 
   '@cspell/dict-sql@2.1.3':
     resolution: {integrity: sha512-SEyTNKJrjqD6PAzZ9WpdSu6P7wgdNtGV2RV8Kpuw1x6bV+YsSptuClYG+JSdRExBTE6LwIe1bTklejUp3ZP8TQ==}
@@ -1052,8 +1052,8 @@ packages:
     resolution: {integrity: sha512-tjwM5exMg6BGRI+kNmTntNsvdZS1X8BFYS6tnJ2hdH0kVxM6/eVZ2xy+FqStSWvYmtfFMDLIxurorHwDKfDz5Q==}
     engines: {node: '>=18'}
 
-  c8@10.0.0:
-    resolution: {integrity: sha512-rdQecjxw16P8kwgMBjruaQyfF+R2o/mucCCK4VPktwq2HFMWLOHGyUasb46+WlUOVJX94d6dZolcJxzjCzWmXg==}
+  c8@10.1.1:
+    resolution: {integrity: sha512-+aAvpNMwnzncW27XsEf2eMrGTF8HXIGZ24UQ1dW679+8SQ/UvDXxHNoKwMohcI9ZVj0xl/bI4/meqxvIWOBYaw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -1638,8 +1638,8 @@ packages:
   for-each@0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
 
-  foreground-child@3.1.1:
-    resolution: {integrity: sha512-TMKDUnIte6bfb5nWv7V/caI169OHgvwjb7V4WkeUvbQQdjr5rWKqHFiKWb/fcOwB+CzBT+qbWjvj+DVwRskpIg==}
+  foreground-child@3.2.0:
+    resolution: {integrity: sha512-CrWQNaEl1/6WeZoarcM9LHupTo3RpZO2Pdk1vktwzPiQTsJnAKJmm3TACKeG5UZbWDfaH2AbvYxzP96y0MT7fA==}
     engines: {node: '>=14'}
 
   form-data-encoder@2.1.4:
@@ -2240,8 +2240,8 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
-  lint-staged@15.2.5:
-    resolution: {integrity: sha512-j+DfX7W9YUvdzEZl3Rk47FhDF6xwDBV5wwsCPw6BwWZVPYJemusQmvb9bRsW23Sqsaa+vRloAWogbK4BUuU2zA==}
+  lint-staged@15.2.6:
+    resolution: {integrity: sha512-M/3PdijFXT/A5lnbSK3EQNLbIIrkE00JZaD39r7t4kfFOqT1Ly9LgSZSMMtvQ3p2/C8Nyj/ou0vkNHmEwqoB8g==}
     engines: {node: '>=18.12.0'}
     hasBin: true
 
@@ -2793,8 +2793,8 @@ packages:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
-  rfdc@1.3.1:
-    resolution: {integrity: sha512-r5a3l5HzYlIC68TpmYKlxWjmOP6wiPJ1vWv2HeLhNsRZMrCkxeqxiHlQ21oXmQ4F3SiryXBHhAD7JZqvOJjFmg==}
+  rfdc@1.4.0:
+    resolution: {integrity: sha512-P9wEDJ6O2uKNn510yBABRcpDlRapH/i56M+atix0ZtZ3AC4cRMC7uvLeiexM7DoDq5IYUo0dVavRtEL5hoHGuQ==}
 
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
@@ -3527,9 +3527,9 @@ snapshots:
       '@cspell/dict-python': 4.2.1
       '@cspell/dict-r': 2.0.1
       '@cspell/dict-ruby': 5.0.2
-      '@cspell/dict-rust': 4.0.3
+      '@cspell/dict-rust': 4.0.4
       '@cspell/dict-scala': 5.0.2
-      '@cspell/dict-software-terms': 3.4.4
+      '@cspell/dict-software-terms': 3.4.5
       '@cspell/dict-sql': 2.1.3
       '@cspell/dict-svelte': 1.0.2
       '@cspell/dict-swift': 2.0.1
@@ -3637,11 +3637,11 @@ snapshots:
 
   '@cspell/dict-ruby@5.0.2': {}
 
-  '@cspell/dict-rust@4.0.3': {}
+  '@cspell/dict-rust@4.0.4': {}
 
   '@cspell/dict-scala@5.0.2': {}
 
-  '@cspell/dict-software-terms@3.4.4': {}
+  '@cspell/dict-software-terms@3.4.5': {}
 
   '@cspell/dict-sql@2.1.3': {}
 
@@ -4295,12 +4295,12 @@ snapshots:
     dependencies:
       run-applescript: 7.0.0
 
-  c8@10.0.0:
+  c8@10.1.1:
     dependencies:
       '@bcoe/v8-coverage': 0.2.3
       '@istanbuljs/schema': 0.1.3
       find-up: 5.0.0
-      foreground-child: 3.1.1
+      foreground-child: 3.2.0
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
       istanbul-reports: 3.1.7
@@ -5014,7 +5014,7 @@ snapshots:
     dependencies:
       is-callable: 1.2.7
 
-  foreground-child@3.1.1:
+  foreground-child@3.2.0:
     dependencies:
       cross-spawn: 7.0.3
       signal-exit: 4.1.0
@@ -5117,7 +5117,7 @@ snapshots:
 
   glob@10.4.1:
     dependencies:
-      foreground-child: 3.1.1
+      foreground-child: 3.2.0
       jackspeak: 3.4.0
       minimatch: 9.0.4
       minipass: 7.1.2
@@ -5619,7 +5619,7 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  lint-staged@15.2.5:
+  lint-staged@15.2.6:
     dependencies:
       chalk: 5.3.0
       commander: 12.1.0
@@ -5640,7 +5640,7 @@ snapshots:
       colorette: 2.0.20
       eventemitter3: 5.0.1
       log-update: 6.0.0
-      rfdc: 1.3.1
+      rfdc: 1.4.0
       wrap-ansi: 9.0.0
 
   locate-path@6.0.0:
@@ -6229,7 +6229,7 @@ snapshots:
 
   reusify@1.0.4: {}
 
-  rfdc@1.3.1: {}
+  rfdc@1.4.0: {}
 
   rimraf@3.0.2:
     dependencies:
