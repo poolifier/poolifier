@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.14] - 2024-06-12
+
 ### Changed
 
 - Add mapExecute() helper to execute a task function on an iterable data's input.
