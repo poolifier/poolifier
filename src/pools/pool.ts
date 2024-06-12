@@ -279,13 +279,25 @@ export interface IPool<
    * @param data - The optional task input data for the specified task function. This can only be structured-cloneable data.
    * @param name - The optional name of the task function to execute. If not specified, the default task function will be executed.
    * @param transferList - An optional array of transferable objects to transfer ownership of. Ownership of the transferred objects is given to the chosen pool's worker_threads worker and they should not be used in the main thread afterwards.
-   * @returns Promise that will be fulfilled when the task is completed.
+   * @returns Promise with a task function response that will be fulfilled when the task is completed.
    */
   readonly execute: (
     data?: Data,
     name?: string,
     transferList?: readonly TransferListItem[]
   ) => Promise<Response>
+  /**
+   * Executes the specified function in the worker constructor with the tasks data iterable input parameter.
+   * @param data - The tasks iterable input data for the specified task function. This can only be an iterable of structured-cloneable data.
+   * @param name - The optional name of the task function to execute. If not specified, the default task function will be executed.
+   * @param transferList - An optional array of transferable objects to transfer ownership of. Ownership of the transferred objects is given to the chosen pool's worker_threads worker and they should not be used in the main thread afterwards.
+   * @returns Promise with an array of task function responses that will be fulfilled when the tasks are completed.
+   */
+  readonly mapExecute: (
+    data: Iterable<Data>,
+    name?: string,
+    transferList?: readonly TransferListItem[]
+  ) => Promise<Response[]>
   /**
    * Starts the minimum number of workers in this pool.
    */

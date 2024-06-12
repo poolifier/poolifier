@@ -1708,6 +1708,33 @@ describe('Abstract pool test suite', () => {
     await pool.destroy()
   })
 
+  it('Verify that mapExecute() is working', async () => {
+    const pool = new DynamicThreadPool(
+      Math.floor(numberOfWorkers / 2),
+      numberOfWorkers,
+      './tests/worker-files/thread/testMultipleTaskFunctionsWorker.mjs'
+    )
+    let results = await pool.mapExecute([{}, {}, {}, {}])
+    expect(results).toStrictEqual([
+      { ok: 1 },
+      { ok: 1 },
+      { ok: 1 },
+      { ok: 1 },
+    ])
+    expect(pool.info.executingTasks).toBe(0)
+    expect(pool.info.executedTasks).toBe(4)
+    results = await pool.mapExecute([{ n: 10 }, { n: 20 }, { n: 30 }, { n: 40 }], 'factorial')
+    expect(results).toStrictEqual([
+      3628800,
+      2432902008176640000,
+      2.6525285981219103e+32,
+      8.159152832478977e+47,
+    ])
+    expect(pool.info.executingTasks).toBe(0)
+    expect(pool.info.executedTasks).toBe(8)
+    await pool.destroy()
+  })
+
   it('Verify that task function objects worker is working', async () => {
     const pool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
