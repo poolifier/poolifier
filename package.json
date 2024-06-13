@@ -115,7 +115,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^9.4.0",
     "eslint-define-config": "^2.1.0",
-    "eslint-plugin-jsdoc": "^48.2.9",
+    "eslint-plugin-jsdoc": "^48.2.11",
     "eslint-plugin-n": "^17.8.1",
     "eslint-plugin-simple-import-sort": "^12.1.0",
     "expect": "^29.7.0",
