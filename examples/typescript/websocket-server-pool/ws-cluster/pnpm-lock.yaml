@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       poolifier:
-        specifier: ^4.0.13
-        version: 4.0.13
+        specifier: ^4.0.14
+        version: 4.0.14
       ws:
         specifier: ^8.17.0
         version: 8.17.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
@@ -331,8 +331,8 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
-  poolifier@4.0.13:
-    resolution: {integrity: sha512-GPITJo3LZvZXGNDWn6eDpOJ+F5+rq4tvyoXFQJfyJ92w0qr4evjoOX9hymwMGmv8TuifFMIBmgCdcTvoxRdMgA==}
+  poolifier@4.0.14:
+    resolution: {integrity: sha512-dlFUzJyGfxZzzf4YaB9krMUETqWr9ac3Ad/dtFHAgYQ5mitoMOKzJ9yhwWoONwFs38ugLtEz5zyytYl2nVnDzQ==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   queue-microtask@1.2.3:
@@ -655,7 +655,7 @@ snapshots:
 
   picomatch@2.3.1: {}
 
-  poolifier@4.0.13: {}
+  poolifier@4.0.14: {}
 
   queue-microtask@1.2.3: {}
 

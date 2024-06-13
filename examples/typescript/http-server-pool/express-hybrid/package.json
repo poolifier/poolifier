@@ -23,7 +23,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.19.2",
-    "poolifier": "^4.0.13"
+    "poolifier": "^4.0.14"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
