@@ -81,8 +81,8 @@ importers:
         specifier: ^7.1.3
         version: 7.1.3(mocha@10.4.0)
       neostandard:
-        specifier: ^0.7.0
-        version: 0.7.0(@typescript-eslint/parser@8.0.0-alpha.30(eslint@9.4.0)(typescript@5.4.5))(eslint@9.4.0)(typescript@5.4.5)
+        specifier: ^0.7.1
+        version: 0.7.1(@typescript-eslint/parser@8.0.0-alpha.30(eslint@9.4.0)(typescript@5.4.5))(eslint@9.4.0)(typescript@5.4.5)
       prettier:
         specifier: ^3.3.2
         version: 3.3.2
@@ -2450,8 +2450,8 @@ packages:
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
-  neostandard@0.7.0:
-    resolution: {integrity: sha512-YQ9jyV6qra2yQCmFLfkvwOaZDFjsKZrS15aXkwqA5otnC23cd2sMdtNQumXWb5KfOoWPcG5KLtYG9NZG+l9bjw==}
+  neostandard@0.7.1:
+    resolution: {integrity: sha512-qZZvRUqPUQfQWLV6u4sUlpmuJSWYip6UCVyDJktvRZhFuyD0M9aspaQfkGphA5a1V1HR1237/L5RZEfA5u7qaw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     hasBin: true
     peerDependencies:
@@ -5837,7 +5837,7 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  neostandard@0.7.0(@typescript-eslint/parser@8.0.0-alpha.30(eslint@9.4.0)(typescript@5.4.5))(eslint@9.4.0)(typescript@5.4.5):
+  neostandard@0.7.1(@typescript-eslint/parser@8.0.0-alpha.30(eslint@9.4.0)(typescript@5.4.5))(eslint@9.4.0)(typescript@5.4.5):
     dependencies:
       '@humanwhocodes/gitignore-to-minimatch': 1.0.2
       '@stylistic/eslint-plugin-js': 2.1.0(eslint@9.4.0)
