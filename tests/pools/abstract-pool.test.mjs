@@ -1714,6 +1714,8 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testMultipleTaskFunctionsWorker.mjs'
     )
+    expect(() => pool.mapExecute()).toThrow(new TypeError('data argument must be a defined iterable'))
+    expect(() => pool.mapExecute(0)).toThrow(new Error('data argument must be an iterable'))
     let results = await pool.mapExecute([{}, {}, {}, {}])
     expect(results).toStrictEqual([
       { ok: 1 },
@@ -1732,6 +1734,15 @@ describe('Abstract pool test suite', () => {
     ])
     expect(pool.info.executingTasks).toBe(0)
     expect(pool.info.executedTasks).toBe(8)
+    results = await pool.mapExecute(new Set([{ n: 10 }, { n: 20 }, { n: 30 }, { n: 40 }]), 'factorial')
+    expect(results).toStrictEqual([
+      3628800,
+      2432902008176640000,
+      2.6525285981219103e+32,
+      8.159152832478977e+47,
+    ])
+    expect(pool.info.executingTasks).toBe(0)
+    expect(pool.info.executedTasks).toBe(12)
     await pool.destroy()
   })
 

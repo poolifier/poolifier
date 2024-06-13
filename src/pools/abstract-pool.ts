@@ -1232,8 +1232,18 @@ export abstract class AbstractPool<
     name?: string,
     transferList?: readonly TransferListItem[]
   ): Promise<Response[]> {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (data == null) {
+      throw new TypeError('data argument must be a defined iterable')
+    }
+    if (typeof data[Symbol.iterator] !== 'function') {
+      throw new TypeError('data argument must be an iterable')
+    }
+    if (!Array.isArray(data)) {
+      data = [...data]
+    }
     return Promise.all(
-      [...data].map(data => this.execute(data, name, transferList))
+      (data as Data[]).map(data => this.execute(data, name, transferList))
     )
   }
 
