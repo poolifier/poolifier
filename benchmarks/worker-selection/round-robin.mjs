@@ -3,6 +3,7 @@ import { bench, group, run } from 'tatami-ng'
 /**
  *
  * @param numberOfWorkers
+ * @returns
  */
 function generateWorkersArray (numberOfWorkers) {
   return [...Array(numberOfWorkers).keys()]
@@ -13,7 +14,7 @@ const workers = generateWorkersArray(60)
 let nextWorkerIndex
 
 /**
- *
+ * @returns
  */
 function roundRobinTernaryOffByOne () {
   nextWorkerIndex =
@@ -22,7 +23,7 @@ function roundRobinTernaryOffByOne () {
 }
 
 /**
- *
+ * @returns
  */
 function roundRobinTernaryWithNegation () {
   nextWorkerIndex =
@@ -33,7 +34,7 @@ function roundRobinTernaryWithNegation () {
 }
 
 /**
- *
+ * @returns
  */
 function roundRobinTernaryWithPreChoosing () {
   const chosenWorker = workers[nextWorkerIndex]
@@ -43,7 +44,7 @@ function roundRobinTernaryWithPreChoosing () {
 }
 
 /**
- *
+ * @returns
  */
 function roundRobinIncrementModulo () {
   const chosenWorker = workers[nextWorkerIndex]

@@ -6,6 +6,7 @@ import { bench, group, run } from 'tatami-ng'
  *
  * @param numberOfWorkers
  * @param maxNumberOfTasksPerWorker
+ * @returns
  */
 function generateRandomTasksMap (
   numberOfWorkers,
@@ -24,6 +25,7 @@ const tasksMap = generateRandomTasksMap(60, 20)
 /**
  *
  * @param tasksMap
+ * @returns
  */
 function loopSelect (tasksMap) {
   let minKey
@@ -42,6 +44,7 @@ function loopSelect (tasksMap) {
 /**
  *
  * @param tasksMap
+ * @returns
  */
 function arraySortSelect (tasksMap) {
   const tasksArray = Array.from(tasksMap)
@@ -86,6 +89,7 @@ function swap (array, index1, index2) {
  * @param rightIndex
  * @param pivotIndex
  * @param compare
+ * @returns
  */
 function partition (
   array,
@@ -115,6 +119,7 @@ function partition (
  * @param rightIndex
  * @param compare
  * @param pivotIndexSelect
+ * @returns
  */
 function selectLoop (
   array,
@@ -146,6 +151,7 @@ function selectLoop (
  * @param rightIndex
  * @param compare
  * @param pivotIndexSelect
+ * @returns
  */
 function selectRecursion (
   array,
@@ -170,6 +176,7 @@ function selectRecursion (
 /**
  *
  * @param tasksMap
+ * @returns
  */
 function quickSelectLoop (tasksMap) {
   const tasksArray = Array.from(tasksMap)
@@ -182,6 +189,7 @@ function quickSelectLoop (tasksMap) {
 /**
  *
  * @param tasksMap
+ * @returns
  */
 function quickSelectLoopRandomPivot (tasksMap) {
   const tasksArray = Array.from(tasksMap)
@@ -201,6 +209,7 @@ function quickSelectLoopRandomPivot (tasksMap) {
 /**
  *
  * @param tasksMap
+ * @returns
  */
 function quickSelectRecursion (tasksMap) {
   const tasksArray = Array.from(tasksMap)
@@ -213,6 +222,7 @@ function quickSelectRecursion (tasksMap) {
 /**
  *
  * @param tasksMap
+ * @returns
  */
 function quickSelectRecursionRandomPivot (tasksMap) {
   const tasksArray = Array.from(tasksMap)

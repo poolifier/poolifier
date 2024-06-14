@@ -17,6 +17,11 @@ export default defineFlatConfig([
   js.configs.recommended,
   ...nodePlugin.configs['flat/mixed-esm-and-cjs'],
   jsdoc.configs['flat/recommended-typescript'],
+  {
+    rules: {
+      'jsdoc/check-tag-names': ['warn', { typed: true, definedTags: ['defaultValue', 'experimental', 'typeParam'] }],
+    },
+  },
   ...tseslint.config(
     ...tseslint.configs.strictTypeChecked,
     ...tseslint.configs.stylisticTypeChecked

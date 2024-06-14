@@ -2,7 +2,7 @@
 const { ThreadWorker } = require('poolifier')
 
 /**
- *
+ * @returns
  */
 function yourFunction () {
   for (let i = 0; i <= 1000; i++) {

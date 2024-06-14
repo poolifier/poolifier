@@ -4,6 +4,7 @@ const { ThreadWorker } = require('poolifier')
 /**
  *
  * @param data
+ * @returns
  */
 function fn0 (data) {
   console.info('Executing fn0')
@@ -13,6 +14,7 @@ function fn0 (data) {
 /**
  *
  * @param data
+ * @returns
  */
 function fn1 (data) {
   console.info('Executing fn1')

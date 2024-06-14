@@ -56,6 +56,7 @@ export class PriorityQueue<T> {
 
   /**
    * The priority queue size.
+   * @returns The priority queue size.
    */
   public get size (): number {
     let node: PriorityQueueNode<T> | undefined = this.tail
@@ -84,6 +85,7 @@ export class PriorityQueue<T> {
 
   /**
    * The number of filled prioritized buckets.
+   * @returns The number of filled prioritized buckets.
    */
   public get buckets (): number {
     return Math.trunc(this.size / this.bucketSize)

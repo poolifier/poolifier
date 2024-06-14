@@ -6,6 +6,7 @@ const { TaskFunctions } = require('../../test-types.cjs')
 /**
  *
  * @param data
+ * @returns
  */
 function test (data) {
   data = data || {}

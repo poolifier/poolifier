@@ -589,6 +589,7 @@ export abstract class AbstractPool<
 
   /**
    * The pool readiness boolean status.
+   * @returns The pool readiness status.
    */
   private get ready (): boolean {
     if (this.empty) {
@@ -607,6 +608,7 @@ export abstract class AbstractPool<
 
   /**
    * The pool emptiness boolean status.
+   * @returns The pool emptiness status.
    */
   protected get empty (): boolean {
     return this.minimumNumberOfWorkers === 0 && this.workerNodes.length === 0
@@ -820,8 +822,7 @@ export abstract class AbstractPool<
 
   /**
    * Whether the pool is full or not.
-   *
-   * The pool filling boolean status.
+   * @returns The pool filling boolean status.
    */
   protected get full (): boolean {
     return (
