@@ -2,6 +2,8 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit"
   },
+  // enable flat config files (eslint.config.*js)
+  "eslint.experimental.useFlatConfig": true,
   "cSpell.words": [
     "Alessandro",
     "Ardizio",
