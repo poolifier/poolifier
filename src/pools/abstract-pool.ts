@@ -1252,6 +1252,9 @@ export abstract class AbstractPool<
    * @param initWorkerNodeUsage - Whether to initialize the worker node usage or not. @defaultValue false
    */
   private startMinimumNumberOfWorkers (initWorkerNodeUsage = false): void {
+    if (this.minimumNumberOfWorkers === 0) {
+      return
+    }
     this.startingMinimumNumberOfWorkers = true
     while (
       this.workerNodes.reduce(
