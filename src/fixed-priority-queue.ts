@@ -76,8 +76,7 @@ export class FixedPriorityQueue<T> {
       for (let i = 0; i < this.size; i++) {
         if (this.nodeArray[index].priority > priority) {
           this.nodeArray.splice(index, 0, { data, priority })
-          this.nodeArray.length !== this.capacity &&
-            (this.nodeArray.length = this.capacity)
+          this.nodeArray.length = this.capacity
           inserted = true
           break
         }
@@ -136,13 +135,11 @@ export class FixedPriorityQueue<T> {
      * @returns `true` if the data was deleted, `false` otherwise.
      */
     public delete (data: T): boolean {
-      if (
-        this.nodeArray.splice(
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          this.nodeArray.findIndex(node => node?.data === data),
-          1
-        ).length > 0
-      ) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      const index = this.nodeArray.findIndex(node => node?.data === data)
+      if (index !== -1) {
+        this.nodeArray.splice(index, 1)
+        this.nodeArray.length = this.capacity
         --this.size
         return true
       }

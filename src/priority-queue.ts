@@ -162,10 +162,21 @@ export class PriorityQueue<T> {
    */
   public delete (data: T): boolean {
     let node: PriorityQueueNode<T> | undefined = this.tail
+    let prev: PriorityQueueNode<T> | undefined
     while (node != null) {
       if (node.delete(data)) {
+        if (node.empty() && node.next != null) {
+          if (node === this.tail) {
+            this.tail = node.next
+          } else if (node === this.head && prev != null) {
+            this.head = prev
+          } else if (prev != null) {
+            prev.next = node.next
+          }
+        }
         return true
       }
+      prev = node
       node = node.next
     }
     return false

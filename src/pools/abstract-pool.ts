@@ -1243,7 +1243,6 @@ export abstract class AbstractPool<
     })
   }
 
-
   /** @inheritDoc */
   public mapExecute (
     data: Iterable<Data>,
