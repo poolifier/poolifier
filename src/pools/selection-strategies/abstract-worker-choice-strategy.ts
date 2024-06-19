@@ -129,7 +129,6 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /**
    * Check worker node keys affinity.
-   *
    * @param workerNodes - Worker node keys affinity
    * @returns Worker node keys affinity
    */

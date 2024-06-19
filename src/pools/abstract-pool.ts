@@ -1081,7 +1081,6 @@ export abstract class AbstractPool<
 
   /**
    * Gets task function worker node keys affinity, if any.
-   *
    * @param name - The task function name.
    * @returns The task function worker node keys affinity if the task function worker node keys affinity is defined, `undefined` otherwise.
    */
