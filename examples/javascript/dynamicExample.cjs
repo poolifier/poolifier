@@ -2,7 +2,7 @@
 const {
   DynamicThreadPool,
   PoolEvents,
-  availableParallelism
+  availableParallelism,
 } = require('poolifier')
 
 const pool = new DynamicThreadPool(
@@ -11,7 +11,7 @@ const pool = new DynamicThreadPool(
   './yourWorker.js',
   {
     onlineHandler: () => console.info('worker is online'),
-    errorHandler: e => console.error(e)
+    errorHandler: e => console.error(e),
   }
 )
 let poolFull = 0

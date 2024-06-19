@@ -9,7 +9,6 @@ export const defaultBucketSize = 2048
 
 /**
  * Priority queue node.
- *
  * @typeParam T - Type of priority queue node data.
  * @internal
  */
@@ -19,7 +18,6 @@ export interface PriorityQueueNode<T> extends FixedPriorityQueue<T> {
 
 /**
  * Priority queue.
- *
  * @typeParam T - Type of priority queue data.
  * @internal
  */
@@ -32,25 +30,33 @@ export class PriorityQueue<T> {
 
   /**
    * Constructs a priority queue.
-   *
    * @param bucketSize - Prioritized bucket size. @defaultValue defaultBucketSize
+   * @param enablePriority - Whether to enable priority. @defaultValue false
    * @returns PriorityQueue.
    */
-  public constructor (bucketSize: number = defaultBucketSize) {
+  public constructor (
+    bucketSize: number = defaultBucketSize,
+    enablePriority = false
+  ) {
     if (!Number.isSafeInteger(bucketSize)) {
       throw new TypeError(
-        `Invalid bucket size: '${bucketSize}' is not an integer`
+        `Invalid bucket size: '${bucketSize.toString()}' is not an integer`
       )
     }
     if (bucketSize < 0) {
-      throw new RangeError(`Invalid bucket size: ${bucketSize} < 0`)
+      throw new RangeError(`Invalid bucket size: ${bucketSize.toString()} < 0`)
     }
     this.bucketSize = bucketSize
-    this.clear()
+    this.head = this.tail = new FixedPriorityQueue(
+      this.bucketSize,
+      enablePriority
+    )
+    this.maxSize = 0
   }
 
   /**
    * The priority queue size.
+   * @returns The priority queue size.
    */
   public get size (): number {
     let node: PriorityQueueNode<T> | undefined = this.tail
@@ -62,8 +68,24 @@ export class PriorityQueue<T> {
     return size
   }
 
+  public get enablePriority (): boolean {
+    return this.head.enablePriority
+  }
+
+  public set enablePriority (enablePriority: boolean) {
+    if (this.head.enablePriority === enablePriority) {
+      return
+    }
+    let node: PriorityQueueNode<T> | undefined = this.tail
+    while (node != null) {
+      node.enablePriority = enablePriority
+      node = node.next
+    }
+  }
+
   /**
    * The number of filled prioritized buckets.
+   * @returns The number of filled prioritized buckets.
    */
   public get buckets (): number {
     return Math.trunc(this.size / this.bucketSize)
@@ -71,14 +93,16 @@ export class PriorityQueue<T> {
 
   /**
    * Enqueue data into the priority queue.
-   *
    * @param data - Data to enqueue.
    * @param priority - Priority of the data. Lower values have higher priority.
    * @returns The new size of the priority queue.
    */
   public enqueue (data: T, priority?: number): number {
     if (this.head.full()) {
-      this.head = this.head.next = new FixedPriorityQueue(this.bucketSize)
+      this.head = this.head.next = new FixedPriorityQueue(
+        this.bucketSize,
+        this.enablePriority
+      )
     }
     this.head.enqueue(data, priority)
     const size = this.size
@@ -90,7 +114,6 @@ export class PriorityQueue<T> {
 
   /**
    * Dequeue data from the priority queue.
-   *
    * @param bucket - The prioritized bucket to dequeue from.
    * @returns The dequeued data or `undefined` if the priority queue is empty.
    */
@@ -136,13 +159,15 @@ export class PriorityQueue<T> {
    * Clears the priority queue.
    */
   public clear (): void {
-    this.head = this.tail = new FixedPriorityQueue(this.bucketSize)
+    this.head = this.tail = new FixedPriorityQueue(
+      this.bucketSize,
+      this.enablePriority
+    )
     this.maxSize = 0
   }
 
   /**
    * Returns an iterator for the priority queue.
-   *
    * @returns An iterator for the priority queue.
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
    */
@@ -155,7 +180,7 @@ export class PriorityQueue<T> {
         if (value == null) {
           return {
             value: undefined,
-            done: true
+            done: true,
           }
         }
         ++index
@@ -165,9 +190,9 @@ export class PriorityQueue<T> {
         }
         return {
           value,
-          done: false
+          done: false,
         }
-      }
+      },
     }
   }
 }

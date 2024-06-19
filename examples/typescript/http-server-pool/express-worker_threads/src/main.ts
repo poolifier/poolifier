@@ -43,7 +43,7 @@ expressApp.get('/api/factorial/:number', (req: Request, res: Response) => {
 try {
   expressApp.listen(port, () => {
     console.info(
-      `⚡️[express server]: Express server is started at http://localhost:${port}/`
+      `⚡️[express server]: Express server is started at http://localhost:${port.toString()}/`
     )
   })
 } catch (err) {

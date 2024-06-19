@@ -16,17 +16,19 @@ describe('Priority queue test suite', () => {
     expect(priorityQueue.buckets).toBe(0)
     expect(priorityQueue.size).toBe(0)
     expect(priorityQueue.maxSize).toBe(0)
+    expect(priorityQueue.enablePriority).toBe(false)
     expect(priorityQueue.head).toBeInstanceOf(FixedPriorityQueue)
     expect(priorityQueue.head.next).toBe(undefined)
     expect(priorityQueue.head.capacity).toBe(defaultBucketSize)
     expect(priorityQueue.tail).toBeInstanceOf(FixedPriorityQueue)
     expect(priorityQueue.tail).toStrictEqual(priorityQueue.head)
     const bucketSize = 2
-    priorityQueue = new PriorityQueue(bucketSize)
+    priorityQueue = new PriorityQueue(bucketSize, true)
     expect(priorityQueue.bucketSize).toBe(bucketSize)
     expect(priorityQueue.buckets).toBe(0)
     expect(priorityQueue.size).toBe(0)
     expect(priorityQueue.maxSize).toBe(0)
+    expect(priorityQueue.enablePriority).toBe(true)
     expect(priorityQueue.head).toBeInstanceOf(FixedPriorityQueue)
     expect(priorityQueue.head.next).toBe(undefined)
     expect(priorityQueue.head.capacity).toBe(bucketSize)
@@ -35,14 +37,14 @@ describe('Priority queue test suite', () => {
   })
 
   it('Verify default bucket size enqueue() behavior', () => {
-    const priorityQueue = new PriorityQueue()
+    const priorityQueue = new PriorityQueue(defaultBucketSize, true)
     let rtSize = priorityQueue.enqueue(1)
     expect(priorityQueue.buckets).toBe(0)
     expect(priorityQueue.size).toBe(1)
     expect(priorityQueue.maxSize).toBe(1)
     expect(rtSize).toBe(priorityQueue.size)
     expect(priorityQueue.head.nodeArray).toMatchObject([
-      { data: 1, priority: 0 }
+      { data: 1, priority: 0 },
     ])
     expect(priorityQueue.head.next).toBe(undefined)
     expect(priorityQueue.tail).toStrictEqual(priorityQueue.head)
@@ -53,7 +55,7 @@ describe('Priority queue test suite', () => {
     expect(rtSize).toBe(priorityQueue.size)
     expect(priorityQueue.head.nodeArray).toMatchObject([
       { data: 1, priority: 0 },
-      { data: 2, priority: 0 }
+      { data: 2, priority: 0 },
     ])
     expect(priorityQueue.head.next).toBe(undefined)
     expect(priorityQueue.tail).toStrictEqual(priorityQueue.head)
@@ -65,7 +67,7 @@ describe('Priority queue test suite', () => {
     expect(priorityQueue.head.nodeArray).toMatchObject([
       { data: 1, priority: 0 },
       { data: 2, priority: 0 },
-      { data: 3, priority: 0 }
+      { data: 3, priority: 0 },
     ])
     expect(priorityQueue.head.next).toBe(undefined)
     expect(priorityQueue.tail).toStrictEqual(priorityQueue.head)
@@ -78,7 +80,7 @@ describe('Priority queue test suite', () => {
       { data: 3, priority: -1 },
       { data: 1, priority: 0 },
       { data: 2, priority: 0 },
-      { data: 3, priority: 0 }
+      { data: 3, priority: 0 },
     ])
     expect(priorityQueue.head.next).toBe(undefined)
     expect(priorityQueue.tail).toStrictEqual(priorityQueue.head)
@@ -92,21 +94,21 @@ describe('Priority queue test suite', () => {
       { data: 1, priority: 0 },
       { data: 2, priority: 0 },
       { data: 3, priority: 0 },
-      { data: 1, priority: 1 }
+      { data: 1, priority: 1 },
     ])
     expect(priorityQueue.head.next).toBe(undefined)
     expect(priorityQueue.tail).toStrictEqual(priorityQueue.head)
   })
 
   it('Verify bucketSize=2 enqueue() behavior', () => {
-    const priorityQueue = new PriorityQueue(2)
+    const priorityQueue = new PriorityQueue(2, true)
     let rtSize = priorityQueue.enqueue(1)
     expect(priorityQueue.buckets).toBe(0)
     expect(priorityQueue.size).toBe(1)
     expect(priorityQueue.maxSize).toBe(1)
     expect(rtSize).toBe(priorityQueue.size)
     expect(priorityQueue.head.nodeArray).toMatchObject([
-      { data: 1, priority: 0 }
+      { data: 1, priority: 0 },
     ])
     expect(priorityQueue.head.next).toBe(undefined)
     expect(priorityQueue.tail).toStrictEqual(priorityQueue.head)
@@ -117,7 +119,7 @@ describe('Priority queue test suite', () => {
     expect(rtSize).toBe(priorityQueue.size)
     expect(priorityQueue.head.nodeArray).toMatchObject([
       { data: 1, priority: 0 },
-      { data: 2, priority: 0 }
+      { data: 2, priority: 0 },
     ])
     expect(priorityQueue.head.next).toBe(undefined)
     expect(priorityQueue.tail).toStrictEqual(priorityQueue.head)
@@ -127,12 +129,12 @@ describe('Priority queue test suite', () => {
     expect(priorityQueue.maxSize).toBe(3)
     expect(rtSize).toBe(priorityQueue.size)
     expect(priorityQueue.head.nodeArray).toMatchObject([
-      { data: 3, priority: 0 }
+      { data: 3, priority: 0 },
     ])
     expect(priorityQueue.head.next).toBe(undefined)
     expect(priorityQueue.tail.nodeArray).toMatchObject([
       { data: 1, priority: 0 },
-      { data: 2, priority: 0 }
+      { data: 2, priority: 0 },
     ])
     expect(priorityQueue.tail.next).toStrictEqual(priorityQueue.head)
     rtSize = priorityQueue.enqueue(3, -1)
@@ -142,12 +144,12 @@ describe('Priority queue test suite', () => {
     expect(rtSize).toBe(priorityQueue.size)
     expect(priorityQueue.head.nodeArray).toMatchObject([
       { data: 3, priority: -1 },
-      { data: 3, priority: 0 }
+      { data: 3, priority: 0 },
     ])
     expect(priorityQueue.head.next).toBe(undefined)
     expect(priorityQueue.tail.nodeArray).toMatchObject([
       { data: 1, priority: 0 },
-      { data: 2, priority: 0 }
+      { data: 2, priority: 0 },
     ])
     expect(priorityQueue.tail.next).toStrictEqual(priorityQueue.head)
     rtSize = priorityQueue.enqueue(1, 1)
@@ -156,17 +158,17 @@ describe('Priority queue test suite', () => {
     expect(priorityQueue.maxSize).toBe(5)
     expect(rtSize).toBe(priorityQueue.size)
     expect(priorityQueue.head.nodeArray).toMatchObject([
-      { data: 1, priority: 1 }
+      { data: 1, priority: 1 },
     ])
     expect(priorityQueue.head.next).toBe(undefined)
     expect(priorityQueue.tail.nodeArray).toMatchObject([
       { data: 1, priority: 0 },
-      { data: 2, priority: 0 }
+      { data: 2, priority: 0 },
     ])
     expect(priorityQueue.tail.next).not.toStrictEqual(priorityQueue.head)
     expect(priorityQueue.tail.next.nodeArray).toMatchObject([
       { data: 3, priority: -1 },
-      { data: 3, priority: 0 }
+      { data: 3, priority: 0 },
     ])
     rtSize = priorityQueue.enqueue(3, -2)
     expect(priorityQueue.buckets).toBe(3)
@@ -175,22 +177,22 @@ describe('Priority queue test suite', () => {
     expect(rtSize).toBe(priorityQueue.size)
     expect(priorityQueue.head.nodeArray).toMatchObject([
       { data: 3, priority: -2 },
-      { data: 1, priority: 1 }
+      { data: 1, priority: 1 },
     ])
     expect(priorityQueue.head.next).toBe(undefined)
     expect(priorityQueue.tail.nodeArray).toMatchObject([
       { data: 1, priority: 0 },
-      { data: 2, priority: 0 }
+      { data: 2, priority: 0 },
     ])
     expect(priorityQueue.tail.next).not.toStrictEqual(priorityQueue.head)
     expect(priorityQueue.tail.next.nodeArray).toMatchObject([
       { data: 3, priority: -1 },
-      { data: 3, priority: 0 }
+      { data: 3, priority: 0 },
     ])
   })
 
   it('Verify default bucket size dequeue() behavior', () => {
-    const priorityQueue = new PriorityQueue()
+    const priorityQueue = new PriorityQueue(defaultBucketSize, true)
     priorityQueue.enqueue(1)
     priorityQueue.enqueue(2, -1)
     priorityQueue.enqueue(3)
@@ -223,7 +225,7 @@ describe('Priority queue test suite', () => {
   })
 
   it('Verify bucketSize=2 dequeue() behavior', () => {
-    const priorityQueue = new PriorityQueue(2)
+    const priorityQueue = new PriorityQueue(2, true)
     priorityQueue.enqueue(1)
     priorityQueue.enqueue(2)
     priorityQueue.enqueue(3)
@@ -277,6 +279,30 @@ describe('Priority queue test suite', () => {
     expect(rtItem).toBe(2)
     expect(priorityQueue.tail.empty()).toBe(true)
     expect(priorityQueue.tail.next).toBe(undefined)
+  })
+
+  it('Verify enablePriority setter behavior', () => {
+    const priorityQueue = new PriorityQueue(2)
+    expect(priorityQueue.enablePriority).toBe(false)
+    priorityQueue.enqueue(1)
+    priorityQueue.enqueue(2)
+    priorityQueue.enqueue(3)
+    priorityQueue.enqueue(4)
+    let buckets = 0
+    let node = priorityQueue.tail
+    while (node != null) {
+      expect(node.enablePriority).toBe(false)
+      node = node.next
+      ++buckets
+    }
+    expect(buckets).toBe(2)
+    priorityQueue.enablePriority = true
+    expect(priorityQueue.enablePriority).toBe(true)
+    node = priorityQueue.tail
+    while (node != null) {
+      expect(node.enablePriority).toBe(true)
+      node = node.next
+    }
   })
 
   it('Verify iterator behavior', () => {

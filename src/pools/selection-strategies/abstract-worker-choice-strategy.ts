@@ -5,16 +5,15 @@ import type {
   IWorkerChoiceStrategy,
   StrategyPolicy,
   TaskStatisticsRequirements,
-  WorkerChoiceStrategyOptions
+  WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
 import {
   buildWorkerChoiceStrategyOptions,
-  toggleMedianMeasurementStatisticsRequirements
+  toggleMedianMeasurementStatisticsRequirements,
 } from './selection-strategies-utils.js'
 
 /**
  * Worker choice strategy abstract base class.
- *
  * @typeParam Worker - Type of worker which manages the strategy.
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
@@ -37,19 +36,18 @@ export abstract class AbstractWorkerChoiceStrategy<
   /** @inheritDoc */
   public readonly strategyPolicy: StrategyPolicy = {
     dynamicWorkerUsage: false,
-    dynamicWorkerReady: true
+    dynamicWorkerReady: true,
   }
 
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
     runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
     waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS
+    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   }
 
   /**
    * Constructs a worker choice strategy bound to the pool.
-   *
    * @param pool - The pool instance.
    * @param opts - The worker choice strategy options.
    */
@@ -109,7 +107,6 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /**
    * Whether the worker node is ready or not.
-   *
    * @param workerNodeKey - The worker node key.
    * @returns Whether the worker node is ready or not.
    */
@@ -168,7 +165,6 @@ export abstract class AbstractWorkerChoiceStrategy<
    * Gets the worker node task runtime.
    * If the task statistics require the average runtime, the average runtime is returned.
    * If the task statistics require the median runtime, the median runtime is returned.
-   *
    * @param workerNodeKey - The worker node key.
    * @returns The worker node task runtime.
    */
@@ -182,7 +178,6 @@ export abstract class AbstractWorkerChoiceStrategy<
    * Gets the worker node task wait time.
    * If the task statistics require the average wait time, the average wait time is returned.
    * If the task statistics require the median wait time, the median wait time is returned.
-   *
    * @param workerNodeKey - The worker node key.
    * @returns The worker node task wait time.
    */
@@ -196,7 +191,6 @@ export abstract class AbstractWorkerChoiceStrategy<
    * Gets the worker node task ELU.
    * If the task statistics require the average ELU, the average ELU is returned.
    * If the task statistics require the median ELU, the median ELU is returned.
-   *
    * @param workerNodeKey - The worker node key.
    * @returns The worker node task ELU.
    */
@@ -208,7 +202,6 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /**
    * Sets safely the previous worker node key.
-   *
    * @param workerNodeKey - The worker node key.
    */
   protected setPreviousWorkerNodeKey (workerNodeKey: number | undefined): void {

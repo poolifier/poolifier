@@ -3,7 +3,7 @@ import { expect } from 'expect'
 import { FixedClusterPool, FixedThreadPool } from '../../../lib/index.cjs'
 import {
   buildWorkerChoiceStrategyOptions,
-  getWorkerChoiceStrategiesRetries
+  getWorkerChoiceStrategiesRetries,
 } from '../../../lib/pools/selection-strategies/selection-strategies-utils.cjs'
 
 describe('Selection strategies utils test suite', () => {
@@ -19,8 +19,8 @@ describe('Selection strategies utils test suite', () => {
       elu: { median: false },
       weights: expect.objectContaining({
         0: expect.any(Number),
-        [pool.info.maxSize - 1]: expect.any(Number)
-      })
+        [pool.info.maxSize - 1]: expect.any(Number),
+      }),
     })
     const workerChoiceStrategyOptions = {
       runTime: { median: true },
@@ -28,8 +28,8 @@ describe('Selection strategies utils test suite', () => {
       elu: { median: true },
       weights: {
         0: 100,
-        1: 100
-      }
+        1: 100,
+      },
     }
     expect(
       buildWorkerChoiceStrategyOptions(pool, workerChoiceStrategyOptions)
@@ -50,8 +50,8 @@ describe('Selection strategies utils test suite', () => {
       elu: { median: true },
       weights: {
         0: 100,
-        1: 100
-      }
+        1: 100,
+      },
     }
     expect(
       getWorkerChoiceStrategiesRetries(pool, workerChoiceStrategyOptions)

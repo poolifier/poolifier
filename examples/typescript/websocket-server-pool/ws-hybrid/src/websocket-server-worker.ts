@@ -1,7 +1,7 @@
 import {
   availableParallelism,
   ClusterWorker,
-  DynamicThreadPool
+  DynamicThreadPool,
 } from 'poolifier'
 import { type RawData, WebSocketServer } from 'ws'
 
@@ -12,7 +12,7 @@ import {
   type MessagePayload,
   MessageType,
   type ThreadWorkerData,
-  type ThreadWorkerResponse
+  type ThreadWorkerResponse,
 } from './types.js'
 
 const emptyFunction = (): void => {
@@ -20,24 +20,25 @@ const emptyFunction = (): void => {
 }
 
 class WebSocketServerWorker extends ClusterWorker<
-ClusterWorkerData,
-ClusterWorkerResponse
+  ClusterWorkerData,
+  ClusterWorkerResponse
 > {
   private static wss: WebSocketServer
   private static requestHandlerPool: DynamicThreadPool<
-  ThreadWorkerData<DataPayload>,
-  ThreadWorkerResponse<DataPayload>
+    ThreadWorkerData<DataPayload>,
+    ThreadWorkerResponse<DataPayload>
   >
 
   private static readonly startWebSocketServer = (
     workerData?: ClusterWorkerData
   ): ClusterWorkerResponse => {
     const { port, workerFile, minWorkers, maxWorkers, ...poolOptions } =
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       workerData!
 
     WebSocketServerWorker.requestHandlerPool = new DynamicThreadPool<
-    ThreadWorkerData<DataPayload>,
-    ThreadWorkerResponse<DataPayload>
+      ThreadWorkerData<DataPayload>,
+      ThreadWorkerResponse<DataPayload>
     >(
       minWorkers ?? 1,
       maxWorkers ?? availableParallelism(),
@@ -47,7 +48,7 @@ ClusterWorkerResponse
 
     WebSocketServerWorker.wss = new WebSocketServer({ port }, () => {
       console.info(
-        `⚡️[ws server]: WebSocket server is started in cluster worker at ws://localhost:${port}/`
+        `⚡️[ws server]: WebSocket server is started in cluster worker at ws://localhost:${port.toString()}/`
       )
     })
 
@@ -66,7 +67,7 @@ ClusterWorkerResponse
                 ws.send(
                   JSON.stringify({
                     type: MessageType.echo,
-                    data: response.data
+                    data: response.data,
                   })
                 )
                 return undefined
@@ -81,9 +82,10 @@ ClusterWorkerResponse
                   JSON.stringify(
                     {
                       type: MessageType.factorial,
-                      data: response.data
+                      data: response.data,
                     },
-                    (_, v) => (typeof v === 'bigint' ? v.toString() : v)
+                    (_, v: unknown) =>
+                      typeof v === 'bigint' ? v.toString() : v
                   )
                 )
                 return undefined
@@ -95,7 +97,7 @@ ClusterWorkerResponse
     })
     return {
       status: true,
-      port: WebSocketServerWorker.wss.options.port
+      port: WebSocketServerWorker.wss.options.port,
     }
   }
 
@@ -104,7 +106,7 @@ ClusterWorkerResponse
       killHandler: async () => {
         await WebSocketServerWorker.requestHandlerPool.destroy()
         WebSocketServerWorker.wss.close()
-      }
+      },
     })
   }
 }

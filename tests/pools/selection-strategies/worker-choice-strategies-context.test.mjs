@@ -4,7 +4,7 @@ import { createStubInstance, restore, stub } from 'sinon'
 import {
   DynamicThreadPool,
   FixedThreadPool,
-  WorkerChoiceStrategies
+  WorkerChoiceStrategies,
 } from '../../../lib/index.cjs'
 import { FairShareWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy.cjs'
 import { InterleavedWeightedRoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/interleaved-weighted-round-robin-worker-choice-strategy.cjs'
@@ -87,7 +87,7 @@ describe('Worker choice strategies context test suite', () => {
     const workerChoiceStrategyUndefinedStub = createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
-        choose: stub().returns(undefined)
+        choose: stub().returns(undefined),
       }
     )
     workerChoiceStrategiesContext.workerChoiceStrategies.set(
@@ -102,7 +102,7 @@ describe('Worker choice strategies context test suite', () => {
     const workerChoiceStrategyNullStub = createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
-        choose: stub().returns(null)
+        choose: stub().returns(null),
       }
     )
     workerChoiceStrategiesContext.workerChoiceStrategies.set(
@@ -134,7 +134,7 @@ describe('Worker choice strategies context test suite', () => {
           .returns(undefined)
           .onCall(4)
           .returns(undefined)
-          .returns(1)
+          .returns(1),
       }
     )
     expect(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
@@ -160,7 +160,7 @@ describe('Worker choice strategies context test suite', () => {
     const workerChoiceStrategyStub = createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
-        choose: stub().returns(0)
+        choose: stub().returns(0),
       }
     )
     expect(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
@@ -186,7 +186,7 @@ describe('Worker choice strategies context test suite', () => {
     const workerChoiceStrategyStub = createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
-        choose: stub().returns(0)
+        choose: stub().returns(0),
       }
     )
     expect(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
@@ -418,7 +418,7 @@ describe('Worker choice strategies context test suite', () => {
       [wwrWorkerChoiceStrategy],
       {
         runTime: { median: true },
-        waitTime: { median: true }
+        waitTime: { median: true },
       }
     )
     expect(
@@ -442,7 +442,7 @@ describe('Worker choice strategies context test suite', () => {
       [wwrWorkerChoiceStrategy],
       {
         runTime: { median: true },
-        waitTime: { median: true }
+        waitTime: { median: true },
       }
     )
     expect(
@@ -467,7 +467,7 @@ describe('Worker choice strategies context test suite', () => {
       [fsWorkerChoiceStrategy],
       {
         runTime: { median: true },
-        waitTime: { median: true }
+        waitTime: { median: true },
       }
     )
     expect(
@@ -491,7 +491,7 @@ describe('Worker choice strategies context test suite', () => {
       [fsWorkerChoiceStrategy],
       {
         runTime: { median: true },
-        waitTime: { median: true }
+        waitTime: { median: true },
       }
     )
     expect(

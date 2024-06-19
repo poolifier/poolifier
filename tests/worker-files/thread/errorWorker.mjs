@@ -9,5 +9,5 @@ function error () {
 
 export default new ThreadWorker(error, {
   killBehavior: KillBehaviors.HARD,
-  maxInactiveTime: 500
+  maxInactiveTime: 500,
 })

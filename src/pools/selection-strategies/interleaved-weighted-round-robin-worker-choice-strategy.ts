@@ -5,12 +5,11 @@ import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.
 import type {
   IWorkerChoiceStrategy,
   TaskStatisticsRequirements,
-  WorkerChoiceStrategyOptions
+  WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
 
 /**
  * Selects the next worker with an interleaved weighted round robin scheduling algorithm.
- *
  * @typeParam Worker - Type of worker which manages the strategy.
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
@@ -27,14 +26,14 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
     runTime: {
       aggregate: true,
       average: true,
-      median: false
+      median: false,
     },
     waitTime: {
       aggregate: true,
       average: true,
-      median: false
+      median: false,
     },
-    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS
+    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   }
 
   /**
@@ -172,7 +171,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
         Object.values(this.opts!.weights!)
           .slice()
           .sort((a, b) => a - b)
-      )
+      ),
     ]
   }
 }

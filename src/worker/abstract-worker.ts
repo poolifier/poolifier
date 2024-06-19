@@ -7,14 +7,14 @@ import type {
   Task,
   TaskFunctionProperties,
   TaskPerformance,
-  WorkerStatistics
+  WorkerStatistics,
 } from '../utility-types.js'
 import {
   buildTaskFunctionProperties,
   DEFAULT_TASK_NAME,
   EMPTY_FUNCTION,
   isAsyncFunction,
-  isPlainObject
+  isPlainObject,
 } from '../utils.js'
 import type {
   TaskAsyncFunction,
@@ -22,12 +22,12 @@ import type {
   TaskFunctionObject,
   TaskFunctionOperationResult,
   TaskFunctions,
-  TaskSyncFunction
+  TaskSyncFunction,
 } from './task-functions.js'
 import {
   checkTaskFunctionName,
   checkValidTaskFunctionObjectEntry,
-  checkValidWorkerOptions
+  checkValidWorkerOptions,
 } from './utils.js'
 import { KillBehaviors, type WorkerOptions } from './worker-options.js'
 
@@ -45,12 +45,11 @@ const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
   /**
    * The function to call when the worker is killed.
    */
-  killHandler: EMPTY_FUNCTION
+  killHandler: EMPTY_FUNCTION,
 }
 
 /**
  * Base class that implements some shared logic for all poolifier workers.
- *
  * @typeParam MainWorker - Type of main worker.
  * @typeParam Data - Type of data this worker receives from pool's execution. This can only be structured-cloneable data.
  * @typeParam Response - Type of response the worker sends back to the main worker. This can only be structured-cloneable data.
@@ -83,7 +82,6 @@ export abstract class AbstractWorker<
 
   /**
    * Constructs a new poolifier worker.
-   *
    * @param isMain - Whether this is the main worker or not.
    * @param mainWorker - Reference to main worker.
    * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked. The first function is the default function.
@@ -113,14 +111,13 @@ export abstract class AbstractWorker<
 
   /**
    * Checks if the `taskFunctions` parameter is passed to the constructor and valid.
-   *
    * @param taskFunctions - The task function(s) parameter that should be checked.
    */
   private checkTaskFunctions (
     taskFunctions:
-    | TaskFunction<Data, Response>
-    | TaskFunctions<Data, Response>
-    | undefined
+      | TaskFunction<Data, Response>
+      | TaskFunctions<Data, Response>
+      | undefined
   ): void {
     if (taskFunctions == null) {
       throw new Error('taskFunctions parameter is mandatory')
@@ -141,8 +138,8 @@ export abstract class AbstractWorker<
       for (let [name, fnObj] of Object.entries(taskFunctions)) {
         if (typeof fnObj === 'function') {
           fnObj = { taskFunction: fnObj } satisfies TaskFunctionObject<
-          Data,
-          Response
+            Data,
+            Response
           >
         }
         checkValidTaskFunctionObjectEntry<Data, Response>(name, fnObj)
@@ -165,7 +162,6 @@ export abstract class AbstractWorker<
 
   /**
    * Checks if the worker has a task function with the given name.
-   *
    * @param name - The name of the task function to check.
    * @returns Whether the worker has a task function with the given name or not.
    */
@@ -181,7 +177,6 @@ export abstract class AbstractWorker<
   /**
    * Adds a task function to the worker.
    * If a task function with the same name already exists, it is replaced.
-   *
    * @param name - The name of the task function to add.
    * @param fn - The task function to add.
    * @returns Whether the task function was added or not.
@@ -218,7 +213,6 @@ export abstract class AbstractWorker<
 
   /**
    * Removes a task function from the worker.
-   *
    * @param name - The name of the task function to remove.
    * @returns Whether the task function existed and was removed or not.
    */
@@ -248,7 +242,6 @@ export abstract class AbstractWorker<
 
   /**
    * Lists the properties of the worker's task functions.
-   *
    * @returns The properties of the worker's task functions.
    */
   public listTaskFunctionsProperties (): TaskFunctionProperties[] {
@@ -278,13 +271,12 @@ export abstract class AbstractWorker<
         defaultTaskFunctionName,
         this.taskFunctions.get(defaultTaskFunctionName)
       ),
-      ...taskFunctionsProperties
+      ...taskFunctionsProperties,
     ]
   }
 
   /**
    * Sets the default task function to use in the worker.
-   *
    * @param name - The name of the task function to use as default task function.
    * @returns Whether the default task function was set or not.
    */
@@ -312,14 +304,12 @@ export abstract class AbstractWorker<
 
   /**
    * Handles the ready message sent by the main worker.
-   *
    * @param message - The ready message.
    */
   protected abstract handleReadyMessage (message: MessageValue<Data>): void
 
   /**
    * Worker message listener.
-   *
    * @param message - The received message.
    */
   protected messageListener (message: MessageValue<Data>): void {
@@ -330,7 +320,7 @@ export abstract class AbstractWorker<
       taskFunctionOperation,
       taskId,
       data,
-      kill
+      kill,
     } = message
     if (statistics != null) {
       // Statistics message received
@@ -366,13 +356,14 @@ export abstract class AbstractWorker<
         response = this.addTaskFunction(taskFunctionProperties.name, {
           // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
           taskFunction: new Function(
-            `return ${taskFunction}`
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            `return ${taskFunction!}`
           )() as TaskFunction<Data, Response>,
           ...(taskFunctionProperties.priority != null && {
-            priority: taskFunctionProperties.priority
+            priority: taskFunctionProperties.priority,
           }),
           ...(taskFunctionProperties.strategy != null && {
-            strategy: taskFunctionProperties.strategy
+            strategy: taskFunctionProperties.strategy,
           }),
           ...(taskFunctionProperties.workerNodes != null && {
             workerNodes: taskFunctionProperties.workerNodes
@@ -389,29 +380,29 @@ export abstract class AbstractWorker<
         response = { status: false, error: new Error('Unknown task operation') }
         break
     }
+    const { status, error } = response
     this.sendToMainWorker({
       taskFunctionOperation,
-      taskFunctionOperationStatus: response.status,
+      taskFunctionOperationStatus: status,
       taskFunctionProperties,
-      ...(!response.status &&
-        response.error != null && {
+      ...(!status &&
+        error != null && {
         workerError: {
           name: taskFunctionProperties.name,
-          message: this.handleError(response.error as Error | string)
-        }
-      })
+          message: this.handleError(error as Error | string),
+        },
+      }),
     })
   }
 
   /**
    * Handles a kill message sent by the main worker.
-   *
    * @param message - The kill message.
    */
-  protected handleKillMessage (_message: MessageValue<Data>): void {
+  protected handleKillMessage (message: MessageValue<Data>): void {
     this.stopCheckActive()
     if (isAsyncFunction(this.opts.killHandler)) {
-      (this.opts.killHandler() as Promise<void>)
+      ;(this.opts.killHandler as () => Promise<void>)()
         .then(() => {
           this.sendToMainWorker({ kill: 'success' })
           return undefined
@@ -421,8 +412,7 @@ export abstract class AbstractWorker<
         })
     } else {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-        this.opts.killHandler?.() as void
+        ;(this.opts.killHandler as (() => void) | undefined)?.()
         this.sendToMainWorker({ kill: 'success' })
       } catch {
         this.sendToMainWorker({ kill: 'failure' })
@@ -432,7 +422,6 @@ export abstract class AbstractWorker<
 
   /**
    * Check if the message worker id is set and matches the worker id.
-   *
    * @param message - The message to check.
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the message worker id is not set or does not match the worker id.
    */
@@ -441,7 +430,7 @@ export abstract class AbstractWorker<
       throw new Error('Message worker id is not set')
     } else if (message.workerId !== this.id) {
       throw new Error(
-        `Message worker id ${message.workerId} does not match the worker id ${this.id}`
+        `Message worker id ${message.workerId.toString()} does not match the worker id ${this.id.toString()}`
       )
     }
   }
@@ -481,7 +470,6 @@ export abstract class AbstractWorker<
 
   /**
    * Returns the main worker.
-   *
    * @returns Reference to the main worker.
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If the main worker is not set.
    */
@@ -494,7 +482,6 @@ export abstract class AbstractWorker<
 
   /**
    * Sends a message to main worker.
-   *
    * @param message - The response message.
    */
   protected abstract sendToMainWorker (
@@ -506,13 +493,12 @@ export abstract class AbstractWorker<
    */
   protected sendTaskFunctionsPropertiesToMainWorker (): void {
     this.sendToMainWorker({
-      taskFunctionsProperties: this.listTaskFunctionsProperties()
+      taskFunctionsProperties: this.listTaskFunctionsProperties(),
     })
   }
 
   /**
    * Handles an error and convert it to a string so it can be sent back to the main worker.
-   *
    * @param error - The error raised by the worker.
    * @returns The error message.
    */
@@ -522,7 +508,6 @@ export abstract class AbstractWorker<
 
   /**
    * Runs the given task.
-   *
    * @param task - The task to execute.
    */
   protected readonly run = (task: Task<Data>): void => {
@@ -533,10 +518,11 @@ export abstract class AbstractWorker<
         workerError: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           name: name!,
-          message: `Task function '${name}' not found`,
-          data
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          message: `Task function '${name!}' not found`,
+          data,
         },
-        taskId
+        taskId,
       })
       return
     }
@@ -550,7 +536,6 @@ export abstract class AbstractWorker<
 
   /**
    * Runs the given task function synchronously.
-   *
    * @param fn - Task function that will be executed.
    * @param task - Input data for the task function.
    */
@@ -566,7 +551,7 @@ export abstract class AbstractWorker<
       this.sendToMainWorker({
         data: res,
         taskPerformance,
-        taskId
+        taskId,
       })
     } catch (error) {
       this.sendToMainWorker({
@@ -574,9 +559,9 @@ export abstract class AbstractWorker<
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           name: name!,
           message: this.handleError(error as Error | string),
-          data
+          data,
         },
-        taskId
+        taskId,
       })
     } finally {
       this.updateLastTaskTimestamp()
@@ -585,7 +570,6 @@ export abstract class AbstractWorker<
 
   /**
    * Runs the given task function asynchronously.
-   *
    * @param fn - Task function that will be executed.
    * @param task - Input data for the task function.
    */
@@ -601,7 +585,7 @@ export abstract class AbstractWorker<
         this.sendToMainWorker({
           data: res,
           taskPerformance,
-          taskId
+          taskId,
         })
         return undefined
       })
@@ -611,9 +595,9 @@ export abstract class AbstractWorker<
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             name: name!,
             message: this.handleError(error as Error | string),
-            data
+            data,
           },
-          taskId
+          taskId,
         })
       })
       .finally(() => {
@@ -630,8 +614,8 @@ export abstract class AbstractWorker<
       name: name ?? DEFAULT_TASK_NAME,
       timestamp: performance.now(),
       ...(this.statistics.elu && {
-        elu: performance.eventLoopUtilization()
-      })
+        elu: performance.eventLoopUtilization(),
+      }),
     }
   }
 
@@ -644,11 +628,11 @@ export abstract class AbstractWorker<
     return {
       ...taskPerformance,
       ...(this.statistics.runTime && {
-        runTime: performance.now() - taskPerformance.timestamp
+        runTime: performance.now() - taskPerformance.timestamp,
       }),
       ...(this.statistics.elu && {
-        elu: performance.eventLoopUtilization(taskPerformance.elu)
-      })
+        elu: performance.eventLoopUtilization(taskPerformance.elu),
+      }),
     }
   }
 

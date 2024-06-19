@@ -11,5 +11,5 @@ async function sleep (data) {
 }
 
 export default new ThreadWorker(sleep, {
-  maxInactiveTime: 500
+  maxInactiveTime: 500,
 })

@@ -13,7 +13,6 @@ import type { WorkerOptions } from './worker-options.js'
  *
  * If you use a `DynamicClusterPool` the extra workers that were created will be terminated,
  * but the minimum number of workers will be guaranteed.
- *
  * @typeParam Data - Type of data this worker receives from pool's execution. This can only be structured-cloneable data.
  * @typeParam Response - Type of response the worker sends back to the main worker. This can only be structured-cloneable data.
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
@@ -25,7 +24,6 @@ export class ClusterWorker<
 > extends AbstractWorker<Worker, Data, Response> {
   /**
    * Constructs a new poolifier cluster worker.
-   *
    * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked.
    * @param opts - Options for the worker.
    */
@@ -43,12 +41,12 @@ export class ClusterWorker<
         this.getMainWorker().on('message', this.messageListener.bind(this))
         this.sendToMainWorker({
           ready: true,
-          taskFunctionsProperties: this.listTaskFunctionsProperties()
+          taskFunctionsProperties: this.listTaskFunctionsProperties(),
         })
       } catch {
         this.sendToMainWorker({
           ready: false,
-          taskFunctionsProperties: this.listTaskFunctionsProperties()
+          taskFunctionsProperties: this.listTaskFunctionsProperties(),
         })
       }
     }
@@ -65,7 +63,7 @@ export class ClusterWorker<
   ): void => {
     this.getMainWorker().send({
       ...message,
-      workerId: this.id
+      workerId: this.id,
     } satisfies MessageValue<Response>)
   }
 }

@@ -11,14 +11,14 @@ const workerFile = join(
 )
 
 export const requestHandlerPool = new DynamicThreadPool<
-WorkerData<BodyPayload>,
-WorkerResponse<BodyPayload>
+  WorkerData<BodyPayload>,
+  WorkerResponse<BodyPayload>
 >(1, availableParallelism(), workerFile, {
   enableTasksQueue: true,
   tasksQueueOptions: {
-    concurrency: 8
+    concurrency: 8,
   },
   errorHandler: (e: Error) => {
     console.error('Thread worker error:', e)
-  }
+  },
 })

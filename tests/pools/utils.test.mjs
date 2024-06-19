@@ -11,7 +11,7 @@ import {
   getDefaultTasksQueueOptions,
   getWorkerId,
   getWorkerType,
-  updateMeasurementStatistics
+  updateMeasurementStatistics,
 } from '../../lib/pools/utils.cjs'
 import { MeasurementHistorySize } from '../../lib/pools/worker.cjs'
 
@@ -20,7 +20,7 @@ describe('Pool utils test suite', () => {
     expect(DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS).toStrictEqual({
       aggregate: false,
       average: false,
-      median: false
+      median: false,
     })
   })
 
@@ -31,13 +31,13 @@ describe('Pool utils test suite', () => {
       size: Math.pow(poolMaxSize, 2),
       taskStealing: true,
       tasksStealingOnBackPressure: false,
-      tasksFinishedTimeout: 2000
+      tasksFinishedTimeout: 2000,
     })
   })
 
   it('Verify updateMeasurementStatistics() behavior', () => {
     const measurementStatistics = {
-      history: new CircularBuffer(MeasurementHistorySize)
+      history: new CircularBuffer(MeasurementHistorySize),
     }
     updateMeasurementStatistics(
       measurementStatistics,
@@ -47,7 +47,7 @@ describe('Pool utils test suite', () => {
     expect(measurementStatistics).toMatchObject({
       aggregate: 0.01,
       maximum: 0.01,
-      minimum: 0.01
+      minimum: 0.01,
     })
     updateMeasurementStatistics(
       measurementStatistics,
@@ -57,7 +57,7 @@ describe('Pool utils test suite', () => {
     expect(measurementStatistics).toMatchObject({
       aggregate: 0.03,
       maximum: 0.02,
-      minimum: 0.01
+      minimum: 0.01,
     })
     updateMeasurementStatistics(
       measurementStatistics,
@@ -68,7 +68,7 @@ describe('Pool utils test suite', () => {
       aggregate: 0.031,
       maximum: 0.02,
       minimum: 0.001,
-      average: 0.0010000000474974513
+      average: 0.0010000000474974513,
     })
     updateMeasurementStatistics(
       measurementStatistics,
@@ -79,7 +79,7 @@ describe('Pool utils test suite', () => {
       aggregate: 0.034,
       maximum: 0.02,
       minimum: 0.001,
-      average: 0.0020000000367872417
+      average: 0.0020000000367872417,
     })
     updateMeasurementStatistics(
       measurementStatistics,
@@ -90,7 +90,7 @@ describe('Pool utils test suite', () => {
       aggregate: 0.04,
       maximum: 0.02,
       minimum: 0.001,
-      median: 0.003000000026077032
+      median: 0.003000000026077032,
     })
     updateMeasurementStatistics(
       measurementStatistics,
@@ -101,7 +101,7 @@ describe('Pool utils test suite', () => {
       aggregate: 0.05,
       maximum: 0.02,
       minimum: 0.001,
-      average: 0.004999999975552782
+      average: 0.004999999975552782,
     })
   })
 

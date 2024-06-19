@@ -5,19 +5,18 @@ import type {
   StrategyPolicy,
   TaskStatisticsRequirements,
   WorkerChoiceStrategy,
-  WorkerChoiceStrategyOptions
+  WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
 import { WorkerChoiceStrategies } from './selection-strategies-types.js'
 import {
   buildWorkerChoiceStrategiesPolicy,
   buildWorkerChoiceStrategiesTaskStatisticsRequirements,
   getWorkerChoiceStrategiesRetries,
-  getWorkerChoiceStrategy
+  getWorkerChoiceStrategy,
 } from './selection-strategies-utils.js'
 
 /**
  * The worker choice strategies context.
- *
  * @typeParam Worker - Type of worker.
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
@@ -41,8 +40,8 @@ export class WorkerChoiceStrategiesContext<
    * The worker choice strategies registered in the context.
    */
   private readonly workerChoiceStrategies: Map<
-  WorkerChoiceStrategy,
-  IWorkerChoiceStrategy
+    WorkerChoiceStrategy,
+    IWorkerChoiceStrategy
   >
 
   /**
@@ -62,7 +61,6 @@ export class WorkerChoiceStrategiesContext<
 
   /**
    * Worker choice strategies context constructor.
-   *
    * @param pool - The pool instance.
    * @param workerChoiceStrategies - The worker choice strategies. @defaultValue [WorkerChoiceStrategies.ROUND_ROBIN]
    * @param opts - The worker choice strategy options.
@@ -70,15 +68,15 @@ export class WorkerChoiceStrategiesContext<
   public constructor (
     private readonly pool: IPool<Worker, Data, Response>,
     workerChoiceStrategies: WorkerChoiceStrategy[] = [
-      WorkerChoiceStrategies.ROUND_ROBIN
+      WorkerChoiceStrategies.ROUND_ROBIN,
     ],
     opts?: WorkerChoiceStrategyOptions
   ) {
     this.execute = this.execute.bind(this)
     this.defaultWorkerChoiceStrategy = workerChoiceStrategies[0]
     this.workerChoiceStrategies = new Map<
-    WorkerChoiceStrategy,
-    IWorkerChoiceStrategy
+      WorkerChoiceStrategy,
+      IWorkerChoiceStrategy
     >()
     for (const workerChoiceStrategy of workerChoiceStrategies) {
       this.addWorkerChoiceStrategy(workerChoiceStrategy, this.pool, opts)
@@ -99,7 +97,6 @@ export class WorkerChoiceStrategiesContext<
 
   /**
    * Gets the active worker choice strategies in the context policy.
-   *
    * @returns The strategies policy.
    */
   public getPolicy (): StrategyPolicy {
@@ -108,7 +105,6 @@ export class WorkerChoiceStrategiesContext<
 
   /**
    * Gets the active worker choice strategies in the context task statistics requirements.
-   *
    * @returns The strategies task statistics requirements.
    */
   public getTaskStatisticsRequirements (): TaskStatisticsRequirements {
@@ -117,7 +113,6 @@ export class WorkerChoiceStrategiesContext<
 
   /**
    * Sets the default worker choice strategy to use in the context.
-   *
    * @param workerChoiceStrategy - The default worker choice strategy to set.
    * @param opts - The worker choice strategy options.
    */
@@ -133,7 +128,7 @@ export class WorkerChoiceStrategiesContext<
 
   /**
    * Updates the worker node key in the active worker choice strategies in the context internals.
-   *
+   * @param workerNodeKey - The worker node key.
    * @returns `true` if the update is successful, `false` otherwise.
    */
   public update (workerNodeKey: number): boolean {
@@ -145,7 +140,6 @@ export class WorkerChoiceStrategiesContext<
 
   /**
    * Executes the given worker choice strategy in the context algorithm.
-   *
    * @param workerChoiceStrategy - The worker choice strategy algorithm to execute. @defaultValue this.defaultWorkerChoiceStrategy
    * @param workerNodes - Worker node keys affinity.
    * @returns The key of the worker node.
@@ -165,7 +159,6 @@ export class WorkerChoiceStrategiesContext<
 
   /**
    * Executes the given worker choice strategy.
-   *
    * @param workerChoiceStrategy - The worker choice strategy.
    * @param workerNodes - Worker node keys affinity.
    * @returns The key of the worker node.
@@ -188,7 +181,7 @@ export class WorkerChoiceStrategiesContext<
     } while (workerNodeKey == null && retriesCount < this.retries)
     if (workerNodeKey == null) {
       throw new Error(
-        `Worker node key chosen is null or undefined after ${retriesCount} retries`
+        `Worker node key chosen is null or undefined after ${retriesCount.toString()} retries`
       )
     }
     return workerNodeKey
@@ -196,7 +189,6 @@ export class WorkerChoiceStrategiesContext<
 
   /**
    * Removes the worker node key from the active worker choice strategies in the context.
-   *
    * @param workerNodeKey - The worker node key.
    * @returns `true` if the removal is successful, `false` otherwise.
    */
@@ -209,7 +201,6 @@ export class WorkerChoiceStrategiesContext<
 
   /**
    * Sets the active worker choice strategies in the context options.
-   *
    * @param opts - The worker choice strategy options.
    */
   public setOptions (opts: WorkerChoiceStrategyOptions | undefined): void {
@@ -220,7 +211,6 @@ export class WorkerChoiceStrategiesContext<
 
   /**
    * Synchronizes the active worker choice strategies in the context with the given worker choice strategies.
-   *
    * @param workerChoiceStrategies - The worker choice strategies to synchronize.
    * @param opts - The worker choice strategy options.
    */
@@ -249,8 +239,8 @@ export class WorkerChoiceStrategiesContext<
 
   /**
    * Adds a worker choice strategy to the context.
-   *
    * @param workerChoiceStrategy - The worker choice strategy to add.
+   * @param pool - The pool instance.
    * @param opts - The worker choice strategy options.
    * @returns The worker choice strategies.
    */
@@ -275,7 +265,6 @@ export class WorkerChoiceStrategiesContext<
 
   /**
    * Removes a worker choice strategy from the context.
-   *
    * @param workerChoiceStrategy - The worker choice strategy to remove.
    * @returns `true` if the worker choice strategy is removed, `false` otherwise.
    */

@@ -5,7 +5,7 @@ import express, { type Express, type Request, type Response } from 'express'
 import {
   availableParallelism,
   ClusterWorker,
-  DynamicThreadPool
+  DynamicThreadPool,
 } from 'poolifier'
 
 import type {
@@ -13,7 +13,7 @@ import type {
   ClusterWorkerResponse,
   DataPayload,
   ThreadWorkerData,
-  ThreadWorkerResponse
+  ThreadWorkerResponse,
 } from './types.js'
 
 const emptyFunction = (): void => {
@@ -21,24 +21,25 @@ const emptyFunction = (): void => {
 }
 
 class ExpressWorker extends ClusterWorker<
-ClusterWorkerData,
-ClusterWorkerResponse
+  ClusterWorkerData,
+  ClusterWorkerResponse
 > {
   private static server: Server
   private static requestHandlerPool: DynamicThreadPool<
-  ThreadWorkerData<DataPayload>,
-  ThreadWorkerResponse<DataPayload>
+    ThreadWorkerData<DataPayload>,
+    ThreadWorkerResponse<DataPayload>
   >
 
   private static readonly startExpress = (
     workerData?: ClusterWorkerData
   ): ClusterWorkerResponse => {
     const { port, workerFile, minWorkers, maxWorkers, ...poolOptions } =
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       workerData!
 
     ExpressWorker.requestHandlerPool = new DynamicThreadPool<
-    ThreadWorkerData<DataPayload>,
-    ThreadWorkerResponse<DataPayload>
+      ThreadWorkerData<DataPayload>,
+      ThreadWorkerResponse<DataPayload>
     >(
       minWorkers ?? 1,
       maxWorkers ?? availableParallelism(),
@@ -74,12 +75,12 @@ ClusterWorkerResponse
     ExpressWorker.server = application.listen(port, () => {
       listenerPort = (ExpressWorker.server.address() as AddressInfo).port
       console.info(
-        `⚡️[express server]: Express server is started in cluster worker at http://localhost:${listenerPort}/`
+        `⚡️[express server]: Express server is started in cluster worker at http://localhost:${listenerPort.toString()}/`
       )
     })
     return {
       status: true,
-      port: listenerPort ?? port
+      port: listenerPort ?? port,
     }
   }
 
@@ -88,7 +89,7 @@ ClusterWorkerResponse
       killHandler: async () => {
         await ExpressWorker.requestHandlerPool.destroy()
         ExpressWorker.server.close()
-      }
+      },
     })
   }
 }

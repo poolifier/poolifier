@@ -7,7 +7,6 @@ import { FixedThreadPool, type ThreadPoolOptions } from './fixed.js'
  *
  * This thread pool creates new threads when the others are busy, up to the maximum number of threads.
  * When the maximum number of threads is reached and workers are busy, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
- *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
@@ -19,7 +18,6 @@ export class DynamicThreadPool<
 > extends FixedThreadPool<Data, Response> {
   /**
    * Constructs a new poolifier dynamic thread pool.
-   *
    * @param min - Minimum number of threads which are always active.
    * @param max - Maximum number of threads that can be created by this pool.
    * @param filePath - Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.

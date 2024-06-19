@@ -43,15 +43,15 @@ export default defineConfig([
               entryFileNames: '[name].cjs',
               chunkFileNames: '[name]-[hash].cjs',
               preserveModules: true,
-              preserveModulesRoot: './src'
+              preserveModulesRoot: './src',
             }
           : {
               file: './lib/index.cjs',
-              plugins: [terser({ maxWorkers })]
+              plugins: [terser({ maxWorkers })],
             }),
         ...(sourcemap && {
-          sourcemap
-        })
+          sourcemap,
+        }),
       },
       {
         format: 'esm',
@@ -61,31 +61,31 @@ export default defineConfig([
               entryFileNames: '[name].mjs',
               chunkFileNames: '[name]-[hash].mjs',
               preserveModules: true,
-              preserveModulesRoot: './src'
+              preserveModulesRoot: './src',
             }
           : {
               file: './lib/index.mjs',
-              plugins: [terser({ maxWorkers })]
+              plugins: [terser({ maxWorkers })],
             }),
         ...(sourcemap && {
-          sourcemap
-        })
-      }
+          sourcemap,
+        }),
+      },
     ],
     external: [/^node:*/],
     plugins: [
       typescript({
         tsconfig: './tsconfig.build.json',
         compilerOptions: {
-          sourceMap: sourcemap
-        }
+          sourceMap: sourcemap,
+        },
       }),
       del({
-        targets: ['./lib/*']
+        targets: ['./lib/*'],
       }),
       isAnalyzeBuild && analyze(),
-      isDocumentationBuild && command('pnpm typedoc')
-    ]
+      isDocumentationBuild && command('pnpm typedoc'),
+    ],
   },
   {
     input: './lib/dts/index.d.ts',
@@ -96,9 +96,9 @@ export default defineConfig([
       dts(),
       del({
         targets: ['./lib/dts'],
-        hook: 'buildEnd'
+        hook: 'buildEnd',
       }),
-      isAnalyzeBuild && analyze()
-    ]
-  }
+      isAnalyzeBuild && analyze(),
+    ],
+  },
 ])

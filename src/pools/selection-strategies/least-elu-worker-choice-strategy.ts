@@ -5,12 +5,11 @@ import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.
 import type {
   IWorkerChoiceStrategy,
   TaskStatisticsRequirements,
-  WorkerChoiceStrategyOptions
+  WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
 
 /**
  * Selects the worker with the least ELU.
- *
  * @typeParam Worker - Type of worker which manages the strategy.
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
@@ -29,8 +28,8 @@ export class LeastEluWorkerChoiceStrategy<
     elu: {
       aggregate: true,
       average: false,
-      median: false
-    }
+      median: false,
+    },
   }
 
   /** @inheritDoc */

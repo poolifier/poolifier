@@ -11,19 +11,19 @@ export default defineConfig({
       dir: './dist',
       sourcemap: true,
       entryFileNames: '[name].cjs',
-      chunkFileNames: '[name]-[hash].cjs'
+      chunkFileNames: '[name]-[hash].cjs',
     },
     {
       format: 'esm',
       dir: './dist',
-      sourcemap: true
-    }
+      sourcemap: true,
+    },
   ],
   external: ['fastify', /^node:*/, 'poolifier'],
   plugins: [
     typescript(),
     del({
-      targets: ['./dist/*']
-    })
-  ]
+      targets: ['./dist/*'],
+    }),
+  ],
 })

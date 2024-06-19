@@ -21,7 +21,8 @@ const pool = new FixedClusterPool<WorkerData, WorkerResponse>(
         .then(response => {
           if (response.status) {
             console.info(
-              `Fastify is listening in cluster worker on port ${response.port}`
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `Fastify is listening in cluster worker on port ${response.port?.toString()}`
             )
           }
           return undefined
@@ -32,6 +33,6 @@ const pool = new FixedClusterPool<WorkerData, WorkerResponse>(
     },
     errorHandler: (e: Error) => {
       console.error('Cluster worker error:', e)
-    }
+    },
   }
 )

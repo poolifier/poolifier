@@ -15,7 +15,7 @@ import {
   type TaskStatisticsRequirements,
   WorkerChoiceStrategies,
   type WorkerChoiceStrategy,
-  type WorkerChoiceStrategyOptions
+  type WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
 import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-worker-choice-strategy.js'
 import type { WorkerChoiceStrategiesContext } from './worker-choice-strategies-context.js'
@@ -95,9 +95,9 @@ export const buildWorkerChoiceStrategyOptions = <
     ...{
       runTime: { median: false },
       waitTime: { median: false },
-      elu: { median: false }
+      elu: { median: false },
     },
-    ...opts
+    ...opts,
   }
 }
 
@@ -124,7 +124,7 @@ export const buildWorkerChoiceStrategiesPolicy = (
   )
   return {
     dynamicWorkerUsage: policies.some(p => p.dynamicWorkerUsage),
-    dynamicWorkerReady: policies.some(p => p.dynamicWorkerReady)
+    dynamicWorkerReady: policies.some(p => p.dynamicWorkerReady),
   }
 }
 
@@ -140,18 +140,18 @@ export const buildWorkerChoiceStrategiesTaskStatisticsRequirements = (
     runTime: {
       aggregate: taskStatisticsRequirements.some(r => r.runTime.aggregate),
       average: taskStatisticsRequirements.some(r => r.runTime.average),
-      median: taskStatisticsRequirements.some(r => r.runTime.median)
+      median: taskStatisticsRequirements.some(r => r.runTime.median),
     },
     waitTime: {
       aggregate: taskStatisticsRequirements.some(r => r.waitTime.aggregate),
       average: taskStatisticsRequirements.some(r => r.waitTime.average),
-      median: taskStatisticsRequirements.some(r => r.waitTime.median)
+      median: taskStatisticsRequirements.some(r => r.waitTime.median),
     },
     elu: {
       aggregate: taskStatisticsRequirements.some(r => r.elu.aggregate),
       average: taskStatisticsRequirements.some(r => r.elu.average),
-      median: taskStatisticsRequirements.some(r => r.elu.median)
-    }
+      median: taskStatisticsRequirements.some(r => r.elu.median),
+    },
   }
 }
 

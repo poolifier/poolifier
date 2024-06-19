@@ -6,7 +6,7 @@ import { type DataPayload, type MessagePayload, MessageType } from './types.js'
 const port = 8080
 const wss = new WebSocketServer({ port }, () => {
   console.info(
-    `⚡️[ws server]: WebSocket server is started at ws://localhost:${port}/`
+    `⚡️[ws server]: WebSocket server is started at ws://localhost:${port.toString()}/`
   )
 })
 
@@ -29,7 +29,7 @@ wss.on('connection', ws => {
             ws.send(
               JSON.stringify({
                 type: MessageType.echo,
-                data: response.data
+                data: response.data,
               })
             )
             return undefined
@@ -44,9 +44,9 @@ wss.on('connection', ws => {
               JSON.stringify(
                 {
                   type: MessageType.factorial,
-                  data: response.data
+                  data: response.data,
                 },
-                (_, v) => (typeof v === 'bigint' ? v.toString() : v)
+                (_, v: unknown) => (typeof v === 'bigint' ? v.toString() : v)
               )
             )
             return undefined

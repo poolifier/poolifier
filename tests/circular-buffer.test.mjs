@@ -2,7 +2,7 @@ import { expect } from 'expect'
 
 import { CircularBuffer, defaultBufferSize } from '../lib/circular-buffer.cjs'
 
-describe('Circular buffer test suite', t => {
+describe('Circular buffer test suite', () => {
   it('Verify that circular buffer can be instantiated', () => {
     const circularBuffer = new CircularBuffer()
     expect(circularBuffer).toBeInstanceOf(CircularBuffer)

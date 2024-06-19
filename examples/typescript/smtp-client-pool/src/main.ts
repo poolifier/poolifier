@@ -14,16 +14,16 @@ for (const to of tos) {
         secure: true,
         auth: {
           user: 'REPLACE-WITH-YOUR-ALIAS@DOMAIN.TLD',
-          pass: 'REPLACE-WITH-YOUR-GENERATED-PASSWORD'
-        }
+          pass: 'REPLACE-WITH-YOUR-GENERATED-PASSWORD',
+        },
       },
       mail: {
         from: '"Foo" <foo@domain.tld>',
         to,
         subject: 'Hello',
         text: 'Hello world?',
-        html: '<b>Hello world?</b>'
-      }
+        html: '<b>Hello world?</b>',
+      },
     })
   )
 }
@@ -32,9 +32,9 @@ try {
   await Promise.all(smtpClientPoolPromises)
   const elapsedTime = performance.now() - now
   console.info(
-    `Send in parallel in ${elapsedTime.toFixed(2)}ms ${
-      tos.length
-    } mails with SMTP client pool`
+    `Send in parallel in ${elapsedTime.toFixed(
+      2
+    )}ms ${tos.length.toString()} mails with SMTP client pool`
   )
 } catch (error) {
   console.error(error)

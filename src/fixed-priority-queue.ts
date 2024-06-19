@@ -5,7 +5,6 @@ export const defaultQueueSize = 2048
 
 /**
  * Fixed priority queue node.
- *
  * @typeParam T - Type of priority queue node data.
  * @internal
  */
@@ -16,34 +15,35 @@ export interface FixedPriorityQueueNode<T> {
 
 /**
  * Fixed priority queue.
- *
  * @typeParam T - Type of fixed priority queue data.
  * @internal
  */
 export class FixedPriorityQueue<T> {
   private start!: number
-  private readonly nodeArray: Array<FixedPriorityQueueNode<T>>
+  private readonly nodeArray: FixedPriorityQueueNode<T>[]
   /** The fixed priority queue capacity. */
   public readonly capacity: number
-  /** The fixed priority queue size */
+  /** The fixed priority queue size. */
   public size!: number
+  /** Whether to enable priority. */
+  public enablePriority: boolean
 
   /**
    * Constructs a fixed priority queue.
-   *
    * @param size - Fixed priority queue size. @defaultValue defaultQueueSize
+   * @param enablePriority - Whether to enable priority. @defaultValue false
    * @returns FixedPriorityQueue.
    */
-  constructor (size: number = defaultQueueSize) {
+  constructor (size: number = defaultQueueSize, enablePriority = false) {
     this.checkSize(size)
     this.capacity = size
+    this.enablePriority = enablePriority
     this.nodeArray = new Array<FixedPriorityQueueNode<T>>(this.capacity)
     this.clear()
   }
 
   /**
    * Checks if the fixed priority queue is empty.
-   *
    * @returns `true` if the fixed priority queue is empty, `false` otherwise.
    */
   public empty (): boolean {
@@ -52,7 +52,6 @@ export class FixedPriorityQueue<T> {
 
   /**
    * Checks if the fixed priority queue is full.
-   *
    * @returns `true` if the fixed priority queue is full, `false` otherwise.
    */
   public full (): boolean {
@@ -61,7 +60,6 @@ export class FixedPriorityQueue<T> {
 
   /**
    * Enqueue data into the fixed priority queue.
-   *
    * @param data - Data to enqueue.
    * @param priority - Priority of the data. Lower values have higher priority.
    * @returns The new size of the priority queue.
@@ -72,19 +70,21 @@ export class FixedPriorityQueue<T> {
       throw new Error('Priority queue is full')
     }
     priority = priority ?? 0
-    let index = this.start
     let inserted = false
-    for (let i = 0; i < this.size; i++) {
-      if (this.nodeArray[index].priority > priority) {
-        this.nodeArray.splice(index, 0, { data, priority })
-        this.nodeArray.length !== this.capacity &&
-          (this.nodeArray.length = this.capacity)
-        inserted = true
-        break
-      }
-      ++index
-      if (index === this.capacity) {
-        index = 0
+    if (this.enablePriority) {
+      let index = this.start
+      for (let i = 0; i < this.size; i++) {
+        if (this.nodeArray[index].priority > priority) {
+          this.nodeArray.splice(index, 0, { data, priority })
+          this.nodeArray.length !== this.capacity &&
+            (this.nodeArray.length = this.capacity)
+          inserted = true
+          break
+        }
+        ++index
+        if (index === this.capacity) {
+          index = 0
+        }
       }
     }
     if (!inserted) {
@@ -99,7 +99,6 @@ export class FixedPriorityQueue<T> {
 
   /**
    * Gets data from the fixed priority queue.
-   *
    * @param index - The index of the data to get.
    * @returns The data at the index or `undefined` if the fixed priority queue is empty or the index is out of bounds.
    */
@@ -116,7 +115,6 @@ export class FixedPriorityQueue<T> {
 
   /**
    * Dequeue data from the fixed priority queue.
-   *
    * @returns The dequeued data or `undefined` if the priority queue is empty.
    */
   public dequeue (): T | undefined {
@@ -142,7 +140,6 @@ export class FixedPriorityQueue<T> {
 
   /**
    * Returns an iterator for the fixed priority queue.
-   *
    * @returns An iterator for the fixed priority queue.
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
    */
@@ -154,7 +151,7 @@ export class FixedPriorityQueue<T> {
         if (i >= this.size) {
           return {
             value: undefined,
-            done: true
+            done: true,
           }
         }
         const value = this.nodeArray[index].data
@@ -165,25 +162,26 @@ export class FixedPriorityQueue<T> {
         }
         return {
           value,
-          done: false
+          done: false,
         }
-      }
+      },
     }
   }
 
   /**
-   * Checks the size.
-   *
-   * @param size - The size to check.
+   * Checks the queue size.
+   * @param size - Queue size.
    */
   private checkSize (size: number): void {
     if (!Number.isSafeInteger(size)) {
       throw new TypeError(
-        `Invalid fixed priority queue size: '${size}' is not an integer`
+        `Invalid fixed priority queue size: '${size.toString()}' is not an integer`
       )
     }
     if (size < 0) {
-      throw new RangeError(`Invalid fixed priority queue size: ${size} < 0`)
+      throw new RangeError(
+        `Invalid fixed priority queue size: ${size.toString()} < 0`
+      )
     }
   }
 }

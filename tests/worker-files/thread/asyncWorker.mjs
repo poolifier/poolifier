@@ -12,5 +12,5 @@ async function sleep (data) {
 
 export default new ThreadWorker(sleep, {
   killBehavior: KillBehaviors.HARD,
-  maxInactiveTime: 500
+  maxInactiveTime: 500,
 })

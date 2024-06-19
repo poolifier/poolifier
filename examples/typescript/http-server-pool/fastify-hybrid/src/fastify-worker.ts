@@ -7,18 +7,19 @@ import { fastifyPoolifier } from './fastify-poolifier.js'
 import type { ClusterWorkerData, ClusterWorkerResponse } from './types.js'
 
 class FastifyWorker extends ClusterWorker<
-ClusterWorkerData,
-ClusterWorkerResponse
+  ClusterWorkerData,
+  ClusterWorkerResponse
 > {
   private static fastify: FastifyInstance
 
   private static readonly startFastify = async (
     workerData?: ClusterWorkerData
   ): Promise<ClusterWorkerResponse> => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { port, ...fastifyPoolifierOptions } = workerData!
 
     FastifyWorker.fastify = Fastify({
-      logger: true
+      logger: true,
     })
 
     await FastifyWorker.fastify.register(
@@ -44,7 +45,7 @@ ClusterWorkerResponse
     await FastifyWorker.fastify.listen({ port })
     return {
       status: true,
-      port: (FastifyWorker.fastify.server.address() as AddressInfo).port
+      port: (FastifyWorker.fastify.server.address() as AddressInfo).port,
     }
   }
 
@@ -53,7 +54,7 @@ ClusterWorkerResponse
       killHandler: async () => {
         await FastifyWorker.fastify.pool.destroy()
         await FastifyWorker.fastify.close()
-      }
+      },
     })
   }
 }

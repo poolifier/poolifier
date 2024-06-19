@@ -5,13 +5,12 @@ import {
   type IWorkerChoiceStrategy,
   Measurements,
   type TaskStatisticsRequirements,
-  type WorkerChoiceStrategyOptions
+  type WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
 
 /**
  * Selects the next worker with a fair share scheduling algorithm.
  * Loosely modeled after the fair queueing algorithm: https://en.wikipedia.org/wiki/Fair_queuing.
- *
  * @typeParam Worker - Type of worker which manages the strategy.
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
@@ -28,18 +27,18 @@ export class FairShareWorkerChoiceStrategy<
     runTime: {
       aggregate: true,
       average: true,
-      median: false
+      median: false,
     },
     waitTime: {
       aggregate: true,
       average: true,
-      median: false
+      median: false,
     },
     elu: {
       aggregate: true,
       average: true,
-      median: false
-    }
+      median: false,
+    },
   }
 
   /** @inheritDoc */
@@ -63,7 +62,7 @@ export class FairShareWorkerChoiceStrategy<
   public update (workerNodeKey: number): boolean {
     this.pool.workerNodes[workerNodeKey].strategyData = {
       virtualTaskEndTimestamp:
-        this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey)
+        this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey),
     }
     return true
   }
@@ -92,7 +91,7 @@ export class FairShareWorkerChoiceStrategy<
         if (workerNode.strategyData?.virtualTaskEndTimestamp == null) {
           workerNode.strategyData = {
             virtualTaskEndTimestamp:
-              this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey)
+              this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey),
           }
         }
         return this.isWorkerNodeReady(workerNodeKey) &&
@@ -110,7 +109,6 @@ export class FairShareWorkerChoiceStrategy<
 
   /**
    * Computes the worker node key virtual task end timestamp.
-   *
    * @param workerNodeKey - The worker node key.
    * @returns The worker node key virtual task end timestamp.
    */

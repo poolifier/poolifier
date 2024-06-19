@@ -6,7 +6,7 @@ import {
   type MessagePayload,
   MessageType,
   type WorkerData,
-  type WorkerResponse
+  type WorkerResponse,
 } from './types.js'
 
 class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
@@ -28,11 +28,12 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static readonly startWebSocketServer = (
     workerData?: WorkerData
   ): WorkerResponse => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { port } = workerData!
 
     WebSocketServerWorker.wss = new WebSocketServer({ port }, () => {
       console.info(
-        `⚡️[ws server]: WebSocket server is started in cluster worker at ws://localhost:${port}/`
+        `⚡️[ws server]: WebSocket server is started in cluster worker at ws://localhost:${port.toString()}/`
       )
     })
 
@@ -48,7 +49,7 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
             ws.send(
               JSON.stringify({
                 type: MessageType.echo,
-                data
+                data,
               })
             )
             break
@@ -58,10 +59,11 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
                 {
                   type: MessageType.factorial,
                   data: {
-                    number: WebSocketServerWorker.factorial(data.number!)
-                  }
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    number: WebSocketServerWorker.factorial(data.number!),
+                  },
                 },
-                (_, v) => (typeof v === 'bigint' ? v.toString() : v)
+                (_, v: unknown) => (typeof v === 'bigint' ? v.toString() : v)
               )
             )
             break
@@ -70,7 +72,7 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
     })
     return {
       status: true,
-      port: WebSocketServerWorker.wss.options.port
+      port: WebSocketServerWorker.wss.options.port,
     }
   }
 
@@ -78,7 +80,7 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
     super(WebSocketServerWorker.startWebSocketServer, {
       killHandler: () => {
         WebSocketServerWorker.wss.close()
-      }
+      },
     })
   }
 }
