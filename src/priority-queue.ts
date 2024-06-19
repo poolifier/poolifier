@@ -165,13 +165,16 @@ export class PriorityQueue<T> {
     let prev: PriorityQueueNode<T> | undefined
     while (node != null) {
       if (node.delete(data)) {
-        if (node.empty() && node.next != null) {
-          if (node === this.tail) {
+        if (node.empty()) {
+          if (node === this.tail && node.next != null) {
             this.tail = node.next
-          } else if (node === this.head && prev != null) {
-            this.head = prev
-          } else if (prev != null) {
+            delete node.next
+          } else if (node.next != null && prev != null) {
             prev.next = node.next
+            delete node.next
+          } else if (node.next == null && prev != null) {
+            this.head = prev
+            delete this.head.next
           }
         }
         return true
