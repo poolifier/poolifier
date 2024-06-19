@@ -335,7 +335,6 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
   readonly dequeueLastPrioritizedTask: () => Task<Data> | undefined
   /**
    * Deletes a task from the tasks queue.
-   *
    * @param task - The task to delete.
    * @returns `true` if the task was deleted, `false` otherwise.
    */

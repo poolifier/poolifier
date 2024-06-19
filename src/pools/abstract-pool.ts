@@ -1757,7 +1757,8 @@ export abstract class AbstractPool<
           this.workerNodes[workerNodeKey].deleteTask(task)
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.promiseResponseMap.delete(taskId!)
-          reject(new Error(`Task ${name} id ${taskId} aborted`))
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          reject(new Error(`Task ${name!} id ${taskId!} aborted`))
           return
         }
       }
