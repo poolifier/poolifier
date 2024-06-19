@@ -173,6 +173,7 @@ export class PriorityQueue<T> {
             prev.next = node.next
             delete node.next
           } else if (node.next == null && prev != null) {
+            delete node.next
             this.head = prev
             delete this.head.next
           }
