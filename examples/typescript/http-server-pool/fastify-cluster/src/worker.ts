@@ -24,10 +24,11 @@ class FastifyWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static readonly startFastify = async (
     workerData?: WorkerData
   ): Promise<WorkerResponse> => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { port } = workerData!
 
     FastifyWorker.fastify = Fastify({
-      logger: true
+      logger: true,
     })
 
     FastifyWorker.fastify.all('/api/echo', request => {
@@ -44,7 +45,7 @@ class FastifyWorker extends ClusterWorker<WorkerData, WorkerResponse> {
     await FastifyWorker.fastify.listen({ port })
     return {
       status: true,
-      port: (FastifyWorker.fastify.server.address() as AddressInfo).port
+      port: (FastifyWorker.fastify.server.address() as AddressInfo).port,
     }
   }
 
@@ -52,7 +53,7 @@ class FastifyWorker extends ClusterWorker<WorkerData, WorkerResponse> {
     super(FastifyWorker.startFastify, {
       killHandler: async () => {
         await FastifyWorker.fastify.close()
-      }
+      },
     })
   }
 }

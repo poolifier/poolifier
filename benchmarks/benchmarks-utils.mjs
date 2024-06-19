@@ -10,7 +10,7 @@ import {
   Measurements,
   PoolTypes,
   WorkerChoiceStrategies,
-  WorkerTypes
+  WorkerTypes,
 } from '../lib/index.mjs'
 import { executeTaskFunction } from './benchmarks-utils.cjs'
 
@@ -80,13 +80,13 @@ export const runPoolifierBenchmarkTatamiNg = async (
                 async () => {
                   await runPoolifierPool(pool, {
                     taskExecutions,
-                    workerData
+                    workerData,
                   })
                 },
                 {
                   before: () => {
                     pool.setWorkerChoiceStrategy(workerChoiceStrategy, {
-                      measurement
+                      measurement,
                     })
                     pool.enableTasksQueue(enableTasksQueue)
                     strictEqual(
@@ -98,7 +98,7 @@ export const runPoolifierBenchmarkTatamiNg = async (
                       pool.opts.workerChoiceStrategyOptions.measurement,
                       measurement
                     )
-                  }
+                  },
                 }
               )
             })
@@ -112,7 +112,7 @@ export const runPoolifierBenchmarkTatamiNg = async (
               async () => {
                 await runPoolifierPool(pool, {
                   taskExecutions,
-                  workerData
+                  workerData,
                 })
               },
               {
@@ -124,7 +124,7 @@ export const runPoolifierBenchmarkTatamiNg = async (
                     workerChoiceStrategy
                   )
                   strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
-                }
+                },
               }
             )
           })
@@ -148,12 +148,12 @@ export const convertTatamiNgToBmf = report => {
           latency: {
             value: stats?.avg,
             lower_value: stats?.min,
-            upper_value: stats?.max
+            upper_value: stats?.max,
           },
           throughput: {
-            value: stats?.iter
-          }
-        }
+            value: stats?.iter,
+          },
+        },
       }
     })
     .reduce((obj, item) => Object.assign(obj, item), {})

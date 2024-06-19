@@ -1,4 +1,8 @@
 export type { CircularBuffer } from './circular-buffer.js'
+export type {
+  FixedPriorityQueue,
+  FixedPriorityQueueNode,
+} from './fixed-priority-queue.js'
 export type { AbstractPool } from './pools/abstract-pool.js'
 export { DynamicClusterPool } from './pools/cluster/dynamic.js'
 export type { ClusterPoolOptions } from './pools/cluster/fixed.js'
@@ -9,7 +13,7 @@ export type {
   PoolInfo,
   PoolOptions,
   PoolType,
-  TasksQueueOptions
+  TasksQueueOptions,
 } from './pools/pool.js'
 export { PoolEvents, PoolTypes } from './pools/pool.js'
 export type {
@@ -20,11 +24,11 @@ export type {
   StrategyPolicy,
   TaskStatisticsRequirements,
   WorkerChoiceStrategy,
-  WorkerChoiceStrategyOptions
+  WorkerChoiceStrategyOptions,
 } from './pools/selection-strategies/selection-strategies-types.js'
 export {
   Measurements,
-  WorkerChoiceStrategies
+  WorkerChoiceStrategies,
 } from './pools/selection-strategies/selection-strategies-types.js'
 export type { WorkerChoiceStrategiesContext } from './pools/selection-strategies/worker-choice-strategies-context.js'
 export { DynamicThreadPool } from './pools/thread/dynamic.js'
@@ -46,7 +50,7 @@ export type {
   WorkerNodeEventDetail,
   WorkerNodeOptions,
   WorkerType,
-  WorkerUsage
+  WorkerUsage,
 } from './pools/worker.js'
 export { WorkerTypes } from './pools/worker.js'
 export type { PriorityQueue, PriorityQueueNode } from './priority-queue.js'
@@ -58,7 +62,7 @@ export type {
   TaskPerformance,
   WorkerError,
   WorkerStatistics,
-  Writable
+  Writable,
 } from './utility-types.js'
 export { availableParallelism } from './utils.js'
 export type { AbstractWorker } from './worker/abstract-worker.js'
@@ -69,12 +73,12 @@ export type {
   TaskFunctionObject,
   TaskFunctionOperationResult,
   TaskFunctions,
-  TaskSyncFunction
+  TaskSyncFunction,
 } from './worker/task-functions.js'
 export { ThreadWorker } from './worker/thread-worker.js'
 export type {
   KillBehavior,
   KillHandler,
-  WorkerOptions
+  WorkerOptions,
 } from './worker/worker-options.js'
 export { KillBehaviors } from './worker/worker-options.js'

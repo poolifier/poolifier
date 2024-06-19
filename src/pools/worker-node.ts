@@ -9,7 +9,7 @@ import {
   checkWorkerNodeArguments,
   createWorker,
   getWorkerId,
-  getWorkerType
+  getWorkerType,
 } from './utils.js'
 import {
   type EventHandler,
@@ -21,12 +21,11 @@ import {
   type WorkerNodeOptions,
   type WorkerType,
   WorkerTypes,
-  type WorkerUsage
+  type WorkerUsage,
 } from './worker.js'
 
 /**
  * Worker node.
- *
  * @typeParam Worker - Type of worker.
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  */
@@ -52,7 +51,6 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
 
   /**
    * Constructs a new worker node.
-   *
    * @param type - The worker type.
    * @param filePath - Path to the worker file.
    * @param opts - The worker node options.
@@ -62,7 +60,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     checkWorkerNodeArguments(type, filePath, opts)
     this.worker = createWorker<Worker>(type, filePath, {
       env: opts.env,
-      workerOptions: opts.workerOptions
+      workerOptions: opts.workerOptions,
     })
     this.info = this.initWorkerInfo(this.worker)
     this.usage = this.initWorkerUsage()
@@ -71,9 +69,17 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.tasksQueueBackPressureSize = opts.tasksQueueBackPressureSize!
-    this.tasksQueue = new PriorityQueue<Task<Data>>(opts.tasksQueueBucketSize)
+    this.tasksQueue = new PriorityQueue<Task<Data>>(
+      opts.tasksQueueBucketSize,
+      opts.tasksQueuePriority
+    )
     this.setBackPressureFlag = false
     this.taskFunctionsUsage = new Map<string, WorkerUsage>()
+  }
+
+  /** @inheritdoc */
+  public setTasksQueuePriority (enablePriority: boolean): void {
+    this.tasksQueue.enablePriority = enablePriority
   }
 
   /** @inheritdoc */
@@ -220,7 +226,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
       dynamic: false,
       ready: false,
       stealing: false,
-      backPressure: false
+      backPressure: false,
     }
   }
 
@@ -243,22 +249,22 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
         },
         sequentiallyStolen: 0,
         stolen: 0,
-        failed: 0
+        failed: 0,
       },
       runTime: {
-        history: new CircularBuffer(MeasurementHistorySize)
+        history: new CircularBuffer(MeasurementHistorySize),
       },
       waitTime: {
-        history: new CircularBuffer(MeasurementHistorySize)
+        history: new CircularBuffer(MeasurementHistorySize),
       },
       elu: {
         idle: {
-          history: new CircularBuffer(MeasurementHistorySize)
+          history: new CircularBuffer(MeasurementHistorySize),
         },
         active: {
-          history: new CircularBuffer(MeasurementHistorySize)
-        }
-      }
+          history: new CircularBuffer(MeasurementHistorySize),
+        },
+      },
     }
   }
 
@@ -286,22 +292,22 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
         },
         sequentiallyStolen: 0,
         stolen: 0,
-        failed: 0
+        failed: 0,
       },
       runTime: {
-        history: new CircularBuffer(MeasurementHistorySize)
+        history: new CircularBuffer(MeasurementHistorySize),
       },
       waitTime: {
-        history: new CircularBuffer(MeasurementHistorySize)
+        history: new CircularBuffer(MeasurementHistorySize),
       },
       elu: {
         idle: {
-          history: new CircularBuffer(MeasurementHistorySize)
+          history: new CircularBuffer(MeasurementHistorySize),
         },
         active: {
-          history: new CircularBuffer(MeasurementHistorySize)
-        }
-      }
+          history: new CircularBuffer(MeasurementHistorySize),
+        },
+      },
     }
   }
 }

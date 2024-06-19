@@ -11,6 +11,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add fine grained task abortion support.
 
+## [4.0.14] - 2024-06-12
+
+### Changed
+
+- Add mapExecute() helper to execute a task function on an iterable data's input.
+
+## [4.0.13] - 2024-05-29
+
+### Changed
+
+- Optimize tasks queue implementation.
+- Enable prioritized tasks queueing only when necessary.
+
 ## [4.0.12] - 2024-05-25
 
 ### Changed

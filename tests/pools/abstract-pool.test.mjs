@@ -17,10 +17,10 @@ import {
   PoolEvents,
   PoolTypes,
   WorkerChoiceStrategies,
-  WorkerTypes
+  WorkerTypes,
 } from '../../lib/index.cjs'
 import { WorkerNode } from '../../lib/pools/worker-node.cjs'
-import { PriorityQueue } from '../../lib/priority-queue.cjs'
+import { defaultBucketSize, PriorityQueue } from '../../lib/priority-queue.cjs'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 import { waitPoolEvents } from '../test-utils.cjs'
 
@@ -58,7 +58,7 @@ describe('Abstract pool test suite', () => {
           numberOfWorkers,
           './tests/worker-files/thread/testWorker.mjs',
           {
-            errorHandler: e => console.error(e)
+            errorHandler: e => console.error(e),
           }
         )
     ).toThrow(
@@ -230,7 +230,7 @@ describe('Abstract pool test suite', () => {
       enableEvents: true,
       restartWorkerOnError: true,
       enableTasksQueue: false,
-      workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN
+      workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategiesContext
       .workerChoiceStrategies) {
@@ -240,8 +240,8 @@ describe('Abstract pool test suite', () => {
         elu: { median: false },
         weights: expect.objectContaining({
           0: expect.any(Number),
-          [pool.info.maxSize - 1]: expect.any(Number)
-        })
+          [pool.info.maxSize - 1]: expect.any(Number),
+        }),
       })
     }
     await pool.destroy()
@@ -253,7 +253,7 @@ describe('Abstract pool test suite', () => {
         workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
         workerChoiceStrategyOptions: {
           runTime: { median: true },
-          weights: { 0: 300, 1: 200 }
+          weights: { 0: 300, 1: 200 },
         },
         enableEvents: false,
         restartWorkerOnError: false,
@@ -262,7 +262,7 @@ describe('Abstract pool test suite', () => {
         messageHandler: testHandler,
         errorHandler: testHandler,
         onlineHandler: testHandler,
-        exitHandler: testHandler
+        exitHandler: testHandler,
       }
     )
     expect(pool.emitter).toBeUndefined()
@@ -276,17 +276,17 @@ describe('Abstract pool test suite', () => {
         size: Math.pow(numberOfWorkers, 2),
         taskStealing: true,
         tasksStealingOnBackPressure: false,
-        tasksFinishedTimeout: 2000
+        tasksFinishedTimeout: 2000,
       },
       workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
       workerChoiceStrategyOptions: {
         runTime: { median: true },
-        weights: { 0: 300, 1: 200 }
+        weights: { 0: 300, 1: 200 },
       },
       onlineHandler: testHandler,
       messageHandler: testHandler,
       errorHandler: testHandler,
-      exitHandler: testHandler
+      exitHandler: testHandler,
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategiesContext
       .workerChoiceStrategies) {
@@ -294,7 +294,7 @@ describe('Abstract pool test suite', () => {
         runTime: { median: true },
         waitTime: { median: false },
         elu: { median: false },
-        weights: { 0: 300, 1: 200 }
+        weights: { 0: 300, 1: 200 },
       })
     }
     await pool.destroy()
@@ -307,7 +307,7 @@ describe('Abstract pool test suite', () => {
           numberOfWorkers,
           './tests/worker-files/thread/testWorker.mjs',
           {
-            workerChoiceStrategy: 'invalidStrategy'
+            workerChoiceStrategy: 'invalidStrategy',
           }
         )
     ).toThrow(new Error("Invalid worker choice strategy 'invalidStrategy'"))
@@ -317,7 +317,7 @@ describe('Abstract pool test suite', () => {
           numberOfWorkers,
           './tests/worker-files/thread/testWorker.mjs',
           {
-            workerChoiceStrategyOptions: { weights: {} }
+            workerChoiceStrategyOptions: { weights: {} },
           }
         )
     ).toThrow(
@@ -331,7 +331,7 @@ describe('Abstract pool test suite', () => {
           numberOfWorkers,
           './tests/worker-files/thread/testWorker.mjs',
           {
-            workerChoiceStrategyOptions: { measurement: 'invalidMeasurement' }
+            workerChoiceStrategyOptions: { measurement: 'invalidMeasurement' },
           }
         )
     ).toThrow(
@@ -346,7 +346,7 @@ describe('Abstract pool test suite', () => {
           './tests/worker-files/thread/testWorker.mjs',
           {
             enableTasksQueue: true,
-            tasksQueueOptions: 'invalidTasksQueueOptions'
+            tasksQueueOptions: 'invalidTasksQueueOptions',
           }
         )
     ).toThrow(
@@ -359,7 +359,7 @@ describe('Abstract pool test suite', () => {
           './tests/worker-files/thread/testWorker.mjs',
           {
             enableTasksQueue: true,
-            tasksQueueOptions: { concurrency: 0 }
+            tasksQueueOptions: { concurrency: 0 },
           }
         )
     ).toThrow(
@@ -374,7 +374,7 @@ describe('Abstract pool test suite', () => {
           './tests/worker-files/thread/testWorker.mjs',
           {
             enableTasksQueue: true,
-            tasksQueueOptions: { concurrency: -1 }
+            tasksQueueOptions: { concurrency: -1 },
           }
         )
     ).toThrow(
@@ -389,7 +389,7 @@ describe('Abstract pool test suite', () => {
           './tests/worker-files/thread/testWorker.mjs',
           {
             enableTasksQueue: true,
-            tasksQueueOptions: { concurrency: 0.2 }
+            tasksQueueOptions: { concurrency: 0.2 },
           }
         )
     ).toThrow(
@@ -402,7 +402,7 @@ describe('Abstract pool test suite', () => {
           './tests/worker-files/thread/testWorker.mjs',
           {
             enableTasksQueue: true,
-            tasksQueueOptions: { size: 0 }
+            tasksQueueOptions: { size: 0 },
           }
         )
     ).toThrow(
@@ -417,7 +417,7 @@ describe('Abstract pool test suite', () => {
           './tests/worker-files/thread/testWorker.mjs',
           {
             enableTasksQueue: true,
-            tasksQueueOptions: { size: -1 }
+            tasksQueueOptions: { size: -1 },
           }
         )
     ).toThrow(
@@ -432,7 +432,7 @@ describe('Abstract pool test suite', () => {
           './tests/worker-files/thread/testWorker.mjs',
           {
             enableTasksQueue: true,
-            tasksQueueOptions: { size: 0.2 }
+            tasksQueueOptions: { size: 0.2 },
           }
         )
     ).toThrow(
@@ -455,8 +455,8 @@ describe('Abstract pool test suite', () => {
         elu: { median: false },
         weights: expect.objectContaining({
           0: expect.any(Number),
-          [pool.info.maxSize - 1]: expect.any(Number)
-        })
+          [pool.info.maxSize - 1]: expect.any(Number),
+        }),
       })
     }
     expect(
@@ -465,26 +465,26 @@ describe('Abstract pool test suite', () => {
       runTime: {
         aggregate: true,
         average: true,
-        median: false
+        median: false,
       },
       waitTime: {
         aggregate: true,
         average: true,
-        median: false
+        median: false,
       },
       elu: {
         aggregate: true,
         average: true,
-        median: false
-      }
+        median: false,
+      },
     })
     pool.setWorkerChoiceStrategyOptions({
       runTime: { median: true },
-      elu: { median: true }
+      elu: { median: true },
     })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
       runTime: { median: true },
-      elu: { median: true }
+      elu: { median: true },
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategiesContext
       .workerChoiceStrategies) {
@@ -494,8 +494,8 @@ describe('Abstract pool test suite', () => {
         elu: { median: true },
         weights: expect.objectContaining({
           0: expect.any(Number),
-          [pool.info.maxSize - 1]: expect.any(Number)
-        })
+          [pool.info.maxSize - 1]: expect.any(Number),
+        }),
       })
     }
     expect(
@@ -504,26 +504,26 @@ describe('Abstract pool test suite', () => {
       runTime: {
         aggregate: true,
         average: false,
-        median: true
+        median: true,
       },
       waitTime: {
         aggregate: true,
         average: true,
-        median: false
+        median: false,
       },
       elu: {
         aggregate: true,
         average: false,
-        median: true
-      }
+        median: true,
+      },
     })
     pool.setWorkerChoiceStrategyOptions({
       runTime: { median: false },
-      elu: { median: false }
+      elu: { median: false },
     })
     expect(pool.opts.workerChoiceStrategyOptions).toStrictEqual({
       runTime: { median: false },
-      elu: { median: false }
+      elu: { median: false },
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategiesContext
       .workerChoiceStrategies) {
@@ -533,8 +533,8 @@ describe('Abstract pool test suite', () => {
         elu: { median: false },
         weights: expect.objectContaining({
           0: expect.any(Number),
-          [pool.info.maxSize - 1]: expect.any(Number)
-        })
+          [pool.info.maxSize - 1]: expect.any(Number),
+        }),
       })
     }
     expect(
@@ -543,18 +543,18 @@ describe('Abstract pool test suite', () => {
       runTime: {
         aggregate: true,
         average: true,
-        median: false
+        median: false,
       },
       waitTime: {
         aggregate: true,
         average: true,
-        median: false
+        median: false,
       },
       elu: {
         aggregate: true,
         average: true,
-        median: false
-      }
+        median: false,
+      },
     })
     expect(() =>
       pool.setWorkerChoiceStrategyOptions('invalidWorkerChoiceStrategyOptions')
@@ -592,7 +592,7 @@ describe('Abstract pool test suite', () => {
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
       tasksStealingOnBackPressure: false,
-      tasksFinishedTimeout: 2000
+      tasksFinishedTimeout: 2000,
     })
     pool.enableTasksQueue(true, { concurrency: 2 })
     expect(pool.opts.enableTasksQueue).toBe(true)
@@ -601,7 +601,7 @@ describe('Abstract pool test suite', () => {
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
       tasksStealingOnBackPressure: false,
-      tasksFinishedTimeout: 2000
+      tasksFinishedTimeout: 2000,
     })
     pool.enableTasksQueue(false)
     expect(pool.opts.enableTasksQueue).toBe(false)
@@ -620,7 +620,7 @@ describe('Abstract pool test suite', () => {
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
       tasksStealingOnBackPressure: false,
-      tasksFinishedTimeout: 2000
+      tasksFinishedTimeout: 2000,
     })
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksQueueBackPressureSize).toBe(
@@ -632,14 +632,14 @@ describe('Abstract pool test suite', () => {
       size: 2,
       taskStealing: false,
       tasksStealingOnBackPressure: false,
-      tasksFinishedTimeout: 3000
+      tasksFinishedTimeout: 3000,
     })
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 2,
       size: 2,
       taskStealing: false,
       tasksStealingOnBackPressure: false,
-      tasksFinishedTimeout: 3000
+      tasksFinishedTimeout: 3000,
     })
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksQueueBackPressureSize).toBe(
@@ -649,14 +649,14 @@ describe('Abstract pool test suite', () => {
     pool.setTasksQueueOptions({
       concurrency: 1,
       taskStealing: true,
-      tasksStealingOnBackPressure: true
+      tasksStealingOnBackPressure: true,
     })
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 1,
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
       tasksStealingOnBackPressure: true,
-      tasksFinishedTimeout: 2000
+      tasksFinishedTimeout: 2000,
     })
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksQueueBackPressureSize).toBe(
@@ -715,7 +715,7 @@ describe('Abstract pool test suite', () => {
       busyWorkerNodes: 0,
       executedTasks: 0,
       executingTasks: 0,
-      failedTasks: 0
+      failedTasks: 0,
     })
     await pool.destroy()
     pool = new DynamicClusterPool(
@@ -738,7 +738,7 @@ describe('Abstract pool test suite', () => {
       busyWorkerNodes: 0,
       executedTasks: 0,
       executingTasks: 0,
-      failedTasks: 0
+      failedTasks: 0,
     })
     await pool.destroy()
   })
@@ -758,22 +758,22 @@ describe('Abstract pool test suite', () => {
           maxQueued: 0,
           sequentiallyStolen: 0,
           stolen: 0,
-          failed: 0
+          failed: 0,
         },
         runTime: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         waitTime: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         elu: {
           idle: {
-            history: expect.any(CircularBuffer)
+            history: expect.any(CircularBuffer),
           },
           active: {
-            history: expect.any(CircularBuffer)
-          }
-        }
+            history: expect.any(CircularBuffer),
+          },
+        },
       })
     }
     await pool.destroy()
@@ -789,7 +789,8 @@ describe('Abstract pool test suite', () => {
       expect(workerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
       expect(workerNode.tasksQueue.size).toBe(0)
       expect(workerNode.tasksQueue.maxSize).toBe(0)
-      expect(workerNode.tasksQueue.bucketSize).toBe(numberOfWorkers * 2)
+      expect(workerNode.tasksQueue.bucketSize).toBe(defaultBucketSize)
+      expect(workerNode.tasksQueue.enablePriority).toBe(false)
     }
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -802,7 +803,8 @@ describe('Abstract pool test suite', () => {
       expect(workerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
       expect(workerNode.tasksQueue.size).toBe(0)
       expect(workerNode.tasksQueue.maxSize).toBe(0)
-      expect(workerNode.tasksQueue.bucketSize).toBe(numberOfWorkers * 2)
+      expect(workerNode.tasksQueue.bucketSize).toBe(defaultBucketSize)
+      expect(workerNode.tasksQueue.enablePriority).toBe(false)
     }
     await pool.destroy()
   })
@@ -820,7 +822,7 @@ describe('Abstract pool test suite', () => {
         dynamic: false,
         ready: true,
         stealing: false,
-        backPressure: false
+        backPressure: false,
       })
     }
     await pool.destroy()
@@ -837,7 +839,7 @@ describe('Abstract pool test suite', () => {
         dynamic: false,
         ready: true,
         stealing: false,
-        backPressure: false
+        backPressure: false,
       })
     }
     await pool.destroy()
@@ -866,7 +868,7 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/cluster/testWorker.cjs',
       {
-        startWorkers: false
+        startWorkers: false,
       }
     )
     expect(pool.info.started).toBe(false)
@@ -933,22 +935,22 @@ describe('Abstract pool test suite', () => {
           maxQueued: 0,
           sequentiallyStolen: 0,
           stolen: 0,
-          failed: 0
+          failed: 0,
         },
         runTime: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         waitTime: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         elu: {
           idle: {
-            history: expect.any(CircularBuffer)
+            history: expect.any(CircularBuffer),
           },
           active: {
-            history: expect.any(CircularBuffer)
-          }
-        }
+            history: expect.any(CircularBuffer),
+          },
+        },
       })
     }
     await Promise.all(promises)
@@ -961,22 +963,22 @@ describe('Abstract pool test suite', () => {
           maxQueued: 0,
           sequentiallyStolen: 0,
           stolen: 0,
-          failed: 0
+          failed: 0,
         },
         runTime: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         waitTime: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         elu: {
           idle: {
-            history: expect.any(CircularBuffer)
+            history: expect.any(CircularBuffer),
           },
           active: {
-            history: expect.any(CircularBuffer)
-          }
-        }
+            history: expect.any(CircularBuffer),
+          },
+        },
       })
     }
     await pool.destroy()
@@ -1003,22 +1005,22 @@ describe('Abstract pool test suite', () => {
           maxQueued: 0,
           sequentiallyStolen: 0,
           stolen: 0,
-          failed: 0
+          failed: 0,
         },
         runTime: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         waitTime: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         elu: {
           idle: {
-            history: expect.any(CircularBuffer)
+            history: expect.any(CircularBuffer),
           },
           active: {
-            history: expect.any(CircularBuffer)
-          }
-        }
+            history: expect.any(CircularBuffer),
+          },
+        },
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
@@ -1035,22 +1037,22 @@ describe('Abstract pool test suite', () => {
           maxQueued: 0,
           sequentiallyStolen: 0,
           stolen: 0,
-          failed: 0
+          failed: 0,
         },
         runTime: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         waitTime: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         elu: {
           idle: {
-            history: expect.any(CircularBuffer)
+            history: expect.any(CircularBuffer),
           },
           active: {
-            history: expect.any(CircularBuffer)
-          }
-        }
+            history: expect.any(CircularBuffer),
+          },
+        },
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
@@ -1091,7 +1093,7 @@ describe('Abstract pool test suite', () => {
       busyWorkerNodes: expect.any(Number),
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
-      failedTasks: expect.any(Number)
+      failedTasks: expect.any(Number),
     })
     await pool.destroy()
   })
@@ -1132,7 +1134,7 @@ describe('Abstract pool test suite', () => {
       busyWorkerNodes: expect.any(Number),
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
-      failedTasks: expect.any(Number)
+      failedTasks: expect.any(Number),
     })
     await pool.destroy()
   })
@@ -1172,7 +1174,7 @@ describe('Abstract pool test suite', () => {
       busyWorkerNodes: expect.any(Number),
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
-      failedTasks: expect.any(Number)
+      failedTasks: expect.any(Number),
     })
     await pool.destroy()
   })
@@ -1182,7 +1184,7 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testWorker.mjs',
       {
-        enableTasksQueue: true
+        enableTasksQueue: true,
       }
     )
     stub(pool, 'hasBackPressure').returns(true)
@@ -1220,7 +1222,7 @@ describe('Abstract pool test suite', () => {
       queuedTasks: expect.any(Number),
       backPressure: true,
       stolenTasks: expect.any(Number),
-      failedTasks: expect.any(Number)
+      failedTasks: expect.any(Number),
     })
     expect(pool.hasBackPressure.callCount).toBeGreaterThanOrEqual(7)
     await pool.destroy()
@@ -1233,7 +1235,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/asyncWorker.mjs',
       {
         enableTasksQueue: true,
-        tasksQueueOptions: { tasksFinishedTimeout }
+        tasksQueueOptions: { tasksFinishedTimeout },
       }
     )
     const maxMultiplier = 4
@@ -1262,7 +1264,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/asyncWorker.mjs',
       {
         enableTasksQueue: true,
-        tasksQueueOptions: { tasksFinishedTimeout }
+        tasksQueueOptions: { tasksFinishedTimeout },
       }
     )
     const maxMultiplier = 4
@@ -1304,7 +1306,7 @@ describe('Abstract pool test suite', () => {
       },
       promiseResolve () {
         if (executionAsyncId() === taskAsyncId) resolveCalls++
-      }
+      },
     })
     const pool = new FixedThreadPool(
       numberOfWorkers,
@@ -1380,7 +1382,7 @@ describe('Abstract pool test suite', () => {
     await expect(
       dynamicThreadPool.addTaskFunction('test', {
         taskFunction: () => {},
-        priority: -21
+        priority: -21,
       })
     ).rejects.toThrow(
       new RangeError("Property 'priority' must be between -20 and 19")
@@ -1388,7 +1390,7 @@ describe('Abstract pool test suite', () => {
     await expect(
       dynamicThreadPool.addTaskFunction('test', {
         taskFunction: () => {},
-        priority: 20
+        priority: 20,
       })
     ).rejects.toThrow(
       new RangeError("Property 'priority' must be between -20 and 19")
@@ -1396,17 +1398,17 @@ describe('Abstract pool test suite', () => {
     await expect(
       dynamicThreadPool.addTaskFunction('test', {
         taskFunction: () => {},
-        strategy: 'invalidStrategy'
+        strategy: 'invalidStrategy',
       })
     ).rejects.toThrow(
       new Error("Invalid worker choice strategy 'invalidStrategy'")
     )
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
-      { name: 'test' }
+      { name: 'test' },
     ])
     expect([
-      ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys()
+      ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys(),
     ]).toStrictEqual([WorkerChoiceStrategies.ROUND_ROBIN])
     const echoTaskFunction = data => {
       return data
@@ -1414,24 +1416,24 @@ describe('Abstract pool test suite', () => {
     await expect(
       dynamicThreadPool.addTaskFunction('echo', {
         taskFunction: echoTaskFunction,
-        strategy: WorkerChoiceStrategies.LEAST_ELU
+        strategy: WorkerChoiceStrategies.LEAST_ELU,
       })
     ).resolves.toBe(true)
     expect(dynamicThreadPool.taskFunctions.size).toBe(1)
     expect(dynamicThreadPool.taskFunctions.get('echo')).toStrictEqual({
       taskFunction: echoTaskFunction,
-      strategy: WorkerChoiceStrategies.LEAST_ELU
+      strategy: WorkerChoiceStrategies.LEAST_ELU,
     })
     expect([
-      ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys()
+      ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys(),
     ]).toStrictEqual([
       WorkerChoiceStrategies.ROUND_ROBIN,
-      WorkerChoiceStrategies.LEAST_ELU
+      WorkerChoiceStrategies.LEAST_ELU,
     ])
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
       { name: 'test' },
-      { name: 'echo', strategy: WorkerChoiceStrategies.LEAST_ELU }
+      { name: 'echo', strategy: WorkerChoiceStrategies.LEAST_ELU },
     ])
     const taskFunctionData = { test: 'test' }
     const echoResult = await dynamicThreadPool.execute(taskFunctionData, 'echo')
@@ -1444,22 +1446,22 @@ describe('Abstract pool test suite', () => {
           queued: 0,
           sequentiallyStolen: 0,
           stolen: 0,
-          failed: 0
+          failed: 0,
         },
         runTime: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         waitTime: {
-          history: expect.any(CircularBuffer)
+          history: expect.any(CircularBuffer),
         },
         elu: expect.objectContaining({
           idle: expect.objectContaining({
-            history: expect.any(CircularBuffer)
+            history: expect.any(CircularBuffer),
           }),
           active: expect.objectContaining({
-            history: expect.any(CircularBuffer)
-          })
-        })
+            history: expect.any(CircularBuffer),
+          }),
+        }),
       })
       expect(
         workerNode.getTaskFunctionWorkerUsage('echo').tasks.executed
@@ -1514,7 +1516,7 @@ describe('Abstract pool test suite', () => {
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
-      { name: 'test' }
+      { name: 'test' },
     ])
     await expect(dynamicThreadPool.removeTaskFunction('test')).rejects.toThrow(
       new Error('Cannot remove a task function not handled on the pool side')
@@ -1524,23 +1526,23 @@ describe('Abstract pool test suite', () => {
     }
     await dynamicThreadPool.addTaskFunction('echo', {
       taskFunction: echoTaskFunction,
-      strategy: WorkerChoiceStrategies.LEAST_ELU
+      strategy: WorkerChoiceStrategies.LEAST_ELU,
     })
     expect(dynamicThreadPool.taskFunctions.size).toBe(1)
     expect(dynamicThreadPool.taskFunctions.get('echo')).toStrictEqual({
       taskFunction: echoTaskFunction,
-      strategy: WorkerChoiceStrategies.LEAST_ELU
+      strategy: WorkerChoiceStrategies.LEAST_ELU,
     })
     expect([
-      ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys()
+      ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys(),
     ]).toStrictEqual([
       WorkerChoiceStrategies.ROUND_ROBIN,
-      WorkerChoiceStrategies.LEAST_ELU
+      WorkerChoiceStrategies.LEAST_ELU,
     ])
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
       { name: 'test' },
-      { name: 'echo', strategy: WorkerChoiceStrategies.LEAST_ELU }
+      { name: 'echo', strategy: WorkerChoiceStrategies.LEAST_ELU },
     ])
     await expect(dynamicThreadPool.removeTaskFunction('echo')).resolves.toBe(
       true
@@ -1548,11 +1550,11 @@ describe('Abstract pool test suite', () => {
     expect(dynamicThreadPool.taskFunctions.size).toBe(0)
     expect(dynamicThreadPool.taskFunctions.get('echo')).toBeUndefined()
     expect([
-      ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys()
+      ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys(),
     ]).toStrictEqual([WorkerChoiceStrategies.ROUND_ROBIN])
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
-      { name: 'test' }
+      { name: 'test' },
     ])
     await dynamicThreadPool.destroy()
   })
@@ -1568,7 +1570,7 @@ describe('Abstract pool test suite', () => {
       { name: DEFAULT_TASK_NAME },
       { name: 'jsonIntegerSerialization' },
       { name: 'factorial' },
-      { name: 'fibonacci' }
+      { name: 'fibonacci' },
     ])
     await dynamicThreadPool.destroy()
     const fixedClusterPool = new FixedClusterPool(
@@ -1580,7 +1582,7 @@ describe('Abstract pool test suite', () => {
       { name: DEFAULT_TASK_NAME },
       { name: 'jsonIntegerSerialization' },
       { name: 'factorial' },
-      { name: 'fibonacci' }
+      { name: 'fibonacci' },
     ])
     await fixedClusterPool.destroy()
   })
@@ -1616,7 +1618,7 @@ describe('Abstract pool test suite', () => {
       { name: DEFAULT_TASK_NAME },
       { name: 'jsonIntegerSerialization' },
       { name: 'factorial' },
-      { name: 'fibonacci' }
+      { name: 'fibonacci' },
     ])
     await expect(
       dynamicThreadPool.setDefaultTaskFunction('factorial')
@@ -1625,7 +1627,7 @@ describe('Abstract pool test suite', () => {
       { name: DEFAULT_TASK_NAME },
       { name: 'factorial' },
       { name: 'jsonIntegerSerialization' },
-      { name: 'fibonacci' }
+      { name: 'fibonacci' },
     ])
     await expect(
       dynamicThreadPool.setDefaultTaskFunction('fibonacci')
@@ -1634,7 +1636,7 @@ describe('Abstract pool test suite', () => {
       { name: DEFAULT_TASK_NAME },
       { name: 'fibonacci' },
       { name: 'jsonIntegerSerialization' },
-      { name: 'factorial' }
+      { name: 'factorial' },
     ])
     await dynamicThreadPool.destroy()
   })
@@ -1661,10 +1663,11 @@ describe('Abstract pool test suite', () => {
         { name: DEFAULT_TASK_NAME },
         { name: 'jsonIntegerSerialization' },
         { name: 'factorial' },
-        { name: 'fibonacci' }
+        { name: 'fibonacci' },
       ])
       expect(workerNode.taskFunctionsUsage.size).toBe(3)
       expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.tasksQueue.enablePriority).toBe(false)
       for (const taskFunctionProperties of pool.listTaskFunctionsProperties()) {
         expect(
           workerNode.getTaskFunctionWorkerUsage(taskFunctionProperties.name)
@@ -1675,22 +1678,22 @@ describe('Abstract pool test suite', () => {
             failed: 0,
             queued: 0,
             sequentiallyStolen: 0,
-            stolen: 0
+            stolen: 0,
           },
           runTime: {
-            history: expect.any(CircularBuffer)
+            history: expect.any(CircularBuffer),
           },
           waitTime: {
-            history: expect.any(CircularBuffer)
+            history: expect.any(CircularBuffer),
           },
           elu: {
             idle: {
-              history: expect.any(CircularBuffer)
+              history: expect.any(CircularBuffer),
             },
             active: {
-              history: expect.any(CircularBuffer)
-            }
-          }
+              history: expect.any(CircularBuffer),
+            },
+          },
         })
         expect(
           workerNode.getTaskFunctionWorkerUsage(taskFunctionProperties.name)
@@ -1705,6 +1708,44 @@ describe('Abstract pool test suite', () => {
         )
       )
     }
+    await pool.destroy()
+  })
+
+  it('Verify that mapExecute() is working', async () => {
+    const pool = new DynamicThreadPool(
+      Math.floor(numberOfWorkers / 2),
+      numberOfWorkers,
+      './tests/worker-files/thread/testMultipleTaskFunctionsWorker.mjs'
+    )
+    expect(() => pool.mapExecute()).toThrow(new TypeError('data argument must be a defined iterable'))
+    expect(() => pool.mapExecute(0)).toThrow(new TypeError('data argument must be an iterable'))
+    let results = await pool.mapExecute([{}, {}, {}, {}])
+    expect(results).toStrictEqual([
+      { ok: 1 },
+      { ok: 1 },
+      { ok: 1 },
+      { ok: 1 },
+    ])
+    expect(pool.info.executingTasks).toBe(0)
+    expect(pool.info.executedTasks).toBe(4)
+    results = await pool.mapExecute([{ n: 10 }, { n: 20 }, { n: 30 }, { n: 40 }], 'factorial')
+    expect(results).toStrictEqual([
+      3628800,
+      2432902008176640000,
+      2.6525285981219103e+32,
+      8.159152832478977e+47,
+    ])
+    expect(pool.info.executingTasks).toBe(0)
+    expect(pool.info.executedTasks).toBe(8)
+    results = await pool.mapExecute(new Set([{ n: 10 }, { n: 20 }, { n: 30 }, { n: 40 }]), 'factorial')
+    expect(results).toStrictEqual([
+      3628800,
+      2432902008176640000,
+      2.6525285981219103e+32,
+      8.159152832478977e+47,
+    ])
+    expect(pool.info.executingTasks).toBe(0)
+    expect(pool.info.executedTasks).toBe(12)
     await pool.destroy()
   })
 
@@ -1730,10 +1771,11 @@ describe('Abstract pool test suite', () => {
         { name: DEFAULT_TASK_NAME },
         { name: 'jsonIntegerSerialization' },
         { name: 'factorial' },
-        { name: 'fibonacci' }
+        { name: 'fibonacci', priority: -5 },
       ])
       expect(workerNode.taskFunctionsUsage.size).toBe(3)
       expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
+      expect(workerNode.tasksQueue.enablePriority).toBe(true)
       for (const taskFunctionProperties of pool.listTaskFunctionsProperties()) {
         expect(
           workerNode.getTaskFunctionWorkerUsage(taskFunctionProperties.name)
@@ -1744,22 +1786,22 @@ describe('Abstract pool test suite', () => {
             failed: 0,
             queued: 0,
             sequentiallyStolen: 0,
-            stolen: 0
+            stolen: 0,
           },
           runTime: {
-            history: expect.any(CircularBuffer)
+            history: expect.any(CircularBuffer),
           },
           waitTime: {
-            history: expect.any(CircularBuffer)
+            history: expect.any(CircularBuffer),
           },
           elu: {
             idle: {
-              history: expect.any(CircularBuffer)
+              history: expect.any(CircularBuffer),
             },
             active: {
-              history: expect.any(CircularBuffer)
-            }
-          }
+              history: expect.any(CircularBuffer),
+            },
+          },
         })
         expect(
           workerNode.getTaskFunctionWorkerUsage(taskFunctionProperties.name)
@@ -1801,7 +1843,7 @@ describe('Abstract pool test suite', () => {
       pool.sendTaskFunctionOperationToWorker(workerNodeKey, {
         taskFunctionOperation: 'add',
         taskFunctionProperties: { name: 'empty' },
-        taskFunction: (() => {}).toString()
+        taskFunction: (() => {}).toString(),
       })
     ).resolves.toBe(true)
     expect(
@@ -1809,7 +1851,7 @@ describe('Abstract pool test suite', () => {
     ).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
       { name: 'test' },
-      { name: 'empty' }
+      { name: 'empty' },
     ])
     await pool.destroy()
   })
@@ -1824,14 +1866,14 @@ describe('Abstract pool test suite', () => {
       pool.sendTaskFunctionOperationToWorkers({
         taskFunctionOperation: 'add',
         taskFunctionProperties: { name: 'empty' },
-        taskFunction: (() => {}).toString()
+        taskFunction: (() => {}).toString(),
       })
     ).resolves.toBe(true)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.info.taskFunctionsProperties).toStrictEqual([
         { name: DEFAULT_TASK_NAME },
         { name: 'test' },
-        { name: 'empty' }
+        { name: 'empty' },
       ])
     }
     await pool.destroy()

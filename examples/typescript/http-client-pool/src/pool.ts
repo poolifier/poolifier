@@ -17,10 +17,10 @@ export const httpClientPool = new DynamicThreadPool<WorkerData, WorkerResponse>(
   {
     enableTasksQueue: true,
     tasksQueueOptions: {
-      concurrency: 8
+      concurrency: 8,
     },
     errorHandler: (e: Error) => {
       console.error('Thread worker error:', e)
-    }
+    },
   }
 )

@@ -7,14 +7,12 @@ import type { Task, TaskFunctionProperties } from '../utility-types.js'
 
 /**
  * Callback invoked when the worker has started successfully.
- *
  * @typeParam Worker - Type of worker.
  */
 export type OnlineHandler<Worker extends IWorker> = (this: Worker) => void
 
 /**
  * Callback invoked if the worker has received a message.
- *
  * @typeParam Worker - Type of worker.
  */
 export type MessageHandler<Worker extends IWorker> = (
@@ -24,7 +22,6 @@ export type MessageHandler<Worker extends IWorker> = (
 
 /**
  * Callback invoked if the worker raised an error.
- *
  * @typeParam Worker - Type of worker.
  */
 export type ErrorHandler<Worker extends IWorker> = (
@@ -34,7 +31,6 @@ export type ErrorHandler<Worker extends IWorker> = (
 
 /**
  * Callback invoked when the worker exits successfully.
- *
  * @typeParam Worker - Type of worker.
  */
 export type ExitHandler<Worker extends IWorker> = (
@@ -44,7 +40,6 @@ export type ExitHandler<Worker extends IWorker> = (
 
 /**
  * Worker event handler.
- *
  * @typeParam Worker - Type of worker.
  */
 export type EventHandler<Worker extends IWorker> =
@@ -60,7 +55,6 @@ export const MeasurementHistorySize = 386
 
 /**
  * Measurement statistics.
- *
  * @internal
  */
 export interface MeasurementStatistics {
@@ -92,7 +86,6 @@ export interface MeasurementStatistics {
 
 /**
  * Event loop utilization measurement statistics.
- *
  * @internal
  */
 export interface EventLoopUtilizationMeasurementStatistics {
@@ -103,7 +96,6 @@ export interface EventLoopUtilizationMeasurementStatistics {
 
 /**
  * Task statistics.
- *
  * @internal
  */
 export interface TaskStatistics {
@@ -140,10 +132,10 @@ export interface TaskStatistics {
 /**
  * Enumeration of worker types.
  */
-export const WorkerTypes: Readonly<{ thread: 'thread', cluster: 'cluster' }> =
+export const WorkerTypes: Readonly<{ thread: 'thread'; cluster: 'cluster' }> =
   Object.freeze({
     thread: 'thread',
-    cluster: 'cluster'
+    cluster: 'cluster',
   } as const)
 
 /**
@@ -153,7 +145,6 @@ export type WorkerType = keyof typeof WorkerTypes
 
 /**
  * Worker information.
- *
  * @internal
  */
 export interface WorkerInfo {
@@ -191,7 +182,6 @@ export interface WorkerInfo {
 
 /**
  * Worker usage statistics.
- *
  * @internal
  */
 export interface WorkerUsage {
@@ -215,7 +205,6 @@ export interface WorkerUsage {
 
 /**
  * Worker choice strategy data.
- *
  * @internal
  */
 export interface StrategyData {
@@ -236,14 +225,12 @@ export interface IWorker extends EventEmitter {
   readonly threadId?: number
   /**
    * Registers an event handler.
-   *
    * @param event - The event.
    * @param handler - The event handler.
    */
   readonly on: (event: string, handler: EventHandler<this>) => this
   /**
    * Registers once an event handler.
-   *
    * @param event - The event.
    * @param handler - The event handler.
    */
@@ -271,7 +258,6 @@ export interface IWorker extends EventEmitter {
 
 /**
  * Worker node options.
- *
  * @internal
  */
 export interface WorkerNodeOptions {
@@ -279,11 +265,11 @@ export interface WorkerNodeOptions {
   env?: Record<string, unknown>
   tasksQueueBackPressureSize: number | undefined
   tasksQueueBucketSize: number | undefined
+  tasksQueuePriority: boolean | undefined
 }
 
 /**
  * Worker node interface.
- *
  * @typeParam Worker - Type of worker.
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @internal
@@ -321,28 +307,29 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   tasksQueueBackPressureSize: number
   /**
+   * Sets tasks queue priority.
+   * @param enablePriority - Whether to enable tasks queue priority.
+   */
+  readonly setTasksQueuePriority: (enablePriority: boolean) => void
+  /**
    * Tasks queue size.
-   *
    * @returns The tasks queue size.
    */
   readonly tasksQueueSize: () => number
   /**
    * Enqueue task.
-   *
    * @param task - The task to queue.
    * @returns The tasks queue size.
    */
   readonly enqueueTask: (task: Task<Data>) => number
   /**
    * Dequeue task.
-   *
    * @param bucket - The prioritized bucket to dequeue from. @defaultValue 0
    * @returns The dequeued task.
    */
   readonly dequeueTask: (bucket?: number) => Task<Data> | undefined
   /**
    * Dequeue last prioritized task.
-   *
    * @returns The dequeued task.
    */
   readonly dequeueLastPrioritizedTask: () => Task<Data> | undefined
@@ -359,7 +346,6 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
   readonly clearTasksQueue: () => void
   /**
    * Whether the worker node has back pressure (i.e. its tasks queue is full).
-   *
    * @returns `true` if the worker node has back pressure, `false` otherwise.
    */
   readonly hasBackPressure: () => boolean
@@ -369,7 +355,6 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
   readonly terminate: () => Promise<void>
   /**
    * Registers a worker event handler.
-   *
    * @param event - The event.
    * @param handler - The event handler.
    */
@@ -379,7 +364,6 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
   ) => void
   /**
    * Registers once a worker event handler.
-   *
    * @param event - The event.
    * @param handler - The event handler.
    */
@@ -389,14 +373,12 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
   ) => void
   /**
    * Gets task function worker usage statistics.
-   *
    * @param name - The task function name.
    * @returns The task function worker usage statistics if the task function worker usage statistics are initialized, `undefined` otherwise.
    */
   readonly getTaskFunctionWorkerUsage: (name: string) => WorkerUsage | undefined
   /**
    * Deletes task function worker usage statistics.
-   *
    * @param name - The task function name.
    * @returns `true` if the task function worker usage statistics were deleted, `false` otherwise.
    */
@@ -405,7 +387,6 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
 
 /**
  * Worker node event detail.
- *
  * @internal
  */
 export interface WorkerNodeEventDetail {

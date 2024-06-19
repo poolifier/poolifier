@@ -19,13 +19,13 @@ describe('Thread worker test suite', () => {
 
   it('Verify that sync kill handler is called when worker is killed', () => {
     const worker = new ThreadWorker(() => {}, {
-      killHandler: stub().returns()
+      killHandler: stub().returns(),
     })
     worker.isMain = false
     worker.port = {
       postMessage: stub().returns(),
       unref: stub().returns(),
-      close: stub().returns()
+      close: stub().returns(),
     }
     worker.handleKillMessage()
     expect(worker.port.postMessage.calledOnce).toBe(true)
@@ -43,24 +43,24 @@ describe('Thread worker test suite', () => {
     }
     const worker = new ThreadWorker({ fn1, fn2 })
     worker.port = {
-      postMessage: stub().returns()
+      postMessage: stub().returns(),
     }
     expect(worker.removeTaskFunction(0, fn1)).toStrictEqual({
       status: false,
-      error: new TypeError('name parameter is not a string')
+      error: new TypeError('name parameter is not a string'),
     })
     expect(worker.removeTaskFunction('', fn1)).toStrictEqual({
       status: false,
-      error: new TypeError('name parameter is an empty string')
+      error: new TypeError('name parameter is an empty string'),
     })
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual({
-      taskFunction: expect.any(Function)
+      taskFunction: expect.any(Function),
     })
     expect(worker.taskFunctions.get('fn1')).toStrictEqual({
-      taskFunction: expect.any(Function)
+      taskFunction: expect.any(Function),
     })
     expect(worker.taskFunctions.get('fn2')).toStrictEqual({
-      taskFunction: expect.any(Function)
+      taskFunction: expect.any(Function),
     })
     expect(worker.taskFunctions.size).toBe(3)
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
@@ -70,20 +70,20 @@ describe('Thread worker test suite', () => {
       status: false,
       error: new Error(
         'Cannot remove the task function with the default reserved name'
-      )
+      ),
     })
     expect(worker.removeTaskFunction('fn1')).toStrictEqual({
       status: false,
       error: new Error(
         'Cannot remove the task function used as the default task function'
-      )
+      ),
     })
     worker.removeTaskFunction('fn2')
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual({
-      taskFunction: expect.any(Function)
+      taskFunction: expect.any(Function),
     })
     expect(worker.taskFunctions.get('fn1')).toStrictEqual({
-      taskFunction: expect.any(Function)
+      taskFunction: expect.any(Function),
     })
     expect(worker.taskFunctions.get('fn2')).toBeUndefined()
     expect(worker.taskFunctions.size).toBe(2)

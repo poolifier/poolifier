@@ -5,13 +5,12 @@ import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.
 import type {
   IWorkerChoiceStrategy,
   TaskStatisticsRequirements,
-  WorkerChoiceStrategyOptions
+  WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
 
 /**
  * Selects the next worker with a weighted round robin scheduling algorithm.
  * Loosely modeled after the weighted round robin queueing algorithm: https://en.wikipedia.org/wiki/Weighted_round_robin.
- *
  * @typeParam Worker - Type of worker which manages the strategy.
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
@@ -28,14 +27,14 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     runTime: {
       aggregate: true,
       average: true,
-      median: false
+      median: false,
     },
     waitTime: {
       aggregate: true,
       average: true,
-      median: false
+      median: false,
     },
-    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS
+    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   }
 
   /**

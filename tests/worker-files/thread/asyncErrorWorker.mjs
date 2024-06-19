@@ -17,5 +17,5 @@ async function error (data) {
 
 export default new ThreadWorker(error, {
   killBehavior: KillBehaviors.HARD,
-  maxInactiveTime: 500
+  maxInactiveTime: 500,
 })

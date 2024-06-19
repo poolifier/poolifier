@@ -19,12 +19,12 @@ describe('Cluster worker test suite', () => {
 
   it('Verify that sync kill handler is called when worker is killed', () => {
     const worker = new ClusterWorker(() => {}, {
-      killHandler: stub().returns()
+      killHandler: stub().returns(),
     })
     worker.isMain = false
     worker.getMainWorker = stub().returns({
       id: 1,
-      send: stub().returns()
+      send: stub().returns(),
     })
     worker.handleKillMessage()
     expect(worker.getMainWorker.calledTwice).toBe(true)
@@ -42,24 +42,24 @@ describe('Cluster worker test suite', () => {
     const worker = new ClusterWorker({ fn1, fn2 })
     worker.getMainWorker = stub().returns({
       id: 1,
-      send: stub().returns()
+      send: stub().returns(),
     })
     expect(worker.removeTaskFunction(0, fn1)).toStrictEqual({
       status: false,
-      error: new TypeError('name parameter is not a string')
+      error: new TypeError('name parameter is not a string'),
     })
     expect(worker.removeTaskFunction('', fn1)).toStrictEqual({
       status: false,
-      error: new TypeError('name parameter is an empty string')
+      error: new TypeError('name parameter is an empty string'),
     })
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual({
-      taskFunction: expect.any(Function)
+      taskFunction: expect.any(Function),
     })
     expect(worker.taskFunctions.get('fn1')).toStrictEqual({
-      taskFunction: expect.any(Function)
+      taskFunction: expect.any(Function),
     })
     expect(worker.taskFunctions.get('fn2')).toStrictEqual({
-      taskFunction: expect.any(Function)
+      taskFunction: expect.any(Function),
     })
     expect(worker.taskFunctions.size).toBe(3)
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(
@@ -69,20 +69,20 @@ describe('Cluster worker test suite', () => {
       status: false,
       error: new Error(
         'Cannot remove the task function with the default reserved name'
-      )
+      ),
     })
     expect(worker.removeTaskFunction('fn1')).toStrictEqual({
       status: false,
       error: new Error(
         'Cannot remove the task function used as the default task function'
-      )
+      ),
     })
     worker.removeTaskFunction('fn2')
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual({
-      taskFunction: expect.any(Function)
+      taskFunction: expect.any(Function),
     })
     expect(worker.taskFunctions.get('fn1')).toStrictEqual({
-      taskFunction: expect.any(Function)
+      taskFunction: expect.any(Function),
     })
     expect(worker.taskFunctions.get('fn2')).toBeUndefined()
     expect(worker.taskFunctions.size).toBe(2)
@@ -102,7 +102,7 @@ describe('Cluster worker test suite', () => {
   it('Verify that sendToMainWorker() method invokes the getMainWorker() and send() methods', () => {
     const worker = new ClusterWorker(() => {})
     worker.getMainWorker = stub().returns({
-      send: stub().returns()
+      send: stub().returns(),
     })
     worker.sendToMainWorker({ ok: 1 })
     expect(worker.getMainWorker.calledTwice).toBe(true)

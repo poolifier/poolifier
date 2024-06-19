@@ -27,15 +27,16 @@ class RequestHandlerWorker<
       factorial: (workerData?: Data) => {
         return {
           data: {
-            number: RequestHandlerWorker.factorial(workerData!.data.number!)
-          }
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            number: RequestHandlerWorker.factorial(workerData!.data.number!),
+          },
         } as unknown as Response
-      }
+      },
     })
   }
 }
 
 export const requestHandlerWorker = new RequestHandlerWorker<
-WorkerData<DataPayload>,
-WorkerResponse<DataPayload>
+  WorkerData<DataPayload>,
+  WorkerResponse<DataPayload>
 >()

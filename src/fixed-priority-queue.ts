@@ -4,68 +4,119 @@
 export const defaultQueueSize = 2048
 
 /**
- * Priority queue node.
- *
+ * Fixed priority queue node.
  * @typeParam T - Type of priority queue node data.
  * @internal
  */
-export interface PriorityQueueNode<T> {
+export interface FixedPriorityQueueNode<T> {
   data: T
   priority: number
 }
 
 /**
  * Fixed priority queue.
- *
  * @typeParam T - Type of fixed priority queue data.
  * @internal
  */
 export class FixedPriorityQueue<T> {
   private start!: number
-  private readonly nodeArray: Array<PriorityQueueNode<T>>
+  private readonly nodeArray: FixedPriorityQueueNode<T>[]
+  /** The fixed priority queue capacity. */
+  public readonly capacity: number
+  /** The fixed priority queue size. */
   public size!: number
-  public maxSize!: number
+  /** Whether to enable priority. */
+  public enablePriority: boolean
 
-  constructor (size: number = defaultQueueSize) {
+  /**
+   * Constructs a fixed priority queue.
+   * @param size - Fixed priority queue size. @defaultValue defaultQueueSize
+   * @param enablePriority - Whether to enable priority. @defaultValue false
+   * @returns FixedPriorityQueue.
+   */
+  constructor (size: number = defaultQueueSize, enablePriority = false) {
     this.checkSize(size)
-    this.nodeArray = new Array<PriorityQueueNode<T>>(size)
+    this.capacity = size
+    this.enablePriority = enablePriority
+    this.nodeArray = new Array<FixedPriorityQueueNode<T>>(this.capacity)
     this.clear()
   }
 
+  /**
+   * Checks if the fixed priority queue is empty.
+   * @returns `true` if the fixed priority queue is empty, `false` otherwise.
+   */
   public empty (): boolean {
     return this.size === 0
   }
 
+  /**
+   * Checks if the fixed priority queue is full.
+   * @returns `true` if the fixed priority queue is full, `false` otherwise.
+   */
   public full (): boolean {
-    return this.size === this.nodeArray.length
+    return this.size === this.capacity
   }
 
+  /**
+   * Enqueue data into the fixed priority queue.
+   * @param data - Data to enqueue.
+   * @param priority - Priority of the data. Lower values have higher priority.
+   * @returns The new size of the priority queue.
+   * @throws If the fixed priority queue is full.
+   */
   public enqueue (data: T, priority?: number): number {
     if (this.full()) {
       throw new Error('Priority queue is full')
     }
     priority = priority ?? 0
-    const nodeArrayLength = this.nodeArray.length
     let inserted = false
-    for (let index = this.start; index < nodeArrayLength; index++) {
-      if (this.nodeArray[index]?.priority > priority) {
-        this.nodeArray.splice(index, 0, { data, priority })
-        inserted = true
-        break
+    if (this.enablePriority) {
+      let index = this.start
+      for (let i = 0; i < this.size; i++) {
+        if (this.nodeArray[index].priority > priority) {
+          this.nodeArray.splice(index, 0, { data, priority })
+          this.nodeArray.length !== this.capacity &&
+            (this.nodeArray.length = this.capacity)
+          inserted = true
+          break
+        }
+        ++index
+        if (index === this.capacity) {
+          index = 0
+        }
       }
     }
-    this.nodeArray.length !== nodeArrayLength &&
-      (this.nodeArray.length = nodeArrayLength)
     if (!inserted) {
       let index = this.start + this.size
-      if (index >= nodeArrayLength) {
-        index -= nodeArrayLength
+      if (index >= this.capacity) {
+        index -= this.capacity
       }
       this.nodeArray[index] = { data, priority }
     }
-    return this.incrementSize()
+    return ++this.size
   }
 
+  /**
+   * Gets data from the fixed priority queue.
+   * @param index - The index of the data to get.
+   * @returns The data at the index or `undefined` if the fixed priority queue is empty or the index is out of bounds.
+   */
+  public get (index: number): T | undefined {
+    if (this.empty() || index >= this.size) {
+      return undefined
+    }
+    index += this.start
+    if (index >= this.capacity) {
+      index -= this.capacity
+    }
+    return this.nodeArray[index].data
+  }
+
+  /**
+   * Dequeue data from the fixed priority queue.
+   * @returns The dequeued data or `undefined` if the priority queue is empty.
+   */
   public dequeue (): T | undefined {
     if (this.empty()) {
       return undefined
@@ -73,11 +124,29 @@ export class FixedPriorityQueue<T> {
     const index = this.start
     --this.size
     ++this.start
-    if (this.start === this.nodeArray.length) {
+    if (this.start === this.capacity) {
       this.start = 0
     }
     return this.nodeArray[index].data
   }
+
+    /**
+   * Deletes the given data from the priority queue.
+   * @param data - Data to delete.
+   * @returns `true` if the data was deleted, `false` otherwise.
+   */
+    public delete (data: T): boolean {
+      if (
+        this.nodeArray.splice(
+          this.nodeArray.findIndex(node => node?.data === data),
+          1
+        ).length > 0
+      ) {
+        --this.size
+        return true
+      }
+      return false
+    }
 
   /**
    * Clears the fixed priority queue.
@@ -85,56 +154,52 @@ export class FixedPriorityQueue<T> {
   public clear (): void {
     this.start = 0
     this.size = 0
-    this.maxSize = 0
   }
 
   /**
    * Returns an iterator for the fixed priority queue.
-   *
    * @returns An iterator for the fixed priority queue.
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
    */
-  [Symbol.iterator] (): Iterator<T> {
-    let i = this.start
+  public [Symbol.iterator] (): Iterator<T> {
+    let index = this.start
+    let i = 0
     return {
       next: () => {
         if (i >= this.size) {
           return {
             value: undefined,
-            done: true
+            done: true,
           }
         }
-        const value = this.nodeArray[i].data
-        i++
+        const value = this.nodeArray[index].data
+        ++index
+        ++i
+        if (index === this.capacity) {
+          index = 0
+        }
         return {
           value,
-          done: false
+          done: false,
         }
-      }
+      },
     }
   }
 
   /**
-   * Increments the size of the fixed priority queue.
-   *
-   * @returns The new size of the fixed priority queue.
+   * Checks the queue size.
+   * @param size - Queue size.
    */
-  private incrementSize (): number {
-    ++this.size
-    if (this.size > this.maxSize) {
-      this.maxSize = this.size
-    }
-    return this.size
-  }
-
   private checkSize (size: number): void {
     if (!Number.isSafeInteger(size)) {
       throw new TypeError(
-        `Invalid fixed priority queue size: '${size}' is not an integer`
+        `Invalid fixed priority queue size: '${size.toString()}' is not an integer`
       )
     }
     if (size < 0) {
-      throw new RangeError(`Invalid fixed priority queue size: ${size} < 0`)
+      throw new RangeError(
+        `Invalid fixed priority queue size: ${size.toString()} < 0`
+      )
     }
   }
 }

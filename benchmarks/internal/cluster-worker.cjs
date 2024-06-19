@@ -8,6 +8,7 @@ const taskFunction = data => {
   data.function = data.function || TaskFunctions.factorial
   data.debug = data.debug || false
   const res = executeTaskFunction(data)
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   data.debug === true && console.debug(`This is the main thread ${isPrimary}`)
   return res
 }

@@ -37,6 +37,7 @@
     "mochawesome",
     "MYBENCH",
     "nanothreads",
+    "neostandard",
     "npmjs",
     "nproc",
     "octocat",
@@ -59,6 +60,7 @@
     "tinypool",
     "trimmable",
     "tsdoc",
+    "tseslint",
     "typedoc",
     "workerpool"
   ],

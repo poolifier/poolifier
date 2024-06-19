@@ -31,16 +31,17 @@ const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(
               : Math.round(availableParallelism() / 4),
           enableTasksQueue: true,
           tasksQueueOptions: {
-            concurrency: 8
+            concurrency: 8,
           },
           errorHandler: (e: Error) => {
             console.error('Thread worker error', e)
-          }
+          },
         })
         .then(response => {
           if (response.status) {
             console.info(
-              `Fastify is listening in cluster worker on port ${response.port}`
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `Fastify is listening in cluster worker on port ${response.port?.toString()}`
             )
           }
           return undefined
@@ -51,6 +52,6 @@ const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(
     },
     errorHandler: (e: Error) => {
       console.error('Cluster worker error:', e)
-    }
+    },
   }
 )

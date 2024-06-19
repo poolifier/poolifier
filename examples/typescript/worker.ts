@@ -12,7 +12,7 @@ export interface MyResponse {
 class MyThreadWorker extends ThreadWorker<MyData, MyResponse> {
   constructor () {
     super(async (data?: MyData) => await this.process(data), {
-      maxInactiveTime: 60000
+      maxInactiveTime: 60000,
     })
   }
 

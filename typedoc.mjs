@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 
 try {
   mkdirSync(join(dirname(fileURLToPath(import.meta.url)), 'tmp'), {
-    recursive: true
+    recursive: true,
   })
   const markdownFiles = readdirSync(
     join(dirname(fileURLToPath(import.meta.url)), 'docs')
@@ -25,7 +25,7 @@ try {
   }
   rmSync(join(dirname(fileURLToPath(import.meta.url)), 'tmp'), {
     recursive: true,
-    force: true
+    force: true,
   })
 } catch (e) {
   console.error(e)

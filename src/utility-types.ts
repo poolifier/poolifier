@@ -7,7 +7,6 @@ import type { KillBehavior } from './worker/worker-options.js'
 
 /**
  * Worker error.
- *
  * @typeParam Data - Type of data sent to the worker triggering an error. This can only be structured-cloneable data.
  */
 export interface WorkerError<Data = unknown> {
@@ -27,7 +26,6 @@ export interface WorkerError<Data = unknown> {
 
 /**
  * Task performance.
- *
  * @internal
  */
 export interface TaskPerformance {
@@ -51,7 +49,6 @@ export interface TaskPerformance {
 
 /**
  * Worker task performance statistics computation settings.
- *
  * @internal
  */
 export interface WorkerStatistics {
@@ -85,7 +82,6 @@ export interface TaskFunctionProperties {
 
 /**
  * Message object that is passed as a task between main worker and worker.
- *
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @internal
  */
@@ -100,7 +96,6 @@ export interface Task<Data = unknown> {
   readonly data?: Data
   /**
    * Task priority. Lower values have higher priority.
-   *
    * @defaultValue 0
    */
   readonly priority?: number
@@ -128,7 +123,6 @@ export interface Task<Data = unknown> {
 
 /**
  * Message object that is passed between main worker and worker.
- *
  * @typeParam Data - Type of data sent to the worker or execution response. This can only be structured-cloneable data.
  * @typeParam ErrorData - Type of data sent to the worker triggering an error. This can only be structured-cloneable data.
  * @internal
@@ -199,7 +193,6 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
 
 /**
  * An object holding the task execution response promise resolve/reject callbacks.
- *
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  * @internal
  */

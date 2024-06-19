@@ -1,7 +1,7 @@
 /**
  * Enumeration of kill behaviors.
  */
-export const KillBehaviors: Readonly<{ SOFT: 'SOFT', HARD: 'HARD' }> =
+export const KillBehaviors: Readonly<{ SOFT: 'SOFT'; HARD: 'HARD' }> =
   Object.freeze({
     /**
      * If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but the worker is stealing tasks or a task is executing or queued, then the worker **wont** be deleted.
@@ -10,7 +10,7 @@ export const KillBehaviors: Readonly<{ SOFT: 'SOFT', HARD: 'HARD' }> =
     /**
      * If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but the worker is stealing tasks or a task is executing or queued, then the worker will be deleted.
      */
-    HARD: 'HARD'
+    HARD: 'HARD',
   } as const)
 
 /**
@@ -34,7 +34,6 @@ export interface WorkerOptions {
    * - HARD: If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but the worker is stealing tasks or a task is executing or queued, then the worker will be deleted.
    *
    * This option only apply to the newly created workers.
-   *
    * @defaultValue KillBehaviors.SOFT
    */
   killBehavior?: KillBehavior
@@ -45,15 +44,13 @@ export interface WorkerOptions {
    * The last active time of your worker will be updated when it terminates a task.
    *
    * - If `killBehavior` is set to `KillBehaviors.HARD` this value represents also the timeout for the tasks that you submit to the pool,
-   *   when this timeout expires your tasks is interrupted before completion and removed. The worker is killed if is not part of the minimum size of the pool.
+   * when this timeout expires your tasks is interrupted before completion and removed. The worker is killed if is not part of the minimum size of the pool.
    * - If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.
-   *
    * @defaultValue 60000
    */
   maxInactiveTime?: number
   /**
    * The function to call when a worker is killed.
-   *
    * @defaultValue `() => {}`
    */
   killHandler?: KillHandler

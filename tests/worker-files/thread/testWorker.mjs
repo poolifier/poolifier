@@ -15,5 +15,5 @@ function test (data) {
 
 export default new ThreadWorker(test, {
   killBehavior: KillBehaviors.HARD,
-  maxInactiveTime: 500
+  maxInactiveTime: 500,
 })

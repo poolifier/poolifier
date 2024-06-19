@@ -7,7 +7,7 @@ import { availableParallelism, DynamicThreadPool } from 'poolifier'
 import type {
   FastifyPoolifierOptions,
   WorkerData,
-  WorkerResponse
+  WorkerResponse,
 } from './types.js'
 
 const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
@@ -18,13 +18,15 @@ const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
   options = {
     ...{
       minWorkers: 1,
-      maxWorkers: availableParallelism()
+      maxWorkers: availableParallelism(),
     },
-    ...options
+    ...options,
   }
   const { workerFile, minWorkers, maxWorkers, ...poolOptions } = options
   const pool = new DynamicThreadPool<WorkerData, WorkerResponse>(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     minWorkers!,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     maxWorkers!,
     workerFile,
     poolOptions
@@ -47,5 +49,5 @@ const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
 
 export const fastifyPoolifier = fp(fastifyPoolifierPlugin, {
   fastify: '4.x',
-  name: 'fastify-poolifier'
+  name: 'fastify-poolifier',
 })

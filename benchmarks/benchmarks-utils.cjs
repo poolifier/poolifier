@@ -4,14 +4,14 @@ const {
   mkdirSync,
   readFileSync,
   rmSync,
-  writeFileSync
+  writeFileSync,
 } = require('node:fs')
 const { TaskFunctions } = require('./benchmarks-types.cjs')
 
 const jsonIntegerSerialization = n => {
   for (let i = 0; i < n; i++) {
     const o = {
-      a: i
+      a: i,
     }
     JSON.stringify(o)
   }
@@ -19,8 +19,8 @@ const jsonIntegerSerialization = n => {
 }
 
 /**
- * @param {number} n - The number of fibonacci numbers to generate.
- * @returns {number} - The nth fibonacci number.
+ * @param n - The number of fibonacci numbers to generate.
+ * @returns - The nth fibonacci number.
  */
 const fibonacci = n => {
   n = BigInt(n)
@@ -36,8 +36,8 @@ const fibonacci = n => {
 }
 
 /**
- * @param {number} n - The number to calculate the factorial of.
- * @returns {number} - The factorial of n.
+ * @param n - The number to calculate the factorial of.
+ * @returns - The factorial of n.
  */
 const factorial = n => {
   if (n === 0 || n === 1) {
@@ -65,7 +65,7 @@ const readWriteFiles = (
     const filePath = `${baseDirectory}/${i}`
     writeFileSync(filePath, i.toString(), {
       encoding: 'utf8',
-      flag: 'a'
+      flag: 'a',
     })
     readFileSync(filePath, 'utf8')
   }
@@ -89,5 +89,5 @@ const executeTaskFunction = data => {
 }
 
 module.exports = {
-  executeTaskFunction
+  executeTaskFunction,
 }

@@ -1,6 +1,6 @@
 import {
   checkValidPriority,
-  checkValidWorkerChoiceStrategy
+  checkValidWorkerChoiceStrategy,
 } from '../pools/utils.js'
 import { isPlainObject } from '../utils.js'
 import type { TaskFunctionObject } from './task-functions.js'

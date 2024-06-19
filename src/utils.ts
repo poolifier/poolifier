@@ -20,7 +20,6 @@ export const EMPTY_FUNCTION: () => void = Object.freeze(() => {
 /**
  * Returns safe host OS optimized estimate of the default amount of parallelism a pool should use.
  * Always returns a value greater than zero.
- *
  * @returns The host OS optimized maximum pool size.
  */
 export const availableParallelism = (): number => {
@@ -38,7 +37,6 @@ export const availableParallelism = (): number => {
 
 /**
  * Sleeps for the given amount of milliseconds.
- *
  * @param ms - The amount of milliseconds to sleep.
  * @returns A promise that resolves after the given amount of milliseconds.
  * @internal
@@ -51,7 +49,6 @@ export const sleep = async (ms: number): Promise<void> => {
 
 /**
  * Computes the retry delay in milliseconds using an exponential back off algorithm.
- *
  * @param retryNumber - The number of retries that have already been attempted
  * @param delayFactor - The base delay factor in milliseconds
  * @returns Delay in milliseconds
@@ -68,7 +65,6 @@ export const exponentialDelay = (
 
 /**
  * Computes the average of the given data set.
- *
  * @param dataSet - Data set.
  * @returns The average of the given data set.
  * @internal
@@ -87,7 +83,6 @@ export const average = (dataSet: number[]): number => {
 
 /**
  * Computes the median of the given data set.
- *
  * @param dataSet - Data set.
  * @returns The median of the given data set.
  * @internal
@@ -109,7 +104,6 @@ export const median = (dataSet: number[]): number => {
 /**
  * Rounds the given number to the given scale.
  * The rounding is done using the "round half away from zero" method.
- *
  * @param num - The number to round.
  * @param scale - The scale to round to.
  * @returns The rounded number.
@@ -122,7 +116,6 @@ export const round = (num: number, scale = 2): number => {
 
 /**
  * Is the given value a plain object?
- *
  * @param value - The value to check.
  * @returns `true` if the given value is a plain object, `false` otherwise.
  * @internal
@@ -135,7 +128,6 @@ export const isPlainObject = (value: unknown): value is object =>
 
 /**
  * Detects whether the given value is a kill behavior or not.
- *
  * @typeParam KB - Which specific KillBehavior type to test against.
  * @param killBehavior - Which kind of kill behavior to detect.
  * @param value - Unknown value.
@@ -151,7 +143,6 @@ export const isKillBehavior = <KB extends KillBehavior>(
 
 /**
  * Detects whether the given value is an asynchronous function or not.
- *
  * @param fn - Unknown value.
  * @returns `true` if `fn` was an asynchronous function, otherwise `false`.
  * @internal
@@ -164,7 +155,6 @@ export const isAsyncFunction = (
 
 /**
  * Generates a cryptographically secure random number in the [0,1[ range
- *
  * @returns A number in the [0,1[ range
  * @internal
  */
@@ -175,7 +165,6 @@ export const secureRandom = (): number => {
 /**
  * Returns the minimum of the given numbers.
  * If no numbers are given, `Number.POSITIVE_INFINITY` is returned.
- *
  * @param args - The numbers to get the minimum of.
  * @returns The minimum of the given numbers.
  * @internal
@@ -189,7 +178,6 @@ export const min = (...args: number[]): number =>
 /**
  * Returns the maximum of the given numbers.
  * If no numbers are given, `Number.NEGATIVE_INFINITY` is returned.
- *
  * @param args - The numbers to get the maximum of.
  * @returns The maximum of the given numbers.
  * @internal
@@ -202,11 +190,9 @@ export const max = (...args: number[]): number =>
 
 /**
  * Wraps a function so that it can only be called once.
- *
  * @param fn - The function to wrap.
  * @param context - The context to bind the function to.
  * @returns The wrapped function.
- *
  * @typeParam A - The function's arguments.
  * @typeParam R - The function's return value.
  * @typeParam C - The function's context.
@@ -236,10 +222,10 @@ export const buildTaskFunctionProperties = <Data, Response>(
   return {
     name,
     ...(taskFunctionObject?.priority != null && {
-      priority: taskFunctionObject.priority
+      priority: taskFunctionObject.priority,
     }),
     ...(taskFunctionObject?.strategy != null && {
-      strategy: taskFunctionObject.strategy
-    })
+      strategy: taskFunctionObject.strategy,
+    }),
   }
 }

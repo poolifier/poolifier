@@ -28,16 +28,17 @@ class RequestHandlerWorker<
         return {
           body: {
             number: RequestHandlerWorker.factorial(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               workerData!.body.number!
-            ).toString()
-          }
+            ).toString(),
+          },
         } as unknown as Response
-      }
+      },
     })
   }
 }
 
 export const requestHandlerWorker = new RequestHandlerWorker<
-WorkerData<BodyPayload>,
-WorkerResponse<BodyPayload>
+  WorkerData<BodyPayload>,
+  WorkerResponse<BodyPayload>
 >()

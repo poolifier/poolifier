@@ -12,7 +12,7 @@ describe('Fixed thread pool test suite', () => {
     numberOfThreads,
     './tests/worker-files/thread/testWorker.mjs',
     {
-      errorHandler: e => console.error(e)
+      errorHandler: e => console.error(e),
     }
   )
   const queuePool = new FixedThreadPool(
@@ -21,9 +21,9 @@ describe('Fixed thread pool test suite', () => {
     {
       enableTasksQueue: true,
       tasksQueueOptions: {
-        concurrency: tasksConcurrency
+        concurrency: tasksConcurrency,
       },
-      errorHandler: e => console.error(e)
+      errorHandler: e => console.error(e),
     }
   )
   const emptyPool = new FixedThreadPool(
@@ -39,14 +39,14 @@ describe('Fixed thread pool test suite', () => {
     numberOfThreads,
     './tests/worker-files/thread/errorWorker.mjs',
     {
-      errorHandler: e => console.error(e)
+      errorHandler: e => console.error(e),
     }
   )
   const asyncErrorPool = new FixedThreadPool(
     numberOfThreads,
     './tests/worker-files/thread/asyncErrorWorker.mjs',
     {
-      errorHandler: e => console.error(e)
+      errorHandler: e => console.error(e),
     }
   )
   const asyncPool = new FixedThreadPool(
@@ -66,11 +66,11 @@ describe('Fixed thread pool test suite', () => {
 
   it('Verify that the function is executed in a worker thread', async () => {
     let result = await pool.execute({
-      function: TaskFunctions.fibonacci
+      function: TaskFunctions.fibonacci,
     })
     expect(result).toBe(354224848179262000000)
     result = await pool.execute({
-      function: TaskFunctions.factorial
+      function: TaskFunctions.factorial,
     })
     expect(result).toBe(9.33262154439441e157)
   })
@@ -85,7 +85,7 @@ describe('Fixed thread pool test suite', () => {
       numberOfThreads,
       './tests/worker-files/thread/testWorker.mjs',
       {
-        errorHandler: e => console.error(e)
+        errorHandler: e => console.error(e),
       }
     )
     expect(pool.emitter.eventNames()).toStrictEqual([])
@@ -195,7 +195,7 @@ describe('Fixed thread pool test suite', () => {
     try {
       result = await pool.execute(undefined, undefined, [
         new ArrayBuffer(16),
-        new MessageChannel().port1
+        new MessageChannel().port1,
       ])
     } catch (e) {
       error = e
@@ -204,7 +204,7 @@ describe('Fixed thread pool test suite', () => {
     expect(error).toBeUndefined()
     try {
       result = await pool.execute(undefined, undefined, [
-        new SharedArrayBuffer(16)
+        new SharedArrayBuffer(16),
       ])
     } catch (e) {
       error = e
@@ -238,7 +238,7 @@ describe('Fixed thread pool test suite', () => {
     expect(taskError).toStrictEqual({
       name: DEFAULT_TASK_NAME,
       message: new Error('Error Message from ThreadWorker'),
-      data
+      data,
     })
     expect(
       errorPool.workerNodes.some(
@@ -255,7 +255,7 @@ describe('Fixed thread pool test suite', () => {
       taskError = e
     })
     expect(asyncErrorPool.emitter.eventNames()).toStrictEqual([
-      PoolEvents.taskError
+      PoolEvents.taskError,
     ])
     let inError
     try {
@@ -271,7 +271,7 @@ describe('Fixed thread pool test suite', () => {
     expect(taskError).toStrictEqual({
       name: DEFAULT_TASK_NAME,
       message: new Error('Error Message from ThreadWorker:async'),
-      data
+      data,
     })
     expect(
       asyncErrorPool.workerNodes.some(
@@ -296,14 +296,14 @@ describe('Fixed thread pool test suite', () => {
     pool.emitter.on(PoolEvents.destroy, () => ++poolDestroy)
     expect(pool.emitter.eventNames()).toStrictEqual([
       PoolEvents.busy,
-      PoolEvents.destroy
+      PoolEvents.destroy,
     ])
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
     expect(pool.started).toBe(false)
     expect(pool.emitter.eventNames()).toStrictEqual([
       PoolEvents.busy,
-      PoolEvents.destroy
+      PoolEvents.destroy,
     ])
     expect(pool.readyEventEmitted).toBe(false)
     expect(pool.workerNodes.length).toBe(0)
@@ -319,12 +319,12 @@ describe('Fixed thread pool test suite', () => {
     pool = new FixedThreadPool(numberOfThreads, workerFilePath, {
       workerOptions: {
         env: { TEST: 'test' },
-        name: 'test'
-      }
+        name: 'test',
+      },
     })
     expect(pool.opts.workerOptions).toStrictEqual({
       env: { TEST: 'test' },
-      name: 'test'
+      name: 'test',
     })
     await pool.destroy()
   })

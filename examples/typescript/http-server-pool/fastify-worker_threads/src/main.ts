@@ -12,11 +12,12 @@ import { fastifyPoolifier } from './fastify-poolifier.js'
 
 const port = 8080
 const fastify = Fastify({
-  logger: true
+  logger: true,
 })
 
 const workerFile = join(
   dirname(fileURLToPath(import.meta.url)),
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   `worker${extname(fileURLToPath(import.meta.url))}`
 )
 
@@ -24,11 +25,11 @@ await fastify.register(fastifyPoolifier, {
   workerFile,
   enableTasksQueue: true,
   tasksQueueOptions: {
-    concurrency: 8
+    concurrency: 8,
   },
   errorHandler: (e: Error) => {
     fastify.log.error('Thread worker error:', e)
-  }
+  },
 })
 
 fastify.all('/api/echo', async request => {

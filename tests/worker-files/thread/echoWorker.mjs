@@ -10,5 +10,5 @@ function echo (data) {
 }
 
 export default new ThreadWorker(echo, {
-  killBehavior: KillBehaviors.HARD
+  killBehavior: KillBehaviors.HARD,
 })
