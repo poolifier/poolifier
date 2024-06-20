@@ -128,29 +128,38 @@ export class PriorityQueue<T> {
         }
         ++currentBucket
         tail = tail.next
-        tailChanged = true
       }
+      tailChanged = tail !== this.tail
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const data = tail!.dequeue()
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    if (tail!.empty() && tail!.next != null) {
-      if (!tailChanged) {
+    if (tail!.empty()) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      if (!tailChanged && tail!.next != null) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.tail = tail!.next
-      } else {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        delete tail!.next
+      } else if (tailChanged) {
         let node: PriorityQueueNode<T> | undefined = this.tail
         while (node != null) {
-          if (node.next === tail) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          if (node.next === tail && tail!.next != null) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             node.next = tail!.next
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            delete tail!.next
+            break
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          } else if (node.next === tail && tail!.next == null) {
+            delete node.next
+            this.head = node
             break
           }
           node = node.next
         }
       }
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      delete tail!.next
     }
     return data
   }

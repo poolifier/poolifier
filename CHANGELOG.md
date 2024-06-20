@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add fine grained task abortion support.
 
+## [4.0.15] - 2024-06-20
+
+### Fixed
+
+- Fix priority queue dequeue() from the last prioritized bucket.
+
 ## [4.0.14] - 2024-06-12
 
 ### Changed
