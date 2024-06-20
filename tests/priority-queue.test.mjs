@@ -137,6 +137,7 @@ describe('Priority queue test suite', () => {
       { data: 2, priority: 0 },
     ])
     expect(priorityQueue.tail.next).toStrictEqual(priorityQueue.head)
+    expect(priorityQueue.tail).not.toStrictEqual(priorityQueue.head)
     rtSize = priorityQueue.enqueue(3, -1)
     expect(priorityQueue.buckets).toBe(2)
     expect(priorityQueue.size).toBe(4)
@@ -152,6 +153,7 @@ describe('Priority queue test suite', () => {
       { data: 2, priority: 0 },
     ])
     expect(priorityQueue.tail.next).toStrictEqual(priorityQueue.head)
+    expect(priorityQueue.tail).not.toStrictEqual(priorityQueue.head)
     rtSize = priorityQueue.enqueue(1, 1)
     expect(priorityQueue.buckets).toBe(2)
     expect(priorityQueue.size).toBe(5)
@@ -165,11 +167,13 @@ describe('Priority queue test suite', () => {
       { data: 1, priority: 0 },
       { data: 2, priority: 0 },
     ])
-    expect(priorityQueue.tail.next).not.toStrictEqual(priorityQueue.head)
     expect(priorityQueue.tail.next.nodeArray).toMatchObject([
       { data: 3, priority: -1 },
       { data: 3, priority: 0 },
     ])
+    expect(priorityQueue.tail.next.next).toStrictEqual(priorityQueue.head)
+    expect(priorityQueue.tail.next).not.toStrictEqual(priorityQueue.head)
+    expect(priorityQueue.tail).not.toStrictEqual(priorityQueue.head)
     rtSize = priorityQueue.enqueue(3, -2)
     expect(priorityQueue.buckets).toBe(3)
     expect(priorityQueue.size).toBe(6)
@@ -184,11 +188,13 @@ describe('Priority queue test suite', () => {
       { data: 1, priority: 0 },
       { data: 2, priority: 0 },
     ])
-    expect(priorityQueue.tail.next).not.toStrictEqual(priorityQueue.head)
     expect(priorityQueue.tail.next.nodeArray).toMatchObject([
       { data: 3, priority: -1 },
       { data: 3, priority: 0 },
     ])
+    expect(priorityQueue.tail.next.next).toStrictEqual(priorityQueue.head)
+    expect(priorityQueue.tail.next).not.toStrictEqual(priorityQueue.head)
+    expect(priorityQueue.tail).not.toStrictEqual(priorityQueue.head)
   })
 
   it('Verify default bucket size dequeue() behavior', () => {
@@ -201,6 +207,7 @@ describe('Priority queue test suite', () => {
     expect(priorityQueue.maxSize).toBe(3)
     expect(priorityQueue.tail.empty()).toBe(false)
     expect(priorityQueue.tail.next).toBe(undefined)
+    expect(priorityQueue.tail).toStrictEqual(priorityQueue.head)
     let rtItem = priorityQueue.dequeue()
     expect(priorityQueue.buckets).toBe(0)
     expect(priorityQueue.size).toBe(2)
@@ -208,6 +215,7 @@ describe('Priority queue test suite', () => {
     expect(rtItem).toBe(2)
     expect(priorityQueue.tail.empty()).toBe(false)
     expect(priorityQueue.tail.next).toBe(undefined)
+    expect(priorityQueue.tail).toStrictEqual(priorityQueue.head)
     rtItem = priorityQueue.dequeue()
     expect(priorityQueue.buckets).toBe(0)
     expect(priorityQueue.size).toBe(1)
@@ -215,6 +223,7 @@ describe('Priority queue test suite', () => {
     expect(rtItem).toBe(1)
     expect(priorityQueue.tail.empty()).toBe(false)
     expect(priorityQueue.tail.next).toBe(undefined)
+    expect(priorityQueue.tail).toStrictEqual(priorityQueue.head)
     rtItem = priorityQueue.dequeue()
     expect(priorityQueue.buckets).toBe(0)
     expect(priorityQueue.size).toBe(0)
@@ -222,6 +231,7 @@ describe('Priority queue test suite', () => {
     expect(rtItem).toBe(3)
     expect(priorityQueue.tail.empty()).toBe(true)
     expect(priorityQueue.tail.next).toBe(undefined)
+    expect(priorityQueue.tail).toStrictEqual(priorityQueue.head)
   })
 
   it('Verify bucketSize=2 dequeue() behavior', () => {
@@ -237,6 +247,7 @@ describe('Priority queue test suite', () => {
     expect(priorityQueue.maxSize).toBe(6)
     expect(priorityQueue.tail.empty()).toBe(false)
     expect(priorityQueue.tail.next).toBeInstanceOf(FixedPriorityQueue)
+    expect(priorityQueue.tail).not.toStrictEqual(priorityQueue.head)
     let rtItem = priorityQueue.dequeue(3)
     expect(priorityQueue.buckets).toBe(2)
     expect(priorityQueue.size).toBe(5)
@@ -244,6 +255,7 @@ describe('Priority queue test suite', () => {
     expect(rtItem).toBe(3)
     expect(priorityQueue.tail.empty()).toBe(false)
     expect(priorityQueue.tail.next).toBeInstanceOf(FixedPriorityQueue)
+    expect(priorityQueue.tail).not.toStrictEqual(priorityQueue.head)
     rtItem = priorityQueue.dequeue()
     expect(priorityQueue.buckets).toBe(2)
     expect(priorityQueue.size).toBe(4)
@@ -251,6 +263,7 @@ describe('Priority queue test suite', () => {
     expect(rtItem).toBe(1)
     expect(priorityQueue.tail.empty()).toBe(false)
     expect(priorityQueue.tail.next).toBeInstanceOf(FixedPriorityQueue)
+    expect(priorityQueue.tail).not.toStrictEqual(priorityQueue.head)
     rtItem = priorityQueue.dequeue(2)
     expect(priorityQueue.buckets).toBe(1)
     expect(priorityQueue.size).toBe(3)
@@ -258,6 +271,7 @@ describe('Priority queue test suite', () => {
     expect(rtItem).toBe(3)
     expect(priorityQueue.tail.empty()).toBe(false)
     expect(priorityQueue.tail.next).toBeInstanceOf(FixedPriorityQueue)
+    expect(priorityQueue.tail).not.toStrictEqual(priorityQueue.head)
     rtItem = priorityQueue.dequeue(2)
     expect(priorityQueue.buckets).toBe(1)
     expect(priorityQueue.size).toBe(2)
@@ -265,13 +279,15 @@ describe('Priority queue test suite', () => {
     expect(rtItem).toBe(3)
     expect(priorityQueue.tail.empty()).toBe(false)
     expect(priorityQueue.tail.next).toBeInstanceOf(FixedPriorityQueue)
+    expect(priorityQueue.tail).not.toStrictEqual(priorityQueue.head)
     rtItem = priorityQueue.dequeue(2)
     expect(priorityQueue.buckets).toBe(0)
     expect(priorityQueue.size).toBe(1)
     expect(priorityQueue.maxSize).toBe(6)
     expect(rtItem).toBe(1)
     expect(priorityQueue.tail.empty()).toBe(false)
-    expect(priorityQueue.tail.next).toBeInstanceOf(FixedPriorityQueue)
+    expect(priorityQueue.tail.next).toBe(undefined)
+    expect(priorityQueue.tail).toStrictEqual(priorityQueue.head)
     rtItem = priorityQueue.dequeue()
     expect(priorityQueue.buckets).toBe(0)
     expect(priorityQueue.size).toBe(0)
@@ -279,6 +295,7 @@ describe('Priority queue test suite', () => {
     expect(rtItem).toBe(2)
     expect(priorityQueue.tail.empty()).toBe(true)
     expect(priorityQueue.tail.next).toBe(undefined)
+    expect(priorityQueue.tail).toStrictEqual(priorityQueue.head)
   })
 
   it('Verify enablePriority setter behavior', () => {
