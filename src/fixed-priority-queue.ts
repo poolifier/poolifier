@@ -76,8 +76,7 @@ export class FixedPriorityQueue<T> {
       for (let i = 0; i < this.size; i++) {
         if (this.nodeArray[index].priority > priority) {
           this.nodeArray.splice(index, 0, { data, priority })
-          this.nodeArray.length !== this.capacity &&
-            (this.nodeArray.length = this.capacity)
+          this.nodeArray.length = this.capacity
           inserted = true
           break
         }

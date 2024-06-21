@@ -4,6 +4,7 @@ const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
 /**
  *
  * @param data
+ * @returns
  */
 function echo (data) {
   return data
