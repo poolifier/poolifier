@@ -1162,7 +1162,7 @@ export abstract class AbstractPool<
           )
           .filter(
             (strategy: WorkerChoiceStrategy | undefined) => strategy != null
-          ) as WorkerChoiceStrategy[]),
+          )),
       ])
     }
 
