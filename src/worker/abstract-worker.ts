@@ -77,7 +77,7 @@ export abstract class AbstractWorker<
    */
   protected taskAbortFunctions: Map<
     `${string}-${string}-${string}-${string}`,
-  () => void
+    () => void
   >
 
   /**
@@ -113,7 +113,7 @@ export abstract class AbstractWorker<
     this.checkTaskFunctions(taskFunctions)
     this.taskAbortFunctions = new Map<
       `${string}-${string}-${string}-${string}`,
-    () => void
+      () => void
     >()
     this.on('abortTask', (eventDetail: AbortTaskEventDetail) => {
       const { taskId } = eventDetail
@@ -552,7 +552,7 @@ export abstract class AbstractWorker<
           })
           const taskFunction = this.taskFunctions.get(name)?.taskFunction
           if (isAsyncFunction(taskFunction)) {
-            (taskFunction as TaskAsyncFunction<Data, Response>)(data)
+            ;(taskFunction as TaskAsyncFunction<Data, Response>)(data)
               .then(resolve)
               .catch(reject)
           } else {

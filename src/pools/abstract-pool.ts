@@ -1213,7 +1213,7 @@ export abstract class AbstractPool<
           this.workerNodes[workerNodeKey].emit('abortTask', {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             workerId: this.getWorkerInfo(workerNodeKey)!.id!,
-            taskId: task.taskId
+            taskId: task.taskId,
           })
         },
         { once: true }
@@ -1229,7 +1229,7 @@ export abstract class AbstractPool<
             requireManualDestroy: true,
           }),
         }),
-        abortSignal
+        abortSignal,
       })
       if (
         this.opts.enableTasksQueue === false ||
