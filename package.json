@@ -113,7 +113,7 @@
     "@types/node": "^20.14.9",
     "c8": "^10.1.2",
     "cross-env": "^7.0.3",
-    "eslint": "^9.5.0",
+    "eslint": "^9.6.0",
     "eslint-define-config": "^2.1.0",
     "eslint-plugin-jsdoc": "^48.5.0",
     "eslint-plugin-n": "^17.9.0",
