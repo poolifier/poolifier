@@ -1155,14 +1155,14 @@ export abstract class AbstractPool<
       return new Set([
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.opts.workerChoiceStrategy!,
-        ...(this.listTaskFunctionsProperties()
+        ...this.listTaskFunctionsProperties()
           .map(
             (taskFunctionProperties: TaskFunctionProperties) =>
               taskFunctionProperties.strategy
           )
           .filter(
             (strategy: WorkerChoiceStrategy | undefined) => strategy != null
-          )),
+          ),
       ])
     }
 
