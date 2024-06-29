@@ -22,7 +22,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^4.28.0",
+    "fastify": "^4.28.1",
     "poolifier": "^4.0.15"
   },
   "devDependencies": {
