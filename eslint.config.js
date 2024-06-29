@@ -19,7 +19,13 @@ export default defineFlatConfig([
   jsdoc.configs['flat/recommended-typescript'],
   {
     rules: {
-      'jsdoc/check-tag-names': ['warn', { typed: true, definedTags: ['defaultValue', 'experimental', 'typeParam'] }],
+      'jsdoc/check-tag-names': [
+        'warn',
+        {
+          typed: true,
+          definedTags: ['defaultValue', 'experimental', 'typeParam'],
+        },
+      ],
     },
   },
   ...tseslint.config(
