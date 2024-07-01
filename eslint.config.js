@@ -36,7 +36,6 @@ export default defineFlatConfig([
   ...neostandard({
     ts: true,
     globals: {
-      ...globals.node,
       ...globals.mocha,
     },
   }),
