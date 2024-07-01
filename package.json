@@ -134,6 +134,6 @@
     "sinon": "^18.0.0",
     "tatami-ng": "^0.4.15",
     "typedoc": "^0.26.3",
-    "typescript": "~5.5.2"
+    "typescript": "~5.5.3"
   }
 }
