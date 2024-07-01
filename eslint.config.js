@@ -2,10 +2,10 @@ import cspellConfigs from '@cspell/eslint-plugin/configs'
 import js from '@eslint/js'
 import { defineFlatConfig } from 'eslint-define-config'
 import jsdoc from 'eslint-plugin-jsdoc'
-import nodePlugin from 'eslint-plugin-n'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import globals from 'globals'
-import neostandard from 'neostandard'
+import neostandard, { plugins } from 'neostandard'
+// FIXME: https://github.com/neostandard/neostandard/pull/88
 // eslint-disable-next-line n/no-extraneous-import
 import tseslint from 'typescript-eslint'
 
@@ -15,7 +15,8 @@ export default defineFlatConfig([
   },
   cspellConfigs.recommended,
   js.configs.recommended,
-  ...nodePlugin.configs['flat/mixed-esm-and-cjs'],
+  plugins.promise.configs['flat/recommended'],
+  ...plugins.n.configs['flat/mixed-esm-and-cjs'],
   jsdoc.configs['flat/recommended-typescript'],
   {
     rules: {
@@ -28,10 +29,10 @@ export default defineFlatConfig([
       ],
     },
   },
-  ...tseslint.config(
-    ...tseslint.configs.strictTypeChecked,
-    ...tseslint.configs.stylisticTypeChecked
-  ),
+  // ...tseslint.config(
+  //   ...tseslint.configs.strictTypeChecked,
+  //   ...tseslint.configs.stylisticTypeChecked
+  // ),
   ...neostandard({
     ts: true,
     globals: {
