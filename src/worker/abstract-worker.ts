@@ -365,6 +365,9 @@ export abstract class AbstractWorker<
           ...(taskFunctionProperties.strategy != null && {
             strategy: taskFunctionProperties.strategy,
           }),
+          ...(taskFunctionProperties.workerNodes != null && {
+            workerNodes: taskFunctionProperties.workerNodes,
+          }),
         })
         break
       case 'remove':
