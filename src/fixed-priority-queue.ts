@@ -130,6 +130,23 @@ export class FixedPriorityQueue<T> {
   }
 
   /**
+   * Deletes the given data from the fixed priority queue.
+   * @param data - Data to delete.
+   * @returns `true` if the data was deleted, `false` otherwise.
+   */
+  public delete (data: T): boolean {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    const index = this.nodeArray.findIndex(node => node?.data === data)
+    if (index !== -1) {
+      this.nodeArray.splice(index, 1)
+      this.nodeArray.length = this.capacity
+      --this.size
+      return true
+    }
+    return false
+  }
+
+  /**
    * Clears the fixed priority queue.
    */
   public clear (): void {

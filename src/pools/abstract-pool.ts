@@ -1160,7 +1160,8 @@ export abstract class AbstractPool<
   public async execute (
     data?: Data,
     name?: string,
-    transferList?: readonly TransferListItem[]
+    transferList?: readonly TransferListItem[],
+    abortSignal?: AbortSignal
   ): Promise<Response> {
     return await new Promise<Response>((resolve, reject) => {
       if (!this.started) {
@@ -1187,6 +1188,10 @@ export abstract class AbstractPool<
         reject(new TypeError('transferList argument must be an array'))
         return
       }
+      if (abortSignal != null && !(abortSignal instanceof AbortSignal)) {
+        reject(new TypeError('abortSignal argument must be an AbortSignal'))
+        return
+      }
       const timestamp = performance.now()
       const workerNodeKey = this.chooseWorkerNode(name)
       const task: Task<Data> = {
@@ -1199,8 +1204,20 @@ export abstract class AbstractPool<
         ),
         transferList,
         timestamp,
+        abortable: abortSignal != null,
         taskId: randomUUID(),
       }
+      abortSignal?.addEventListener(
+        'abort',
+        () => {
+          this.workerNodes[workerNodeKey].emit('abortTask', {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            workerId: this.getWorkerInfo(workerNodeKey)!.id!,
+            taskId: task.taskId,
+          })
+        },
+        { once: true }
+      )
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.promiseResponseMap.set(task.taskId!, {
         resolve,
@@ -1212,6 +1229,7 @@ export abstract class AbstractPool<
             requireManualDestroy: true,
           }),
         }),
+        abortSignal,
       })
       if (
         this.opts.enableTasksQueue === false ||
@@ -1726,6 +1744,29 @@ export abstract class AbstractPool<
     listener: (message: MessageValue<Message>) => void
   ): void
 
+  private readonly abortTask = (eventDetail: WorkerNodeEventDetail): void => {
+    const { workerId, taskId } = eventDetail
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const { reject, abortSignal } = this.promiseResponseMap.get(taskId!)!
+    const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+    if (this.opts.enableTasksQueue === true) {
+      for (const task of this.workerNodes[workerNodeKey].tasksQueue) {
+        const { name, abortable } = task
+        if (taskId === task.taskId && abortable === true) {
+          this.workerNodes[workerNodeKey].deleteTask(task)
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.promiseResponseMap.delete(taskId!)
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          reject(new Error(`Task ${name!} id ${taskId!} aborted`))
+          return
+        }
+      }
+    }
+    if (abortSignal != null) {
+      this.sendToWorker(workerNodeKey, { taskId, taskOperation: 'abort' })
+    }
+  }
+
   /**
    * Method hooked up after a worker node has been newly created.
    * Can be overridden.
@@ -1755,6 +1796,7 @@ export abstract class AbstractPool<
         )
       }
     }
+    this.workerNodes[workerNodeKey].on('abortTask', this.abortTask)
   }
 
   /**
@@ -2255,8 +2297,18 @@ export abstract class AbstractPool<
    * @param task - The task to execute.
    */
   private executeTask (workerNodeKey: number, task: Task<Data>): void {
+    const { taskId, transferList } = task
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const { reject, abortSignal } = this.promiseResponseMap.get(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      taskId!
+    )!
+    if (abortSignal?.aborted === true) {
+      reject(new Error('Cannot execute an already aborted task'))
+      return
+    }
     this.beforeTaskExecutionHook(workerNodeKey, task)
-    this.sendToWorker(workerNodeKey, task, task.transferList)
+    this.sendToWorker(workerNodeKey, task, transferList)
     this.checkAndEmitTaskExecutionEvents()
   }
 
