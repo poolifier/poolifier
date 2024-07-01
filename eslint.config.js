@@ -29,10 +29,10 @@ export default defineFlatConfig([
       ],
     },
   },
-  // ...tseslint.config(
-  //   ...tseslint.configs.strictTypeChecked,
-  //   ...tseslint.configs.stylisticTypeChecked
-  // ),
+  ...tseslint.config(
+    ...tseslint.configs.strictTypeChecked,
+    ...tseslint.configs.stylisticTypeChecked
+  ),
   ...neostandard({
     ts: true,
     globals: {
