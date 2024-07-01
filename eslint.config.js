@@ -5,9 +5,6 @@ import jsdoc from 'eslint-plugin-jsdoc'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import globals from 'globals'
 import neostandard, { plugins } from 'neostandard'
-// FIXME: https://github.com/neostandard/neostandard/pull/88
-// eslint-disable-next-line n/no-extraneous-import
-import tseslint from 'typescript-eslint'
 
 export default defineFlatConfig([
   {
@@ -29,9 +26,9 @@ export default defineFlatConfig([
       ],
     },
   },
-  ...tseslint.config(
-    ...tseslint.configs.strictTypeChecked,
-    ...tseslint.configs.stylisticTypeChecked
+  ...plugins['typescript-eslint'].config(
+    ...plugins['typescript-eslint'].configs.strictTypeChecked,
+    ...plugins['typescript-eslint'].configs.stylisticTypeChecked
   ),
   ...neostandard({
     ts: true,
@@ -65,7 +62,6 @@ export default defineFlatConfig([
               'Quadflieg',
               'neostandard',
               'poolifier',
-              'tseslint',
             ],
           },
         },
@@ -84,7 +80,7 @@ export default defineFlatConfig([
   },
   {
     files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
-    ...tseslint.configs.disableTypeChecked,
+    ...plugins['typescript-eslint'].configs.disableTypeChecked,
   },
   // examples specific configuration
   {
