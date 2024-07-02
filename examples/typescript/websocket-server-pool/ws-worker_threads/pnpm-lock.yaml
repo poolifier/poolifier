@@ -29,8 +29,8 @@ importers:
         specifier: ^8.5.10
         version: 8.5.10
       typescript:
-        specifier: ^5.5.2
-        version: 5.5.2
+        specifier: ^5.5.3
+        version: 5.5.3
 
 packages:
 
@@ -52,8 +52,8 @@ packages:
     resolution: {integrity: sha512-D6udA0Pz0odHpuo93vrdNmiJXgmg9SAVO0hWJ8VX/OUIg8L+8PKtpbJgiRXB1yO26WIuKAyjhJ5hu5EBA3E6/A==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
-  typescript@5.5.2:
-    resolution: {integrity: sha512-NcRtPEOsPFFWjobJEtfihkLCZCXZt/os3zf8nTxjVH3RvTSxjrCamJpbExGvYOF+tFHc3pA65qpdwPbzjohhew==}
+  typescript@5.5.3:
+    resolution: {integrity: sha512-/hreyEujaB0w76zKo6717l3L0o/qEUtRgdvUBvlkhoWeOVMjMuHNHk0BRBzikzuGDqNmPQbg5ifMEqsHLiIUcQ==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -96,7 +96,7 @@ snapshots:
 
   poolifier@4.0.15: {}
 
-  typescript@5.5.2: {}
+  typescript@5.5.3: {}
 
   undici-types@5.26.5: {}
 

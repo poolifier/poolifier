@@ -2,12 +2,9 @@ import cspellConfigs from '@cspell/eslint-plugin/configs'
 import js from '@eslint/js'
 import { defineFlatConfig } from 'eslint-define-config'
 import jsdoc from 'eslint-plugin-jsdoc'
-import nodePlugin from 'eslint-plugin-n'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import globals from 'globals'
-import neostandard from 'neostandard'
-// eslint-disable-next-line n/no-extraneous-import
-import tseslint from 'typescript-eslint'
+import neostandard, { plugins } from 'neostandard'
 
 export default defineFlatConfig([
   {
@@ -15,7 +12,8 @@ export default defineFlatConfig([
   },
   cspellConfigs.recommended,
   js.configs.recommended,
-  ...nodePlugin.configs['flat/mixed-esm-and-cjs'],
+  plugins.promise.configs['flat/recommended'],
+  ...plugins.n.configs['flat/mixed-esm-and-cjs'],
   jsdoc.configs['flat/recommended-typescript'],
   {
     rules: {
@@ -28,14 +26,13 @@ export default defineFlatConfig([
       ],
     },
   },
-  ...tseslint.config(
-    ...tseslint.configs.strictTypeChecked,
-    ...tseslint.configs.stylisticTypeChecked
+  ...plugins['typescript-eslint'].config(
+    ...plugins['typescript-eslint'].configs.strictTypeChecked,
+    ...plugins['typescript-eslint'].configs.stylisticTypeChecked
   ),
   ...neostandard({
     ts: true,
     globals: {
-      ...globals.node,
       ...globals.mocha,
     },
   }),
@@ -65,7 +62,6 @@ export default defineFlatConfig([
               'Quadflieg',
               'neostandard',
               'poolifier',
-              'tseslint',
             ],
           },
         },
@@ -84,7 +80,7 @@ export default defineFlatConfig([
   },
   {
     files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
-    ...tseslint.configs.disableTypeChecked,
+    ...plugins['typescript-eslint'].configs.disableTypeChecked,
   },
   // examples specific configuration
   {
