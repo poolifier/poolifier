@@ -1,12 +1,36 @@
-name: Publish package
+name: Release Please
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
 
 jobs:
-  build:
+  release-please:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+          config-file: .github/release-please/config.json
+          manifest-file: .github/release-please/manifest.json
+
+  build-release:
+    needs: release-please
+    runs-on: ubuntu-latest
+    if: needs.release-please.outputs.release_created
 
     steps:
       - name: Checkout
@@ -36,7 +60,7 @@ jobs:
         run: pnpm build:prod
 
   publish-jsr:
-    needs: build
+    needs: build-release
     runs-on: ubuntu-latest
 
     permissions:
@@ -61,7 +85,7 @@ jobs:
         run: npx jsr publish --allow-dirty
 
   publish-npm:
-    needs: build
+    needs: build-release
     runs-on: ubuntu-latest
 
     steps:

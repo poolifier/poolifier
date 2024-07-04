@@ -1,7 +1,7 @@
 ## How to contribute
 
-This repo use standard js style, please use it if you want to contribute.  
-[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)  
+This repo use [![neostandard Javascript Code Style](https://badgen.net/static/neo/standard/green)](https://github.com/neostandard/neostandard) js style, please use it if you want to contribute.
+
 Take tasks from todo list, develop a new feature or fix a bug and do a pull request.  
 Another thing that you can do to contribute is to build something on top of poolifier and link poolifier to your project.
 
