@@ -1,10 +1,11 @@
-name: Generate documentation
+name: Publish documentation
 
 on:
   workflow_dispatch:
+  workflow_call:
 
 jobs:
-  generate:
+  publish-documentation:
     runs-on: ubuntu-latest
 
     steps:
