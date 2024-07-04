@@ -6,10 +6,10 @@
 ## PR Checklist
 
 - [ ] Please add a description of your changes.
+- [ ] Please ensure title follows [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/).
 - [ ] We need your changes to come with unit tests in order to keep this project in quality and easy to maintain.
 - [ ] If your changes contain any new feature please be sure to document it.
 - [ ] Please add a link to the open issue or task that this pull request will resolve.
-- [ ] Add an entry to the changelog to indicate the change.
 
 ## Does this PR introduce a breaking change?
 

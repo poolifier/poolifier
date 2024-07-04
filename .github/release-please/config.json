@@ -1,0 +1,35 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "node",
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": true,
+  "include-component-in-tag": false,
+  "include-v-in-tag": true,
+  "packages": {
+    ".": {
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "jsr.json",
+          "jsonpath": "$.version"
+        },
+        "sonar-project.properties",
+        "src/pools/version.ts"
+      ]
+    }
+  },
+  "changelog-sections": [
+    { "type": "feat", "section": "🚀 Features", "hidden": false },
+    { "type": "fix", "section": "🐞 Fixes", "hidden": false },
+    { "type": "docs", "section": "📚 Documentation", "hidden": false },
+
+    { "type": "perf", "section": "✨ Polish", "hidden": false },
+    { "type": "refactor", "section": "✨ Polish", "hidden": false },
+
+    { "type": "chore", "section": "🧹 Chores", "hidden": true },
+    { "type": "test", "section": "🧹 Chores", "hidden": false },
+
+    { "type": "build", "section": "🤖 Automation", "hidden": false },
+    { "type": "ci", "section": "🤖 Automation", "hidden": true }
+  ]
+}
