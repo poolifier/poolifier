@@ -16,7 +16,7 @@
 - [ ] Yes
 - [ ] No
 
-If yes please indicate it in the title and migration info into the documentation.
+If yes please indicate it in the title and add migration info into the documentation.
 
 ---
 
