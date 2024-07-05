@@ -11,6 +11,7 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    if: github.repository == 'poolifier/poolifier'
 
     permissions:
       contents: write
@@ -126,3 +127,7 @@ jobs:
         run: pnpm publish --no-git-checks --tag beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish-documentation:
+    uses: ./.github/workflows/publish-documentation.yml
+    needs: [publish-npm, publish-jsr]
