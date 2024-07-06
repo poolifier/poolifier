@@ -93,9 +93,7 @@
     "url": "https://github.com/poolifier/poolifier/issues"
   },
   "homepage": "https://github.com/poolifier/poolifier#readme",
-  "files": [
-    "lib"
-  ],
+  "files": ["lib"],
   "pnpm": {
     "overrides": {
       "semver": "^7.5.3"
@@ -105,7 +103,7 @@
     "@biomejs/biome": "^1.8.3",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
-    "@cspell/eslint-plugin": "^8.10.2",
+    "@cspell/eslint-plugin": "^8.10.4",
     "@eslint/js": "^9.6.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
