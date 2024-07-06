@@ -21,16 +21,4 @@ export class FixedQueue<T>
     this.nodeArray[index] = { data, priority: priority ?? 0 }
     return ++this.size
   }
-
-  /** @inheritdoc */
-  public get (index: number): T | undefined {
-    if (this.empty() || index >= this.size) {
-      return undefined
-    }
-    index += this.start
-    if (index >= this.capacity) {
-      index -= this.capacity
-    }
-    return this.nodeArray[index].data
-  }
 }
