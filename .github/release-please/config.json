@@ -21,13 +21,14 @@
   "changelog-sections": [
     { "type": "feat", "section": "🚀 Features", "hidden": false },
     { "type": "fix", "section": "🐞 Bug Fixes", "hidden": false },
-    { "type": "docs", "section": "📚 Documentation", "hidden": false },
-    { "type": "test", "section": "🧪 Tests", "hidden": false },
     { "type": "perf", "section": "⚡ Performance", "hidden": false },
     { "type": "refactor", "section": "✨ Polish", "hidden": false },
-    { "type": "chore", "section": "🧹 Chores", "hidden": true },
+    { "type": "test", "section": "🧪 Tests", "hidden": false },
+    { "type": "docs", "section": "📚 Documentation", "hidden": false },
 
     { "type": "build", "section": "🤖 Automation", "hidden": false },
-    { "type": "ci", "section": "🤖 Automation", "hidden": true }
+    { "type": "ci", "section": "🤖 Automation", "hidden": true },
+
+    { "type": "chore", "section": "🧹 Chores", "hidden": true }
   ]
 }
