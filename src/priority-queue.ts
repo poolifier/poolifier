@@ -2,7 +2,12 @@
 
 import { FixedPriorityQueue } from './fixed-priority-queue.js'
 import { FixedQueue } from './fixed-queue.js'
-import { defaultBucketSize, type FixedQueueNode, type IFixedQueue, type PriorityQueueNode } from './utility-types.js'
+import {
+  defaultBucketSize,
+  type FixedQueueNode,
+  type IFixedQueue,
+  type PriorityQueueNode,
+} from './utility-types.js'
 
 /**
  * Priority queue.
@@ -65,7 +70,7 @@ export class PriorityQueue<T> {
     this.priorityEnabled = enablePriority
     let head: PriorityQueueNode<T>
     let tail: PriorityQueueNode<T>
-    let prevNode : PriorityQueueNode<T> | undefined
+    let prevNode: PriorityQueueNode<T> | undefined
     let node: PriorityQueueNode<T> | undefined = this.tail
     let buckets = 0
     while (node != null) {
@@ -205,7 +210,9 @@ export class PriorityQueue<T> {
     }
   }
 
-  private getPriorityQueueNode (nodeArray?: FixedQueueNode<T>[]): PriorityQueueNode<T> {
+  private getPriorityQueueNode (
+    nodeArray?: FixedQueueNode<T>[]
+  ): PriorityQueueNode<T> {
     let fixedQueue: IFixedQueue<T>
     if (this.priorityEnabled) {
       fixedQueue = new FixedPriorityQueue(this.bucketSize)

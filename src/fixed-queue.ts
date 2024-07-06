@@ -1,4 +1,8 @@
-import { defaultQueueSize, type FixedQueueNode, type IFixedQueue } from './utility-types.js'
+import {
+  defaultQueueSize,
+  type FixedQueueNode,
+  type IFixedQueue,
+} from './utility-types.js'
 
 /**
  * Fixed queue.
@@ -118,9 +122,7 @@ export class FixedQueue<T> implements IFixedQueue<T> {
       )
     }
     if (size < 0) {
-      throw new RangeError(
-        `Invalid fixed queue size: ${size.toString()} < 0`
-      )
+      throw new RangeError(`Invalid fixed queue size: ${size.toString()} < 0`)
     }
   }
 }

@@ -1,4 +1,8 @@
-import { defaultQueueSize, type FixedQueueNode, type IFixedQueue } from './utility-types.js'
+import {
+  defaultQueueSize,
+  type FixedQueueNode,
+  type IFixedQueue,
+} from './utility-types.js'
 
 /**
  * Fixed priority queue.

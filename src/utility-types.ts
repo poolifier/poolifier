@@ -245,12 +245,12 @@ export interface IFixedQueue<T> {
    * Checks if the fixed queue is empty.
    * @returns `true` if the fixed queue is empty, `false` otherwise.
    */
-  empty(): boolean
+  empty: () => boolean
   /**
    * Checks if the fixed queue is full.
    * @returns `true` if the fixed queue is full, `false` otherwise.
    */
-  full(): boolean
+  full: () => boolean
   /**
    * Enqueue data into the fixed queue.
    * @param data - Data to enqueue.
@@ -258,28 +258,28 @@ export interface IFixedQueue<T> {
    * @returns The new size of the fixed queue.
    * @throws If the fixed queue is full.
    */
-  enqueue (data: T, priority?: number): number
+  enqueue: (data: T, priority?: number) => number
   /**
    * Gets data from the fixed queue.
    * @param index - The index of the data to get.
    * @returns The data at the index or `undefined` if the fixed queue is empty or the index is out of bounds.
    */
-  get (index: number): T | undefined
+  get: (index: number) => T | undefined
   /**
    * Dequeue data from the fixed queue.
    * @returns The dequeued data or `undefined` if the fixed queue is empty.
    */
-  dequeue (): T | undefined
+  dequeue: () => T | undefined
   /**
    * Clears the fixed queue.
    */
-  clear (): void
+  clear: () => void
   /**
    * Returns an iterator for the fixed queue.
    * @returns An iterator for the fixed queue.
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
    */
-  [Symbol.iterator] (): Iterator<T>
+  [Symbol.iterator]: () => Iterator<T>
 }
 
 /**

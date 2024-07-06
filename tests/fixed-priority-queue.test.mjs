@@ -1,8 +1,6 @@
 import { expect } from 'expect'
 
-import {
-  FixedPriorityQueue,
-} from '../lib/fixed-priority-queue.cjs'
+import { FixedPriorityQueue } from '../lib/fixed-priority-queue.cjs'
 import { defaultQueueSize } from '../lib/utility-types.cjs'
 
 describe('Fixed priority queue test suite', () => {

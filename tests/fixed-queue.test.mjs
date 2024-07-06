@@ -1,8 +1,6 @@
 import { expect } from 'expect'
 
-import {
-  FixedQueue,
-} from '../lib/fixed-queue.cjs'
+import { FixedQueue } from '../lib/fixed-queue.cjs'
 import { defaultQueueSize } from '../lib/utility-types.cjs'
 
 describe('Fixed queue test suite', () => {
@@ -27,9 +25,7 @@ describe('Fixed queue test suite', () => {
     expect(fixedQueue.start).toBe(0)
     expect(fixedQueue.size).toBe(1)
     expect(rtSize).toBe(fixedQueue.size)
-    expect(fixedQueue.nodeArray).toMatchObject([
-      { data: 1, priority: 0 },
-    ])
+    expect(fixedQueue.nodeArray).toMatchObject([{ data: 1, priority: 0 }])
     expect(fixedQueue.capacity).toBe(queueSize)
     rtSize = fixedQueue.enqueue(2)
     expect(fixedQueue.start).toBe(0)
