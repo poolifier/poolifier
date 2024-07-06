@@ -43,7 +43,7 @@ export class FixedQueue<T> implements IFixedQueue<T> {
   /** @inheritdoc */
   public enqueue (data: T, priority?: number): number {
     if (this.full()) {
-      throw new Error('Priority queue is full')
+      throw new Error('Fixed queue is full')
     }
     let index = this.start + this.size
     if (index >= this.capacity) {

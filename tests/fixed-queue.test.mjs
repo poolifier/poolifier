@@ -70,7 +70,7 @@ describe('Fixed queue test suite', () => {
     ])
     expect(fixedQueue.capacity).toBe(queueSize)
     expect(() => fixedQueue.enqueue(4)).toThrow(
-      new Error('Priority queue is full')
+      new Error('Fixed queue is full')
     )
   })
 

@@ -43,7 +43,7 @@ export class FixedPriorityQueue<T> implements IFixedQueue<T> {
   /** @inheritdoc */
   public enqueue (data: T, priority?: number): number {
     if (this.full()) {
-      throw new Error('Priority queue is full')
+      throw new Error('Fixed priority queue is full')
     }
     priority = priority ?? 0
     let inserted = false
