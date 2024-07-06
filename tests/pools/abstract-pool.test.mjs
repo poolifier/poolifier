@@ -20,7 +20,8 @@ import {
   WorkerTypes,
 } from '../../lib/index.cjs'
 import { WorkerNode } from '../../lib/pools/worker-node.cjs'
-import { defaultBucketSize, PriorityQueue } from '../../lib/priority-queue.cjs'
+import { PriorityQueue } from '../../lib/priority-queue.cjs'
+import { defaultBucketSize } from '../../lib/utility-types.cjs'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 import { waitPoolEvents } from '../test-utils.cjs'
 

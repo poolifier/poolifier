@@ -1,7 +1,9 @@
 import { expect } from 'expect'
 
 import { FixedPriorityQueue } from '../lib/fixed-priority-queue.cjs'
-import { defaultBucketSize, PriorityQueue } from '../lib/priority-queue.cjs'
+import { FixedQueue } from '../lib/fixed-queue.cjs'
+import { PriorityQueue } from '../lib/priority-queue.cjs'
+import { defaultBucketSize } from '../lib/utility-types.cjs'
 
 describe('Priority queue test suite', () => {
   it('Verify constructor() behavior', () => {
@@ -17,10 +19,10 @@ describe('Priority queue test suite', () => {
     expect(priorityQueue.size).toBe(0)
     expect(priorityQueue.maxSize).toBe(0)
     expect(priorityQueue.enablePriority).toBe(false)
-    expect(priorityQueue.head).toBeInstanceOf(FixedPriorityQueue)
+    expect(priorityQueue.head).toBeInstanceOf(FixedQueue)
     expect(priorityQueue.head.next).toBe(undefined)
     expect(priorityQueue.head.capacity).toBe(defaultBucketSize)
-    expect(priorityQueue.tail).toBeInstanceOf(FixedPriorityQueue)
+    expect(priorityQueue.tail).toBeInstanceOf(FixedQueue)
     expect(priorityQueue.tail).toStrictEqual(priorityQueue.head)
     const bucketSize = 2
     priorityQueue = new PriorityQueue(bucketSize, true)
@@ -308,18 +310,21 @@ describe('Priority queue test suite', () => {
     let buckets = 0
     let node = priorityQueue.tail
     while (node != null) {
-      expect(node.enablePriority).toBe(false)
+      expect(node).toBeInstanceOf(FixedQueue)
       node = node.next
       ++buckets
     }
     expect(buckets).toBe(2)
     priorityQueue.enablePriority = true
     expect(priorityQueue.enablePriority).toBe(true)
+    buckets = 0
     node = priorityQueue.tail
     while (node != null) {
-      expect(node.enablePriority).toBe(true)
+      expect(node).toBeInstanceOf(FixedPriorityQueue)
       node = node.next
+      ++buckets
     }
+    expect(buckets).toBe(2)
   })
 
   it('Verify iterator behavior', () => {

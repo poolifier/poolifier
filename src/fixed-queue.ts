@@ -1,11 +1,11 @@
 import { defaultQueueSize, type FixedQueueNode, type IFixedQueue } from './utility-types.js'
 
 /**
- * Fixed priority queue.
- * @typeParam T - Type of fixed priority queue data.
+ * Fixed queue.
+ * @typeParam T - Type of fixed queue data.
  * @internal
  */
-export class FixedPriorityQueue<T> implements IFixedQueue<T> {
+export class FixedQueue<T> implements IFixedQueue<T> {
   private start!: number
   /** @inheritdoc */
   public readonly capacity: number
@@ -15,9 +15,9 @@ export class FixedPriorityQueue<T> implements IFixedQueue<T> {
   public nodeArray: FixedQueueNode<T>[]
 
   /**
-   * Constructs a fixed priority queue.
-   * @param size - Fixed priority queue size. @defaultValue defaultQueueSize
-   * @returns FixedPriorityQueue.
+   * Constructs a fixed queue.
+   * @param size - Fixed queue size. @defaultValue defaultQueueSize
+   * @returns FixedQueue.
    */
   constructor (size: number = defaultQueueSize) {
     this.checkSize(size)
@@ -41,28 +41,11 @@ export class FixedPriorityQueue<T> implements IFixedQueue<T> {
     if (this.full()) {
       throw new Error('Priority queue is full')
     }
-    priority = priority ?? 0
-    let inserted = false
-    let index = this.start
-    for (let i = 0; i < this.size; i++) {
-      if (this.nodeArray[index].priority > priority) {
-        this.nodeArray.splice(index, 0, { data, priority })
-        this.nodeArray.length = this.capacity
-        inserted = true
-        break
-      }
-      ++index
-      if (index === this.capacity) {
-        index = 0
-      }
+    let index = this.start + this.size
+    if (index >= this.capacity) {
+      index -= this.capacity
     }
-    if (!inserted) {
-      let index = this.start + this.size
-      if (index >= this.capacity) {
-        index -= this.capacity
-      }
-      this.nodeArray[index] = { data, priority }
-    }
+    this.nodeArray[index] = { data, priority: priority ?? 0 }
     return ++this.size
   }
 
@@ -131,12 +114,12 @@ export class FixedPriorityQueue<T> implements IFixedQueue<T> {
   private checkSize (size: number): void {
     if (!Number.isSafeInteger(size)) {
       throw new TypeError(
-        `Invalid fixed priority queue size: '${size.toString()}' is not an integer`
+        `Invalid fixed queue size: '${size.toString()}' is not an integer`
       )
     }
     if (size < 0) {
       throw new RangeError(
-        `Invalid fixed priority queue size: ${size.toString()} < 0`
+        `Invalid fixed queue size: ${size.toString()} < 0`
       )
     }
   }
