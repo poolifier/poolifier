@@ -7,7 +7,7 @@ import {
   type FixedQueueNode,
   type IFixedQueue,
   type PriorityQueueNode,
-} from './utility-types.js'
+} from './queue-types.js'
 
 /**
  * Priority queue.

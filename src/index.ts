@@ -49,9 +49,9 @@ export type {
   WorkerUsage,
 } from './pools/worker.js'
 export { WorkerTypes } from './pools/worker.js'
-export type { PriorityQueue } from './priority-queue.js'
+export type { PriorityQueue } from './queues/priority-queue.js'
+export type { FixedQueueNode, IFixedQueue } from './queues/queue-types.js'
 export type {
-  IFixedQueue,
   MessageValue,
   PromiseResponseWrapper,
   Task,

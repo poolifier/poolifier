@@ -1,7 +1,7 @@
 import { expect } from 'expect'
 
-import { FixedQueue } from '../lib/fixed-queue.cjs'
-import { defaultQueueSize } from '../lib/utility-types.cjs'
+import { FixedQueue } from '../../lib/queues/fixed-queue.cjs'
+import { defaultQueueSize } from '../../lib/queues/queue-types.cjs'
 
 describe('Fixed queue test suite', () => {
   it('Verify constructor() behavior', () => {

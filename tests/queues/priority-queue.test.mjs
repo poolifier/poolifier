@@ -1,9 +1,9 @@
 import { expect } from 'expect'
 
-import { FixedPriorityQueue } from '../lib/fixed-priority-queue.cjs'
-import { FixedQueue } from '../lib/fixed-queue.cjs'
-import { PriorityQueue } from '../lib/priority-queue.cjs'
-import { defaultBucketSize } from '../lib/utility-types.cjs'
+import { FixedPriorityQueue } from '../../lib/queues/fixed-priority-queue.cjs'
+import { FixedQueue } from '../../lib/queues/fixed-queue.cjs'
+import { PriorityQueue } from '../../lib/queues/priority-queue.cjs'
+import { defaultBucketSize } from '../../lib/queues/queue-types.cjs'
 
 describe('Priority queue test suite', () => {
   it('Verify constructor() behavior', () => {

@@ -2,7 +2,7 @@ import {
   defaultQueueSize,
   type FixedQueueNode,
   type IFixedQueue,
-} from './utility-types.js'
+} from './queue-types.js'
 
 /**
  * Base fixed queue class

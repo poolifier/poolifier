@@ -2,7 +2,7 @@ import { EventEmitter } from 'node:events'
 import { MessageChannel } from 'node:worker_threads'
 
 import { CircularBuffer } from '../circular-buffer.js'
-import { PriorityQueue } from '../priority-queue.js'
+import { PriorityQueue } from '../queues/priority-queue.js'
 import type { Task } from '../utility-types.js'
 import { DEFAULT_TASK_NAME } from '../utils.js'
 import {
