@@ -1,20 +1,13 @@
 // Copyright Jerome Benoit. 2024. All Rights Reserved.
 
 import { FixedPriorityQueue } from './fixed-priority-queue.js'
-
-/**
- * Default bucket size.
- */
-export const defaultBucketSize = 2048
-
-/**
- * Priority queue node.
- * @typeParam T - Type of priority queue node data.
- * @internal
- */
-export interface PriorityQueueNode<T> extends FixedPriorityQueue<T> {
-  next?: FixedPriorityQueue<T>
-}
+import { FixedQueue } from './fixed-queue.js'
+import {
+  defaultBucketSize,
+  type FixedQueueNode,
+  type IFixedQueue,
+  type PriorityQueueNode,
+} from './queue-types.js'
 
 /**
  * Priority queue.
@@ -25,6 +18,7 @@ export class PriorityQueue<T> {
   private head!: PriorityQueueNode<T>
   private tail!: PriorityQueueNode<T>
   private readonly bucketSize: number
+  private priorityEnabled: boolean
   /** The priority queue maximum size. */
   public maxSize!: number
 
@@ -47,11 +41,8 @@ export class PriorityQueue<T> {
       throw new RangeError(`Invalid bucket size: ${bucketSize.toString()} < 0`)
     }
     this.bucketSize = bucketSize
-    this.head = this.tail = new FixedPriorityQueue(
-      this.bucketSize,
-      enablePriority
-    )
-    this.maxSize = 0
+    this.priorityEnabled = enablePriority
+    this.clear()
   }
 
   /**
@@ -69,18 +60,38 @@ export class PriorityQueue<T> {
   }
 
   public get enablePriority (): boolean {
-    return this.head.enablePriority
+    return this.priorityEnabled
   }
 
   public set enablePriority (enablePriority: boolean) {
-    if (this.head.enablePriority === enablePriority) {
+    if (this.priorityEnabled === enablePriority) {
       return
     }
+    this.priorityEnabled = enablePriority
+    let head: PriorityQueueNode<T>
+    let tail: PriorityQueueNode<T>
+    let prevNode: PriorityQueueNode<T> | undefined
     let node: PriorityQueueNode<T> | undefined = this.tail
+    let buckets = 0
     while (node != null) {
-      node.enablePriority = enablePriority
+      const currentNode = this.getPriorityQueueNode(node.nodeArray)
+      if (buckets === 0) {
+        tail = currentNode
+      }
+      if (prevNode != null) {
+        prevNode.next = currentNode
+      }
+      prevNode = currentNode
+      if (node.next == null) {
+        head = currentNode
+      }
+      ++buckets
       node = node.next
     }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.head = head!
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.tail = tail!
   }
 
   /**
@@ -99,10 +110,7 @@ export class PriorityQueue<T> {
    */
   public enqueue (data: T, priority?: number): number {
     if (this.head.full()) {
-      this.head = this.head.next = new FixedPriorityQueue(
-        this.bucketSize,
-        this.enablePriority
-      )
+      this.head = this.head.next = this.getPriorityQueueNode()
     }
     this.head.enqueue(data, priority)
     const size = this.size
@@ -168,10 +176,7 @@ export class PriorityQueue<T> {
    * Clears the priority queue.
    */
   public clear (): void {
-    this.head = this.tail = new FixedPriorityQueue(
-      this.bucketSize,
-      this.enablePriority
-    )
+    this.head = this.tail = this.getPriorityQueueNode()
     this.maxSize = 0
   }
 
@@ -203,5 +208,20 @@ export class PriorityQueue<T> {
         }
       },
     }
+  }
+
+  private getPriorityQueueNode (
+    nodeArray?: FixedQueueNode<T>[]
+  ): PriorityQueueNode<T> {
+    let fixedQueue: IFixedQueue<T>
+    if (this.priorityEnabled) {
+      fixedQueue = new FixedPriorityQueue(this.bucketSize)
+    } else {
+      fixedQueue = new FixedQueue(this.bucketSize)
+    }
+    if (nodeArray != null) {
+      fixedQueue.nodeArray = nodeArray
+    }
+    return fixedQueue
   }
 }
