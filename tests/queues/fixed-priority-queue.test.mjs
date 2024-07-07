@@ -1,35 +1,26 @@
 import { expect } from 'expect'
 
-import {
-  defaultQueueSize,
-  FixedPriorityQueue,
-} from '../lib/fixed-priority-queue.cjs'
+import { FixedPriorityQueue } from '../../lib/queues/fixed-priority-queue.cjs'
+import { defaultQueueSize } from '../../lib/queues/queue-types.cjs'
 
 describe('Fixed priority queue test suite', () => {
   it('Verify constructor() behavior', () => {
     expect(() => new FixedPriorityQueue('')).toThrow(
-      new TypeError("Invalid fixed priority queue size: '' is not an integer")
+      new TypeError("Invalid fixed queue size: '' is not an integer")
     )
     expect(() => new FixedPriorityQueue(-1)).toThrow(
-      new RangeError('Invalid fixed priority queue size: -1 < 0')
+      new RangeError('Invalid fixed queue size: -1 < 0')
     )
-    let fixedPriorityQueue = new FixedPriorityQueue()
+    const fixedPriorityQueue = new FixedPriorityQueue()
     expect(fixedPriorityQueue.start).toBe(0)
     expect(fixedPriorityQueue.size).toBe(0)
     expect(fixedPriorityQueue.nodeArray).toBeInstanceOf(Array)
     expect(fixedPriorityQueue.capacity).toBe(defaultQueueSize)
-    expect(fixedPriorityQueue.enablePriority).toBe(false)
-    fixedPriorityQueue = new FixedPriorityQueue(2, true)
-    expect(fixedPriorityQueue.start).toBe(0)
-    expect(fixedPriorityQueue.size).toBe(0)
-    expect(fixedPriorityQueue.nodeArray).toBeInstanceOf(Array)
-    expect(fixedPriorityQueue.capacity).toBe(2)
-    expect(fixedPriorityQueue.enablePriority).toBe(true)
   })
 
   it('Verify enqueue() behavior', () => {
     const queueSize = 5
-    const fixedPriorityQueue = new FixedPriorityQueue(queueSize, true)
+    const fixedPriorityQueue = new FixedPriorityQueue(queueSize)
     let rtSize = fixedPriorityQueue.enqueue(1)
     expect(fixedPriorityQueue.start).toBe(0)
     expect(fixedPriorityQueue.size).toBe(1)
@@ -81,12 +72,12 @@ describe('Fixed priority queue test suite', () => {
     ])
     expect(fixedPriorityQueue.capacity).toBe(queueSize)
     expect(() => fixedPriorityQueue.enqueue(4)).toThrow(
-      new Error('Priority queue is full')
+      new Error('Fixed priority queue is full')
     )
   })
 
   it('Verify get() behavior', () => {
-    const fixedPriorityQueue = new FixedPriorityQueue(defaultQueueSize, true)
+    const fixedPriorityQueue = new FixedPriorityQueue()
     fixedPriorityQueue.enqueue(1)
     fixedPriorityQueue.enqueue(2, -1)
     fixedPriorityQueue.enqueue(3)
@@ -98,7 +89,7 @@ describe('Fixed priority queue test suite', () => {
 
   it('Verify dequeue() behavior', () => {
     const queueSize = 5
-    const fixedPriorityQueue = new FixedPriorityQueue(queueSize, true)
+    const fixedPriorityQueue = new FixedPriorityQueue(queueSize)
     fixedPriorityQueue.enqueue(1)
     fixedPriorityQueue.enqueue(2, -1)
     fixedPriorityQueue.enqueue(3)

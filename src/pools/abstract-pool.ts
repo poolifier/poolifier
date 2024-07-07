@@ -4,7 +4,7 @@ import { EventEmitterAsyncResource } from 'node:events'
 import { performance } from 'node:perf_hooks'
 import type { TransferListItem } from 'node:worker_threads'
 
-import { defaultBucketSize } from '../priority-queue.js'
+import { defaultBucketSize } from '../queues/queue-types.js'
 import type {
   MessageValue,
   PromiseResponseWrapper,
