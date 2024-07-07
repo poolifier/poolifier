@@ -158,9 +158,7 @@ describe('Fixed queue test suite', () => {
     expect(fixedQueue.delete(3)).toBe(true)
     expect(fixedQueue.start).toBe(0)
     expect(fixedQueue.size).toBe(1)
-    expect(fixedQueue.nodeArray).toMatchObject([
-      { data: 1, priority: 0 },
-    ])
+    expect(fixedQueue.nodeArray).toMatchObject([{ data: 1, priority: 0 }])
     expect(fixedQueue.delete(1)).toBe(true)
     expect(fixedQueue.start).toBe(0)
     expect(fixedQueue.size).toBe(0)
