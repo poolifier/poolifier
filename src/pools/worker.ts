@@ -2,7 +2,7 @@ import type { EventEmitter } from 'node:events'
 import type { MessageChannel, WorkerOptions } from 'node:worker_threads'
 
 import type { CircularBuffer } from '../circular-buffer.js'
-import type { PriorityQueue } from '../priority-queue.js'
+import type { PriorityQueue } from '../queues/priority-queue.js'
 import type { Task, TaskFunctionProperties } from '../utility-types.js'
 
 /**

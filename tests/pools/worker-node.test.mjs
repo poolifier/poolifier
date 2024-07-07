@@ -6,7 +6,7 @@ import { expect } from 'expect'
 import { CircularBuffer } from '../../lib/circular-buffer.cjs'
 import { WorkerTypes } from '../../lib/index.cjs'
 import { WorkerNode } from '../../lib/pools/worker-node.cjs'
-import { PriorityQueue } from '../../lib/priority-queue.cjs'
+import { PriorityQueue } from '../../lib/queues/priority-queue.cjs'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 
 describe('Worker node test suite', () => {

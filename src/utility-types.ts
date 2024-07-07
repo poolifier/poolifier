@@ -219,4 +219,9 @@ export interface PromiseResponseWrapper<Response = unknown> {
   readonly abortSignal?: AbortSignal
 }
 
+/**
+ * Remove readonly modifier from all properties of T.
+ * @typeParam T - Type to remove readonly modifier.
+ * @internal
+ */
 export type Writable<T> = { -readonly [P in keyof T]: T[P] }
