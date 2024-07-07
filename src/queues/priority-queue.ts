@@ -70,7 +70,7 @@ export class PriorityQueue<T> {
     this.priorityEnabled = enablePriority
     let head: PriorityQueueNode<T>
     let tail: PriorityQueueNode<T>
-    let prevNode: PriorityQueueNode<T> | undefined
+    let prev: PriorityQueueNode<T> | undefined
     let node: PriorityQueueNode<T> | undefined = this.tail
     let buckets = 0
     while (node != null) {
@@ -78,10 +78,10 @@ export class PriorityQueue<T> {
       if (buckets === 0) {
         tail = currentNode
       }
-      if (prevNode != null) {
-        prevNode.next = currentNode
+      if (prev != null) {
+        prev.next = currentNode
       }
-      prevNode = currentNode
+      prev = currentNode
       if (node.next == null) {
         head = currentNode
       }
