@@ -20,6 +20,7 @@ import {
  * @typeParam Worker - Type of worker.
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
+ * @internal
  */
 export class WorkerChoiceStrategiesContext<
   Worker extends IWorker,
