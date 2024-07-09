@@ -15,8 +15,8 @@ importers:
         specifier: ^4.5.1
         version: 4.5.1
       poolifier:
-        specifier: ^4.0.16
-        version: 4.0.16
+        specifier: ^4.0.17
+        version: 4.0.17
     devDependencies:
       '@types/node':
         specifier: ^20.14.10
@@ -284,8 +284,8 @@ packages:
     resolution: {integrity: sha512-g3/hpwfujK5a4oVbaefoJxezLzsDgLcNJeITvC6yrfwYeT9la+edCK42j5QpEQSQCZgTKapXvnQIdgZwvRaZug==}
     hasBin: true
 
-  poolifier@4.0.16:
-    resolution: {integrity: sha512-koQ6mTCG9wCKiYC05mM9f7FetALiAAOTekThF/l7cOsqgfYRCREmFaRMzeSsg6sdA6zNYDLWTMRpHnP4RMQrng==}
+  poolifier@4.0.17:
+    resolution: {integrity: sha512-rbzOR3EKkNtTNpgiGgKjD58Tsc+ofWMZcFpJgcxs1Ef3kHifIr0ZeTxZuvxEPXomZkXSRam0TU7aJv0Qu6FwyQ==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   pretty-bytes@5.6.0:
@@ -700,7 +700,7 @@ snapshots:
       sonic-boom: 4.0.1
       thread-stream: 3.1.0
 
-  poolifier@4.0.16: {}
+  poolifier@4.0.17: {}
 
   pretty-bytes@5.6.0: {}
 
