@@ -112,7 +112,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^9.6.0",
     "eslint-define-config": "^2.1.0",
-    "eslint-plugin-jsdoc": "^48.5.2",
+    "eslint-plugin-jsdoc": "^48.7.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "expect": "^29.7.0",
     "globals": "^15.8.0",
@@ -128,8 +128,8 @@
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^6.1.1",
     "sinon": "^18.0.0",
-    "tatami-ng": "^0.4.16",
-    "typedoc": "^0.26.3",
+    "tatami-ng": "^0.5.1",
+    "typedoc": "^0.26.4",
     "typescript": "~5.5.3"
   }
 }
