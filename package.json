@@ -130,7 +130,7 @@
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^6.1.1",
     "sinon": "^18.0.0",
-    "tatami-ng": "^0.5.1",
+    "tatami-ng": "^0.5.3",
     "typedoc": "^0.26.4",
     "typescript": "~5.5.3"
   }
