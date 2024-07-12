@@ -206,4 +206,9 @@ export interface PromiseResponseWrapper<Response = unknown> {
   readonly asyncResource?: AsyncResource
 }
 
+/**
+ * Remove readonly modifier from all properties of T.
+ * @typeParam T - Type to remove readonly modifier.
+ * @internal
+ */
 export type Writable<T> = { -readonly [P in keyof T]: T[P] }

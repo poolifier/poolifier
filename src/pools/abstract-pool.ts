@@ -4,7 +4,7 @@ import { EventEmitterAsyncResource } from 'node:events'
 import { performance } from 'node:perf_hooks'
 import type { TransferListItem } from 'node:worker_threads'
 
-import { defaultBucketSize } from '../priority-queue.js'
+import { defaultBucketSize } from '../queues/queue-types.js'
 import type {
   MessageValue,
   PromiseResponseWrapper,
@@ -1442,16 +1442,15 @@ export abstract class AbstractPool<
     }
     if (
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
+      message.taskPerformance?.name != null &&
       this.workerNodes[workerNodeKey].getTaskFunctionWorkerUsage(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        message.taskPerformance!.name
+        message.taskPerformance.name
       ) != null
     ) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const taskFunctionWorkerUsage = this.workerNodes[
         workerNodeKey
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      ].getTaskFunctionWorkerUsage(message.taskPerformance!.name)!
+      ].getTaskFunctionWorkerUsage(message.taskPerformance.name)!
       updateTaskStatisticsWorkerUsage(taskFunctionWorkerUsage, message)
       updateRunTimeWorkerUsage(
         this.workerChoiceStrategiesContext,

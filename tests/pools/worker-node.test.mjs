@@ -5,8 +5,9 @@ import { expect } from 'expect'
 
 import { CircularBuffer } from '../../lib/circular-buffer.cjs'
 import { WorkerTypes } from '../../lib/index.cjs'
+import { MeasurementHistorySize } from '../../lib/pools/worker.cjs'
 import { WorkerNode } from '../../lib/pools/worker-node.cjs'
-import { PriorityQueue } from '../../lib/priority-queue.cjs'
+import { PriorityQueue } from '../../lib/queues/priority-queue.cjs'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 
 describe('Worker node test suite', () => {
@@ -258,6 +259,18 @@ describe('Worker node test suite', () => {
         },
       },
     })
+    expect(threadWorkerNode.usage.runTime.history.items.length).toBe(
+      MeasurementHistorySize
+    )
+    expect(threadWorkerNode.usage.waitTime.history.items.length).toBe(
+      MeasurementHistorySize
+    )
+    expect(threadWorkerNode.usage.elu.idle.history.items.length).toBe(
+      MeasurementHistorySize
+    )
+    expect(threadWorkerNode.usage.elu.active.history.items.length).toBe(
+      MeasurementHistorySize
+    )
     expect(threadWorkerNode.messageChannel).toBeInstanceOf(MessageChannel)
     expect(threadWorkerNode.tasksQueueBackPressureSize).toBe(12)
     expect(threadWorkerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
@@ -305,6 +318,18 @@ describe('Worker node test suite', () => {
         },
       },
     })
+    expect(clusterWorkerNode.usage.runTime.history.items.length).toBe(
+      MeasurementHistorySize
+    )
+    expect(clusterWorkerNode.usage.waitTime.history.items.length).toBe(
+      MeasurementHistorySize
+    )
+    expect(clusterWorkerNode.usage.elu.idle.history.items.length).toBe(
+      MeasurementHistorySize
+    )
+    expect(clusterWorkerNode.usage.elu.active.history.items.length).toBe(
+      MeasurementHistorySize
+    )
     expect(clusterWorkerNode.messageChannel).toBeUndefined()
     expect(clusterWorkerNode.tasksQueueBackPressureSize).toBe(12)
     expect(clusterWorkerNode.tasksQueue).toBeInstanceOf(PriorityQueue)
