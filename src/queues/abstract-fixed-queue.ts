@@ -5,7 +5,7 @@ import {
 } from './queue-types.js'
 
 /**
- * Base fixed queue class
+ * Base fixed queue class.
  * @typeParam T - Type of fixed queue data.
  * @internal
  */
