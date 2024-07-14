@@ -17,6 +17,7 @@ const fastify = Fastify({
 
 const workerFile = join(
   dirname(fileURLToPath(import.meta.url)),
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   `worker${extname(fileURLToPath(import.meta.url))}`
 )
 
