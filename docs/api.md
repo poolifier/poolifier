@@ -6,6 +6,7 @@
   - [`pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`](#pool--new-fixedthreadpoolfixedclusterpoolnumberofthreadsnumberofworkers-filepath-opts)
   - [`pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`](#pool--new-dynamicthreadpooldynamicclusterpoolmin-max-filepath-opts)
   - [`pool.execute(data, name, transferList)`](#poolexecutedata-name-transferlist)
+  - [`pool.mapExecute(data, name, transferList)`](#poolmapexecutedata-name-transferlist)
   - [`pool.start()`](#poolstart)
   - [`pool.destroy()`](#pooldestroy)
   - [`pool.hasTaskFunction(name)`](#poolhastaskfunctionname)
