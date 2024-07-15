@@ -564,8 +564,8 @@ packages:
   pino-std-serializers@7.0.0:
     resolution: {integrity: sha512-e906FRY0+tV27iq4juKzSYPbUj2do2X2JX4EzSca1631EB2QJQUqGbDuERal7LCtOpxl6x3+nvo9NPZcmjkiFA==}
 
-  pino@9.2.0:
-    resolution: {integrity: sha512-g3/hpwfujK5a4oVbaefoJxezLzsDgLcNJeITvC6yrfwYeT9la+edCK42j5QpEQSQCZgTKapXvnQIdgZwvRaZug==}
+  pino@9.3.0:
+    resolution: {integrity: sha512-W9e1K47Gb8VJLn43j8lythxaKdzHG8tUPYvO8r1kWg7Z7ry/78UJeZ/1UA7ejumgvSPcJ9eBt4AN4gjJioDG7w==}
     hasBin: true
 
   poolifier@4.0.18:
@@ -1047,7 +1047,7 @@ snapshots:
       fast-json-stringify: 5.16.1
       find-my-way: 8.2.0
       light-my-request: 5.13.0
-      pino: 9.2.0
+      pino: 9.3.0
       process-warning: 3.0.0
       proxy-addr: 2.0.7
       rfdc: 1.4.1
@@ -1235,7 +1235,7 @@ snapshots:
 
   pino-std-serializers@7.0.0: {}
 
-  pino@9.2.0:
+  pino@9.3.0:
     dependencies:
       atomic-sleep: 1.0.0
       fast-redact: 3.5.0
