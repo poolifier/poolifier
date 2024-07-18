@@ -44,6 +44,7 @@ export const getDefaultTasksQueueOptions = (
     concurrency: 1,
     taskStealing: true,
     tasksStealingOnBackPressure: false,
+    tasksStealingRatio: 0.6,
     tasksFinishedTimeout: 2000,
   }
 }
@@ -155,6 +156,23 @@ export const checkValidTasksQueueOptions = (
   if (tasksQueueOptions?.size != null && tasksQueueOptions.size <= 0) {
     throw new RangeError(
       `Invalid worker node tasks queue size: ${tasksQueueOptions.size.toString()} is a negative integer or zero`
+    )
+  }
+  if (
+    tasksQueueOptions?.tasksStealingRatio != null &&
+    typeof tasksQueueOptions.tasksStealingRatio !== 'number'
+  ) {
+    throw new TypeError(
+      'Invalid worker node tasks stealing ratio: must be a number'
+    )
+  }
+  if (
+    tasksQueueOptions?.tasksStealingRatio != null &&
+    (tasksQueueOptions.tasksStealingRatio < 0 ||
+      tasksQueueOptions.tasksStealingRatio > 1)
+  ) {
+    throw new RangeError(
+      'Invalid worker node tasks stealing ratio: must be between 0 and 1'
     )
   }
 }

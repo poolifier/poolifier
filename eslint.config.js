@@ -26,16 +26,16 @@ export default defineFlatConfig([
       ],
     },
   },
-  ...plugins['typescript-eslint'].config(
-    ...plugins['typescript-eslint'].configs.strictTypeChecked,
-    ...plugins['typescript-eslint'].configs.stylisticTypeChecked
-  ),
   ...neostandard({
     ts: true,
     globals: {
       ...globals.mocha,
     },
   }),
+  ...plugins['typescript-eslint'].config(
+    ...plugins['typescript-eslint'].configs.strictTypeChecked,
+    ...plugins['typescript-eslint'].configs.stylisticTypeChecked
+  ),
   {
     languageOptions: {
       parserOptions: {
