@@ -16,7 +16,7 @@ try {
       join(dirname(fileURLToPath(import.meta.url)), 'tmp', markdownFile)
     )
   }
-  execSync('pnpm dlx typedoc', { stdio: 'inherit' })
+  execSync('pnpm exec typedoc', { stdio: 'inherit' })
   for (const markdownFile of markdownFiles) {
     copyFileSync(
       join(dirname(fileURLToPath(import.meta.url)), 'tmp', markdownFile),
