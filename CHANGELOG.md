@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.0](https://github.com/poolifier/poolifier/compare/v4.0.18...v4.1.0) (2024-07-18)
+
+
+### 🚀 Features
+
+* add ratio of worker nodes in a pool allowed to perform concurrent tasks stealing ([e25f86b](https://github.com/poolifier/poolifier/commit/e25f86b30763ea5c2e5fc6c0ef16818b7e4efe83)), closes [#2284](https://github.com/poolifier/poolifier/issues/2284)
+
+
+### ✨ Polish
+
+* npx -&gt; pnpm dlx where appropriates ([21b76dc](https://github.com/poolifier/poolifier/commit/21b76dc2ca538ea8691570e599b152d4d4dd50bd))
+
+
+### 🧪 Tests
+
+* fix error type expectation ([16196bc](https://github.com/poolifier/poolifier/commit/16196bc039fc80684b777cf4cd9e822e3293c339))
+
+
+### 📚 Documentation
+
+* **api.md:** add missing ToC entry ([989a71a](https://github.com/poolifier/poolifier/commit/989a71a5497bfeb445748022d241de083fa9d66b))
+* **api.md:** document tasksStealingRatio tasks queue option ([453c646](https://github.com/poolifier/poolifier/commit/453c6467536356616003ea3666fd4d14ef539e26))
+* publish documentation ([082fb4d](https://github.com/poolifier/poolifier/commit/082fb4db638f093fe284690eaf4764e0a2758184))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump @cspell/eslint-plugin from 8.10.4 to 8.11.0 ([ae8cecf](https://github.com/poolifier/poolifier/commit/ae8cecfc95719c815557f1d1b210d282dda350cd))
+* **deps-dev:** bump @types/node ([e1436e8](https://github.com/poolifier/poolifier/commit/e1436e89c8a3a0d83cf82dcc835b4ef10b3e9738))
+* **deps-dev:** bump husky from 9.0.11 to 9.1.0 ([#2474](https://github.com/poolifier/poolifier/issues/2474)) ([8b770d2](https://github.com/poolifier/poolifier/commit/8b770d22dba7dcb844c7aae2d16de414499ff9f6))
+* **deps-dev:** bump prettier from 3.3.2 to 3.3.3 ([#2469](https://github.com/poolifier/poolifier/issues/2469)) ([ed09ef1](https://github.com/poolifier/poolifier/commit/ed09ef1d80a2ba11abf2e276c1c4b3c4081979c1))
+* **deps-dev:** bump tatami-ng from 0.5.1 to 0.5.3 ([27ddec8](https://github.com/poolifier/poolifier/commit/27ddec8d142fab42db702118325d49ce0c1140cc))
+* **deps:** bump poolifier ([01afcb2](https://github.com/poolifier/poolifier/commit/01afcb2142ddf51db4de08aa85ff36408e1d34ea))
+* **deps:** bump poolifier ([f49f67f](https://github.com/poolifier/poolifier/commit/f49f67f853d84ab60a407f3bbaeea41c462bda83))
+* **deps:** bump poolifier ([ac181f4](https://github.com/poolifier/poolifier/commit/ac181f447618a6ca7206d13fdc17acafed0cd472))
+* **deps:** bump poolifier ([966953d](https://github.com/poolifier/poolifier/commit/966953ddd2798a4bb52e83fb054165e7cc2b2dca))
+* **deps:** bump poolifier ([d67aa39](https://github.com/poolifier/poolifier/commit/d67aa393b66234b305638f02aec075ceea5053d9))
+* **deps:** bump poolifier ([4763e8c](https://github.com/poolifier/poolifier/commit/4763e8cea8204ed4f1f4da9e14f27e83949a445c))
+* **deps:** bump poolifier ([69b9ebc](https://github.com/poolifier/poolifier/commit/69b9ebc66743cc0fd14d0c13d547d72a8962e54a))
+* **deps:** bump poolifier ([37645d7](https://github.com/poolifier/poolifier/commit/37645d7921f5d48c1731726430ec6b56cff9b472))
+* **deps:** bump poolifier ([c63416f](https://github.com/poolifier/poolifier/commit/c63416f26d0ceb487f2efdc47ec029b069c3c9e1))
+* **deps:** bump poolifier in /examples/typescript/http-client-pool ([d96a9d3](https://github.com/poolifier/poolifier/commit/d96a9d38c802923b762447e2d07b2679932ae687))
+* **deps:** bump poolifier in /examples/typescript/smtp-client-pool ([af1cc0e](https://github.com/poolifier/poolifier/commit/af1cc0e16116ec360615a121cef2c25035e73ce5))
+
 ## [4.0.18](https://github.com/poolifier/poolifier/compare/v4.0.17...v4.0.18) (2024-07-11)
 
 
