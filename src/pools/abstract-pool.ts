@@ -713,7 +713,10 @@ export abstract class AbstractPool<
   ): boolean {
     this.checkValidWorkerChoiceStrategyOptions(workerChoiceStrategyOptions)
     if (workerChoiceStrategyOptions != null) {
-      this.opts.workerChoiceStrategyOptions = workerChoiceStrategyOptions
+      this.opts.workerChoiceStrategyOptions = {
+        ...this.opts.workerChoiceStrategyOptions,
+        ...workerChoiceStrategyOptions,
+      }
       this.workerChoiceStrategiesContext?.setOptions(
         this.opts.workerChoiceStrategyOptions
       )
@@ -777,6 +780,7 @@ export abstract class AbstractPool<
       ...getDefaultTasksQueueOptions(
         this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers
       ),
+      ...this.opts.tasksQueueOptions,
       ...tasksQueueOptions,
     }
   }
@@ -1420,7 +1424,7 @@ export abstract class AbstractPool<
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const taskFunctionWorkerUsage = this.workerNodes[
         workerNodeKey
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       ].getTaskFunctionWorkerUsage(task.name!)!
       ++taskFunctionWorkerUsage.tasks.executing
       updateWaitTimeWorkerUsage(
@@ -1619,7 +1623,7 @@ export abstract class AbstractPool<
       ) {
         this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
       }
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, promise/no-promise-in-callback
       workerNode?.terminate().catch((error: unknown) => {
         this.emitter?.emit(PoolEvents.error, error)
       })
@@ -1944,7 +1948,11 @@ export abstract class AbstractPool<
     if (
       this.cannotStealTask() ||
       (this.info.stealingWorkerNodes ?? 0) >
-        Math.floor(this.workerNodes.length / 2)
+        Math.round(
+          this.workerNodes.length *
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.opts.tasksQueueOptions!.tasksStealingRatio!
+        )
     ) {
       if (previousStolenTask != null) {
         workerInfo.stealing = false
@@ -2023,7 +2031,11 @@ export abstract class AbstractPool<
       this.cannotStealTask() ||
       this.hasBackPressure() ||
       (this.info.stealingWorkerNodes ?? 0) >
-        Math.floor(this.workerNodes.length / 2)
+        Math.round(
+          this.workerNodes.length *
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.opts.tasksQueueOptions!.tasksStealingRatio!
+        )
     ) {
       return
     }

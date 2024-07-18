@@ -277,6 +277,7 @@ describe('Abstract pool test suite', () => {
         size: Math.pow(numberOfWorkers, 2),
         taskStealing: true,
         tasksStealingOnBackPressure: false,
+        tasksStealingRatio: 0.6,
         tasksFinishedTimeout: 2000,
       },
       workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
@@ -439,6 +440,36 @@ describe('Abstract pool test suite', () => {
     ).toThrow(
       new TypeError('Invalid worker node tasks queue size: must be an integer')
     )
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.mjs',
+          {
+            enableTasksQueue: true,
+            tasksQueueOptions: { tasksStealingRatio: '' },
+          }
+        )
+    ).toThrow(
+      new TypeError(
+        'Invalid worker node tasks stealing ratio: must be a number'
+      )
+    )
+    expect(
+      () =>
+        new FixedThreadPool(
+          numberOfWorkers,
+          './tests/worker-files/thread/testWorker.mjs',
+          {
+            enableTasksQueue: true,
+            tasksQueueOptions: { tasksStealingRatio: 1.1 },
+          }
+        )
+    ).toThrow(
+      new RangeError(
+        'Invalid worker node tasks stealing ratio: must be between 0 and 1'
+      )
+    )
   })
 
   it('Verify that pool worker choice strategy options can be set', async () => {
@@ -593,6 +624,7 @@ describe('Abstract pool test suite', () => {
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
       tasksStealingOnBackPressure: false,
+      tasksStealingRatio: 0.6,
       tasksFinishedTimeout: 2000,
     })
     pool.enableTasksQueue(true, { concurrency: 2 })
@@ -602,6 +634,7 @@ describe('Abstract pool test suite', () => {
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
       tasksStealingOnBackPressure: false,
+      tasksStealingRatio: 0.6,
       tasksFinishedTimeout: 2000,
     })
     pool.enableTasksQueue(false)
@@ -621,6 +654,7 @@ describe('Abstract pool test suite', () => {
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
       tasksStealingOnBackPressure: false,
+      tasksStealingRatio: 0.6,
       tasksFinishedTimeout: 2000,
     })
     for (const workerNode of pool.workerNodes) {
@@ -633,6 +667,7 @@ describe('Abstract pool test suite', () => {
       size: 2,
       taskStealing: false,
       tasksStealingOnBackPressure: false,
+      tasksStealingRatio: 0.5,
       tasksFinishedTimeout: 3000,
     })
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
@@ -640,6 +675,7 @@ describe('Abstract pool test suite', () => {
       size: 2,
       taskStealing: false,
       tasksStealingOnBackPressure: false,
+      tasksStealingRatio: 0.5,
       tasksFinishedTimeout: 3000,
     })
     for (const workerNode of pool.workerNodes) {
@@ -654,10 +690,11 @@ describe('Abstract pool test suite', () => {
     })
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 1,
-      size: Math.pow(numberOfWorkers, 2),
+      size: 2,
       taskStealing: true,
       tasksStealingOnBackPressure: true,
-      tasksFinishedTimeout: 2000,
+      tasksStealingRatio: 0.5,
+      tasksFinishedTimeout: 3000,
     })
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.tasksQueueBackPressureSize).toBe(
@@ -692,6 +729,18 @@ describe('Abstract pool test suite', () => {
     )
     expect(() => pool.setTasksQueueOptions({ size: 0.2 })).toThrow(
       new TypeError('Invalid worker node tasks queue size: must be an integer')
+    )
+    expect(() => pool.setTasksQueueOptions({ tasksStealingRatio: '' })).toThrow(
+      new TypeError(
+        'Invalid worker node tasks stealing ratio: must be a number'
+      )
+    )
+    expect(() =>
+      pool.setTasksQueueOptions({ tasksStealingRatio: 1.1 })
+    ).toThrow(
+      new TypeError(
+        'Invalid worker node tasks stealing ratio: must be between 0 and 1'
+      )
     )
     await pool.destroy()
   })
