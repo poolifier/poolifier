@@ -158,6 +158,11 @@ export interface TasksQueueOptions {
    */
   readonly tasksStealingOnBackPressure?: boolean
   /**
+   * Ratio of worker nodes that can steal tasks from another worker node.
+   * @defaultValue 0.6
+   */
+  readonly tasksStealingRatio?: number
+  /**
    * Queued tasks finished timeout in milliseconds at worker node termination.
    * @defaultValue 2000
    */
