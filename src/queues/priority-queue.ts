@@ -59,10 +59,18 @@ export class PriorityQueue<T> {
     return size
   }
 
+  /**
+   * Whether priority is enabled.
+   * @returns Whether priority is enabled.
+   */
   public get enablePriority (): boolean {
     return this.priorityEnabled
   }
 
+  /**
+   * Enables/disables priority.
+   * @param enablePriority - Whether to enable priority.
+   */
   public set enablePriority (enablePriority: boolean) {
     if (this.priorityEnabled === enablePriority) {
       return
