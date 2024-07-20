@@ -6,7 +6,7 @@
   "main": "dist/main.js",
   "type": "module",
   "volta": {
-    "node": "22.5.0",
+    "node": "22.5.1",
     "pnpm": "9.5.0"
   },
   "packageManager": "pnpm@9.5.0",
@@ -24,7 +24,7 @@
   "dependencies": {
     "fastify": "^4.28.1",
     "fastify-plugin": "^4.5.1",
-    "poolifier": "^4.0.18"
+    "poolifier": "^4.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.11",
