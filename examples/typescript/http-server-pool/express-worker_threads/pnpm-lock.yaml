@@ -12,8 +12,8 @@ importers:
         specifier: ^4.19.2
         version: 4.19.2
       poolifier:
-        specifier: ^4.0.18
-        version: 4.0.18
+        specifier: ^4.1.0
+        version: 4.1.0
     devDependencies:
       '@types/express':
         specifier: ^4.17.21
@@ -361,8 +361,8 @@ packages:
   path-to-regexp@0.1.7:
     resolution: {integrity: sha512-5DFkuoqlv1uYQKxy8omFBeJPQcdoE07Kv2sferDCrAq1ohOU+MSDswDIbnx3YAM60qIOnYa53wBhXW0EbMonrQ==}
 
-  poolifier@4.0.18:
-    resolution: {integrity: sha512-1Tb/+CFGhB1c0IyVGcWQSh9m452e8BNv0ybrZhCFIolTzAgCUd4Hzda+PQ/ZEiHHgs0Ls35M/wAZ4JMkLJYM+g==}
+  poolifier@4.1.0:
+    resolution: {integrity: sha512-BKFOreJX/PINEwanfJPCRZ6I2DO59tzwAx+mamKgmz9YjgXlYsMO8WLd3Xkr2cNr0z6WbA03XGQ10sH6y9iizg==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   pretty-bytes@5.6.0:
@@ -848,7 +848,7 @@ snapshots:
 
   path-to-regexp@0.1.7: {}
 
-  poolifier@4.0.18: {}
+  poolifier@4.1.0: {}
 
   pretty-bytes@5.6.0: {}
 
