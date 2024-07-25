@@ -1406,7 +1406,7 @@ export abstract class AbstractPool<
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const taskFunctionWorkerUsage = this.workerNodes[
         workerNodeKey
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       ].getTaskFunctionWorkerUsage(task.name!)!
       ++taskFunctionWorkerUsage.tasks.executing
       updateWaitTimeWorkerUsage(
