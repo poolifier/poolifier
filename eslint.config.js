@@ -95,6 +95,7 @@ export default defineFlatConfig([
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
       '@typescript-eslint/no-redundant-type-constituents': 'off',
       '@typescript-eslint/return-await': 'off',
+      '@typescript-eslint/restrict-template-expressions': 'off',
     },
   },
   {
