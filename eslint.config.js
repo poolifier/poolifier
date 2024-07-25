@@ -38,7 +38,6 @@ export default defineFlatConfig([
   ),
   {
     languageOptions: {
-      sourceType: 'module',
       parserOptions: {
         project: true,
         tsconfigRootDir: import.meta.dirname,
