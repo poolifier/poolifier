@@ -22,7 +22,7 @@ updates:
     versioning-strategy: increase
   - package-ecosystem: 'npm'
     directories:
-      - '/examples/typescript/**/*'
+      - '/examples/typescript/*'
     schedule:
       interval: 'daily'
     labels:
