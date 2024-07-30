@@ -198,7 +198,7 @@ export const max = (...args: number[]): number =>
  * @typeParam C - The function's context.
  * @internal
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unnecessary-type-parameters
 export const once = <A extends any[], R, C extends ThisType<any>>(
   fn: (...args: A) => R,
   context: C
