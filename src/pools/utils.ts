@@ -383,6 +383,7 @@ export const updateEluWorkerUsage = <
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 export const createWorker = <Worker extends IWorker>(
   type: WorkerType,
   filePath: string,
