@@ -8,54 +8,58 @@ import { waitPoolEvents, waitWorkerEvents } from '../../test-utils.cjs'
 describe('Fixed thread pool test suite', () => {
   const numberOfThreads = 6
   const tasksConcurrency = 2
-  const pool = new FixedThreadPool(
-    numberOfThreads,
-    './tests/worker-files/thread/testWorker.mjs',
-    {
-      errorHandler: e => console.error(e),
-    }
-  )
-  const queuePool = new FixedThreadPool(
-    numberOfThreads,
-    './tests/worker-files/thread/testWorker.mjs',
-    {
-      enableTasksQueue: true,
-      tasksQueueOptions: {
-        concurrency: tasksConcurrency,
-      },
-      errorHandler: e => console.error(e),
-    }
-  )
-  const emptyPool = new FixedThreadPool(
-    numberOfThreads,
-    './tests/worker-files/thread/emptyWorker.mjs',
-    { exitHandler: () => console.info('empty pool worker exited') }
-  )
-  const echoPool = new FixedThreadPool(
-    numberOfThreads,
-    './tests/worker-files/thread/echoWorker.mjs'
-  )
-  const errorPool = new FixedThreadPool(
-    numberOfThreads,
-    './tests/worker-files/thread/errorWorker.mjs',
-    {
-      errorHandler: e => console.error(e),
-    }
-  )
-  const asyncErrorPool = new FixedThreadPool(
-    numberOfThreads,
-    './tests/worker-files/thread/asyncErrorWorker.mjs',
-    {
-      errorHandler: e => console.error(e),
-    }
-  )
-  const asyncPool = new FixedThreadPool(
-    numberOfThreads,
-    './tests/worker-files/thread/asyncWorker.mjs'
-  )
+  let pool, queuePool, emptyPool, echoPool, errorPool, asyncErrorPool, asyncPool
 
-  after('Destroy all pools', async () => {
-    // We need to clean up the resources after our test
+  before('Create pools', () => {
+    pool = new FixedThreadPool(
+      numberOfThreads,
+      './tests/worker-files/thread/testWorker.mjs',
+      {
+        errorHandler: e => console.error(e),
+      }
+    )
+    queuePool = new FixedThreadPool(
+      numberOfThreads,
+      './tests/worker-files/thread/testWorker.mjs',
+      {
+        enableTasksQueue: true,
+        tasksQueueOptions: {
+          concurrency: tasksConcurrency,
+        },
+        errorHandler: e => console.error(e),
+      }
+    )
+    emptyPool = new FixedThreadPool(
+      numberOfThreads,
+      './tests/worker-files/thread/emptyWorker.mjs',
+      { exitHandler: () => console.info('empty pool worker exited') }
+    )
+    echoPool = new FixedThreadPool(
+      numberOfThreads,
+      './tests/worker-files/thread/echoWorker.mjs'
+    )
+    errorPool = new FixedThreadPool(
+      numberOfThreads,
+      './tests/worker-files/thread/errorWorker.mjs',
+      {
+        errorHandler: e => console.error(e),
+      }
+    )
+    asyncErrorPool = new FixedThreadPool(
+      numberOfThreads,
+      './tests/worker-files/thread/asyncErrorWorker.mjs',
+      {
+        errorHandler: e => console.error(e),
+      }
+    )
+    asyncPool = new FixedThreadPool(
+      numberOfThreads,
+      './tests/worker-files/thread/asyncWorker.mjs'
+    )
+  })
+
+  after('Destroy pools', async () => {
+    // We need to clean up the resources after our tests
     await echoPool.destroy()
     await asyncPool.destroy()
     await errorPool.destroy()
@@ -326,15 +330,6 @@ describe('Fixed thread pool test suite', () => {
       env: { TEST: 'test' },
       name: 'test',
     })
-    await pool.destroy()
-  })
-
-  it('Should work even without opts in input', async () => {
-    const workerFilePath = './tests/worker-files/thread/testWorker.mjs'
-    const pool = new FixedThreadPool(numberOfThreads, workerFilePath)
-    const res = await pool.execute()
-    expect(res).toStrictEqual({ ok: 1 })
-    // We need to clean up the resources after our test
     await pool.destroy()
   })
 

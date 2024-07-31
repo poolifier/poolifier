@@ -11,14 +11,14 @@ describe('Weighted round robin strategy worker choice strategy test suite', () =
   const max = 3
   let pool
 
-  before(() => {
+  before('Create pool', () => {
     pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.mjs'
     )
   })
 
-  after(async () => {
+  after('Destroy pool', async () => {
     await pool.destroy()
   })
 

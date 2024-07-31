@@ -11,24 +11,33 @@ import { PriorityQueue } from '../../lib/queues/priority-queue.cjs'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 
 describe('Worker node test suite', () => {
-  const threadWorkerNode = new WorkerNode(
-    WorkerTypes.thread,
-    './tests/worker-files/thread/testWorker.mjs',
-    {
-      tasksQueueBackPressureSize: 12,
-      tasksQueueBucketSize: 6,
-      tasksQueuePriority: true,
-    }
-  )
-  const clusterWorkerNode = new WorkerNode(
-    WorkerTypes.cluster,
-    './tests/worker-files/cluster/testWorker.cjs',
-    {
-      tasksQueueBackPressureSize: 12,
-      tasksQueueBucketSize: 6,
-      tasksQueuePriority: true,
-    }
-  )
+  let threadWorkerNode, clusterWorkerNode
+
+  before('Create worker nodes', () => {
+    threadWorkerNode = new WorkerNode(
+      WorkerTypes.thread,
+      './tests/worker-files/thread/testWorker.mjs',
+      {
+        tasksQueueBackPressureSize: 12,
+        tasksQueueBucketSize: 6,
+        tasksQueuePriority: true,
+      }
+    )
+    clusterWorkerNode = new WorkerNode(
+      WorkerTypes.cluster,
+      './tests/worker-files/cluster/testWorker.cjs',
+      {
+        tasksQueueBackPressureSize: 12,
+        tasksQueueBucketSize: 6,
+        tasksQueuePriority: true,
+      }
+    )
+  })
+
+  after('Terminate worker nodes', async () => {
+    await threadWorkerNode.terminate()
+    await clusterWorkerNode.terminate()
+  })
 
   it('Worker node instantiation', () => {
     expect(() => new WorkerNode()).toThrow(
