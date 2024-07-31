@@ -10,54 +10,58 @@ import { waitPoolEvents, waitWorkerEvents } from '../../test-utils.cjs'
 describe('Fixed cluster pool test suite', () => {
   const numberOfWorkers = 8
   const tasksConcurrency = 2
-  const pool = new FixedClusterPool(
-    numberOfWorkers,
-    './tests/worker-files/cluster/testWorker.cjs',
-    {
-      errorHandler: e => console.error(e),
-    }
-  )
-  const queuePool = new FixedClusterPool(
-    numberOfWorkers,
-    './tests/worker-files/cluster/testWorker.cjs',
-    {
-      enableTasksQueue: true,
-      tasksQueueOptions: {
-        concurrency: tasksConcurrency,
-      },
-      errorHandler: e => console.error(e),
-    }
-  )
-  const emptyPool = new FixedClusterPool(
-    numberOfWorkers,
-    './tests/worker-files/cluster/emptyWorker.cjs',
-    { exitHandler: () => console.info('empty pool worker exited') }
-  )
-  const echoPool = new FixedClusterPool(
-    numberOfWorkers,
-    './tests/worker-files/cluster/echoWorker.cjs'
-  )
-  const errorPool = new FixedClusterPool(
-    numberOfWorkers,
-    './tests/worker-files/cluster/errorWorker.cjs',
-    {
-      errorHandler: e => console.error(e),
-    }
-  )
-  const asyncErrorPool = new FixedClusterPool(
-    numberOfWorkers,
-    './tests/worker-files/cluster/asyncErrorWorker.cjs',
-    {
-      errorHandler: e => console.error(e),
-    }
-  )
-  const asyncPool = new FixedClusterPool(
-    numberOfWorkers,
-    './tests/worker-files/cluster/asyncWorker.cjs'
-  )
+  let pool, queuePool, emptyPool, echoPool, errorPool, asyncErrorPool, asyncPool
 
-  after('Destroy all pools', async () => {
-    // We need to clean up the resources after our test
+  before('Create pools', () => {
+    pool = new FixedClusterPool(
+      numberOfWorkers,
+      './tests/worker-files/cluster/testWorker.cjs',
+      {
+        errorHandler: e => console.error(e),
+      }
+    )
+    queuePool = new FixedClusterPool(
+      numberOfWorkers,
+      './tests/worker-files/cluster/testWorker.cjs',
+      {
+        enableTasksQueue: true,
+        tasksQueueOptions: {
+          concurrency: tasksConcurrency,
+        },
+        errorHandler: e => console.error(e),
+      }
+    )
+    emptyPool = new FixedClusterPool(
+      numberOfWorkers,
+      './tests/worker-files/cluster/emptyWorker.cjs',
+      { exitHandler: () => console.info('empty pool worker exited') }
+    )
+    echoPool = new FixedClusterPool(
+      numberOfWorkers,
+      './tests/worker-files/cluster/echoWorker.cjs'
+    )
+    errorPool = new FixedClusterPool(
+      numberOfWorkers,
+      './tests/worker-files/cluster/errorWorker.cjs',
+      {
+        errorHandler: e => console.error(e),
+      }
+    )
+    asyncErrorPool = new FixedClusterPool(
+      numberOfWorkers,
+      './tests/worker-files/cluster/asyncErrorWorker.cjs',
+      {
+        errorHandler: e => console.error(e),
+      }
+    )
+    asyncPool = new FixedClusterPool(
+      numberOfWorkers,
+      './tests/worker-files/cluster/asyncWorker.cjs'
+    )
+  })
+
+  after('Destroy pools', async () => {
+    // We need to clean up the resources after our tests
     await echoPool.destroy()
     await asyncPool.destroy()
     await errorPool.destroy()
