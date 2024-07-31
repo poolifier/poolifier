@@ -333,15 +333,6 @@ describe('Fixed thread pool test suite', () => {
     await pool.destroy()
   })
 
-  it('Should work even without opts in input', async () => {
-    const workerFilePath = './tests/worker-files/thread/testWorker.mjs'
-    const pool = new FixedThreadPool(numberOfThreads, workerFilePath)
-    const res = await pool.execute()
-    expect(res).toStrictEqual({ ok: 1 })
-    // We need to clean up the resources after our test
-    await pool.destroy()
-  })
-
   it('Verify destroyWorkerNode()', async () => {
     const workerFilePath = './tests/worker-files/thread/testWorker.mjs'
     const pool = new FixedThreadPool(numberOfThreads, workerFilePath)

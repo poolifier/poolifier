@@ -11,14 +11,18 @@ import { sleep, waitPoolEvents, waitWorkerEvents } from '../../test-utils.cjs'
 describe('Dynamic cluster pool test suite', () => {
   const min = 1
   const max = 3
-  const pool = new DynamicClusterPool(
-    min,
-    max,
-    './tests/worker-files/cluster/testWorker.cjs',
-    {
-      errorHandler: e => console.error(e),
-    }
-  )
+  let pool
+
+  before('Create pool', () => {
+    pool = new DynamicClusterPool(
+      min,
+      max,
+      './tests/worker-files/cluster/testWorker.cjs',
+      {
+        errorHandler: e => console.error(e),
+      }
+    )
+  })
 
   it('Verify that the function is executed in a worker cluster', async () => {
     let result = await pool.execute({
@@ -86,18 +90,6 @@ describe('Dynamic cluster pool test suite', () => {
     expect(() => new DynamicClusterPool(min)).toThrow(
       'The worker file path must be specified'
     )
-  })
-
-  it('Should work even without opts in input', async () => {
-    const pool = new DynamicClusterPool(
-      min,
-      max,
-      './tests/worker-files/cluster/testWorker.cjs'
-    )
-    const result = await pool.execute()
-    expect(result).toStrictEqual({ ok: 1 })
-    // We need to clean up the resources after our test
-    await pool.destroy()
   })
 
   it('Verify scale processes up and down is working when long executing task is used:hard', async () => {
