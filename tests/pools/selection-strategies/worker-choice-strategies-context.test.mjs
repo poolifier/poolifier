@@ -20,7 +20,7 @@ describe('Worker choice strategies context test suite', () => {
   const max = 3
   let fixedPool, dynamicPool
 
-  before(() => {
+  before('Create pools', () => {
     fixedPool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.mjs'
@@ -36,7 +36,7 @@ describe('Worker choice strategies context test suite', () => {
     restore()
   })
 
-  after(async () => {
+  after('Destroy pools', async () => {
     await fixedPool.destroy()
     await dynamicPool.destroy()
   })
