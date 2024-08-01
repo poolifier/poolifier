@@ -115,7 +115,7 @@
     "eslint-plugin-jsdoc": "^48.10.2",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "expect": "^29.7.0",
-    "globals": "^15.8.0",
+    "globals": "^15.9.0",
     "husky": "^9.1.4",
     "lint-staged": "^15.2.7",
     "mocha": "^10.7.0",
