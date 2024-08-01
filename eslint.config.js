@@ -26,12 +26,6 @@ export default defineFlatConfig([
       ],
     },
   },
-  ...neostandard({
-    ts: true,
-    globals: {
-      ...globals.mocha,
-    },
-  }),
   ...plugins['typescript-eslint'].config(
     ...plugins['typescript-eslint'].configs.strictTypeChecked,
     ...plugins['typescript-eslint'].configs.stylisticTypeChecked
@@ -43,6 +37,10 @@ export default defineFlatConfig([
         tsconfigRootDir: import.meta.dirname,
       },
     },
+  },
+  {
+    files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
+    ...plugins['typescript-eslint'].configs.disableTypeChecked,
   },
   {
     plugins: {
@@ -70,6 +68,12 @@ export default defineFlatConfig([
       'simple-import-sort/exports': 'error',
     },
   },
+  ...neostandard({
+    ts: true,
+    globals: {
+      ...globals.mocha,
+    },
+  }),
   {
     files: [
       'src/pools/selection-strategies/fair-share-worker-choice-strategy.ts',
@@ -77,10 +81,6 @@ export default defineFlatConfig([
     rules: {
       '@stylistic/operator-linebreak': 'off',
     },
-  },
-  {
-    files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
-    ...plugins['typescript-eslint'].configs.disableTypeChecked,
   },
   // examples specific configuration
   {
