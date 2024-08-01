@@ -23,6 +23,8 @@ updates:
   - package-ecosystem: 'npm'
     directories:
       - '/examples/typescript/*'
+      - '/examples/typescript/http-server-pool/*'
+      - '/examples/typescript/websocket-server-pool/*'
     schedule:
       interval: 'daily'
     labels:
