@@ -19,8 +19,8 @@ importers:
         specifier: ^11.1.6
         version: 11.1.6(rollup@4.19.2)(tslib@2.6.3)(typescript@5.5.4)
       '@types/node':
-        specifier: ^22.0.0
-        version: 22.0.0
+        specifier: ^22.0.2
+        version: 22.0.2
       autocannon:
         specifier: ^7.15.0
         version: 7.15.0
@@ -181,8 +181,8 @@ packages:
   '@types/minimatch@5.1.2':
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
 
-  '@types/node@22.0.0':
-    resolution: {integrity: sha512-VT7KSYudcPOzP5Q0wfbowyNLaVR8QWUdw+088uFWwfvpY6uCWaXpqV6ieLAu9WBcnTa7H4Z5RLK8I5t2FuOcqw==}
+  '@types/node@22.0.2':
+    resolution: {integrity: sha512-yPL6DyFwY5PiMVEwymNeqUTKsDczQBJ/5T7W/46RwLU/VH+AA8aT5TZkvBviLKLbbm0hlfftEkGrNzfRk/fofQ==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -839,11 +839,11 @@ snapshots:
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 22.0.0
+      '@types/node': 22.0.2
 
   '@types/minimatch@5.1.2': {}
 
-  '@types/node@22.0.0':
+  '@types/node@22.0.2':
     dependencies:
       undici-types: 6.11.1
 
