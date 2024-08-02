@@ -27,21 +27,23 @@ export default defineFlatConfig([
     },
   },
   ...plugins['typescript-eslint'].config(
-    ...plugins['typescript-eslint'].configs.strictTypeChecked,
-    ...plugins['typescript-eslint'].configs.stylisticTypeChecked,
     {
+      extends: [
+        ...plugins['typescript-eslint'].configs.strictTypeChecked,
+        ...plugins['typescript-eslint'].configs.stylisticTypeChecked,
+      ],
       languageOptions: {
         parserOptions: {
           projectService: true,
           tsconfigRootDir: import.meta.dirname,
         },
       },
+    },
+    {
+      files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
+      ...plugins['typescript-eslint'].configs.disableTypeChecked,
     }
   ),
-  {
-    files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
-    ...plugins['typescript-eslint'].configs.disableTypeChecked,
-  },
   {
     plugins: {
       'simple-import-sort': simpleImportSort,
