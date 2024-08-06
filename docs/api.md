@@ -147,7 +147,7 @@ An object with these properties:
   - `tasksStealingRatio` (optional) - The ratio of worker nodes that can steal tasks from another worker node. It must be a number between 0 and 1.
   - `tasksFinishedTimeout` (optional) - Queued tasks finished timeout in milliseconds at worker termination.
 
-  Default: `{ size: (pool maximum size)^2, concurrency: 1, taskStealing: true, tasksStealingOnBackPressure: false, tasksFinishedTimeout: 2000 }`
+  Default: `{ size: (pool maximum size)^2, concurrency: 1, taskStealing: true, tasksStealingOnBackPressure: false, tasksStealingRatio: 0.6, tasksFinishedTimeout: 2000 }`
 
 - `workerOptions` (optional) - An object with the worker options to pass to worker. See [worker_threads](https://nodejs.org/api/worker_threads.html#worker_threads_new_worker_filename_options) for more details.
 
