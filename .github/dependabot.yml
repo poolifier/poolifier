@@ -14,6 +14,14 @@ updates:
     directory: '/'
     schedule:
       interval: 'daily'
+    groups:
+      regular:
+        update-types:
+          - 'minor'
+          - 'patch'
+      major:
+        update-types:
+          - 'major'
     labels:
       - 'dependencies'
     reviewers:
@@ -27,6 +35,14 @@ updates:
       - '/examples/typescript/websocket-server-pool/*'
     schedule:
       interval: 'daily'
+    groups:
+      regular:
+        update-types:
+          - 'minor'
+          - 'patch'
+      major:
+        update-types:
+          - 'major'
     labels:
       - 'dependencies'
       - 'examples'
