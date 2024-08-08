@@ -56,6 +56,12 @@ export interface IFixedQueue<T> {
    */
   dequeue: () => T | undefined
   /**
+   * Deletes the given data from the fixed priority queue.
+   * @param data - Data to delete.
+   * @returns `true` if the data was deleted, `false` otherwise.
+   */
+  delete: (data: T) => boolean
+  /**
    * Clears the fixed queue.
    */
   clear: () => void

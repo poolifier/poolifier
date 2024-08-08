@@ -112,6 +112,10 @@ export interface Task<Data = unknown> {
    */
   readonly timestamp?: number
   /**
+   * Whether the task is abortable or not.
+   */
+  readonly abortable?: boolean
+  /**
    * Task UUID.
    */
   readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
@@ -137,6 +141,11 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    * Worker error.
    */
   readonly workerError?: WorkerError<ErrorData>
+  /**
+   * Task operation:
+   * - `'abort'` - Abort a task.
+   */
+  readonly taskOperation?: 'abort'
   /**
    * Task performance.
    */
@@ -204,6 +213,10 @@ export interface PromiseResponseWrapper<Response = unknown> {
    * The asynchronous resource used to track the task execution.
    */
   readonly asyncResource?: AsyncResource
+  /**
+   * The task abort signal.
+   */
+  readonly abortSignal?: AbortSignal
 }
 
 /**

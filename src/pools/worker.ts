@@ -2,6 +2,7 @@ import type { EventEmitter } from 'node:events'
 import type { MessageChannel, WorkerOptions } from 'node:worker_threads'
 
 import type { CircularBuffer } from '../circular-buffer.js'
+import type { PriorityQueue } from '../queues/priority-queue.js'
 import type { Task, TaskFunctionProperties } from '../utility-types.js'
 
 /**
@@ -297,6 +298,10 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   readonly messageChannel?: MessageChannel
   /**
+   * Tasks queue.
+   */
+  readonly tasksQueue: PriorityQueue<Task<Data>>
+  /**
    * Tasks queue back pressure size.
    * This is the number of tasks that can be enqueued before the worker node has back pressure.
    */
@@ -328,6 +333,12 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    * @returns The dequeued task.
    */
   readonly dequeueLastPrioritizedTask: () => Task<Data> | undefined
+  /**
+   * Deletes a task from the tasks queue.
+   * @param task - The task to delete.
+   * @returns `true` if the task was deleted, `false` otherwise.
+   */
+  readonly deleteTask: (task: Task<Data>) => boolean
   /**
    * Clears tasks queue.
    */
@@ -380,4 +391,5 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
 export interface WorkerNodeEventDetail {
   workerId?: number
   workerNodeKey?: number
+  taskId?: `${string}-${string}-${string}-${string}-${string}`
 }
