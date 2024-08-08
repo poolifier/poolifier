@@ -91,7 +91,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   public abstract update (workerNodeKey: number): boolean
 
   /** @inheritDoc */
-  public abstract choose (): number | undefined
+  public abstract choose (workerNodes?: number[]): number | undefined
 
   /** @inheritDoc */
   public abstract remove (workerNodeKey: number): boolean
@@ -125,6 +125,39 @@ export abstract class AbstractWorkerChoiceStrategy<
     ) {
       delete this.nextWorkerNodeKey
     }
+  }
+
+  /**
+   * Check worker node keys affinity.
+   * @param workerNodes - Worker node keys affinity
+   * @returns Worker node keys affinity
+   */
+  protected checkWorkerNodes (workerNodes?: number[]): number[] {
+    const poolWorkerNodesKeys = this.pool.workerNodes.map((_, index) => index)
+    if (workerNodes == null) {
+      return poolWorkerNodesKeys
+    }
+    if (!Array.isArray(workerNodes)) {
+      throw new TypeError('Worker nodes must be an array')
+    }
+    if (
+      workerNodes.filter(workerNodeKey =>
+        poolWorkerNodesKeys.includes(workerNodeKey)
+      ).length === 0
+    ) {
+      throw new Error('Worker nodes must be part of the pool worker nodes')
+    }
+    return workerNodes
+  }
+
+  /**
+   *
+   * @returns
+   */
+  protected getRoundRobinNextWorkerNodeKey (): number {
+    return this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
+      ? 0
+      : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
   }
 
   /**
