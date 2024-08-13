@@ -43,7 +43,7 @@ export const getDefaultTasksQueueOptions = (
     size: Math.pow(poolMaxSize, 2),
     concurrency: 1,
     taskStealing: true,
-    tasksStealingOnBackPressure: false,
+    tasksStealingOnBackPressure: true,
     tasksStealingRatio: 0.6,
     tasksFinishedTimeout: 2000,
   }

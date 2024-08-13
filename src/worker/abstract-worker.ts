@@ -534,7 +534,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Abortable task function.
+   * Gets abortable task function.
    * An abortable promise is built to permit the task to be aborted.
    * @param name - The name of the task.
    * @param taskId - The task id.
