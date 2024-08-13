@@ -169,6 +169,11 @@ export interface WorkerInfo {
    */
   stealing: boolean
   /**
+   * Stolen flag.
+   * This flag is set to `true` when worker node has one task stolen from another worker node.
+   */
+  stolen: boolean
+  /**
    * Back pressure flag.
    * This flag is set to `true` when worker node tasks queue has back pressure.
    */

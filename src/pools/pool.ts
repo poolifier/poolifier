@@ -90,6 +90,8 @@ export interface PoolInfo {
   readonly workerNodes: number
   /** Pool stealing worker nodes. */
   readonly stealingWorkerNodes?: number
+  /** Pool stolen worker nodes. */
+  readonly stolenWorkerNodes?: number
   /** Pool idle worker nodes. */
   readonly idleWorkerNodes: number
   /** Pool busy worker nodes. */
@@ -154,7 +156,7 @@ export interface TasksQueueOptions {
   readonly taskStealing?: boolean
   /**
    * Whether to enable tasks stealing under back pressure.
-   * @defaultValue false
+   * @defaultValue true
    */
   readonly tasksStealingOnBackPressure?: boolean
   /**

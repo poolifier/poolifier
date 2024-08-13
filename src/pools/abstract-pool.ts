@@ -326,6 +326,13 @@ export abstract class AbstractPool<
           0
         ),
       }),
+      ...(this.opts.enableTasksQueue === true && {
+        stolenWorkerNodes: this.workerNodes.reduce(
+          (accumulator, workerNode) =>
+            workerNode.info.stolen ? accumulator + 1 : accumulator,
+          0
+        ),
+      }),
       busyWorkerNodes: this.workerNodes.reduce(
         (accumulator, _, workerNodeKey) =>
           this.isWorkerNodeBusy(workerNodeKey) ? accumulator + 1 : accumulator,
@@ -1190,37 +1197,12 @@ export abstract class AbstractPool<
     )
   }
 
-  /** @inheritDoc */
-  public async execute (
+  private async internalExecute (
     data?: Data,
     name?: string,
     transferList?: readonly TransferListItem[]
   ): Promise<Response> {
     return await new Promise<Response>((resolve, reject) => {
-      if (!this.started) {
-        reject(new Error('Cannot execute a task on not started pool'))
-        return
-      }
-      if (this.destroying) {
-        reject(new Error('Cannot execute a task on destroying pool'))
-        return
-      }
-      if (name != null && typeof name !== 'string') {
-        reject(new TypeError('name argument must be a string'))
-        return
-      }
-      if (
-        name != null &&
-        typeof name === 'string' &&
-        name.trim().length === 0
-      ) {
-        reject(new TypeError('name argument must not be an empty string'))
-        return
-      }
-      if (transferList != null && !Array.isArray(transferList)) {
-        reject(new TypeError('transferList argument must be an array'))
-        return
-      }
       const timestamp = performance.now()
       const workerNodeKey = this.chooseWorkerNode(name)
       const task: Task<Data> = {
@@ -1260,11 +1242,41 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public mapExecute (
+  public async execute (
+    data?: Data,
+    name?: string,
+    transferList?: readonly TransferListItem[]
+  ): Promise<Response> {
+    if (!this.started) {
+      throw new Error('Cannot execute a task on not started pool')
+    }
+    if (this.destroying) {
+      throw new Error('Cannot execute a task on destroying pool')
+    }
+    if (name != null && typeof name !== 'string') {
+      throw new TypeError('name argument must be a string')
+    }
+    if (name != null && typeof name === 'string' && name.trim().length === 0) {
+      throw new TypeError('name argument must not be an empty string')
+    }
+    if (transferList != null && !Array.isArray(transferList)) {
+      throw new TypeError('transferList argument must be an array')
+    }
+    return await this.internalExecute(data, name, transferList)
+  }
+
+  /** @inheritDoc */
+  public async mapExecute (
     data: Iterable<Data>,
     name?: string,
     transferList?: readonly TransferListItem[]
   ): Promise<Response[]> {
+    if (!this.started) {
+      throw new Error('Cannot execute task(s) on not started pool')
+    }
+    if (this.destroying) {
+      throw new Error('Cannot execute task(s) on destroying pool')
+    }
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (data == null) {
       throw new TypeError('data argument must be a defined iterable')
@@ -1272,11 +1284,22 @@ export abstract class AbstractPool<
     if (typeof data[Symbol.iterator] !== 'function') {
       throw new TypeError('data argument must be an iterable')
     }
+    if (name != null && typeof name !== 'string') {
+      throw new TypeError('name argument must be a string')
+    }
+    if (name != null && typeof name === 'string' && name.trim().length === 0) {
+      throw new TypeError('name argument must not be an empty string')
+    }
+    if (transferList != null && !Array.isArray(transferList)) {
+      throw new TypeError('transferList argument must be an array')
+    }
     if (!Array.isArray(data)) {
       data = [...data]
     }
-    return Promise.all(
-      (data as Data[]).map(data => this.execute(data, name, transferList))
+    return await Promise.all(
+      (data as Data[]).map(data =>
+        this.internalExecute(data, name, transferList)
+      )
     )
   }
 
@@ -1680,10 +1703,10 @@ export abstract class AbstractPool<
           ((this.opts.enableTasksQueue === false &&
             workerUsage.tasks.executing === 0) ||
             (this.opts.enableTasksQueue === true &&
-              workerInfo != null &&
-              !workerInfo.stealing &&
               workerUsage.tasks.executing === 0 &&
-              this.tasksQueueSize(localWorkerNodeKey) === 0)))
+              this.tasksQueueSize(localWorkerNodeKey) === 0 &&
+              workerInfo != null &&
+              !workerInfo.stealing)))
       ) {
         // Flag the worker node as not ready immediately
         this.flagWorkerNodeAsNotReady(localWorkerNodeKey)
@@ -1918,6 +1941,42 @@ export abstract class AbstractPool<
     }
   }
 
+  private readonly stealTask = (
+    sourceWorkerNode: IWorkerNode<Worker, Data>,
+    destinationWorkerNodeKey: number
+  ): Task<Data> | undefined => {
+    const destinationWorkerInfo = this.getWorkerInfo(destinationWorkerNodeKey)
+    if (destinationWorkerInfo == null) {
+      throw new Error(
+        `Worker node with key '${destinationWorkerNodeKey.toString()}' not found in pool`
+      )
+    }
+    // Avoid cross task stealing. Could be smarter by checking stealing/stolen worker ids pair.
+    if (
+      !sourceWorkerNode.info.ready ||
+      sourceWorkerNode.info.stolen ||
+      sourceWorkerNode.info.stealing ||
+      !destinationWorkerInfo.ready ||
+      destinationWorkerInfo.stolen ||
+      destinationWorkerInfo.stealing
+    ) {
+      return
+    }
+    destinationWorkerInfo.stealing = true
+    sourceWorkerNode.info.stolen = true
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const task = sourceWorkerNode.dequeueLastPrioritizedTask()!
+    sourceWorkerNode.info.stolen = false
+    destinationWorkerInfo.stealing = false
+    this.handleTask(destinationWorkerNodeKey, task)
+    this.updateTaskStolenStatisticsWorkerUsage(
+      destinationWorkerNodeKey,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      task.name!
+    )
+    return task
+  }
+
   private readonly handleWorkerNodeIdleEvent = (
     eventDetail: WorkerNodeEventDetail,
     previousStolenTask?: Task<Data>
@@ -1926,12 +1985,6 @@ export abstract class AbstractPool<
     if (workerNodeKey == null) {
       throw new Error(
         "WorkerNode event detail 'workerNodeKey' property must be defined"
-      )
-    }
-    const workerInfo = this.getWorkerInfo(workerNodeKey)
-    if (workerInfo == null) {
-      throw new Error(
-        `Worker node with key '${workerNodeKey.toString()}' not found in pool`
       )
     }
     if (
@@ -1944,7 +1997,6 @@ export abstract class AbstractPool<
         )
     ) {
       if (previousStolenTask != null) {
-        workerInfo.stealing = false
         this.resetTaskSequentiallyStolenStatisticsWorkerUsage(
           workerNodeKey,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -1959,7 +2011,6 @@ export abstract class AbstractPool<
       (workerNodeTasksUsage.executing > 0 ||
         this.tasksQueueSize(workerNodeKey) > 0)
     ) {
-      workerInfo.stealing = false
       this.resetTaskSequentiallyStolenStatisticsWorkerUsage(
         workerNodeKey,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -1967,7 +2018,6 @@ export abstract class AbstractPool<
       )
       return
     }
-    workerInfo.stealing = true
     const stolenTask = this.workerNodeStealTask(workerNodeKey)
     if (stolenTask != null) {
       this.updateTaskSequentiallyStolenStatisticsWorkerUsage(
@@ -1998,18 +2048,11 @@ export abstract class AbstractPool<
       )
     const sourceWorkerNode = workerNodes.find(
       (sourceWorkerNode, sourceWorkerNodeKey) =>
-        sourceWorkerNode.info.ready &&
-        !sourceWorkerNode.info.stealing &&
         sourceWorkerNodeKey !== workerNodeKey &&
         sourceWorkerNode.usage.tasks.queued > 0
     )
     if (sourceWorkerNode != null) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const task = sourceWorkerNode.dequeueLastPrioritizedTask()!
-      this.handleTask(workerNodeKey, task)
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.updateTaskStolenStatisticsWorkerUsage(workerNodeKey, task.name!)
-      return task
+      return this.stealTask(sourceWorkerNode, workerNodeKey)
     }
   }
 
@@ -2045,26 +2088,12 @@ export abstract class AbstractPool<
     for (const [workerNodeKey, workerNode] of workerNodes.entries()) {
       if (
         sourceWorkerNode.usage.tasks.queued > 0 &&
-        workerNode.info.ready &&
-        !workerNode.info.stealing &&
         workerNode.info.id !== workerId &&
         workerNode.usage.tasks.queued <
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.opts.tasksQueueOptions!.size! - sizeOffset
       ) {
-        const workerInfo = this.getWorkerInfo(workerNodeKey)
-        if (workerInfo == null) {
-          throw new Error(
-            `Worker node with key '${workerNodeKey.toString()}' not found in pool`
-          )
-        }
-        workerInfo.stealing = true
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const task = sourceWorkerNode.dequeueLastPrioritizedTask()!
-        this.handleTask(workerNodeKey, task)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.updateTaskStolenStatisticsWorkerUsage(workerNodeKey, task.name!)
-        workerInfo.stealing = false
+        this.stealTask(sourceWorkerNode, workerNodeKey)
       }
     }
   }

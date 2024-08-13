@@ -276,7 +276,7 @@ describe('Abstract pool test suite', () => {
         concurrency: 2,
         size: Math.pow(numberOfWorkers, 2),
         taskStealing: true,
-        tasksStealingOnBackPressure: false,
+        tasksStealingOnBackPressure: true,
         tasksStealingRatio: 0.6,
         tasksFinishedTimeout: 2000,
       },
@@ -623,7 +623,7 @@ describe('Abstract pool test suite', () => {
       concurrency: 1,
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
-      tasksStealingOnBackPressure: false,
+      tasksStealingOnBackPressure: true,
       tasksStealingRatio: 0.6,
       tasksFinishedTimeout: 2000,
     })
@@ -633,7 +633,7 @@ describe('Abstract pool test suite', () => {
       concurrency: 2,
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
-      tasksStealingOnBackPressure: false,
+      tasksStealingOnBackPressure: true,
       tasksStealingRatio: 0.6,
       tasksFinishedTimeout: 2000,
     })
@@ -653,7 +653,7 @@ describe('Abstract pool test suite', () => {
       concurrency: 1,
       size: Math.pow(numberOfWorkers, 2),
       taskStealing: true,
-      tasksStealingOnBackPressure: false,
+      tasksStealingOnBackPressure: true,
       tasksStealingRatio: 0.6,
       tasksFinishedTimeout: 2000,
     })
@@ -872,6 +872,7 @@ describe('Abstract pool test suite', () => {
         dynamic: false,
         ready: true,
         stealing: false,
+        stolen: false,
         backPressure: false,
       })
     }
@@ -889,6 +890,7 @@ describe('Abstract pool test suite', () => {
         dynamic: false,
         ready: true,
         stealing: false,
+        stolen: false,
         backPressure: false,
       })
     }
@@ -925,9 +927,6 @@ describe('Abstract pool test suite', () => {
     expect(pool.info.ready).toBe(false)
     expect(pool.workerNodes).toStrictEqual([])
     expect(pool.readyEventEmitted).toBe(false)
-    await expect(pool.execute()).rejects.toThrow(
-      new Error('Cannot execute a task on not started pool')
-    )
     pool.start()
     expect(pool.info.started).toBe(true)
     expect(pool.info.ready).toBe(true)
@@ -1262,6 +1261,7 @@ describe('Abstract pool test suite', () => {
       workerNodes: expect.any(Number),
       idleWorkerNodes: expect.any(Number),
       stealingWorkerNodes: expect.any(Number),
+      stolenWorkerNodes: expect.any(Number),
       busyWorkerNodes: expect.any(Number),
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
@@ -1764,11 +1764,23 @@ describe('Abstract pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/thread/testMultipleTaskFunctionsWorker.mjs'
     )
-    expect(() => pool.mapExecute()).toThrow(
+    await expect(pool.mapExecute()).rejects.toThrow(
       new TypeError('data argument must be a defined iterable')
     )
-    expect(() => pool.mapExecute(0)).toThrow(
+    await expect(pool.mapExecute(0)).rejects.toThrow(
       new TypeError('data argument must be an iterable')
+    )
+    await expect(pool.mapExecute([undefined], 0)).rejects.toThrow(
+      new TypeError('name argument must be a string')
+    )
+    await expect(pool.mapExecute([undefined], '')).rejects.toThrow(
+      new TypeError('name argument must not be an empty string')
+    )
+    await expect(pool.mapExecute([undefined], undefined, {})).rejects.toThrow(
+      new TypeError('transferList argument must be an array')
+    )
+    await expect(pool.mapExecute([undefined], 'unknown')).rejects.toBe(
+      "Task function 'unknown' not found"
     )
     let results = await pool.mapExecute([{}, {}, {}, {}])
     expect(results).toStrictEqual([{ ok: 1 }, { ok: 1 }, { ok: 1 }, { ok: 1 }])
@@ -1793,6 +1805,9 @@ describe('Abstract pool test suite', () => {
     expect(pool.info.executingTasks).toBe(0)
     expect(pool.info.executedTasks).toBe(12)
     await pool.destroy()
+    await expect(pool.mapExecute()).rejects.toThrow(
+      new Error('Cannot execute task(s) on not started pool')
+    )
   })
 
   it('Verify that task function objects worker is working', async () => {
