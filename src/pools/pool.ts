@@ -90,6 +90,8 @@ export interface PoolInfo {
   readonly workerNodes: number
   /** Pool stealing worker nodes. */
   readonly stealingWorkerNodes?: number
+  /** Pool stolen worker nodes. */
+  readonly stolenWorkerNodes?: number
   /** Pool idle worker nodes. */
   readonly idleWorkerNodes: number
   /** Pool busy worker nodes. */
