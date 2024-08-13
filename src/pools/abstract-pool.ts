@@ -1894,6 +1894,42 @@ export abstract class AbstractPool<
     }
   }
 
+  private readonly stealTask = (
+    sourceWorkerNode: IWorkerNode<Worker, Data>,
+    destinationWorkerNodeKey: number
+  ): Task<Data> | undefined => {
+    const destinationWorkerInfo = this.getWorkerInfo(destinationWorkerNodeKey)
+    if (destinationWorkerInfo == null) {
+      throw new Error(
+        `Worker node with key '${destinationWorkerNodeKey.toString()}' not found in pool`
+      )
+    }
+    // Avoid cross task stealing. Could be smarter by checking stealing/stolen worker ids pair.
+    if (
+      !sourceWorkerNode.info.ready ||
+      sourceWorkerNode.info.stolen ||
+      sourceWorkerNode.info.stealing ||
+      !destinationWorkerInfo.ready ||
+      destinationWorkerInfo.stolen ||
+      destinationWorkerInfo.stealing
+    ) {
+      return
+    }
+    destinationWorkerInfo.stealing = true
+    sourceWorkerNode.info.stolen = true
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const task = sourceWorkerNode.dequeueLastPrioritizedTask()!
+    sourceWorkerNode.info.stolen = false
+    destinationWorkerInfo.stealing = false
+    this.handleTask(destinationWorkerNodeKey, task)
+    this.updateTaskStolenStatisticsWorkerUsage(
+      destinationWorkerNodeKey,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      task.name!
+    )
+    return task
+  }
+
   private readonly handleWorkerNodeIdleEvent = (
     eventDetail: WorkerNodeEventDetail,
     previousStolenTask?: Task<Data>
@@ -1902,12 +1938,6 @@ export abstract class AbstractPool<
     if (workerNodeKey == null) {
       throw new Error(
         "WorkerNode event detail 'workerNodeKey' property must be defined"
-      )
-    }
-    const workerInfo = this.getWorkerInfo(workerNodeKey)
-    if (workerInfo == null) {
-      throw new Error(
-        `Worker node with key '${workerNodeKey.toString()}' not found in pool`
       )
     }
     if (
@@ -1960,31 +1990,6 @@ export abstract class AbstractPool<
       })
   }
 
-  private readonly stealTask = (
-    sourceWorkerNode: IWorkerNode<Worker, Data>,
-    destinationWorkerNodeKey: number
-  ): Task<Data> | undefined => {
-    const destinationWorkerInfo = this.getWorkerInfo(destinationWorkerNodeKey)
-    if (destinationWorkerInfo == null) {
-      throw new Error(
-        `Worker node with key '${destinationWorkerNodeKey.toString()}' not found in pool`
-      )
-    }
-    destinationWorkerInfo.stealing = true
-    sourceWorkerNode.info.stolen = true
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const task = sourceWorkerNode.dequeueLastPrioritizedTask()!
-    sourceWorkerNode.info.stolen = false
-    destinationWorkerInfo.stealing = false
-    this.handleTask(destinationWorkerNodeKey, task)
-    this.updateTaskStolenStatisticsWorkerUsage(
-      destinationWorkerNodeKey,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      task.name!
-    )
-    return task
-  }
-
   private readonly workerNodeStealTask = (
     workerNodeKey: number
   ): Task<Data> | undefined => {
@@ -1996,9 +2001,6 @@ export abstract class AbstractPool<
       )
     const sourceWorkerNode = workerNodes.find(
       (sourceWorkerNode, sourceWorkerNodeKey) =>
-        sourceWorkerNode.info.ready &&
-        !sourceWorkerNode.info.stolen &&
-        !sourceWorkerNode.info.stealing &&
         sourceWorkerNodeKey !== workerNodeKey &&
         sourceWorkerNode.usage.tasks.queued > 0
     )
@@ -2039,9 +2041,6 @@ export abstract class AbstractPool<
     for (const [workerNodeKey, workerNode] of workerNodes.entries()) {
       if (
         sourceWorkerNode.usage.tasks.queued > 0 &&
-        workerNode.info.ready &&
-        !workerNode.info.stolen &&
-        !workerNode.info.stealing &&
         workerNode.info.id !== workerId &&
         workerNode.usage.tasks.queued <
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
