@@ -1167,37 +1167,12 @@ export abstract class AbstractPool<
     )
   }
 
-  /** @inheritDoc */
-  public async execute (
+  private async internalExecute (
     data?: Data,
     name?: string,
     transferList?: readonly TransferListItem[]
   ): Promise<Response> {
     return await new Promise<Response>((resolve, reject) => {
-      if (!this.started) {
-        reject(new Error('Cannot execute a task on not started pool'))
-        return
-      }
-      if (this.destroying) {
-        reject(new Error('Cannot execute a task on destroying pool'))
-        return
-      }
-      if (name != null && typeof name !== 'string') {
-        reject(new TypeError('name argument must be a string'))
-        return
-      }
-      if (
-        name != null &&
-        typeof name === 'string' &&
-        name.trim().length === 0
-      ) {
-        reject(new TypeError('name argument must not be an empty string'))
-        return
-      }
-      if (transferList != null && !Array.isArray(transferList)) {
-        reject(new TypeError('transferList argument must be an array'))
-        return
-      }
       const timestamp = performance.now()
       const workerNodeKey = this.chooseWorkerNode(name)
       const task: Task<Data> = {
@@ -1237,11 +1212,41 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public mapExecute (
+  public async execute (
+    data?: Data,
+    name?: string,
+    transferList?: readonly TransferListItem[]
+  ): Promise<Response> {
+    if (!this.started) {
+      throw new Error('Cannot execute a task on not started pool')
+    }
+    if (this.destroying) {
+      throw new Error('Cannot execute a task on destroying pool')
+    }
+    if (name != null && typeof name !== 'string') {
+      throw new TypeError('name argument must be a string')
+    }
+    if (name != null && typeof name === 'string' && name.trim().length === 0) {
+      throw new TypeError('name argument must not be an empty string')
+    }
+    if (transferList != null && !Array.isArray(transferList)) {
+      throw new TypeError('transferList argument must be an array')
+    }
+    return await this.internalExecute(data, name, transferList)
+  }
+
+  /** @inheritDoc */
+  public async mapExecute (
     data: Iterable<Data>,
     name?: string,
     transferList?: readonly TransferListItem[]
   ): Promise<Response[]> {
+    if (!this.started) {
+      throw new Error('Cannot execute task(s) on not started pool')
+    }
+    if (this.destroying) {
+      throw new Error('Cannot execute task(s) on destroying pool')
+    }
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (data == null) {
       throw new TypeError('data argument must be a defined iterable')
@@ -1249,11 +1254,22 @@ export abstract class AbstractPool<
     if (typeof data[Symbol.iterator] !== 'function') {
       throw new TypeError('data argument must be an iterable')
     }
+    if (name != null && typeof name !== 'string') {
+      throw new TypeError('name argument must be a string')
+    }
+    if (name != null && typeof name === 'string' && name.trim().length === 0) {
+      throw new TypeError('name argument must not be an empty string')
+    }
+    if (transferList != null && !Array.isArray(transferList)) {
+      throw new TypeError('transferList argument must be an array')
+    }
     if (!Array.isArray(data)) {
       data = [...data]
     }
-    return Promise.all(
-      (data as Data[]).map(data => this.execute(data, name, transferList))
+    return await Promise.all(
+      (data as Data[]).map(data =>
+        this.internalExecute(data, name, transferList)
+      )
     )
   }
 
