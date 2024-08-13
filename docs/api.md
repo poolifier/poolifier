@@ -6,7 +6,7 @@
   - [`pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`](#pool--new-fixedthreadpoolfixedclusterpoolnumberofthreadsnumberofworkers-filepath-opts)
   - [`pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`](#pool--new-dynamicthreadpooldynamicclusterpoolmin-max-filepath-opts)
   - [`pool.execute(data, name, transferList, abortSignal)`](#poolexecutedata-name-transferlist-abortsignal)
-  - [`pool.mapExecute(data, name, transferList)`](#poolmapexecutedata-name-transferlist)
+  - [`pool.mapExecute(data, name, transferList, abortSignal)`](#poolmapexecutedata-name-transferlist-abortsignal)
   - [`pool.start()`](#poolstart)
   - [`pool.destroy()`](#pooldestroy)
   - [`pool.hasTaskFunction(name)`](#poolhastaskfunctionname)
@@ -47,11 +47,12 @@
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
 
-### `pool.mapExecute(data, name, transferList)`
+### `pool.mapExecute(data, name, transferList, abortSignal)`
 
 `data` Iterable objects that you want to pass to your worker task function implementation.  
 `name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
 `transferList` (optional) An array of transferable objects that you want to transfer to your [`ThreadWorker`](#class-yourworker-extends-threadworkerclusterworker) worker implementation.
+`abortSignal` (optional) An abort signal to stop the task function execution.
 
 This method is available on both pool implementations and returns a promise with the task function execution responses array.
 

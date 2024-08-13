@@ -300,12 +300,14 @@ export interface IPool<
    * @param data - The tasks iterable input data for the specified task function. This can only be an iterable of structured-cloneable data.
    * @param name - The optional name of the task function to execute. If not specified, the default task function will be executed.
    * @param transferList - An optional array of transferable objects to transfer ownership of. Ownership of the transferred objects is given to the chosen pool's worker_threads worker and they should not be used in the main thread afterwards.
+   * @param abortSignal - An optional AbortSignal to abort the task.
    * @returns Promise with an array of task function responses that will be fulfilled when the tasks are completed.
    */
   readonly mapExecute: (
     data: Iterable<Data>,
     name?: string,
-    transferList?: readonly TransferListItem[]
+    transferList?: readonly TransferListItem[],
+    abortSignal?: AbortSignal
   ) => Promise<Response[]>
   /**
    * Starts the minimum number of workers in this pool.
