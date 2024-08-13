@@ -156,7 +156,7 @@ export interface TasksQueueOptions {
   readonly taskStealing?: boolean
   /**
    * Whether to enable tasks stealing under back pressure.
-   * @defaultValue false
+   * @defaultValue true
    */
   readonly tasksStealingOnBackPressure?: boolean
   /**
