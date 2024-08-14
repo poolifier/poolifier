@@ -166,7 +166,7 @@ export interface WorkerInfo {
   ready: boolean
   /**
    * Stealing flag.
-   * This flag is set to `true` when worker node is stealing tasks from another worker node.
+   * This flag is set to `true` when worker node is stealing one task from another worker node.
    */
   stealing: boolean
   /**
@@ -174,6 +174,11 @@ export interface WorkerInfo {
    * This flag is set to `true` when worker node has one task stolen from another worker node.
    */
   stolen: boolean
+  /**
+   * Continuous stealing flag.
+   * This flag is set to `true` when worker node continuously steal tasks from other worker nodes.
+   */
+  continuousStealing: boolean
   /**
    * Back pressure flag.
    * This flag is set to `true` when worker node tasks queue has back pressure.

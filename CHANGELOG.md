@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.1](https://github.com/poolifier/poolifier/compare/v4.2.0...v4.2.1) (2024-08-14)
+
+
+### 🐞 Bug Fixes
+
+* ensure task stealing can't start twice on the same worker node ([37cc14e](https://github.com/poolifier/poolifier/commit/37cc14e81ea8e83ea2b78cf27e0e74f3c4694e21))
+* trigger continuous tasks stealing under proper conditions ([2663563](https://github.com/poolifier/poolifier/commit/2663563da5f52fd57be41127e5c789c86e969ae7))
+
+
+### ✨ Polish
+
+* remove unneeded condition at task response handling ([93df097](https://github.com/poolifier/poolifier/commit/93df097ec6c54af9f0d29df0cb61cb901f29fca4))
+
+
+### 📚 Documentation
+
+* publish documentation ([b4f9421](https://github.com/poolifier/poolifier/commit/b4f9421addf669cffe56d2f30f0fbab42dfe9755))
+* refine code comment about task stealing conditions ([80716e5](https://github.com/poolifier/poolifier/commit/80716e5039fb14c3731fa6b7f22334fcd4e5b314))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump eslint-plugin-jsdoc in the regular group ([#2525](https://github.com/poolifier/poolifier/issues/2525)) ([b9873cb](https://github.com/poolifier/poolifier/commit/b9873cbec16f627e05dfb354521c34540722df0c))
+* **deps:** bump the regular group across 11 directories with 2 updates ([#2526](https://github.com/poolifier/poolifier/issues/2526)) ([d3167a7](https://github.com/poolifier/poolifier/commit/d3167a7e6ee5dea226278a26813e6b64b49aa1d2))
+
 ## [4.2.0](https://github.com/poolifier/poolifier/compare/v4.1.0...v4.2.0) (2024-08-13)
 
 ### 🚀 Features
