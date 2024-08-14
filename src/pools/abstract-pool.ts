@@ -1919,7 +1919,7 @@ export abstract class AbstractPool<
         `Worker node with key '${destinationWorkerNodeKey.toString()}' not found in pool`
       )
     }
-    // Avoid cross task stealing. Could be smarter by checking stealing/stolen worker ids pair.
+    // Avoid cross and cascading task stealing. Could be smarter by checking stealing/stolen worker ids pair.
     if (
       !sourceWorkerNode.info.ready ||
       sourceWorkerNode.info.stolen ||
