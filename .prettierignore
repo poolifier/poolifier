@@ -7,3 +7,4 @@ lib/
 outputs/
 pnpm-lock.yaml
 reports/
+CHANGELOG.md

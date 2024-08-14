@@ -312,27 +312,18 @@ export abstract class AbstractPool<
         utilization: round(this.utilization),
       }),
       workerNodes: this.workerNodes.length,
-      idleWorkerNodes: this.workerNodes.reduce(
-        (accumulator, workerNode) =>
-          workerNode.usage.tasks.executing === 0
-            ? accumulator + 1
-            : accumulator,
-        0
-      ),
       ...(this.opts.enableTasksQueue === true && {
         stealingWorkerNodes: this.workerNodes.reduce(
           (accumulator, workerNode) =>
-            workerNode.info.stealing ? accumulator + 1 : accumulator,
+            workerNode.info.continuousStealing ? accumulator + 1 : accumulator,
           0
         ),
       }),
-      ...(this.opts.enableTasksQueue === true && {
-        stolenWorkerNodes: this.workerNodes.reduce(
-          (accumulator, workerNode) =>
-            workerNode.info.stolen ? accumulator + 1 : accumulator,
-          0
-        ),
-      }),
+      idleWorkerNodes: this.workerNodes.reduce(
+        (accumulator, _, workerNodeKey) =>
+          this.isWorkerNodeIdle(workerNodeKey) ? accumulator + 1 : accumulator,
+        0
+      ),
       busyWorkerNodes: this.workerNodes.reduce(
         (accumulator, _, workerNodeKey) =>
           this.isWorkerNodeBusy(workerNodeKey) ? accumulator + 1 : accumulator,
@@ -871,6 +862,16 @@ export abstract class AbstractPool<
           workerNode.info.ready && workerNode.usage.tasks.executing === 0
       ) === -1
     )
+  }
+
+  private isWorkerNodeIdle (workerNodeKey: number): boolean {
+    if (this.opts.enableTasksQueue === true) {
+      return (
+        this.workerNodes[workerNodeKey].usage.tasks.executing === 0 &&
+        this.tasksQueueSize(workerNodeKey) === 0
+      )
+    }
+    return this.workerNodes[workerNodeKey].usage.tasks.executing === 0
   }
 
   private isWorkerNodeBusy (workerNodeKey: number): boolean {
@@ -1695,18 +1696,14 @@ export abstract class AbstractPool<
         message.workerId
       )
       const workerInfo = this.getWorkerInfo(localWorkerNodeKey)
-      const workerUsage = this.workerNodes[localWorkerNodeKey]?.usage
       // Kill message received from worker
       if (
         isKillBehavior(KillBehaviors.HARD, message.kill) ||
         (isKillBehavior(KillBehaviors.SOFT, message.kill) &&
-          ((this.opts.enableTasksQueue === false &&
-            workerUsage.tasks.executing === 0) ||
-            (this.opts.enableTasksQueue === true &&
-              workerUsage.tasks.executing === 0 &&
-              this.tasksQueueSize(localWorkerNodeKey) === 0 &&
-              workerInfo != null &&
-              !workerInfo.stealing)))
+          this.isWorkerNodeIdle(localWorkerNodeKey) &&
+          workerInfo != null &&
+          !workerInfo.continuousStealing &&
+          !workerInfo.stealing)
       ) {
         // Flag the worker node as not ready immediately
         this.flagWorkerNodeAsNotReady(localWorkerNodeKey)
@@ -1893,15 +1890,16 @@ export abstract class AbstractPool<
 
   private updateTaskSequentiallyStolenStatisticsWorkerUsage (
     workerNodeKey: number,
-    taskName: string,
+    taskName?: string,
     previousTaskName?: string
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (workerNode?.usage != null) {
+    if (workerNode?.usage != null && taskName != null) {
       ++workerNode.usage.tasks.sequentiallyStolen
     }
     if (
+      taskName != null &&
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
     ) {
@@ -1923,7 +1921,7 @@ export abstract class AbstractPool<
 
   private resetTaskSequentiallyStolenStatisticsWorkerUsage (
     workerNodeKey: number,
-    taskName: string
+    taskName?: string
   ): void {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -1931,6 +1929,7 @@ export abstract class AbstractPool<
       workerNode.usage.tasks.sequentiallyStolen = 0
     }
     if (
+      taskName != null &&
       this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
     ) {
@@ -1951,7 +1950,7 @@ export abstract class AbstractPool<
         `Worker node with key '${destinationWorkerNodeKey.toString()}' not found in pool`
       )
     }
-    // Avoid cross task stealing. Could be smarter by checking stealing/stolen worker ids pair.
+    // Avoid cross and cascading task stealing. Could be smarter by checking stealing/stolen worker ids pair.
     if (
       !sourceWorkerNode.info.ready ||
       sourceWorkerNode.info.stolen ||
@@ -1965,16 +1964,16 @@ export abstract class AbstractPool<
     destinationWorkerInfo.stealing = true
     sourceWorkerNode.info.stolen = true
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const task = sourceWorkerNode.dequeueLastPrioritizedTask()!
+    const stolenTask = sourceWorkerNode.dequeueLastPrioritizedTask()!
     sourceWorkerNode.info.stolen = false
     destinationWorkerInfo.stealing = false
-    this.handleTask(destinationWorkerNodeKey, task)
+    this.handleTask(destinationWorkerNodeKey, stolenTask)
     this.updateTaskStolenStatisticsWorkerUsage(
       destinationWorkerNodeKey,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      task.name!
+      stolenTask.name!
     )
-    return task
+    return stolenTask
   }
 
   private readonly handleWorkerNodeIdleEvent = (
@@ -1987,46 +1986,46 @@ export abstract class AbstractPool<
         "WorkerNode event detail 'workerNodeKey' property must be defined"
       )
     }
+    const workerNodeInfo = this.getWorkerInfo(workerNodeKey)
+    if (workerNodeInfo == null) {
+      throw new Error(
+        `Worker node with key '${workerNodeKey.toString()}' not found in pool`
+      )
+    }
+    const workerNodeTasksUsage = this.workerNodes[workerNodeKey].usage.tasks
     if (
-      this.cannotStealTask() ||
-      (this.info.stealingWorkerNodes ?? 0) >
-        Math.round(
-          this.workerNodes.length *
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.opts.tasksQueueOptions!.tasksStealingRatio!
-        )
+      !workerNodeInfo.continuousStealing &&
+      (this.cannotStealTask() ||
+        (this.info.stealingWorkerNodes ?? 0) >
+          Math.round(
+            this.workerNodes.length *
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              this.opts.tasksQueueOptions!.tasksStealingRatio!
+          ))
     ) {
-      if (previousStolenTask != null) {
+      return
+    }
+    if (
+      workerNodeInfo.continuousStealing &&
+      (workerNodeTasksUsage.executing > 0 ||
+        this.tasksQueueSize(workerNodeKey) > 0)
+    ) {
+      workerNodeInfo.continuousStealing = false
+      if (workerNodeTasksUsage.sequentiallyStolen > 0) {
         this.resetTaskSequentiallyStolenStatisticsWorkerUsage(
           workerNodeKey,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          previousStolenTask.name!
+          previousStolenTask?.name
         )
       }
       return
     }
-    const workerNodeTasksUsage = this.workerNodes[workerNodeKey].usage.tasks
-    if (
-      previousStolenTask != null &&
-      (workerNodeTasksUsage.executing > 0 ||
-        this.tasksQueueSize(workerNodeKey) > 0)
-    ) {
-      this.resetTaskSequentiallyStolenStatisticsWorkerUsage(
-        workerNodeKey,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        previousStolenTask.name!
-      )
-      return
-    }
+    workerNodeInfo.continuousStealing = true
     const stolenTask = this.workerNodeStealTask(workerNodeKey)
-    if (stolenTask != null) {
-      this.updateTaskSequentiallyStolenStatisticsWorkerUsage(
-        workerNodeKey,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        stolenTask.name!,
-        previousStolenTask?.name
-      )
-    }
+    this.updateTaskSequentiallyStolenStatisticsWorkerUsage(
+      workerNodeKey,
+      stolenTask?.name,
+      previousStolenTask?.name
+    )
     sleep(exponentialDelay(workerNodeTasksUsage.sequentiallyStolen))
       .then(() => {
         this.handleWorkerNodeIdleEvent(eventDetail, stolenTask)
@@ -2154,7 +2153,7 @@ export abstract class AbstractPool<
   }
 
   private handleTaskExecutionResponse (message: MessageValue<Response>): void {
-    const { workerId, taskId, workerError, data } = message
+    const { taskId, workerError, data } = message
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const promiseResponse = this.promiseResponseMap.get(taskId!)
     if (promiseResponse != null) {
@@ -2178,14 +2177,7 @@ export abstract class AbstractPool<
       this.afterTaskExecutionHook(workerNodeKey, message)
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.promiseResponseMap.delete(taskId!)
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      workerNode?.emit('taskFinished', taskId)
-      if (
-        this.opts.enableTasksQueue === true &&
-        !this.destroying &&
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        workerNode != null
-      ) {
+      if (this.opts.enableTasksQueue === true && !this.destroying) {
         const workerNodeTasksUsage = workerNode.usage.tasks
         if (
           this.tasksQueueSize(workerNodeKey) > 0 &&
@@ -2196,17 +2188,15 @@ export abstract class AbstractPool<
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.executeTask(workerNodeKey, this.dequeueTask(workerNodeKey)!)
         }
-        if (
-          workerNodeTasksUsage.executing === 0 &&
-          this.tasksQueueSize(workerNodeKey) === 0 &&
-          workerNodeTasksUsage.sequentiallyStolen === 0
-        ) {
+        if (this.isWorkerNodeIdle(workerNodeKey)) {
           workerNode.emit('idle', {
-            workerId,
             workerNodeKey,
           })
         }
       }
+      // FIXME: cannot be theoretically undefined. Schedule in the next tick to avoid race conditions?
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      workerNode?.emit('taskFinished', taskId)
     }
   }
 
