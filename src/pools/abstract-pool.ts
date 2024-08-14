@@ -2163,7 +2163,9 @@ export abstract class AbstractPool<
           })
         }
       }
-      workerNode.emit('taskFinished', taskId)
+      // FIXME: cannot be theoretically undefined. Schedule in the next tick to avoid race conditions?
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      workerNode?.emit('taskFinished', taskId)
     }
   }
 
