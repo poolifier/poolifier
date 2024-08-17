@@ -97,8 +97,8 @@ packages:
     resolution: {integrity: sha512-NaP2rQyA+tcubOJMFv2+oeW9jv2pq/t+LM6BL3cfJic0HEfscEcnWgAyU5YovE/oTHUzAgTliGdLPR+RQAWUbg==}
     hasBin: true
 
-  avvio@8.3.2:
-    resolution: {integrity: sha512-st8e519GWHa/azv8S87mcJvZs4WsgTBjOw/Ih1CP6u+8SZvcOeAYNG6JbsIrAUUJJ7JfmrnOkR8ipDS+u9SIRQ==}
+  avvio@8.4.0:
+    resolution: {integrity: sha512-CDSwaxINFy59iNwhYnkvALBwZiTydGkOecZyPkqBpABYR1KqGEsET0VOOYDwtleZSUIdeY36DC2bSZ24CO1igA==}
 
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
@@ -501,7 +501,7 @@ snapshots:
       subarg: 1.0.0
       timestring: 6.0.0
 
-  avvio@8.3.2:
+  avvio@8.4.0:
     dependencies:
       '@fastify/error': 3.4.1
       fastq: 1.17.1
@@ -589,7 +589,7 @@ snapshots:
       '@fastify/error': 3.4.1
       '@fastify/fast-json-stringify-compiler': 4.3.0
       abstract-logging: 2.0.1
-      avvio: 8.3.2
+      avvio: 8.4.0
       fast-content-type-parse: 1.1.0
       fast-json-stringify: 5.16.1
       find-my-way: 8.2.0
