@@ -222,6 +222,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
       stealing: false,
       stolen: false,
       continuousStealing: false,
+      backPressureStealing: false,
       backPressure: false,
     }
   }

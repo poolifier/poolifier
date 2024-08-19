@@ -874,6 +874,7 @@ describe('Abstract pool test suite', () => {
         stealing: false,
         stolen: false,
         continuousStealing: false,
+        backPressureStealing: false,
         backPressure: false,
       })
     }
@@ -893,6 +894,7 @@ describe('Abstract pool test suite', () => {
         stealing: false,
         stolen: false,
         continuousStealing: false,
+        backPressureStealing: false,
         backPressure: false,
       })
     }
