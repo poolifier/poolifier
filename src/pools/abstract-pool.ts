@@ -311,13 +311,6 @@ export abstract class AbstractPool<
         utilization: round(this.utilization),
       }),
       workerNodes: this.workerNodes.length,
-      ...(this.opts.enableTasksQueue === true && {
-        stealingWorkerNodes: this.workerNodes.reduce(
-          (accumulator, workerNode) =>
-            workerNode.info.continuousStealing ? accumulator + 1 : accumulator,
-          0
-        ),
-      }),
       idleWorkerNodes: this.workerNodes.reduce(
         (accumulator, _, workerNodeKey) =>
           this.isWorkerNodeIdle(workerNodeKey) ? accumulator + 1 : accumulator,
@@ -328,6 +321,23 @@ export abstract class AbstractPool<
           this.isWorkerNodeBusy(workerNodeKey) ? accumulator + 1 : accumulator,
         0
       ),
+      ...(this.opts.enableTasksQueue === true && {
+        stealingWorkerNodes: this.workerNodes.reduce(
+          (accumulator, workerNode) =>
+            workerNode.info.continuousStealing ||
+            workerNode.info.backPressureStealing
+              ? accumulator + 1
+              : accumulator,
+          0
+        ),
+      }),
+      ...(this.opts.enableTasksQueue === true && {
+        backPressureWorkerNodes: this.workerNodes.reduce(
+          (accumulator, workerNode) =>
+            workerNode.info.backPressure ? accumulator + 1 : accumulator,
+          0
+        ),
+      }),
       executedTasks: this.workerNodes.reduce(
         (accumulator, workerNode) =>
           accumulator + workerNode.usage.tasks.executed,
@@ -1694,7 +1704,7 @@ export abstract class AbstractPool<
           this.isWorkerNodeIdle(localWorkerNodeKey) &&
           workerInfo != null &&
           !workerInfo.continuousStealing &&
-          !workerInfo.stealing)
+          !workerInfo.backPressureStealing)
       ) {
         // Flag the worker node as not ready immediately
         this.flagWorkerNodeAsNotReady(localWorkerNodeKey)
@@ -2107,7 +2117,12 @@ export abstract class AbstractPool<
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.opts.tasksQueueOptions!.size! - sizeOffset
       ) {
+        if (workerNode.info.backPressureStealing) {
+          continue
+        }
+        workerNode.info.backPressureStealing = true
         this.stealTask(sourceWorkerNode, workerNodeKey)
+        workerNode.info.backPressureStealing = false
       }
     }
   }

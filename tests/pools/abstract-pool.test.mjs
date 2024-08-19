@@ -874,6 +874,7 @@ describe('Abstract pool test suite', () => {
         stealing: false,
         stolen: false,
         continuousStealing: false,
+        backPressureStealing: false,
         backPressure: false,
       })
     }
@@ -893,6 +894,7 @@ describe('Abstract pool test suite', () => {
         stealing: false,
         stolen: false,
         continuousStealing: false,
+        backPressureStealing: false,
         backPressure: false,
       })
     }
@@ -1264,9 +1266,10 @@ describe('Abstract pool test suite', () => {
       minSize: expect.any(Number),
       maxSize: expect.any(Number),
       workerNodes: expect.any(Number),
-      stealingWorkerNodes: expect.any(Number),
       idleWorkerNodes: expect.any(Number),
       busyWorkerNodes: expect.any(Number),
+      stealingWorkerNodes: expect.any(Number),
+      backPressureWorkerNodes: expect.any(Number),
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
       maxQueuedTasks: expect.any(Number),
