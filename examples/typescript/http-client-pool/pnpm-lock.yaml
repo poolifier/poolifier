@@ -15,20 +15,20 @@ importers:
         specifier: ^3.3.2
         version: 3.3.2
       poolifier:
-        specifier: ^4.2.2
-        version: 4.2.2
+        specifier: ^4.2.3
+        version: 4.2.3
     devDependencies:
       '@types/node':
-        specifier: ^22.4.0
-        version: 22.4.0
+        specifier: ^22.4.1
+        version: 22.4.1
       typescript:
         specifier: ^5.5.4
         version: 5.5.4
 
 packages:
 
-  '@types/node@22.4.0':
-    resolution: {integrity: sha512-49AbMDwYUz7EXxKU/r7mXOsxwFr4BYbvB7tWYxVuLdb2ibd30ijjXINSMAHiEEZk5PCRBmW1gUeisn2VMKt3cQ==}
+  '@types/node@22.4.1':
+    resolution: {integrity: sha512-1tbpb9325+gPnKK0dMm+/LMriX0vKxf6RnB0SZUqfyVkQ4fMgUSySqhxE/y8Jvs4NyF1yHzTfG9KlnkIODxPKg==}
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
@@ -85,8 +85,8 @@ packages:
     resolution: {integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  poolifier@4.2.2:
-    resolution: {integrity: sha512-VpTCPMhAfP9JHuECGynJo3zEO+R2O5eBeQkluD22kOruxzQm8t5sIS/Vd8HzdkYLz6WirmjRQuDvqqlRuihYow==}
+  poolifier@4.2.3:
+    resolution: {integrity: sha512-JF3gPzuugRLKlfyQ+vjtxviMr5AyarCAnWYT/g00NAL5Djb5oviCIvb0+eECWQ15QX0QBwcqaxrqB89Dr+pP3Q==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   proxy-from-env@1.1.0:
@@ -97,8 +97,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  undici-types@6.19.6:
-    resolution: {integrity: sha512-e/vggGopEfTKSvj4ihnOLTsqhrKRN3LeO6qSN/GxohhuRv8qH9bNQ4B8W7e/vFL+0XTnmHPB4/kegunZGA4Org==}
+  undici-types@6.19.8:
+    resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
 
   web-streams-polyfill@3.3.3:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
@@ -106,9 +106,9 @@ packages:
 
 snapshots:
 
-  '@types/node@22.4.0':
+  '@types/node@22.4.1':
     dependencies:
-      undici-types: 6.19.6
+      undici-types: 6.19.8
 
   asynckit@0.4.0: {}
 
@@ -159,12 +159,12 @@ snapshots:
       fetch-blob: 3.2.0
       formdata-polyfill: 4.0.10
 
-  poolifier@4.2.2: {}
+  poolifier@4.2.3: {}
 
   proxy-from-env@1.1.0: {}
 
   typescript@5.5.4: {}
 
-  undici-types@6.19.6: {}
+  undici-types@6.19.8: {}
 
   web-streams-polyfill@3.3.3: {}
