@@ -6,7 +6,7 @@ class RequestHandlerWorker<
   Data extends WorkerData<DataPayload>,
   Response extends WorkerResponse<DataPayload>
 > extends ThreadWorker<Data, Response> {
-  private static readonly factorial = (n: number | bigint): bigint => {
+  private static readonly factorial = (n: bigint | number): bigint => {
     if (n === 0 || n === 1) {
       return 1n
     } else {

@@ -4,8 +4,8 @@ export enum MessageType {
 }
 
 export interface MessagePayload<T = unknown> {
-  type: MessageType
   data: T
+  type: MessageType
 }
 
 export interface DataPayload {
@@ -17,6 +17,6 @@ export interface WorkerData {
 }
 
 export interface WorkerResponse {
-  status: boolean
   port?: number
+  status: boolean
 }

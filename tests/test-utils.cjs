@@ -98,12 +98,12 @@ const factorial = n => {
 
 const executeTaskFunction = data => {
   switch (data.function) {
-    case TaskFunctions.jsonIntegerSerialization:
-      return jsonIntegerSerialization(data.n || 100)
-    case TaskFunctions.fibonacci:
-      return fibonacci(data.n || 100)
     case TaskFunctions.factorial:
       return factorial(data.n || 100)
+    case TaskFunctions.fibonacci:
+      return fibonacci(data.n || 100)
+    case TaskFunctions.jsonIntegerSerialization:
+      return jsonIntegerSerialization(data.n || 100)
     default:
       throw new Error('Unknown worker function')
   }

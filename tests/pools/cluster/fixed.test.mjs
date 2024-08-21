@@ -1,6 +1,5 @@
-import cluster from 'node:cluster'
-
 import { expect } from 'expect'
+import cluster from 'node:cluster'
 
 import { FixedClusterPool, PoolEvents } from '../../../lib/index.cjs'
 import { DEFAULT_TASK_NAME } from '../../../lib/utils.cjs'
@@ -10,7 +9,7 @@ import { waitPoolEvents, waitWorkerEvents } from '../../test-utils.cjs'
 describe('Fixed cluster pool test suite', () => {
   const numberOfWorkers = 8
   const tasksConcurrency = 2
-  let pool, queuePool, emptyPool, echoPool, errorPool, asyncErrorPool, asyncPool
+  let asyncErrorPool, asyncPool, echoPool, emptyPool, errorPool, pool, queuePool
 
   before('Create pools', () => {
     pool = new FixedClusterPool(
@@ -25,10 +24,10 @@ describe('Fixed cluster pool test suite', () => {
       './tests/worker-files/cluster/testWorker.cjs',
       {
         enableTasksQueue: true,
+        errorHandler: e => console.error(e),
         tasksQueueOptions: {
           concurrency: tasksConcurrency,
         },
-        errorHandler: e => console.error(e),
       }
     )
     emptyPool = new FixedClusterPool(
@@ -213,9 +212,9 @@ describe('Fixed cluster pool test suite', () => {
     expect(typeof inError === 'string').toBe(true)
     expect(inError).toBe('Error Message from ClusterWorker')
     expect(taskError).toStrictEqual({
-      name: DEFAULT_TASK_NAME,
-      message: 'Error Message from ClusterWorker',
       data,
+      message: 'Error Message from ClusterWorker',
+      name: DEFAULT_TASK_NAME,
     })
     expect(
       errorPool.workerNodes.some(
@@ -244,9 +243,9 @@ describe('Fixed cluster pool test suite', () => {
     expect(typeof inError === 'string').toBe(true)
     expect(inError).toBe('Error Message from ClusterWorker:async')
     expect(taskError).toStrictEqual({
-      name: DEFAULT_TASK_NAME,
-      message: 'Error Message from ClusterWorker:async',
       data,
+      message: 'Error Message from ClusterWorker:async',
+      name: DEFAULT_TASK_NAME,
     })
     expect(
       asyncErrorPool.workerNodes.some(
@@ -307,8 +306,8 @@ describe('Fixed cluster pool test suite', () => {
     })
     expect(cluster.settings).toMatchObject({
       args: ['--use', 'http'],
-      silent: true,
       exec: workerFilePath,
+      silent: true,
     })
     await pool.destroy()
   })

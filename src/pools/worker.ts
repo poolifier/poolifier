@@ -42,10 +42,10 @@ export type ExitHandler<Worker extends IWorker> = (
  * @typeParam Worker - Type of worker.
  */
 export type EventHandler<Worker extends IWorker> =
-  | OnlineHandler<Worker>
-  | MessageHandler<Worker>
   | ErrorHandler<Worker>
   | ExitHandler<Worker>
+  | MessageHandler<Worker>
+  | OnlineHandler<Worker>
 
 /**
  * Measurement history size.
@@ -62,25 +62,25 @@ export interface MeasurementStatistics {
    */
   aggregate?: number
   /**
-   * Measurement minimum.
+   * Measurement average.
    */
-  minimum?: number
+  average?: number
+  /**
+   * Measurement history.
+   */
+  readonly history: CircularBuffer
   /**
    * Measurement maximum.
    */
   maximum?: number
   /**
-   * Measurement average.
-   */
-  average?: number
-  /**
    * Measurement median.
    */
   median?: number
   /**
-   * Measurement history.
+   * Measurement minimum.
    */
-  readonly history: CircularBuffer
+  minimum?: number
 }
 
 /**
@@ -88,8 +88,8 @@ export interface MeasurementStatistics {
  * @internal
  */
 export interface EventLoopUtilizationMeasurementStatistics {
-  readonly idle: MeasurementStatistics
   readonly active: MeasurementStatistics
+  readonly idle: MeasurementStatistics
   utilization?: number
 }
 
@@ -107,13 +107,17 @@ export interface TaskStatistics {
    */
   executing: number
   /**
-   * Number of queued tasks.
+   * Number of failed tasks.
    */
-  readonly queued: number
+  failed: number
   /**
    * Maximum number of queued tasks.
    */
   readonly maxQueued?: number
+  /**
+   * Number of queued tasks.
+   */
+  readonly queued: number
   /**
    * Number of sequentially stolen tasks.
    */
@@ -122,19 +126,15 @@ export interface TaskStatistics {
    * Number of stolen tasks.
    */
   stolen: number
-  /**
-   * Number of failed tasks.
-   */
-  failed: number
 }
 
 /**
  * Enumeration of worker types.
  */
-export const WorkerTypes: Readonly<{ thread: 'thread'; cluster: 'cluster' }> =
+export const WorkerTypes: Readonly<{ cluster: 'cluster'; thread: 'thread' }> =
   Object.freeze({
-    thread: 'thread',
     cluster: 'cluster',
+    thread: 'thread',
   } as const)
 
 /**
@@ -148,17 +148,28 @@ export type WorkerType = keyof typeof WorkerTypes
  */
 export interface WorkerInfo {
   /**
-   * Worker id.
+   * Back pressure flag.
+   * This flag is set to `true` when worker node tasks queue has back pressure.
    */
-  readonly id: number | undefined
+  backPressure: boolean
   /**
-   * Worker type.
+   * Back pressure stealing flag.
+   * This flag is set to `true` when worker node is stealing one task from another back pressured worker node.
    */
-  readonly type: WorkerType
+  backPressureStealing: boolean
+  /**
+   * Continuous stealing flag.
+   * This flag is set to `true` when worker node is continuously stealing tasks from other worker nodes.
+   */
+  continuousStealing: boolean
   /**
    * Dynamic flag.
    */
   dynamic: boolean
+  /**
+   * Worker id.
+   */
+  readonly id: number | undefined
   /**
    * Ready flag.
    */
@@ -174,24 +185,13 @@ export interface WorkerInfo {
    */
   stolen: boolean
   /**
-   * Continuous stealing flag.
-   * This flag is set to `true` when worker node is continuously stealing tasks from other worker nodes.
-   */
-  continuousStealing: boolean
-  /**
-   * Back pressure stealing flag.
-   * This flag is set to `true` when worker node is stealing one task from another back pressured worker node.
-   */
-  backPressureStealing: boolean
-  /**
-   * Back pressure flag.
-   * This flag is set to `true` when worker node tasks queue has back pressure.
-   */
-  backPressure: boolean
-  /**
    * Task functions properties.
    */
   taskFunctionsProperties?: TaskFunctionProperties[]
+  /**
+   * Worker type.
+   */
+  readonly type: WorkerType
 }
 
 /**
@@ -200,21 +200,21 @@ export interface WorkerInfo {
  */
 export interface WorkerUsage {
   /**
-   * Tasks statistics.
+   * Tasks event loop utilization statistics.
    */
-  readonly tasks: TaskStatistics
+  readonly elu: EventLoopUtilizationMeasurementStatistics
   /**
    * Tasks runtime statistics.
    */
   readonly runTime: MeasurementStatistics
   /**
+   * Tasks statistics.
+   */
+  readonly tasks: TaskStatistics
+  /**
    * Tasks wait time statistics.
    */
   readonly waitTime: MeasurementStatistics
-  /**
-   * Tasks event loop utilization statistics.
-   */
-  readonly elu: EventLoopUtilizationMeasurementStatistics
 }
 
 /**
@@ -230,13 +230,17 @@ export interface StrategyData {
  */
 export interface IWorker extends EventEmitter {
   /**
+   * Cluster worker disconnect.
+   */
+  readonly disconnect?: () => void
+  /**
    * Cluster worker id.
    */
   readonly id?: number
   /**
-   * Worker thread worker id.
+   * Cluster worker kill.
    */
-  readonly threadId?: number
+  readonly kill?: (signal?: string) => void
   /**
    * Registers an event handler.
    * @param event - The event.
@@ -250,24 +254,20 @@ export interface IWorker extends EventEmitter {
    */
   readonly once: (event: string, handler: EventHandler<this>) => this
   /**
-   * Calling `unref()` on a worker allows the thread to exit if this is the only
-   * active handle in the event system. If the worker is already `unref()`ed calling`unref()` again has no effect.
-   * @since v10.5.0
-   */
-  readonly unref?: () => void
-  /**
    * Stop all JavaScript execution in the worker thread as soon as possible.
    * Returns a Promise for the exit code that is fulfilled when the `'exit' event` is emitted.
    */
   readonly terminate?: () => Promise<number>
   /**
-   * Cluster worker disconnect.
+   * Worker thread worker id.
    */
-  readonly disconnect?: () => void
+  readonly threadId?: number
   /**
-   * Cluster worker kill.
+   * Calling `unref()` on a worker allows the thread to exit if this is the only
+   * active handle in the event system. If the worker is already `unref()`ed calling`unref()` again has no effect.
+   * @since v10.5.0
    */
-  readonly kill?: (signal?: string) => void
+  readonly unref?: () => void
 }
 
 /**
@@ -275,11 +275,11 @@ export interface IWorker extends EventEmitter {
  * @internal
  */
 export interface WorkerNodeOptions {
-  workerOptions?: WorkerOptions
   env?: Record<string, unknown>
   tasksQueueBackPressureSize: number | undefined
   tasksQueueBucketSize: number | undefined
   tasksQueuePriority: boolean | undefined
+  workerOptions?: WorkerOptions
 }
 
 /**
@@ -291,47 +291,20 @@ export interface WorkerNodeOptions {
 export interface IWorkerNode<Worker extends IWorker, Data = unknown>
   extends EventEmitter {
   /**
-   * Worker.
+   * Clears tasks queue.
    */
-  readonly worker: Worker
+  readonly clearTasksQueue: () => void
   /**
-   * Worker info.
+   * Deletes task function worker usage statistics.
+   * @param name - The task function name.
+   * @returns `true` if the task function worker usage statistics were deleted, `false` otherwise.
    */
-  readonly info: WorkerInfo
+  readonly deleteTaskFunctionWorkerUsage: (name: string) => boolean
   /**
-   * Worker usage statistics.
+   * Dequeue last prioritized task.
+   * @returns The dequeued task.
    */
-  readonly usage: WorkerUsage
-  /**
-   * Worker choice strategy data.
-   * This is used to store data that are specific to the worker choice strategy.
-   */
-  strategyData?: StrategyData
-  /**
-   * Message channel (worker thread only).
-   */
-  readonly messageChannel?: MessageChannel
-  /**
-   * Tasks queue back pressure size.
-   * This is the number of tasks that can be enqueued before the worker node has back pressure.
-   */
-  tasksQueueBackPressureSize: number
-  /**
-   * Sets tasks queue priority.
-   * @param enablePriority - Whether to enable tasks queue priority.
-   */
-  readonly setTasksQueuePriority: (enablePriority: boolean) => void
-  /**
-   * Tasks queue size.
-   * @returns The tasks queue size.
-   */
-  readonly tasksQueueSize: () => number
-  /**
-   * Enqueue task.
-   * @param task - The task to queue.
-   * @returns The tasks queue size.
-   */
-  readonly enqueueTask: (task: Task<Data>) => number
+  readonly dequeueLastPrioritizedTask: () => Task<Data> | undefined
   /**
    * Dequeue task.
    * @param bucket - The prioritized bucket to dequeue from. @defaultValue 0
@@ -339,32 +312,30 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   readonly dequeueTask: (bucket?: number) => Task<Data> | undefined
   /**
-   * Dequeue last prioritized task.
-   * @returns The dequeued task.
+   * Enqueue task.
+   * @param task - The task to queue.
+   * @returns The tasks queue size.
    */
-  readonly dequeueLastPrioritizedTask: () => Task<Data> | undefined
+  readonly enqueueTask: (task: Task<Data>) => number
   /**
-   * Clears tasks queue.
+   * Gets task function worker usage statistics.
+   * @param name - The task function name.
+   * @returns The task function worker usage statistics if the task function worker usage statistics are initialized, `undefined` otherwise.
    */
-  readonly clearTasksQueue: () => void
+  readonly getTaskFunctionWorkerUsage: (name: string) => undefined | WorkerUsage
   /**
    * Whether the worker node has back pressure (i.e. its tasks queue is full).
    * @returns `true` if the worker node has back pressure, `false` otherwise.
    */
   readonly hasBackPressure: () => boolean
   /**
-   * Terminates the worker node.
+   * Worker info.
    */
-  readonly terminate: () => Promise<void>
+  readonly info: WorkerInfo
   /**
-   * Registers a worker event handler.
-   * @param event - The event.
-   * @param handler - The event handler.
+   * Message channel (worker thread only).
    */
-  readonly registerWorkerEventHandler: (
-    event: string,
-    handler: EventHandler<Worker>
-  ) => void
+  readonly messageChannel?: MessageChannel
   /**
    * Registers once a worker event handler.
    * @param event - The event.
@@ -375,17 +346,46 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
     handler: EventHandler<Worker>
   ) => void
   /**
-   * Gets task function worker usage statistics.
-   * @param name - The task function name.
-   * @returns The task function worker usage statistics if the task function worker usage statistics are initialized, `undefined` otherwise.
+   * Registers a worker event handler.
+   * @param event - The event.
+   * @param handler - The event handler.
    */
-  readonly getTaskFunctionWorkerUsage: (name: string) => WorkerUsage | undefined
+  readonly registerWorkerEventHandler: (
+    event: string,
+    handler: EventHandler<Worker>
+  ) => void
   /**
-   * Deletes task function worker usage statistics.
-   * @param name - The task function name.
-   * @returns `true` if the task function worker usage statistics were deleted, `false` otherwise.
+   * Sets tasks queue priority.
+   * @param enablePriority - Whether to enable tasks queue priority.
    */
-  readonly deleteTaskFunctionWorkerUsage: (name: string) => boolean
+  readonly setTasksQueuePriority: (enablePriority: boolean) => void
+  /**
+   * Worker choice strategy data.
+   * This is used to store data that are specific to the worker choice strategy.
+   */
+  strategyData?: StrategyData
+  /**
+   * Tasks queue back pressure size.
+   * This is the number of tasks that can be enqueued before the worker node has back pressure.
+   */
+  tasksQueueBackPressureSize: number
+  /**
+   * Tasks queue size.
+   * @returns The tasks queue size.
+   */
+  readonly tasksQueueSize: () => number
+  /**
+   * Terminates the worker node.
+   */
+  readonly terminate: () => Promise<void>
+  /**
+   * Worker usage statistics.
+   */
+  readonly usage: WorkerUsage
+  /**
+   * Worker.
+   */
+  readonly worker: Worker
 }
 
 /**

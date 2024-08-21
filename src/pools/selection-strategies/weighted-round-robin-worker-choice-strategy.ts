@@ -1,12 +1,13 @@
 import type { IPool } from '../pool.js'
-import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../utils.js'
 import type { IWorker } from '../worker.js'
-import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
   TaskStatisticsRequirements,
   WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
+
+import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../utils.js'
+import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 
 /**
  * Selects the next worker with a weighted round robin scheduling algorithm.
@@ -22,8 +23,14 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
+  /**
+   * Worker node virtual execution time.
+   */
+  private workerNodeVirtualTaskExecutionTime = 0
+
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
+    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
     runTime: {
       aggregate: true,
       average: true,
@@ -34,13 +41,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
       average: true,
       median: false,
     },
-    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   }
-
-  /**
-   * Worker node virtual execution time.
-   */
-  private workerNodeVirtualTaskExecutionTime = 0
 
   /** @inheritDoc */
   public constructor (
@@ -51,16 +52,26 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     this.setTaskStatisticsRequirements(this.opts)
   }
 
-  /** @inheritDoc */
-  public reset (): boolean {
-    this.resetWorkerNodeKeyProperties()
-    this.workerNodeVirtualTaskExecutionTime = 0
-    return true
-  }
-
-  /** @inheritDoc */
-  public update (): boolean {
-    return true
+  private weightedRoundRobinNextWorkerNodeKey (): number | undefined {
+    const workerWeight =
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.opts!.weights![this.nextWorkerNodeKey ?? this.previousWorkerNodeKey]
+    if (this.workerNodeVirtualTaskExecutionTime < workerWeight) {
+      this.workerNodeVirtualTaskExecutionTime +=
+        this.getWorkerNodeTaskWaitTime(
+          this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
+        ) +
+        this.getWorkerNodeTaskRunTime(
+          this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
+        )
+    } else {
+      this.nextWorkerNodeKey =
+        this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
+          ? 0
+          : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
+      this.workerNodeVirtualTaskExecutionTime = 0
+    }
+    return this.nextWorkerNodeKey
   }
 
   /** @inheritDoc */
@@ -92,25 +103,15 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     return true
   }
 
-  private weightedRoundRobinNextWorkerNodeKey (): number | undefined {
-    const workerWeight =
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.opts!.weights![this.nextWorkerNodeKey ?? this.previousWorkerNodeKey]
-    if (this.workerNodeVirtualTaskExecutionTime < workerWeight) {
-      this.workerNodeVirtualTaskExecutionTime +=
-        this.getWorkerNodeTaskWaitTime(
-          this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
-        ) +
-        this.getWorkerNodeTaskRunTime(
-          this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
-        )
-    } else {
-      this.nextWorkerNodeKey =
-        this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
-          ? 0
-          : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
-      this.workerNodeVirtualTaskExecutionTime = 0
-    }
-    return this.nextWorkerNodeKey
+  /** @inheritDoc */
+  public reset (): boolean {
+    this.resetWorkerNodeKeyProperties()
+    this.workerNodeVirtualTaskExecutionTime = 0
+    return true
+  }
+
+  /** @inheritDoc */
+  public update (): boolean {
+    return true
   }
 }

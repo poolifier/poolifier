@@ -1,5 +1,6 @@
-import { AbstractFixedQueue } from './abstract-fixed-queue.js'
 import type { IFixedQueue } from './queue-types.js'
+
+import { AbstractFixedQueue } from './abstract-fixed-queue.js'
 
 /**
  * Fixed priority queue.

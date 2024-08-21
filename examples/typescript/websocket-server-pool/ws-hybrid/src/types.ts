@@ -6,8 +6,8 @@ export enum MessageType {
 }
 
 export interface MessagePayload<T = unknown> {
-  type: MessageType
   data: T
+  type: MessageType
 }
 
 export interface DataPayload {
@@ -15,15 +15,15 @@ export interface DataPayload {
 }
 
 export interface ClusterWorkerData extends ThreadPoolOptions {
+  maxWorkers?: number
+  minWorkers?: number
   port: number
   workerFile: string
-  minWorkers?: number
-  maxWorkers?: number
 }
 
 export interface ClusterWorkerResponse {
-  status: boolean
   port?: number
+  status: boolean
 }
 
 export interface ThreadWorkerData<T = unknown> {

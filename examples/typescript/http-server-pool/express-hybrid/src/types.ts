@@ -1,15 +1,15 @@
 import type { ThreadPoolOptions } from 'poolifier'
 
 export interface ClusterWorkerData extends ThreadPoolOptions {
+  maxWorkers?: number
+  minWorkers?: number
   port: number
   workerFile: string
-  minWorkers?: number
-  maxWorkers?: number
 }
 
 export interface ClusterWorkerResponse {
-  status: boolean
   port?: number
+  status: boolean
 }
 
 export interface DataPayload {

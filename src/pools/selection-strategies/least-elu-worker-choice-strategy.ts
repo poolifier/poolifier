@@ -1,12 +1,13 @@
 import type { IPool } from '../pool.js'
-import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../utils.js'
 import type { IWorker } from '../worker.js'
-import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
   TaskStatisticsRequirements,
   WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
+
+import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../utils.js'
+import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 
 /**
  * Selects the worker with the least ELU.
@@ -23,13 +24,13 @@ export class LeastEluWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
-    runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-    waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
     elu: {
       aggregate: true,
       average: false,
       median: false,
     },
+    runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+    waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   }
 
   /** @inheritDoc */
@@ -41,14 +42,17 @@ export class LeastEluWorkerChoiceStrategy<
     this.setTaskStatisticsRequirements(this.opts)
   }
 
-  /** @inheritDoc */
-  public reset (): boolean {
-    return true
-  }
-
-  /** @inheritDoc */
-  public update (): boolean {
-    return true
+  private leastEluNextWorkerNodeKey (): number | undefined {
+    return this.pool.workerNodes.reduce(
+      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
+        return this.isWorkerNodeReady(workerNodeKey) &&
+          (workerNode.usage.elu.active.aggregate ?? 0) <
+            (workerNodes[minWorkerNodeKey].usage.elu.active.aggregate ?? 0)
+          ? workerNodeKey
+          : minWorkerNodeKey
+      },
+      0
+    )
   }
 
   /** @inheritDoc */
@@ -63,16 +67,13 @@ export class LeastEluWorkerChoiceStrategy<
     return true
   }
 
-  private leastEluNextWorkerNodeKey (): number | undefined {
-    return this.pool.workerNodes.reduce(
-      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
-        return this.isWorkerNodeReady(workerNodeKey) &&
-          (workerNode.usage.elu.active.aggregate ?? 0) <
-            (workerNodes[minWorkerNodeKey].usage.elu.active.aggregate ?? 0)
-          ? workerNodeKey
-          : minWorkerNodeKey
-      },
-      0
-    )
+  /** @inheritDoc */
+  public reset (): boolean {
+    return true
+  }
+
+  /** @inheritDoc */
+  public update (): boolean {
+    return true
   }
 }

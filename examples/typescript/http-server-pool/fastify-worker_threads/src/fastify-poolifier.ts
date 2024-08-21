@@ -1,6 +1,6 @@
+import type { FastifyPluginCallback } from 'fastify'
 import type { TransferListItem } from 'node:worker_threads'
 
-import type { FastifyPluginCallback } from 'fastify'
 import fp from 'fastify-plugin'
 import { availableParallelism, DynamicThreadPool } from 'poolifier'
 
@@ -17,12 +17,12 @@ const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
 ) => {
   options = {
     ...{
-      minWorkers: 1,
       maxWorkers: availableParallelism(),
+      minWorkers: 1,
     },
     ...options,
   }
-  const { workerFile, minWorkers, maxWorkers, ...poolOptions } = options
+  const { maxWorkers, minWorkers, workerFile, ...poolOptions } = options
   const pool = new DynamicThreadPool<WorkerData, WorkerResponse>(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     minWorkers!,

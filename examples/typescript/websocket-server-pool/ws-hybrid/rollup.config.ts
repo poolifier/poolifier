@@ -3,31 +3,31 @@ import { defineConfig } from 'rollup'
 import del from 'rollup-plugin-delete'
 
 export default defineConfig({
+  external: [/^node:*/, 'poolifier', 'ws'],
   input: [
     './src/main.ts',
     './src/websocket-server-worker.ts',
     './src/request-handler-worker.ts',
   ],
-  strictDeprecations: true,
   output: [
     {
-      format: 'cjs',
-      dir: './dist',
-      sourcemap: true,
-      entryFileNames: '[name].cjs',
       chunkFileNames: '[name]-[hash].cjs',
+      dir: './dist',
+      entryFileNames: '[name].cjs',
+      format: 'cjs',
+      sourcemap: true,
     },
     {
-      format: 'esm',
       dir: './dist',
+      format: 'esm',
       sourcemap: true,
     },
   ],
-  external: [/^node:*/, 'poolifier', 'ws'],
   plugins: [
     typescript(),
     del({
       targets: ['./dist/*'],
     }),
   ],
+  strictDeprecations: true,
 })

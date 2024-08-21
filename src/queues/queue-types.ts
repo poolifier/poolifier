@@ -20,22 +20,28 @@ export interface FixedQueueNode<T> {
  * @internal
  */
 export interface IFixedQueue<T> {
+  /**
+   * Returns an iterator for the fixed queue.
+   * @returns An iterator for the fixed queue.
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
+   */
+  [Symbol.iterator]: () => Iterator<T>
   /** The fixed queue capacity. */
   readonly capacity: number
-  /** The fixed queue size. */
-  readonly size: number
-  /** The fixed queue node array. */
-  nodeArray: FixedQueueNode<T>[]
+  /**
+   * Clears the fixed queue.
+   */
+  clear: () => void
+  /**
+   * Dequeue data from the fixed queue.
+   * @returns The dequeued data or `undefined` if the fixed queue is empty.
+   */
+  dequeue: () => T | undefined
   /**
    * Checks if the fixed queue is empty.
    * @returns `true` if the fixed queue is empty, `false` otherwise.
    */
   empty: () => boolean
-  /**
-   * Checks if the fixed queue is full.
-   * @returns `true` if the fixed queue is full, `false` otherwise.
-   */
-  full: () => boolean
   /**
    * Enqueue data into the fixed queue.
    * @param data - Data to enqueue.
@@ -45,26 +51,20 @@ export interface IFixedQueue<T> {
    */
   enqueue: (data: T, priority?: number) => number
   /**
+   * Checks if the fixed queue is full.
+   * @returns `true` if the fixed queue is full, `false` otherwise.
+   */
+  full: () => boolean
+  /**
    * Gets data from the fixed queue.
    * @param index - The index of the data to get.
    * @returns The data at the index or `undefined` if the fixed queue is empty or the index is out of bounds.
    */
   get: (index: number) => T | undefined
-  /**
-   * Dequeue data from the fixed queue.
-   * @returns The dequeued data or `undefined` if the fixed queue is empty.
-   */
-  dequeue: () => T | undefined
-  /**
-   * Clears the fixed queue.
-   */
-  clear: () => void
-  /**
-   * Returns an iterator for the fixed queue.
-   * @returns An iterator for the fixed queue.
-   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
-   */
-  [Symbol.iterator]: () => Iterator<T>
+  /** The fixed queue node array. */
+  nodeArray: FixedQueueNode<T>[]
+  /** The fixed queue size. */
+  readonly size: number
 }
 
 /**

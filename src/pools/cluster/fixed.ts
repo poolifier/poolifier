@@ -1,6 +1,7 @@
 import cluster, { type Worker } from 'node:cluster'
 
 import type { MessageValue } from '../../utility-types.js'
+
 import { AbstractPool } from '../abstract-pool.js'
 import { type PoolOptions, type PoolType, PoolTypes } from '../pool.js'
 import { type WorkerType, WorkerTypes } from '../worker.js'
@@ -38,13 +39,44 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
-  protected setupHook (): void {
-    cluster.setupPrimary({ ...this.opts.settings, exec: this.filePath })
+  protected checkAndEmitDynamicWorkerCreationEvents (): void {
+    /* noop */
+  }
+
+  /** @inheritDoc */
+  protected deregisterWorkerMessageListener<Message extends Data | Response>(
+    workerNodeKey: number,
+    listener: (message: MessageValue<Message>) => void
+  ): void {
+    this.workerNodes[workerNodeKey].worker.off('message', listener)
   }
 
   /** @inheritDoc */
   protected isMain (): boolean {
     return cluster.isPrimary
+  }
+
+  /** @inheritDoc */
+  protected registerOnceWorkerMessageListener<Message extends Data | Response>(
+    workerNodeKey: number,
+    listener: (message: MessageValue<Message>) => void
+  ): void {
+    this.workerNodes[workerNodeKey].worker.once('message', listener)
+  }
+
+  /** @inheritDoc */
+  protected registerWorkerMessageListener<Message extends Data | Response>(
+    workerNodeKey: number,
+    listener: (message: MessageValue<Message>) => void
+  ): void {
+    this.workerNodes[workerNodeKey].worker.on('message', listener)
+  }
+
+  /** @inheritDoc */
+  protected sendStartupMessageToWorker (workerNodeKey: number): void {
+    this.sendToWorker(workerNodeKey, {
+      ready: false,
+    })
   }
 
   /** @inheritDoc */
@@ -59,34 +91,8 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
-  protected sendStartupMessageToWorker (workerNodeKey: number): void {
-    this.sendToWorker(workerNodeKey, {
-      ready: false,
-    })
-  }
-
-  /** @inheritDoc */
-  protected registerWorkerMessageListener<Message extends Data | Response>(
-    workerNodeKey: number,
-    listener: (message: MessageValue<Message>) => void
-  ): void {
-    this.workerNodes[workerNodeKey].worker.on('message', listener)
-  }
-
-  /** @inheritDoc */
-  protected registerOnceWorkerMessageListener<Message extends Data | Response>(
-    workerNodeKey: number,
-    listener: (message: MessageValue<Message>) => void
-  ): void {
-    this.workerNodes[workerNodeKey].worker.once('message', listener)
-  }
-
-  /** @inheritDoc */
-  protected deregisterWorkerMessageListener<Message extends Data | Response>(
-    workerNodeKey: number,
-    listener: (message: MessageValue<Message>) => void
-  ): void {
-    this.workerNodes[workerNodeKey].worker.off('message', listener)
+  protected setupHook (): void {
+    cluster.setupPrimary({ ...this.opts.settings, exec: this.filePath })
   }
 
   /** @inheritDoc */
@@ -95,8 +101,8 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
-  protected checkAndEmitDynamicWorkerCreationEvents (): void {
-    /* noop */
+  protected get busy (): boolean {
+    return this.internalBusy()
   }
 
   /** @inheritDoc */
@@ -107,10 +113,5 @@ export class FixedClusterPool<
   /** @inheritDoc */
   protected get worker (): WorkerType {
     return WorkerTypes.cluster
-  }
-
-  /** @inheritDoc */
-  protected get busy (): boolean {
-    return this.internalBusy()
   }
 }

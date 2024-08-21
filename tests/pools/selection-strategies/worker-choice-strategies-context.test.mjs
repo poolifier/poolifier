@@ -18,7 +18,7 @@ import { WorkerChoiceStrategiesContext } from '../../../lib/pools/selection-stra
 describe('Worker choice strategies context test suite', () => {
   const min = 1
   const max = 3
-  let fixedPool, dynamicPool
+  let dynamicPool, fixedPool
 
   before('Create pools', () => {
     fixedPool = new FixedThreadPool(

@@ -3,8 +3,9 @@ import type { AddressInfo } from 'node:net'
 import Fastify, { type FastifyInstance } from 'fastify'
 import { ClusterWorker } from 'poolifier'
 
-import { fastifyPoolifier } from './fastify-poolifier.js'
 import type { ClusterWorkerData, ClusterWorkerResponse } from './types.js'
+
+import { fastifyPoolifier } from './fastify-poolifier.js'
 
 class FastifyWorker extends ClusterWorker<
   ClusterWorkerData,
@@ -44,8 +45,8 @@ class FastifyWorker extends ClusterWorker<
 
     await FastifyWorker.fastify.listen({ port })
     return {
-      status: true,
       port: (FastifyWorker.fastify.server.address() as AddressInfo).port,
+      status: true,
     }
   }
 

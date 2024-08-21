@@ -1,6 +1,5 @@
-import { randomInt } from 'node:crypto'
-
 import { expect } from 'expect'
+import { randomInt } from 'node:crypto'
 
 import { FixedThreadPool } from '../../../lib/index.cjs'
 import { InterleavedWeightedRoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/interleaved-weighted-round-robin-worker-choice-strategy.cjs'

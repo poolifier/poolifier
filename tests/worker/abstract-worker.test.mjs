@@ -25,8 +25,8 @@ describe('Abstract worker test suite', () => {
     const worker = new ThreadWorker(() => {})
     expect(worker.opts).toStrictEqual({
       killBehavior: KillBehaviors.SOFT,
-      maxInactiveTime: 60000,
       killHandler: EMPTY_FUNCTION,
+      maxInactiveTime: 60000,
     })
   })
 
@@ -70,13 +70,13 @@ describe('Abstract worker test suite', () => {
     }
     const worker = new ClusterWorker(() => {}, {
       killBehavior: KillBehaviors.HARD,
-      maxInactiveTime: 6000,
       killHandler,
+      maxInactiveTime: 6000,
     })
     expect(worker.opts).toStrictEqual({
       killBehavior: KillBehaviors.HARD,
-      maxInactiveTime: 6000,
       killHandler,
+      maxInactiveTime: 6000,
     })
   })
 
@@ -173,18 +173,18 @@ describe('Abstract worker test suite', () => {
       )
     )
     expect(
-      () => new ThreadWorker({ fn1: { taskFunction: fn1, priority: '' } })
+      () => new ThreadWorker({ fn1: { priority: '', taskFunction: fn1 } })
     ).toThrow(new TypeError("Invalid property 'priority': ''"))
     expect(
-      () => new ThreadWorker({ fn1: { taskFunction: fn1, priority: -21 } })
+      () => new ThreadWorker({ fn1: { priority: -21, taskFunction: fn1 } })
     ).toThrow(new RangeError("Property 'priority' must be between -20 and 19"))
     expect(
-      () => new ThreadWorker({ fn1: { taskFunction: fn1, priority: 20 } })
+      () => new ThreadWorker({ fn1: { priority: 20, taskFunction: fn1 } })
     ).toThrow(new RangeError("Property 'priority' must be between -20 and 19"))
     expect(
       () =>
         new ThreadWorker({
-          fn1: { taskFunction: fn1, strategy: 'invalidStrategy' },
+          fn1: { strategy: 'invalidStrategy', taskFunction: fn1 },
         })
     ).toThrow(new Error("Invalid worker choice strategy 'invalidStrategy'"))
   })
@@ -214,17 +214,17 @@ describe('Abstract worker test suite', () => {
 
   it('Verify that taskFunctions parameter with multiple task functions object is taken', () => {
     const fn1Obj = {
+      priority: 5,
       taskFunction: () => {
         return 1
       },
-      priority: 5,
     }
     const fn2Obj = {
+      priority: 6,
+      strategy: WorkerChoiceStrategies.LESS_BUSY,
       taskFunction: () => {
         return 2
       },
-      priority: 6,
-      strategy: WorkerChoiceStrategies.LESS_BUSY,
     }
     const worker = new ThreadWorker({
       fn1: fn1Obj,
@@ -264,12 +264,12 @@ describe('Abstract worker test suite', () => {
     }
     const worker = new ClusterWorker({ fn1, fn2 })
     expect(worker.hasTaskFunction(0)).toStrictEqual({
-      status: false,
       error: new TypeError('name parameter is not a string'),
+      status: false,
     })
     expect(worker.hasTaskFunction('')).toStrictEqual({
-      status: false,
       error: new TypeError('name parameter is an empty string'),
+      status: false,
     })
     expect(worker.hasTaskFunction(DEFAULT_TASK_NAME)).toStrictEqual({
       status: true,
@@ -291,57 +291,57 @@ describe('Abstract worker test suite', () => {
     }
     const worker = new ThreadWorker(fn1)
     expect(worker.addTaskFunction(0, fn1)).toStrictEqual({
-      status: false,
       error: new TypeError('name parameter is not a string'),
+      status: false,
     })
     expect(worker.addTaskFunction('', fn1)).toStrictEqual({
-      status: false,
       error: new TypeError('name parameter is an empty string'),
+      status: false,
     })
     expect(worker.addTaskFunction('fn2', 0)).toStrictEqual({
-      status: false,
       error: new TypeError(
         "taskFunction object 'taskFunction' property 'undefined' is not a function"
       ),
+      status: false,
     })
     expect(worker.addTaskFunction('fn3', '')).toStrictEqual({
-      status: false,
       error: new TypeError(
         "taskFunction object 'taskFunction' property 'undefined' is not a function"
       ),
+      status: false,
     })
     expect(worker.addTaskFunction('fn2', { taskFunction: 0 })).toStrictEqual({
-      status: false,
       error: new TypeError(
         "taskFunction object 'taskFunction' property '0' is not a function"
       ),
+      status: false,
     })
     expect(worker.addTaskFunction('fn3', { taskFunction: '' })).toStrictEqual({
-      status: false,
       error: new TypeError(
         "taskFunction object 'taskFunction' property '' is not a function"
       ),
+      status: false,
     })
     expect(
-      worker.addTaskFunction('fn2', { taskFunction: () => {}, priority: -21 })
+      worker.addTaskFunction('fn2', { priority: -21, taskFunction: () => {} })
     ).toStrictEqual({
-      status: false,
       error: new RangeError("Property 'priority' must be between -20 and 19"),
+      status: false,
     })
     expect(
-      worker.addTaskFunction('fn3', { taskFunction: () => {}, priority: 20 })
+      worker.addTaskFunction('fn3', { priority: 20, taskFunction: () => {} })
     ).toStrictEqual({
-      status: false,
       error: new RangeError("Property 'priority' must be between -20 and 19"),
+      status: false,
     })
     expect(
       worker.addTaskFunction('fn2', {
-        taskFunction: () => {},
         strategy: 'invalidStrategy',
+        taskFunction: () => {},
       })
     ).toStrictEqual({
-      status: false,
       error: new Error("Invalid worker choice strategy 'invalidStrategy'"),
+      status: false,
     })
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual({
       taskFunction: expect.any(Function),
@@ -354,10 +354,10 @@ describe('Abstract worker test suite', () => {
       worker.taskFunctions.get('fn1')
     )
     expect(worker.addTaskFunction(DEFAULT_TASK_NAME, fn2)).toStrictEqual({
-      status: false,
       error: new Error(
         'Cannot add a task function with the default reserved name'
       ),
+      status: false,
     })
     worker.addTaskFunction('fn2', fn2)
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual({
@@ -413,12 +413,12 @@ describe('Abstract worker test suite', () => {
     }
     const worker = new ThreadWorker({ fn1, fn2 })
     expect(worker.setDefaultTaskFunction(0, fn1)).toStrictEqual({
-      status: false,
       error: new TypeError('name parameter is not a string'),
+      status: false,
     })
     expect(worker.setDefaultTaskFunction('', fn1)).toStrictEqual({
-      status: false,
       error: new TypeError('name parameter is an empty string'),
+      status: false,
     })
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual({
       taskFunction: expect.any(Function),
@@ -434,16 +434,16 @@ describe('Abstract worker test suite', () => {
       worker.taskFunctions.get('fn1')
     )
     expect(worker.setDefaultTaskFunction(DEFAULT_TASK_NAME)).toStrictEqual({
-      status: false,
       error: new Error(
         'Cannot set the default task function reserved name as the default task function'
       ),
+      status: false,
     })
     expect(worker.setDefaultTaskFunction('fn3')).toStrictEqual({
-      status: false,
       error: new Error(
         'Cannot set the default task function to a non-existing task function'
       ),
+      status: false,
     })
     worker.setDefaultTaskFunction('fn1')
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual(

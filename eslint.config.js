@@ -2,7 +2,7 @@ import cspellConfigs from '@cspell/eslint-plugin/configs'
 import js from '@eslint/js'
 import { defineFlatConfig } from 'eslint-define-config'
 import jsdoc from 'eslint-plugin-jsdoc'
-import simpleImportSort from 'eslint-plugin-simple-import-sort'
+import perfectionist from 'eslint-plugin-perfectionist'
 import globals from 'globals'
 import neostandard, { plugins } from 'neostandard'
 
@@ -20,12 +20,13 @@ export default defineFlatConfig([
       'jsdoc/check-tag-names': [
         'warn',
         {
-          typed: true,
           definedTags: ['defaultValue', 'experimental', 'typeParam'],
+          typed: true,
         },
       ],
     },
   },
+
   ...plugins['typescript-eslint'].config(
     {
       extends: [
@@ -45,9 +46,6 @@ export default defineFlatConfig([
     }
   ),
   {
-    plugins: {
-      'simple-import-sort': simpleImportSort,
-    },
     rules: {
       '@cspell/spellchecker': [
         'warn',
@@ -66,15 +64,14 @@ export default defineFlatConfig([
           },
         },
       ],
-      'simple-import-sort/imports': 'error',
-      'simple-import-sort/exports': 'error',
     },
   },
+  perfectionist.configs['recommended-natural'],
   ...neostandard({
-    ts: true,
     globals: {
       ...globals.mocha,
     },
+    ts: true,
   }),
   {
     files: [
@@ -88,27 +85,27 @@ export default defineFlatConfig([
   {
     files: ['examples/**/*.ts'],
     rules: {
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
       '@typescript-eslint/no-redundant-type-constituents': 'off',
-      '@typescript-eslint/return-await': 'off',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
+      '@typescript-eslint/return-await': 'off',
     },
   },
   {
     files: ['examples/**/*.js', 'examples/**/*.cjs'],
     rules: {
+      '@typescript-eslint/no-require-imports': 'off',
       'n/no-missing-import': [
         'error',
         {
           allowModules: ['ws'],
         },
       ],
-      '@typescript-eslint/no-require-imports': 'off',
     },
   },
   // benchmarks specific configuration
@@ -122,8 +119,8 @@ export default defineFlatConfig([
   {
     files: ['tests/**/*.js', 'tests/**/*.mjs', 'tests/**/*.cjs'],
     rules: {
-      '@typescript-eslint/no-require-imports': 'off',
       '@typescript-eslint/no-empty-function': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
 ])

@@ -4,8 +4,8 @@ export enum MessageType {
 }
 
 export interface MessagePayload<T = unknown> {
-  type: MessageType
   data: T
+  type: MessageType
 }
 
 export interface DataPayload {
