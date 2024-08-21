@@ -26,7 +26,6 @@ export default defineFlatConfig([
       ],
     },
   },
-
   ...plugins['typescript-eslint'].config(
     {
       extends: [
