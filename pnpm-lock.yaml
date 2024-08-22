@@ -4892,8 +4892,6 @@ snapshots:
 
   natural-compare-lite@1.4.0: {}
 
-  natural-compare-lite@1.4.0: {}
-
   natural-compare@1.4.0: {}
 
   neostandard@0.11.3(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4):
