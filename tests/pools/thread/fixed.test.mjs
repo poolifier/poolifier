@@ -8,7 +8,7 @@ import { waitPoolEvents, waitWorkerEvents } from '../../test-utils.cjs'
 describe('Fixed thread pool test suite', () => {
   const numberOfThreads = 6
   const tasksConcurrency = 2
-  let pool, queuePool, emptyPool, echoPool, errorPool, asyncErrorPool, asyncPool
+  let asyncErrorPool, asyncPool, echoPool, emptyPool, errorPool, pool, queuePool
 
   before('Create pools', () => {
     pool = new FixedThreadPool(
@@ -23,10 +23,10 @@ describe('Fixed thread pool test suite', () => {
       './tests/worker-files/thread/testWorker.mjs',
       {
         enableTasksQueue: true,
+        errorHandler: e => console.error(e),
         tasksQueueOptions: {
           concurrency: tasksConcurrency,
         },
-        errorHandler: e => console.error(e),
       }
     )
     emptyPool = new FixedThreadPool(
@@ -240,9 +240,9 @@ describe('Fixed thread pool test suite', () => {
     expect(typeof inError.message === 'string').toBe(true)
     expect(inError.message).toBe('Error Message from ThreadWorker')
     expect(taskError).toStrictEqual({
-      name: DEFAULT_TASK_NAME,
-      message: new Error('Error Message from ThreadWorker'),
       data,
+      message: new Error('Error Message from ThreadWorker'),
+      name: DEFAULT_TASK_NAME,
     })
     expect(
       errorPool.workerNodes.some(
@@ -273,9 +273,9 @@ describe('Fixed thread pool test suite', () => {
     expect(typeof inError.message === 'string').toBe(true)
     expect(inError.message).toBe('Error Message from ThreadWorker:async')
     expect(taskError).toStrictEqual({
-      name: DEFAULT_TASK_NAME,
-      message: new Error('Error Message from ThreadWorker:async'),
       data,
+      message: new Error('Error Message from ThreadWorker:async'),
+      name: DEFAULT_TASK_NAME,
     })
     expect(
       asyncErrorPool.workerNodes.some(

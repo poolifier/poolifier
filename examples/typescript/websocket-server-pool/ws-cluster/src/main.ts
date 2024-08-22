@@ -1,6 +1,5 @@
 import { dirname, extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-
 import { availableParallelism, FixedClusterPool } from 'poolifier'
 
 import type { WorkerData, WorkerResponse } from './types.js'
@@ -15,6 +14,9 @@ const pool = new FixedClusterPool<WorkerData, WorkerResponse>(
   workerFile,
   {
     enableEvents: false,
+    errorHandler: (e: Error) => {
+      console.error('Cluster worker error', e)
+    },
     onlineHandler: () => {
       pool
         .execute({ port: 8080 })
@@ -32,9 +34,6 @@ const pool = new FixedClusterPool<WorkerData, WorkerResponse>(
             error
           )
         })
-    },
-    errorHandler: (e: Error) => {
-      console.error('Cluster worker error', e)
     },
   }
 )

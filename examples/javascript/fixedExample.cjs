@@ -1,13 +1,13 @@
 'use strict'
 const {
+  availableParallelism,
   FixedThreadPool,
   PoolEvents,
-  availableParallelism,
 } = require('poolifier')
 
 const pool = new FixedThreadPool(availableParallelism(), './yourWorker.cjs', {
-  onlineHandler: () => console.info('worker is online'),
   errorHandler: e => console.error(e),
+  onlineHandler: () => console.info('worker is online'),
 })
 let poolReady = 0
 let poolBusy = 0

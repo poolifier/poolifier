@@ -17,7 +17,7 @@ const emptyFunction = (): void => {
 wss.on('connection', ws => {
   ws.on('error', console.error)
   ws.on('message', (message: RawData) => {
-    const { type, data } = JSON.parse(
+    const { data, type } = JSON.parse(
       message.toString()
     ) as MessagePayload<DataPayload>
     switch (type) {
@@ -27,8 +27,8 @@ wss.on('connection', ws => {
           .then(response => {
             ws.send(
               JSON.stringify({
-                type: MessageType.echo,
                 data: response.data,
+                type: MessageType.echo,
               })
             )
             return undefined
@@ -42,8 +42,8 @@ wss.on('connection', ws => {
             ws.send(
               JSON.stringify(
                 {
-                  type: MessageType.factorial,
                   data: response.data,
+                  type: MessageType.factorial,
                 },
                 (_, v: unknown) => (typeof v === 'bigint' ? v.toString() : v)
               )

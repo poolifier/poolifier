@@ -1,6 +1,5 @@
-import { randomInt } from 'node:crypto'
-
 import { expect } from 'expect'
+import { randomInt } from 'node:crypto'
 
 import { CircularBuffer } from '../../../lib/circular-buffer.cjs'
 import {
@@ -158,8 +157,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategiesContext.getPolicy()).toStrictEqual({
-      dynamicWorkerUsage: false,
       dynamicWorkerReady: true,
+      dynamicWorkerUsage: false,
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -169,8 +168,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategiesContext.getPolicy()).toStrictEqual({
-      dynamicWorkerUsage: false,
       dynamicWorkerReady: true,
+      dynamicWorkerUsage: false,
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -186,17 +185,17 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false,
+      },
       runTime: {
         aggregate: false,
         average: false,
         median: false,
       },
       waitTime: {
-        aggregate: false,
-        average: false,
-        median: false,
-      },
-      elu: {
         aggregate: false,
         average: false,
         median: false,
@@ -212,17 +211,17 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false,
+      },
       runTime: {
         aggregate: false,
         average: false,
         median: false,
       },
       waitTime: {
-        aggregate: false,
-        average: false,
-        median: false,
-      },
-      elu: {
         aggregate: false,
         average: false,
         median: false,
@@ -248,28 +247,28 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
-        tasks: {
-          executed: maxMultiplier,
-          executing: 0,
-          queued: 0,
-          maxQueued: 0,
-          sequentiallyStolen: 0,
-          stolen: 0,
-          failed: 0,
+        elu: {
+          active: {
+            history: expect.any(CircularBuffer),
+          },
+          idle: {
+            history: expect.any(CircularBuffer),
+          },
         },
         runTime: {
           history: expect.any(CircularBuffer),
         },
+        tasks: {
+          executed: maxMultiplier,
+          executing: 0,
+          failed: 0,
+          maxQueued: 0,
+          queued: 0,
+          sequentiallyStolen: 0,
+          stolen: 0,
+        },
         waitTime: {
           history: expect.any(CircularBuffer),
-        },
-        elu: {
-          idle: {
-            history: expect.any(CircularBuffer),
-          },
-          active: {
-            history: expect.any(CircularBuffer),
-          },
         },
       })
     }
@@ -304,28 +303,28 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
-        tasks: {
-          executed: expect.any(Number),
-          executing: 0,
-          queued: 0,
-          maxQueued: 0,
-          sequentiallyStolen: 0,
-          stolen: 0,
-          failed: 0,
+        elu: {
+          active: {
+            history: expect.any(CircularBuffer),
+          },
+          idle: {
+            history: expect.any(CircularBuffer),
+          },
         },
         runTime: {
           history: expect.any(CircularBuffer),
         },
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          failed: 0,
+          maxQueued: 0,
+          queued: 0,
+          sequentiallyStolen: 0,
+          stolen: 0,
+        },
         waitTime: {
           history: expect.any(CircularBuffer),
-        },
-        elu: {
-          idle: {
-            history: expect.any(CircularBuffer),
-          },
-          active: {
-            history: expect.any(CircularBuffer),
-          },
         },
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -433,8 +432,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategiesContext.getPolicy()).toStrictEqual({
-      dynamicWorkerUsage: false,
       dynamicWorkerReady: true,
+      dynamicWorkerUsage: false,
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -444,8 +443,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategiesContext.getPolicy()).toStrictEqual({
-      dynamicWorkerUsage: false,
       dynamicWorkerReady: true,
+      dynamicWorkerUsage: false,
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -461,17 +460,17 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false,
+      },
       runTime: {
         aggregate: false,
         average: false,
         median: false,
       },
       waitTime: {
-        aggregate: false,
-        average: false,
-        median: false,
-      },
-      elu: {
         aggregate: false,
         average: false,
         median: false,
@@ -487,17 +486,17 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false,
+      },
       runTime: {
         aggregate: false,
         average: false,
         median: false,
       },
       waitTime: {
-        aggregate: false,
-        average: false,
-        median: false,
-      },
-      elu: {
         aggregate: false,
         average: false,
         median: false,
@@ -522,28 +521,28 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
-        tasks: {
-          executed: expect.any(Number),
-          executing: 0,
-          queued: 0,
-          maxQueued: 0,
-          sequentiallyStolen: 0,
-          stolen: 0,
-          failed: 0,
+        elu: {
+          active: {
+            history: expect.any(CircularBuffer),
+          },
+          idle: {
+            history: expect.any(CircularBuffer),
+          },
         },
         runTime: {
           history: expect.any(CircularBuffer),
         },
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          failed: 0,
+          maxQueued: 0,
+          queued: 0,
+          sequentiallyStolen: 0,
+          stolen: 0,
+        },
         waitTime: {
           history: expect.any(CircularBuffer),
-        },
-        elu: {
-          idle: {
-            history: expect.any(CircularBuffer),
-          },
-          active: {
-            history: expect.any(CircularBuffer),
-          },
         },
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -581,28 +580,28 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
-        tasks: {
-          executed: expect.any(Number),
-          executing: 0,
-          queued: 0,
-          maxQueued: 0,
-          sequentiallyStolen: 0,
-          stolen: 0,
-          failed: 0,
+        elu: {
+          active: {
+            history: expect.any(CircularBuffer),
+          },
+          idle: {
+            history: expect.any(CircularBuffer),
+          },
         },
         runTime: {
           history: expect.any(CircularBuffer),
         },
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          failed: 0,
+          maxQueued: 0,
+          queued: 0,
+          sequentiallyStolen: 0,
+          stolen: 0,
+        },
         waitTime: {
           history: expect.any(CircularBuffer),
-        },
-        elu: {
-          idle: {
-            history: expect.any(CircularBuffer),
-          },
-          active: {
-            history: expect.any(CircularBuffer),
-          },
         },
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -632,8 +631,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategiesContext.getPolicy()).toStrictEqual({
-      dynamicWorkerUsage: false,
       dynamicWorkerReady: true,
+      dynamicWorkerUsage: false,
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -643,8 +642,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategiesContext.getPolicy()).toStrictEqual({
-      dynamicWorkerUsage: false,
       dynamicWorkerReady: true,
+      dynamicWorkerUsage: false,
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -660,6 +659,11 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false,
+      },
       runTime: {
         aggregate: true,
         average: false,
@@ -667,11 +671,6 @@ describe('Selection strategies test suite', () => {
       },
       waitTime: {
         aggregate: true,
-        average: false,
-        median: false,
-      },
-      elu: {
-        aggregate: false,
         average: false,
         median: false,
       },
@@ -686,6 +685,11 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false,
+      },
       runTime: {
         aggregate: true,
         average: false,
@@ -693,11 +697,6 @@ describe('Selection strategies test suite', () => {
       },
       waitTime: {
         aggregate: true,
-        average: false,
-        median: false,
-      },
-      elu: {
-        aggregate: false,
         average: false,
         median: false,
       },
@@ -721,29 +720,29 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
-        tasks: {
-          executed: expect.any(Number),
-          executing: 0,
-          queued: 0,
-          maxQueued: 0,
-          sequentiallyStolen: 0,
-          stolen: 0,
-          failed: 0,
+        elu: {
+          active: {
+            history: expect.any(CircularBuffer),
+          },
+          idle: {
+            history: expect.any(CircularBuffer),
+          },
         },
         runTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
         }),
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          failed: 0,
+          maxQueued: 0,
+          queued: 0,
+          sequentiallyStolen: 0,
+          stolen: 0,
+        },
         waitTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
         }),
-        elu: {
-          idle: {
-            history: expect.any(CircularBuffer),
-          },
-          active: {
-            history: expect.any(CircularBuffer),
-          },
-        },
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
@@ -790,29 +789,29 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
-        tasks: {
-          executed: expect.any(Number),
-          executing: 0,
-          queued: 0,
-          maxQueued: 0,
-          sequentiallyStolen: 0,
-          stolen: 0,
-          failed: 0,
+        elu: {
+          active: {
+            history: expect.any(CircularBuffer),
+          },
+          idle: {
+            history: expect.any(CircularBuffer),
+          },
         },
         runTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
         }),
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          failed: 0,
+          maxQueued: 0,
+          queued: 0,
+          sequentiallyStolen: 0,
+          stolen: 0,
+        },
         waitTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
         }),
-        elu: {
-          idle: {
-            history: expect.any(CircularBuffer),
-          },
-          active: {
-            history: expect.any(CircularBuffer),
-          },
-        },
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
@@ -851,8 +850,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategiesContext.getPolicy()).toStrictEqual({
-      dynamicWorkerUsage: false,
       dynamicWorkerReady: true,
+      dynamicWorkerUsage: false,
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -862,8 +861,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategiesContext.getPolicy()).toStrictEqual({
-      dynamicWorkerUsage: false,
       dynamicWorkerReady: true,
+      dynamicWorkerUsage: false,
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -879,6 +878,11 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
+      elu: {
+        aggregate: true,
+        average: false,
+        median: false,
+      },
       runTime: {
         aggregate: false,
         average: false,
@@ -886,11 +890,6 @@ describe('Selection strategies test suite', () => {
       },
       waitTime: {
         aggregate: false,
-        average: false,
-        median: false,
-      },
-      elu: {
-        aggregate: true,
         average: false,
         median: false,
       },
@@ -905,6 +904,11 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
+      elu: {
+        aggregate: true,
+        average: false,
+        median: false,
+      },
       runTime: {
         aggregate: false,
         average: false,
@@ -912,11 +916,6 @@ describe('Selection strategies test suite', () => {
       },
       waitTime: {
         aggregate: false,
-        average: false,
-        median: false,
-      },
-      elu: {
-        aggregate: true,
         average: false,
         median: false,
       },
@@ -940,29 +939,29 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
+        elu: expect.objectContaining({
+          active: expect.objectContaining({
+            history: expect.any(CircularBuffer),
+          }),
+          idle: expect.objectContaining({
+            history: expect.any(CircularBuffer),
+          }),
+        }),
+        runTime: {
+          history: expect.any(CircularBuffer),
+        },
         tasks: {
           executed: expect.any(Number),
           executing: 0,
-          queued: 0,
+          failed: 0,
           maxQueued: 0,
+          queued: 0,
           sequentiallyStolen: 0,
           stolen: 0,
-          failed: 0,
-        },
-        runTime: {
-          history: expect.any(CircularBuffer),
         },
         waitTime: {
           history: expect.any(CircularBuffer),
         },
-        elu: expect.objectContaining({
-          idle: expect.objectContaining({
-            history: expect.any(CircularBuffer),
-          }),
-          active: expect.objectContaining({
-            history: expect.any(CircularBuffer),
-          }),
-        }),
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
@@ -1015,29 +1014,29 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
+        elu: expect.objectContaining({
+          active: expect.objectContaining({
+            history: expect.any(CircularBuffer),
+          }),
+          idle: expect.objectContaining({
+            history: expect.any(CircularBuffer),
+          }),
+        }),
+        runTime: {
+          history: expect.any(CircularBuffer),
+        },
         tasks: {
           executed: expect.any(Number),
           executing: 0,
-          queued: 0,
+          failed: 0,
           maxQueued: 0,
+          queued: 0,
           sequentiallyStolen: 0,
           stolen: 0,
-          failed: 0,
-        },
-        runTime: {
-          history: expect.any(CircularBuffer),
         },
         waitTime: {
           history: expect.any(CircularBuffer),
         },
-        elu: expect.objectContaining({
-          idle: expect.objectContaining({
-            history: expect.any(CircularBuffer),
-          }),
-          active: expect.objectContaining({
-            history: expect.any(CircularBuffer),
-          }),
-        }),
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
@@ -1082,8 +1081,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategiesContext.getPolicy()).toStrictEqual({
-      dynamicWorkerUsage: false,
       dynamicWorkerReady: true,
+      dynamicWorkerUsage: false,
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -1093,8 +1092,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategiesContext.getPolicy()).toStrictEqual({
-      dynamicWorkerUsage: false,
       dynamicWorkerReady: true,
+      dynamicWorkerUsage: false,
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -1110,17 +1109,17 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
+      elu: {
+        aggregate: true,
+        average: true,
+        median: false,
+      },
       runTime: {
         aggregate: true,
         average: true,
         median: false,
       },
       waitTime: {
-        aggregate: true,
-        average: true,
-        median: false,
-      },
-      elu: {
         aggregate: true,
         average: true,
         median: false,
@@ -1136,17 +1135,17 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
+      elu: {
+        aggregate: true,
+        average: true,
+        median: false,
+      },
       runTime: {
         aggregate: true,
         average: true,
         median: false,
       },
       waitTime: {
-        aggregate: true,
-        average: true,
-        median: false,
-      },
-      elu: {
         aggregate: true,
         average: true,
         median: false,
@@ -1171,28 +1170,28 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
-        tasks: {
-          executed: expect.any(Number),
-          executing: 0,
-          queued: 0,
-          maxQueued: 0,
-          sequentiallyStolen: 0,
-          stolen: 0,
-          failed: 0,
-        },
-        runTime: expect.objectContaining({
-          history: expect.any(CircularBuffer),
-        }),
-        waitTime: expect.objectContaining({
-          history: expect.any(CircularBuffer),
-        }),
         elu: expect.objectContaining({
-          idle: expect.objectContaining({
-            history: expect.any(CircularBuffer),
-          }),
           active: expect.objectContaining({
             history: expect.any(CircularBuffer),
           }),
+          idle: expect.objectContaining({
+            history: expect.any(CircularBuffer),
+          }),
+        }),
+        runTime: expect.objectContaining({
+          history: expect.any(CircularBuffer),
+        }),
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          failed: 0,
+          maxQueued: 0,
+          queued: 0,
+          sequentiallyStolen: 0,
+          stolen: 0,
+        },
+        waitTime: expect.objectContaining({
+          history: expect.any(CircularBuffer),
         }),
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -1267,28 +1266,28 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
-        tasks: {
-          executed: expect.any(Number),
-          executing: 0,
-          queued: 0,
-          maxQueued: 0,
-          sequentiallyStolen: 0,
-          stolen: 0,
-          failed: 0,
-        },
-        runTime: expect.objectContaining({
-          history: expect.any(CircularBuffer),
-        }),
-        waitTime: expect.objectContaining({
-          history: expect.any(CircularBuffer),
-        }),
         elu: expect.objectContaining({
-          idle: expect.objectContaining({
-            history: expect.any(CircularBuffer),
-          }),
           active: expect.objectContaining({
             history: expect.any(CircularBuffer),
           }),
+          idle: expect.objectContaining({
+            history: expect.any(CircularBuffer),
+          }),
+        }),
+        runTime: expect.objectContaining({
+          history: expect.any(CircularBuffer),
+        }),
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          failed: 0,
+          maxQueued: 0,
+          queued: 0,
+          sequentiallyStolen: 0,
+          stolen: 0,
+        },
+        waitTime: expect.objectContaining({
+          history: expect.any(CircularBuffer),
         }),
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -1368,28 +1367,28 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
-        tasks: {
-          executed: expect.any(Number),
-          executing: 0,
-          queued: 0,
-          maxQueued: 0,
-          sequentiallyStolen: 0,
-          stolen: 0,
-          failed: 0,
-        },
-        runTime: expect.objectContaining({
-          history: expect.any(CircularBuffer),
-        }),
-        waitTime: expect.objectContaining({
-          history: expect.any(CircularBuffer),
-        }),
         elu: expect.objectContaining({
-          idle: expect.objectContaining({
-            history: expect.any(CircularBuffer),
-          }),
           active: expect.objectContaining({
             history: expect.any(CircularBuffer),
           }),
+          idle: expect.objectContaining({
+            history: expect.any(CircularBuffer),
+          }),
+        }),
+        runTime: expect.objectContaining({
+          history: expect.any(CircularBuffer),
+        }),
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          failed: 0,
+          maxQueued: 0,
+          queued: 0,
+          sequentiallyStolen: 0,
+          stolen: 0,
+        },
+        waitTime: expect.objectContaining({
+          history: expect.any(CircularBuffer),
         }),
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
@@ -1490,8 +1489,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategiesContext.getPolicy()).toStrictEqual({
-      dynamicWorkerUsage: false,
       dynamicWorkerReady: true,
+      dynamicWorkerUsage: false,
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -1501,8 +1500,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategiesContext.getPolicy()).toStrictEqual({
-      dynamicWorkerUsage: false,
       dynamicWorkerReady: true,
+      dynamicWorkerUsage: false,
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -1518,6 +1517,11 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false,
+      },
       runTime: {
         aggregate: true,
         average: true,
@@ -1526,11 +1530,6 @@ describe('Selection strategies test suite', () => {
       waitTime: {
         aggregate: true,
         average: true,
-        median: false,
-      },
-      elu: {
-        aggregate: false,
-        average: false,
         median: false,
       },
     })
@@ -1544,6 +1543,11 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false,
+      },
       runTime: {
         aggregate: true,
         average: true,
@@ -1552,11 +1556,6 @@ describe('Selection strategies test suite', () => {
       waitTime: {
         aggregate: true,
         average: true,
-        median: false,
-      },
-      elu: {
-        aggregate: false,
-        average: false,
         median: false,
       },
     })
@@ -1579,29 +1578,29 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
-        tasks: {
-          executed: expect.any(Number),
-          executing: 0,
-          queued: 0,
-          maxQueued: 0,
-          sequentiallyStolen: 0,
-          stolen: 0,
-          failed: 0,
+        elu: {
+          active: {
+            history: expect.any(CircularBuffer),
+          },
+          idle: {
+            history: expect.any(CircularBuffer),
+          },
         },
         runTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
         }),
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          failed: 0,
+          maxQueued: 0,
+          queued: 0,
+          sequentiallyStolen: 0,
+          stolen: 0,
+        },
         waitTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
         }),
-        elu: {
-          idle: {
-            history: expect.any(CircularBuffer),
-          },
-          active: {
-            history: expect.any(CircularBuffer),
-          },
-        },
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
@@ -1663,29 +1662,29 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
-        tasks: {
-          executed: expect.any(Number),
-          executing: 0,
-          queued: 0,
-          maxQueued: 0,
-          sequentiallyStolen: 0,
-          stolen: 0,
-          failed: 0,
+        elu: {
+          active: {
+            history: expect.any(CircularBuffer),
+          },
+          idle: {
+            history: expect.any(CircularBuffer),
+          },
         },
         runTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
         }),
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          failed: 0,
+          maxQueued: 0,
+          queued: 0,
+          sequentiallyStolen: 0,
+          stolen: 0,
+        },
         waitTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
         }),
-        elu: {
-          idle: {
-            history: expect.any(CircularBuffer),
-          },
-          active: {
-            history: expect.any(CircularBuffer),
-          },
-        },
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
@@ -1752,29 +1751,29 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
-        tasks: {
-          executed: expect.any(Number),
-          executing: 0,
-          queued: 0,
-          maxQueued: 0,
-          sequentiallyStolen: 0,
-          stolen: 0,
-          failed: 0,
+        elu: {
+          active: {
+            history: expect.any(CircularBuffer),
+          },
+          idle: {
+            history: expect.any(CircularBuffer),
+          },
         },
         runTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
         }),
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          failed: 0,
+          maxQueued: 0,
+          queued: 0,
+          sequentiallyStolen: 0,
+          stolen: 0,
+        },
         waitTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
         }),
-        elu: {
-          idle: {
-            history: expect.any(CircularBuffer),
-          },
-          active: {
-            history: expect.any(CircularBuffer),
-          },
-        },
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
@@ -1897,8 +1896,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategiesContext.getPolicy()).toStrictEqual({
-      dynamicWorkerUsage: false,
       dynamicWorkerReady: true,
+      dynamicWorkerUsage: false,
     })
     await pool.destroy()
     pool = new DynamicThreadPool(
@@ -1908,8 +1907,8 @@ describe('Selection strategies test suite', () => {
       { workerChoiceStrategy }
     )
     expect(pool.workerChoiceStrategiesContext.getPolicy()).toStrictEqual({
-      dynamicWorkerUsage: false,
       dynamicWorkerReady: true,
+      dynamicWorkerUsage: false,
     })
     // We need to clean up the resources after our test
     await pool.destroy()
@@ -1926,6 +1925,11 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false,
+      },
       runTime: {
         aggregate: true,
         average: true,
@@ -1934,11 +1938,6 @@ describe('Selection strategies test suite', () => {
       waitTime: {
         aggregate: true,
         average: true,
-        median: false,
-      },
-      elu: {
-        aggregate: false,
-        average: false,
         median: false,
       },
     })
@@ -1952,6 +1951,11 @@ describe('Selection strategies test suite', () => {
     expect(
       pool.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
     ).toStrictEqual({
+      elu: {
+        aggregate: false,
+        average: false,
+        median: false,
+      },
       runTime: {
         aggregate: true,
         average: true,
@@ -1960,11 +1964,6 @@ describe('Selection strategies test suite', () => {
       waitTime: {
         aggregate: true,
         average: true,
-        median: false,
-      },
-      elu: {
-        aggregate: false,
-        average: false,
         median: false,
       },
     })
@@ -1990,29 +1989,29 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
-        tasks: {
-          executed: expect.any(Number),
-          executing: 0,
-          queued: 0,
-          maxQueued: 0,
-          sequentiallyStolen: 0,
-          stolen: 0,
-          failed: 0,
+        elu: {
+          active: {
+            history: expect.any(CircularBuffer),
+          },
+          idle: {
+            history: expect.any(CircularBuffer),
+          },
         },
         runTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
         }),
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          failed: 0,
+          maxQueued: 0,
+          queued: 0,
+          sequentiallyStolen: 0,
+          stolen: 0,
+        },
         waitTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
         }),
-        elu: {
-          idle: {
-            history: expect.any(CircularBuffer),
-          },
-          active: {
-            history: expect.any(CircularBuffer),
-          },
-        },
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
@@ -2094,29 +2093,29 @@ describe('Selection strategies test suite', () => {
     await Promise.all(promises)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.usage).toStrictEqual({
-        tasks: {
-          executed: expect.any(Number),
-          executing: 0,
-          queued: 0,
-          maxQueued: 0,
-          sequentiallyStolen: 0,
-          stolen: 0,
-          failed: 0,
+        elu: {
+          active: {
+            history: expect.any(CircularBuffer),
+          },
+          idle: {
+            history: expect.any(CircularBuffer),
+          },
         },
         runTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
         }),
+        tasks: {
+          executed: expect.any(Number),
+          executing: 0,
+          failed: 0,
+          maxQueued: 0,
+          queued: 0,
+          sequentiallyStolen: 0,
+          stolen: 0,
+        },
         waitTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
         }),
-        elu: {
-          idle: {
-            history: expect.any(CircularBuffer),
-          },
-          active: {
-            history: expect.any(CircularBuffer),
-          },
-        },
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(

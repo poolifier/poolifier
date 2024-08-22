@@ -15,10 +15,10 @@ import {
  * @internal
  */
 export class PriorityQueue<T> {
-  private head!: PriorityQueueNode<T>
-  private tail!: PriorityQueueNode<T>
   private readonly bucketSize: number
+  private head!: PriorityQueueNode<T>
   private priorityEnabled: boolean
+  private tail!: PriorityQueueNode<T>
   /** The priority queue maximum size. */
   public maxSize!: number
 
@@ -45,87 +45,57 @@ export class PriorityQueue<T> {
     this.clear()
   }
 
+  private getPriorityQueueNode (
+    nodeArray?: FixedQueueNode<T>[]
+  ): PriorityQueueNode<T> {
+    let fixedQueue: IFixedQueue<T>
+    if (this.priorityEnabled) {
+      fixedQueue = new FixedPriorityQueue(this.bucketSize)
+    } else {
+      fixedQueue = new FixedQueue(this.bucketSize)
+    }
+    if (nodeArray != null) {
+      fixedQueue.nodeArray = nodeArray
+    }
+    return fixedQueue
+  }
+
   /**
-   * The priority queue size.
-   * @returns The priority queue size.
+   * Clears the priority queue.
    */
-  public get size (): number {
+  public clear (): void {
+    this.head = this.tail = this.getPriorityQueueNode()
+    this.maxSize = 0
+  }
+
+  /**
+   * Deletes the given data from the priority queue.
+   * @param data - Data to delete.
+   * @returns `true` if the data was deleted, `false` otherwise.
+   */
+  public delete (data: T): boolean {
     let node: PriorityQueueNode<T> | undefined = this.tail
-    let size = 0
-    while (node != null) {
-      size += node.size
-      node = node.next
-    }
-    return size
-  }
-
-  /**
-   * Whether priority is enabled.
-   * @returns Whether priority is enabled.
-   */
-  public get enablePriority (): boolean {
-    return this.priorityEnabled
-  }
-
-  /**
-   * Enables/disables priority.
-   * @param enablePriority - Whether to enable priority.
-   */
-  public set enablePriority (enablePriority: boolean) {
-    if (this.priorityEnabled === enablePriority) {
-      return
-    }
-    this.priorityEnabled = enablePriority
-    let head: PriorityQueueNode<T>
-    let tail: PriorityQueueNode<T>
     let prev: PriorityQueueNode<T> | undefined
-    let node: PriorityQueueNode<T> | undefined = this.tail
-    let buckets = 0
     while (node != null) {
-      const currentNode = this.getPriorityQueueNode(node.nodeArray)
-      if (buckets === 0) {
-        tail = currentNode
+      if (node.delete(data)) {
+        if (node.empty()) {
+          if (node === this.tail && node.next != null) {
+            this.tail = node.next
+            delete node.next
+          } else if (node.next != null && prev != null) {
+            prev.next = node.next
+            delete node.next
+          } else if (node.next == null && prev != null) {
+            delete prev.next
+            this.head = prev
+          }
+        }
+        return true
       }
-      if (prev != null) {
-        prev.next = currentNode
-      }
-      prev = currentNode
-      if (node.next == null) {
-        head = currentNode
-      }
-      ++buckets
+      prev = node
       node = node.next
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.head = head!
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.tail = tail!
-  }
-
-  /**
-   * The number of filled prioritized buckets.
-   * @returns The number of filled prioritized buckets.
-   */
-  public get buckets (): number {
-    return Math.trunc(this.size / this.bucketSize)
-  }
-
-  /**
-   * Enqueue data into the priority queue.
-   * @param data - Data to enqueue.
-   * @param priority - Priority of the data. Lower values have higher priority.
-   * @returns The new size of the priority queue.
-   */
-  public enqueue (data: T, priority?: number): number {
-    if (this.head.full()) {
-      this.head = this.head.next = this.getPriorityQueueNode()
-    }
-    this.head.enqueue(data, priority)
-    const size = this.size
-    if (size > this.maxSize) {
-      this.maxSize = size
-    }
-    return size
+    return false
   }
 
   /**
@@ -181,41 +151,21 @@ export class PriorityQueue<T> {
   }
 
   /**
-   * Deletes the given data from the priority queue.
-   * @param data - Data to delete.
-   * @returns `true` if the data was deleted, `false` otherwise.
+   * Enqueue data into the priority queue.
+   * @param data - Data to enqueue.
+   * @param priority - Priority of the data. Lower values have higher priority.
+   * @returns The new size of the priority queue.
    */
-  public delete (data: T): boolean {
-    let node: PriorityQueueNode<T> | undefined = this.tail
-    let prev: PriorityQueueNode<T> | undefined
-    while (node != null) {
-      if (node.delete(data)) {
-        if (node.empty()) {
-          if (node === this.tail && node.next != null) {
-            this.tail = node.next
-            delete node.next
-          } else if (node.next != null && prev != null) {
-            prev.next = node.next
-            delete node.next
-          } else if (node.next == null && prev != null) {
-            delete prev.next
-            this.head = prev
-          }
-        }
-        return true
-      }
-      prev = node
-      node = node.next
+  public enqueue (data: T, priority?: number): number {
+    if (this.head.full()) {
+      this.head = this.head.next = this.getPriorityQueueNode()
     }
-    return false
-  }
-
-  /**
-   * Clears the priority queue.
-   */
-  public clear (): void {
-    this.head = this.tail = this.getPriorityQueueNode()
-    this.maxSize = 0
+    this.head.enqueue(data, priority)
+    const size = this.size
+    if (size > this.maxSize) {
+      this.maxSize = size
+    }
+    return size
   }
 
   /**
@@ -231,8 +181,8 @@ export class PriorityQueue<T> {
         const value = node.get(index) as T
         if (value == null) {
           return {
-            value: undefined,
             done: true,
+            value: undefined,
           }
         }
         ++index
@@ -241,25 +191,75 @@ export class PriorityQueue<T> {
           index = 0
         }
         return {
-          value,
           done: false,
+          value,
         }
       },
     }
   }
 
-  private getPriorityQueueNode (
-    nodeArray?: FixedQueueNode<T>[]
-  ): PriorityQueueNode<T> {
-    let fixedQueue: IFixedQueue<T>
-    if (this.priorityEnabled) {
-      fixedQueue = new FixedPriorityQueue(this.bucketSize)
-    } else {
-      fixedQueue = new FixedQueue(this.bucketSize)
+  /**
+   * The number of filled prioritized buckets.
+   * @returns The number of filled prioritized buckets.
+   */
+  public get buckets (): number {
+    return Math.trunc(this.size / this.bucketSize)
+  }
+
+  /**
+   * Whether priority is enabled.
+   * @returns Whether priority is enabled.
+   */
+  public get enablePriority (): boolean {
+    return this.priorityEnabled
+  }
+
+  /**
+   * Enables/disables priority.
+   * @param enablePriority - Whether to enable priority.
+   */
+  public set enablePriority (enablePriority: boolean) {
+    if (this.priorityEnabled === enablePriority) {
+      return
     }
-    if (nodeArray != null) {
-      fixedQueue.nodeArray = nodeArray
+    this.priorityEnabled = enablePriority
+    let head: PriorityQueueNode<T>
+    let tail: PriorityQueueNode<T>
+    let prev: PriorityQueueNode<T> | undefined
+    let node: PriorityQueueNode<T> | undefined = this.tail
+    let buckets = 0
+    while (node != null) {
+      const currentNode = this.getPriorityQueueNode(node.nodeArray)
+      if (buckets === 0) {
+        tail = currentNode
+      }
+      if (prev != null) {
+        prev.next = currentNode
+      }
+      prev = currentNode
+      if (node.next == null) {
+        head = currentNode
+      }
+      ++buckets
+      node = node.next
     }
-    return fixedQueue
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.head = head!
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.tail = tail!
+  }
+
+  /**
+   * The priority queue size.
+   * @returns The priority queue size.
+   */
+  public get size (): number {
+    let node: PriorityQueueNode<T> | undefined = this.tail
+    let size = 0
+    while (node != null) {
+      size += node.size
+      node = node.next
+    }
+    return size
   }
 }

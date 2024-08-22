@@ -1,9 +1,10 @@
 import { EventEmitter } from 'node:events'
 import { MessageChannel } from 'node:worker_threads'
 
+import type { Task } from '../utility-types.js'
+
 import { CircularBuffer } from '../circular-buffer.js'
 import { PriorityQueue } from '../queues/priority-queue.js'
-import type { Task } from '../utility-types.js'
 import { DEFAULT_TASK_NAME } from '../utils.js'
 import {
   checkWorkerNodeArguments,
@@ -32,22 +33,22 @@ import {
 export class WorkerNode<Worker extends IWorker, Data = unknown>
   extends EventEmitter
   implements IWorkerNode<Worker, Data> {
-  /** @inheritdoc */
-  public readonly worker: Worker
+  private setBackPressureFlag: boolean
+  private readonly taskFunctionsUsage: Map<string, WorkerUsage>
   /** @inheritdoc */
   public readonly info: WorkerInfo
   /** @inheritdoc */
-  public usage: WorkerUsage
+  public messageChannel?: MessageChannel
   /** @inheritdoc */
   public strategyData?: StrategyData
-  /** @inheritdoc */
-  public messageChannel?: MessageChannel
   /** @inheritdoc */
   public readonly tasksQueue: PriorityQueue<Task<Data>>
   /** @inheritdoc */
   public tasksQueueBackPressureSize: number
-  private setBackPressureFlag: boolean
-  private readonly taskFunctionsUsage: Map<string, WorkerUsage>
+  /** @inheritdoc */
+  public usage: WorkerUsage
+  /** @inheritdoc */
+  public readonly worker: Worker
 
   /**
    * Constructs a new worker node.
@@ -77,14 +78,146 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     this.taskFunctionsUsage = new Map<string, WorkerUsage>()
   }
 
-  /** @inheritdoc */
-  public setTasksQueuePriority (enablePriority: boolean): void {
-    this.tasksQueue.enablePriority = enablePriority
+  private closeMessageChannel (): void {
+    if (this.messageChannel != null) {
+      this.messageChannel.port1.unref()
+      this.messageChannel.port2.unref()
+      this.messageChannel.port1.close()
+      this.messageChannel.port2.close()
+      delete this.messageChannel
+    }
+  }
+
+  private initTaskFunctionWorkerUsage (name: string): WorkerUsage {
+    const getTaskFunctionQueueSize = (): number => {
+      let taskFunctionQueueSize = 0
+      for (const task of this.tasksQueue) {
+        if (
+          (task.name === DEFAULT_TASK_NAME &&
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            name === this.info.taskFunctionsProperties![1].name) ||
+          (task.name !== DEFAULT_TASK_NAME && name === task.name)
+        ) {
+          ++taskFunctionQueueSize
+        }
+      }
+      return taskFunctionQueueSize
+    }
+    return {
+      elu: {
+        active: {
+          history: new CircularBuffer(MeasurementHistorySize),
+        },
+        idle: {
+          history: new CircularBuffer(MeasurementHistorySize),
+        },
+      },
+      runTime: {
+        history: new CircularBuffer(MeasurementHistorySize),
+      },
+      tasks: {
+        executed: 0,
+        executing: 0,
+        failed: 0,
+        get queued (): number {
+          return getTaskFunctionQueueSize()
+        },
+        sequentiallyStolen: 0,
+        stolen: 0,
+      },
+      waitTime: {
+        history: new CircularBuffer(MeasurementHistorySize),
+      },
+    }
+  }
+
+  private initWorkerInfo (worker: Worker): WorkerInfo {
+    return {
+      backPressure: false,
+      backPressureStealing: false,
+      continuousStealing: false,
+      dynamic: false,
+      id: getWorkerId(worker),
+      ready: false,
+      stealing: false,
+      stolen: false,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      type: getWorkerType(worker)!,
+    }
+  }
+
+  private initWorkerUsage (): WorkerUsage {
+    const getTasksQueueSize = (): number => {
+      return this.tasksQueue.size
+    }
+    const getTasksQueueMaxSize = (): number => {
+      return this.tasksQueue.maxSize
+    }
+    return {
+      elu: {
+        active: {
+          history: new CircularBuffer(MeasurementHistorySize),
+        },
+        idle: {
+          history: new CircularBuffer(MeasurementHistorySize),
+        },
+      },
+      runTime: {
+        history: new CircularBuffer(MeasurementHistorySize),
+      },
+      tasks: {
+        executed: 0,
+        executing: 0,
+        failed: 0,
+        get maxQueued (): number {
+          return getTasksQueueMaxSize()
+        },
+        get queued (): number {
+          return getTasksQueueSize()
+        },
+        sequentiallyStolen: 0,
+        stolen: 0,
+      },
+      waitTime: {
+        history: new CircularBuffer(MeasurementHistorySize),
+      },
+    }
   }
 
   /** @inheritdoc */
-  public tasksQueueSize (): number {
-    return this.tasksQueue.size
+  public clearTasksQueue (): void {
+    this.tasksQueue.clear()
+  }
+
+  /** @inheritdoc */
+  public deleteTask (task: Task<Data>): boolean {
+    return this.tasksQueue.delete(task)
+  }
+
+  /** @inheritdoc */
+  public deleteTaskFunctionWorkerUsage (name: string): boolean {
+    return this.taskFunctionsUsage.delete(name)
+  }
+
+  /** @inheritdoc */
+  public dequeueLastPrioritizedTask (): Task<Data> | undefined {
+    // Start from the last empty or partially filled bucket
+    return this.dequeueTask(this.tasksQueue.buckets + 1)
+  }
+
+  /** @inheritdoc */
+  public dequeueTask (bucket?: number): Task<Data> | undefined {
+    const task = this.tasksQueue.dequeue(bucket)
+    if (
+      !this.setBackPressureFlag &&
+      !this.hasBackPressure() &&
+      this.info.backPressure
+    ) {
+      this.setBackPressureFlag = true
+      this.info.backPressure = false
+      this.setBackPressureFlag = false
+    }
+    return task
   }
 
   /** @inheritdoc */
@@ -104,39 +237,58 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   }
 
   /** @inheritdoc */
-  public dequeueTask (bucket?: number): Task<Data> | undefined {
-    const task = this.tasksQueue.dequeue(bucket)
-    if (
-      !this.setBackPressureFlag &&
-      !this.hasBackPressure() &&
-      this.info.backPressure
-    ) {
-      this.setBackPressureFlag = true
-      this.info.backPressure = false
-      this.setBackPressureFlag = false
+  public getTaskFunctionWorkerUsage (name: string): undefined | WorkerUsage {
+    if (!Array.isArray(this.info.taskFunctionsProperties)) {
+      throw new Error(
+        `Cannot get task function worker usage for task function name '${name}' when task function properties list is not yet defined`
+      )
     }
-    return task
-  }
-
-  /** @inheritdoc */
-  public dequeueLastPrioritizedTask (): Task<Data> | undefined {
-    // Start from the last empty or partially filled bucket
-    return this.dequeueTask(this.tasksQueue.buckets + 1)
-  }
-
-  /** @inheritdoc */
-  public deleteTask (task: Task<Data>): boolean {
-    return this.tasksQueue.delete(task)
-  }
-
-  /** @inheritdoc */
-  public clearTasksQueue (): void {
-    this.tasksQueue.clear()
+    if (
+      Array.isArray(this.info.taskFunctionsProperties) &&
+      this.info.taskFunctionsProperties.length < 3
+    ) {
+      throw new Error(
+        `Cannot get task function worker usage for task function name '${name}' when task function properties list has less than 3 elements`
+      )
+    }
+    if (name === DEFAULT_TASK_NAME) {
+      name = this.info.taskFunctionsProperties[1].name
+    }
+    if (!this.taskFunctionsUsage.has(name)) {
+      this.taskFunctionsUsage.set(name, this.initTaskFunctionWorkerUsage(name))
+    }
+    return this.taskFunctionsUsage.get(name)
   }
 
   /** @inheritdoc */
   public hasBackPressure (): boolean {
     return this.tasksQueue.size >= this.tasksQueueBackPressureSize
+  }
+
+  /** @inheritdoc */
+  public registerOnceWorkerEventHandler (
+    event: string,
+    handler: EventHandler<Worker>
+  ): void {
+    this.worker.once(event, handler)
+  }
+
+  /** @inheritdoc */
+  public registerWorkerEventHandler (
+    event: string,
+    handler: EventHandler<Worker>
+  ): void {
+    this.worker.on(event, handler)
+  }
+
+  /** @inheritdoc */
+  public setTasksQueuePriority (enablePriority: boolean): void {
+    this.tasksQueue.enablePriority = enablePriority
+  }
+
+  /** @inheritdoc */
+  public tasksQueueSize (): number {
+    return this.tasksQueue.size
   }
 
   /** @inheritdoc */
@@ -161,156 +313,5 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
         break
     }
     await waitWorkerExit
-  }
-
-  /** @inheritdoc */
-  public registerWorkerEventHandler (
-    event: string,
-    handler: EventHandler<Worker>
-  ): void {
-    this.worker.on(event, handler)
-  }
-
-  /** @inheritdoc */
-  public registerOnceWorkerEventHandler (
-    event: string,
-    handler: EventHandler<Worker>
-  ): void {
-    this.worker.once(event, handler)
-  }
-
-  /** @inheritdoc */
-  public getTaskFunctionWorkerUsage (name: string): WorkerUsage | undefined {
-    if (!Array.isArray(this.info.taskFunctionsProperties)) {
-      throw new Error(
-        `Cannot get task function worker usage for task function name '${name}' when task function properties list is not yet defined`
-      )
-    }
-    if (
-      Array.isArray(this.info.taskFunctionsProperties) &&
-      this.info.taskFunctionsProperties.length < 3
-    ) {
-      throw new Error(
-        `Cannot get task function worker usage for task function name '${name}' when task function properties list has less than 3 elements`
-      )
-    }
-    if (name === DEFAULT_TASK_NAME) {
-      name = this.info.taskFunctionsProperties[1].name
-    }
-    if (!this.taskFunctionsUsage.has(name)) {
-      this.taskFunctionsUsage.set(name, this.initTaskFunctionWorkerUsage(name))
-    }
-    return this.taskFunctionsUsage.get(name)
-  }
-
-  /** @inheritdoc */
-  public deleteTaskFunctionWorkerUsage (name: string): boolean {
-    return this.taskFunctionsUsage.delete(name)
-  }
-
-  private closeMessageChannel (): void {
-    if (this.messageChannel != null) {
-      this.messageChannel.port1.unref()
-      this.messageChannel.port2.unref()
-      this.messageChannel.port1.close()
-      this.messageChannel.port2.close()
-      delete this.messageChannel
-    }
-  }
-
-  private initWorkerInfo (worker: Worker): WorkerInfo {
-    return {
-      id: getWorkerId(worker),
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      type: getWorkerType(worker)!,
-      dynamic: false,
-      ready: false,
-      stealing: false,
-      stolen: false,
-      continuousStealing: false,
-      backPressureStealing: false,
-      backPressure: false,
-    }
-  }
-
-  private initWorkerUsage (): WorkerUsage {
-    const getTasksQueueSize = (): number => {
-      return this.tasksQueue.size
-    }
-    const getTasksQueueMaxSize = (): number => {
-      return this.tasksQueue.maxSize
-    }
-    return {
-      tasks: {
-        executed: 0,
-        executing: 0,
-        get queued (): number {
-          return getTasksQueueSize()
-        },
-        get maxQueued (): number {
-          return getTasksQueueMaxSize()
-        },
-        sequentiallyStolen: 0,
-        stolen: 0,
-        failed: 0,
-      },
-      runTime: {
-        history: new CircularBuffer(MeasurementHistorySize),
-      },
-      waitTime: {
-        history: new CircularBuffer(MeasurementHistorySize),
-      },
-      elu: {
-        idle: {
-          history: new CircularBuffer(MeasurementHistorySize),
-        },
-        active: {
-          history: new CircularBuffer(MeasurementHistorySize),
-        },
-      },
-    }
-  }
-
-  private initTaskFunctionWorkerUsage (name: string): WorkerUsage {
-    const getTaskFunctionQueueSize = (): number => {
-      let taskFunctionQueueSize = 0
-      for (const task of this.tasksQueue) {
-        if (
-          (task.name === DEFAULT_TASK_NAME &&
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            name === this.info.taskFunctionsProperties![1].name) ||
-          (task.name !== DEFAULT_TASK_NAME && name === task.name)
-        ) {
-          ++taskFunctionQueueSize
-        }
-      }
-      return taskFunctionQueueSize
-    }
-    return {
-      tasks: {
-        executed: 0,
-        executing: 0,
-        get queued (): number {
-          return getTaskFunctionQueueSize()
-        },
-        sequentiallyStolen: 0,
-        stolen: 0,
-        failed: 0,
-      },
-      runTime: {
-        history: new CircularBuffer(MeasurementHistorySize),
-      },
-      waitTime: {
-        history: new CircularBuffer(MeasurementHistorySize),
-      },
-      elu: {
-        idle: {
-          history: new CircularBuffer(MeasurementHistorySize),
-        },
-        active: {
-          history: new CircularBuffer(MeasurementHistorySize),
-        },
-      },
-    }
   }
 }

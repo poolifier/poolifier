@@ -1,10 +1,11 @@
 import type { IPool } from '../pool.js'
 import type { IWorker } from '../worker.js'
-import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
   WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
+
+import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 
 /**
  * Selects the next worker in a round robin fashion.
@@ -27,15 +28,12 @@ export class RoundRobinWorkerChoiceStrategy<
     super(pool, opts)
   }
 
-  /** @inheritDoc */
-  public reset (): boolean {
-    this.resetWorkerNodeKeyProperties()
-    return true
-  }
-
-  /** @inheritDoc */
-  public update (): boolean {
-    return true
+  private roundRobinNextWorkerNodeKey (): number | undefined {
+    this.nextWorkerNodeKey =
+      this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
+        ? 0
+        : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
+    return this.nextWorkerNodeKey
   }
 
   /** @inheritDoc */
@@ -68,11 +66,14 @@ export class RoundRobinWorkerChoiceStrategy<
     return true
   }
 
-  private roundRobinNextWorkerNodeKey (): number | undefined {
-    this.nextWorkerNodeKey =
-      this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
-        ? 0
-        : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
-    return this.nextWorkerNodeKey
+  /** @inheritDoc */
+  public reset (): boolean {
+    this.resetWorkerNodeKeyProperties()
+    return true
+  }
+
+  /** @inheritDoc */
+  public update (): boolean {
+    return true
   }
 }

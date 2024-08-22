@@ -13,7 +13,7 @@ export interface WorkerResponse<T = unknown> {
 }
 
 export interface FastifyPoolifierOptions extends ThreadPoolOptions {
-  workerFile: string
-  minWorkers?: number
   maxWorkers?: number
+  minWorkers?: number
+  workerFile: string
 }

@@ -1,8 +1,7 @@
+import Fastify from 'fastify'
 import { dirname, extname, join } from 'node:path'
 import { exit } from 'node:process'
 import { fileURLToPath } from 'node:url'
-
-import Fastify from 'fastify'
 
 import { fastifyPoolifier } from './fastify-poolifier.js'
 
@@ -21,14 +20,14 @@ const workerFile = join(
 )
 
 await fastify.register(fastifyPoolifier, {
-  workerFile,
   enableTasksQueue: true,
-  tasksQueueOptions: {
-    concurrency: 8,
-  },
   errorHandler: (e: Error) => {
     fastify.log.error('Thread worker error:', e)
   },
+  tasksQueueOptions: {
+    concurrency: 8,
+  },
+  workerFile,
 })
 
 fastify.all('/api/echo', async request => {

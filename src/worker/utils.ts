@@ -1,13 +1,14 @@
+import type { TaskFunctionObject } from './task-functions.js'
+
 import {
   checkValidPriority,
   checkValidWorkerChoiceStrategy,
 } from '../pools/utils.js'
 import { isPlainObject } from '../utils.js'
-import type { TaskFunctionObject } from './task-functions.js'
 import { KillBehaviors, type WorkerOptions } from './worker-options.js'
 
 export const checkValidWorkerOptions = (
-  opts: WorkerOptions | undefined
+  opts: undefined | WorkerOptions
 ): void => {
   if (opts != null && !isPlainObject(opts)) {
     throw new TypeError('opts worker options parameter is not a plain object')

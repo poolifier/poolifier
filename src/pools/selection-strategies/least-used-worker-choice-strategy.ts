@@ -1,10 +1,11 @@
 import type { IPool } from '../pool.js'
 import type { IWorker } from '../worker.js'
-import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
   WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
+
+import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 
 /**
  * Selects the least used worker.
@@ -27,14 +28,18 @@ export class LeastUsedWorkerChoiceStrategy<
     super(pool, opts)
   }
 
-  /** @inheritDoc */
-  public reset (): boolean {
-    return true
-  }
-
-  /** @inheritDoc */
-  public update (): boolean {
-    return true
+  private leastUsedNextWorkerNodeKey (): number | undefined {
+    return this.pool.workerNodes.reduce(
+      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
+        return this.isWorkerNodeReady(workerNodeKey) &&
+          workerNode.usage.tasks.executing + workerNode.usage.tasks.queued <
+            workerNodes[minWorkerNodeKey].usage.tasks.executing +
+              workerNodes[minWorkerNodeKey].usage.tasks.queued
+          ? workerNodeKey
+          : minWorkerNodeKey
+      },
+      0
+    )
   }
 
   /** @inheritDoc */
@@ -49,17 +54,13 @@ export class LeastUsedWorkerChoiceStrategy<
     return true
   }
 
-  private leastUsedNextWorkerNodeKey (): number | undefined {
-    return this.pool.workerNodes.reduce(
-      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
-        return this.isWorkerNodeReady(workerNodeKey) &&
-          workerNode.usage.tasks.executing + workerNode.usage.tasks.queued <
-            workerNodes[minWorkerNodeKey].usage.tasks.executing +
-              workerNodes[minWorkerNodeKey].usage.tasks.queued
-          ? workerNodeKey
-          : minWorkerNodeKey
-      },
-      0
-    )
+  /** @inheritDoc */
+  public reset (): boolean {
+    return true
+  }
+
+  /** @inheritDoc */
+  public update (): boolean {
+    return true
   }
 }

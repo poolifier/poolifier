@@ -1,7 +1,8 @@
 import type { Worker } from 'node:cluster'
+import type { MessagePort } from 'node:worker_threads'
+
 import { EventEmitter } from 'node:events'
 import { performance } from 'node:perf_hooks'
-import type { MessagePort } from 'node:worker_threads'
 
 import type {
   MessageValue,
@@ -10,13 +11,6 @@ import type {
   TaskPerformance,
   WorkerStatistics,
 } from '../utility-types.js'
-import {
-  buildTaskFunctionProperties,
-  DEFAULT_TASK_NAME,
-  EMPTY_FUNCTION,
-  isAsyncFunction,
-  isPlainObject,
-} from '../utils.js'
 import type {
   TaskAsyncFunction,
   TaskFunction,
@@ -25,6 +19,14 @@ import type {
   TaskFunctions,
   TaskSyncFunction,
 } from './task-functions.js'
+
+import {
+  buildTaskFunctionProperties,
+  DEFAULT_TASK_NAME,
+  EMPTY_FUNCTION,
+  isAsyncFunction,
+  isPlainObject,
+} from '../utils.js'
 import {
   checkTaskFunctionName,
   checkValidTaskFunctionObjectEntry,
@@ -43,14 +45,14 @@ const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
    */
   killBehavior: KillBehaviors.SOFT,
   /**
+   * The function to call when the worker is killed.
+   */
+  killHandler: EMPTY_FUNCTION,
+  /**
    * The maximum time to keep this worker active while idle.
    * The pool automatically checks and terminates this worker when the time expires.
    */
   maxInactiveTime: DEFAULT_MAX_INACTIVE_TIME,
-  /**
-   * The function to call when the worker is killed.
-   */
-  killHandler: EMPTY_FUNCTION,
 }
 
 /**
@@ -60,18 +62,143 @@ const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
  * @typeParam Response - Type of response the worker sends back to the main worker. This can only be structured-cloneable data.
  */
 export abstract class AbstractWorker<
-  MainWorker extends Worker | MessagePort,
+  MainWorker extends MessagePort | Worker,
   Data = unknown,
   Response = unknown
 > extends EventEmitter {
+  /**
+   * Handler id of the `activeInterval` worker activity check.
+   */
+  protected activeInterval?: NodeJS.Timeout
   /**
    * Worker id.
    */
   protected abstract id: number
   /**
-   * Task function object(s) processed by the worker when the pool's `execution` function is invoked.
+   * Timestamp of the last task processed by this worker.
    */
-  protected taskFunctions!: Map<string, TaskFunctionObject<Data, Response>>
+  protected lastTaskTimestamp!: number
+
+  /**
+   * Runs the given task.
+   * @param task - The task to execute.
+   */
+  protected readonly run = (task: Task<Data>): void => {
+    const { abortable, data, name, taskId } = task
+    const taskFunctionName = name ?? DEFAULT_TASK_NAME
+    if (!this.taskFunctions.has(taskFunctionName)) {
+      this.sendToMainWorker({
+        taskId,
+        workerError: {
+          data,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          message: `Task function '${name!}' not found`,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          name: name!,
+        },
+      })
+      return
+    }
+    let fn: TaskFunction<Data, Response>
+    if (abortable === true) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      fn = this.getAbortableTaskFunction(taskFunctionName, taskId!)
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      fn = this.taskFunctions.get(taskFunctionName)!.taskFunction
+    }
+    if (isAsyncFunction(fn)) {
+      this.runAsync(fn as TaskAsyncFunction<Data, Response>, task)
+    } else {
+      this.runSync(fn as TaskSyncFunction<Data, Response>, task)
+    }
+  }
+
+  /**
+   * Runs the given task function asynchronously.
+   * @param fn - Task function that will be executed.
+   * @param task - Input data for the task function.
+   */
+  protected readonly runAsync = (
+    fn: TaskAsyncFunction<Data, Response>,
+    task: Task<Data>
+  ): void => {
+    const { abortable, data, name, taskId } = task
+    let taskPerformance = this.beginTaskPerformance(name)
+    fn(data)
+      .then(res => {
+        taskPerformance = this.endTaskPerformance(taskPerformance)
+        this.sendToMainWorker({
+          data: res,
+          taskId,
+          taskPerformance,
+        })
+        return undefined
+      })
+      .catch((error: unknown) => {
+        this.sendToMainWorker({
+          taskId,
+          workerError: {
+            data,
+            message: this.handleError(error as Error | string),
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            name: name!,
+          },
+        })
+      })
+      .finally(() => {
+        this.updateLastTaskTimestamp()
+        if (abortable === true) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.taskAbortFunctions.delete(taskId!)
+        }
+      })
+      .catch(EMPTY_FUNCTION)
+  }
+
+  /**
+   * Runs the given task function synchronously.
+   * @param fn - Task function that will be executed.
+   * @param task - Input data for the task function.
+   */
+  protected readonly runSync = (
+    fn: TaskSyncFunction<Data, Response>,
+    task: Task<Data>
+  ): void => {
+    const { abortable, data, name, taskId } = task
+    try {
+      let taskPerformance = this.beginTaskPerformance(name)
+      const res = fn(data)
+      taskPerformance = this.endTaskPerformance(taskPerformance)
+      this.sendToMainWorker({
+        data: res,
+        taskId,
+        taskPerformance,
+      })
+    } catch (error) {
+      this.sendToMainWorker({
+        taskId,
+        workerError: {
+          data,
+          message: this.handleError(error as Error | string),
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          name: name!,
+        },
+      })
+    } finally {
+      this.updateLastTaskTimestamp()
+      if (abortable === true) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.taskAbortFunctions.delete(taskId!)
+      }
+    }
+  }
+
+  /**
+   * Performance statistics computation requirements.
+   */
+  protected statistics?: WorkerStatistics
+
   /**
    * Task abort functions processed by the worker when task operation 'abort' is received.
    */
@@ -81,17 +208,9 @@ export abstract class AbstractWorker<
   >
 
   /**
-   * Timestamp of the last task processed by this worker.
+   * Task function object(s) processed by the worker when the pool's `execution` function is invoked.
    */
-  protected lastTaskTimestamp!: number
-  /**
-   * Performance statistics computation requirements.
-   */
-  protected statistics?: WorkerStatistics
-  /**
-   * Handler id of the `activeInterval` worker activity check.
-   */
-  protected activeInterval?: NodeJS.Timeout
+  protected taskFunctions!: Map<string, TaskFunctionObject<Data, Response>>
 
   /**
    * Constructs a new poolifier worker.
@@ -102,7 +221,7 @@ export abstract class AbstractWorker<
    */
   public constructor (
     protected readonly isMain: boolean | undefined,
-    private readonly mainWorker: MainWorker | undefined | null,
+    private readonly mainWorker: MainWorker | null | undefined,
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     protected opts: WorkerOptions = DEFAULT_WORKER_OPTIONS
   ) {
@@ -129,9 +248,203 @@ export abstract class AbstractWorker<
     }
   }
 
-  private checkWorkerOptions (opts: WorkerOptions): void {
-    checkValidWorkerOptions(opts)
-    this.opts = { ...DEFAULT_WORKER_OPTIONS, ...opts }
+  /**
+   * Returns the main worker.
+   * @returns Reference to the main worker.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the main worker is not set.
+   */
+  protected getMainWorker (): MainWorker {
+    if (this.mainWorker == null) {
+      throw new Error('Main worker not set')
+    }
+    return this.mainWorker
+  }
+
+  /**
+   * Handles an error and convert it to a string so it can be sent back to the main worker.
+   * @param error - The error raised by the worker.
+   * @returns The error message.
+   */
+  protected handleError (error: Error | string): string {
+    return error instanceof Error ? error.message : error
+  }
+
+  /**
+   * Handles a kill message sent by the main worker.
+   * @param message - The kill message.
+   */
+  protected handleKillMessage (message: MessageValue<Data>): void {
+    this.stopCheckActive()
+    if (isAsyncFunction(this.opts.killHandler)) {
+      ;(this.opts.killHandler as () => Promise<void>)()
+        .then(() => {
+          this.sendToMainWorker({ kill: 'success' })
+          return undefined
+        })
+        .catch(() => {
+          this.sendToMainWorker({ kill: 'failure' })
+        })
+    } else {
+      try {
+        ;(this.opts.killHandler as (() => void) | undefined)?.()
+        this.sendToMainWorker({ kill: 'success' })
+      } catch {
+        this.sendToMainWorker({ kill: 'failure' })
+      }
+    }
+    this.removeAllListeners()
+  }
+
+  /**
+   * Handles the ready message sent by the main worker.
+   * @param message - The ready message.
+   */
+  protected abstract handleReadyMessage (message: MessageValue<Data>): void
+
+  protected handleTaskFunctionOperationMessage (
+    message: MessageValue<Data>
+  ): void {
+    const { taskFunction, taskFunctionOperation, taskFunctionProperties } =
+      message
+    if (taskFunctionProperties == null) {
+      throw new Error(
+        'Cannot handle task function operation message without task function properties'
+      )
+    }
+    let response: TaskFunctionOperationResult
+    switch (taskFunctionOperation) {
+      case 'add':
+        response = this.addTaskFunction(taskFunctionProperties.name, {
+          // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
+          taskFunction: new Function(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            `return ${taskFunction!}`
+          )() as TaskFunction<Data, Response>,
+          ...(taskFunctionProperties.priority != null && {
+            priority: taskFunctionProperties.priority,
+          }),
+          ...(taskFunctionProperties.strategy != null && {
+            strategy: taskFunctionProperties.strategy,
+          }),
+        })
+        break
+      case 'remove':
+        response = this.removeTaskFunction(taskFunctionProperties.name)
+        break
+      case 'default':
+        response = this.setDefaultTaskFunction(taskFunctionProperties.name)
+        break
+      // eslint-disable-next-line perfectionist/sort-switch-case
+      default:
+        response = { error: new Error('Unknown task operation'), status: false }
+        break
+    }
+    const { error, status } = response
+    this.sendToMainWorker({
+      taskFunctionOperation,
+      taskFunctionOperationStatus: status,
+      taskFunctionProperties,
+      ...(!status &&
+        error != null && {
+        workerError: {
+          message: this.handleError(error as Error | string),
+          name: taskFunctionProperties.name,
+        },
+      }),
+    })
+  }
+
+  /**
+   * Worker message listener.
+   * @param message - The received message.
+   */
+  protected messageListener (message: MessageValue<Data>): void {
+    this.checkMessageWorkerId(message)
+    const {
+      checkActive,
+      data,
+      kill,
+      statistics,
+      taskFunctionOperation,
+      taskId,
+      taskOperation,
+    } = message
+    if (statistics != null) {
+      // Statistics message received
+      this.statistics = statistics
+    } else if (checkActive != null) {
+      // Check active message received
+      checkActive ? this.startCheckActive() : this.stopCheckActive()
+    } else if (taskFunctionOperation != null) {
+      // Task function operation message received
+      this.handleTaskFunctionOperationMessage(message)
+    } else if (taskId != null && data != null) {
+      // Task message received
+      this.run(message)
+    } else if (taskOperation === 'abort' && taskId != null) {
+      // Abort task operation message received
+      this.emit('abortTask', { taskId: message.taskId })
+    } else if (kill === true) {
+      // Kill message received
+      this.handleKillMessage(message)
+    }
+  }
+
+  /**
+   * Sends task functions properties to the main worker.
+   */
+  protected sendTaskFunctionsPropertiesToMainWorker (): void {
+    this.sendToMainWorker({
+      taskFunctionsProperties: this.listTaskFunctionsProperties(),
+    })
+  }
+
+  /**
+   * Sends a message to main worker.
+   * @param message - The response message.
+   */
+  protected abstract sendToMainWorker (
+    message: MessageValue<Response, Data>
+  ): void
+
+  private beginTaskPerformance (name?: string): TaskPerformance {
+    if (this.statistics == null) {
+      throw new Error('Performance statistics computation requirements not set')
+    }
+    return {
+      name: name ?? DEFAULT_TASK_NAME,
+      timestamp: performance.now(),
+      ...(this.statistics.elu && {
+        elu: performance.eventLoopUtilization(),
+      }),
+    }
+  }
+
+  /**
+   * Checks if the worker should be terminated, because its living too long.
+   */
+  private checkActive (): void {
+    if (
+      performance.now() - this.lastTaskTimestamp >
+      (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME)
+    ) {
+      this.sendToMainWorker({ kill: this.opts.killBehavior })
+    }
+  }
+
+  /**
+   * Check if the message worker id is set and matches the worker id.
+   * @param message - The message to check.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the message worker id is not set or does not match the worker id.
+   */
+  private checkMessageWorkerId (message: MessageValue<Data>): void {
+    if (message.workerId == null) {
+      throw new Error('Message worker id is not set')
+    } else if (message.workerId !== this.id) {
+      throw new Error(
+        `Message worker id ${message.workerId.toString()} does not match the worker id ${this.id.toString()}`
+      )
+    }
   }
 
   /**
@@ -185,18 +498,82 @@ export abstract class AbstractWorker<
     }
   }
 
-  /**
-   * Checks if the worker has a task function with the given name.
-   * @param name - The name of the task function to check.
-   * @returns Whether the worker has a task function with the given name or not.
-   */
-  public hasTaskFunction (name: string): TaskFunctionOperationResult {
-    try {
-      checkTaskFunctionName(name)
-    } catch (error) {
-      return { status: false, error: error as Error }
+  private checkWorkerOptions (opts: WorkerOptions): void {
+    checkValidWorkerOptions(opts)
+    this.opts = { ...DEFAULT_WORKER_OPTIONS, ...opts }
+  }
+
+  private endTaskPerformance (
+    taskPerformance: TaskPerformance
+  ): TaskPerformance {
+    if (this.statistics == null) {
+      throw new Error('Performance statistics computation requirements not set')
     }
-    return { status: this.taskFunctions.has(name) }
+    return {
+      ...taskPerformance,
+      ...(this.statistics.runTime && {
+        runTime: performance.now() - taskPerformance.timestamp,
+      }),
+      ...(this.statistics.elu && {
+        elu: performance.eventLoopUtilization(taskPerformance.elu),
+      }),
+    }
+  }
+
+  /**
+   * Gets abortable task function.
+   * An abortable promise is built to permit the task to be aborted.
+   * @param name - The name of the task.
+   * @param taskId - The task id.
+   * @returns The abortable task function.
+   */
+  private getAbortableTaskFunction (
+    name: string,
+    taskId: `${string}-${string}-${string}-${string}`
+  ): TaskAsyncFunction<Data, Response> {
+    return async (data?: Data): Promise<Response> =>
+      await new Promise<Response>(
+        (resolve, reject: (reason?: unknown) => void) => {
+          this.taskAbortFunctions.set(taskId, () => {
+            reject(new Error(`Task ${name} id ${taskId} aborted`))
+          })
+          const taskFunction = this.taskFunctions.get(name)?.taskFunction
+          if (isAsyncFunction(taskFunction)) {
+            ;(taskFunction as TaskAsyncFunction<Data, Response>)(data)
+              .then(resolve)
+              .catch(reject)
+          } else {
+            resolve((taskFunction as TaskSyncFunction<Data, Response>)(data))
+          }
+        }
+      )
+  }
+
+  /**
+   * Starts the worker check active interval.
+   */
+  private startCheckActive (): void {
+    this.lastTaskTimestamp = performance.now()
+    this.activeInterval = setInterval(
+      this.checkActive.bind(this),
+      (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) / 2
+    )
+  }
+
+  /**
+   * Stops the worker check active interval.
+   */
+  private stopCheckActive (): void {
+    if (this.activeInterval != null) {
+      clearInterval(this.activeInterval)
+      delete this.activeInterval
+    }
+  }
+
+  private updateLastTaskTimestamp (): void {
+    if (this.activeInterval != null) {
+      this.lastTaskTimestamp = performance.now()
+    }
   }
 
   /**
@@ -232,37 +609,22 @@ export abstract class AbstractWorker<
       this.sendTaskFunctionsPropertiesToMainWorker()
       return { status: true }
     } catch (error) {
-      return { status: false, error: error as Error }
+      return { error: error as Error, status: false }
     }
   }
 
   /**
-   * Removes a task function from the worker.
-   * @param name - The name of the task function to remove.
-   * @returns Whether the task function existed and was removed or not.
+   * Checks if the worker has a task function with the given name.
+   * @param name - The name of the task function to check.
+   * @returns Whether the worker has a task function with the given name or not.
    */
-  public removeTaskFunction (name: string): TaskFunctionOperationResult {
+  public hasTaskFunction (name: string): TaskFunctionOperationResult {
     try {
       checkTaskFunctionName(name)
-      if (name === DEFAULT_TASK_NAME) {
-        throw new Error(
-          'Cannot remove the task function with the default reserved name'
-        )
-      }
-      if (
-        this.taskFunctions.get(name) ===
-        this.taskFunctions.get(DEFAULT_TASK_NAME)
-      ) {
-        throw new Error(
-          'Cannot remove the task function used as the default task function'
-        )
-      }
-      const deleteStatus = this.taskFunctions.delete(name)
-      this.sendTaskFunctionsPropertiesToMainWorker()
-      return { status: deleteStatus }
     } catch (error) {
-      return { status: false, error: error as Error }
+      return { error: error as Error, status: false }
     }
+    return { status: this.taskFunctions.has(name) }
   }
 
   /**
@@ -301,6 +663,35 @@ export abstract class AbstractWorker<
   }
 
   /**
+   * Removes a task function from the worker.
+   * @param name - The name of the task function to remove.
+   * @returns Whether the task function existed and was removed or not.
+   */
+  public removeTaskFunction (name: string): TaskFunctionOperationResult {
+    try {
+      checkTaskFunctionName(name)
+      if (name === DEFAULT_TASK_NAME) {
+        throw new Error(
+          'Cannot remove the task function with the default reserved name'
+        )
+      }
+      if (
+        this.taskFunctions.get(name) ===
+        this.taskFunctions.get(DEFAULT_TASK_NAME)
+      ) {
+        throw new Error(
+          'Cannot remove the task function used as the default task function'
+        )
+      }
+      const deleteStatus = this.taskFunctions.delete(name)
+      this.sendTaskFunctionsPropertiesToMainWorker()
+      return { status: deleteStatus }
+    } catch (error) {
+      return { error: error as Error, status: false }
+    }
+  }
+
+  /**
    * Sets the default task function to use in the worker.
    * @param name - The name of the task function to use as default task function.
    * @returns Whether the default task function was set or not.
@@ -323,393 +714,7 @@ export abstract class AbstractWorker<
       this.sendTaskFunctionsPropertiesToMainWorker()
       return { status: true }
     } catch (error) {
-      return { status: false, error: error as Error }
-    }
-  }
-
-  /**
-   * Handles the ready message sent by the main worker.
-   * @param message - The ready message.
-   */
-  protected abstract handleReadyMessage (message: MessageValue<Data>): void
-
-  /**
-   * Worker message listener.
-   * @param message - The received message.
-   */
-  protected messageListener (message: MessageValue<Data>): void {
-    this.checkMessageWorkerId(message)
-    const {
-      statistics,
-      checkActive,
-      taskFunctionOperation,
-      taskId,
-      data,
-      taskOperation,
-      kill,
-    } = message
-    if (statistics != null) {
-      // Statistics message received
-      this.statistics = statistics
-    } else if (checkActive != null) {
-      // Check active message received
-      checkActive ? this.startCheckActive() : this.stopCheckActive()
-    } else if (taskFunctionOperation != null) {
-      // Task function operation message received
-      this.handleTaskFunctionOperationMessage(message)
-    } else if (taskId != null && data != null) {
-      // Task message received
-      this.run(message)
-    } else if (taskOperation === 'abort' && taskId != null) {
-      // Abort task operation message received
-      this.emit('abortTask', { taskId: message.taskId })
-    } else if (kill === true) {
-      // Kill message received
-      this.handleKillMessage(message)
-    }
-  }
-
-  protected handleTaskFunctionOperationMessage (
-    message: MessageValue<Data>
-  ): void {
-    const { taskFunctionOperation, taskFunctionProperties, taskFunction } =
-      message
-    if (taskFunctionProperties == null) {
-      throw new Error(
-        'Cannot handle task function operation message without task function properties'
-      )
-    }
-    let response: TaskFunctionOperationResult
-    switch (taskFunctionOperation) {
-      case 'add':
-        response = this.addTaskFunction(taskFunctionProperties.name, {
-          // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
-          taskFunction: new Function(
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            `return ${taskFunction!}`
-          )() as TaskFunction<Data, Response>,
-          ...(taskFunctionProperties.priority != null && {
-            priority: taskFunctionProperties.priority,
-          }),
-          ...(taskFunctionProperties.strategy != null && {
-            strategy: taskFunctionProperties.strategy,
-          }),
-        })
-        break
-      case 'remove':
-        response = this.removeTaskFunction(taskFunctionProperties.name)
-        break
-      case 'default':
-        response = this.setDefaultTaskFunction(taskFunctionProperties.name)
-        break
-      default:
-        response = { status: false, error: new Error('Unknown task operation') }
-        break
-    }
-    const { status, error } = response
-    this.sendToMainWorker({
-      taskFunctionOperation,
-      taskFunctionOperationStatus: status,
-      taskFunctionProperties,
-      ...(!status &&
-        error != null && {
-        workerError: {
-          name: taskFunctionProperties.name,
-          message: this.handleError(error as Error | string),
-        },
-      }),
-    })
-  }
-
-  /**
-   * Handles a kill message sent by the main worker.
-   * @param message - The kill message.
-   */
-  protected handleKillMessage (message: MessageValue<Data>): void {
-    this.stopCheckActive()
-    if (isAsyncFunction(this.opts.killHandler)) {
-      ;(this.opts.killHandler as () => Promise<void>)()
-        .then(() => {
-          this.sendToMainWorker({ kill: 'success' })
-          return undefined
-        })
-        .catch(() => {
-          this.sendToMainWorker({ kill: 'failure' })
-        })
-    } else {
-      try {
-        ;(this.opts.killHandler as (() => void) | undefined)?.()
-        this.sendToMainWorker({ kill: 'success' })
-      } catch {
-        this.sendToMainWorker({ kill: 'failure' })
-      }
-    }
-    this.removeAllListeners()
-  }
-
-  /**
-   * Check if the message worker id is set and matches the worker id.
-   * @param message - The message to check.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the message worker id is not set or does not match the worker id.
-   */
-  private checkMessageWorkerId (message: MessageValue<Data>): void {
-    if (message.workerId == null) {
-      throw new Error('Message worker id is not set')
-    } else if (message.workerId !== this.id) {
-      throw new Error(
-        `Message worker id ${message.workerId.toString()} does not match the worker id ${this.id.toString()}`
-      )
-    }
-  }
-
-  /**
-   * Starts the worker check active interval.
-   */
-  private startCheckActive (): void {
-    this.lastTaskTimestamp = performance.now()
-    this.activeInterval = setInterval(
-      this.checkActive.bind(this),
-      (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) / 2
-    )
-  }
-
-  /**
-   * Stops the worker check active interval.
-   */
-  private stopCheckActive (): void {
-    if (this.activeInterval != null) {
-      clearInterval(this.activeInterval)
-      delete this.activeInterval
-    }
-  }
-
-  /**
-   * Checks if the worker should be terminated, because its living too long.
-   */
-  private checkActive (): void {
-    if (
-      performance.now() - this.lastTaskTimestamp >
-      (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME)
-    ) {
-      this.sendToMainWorker({ kill: this.opts.killBehavior })
-    }
-  }
-
-  /**
-   * Returns the main worker.
-   * @returns Reference to the main worker.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the main worker is not set.
-   */
-  protected getMainWorker (): MainWorker {
-    if (this.mainWorker == null) {
-      throw new Error('Main worker not set')
-    }
-    return this.mainWorker
-  }
-
-  /**
-   * Sends a message to main worker.
-   * @param message - The response message.
-   */
-  protected abstract sendToMainWorker (
-    message: MessageValue<Response, Data>
-  ): void
-
-  /**
-   * Sends task functions properties to the main worker.
-   */
-  protected sendTaskFunctionsPropertiesToMainWorker (): void {
-    this.sendToMainWorker({
-      taskFunctionsProperties: this.listTaskFunctionsProperties(),
-    })
-  }
-
-  /**
-   * Handles an error and convert it to a string so it can be sent back to the main worker.
-   * @param error - The error raised by the worker.
-   * @returns The error message.
-   */
-  protected handleError (error: Error | string): string {
-    return error instanceof Error ? error.message : error
-  }
-
-  /**
-   * Gets abortable task function.
-   * An abortable promise is built to permit the task to be aborted.
-   * @param name - The name of the task.
-   * @param taskId - The task id.
-   * @returns The abortable task function.
-   */
-  private getAbortableTaskFunction (
-    name: string,
-    taskId: `${string}-${string}-${string}-${string}`
-  ): TaskAsyncFunction<Data, Response> {
-    return async (data?: Data): Promise<Response> =>
-      await new Promise<Response>(
-        (resolve, reject: (reason?: unknown) => void) => {
-          this.taskAbortFunctions.set(taskId, () => {
-            reject(new Error(`Task ${name} id ${taskId} aborted`))
-          })
-          const taskFunction = this.taskFunctions.get(name)?.taskFunction
-          if (isAsyncFunction(taskFunction)) {
-            ;(taskFunction as TaskAsyncFunction<Data, Response>)(data)
-              .then(resolve)
-              .catch(reject)
-          } else {
-            resolve((taskFunction as TaskSyncFunction<Data, Response>)(data))
-          }
-        }
-      )
-  }
-
-  /**
-   * Runs the given task.
-   * @param task - The task to execute.
-   */
-  protected readonly run = (task: Task<Data>): void => {
-    const { name, data, abortable, taskId } = task
-    const taskFunctionName = name ?? DEFAULT_TASK_NAME
-    if (!this.taskFunctions.has(taskFunctionName)) {
-      this.sendToMainWorker({
-        workerError: {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          name: name!,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          message: `Task function '${name!}' not found`,
-          data,
-        },
-        taskId,
-      })
-      return
-    }
-    let fn: TaskFunction<Data, Response>
-    if (abortable === true) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      fn = this.getAbortableTaskFunction(taskFunctionName, taskId!)
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      fn = this.taskFunctions.get(taskFunctionName)!.taskFunction
-    }
-    if (isAsyncFunction(fn)) {
-      this.runAsync(fn as TaskAsyncFunction<Data, Response>, task)
-    } else {
-      this.runSync(fn as TaskSyncFunction<Data, Response>, task)
-    }
-  }
-
-  /**
-   * Runs the given task function synchronously.
-   * @param fn - Task function that will be executed.
-   * @param task - Input data for the task function.
-   */
-  protected readonly runSync = (
-    fn: TaskSyncFunction<Data, Response>,
-    task: Task<Data>
-  ): void => {
-    const { name, data, abortable, taskId } = task
-    try {
-      let taskPerformance = this.beginTaskPerformance(name)
-      const res = fn(data)
-      taskPerformance = this.endTaskPerformance(taskPerformance)
-      this.sendToMainWorker({
-        data: res,
-        taskPerformance,
-        taskId,
-      })
-    } catch (error) {
-      this.sendToMainWorker({
-        workerError: {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          name: name!,
-          message: this.handleError(error as Error | string),
-          data,
-        },
-        taskId,
-      })
-    } finally {
-      this.updateLastTaskTimestamp()
-      if (abortable === true) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.taskAbortFunctions.delete(taskId!)
-      }
-    }
-  }
-
-  /**
-   * Runs the given task function asynchronously.
-   * @param fn - Task function that will be executed.
-   * @param task - Input data for the task function.
-   */
-  protected readonly runAsync = (
-    fn: TaskAsyncFunction<Data, Response>,
-    task: Task<Data>
-  ): void => {
-    const { name, data, abortable, taskId } = task
-    let taskPerformance = this.beginTaskPerformance(name)
-    fn(data)
-      .then(res => {
-        taskPerformance = this.endTaskPerformance(taskPerformance)
-        this.sendToMainWorker({
-          data: res,
-          taskPerformance,
-          taskId,
-        })
-        return undefined
-      })
-      .catch((error: unknown) => {
-        this.sendToMainWorker({
-          workerError: {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            name: name!,
-            message: this.handleError(error as Error | string),
-            data,
-          },
-          taskId,
-        })
-      })
-      .finally(() => {
-        this.updateLastTaskTimestamp()
-        if (abortable === true) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this.taskAbortFunctions.delete(taskId!)
-        }
-      })
-      .catch(EMPTY_FUNCTION)
-  }
-
-  private beginTaskPerformance (name?: string): TaskPerformance {
-    if (this.statistics == null) {
-      throw new Error('Performance statistics computation requirements not set')
-    }
-    return {
-      name: name ?? DEFAULT_TASK_NAME,
-      timestamp: performance.now(),
-      ...(this.statistics.elu && {
-        elu: performance.eventLoopUtilization(),
-      }),
-    }
-  }
-
-  private endTaskPerformance (
-    taskPerformance: TaskPerformance
-  ): TaskPerformance {
-    if (this.statistics == null) {
-      throw new Error('Performance statistics computation requirements not set')
-    }
-    return {
-      ...taskPerformance,
-      ...(this.statistics.runTime && {
-        runTime: performance.now() - taskPerformance.timestamp,
-      }),
-      ...(this.statistics.elu && {
-        elu: performance.eventLoopUtilization(taskPerformance.elu),
-      }),
-    }
-  }
-
-  private updateLastTaskTimestamp (): void {
-    if (this.activeInterval != null) {
-      this.lastTaskTimestamp = performance.now()
+      return { error: error as Error, status: false }
     }
   }
 }

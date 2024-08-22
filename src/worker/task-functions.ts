@@ -30,8 +30,8 @@ export type TaskAsyncFunction<Data = unknown, Response = unknown> = (
  * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
  */
 export type TaskFunction<Data = unknown, Response = unknown> =
-  | TaskSyncFunction<Data, Response>
   | TaskAsyncFunction<Data, Response>
+  | TaskSyncFunction<Data, Response>
 
 /**
  * Task function object.
@@ -40,10 +40,6 @@ export type TaskFunction<Data = unknown, Response = unknown> =
  */
 export interface TaskFunctionObject<Data = unknown, Response = unknown> {
   /**
-   * Task function.
-   */
-  taskFunction: TaskFunction<Data, Response>
-  /**
    * Task function priority. Lower values have higher priority.
    */
   priority?: number
@@ -51,6 +47,10 @@ export interface TaskFunctionObject<Data = unknown, Response = unknown> {
    * Task function worker choice strategy.
    */
   strategy?: WorkerChoiceStrategy
+  /**
+   * Task function.
+   */
+  taskFunction: TaskFunction<Data, Response>
 }
 
 /**
@@ -69,6 +69,6 @@ export type TaskFunctions<Data = unknown, Response = unknown> = Record<
  * Task function operation result.
  */
 export interface TaskFunctionOperationResult {
-  status: boolean
   error?: Error
+  status: boolean
 }

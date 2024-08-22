@@ -99,8 +99,8 @@ describe('Dynamic cluster pool test suite', () => {
       './tests/worker-files/cluster/longRunningWorkerHardBehavior.cjs',
       {
         errorHandler: e => console.error(e),
-        onlineHandler: () => console.info('long executing worker is online'),
         exitHandler: () => console.info('long executing worker exited'),
+        onlineHandler: () => console.info('long executing worker is online'),
       }
     )
     expect(longRunningPool.workerNodes.length).toBe(min)
@@ -127,8 +127,8 @@ describe('Dynamic cluster pool test suite', () => {
       './tests/worker-files/cluster/longRunningWorkerSoftBehavior.cjs',
       {
         errorHandler: e => console.error(e),
-        onlineHandler: () => console.info('long executing worker is online'),
         exitHandler: () => console.info('long executing worker exited'),
+        onlineHandler: () => console.info('long executing worker is online'),
       }
     )
     expect(longRunningPool.workerNodes.length).toBe(min)

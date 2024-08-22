@@ -1,6 +1,5 @@
 import { dirname, extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-
 import { availableParallelism, DynamicThreadPool } from 'poolifier'
 
 import type { WorkerData, WorkerResponse } from './types.js'
@@ -16,11 +15,11 @@ export const httpClientPool = new DynamicThreadPool<WorkerData, WorkerResponse>(
   workerFile,
   {
     enableTasksQueue: true,
-    tasksQueueOptions: {
-      concurrency: 8,
-    },
     errorHandler: (e: Error) => {
       console.error('Thread worker error:', e)
+    },
+    tasksQueueOptions: {
+      concurrency: 8,
     },
   }
 )

@@ -1,5 +1,4 @@
 import { randomInt } from 'node:crypto'
-
 import { bench, group, run } from 'tatami-ng'
 
 /**

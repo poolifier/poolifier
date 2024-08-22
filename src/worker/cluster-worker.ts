@@ -1,9 +1,10 @@
 import cluster, { type Worker } from 'node:cluster'
 
 import type { MessageValue } from '../utility-types.js'
-import { AbstractWorker } from './abstract-worker.js'
 import type { TaskFunction, TaskFunctions } from './task-functions.js'
 import type { WorkerOptions } from './worker-options.js'
+
+import { AbstractWorker } from './abstract-worker.js'
 
 /**
  * A cluster worker used by a poolifier `ClusterPool`.
@@ -22,6 +23,16 @@ export class ClusterWorker<
   Data = unknown,
   Response = unknown
 > extends AbstractWorker<Worker, Data, Response> {
+  /** @inheritDoc */
+  protected readonly sendToMainWorker = (
+    message: MessageValue<Response>
+  ): void => {
+    this.getMainWorker().send({
+      ...message,
+      workerId: this.id,
+    } satisfies MessageValue<Response>)
+  }
+
   /**
    * Constructs a new poolifier cluster worker.
    * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked.
@@ -55,15 +66,5 @@ export class ClusterWorker<
   /** @inheritDoc */
   protected get id (): number {
     return this.getMainWorker().id
-  }
-
-  /** @inheritDoc */
-  protected readonly sendToMainWorker = (
-    message: MessageValue<Response>
-  ): void => {
-    this.getMainWorker().send({
-      ...message,
-      workerId: this.id,
-    } satisfies MessageValue<Response>)
   }
 }

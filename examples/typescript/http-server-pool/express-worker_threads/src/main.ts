@@ -1,6 +1,5 @@
-import { exit } from 'node:process'
-
 import express, { type Express, type Request, type Response } from 'express'
+import { exit } from 'node:process'
 
 import { requestHandlerPool } from './pool.js'
 
