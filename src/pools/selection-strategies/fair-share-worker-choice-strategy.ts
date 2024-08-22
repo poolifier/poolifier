@@ -1,5 +1,6 @@
 import type { IPool } from '../pool.js'
 import type { IWorker } from '../worker.js'
+
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import {
   type IWorkerChoiceStrategy,
@@ -24,17 +25,17 @@ export class FairShareWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
+    elu: {
+      aggregate: true,
+      average: true,
+      median: false,
+    },
     runTime: {
       aggregate: true,
       average: true,
       median: false,
     },
     waitTime: {
-      aggregate: true,
-      average: true,
-      median: false,
-    },
-    elu: {
       aggregate: true,
       average: true,
       median: false,
@@ -50,33 +51,18 @@ export class FairShareWorkerChoiceStrategy<
     this.setTaskStatisticsRequirements(this.opts)
   }
 
-  /** @inheritDoc */
-  public reset (): boolean {
-    for (const workerNode of this.pool.workerNodes) {
-      delete workerNode.strategyData?.virtualTaskEndTimestamp
-    }
-    return true
-  }
-
-  /** @inheritDoc */
-  public update (workerNodeKey: number): boolean {
-    this.pool.workerNodes[workerNodeKey].strategyData = {
-      virtualTaskEndTimestamp:
-        this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey),
-    }
-    return true
-  }
-
-  /** @inheritDoc */
-  public choose (workerNodes?: number[]): number | undefined {
-    this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey(workerNodes)
-    return this.nextWorkerNodeKey
-  }
-
-  /** @inheritDoc */
-  public remove (): boolean {
-    return true
+  /**
+   * Computes the worker node key virtual task end timestamp.
+   * @param workerNodeKey - The worker node key.
+   * @returns The worker node key virtual task end timestamp.
+   */
+  private computeWorkerNodeVirtualTaskEndTimestamp (
+    workerNodeKey: number
+  ): number {
+    return this.getWorkerNodeVirtualTaskEndTimestamp(
+      workerNodeKey,
+      this.getWorkerNodeVirtualTaskStartTimestamp(workerNodeKey)
+    )
   }
 
   private fairShareNextWorkerNodeKey (
@@ -107,20 +93,6 @@ export class FairShareWorkerChoiceStrategy<
     )
   }
 
-  /**
-   * Computes the worker node key virtual task end timestamp.
-   * @param workerNodeKey - The worker node key.
-   * @returns The worker node key virtual task end timestamp.
-   */
-  private computeWorkerNodeVirtualTaskEndTimestamp (
-    workerNodeKey: number
-  ): number {
-    return this.getWorkerNodeVirtualTaskEndTimestamp(
-      workerNodeKey,
-      this.getWorkerNodeVirtualTaskStartTimestamp(workerNodeKey)
-    )
-  }
-
   private getWorkerNodeVirtualTaskEndTimestamp (
     workerNodeKey: number,
     workerNodeVirtualTaskStartTimestamp: number
@@ -145,5 +117,34 @@ export class FairShareWorkerChoiceStrategy<
       ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       virtualTaskEndTimestamp!
       : now
+  }
+
+  /** @inheritDoc */
+  public choose (workerNodes?: number[]): number | undefined {
+    this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
+    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey(workerNodes)
+    return this.nextWorkerNodeKey
+  }
+
+  /** @inheritDoc */
+  public remove (): boolean {
+    return true
+  }
+
+  /** @inheritDoc */
+  public reset (): boolean {
+    for (const workerNode of this.pool.workerNodes) {
+      delete workerNode.strategyData?.virtualTaskEndTimestamp
+    }
+    return true
+  }
+
+  /** @inheritDoc */
+  public update (workerNodeKey: number): boolean {
+    this.pool.workerNodes[workerNodeKey].strategyData = {
+      virtualTaskEndTimestamp:
+        this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey),
+    }
+    return true
   }
 }

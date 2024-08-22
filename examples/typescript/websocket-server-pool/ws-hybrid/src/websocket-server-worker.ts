@@ -23,7 +23,6 @@ class WebSocketServerWorker extends ClusterWorker<
   ClusterWorkerData,
   ClusterWorkerResponse
 > {
-  private static wss: WebSocketServer
   private static requestHandlerPool: DynamicThreadPool<
     ThreadWorkerData<DataPayload>,
     ThreadWorkerResponse<DataPayload>
@@ -32,7 +31,7 @@ class WebSocketServerWorker extends ClusterWorker<
   private static readonly startWebSocketServer = (
     workerData?: ClusterWorkerData
   ): ClusterWorkerResponse => {
-    const { port, workerFile, minWorkers, maxWorkers, ...poolOptions } =
+    const { maxWorkers, minWorkers, port, workerFile, ...poolOptions } =
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       workerData!
 
@@ -55,7 +54,7 @@ class WebSocketServerWorker extends ClusterWorker<
     WebSocketServerWorker.wss.on('connection', ws => {
       ws.on('error', console.error)
       ws.on('message', (message: RawData) => {
-        const { type, data } = JSON.parse(
+        const { data, type } = JSON.parse(
           message.toString()
         ) as MessagePayload<DataPayload>
         switch (type) {
@@ -65,8 +64,8 @@ class WebSocketServerWorker extends ClusterWorker<
               .then(response => {
                 ws.send(
                   JSON.stringify({
-                    type: MessageType.echo,
                     data: response.data,
+                    type: MessageType.echo,
                   })
                 )
                 return undefined
@@ -80,8 +79,8 @@ class WebSocketServerWorker extends ClusterWorker<
                 ws.send(
                   JSON.stringify(
                     {
-                      type: MessageType.factorial,
                       data: response.data,
+                      type: MessageType.factorial,
                     },
                     (_, v: unknown) =>
                       typeof v === 'bigint' ? v.toString() : v
@@ -95,10 +94,12 @@ class WebSocketServerWorker extends ClusterWorker<
       })
     })
     return {
-      status: true,
       port: WebSocketServerWorker.wss.options.port,
+      status: true,
     }
   }
+
+  private static wss: WebSocketServer
 
   public constructor () {
     super(WebSocketServerWorker.startWebSocketServer, {

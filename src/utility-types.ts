@@ -11,17 +11,17 @@ import type { KillBehavior } from './worker/worker-options.js'
  */
 export interface WorkerError<Data = unknown> {
   /**
-   * Task function name triggering the error.
+   * Data triggering the error.
    */
-  readonly name: string
+  readonly data?: Data
   /**
    * Error message.
    */
   readonly message: string
   /**
-   * Data triggering the error.
+   * Task function name triggering the error.
    */
-  readonly data?: Data
+  readonly name: string
 }
 
 /**
@@ -30,21 +30,21 @@ export interface WorkerError<Data = unknown> {
  */
 export interface TaskPerformance {
   /**
+   * Task event loop utilization.
+   */
+  readonly elu?: EventLoopUtilization
+  /**
    * Task name.
    */
   readonly name: string
-  /**
-   * Task performance timestamp.
-   */
-  readonly timestamp: number
   /**
    * Task runtime.
    */
   readonly runTime?: number
   /**
-   * Task event loop utilization.
+   * Task performance timestamp.
    */
-  readonly elu?: EventLoopUtilization
+  readonly timestamp: number
 }
 
 /**
@@ -53,13 +53,13 @@ export interface TaskPerformance {
  */
 export interface WorkerStatistics {
   /**
-   * Whether the worker computes the task runtime or not.
-   */
-  readonly runTime: boolean
-  /**
    * Whether the worker computes the task event loop utilization (ELU) or not.
    */
   readonly elu: boolean
+  /**
+   * Whether the worker computes the task runtime or not.
+   */
+  readonly runTime: boolean
 }
 
 /**
@@ -91,13 +91,13 @@ export interface TaskFunctionProperties {
  */
 export interface Task<Data = unknown> {
   /**
-   * Task name.
-   */
-  readonly name?: string
-  /**
    * Task input data that will be passed to the worker.
    */
   readonly data?: Data
+  /**
+   * Task name.
+   */
+  readonly name?: string
   /**
    * Task priority. Lower values have higher priority.
    * @defaultValue 0
@@ -108,17 +108,17 @@ export interface Task<Data = unknown> {
    */
   readonly strategy?: WorkerChoiceStrategy
   /**
-   * Array of transferable objects.
+   * Task UUID.
    */
-  readonly transferList?: readonly TransferListItem[]
+  readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
   /**
    * Timestamp.
    */
   readonly timestamp?: number
   /**
-   * Task UUID.
+   * Array of transferable objects.
    */
-  readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
+  readonly transferList?: readonly TransferListItem[]
 }
 
 /**
@@ -130,28 +130,36 @@ export interface Task<Data = unknown> {
 export interface MessageValue<Data = unknown, ErrorData = unknown>
   extends Task<Data> {
   /**
-   * Worker id.
+   * Whether the worker starts or stops its activity check.
    */
-  readonly workerId?: number
+  readonly checkActive?: boolean
   /**
    * Kill code.
    */
-  readonly kill?: KillBehavior | true | 'success' | 'failure'
+  readonly kill?: 'failure' | 'success' | KillBehavior | true
   /**
-   * Worker error.
+   * Message port.
    */
-  readonly workerError?: WorkerError<ErrorData>
+  readonly port?: MessagePort
   /**
-   * Task performance.
+   * Whether the worker is ready or not.
    */
-  readonly taskPerformance?: TaskPerformance
+  readonly ready?: boolean
+  /**
+   * Whether the worker computes the given statistics or not.
+   */
+  readonly statistics?: WorkerStatistics
+  /**
+   * Task function serialized to string.
+   */
+  readonly taskFunction?: string
   /**
    * Task function operation:
    * - `'add'` - Add a task function.
    * - `'remove'` - Remove a task function.
    * - `'default'` - Set a task function as default.
    */
-  readonly taskFunctionOperation?: 'add' | 'remove' | 'default'
+  readonly taskFunctionOperation?: 'add' | 'default' | 'remove'
   /**
    * Whether the task function operation is successful or not.
    */
@@ -161,29 +169,21 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    */
   readonly taskFunctionProperties?: TaskFunctionProperties
   /**
-   * Task function serialized to string.
-   */
-  readonly taskFunction?: string
-  /**
    * Task functions properties.
    */
   readonly taskFunctionsProperties?: TaskFunctionProperties[]
   /**
-   * Whether the worker computes the given statistics or not.
+   * Task performance.
    */
-  readonly statistics?: WorkerStatistics
+  readonly taskPerformance?: TaskPerformance
   /**
-   * Whether the worker is ready or not.
+   * Worker error.
    */
-  readonly ready?: boolean
+  readonly workerError?: WorkerError<ErrorData>
   /**
-   * Whether the worker starts or stops its activity check.
+   * Worker id.
    */
-  readonly checkActive?: boolean
-  /**
-   * Message port.
-   */
-  readonly port?: MessagePort
+  readonly workerId?: number
 }
 
 /**
@@ -193,21 +193,21 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
  */
 export interface PromiseResponseWrapper<Response = unknown> {
   /**
-   * Resolve callback to fulfill the promise.
+   * The asynchronous resource used to track the task execution.
    */
-  readonly resolve: (value: Response | PromiseLike<Response>) => void
+  readonly asyncResource?: AsyncResource
   /**
    * Reject callback to reject the promise.
    */
   readonly reject: (reason?: unknown) => void
   /**
+   * Resolve callback to fulfill the promise.
+   */
+  readonly resolve: (value: PromiseLike<Response> | Response) => void
+  /**
    * The worker node key executing the task.
    */
   readonly workerNodeKey: number
-  /**
-   * The asynchronous resource used to track the task execution.
-   */
-  readonly asyncResource?: AsyncResource
 }
 
 /**

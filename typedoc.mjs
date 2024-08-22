@@ -24,8 +24,8 @@ try {
     )
   }
   rmSync(join(dirname(fileURLToPath(import.meta.url)), 'tmp'), {
-    recursive: true,
     force: true,
+    recursive: true,
   })
 } catch (e) {
   console.error(e)

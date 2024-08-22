@@ -1,16 +1,16 @@
 'use strict'
 const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
 const {
-  jsonIntegerSerialization,
   factorial,
   fibonacci,
+  jsonIntegerSerialization,
 } = require('../../test-utils.cjs')
 
 module.exports = new ClusterWorker(
   {
-    jsonIntegerSerialization: data => jsonIntegerSerialization(data.n),
     factorial: data => factorial(data.n),
     fibonacci: data => fibonacci(data.n),
+    jsonIntegerSerialization: data => jsonIntegerSerialization(data.n),
   },
   {
     killBehavior: KillBehaviors.HARD,

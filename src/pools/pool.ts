@@ -25,17 +25,17 @@ import type {
  * Enumeration of pool types.
  */
 export const PoolTypes: Readonly<{
-  fixed: 'fixed'
   dynamic: 'dynamic'
+  fixed: 'fixed'
 }> = Object.freeze({
-  /**
-   * Fixed pool type.
-   */
-  fixed: 'fixed',
   /**
    * Dynamic pool type.
    */
   dynamic: 'dynamic',
+  /**
+   * Fixed pool type.
+   */
+  fixed: 'fixed',
 } as const)
 
 /**
@@ -47,23 +47,23 @@ export type PoolType = keyof typeof PoolTypes
  * Enumeration of pool events.
  */
 export const PoolEvents: Readonly<{
-  ready: 'ready'
-  busy: 'busy'
-  full: 'full'
-  empty: 'empty'
-  destroy: 'destroy'
-  error: 'error'
-  taskError: 'taskError'
   backPressure: 'backPressure'
+  busy: 'busy'
+  destroy: 'destroy'
+  empty: 'empty'
+  error: 'error'
+  full: 'full'
+  ready: 'ready'
+  taskError: 'taskError'
 }> = Object.freeze({
-  ready: 'ready',
-  busy: 'busy',
-  full: 'full',
-  empty: 'empty',
-  destroy: 'destroy',
-  error: 'error',
-  taskError: 'taskError',
   backPressure: 'backPressure',
+  busy: 'busy',
+  destroy: 'destroy',
+  empty: 'empty',
+  error: 'error',
+  full: 'full',
+  ready: 'ready',
+  taskError: 'taskError',
 } as const)
 
 /**
@@ -75,64 +75,64 @@ export type PoolEvent = keyof typeof PoolEvents
  * Pool information.
  */
 export interface PoolInfo {
-  readonly version: string
-  readonly type: PoolType
-  readonly worker: WorkerType
-  readonly started: boolean
-  readonly ready: boolean
-  readonly defaultStrategy: WorkerChoiceStrategy
-  readonly strategyRetries: number
-  readonly minSize: number
-  readonly maxSize: number
-  /** Pool utilization. */
-  readonly utilization?: number
-  /** Pool total worker nodes. */
-  readonly workerNodes: number
-  /** Pool idle worker nodes. */
-  readonly idleWorkerNodes: number
-  /** Pool busy worker nodes. */
-  readonly busyWorkerNodes: number
-  /** Pool tasks stealing worker nodes. */
-  readonly stealingWorkerNodes?: number
+  readonly backPressure?: boolean
   /** Pool tasks back pressure worker nodes. */
   readonly backPressureWorkerNodes?: number
-  readonly executedTasks: number
-  readonly executingTasks: number
-  readonly queuedTasks?: number
-  readonly maxQueuedTasks?: number
-  readonly backPressure?: boolean
-  readonly stolenTasks?: number
-  readonly failedTasks: number
-  readonly runTime?: {
-    readonly minimum: number
-    readonly maximum: number
-    readonly average?: number
-    readonly median?: number
-  }
-  readonly waitTime?: {
-    readonly minimum: number
-    readonly maximum: number
-    readonly average?: number
-    readonly median?: number
-  }
+  /** Pool busy worker nodes. */
+  readonly busyWorkerNodes: number
+  readonly defaultStrategy: WorkerChoiceStrategy
   readonly elu?: {
-    idle: {
-      readonly minimum: number
-      readonly maximum: number
-      readonly average?: number
-      readonly median?: number
-    }
     active: {
-      readonly minimum: number
-      readonly maximum: number
       readonly average?: number
+      readonly maximum: number
       readonly median?: number
+      readonly minimum: number
+    }
+    idle: {
+      readonly average?: number
+      readonly maximum: number
+      readonly median?: number
+      readonly minimum: number
     }
     utilization: {
       readonly average?: number
       readonly median?: number
     }
   }
+  readonly executedTasks: number
+  readonly executingTasks: number
+  readonly failedTasks: number
+  /** Pool idle worker nodes. */
+  readonly idleWorkerNodes: number
+  readonly maxQueuedTasks?: number
+  readonly maxSize: number
+  readonly minSize: number
+  readonly queuedTasks?: number
+  readonly ready: boolean
+  readonly runTime?: {
+    readonly average?: number
+    readonly maximum: number
+    readonly median?: number
+    readonly minimum: number
+  }
+  readonly started: boolean
+  /** Pool tasks stealing worker nodes. */
+  readonly stealingWorkerNodes?: number
+  readonly stolenTasks?: number
+  readonly strategyRetries: number
+  readonly type: PoolType
+  /** Pool utilization. */
+  readonly utilization?: number
+  readonly version: string
+  readonly waitTime?: {
+    readonly average?: number
+    readonly maximum: number
+    readonly median?: number
+    readonly minimum: number
+  }
+  readonly worker: WorkerType
+  /** Pool total worker nodes. */
+  readonly workerNodes: number
 }
 
 /**
@@ -140,20 +140,20 @@ export interface PoolInfo {
  */
 export interface TasksQueueOptions {
   /**
-   * Maximum tasks queue size per worker node flagging it as back pressured.
-   * @defaultValue (pool maximum size)^2
-   */
-  readonly size?: number
-  /**
    * Maximum number of tasks that can be executed concurrently on a worker node.
    * @defaultValue 1
    */
   readonly concurrency?: number
   /**
-   * Whether to enable task stealing on idle.
-   * @defaultValue true
+   * Maximum tasks queue size per worker node flagging it as back pressured.
+   * @defaultValue (pool maximum size)^2
    */
-  readonly taskStealing?: boolean
+  readonly size?: number
+  /**
+   * Queued tasks finished timeout in milliseconds at worker node termination.
+   * @defaultValue 2000
+   */
+  readonly tasksFinishedTimeout?: number
   /**
    * Whether to enable tasks stealing under back pressure.
    * @defaultValue true
@@ -165,10 +165,10 @@ export interface TasksQueueOptions {
    */
   readonly tasksStealingRatio?: number
   /**
-   * Queued tasks finished timeout in milliseconds at worker node termination.
-   * @defaultValue 2000
+   * Whether to enable task stealing on idle.
+   * @defaultValue true
    */
-  readonly tasksFinishedTimeout?: number
+  readonly taskStealing?: boolean
 }
 
 /**
@@ -176,44 +176,6 @@ export interface TasksQueueOptions {
  * @typeParam Worker - Type of worker.
  */
 export interface PoolOptions<Worker extends IWorker> {
-  /**
-   * A function that will listen for online event on each worker.
-   * @defaultValue `() => {}`
-   */
-  onlineHandler?: OnlineHandler<Worker>
-  /**
-   * A function that will listen for message event on each worker.
-   * @defaultValue `() => {}`
-   */
-  messageHandler?: MessageHandler<Worker>
-  /**
-   * A function that will listen for error event on each worker.
-   * @defaultValue `() => {}`
-   */
-  errorHandler?: ErrorHandler<Worker>
-  /**
-   * A function that will listen for exit event on each worker.
-   * @defaultValue `() => {}`
-   */
-  exitHandler?: ExitHandler<Worker>
-  /**
-   * Whether to start the minimum number of workers at pool initialization.
-   * @defaultValue true
-   */
-  startWorkers?: boolean
-  /**
-   * The default worker choice strategy to use in this pool.
-   * @defaultValue WorkerChoiceStrategies.ROUND_ROBIN
-   */
-  workerChoiceStrategy?: WorkerChoiceStrategy
-  /**
-   * The worker choice strategy options.
-   */
-  workerChoiceStrategyOptions?: WorkerChoiceStrategyOptions
-  /**
-   * Restart worker on error.
-   */
-  restartWorkerOnError?: boolean
   /**
    * Pool events integrated with async resource emission.
    * @defaultValue true
@@ -225,24 +187,62 @@ export interface PoolOptions<Worker extends IWorker> {
    */
   enableTasksQueue?: boolean
   /**
-   * Pool worker node tasks queue options.
-   */
-  tasksQueueOptions?: TasksQueueOptions
-  /**
-   * Worker options.
-   * @see https://nodejs.org/api/worker_threads.html#new-workerfilename-options
-   */
-  workerOptions?: WorkerOptions
-  /**
    * Key/value pairs to add to worker process environment.
    * @see https://nodejs.org/api/cluster.html#cluster_cluster_fork_env
    */
   env?: Record<string, unknown>
   /**
+   * A function that will listen for error event on each worker.
+   * @defaultValue `() => {}`
+   */
+  errorHandler?: ErrorHandler<Worker>
+  /**
+   * A function that will listen for exit event on each worker.
+   * @defaultValue `() => {}`
+   */
+  exitHandler?: ExitHandler<Worker>
+  /**
+   * A function that will listen for message event on each worker.
+   * @defaultValue `() => {}`
+   */
+  messageHandler?: MessageHandler<Worker>
+  /**
+   * A function that will listen for online event on each worker.
+   * @defaultValue `() => {}`
+   */
+  onlineHandler?: OnlineHandler<Worker>
+  /**
+   * Restart worker on error.
+   */
+  restartWorkerOnError?: boolean
+  /**
    * Cluster settings.
    * @see https://nodejs.org/api/cluster.html#cluster_cluster_settings
    */
   settings?: ClusterSettings
+  /**
+   * Whether to start the minimum number of workers at pool initialization.
+   * @defaultValue true
+   */
+  startWorkers?: boolean
+  /**
+   * Pool worker node tasks queue options.
+   */
+  tasksQueueOptions?: TasksQueueOptions
+  /**
+   * The default worker choice strategy to use in this pool.
+   * @defaultValue WorkerChoiceStrategies.ROUND_ROBIN
+   */
+  workerChoiceStrategy?: WorkerChoiceStrategy
+  /**
+   * The worker choice strategy options.
+   */
+  workerChoiceStrategyOptions?: WorkerChoiceStrategyOptions
+  /**
+   * Worker options.
+   * @see https://nodejs.org/api/worker_threads.html#new-workerfilename-options
+   */
+  workerOptions?: WorkerOptions
 }
 
 /**
@@ -257,14 +257,22 @@ export interface IPool<
   Response = unknown
 > {
   /**
-   * Pool information.
+   * Adds a task function to this pool.
+   * If a task function with the same name already exists, it will be overwritten.
+   * @param name - The name of the task function.
+   * @param fn - The task function.
+   * @returns `true` if the task function was added, `false` otherwise.
+   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string or an empty string.
+   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `fn` parameter is not a function or task function object.
    */
-  readonly info: PoolInfo
+  readonly addTaskFunction: (
+    name: string,
+    fn: TaskFunction<Data, Response> | TaskFunctionObject<Data, Response>
+  ) => Promise<boolean>
   /**
-   * Pool worker nodes.
-   * @internal
+   * Terminates all workers in this pool.
    */
-  readonly workerNodes: IWorkerNode<Worker, Data>[]
+  readonly destroy: () => Promise<void>
   /**
    * Pool event emitter integrated with async resource.
    * The async tracking tooling identifier is `poolifier:<PoolType>-<WorkerType>-pool`.
@@ -282,6 +290,15 @@ export interface IPool<
    */
   readonly emitter?: EventEmitterAsyncResource
   /**
+   * Enables/disables the worker node tasks queue in this pool.
+   * @param enable - Whether to enable or disable the worker node tasks queue.
+   * @param tasksQueueOptions - The worker node tasks queue options.
+   */
+  readonly enableTasksQueue: (
+    enable: boolean,
+    tasksQueueOptions?: TasksQueueOptions
+  ) => void
+  /**
    * Executes the specified function in the worker constructor with the task data input parameter.
    * @param data - The optional task input data for the specified task function. This can only be structured-cloneable data.
    * @param name - The optional name of the task function to execute. If not specified, the default task function will be executed.
@@ -293,6 +310,21 @@ export interface IPool<
     name?: string,
     transferList?: readonly TransferListItem[]
   ) => Promise<Response>
+  /**
+   * Whether the specified task function exists in this pool.
+   * @param name - The name of the task function.
+   * @returns `true` if the task function exists, `false` otherwise.
+   */
+  readonly hasTaskFunction: (name: string) => boolean
+  /**
+   * Pool information.
+   */
+  readonly info: PoolInfo
+  /**
+   * Lists the properties of task functions available in this pool.
+   * @returns The properties of task functions available in this pool.
+   */
+  readonly listTaskFunctionsProperties: () => TaskFunctionProperties[]
   /**
    * Executes the specified function in the worker constructor with the tasks data iterable input parameter.
    * @param data - The tasks iterable input data for the specified task function. This can only be an iterable of structured-cloneable data.
@@ -306,49 +338,22 @@ export interface IPool<
     transferList?: readonly TransferListItem[]
   ) => Promise<Response[]>
   /**
-   * Starts the minimum number of workers in this pool.
-   */
-  readonly start: () => void
-  /**
-   * Terminates all workers in this pool.
-   */
-  readonly destroy: () => Promise<void>
-  /**
-   * Whether the specified task function exists in this pool.
-   * @param name - The name of the task function.
-   * @returns `true` if the task function exists, `false` otherwise.
-   */
-  readonly hasTaskFunction: (name: string) => boolean
-  /**
-   * Adds a task function to this pool.
-   * If a task function with the same name already exists, it will be overwritten.
-   * @param name - The name of the task function.
-   * @param fn - The task function.
-   * @returns `true` if the task function was added, `false` otherwise.
-   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `name` parameter is not a string or an empty string.
-   * @throws {@link https://nodejs.org/api/errors.html#class-typeerror} If the `fn` parameter is not a function or task function object.
-   */
-  readonly addTaskFunction: (
-    name: string,
-    fn: TaskFunction<Data, Response> | TaskFunctionObject<Data, Response>
-  ) => Promise<boolean>
-  /**
    * Removes a task function from this pool.
    * @param name - The name of the task function.
    * @returns `true` if the task function was removed, `false` otherwise.
    */
   readonly removeTaskFunction: (name: string) => Promise<boolean>
   /**
-   * Lists the properties of task functions available in this pool.
-   * @returns The properties of task functions available in this pool.
-   */
-  readonly listTaskFunctionsProperties: () => TaskFunctionProperties[]
-  /**
    * Sets the default task function in this pool.
    * @param name - The name of the task function.
    * @returns `true` if the default task function was set, `false` otherwise.
    */
   readonly setDefaultTaskFunction: (name: string) => Promise<boolean>
+  /**
+   * Sets the worker node tasks queue options in this pool.
+   * @param tasksQueueOptions - The worker node tasks queue options.
+   */
+  readonly setTasksQueueOptions: (tasksQueueOptions: TasksQueueOptions) => void
   /**
    * Sets the default worker choice strategy in this pool.
    * @param workerChoiceStrategy - The default worker choice strategy.
@@ -367,17 +372,12 @@ export interface IPool<
     workerChoiceStrategyOptions: WorkerChoiceStrategyOptions
   ) => boolean
   /**
-   * Enables/disables the worker node tasks queue in this pool.
-   * @param enable - Whether to enable or disable the worker node tasks queue.
-   * @param tasksQueueOptions - The worker node tasks queue options.
+   * Starts the minimum number of workers in this pool.
    */
-  readonly enableTasksQueue: (
-    enable: boolean,
-    tasksQueueOptions?: TasksQueueOptions
-  ) => void
+  readonly start: () => void
   /**
-   * Sets the worker node tasks queue options in this pool.
-   * @param tasksQueueOptions - The worker node tasks queue options.
+   * Pool worker nodes.
+   * @internal
    */
-  readonly setTasksQueueOptions: (tasksQueueOptions: TasksQueueOptions) => void
+  readonly workerNodes: IWorkerNode<Worker, Data>[]
 }

@@ -1,8 +1,7 @@
-import * as os from 'node:os'
-import { env } from 'node:process'
-
 import terser from '@rollup/plugin-terser'
 import typescript from '@rollup/plugin-typescript'
+import * as os from 'node:os'
+import { env } from 'node:process'
 import { defineConfig } from 'rollup'
 import analyze from 'rollup-plugin-analyzer'
 import command from 'rollup-plugin-command'
@@ -32,16 +31,16 @@ const maxWorkers = Math.floor(availableParallelism() / 2)
 
 export default defineConfig([
   {
+    external: [/^node:*/],
     input: './src/index.ts',
-    strictDeprecations: true,
     output: [
       {
         format: 'cjs',
         ...(isDevelopmentBuild
           ? {
+              chunkFileNames: '[name]-[hash].cjs',
               dir: './lib',
               entryFileNames: '[name].cjs',
-              chunkFileNames: '[name]-[hash].cjs',
               preserveModules: true,
               preserveModulesRoot: './src',
             }
@@ -57,9 +56,9 @@ export default defineConfig([
         format: 'esm',
         ...(isDevelopmentBuild
           ? {
+              chunkFileNames: '[name]-[hash].mjs',
               dir: './lib',
               entryFileNames: '[name].mjs',
-              chunkFileNames: '[name]-[hash].mjs',
               preserveModules: true,
               preserveModulesRoot: './src',
             }
@@ -72,13 +71,12 @@ export default defineConfig([
         }),
       },
     ],
-    external: [/^node:*/],
     plugins: [
       typescript({
-        tsconfig: './tsconfig.build.json',
         compilerOptions: {
           sourceMap: sourcemap,
         },
+        tsconfig: './tsconfig.build.json',
       }),
       del({
         targets: ['./lib/*'],
@@ -86,19 +84,20 @@ export default defineConfig([
       isAnalyzeBuild && analyze(),
       isDocumentationBuild && command('pnpm typedoc'),
     ],
+    strictDeprecations: true,
   },
   {
-    input: './lib/dts/index.d.ts',
-    strictDeprecations: true,
-    output: [{ format: 'esm', file: './lib/index.d.ts' }],
     external: [/^node:*/],
+    input: './lib/dts/index.d.ts',
+    output: [{ file: './lib/index.d.ts', format: 'esm' }],
     plugins: [
       dts(),
       del({
-        targets: ['./lib/dts'],
         hook: 'buildEnd',
+        targets: ['./lib/dts'],
       }),
       isAnalyzeBuild && analyze(),
     ],
+    strictDeprecations: true,
   },
 ])

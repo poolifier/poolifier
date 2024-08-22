@@ -23,9 +23,9 @@ describe('Thread worker test suite', () => {
     })
     worker.isMain = false
     worker.port = {
+      close: stub().returns(),
       postMessage: stub().returns(),
       unref: stub().returns(),
-      close: stub().returns(),
     }
     worker.handleKillMessage()
     expect(worker.port.postMessage.calledOnce).toBe(true)
@@ -46,12 +46,12 @@ describe('Thread worker test suite', () => {
       postMessage: stub().returns(),
     }
     expect(worker.removeTaskFunction(0, fn1)).toStrictEqual({
-      status: false,
       error: new TypeError('name parameter is not a string'),
+      status: false,
     })
     expect(worker.removeTaskFunction('', fn1)).toStrictEqual({
-      status: false,
       error: new TypeError('name parameter is an empty string'),
+      status: false,
     })
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual({
       taskFunction: expect.any(Function),
@@ -67,16 +67,16 @@ describe('Thread worker test suite', () => {
       worker.taskFunctions.get('fn1')
     )
     expect(worker.removeTaskFunction(DEFAULT_TASK_NAME)).toStrictEqual({
-      status: false,
       error: new Error(
         'Cannot remove the task function with the default reserved name'
       ),
+      status: false,
     })
     expect(worker.removeTaskFunction('fn1')).toStrictEqual({
-      status: false,
       error: new Error(
         'Cannot remove the task function used as the default task function'
       ),
+      status: false,
     })
     worker.removeTaskFunction('fn2')
     expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toStrictEqual({

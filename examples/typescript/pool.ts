@@ -1,6 +1,5 @@
 import { dirname, extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-
 import {
   availableParallelism,
   DynamicThreadPool,
@@ -18,11 +17,11 @@ const fixedPool = new FixedThreadPool<MyData, MyResponse>(
   availableParallelism(),
   workerFile,
   {
-    onlineHandler: () => {
-      console.info('Worker is online')
-    },
     errorHandler: (e: Error) => {
       console.error(e)
+    },
+    onlineHandler: () => {
+      console.info('Worker is online')
     },
   }
 )
@@ -34,11 +33,11 @@ const dynamicPool = new DynamicThreadPool<MyData, MyResponse>(
   availableParallelism(),
   workerFile,
   {
-    onlineHandler: () => {
-      console.info('Worker is online')
-    },
     errorHandler: (e: Error) => {
       console.error(e)
+    },
+    onlineHandler: () => {
+      console.info('Worker is online')
     },
   }
 )

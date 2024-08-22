@@ -5,8 +5,8 @@ export interface ClusterWorkerData extends FastifyPoolifierOptions {
 }
 
 export interface ClusterWorkerResponse {
-  status: boolean
   port?: number
+  status: boolean
 }
 
 export interface DataPayload {
@@ -22,7 +22,7 @@ export interface ThreadWorkerResponse<T = unknown> {
 }
 
 export interface FastifyPoolifierOptions extends ThreadPoolOptions {
-  workerFile: string
-  minWorkers?: number
   maxWorkers?: number
+  minWorkers?: number
+  workerFile: string
 }

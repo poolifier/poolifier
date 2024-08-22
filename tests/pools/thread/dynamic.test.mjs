@@ -99,8 +99,8 @@ describe('Dynamic thread pool test suite', () => {
       './tests/worker-files/thread/longRunningWorkerHardBehavior.mjs',
       {
         errorHandler: e => console.error(e),
-        onlineHandler: () => console.info('long executing worker is online'),
         exitHandler: () => console.info('long executing worker exited'),
+        onlineHandler: () => console.info('long executing worker is online'),
       }
     )
     expect(longRunningPool.workerNodes.length).toBe(min)
@@ -127,8 +127,8 @@ describe('Dynamic thread pool test suite', () => {
       './tests/worker-files/thread/longRunningWorkerSoftBehavior.mjs',
       {
         errorHandler: e => console.error(e),
-        onlineHandler: () => console.info('long executing worker is online'),
         exitHandler: () => console.info('long executing worker exited'),
+        onlineHandler: () => console.info('long executing worker is online'),
       }
     )
     expect(longRunningPool.workerNodes.length).toBe(min)

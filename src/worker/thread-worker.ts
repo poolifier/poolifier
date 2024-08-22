@@ -6,9 +6,10 @@ import {
 } from 'node:worker_threads'
 
 import type { MessageValue } from '../utility-types.js'
-import { AbstractWorker } from './abstract-worker.js'
 import type { TaskFunction, TaskFunctions } from './task-functions.js'
 import type { WorkerOptions } from './worker-options.js'
+
+import { AbstractWorker } from './abstract-worker.js'
 
 /**
  * A thread worker used by a poolifier `ThreadPool`.
@@ -27,6 +28,16 @@ export class ThreadWorker<
   Data = unknown,
   Response = unknown
 > extends AbstractWorker<MessagePort, Data, Response> {
+  /** @inheritDoc */
+  protected readonly sendToMainWorker = (
+    message: MessageValue<Response>
+  ): void => {
+    this.port?.postMessage({
+      ...message,
+      workerId: this.id,
+    } satisfies MessageValue<Response>)
+  }
+
   /**
    * Message port used to communicate with the main worker.
    */
@@ -42,6 +53,20 @@ export class ThreadWorker<
     opts: WorkerOptions = {}
   ) {
     super(isMainThread, parentPort, taskFunctions, opts)
+  }
+
+  /**
+   * @inheritDoc
+   */
+  protected handleError (error: Error | string): string {
+    return error as string
+  }
+
+  /** @inheritDoc */
+  protected handleKillMessage (message: MessageValue<Data>): void {
+    super.handleKillMessage(message)
+    this.port?.unref()
+    this.port?.close()
   }
 
   /** @inheritDoc */
@@ -68,31 +93,7 @@ export class ThreadWorker<
   }
 
   /** @inheritDoc */
-  protected handleKillMessage (message: MessageValue<Data>): void {
-    super.handleKillMessage(message)
-    this.port?.unref()
-    this.port?.close()
-  }
-
-  /** @inheritDoc */
   protected get id (): number {
     return threadId
-  }
-
-  /** @inheritDoc */
-  protected readonly sendToMainWorker = (
-    message: MessageValue<Response>
-  ): void => {
-    this.port?.postMessage({
-      ...message,
-      workerId: this.id,
-    } satisfies MessageValue<Response>)
-  }
-
-  /**
-   * @inheritDoc
-   */
-  protected handleError (error: Error | string): string {
-    return error as string
   }
 }

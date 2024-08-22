@@ -8,14 +8,15 @@ import {
 } from 'node:worker_threads'
 
 import type { MessageValue, Task } from '../utility-types.js'
-import { average, isPlainObject, max, median, min } from '../utils.js'
 import type { TasksQueueOptions } from './pool.js'
+import type { WorkerChoiceStrategiesContext } from './selection-strategies/worker-choice-strategies-context.js'
+
+import { average, isPlainObject, max, median, min } from '../utils.js'
 import {
   type MeasurementStatisticsRequirements,
   WorkerChoiceStrategies,
   type WorkerChoiceStrategy,
 } from './selection-strategies/selection-strategies-types.js'
-import type { WorkerChoiceStrategiesContext } from './selection-strategies/worker-choice-strategies-context.js'
 import {
   type IWorker,
   type IWorkerNode,
@@ -40,12 +41,12 @@ export const getDefaultTasksQueueOptions = (
   poolMaxSize: number
 ): Required<TasksQueueOptions> => {
   return {
-    size: Math.pow(poolMaxSize, 2),
     concurrency: 1,
-    taskStealing: true,
+    size: Math.pow(poolMaxSize, 2),
+    tasksFinishedTimeout: 2000,
     tasksStealingOnBackPressure: true,
     tasksStealingRatio: 0.6,
-    tasksFinishedTimeout: 2000,
+    taskStealing: true,
   }
 }
 
@@ -102,7 +103,7 @@ export const checkValidPriority = (priority: number | undefined): void => {
 }
 
 export const checkValidWorkerChoiceStrategy = (
-  workerChoiceStrategy: WorkerChoiceStrategy | undefined
+  workerChoiceStrategy: undefined | WorkerChoiceStrategy
 ): void => {
   if (
     workerChoiceStrategy != null &&
@@ -178,9 +179,9 @@ export const checkValidTasksQueueOptions = (
 }
 
 export const checkWorkerNodeArguments = (
-  type: WorkerType | undefined,
+  type: undefined | WorkerType,
   filePath: string | undefined,
-  opts: WorkerNodeOptions | undefined
+  opts: undefined | WorkerNodeOptions
 ): void => {
   if (type == null) {
     throw new TypeError('Cannot construct a worker node without a worker type')
@@ -300,8 +301,8 @@ export const updateWaitTimeWorkerUsage = <
   Response = unknown
 >(
     workerChoiceStrategiesContext:
-    | WorkerChoiceStrategiesContext<Worker, Data, Response>
-    | undefined,
+    | undefined
+    | WorkerChoiceStrategiesContext<Worker, Data, Response>,
     workerUsage: WorkerUsage,
     task: Task<Data>
   ): void => {
@@ -339,8 +340,8 @@ export const updateRunTimeWorkerUsage = <
   Response = unknown
 >(
     workerChoiceStrategiesContext:
-    | WorkerChoiceStrategiesContext<Worker, Data, Response>
-    | undefined,
+    | undefined
+    | WorkerChoiceStrategiesContext<Worker, Data, Response>,
     workerUsage: WorkerUsage,
     message: MessageValue<Response>
   ): void => {
@@ -360,8 +361,8 @@ export const updateEluWorkerUsage = <
   Response = unknown
 >(
     workerChoiceStrategiesContext:
-    | WorkerChoiceStrategiesContext<Worker, Data, Response>
-    | undefined,
+    | undefined
+    | WorkerChoiceStrategiesContext<Worker, Data, Response>,
     workerUsage: WorkerUsage,
     message: MessageValue<Response>
   ): void => {
@@ -401,13 +402,13 @@ export const createWorker = <Worker extends IWorker>(
   opts: { env?: Record<string, unknown>; workerOptions?: WorkerOptions }
 ): Worker => {
   switch (type) {
+    case WorkerTypes.cluster:
+      return cluster.fork(opts.env) as unknown as Worker
     case WorkerTypes.thread:
       return new ThreadWorker(filePath, {
         env: SHARE_ENV,
         ...opts.workerOptions,
       }) as unknown as Worker
-    case WorkerTypes.cluster:
-      return cluster.fork(opts.env) as unknown as Worker
     default:
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`Unknown worker type '${type}'`)
@@ -420,7 +421,7 @@ export const createWorker = <Worker extends IWorker>(
  * @returns The worker type of the given worker.
  * @internal
  */
-export const getWorkerType = (worker: IWorker): WorkerType | undefined => {
+export const getWorkerType = (worker: IWorker): undefined | WorkerType => {
   if (worker instanceof ThreadWorker) {
     return WorkerTypes.thread
   } else if (worker instanceof ClusterWorker) {
@@ -458,8 +459,8 @@ export const waitWorkerNodeEvents = async <
       return
     }
     switch (workerNodeEvent) {
-      case 'idle':
       case 'backPressure':
+      case 'idle':
       case 'taskFinished':
         workerNode.on(workerNodeEvent, () => {
           ++events

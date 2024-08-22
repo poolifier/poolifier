@@ -5,6 +5,7 @@ import {
 } from 'node:worker_threads'
 
 import type { MessageValue } from '../../utility-types.js'
+
 import { AbstractPool } from '../abstract-pool.js'
 import { type PoolOptions, type PoolType, PoolTypes } from '../pool.js'
 import { type WorkerType, WorkerTypes } from '../worker.js'
@@ -42,8 +43,61 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
+  protected checkAndEmitDynamicWorkerCreationEvents (): void {
+    /* noop */
+  }
+
+  /** @inheritDoc */
+  protected deregisterWorkerMessageListener<Message extends Data | Response>(
+    workerNodeKey: number,
+    listener: (message: MessageValue<Message>) => void
+  ): void {
+    this.workerNodes[workerNodeKey].messageChannel?.port1.off(
+      'message',
+      listener
+    )
+  }
+
+  /** @inheritDoc */
   protected isMain (): boolean {
     return isMainThread
+  }
+
+  /** @inheritDoc */
+  protected registerOnceWorkerMessageListener<Message extends Data | Response>(
+    workerNodeKey: number,
+    listener: (message: MessageValue<Message>) => void
+  ): void {
+    this.workerNodes[workerNodeKey].messageChannel?.port1.once(
+      'message',
+      listener
+    )
+  }
+
+  /** @inheritDoc */
+  protected registerWorkerMessageListener<Message extends Data | Response>(
+    workerNodeKey: number,
+    listener: (message: MessageValue<Message>) => void
+  ): void {
+    this.workerNodes[workerNodeKey].messageChannel?.port1.on(
+      'message',
+      listener
+    )
+  }
+
+  /** @inheritDoc */
+  protected sendStartupMessageToWorker (workerNodeKey: number): void {
+    const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const port2 = workerNode.messageChannel!.port2
+    workerNode.worker.postMessage(
+      {
+        port: port2,
+        ready: false,
+        workerId: this.getWorkerInfo(workerNodeKey)?.id,
+      } satisfies MessageValue<Data>,
+      [port2]
+    )
   }
 
   /** @inheritDoc */
@@ -62,61 +116,13 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
-  protected sendStartupMessageToWorker (workerNodeKey: number): void {
-    const workerNode = this.workerNodes[workerNodeKey]
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const port2 = workerNode.messageChannel!.port2
-    workerNode.worker.postMessage(
-      {
-        ready: false,
-        workerId: this.getWorkerInfo(workerNodeKey)?.id,
-        port: port2,
-      } satisfies MessageValue<Data>,
-      [port2]
-    )
-  }
-
-  /** @inheritDoc */
-  protected registerWorkerMessageListener<Message extends Data | Response>(
-    workerNodeKey: number,
-    listener: (message: MessageValue<Message>) => void
-  ): void {
-    this.workerNodes[workerNodeKey].messageChannel?.port1.on(
-      'message',
-      listener
-    )
-  }
-
-  /** @inheritDoc */
-  protected registerOnceWorkerMessageListener<Message extends Data | Response>(
-    workerNodeKey: number,
-    listener: (message: MessageValue<Message>) => void
-  ): void {
-    this.workerNodes[workerNodeKey].messageChannel?.port1.once(
-      'message',
-      listener
-    )
-  }
-
-  /** @inheritDoc */
-  protected deregisterWorkerMessageListener<Message extends Data | Response>(
-    workerNodeKey: number,
-    listener: (message: MessageValue<Message>) => void
-  ): void {
-    this.workerNodes[workerNodeKey].messageChannel?.port1.off(
-      'message',
-      listener
-    )
-  }
-
-  /** @inheritDoc */
   protected shallCreateDynamicWorker (): boolean {
     return false
   }
 
   /** @inheritDoc */
-  protected checkAndEmitDynamicWorkerCreationEvents (): void {
-    /* noop */
+  protected get busy (): boolean {
+    return this.internalBusy()
   }
 
   /** @inheritDoc */
@@ -127,10 +133,5 @@ export class FixedThreadPool<
   /** @inheritDoc */
   protected get worker (): WorkerType {
     return WorkerTypes.thread
-  }
-
-  /** @inheritDoc */
-  protected get busy (): boolean {
-    return this.internalBusy()
   }
 }

@@ -24,16 +24,17 @@ class ExpressWorker extends ClusterWorker<
   ClusterWorkerData,
   ClusterWorkerResponse
 > {
-  private static server: Server
   private static requestHandlerPool: DynamicThreadPool<
     ThreadWorkerData<DataPayload>,
     ThreadWorkerResponse<DataPayload>
   >
 
+  private static server: Server
+
   private static readonly startExpress = (
     workerData?: ClusterWorkerData
   ): ClusterWorkerResponse => {
-    const { port, workerFile, minWorkers, maxWorkers, ...poolOptions } =
+    const { maxWorkers, minWorkers, port, workerFile, ...poolOptions } =
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       workerData!
 
@@ -79,8 +80,8 @@ class ExpressWorker extends ClusterWorker<
       )
     })
     return {
-      status: true,
       port: listenerPort ?? port,
+      status: true,
     }
   }
 

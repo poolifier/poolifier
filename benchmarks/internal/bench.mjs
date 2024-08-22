@@ -25,15 +25,15 @@ let benchmarkReport
 
 switch (
   parseArgs({
+    allowPositionals: true,
     args: process.argv,
     options: {
       type: {
-        type: 'string',
         short: 't',
+        type: 'string',
       },
     },
     strict: true,
-    allowPositionals: true,
   }).values.type
 ) {
   case 'tatami-ng':

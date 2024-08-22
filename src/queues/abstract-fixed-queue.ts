@@ -14,9 +14,9 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
   /** @inheritdoc */
   public readonly capacity: number
   /** @inheritdoc */
-  public size!: number
-  /** @inheritdoc */
   public nodeArray: FixedQueueNode<T>[]
+  /** @inheritdoc */
+  public size!: number
 
   /**
    * Constructs a fixed queue.
@@ -30,29 +30,25 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
     this.clear()
   }
 
-  /** @inheritdoc */
-  public empty (): boolean {
-    return this.size === 0
+  /**
+   * Checks the fixed queue size.
+   * @param size - Queue size.
+   */
+  private checkSize (size: number): void {
+    if (!Number.isSafeInteger(size)) {
+      throw new TypeError(
+        `Invalid fixed queue size: '${size.toString()}' is not an integer`
+      )
+    }
+    if (size < 0) {
+      throw new RangeError(`Invalid fixed queue size: ${size.toString()} < 0`)
+    }
   }
 
   /** @inheritdoc */
-  public full (): boolean {
-    return this.size === this.capacity
-  }
-
-  /** @inheritdoc */
-  public abstract enqueue (data: T, priority?: number): number
-
-  /** @inheritdoc */
-  public get (index: number): T | undefined {
-    if (this.empty() || index >= this.size) {
-      return undefined
-    }
-    index += this.start
-    if (index >= this.capacity) {
-      index -= this.capacity
-    }
-    return this.nodeArray[index].data
+  public clear (): void {
+    this.start = 0
+    this.size = 0
   }
 
   /** @inheritdoc */
@@ -70,9 +66,28 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
   }
 
   /** @inheritdoc */
-  public clear (): void {
-    this.start = 0
-    this.size = 0
+  public empty (): boolean {
+    return this.size === 0
+  }
+
+  /** @inheritdoc */
+  public abstract enqueue (data: T, priority?: number): number
+
+  /** @inheritdoc */
+  public full (): boolean {
+    return this.size === this.capacity
+  }
+
+  /** @inheritdoc */
+  public get (index: number): T | undefined {
+    if (this.empty() || index >= this.size) {
+      return undefined
+    }
+    index += this.start
+    if (index >= this.capacity) {
+      index -= this.capacity
+    }
+    return this.nodeArray[index].data
   }
 
   /** @inheritdoc */
@@ -83,8 +98,8 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
       next: () => {
         if (i >= this.size) {
           return {
-            value: undefined,
             done: true,
+            value: undefined,
           }
         }
         const value = this.nodeArray[index].data
@@ -94,25 +109,10 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
           index = 0
         }
         return {
-          value,
           done: false,
+          value,
         }
       },
-    }
-  }
-
-  /**
-   * Checks the fixed queue size.
-   * @param size - Queue size.
-   */
-  private checkSize (size: number): void {
-    if (!Number.isSafeInteger(size)) {
-      throw new TypeError(
-        `Invalid fixed queue size: '${size.toString()}' is not an integer`
-      )
-    }
-    if (size < 0) {
-      throw new RangeError(`Invalid fixed queue size: ${size.toString()} < 0`)
     }
   }
 }

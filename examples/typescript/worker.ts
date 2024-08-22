@@ -5,8 +5,8 @@ export interface MyData {
 }
 
 export interface MyResponse {
-  message: string
   data?: MyData
+  message: string
 }
 
 class MyThreadWorker extends ThreadWorker<MyData, MyResponse> {
@@ -19,7 +19,7 @@ class MyThreadWorker extends ThreadWorker<MyData, MyResponse> {
   private async process (data?: MyData): Promise<MyResponse> {
     return await new Promise(resolve => {
       setTimeout(() => {
-        resolve({ message: 'Hello from Worker :)', data })
+        resolve({ data, message: 'Hello from Worker :)' })
       }, 1000)
     })
   }

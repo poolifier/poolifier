@@ -1,12 +1,13 @@
 import type { IPool } from '../pool.js'
-import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../utils.js'
 import type { IWorker } from '../worker.js'
-import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
   TaskStatisticsRequirements,
   WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
+
+import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../utils.js'
+import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 
 /**
  * Selects the worker with the least ELU.
@@ -23,13 +24,13 @@ export class LeastEluWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
-    runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-    waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
     elu: {
       aggregate: true,
       average: false,
       median: false,
     },
+    runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+    waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   }
 
   /** @inheritDoc */
@@ -39,28 +40,6 @@ export class LeastEluWorkerChoiceStrategy<
   ) {
     super(pool, opts)
     this.setTaskStatisticsRequirements(this.opts)
-  }
-
-  /** @inheritDoc */
-  public reset (): boolean {
-    return true
-  }
-
-  /** @inheritDoc */
-  public update (): boolean {
-    return true
-  }
-
-  /** @inheritDoc */
-  public choose (workerNodes?: number[]): number | undefined {
-    this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.leastEluNextWorkerNodeKey(workerNodes)
-    return this.nextWorkerNodeKey
-  }
-
-  /** @inheritDoc */
-  public remove (): boolean {
-    return true
   }
 
   private leastEluNextWorkerNodeKey (
@@ -81,5 +60,27 @@ export class LeastEluWorkerChoiceStrategy<
       },
       0
     )
+  }
+
+  /** @inheritDoc */
+  public choose (workerNodes?: number[]): number | undefined {
+    this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
+    this.nextWorkerNodeKey = this.leastEluNextWorkerNodeKey(workerNodes)
+    return this.nextWorkerNodeKey
+  }
+
+  /** @inheritDoc */
+  public remove (): boolean {
+    return true
+  }
+
+  /** @inheritDoc */
+  public reset (): boolean {
+    return true
+  }
+
+  /** @inheritDoc */
+  public update (): boolean {
+    return true
   }
 }

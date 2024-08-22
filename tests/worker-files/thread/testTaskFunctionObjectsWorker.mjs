@@ -7,11 +7,11 @@ import {
 
 export default new ThreadWorker(
   {
+    factorial: { taskFunction: data => factorial(data.n) },
+    fibonacci: { priority: -5, taskFunction: data => fibonacci(data.n) },
     jsonIntegerSerialization: {
       taskFunction: data => jsonIntegerSerialization(data.n),
     },
-    factorial: { taskFunction: data => factorial(data.n) },
-    fibonacci: { taskFunction: data => fibonacci(data.n), priority: -5 },
   },
   {
     killBehavior: KillBehaviors.HARD,

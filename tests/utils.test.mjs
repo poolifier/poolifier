@@ -1,7 +1,6 @@
+import { expect } from 'expect'
 import { randomInt } from 'node:crypto'
 import os from 'node:os'
-
-import { expect } from 'expect'
 
 import { KillBehaviors } from '../lib/index.cjs'
 import {
@@ -182,12 +181,12 @@ describe('Utils test suite', () => {
     expect(isAsyncFunction(async function () {})).toBe(true)
     expect(isAsyncFunction(async function named () {})).toBe(true)
     class TestClass {
-      testSync () {}
-      async testAsync () {}
-      testArrowSync = () => {}
       testArrowAsync = async () => {}
-      static testStaticSync () {}
+      testArrowSync = () => {}
       static async testStaticAsync () {}
+      static testStaticSync () {}
+      async testAsync () {}
+      testSync () {}
     }
     const testClass = new TestClass()
     expect(isAsyncFunction(testClass.testSync)).toBe(false)
