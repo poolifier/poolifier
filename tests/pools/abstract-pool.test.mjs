@@ -1,4 +1,5 @@
 import { expect } from 'expect'
+// eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { createHook, executionAsyncId } from 'node:async_hooks'
 import { EventEmitterAsyncResource } from 'node:events'
 import { readFileSync } from 'node:fs'
@@ -1617,9 +1618,9 @@ describe('Abstract pool test suite', () => {
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
-      { name: 'jsonIntegerSerialization' },
       { name: 'factorial' },
       { name: 'fibonacci' },
+      { name: 'jsonIntegerSerialization' },
     ])
     await dynamicThreadPool.destroy()
     const fixedClusterPool = new FixedClusterPool(
@@ -1629,9 +1630,9 @@ describe('Abstract pool test suite', () => {
     await waitPoolEvents(fixedClusterPool, PoolEvents.ready, 1)
     expect(fixedClusterPool.listTaskFunctionsProperties()).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
-      { name: 'jsonIntegerSerialization' },
       { name: 'factorial' },
       { name: 'fibonacci' },
+      { name: 'jsonIntegerSerialization' },
     ])
     await fixedClusterPool.destroy()
   })
@@ -1665,9 +1666,9 @@ describe('Abstract pool test suite', () => {
     )
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
-      { name: 'jsonIntegerSerialization' },
       { name: 'factorial' },
       { name: 'fibonacci' },
+      { name: 'jsonIntegerSerialization' },
     ])
     await expect(
       dynamicThreadPool.setDefaultTaskFunction('factorial')
@@ -1675,8 +1676,8 @@ describe('Abstract pool test suite', () => {
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
       { name: 'factorial' },
-      { name: 'jsonIntegerSerialization' },
       { name: 'fibonacci' },
+      { name: 'jsonIntegerSerialization' },
     ])
     await expect(
       dynamicThreadPool.setDefaultTaskFunction('fibonacci')
@@ -1684,8 +1685,8 @@ describe('Abstract pool test suite', () => {
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
       { name: 'fibonacci' },
-      { name: 'jsonIntegerSerialization' },
       { name: 'factorial' },
+      { name: 'jsonIntegerSerialization' },
     ])
     await dynamicThreadPool.destroy()
   })
@@ -1698,7 +1699,7 @@ describe('Abstract pool test suite', () => {
     )
     const data = { n: 10 }
     const result0 = await pool.execute(data)
-    expect(result0).toStrictEqual({ ok: 1 })
+    expect(result0).toStrictEqual(3628800)
     const result1 = await pool.execute(data, 'jsonIntegerSerialization')
     expect(result1).toStrictEqual({ ok: 1 })
     const result2 = await pool.execute(data, 'factorial')
@@ -1710,9 +1711,9 @@ describe('Abstract pool test suite', () => {
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.info.taskFunctionsProperties).toStrictEqual([
         { name: DEFAULT_TASK_NAME },
-        { name: 'jsonIntegerSerialization' },
         { name: 'factorial' },
         { name: 'fibonacci' },
+        { name: 'jsonIntegerSerialization' },
       ])
       expect(workerNode.taskFunctionsUsage.size).toBe(3)
       expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
@@ -1784,7 +1785,10 @@ describe('Abstract pool test suite', () => {
     await expect(pool.mapExecute([undefined], 'unknown')).rejects.toBe(
       "Task function 'unknown' not found"
     )
-    let results = await pool.mapExecute([{}, {}, {}, {}])
+    let results = await pool.mapExecute(
+      [{}, {}, {}, {}],
+      'jsonIntegerSerialization'
+    )
     expect(results).toStrictEqual([{ ok: 1 }, { ok: 1 }, { ok: 1 }, { ok: 1 }])
     expect(pool.info.executingTasks).toBe(0)
     expect(pool.info.executedTasks).toBe(4)
@@ -1820,7 +1824,7 @@ describe('Abstract pool test suite', () => {
     )
     const data = { n: 10 }
     const result0 = await pool.execute(data)
-    expect(result0).toStrictEqual({ ok: 1 })
+    expect(result0).toStrictEqual(3628800)
     const result1 = await pool.execute(data, 'jsonIntegerSerialization')
     expect(result1).toStrictEqual({ ok: 1 })
     const result2 = await pool.execute(data, 'factorial')
@@ -1832,9 +1836,9 @@ describe('Abstract pool test suite', () => {
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.info.taskFunctionsProperties).toStrictEqual([
         { name: DEFAULT_TASK_NAME },
-        { name: 'jsonIntegerSerialization' },
         { name: 'factorial' },
         { name: 'fibonacci', priority: -5 },
+        { name: 'jsonIntegerSerialization' },
       ])
       expect(workerNode.taskFunctionsUsage.size).toBe(3)
       expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
