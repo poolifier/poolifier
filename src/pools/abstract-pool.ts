@@ -917,7 +917,6 @@ export abstract class AbstractPool<
   private checkAndEmitEmptyEvent (): void {
     if (this.empty) {
       this.emitter?.emit(PoolEvents.empty, this.info)
-      this.readyEventEmitted = false
     }
   }
 
@@ -2293,8 +2292,11 @@ export abstract class AbstractPool<
    * @returns The pool readiness boolean status.
    */
   private get ready (): boolean {
-    if (this.empty) {
+    if (!this.started) {
       return false
+    }
+    if (this.empty) {
+      return true
     }
     return (
       this.workerNodes.reduce(

@@ -77,6 +77,9 @@ describe('Abstract pool test suite', () => {
     expect(pool.starting).toBe(false)
     expect(pool.destroying).toBe(false)
     await pool.destroy()
+    expect(pool.started).toBe(false)
+    expect(pool.starting).toBe(false)
+    expect(pool.destroying).toBe(false)
   })
 
   it('Verify that filePath is checked', () => {

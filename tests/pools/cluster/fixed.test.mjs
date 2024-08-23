@@ -274,7 +274,7 @@ describe('Fixed cluster pool test suite', () => {
     ])
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
-    expect(pool.started).toBe(false)
+    expect(pool.info.started).toBe(false)
     expect(pool.emitter.eventNames()).toStrictEqual([
       PoolEvents.busy,
       PoolEvents.destroy,
