@@ -7,6 +7,7 @@ import type {
   WorkerChoiceStrategy,
   WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
+
 import { WorkerChoiceStrategies } from './selection-strategies-types.js'
 import {
   buildWorkerChoiceStrategiesPolicy,
@@ -28,14 +29,14 @@ export class WorkerChoiceStrategiesContext<
   Response = unknown
 > {
   /**
-   * The number of worker choice strategies execution retries.
-   */
-  public retriesCount: number
-
-  /**
    * The default worker choice strategy in the context.
    */
   private defaultWorkerChoiceStrategy: WorkerChoiceStrategy
+
+  /**
+   * The maximum number of worker choice strategies execution retries.
+   */
+  private readonly retries: number
 
   /**
    * The worker choice strategies registered in the context.
@@ -56,9 +57,9 @@ export class WorkerChoiceStrategiesContext<
   private workerChoiceStrategiesTaskStatisticsRequirements: TaskStatisticsRequirements
 
   /**
-   * The maximum number of worker choice strategies execution retries.
+   * The number of worker choice strategies execution retries.
    */
-  private readonly retries: number
+  public retriesCount: number
 
   /**
    * Worker choice strategies context constructor.
@@ -97,62 +98,29 @@ export class WorkerChoiceStrategiesContext<
   }
 
   /**
-   * Gets the active worker choice strategies in the context policy.
-   * @returns The strategies policy.
-   */
-  public getPolicy (): StrategyPolicy {
-    return this.workerChoiceStrategiesPolicy
-  }
-
-  /**
-   * Gets the active worker choice strategies in the context task statistics requirements.
-   * @returns The strategies task statistics requirements.
-   */
-  public getTaskStatisticsRequirements (): TaskStatisticsRequirements {
-    return this.workerChoiceStrategiesTaskStatisticsRequirements
-  }
-
-  /**
-   * Sets the default worker choice strategy to use in the context.
-   * @param workerChoiceStrategy - The default worker choice strategy to set.
+   * Adds a worker choice strategy to the context.
+   * @param workerChoiceStrategy - The worker choice strategy to add.
+   * @param pool - The pool instance.
    * @param opts - The worker choice strategy options.
+   * @returns The worker choice strategies.
    */
-  public setDefaultWorkerChoiceStrategy (
+  private addWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy,
+    pool: IPool<Worker, Data, Response>,
     opts?: WorkerChoiceStrategyOptions
-  ): void {
-    if (workerChoiceStrategy !== this.defaultWorkerChoiceStrategy) {
-      this.defaultWorkerChoiceStrategy = workerChoiceStrategy
-      this.addWorkerChoiceStrategy(workerChoiceStrategy, this.pool, opts)
+  ): Map<WorkerChoiceStrategy, IWorkerChoiceStrategy> {
+    if (!this.workerChoiceStrategies.has(workerChoiceStrategy)) {
+      return this.workerChoiceStrategies.set(
+        workerChoiceStrategy,
+        getWorkerChoiceStrategy<Worker, Data, Response>(
+          workerChoiceStrategy,
+          pool,
+          this,
+          opts
+        )
+      )
     }
-  }
-
-  /**
-   * Updates the worker node key in the active worker choice strategies in the context internals.
-   * @param workerNodeKey - The worker node key.
-   * @returns `true` if the update is successful, `false` otherwise.
-   */
-  public update (workerNodeKey: number): boolean {
-    return Array.from(
-      this.workerChoiceStrategies,
-      ([_, workerChoiceStrategy]) => workerChoiceStrategy.update(workerNodeKey)
-    ).every(r => r)
-  }
-
-  /**
-   * Executes the given worker choice strategy in the context algorithm.
-   * @param workerChoiceStrategy - The worker choice strategy algorithm to execute. @defaultValue this.defaultWorkerChoiceStrategy
-   * @returns The key of the worker node.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If after computed retries the worker node key is null or undefined.
-   */
-  public execute (
-    workerChoiceStrategy: WorkerChoiceStrategy = this
-      .defaultWorkerChoiceStrategy
-  ): number {
-    return this.executeStrategy(
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.workerChoiceStrategies.get(workerChoiceStrategy)!
-    )
+    return this.workerChoiceStrategies
   }
 
   /**
@@ -182,6 +150,49 @@ export class WorkerChoiceStrategiesContext<
   }
 
   /**
+   * Removes a worker choice strategy from the context.
+   * @param workerChoiceStrategy - The worker choice strategy to remove.
+   * @returns `true` if the worker choice strategy is removed, `false` otherwise.
+   */
+  private removeWorkerChoiceStrategy (
+    workerChoiceStrategy: WorkerChoiceStrategy
+  ): boolean {
+    return this.workerChoiceStrategies.delete(workerChoiceStrategy)
+  }
+
+  /**
+   * Executes the given worker choice strategy in the context algorithm.
+   * @param workerChoiceStrategy - The worker choice strategy algorithm to execute. @defaultValue this.defaultWorkerChoiceStrategy
+   * @returns The key of the worker node.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If after computed retries the worker node key is null or undefined.
+   */
+  public execute (
+    workerChoiceStrategy: WorkerChoiceStrategy = this
+      .defaultWorkerChoiceStrategy
+  ): number {
+    return this.executeStrategy(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.workerChoiceStrategies.get(workerChoiceStrategy)!
+    )
+  }
+
+  /**
+   * Gets the active worker choice strategies in the context policy.
+   * @returns The strategies policy.
+   */
+  public getPolicy (): StrategyPolicy {
+    return this.workerChoiceStrategiesPolicy
+  }
+
+  /**
+   * Gets the active worker choice strategies in the context task statistics requirements.
+   * @returns The strategies task statistics requirements.
+   */
+  public getTaskStatisticsRequirements (): TaskStatisticsRequirements {
+    return this.workerChoiceStrategiesTaskStatisticsRequirements
+  }
+
+  /**
    * Removes the worker node key from the active worker choice strategies in the context.
    * @param workerNodeKey - The worker node key.
    * @returns `true` if the removal is successful, `false` otherwise.
@@ -194,10 +205,25 @@ export class WorkerChoiceStrategiesContext<
   }
 
   /**
+   * Sets the default worker choice strategy to use in the context.
+   * @param workerChoiceStrategy - The default worker choice strategy to set.
+   * @param opts - The worker choice strategy options.
+   */
+  public setDefaultWorkerChoiceStrategy (
+    workerChoiceStrategy: WorkerChoiceStrategy,
+    opts?: WorkerChoiceStrategyOptions
+  ): void {
+    if (workerChoiceStrategy !== this.defaultWorkerChoiceStrategy) {
+      this.defaultWorkerChoiceStrategy = workerChoiceStrategy
+      this.addWorkerChoiceStrategy(workerChoiceStrategy, this.pool, opts)
+    }
+  }
+
+  /**
    * Sets the active worker choice strategies in the context options.
    * @param opts - The worker choice strategy options.
    */
-  public setOptions (opts: WorkerChoiceStrategyOptions | undefined): void {
+  public setOptions (opts: undefined | WorkerChoiceStrategyOptions): void {
     for (const workerChoiceStrategy of this.workerChoiceStrategies.values()) {
       workerChoiceStrategy.setOptions(opts)
     }
@@ -232,39 +258,14 @@ export class WorkerChoiceStrategiesContext<
   }
 
   /**
-   * Adds a worker choice strategy to the context.
-   * @param workerChoiceStrategy - The worker choice strategy to add.
-   * @param pool - The pool instance.
-   * @param opts - The worker choice strategy options.
-   * @returns The worker choice strategies.
+   * Updates the worker node key in the active worker choice strategies in the context internals.
+   * @param workerNodeKey - The worker node key.
+   * @returns `true` if the update is successful, `false` otherwise.
    */
-  private addWorkerChoiceStrategy (
-    workerChoiceStrategy: WorkerChoiceStrategy,
-    pool: IPool<Worker, Data, Response>,
-    opts?: WorkerChoiceStrategyOptions
-  ): Map<WorkerChoiceStrategy, IWorkerChoiceStrategy> {
-    if (!this.workerChoiceStrategies.has(workerChoiceStrategy)) {
-      return this.workerChoiceStrategies.set(
-        workerChoiceStrategy,
-        getWorkerChoiceStrategy<Worker, Data, Response>(
-          workerChoiceStrategy,
-          pool,
-          this,
-          opts
-        )
-      )
-    }
-    return this.workerChoiceStrategies
-  }
-
-  /**
-   * Removes a worker choice strategy from the context.
-   * @param workerChoiceStrategy - The worker choice strategy to remove.
-   * @returns `true` if the worker choice strategy is removed, `false` otherwise.
-   */
-  private removeWorkerChoiceStrategy (
-    workerChoiceStrategy: WorkerChoiceStrategy
-  ): boolean {
-    return this.workerChoiceStrategies.delete(workerChoiceStrategy)
+  public update (workerNodeKey: number): boolean {
+    return Array.from(
+      this.workerChoiceStrategies,
+      ([_, workerChoiceStrategy]) => workerChoiceStrategy.update(workerNodeKey)
+    ).every(r => r)
   }
 }

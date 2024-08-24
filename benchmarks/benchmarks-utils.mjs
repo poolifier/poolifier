@@ -1,5 +1,4 @@
 import { strictEqual } from 'node:assert'
-
 import { bench, clear, group, run } from 'tatami-ng'
 
 import {
@@ -16,24 +15,15 @@ import { executeTaskFunction } from './benchmarks-utils.cjs'
 
 const buildPoolifierPool = (workerType, poolType, poolSize, poolOptions) => {
   switch (poolType) {
-    case PoolTypes.fixed:
+    case PoolTypes.dynamic:
       switch (workerType) {
-        case WorkerTypes.thread:
-          return new FixedThreadPool(
-            poolSize,
-            './benchmarks/internal/thread-worker.mjs',
-            poolOptions
-          )
         case WorkerTypes.cluster:
-          return new FixedClusterPool(
+          return new DynamicClusterPool(
+            Math.floor(poolSize / 2),
             poolSize,
             './benchmarks/internal/cluster-worker.cjs',
             poolOptions
           )
-      }
-      break
-    case PoolTypes.dynamic:
-      switch (workerType) {
         case WorkerTypes.thread:
           return new DynamicThreadPool(
             Math.floor(poolSize / 2),
@@ -41,11 +31,20 @@ const buildPoolifierPool = (workerType, poolType, poolSize, poolOptions) => {
             './benchmarks/internal/thread-worker.mjs',
             poolOptions
           )
+      }
+      break
+    case PoolTypes.fixed:
+      switch (workerType) {
         case WorkerTypes.cluster:
-          return new DynamicClusterPool(
-            Math.floor(poolSize / 2),
+          return new FixedClusterPool(
             poolSize,
             './benchmarks/internal/cluster-worker.cjs',
+            poolOptions
+          )
+        case WorkerTypes.thread:
+          return new FixedThreadPool(
+            poolSize,
+            './benchmarks/internal/thread-worker.mjs',
             poolOptions
           )
       }
@@ -146,9 +145,9 @@ export const convertTatamiNgToBmf = report => {
       return {
         [name]: {
           latency: {
-            value: stats?.avg,
             lower_value: stats?.min,
             upper_value: stats?.max,
+            value: stats?.avg,
           },
           throughput: {
             value: stats?.iter,

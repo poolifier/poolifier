@@ -37,11 +37,6 @@ export class DynamicThreadPool<
   }
 
   /** @inheritDoc */
-  protected shallCreateDynamicWorker (): boolean {
-    return (!this.full && this.internalBusy()) || this.empty
-  }
-
-  /** @inheritDoc */
   protected checkAndEmitDynamicWorkerCreationEvents (): void {
     if (this.full) {
       this.emitter?.emit(PoolEvents.full, this.info)
@@ -49,12 +44,17 @@ export class DynamicThreadPool<
   }
 
   /** @inheritDoc */
-  protected get type (): PoolType {
-    return PoolTypes.dynamic
+  protected shallCreateDynamicWorker (): boolean {
+    return (!this.full && this.internalBusy()) || this.empty
   }
 
   /** @inheritDoc */
   protected get busy (): boolean {
     return this.full && this.internalBusy()
+  }
+
+  /** @inheritDoc */
+  protected get type (): PoolType {
+    return PoolTypes.dynamic
   }
 }

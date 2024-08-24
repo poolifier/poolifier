@@ -10,9 +10,7 @@ import {
 } from './types.js'
 
 class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
-  private static wss: WebSocketServer
-
-  private static readonly factorial = (n: number | bigint): bigint => {
+  private static readonly factorial = (n: bigint | number): bigint => {
     if (n === 0 || n === 1) {
       return 1n
     } else {
@@ -40,15 +38,15 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
     WebSocketServerWorker.wss.on('connection', ws => {
       ws.on('error', console.error)
       ws.on('message', (message: RawData) => {
-        const { type, data } = JSON.parse(
+        const { data, type } = JSON.parse(
           message.toString()
         ) as MessagePayload<DataPayload>
         switch (type) {
           case MessageType.echo:
             ws.send(
               JSON.stringify({
-                type: MessageType.echo,
                 data,
+                type: MessageType.echo,
               })
             )
             break
@@ -56,11 +54,11 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
             ws.send(
               JSON.stringify(
                 {
-                  type: MessageType.factorial,
                   data: {
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     number: WebSocketServerWorker.factorial(data.number!),
                   },
+                  type: MessageType.factorial,
                 },
                 (_, v: unknown) => (typeof v === 'bigint' ? v.toString() : v)
               )
@@ -70,10 +68,12 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
       })
     })
     return {
-      status: true,
       port: WebSocketServerWorker.wss.options.port,
+      status: true,
     }
   }
+
+  private static wss: WebSocketServer
 
   public constructor () {
     super(WebSocketServerWorker.startWebSocketServer, {

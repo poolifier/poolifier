@@ -75,7 +75,7 @@ describe('Dynamic cluster pool test suite', () => {
     ])
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
-    expect(pool.started).toBe(false)
+    expect(pool.info.started).toBe(false)
     expect(pool.emitter.eventNames()).toStrictEqual([
       PoolEvents.busy,
       PoolEvents.destroy,
@@ -99,8 +99,8 @@ describe('Dynamic cluster pool test suite', () => {
       './tests/worker-files/cluster/longRunningWorkerHardBehavior.cjs',
       {
         errorHandler: e => console.error(e),
-        onlineHandler: () => console.info('long executing worker is online'),
         exitHandler: () => console.info('long executing worker exited'),
+        onlineHandler: () => console.info('long executing worker is online'),
       }
     )
     expect(longRunningPool.workerNodes.length).toBe(min)
@@ -127,8 +127,8 @@ describe('Dynamic cluster pool test suite', () => {
       './tests/worker-files/cluster/longRunningWorkerSoftBehavior.cjs',
       {
         errorHandler: e => console.error(e),
-        onlineHandler: () => console.info('long executing worker is online'),
         exitHandler: () => console.info('long executing worker exited'),
+        onlineHandler: () => console.info('long executing worker is online'),
       }
     )
     expect(longRunningPool.workerNodes.length).toBe(min)
@@ -161,12 +161,16 @@ describe('Dynamic cluster pool test suite', () => {
         max,
         './tests/worker-files/cluster/testWorker.cjs',
         {
+          startWorkers: false,
           workerChoiceStrategy,
         }
       )
-      expect(pool.starting).toBe(false)
-      expect(pool.readyEventEmitted).toBe(false)
       for (let run = 0; run < 2; run++) {
+        expect(pool.info.started).toBe(false)
+        expect(pool.info.ready).toBe(false)
+        pool.start()
+        expect(pool.info.started).toBe(true)
+        expect(pool.info.ready).toBe(true)
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         run % 2 !== 0 && pool.enableTasksQueue(true)
         const maxMultiplier = 4
@@ -176,15 +180,13 @@ describe('Dynamic cluster pool test suite', () => {
           promises.add(pool.execute())
         }
         await Promise.all(promises)
-        expect(pool.readyEventEmitted).toBe(true)
         expect(pool.workerNodes.length).toBeGreaterThan(pool.info.minSize)
         expect(pool.workerNodes.length).toBeLessThanOrEqual(pool.info.maxSize)
         await waitPoolEvents(pool, PoolEvents.empty, 1)
-        expect(pool.readyEventEmitted).toBe(false)
         expect(pool.workerNodes.length).toBe(pool.info.minSize)
+        // We need to clean up the resources after our test
+        await pool.destroy()
       }
-      // We need to clean up the resources after our test
-      await pool.destroy()
     }
   })
 })

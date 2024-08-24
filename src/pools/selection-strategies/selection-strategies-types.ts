@@ -2,22 +2,23 @@
  * Enumeration of worker choice strategies.
  */
 export const WorkerChoiceStrategies: Readonly<{
-  ROUND_ROBIN: 'ROUND_ROBIN'
-  LEAST_USED: 'LEAST_USED'
+  FAIR_SHARE: 'FAIR_SHARE'
+  INTERLEAVED_WEIGHTED_ROUND_ROBIN: 'INTERLEAVED_WEIGHTED_ROUND_ROBIN'
   LEAST_BUSY: 'LEAST_BUSY'
   LEAST_ELU: 'LEAST_ELU'
-  FAIR_SHARE: 'FAIR_SHARE'
+  LEAST_USED: 'LEAST_USED'
+  ROUND_ROBIN: 'ROUND_ROBIN'
   WEIGHTED_ROUND_ROBIN: 'WEIGHTED_ROUND_ROBIN'
-  INTERLEAVED_WEIGHTED_ROUND_ROBIN: 'INTERLEAVED_WEIGHTED_ROUND_ROBIN'
 }> = Object.freeze({
   /**
-   * Round robin worker selection strategy.
+   * Fair share worker selection strategy.
    */
-  ROUND_ROBIN: 'ROUND_ROBIN',
+  FAIR_SHARE: 'FAIR_SHARE',
   /**
-   * Least used worker selection strategy.
+   * Interleaved weighted round robin worker selection strategy.
+   * @experimental
    */
-  LEAST_USED: 'LEAST_USED',
+  INTERLEAVED_WEIGHTED_ROUND_ROBIN: 'INTERLEAVED_WEIGHTED_ROUND_ROBIN',
   /**
    * Least busy worker selection strategy.
    */
@@ -27,18 +28,17 @@ export const WorkerChoiceStrategies: Readonly<{
    */
   LEAST_ELU: 'LEAST_ELU',
   /**
-   * Fair share worker selection strategy.
+   * Least used worker selection strategy.
    */
-  FAIR_SHARE: 'FAIR_SHARE',
+  LEAST_USED: 'LEAST_USED',
+  /**
+   * Round robin worker selection strategy.
+   */
+  ROUND_ROBIN: 'ROUND_ROBIN',
   /**
    * Weighted round robin worker selection strategy.
    */
   WEIGHTED_ROUND_ROBIN: 'WEIGHTED_ROUND_ROBIN',
-  /**
-   * Interleaved weighted round robin worker selection strategy.
-   * @experimental
-   */
-  INTERLEAVED_WEIGHTED_ROUND_ROBIN: 'INTERLEAVED_WEIGHTED_ROUND_ROBIN',
 } as const)
 
 /**
@@ -50,13 +50,13 @@ export type WorkerChoiceStrategy = keyof typeof WorkerChoiceStrategies
  * Enumeration of measurements.
  */
 export const Measurements: Readonly<{
+  elu: 'elu'
   runTime: 'runTime'
   waitTime: 'waitTime'
-  elu: 'elu'
 }> = Object.freeze({
+  elu: 'elu',
   runTime: 'runTime',
   waitTime: 'waitTime',
-  elu: 'elu',
 } as const)
 
 /**
@@ -79,6 +79,11 @@ export interface MeasurementOptions {
  */
 export interface WorkerChoiceStrategyOptions {
   /**
+   * Event loop utilization options.
+   * @defaultValue \{ median: false \}
+   */
+  readonly elu?: MeasurementOptions
+  /**
    * Measurement to use in worker choice strategy supporting it.
    */
   readonly measurement?: Measurement
@@ -92,11 +97,6 @@ export interface WorkerChoiceStrategyOptions {
    * @defaultValue \{ median: false \}
    */
   readonly waitTime?: MeasurementOptions
-  /**
-   * Event loop utilization options.
-   * @defaultValue \{ median: false \}
-   */
-  readonly elu?: MeasurementOptions
   /**
    * Worker weights to use for weighted round robin worker selection strategies.
    * A weight is tasks maximum execution time in milliseconds for a worker node.
@@ -130,6 +130,10 @@ export interface MeasurementStatisticsRequirements {
  */
 export interface TaskStatisticsRequirements {
   /**
+   * Tasks event loop utilization requirements.
+   */
+  readonly elu: MeasurementStatisticsRequirements
+  /**
    * Tasks runtime requirements.
    */
   readonly runTime: MeasurementStatisticsRequirements
@@ -137,10 +141,6 @@ export interface TaskStatisticsRequirements {
    * Tasks wait time requirements.
    */
   readonly waitTime: MeasurementStatisticsRequirements
-  /**
-   * Tasks event loop utilization requirements.
-   */
-  readonly elu: MeasurementStatisticsRequirements
 }
 
 /**
@@ -149,13 +149,13 @@ export interface TaskStatisticsRequirements {
  */
 export interface StrategyPolicy {
   /**
-   * Expects tasks execution on the newly created dynamic worker.
-   */
-  readonly dynamicWorkerUsage: boolean
-  /**
    * Expects the newly created dynamic worker to be flagged as ready.
    */
   readonly dynamicWorkerReady: boolean
+  /**
+   * Expects tasks execution on the newly created dynamic worker.
+   */
+  readonly dynamicWorkerUsage: boolean
 }
 
 /**
@@ -163,25 +163,6 @@ export interface StrategyPolicy {
  * @internal
  */
 export interface IWorkerChoiceStrategy {
-  /**
-   * Strategy policy.
-   */
-  readonly strategyPolicy: StrategyPolicy
-  /**
-   * Tasks statistics requirements.
-   */
-  readonly taskStatisticsRequirements: TaskStatisticsRequirements
-  /**
-   * Resets strategy internals.
-   * @returns `true` if the reset is successful, `false` otherwise.
-   */
-  readonly reset: () => boolean
-  /**
-   * Updates the worker node key strategy internals.
-   * This is called after a task has been executed on a worker node.
-   * @returns `true` if the update is successful, `false` otherwise.
-   */
-  readonly update: (workerNodeKey: number) => boolean
   /**
    * Chooses a worker node in the pool and returns its key.
    * If no worker nodes are not eligible, `undefined` is returned.
@@ -196,8 +177,27 @@ export interface IWorkerChoiceStrategy {
    */
   readonly remove: (workerNodeKey: number) => boolean
   /**
+   * Resets strategy internals.
+   * @returns `true` if the reset is successful, `false` otherwise.
+   */
+  readonly reset: () => boolean
+  /**
    * Sets the worker choice strategy options.
    * @param opts - The worker choice strategy options.
    */
-  readonly setOptions: (opts: WorkerChoiceStrategyOptions | undefined) => void
+  readonly setOptions: (opts: undefined | WorkerChoiceStrategyOptions) => void
+  /**
+   * Strategy policy.
+   */
+  readonly strategyPolicy: StrategyPolicy
+  /**
+   * Tasks statistics requirements.
+   */
+  readonly taskStatisticsRequirements: TaskStatisticsRequirements
+  /**
+   * Updates the worker node key strategy internals.
+   * This is called after a task has been executed on a worker node.
+   * @returns `true` if the update is successful, `false` otherwise.
+   */
+  readonly update: (workerNodeKey: number) => boolean
 }

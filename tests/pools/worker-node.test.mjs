@@ -1,7 +1,6 @@
+import { expect } from 'expect'
 import { Worker as ClusterWorker } from 'node:cluster'
 import { MessageChannel, Worker as ThreadWorker } from 'node:worker_threads'
-
-import { expect } from 'expect'
 
 import { CircularBuffer } from '../../lib/circular-buffer.cjs'
 import { WorkerTypes } from '../../lib/index.cjs'
@@ -11,7 +10,7 @@ import { PriorityQueue } from '../../lib/queues/priority-queue.cjs'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 
 describe('Worker node test suite', () => {
-  let threadWorkerNode, clusterWorkerNode
+  let clusterWorkerNode, threadWorkerNode
 
   before('Create worker nodes', () => {
     threadWorkerNode = new WorkerNode(
@@ -236,38 +235,39 @@ describe('Worker node test suite', () => {
     expect(threadWorkerNode).toBeInstanceOf(WorkerNode)
     expect(threadWorkerNode.worker).toBeInstanceOf(ThreadWorker)
     expect(threadWorkerNode.info).toStrictEqual({
-      id: threadWorkerNode.worker.threadId,
-      type: WorkerTypes.thread,
+      backPressure: false,
+      backPressureStealing: false,
+      continuousStealing: false,
       dynamic: false,
+      id: threadWorkerNode.worker.threadId,
       ready: false,
       stealing: false,
       stolen: false,
-      continuousStealing: false,
-      backPressure: false,
+      type: WorkerTypes.thread,
     })
     expect(threadWorkerNode.usage).toStrictEqual({
-      tasks: {
-        executed: 0,
-        executing: 0,
-        queued: 0,
-        maxQueued: 0,
-        sequentiallyStolen: 0,
-        stolen: 0,
-        failed: 0,
+      elu: {
+        active: {
+          history: expect.any(CircularBuffer),
+        },
+        idle: {
+          history: expect.any(CircularBuffer),
+        },
       },
       runTime: {
         history: expect.any(CircularBuffer),
       },
+      tasks: {
+        executed: 0,
+        executing: 0,
+        failed: 0,
+        maxQueued: 0,
+        queued: 0,
+        sequentiallyStolen: 0,
+        stolen: 0,
+      },
       waitTime: {
         history: expect.any(CircularBuffer),
-      },
-      elu: {
-        idle: {
-          history: expect.any(CircularBuffer),
-        },
-        active: {
-          history: expect.any(CircularBuffer),
-        },
       },
     })
     expect(threadWorkerNode.usage.runTime.history.items.length).toBe(
@@ -297,38 +297,39 @@ describe('Worker node test suite', () => {
     expect(clusterWorkerNode).toBeInstanceOf(WorkerNode)
     expect(clusterWorkerNode.worker).toBeInstanceOf(ClusterWorker)
     expect(clusterWorkerNode.info).toStrictEqual({
-      id: clusterWorkerNode.worker.id,
-      type: WorkerTypes.cluster,
+      backPressure: false,
+      backPressureStealing: false,
+      continuousStealing: false,
       dynamic: false,
+      id: clusterWorkerNode.worker.id,
       ready: false,
       stealing: false,
       stolen: false,
-      continuousStealing: false,
-      backPressure: false,
+      type: WorkerTypes.cluster,
     })
     expect(clusterWorkerNode.usage).toStrictEqual({
-      tasks: {
-        executed: 0,
-        executing: 0,
-        queued: 0,
-        maxQueued: 0,
-        sequentiallyStolen: 0,
-        stolen: 0,
-        failed: 0,
+      elu: {
+        active: {
+          history: expect.any(CircularBuffer),
+        },
+        idle: {
+          history: expect.any(CircularBuffer),
+        },
       },
       runTime: {
         history: expect.any(CircularBuffer),
       },
+      tasks: {
+        executed: 0,
+        executing: 0,
+        failed: 0,
+        maxQueued: 0,
+        queued: 0,
+        sequentiallyStolen: 0,
+        stolen: 0,
+      },
       waitTime: {
         history: expect.any(CircularBuffer),
-      },
-      elu: {
-        idle: {
-          history: expect.any(CircularBuffer),
-        },
-        active: {
-          history: expect.any(CircularBuffer),
-        },
       },
     })
     expect(clusterWorkerNode.usage.runTime.history.items.length).toBe(
@@ -383,75 +384,75 @@ describe('Worker node test suite', () => {
     expect(
       threadWorkerNode.getTaskFunctionWorkerUsage(DEFAULT_TASK_NAME)
     ).toStrictEqual({
-      tasks: {
-        executed: 0,
-        executing: 0,
-        queued: 0,
-        sequentiallyStolen: 0,
-        stolen: 0,
-        failed: 0,
+      elu: {
+        active: {
+          history: expect.any(CircularBuffer),
+        },
+        idle: {
+          history: expect.any(CircularBuffer),
+        },
       },
       runTime: {
         history: expect.any(CircularBuffer),
       },
+      tasks: {
+        executed: 0,
+        executing: 0,
+        failed: 0,
+        queued: 0,
+        sequentiallyStolen: 0,
+        stolen: 0,
+      },
       waitTime: {
         history: expect.any(CircularBuffer),
-      },
-      elu: {
-        idle: {
-          history: expect.any(CircularBuffer),
-        },
-        active: {
-          history: expect.any(CircularBuffer),
-        },
       },
     })
     expect(threadWorkerNode.getTaskFunctionWorkerUsage('fn1')).toStrictEqual({
-      tasks: {
-        executed: 0,
-        executing: 0,
-        queued: 0,
-        sequentiallyStolen: 0,
-        stolen: 0,
-        failed: 0,
+      elu: {
+        active: {
+          history: expect.any(CircularBuffer),
+        },
+        idle: {
+          history: expect.any(CircularBuffer),
+        },
       },
       runTime: {
         history: expect.any(CircularBuffer),
       },
+      tasks: {
+        executed: 0,
+        executing: 0,
+        failed: 0,
+        queued: 0,
+        sequentiallyStolen: 0,
+        stolen: 0,
+      },
       waitTime: {
         history: expect.any(CircularBuffer),
-      },
-      elu: {
-        idle: {
-          history: expect.any(CircularBuffer),
-        },
-        active: {
-          history: expect.any(CircularBuffer),
-        },
       },
     })
     expect(threadWorkerNode.getTaskFunctionWorkerUsage('fn2')).toStrictEqual({
-      tasks: {
-        executed: 0,
-        executing: 0,
-        queued: 0,
-        sequentiallyStolen: 0,
-        stolen: 0,
-        failed: 0,
+      elu: {
+        active: {
+          history: expect.any(CircularBuffer),
+        },
+        idle: {
+          history: expect.any(CircularBuffer),
+        },
       },
       runTime: {
         history: expect.any(CircularBuffer),
       },
+      tasks: {
+        executed: 0,
+        executing: 0,
+        failed: 0,
+        queued: 0,
+        sequentiallyStolen: 0,
+        stolen: 0,
+      },
       waitTime: {
         history: expect.any(CircularBuffer),
-      },
-      elu: {
-        idle: {
-          history: expect.any(CircularBuffer),
-        },
-        active: {
-          history: expect.any(CircularBuffer),
-        },
       },
     })
     expect(threadWorkerNode.taskFunctionsUsage.size).toBe(2)

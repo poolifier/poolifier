@@ -1,16 +1,16 @@
 /**
  * Enumeration of kill behaviors.
  */
-export const KillBehaviors: Readonly<{ SOFT: 'SOFT'; HARD: 'HARD' }> =
+export const KillBehaviors: Readonly<{ HARD: 'HARD'; SOFT: 'SOFT' }> =
   Object.freeze({
-    /**
-     * If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but the worker is stealing tasks or a task is executing or queued, then the worker **wont** be deleted.
-     */
-    SOFT: 'SOFT',
     /**
      * If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but the worker is stealing tasks or a task is executing or queued, then the worker will be deleted.
      */
     HARD: 'HARD',
+    /**
+     * If `currentTime - lastActiveTime` is greater than `maxInactiveTime` but the worker is stealing tasks or a task is executing or queued, then the worker **wont** be deleted.
+     */
+    SOFT: 'SOFT',
   } as const)
 
 /**
@@ -21,7 +21,7 @@ export type KillBehavior = keyof typeof KillBehaviors
 /**
  * Handler called when a worker is killed.
  */
-export type KillHandler = () => void | Promise<void>
+export type KillHandler = () => Promise<void> | void
 
 /**
  * Options for workers.
@@ -38,6 +38,11 @@ export interface WorkerOptions {
    */
   killBehavior?: KillBehavior
   /**
+   * The function to call when a worker is killed.
+   * @defaultValue `() => {}`
+   */
+  killHandler?: KillHandler
+  /**
    * Maximum waiting time in milliseconds for tasks on newly created workers. It must be greater or equal than 5.
    *
    * After this time, newly created workers will be terminated.
@@ -49,9 +54,4 @@ export interface WorkerOptions {
    * @defaultValue 60000
    */
   maxInactiveTime?: number
-  /**
-   * The function to call when a worker is killed.
-   * @defaultValue `() => {}`
-   */
-  killHandler?: KillHandler
 }

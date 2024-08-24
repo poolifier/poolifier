@@ -1,7 +1,7 @@
 const TaskFunctions = {
-  jsonIntegerSerialization: 'jsonIntegerSerialization',
-  fibonacci: 'fibonacci',
   factorial: 'factorial',
+  fibonacci: 'fibonacci',
+  jsonIntegerSerialization: 'jsonIntegerSerialization',
 }
 
 module.exports = { TaskFunctions }

@@ -1,6 +1,5 @@
 import { dirname, extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-
 import { availableParallelism, FixedClusterPool } from 'poolifier'
 
 import type { ClusterWorkerData, ClusterWorkerResponse } from './types.js'
@@ -20,22 +19,25 @@ const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(
   fastifyWorkerFile,
   {
     enableEvents: false,
+    errorHandler: (e: Error) => {
+      console.error('Cluster worker error:', e)
+    },
     onlineHandler: () => {
       pool
         .execute({
-          port: 8080,
-          workerFile: requestHandlerWorkerFile,
+          enableTasksQueue: true,
+          errorHandler: (e: Error) => {
+            console.error('Thread worker error', e)
+          },
           maxWorkers:
             Math.round(availableParallelism() / 4) < 1
               ? 1
               : Math.round(availableParallelism() / 4),
-          enableTasksQueue: true,
+          port: 8080,
           tasksQueueOptions: {
             concurrency: 8,
           },
-          errorHandler: (e: Error) => {
-            console.error('Thread worker error', e)
-          },
+          workerFile: requestHandlerWorkerFile,
         })
         .then(response => {
           if (response.status) {
@@ -48,9 +50,6 @@ const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(
         .catch((error: unknown) => {
           console.error('Fastify failed to start in cluster worker:', error)
         })
-    },
-    errorHandler: (e: Error) => {
-      console.error('Cluster worker error:', e)
     },
   }
 )

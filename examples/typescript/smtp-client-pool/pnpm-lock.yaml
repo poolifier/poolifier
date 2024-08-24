@@ -12,12 +12,12 @@ importers:
         specifier: ^6.9.14
         version: 6.9.14
       poolifier:
-        specifier: ^4.2.2
-        version: 4.2.2
+        specifier: ^4.2.3
+        version: 4.2.3
     devDependencies:
       '@types/node':
-        specifier: ^22.3.0
-        version: 22.3.0
+        specifier: ^22.5.0
+        version: 22.5.0
       '@types/nodemailer':
         specifier: ^6.4.15
         version: 6.4.15
@@ -27,8 +27,8 @@ importers:
 
 packages:
 
-  '@types/node@22.3.0':
-    resolution: {integrity: sha512-nrWpWVaDZuaVc5X84xJ0vNrLvomM205oQyLsRt7OHNZbSHslcWsvgFR7O7hire2ZonjLrWBbedmotmIlJDVd6g==}
+  '@types/node@22.5.0':
+    resolution: {integrity: sha512-DkFrJOe+rfdHTqqMg0bSNlGlQ85hSoh2TPzZyhHsXnMtligRWpxUySiyw8FY14ITt24HVCiQPWxS3KO/QlGmWg==}
 
   '@types/nodemailer@6.4.15':
     resolution: {integrity: sha512-0EBJxawVNjPkng1zm2vopRctuWVCxk34JcIlRuXSf54habUWdz1FB7wHDqOqvDa8Mtpt0Q3LTXQkAs2LNyK5jQ==}
@@ -37,8 +37,8 @@ packages:
     resolution: {integrity: sha512-Dobp/ebDKBvz91sbtRKhcznLThrKxKt97GI2FAlAyy+fk19j73Uz3sBXolVtmcXjaorivqsbbbjDY+Jkt4/bQA==}
     engines: {node: '>=6.0.0'}
 
-  poolifier@4.2.2:
-    resolution: {integrity: sha512-VpTCPMhAfP9JHuECGynJo3zEO+R2O5eBeQkluD22kOruxzQm8t5sIS/Vd8HzdkYLz6WirmjRQuDvqqlRuihYow==}
+  poolifier@4.2.3:
+    resolution: {integrity: sha512-JF3gPzuugRLKlfyQ+vjtxviMr5AyarCAnWYT/g00NAL5Djb5oviCIvb0+eECWQ15QX0QBwcqaxrqB89Dr+pP3Q==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   typescript@5.5.4:
@@ -46,23 +46,23 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  undici-types@6.18.2:
-    resolution: {integrity: sha512-5ruQbENj95yDYJNS3TvcaxPMshV7aizdv/hWYjGIKoANWKjhWNBsr2YEuYZKodQulB1b8l7ILOuDQep3afowQQ==}
+  undici-types@6.19.8:
+    resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
 
 snapshots:
 
-  '@types/node@22.3.0':
+  '@types/node@22.5.0':
     dependencies:
-      undici-types: 6.18.2
+      undici-types: 6.19.8
 
   '@types/nodemailer@6.4.15':
     dependencies:
-      '@types/node': 22.3.0
+      '@types/node': 22.5.0
 
   nodemailer@6.9.14: {}
 
-  poolifier@4.2.2: {}
+  poolifier@4.2.3: {}
 
   typescript@5.5.4: {}
 
-  undici-types@6.18.2: {}
+  undici-types@6.19.8: {}

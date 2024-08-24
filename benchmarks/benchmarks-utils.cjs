@@ -6,6 +6,7 @@ const {
   rmSync,
   writeFileSync,
 } = require('node:fs')
+
 const { TaskFunctions } = require('./benchmarks-types.cjs')
 
 const jsonIntegerSerialization = n => {

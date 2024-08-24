@@ -29,18 +29,18 @@ describe('Selection strategies utils test suite', () => {
 
   it('Verify buildWorkerChoiceStrategyOptions() behavior', async () => {
     expect(buildWorkerChoiceStrategyOptions(clusterFixedPool)).toStrictEqual({
+      elu: { median: false },
       runTime: { median: false },
       waitTime: { median: false },
-      elu: { median: false },
       weights: expect.objectContaining({
         0: expect.any(Number),
         [clusterFixedPool.info.maxSize - 1]: expect.any(Number),
       }),
     })
     const workerChoiceStrategyOptions = {
+      elu: { median: true },
       runTime: { median: true },
       waitTime: { median: true },
-      elu: { median: true },
       weights: {
         0: 100,
         1: 100,
@@ -59,9 +59,9 @@ describe('Selection strategies utils test suite', () => {
       threadFixedPool.info.maxSize * 2
     )
     const workerChoiceStrategyOptions = {
+      elu: { median: true },
       runTime: { median: true },
       waitTime: { median: true },
-      elu: { median: true },
       weights: {
         0: 100,
         1: 100,

@@ -1,5 +1,6 @@
-import { createTransport } from 'nodemailer'
 import type SMTPTransport from 'nodemailer/lib/smtp-transport/index.js'
+
+import { createTransport } from 'nodemailer'
 import { ThreadWorker } from 'poolifier'
 
 import type { WorkerData } from './types.js'

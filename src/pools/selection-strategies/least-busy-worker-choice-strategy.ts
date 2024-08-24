@@ -1,12 +1,13 @@
 import type { IPool } from '../pool.js'
-import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../utils.js'
 import type { IWorker } from '../worker.js'
-import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 import type {
   IWorkerChoiceStrategy,
   TaskStatisticsRequirements,
   WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
+
+import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../utils.js'
+import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
 
 /**
  * Selects the least busy worker.
@@ -23,6 +24,7 @@ export class LeastBusyWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
+    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
     runTime: {
       aggregate: true,
       average: false,
@@ -33,7 +35,6 @@ export class LeastBusyWorkerChoiceStrategy<
       average: false,
       median: false,
     },
-    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   }
 
   /** @inheritDoc */
@@ -43,28 +44,6 @@ export class LeastBusyWorkerChoiceStrategy<
   ) {
     super(pool, opts)
     this.setTaskStatisticsRequirements(this.opts)
-  }
-
-  /** @inheritDoc */
-  public reset (): boolean {
-    return true
-  }
-
-  /** @inheritDoc */
-  public update (): boolean {
-    return true
-  }
-
-  /** @inheritDoc */
-  public choose (): number | undefined {
-    this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.leastBusyNextWorkerNodeKey()
-    return this.nextWorkerNodeKey
-  }
-
-  /** @inheritDoc */
-  public remove (): boolean {
-    return true
   }
 
   private leastBusyNextWorkerNodeKey (): number | undefined {
@@ -80,5 +59,27 @@ export class LeastBusyWorkerChoiceStrategy<
       },
       0
     )
+  }
+
+  /** @inheritDoc */
+  public choose (): number | undefined {
+    this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
+    this.nextWorkerNodeKey = this.leastBusyNextWorkerNodeKey()
+    return this.nextWorkerNodeKey
+  }
+
+  /** @inheritDoc */
+  public remove (): boolean {
+    return true
+  }
+
+  /** @inheritDoc */
+  public reset (): boolean {
+    return true
+  }
+
+  /** @inheritDoc */
+  public update (): boolean {
+    return true
   }
 }

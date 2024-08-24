@@ -9,32 +9,32 @@ importers:
   .:
     dependencies:
       axios:
-        specifier: ^1.7.4
-        version: 1.7.4
+        specifier: ^1.7.5
+        version: 1.7.5
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
       poolifier:
-        specifier: ^4.2.2
-        version: 4.2.2
+        specifier: ^4.2.3
+        version: 4.2.3
     devDependencies:
       '@types/node':
-        specifier: ^22.3.0
-        version: 22.3.0
+        specifier: ^22.5.0
+        version: 22.5.0
       typescript:
         specifier: ^5.5.4
         version: 5.5.4
 
 packages:
 
-  '@types/node@22.3.0':
-    resolution: {integrity: sha512-nrWpWVaDZuaVc5X84xJ0vNrLvomM205oQyLsRt7OHNZbSHslcWsvgFR7O7hire2ZonjLrWBbedmotmIlJDVd6g==}
+  '@types/node@22.5.0':
+    resolution: {integrity: sha512-DkFrJOe+rfdHTqqMg0bSNlGlQ85hSoh2TPzZyhHsXnMtligRWpxUySiyw8FY14ITt24HVCiQPWxS3KO/QlGmWg==}
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  axios@1.7.4:
-    resolution: {integrity: sha512-DukmaFRnY6AzAALSH4J2M3k6PkaC+MfaAGdEERRWcC9q3/TWQwLpHR8ZRLKTdQ3aBDL64EdluRDjJqKw+BPZEw==}
+  axios@1.7.5:
+    resolution: {integrity: sha512-fZu86yCo+svH3uqJ/yTdQ0QHpQu5oL+/QE+QPSv6BZSkDAoky9vytxp7u5qk83OJFS3kEBcesWni9WTZAv3tSw==}
 
   combined-stream@1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
@@ -85,8 +85,8 @@ packages:
     resolution: {integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  poolifier@4.2.2:
-    resolution: {integrity: sha512-VpTCPMhAfP9JHuECGynJo3zEO+R2O5eBeQkluD22kOruxzQm8t5sIS/Vd8HzdkYLz6WirmjRQuDvqqlRuihYow==}
+  poolifier@4.2.3:
+    resolution: {integrity: sha512-JF3gPzuugRLKlfyQ+vjtxviMr5AyarCAnWYT/g00NAL5Djb5oviCIvb0+eECWQ15QX0QBwcqaxrqB89Dr+pP3Q==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   proxy-from-env@1.1.0:
@@ -97,8 +97,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  undici-types@6.18.2:
-    resolution: {integrity: sha512-5ruQbENj95yDYJNS3TvcaxPMshV7aizdv/hWYjGIKoANWKjhWNBsr2YEuYZKodQulB1b8l7ILOuDQep3afowQQ==}
+  undici-types@6.19.8:
+    resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
 
   web-streams-polyfill@3.3.3:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
@@ -106,13 +106,13 @@ packages:
 
 snapshots:
 
-  '@types/node@22.3.0':
+  '@types/node@22.5.0':
     dependencies:
-      undici-types: 6.18.2
+      undici-types: 6.19.8
 
   asynckit@0.4.0: {}
 
-  axios@1.7.4:
+  axios@1.7.5:
     dependencies:
       follow-redirects: 1.15.6
       form-data: 4.0.0
@@ -159,12 +159,12 @@ snapshots:
       fetch-blob: 3.2.0
       formdata-polyfill: 4.0.10
 
-  poolifier@4.2.2: {}
+  poolifier@4.2.3: {}
 
   proxy-from-env@1.1.0: {}
 
   typescript@5.5.4: {}
 
-  undici-types@6.18.2: {}
+  undici-types@6.19.8: {}
 
   web-streams-polyfill@3.3.3: {}

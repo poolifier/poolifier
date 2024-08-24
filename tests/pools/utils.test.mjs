@@ -1,7 +1,6 @@
+import { expect } from 'expect'
 import cluster, { Worker as ClusterWorker } from 'node:cluster'
 import { Worker as ThreadWorker } from 'node:worker_threads'
-
-import { expect } from 'expect'
 
 import { CircularBuffer } from '../../lib/circular-buffer.cjs'
 import { WorkerTypes } from '../../lib/index.cjs'
@@ -29,10 +28,10 @@ describe('Pool utils test suite', () => {
     expect(getDefaultTasksQueueOptions(poolMaxSize)).toStrictEqual({
       concurrency: 1,
       size: Math.pow(poolMaxSize, 2),
-      taskStealing: true,
+      tasksFinishedTimeout: 2000,
       tasksStealingOnBackPressure: true,
       tasksStealingRatio: 0.6,
-      tasksFinishedTimeout: 2000,
+      taskStealing: true,
     })
   })
 
@@ -67,9 +66,9 @@ describe('Pool utils test suite', () => {
     )
     expect(measurementStatistics).toMatchObject({
       aggregate: 0.031,
+      average: 0.0010000000474974513,
       maximum: 0.02,
       minimum: 0.001,
-      average: 0.0010000000474974513,
     })
     updateMeasurementStatistics(
       measurementStatistics,
@@ -78,9 +77,9 @@ describe('Pool utils test suite', () => {
     )
     expect(measurementStatistics).toMatchObject({
       aggregate: 0.034,
+      average: 0.0020000000367872417,
       maximum: 0.02,
       minimum: 0.001,
-      average: 0.0020000000367872417,
     })
     updateMeasurementStatistics(
       measurementStatistics,
@@ -90,8 +89,8 @@ describe('Pool utils test suite', () => {
     expect(measurementStatistics).toMatchObject({
       aggregate: 0.04,
       maximum: 0.02,
-      minimum: 0.001,
       median: 0.003000000026077032,
+      minimum: 0.001,
     })
     updateMeasurementStatistics(
       measurementStatistics,
@@ -100,9 +99,9 @@ describe('Pool utils test suite', () => {
     )
     expect(measurementStatistics).toMatchObject({
       aggregate: 0.05,
+      average: 0.004999999975552782,
       maximum: 0.02,
       minimum: 0.001,
-      average: 0.004999999975552782,
     })
   })
 
