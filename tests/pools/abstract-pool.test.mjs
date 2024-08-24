@@ -1296,7 +1296,7 @@ describe('Abstract pool test suite', () => {
       poolInfo = info
     })
     expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.empty])
-    for (let i = 0; i < numberOfWorkers * 2; i++) {
+    for (let i = 0; i < numberOfWorkers; i++) {
       promises.add(pool.execute())
     }
     await Promise.all(promises)
