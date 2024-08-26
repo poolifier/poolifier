@@ -77,6 +77,9 @@ describe('Abstract pool test suite', () => {
     expect(pool.starting).toBe(false)
     expect(pool.destroying).toBe(false)
     await pool.destroy()
+    expect(pool.started).toBe(false)
+    expect(pool.starting).toBe(false)
+    expect(pool.destroying).toBe(false)
   })
 
   it('Verify that filePath is checked', () => {
@@ -1189,10 +1192,10 @@ describe('Abstract pool test suite', () => {
   })
 
   it("Verify that pool event emitter 'full' event can register a callback", async () => {
-    const pool = new DynamicThreadPool(
+    const pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
-      './tests/worker-files/thread/testWorker.mjs'
+      './tests/worker-files/cluster/testWorker.cjs'
     )
     expect(pool.emitter.eventNames()).toStrictEqual([])
     const promises = new Set()
@@ -1222,7 +1225,7 @@ describe('Abstract pool test suite', () => {
       strategyRetries: expect.any(Number),
       type: PoolTypes.dynamic,
       version,
-      worker: WorkerTypes.thread,
+      worker: WorkerTypes.cluster,
       workerNodes: expect.any(Number),
     })
     await pool.destroy()
@@ -1275,6 +1278,47 @@ describe('Abstract pool test suite', () => {
       workerNodes: expect.any(Number),
     })
     expect(pool.hasBackPressure.callCount).toBeGreaterThanOrEqual(7)
+    await pool.destroy()
+  })
+
+  it("Verify that pool event emitter 'empty' event can register a callback", async () => {
+    const pool = new DynamicClusterPool(
+      0,
+      numberOfWorkers,
+      './tests/worker-files/cluster/testWorker.cjs'
+    )
+    expect(pool.emitter.eventNames()).toStrictEqual([])
+    const promises = new Set()
+    let poolEmpty = 0
+    let poolInfo
+    pool.emitter.on(PoolEvents.empty, info => {
+      ++poolEmpty
+      poolInfo = info
+    })
+    expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.empty])
+    for (let i = 0; i < numberOfWorkers; i++) {
+      promises.add(pool.execute())
+    }
+    await Promise.all(promises)
+    await waitPoolEvents(pool, PoolEvents.empty, 1)
+    expect(poolEmpty).toBe(1)
+    expect(poolInfo).toStrictEqual({
+      busyWorkerNodes: expect.any(Number),
+      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      executedTasks: expect.any(Number),
+      executingTasks: expect.any(Number),
+      failedTasks: expect.any(Number),
+      idleWorkerNodes: expect.any(Number),
+      maxSize: expect.any(Number),
+      minSize: expect.any(Number),
+      ready: true,
+      started: true,
+      strategyRetries: expect.any(Number),
+      type: PoolTypes.dynamic,
+      version,
+      worker: WorkerTypes.cluster,
+      workerNodes: expect.any(Number),
+    })
     await pool.destroy()
   })
 
