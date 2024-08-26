@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.5](https://github.com/poolifier/poolifier/compare/v4.2.4...v4.2.5) (2024-08-26)
+
+
+### 🐞 Bug Fixes
+
+* ensure no deleted dynamic worker can be used to steal task(s) ([60ff5f0](https://github.com/poolifier/poolifier/commit/60ff5f050aac60f90e63638029b88e80e91e259c))
+
+
+### ✨ Polish
+
+* cleanup worker node back pressure detection implementation ([6546b6a](https://github.com/poolifier/poolifier/commit/6546b6a8ba008ea2be1a3ecc129054f4b84417c2))
+* cleanup worker node state conditions check ([2a8bfdf](https://github.com/poolifier/poolifier/commit/2a8bfdff6ba9391ec6dd0f733b23d39633583bcb))
+
+
+### 📚 Documentation
+
+* publish documentation ([200c455](https://github.com/poolifier/poolifier/commit/200c455f716523a3f14500435cf834cc1ae86880))
+
 ## [4.2.4](https://github.com/poolifier/poolifier/compare/v4.2.3...v4.2.4) (2024-08-24)
 
 
