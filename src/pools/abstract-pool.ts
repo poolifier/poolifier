@@ -1192,9 +1192,11 @@ export abstract class AbstractPool<
   private hasBackPressure (): boolean {
     return (
       this.opts.enableTasksQueue === true &&
-      this.workerNodes.findIndex(
-        workerNode => !workerNode.hasBackPressure()
-      ) === -1
+      this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          workerNode.info.backPressure ? accumulator + 1 : accumulator,
+        0
+      ) === this.workerNodes.length
     )
   }
 
