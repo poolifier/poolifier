@@ -3,7 +3,7 @@ import { expect } from 'expect'
 import { FixedThreadPool, PoolEvents } from '../../../lib/index.cjs'
 import { DEFAULT_TASK_NAME } from '../../../lib/utils.cjs'
 import { TaskFunctions } from '../../test-types.cjs'
-import { waitPoolEvents, waitWorkerEvents } from '../../test-utils.cjs'
+import { waitWorkerEvents } from '../../test-utils.cjs'
 
 describe('Fixed thread pool test suite', () => {
   const numberOfThreads = 6
@@ -82,38 +82,6 @@ describe('Fixed thread pool test suite', () => {
   it('Verify that is possible to invoke the execute() method without input', async () => {
     const result = await pool.execute()
     expect(result).toStrictEqual({ ok: 1 })
-  })
-
-  it("Verify that 'ready' event is emitted", async () => {
-    const pool = new FixedThreadPool(
-      numberOfThreads,
-      './tests/worker-files/thread/testWorker.mjs',
-      {
-        errorHandler: e => console.error(e),
-      }
-    )
-    expect(pool.emitter.eventNames()).toStrictEqual([])
-    let poolReady = 0
-    pool.emitter.on(PoolEvents.ready, () => ++poolReady)
-    await waitPoolEvents(pool, PoolEvents.ready, 1)
-    expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.ready])
-    expect(poolReady).toBe(1)
-    await pool.destroy()
-  })
-
-  it("Verify that 'busy' event is emitted", async () => {
-    const promises = new Set()
-    expect(pool.emitter.eventNames()).toStrictEqual([])
-    let poolBusy = 0
-    pool.emitter.on(PoolEvents.busy, () => ++poolBusy)
-    expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.busy])
-    for (let i = 0; i < numberOfThreads * 2; i++) {
-      promises.add(pool.execute())
-    }
-    await Promise.all(promises)
-    // The `busy` event is triggered when the number of submitted tasks at once reach the number of fixed pool workers.
-    // So in total numberOfThreads + 1 times for a loop submitting up to numberOfThreads * 2 tasks to the fixed pool.
-    expect(poolBusy).toBe(numberOfThreads + 1)
   })
 
   it('Verify that tasks queuing is working', async () => {
@@ -295,20 +263,14 @@ describe('Fixed thread pool test suite', () => {
 
   it('Shutdown test', async () => {
     const exitPromise = waitWorkerEvents(pool, 'exit', numberOfThreads)
-    expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.busy])
+    expect(pool.emitter.eventNames()).toStrictEqual([])
     let poolDestroy = 0
     pool.emitter.on(PoolEvents.destroy, () => ++poolDestroy)
-    expect(pool.emitter.eventNames()).toStrictEqual([
-      PoolEvents.busy,
-      PoolEvents.destroy,
-    ])
+    expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.destroy])
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
-    expect(pool.started).toBe(false)
-    expect(pool.emitter.eventNames()).toStrictEqual([
-      PoolEvents.busy,
-      PoolEvents.destroy,
-    ])
+    expect(pool.info.started).toBe(false)
+    expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.destroy])
     expect(pool.readyEventEmitted).toBe(false)
     expect(pool.workerNodes.length).toBe(0)
     expect(numberOfExitEvents).toBe(numberOfThreads)

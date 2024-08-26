@@ -304,14 +304,13 @@ export abstract class AbstractPool<
         "WorkerNode event detail 'workerNodeKey' property must be defined"
       )
     }
-    const workerNodeInfo = this.getWorkerInfo(workerNodeKey)
-    if (workerNodeInfo == null) {
-      throw new Error(
-        `Worker node with key '${workerNodeKey.toString()}' not found in pool`
-      )
+    const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (workerNode == null) {
+      return
     }
     if (
-      !workerNodeInfo.continuousStealing &&
+      !workerNode.info.continuousStealing &&
       (this.cannotStealTask() ||
         (this.info.stealingWorkerNodes ?? 0) >
           Math.round(
@@ -322,13 +321,12 @@ export abstract class AbstractPool<
     ) {
       return
     }
-    const workerNodeTasksUsage = this.workerNodes[workerNodeKey].usage.tasks
+    const workerNodeTasksUsage = workerNode.usage.tasks
     if (
-      workerNodeInfo.continuousStealing &&
-      (workerNodeTasksUsage.executing > 0 ||
-        this.tasksQueueSize(workerNodeKey) > 0)
+      workerNode.info.continuousStealing &&
+      !this.isWorkerNodeIdle(workerNodeKey)
     ) {
-      workerNodeInfo.continuousStealing = false
+      workerNode.info.continuousStealing = false
       if (workerNodeTasksUsage.sequentiallyStolen > 0) {
         this.resetTaskSequentiallyStolenStatisticsWorkerUsage(
           workerNodeKey,
@@ -337,7 +335,7 @@ export abstract class AbstractPool<
       }
       return
     }
-    workerNodeInfo.continuousStealing = true
+    workerNode.info.continuousStealing = true
     const stolenTask = this.workerNodeStealTask(workerNodeKey)
     this.updateTaskSequentiallyStolenStatisticsWorkerUsage(
       workerNodeKey,
@@ -383,29 +381,28 @@ export abstract class AbstractPool<
     sourceWorkerNode: IWorkerNode<Worker, Data>,
     destinationWorkerNodeKey: number
   ): Task<Data> | undefined => {
-    const destinationWorkerInfo = this.getWorkerInfo(destinationWorkerNodeKey)
-    if (destinationWorkerInfo == null) {
-      throw new Error(
-        `Worker node with key '${destinationWorkerNodeKey.toString()}' not found in pool`
-      )
+    const destinationWorkerNode = this.workerNodes[destinationWorkerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (destinationWorkerNode == null) {
+      return
     }
-    // Avoid cross and cascading task stealing. Could be smarter by checking stealing/stolen worker ids pair.
+    // Avoid cross and cascade task stealing. Could be smarter by checking stealing/stolen worker ids pair.
     if (
       !sourceWorkerNode.info.ready ||
       sourceWorkerNode.info.stolen ||
       sourceWorkerNode.info.stealing ||
-      !destinationWorkerInfo.ready ||
-      destinationWorkerInfo.stolen ||
-      destinationWorkerInfo.stealing
+      !destinationWorkerNode.info.ready ||
+      destinationWorkerNode.info.stolen ||
+      destinationWorkerNode.info.stealing
     ) {
       return
     }
-    destinationWorkerInfo.stealing = true
+    destinationWorkerNode.info.stealing = true
     sourceWorkerNode.info.stolen = true
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const stolenTask = sourceWorkerNode.dequeueLastPrioritizedTask()!
     sourceWorkerNode.info.stolen = false
-    destinationWorkerInfo.stealing = false
+    destinationWorkerNode.info.stealing = false
     this.handleTask(destinationWorkerNodeKey, stolenTask)
     this.updateTaskStolenStatisticsWorkerUsage(
       destinationWorkerNodeKey,
@@ -826,22 +823,12 @@ export abstract class AbstractPool<
    * @returns Worker nodes busyness boolean status.
    */
   protected internalBusy (): boolean {
-    if (this.opts.enableTasksQueue === true) {
-      return (
-        this.workerNodes.findIndex(
-          workerNode =>
-            workerNode.info.ready &&
-            workerNode.usage.tasks.executing <
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              this.opts.tasksQueueOptions!.concurrency!
-        ) === -1
-      )
-    }
     return (
-      this.workerNodes.findIndex(
-        workerNode =>
-          workerNode.info.ready && workerNode.usage.tasks.executing === 0
-      ) === -1
+      this.workerNodes.reduce(
+        (accumulator, _, workerNodeKey) =>
+          this.isWorkerNodeIdle(workerNodeKey) ? accumulator + 1 : accumulator,
+        0
+      ) === 0
     )
   }
 
@@ -941,7 +928,6 @@ export abstract class AbstractPool<
   private checkAndEmitEmptyEvent (): void {
     if (this.empty) {
       this.emitter?.emit(PoolEvents.empty, this.info)
-      this.readyEventEmitted = false
     }
   }
 
@@ -1201,12 +1187,9 @@ export abstract class AbstractPool<
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.promiseResponseMap.delete(taskId!)
       if (this.opts.enableTasksQueue === true && !this.destroying) {
-        const workerNodeTasksUsage = workerNode.usage.tasks
         if (
-          this.tasksQueueSize(workerNodeKey) > 0 &&
-          workerNodeTasksUsage.executing <
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.opts.tasksQueueOptions!.concurrency!
+          !this.isWorkerNodeBusy(workerNodeKey) &&
+          this.tasksQueueSize(workerNodeKey) > 0
         ) {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.executeTask(workerNodeKey, this.dequeueTask(workerNodeKey)!)
@@ -1241,9 +1224,11 @@ export abstract class AbstractPool<
   private hasBackPressure (): boolean {
     return (
       this.opts.enableTasksQueue === true &&
-      this.workerNodes.findIndex(
-        workerNode => !workerNode.hasBackPressure()
-      ) === -1
+      this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          workerNode.info.backPressure ? accumulator + 1 : accumulator,
+        0
+      ) === this.workerNodes.length
     )
   }
 
@@ -1352,24 +1337,28 @@ export abstract class AbstractPool<
   }
 
   private isWorkerNodeBusy (workerNodeKey: number): boolean {
+    const workerNode = this.workerNodes[workerNodeKey]
     if (this.opts.enableTasksQueue === true) {
       return (
-        this.workerNodes[workerNodeKey].usage.tasks.executing >=
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.opts.tasksQueueOptions!.concurrency!
+        workerNode.info.ready &&
+        workerNode.usage.tasks.executing >=
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.opts.tasksQueueOptions!.concurrency!
       )
     }
-    return this.workerNodes[workerNodeKey].usage.tasks.executing > 0
+    return workerNode.info.ready && workerNode.usage.tasks.executing > 0
   }
 
   private isWorkerNodeIdle (workerNodeKey: number): boolean {
+    const workerNode = this.workerNodes[workerNodeKey]
     if (this.opts.enableTasksQueue === true) {
       return (
-        this.workerNodes[workerNodeKey].usage.tasks.executing === 0 &&
+        workerNode.info.ready &&
+        workerNode.usage.tasks.executing === 0 &&
         this.tasksQueueSize(workerNodeKey) === 0
       )
     }
-    return this.workerNodes[workerNodeKey].usage.tasks.executing === 0
+    return workerNode.info.ready && workerNode.usage.tasks.executing === 0
   }
 
   private redistributeQueuedTasks (sourceWorkerNodeKey: number): void {
@@ -2349,7 +2338,7 @@ export abstract class AbstractPool<
    * @returns The pool readiness boolean status.
    */
   private get ready (): boolean {
-    if (this.empty) {
+    if (!this.started) {
       return false
     }
     return (

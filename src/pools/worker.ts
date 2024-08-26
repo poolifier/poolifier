@@ -331,11 +331,6 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   readonly getTaskFunctionWorkerUsage: (name: string) => undefined | WorkerUsage
   /**
-   * Whether the worker node has back pressure (i.e. its tasks queue is full).
-   * @returns `true` if the worker node has back pressure, `false` otherwise.
-   */
-  readonly hasBackPressure: () => boolean
-  /**
    * Worker info.
    */
   readonly info: WorkerInfo

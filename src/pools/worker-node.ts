@@ -88,6 +88,14 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     }
   }
 
+  /**
+   * Whether the worker node has back pressure (i.e. its tasks queue is full).
+   * @returns `true` if the worker node has back pressure, `false` otherwise.
+   */
+  private hasBackPressure (): boolean {
+    return this.tasksQueue.size >= this.tasksQueueBackPressureSize
+  }
+
   private initTaskFunctionWorkerUsage (name: string): WorkerUsage {
     const getTaskFunctionQueueSize = (): number => {
       let taskFunctionQueueSize = 0
@@ -258,11 +266,6 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
       this.taskFunctionsUsage.set(name, this.initTaskFunctionWorkerUsage(name))
     }
     return this.taskFunctionsUsage.get(name)
-  }
-
-  /** @inheritdoc */
-  public hasBackPressure (): boolean {
-    return this.tasksQueue.size >= this.tasksQueueBackPressureSize
   }
 
   /** @inheritdoc */
