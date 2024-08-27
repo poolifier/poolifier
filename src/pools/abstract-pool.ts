@@ -133,6 +133,11 @@ export abstract class AbstractPool<
   }
 
   /**
+   * Whether the pool back pressure event has been emitted or not.
+   */
+  private backPressureEventEmitted: boolean
+
+  /**
    * Whether the pool is destroying or not.
    */
   private destroying: boolean
@@ -473,6 +478,7 @@ export abstract class AbstractPool<
     this.starting = false
     this.destroying = false
     this.readyEventEmitted = false
+    this.backPressureEventEmitted = false
     this.startingMinimumNumberOfWorkers = false
     if (this.opts.startWorkers === true) {
       this.start()
@@ -929,6 +935,13 @@ export abstract class AbstractPool<
     }
   }
 
+  private checkAndEmitTaskDequeuingEvents (): void {
+    if (this.backPressureEventEmitted && !this.backPressure) {
+      this.emitter?.emit(PoolEvents.backPressureEnd, this.info)
+      this.backPressureEventEmitted = false
+    }
+  }
+
   private checkAndEmitTaskExecutionEvents (): void {
     if (this.busy) {
       this.emitter?.emit(PoolEvents.busy, this.info)
@@ -936,8 +949,9 @@ export abstract class AbstractPool<
   }
 
   private checkAndEmitTaskQueuingEvents (): void {
-    if (this.backPressure) {
+    if (!this.backPressureEventEmitted && this.backPressure) {
       this.emitter?.emit(PoolEvents.backPressure, this.info)
+      this.backPressureEventEmitted = true
     }
   }
 
@@ -1091,7 +1105,9 @@ export abstract class AbstractPool<
   }
 
   private dequeueTask (workerNodeKey: number): Task<Data> | undefined {
-    return this.workerNodes[workerNodeKey].dequeueTask()
+    const task = this.workerNodes[workerNodeKey].dequeueTask()
+    this.checkAndEmitTaskDequeuingEvents()
+    return task
   }
 
   private enqueueTask (workerNodeKey: number, task: Task<Data>): number {
@@ -1712,6 +1728,7 @@ export abstract class AbstractPool<
     this.emitter?.emit(PoolEvents.destroy, this.info)
     this.emitter?.emitDestroy()
     this.readyEventEmitted = false
+    this.backPressureEventEmitted = false
     delete this.startTimestamp
     this.destroying = false
     this.started = false

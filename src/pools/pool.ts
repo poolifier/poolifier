@@ -48,6 +48,7 @@ export type PoolType = keyof typeof PoolTypes
  */
 export const PoolEvents: Readonly<{
   backPressure: 'backPressure'
+  backPressureEnd: 'backPressureEnd'
   busy: 'busy'
   destroy: 'destroy'
   empty: 'empty'
@@ -57,6 +58,7 @@ export const PoolEvents: Readonly<{
   taskError: 'taskError'
 }> = Object.freeze({
   backPressure: 'backPressure',
+  backPressureEnd: 'backPressureEnd',
   busy: 'busy',
   destroy: 'destroy',
   empty: 'empty',
@@ -287,6 +289,7 @@ export interface IPool<
    * - `'error'`: Emitted when an uncaught error occurs.
    * - `'taskError'`: Emitted when an error occurs while executing a task.
    * - `'backPressure'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are back pressured (i.e. their tasks queue is full: queue size \>= maximum queue size).
+   * - `'backPressureEnd'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are no longer back pressured (i.e. their tasks queue is no longer full: queue size \< maximum queue size).
    */
   readonly emitter?: EventEmitterAsyncResource
   /**
