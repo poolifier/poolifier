@@ -15,8 +15,8 @@ importers:
         specifier: ^4.5.1
         version: 4.5.1
       poolifier:
-        specifier: ^4.2.3
-        version: 4.2.3
+        specifier: ^4.2.5
+        version: 4.2.5
     devDependencies:
       '@types/node':
         specifier: ^22.5.0
@@ -287,8 +287,8 @@ packages:
     resolution: {integrity: sha512-WtARBjgZ7LNEkrGWxMBN/jvlFiE17LTbBoH0konmBU684Kd0uIiDwBXlcTCW7iJnA6HfIKwUssS/2AC6cDEanw==}
     hasBin: true
 
-  poolifier@4.2.3:
-    resolution: {integrity: sha512-JF3gPzuugRLKlfyQ+vjtxviMr5AyarCAnWYT/g00NAL5Djb5oviCIvb0+eECWQ15QX0QBwcqaxrqB89Dr+pP3Q==}
+  poolifier@4.2.5:
+    resolution: {integrity: sha512-z3RLgTBZurCJo8pOJSxxnO4usZG6mIYGNd+TP7amhFSljVdTuc5jWWmHL6i66GUSDtb0CX8CvQ0EfIgtqZNgeg==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   pretty-bytes@5.6.0:
@@ -351,8 +351,8 @@ packages:
   safe-regex2@3.1.0:
     resolution: {integrity: sha512-RAAZAGbap2kBfbVhvmnTFv73NWLMvDGOITFYTZBAaY8eR+Ir4ef7Up/e7amo+y1+AH+3PtLkrt9mvcTsG9LXug==}
 
-  safe-stable-stringify@2.4.3:
-    resolution: {integrity: sha512-e2bDA2WJT0wxseVd4lsDP4+3ONX6HpMXQa1ZhFQ7SU+GjvORCmShbCMltrtIDfkYhVHrOcPtj+KhmDBdPdZD1g==}
+  safe-stable-stringify@2.5.0:
+    resolution: {integrity: sha512-b3rppTKm9T+PsVCBEOUR46GWI7fdOs00VKZ1+9c1EWDaDMvjQc6tUwuFyIprgGgTcWoVHSKrU8H31ZHA2e0RHA==}
     engines: {node: '>=10'}
 
   secure-json-parse@2.7.0:
@@ -697,11 +697,11 @@ snapshots:
       process-warning: 4.0.0
       quick-format-unescaped: 4.0.4
       real-require: 0.2.0
-      safe-stable-stringify: 2.4.3
+      safe-stable-stringify: 2.5.0
       sonic-boom: 4.0.1
       thread-stream: 3.1.0
 
-  poolifier@4.2.3: {}
+  poolifier@4.2.5: {}
 
   pretty-bytes@5.6.0: {}
 
@@ -748,7 +748,7 @@ snapshots:
     dependencies:
       ret: 0.4.3
 
-  safe-stable-stringify@2.4.3: {}
+  safe-stable-stringify@2.5.0: {}
 
   secure-json-parse@2.7.0: {}
 

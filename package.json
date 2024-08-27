@@ -41,9 +41,9 @@
   },
   "volta": {
     "node": "22.7.0",
-    "pnpm": "9.8.0"
+    "pnpm": "9.9.0"
   },
-  "packageManager": "pnpm@9.8.0",
+  "packageManager": "pnpm@9.9.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/poolifier/poolifier.git"
@@ -120,9 +120,9 @@
     "lint-staged": "^15.2.9",
     "mocha": "^10.7.3",
     "mochawesome": "^7.1.3",
-    "neostandard": "^0.11.3",
+    "neostandard": "^0.11.4",
     "prettier": "^3.3.3",
-    "rollup": "^4.21.0",
+    "rollup": "^4.21.1",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",
     "rollup-plugin-delete": "^2.0.0",
