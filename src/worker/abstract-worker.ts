@@ -292,7 +292,6 @@ export abstract class AbstractWorker<
       case 'remove':
         response = this.removeTaskFunction(taskFunctionProperties.name)
         break
-
       default:
         response = { error: new Error('Unknown task operation'), status: false }
         break
