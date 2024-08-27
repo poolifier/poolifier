@@ -812,10 +812,9 @@ export abstract class AbstractPool<
    */
   protected internalBackPressure (): boolean {
     return (
-      this.opts.enableTasksQueue === true &&
       this.workerNodes.reduce(
-        (accumulator, workerNode) =>
-          workerNode.info.ready && workerNode.info.backPressure
+        (accumulator, _, workerNodeKey) =>
+          this.isWorkerNodeBackPressured(workerNodeKey)
             ? accumulator + 1
             : accumulator,
         0
@@ -1331,6 +1330,11 @@ export abstract class AbstractPool<
         this.enqueueTask(workerNodeKey, task)
       }
     })
+  }
+
+  private isWorkerNodeBackPressured (workerNodeKey: number): boolean {
+    const workerNode = this.workerNodes[workerNodeKey]
+    return workerNode.info.ready && workerNode.info.backPressure
   }
 
   private isWorkerNodeBusy (workerNodeKey: number): boolean {
@@ -2073,8 +2077,10 @@ export abstract class AbstractPool<
       }),
       ...(this.opts.enableTasksQueue === true && {
         backPressureWorkerNodes: this.workerNodes.reduce(
-          (accumulator, workerNode) =>
-            workerNode.info.backPressure ? accumulator + 1 : accumulator,
+          (accumulator, _, workerNodeKey) =>
+            this.isWorkerNodeBackPressured(workerNodeKey)
+              ? accumulator + 1
+              : accumulator,
           0
         ),
       }),
