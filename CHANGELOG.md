@@ -5,6 +5,58 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.5](https://github.com/poolifier/poolifier/compare/v4.2.4...v4.2.5) (2024-08-26)
+
+
+### 🐞 Bug Fixes
+
+* ensure no deleted dynamic worker can be used to steal task(s) ([60ff5f0](https://github.com/poolifier/poolifier/commit/60ff5f050aac60f90e63638029b88e80e91e259c))
+
+
+### ✨ Polish
+
+* cleanup worker node back pressure detection implementation ([6546b6a](https://github.com/poolifier/poolifier/commit/6546b6a8ba008ea2be1a3ecc129054f4b84417c2))
+* cleanup worker node state conditions check ([2a8bfdf](https://github.com/poolifier/poolifier/commit/2a8bfdff6ba9391ec6dd0f733b23d39633583bcb))
+
+
+### 📚 Documentation
+
+* publish documentation ([200c455](https://github.com/poolifier/poolifier/commit/200c455f716523a3f14500435cf834cc1ae86880))
+
+## [4.2.4](https://github.com/poolifier/poolifier/compare/v4.2.3...v4.2.4) (2024-08-24)
+
+
+### 🐞 Bug Fixes
+
+* fix pool ready status with zero min size dynamic pool ([e48fa7a](https://github.com/poolifier/poolifier/commit/e48fa7a7cd32d0b42df79043b773fcb1e6f2c778))
+
+
+### ✨ Polish
+
+* switch to eslint-plugin-perfectionist ([9723108](https://github.com/poolifier/poolifier/commit/972310863f23533360c1021be9c00f375230f81d))
+
+
+### 🧪 Tests
+
+* add pool empty event test ([7682c56](https://github.com/poolifier/poolifier/commit/7682c56f39d439b949dd02f1c3a251e261d1eb49))
+* optimize pool empty event test ([fa97876](https://github.com/poolifier/poolifier/commit/fa97876e2e8c5d8b507bc467bf8026f9a6573628))
+
+
+### 📚 Documentation
+
+* publish documentation ([4073f18](https://github.com/poolifier/poolifier/commit/4073f18713bcccfae354c3eb03c63e5a50496192))
+* refine a code comment ([cee9a55](https://github.com/poolifier/poolifier/commit/cee9a55aca4d0794d9d64fbd7b7206375c34f27b))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump husky from 9.1.4 to 9.1.5 in the regular group ([#2538](https://github.com/poolifier/poolifier/issues/2538)) ([d25e4f5](https://github.com/poolifier/poolifier/commit/d25e4f5f8b03f55e6a3be7791bfb1f37fbad0162))
+* **deps-dev:** bump the regular group across 11 directories with 1 update ([#2539](https://github.com/poolifier/poolifier/issues/2539)) ([dd24a54](https://github.com/poolifier/poolifier/commit/dd24a543d47b006d2b84a1a031894f46c169abe7))
+* **deps-dev:** bump the regular group with 2 updates ([205d209](https://github.com/poolifier/poolifier/commit/205d209cbb2e82e4245f534e32ab7cf9e01aea78))
+* **deps:** bump sonarsource/sonarcloud-github-action ([#2537](https://github.com/poolifier/poolifier/issues/2537)) ([82e0653](https://github.com/poolifier/poolifier/commit/82e065399f9c5a1aa48f0da8c117794f6b7d0dbf))
+* **deps:** bump the regular group across 11 directories with 3 updates ([#2536](https://github.com/poolifier/poolifier/issues/2536)) ([b901726](https://github.com/poolifier/poolifier/commit/b901726ffdcb1d987818057afb4779c1673a273a))
+* **deps:** bump the regular group across 7 directories with 2 updates ([e559d2d](https://github.com/poolifier/poolifier/commit/e559d2d191ddb9d622e05ba9c414d1a4e64406d0))
+
 ## [4.2.3](https://github.com/poolifier/poolifier/compare/v4.2.2...v4.2.3) (2024-08-19)
 
 
