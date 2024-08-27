@@ -229,7 +229,7 @@ export abstract class AbstractPool<
   ): void => {
     if (
       this.cannotStealTask() ||
-      this.hasBackPressure() ||
+      this.backPressure ||
       (this.info.stealingWorkerNodes ?? 0) >
         Math.round(
           this.workerNodes.length *
@@ -795,6 +795,21 @@ export abstract class AbstractPool<
   }
 
   /**
+   * Whether the worker nodes are back pressured or not.
+   * @returns Worker nodes back pressure boolean status.
+   */
+  protected internalBackPressure (): boolean {
+    return (
+      this.opts.enableTasksQueue === true &&
+      this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          workerNode.info.backPressure ? accumulator + 1 : accumulator,
+        0
+      ) === this.workerNodes.length
+    )
+  }
+
+  /**
    * Whether worker nodes are executing concurrently their tasks quota or not.
    * @returns Worker nodes busyness boolean status.
    */
@@ -802,9 +817,9 @@ export abstract class AbstractPool<
     return (
       this.workerNodes.reduce(
         (accumulator, _, workerNodeKey) =>
-          this.isWorkerNodeIdle(workerNodeKey) ? accumulator + 1 : accumulator,
+          this.isWorkerNodeBusy(workerNodeKey) ? accumulator + 1 : accumulator,
         0
-      ) === 0
+      ) === this.workerNodes.length
     )
   }
 
@@ -921,7 +936,7 @@ export abstract class AbstractPool<
   }
 
   private checkAndEmitTaskQueuingEvents (): void {
-    if (this.hasBackPressure()) {
+    if (this.backPressure) {
       this.emitter?.emit(PoolEvents.backPressure, this.info)
     }
   }
@@ -1185,17 +1200,6 @@ export abstract class AbstractPool<
     this.sendStatisticsMessageToWorker(workerNodeKey)
     this.setTasksQueuePriority(workerNodeKey)
     this.checkAndEmitReadyEvent()
-  }
-
-  private hasBackPressure (): boolean {
-    return (
-      this.opts.enableTasksQueue === true &&
-      this.workerNodes.reduce(
-        (accumulator, workerNode) =>
-          workerNode.info.backPressure ? accumulator + 1 : accumulator,
-        0
-      ) === this.workerNodes.length
-    )
   }
 
   private initEventEmitter (): void {
@@ -1949,6 +1953,12 @@ export abstract class AbstractPool<
   }
 
   /**
+   * Whether the pool is back pressured or not.
+   * @returns The pool back pressure boolean status.
+   */
+  protected abstract get backPressure (): boolean
+
+  /**
    * Whether the pool is busy or not.
    * @returns The pool busyness boolean status.
    */
@@ -1959,7 +1969,10 @@ export abstract class AbstractPool<
    * @returns The pool emptiness boolean status.
    */
   protected get empty (): boolean {
-    return this.minimumNumberOfWorkers === 0 && this.workerNodes.length === 0
+    return (
+      this.minimumNumberOfWorkers === 0 &&
+      this.workerNodes.length === this.minimumNumberOfWorkers
+    )
   }
 
   /**
@@ -2045,7 +2058,7 @@ export abstract class AbstractPool<
         ),
       }),
       ...(this.opts.enableTasksQueue === true && {
-        backPressure: this.hasBackPressure(),
+        backPressure: this.backPressure,
       }),
       ...(this.opts.enableTasksQueue === true && {
         stolenTasks: this.workerNodes.reduce(

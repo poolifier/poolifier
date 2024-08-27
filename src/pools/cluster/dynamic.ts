@@ -49,6 +49,11 @@ export class DynamicClusterPool<
   }
 
   /** @inheritDoc */
+  protected get backPressure (): boolean {
+    return this.full && this.internalBackPressure()
+  }
+
+  /** @inheritDoc */
   protected get busy (): boolean {
     return this.full && this.internalBusy()
   }

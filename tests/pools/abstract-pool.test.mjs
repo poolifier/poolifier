@@ -1239,7 +1239,8 @@ describe('Abstract pool test suite', () => {
         enableTasksQueue: true,
       }
     )
-    stub(pool, 'hasBackPressure').returns(true)
+    const backPressureGetterStub = stub().returns(true)
+    stub(pool, 'backPressure').get(backPressureGetterStub)
     expect(pool.emitter.eventNames()).toStrictEqual([])
     const promises = new Set()
     let poolBackPressure = 0
@@ -1277,7 +1278,7 @@ describe('Abstract pool test suite', () => {
       worker: WorkerTypes.thread,
       workerNodes: expect.any(Number),
     })
-    expect(pool.hasBackPressure.callCount).toBeGreaterThanOrEqual(7)
+    expect(backPressureGetterStub.callCount).toBeGreaterThanOrEqual(7)
     await pool.destroy()
   })
 
