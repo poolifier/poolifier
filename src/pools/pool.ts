@@ -48,7 +48,9 @@ export type PoolType = keyof typeof PoolTypes
  */
 export const PoolEvents: Readonly<{
   backPressure: 'backPressure'
+  backPressureEnd: 'backPressureEnd'
   busy: 'busy'
+  busyEnd: 'busyEnd'
   destroy: 'destroy'
   empty: 'empty'
   error: 'error'
@@ -57,7 +59,9 @@ export const PoolEvents: Readonly<{
   taskError: 'taskError'
 }> = Object.freeze({
   backPressure: 'backPressure',
+  backPressureEnd: 'backPressureEnd',
   busy: 'busy',
+  busyEnd: 'busyEnd',
   destroy: 'destroy',
   empty: 'empty',
   error: 'error',
@@ -281,12 +285,14 @@ export interface IPool<
    *
    * - `'ready'`: Emitted when the number of workers created in the pool has reached the minimum size expected and are ready. If the pool is dynamic with a minimum number of workers is set to zero, this event is emitted when at least one dynamic worker is ready.
    * - `'busy'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are executing concurrently their tasks quota.
+   * - `'busyEnd'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are no longer executing concurrently their tasks quota.
    * - `'full'`: Emitted when the pool is dynamic and the number of workers created has reached the maximum size expected.
    * - `'empty'`: Emitted when the pool is dynamic with a minimum number of workers set to zero and the number of workers has reached the minimum size expected.
    * - `'destroy'`: Emitted when the pool is destroyed.
    * - `'error'`: Emitted when an uncaught error occurs.
    * - `'taskError'`: Emitted when an error occurs while executing a task.
-   * - `'backPressure'`: Emitted when all worker nodes have back pressure (i.e. their tasks queue is full: queue size \>= maximum queue size).
+   * - `'backPressure'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are back pressured (i.e. their tasks queue is full: queue size \>= maximum queue size).
+   * - `'backPressureEnd'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are no longer back pressured (i.e. their tasks queue is no longer full: queue size \< maximum queue size).
    */
   readonly emitter?: EventEmitterAsyncResource
   /**

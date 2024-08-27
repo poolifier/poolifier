@@ -38,14 +38,19 @@ export class DynamicThreadPool<
 
   /** @inheritDoc */
   protected checkAndEmitDynamicWorkerCreationEvents (): void {
-    if (this.full) {
-      this.emitter?.emit(PoolEvents.full, this.info)
+    if (this.emitter != null && this.full) {
+      this.emitter.emit(PoolEvents.full, this.info)
     }
   }
 
   /** @inheritDoc */
   protected shallCreateDynamicWorker (): boolean {
     return (!this.full && this.internalBusy()) || this.empty
+  }
+
+  /** @inheritDoc */
+  protected get backPressure (): boolean {
+    return this.full && this.internalBackPressure()
   }
 
   /** @inheritDoc */
