@@ -138,6 +138,11 @@ export abstract class AbstractPool<
   private backPressureEventEmitted: boolean
 
   /**
+   * Whether the pool busy event has been emitted or not.
+   */
+  private busyEventEmitted: boolean
+
+  /**
    * Whether the pool is destroying or not.
    */
   private destroying: boolean
@@ -478,6 +483,7 @@ export abstract class AbstractPool<
     this.starting = false
     this.destroying = false
     this.readyEventEmitted = false
+    this.busyEventEmitted = false
     this.backPressureEventEmitted = false
     this.startingMinimumNumberOfWorkers = false
     if (this.opts.startWorkers === true) {
@@ -809,7 +815,9 @@ export abstract class AbstractPool<
       this.opts.enableTasksQueue === true &&
       this.workerNodes.reduce(
         (accumulator, workerNode) =>
-          workerNode.info.backPressure ? accumulator + 1 : accumulator,
+          workerNode.info.ready && workerNode.info.backPressure
+            ? accumulator + 1
+            : accumulator,
         0
       ) === this.workerNodes.length
     )
@@ -923,34 +931,50 @@ export abstract class AbstractPool<
   }
 
   private checkAndEmitEmptyEvent (): void {
-    if (this.empty) {
-      this.emitter?.emit(PoolEvents.empty, this.info)
+    if (this.emitter != null && this.empty) {
+      this.emitter.emit(PoolEvents.empty, this.info)
     }
   }
 
   private checkAndEmitReadyEvent (): void {
-    if (!this.readyEventEmitted && this.ready) {
-      this.emitter?.emit(PoolEvents.ready, this.info)
+    if (this.emitter != null && !this.readyEventEmitted && this.ready) {
+      this.emitter.emit(PoolEvents.ready, this.info)
       this.readyEventEmitted = true
     }
   }
 
   private checkAndEmitTaskDequeuingEvents (): void {
-    if (this.backPressureEventEmitted && !this.backPressure) {
-      this.emitter?.emit(PoolEvents.backPressureEnd, this.info)
+    if (
+      this.emitter != null &&
+      this.backPressureEventEmitted &&
+      !this.backPressure
+    ) {
+      this.emitter.emit(PoolEvents.backPressureEnd, this.info)
       this.backPressureEventEmitted = false
     }
   }
 
   private checkAndEmitTaskExecutionEvents (): void {
-    if (this.busy) {
-      this.emitter?.emit(PoolEvents.busy, this.info)
+    if (this.emitter != null && !this.busyEventEmitted && this.busy) {
+      this.emitter.emit(PoolEvents.busy, this.info)
+      this.busyEventEmitted = true
+    }
+  }
+
+  private checkAndEmitTaskExecutionFinishedEvents (): void {
+    if (this.emitter != null && this.busyEventEmitted && !this.busy) {
+      this.emitter.emit(PoolEvents.busyEnd, this.info)
+      this.busyEventEmitted = false
     }
   }
 
   private checkAndEmitTaskQueuingEvents (): void {
-    if (!this.backPressureEventEmitted && this.backPressure) {
-      this.emitter?.emit(PoolEvents.backPressure, this.info)
+    if (
+      this.emitter != null &&
+      !this.backPressureEventEmitted &&
+      this.backPressure
+    ) {
+      this.emitter.emit(PoolEvents.backPressure, this.info)
       this.backPressureEventEmitted = true
     }
   }
@@ -1181,6 +1205,7 @@ export abstract class AbstractPool<
       }
       asyncResource?.emitDestroy()
       this.afterTaskExecutionHook(workerNodeKey, message)
+      this.checkAndEmitTaskExecutionFinishedEvents()
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.promiseResponseMap.delete(taskId!)
       if (this.opts.enableTasksQueue === true && !this.destroying) {
@@ -1725,10 +1750,13 @@ export abstract class AbstractPool<
         await this.destroyWorkerNode(workerNodeKey)
       })
     )
-    this.emitter?.emit(PoolEvents.destroy, this.info)
-    this.emitter?.emitDestroy()
-    this.readyEventEmitted = false
-    this.backPressureEventEmitted = false
+    if (this.emitter != null) {
+      this.emitter.emit(PoolEvents.destroy, this.info)
+      this.emitter.emitDestroy()
+      this.readyEventEmitted = false
+      this.busyEventEmitted = false
+      this.backPressureEventEmitted = false
+    }
     delete this.startTimestamp
     this.destroying = false
     this.started = false

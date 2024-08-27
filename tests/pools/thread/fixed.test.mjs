@@ -273,6 +273,7 @@ describe('Fixed thread pool test suite', () => {
     expect(pool.info.ready).toBe(false)
     expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.destroy])
     expect(pool.readyEventEmitted).toBe(false)
+    expect(pool.busyEventEmitted).toBe(false)
     expect(pool.backPressureEventEmitted).toBe(false)
     expect(pool.workerNodes.length).toBe(0)
     expect(numberOfExitEvents).toBe(numberOfThreads)

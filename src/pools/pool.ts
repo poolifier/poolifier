@@ -50,6 +50,7 @@ export const PoolEvents: Readonly<{
   backPressure: 'backPressure'
   backPressureEnd: 'backPressureEnd'
   busy: 'busy'
+  busyEnd: 'busyEnd'
   destroy: 'destroy'
   empty: 'empty'
   error: 'error'
@@ -60,6 +61,7 @@ export const PoolEvents: Readonly<{
   backPressure: 'backPressure',
   backPressureEnd: 'backPressureEnd',
   busy: 'busy',
+  busyEnd: 'busyEnd',
   destroy: 'destroy',
   empty: 'empty',
   error: 'error',
@@ -283,6 +285,7 @@ export interface IPool<
    *
    * - `'ready'`: Emitted when the number of workers created in the pool has reached the minimum size expected and are ready. If the pool is dynamic with a minimum number of workers is set to zero, this event is emitted when at least one dynamic worker is ready.
    * - `'busy'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are executing concurrently their tasks quota.
+   * - `'busyEnd'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are no longer executing concurrently their tasks quota.
    * - `'full'`: Emitted when the pool is dynamic and the number of workers created has reached the maximum size expected.
    * - `'empty'`: Emitted when the pool is dynamic with a minimum number of workers set to zero and the number of workers has reached the minimum size expected.
    * - `'destroy'`: Emitted when the pool is destroyed.
