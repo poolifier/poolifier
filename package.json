@@ -113,7 +113,7 @@
     "eslint": "^9.9.1",
     "eslint-define-config": "^2.1.0",
     "eslint-plugin-jsdoc": "^50.2.2",
-    "eslint-plugin-perfectionist": "^3.2.0",
+    "eslint-plugin-perfectionist": "^3.3.0",
     "expect": "^29.7.0",
     "globals": "^15.9.0",
     "husky": "^9.1.5",
