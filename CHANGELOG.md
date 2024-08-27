@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.6](https://github.com/poolifier/poolifier/compare/v4.2.5...v4.2.6) (2024-08-27)
+
+
+### 🐞 Bug Fixes
+
+* fix pool back pressure semantic on dynamic pool ([227e9e9](https://github.com/poolifier/poolifier/commit/227e9e9b75b8e004dd7651af5961490e58ffdda9))
+
+
+### ⚡ Performance
+
+* track pool back pressure lifecycle via events ([303c0db](https://github.com/poolifier/poolifier/commit/303c0db0528190df1f9f726e96c49dbb10f09d27))
+* track pool busy lifecycle via events ([f8a57da](https://github.com/poolifier/poolifier/commit/f8a57da1a44233d40635aabba944ed036258f8ab))
+
+
+### ✨ Polish
+
+* cleanup worker node back pressure checks ([697d8c6](https://github.com/poolifier/poolifier/commit/697d8c6debe324881015e70f43f708c6880be92a))
+
+
+### 📚 Documentation
+
+* publish documentation ([22cdcdd](https://github.com/poolifier/poolifier/commit/22cdcddef65fbcad1f91bbdbec4788c9b81d29be))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump the regular group with 2 updates ([46c6476](https://github.com/poolifier/poolifier/commit/46c6476ed661a91b88a48025faf9bd0c7ed387a6))
+* **deps:** bump the regular group across 11 directories with 2 updates ([43922bf](https://github.com/poolifier/poolifier/commit/43922bfb3902595907ce671a8a245b1f9ee09067))
+
 ## [4.2.5](https://github.com/poolifier/poolifier/compare/v4.2.4...v4.2.5) (2024-08-26)
 
 

@@ -150,7 +150,7 @@ export type WorkerType = keyof typeof WorkerTypes
 export interface WorkerInfo {
   /**
    * Back pressure flag.
-   * This flag is set to `true` when worker node tasks queue has back pressure.
+   * This flag is set to `true` when worker node tasks queue is back pressured.
    */
   backPressure: boolean
   /**
