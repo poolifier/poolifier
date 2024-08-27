@@ -1,6 +1,6 @@
 export enum MessageType {
   echo = 'echo',
-  factorial = 'factorial'
+  factorial = 'factorial',
 }
 
 export interface MessagePayload<T = unknown> {
