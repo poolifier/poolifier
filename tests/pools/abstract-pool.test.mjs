@@ -1136,15 +1136,15 @@ describe('Abstract pool test suite', () => {
       executingTasks: expect.any(Number),
       failedTasks: expect.any(Number),
       idleWorkerNodes: expect.any(Number),
-      maxSize: expect.any(Number),
-      minSize: expect.any(Number),
+      maxSize: numberOfWorkers,
+      minSize: Math.floor(numberOfWorkers / 2),
       ready: true,
       started: true,
       strategyRetries: expect.any(Number),
       type: PoolTypes.dynamic,
       version,
       worker: WorkerTypes.cluster,
-      workerNodes: expect.any(Number),
+      workerNodes: Math.floor(numberOfWorkers / 2),
     })
     await pool.destroy()
   })
@@ -1184,15 +1184,15 @@ describe('Abstract pool test suite', () => {
       executingTasks: expect.any(Number),
       failedTasks: expect.any(Number),
       idleWorkerNodes: expect.any(Number),
-      maxSize: expect.any(Number),
-      minSize: expect.any(Number),
+      maxSize: numberOfWorkers,
+      minSize: numberOfWorkers,
       ready: true,
       started: true,
       strategyRetries: expect.any(Number),
       type: PoolTypes.fixed,
       version,
       worker: WorkerTypes.thread,
-      workerNodes: expect.any(Number),
+      workerNodes: numberOfWorkers,
     })
     expect(poolBusyEnd).toBe(1)
     expect(poolBusyEndInfo).toStrictEqual({
@@ -1202,20 +1202,20 @@ describe('Abstract pool test suite', () => {
       executingTasks: expect.any(Number),
       failedTasks: expect.any(Number),
       idleWorkerNodes: expect.any(Number),
-      maxSize: expect.any(Number),
-      minSize: expect.any(Number),
+      maxSize: numberOfWorkers,
+      minSize: numberOfWorkers,
       ready: true,
       started: true,
       strategyRetries: expect.any(Number),
       type: PoolTypes.fixed,
       version,
       worker: WorkerTypes.thread,
-      workerNodes: expect.any(Number),
+      workerNodes: numberOfWorkers,
     })
     await pool.destroy()
   })
 
-  it("Verify that pool event emitter 'full' event can register a callback", async () => {
+  it("Verify that pool event emitter 'full' and 'fullEnd' events can register a callback", async () => {
     const pool = new DynamicClusterPool(
       Math.floor(numberOfWorkers / 2),
       numberOfWorkers,
@@ -1224,33 +1224,61 @@ describe('Abstract pool test suite', () => {
     expect(pool.emitter.eventNames()).toStrictEqual([])
     const promises = new Set()
     let poolFull = 0
-    let poolInfo
+    let poolFullInfo
     pool.emitter.on(PoolEvents.full, info => {
       ++poolFull
-      poolInfo = info
+      poolFullInfo = info
     })
-    expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.full])
+    let poolFullEnd = 0
+    let poolFullEndInfo
+    pool.emitter.on(PoolEvents.fullEnd, info => {
+      ++poolFullEnd
+      poolFullEndInfo = info
+    })
+    expect(pool.emitter.eventNames()).toStrictEqual([
+      PoolEvents.full,
+      PoolEvents.fullEnd,
+    ])
     for (let i = 0; i < numberOfWorkers * 2; i++) {
       promises.add(pool.execute())
     }
     await Promise.all(promises)
     expect(poolFull).toBe(1)
-    expect(poolInfo).toStrictEqual({
+    expect(poolFullInfo).toStrictEqual({
       busyWorkerNodes: expect.any(Number),
       defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
       failedTasks: expect.any(Number),
       idleWorkerNodes: expect.any(Number),
-      maxSize: expect.any(Number),
-      minSize: expect.any(Number),
+      maxSize: numberOfWorkers,
+      minSize: Math.floor(numberOfWorkers / 2),
       ready: true,
       started: true,
       strategyRetries: expect.any(Number),
       type: PoolTypes.dynamic,
       version,
       worker: WorkerTypes.cluster,
-      workerNodes: expect.any(Number),
+      workerNodes: numberOfWorkers,
+    })
+    await waitPoolEvents(pool, PoolEvents.fullEnd, 1)
+    expect(poolFullEnd).toBe(1)
+    expect(poolFullEndInfo).toStrictEqual({
+      busyWorkerNodes: expect.any(Number),
+      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      executedTasks: expect.any(Number),
+      executingTasks: expect.any(Number),
+      failedTasks: expect.any(Number),
+      idleWorkerNodes: expect.any(Number),
+      maxSize: numberOfWorkers,
+      minSize: Math.floor(numberOfWorkers / 2),
+      ready: true,
+      started: true,
+      strategyRetries: expect.any(Number),
+      type: PoolTypes.dynamic,
+      version,
+      worker: WorkerTypes.cluster,
+      workerNodes: Math.floor(numberOfWorkers / 2),
     })
     await pool.destroy()
   })
@@ -1296,8 +1324,8 @@ describe('Abstract pool test suite', () => {
       failedTasks: expect.any(Number),
       idleWorkerNodes: expect.any(Number),
       maxQueuedTasks: expect.any(Number),
-      maxSize: expect.any(Number),
-      minSize: expect.any(Number),
+      maxSize: numberOfWorkers,
+      minSize: numberOfWorkers,
       queuedTasks: expect.any(Number),
       ready: true,
       started: true,
@@ -1307,7 +1335,7 @@ describe('Abstract pool test suite', () => {
       type: PoolTypes.fixed,
       version,
       worker: WorkerTypes.thread,
-      workerNodes: expect.any(Number),
+      workerNodes: numberOfWorkers,
     })
     expect(poolBackPressureEnd).toBe(1)
     expect(poolBackPressureEndInfo).toStrictEqual({
@@ -1320,8 +1348,8 @@ describe('Abstract pool test suite', () => {
       failedTasks: expect.any(Number),
       idleWorkerNodes: expect.any(Number),
       maxQueuedTasks: expect.any(Number),
-      maxSize: expect.any(Number),
-      minSize: expect.any(Number),
+      maxSize: numberOfWorkers,
+      minSize: numberOfWorkers,
       queuedTasks: expect.any(Number),
       ready: true,
       started: true,
@@ -1331,7 +1359,7 @@ describe('Abstract pool test suite', () => {
       type: PoolTypes.fixed,
       version,
       worker: WorkerTypes.thread,
-      workerNodes: expect.any(Number),
+      workerNodes: numberOfWorkers,
     })
     await pool.destroy()
   })
@@ -1364,15 +1392,15 @@ describe('Abstract pool test suite', () => {
       executingTasks: expect.any(Number),
       failedTasks: expect.any(Number),
       idleWorkerNodes: expect.any(Number),
-      maxSize: expect.any(Number),
-      minSize: expect.any(Number),
+      maxSize: numberOfWorkers,
+      minSize: 0,
       ready: true,
       started: true,
       strategyRetries: expect.any(Number),
       type: PoolTypes.dynamic,
       version,
       worker: WorkerTypes.cluster,
-      workerNodes: expect.any(Number),
+      workerNodes: 0,
     })
     await pool.destroy()
   })

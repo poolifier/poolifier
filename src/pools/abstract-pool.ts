@@ -624,6 +624,11 @@ export abstract class AbstractPool<
   protected abstract checkAndEmitDynamicWorkerCreationEvents (): void
 
   /**
+   * Emits dynamic worker destruction events.
+   */
+  protected abstract checkAndEmitDynamicWorkerDestructionEvents (): void
+
+  /**
    * Creates a new, completely set up dynamic worker node.
    * @returns New, completely set up dynamic worker node key.
    */
@@ -1395,8 +1400,10 @@ export abstract class AbstractPool<
     if (workerNodeKey !== -1) {
       this.workerNodes.splice(workerNodeKey, 1)
       this.workerChoiceStrategiesContext?.remove(workerNodeKey)
+      workerNode.info.dynamic &&
+        this.checkAndEmitDynamicWorkerDestructionEvents()
+      this.checkAndEmitEmptyEvent()
     }
-    this.checkAndEmitEmptyEvent()
   }
 
   private resetTaskSequentiallyStolenStatisticsWorkerUsage (
@@ -1758,8 +1765,6 @@ export abstract class AbstractPool<
       this.emitter.emit(PoolEvents.destroy, this.info)
       this.emitter.emitDestroy()
       this.readyEventEmitted = false
-      this.busyEventEmitted = false
-      this.backPressureEventEmitted = false
     }
     delete this.startTimestamp
     this.destroying = false
