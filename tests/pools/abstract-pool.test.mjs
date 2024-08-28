@@ -1386,12 +1386,12 @@ describe('Abstract pool test suite', () => {
     await waitPoolEvents(pool, PoolEvents.empty, 1)
     expect(poolEmpty).toBe(1)
     expect(poolInfo).toStrictEqual({
-      busyWorkerNodes: expect.any(Number),
+      busyWorkerNodes: 0,
       defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
       failedTasks: expect.any(Number),
-      idleWorkerNodes: expect.any(Number),
+      idleWorkerNodes: 0,
       maxSize: numberOfWorkers,
       minSize: 0,
       ready: true,
