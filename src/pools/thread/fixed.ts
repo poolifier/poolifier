@@ -48,6 +48,11 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
+  protected checkAndEmitDynamicWorkerDestructionEvents (): void {
+    /* noop */
+  }
+
+  /** @inheritDoc */
   protected deregisterWorkerMessageListener<Message extends Data | Response>(
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void

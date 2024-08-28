@@ -17,6 +17,11 @@ export class DynamicClusterPool<
   Response = unknown
 > extends FixedClusterPool<Data, Response> {
   /**
+   * Whether the pool full event has been emitted or not.
+   */
+  private fullEventEmitted: boolean
+
+  /**
    * Constructs a new poolifier dynamic cluster pool.
    * @param min - Minimum number of workers which are always active.
    * @param max - Maximum number of workers that can be created by this pool.
@@ -34,12 +39,27 @@ export class DynamicClusterPool<
       this.minimumNumberOfWorkers,
       this.maximumNumberOfWorkers
     )
+    this.fullEventEmitted = false
   }
 
   /** @inheritDoc */
   protected checkAndEmitDynamicWorkerCreationEvents (): void {
-    if (this.emitter != null && this.full) {
+    if (this.emitter != null && !this.fullEventEmitted && this.full) {
       this.emitter.emit(PoolEvents.full, this.info)
+      this.fullEventEmitted = true
+    }
+  }
+
+  /** @inheritDoc */
+  protected checkAndEmitDynamicWorkerDestructionEvents (): void {
+    if (this.emitter != null) {
+      if (this.fullEventEmitted && !this.full) {
+        this.emitter.emit(PoolEvents.fullEnd, this.info)
+        this.fullEventEmitted = false
+      }
+      if (this.empty) {
+        this.emitter.emit(PoolEvents.empty, this.info)
+      }
     }
   }
 
