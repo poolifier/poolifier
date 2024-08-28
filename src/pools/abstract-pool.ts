@@ -644,6 +644,11 @@ export abstract class AbstractPool<
   protected abstract checkAndEmitDynamicWorkerCreationEvents (): void
 
   /**
+   * Emits dynamic worker destruction events.
+   */
+  protected abstract checkAndEmitDynamicWorkerDestructionEvents (): void
+
+  /**
    * Creates a new, completely set up dynamic worker node.
    * @returns New, completely set up dynamic worker node key.
    */
@@ -947,12 +952,6 @@ export abstract class AbstractPool<
 
   private cannotStealTask (): boolean {
     return this.workerNodes.length <= 1 || this.info.queuedTasks === 0
-  }
-
-  private checkAndEmitEmptyEvent (): void {
-    if (this.emitter != null && this.empty) {
-      this.emitter.emit(PoolEvents.empty, this.info)
-    }
   }
 
   private checkAndEmitReadyEvent (): void {
@@ -1416,8 +1415,9 @@ export abstract class AbstractPool<
     if (workerNodeKey !== -1) {
       this.workerNodes.splice(workerNodeKey, 1)
       this.workerChoiceStrategiesContext?.remove(workerNodeKey)
+      workerNode.info.dynamic &&
+        this.checkAndEmitDynamicWorkerDestructionEvents()
     }
-    this.checkAndEmitEmptyEvent()
   }
 
   private resetTaskSequentiallyStolenStatisticsWorkerUsage (
@@ -1789,8 +1789,6 @@ export abstract class AbstractPool<
       this.emitter.emit(PoolEvents.destroy, this.info)
       this.emitter.emitDestroy()
       this.readyEventEmitted = false
-      this.busyEventEmitted = false
-      this.backPressureEventEmitted = false
     }
     delete this.startTimestamp
     this.destroying = false
@@ -2090,31 +2088,6 @@ export abstract class AbstractPool<
           this.isWorkerNodeBusy(workerNodeKey) ? accumulator + 1 : accumulator,
         0
       ),
-      idleWorkerNodes: this.workerNodes.reduce(
-        (accumulator, _, workerNodeKey) =>
-          this.isWorkerNodeIdle(workerNodeKey) ? accumulator + 1 : accumulator,
-        0
-      ),
-      workerNodes: this.workerNodes.length,
-      ...(this.opts.enableTasksQueue === true && {
-        stealingWorkerNodes: this.workerNodes.reduce(
-          (accumulator, workerNode) =>
-            workerNode.info.continuousStealing ||
-            workerNode.info.backPressureStealing
-              ? accumulator + 1
-              : accumulator,
-          0
-        ),
-      }),
-      ...(this.opts.enableTasksQueue === true && {
-        backPressureWorkerNodes: this.workerNodes.reduce(
-          (accumulator, _, workerNodeKey) =>
-            this.isWorkerNodeBackPressured(workerNodeKey)
-              ? accumulator + 1
-              : accumulator,
-          0
-        ),
-      }),
       executedTasks: this.workerNodes.reduce(
         (accumulator, workerNode) =>
           accumulator + workerNode.usage.tasks.executed,
@@ -2125,35 +2098,50 @@ export abstract class AbstractPool<
           accumulator + workerNode.usage.tasks.executing,
         0
       ),
+      failedTasks: this.workerNodes.reduce(
+        (accumulator, workerNode) =>
+          accumulator + workerNode.usage.tasks.failed,
+        0
+      ),
+      idleWorkerNodes: this.workerNodes.reduce(
+        (accumulator, _, workerNodeKey) =>
+          this.isWorkerNodeIdle(workerNodeKey) ? accumulator + 1 : accumulator,
+        0
+      ),
+      workerNodes: this.workerNodes.length,
       ...(this.opts.enableTasksQueue === true && {
-        queuedTasks: this.workerNodes.reduce(
-          (accumulator, workerNode) =>
-            accumulator + workerNode.usage.tasks.queued,
+        backPressure: this.backPressure,
+        backPressureWorkerNodes: this.workerNodes.reduce(
+          (accumulator, _, workerNodeKey) =>
+            this.isWorkerNodeBackPressured(workerNodeKey)
+              ? accumulator + 1
+              : accumulator,
           0
         ),
-      }),
-      ...(this.opts.enableTasksQueue === true && {
         maxQueuedTasks: this.workerNodes.reduce(
           (accumulator, workerNode) =>
             accumulator + (workerNode.usage.tasks.maxQueued ?? 0),
           0
         ),
-      }),
-      ...(this.opts.enableTasksQueue === true && {
-        backPressure: this.backPressure,
-      }),
-      ...(this.opts.enableTasksQueue === true && {
+        queuedTasks: this.workerNodes.reduce(
+          (accumulator, workerNode) =>
+            accumulator + workerNode.usage.tasks.queued,
+          0
+        ),
+        stealingWorkerNodes: this.workerNodes.reduce(
+          (accumulator, workerNode) =>
+            workerNode.info.continuousStealing ||
+            workerNode.info.backPressureStealing
+              ? accumulator + 1
+              : accumulator,
+          0
+        ),
         stolenTasks: this.workerNodes.reduce(
           (accumulator, workerNode) =>
             accumulator + workerNode.usage.tasks.stolen,
           0
         ),
       }),
-      failedTasks: this.workerNodes.reduce(
-        (accumulator, workerNode) =>
-          accumulator + workerNode.usage.tasks.failed,
-        0
-      ),
       ...(this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements()
         .runTime.aggregate === true && {
         runTime: {

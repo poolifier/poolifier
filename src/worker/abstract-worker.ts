@@ -289,13 +289,12 @@ export abstract class AbstractWorker<
           }),
         })
         break
-      case 'remove':
-        response = this.removeTaskFunction(taskFunctionProperties.name)
-        break
       case 'default':
         response = this.setDefaultTaskFunction(taskFunctionProperties.name)
         break
-      // eslint-disable-next-line perfectionist/sort-switch-case
+      case 'remove':
+        response = this.removeTaskFunction(taskFunctionProperties.name)
+        break
       default:
         response = { error: new Error('Unknown task operation'), status: false }
         break
