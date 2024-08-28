@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.7](https://github.com/poolifier/poolifier/compare/v4.2.6...v4.2.7) (2024-08-28)
+
+
+### ⚡ Performance
+
+* reduce useless branching at pool info building ([4a29667](https://github.com/poolifier/poolifier/commit/4a29667ae71425df81946f45951e90aef20986e9))
+* track dynamic pool full lifecycle via events ([5f9e905](https://github.com/poolifier/poolifier/commit/5f9e90500ddf396a1862479540a4784bca043a20))
+
+
+### ✨ Polish
+
+* cleanup pool information ordering ([ba443f4](https://github.com/poolifier/poolifier/commit/ba443f407e3d94f83bb8d013f7552b271bd3d445))
+* merge dynamic pool events emission code ([e6cf2a9](https://github.com/poolifier/poolifier/commit/e6cf2a95dd56b9683ed81b622f5565c97a60e5a1))
+
+
+### 🧪 Tests
+
+* improve pool empty event test ([4b91b77](https://github.com/poolifier/poolifier/commit/4b91b77184b873be455d65b91719f747bb460778))
+
+
+### 📚 Documentation
+
+* publish documentation ([f948bb3](https://github.com/poolifier/poolifier/commit/f948bb3ef36f727934404c7a490075d431022e39))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump eslint-plugin-perfectionist from 3.2.0 to 3.3.0 in the regular group ([#2549](https://github.com/poolifier/poolifier/issues/2549)) ([60b5fab](https://github.com/poolifier/poolifier/commit/60b5fabe702dab1324f95b2353d8710b6694ec2b))
+* **deps:** bump the regular group across 11 directories with 1 update ([#2550](https://github.com/poolifier/poolifier/issues/2550)) ([7cfe89c](https://github.com/poolifier/poolifier/commit/7cfe89c198cb3f0174713642e4bcddc0ddc1451f))
+
 ## [4.2.6](https://github.com/poolifier/poolifier/compare/v4.2.5...v4.2.6) (2024-08-27)
 
 
