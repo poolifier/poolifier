@@ -285,7 +285,7 @@ export interface IPool<
    *
    * Events that can currently be listened to:
    *
-   * - `'ready'`: Emitted when the number of workers created in the pool has reached the minimum size expected and are ready. If the pool is dynamic with a minimum number of workers is set to zero, this event is emitted when at least one dynamic worker is ready.
+   * - `'ready'`: Emitted when the number of workers created in the pool has reached the minimum size expected and are ready. If the pool is dynamic with a minimum number of workers set to zero, this event is emitted when the pool is started.
    * - `'busy'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are executing concurrently their tasks quota.
    * - `'busyEnd'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are no longer executing concurrently their tasks quota.
    * - `'full'`: Emitted when the pool is dynamic and the number of workers created has reached the maximum size expected.
