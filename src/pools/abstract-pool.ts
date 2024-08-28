@@ -934,12 +934,6 @@ export abstract class AbstractPool<
     return this.workerNodes.length <= 1 || this.info.queuedTasks === 0
   }
 
-  private checkAndEmitEmptyEvent (): void {
-    if (this.emitter != null && this.empty) {
-      this.emitter.emit(PoolEvents.empty, this.info)
-    }
-  }
-
   private checkAndEmitReadyEvent (): void {
     if (this.emitter != null && !this.readyEventEmitted && this.ready) {
       this.emitter.emit(PoolEvents.ready, this.info)
@@ -1402,7 +1396,6 @@ export abstract class AbstractPool<
       this.workerChoiceStrategiesContext?.remove(workerNodeKey)
       workerNode.info.dynamic &&
         this.checkAndEmitDynamicWorkerDestructionEvents()
-      this.checkAndEmitEmptyEvent()
     }
   }
 

@@ -52,9 +52,14 @@ export class DynamicThreadPool<
 
   /** @inheritDoc */
   protected checkAndEmitDynamicWorkerDestructionEvents (): void {
-    if (this.emitter != null && this.fullEventEmitted && !this.full) {
-      this.emitter.emit(PoolEvents.fullEnd, this.info)
-      this.fullEventEmitted = false
+    if (this.emitter != null) {
+      if (this.fullEventEmitted && !this.full) {
+        this.emitter.emit(PoolEvents.fullEnd, this.info)
+        this.fullEventEmitted = false
+      }
+      if (this.empty) {
+        this.emitter.emit(PoolEvents.empty, this.info)
+      }
     }
   }
 
