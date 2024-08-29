@@ -138,14 +138,12 @@ pool.emitter?.on(PoolEvents.busy, () => console.info('Pool is busy'))
 
 // the execute method signature is the same for both implementations,
 // so you can easily switch from one to another
-pool
-  .execute()
-  .then(res => {
-    console.info(res)
-  })
-  .catch(err => {
-    console.error(err)
-  })
+try {
+  const res = await pool.execute()
+  console.info(res)
+} catch (err) {
+  console.error(err)
+}
 ```
 
 You can do the same with the classes _ClusterWorker_, _FixedClusterPool_ and _DynamicClusterPool_.
