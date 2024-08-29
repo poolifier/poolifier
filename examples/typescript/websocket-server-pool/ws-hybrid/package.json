@@ -21,12 +21,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "poolifier": "^4.2.6",
+    "poolifier": "^4.2.7",
     "ws": "^8.18.0"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/node": "^22.5.0",
+    "@types/node": "^22.5.1",
     "@types/ws": "^8.5.12",
     "rollup": "^4.21.1",
     "rollup-plugin-delete": "^2.0.0",
