@@ -44,6 +44,11 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
+  protected checkAndEmitDynamicWorkerDestructionEvents (): void {
+    /* noop */
+  }
+
+  /** @inheritDoc */
   protected deregisterWorkerMessageListener<Message extends Data | Response>(
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
@@ -98,6 +103,11 @@ export class FixedClusterPool<
   /** @inheritDoc */
   protected shallCreateDynamicWorker (): boolean {
     return false
+  }
+
+  /** @inheritDoc */
+  protected get backPressure (): boolean {
+    return this.internalBackPressure()
   }
 
   /** @inheritDoc */

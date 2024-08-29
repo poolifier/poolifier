@@ -270,8 +270,11 @@ describe('Fixed thread pool test suite', () => {
     await pool.destroy()
     const numberOfExitEvents = await exitPromise
     expect(pool.info.started).toBe(false)
+    expect(pool.info.ready).toBe(false)
     expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.destroy])
     expect(pool.readyEventEmitted).toBe(false)
+    expect(pool.busyEventEmitted).toBe(false)
+    expect(pool.backPressureEventEmitted).toBe(false)
     expect(pool.workerNodes.length).toBe(0)
     expect(numberOfExitEvents).toBe(numberOfThreads)
     expect(poolDestroy).toBe(1)
