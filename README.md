@@ -107,8 +107,8 @@ function yourFunction(data) {
   return { ok: 1 }
 }
 
-module.exports = new ThreadWorker(yourFunction, {
-  maxInactiveTime: 60000
+export default new ThreadWorker(yourFunction, {
+  maxInactiveTime: 60000,
 })
 ```
 
@@ -120,7 +120,7 @@ import { DynamicThreadPool, FixedThreadPool, PoolEvents, availableParallelism } 
 // a fixed worker_threads pool
 const pool = new FixedThreadPool(availableParallelism(), './yourWorker.js', {
   onlineHandler: () => console.info('worker is online'),
-  errorHandler: e => console.error(e)
+  errorHandler: e => console.error(e),
 })
 
 pool.emitter?.on(PoolEvents.ready, () => console.info('Pool is ready'))
@@ -129,7 +129,7 @@ pool.emitter?.on(PoolEvents.busy, () => console.info('Pool is busy'))
 // or a dynamic worker_threads pool
 const pool = new DynamicThreadPool(Math.floor(availableParallelism() / 2), availableParallelism(), './yourWorker.js', {
   onlineHandler: () => console.info('worker is online'),
-  errorHandler: e => console.error(e)
+  errorHandler: e => console.error(e),
 })
 
 pool.emitter?.on(PoolEvents.full, () => console.info('Pool is full'))
