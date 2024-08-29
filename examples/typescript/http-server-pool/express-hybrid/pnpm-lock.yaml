@@ -12,8 +12,8 @@ importers:
         specifier: ^4.19.2
         version: 4.19.2
       poolifier:
-        specifier: ^4.2.6
-        version: 4.2.6
+        specifier: ^4.2.7
+        version: 4.2.7
     devDependencies:
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
@@ -22,8 +22,8 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       '@types/node':
-        specifier: ^22.5.0
-        version: 22.5.0
+        specifier: ^22.5.1
+        version: 22.5.1
       autocannon:
         specifier: ^7.15.0
         version: 7.15.0
@@ -190,8 +190,8 @@ packages:
   '@types/minimatch@5.1.2':
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
 
-  '@types/node@22.5.0':
-    resolution: {integrity: sha512-DkFrJOe+rfdHTqqMg0bSNlGlQ85hSoh2TPzZyhHsXnMtligRWpxUySiyw8FY14ITt24HVCiQPWxS3KO/QlGmWg==}
+  '@types/node@22.5.1':
+    resolution: {integrity: sha512-KkHsxej0j9IW1KKOOAA/XBA0z08UFSrRQHErzEfA3Vgq57eXIMYboIlHJuYIfd+lwCQjtKqUu3UnmKbtUc9yRw==}
 
   '@types/qs@6.9.15':
     resolution: {integrity: sha512-uXHQKES6DQKKCLh441Xv/dwxOq1TVS3JPUMlEqoEglvlhR6Mxnlew/Xq/LRVHpLyk7iK3zODe1qYHIMltO7XGg==}
@@ -635,8 +635,8 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
-  poolifier@4.2.6:
-    resolution: {integrity: sha512-k0D9UYD+ECvNRoWDPREqUtj3XFtuPg7zz0EI1PV+6kicMlH64PT9aJTKng79zpHoaEH/gSu+J0olY6q87Quk0w==}
+  poolifier@4.2.7:
+    resolution: {integrity: sha512-R8ggfIlg7QNC4nCOF5DU3yGv/QouLZvqGl9lpp9yrjRgI1wKtPlhWGyEDXxo/TmTq86SpdhmaYszzEXl9pIDvQ==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   pretty-bytes@5.6.0:
@@ -890,17 +890,17 @@ snapshots:
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 22.5.0
+      '@types/node': 22.5.1
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 22.5.0
+      '@types/node': 22.5.1
 
   '@types/estree@1.0.5': {}
 
   '@types/express-serve-static-core@4.19.5':
     dependencies:
-      '@types/node': 22.5.0
+      '@types/node': 22.5.1
       '@types/qs': 6.9.15
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -915,7 +915,7 @@ snapshots:
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 22.5.0
+      '@types/node': 22.5.1
 
   '@types/http-errors@2.0.4': {}
 
@@ -923,7 +923,7 @@ snapshots:
 
   '@types/minimatch@5.1.2': {}
 
-  '@types/node@22.5.0':
+  '@types/node@22.5.1':
     dependencies:
       undici-types: 6.19.8
 
@@ -934,12 +934,12 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 22.5.0
+      '@types/node': 22.5.1
 
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 22.5.0
+      '@types/node': 22.5.1
       '@types/send': 0.17.4
 
   accepts@1.3.8:
@@ -1392,7 +1392,7 @@ snapshots:
 
   picomatch@2.3.1: {}
 
-  poolifier@4.2.6: {}
+  poolifier@4.2.7: {}
 
   pretty-bytes@5.6.0: {}
 

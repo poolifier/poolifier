@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       poolifier:
-        specifier: ^4.2.6
-        version: 4.2.6
+        specifier: ^4.2.7
+        version: 4.2.7
       ws:
         specifier: ^8.18.0
         version: 8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
@@ -23,8 +23,8 @@ importers:
         version: 6.0.4
     devDependencies:
       '@types/node':
-        specifier: ^22.5.0
-        version: 22.5.0
+        specifier: ^22.5.1
+        version: 22.5.1
       '@types/ws':
         specifier: ^8.5.12
         version: 8.5.12
@@ -34,8 +34,8 @@ importers:
 
 packages:
 
-  '@types/node@22.5.0':
-    resolution: {integrity: sha512-DkFrJOe+rfdHTqqMg0bSNlGlQ85hSoh2TPzZyhHsXnMtligRWpxUySiyw8FY14ITt24HVCiQPWxS3KO/QlGmWg==}
+  '@types/node@22.5.1':
+    resolution: {integrity: sha512-KkHsxej0j9IW1KKOOAA/XBA0z08UFSrRQHErzEfA3Vgq57eXIMYboIlHJuYIfd+lwCQjtKqUu3UnmKbtUc9yRw==}
 
   '@types/ws@8.5.12':
     resolution: {integrity: sha512-3tPRkv1EtkDpzlgyKyI8pGsGZAGPEaXeu0DOj5DI25Ja91bdAYddYHbADRYVrZMRbfW+1l5YwXVDKohDJNQxkQ==}
@@ -48,8 +48,8 @@ packages:
     resolution: {integrity: sha512-OSs33Z9yWr148JZcbZd5WiAXhh/n9z8TxQcdMhIOlpN9AhWpLfvVFO73+m77bBABQMaY9XSvIa+qk0jlI7Gcaw==}
     hasBin: true
 
-  poolifier@4.2.6:
-    resolution: {integrity: sha512-k0D9UYD+ECvNRoWDPREqUtj3XFtuPg7zz0EI1PV+6kicMlH64PT9aJTKng79zpHoaEH/gSu+J0olY6q87Quk0w==}
+  poolifier@4.2.7:
+    resolution: {integrity: sha512-R8ggfIlg7QNC4nCOF5DU3yGv/QouLZvqGl9lpp9yrjRgI1wKtPlhWGyEDXxo/TmTq86SpdhmaYszzEXl9pIDvQ==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   typescript@5.5.4:
@@ -78,13 +78,13 @@ packages:
 
 snapshots:
 
-  '@types/node@22.5.0':
+  '@types/node@22.5.1':
     dependencies:
       undici-types: 6.19.8
 
   '@types/ws@8.5.12':
     dependencies:
-      '@types/node': 22.5.0
+      '@types/node': 22.5.1
 
   bufferutil@4.0.8:
     dependencies:
@@ -94,7 +94,7 @@ snapshots:
   node-gyp-build@4.8.1:
     optional: true
 
-  poolifier@4.2.6: {}
+  poolifier@4.2.7: {}
 
   typescript@5.5.4: {}
 
