@@ -44,6 +44,17 @@ const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
       ): Promise<WorkerResponse> => await pool.execute(data, name, transferList)
     )
   }
+  if (!fastify.hasDecorator('mapExecute')) {
+    fastify.decorate(
+      'mapExecute',
+      async (
+        data: Iterable<WorkerData>,
+        name?: string,
+        transferList?: readonly TransferListItem[]
+      ): Promise<WorkerResponse[]> =>
+        await pool.mapExecute(data, name, transferList)
+    )
+  }
   done()
 }
 
