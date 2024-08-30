@@ -1181,12 +1181,12 @@ describe('Abstract pool test suite', () => {
     await Promise.all(promises)
     expect(poolBusy).toBe(1)
     expect(poolBusyInfo).toStrictEqual({
-      busyWorkerNodes: expect.any(Number),
+      busyWorkerNodes: numberOfWorkers,
       defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
       failedTasks: expect.any(Number),
-      idleWorkerNodes: expect.any(Number),
+      idleWorkerNodes: 0,
       maxSize: numberOfWorkers,
       minSize: numberOfWorkers,
       ready: true,
@@ -1215,6 +1215,7 @@ describe('Abstract pool test suite', () => {
       worker: WorkerTypes.thread,
       workerNodes: numberOfWorkers,
     })
+    expect(poolBusyEndInfo.busyWorkerNodes).toBeLessThan(numberOfWorkers)
     await pool.destroy()
   })
 
@@ -1319,7 +1320,7 @@ describe('Abstract pool test suite', () => {
     expect(poolBackPressure).toBe(1)
     expect(poolBackPressureInfo).toStrictEqual({
       backPressure: true,
-      backPressureWorkerNodes: expect.any(Number),
+      backPressureWorkerNodes: numberOfWorkers,
       busyWorkerNodes: expect.any(Number),
       defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
       executedTasks: expect.any(Number),
@@ -1364,6 +1365,9 @@ describe('Abstract pool test suite', () => {
       worker: WorkerTypes.thread,
       workerNodes: numberOfWorkers,
     })
+    expect(poolBackPressureEndInfo.backPressureWorkerNodes).toBeLessThan(
+      numberOfWorkers
+    )
     await pool.destroy()
   })
 
