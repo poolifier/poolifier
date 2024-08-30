@@ -260,8 +260,9 @@ export abstract class AbstractPool<
     if (
       this.cannotStealTask() ||
       this.backPressure ||
+      this.opts.tasksQueueOptions?.tasksStealingRatio === 0 ||
       (this.info.stealingWorkerNodes ?? 0) >
-        Math.round(
+        Math.ceil(
           this.workerNodes.length *
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.opts.tasksQueueOptions!.tasksStealingRatio!
@@ -319,8 +320,9 @@ export abstract class AbstractPool<
     if (
       !workerNode.info.continuousStealing &&
       (this.cannotStealTask() ||
+        this.opts.tasksQueueOptions?.tasksStealingRatio === 0 ||
         (this.info.stealingWorkerNodes ?? 0) >
-          Math.round(
+          Math.ceil(
             this.workerNodes.length *
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               this.opts.tasksQueueOptions!.tasksStealingRatio!
@@ -2041,28 +2043,6 @@ export abstract class AbstractPool<
    * @returns The pool busyness boolean status.
    */
   protected abstract get busy (): boolean
-
-  /**
-   * Whether the pool is empty or not.
-   * @returns The pool emptiness boolean status.
-   */
-  protected get empty (): boolean {
-    return (
-      this.minimumNumberOfWorkers === 0 &&
-      this.workerNodes.length === this.minimumNumberOfWorkers
-    )
-  }
-
-  /**
-   * Whether the pool is full or not.
-   * @returns The pool fullness boolean status.
-   */
-  protected get full (): boolean {
-    return (
-      this.workerNodes.length >=
-      (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers)
-    )
-  }
 
   /** @inheritDoc */
   public get info (): PoolInfo {
