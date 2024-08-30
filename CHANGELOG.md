@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.8](https://github.com/poolifier/poolifier/compare/v4.2.7...v4.2.8) (2024-08-30)
+
+
+### 🐞 Bug Fixes
+
+* fix dynamic thread pool full event emission rate ([52021de](https://github.com/poolifier/poolifier/commit/52021de72b77aa6c6fdd7c6dd816d7d53e6b2feb))
+
+
+### ✨ Polish
+
+* move dynamic pool only getters to its own class ([21e6b0e](https://github.com/poolifier/poolifier/commit/21e6b0ef4c8b89dbf4f8c588ae50887ce1f5177f))
+
+
+### 🧪 Tests
+
+* refine pool event tests expectation ([6a30766](https://github.com/poolifier/poolifier/commit/6a307669ef6f5aae3a8b79504255a8d3bdfd7c86))
+
+
+### 📚 Documentation
+
+* publish documentation ([bc407dc](https://github.com/poolifier/poolifier/commit/bc407dc6774b90aed4c7e2083f6adc765184dc69))
+* **README.md:** fix worker example export ([a5844a0](https://github.com/poolifier/poolifier/commit/a5844a0fffdb82f3890ff87fd0a75860edc20eea))
+* **README.md:** use top level await syntax in example ([3b4d090](https://github.com/poolifier/poolifier/commit/3b4d090fab7dd028a45d8ed12b02837919106084))
+* refine pool ready event emission condition ([3abc7fe](https://github.com/poolifier/poolifier/commit/3abc7fe895e74ae347ab729569f94d25729fceb1))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump the regular group with 3 updates ([d707c4d](https://github.com/poolifier/poolifier/commit/d707c4dc46af6311323aa7a0a235e1f6cbd30d1b))
+* **deps:** bump the regular group across 11 directories with 2 updates ([5c2e6e8](https://github.com/poolifier/poolifier/commit/5c2e6e8b247a9869cc7dc0989e6caaec8c0e1fe0))
+
 ## [4.2.7](https://github.com/poolifier/poolifier/compare/v4.2.6...v4.2.7) (2024-08-28)
 
 
