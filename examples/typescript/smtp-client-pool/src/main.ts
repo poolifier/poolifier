@@ -28,12 +28,11 @@ for (const to of tos) {
 
 try {
   const now = performance.now()
-  await smtpClientPool.mapExecute(smtpMessages)
+  const responses = await smtpClientPool.mapExecute(smtpMessages)
   const elapsedTime = performance.now() - now
   console.info(
-    `Send in parallel in ${elapsedTime.toFixed(
-      2
-    )}ms ${tos.length.toString()} mails with SMTP client pool`
+    `Send in parallel in ${elapsedTime.toFixed(2)}ms ${tos.length.toString()} mails with SMTP client pool:\n`,
+    responses
   )
 } catch (error) {
   console.error(error)

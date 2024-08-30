@@ -20,9 +20,7 @@ for (const workerFunction of ['node_fetch', 'fetch', 'axios']) {
     )
     const elapsedTime = performance.now() - now
     console.info(
-      `Received in ${elapsedTime.toFixed(
-        2
-      )}ms an array with ${responses.length.toString()} responses from ${parallelism.toString()} parallel requests made with HTTP client pool task function ${workerFunction} on ${requestUrl}:\n`,
+      `Received in ${elapsedTime.toFixed(2)}ms an array with ${responses.length.toString()} responses from ${parallelism.toString()} parallel requests made with HTTP client pool task function ${workerFunction} on ${requestUrl}:\n`,
       responses
     )
   } catch (error) {
