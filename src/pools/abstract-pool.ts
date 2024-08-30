@@ -2011,28 +2011,6 @@ export abstract class AbstractPool<
    */
   protected abstract get busy (): boolean
 
-  /**
-   * Whether the pool is empty or not.
-   * @returns The pool emptiness boolean status.
-   */
-  protected get empty (): boolean {
-    return (
-      this.minimumNumberOfWorkers === 0 &&
-      this.workerNodes.length === this.minimumNumberOfWorkers
-    )
-  }
-
-  /**
-   * Whether the pool is full or not.
-   * @returns The pool fullness boolean status.
-   */
-  protected get full (): boolean {
-    return (
-      this.workerNodes.length >=
-      (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers)
-    )
-  }
-
   /** @inheritDoc */
   public get info (): PoolInfo {
     return {
