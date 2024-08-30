@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.9](https://github.com/poolifier/poolifier/compare/v4.2.8...v4.2.9) (2024-08-30)
+
+
+### 🐞 Bug Fixes
+
+* handle properly small or zero `tasksStealingRatio` ([e45f621](https://github.com/poolifier/poolifier/commit/e45f62158cd1a0e899173a453b1fa43fb8ce7bba))
+
+
+### 📚 Documentation
+
+* publish documentation ([41a50df](https://github.com/poolifier/poolifier/commit/41a50dfe7c49c05bf2cd8a9cc0a6ff47385836e4))
+
 ## [4.2.8](https://github.com/poolifier/poolifier/compare/v4.2.7...v4.2.8) (2024-08-30)
 
 
