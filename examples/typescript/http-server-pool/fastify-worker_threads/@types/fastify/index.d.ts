@@ -11,6 +11,11 @@ declare module 'fastify' {
       name?: string,
       transferList?: readonly TransferListItem[]
     ) => Promise<WorkerResponse>
+    mapExecute: (
+      data: Iterable<WorkerData>,
+      name?: string,
+      transferList?: readonly TransferListItem[]
+    ) => Promise<WorkerResponse[]>
     pool: DynamicThreadPool<WorkerData, WorkerResponse>
   }
 }
