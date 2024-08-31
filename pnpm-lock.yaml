@@ -658,8 +658,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@shikijs/core@1.14.1':
-    resolution: {integrity: sha512-KyHIIpKNaT20FtFPFjCQB5WVSTpLR/n+jQXhWHWVUMm9MaOaG9BGOG0MSyt7yA4+Lm+4c9rTc03tt3nYzeYSfw==}
+  '@shikijs/core@1.15.1':
+    resolution: {integrity: sha512-DwkQTDNlhr7PwZMJswdvWIKts+2mqjIn8txByr88fhBRBtUSsIQR43RRoATjRrbeu4hyNTSTMBdxgp/vlxnxvA==}
 
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
@@ -679,8 +679,8 @@ packages:
   '@sinonjs/text-encoding@0.7.3':
     resolution: {integrity: sha512-DE427ROAphMQzU4ENbliGYrBSYPXF+TtLg9S8vzeA+OF4ZKzoDdzfL8sxuMUGS/lgRhM6j1URSk9ghf7Xo1tyA==}
 
-  '@stylistic/eslint-plugin@2.7.1':
-    resolution: {integrity: sha512-JqnHom8CP14oOgPhwTPbn0QgsBJwgNySQSe00V9GQQDlY1tEqZUlK4jM2DIOJ5nE+oXoy51vZWHnHkfZ6rEruw==}
+  '@stylistic/eslint-plugin@2.7.2':
+    resolution: {integrity: sha512-3DVLU5HEuk2pQoBmXJlzvrxbKNpu2mJ0SRqz5O/CJjyNCr12ZiPcYMEtuArTyPOk5i7bsAU44nywh1rGfe3gKQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: '>=8.40.0'
@@ -2350,8 +2350,8 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
 
-  shiki@1.14.1:
-    resolution: {integrity: sha512-FujAN40NEejeXdzPt+3sZ3F2dx1U24BY2XTY01+MG8mbxCiA2XukXdcbyMyLAHJ/1AUUnQd1tZlvIjefWWEJeA==}
+  shiki@1.15.1:
+    resolution: {integrity: sha512-QPtVwbafyHmH9Z90iEZgZL4BhqFh5RMnRq2Bic0Cqp5lgbpbkn4nNmed0zzXbh/yPFs2PpkCviM9qcrbN+9zAA==}
 
   side-channel@1.0.6:
     resolution: {integrity: sha512-fDW/EZ6Q9RiO8eFG8Hj+7u/oW+XrPTIChwCOM2+th2A6OblDtYYIpve9m+KvI9Z4C9qSEXlaGR6bTEYHReuglA==}
@@ -3234,7 +3234,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.21.2':
     optional: true
 
-  '@shikijs/core@1.14.1':
+  '@shikijs/core@1.15.1':
     dependencies:
       '@types/hast': 3.0.4
 
@@ -3260,7 +3260,7 @@ snapshots:
 
   '@sinonjs/text-encoding@0.7.3': {}
 
-  '@stylistic/eslint-plugin@2.7.1(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)':
+  '@stylistic/eslint-plugin@2.7.2(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)':
     dependencies:
       '@types/eslint': 9.6.1
       '@typescript-eslint/utils': 8.3.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)
@@ -4829,7 +4829,7 @@ snapshots:
   neostandard@0.11.4(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4):
     dependencies:
       '@humanwhocodes/gitignore-to-minimatch': 1.0.2
-      '@stylistic/eslint-plugin': 2.7.1(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)
+      '@stylistic/eslint-plugin': 2.7.2(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)
       '@types/eslint': 9.6.1
       eslint: 9.9.1(jiti@1.21.6)
       eslint-plugin-n: 17.10.2(eslint@9.9.1(jiti@1.21.6))
@@ -5160,9 +5160,9 @@ snapshots:
 
   shebang-regex@3.0.0: {}
 
-  shiki@1.14.1:
+  shiki@1.15.1:
     dependencies:
-      '@shikijs/core': 1.14.1
+      '@shikijs/core': 1.15.1
       '@types/hast': 3.0.4
 
   side-channel@1.0.6:
@@ -5398,7 +5398,7 @@ snapshots:
       lunr: 2.3.9
       markdown-it: 14.1.0
       minimatch: 9.0.5
-      shiki: 1.14.1
+      shiki: 1.15.1
       typescript: 5.5.4
       yaml: 2.5.0
 
