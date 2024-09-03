@@ -288,16 +288,16 @@ export abstract class AbstractPool<
           workerNodeA.usage.tasks.queued - workerNodeB.usage.tasks.queued
       )
     for (const [workerNodeKey, workerNode] of workerNodes.entries()) {
+      if (sourceWorkerNode.usage.tasks.queued === 0) {
+        break
+      }
       if (
-        sourceWorkerNode.usage.tasks.queued > 0 &&
         workerNode.info.id !== workerId &&
+        !workerNode.info.backPressureStealing &&
         workerNode.usage.tasks.queued <
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.opts.tasksQueueOptions!.size! - sizeOffset
       ) {
-        if (workerNode.info.backPressureStealing) {
-          continue
-        }
         workerNode.info.backPressureStealing = true
         this.stealTask(sourceWorkerNode, workerNodeKey)
         workerNode.info.backPressureStealing = false
