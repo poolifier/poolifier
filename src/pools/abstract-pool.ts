@@ -240,8 +240,9 @@ export abstract class AbstractPool<
     if (
       this.cannotStealTask() ||
       this.backPressure ||
+      this.opts.tasksQueueOptions?.tasksStealingRatio === 0 ||
       (this.info.stealingWorkerNodes ?? 0) >
-        Math.round(
+        Math.ceil(
           this.workerNodes.length *
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.opts.tasksQueueOptions!.tasksStealingRatio!
@@ -264,16 +265,16 @@ export abstract class AbstractPool<
           workerNodeA.usage.tasks.queued - workerNodeB.usage.tasks.queued
       )
     for (const [workerNodeKey, workerNode] of workerNodes.entries()) {
+      if (sourceWorkerNode.usage.tasks.queued === 0) {
+        break
+      }
       if (
-        sourceWorkerNode.usage.tasks.queued > 0 &&
         workerNode.info.id !== workerId &&
+        !workerNode.info.backPressureStealing &&
         workerNode.usage.tasks.queued <
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.opts.tasksQueueOptions!.size! - sizeOffset
       ) {
-        if (workerNode.info.backPressureStealing) {
-          continue
-        }
         workerNode.info.backPressureStealing = true
         this.stealTask(sourceWorkerNode, workerNodeKey)
         workerNode.info.backPressureStealing = false
@@ -299,8 +300,9 @@ export abstract class AbstractPool<
     if (
       !workerNode.info.continuousStealing &&
       (this.cannotStealTask() ||
+        this.opts.tasksQueueOptions?.tasksStealingRatio === 0 ||
         (this.info.stealingWorkerNodes ?? 0) >
-          Math.round(
+          Math.ceil(
             this.workerNodes.length *
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               this.opts.tasksQueueOptions!.tasksStealingRatio!
@@ -639,15 +641,12 @@ export abstract class AbstractPool<
       const localWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(
         message.workerId
       )
-      const workerInfo = this.getWorkerInfo(localWorkerNodeKey)
       // Kill message received from worker
       if (
         isKillBehavior(KillBehaviors.HARD, message.kill) ||
         (isKillBehavior(KillBehaviors.SOFT, message.kill) &&
           this.isWorkerNodeIdle(localWorkerNodeKey) &&
-          workerInfo != null &&
-          !workerInfo.continuousStealing &&
-          !workerInfo.backPressureStealing)
+          !this.isWorkerNodeStealing(localWorkerNodeKey))
       ) {
         // Flag the worker node as not ready immediately
         this.flagWorkerNodeAsNotReady(localWorkerNodeKey)
@@ -1361,6 +1360,15 @@ export abstract class AbstractPool<
     return workerNode.info.ready && workerNode.usage.tasks.executing === 0
   }
 
+  private isWorkerNodeStealing (workerNodeKey: number): boolean {
+    const workerNode = this.workerNodes[workerNodeKey]
+    return (
+      workerNode.info.ready &&
+      (workerNode.info.continuousStealing ||
+        workerNode.info.backPressureStealing)
+    )
+  }
+
   private redistributeQueuedTasks (sourceWorkerNodeKey: number): void {
     if (sourceWorkerNodeKey === -1 || this.cannotStealTask()) {
       return
@@ -2011,28 +2019,6 @@ export abstract class AbstractPool<
    */
   protected abstract get busy (): boolean
 
-  /**
-   * Whether the pool is empty or not.
-   * @returns The pool emptiness boolean status.
-   */
-  protected get empty (): boolean {
-    return (
-      this.minimumNumberOfWorkers === 0 &&
-      this.workerNodes.length === this.minimumNumberOfWorkers
-    )
-  }
-
-  /**
-   * Whether the pool is full or not.
-   * @returns The pool fullness boolean status.
-   */
-  protected get full (): boolean {
-    return (
-      this.workerNodes.length >=
-      (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers)
-    )
-  }
-
   /** @inheritDoc */
   public get info (): PoolInfo {
     return {
@@ -2098,9 +2084,8 @@ export abstract class AbstractPool<
           0
         ),
         stealingWorkerNodes: this.workerNodes.reduce(
-          (accumulator, workerNode) =>
-            workerNode.info.continuousStealing ||
-            workerNode.info.backPressureStealing
+          (accumulator, _, workerNodeKey) =>
+            this.isWorkerNodeStealing(workerNodeKey)
               ? accumulator + 1
               : accumulator,
           0

@@ -44,7 +44,7 @@ export class DynamicThreadPool<
 
   /** @inheritDoc */
   protected checkAndEmitDynamicWorkerCreationEvents (): void {
-    if (this.emitter != null && this.full) {
+    if (this.emitter != null && !this.fullEventEmitted && this.full) {
       this.emitter.emit(PoolEvents.full, this.info)
       this.fullEventEmitted = true
     }
@@ -76,6 +76,28 @@ export class DynamicThreadPool<
   /** @inheritDoc */
   protected get busy (): boolean {
     return this.full && this.internalBusy()
+  }
+
+  /**
+   * Whether the pool is empty or not.
+   * @returns The pool emptiness boolean status.
+   */
+  private get empty (): boolean {
+    return (
+      this.minimumNumberOfWorkers === 0 &&
+      this.workerNodes.length === this.minimumNumberOfWorkers
+    )
+  }
+
+  /**
+   * Whether the pool is full or not.
+   * @returns The pool fullness boolean status.
+   */
+  private get full (): boolean {
+    return (
+      this.workerNodes.length >=
+      (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers)
+    )
   }
 
   /** @inheritDoc */

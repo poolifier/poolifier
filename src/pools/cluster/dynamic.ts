@@ -78,6 +78,28 @@ export class DynamicClusterPool<
     return this.full && this.internalBusy()
   }
 
+  /**
+   * Whether the pool is empty or not.
+   * @returns The pool emptiness boolean status.
+   */
+  private get empty (): boolean {
+    return (
+      this.minimumNumberOfWorkers === 0 &&
+      this.workerNodes.length === this.minimumNumberOfWorkers
+    )
+  }
+
+  /**
+   * Whether the pool is full or not.
+   * @returns The pool fullness boolean status.
+   */
+  private get full (): boolean {
+    return (
+      this.workerNodes.length >=
+      (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers)
+    )
+  }
+
   /** @inheritDoc */
   protected get type (): PoolType {
     return PoolTypes.dynamic

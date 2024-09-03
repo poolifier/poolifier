@@ -21,10 +21,10 @@
   "license": "ISC",
   "dependencies": {
     "nodemailer": "^6.9.14",
-    "poolifier": "^4.2.7"
+    "poolifier": "^4.2.9"
   },
   "devDependencies": {
-    "@types/node": "^22.5.1",
+    "@types/node": "^22.5.2",
     "@types/nodemailer": "^6.4.15",
     "typescript": "^5.5.4"
   }
