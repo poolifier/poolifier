@@ -12,8 +12,8 @@ importers:
         specifier: ^4.19.2
         version: 4.19.2
       poolifier:
-        specifier: ^4.2.9
-        version: 4.2.9
+        specifier: ^4.2.10
+        version: 4.2.10
     devDependencies:
       '@types/express':
         specifier: ^4.17.21
@@ -269,8 +269,8 @@ packages:
   http-parser-js@0.5.8:
     resolution: {integrity: sha512-SGeBX54F94Wgu5RH3X5jsDtf4eHyRogWX1XGT3b4HuW3tQPM4AaBzoUji/4AAJNXCEOWZ5O0DgZmJw1947gD5Q==}
 
-  hyperid@3.2.0:
-    resolution: {integrity: sha512-PdTtDo+Rmza9nEhTunaDSUKwbC69TIzLEpZUwiB6f+0oqmY0UPfhyHCPt6K1NQ4WFv5yJBTG5vELztVWP+nEVQ==}
+  hyperid@3.3.0:
+    resolution: {integrity: sha512-7qhCVT4MJIoEsNcbhglhdmBKb09QtcmJNiIQGq7js/Khf5FtQQ9bzcAuloeqBeee7XD7JqDeve9KNlQya5tSGQ==}
 
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
@@ -361,8 +361,8 @@ packages:
   path-to-regexp@0.1.7:
     resolution: {integrity: sha512-5DFkuoqlv1uYQKxy8omFBeJPQcdoE07Kv2sferDCrAq1ohOU+MSDswDIbnx3YAM60qIOnYa53wBhXW0EbMonrQ==}
 
-  poolifier@4.2.9:
-    resolution: {integrity: sha512-uAOXQ6CXiLZwMEMiG+VayDTGRTdjKejapPOa0wHcYDatLmvfqCELpHuQv+dRfgQiiR3wiZobZ4l1zgz9+IwYBg==}
+  poolifier@4.2.10:
+    resolution: {integrity: sha512-IQkwgUVhNcwXn8rwsm1uTKiW9TfH4NRiO8F1TawkRku+C5CmJly2fDzSvbXXnLRwhtssGUs48PR9tzGdmNuWfg==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   pretty-bytes@5.6.0:
@@ -563,7 +563,7 @@ snapshots:
       hdr-histogram-js: 3.0.0
       hdr-histogram-percentiles-obj: 3.0.0
       http-parser-js: 0.5.8
-      hyperid: 3.2.0
+      hyperid: 3.3.0
       lodash.chunk: 4.2.0
       lodash.clonedeep: 4.5.0
       lodash.flatten: 4.4.0
@@ -786,7 +786,7 @@ snapshots:
 
   http-parser-js@0.5.8: {}
 
-  hyperid@3.2.0:
+  hyperid@3.3.0:
     dependencies:
       buffer: 5.7.1
       uuid: 8.3.2
@@ -848,7 +848,7 @@ snapshots:
 
   path-to-regexp@0.1.7: {}
 
-  poolifier@4.2.9: {}
+  poolifier@4.2.10: {}
 
   pretty-bytes@5.6.0: {}
 
