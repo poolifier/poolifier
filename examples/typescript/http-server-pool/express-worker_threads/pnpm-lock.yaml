@@ -269,8 +269,8 @@ packages:
   http-parser-js@0.5.8:
     resolution: {integrity: sha512-SGeBX54F94Wgu5RH3X5jsDtf4eHyRogWX1XGT3b4HuW3tQPM4AaBzoUji/4AAJNXCEOWZ5O0DgZmJw1947gD5Q==}
 
-  hyperid@3.2.0:
-    resolution: {integrity: sha512-PdTtDo+Rmza9nEhTunaDSUKwbC69TIzLEpZUwiB6f+0oqmY0UPfhyHCPt6K1NQ4WFv5yJBTG5vELztVWP+nEVQ==}
+  hyperid@3.3.0:
+    resolution: {integrity: sha512-7qhCVT4MJIoEsNcbhglhdmBKb09QtcmJNiIQGq7js/Khf5FtQQ9bzcAuloeqBeee7XD7JqDeve9KNlQya5tSGQ==}
 
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
@@ -563,7 +563,7 @@ snapshots:
       hdr-histogram-js: 3.0.0
       hdr-histogram-percentiles-obj: 3.0.0
       http-parser-js: 0.5.8
-      hyperid: 3.2.0
+      hyperid: 3.3.0
       lodash.chunk: 4.2.0
       lodash.clonedeep: 4.5.0
       lodash.flatten: 4.4.0
@@ -786,7 +786,7 @@ snapshots:
 
   http-parser-js@0.5.8: {}
 
-  hyperid@3.2.0:
+  hyperid@3.3.0:
     dependencies:
       buffer: 5.7.1
       uuid: 8.3.2
