@@ -82,6 +82,7 @@ describe('Dynamic cluster pool test suite', () => {
       PoolEvents.destroy,
     ])
     expect(pool.readyEventEmitted).toBe(false)
+    expect(pool.emptyEventEmitted).toBe(false)
     expect(pool.fullEventEmitted).toBe(false)
     expect(pool.busyEventEmitted).toBe(false)
     expect(pool.backPressureEventEmitted).toBe(false)
