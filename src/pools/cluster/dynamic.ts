@@ -17,6 +17,11 @@ export class DynamicClusterPool<
   Response = unknown
 > extends FixedClusterPool<Data, Response> {
   /**
+   * Whether the pool empty event has been emitted or not
+   */
+  private emptyEventEmitted: boolean
+
+  /**
    * Whether the pool full event has been emitted or not.
    */
   private fullEventEmitted: boolean
@@ -39,14 +44,20 @@ export class DynamicClusterPool<
       this.minimumNumberOfWorkers,
       this.maximumNumberOfWorkers
     )
+    this.emptyEventEmitted = false
     this.fullEventEmitted = false
   }
 
   /** @inheritDoc */
   protected checkAndEmitDynamicWorkerCreationEvents (): void {
-    if (this.emitter != null && !this.fullEventEmitted && this.full) {
-      this.emitter.emit(PoolEvents.full, this.info)
-      this.fullEventEmitted = true
+    if (this.emitter != null) {
+      if (!this.fullEventEmitted && this.full) {
+        this.emitter.emit(PoolEvents.full, this.info)
+        this.fullEventEmitted = true
+      }
+      if (this.emptyEventEmitted && !this.empty) {
+        this.emptyEventEmitted = false
+      }
     }
   }
 
@@ -57,8 +68,9 @@ export class DynamicClusterPool<
         this.emitter.emit(PoolEvents.fullEnd, this.info)
         this.fullEventEmitted = false
       }
-      if (this.empty) {
+      if (!this.emptyEventEmitted && this.empty) {
         this.emitter.emit(PoolEvents.empty, this.info)
+        this.emptyEventEmitted = true
       }
     }
   }
