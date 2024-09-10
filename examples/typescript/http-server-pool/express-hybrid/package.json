@@ -22,7 +22,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2",
+    "express": "^4.20.0",
     "poolifier": "^4.2.10"
   },
   "devDependencies": {
