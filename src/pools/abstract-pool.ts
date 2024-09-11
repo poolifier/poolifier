@@ -2119,6 +2119,13 @@ export abstract class AbstractPool<
         0
       ),
       workerNodes: this.workerNodes.length,
+      ...(this.type === PoolTypes.dynamic && {
+        dynamicWorkerNodes: this.workerNodes.reduce(
+          (accumulator, workerNode) =>
+            workerNode.info.dynamic ? accumulator + 1 : accumulator,
+          0
+        ),
+      }),
       ...(this.opts.enableTasksQueue === true && {
         backPressure: this.backPressure,
         backPressureWorkerNodes: this.workerNodes.reduce(

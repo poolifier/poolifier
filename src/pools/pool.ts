@@ -87,6 +87,8 @@ export interface PoolInfo {
   /** Pool busy worker nodes. */
   readonly busyWorkerNodes: number
   readonly defaultStrategy: WorkerChoiceStrategy
+  /** Pool dynamic worker nodes. */
+  readonly dynamicWorkerNodes?: number
   readonly elu?: {
     active: {
       readonly average?: number

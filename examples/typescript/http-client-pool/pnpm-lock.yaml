@@ -22,8 +22,8 @@ importers:
         specifier: ^22.5.4
         version: 22.5.4
       typescript:
-        specifier: ^5.5.4
-        version: 5.5.4
+        specifier: ^5.6.2
+        version: 5.6.2
 
 packages:
 
@@ -92,8 +92,8 @@ packages:
   proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
 
-  typescript@5.5.4:
-    resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
+  typescript@5.6.2:
+    resolution: {integrity: sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -163,7 +163,7 @@ snapshots:
 
   proxy-from-env@1.1.0: {}
 
-  typescript@5.5.4: {}
+  typescript@5.6.2: {}
 
   undici-types@6.19.8: {}
 
