@@ -773,6 +773,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.info).toStrictEqual({
       busyWorkerNodes: 0,
       defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      dynamicWorkerNodes: 0,
       executedTasks: 0,
       executingTasks: 0,
       failedTasks: 0,
@@ -1130,12 +1131,13 @@ describe('Abstract pool test suite', () => {
     expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.ready])
     expect(poolReady).toBe(1)
     expect(poolInfo).toStrictEqual({
-      busyWorkerNodes: expect.any(Number),
+      busyWorkerNodes: 0,
       defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
-      executedTasks: expect.any(Number),
-      executingTasks: expect.any(Number),
-      failedTasks: expect.any(Number),
-      idleWorkerNodes: expect.any(Number),
+      dynamicWorkerNodes: 0,
+      executedTasks: 0,
+      executingTasks: 0,
+      failedTasks: 0,
+      idleWorkerNodes: Math.floor(numberOfWorkers / 2),
       maxSize: numberOfWorkers,
       minSize: Math.floor(numberOfWorkers / 2),
       ready: true,
@@ -1248,6 +1250,7 @@ describe('Abstract pool test suite', () => {
     expect(poolFullInfo).toStrictEqual({
       busyWorkerNodes: expect.any(Number),
       defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      dynamicWorkerNodes: Math.floor(numberOfWorkers / 2),
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
       failedTasks: expect.any(Number),
@@ -1267,6 +1270,7 @@ describe('Abstract pool test suite', () => {
     expect(poolFullEndInfo).toStrictEqual({
       busyWorkerNodes: expect.any(Number),
       defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      dynamicWorkerNodes: 0,
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
       failedTasks: expect.any(Number),
@@ -1392,6 +1396,7 @@ describe('Abstract pool test suite', () => {
     expect(poolInfo).toStrictEqual({
       busyWorkerNodes: 0,
       defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      dynamicWorkerNodes: 0,
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
       failedTasks: expect.any(Number),

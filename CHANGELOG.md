@@ -5,6 +5,74 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.11](https://github.com/poolifier/poolifier/compare/v4.2.10...v4.2.11) (2024-09-12)
+
+
+### ⚡ Performance
+
+* track dynamic pool empty event lifecycle ([7923fe5](https://github.com/poolifier/poolifier/commit/7923fe59f4a88b218744b16f977faf93015407ac))
+
+
+### ✨ Polish
+
+* add dynamic worker nodes count to pool info ([01277ce](https://github.com/poolifier/poolifier/commit/01277ce688c015fff1bee425276b20077e7a8f34))
+
+
+### 🧪 Tests
+
+* refine dynamic pool shutdown test expectations ([fc43a51](https://github.com/poolifier/poolifier/commit/fc43a5150338466915bc57705d00bd0e5255eac7))
+
+
+### 📚 Documentation
+
+* publish documentation ([4a809cf](https://github.com/poolifier/poolifier/commit/4a809cfc7dd384ec3c8dd8304d99d2160cf94466))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump sinon from 18.0.0 to 18.0.1 in the regular group ([947d358](https://github.com/poolifier/poolifier/commit/947d35846a27cece641eb08f6ea9b7be1d3dd03e))
+* **deps-dev:** bump the regular group with 2 updates ([efd5d49](https://github.com/poolifier/poolifier/commit/efd5d49802507ee6c963abe45aa7446387aad347))
+* **deps:** bump the regular group across 11 directories with 1 update ([#2568](https://github.com/poolifier/poolifier/issues/2568)) ([678986c](https://github.com/poolifier/poolifier/commit/678986c1623ff15844a0f633bfd0fdab87a20362))
+* **deps:** bump the regular group across 3 directories with 1 update ([7e6cc27](https://github.com/poolifier/poolifier/commit/7e6cc278973d7b013e49afa56dba33ef6b50908b))
+
+## [4.2.10](https://github.com/poolifier/poolifier/compare/v4.2.9...v4.2.10) (2024-09-06)
+
+
+### ⚡ Performance
+
+* optimize backpressure task(s) stealing conditions ([9df97af](https://github.com/poolifier/poolifier/commit/9df97afd77c24c8850e0d56eae3d3c66df181981))
+
+
+### ✨ Polish
+
+* add `isWorkerNodeStealing()` helper ([febcf8e](https://github.com/poolifier/poolifier/commit/febcf8e370ebf9ed2e45ba25296e937277d61e93))
+* factor out stealing ratio conditions check into an helper ([207df8a](https://github.com/poolifier/poolifier/commit/207df8aa5381ac3d3ca1f10d9cb79e01593ba10f))
+
+
+### 🧪 Tests
+
+* cleanup error handling expectations ([d960e54](https://github.com/poolifier/poolifier/commit/d960e542b476b90385e962c9be41422860310426))
+
+
+### 📚 Documentation
+
+* add `mapExecute` implementation to fastify examples plugin ([3924d83](https://github.com/poolifier/poolifier/commit/3924d83878275190248eb13b8f814b82c7dde655))
+* add missing `mapExecute` type definition to fastify examples ([83572f4](https://github.com/poolifier/poolifier/commit/83572f443b105de35a127423b53909fab3bd6ced))
+* code cleanup in examples ([24bc951](https://github.com/poolifier/poolifier/commit/24bc951b90abfe7a365ef6323888d51fde479552))
+* publish documentation ([d3a3b16](https://github.com/poolifier/poolifier/commit/d3a3b16f4443cdfda453e56570a0873863df2d03))
+* switch to `mapExecute()` in examples ([8162986](https://github.com/poolifier/poolifier/commit/8162986eb9aff717ad56bed372abd6c63fe2a31d))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump @types/node in the regular group ([fb8923f](https://github.com/poolifier/poolifier/commit/fb8923f8a793d0ba9b47834885bf63ea64346229))
+* **deps-dev:** bump the regular group across 11 directories with 1 update ([8ae78fb](https://github.com/poolifier/poolifier/commit/8ae78fbe85be6e5f61fa4f96f3ee93c1ce006bf7))
+* **deps-dev:** bump the regular group across 11 directories with 1 update ([4a2b738](https://github.com/poolifier/poolifier/commit/4a2b73815c9a8903ac44358c8e6e182ceb2657f5))
+* **deps-dev:** bump the regular group with 2 updates ([b1b652f](https://github.com/poolifier/poolifier/commit/b1b652f50ff2a3b1a55072a1f07955b7c1a262c0))
+* **deps:** bump nodemailer ([552013f](https://github.com/poolifier/poolifier/commit/552013f092a9785c5a80b8849c462a5b75ac5d3d))
+* **deps:** bump the regular group across 11 directories with 2 updates ([302fa26](https://github.com/poolifier/poolifier/commit/302fa26acd5997c297caa723095d36890d4390e1))
+* **deps:** bump the regular group across 11 directories with 2 updates ([#2557](https://github.com/poolifier/poolifier/issues/2557)) ([eb97198](https://github.com/poolifier/poolifier/commit/eb97198de6c8c4a407009c4b1c56497aae41b11a))
+
 ## [4.2.9](https://github.com/poolifier/poolifier/compare/v4.2.8...v4.2.9) (2024-08-30)
 
 
