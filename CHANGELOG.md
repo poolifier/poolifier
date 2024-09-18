@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.11](https://github.com/poolifier/poolifier/compare/v4.2.10...v4.2.11) (2024-09-12)
+
+
+### ⚡ Performance
+
+* track dynamic pool empty event lifecycle ([7923fe5](https://github.com/poolifier/poolifier/commit/7923fe59f4a88b218744b16f977faf93015407ac))
+
+
+### ✨ Polish
+
+* add dynamic worker nodes count to pool info ([01277ce](https://github.com/poolifier/poolifier/commit/01277ce688c015fff1bee425276b20077e7a8f34))
+
+
+### 🧪 Tests
+
+* refine dynamic pool shutdown test expectations ([fc43a51](https://github.com/poolifier/poolifier/commit/fc43a5150338466915bc57705d00bd0e5255eac7))
+
+
+### 📚 Documentation
+
+* publish documentation ([4a809cf](https://github.com/poolifier/poolifier/commit/4a809cfc7dd384ec3c8dd8304d99d2160cf94466))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump sinon from 18.0.0 to 18.0.1 in the regular group ([947d358](https://github.com/poolifier/poolifier/commit/947d35846a27cece641eb08f6ea9b7be1d3dd03e))
+* **deps-dev:** bump the regular group with 2 updates ([efd5d49](https://github.com/poolifier/poolifier/commit/efd5d49802507ee6c963abe45aa7446387aad347))
+* **deps:** bump the regular group across 11 directories with 1 update ([#2568](https://github.com/poolifier/poolifier/issues/2568)) ([678986c](https://github.com/poolifier/poolifier/commit/678986c1623ff15844a0f633bfd0fdab87a20362))
+* **deps:** bump the regular group across 3 directories with 1 update ([7e6cc27](https://github.com/poolifier/poolifier/commit/7e6cc278973d7b013e49afa56dba33ef6b50908b))
+
 ## [4.2.10](https://github.com/poolifier/poolifier/compare/v4.2.9...v4.2.10) (2024-09-06)
 
 
