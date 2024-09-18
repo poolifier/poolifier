@@ -6,7 +6,7 @@
   "main": "dist/main.js",
   "type": "module",
   "volta": {
-    "node": "22.8.0",
+    "node": "22.9.0",
     "pnpm": "9.10.0"
   },
   "packageManager": "pnpm@9.10.0",
@@ -22,15 +22,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.20.0",
-    "poolifier": "^4.2.10"
+    "express": "^4.21.0",
+    "poolifier": "^4.2.11"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/express": "^4.17.21",
-    "@types/node": "^22.5.4",
+    "@types/node": "^22.5.5",
     "autocannon": "^7.15.0",
-    "rollup": "^4.21.2",
+    "rollup": "^4.21.3",
     "rollup-plugin-delete": "^2.1.0",
     "tslib": "^2.7.0",
     "typescript": "^5.6.2"
