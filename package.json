@@ -103,7 +103,7 @@
     "@biomejs/biome": "^1.9.1",
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
-    "@cspell/eslint-plugin": "^8.14.2",
+    "@cspell/eslint-plugin": "^8.14.3",
     "@eslint/js": "^9.10.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
