@@ -24,23 +24,24 @@ export class FairShareWorkerChoiceStrategy<
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
-  public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
-    elu: {
-      aggregate: true,
-      average: true,
-      median: false,
-    },
-    runTime: {
-      aggregate: true,
-      average: true,
-      median: false,
-    },
-    waitTime: {
-      aggregate: true,
-      average: true,
-      median: false,
-    },
-  }
+  public override readonly taskStatisticsRequirements: TaskStatisticsRequirements =
+    {
+      elu: {
+        aggregate: true,
+        average: true,
+        median: false,
+      },
+      runTime: {
+        aggregate: true,
+        average: true,
+        median: false,
+      },
+      waitTime: {
+        aggregate: true,
+        average: true,
+        median: false,
+      },
+    }
 
   /** @inheritDoc */
   public constructor (

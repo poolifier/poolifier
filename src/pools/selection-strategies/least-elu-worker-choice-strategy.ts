@@ -23,15 +23,16 @@ export class LeastEluWorkerChoiceStrategy<
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
-  public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
-    elu: {
-      aggregate: true,
-      average: false,
-      median: false,
-    },
-    runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-    waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-  }
+  public override readonly taskStatisticsRequirements: TaskStatisticsRequirements =
+    {
+      elu: {
+        aggregate: true,
+        average: false,
+        median: false,
+      },
+      runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+      waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+    }
 
   /** @inheritDoc */
   public constructor (
