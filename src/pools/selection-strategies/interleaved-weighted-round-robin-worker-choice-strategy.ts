@@ -40,19 +40,20 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
    */
   private workerNodeVirtualTaskExecutionTime = 0
   /** @inheritDoc */
-  public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
-    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-    runTime: {
-      aggregate: true,
-      average: true,
-      median: false,
-    },
-    waitTime: {
-      aggregate: true,
-      average: true,
-      median: false,
-    },
-  }
+  public override readonly taskStatisticsRequirements: TaskStatisticsRequirements =
+    {
+      elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+      runTime: {
+        aggregate: true,
+        average: true,
+        median: false,
+      },
+      waitTime: {
+        aggregate: true,
+        average: true,
+        median: false,
+      },
+    }
 
   /** @inheritDoc */
   public constructor (
@@ -164,7 +165,9 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public setOptions (opts: undefined | WorkerChoiceStrategyOptions): void {
+  public override setOptions (
+    opts: undefined | WorkerChoiceStrategyOptions
+  ): void {
     super.setOptions(opts)
     this.roundWeights = this.getRoundWeights()
   }

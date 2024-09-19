@@ -58,12 +58,12 @@ export class ThreadWorker<
   /**
    * @inheritDoc
    */
-  protected handleError (error: Error | string): string {
+  protected override handleError (error: Error | string): string {
     return error as string
   }
 
   /** @inheritDoc */
-  protected handleKillMessage (message: MessageValue<Data>): void {
+  protected override handleKillMessage (message: MessageValue<Data>): void {
     super.handleKillMessage(message)
     this.port?.unref()
     this.port?.close()

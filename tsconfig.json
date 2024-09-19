@@ -7,7 +7,8 @@
     "declarationDir": "./lib/dts",
     "strict": true,
     "verbatimModuleSyntax": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitOverride": true
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "lib"]
