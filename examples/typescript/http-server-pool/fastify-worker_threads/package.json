@@ -23,7 +23,7 @@
   "license": "ISC",
   "dependencies": {
     "fastify": "^5.0.0",
-    "fastify-plugin": "^5.0.0",
+    "fastify-plugin": "^5.0.1",
     "poolifier": "^4.2.11"
   },
   "devDependencies": {
