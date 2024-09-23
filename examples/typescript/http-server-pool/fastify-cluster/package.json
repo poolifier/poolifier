@@ -26,7 +26,7 @@
     "poolifier": "^4.2.11"
   },
   "devDependencies": {
-    "@rollup/plugin-typescript": "^11.1.6",
+    "@rollup/plugin-typescript": "^12.1.0",
     "@types/node": "^22.5.5",
     "autocannon": "^7.15.0",
     "rollup": "^4.22.4",

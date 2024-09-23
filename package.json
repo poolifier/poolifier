@@ -106,7 +106,7 @@
     "@cspell/eslint-plugin": "^8.14.4",
     "@eslint/js": "^9.11.0",
     "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-typescript": "^11.1.6",
+    "@rollup/plugin-typescript": "^12.1.0",
     "@types/node": "^22.5.5",
     "c8": "^10.1.2",
     "cross-env": "^7.0.3",
