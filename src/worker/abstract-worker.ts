@@ -264,11 +264,6 @@ export abstract class AbstractWorker<
   ): void {
     const { taskFunction, taskFunctionOperation, taskFunctionProperties } =
       message
-    if (typeof taskFunction !== 'string') {
-      throw new Error(
-        'Cannot handle task function operation message without task function'
-      )
-    }
     if (taskFunctionProperties == null) {
       throw new Error(
         'Cannot handle task function operation message without task function properties'
@@ -277,6 +272,11 @@ export abstract class AbstractWorker<
     let response: TaskFunctionOperationResult
     switch (taskFunctionOperation) {
       case 'add':
+        if (typeof taskFunction !== 'string') {
+          throw new Error(
+            `Cannot handle task function operation ${taskFunctionOperation} message without task function`
+          )
+        }
         response = this.addTaskFunction(taskFunctionProperties.name, {
           // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func, @typescript-eslint/no-unsafe-call
           taskFunction: new Function(
