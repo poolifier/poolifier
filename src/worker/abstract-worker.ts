@@ -179,7 +179,7 @@ export abstract class AbstractWorker<
   protected statistics?: WorkerStatistics
 
   /**
-   * Task function object(s) processed by the worker when the pool's `execution` function is invoked.
+   * Task function object(s) processed by the worker when the pool's `execute` method is invoked.
    */
   protected taskFunctions!: Map<string, TaskFunctionObject<Data, Response>>
 
@@ -187,7 +187,7 @@ export abstract class AbstractWorker<
    * Constructs a new poolifier worker.
    * @param isMain - Whether this is the main worker or not.
    * @param mainWorker - Reference to main worker.
-   * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked. The first function is the default function.
+   * @param taskFunctions - Task function(s) processed by the worker when the pool's `execute` method is invoked. The first function is the default function.
    * @param opts - Options for the worker.
    */
   public constructor (
@@ -272,19 +272,25 @@ export abstract class AbstractWorker<
     let response: TaskFunctionOperationResult
     switch (taskFunctionOperation) {
       case 'add':
-        response = this.addTaskFunction(taskFunctionProperties.name, {
-          // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
-          taskFunction: new Function(
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            `return ${taskFunction!}`
-          )() as TaskFunction<Data, Response>,
-          ...(taskFunctionProperties.priority != null && {
-            priority: taskFunctionProperties.priority,
-          }),
-          ...(taskFunctionProperties.strategy != null && {
-            strategy: taskFunctionProperties.strategy,
-          }),
-        })
+        if (typeof taskFunction === 'string') {
+          response = this.addTaskFunction(taskFunctionProperties.name, {
+            // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func, @typescript-eslint/no-unsafe-call
+            taskFunction: new Function(
+              `return ${taskFunction}`
+            )() as TaskFunction<Data, Response>,
+            ...(taskFunctionProperties.priority != null && {
+              priority: taskFunctionProperties.priority,
+            }),
+            ...(taskFunctionProperties.strategy != null && {
+              strategy: taskFunctionProperties.strategy,
+            }),
+          })
+        } else {
+          response = {
+            error: new Error("'taskFunction' property is not a string"),
+            status: false,
+          }
+        }
         break
       case 'default':
         response = this.setDefaultTaskFunction(taskFunctionProperties.name)
