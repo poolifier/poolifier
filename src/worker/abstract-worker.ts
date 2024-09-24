@@ -264,6 +264,11 @@ export abstract class AbstractWorker<
   ): void {
     const { taskFunction, taskFunctionOperation, taskFunctionProperties } =
       message
+    if (typeof taskFunction !== 'string') {
+      throw new Error(
+        'Cannot handle task function operation message without task function'
+      )
+    }
     if (taskFunctionProperties == null) {
       throw new Error(
         'Cannot handle task function operation message without task function properties'
@@ -272,25 +277,18 @@ export abstract class AbstractWorker<
     let response: TaskFunctionOperationResult
     switch (taskFunctionOperation) {
       case 'add':
-        if (typeof taskFunction === 'string') {
-          response = this.addTaskFunction(taskFunctionProperties.name, {
-            // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func, @typescript-eslint/no-unsafe-call
-            taskFunction: new Function(
-              `return ${taskFunction}`
-            )() as TaskFunction<Data, Response>,
-            ...(taskFunctionProperties.priority != null && {
-              priority: taskFunctionProperties.priority,
-            }),
-            ...(taskFunctionProperties.strategy != null && {
-              strategy: taskFunctionProperties.strategy,
-            }),
-          })
-        } else {
-          response = {
-            error: new Error("'taskFunction' property is not a string"),
-            status: false,
-          }
-        }
+        response = this.addTaskFunction(taskFunctionProperties.name, {
+          // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func, @typescript-eslint/no-unsafe-call
+          taskFunction: new Function(
+            `return ${taskFunction}`
+          )() as TaskFunction<Data, Response>,
+          ...(taskFunctionProperties.priority != null && {
+            priority: taskFunctionProperties.priority,
+          }),
+          ...(taskFunctionProperties.strategy != null && {
+            strategy: taskFunctionProperties.strategy,
+          }),
+        })
         break
       case 'default':
         response = this.setDefaultTaskFunction(taskFunctionProperties.name)
