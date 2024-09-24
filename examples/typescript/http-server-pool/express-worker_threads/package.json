@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
-    "@types/node": "^22.6.0",
+    "@types/node": "^22.6.1",
     "autocannon": "^7.15.0",
     "typescript": "^5.6.2"
   }
