@@ -45,7 +45,7 @@ export class ThreadWorker<
 
   /**
    * Constructs a new poolifier thread worker.
-   * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked.
+   * @param taskFunctions - Task function(s) processed by the worker when the pool's `execute` method is invoked.
    * @param opts - Options for the worker.
    */
   public constructor (
