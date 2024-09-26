@@ -45,7 +45,7 @@ export class ThreadWorker<
 
   /**
    * Constructs a new poolifier thread worker.
-   * @param taskFunctions - Task function(s) processed by the worker when the pool's `execution` function is invoked.
+   * @param taskFunctions - Task function(s) processed by the worker when the pool's `execute` method is invoked.
    * @param opts - Options for the worker.
    */
   public constructor (
@@ -58,12 +58,12 @@ export class ThreadWorker<
   /**
    * @inheritDoc
    */
-  protected handleError (error: Error | string): string {
+  protected override handleError (error: Error | string): string {
     return error as string
   }
 
   /** @inheritDoc */
-  protected handleKillMessage (message: MessageValue<Data>): void {
+  protected override handleKillMessage (message: MessageValue<Data>): void {
     super.handleKillMessage(message)
     this.port?.unref()
     this.port?.close()

@@ -96,7 +96,7 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
-  protected setupHook (): void {
+  protected override setupHook (): void {
     cluster.setupPrimary({ ...this.opts.settings, exec: this.filePath })
   }
 

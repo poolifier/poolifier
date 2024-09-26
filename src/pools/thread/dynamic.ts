@@ -49,7 +49,7 @@ export class DynamicThreadPool<
   }
 
   /** @inheritDoc */
-  protected checkAndEmitDynamicWorkerCreationEvents (): void {
+  protected override checkAndEmitDynamicWorkerCreationEvents (): void {
     if (this.emitter != null) {
       if (!this.fullEventEmitted && this.full) {
         this.emitter.emit(PoolEvents.full, this.info)
@@ -62,7 +62,7 @@ export class DynamicThreadPool<
   }
 
   /** @inheritDoc */
-  protected checkAndEmitDynamicWorkerDestructionEvents (): void {
+  protected override checkAndEmitDynamicWorkerDestructionEvents (): void {
     if (this.emitter != null) {
       if (this.fullEventEmitted && !this.full) {
         this.emitter.emit(PoolEvents.fullEnd, this.info)
@@ -76,17 +76,17 @@ export class DynamicThreadPool<
   }
 
   /** @inheritDoc */
-  protected shallCreateDynamicWorker (): boolean {
+  protected override shallCreateDynamicWorker (): boolean {
     return (!this.full && this.internalBusy()) || this.empty
   }
 
   /** @inheritDoc */
-  protected get backPressure (): boolean {
+  protected override get backPressure (): boolean {
     return this.full && this.internalBackPressure()
   }
 
   /** @inheritDoc */
-  protected get busy (): boolean {
+  protected override get busy (): boolean {
     return this.full && this.internalBusy()
   }
 
@@ -113,7 +113,7 @@ export class DynamicThreadPool<
   }
 
   /** @inheritDoc */
-  protected get type (): PoolType {
+  protected override get type (): PoolType {
     return PoolTypes.dynamic
   }
 }
