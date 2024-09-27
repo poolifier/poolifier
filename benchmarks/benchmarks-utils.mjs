@@ -1,5 +1,5 @@
 import { strictEqual } from 'node:assert'
-import { bench, clear, group, run } from 'tatami-ng'
+import { bench, group, run } from 'tatami-ng'
 
 import {
   DynamicClusterPool,
@@ -131,7 +131,6 @@ export const runPoolifierBenchmarkTatamiNg = async (
       }
     }
     const report = await run()
-    clear()
     await pool.destroy()
     return report
   } catch (error) {
