@@ -96,8 +96,8 @@ importers:
         specifier: ^19.0.2
         version: 19.0.2
       tatami-ng:
-        specifier: ^0.6.0
-        version: 0.6.0(typescript@5.6.2)
+        specifier: ^0.7.0
+        version: 0.7.0(typescript@5.6.2)
       typedoc:
         specifier: ^0.26.7
         version: 0.26.7(typescript@5.6.2)
@@ -2567,8 +2567,8 @@ packages:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
 
-  tatami-ng@0.6.0:
-    resolution: {integrity: sha512-YyUCnYhptn4KolY+gE93QIA1JeyeAz4jFBISGdlmjC70URXCLYBsZ4jrBDykksucqZk1rIbSD7KE3g3DT1LqBw==}
+  tatami-ng@0.7.0:
+    resolution: {integrity: sha512-Z5PUzMwna60T/mtADtqo5p/rNbiNB6tq37ATLidzNfdR5551QBmbaMMv4znHFdlYIztpSo55TohPrxGwcjxRWg==}
     hasBin: true
     peerDependencies:
       typescript: ^5.4.3
@@ -5540,7 +5540,7 @@ snapshots:
 
   tapable@2.2.1: {}
 
-  tatami-ng@0.6.0(typescript@5.6.2):
+  tatami-ng@0.7.0(typescript@5.6.2):
     dependencies:
       peowly: 1.3.2
       typescript: 5.6.2
