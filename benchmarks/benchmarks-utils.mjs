@@ -144,20 +144,12 @@ export const convertTatamiNgToBmf = report => {
       return {
         [name]: {
           latency: {
-            lower_value: stats?.min,
-            upper_value: stats?.max,
+            lower_value: stats?.avg - stats?.sd,
+            upper_value: stats?.avg + stats?.sd,
             value: stats?.avg,
           },
           throughput: {
             value: stats?.iters,
-            ...(typeof stats?.max === 'number' &&
-              stats.max > 0 && {
-              lower_value: 1e9 / stats.max,
-            }),
-            ...(typeof stats?.min === 'number' &&
-              stats.min > 0 && {
-              upper_value: 1e9 / stats.min,
-            }),
           },
         },
       }
