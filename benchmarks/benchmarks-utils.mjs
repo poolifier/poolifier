@@ -141,6 +141,8 @@ export const runPoolifierBenchmarkTatamiNg = async (
 export const convertTatamiNgToBmf = report => {
   return report.benchmarks
     .map(({ name, stats }) => {
+      // https://en.wikipedia.org/wiki/Propagation_of_uncertainty#Example_formulae
+      const throughputSd = (1e9 * stats?.sd) / stats?.avg ** 2
       return {
         [name]: {
           latency: {
@@ -149,6 +151,8 @@ export const convertTatamiNgToBmf = report => {
             value: stats?.avg,
           },
           throughput: {
+            lower_value: stats?.iters - throughputSd,
+            upper_value: stats?.iters + throughputSd,
             value: stats?.iters,
           },
         },
