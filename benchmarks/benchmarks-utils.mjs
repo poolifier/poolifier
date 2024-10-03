@@ -138,23 +138,4 @@ export const runPoolifierBenchmarkTatamiNg = async (
   }
 }
 
-export const convertTatamiNgToBmf = report => {
-  return report.benchmarks
-    .map(({ name, stats }) => {
-      return {
-        [name]: {
-          latency: {
-            lower_value: stats?.min,
-            upper_value: stats?.max,
-            value: stats?.avg,
-          },
-          throughput: {
-            value: stats?.iter,
-          },
-        },
-      }
-    })
-    .reduce((obj, item) => Object.assign(obj, item), {})
-}
-
 export { executeTaskFunction }

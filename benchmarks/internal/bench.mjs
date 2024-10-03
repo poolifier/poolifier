@@ -2,6 +2,7 @@ import { writeFileSync } from 'node:fs'
 import { env } from 'node:process'
 // eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { parseArgs } from 'node:util'
+import { bmf } from 'tatami-ng'
 
 import {
   availableParallelism,
@@ -9,10 +10,7 @@ import {
   WorkerTypes,
 } from '../../lib/index.mjs'
 import { TaskFunctions } from '../benchmarks-types.cjs'
-import {
-  convertTatamiNgToBmf,
-  runPoolifierBenchmarkTatamiNg,
-} from '../benchmarks-utils.mjs'
+import { runPoolifierBenchmarkTatamiNg } from '../benchmarks-utils.mjs'
 
 const poolSize = availableParallelism()
 const taskExecutions = 1
@@ -38,7 +36,7 @@ switch (
 ) {
   case 'tatami-ng':
   default:
-    benchmarkReport = convertTatamiNgToBmf(
+    benchmarkReport = bmf(
       await runPoolifierBenchmarkTatamiNg(
         'FixedThreadPool',
         WorkerTypes.thread,
@@ -52,7 +50,7 @@ switch (
     )
     benchmarkReport = {
       ...benchmarkReport,
-      ...convertTatamiNgToBmf(
+      ...bmf(
         await runPoolifierBenchmarkTatamiNg(
           'DynamicThreadPool',
           WorkerTypes.thread,
@@ -67,7 +65,7 @@ switch (
     }
     benchmarkReport = {
       ...benchmarkReport,
-      ...convertTatamiNgToBmf(
+      ...bmf(
         await runPoolifierBenchmarkTatamiNg(
           'FixedClusterPool',
           WorkerTypes.cluster,
@@ -82,7 +80,7 @@ switch (
     }
     benchmarkReport = {
       ...benchmarkReport,
-      ...convertTatamiNgToBmf(
+      ...bmf(
         await runPoolifierBenchmarkTatamiNg(
           'DynamicClusterPool',
           WorkerTypes.cluster,
