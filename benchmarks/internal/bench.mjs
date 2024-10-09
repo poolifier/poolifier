@@ -2,6 +2,7 @@ import { writeFileSync } from 'node:fs'
 import { env } from 'node:process'
 // eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { parseArgs } from 'node:util'
+import { bmf } from 'tatami-ng'
 
 import {
   availableParallelism,
@@ -9,10 +10,7 @@ import {
   WorkerTypes,
 } from '../../lib/index.mjs'
 import { TaskFunctions } from '../benchmarks-types.cjs'
-import {
-  convertTatamiNgToBmf,
-  runPoolifierBenchmarkTatamiNg,
-} from '../benchmarks-utils.mjs'
+import { runPoolifierBenchmarkTatamiNg } from '../benchmarks-utils.mjs'
 
 const poolSize = availableParallelism()
 const taskExecutions = 1
@@ -38,62 +36,58 @@ switch (
 ) {
   case 'tatami-ng':
   default:
-    benchmarkReport = convertTatamiNgToBmf(
-      await runPoolifierBenchmarkTatamiNg(
-        'FixedThreadPool',
+    benchmarkReport = await runPoolifierBenchmarkTatamiNg(
+      'FixedThreadPool',
+      WorkerTypes.thread,
+      PoolTypes.fixed,
+      poolSize,
+      bmf,
+      {
+        taskExecutions,
+        workerData,
+      }
+    )
+    benchmarkReport = {
+      ...benchmarkReport,
+      ...(await runPoolifierBenchmarkTatamiNg(
+        'DynamicThreadPool',
         WorkerTypes.thread,
-        PoolTypes.fixed,
+        PoolTypes.dynamic,
         poolSize,
+        bmf,
         {
           taskExecutions,
           workerData,
         }
-      )
-    )
-    benchmarkReport = {
-      ...benchmarkReport,
-      ...convertTatamiNgToBmf(
-        await runPoolifierBenchmarkTatamiNg(
-          'DynamicThreadPool',
-          WorkerTypes.thread,
-          PoolTypes.dynamic,
-          poolSize,
-          {
-            taskExecutions,
-            workerData,
-          }
-        )
-      ),
+      )),
     }
     benchmarkReport = {
       ...benchmarkReport,
-      ...convertTatamiNgToBmf(
-        await runPoolifierBenchmarkTatamiNg(
-          'FixedClusterPool',
-          WorkerTypes.cluster,
-          PoolTypes.fixed,
-          poolSize,
-          {
-            taskExecutions,
-            workerData,
-          }
-        )
-      ),
+      ...(await runPoolifierBenchmarkTatamiNg(
+        'FixedClusterPool',
+        WorkerTypes.cluster,
+        PoolTypes.fixed,
+        poolSize,
+        bmf,
+        {
+          taskExecutions,
+          workerData,
+        }
+      )),
     }
     benchmarkReport = {
       ...benchmarkReport,
-      ...convertTatamiNgToBmf(
-        await runPoolifierBenchmarkTatamiNg(
-          'DynamicClusterPool',
-          WorkerTypes.cluster,
-          PoolTypes.dynamic,
-          poolSize,
-          {
-            taskExecutions,
-            workerData,
-          }
-        )
-      ),
+      ...(await runPoolifierBenchmarkTatamiNg(
+        'DynamicClusterPool',
+        WorkerTypes.cluster,
+        PoolTypes.dynamic,
+        poolSize,
+        bmf,
+        {
+          taskExecutions,
+          workerData,
+        }
+      )),
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     env.CI != null &&

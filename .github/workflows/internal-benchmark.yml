@@ -34,10 +34,18 @@ jobs:
       - name: Run production benchmark
         run: |
           bencher run \
-          --if-branch "$GITHUB_REF_NAME" \
-          --else-if-branch "$GITHUB_BASE_REF" \
-          --else-if-branch master \
-          --hash "$GITHUB_SHA" \
+          --branch master \
+          --threshold-measure latency \
+          --threshold-test t_test \
+          --threshold-max-sample-size 64 \
+          --threshold-lower-boundary _ \
+          --threshold-upper-boundary 0.99 \
+          --threshold-measure throughput \
+          --threshold-test t_test \
+          --threshold-max-sample-size 64 \
+          --threshold-lower-boundary 0.99 \
+          --threshold-upper-boundary _ \
+          --thresholds-reset \
           --file benchmark-report.json \
           --err \
           --github-actions ${{ secrets.GITHUB_TOKEN }} \

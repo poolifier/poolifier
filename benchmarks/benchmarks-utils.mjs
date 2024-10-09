@@ -63,6 +63,7 @@ export const runPoolifierBenchmarkTatamiNg = async (
   workerType,
   poolType,
   poolSize,
+  benchmarkReporter,
   { taskExecutions, workerData }
 ) => {
   try {
@@ -130,31 +131,12 @@ export const runPoolifierBenchmarkTatamiNg = async (
         }
       }
     }
-    const report = await run()
+    const report = await run({ reporter: benchmarkReporter })
     await pool.destroy()
     return report
   } catch (error) {
     console.error(error)
   }
-}
-
-export const convertTatamiNgToBmf = report => {
-  return report.benchmarks
-    .map(({ name, stats }) => {
-      return {
-        [name]: {
-          latency: {
-            lower_value: stats?.min,
-            upper_value: stats?.max,
-            value: stats?.avg,
-          },
-          throughput: {
-            value: stats?.iter,
-          },
-        },
-      }
-    })
-    .reduce((obj, item) => Object.assign(obj, item), {})
 }
 
 export { executeTaskFunction }
