@@ -36,62 +36,58 @@ switch (
 ) {
   case 'tatami-ng':
   default:
-    benchmarkReport = bmf(
-      await runPoolifierBenchmarkTatamiNg(
-        'FixedThreadPool',
+    benchmarkReport = await runPoolifierBenchmarkTatamiNg(
+      'FixedThreadPool',
+      WorkerTypes.thread,
+      PoolTypes.fixed,
+      poolSize,
+      bmf,
+      {
+        taskExecutions,
+        workerData,
+      }
+    )
+    benchmarkReport = {
+      ...benchmarkReport,
+      ...(await runPoolifierBenchmarkTatamiNg(
+        'DynamicThreadPool',
         WorkerTypes.thread,
-        PoolTypes.fixed,
+        PoolTypes.dynamic,
         poolSize,
+        bmf,
         {
           taskExecutions,
           workerData,
         }
-      )
-    )
-    benchmarkReport = {
-      ...benchmarkReport,
-      ...bmf(
-        await runPoolifierBenchmarkTatamiNg(
-          'DynamicThreadPool',
-          WorkerTypes.thread,
-          PoolTypes.dynamic,
-          poolSize,
-          {
-            taskExecutions,
-            workerData,
-          }
-        )
-      ),
+      )),
     }
     benchmarkReport = {
       ...benchmarkReport,
-      ...bmf(
-        await runPoolifierBenchmarkTatamiNg(
-          'FixedClusterPool',
-          WorkerTypes.cluster,
-          PoolTypes.fixed,
-          poolSize,
-          {
-            taskExecutions,
-            workerData,
-          }
-        )
-      ),
+      ...(await runPoolifierBenchmarkTatamiNg(
+        'FixedClusterPool',
+        WorkerTypes.cluster,
+        PoolTypes.fixed,
+        poolSize,
+        bmf,
+        {
+          taskExecutions,
+          workerData,
+        }
+      )),
     }
     benchmarkReport = {
       ...benchmarkReport,
-      ...bmf(
-        await runPoolifierBenchmarkTatamiNg(
-          'DynamicClusterPool',
-          WorkerTypes.cluster,
-          PoolTypes.dynamic,
-          poolSize,
-          {
-            taskExecutions,
-            workerData,
-          }
-        )
-      ),
+      ...(await runPoolifierBenchmarkTatamiNg(
+        'DynamicClusterPool',
+        WorkerTypes.cluster,
+        PoolTypes.dynamic,
+        poolSize,
+        bmf,
+        {
+          taskExecutions,
+          workerData,
+        }
+      )),
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     env.CI != null &&
