@@ -35,13 +35,14 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   implements IWorkerNode<Worker, Data> {
   private setBackPressureFlag: boolean
   private readonly taskFunctionsUsage: Map<string, WorkerUsage>
-  private readonly tasksQueue: PriorityQueue<Task<Data>>
   /** @inheritdoc */
   public readonly info: WorkerInfo
   /** @inheritdoc */
   public messageChannel?: MessageChannel
   /** @inheritdoc */
   public strategyData?: StrategyData
+  /** @inheritdoc */
+  public readonly tasksQueue: PriorityQueue<Task<Data>>
   /** @inheritdoc */
   public tasksQueueBackPressureSize: number
   /** @inheritdoc */
@@ -194,6 +195,11 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   /** @inheritdoc */
   public clearTasksQueue (): void {
     this.tasksQueue.clear()
+  }
+
+  /** @inheritdoc */
+  public deleteTask (task: Task<Data>): boolean {
+    return this.tasksQueue.delete(task)
   }
 
   /** @inheritdoc */
