@@ -19,9 +19,6 @@ updates:
         update-types:
           - 'minor'
           - 'patch'
-      major:
-        update-types:
-          - 'major'
     labels:
       - 'dependencies'
     reviewers:
@@ -36,12 +33,10 @@ updates:
     schedule:
       interval: 'daily'
     groups:
-      regular:
+      all:
         update-types:
           - 'minor'
           - 'patch'
-      major:
-        update-types:
           - 'major'
     labels:
       - 'dependencies'
