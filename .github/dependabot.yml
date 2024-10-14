@@ -36,10 +36,12 @@ updates:
     schedule:
       interval: 'daily'
     groups:
-      all:
+      regular:
         update-types:
           - 'minor'
           - 'patch'
+      major:
+        update-types:
           - 'major'
     labels:
       - 'dependencies'
