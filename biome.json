@@ -17,10 +17,10 @@
   },
   "javascript": {
     "formatter": {
+      "arrowParentheses": "asNeeded",
       "quoteStyle": "single",
-      "trailingCommas": "es5",
       "semicolons": "asNeeded",
-      "arrowParentheses": "asNeeded"
+      "trailingCommas": "es5"
     }
   },
   "json": {

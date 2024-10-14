@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "poolifier",
-  "version": "4.2.11",
+  "version": "4.3.0",
   "description": "Fast and small Node.js Worker_Threads and Cluster Worker Pool",
   "license": "MIT",
   "type": "module",
@@ -103,7 +103,7 @@
     "@biomejs/biome": "^1.9.3",
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
-    "@cspell/eslint-plugin": "^8.14.4",
+    "@cspell/eslint-plugin": "^8.15.2",
     "@eslint/js": "^9.12.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.0",
@@ -112,10 +112,10 @@
     "cross-env": "^7.0.3",
     "eslint": "^9.12.0",
     "eslint-define-config": "^2.1.0",
-    "eslint-plugin-jsdoc": "^50.3.1",
+    "eslint-plugin-jsdoc": "^50.4.0",
     "eslint-plugin-perfectionist": "^3.8.0",
     "expect": "^29.7.0",
-    "globals": "^15.10.0",
+    "globals": "^15.11.0",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
     "mocha": "^10.7.3",
@@ -128,8 +128,8 @@
     "rollup-plugin-delete": "^2.1.0",
     "rollup-plugin-dts": "^6.1.1",
     "sinon": "^19.0.2",
-    "tatami-ng": "^0.8.3",
-    "typedoc": "^0.26.8",
-    "typescript": "~5.6.2"
+    "tatami-ng": "^0.8.4",
+    "typedoc": "^0.26.9",
+    "typescript": "~5.6.3"
   }
 }
