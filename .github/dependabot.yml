@@ -19,9 +19,9 @@ updates:
         update-types:
           - 'minor'
           - 'patch'
-        commitlint:
-          patterns:
-            - '@commitlint/*'
+      commitlint:
+        patterns:
+          - '@commitlint/*'
     labels:
       - 'dependencies'
     reviewers:
@@ -36,10 +36,12 @@ updates:
     schedule:
       interval: 'daily'
     groups:
-      all:
+      regular:
         update-types:
           - 'minor'
           - 'patch'
+      major:
+        update-types:
           - 'major'
     labels:
       - 'dependencies'
