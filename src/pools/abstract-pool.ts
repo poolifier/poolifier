@@ -699,9 +699,7 @@ export abstract class AbstractPool<
     workerNode.info.dynamic = true
     if (
       this.workerChoiceStrategiesContext?.getPolicy().dynamicWorkerReady ===
-        true ||
-      this.workerChoiceStrategiesContext?.getPolicy().dynamicWorkerUsage ===
-        true
+      true
     ) {
       workerNode.info.ready = true
     }
@@ -1255,6 +1253,9 @@ export abstract class AbstractPool<
       // FIXME: cannot be theoretically undefined. Schedule in the next tick to avoid race conditions?
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       workerNode?.emit('taskFinished', taskId)
+      if (this.shallCreateDynamicWorker()) {
+        this.createAndSetupDynamicWorkerNode()
+      }
     }
   }
 
