@@ -19,9 +19,9 @@ updates:
         update-types:
           - 'minor'
           - 'patch'
-        commitlint:
-          patterns:
-            - '@commitlint/*'
+      commitlint:
+        patterns:
+          - '@commitlint/*'
     labels:
       - 'dependencies'
     reviewers:
