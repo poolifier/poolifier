@@ -17,8 +17,8 @@ updates:
     groups:
       regular:
         update-types:
-          - 'minor'
           - 'patch'
+          - 'minor'
       commitlint:
         patterns:
           - '@commitlint/*'
@@ -38,8 +38,8 @@ updates:
     groups:
       regular:
         update-types:
-          - 'minor'
           - 'patch'
+          - 'minor'
       major:
         update-types:
           - 'major'
