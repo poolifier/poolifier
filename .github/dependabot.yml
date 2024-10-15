@@ -19,6 +19,15 @@ updates:
         update-types:
           - 'patch'
           - 'minor'
+        exclude-patterns:
+          - 'typescript'
+      typescript:
+        update-types:
+          - 'patch'
+          - 'minor'
+          - 'major'
+        patterns:
+          - 'typescript'
       commitlint:
         patterns:
           - '@commitlint/*'
