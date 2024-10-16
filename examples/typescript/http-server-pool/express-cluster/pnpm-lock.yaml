@@ -16,8 +16,8 @@ importers:
         version: 4.3.0
     devDependencies:
       '@rollup/plugin-typescript':
-        specifier: ^12.1.0
-        version: 12.1.0(rollup@4.24.0)(tslib@2.8.0)(typescript@5.6.3)
+        specifier: ^12.1.1
+        version: 12.1.1(rollup@4.24.0)(tslib@2.8.0)(typescript@5.6.3)
       '@types/express':
         specifier: ^5.0.0
         version: 5.0.0
@@ -64,8 +64,8 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@rollup/plugin-typescript@12.1.0':
-    resolution: {integrity: sha512-Kzs8KGJofe7cfTRODsnG1jNGxSvU8gVoNNd7Z/QaY25AYwe2LSSUpx/kPxqF38NYkpR8de3m51r9uwJpDlz6dg==}
+  '@rollup/plugin-typescript@12.1.1':
+    resolution: {integrity: sha512-t7O653DpfB5MbFrqPe/VcKFFkvRuFNp9qId3xq4Eth5xlyymzxNpye2z8Hrl0RIMuXTSr5GGcFpkdlMeacUiFQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^2.14.0||^3.0.0||^4.0.0
@@ -832,7 +832,7 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
 
-  '@rollup/plugin-typescript@12.1.0(rollup@4.24.0)(tslib@2.8.0)(typescript@5.6.3)':
+  '@rollup/plugin-typescript@12.1.1(rollup@4.24.0)(tslib@2.8.0)(typescript@5.6.3)':
     dependencies:
       '@rollup/pluginutils': 5.1.2(rollup@4.24.0)
       resolve: 1.22.8
