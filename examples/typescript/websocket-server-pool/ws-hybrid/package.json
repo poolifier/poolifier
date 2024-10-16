@@ -30,7 +30,7 @@
     "@types/ws": "^8.5.12",
     "rollup": "^4.24.0",
     "rollup-plugin-delete": "^2.1.0",
-    "tslib": "^2.7.0",
+    "tslib": "^2.8.0",
     "typescript": "^5.6.3"
   },
   "optionalDependencies": {
