@@ -106,7 +106,7 @@
     "@cspell/eslint-plugin": "^8.15.2",
     "@eslint/js": "^9.12.0",
     "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-typescript": "^12.1.0",
+    "@rollup/plugin-typescript": "^12.1.1",
     "@types/node": "^22.7.5",
     "c8": "^10.1.2",
     "cross-env": "^7.0.3",
@@ -129,7 +129,7 @@
     "rollup-plugin-dts": "^6.1.1",
     "sinon": "^19.0.2",
     "tatami-ng": "^0.8.4",
-    "typedoc": "^0.26.9",
+    "typedoc": "^0.26.10",
     "typescript": "~5.6.3"
   }
 }
