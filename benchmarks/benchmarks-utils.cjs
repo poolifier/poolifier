@@ -76,12 +76,12 @@ const readWriteFiles = (
 
 const executeTaskFunction = data => {
   switch (data.function) {
-    case TaskFunctions.jsonIntegerSerialization:
-      return jsonIntegerSerialization(data.taskSize || 1000)
-    case TaskFunctions.fibonacci:
-      return fibonacci(data.taskSize || 1000)
     case TaskFunctions.factorial:
       return factorial(data.taskSize || 1000)
+    case TaskFunctions.fibonacci:
+      return fibonacci(data.taskSize || 1000)
+    case TaskFunctions.jsonIntegerSerialization:
+      return jsonIntegerSerialization(data.taskSize || 1000)
     case TaskFunctions.readWriteFiles:
       return readWriteFiles(data.taskSize || 1000)
     default:
