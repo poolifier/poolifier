@@ -40,10 +40,10 @@
     "pnpm": ">=9.0.0"
   },
   "volta": {
-    "node": "22.9.0",
-    "pnpm": "9.12.1"
+    "node": "22.10.0",
+    "pnpm": "9.12.2"
   },
-  "packageManager": "pnpm@9.12.1",
+  "packageManager": "pnpm@9.12.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/poolifier/poolifier.git"
@@ -103,17 +103,17 @@
     "@biomejs/biome": "^1.9.3",
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
-    "@cspell/eslint-plugin": "^8.15.2",
+    "@cspell/eslint-plugin": "^8.15.3",
     "@eslint/js": "^9.12.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.1",
-    "@types/node": "^22.7.5",
+    "@types/node": "^22.7.6",
     "c8": "^10.1.2",
     "cross-env": "^7.0.3",
     "eslint": "^9.12.0",
     "eslint-define-config": "^2.1.0",
-    "eslint-plugin-jsdoc": "^50.4.1",
-    "eslint-plugin-perfectionist": "^3.9.0",
+    "eslint-plugin-jsdoc": "^50.4.3",
+    "eslint-plugin-perfectionist": "^3.9.1",
     "expect": "^29.7.0",
     "globals": "^15.11.0",
     "husky": "^9.1.6",
@@ -128,7 +128,7 @@
     "rollup-plugin-delete": "^2.1.0",
     "rollup-plugin-dts": "^6.1.1",
     "sinon": "^19.0.2",
-    "tatami-ng": "^0.8.4",
+    "tatami-ng": "^0.8.6",
     "typedoc": "^0.26.10",
     "typescript": "~5.6.3"
   }
