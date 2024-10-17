@@ -94,7 +94,8 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number | undefined {
+  public choose (workerNodes?: number[]): number | undefined {
+    workerNodes = this.checkWorkerNodes(workerNodes)
     for (
       let roundIndex = this.roundId;
       roundIndex < this.roundWeights.length;
@@ -117,6 +118,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
         const workerWeight = this.opts!.weights![workerNodeKey]
         if (
           this.isWorkerNodeReady(workerNodeKey) &&
+          workerNodes.includes(workerNodeKey) &&
           workerWeight >= this.roundWeights[roundIndex] &&
           this.workerNodeVirtualTaskExecutionTime < workerWeight
         ) {
