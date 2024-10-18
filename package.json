@@ -103,7 +103,7 @@
     "@biomejs/biome": "^1.9.4",
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
-    "@cspell/eslint-plugin": "^8.15.3",
+    "@cspell/eslint-plugin": "^8.15.4",
     "@eslint/js": "^9.12.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.1",
@@ -128,7 +128,7 @@
     "rollup-plugin-delete": "^2.1.0",
     "rollup-plugin-dts": "^6.1.1",
     "sinon": "^19.0.2",
-    "tatami-ng": "^0.8.6",
+    "tatami-ng": "^0.8.8",
     "typedoc": "^0.26.10",
     "typescript": "~5.6.3"
   }
