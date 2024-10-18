@@ -93,9 +93,7 @@
     "url": "https://github.com/poolifier/poolifier/issues"
   },
   "homepage": "https://github.com/poolifier/poolifier#readme",
-  "files": [
-    "lib"
-  ],
+  "files": ["lib"],
   "pnpm": {
     "overrides": {
       "semver": "^7.5.3"
