@@ -141,6 +141,8 @@ export const isKillBehavior = <KB extends KillBehavior>(
   return value === killBehavior
 }
 
+type AsyncFunctionType<A extends unknown[], R> = (...args: A) => PromiseLike<R>
+
 /**
  * Detects whether the given value is an asynchronous function or not.
  * @param fn - Unknown value.
@@ -149,8 +151,9 @@ export const isKillBehavior = <KB extends KillBehavior>(
  */
 export const isAsyncFunction = (
   fn: unknown
-): fn is (...args: unknown[]) => Promise<unknown> => {
-  return typeof fn === 'function' && fn.constructor.name === 'AsyncFunction'
+): fn is AsyncFunctionType<unknown[], unknown> => {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  return fn?.constructor === (async () => {}).constructor
 }
 
 /**
