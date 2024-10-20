@@ -30,6 +30,8 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --ignore-scripts --frozen-lockfile
+      - name: Production Build
+        run: pnpm build:prod
       - uses: bencherdev/bencher@main
       - name: Run production benchmark
         run: |
@@ -49,4 +51,4 @@ jobs:
           --file benchmark-report.json \
           --err \
           --github-actions ${{ secrets.GITHUB_TOKEN }} \
-          "pnpm benchmark:tatami-ng:prod"
+          "pnpm benchmark:tatami-ng"
