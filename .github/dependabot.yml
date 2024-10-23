@@ -17,11 +17,20 @@ updates:
     groups:
       regular:
         update-types:
-          - 'minor'
           - 'patch'
-      major:
+          - 'minor'
+        exclude-patterns:
+          - 'typescript'
+      typescript:
         update-types:
+          - 'patch'
+          - 'minor'
           - 'major'
+        patterns:
+          - 'typescript'
+      commitlint:
+        patterns:
+          - '@commitlint/*'
     labels:
       - 'dependencies'
     reviewers:
@@ -38,8 +47,8 @@ updates:
     groups:
       regular:
         update-types:
-          - 'minor'
           - 'patch'
+          - 'minor'
       major:
         update-types:
           - 'major'
