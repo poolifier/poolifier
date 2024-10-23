@@ -116,8 +116,8 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish Pre-Release
-        if: ${{ contains(steps.package-version.outputs.version, '-') == true && contains(steps.package-version.outputs.version, '-beta') == false }}
+      - name: Publish Release Candidate
+        if: ${{ contains(steps.package-version.outputs.version, '-rc') == true }}
         run: pnpm publish --no-git-checks --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -125,6 +125,12 @@ jobs:
       - name: Publish Beta Release
         if: ${{ contains(steps.package-version.outputs.version, '-beta') == true }}
         run: pnpm publish --no-git-checks --tag beta
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish Alpha Release
+        if: ${{ contains(steps.package-version.outputs.version, '-alpha') == true }}
+        run: pnpm publish --no-git-checks --tag alpha
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
