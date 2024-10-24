@@ -219,7 +219,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Handles a worker error .
+   * Handles a worker error.
    * @param error - The error raised by the worker.
    * @returns The worker error object.
    */
