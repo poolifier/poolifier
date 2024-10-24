@@ -120,7 +120,7 @@
     "lint-staged": "^15.2.10",
     "mocha": "^10.7.3",
     "mochawesome": "^7.1.3",
-    "neostandard": "^0.11.6",
+    "neostandard": "^0.11.7",
     "prettier": "^3.3.3",
     "rollup": "^4.24.0",
     "rollup-plugin-analyzer": "^4.0.0",
