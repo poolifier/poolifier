@@ -208,6 +208,7 @@ describe('Fixed thread pool test suite', () => {
       data,
       message: new Error('Error Message from ThreadWorker'),
       name: DEFAULT_TASK_NAME,
+      stack: expect.any(String),
     })
     expect(
       errorPool.workerNodes.some(
@@ -240,6 +241,7 @@ describe('Fixed thread pool test suite', () => {
       data,
       message: new Error('Error Message from ThreadWorker:async'),
       name: DEFAULT_TASK_NAME,
+      stack: expect.any(String),
     })
     expect(
       asyncErrorPool.workerNodes.some(
