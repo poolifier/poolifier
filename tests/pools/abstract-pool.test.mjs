@@ -962,8 +962,8 @@ describe('Abstract pool test suite', () => {
     await expect(pool.execute(undefined, undefined, [], {})).rejects.toThrow(
       new TypeError('abortSignal argument must be an AbortSignal')
     )
-    await expect(pool.execute(undefined, 'unknown')).rejects.toBe(
-      "Task function 'unknown' not found"
+    await expect(pool.execute(undefined, 'unknown')).rejects.toThrow(
+      new Error("Task function 'unknown' not found")
     )
     await pool.destroy()
     await expect(pool.execute()).rejects.toThrow(
@@ -1786,21 +1786,21 @@ describe('Abstract pool test suite', () => {
     const workerId = dynamicThreadPool.workerNodes[0].info.id
     await expect(dynamicThreadPool.setDefaultTaskFunction(0)).rejects.toThrow(
       new Error(
-        `Task function operation 'default' failed on worker ${workerId} with error: 'TypeError: name parameter is not a string'`
+        `Task function operation 'default' failed on worker ${workerId} with error: 'name parameter is not a string'`
       )
     )
     await expect(
       dynamicThreadPool.setDefaultTaskFunction(DEFAULT_TASK_NAME)
     ).rejects.toThrow(
       new Error(
-        `Task function operation 'default' failed on worker ${workerId} with error: 'Error: Cannot set the default task function reserved name as the default task function'`
+        `Task function operation 'default' failed on worker ${workerId} with error: 'Cannot set the default task function reserved name as the default task function'`
       )
     )
     await expect(
       dynamicThreadPool.setDefaultTaskFunction('unknown')
     ).rejects.toThrow(
       new Error(
-        `Task function operation 'default' failed on worker ${workerId} with error: 'Error: Cannot set the default task function to a non-existing task function'`
+        `Task function operation 'default' failed on worker ${workerId} with error: 'Cannot set the default task function to a non-existing task function'`
       )
     )
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
@@ -1926,8 +1926,8 @@ describe('Abstract pool test suite', () => {
     ).rejects.toThrow(
       new TypeError('abortSignal argument must be an AbortSignal')
     )
-    await expect(pool.mapExecute([undefined], 'unknown')).rejects.toBe(
-      "Task function 'unknown' not found"
+    await expect(pool.mapExecute([undefined], 'unknown')).rejects.toThrow(
+      new Error("Task function 'unknown' not found")
     )
     let results = await pool.mapExecute(
       [{}, {}, {}, {}],

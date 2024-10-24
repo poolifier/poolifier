@@ -90,12 +90,13 @@ describe('Cluster worker test suite', () => {
     expect(worker.getMainWorker().send.calledOnce).toBe(true)
   })
 
-  it('Verify that handleErrorMessage() method is working properly', () => {
+  it('Verify that handleError() method is working properly', () => {
     const error = new Error('Error as an error')
     const worker = new ClusterWorker(() => {})
-    expect(worker.handleErrorMessage(error)).toStrictEqual(error.message)
-    const errorMessage = 'Error as a string'
-    expect(worker.handleErrorMessage(errorMessage)).toStrictEqual(errorMessage)
+    expect(worker.handleError(error)).toStrictEqual({
+      message: error.message,
+      stack: error.stack,
+    })
   })
 
   it('Verify that sendToMainWorker() method invokes the getMainWorker() and send() methods', () => {

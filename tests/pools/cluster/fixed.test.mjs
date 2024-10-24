@@ -176,7 +176,9 @@ describe('Fixed cluster pool test suite', () => {
     } catch (e) {
       inError = e
     }
-    expect(inError).toStrictEqual('Error Message from ClusterWorker')
+    expect(inError).toBeInstanceOf(Error)
+    expect(inError.message).toStrictEqual('Error Message from ClusterWorker')
+    expect(typeof inError.stack === 'string').toBe(true)
     expect(taskError).toStrictEqual({
       data,
       message: 'Error Message from ClusterWorker',
@@ -206,7 +208,11 @@ describe('Fixed cluster pool test suite', () => {
     } catch (e) {
       inError = e
     }
-    expect(inError).toStrictEqual('Error Message from ClusterWorker:async')
+    expect(inError).toBeInstanceOf(Error)
+    expect(inError.message).toStrictEqual(
+      'Error Message from ClusterWorker:async'
+    )
+    expect(typeof inError.stack === 'string').toBe(true)
     expect(taskError).toStrictEqual({
       data,
       message: 'Error Message from ClusterWorker:async',
