@@ -181,6 +181,7 @@ describe('Fixed cluster pool test suite', () => {
       data,
       message: 'Error Message from ClusterWorker',
       name: DEFAULT_TASK_NAME,
+      stack: expect.any(String),
     })
     expect(
       errorPool.workerNodes.some(
@@ -210,6 +211,7 @@ describe('Fixed cluster pool test suite', () => {
       data,
       message: 'Error Message from ClusterWorker:async',
       name: DEFAULT_TASK_NAME,
+      stack: expect.any(String),
     })
     expect(
       asyncErrorPool.workerNodes.some(
