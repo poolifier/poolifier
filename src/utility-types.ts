@@ -95,6 +95,10 @@ export interface TaskFunctionProperties {
  */
 export interface Task<Data = unknown> {
   /**
+   * Whether the task is abortable or not.
+   */
+  readonly abortable?: boolean
+  /**
    * Task input data that will be passed to the worker.
    */
   readonly data?: Data
@@ -177,6 +181,11 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    */
   readonly taskFunctionsProperties?: TaskFunctionProperties[]
   /**
+   * Task operation:
+   * - `'abort'` - Abort a task.
+   */
+  readonly taskOperation?: 'abort'
+  /**
    * Task performance.
    */
   readonly taskPerformance?: TaskPerformance
@@ -196,6 +205,10 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
  * @internal
  */
 export interface PromiseResponseWrapper<Response = unknown> {
+  /**
+   * The task abort signal.
+   */
+  readonly abortSignal?: AbortSignal
   /**
    * The asynchronous resource used to track the task execution.
    */
