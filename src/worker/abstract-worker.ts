@@ -87,8 +87,7 @@ export abstract class AbstractWorker<
           data,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           message: `Task function '${name!}' not found`,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          name: name!,
+          name,
         },
       })
       return
@@ -127,9 +126,9 @@ export abstract class AbstractWorker<
           taskId,
           workerError: {
             data,
-            message: this.handleError(error as Error | string),
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            name: name!,
+            message: this.handleErrorMessage(error as Error | string),
+            name,
+            stack: (error as Error).stack,
           },
         })
       })
@@ -163,9 +162,9 @@ export abstract class AbstractWorker<
         taskId,
         workerError: {
           data,
-          message: this.handleError(error as Error | string),
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          name: name!,
+          message: this.handleErrorMessage(error as Error | string),
+          name,
+          stack: (error as Error).stack,
         },
       })
     } finally {
@@ -220,11 +219,12 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Handles an error and convert it to a string so it can be sent back to the main worker.
+   * Handles an error and convert it if needed to its message string.
+   * Error are not structured-cloneable and cannot be sent to the main worker.
    * @param error - The error raised by the worker.
    * @returns The error message.
    */
-  protected handleError (error: Error | string): string {
+  protected handleErrorMessage (error: Error | string): string {
     return error instanceof Error ? error.message : error
   }
 
@@ -311,8 +311,9 @@ export abstract class AbstractWorker<
       ...(!status &&
         error != null && {
         workerError: {
-          message: this.handleError(error as Error | string),
+          message: this.handleErrorMessage(error as Error | string),
           name: taskFunctionProperties.name,
+          stack: error.stack,
         },
       }),
     })

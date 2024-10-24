@@ -21,7 +21,11 @@ export interface WorkerError<Data = unknown> {
   /**
    * Task function name triggering the error.
    */
-  readonly name: string
+  readonly name?: string
+  /**
+   * Error stack trace.
+   */
+  readonly stack?: string
 }
 
 /**
