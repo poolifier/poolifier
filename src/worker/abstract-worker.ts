@@ -128,8 +128,7 @@ export abstract class AbstractWorker<
             data,
             message: this.handleErrorMessage(error as Error | string),
             name,
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            stack: (error as Error)?.stack,
+            stack: (error as Error).stack,
           },
         })
       })
@@ -165,8 +164,7 @@ export abstract class AbstractWorker<
           data,
           message: this.handleErrorMessage(error as Error | string),
           name,
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          stack: (error as Error)?.stack,
+          stack: (error as Error).stack,
         },
       })
     } finally {
@@ -312,8 +310,7 @@ export abstract class AbstractWorker<
         workerError: {
           message: this.handleErrorMessage(error as Error | string),
           name: taskFunctionProperties.name,
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          stack: error?.stack,
+          stack: error.stack,
         },
       }),
     })
