@@ -88,13 +88,15 @@ export default defineConfig([
   },
   {
     external: [/^node:*/],
-    input: './lib/dts/index.d.ts',
+    input: './lib/index.d.ts',
     output: [{ file: './lib/index.d.ts', format: 'esm' }],
     plugins: [
       dts(),
       del({
         hook: 'buildEnd',
-        targets: ['./lib/dts'],
+        targets: isDevelopmentBuild
+          ? ['./lib/**/*.d.ts', '!./lib/index.d.ts']
+          : ['./lib/**/*.d.ts', '!./lib/index.d.ts', './lib/*/'],
       }),
       isAnalyzeBuild && analyze(),
     ],
