@@ -87,7 +87,8 @@ export abstract class AbstractWorker<
           data,
           name,
           ...this.handleError(
-            new Error(`Task function '${taskFunctionName}' not found`)
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            new Error(`Task function '${name!}' not found`)
           ),
         },
       })
@@ -218,7 +219,7 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Handles an error and destructure it if needed.
+   * Handles a worker error .
    * @param error - The error raised by the worker.
    * @returns The worker error object.
    */
