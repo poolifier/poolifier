@@ -1184,14 +1184,18 @@ export abstract class AbstractPool<
       const { asyncResource, reject, resolve, workerNodeKey } = promiseResponse
       const workerNode = this.workerNodes[workerNodeKey]
       if (workerError != null) {
+        let error: Error
+        if (workerError.error != null) {
+          error = workerError.error
+        } else {
+          const err = new Error(workerError.message)
+          err.stack = workerError.stack
+          error = err
+        }
         this.emitter?.emit(PoolEvents.taskError, workerError)
         asyncResource != null
-          ? asyncResource.runInAsyncScope(
-            reject,
-            this.emitter,
-            workerError.message
-          )
-          : reject(workerError.message)
+          ? asyncResource.runInAsyncScope(reject, this.emitter, error)
+          : reject(error)
       } else {
         asyncResource != null
           ? asyncResource.runInAsyncScope(resolve, this.emitter, data)
@@ -1493,6 +1497,7 @@ export abstract class AbstractPool<
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                 `Task function operation '${message.taskFunctionOperation?.toString()}' failed on worker ${message.workerId?.toString()} with error: '${
                   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                  message.workerError?.error?.message ??
                   message.workerError?.message
                 }'`
               )
@@ -1545,6 +1550,7 @@ export abstract class AbstractPool<
                     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                   }' failed on worker ${errorResponse?.workerId?.toString()} with error: '${
                     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                    errorResponse?.workerError?.error?.message ??
                     errorResponse?.workerError?.message
                   }'`
                 )

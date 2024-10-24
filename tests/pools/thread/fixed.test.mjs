@@ -206,9 +206,8 @@ describe('Fixed thread pool test suite', () => {
     expect(inError.message).toStrictEqual('Error Message from ThreadWorker')
     expect(taskError).toStrictEqual({
       data,
-      message: new Error('Error Message from ThreadWorker'),
+      error: new Error('Error Message from ThreadWorker'),
       name: DEFAULT_TASK_NAME,
-      stack: expect.any(String),
     })
     expect(
       errorPool.workerNodes.some(
@@ -239,9 +238,8 @@ describe('Fixed thread pool test suite', () => {
     )
     expect(taskError).toStrictEqual({
       data,
-      message: new Error('Error Message from ThreadWorker:async'),
+      error: new Error('Error Message from ThreadWorker:async'),
       name: DEFAULT_TASK_NAME,
-      stack: expect.any(String),
     })
     expect(
       asyncErrorPool.workerNodes.some(

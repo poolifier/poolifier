@@ -45,6 +45,13 @@ export class ClusterWorker<
     super(cluster.isPrimary, cluster.worker, taskFunctions, opts)
   }
 
+  /**
+   * @inheritDoc
+   */
+  protected handleError (error: Error): { message: string; stack?: string } {
+    return { message: error.message, stack: error.stack }
+  }
+
   /** @inheritDoc */
   protected handleReadyMessage (message: MessageValue<Data>): void {
     if (message.workerId === this.id && message.ready === false) {

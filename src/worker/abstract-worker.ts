@@ -85,9 +85,10 @@ export abstract class AbstractWorker<
         taskId,
         workerError: {
           data,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          message: `Task function '${name!}' not found`,
           name,
+          ...this.handleError(
+            new Error(`Task function '${taskFunctionName}' not found`)
+          ),
         },
       })
       return
@@ -126,9 +127,8 @@ export abstract class AbstractWorker<
           taskId,
           workerError: {
             data,
-            message: this.handleErrorMessage(error as Error | string),
             name,
-            stack: (error as Error).stack,
+            ...this.handleError(error as Error),
           },
         })
       })
@@ -162,9 +162,8 @@ export abstract class AbstractWorker<
         taskId,
         workerError: {
           data,
-          message: this.handleErrorMessage(error as Error | string),
           name,
-          stack: (error as Error).stack,
+          ...this.handleError(error as Error),
         },
       })
     } finally {
@@ -219,13 +218,14 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Handles an error and convert it if needed to its message string.
-   * Error are not structured-cloneable and cannot be sent to the main worker.
+   * Handles an error and destructure it if needed.
    * @param error - The error raised by the worker.
-   * @returns The error message.
+   * @returns The worker error object.
    */
-  protected handleErrorMessage (error: Error | string): string {
-    return error instanceof Error ? error.message : error
+  protected abstract handleError (error: Error): {
+    error?: Error
+    message?: string
+    stack?: string
   }
 
   /**
@@ -308,9 +308,8 @@ export abstract class AbstractWorker<
       ...(!status &&
         error != null && {
         workerError: {
-          message: this.handleErrorMessage(error as Error | string),
           name: taskFunctionProperties.name,
-          stack: error.stack,
+          ...this.handleError(error),
         },
       }),
     })
