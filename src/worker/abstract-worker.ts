@@ -225,7 +225,7 @@ export abstract class AbstractWorker<
    */
   protected abstract handleError (error: Error): {
     error?: Error
-    message?: string
+    message: string
     stack?: string
   }
 
