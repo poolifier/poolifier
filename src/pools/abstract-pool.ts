@@ -10,6 +10,7 @@ import type {
   PromiseResponseWrapper,
   Task,
   TaskFunctionProperties,
+  WorkerError,
 } from '../utility-types.js'
 import type {
   TaskFunction,
@@ -1218,15 +1219,8 @@ export abstract class AbstractPool<
       const { asyncResource, reject, resolve, workerNodeKey } = promiseResponse
       const workerNode = this.workerNodes[workerNodeKey]
       if (workerError != null) {
-        let error: Error
-        if (workerError.error != null) {
-          error = workerError.error
-        } else {
-          const err = new Error(workerError.message)
-          err.stack = workerError.stack
-          error = err
-        }
         this.emitter?.emit(PoolEvents.taskError, workerError)
+        const error = this.handleWorkerError(workerError)
         asyncResource != null
           ? asyncResource.runInAsyncScope(reject, this.emitter, error)
           : reject(error)
@@ -1261,6 +1255,15 @@ export abstract class AbstractPool<
         this.createAndSetupDynamicWorkerNode()
       }
     }
+  }
+
+  private handleWorkerError (workerError: WorkerError): Error {
+    if (workerError.error != null) {
+      return workerError.error
+    }
+    const error = new Error(workerError.message)
+    error.stack = workerError.stack
+    return error
   }
 
   private handleWorkerReadyResponse (message: MessageValue<Response>): void {
@@ -1545,7 +1548,6 @@ export abstract class AbstractPool<
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                 `Task function operation '${message.taskFunctionOperation?.toString()}' failed on worker ${message.workerId?.toString()} with error: '${
                   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                  message.workerError?.error?.message ??
                   message.workerError?.message
                 }'`
               )
@@ -1598,7 +1600,6 @@ export abstract class AbstractPool<
                     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                   }' failed on worker ${errorResponse?.workerId?.toString()} with error: '${
                     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                    errorResponse?.workerError?.error?.message ??
                     errorResponse?.workerError?.message
                   }'`
                 )
