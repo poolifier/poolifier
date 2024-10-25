@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.4.2](https://github.com/poolifier/poolifier/compare/v4.4.1...v4.4.2) (2024-10-25)
+
+
+### 🐞 Bug Fixes
+
+* ensure WorkerError similarity between cluster and worker-threads ([1b12ff4](https://github.com/poolifier/poolifier/commit/1b12ff49353f2ba5eadd8fc0241895b050cbc3d4))
+
+
+### ✨ Polish
+
+* factor out WorkerError handling ([6f82891](https://github.com/poolifier/poolifier/commit/6f82891836b8086f8239430dc25abb364fa53e0f))
+
+
+### 📚 Documentation
+
+* cleanup code comment typo ([c47de87](https://github.com/poolifier/poolifier/commit/c47de879e9f3fbd1e3bce8bf2d84864faaf1b69f))
+* publish documentation ([ec0e975](https://github.com/poolifier/poolifier/commit/ec0e975933e833d15e76a95798759e2b3e3e4ce0))
+
+
+### 🤖 Automation
+
+* **deps:** bump the regular group across 11 directories with 1 update ([#2636](https://github.com/poolifier/poolifier/issues/2636)) ([42797ef](https://github.com/poolifier/poolifier/commit/42797efe5f727ab68e940049a7f83c8a7708ab8c))
+
 ## [4.4.1](https://github.com/poolifier/poolifier/compare/v4.4.0...v4.4.1) (2024-10-24)
 
 
