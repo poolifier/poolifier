@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.4.3](https://github.com/poolifier/poolifier/compare/v4.4.2...v4.4.3) (2024-10-26)
+
+
+### 📚 Documentation
+
+* publish documentation ([557444c](https://github.com/poolifier/poolifier/commit/557444c71a0cd2d0662a63196928ed1388994257))
+
+
+### 🤖 Automation
+
+* add `clean-publish` at npm package releasing ([4f7ba01](https://github.com/poolifier/poolifier/commit/4f7ba0131327d1223bf7bb9cf9906b752a1fbf4e))
+* **deps:** bump the regular group across 11 directories with 2 updates ([#2638](https://github.com/poolifier/poolifier/issues/2638)) ([e3e997e](https://github.com/poolifier/poolifier/commit/e3e997e1d92438b04e8e674da46431122533ac16))
+
 ## [4.4.2](https://github.com/poolifier/poolifier/compare/v4.4.1...v4.4.2) (2024-10-25)
 
 
