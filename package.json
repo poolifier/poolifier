@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "poolifier",
-  "version": "4.4.2",
+  "version": "4.4.3",
   "description": "Fast and small Node.js Worker_Threads and Cluster Worker Pool",
   "license": "MIT",
   "type": "module",
@@ -14,6 +14,9 @@
       "require": "./lib/index.cjs",
       "import": "./lib/index.mjs"
     }
+  },
+  "publishConfig": {
+    "directory": "package"
   },
   "scripts": {
     "prepare": "node prepare.mjs",
@@ -33,7 +36,8 @@
     "lint:fix": "eslint . --cache --fix",
     "lint:report": "eslint . --cache --format json --output-file reports/eslint.json",
     "typedoc": "node typedoc.mjs",
-    "prepublishOnly": "pnpm build:prod"
+    "prepublishOnly": "pnpm build:prod && rm -rf ./package && clean-publish",
+    "postpublish": "rm -rf ./package"
   },
   "engines": {
     "node": ">=18.0.0",
@@ -109,6 +113,7 @@
     "@rollup/plugin-typescript": "^12.1.1",
     "@types/node": "^22.8.1",
     "c8": "^10.1.2",
+    "clean-publish": "^5.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^9.13.0",
     "eslint-define-config": "^2.1.0",
