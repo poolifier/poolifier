@@ -1197,29 +1197,30 @@ export abstract class AbstractPool<
       }
       asyncResource?.emitDestroy()
       this.afterTaskExecutionHook(workerNodeKey, message)
-      this.checkAndEmitTaskExecutionFinishedEvents()
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.promiseResponseMap.delete(taskId!)
-      if (this.opts.enableTasksQueue === true && !this.destroying) {
-        if (
-          !this.isWorkerNodeBusy(workerNodeKey) &&
-          this.tasksQueueSize(workerNodeKey) > 0
-        ) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this.executeTask(workerNodeKey, this.dequeueTask(workerNodeKey)!)
+      queueMicrotask(() => {
+        this.checkAndEmitTaskExecutionFinishedEvents()
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        workerNode?.emit('taskFinished', taskId)
+        if (this.opts.enableTasksQueue === true && !this.destroying) {
+          if (
+            !this.isWorkerNodeBusy(workerNodeKey) &&
+            this.tasksQueueSize(workerNodeKey) > 0
+          ) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.executeTask(workerNodeKey, this.dequeueTask(workerNodeKey)!)
+          }
+          if (this.isWorkerNodeIdle(workerNodeKey)) {
+            workerNode.emit('idle', {
+              workerNodeKey,
+            })
+          }
         }
-        if (this.isWorkerNodeIdle(workerNodeKey)) {
-          workerNode.emit('idle', {
-            workerNodeKey,
-          })
+        if (this.shallCreateDynamicWorker()) {
+          this.createAndSetupDynamicWorkerNode()
         }
-      }
-      // FIXME: cannot be theoretically undefined. Schedule in the next tick to avoid race conditions?
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      workerNode?.emit('taskFinished', taskId)
-      if (this.shallCreateDynamicWorker()) {
-        this.createAndSetupDynamicWorkerNode()
-      }
+      })
     }
   }
 
@@ -1313,18 +1314,7 @@ export abstract class AbstractPool<
         timestamp,
         transferList,
       }
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.promiseResponseMap.set(task.taskId!, {
-        reject,
-        resolve,
-        workerNodeKey,
-        ...(this.emitter != null && {
-          asyncResource: new AsyncResource('poolifier:task', {
-            requireManualDestroy: true,
-            triggerAsyncId: this.emitter.asyncId,
-          }),
-        }),
-      })
+
       if (
         this.opts.enableTasksQueue === false ||
         (this.opts.enableTasksQueue === true &&
@@ -1334,6 +1324,20 @@ export abstract class AbstractPool<
       } else {
         this.enqueueTask(workerNodeKey, task)
       }
+      queueMicrotask(() => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.promiseResponseMap.set(task.taskId!, {
+          reject,
+          resolve,
+          workerNodeKey,
+          ...(this.emitter != null && {
+            asyncResource: new AsyncResource('poolifier:task', {
+              requireManualDestroy: true,
+              triggerAsyncId: this.emitter.asyncId,
+            }),
+          }),
+        })
+      })
     })
   }
 
