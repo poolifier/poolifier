@@ -1197,12 +1197,12 @@ export abstract class AbstractPool<
       }
       asyncResource?.emitDestroy()
       this.afterTaskExecutionHook(workerNodeKey, message)
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.promiseResponseMap.delete(taskId!)
       queueMicrotask(() => {
         this.checkAndEmitTaskExecutionFinishedEvents()
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         workerNode?.emit('taskFinished', taskId)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.promiseResponseMap.delete(taskId!)
         if (this.opts.enableTasksQueue === true && !this.destroying) {
           if (
             !this.isWorkerNodeBusy(workerNodeKey) &&
