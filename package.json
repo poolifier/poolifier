@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "poolifier",
-  "version": "4.4.3",
+  "version": "4.4.4",
   "description": "Fast and small Node.js Worker_Threads and Cluster Worker Pool",
   "license": "MIT",
   "type": "module",
@@ -97,7 +97,9 @@
     "url": "https://github.com/poolifier/poolifier/issues"
   },
   "homepage": "https://github.com/poolifier/poolifier#readme",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "pnpm": {
     "overrides": {
       "semver": "^7.5.3"
