@@ -38,6 +38,9 @@ importers:
       c8:
         specifier: ^10.1.2
         version: 10.1.2
+      clean-publish:
+        specifier: ^5.1.0
+        version: 5.1.0
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -104,6 +107,7 @@ importers:
       typescript:
         specifier: ~5.6.3
         version: 5.6.3
+    publishDirectory: package
 
 packages:
 
@@ -988,6 +992,11 @@ packages:
   ci-info@3.9.0:
     resolution: {integrity: sha512-NIxF55hv4nSqQswkAeiOi1r83xy8JldOFDTWiug55KBu9Jnblncd2U6ViHmYgHf01TPZS77NJBhBMKdWj9HQMQ==}
     engines: {node: '>=8'}
+
+  clean-publish@5.1.0:
+    resolution: {integrity: sha512-Gbz8x7sL/sn0j+2B+yYEumD17WmPT6pHLN+A5nhcd0Sdh86EYblQleU+dUIICXVFalFMFBdW2aGynrVJ6k1u4Q==}
+    engines: {node: '>= 18.0.0'}
+    hasBin: true
 
   clean-stack@2.2.0:
     resolution: {integrity: sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==}
@@ -3724,6 +3733,13 @@ snapshots:
       fsevents: 2.3.3
 
   ci-info@3.9.0: {}
+
+  clean-publish@5.1.0:
+    dependencies:
+      cross-spawn: 7.0.3
+      fast-glob: 3.3.2
+      lilconfig: 3.1.2
+      micromatch: 4.0.8
 
   clean-stack@2.2.0: {}
 

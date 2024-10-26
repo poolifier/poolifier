@@ -75,6 +75,7 @@ package-lock.json
 *.bak
 lib
 dist
+package
 tmp
 .history/
 reports/
