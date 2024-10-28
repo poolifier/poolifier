@@ -136,14 +136,15 @@ export abstract class AbstractPool<
   private readonly abortTask = (eventDetail: WorkerNodeEventDetail): void => {
     const { taskId, workerId } = eventDetail
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { abortSignal, reject } = this.promiseResponseMap.get(taskId)!
+    const { abortSignal, reject } = this.promiseResponseMap.get(taskId!)!
     const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
     if (this.opts.enableTasksQueue === true) {
       for (const task of this.workerNodes[workerNodeKey].tasksQueue) {
         const { abortable, name } = task
         if (taskId === task.taskId && abortable === true) {
           this.workerNodes[workerNodeKey].deleteTask(task)
-          this.promiseResponseMap.delete(taskId)
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.promiseResponseMap.delete(taskId!)
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           reject(new Error(`Task ${name!} id ${taskId!} aborted`))
           return
