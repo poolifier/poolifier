@@ -20,8 +20,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nodemailer": "^6.9.15",
-    "poolifier": "^4.4.2"
+    "nodemailer": "^6.9.16",
+    "poolifier": "^4.4.4"
   },
   "devDependencies": {
     "@types/node": "^22.8.1",
