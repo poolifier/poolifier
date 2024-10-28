@@ -136,15 +136,14 @@ export abstract class AbstractPool<
   private readonly abortTask = (eventDetail: WorkerNodeEventDetail): void => {
     const { taskId, workerId } = eventDetail
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { abortSignal, reject } = this.promiseResponseMap.get(taskId!)!
+    const { abortSignal, reject } = this.promiseResponseMap.get(taskId)!
     const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
     if (this.opts.enableTasksQueue === true) {
       for (const task of this.workerNodes[workerNodeKey].tasksQueue) {
         const { abortable, name } = task
         if (taskId === task.taskId && abortable === true) {
           this.workerNodes[workerNodeKey].deleteTask(task)
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this.promiseResponseMap.delete(taskId!)
+          this.promiseResponseMap.delete(taskId)
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           reject(new Error(`Task ${name!} id ${taskId!} aborted`))
           return
@@ -1231,29 +1230,30 @@ export abstract class AbstractPool<
       }
       asyncResource?.emitDestroy()
       this.afterTaskExecutionHook(workerNodeKey, message)
-      this.checkAndEmitTaskExecutionFinishedEvents()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.promiseResponseMap.delete(taskId!)
-      if (this.opts.enableTasksQueue === true && !this.destroying) {
-        if (
-          !this.isWorkerNodeBusy(workerNodeKey) &&
-          this.tasksQueueSize(workerNodeKey) > 0
-        ) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this.executeTask(workerNodeKey, this.dequeueTask(workerNodeKey)!)
+      queueMicrotask(() => {
+        this.checkAndEmitTaskExecutionFinishedEvents()
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        workerNode?.emit('taskFinished', taskId)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.promiseResponseMap.delete(taskId!)
+        if (this.opts.enableTasksQueue === true && !this.destroying) {
+          if (
+            !this.isWorkerNodeBusy(workerNodeKey) &&
+            this.tasksQueueSize(workerNodeKey) > 0
+          ) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.executeTask(workerNodeKey, this.dequeueTask(workerNodeKey)!)
+          }
+          if (this.isWorkerNodeIdle(workerNodeKey)) {
+            workerNode.emit('idle', {
+              workerNodeKey,
+            })
+          }
         }
-        if (this.isWorkerNodeIdle(workerNodeKey)) {
-          workerNode.emit('idle', {
-            workerNodeKey,
-          })
+        if (this.shallCreateDynamicWorker()) {
+          this.createAndSetupDynamicWorkerNode()
         }
-      }
-      // FIXME: cannot be theoretically undefined. Schedule in the next tick to avoid race conditions?
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      workerNode?.emit('taskFinished', taskId)
-      if (this.shallCreateDynamicWorker()) {
-        this.createAndSetupDynamicWorkerNode()
-      }
+      })
     }
   }
 
@@ -1349,30 +1349,6 @@ export abstract class AbstractPool<
         timestamp,
         transferList,
       }
-      abortSignal?.addEventListener(
-        'abort',
-        () => {
-          this.workerNodes[workerNodeKey].emit('abortTask', {
-            taskId: task.taskId,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            workerId: this.getWorkerInfo(workerNodeKey)!.id!,
-          })
-        },
-        { once: true }
-      )
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.promiseResponseMap.set(task.taskId!, {
-        reject,
-        resolve,
-        workerNodeKey,
-        ...(this.emitter != null && {
-          asyncResource: new AsyncResource('poolifier:task', {
-            requireManualDestroy: true,
-            triggerAsyncId: this.emitter.asyncId,
-          }),
-        }),
-        abortSignal,
-      })
       if (
         this.opts.enableTasksQueue === false ||
         (this.opts.enableTasksQueue === true &&
@@ -1382,6 +1358,32 @@ export abstract class AbstractPool<
       } else {
         this.enqueueTask(workerNodeKey, task)
       }
+      queueMicrotask(() => {
+        abortSignal?.addEventListener(
+          'abort',
+          () => {
+            this.workerNodes[workerNodeKey].emit('abortTask', {
+              taskId: task.taskId,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              workerId: this.getWorkerInfo(workerNodeKey)!.id!,
+            })
+          },
+          { once: true }
+        )
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.promiseResponseMap.set(task.taskId!, {
+          reject,
+          resolve,
+          workerNodeKey,
+          ...(this.emitter != null && {
+            asyncResource: new AsyncResource('poolifier:task', {
+              requireManualDestroy: true,
+              triggerAsyncId: this.emitter.asyncId,
+            }),
+          }),
+          abortSignal,
+        })
+      })
     })
   }
 
