@@ -23,13 +23,13 @@
   "license": "ISC",
   "dependencies": {
     "fastify": "^5.0.0",
-    "poolifier": "^4.4.2"
+    "poolifier": "^4.4.4"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.1.1",
     "@types/node": "^22.8.1",
     "autocannon": "^8.0.0",
-    "rollup": "^4.24.0",
+    "rollup": "^4.24.2",
     "rollup-plugin-delete": "^2.1.0",
     "tslib": "^2.8.0",
     "typescript": "^5.6.3"
