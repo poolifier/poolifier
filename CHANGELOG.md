@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.4.4](https://github.com/poolifier/poolifier/compare/v4.4.3...v4.4.4) (2024-10-26)
+
+
+### ⚡ Performance
+
+* move tasks promise map entry deletion to a micro task ([722a827](https://github.com/poolifier/poolifier/commit/722a827f60eea10650958617bea72094ed702a08))
+* use micro tasks in tasks handling code paths ([48867d8](https://github.com/poolifier/poolifier/commit/48867d87c92c2cd6f2585db235a064dd6ef854cd))
+
+
+### 📚 Documentation
+
+* publish documentation ([8f8bebc](https://github.com/poolifier/poolifier/commit/8f8bebcae9c533f17fef20cd1ca2daa65616d1cf))
+
 ## [4.4.3](https://github.com/poolifier/poolifier/compare/v4.4.2...v4.4.3) (2024-10-26)
 
 

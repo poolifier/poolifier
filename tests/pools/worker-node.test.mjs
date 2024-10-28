@@ -212,7 +212,7 @@ describe('Worker node test suite', () => {
           }
         )
     ).toThrow(
-      new RangeError(
+      new TypeError(
         'Cannot construct a worker node without a tasks queue priority option'
       )
     )
@@ -228,7 +228,7 @@ describe('Worker node test suite', () => {
           }
         )
     ).toThrow(
-      new RangeError(
+      new TypeError(
         'Cannot construct a worker node with a tasks queue priority option that is not a boolean'
       )
     )
@@ -361,7 +361,7 @@ describe('Worker node test suite', () => {
     expect(() =>
       threadWorkerNode.getTaskFunctionWorkerUsage('invalidTaskFunction')
     ).toThrow(
-      new TypeError(
+      new Error(
         "Cannot get task function worker usage for task function name 'invalidTaskFunction' when task function properties list is not yet defined"
       )
     )
@@ -372,7 +372,7 @@ describe('Worker node test suite', () => {
     expect(() =>
       threadWorkerNode.getTaskFunctionWorkerUsage('invalidTaskFunction')
     ).toThrow(
-      new TypeError(
+      new Error(
         "Cannot get task function worker usage for task function name 'invalidTaskFunction' when task function properties list has less than 3 elements"
       )
     )
