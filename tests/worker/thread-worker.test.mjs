@@ -93,9 +93,11 @@ describe('Thread worker test suite', () => {
   it('Verify that handleError() method is working properly', () => {
     const error = new Error('Error as an error')
     const worker = new ThreadWorker(() => {})
-    expect(worker.handleError(error)).toStrictEqual(error)
-    const errorMessage = 'Error as a string'
-    expect(worker.handleError(errorMessage)).toStrictEqual(errorMessage)
+    expect(worker.handleError(error)).toStrictEqual({
+      error,
+      message: error.message,
+      stack: error.stack,
+    })
   })
 
   it('Verify that sendToMainWorker() method invokes the port property postMessage() method', () => {

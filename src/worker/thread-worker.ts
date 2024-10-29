@@ -58,8 +58,12 @@ export class ThreadWorker<
   /**
    * @inheritDoc
    */
-  protected override handleError (error: Error | string): string {
-    return error as string
+  protected handleError (error: Error): {
+    error: Error
+    message: string
+    stack?: string
+  } {
+    return { error, message: error.message, stack: error.stack }
   }
 
   /** @inheritDoc */

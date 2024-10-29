@@ -85,10 +85,11 @@ export abstract class AbstractWorker<
         taskId,
         workerError: {
           data,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          message: `Task function '${name!}' not found`,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          name: name!,
+          name,
+          ...this.handleError(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            new Error(`Task function '${name!}' not found`)
+          ),
         },
       })
       return
@@ -127,9 +128,8 @@ export abstract class AbstractWorker<
           taskId,
           workerError: {
             data,
-            message: this.handleError(error as Error | string),
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            name: name!,
+            name,
+            ...this.handleError(error as Error),
           },
         })
       })
@@ -163,9 +163,8 @@ export abstract class AbstractWorker<
         taskId,
         workerError: {
           data,
-          message: this.handleError(error as Error | string),
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          name: name!,
+          name,
+          ...this.handleError(error as Error),
         },
       })
     } finally {
@@ -220,12 +219,14 @@ export abstract class AbstractWorker<
   }
 
   /**
-   * Handles an error and convert it to a string so it can be sent back to the main worker.
+   * Handles a worker error.
    * @param error - The error raised by the worker.
-   * @returns The error message.
+   * @returns The worker error object.
    */
-  protected handleError (error: Error | string): string {
-    return error instanceof Error ? error.message : error
+  protected abstract handleError (error: Error): {
+    error?: Error
+    message: string
+    stack?: string
   }
 
   /**
@@ -308,8 +309,8 @@ export abstract class AbstractWorker<
       ...(!status &&
         error != null && {
         workerError: {
-          message: this.handleError(error as Error | string),
           name: taskFunctionProperties.name,
+          ...this.handleError(error),
         },
       }),
     })

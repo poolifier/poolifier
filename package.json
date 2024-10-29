@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "poolifier",
-  "version": "4.3.0",
+  "version": "4.4.4",
   "description": "Fast and small Node.js Worker_Threads and Cluster Worker Pool",
   "license": "MIT",
   "type": "module",
@@ -14,6 +14,9 @@
       "require": "./lib/index.cjs",
       "import": "./lib/index.mjs"
     }
+  },
+  "publishConfig": {
+    "directory": "package"
   },
   "scripts": {
     "prepare": "node prepare.mjs",
@@ -33,7 +36,8 @@
     "lint:fix": "eslint . --cache --fix",
     "lint:report": "eslint . --cache --format json --output-file reports/eslint.json",
     "typedoc": "node typedoc.mjs",
-    "prepublishOnly": "pnpm build:prod"
+    "prepublishOnly": "pnpm build:prod && rm -rf ./package && clean-publish",
+    "postpublish": "rm -rf ./package"
   },
   "engines": {
     "node": ">=18.0.0",
@@ -41,9 +45,9 @@
   },
   "volta": {
     "node": "22.10.0",
-    "pnpm": "9.12.2"
+    "pnpm": "9.12.3"
   },
-  "packageManager": "pnpm@9.12.2",
+  "packageManager": "pnpm@9.12.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/poolifier/poolifier.git"
@@ -107,8 +111,9 @@
     "@eslint/js": "^9.13.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.1",
-    "@types/node": "^22.7.8",
+    "@types/node": "^22.8.1",
     "c8": "^10.1.2",
+    "clean-publish": "^5.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^9.13.0",
     "eslint-define-config": "^2.1.0",
@@ -120,15 +125,15 @@
     "lint-staged": "^15.2.10",
     "mocha": "^10.7.3",
     "mochawesome": "^7.1.3",
-    "neostandard": "^0.11.6",
+    "neostandard": "^0.11.7",
     "prettier": "^3.3.3",
-    "rollup": "^4.24.0",
+    "rollup": "^4.24.2",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",
     "rollup-plugin-delete": "^2.1.0",
     "rollup-plugin-dts": "^6.1.1",
     "sinon": "^19.0.2",
-    "tatami-ng": "^0.8.12",
+    "tatami-ng": "^0.8.13",
     "typedoc": "^0.26.10",
     "typescript": "~5.6.3"
   }

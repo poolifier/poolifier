@@ -5,6 +5,108 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.4.4](https://github.com/poolifier/poolifier/compare/v4.4.3...v4.4.4) (2024-10-26)
+
+
+### ⚡ Performance
+
+* move tasks promise map entry deletion to a micro task ([722a827](https://github.com/poolifier/poolifier/commit/722a827f60eea10650958617bea72094ed702a08))
+* use micro tasks in tasks handling code paths ([48867d8](https://github.com/poolifier/poolifier/commit/48867d87c92c2cd6f2585db235a064dd6ef854cd))
+
+
+### 📚 Documentation
+
+* publish documentation ([8f8bebc](https://github.com/poolifier/poolifier/commit/8f8bebcae9c533f17fef20cd1ca2daa65616d1cf))
+
+## [4.4.3](https://github.com/poolifier/poolifier/compare/v4.4.2...v4.4.3) (2024-10-26)
+
+
+### 📚 Documentation
+
+* publish documentation ([557444c](https://github.com/poolifier/poolifier/commit/557444c71a0cd2d0662a63196928ed1388994257))
+
+
+### 🤖 Automation
+
+* add `clean-publish` at npm package releasing ([4f7ba01](https://github.com/poolifier/poolifier/commit/4f7ba0131327d1223bf7bb9cf9906b752a1fbf4e))
+* **deps:** bump the regular group across 11 directories with 2 updates ([#2638](https://github.com/poolifier/poolifier/issues/2638)) ([e3e997e](https://github.com/poolifier/poolifier/commit/e3e997e1d92438b04e8e674da46431122533ac16))
+
+## [4.4.2](https://github.com/poolifier/poolifier/compare/v4.4.1...v4.4.2) (2024-10-25)
+
+
+### 🐞 Bug Fixes
+
+* ensure WorkerError similarity between cluster and worker-threads ([1b12ff4](https://github.com/poolifier/poolifier/commit/1b12ff49353f2ba5eadd8fc0241895b050cbc3d4))
+
+
+### ✨ Polish
+
+* factor out WorkerError handling ([6f82891](https://github.com/poolifier/poolifier/commit/6f82891836b8086f8239430dc25abb364fa53e0f))
+
+
+### 📚 Documentation
+
+* cleanup code comment typo ([c47de87](https://github.com/poolifier/poolifier/commit/c47de879e9f3fbd1e3bce8bf2d84864faaf1b69f))
+* publish documentation ([ec0e975](https://github.com/poolifier/poolifier/commit/ec0e975933e833d15e76a95798759e2b3e3e4ce0))
+
+
+### 🤖 Automation
+
+* **deps:** bump the regular group across 11 directories with 1 update ([#2636](https://github.com/poolifier/poolifier/issues/2636)) ([42797ef](https://github.com/poolifier/poolifier/commit/42797efe5f727ab68e940049a7f83c8a7708ab8c))
+
+## [4.4.1](https://github.com/poolifier/poolifier/compare/v4.4.0...v4.4.1) (2024-10-24)
+
+
+### 🐞 Bug Fixes
+
+* ensure worker error is propagated unchanged if possible ([#2634](https://github.com/poolifier/poolifier/issues/2634)) ([7e582d6](https://github.com/poolifier/poolifier/commit/7e582d647a6e2fff7aba7431133638dcfd0fa6f9))
+
+
+### 📚 Documentation
+
+* publish documentation ([cb9d18c](https://github.com/poolifier/poolifier/commit/cb9d18cc44c7be166b31dbdf2197563a3f713175))
+
+## [4.4.0](https://github.com/poolifier/poolifier/compare/v4.3.0...v4.4.0) (2024-10-24)
+
+
+### 🚀 Features
+
+* add worker side error stack trace to WorkerError ([#2631](https://github.com/poolifier/poolifier/issues/2631)) ([5fd1e6b](https://github.com/poolifier/poolifier/commit/5fd1e6bf528d56998a64e5238d4428af693b18c8))
+
+
+### 🐞 Bug Fixes
+
+* **ci:** untanble build from benchmarking scripts ([693da4d](https://github.com/poolifier/poolifier/commit/693da4ddac420003f0e6a03d0090a712bb91fb16))
+* fix production build ([96e15f3](https://github.com/poolifier/poolifier/commit/96e15f3d994c6240a6ee50431065e3d593d9f581))
+
+
+### ⚡ Performance
+
+* speed up isAsyncFunction() helper ([e155dc6](https://github.com/poolifier/poolifier/commit/e155dc6f44e131201196c5537bff363d9d0b79bb))
+
+
+### 📚 Documentation
+
+* publish documentation ([7bd639b](https://github.com/poolifier/poolifier/commit/7bd639b904e493311f0115d0f2599552f0351ccb))
+
+
+### 🤖 Automation
+
+* **ci:** handle various release type on npm registry ([c4c9bf6](https://github.com/poolifier/poolifier/commit/c4c9bf60a525a59f85c3385420c77243654d5443))
+* **ci:** node 23.x support ([27461e4](https://github.com/poolifier/poolifier/commit/27461e4f1c905185caccbe6ec422df2354b6f1b6))
+* **ci:** switch to workflow token ([c7f3208](https://github.com/poolifier/poolifier/commit/c7f32087e98e0b6ea547272b386e9f085721446e))
+* **deps-dev:** bump @biomejs/biome in the regular group ([#2624](https://github.com/poolifier/poolifier/issues/2624)) ([c8da00b](https://github.com/poolifier/poolifier/commit/c8da00bf3bde94576ada532b3cfaadec6bc324bc))
+* **deps-dev:** bump @types/node in the regular group ([614a923](https://github.com/poolifier/poolifier/commit/614a9238edb101f38f2f8aa2a56533b6ae7a9826))
+* **deps-dev:** bump eslint-plugin-jsdoc in the regular group ([a8ab74a](https://github.com/poolifier/poolifier/commit/a8ab74abe2353f855c95b36d6dc8575552d2f75e))
+* **deps-dev:** bump neostandard in the regular group ([#2629](https://github.com/poolifier/poolifier/issues/2629)) ([b0bd470](https://github.com/poolifier/poolifier/commit/b0bd470729633f5e2a4513ffdd506d212d9f6754))
+* **deps-dev:** bump tatami-ng in the regular group ([#2625](https://github.com/poolifier/poolifier/issues/2625)) ([cd27ebb](https://github.com/poolifier/poolifier/commit/cd27ebba9f493cd5c79398dac5e7c59c2eb685b0))
+* **deps-dev:** bump the major group across 6 directories with 1 update ([#2619](https://github.com/poolifier/poolifier/issues/2619)) ([5257d5f](https://github.com/poolifier/poolifier/commit/5257d5f397b397d9460c378b161671c0bf0c6e28))
+* **deps-dev:** bump the regular group across 11 directories with 1 update ([848c7ca](https://github.com/poolifier/poolifier/commit/848c7cad1b7b146f90c072d4b57b847649693fbe))
+* **deps-dev:** bump the regular group across 6 directories with 1 update ([6f9c249](https://github.com/poolifier/poolifier/commit/6f9c24960a81b252f4b45e671aeeb743eed78a6d))
+* **deps-dev:** bump the regular group across 6 directories with 1 update ([71c0ba1](https://github.com/poolifier/poolifier/commit/71c0ba1520c59f9f339d81deacc3ef2a0fc0fcd5))
+* **deps-dev:** bump the regular group with 2 updates ([5f7136a](https://github.com/poolifier/poolifier/commit/5f7136ad9ec4b43734a423661058a421accb8799))
+* **deps:** bump the all group across 11 directories with 1 update ([fac6bb8](https://github.com/poolifier/poolifier/commit/fac6bb836f2648221ce707dd311073f4b72daade))
+
 ## [4.3.0](https://github.com/poolifier/poolifier/compare/v4.2.11...v4.3.0) (2024-10-14)
 
 

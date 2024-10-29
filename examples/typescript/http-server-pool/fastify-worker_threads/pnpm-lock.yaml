@@ -15,12 +15,12 @@ importers:
         specifier: ^5.0.1
         version: 5.0.1
       poolifier:
-        specifier: ^4.3.0
-        version: 4.3.0
+        specifier: ^4.4.4
+        version: 4.4.4
     devDependencies:
       '@types/node':
-        specifier: ^22.7.8
-        version: 22.7.8
+        specifier: ^22.8.1
+        version: 22.8.1
       autocannon:
         specifier: ^8.0.0
         version: 8.0.0
@@ -52,8 +52,8 @@ packages:
   '@minimistjs/subarg@1.0.0':
     resolution: {integrity: sha512-Q/ONBiM2zNeYUy0mVSO44mWWKYM3UHuEK43PKIOzJCbvUnPoMH1K+gk3cf1kgnCVJFlWmddahQQCmrmBGlk9jQ==}
 
-  '@types/node@22.7.8':
-    resolution: {integrity: sha512-a922jJy31vqR5sk+kAdIENJjHblqcZ4RmERviFsER4WJcEONqxKcjNOlk0q7OUfrF5sddT+vng070cdfMlrPLg==}
+  '@types/node@22.8.1':
+    resolution: {integrity: sha512-k6Gi8Yyo8EtrNtkHXutUu2corfDf9su95VYVP10aGYMMROM6SAItZi0w1XszA6RtWTHSVp5OeFof37w0IEqCQg==}
 
   abstract-logging@2.0.1:
     resolution: {integrity: sha512-2BjRTZxTPvheOvGbBslFSYOUkr+SjPtOnrLP33f+VIWLzezQpZcqVg7ja3L4dBXmzzgwT+a029jRx5PCi3JuiA==}
@@ -123,9 +123,9 @@ packages:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
 
-  cookie@0.7.2:
-    resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
-    engines: {node: '>= 0.6'}
+  cookie@1.0.1:
+    resolution: {integrity: sha512-Xd8lFX4LM9QEEwxQpF9J9NTUh8pmdJO0cyRJhFiDoLTk2eH8FXlRv2IFGYVadZpqI3j8fhNrSdKCeYPxiAhLXw==}
+    engines: {node: '>=18'}
 
   cross-argv@2.0.0:
     resolution: {integrity: sha512-YIaY9TR5Nxeb8SMdtrU8asWVM4jqJDNDYlKV21LxtYcfNJhp1kEsgSa6qXwXgzN0WQWGODps0+TlGp2xQSHwOg==}
@@ -217,8 +217,8 @@ packages:
   json-schema-traverse@1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
 
-  light-my-request@6.1.0:
-    resolution: {integrity: sha512-+NFuhlOGoEwxeQfJ/pobkVFxcnKyDtiX847hLjuB/IzBxIl3q4VJeFI8uRCgb3AlTWL1lgOr+u5+8QdUcr33ng==}
+  light-my-request@6.2.0:
+    resolution: {integrity: sha512-8b6or3xBeDv8p7OHNVXjFmlrLHdK/+Anor0AYLg6P/zgF8DkNDGGwP5BNbOF0SYdkfPFKYH88ARvXfNakOeQqA==}
 
   lodash.chunk@4.2.0:
     resolution: {integrity: sha512-ZzydJKfUHJwHa+hF5X66zLFCBrWn5GeF28OHEr4WVWtNDXlQ/IjWKPBiikqKo2ne0+v6JgCgJ0GzJp8k8bHC7w==}
@@ -264,8 +264,8 @@ packages:
     resolution: {integrity: sha512-xSEmD4pLnV54t0NOUN16yCl7RIB1c5UUOse5HSyEXtBp+FgFQyPeDutc+Q2ZO7/22vImV7VfEjH/1zV2QuqvYw==}
     hasBin: true
 
-  poolifier@4.3.0:
-    resolution: {integrity: sha512-ULuCb1a9rC9a1rHK6m0DIXZZS3kWl5mrya36LtbKGCT1QOHbWI/rW0tip1hYBUWkg9PcFXamN1VU74ZGhrCy+w==}
+  poolifier@4.4.4:
+    resolution: {integrity: sha512-XctEL5IggHDjVS7K1KdGvbt+vTzDRAFSP7e2WGlRpugZsGN6UN1O8Iq3kwYVzrG2iLqOrhQtl1dDug5OGMQKlw==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   pretty-bytes@5.6.0:
@@ -326,8 +326,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  set-cookie-parser@2.7.0:
-    resolution: {integrity: sha512-lXLOiqpkUumhRdFF3k1osNXCy9akgx/dyPZ5p8qAg9seJzXr5ZrlqZuWIMuY6ejOsVLE6flJ5/h3lsn57fQ/PQ==}
+  set-cookie-parser@2.7.1:
+    resolution: {integrity: sha512-IOc8uWeOZgnb3ptbCURJWNjWUPcO3ZnTTdzsurqERrP6nPyv+paC55vJM0LpOlT2ne+Ix+9+CRG1MNLlyZ4GjQ==}
 
   sonic-boom@4.2.0:
     resolution: {integrity: sha512-INb7TM37/mAcsGmc9hyyI6+QR3rR1zVRu36B0NeGXKnOOLiZOfER5SA+N7X7k3yUYRzLWafduTDvJAfDswwEww==}
@@ -401,7 +401,7 @@ snapshots:
     dependencies:
       minimist: 1.2.8
 
-  '@types/node@22.7.8':
+  '@types/node@22.8.1':
     dependencies:
       undici-types: 6.19.8
 
@@ -491,7 +491,7 @@ snapshots:
     dependencies:
       delayed-stream: 1.0.0
 
-  cookie@0.7.2: {}
+  cookie@1.0.1: {}
 
   cross-argv@2.0.0: {}
 
@@ -534,7 +534,7 @@ snapshots:
       avvio: 9.1.0
       fast-json-stringify: 6.0.0
       find-my-way: 9.1.0
-      light-my-request: 6.1.0
+      light-my-request: 6.2.0
       pino: 9.5.0
       process-warning: 4.0.0
       proxy-addr: 2.0.7
@@ -593,11 +593,11 @@ snapshots:
 
   json-schema-traverse@1.0.0: {}
 
-  light-my-request@6.1.0:
+  light-my-request@6.2.0:
     dependencies:
-      cookie: 0.7.2
+      cookie: 1.0.1
       process-warning: 4.0.0
-      set-cookie-parser: 2.7.0
+      set-cookie-parser: 2.7.1
 
   lodash.chunk@4.2.0: {}
 
@@ -641,7 +641,7 @@ snapshots:
       sonic-boom: 4.2.0
       thread-stream: 3.1.0
 
-  poolifier@4.3.0: {}
+  poolifier@4.4.4: {}
 
   pretty-bytes@5.6.0: {}
 
@@ -680,7 +680,7 @@ snapshots:
 
   semver@7.6.3: {}
 
-  set-cookie-parser@2.7.0: {}
+  set-cookie-parser@2.7.1: {}
 
   sonic-boom@4.2.0:
     dependencies:
