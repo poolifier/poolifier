@@ -1314,7 +1314,6 @@ export abstract class AbstractPool<
         timestamp,
         transferList,
       }
-
       if (
         this.opts.enableTasksQueue === false ||
         (this.opts.enableTasksQueue === true &&

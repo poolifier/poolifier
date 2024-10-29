@@ -73,6 +73,7 @@ export abstract class AbstractWorker<
    * Timestamp of the last task processed by this worker.
    */
   protected lastTaskTimestamp!: number
+
   /**
    * Runs the given task.
    * @param task - The task to execute.
