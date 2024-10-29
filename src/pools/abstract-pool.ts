@@ -1350,6 +1350,30 @@ export abstract class AbstractPool<
         timestamp,
         transferList,
       }
+      abortSignal?.addEventListener(
+        'abort',
+        () => {
+          this.workerNodes[workerNodeKey].emit('abortTask', {
+            taskId: task.taskId,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            workerId: this.getWorkerInfo(workerNodeKey)!.id!,
+          })
+        },
+        { once: true }
+      )
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.promiseResponseMap.set(task.taskId!, {
+        reject,
+        resolve,
+        workerNodeKey,
+        ...(this.emitter != null && {
+          asyncResource: new AsyncResource('poolifier:task', {
+            requireManualDestroy: true,
+            triggerAsyncId: this.emitter.asyncId,
+          }),
+        }),
+        abortSignal,
+      })
       if (
         this.opts.enableTasksQueue === false ||
         (this.opts.enableTasksQueue === true &&
@@ -1359,32 +1383,6 @@ export abstract class AbstractPool<
       } else {
         this.enqueueTask(workerNodeKey, task)
       }
-      queueMicrotask(() => {
-        abortSignal?.addEventListener(
-          'abort',
-          () => {
-            this.workerNodes[workerNodeKey].emit('abortTask', {
-              taskId: task.taskId,
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              workerId: this.getWorkerInfo(workerNodeKey)!.id!,
-            })
-          },
-          { once: true }
-        )
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.promiseResponseMap.set(task.taskId!, {
-          reject,
-          resolve,
-          workerNodeKey,
-          ...(this.emitter != null && {
-            asyncResource: new AsyncResource('poolifier:task', {
-              requireManualDestroy: true,
-              triggerAsyncId: this.emitter.asyncId,
-            }),
-          }),
-          abortSignal,
-        })
-      })
     })
   }
 
