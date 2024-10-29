@@ -23,11 +23,11 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.21.1",
-    "poolifier": "^4.4.2"
+    "poolifier": "^4.4.4"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
-    "@types/node": "^22.8.1",
+    "@types/node": "^22.8.2",
     "autocannon": "^8.0.0",
     "typescript": "^5.6.3"
   }
