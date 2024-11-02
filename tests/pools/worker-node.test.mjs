@@ -1,4 +1,4 @@
-import { expect } from 'expect'
+import { expect } from '@std/expect'
 import { Worker as ClusterWorker } from 'node:cluster'
 import { MessageChannel, Worker as ThreadWorker } from 'node:worker_threads'
 

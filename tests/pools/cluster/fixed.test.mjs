@@ -1,4 +1,4 @@
-import { expect } from 'expect'
+import { expect } from '@std/expect'
 import cluster from 'node:cluster'
 
 import { FixedClusterPool, PoolEvents } from '../../../lib/index.cjs'
