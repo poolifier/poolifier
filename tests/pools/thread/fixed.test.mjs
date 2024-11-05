@@ -1,4 +1,4 @@
-import { expect } from 'expect'
+import { expect } from '@std/expect'
 
 import { FixedThreadPool, PoolEvents } from '../../../lib/index.cjs'
 import { DEFAULT_TASK_NAME } from '../../../lib/utils.cjs'

@@ -1,4 +1,4 @@
-import { expect } from 'expect'
+import { expect } from '@std/expect'
 
 import { FixedPriorityQueue } from '../../lib/queues/fixed-priority-queue.cjs'
 import { FixedQueue } from '../../lib/queues/fixed-queue.cjs'
