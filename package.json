@@ -112,7 +112,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.1",
     "@std/expect": "npm:@jsr/std__expect@^1.0.7",
-    "@types/node": "^22.8.7",
+    "@types/node": "^22.9.0",
     "c8": "^10.1.2",
     "clean-publish": "^5.1.0",
     "cross-env": "^7.0.3",
