@@ -28,7 +28,7 @@
     "@rollup/plugin-typescript": "^12.1.1",
     "@types/node": "^22.9.0",
     "@types/ws": "^8.5.13",
-    "rollup": "^4.27.2",
+    "rollup": "^4.27.3",
     "rollup-plugin-delete": "^2.1.0",
     "tslib": "^2.8.1",
     "typescript": "^5.6.3"
