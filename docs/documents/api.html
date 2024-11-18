@@ -1,0 +1,174 @@
+<!DOCTYPE html><html class="default" lang="en"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>api | poolifier - v4.4.5</title><meta name="description" content="Documentation for poolifier"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><div class="table-cell" id="tsd-search" data-base=".."><div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="../assets/icons.svg#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div><div class="field"><div id="tsd-toolbar-links"></div></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">poolifier - v4.4.5</a></div><div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="../assets/icons.svg#icon-menu"></use></svg></a></div></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><ul class="tsd-breadcrumb"><li><a href="../index.html">poolifier</a></li><li><a href="api.html">api</a></li></ul></div><div class="tsd-panel tsd-typography"><a id="md:api" class="tsd-anchor"></a><h1 class="tsd-anchor-link">API<a href="#md:api" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h1><a id="md:table-of-contents" class="tsd-anchor"></a><h2 class="tsd-anchor-link">Table of contents<a href="#md:table-of-contents" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2><ul>
+<li><a href="#md:pool">Pool</a>
+<ul>
+<li><a href="#md:pool--new-fixedthreadpoolfixedclusterpoolnumberofthreadsnumberofworkers-filepath-opts"><code>pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)</code></a></li>
+<li><a href="#md:pool--new-dynamicthreadpooldynamicclusterpoolmin-max-filepath-opts"><code>pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)</code></a></li>
+<li><a href="#md:poolexecutedata-name-transferlist"><code>pool.execute(data, name, transferList)</code></a></li>
+<li><a href="#md:poolmapexecutedata-name-transferlist"><code>pool.mapExecute(data, name, transferList)</code></a></li>
+<li><a href="#md:poolstart"><code>pool.start()</code></a></li>
+<li><a href="#md:pooldestroy"><code>pool.destroy()</code></a></li>
+<li><a href="#md:poolhastaskfunctionname"><code>pool.hasTaskFunction(name)</code></a></li>
+<li><a href="#md:pooladdtaskfunctionname-fn"><code>pool.addTaskFunction(name, fn)</code></a></li>
+<li><a href="#md:poolremovetaskfunctionname"><code>pool.removeTaskFunction(name)</code></a></li>
+<li><a href="#md:poollisttaskfunctionsproperties"><code>pool.listTaskFunctionsProperties()</code></a></li>
+<li><a href="#md:poolsetdefaulttaskfunctionname"><code>pool.setDefaultTaskFunction(name)</code></a></li>
+<li><a href="#md:pool-options">Pool options</a></li>
+</ul>
+</li>
+<li><a href="#md:worker">Worker</a>
+<ul>
+<li><a href="#md:class-yourworker-extends-threadworkerclusterworker"><code>class YourWorker extends ThreadWorker/ClusterWorker</code></a>
+<ul>
+<li><a href="#md:yourworkerhastaskfunctionname"><code>YourWorker.hasTaskFunction(name)</code></a></li>
+<li><a href="#md:yourworkeraddtaskfunctionname-fn"><code>YourWorker.addTaskFunction(name, fn)</code></a></li>
+<li><a href="#md:yourworkerremovetaskfunctionname"><code>YourWorker.removeTaskFunction(name)</code></a></li>
+<li><a href="#md:yourworkerlisttaskfunctionsproperties"><code>YourWorker.listTaskFunctionsProperties()</code></a></li>
+<li><a href="#md:yourworkersetdefaulttaskfunctionname"><code>YourWorker.setDefaultTaskFunction(name)</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<a id="md:pool" class="tsd-anchor"></a><h2 class="tsd-anchor-link">Pool<a href="#md:pool" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2><a id="md:pool--new-fixedthreadpoolfixedclusterpoolnumberofthreadsnumberofworkers-filepath-opts" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><code>pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)</code><a href="#md:pool--new-fixedthreadpoolfixedclusterpoolnumberofthreadsnumberofworkers-filepath-opts" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p><code>numberOfThreads/numberOfWorkers</code> (mandatory) Number of workers for this pool.<br>
+<code>filePath</code> (mandatory) Path to a file with a worker implementation.<br>
+<code>opts</code> (optional) An object with the pool options properties described below.</p>
+<a id="md:pool--new-dynamicthreadpooldynamicclusterpoolmin-max-filepath-opts" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><code>pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)</code><a href="#md:pool--new-dynamicthreadpooldynamicclusterpoolmin-max-filepath-opts" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p><code>min</code> (mandatory) Same as <em>FixedThreadPool</em>/<em>FixedClusterPool</em> numberOfThreads/numberOfWorkers, this number of workers will be always active.<br>
+<code>max</code> (mandatory) Max number of workers that this pool can contain, the newly created workers will die after a threshold (default is 1 minute, you can override it in your worker implementation).<br>
+<code>filePath</code> (mandatory) Path to a file with a worker implementation.<br>
+<code>opts</code> (optional) An object with the pool options properties described below.</p>
+<a id="md:poolexecutedata-name-transferlist" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><code>pool.execute(data, name, transferList)</code><a href="#md:poolexecutedata-name-transferlist" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p><code>data</code> (optional) An object that you want to pass to your worker task function implementation.<br>
+<code>name</code> (optional) A string with the task function name that you want to execute on the worker. Default: <code>'default'</code><br>
+<code>transferList</code> (optional) An array of transferable objects that you want to transfer to your <a href="#md:class-yourworker-extends-threadworkerclusterworker"><code>ThreadWorker</code></a> worker implementation.</p>
+<p>This method is available on both pool implementations and returns a promise with the task function execution response.</p>
+<a id="md:poolmapexecutedata-name-transferlist" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><code>pool.mapExecute(data, name, transferList)</code><a href="#md:poolmapexecutedata-name-transferlist" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p><code>data</code> Iterable objects that you want to pass to your worker task function implementation.<br>
+<code>name</code> (optional) A string with the task function name that you want to execute on the worker. Default: <code>'default'</code><br>
+<code>transferList</code> (optional) An array of transferable objects that you want to transfer to your <a href="#md:class-yourworker-extends-threadworkerclusterworker"><code>ThreadWorker</code></a> worker implementation.</p>
+<p>This method is available on both pool implementations and returns a promise with the task function execution responses array.</p>
+<a id="md:poolstart" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><code>pool.start()</code><a href="#md:poolstart" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p>This method is available on both pool implementations and will start the minimum number of workers.</p>
+<a id="md:pooldestroy" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><code>pool.destroy()</code><a href="#md:pooldestroy" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p>This method is available on both pool implementations and will call the terminate method on each worker.</p>
+<a id="md:poolhastaskfunctionname" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><code>pool.hasTaskFunction(name)</code><a href="#md:poolhastaskfunctionname" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p><code>name</code> (mandatory) The task function name.</p>
+<p>This method is available on both pool implementations and returns a boolean.</p>
+<a id="md:pooladdtaskfunctionname-fn" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><code>pool.addTaskFunction(name, fn)</code><a href="#md:pooladdtaskfunctionname-fn" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p><code>name</code> (mandatory) The task function name.<br>
+<code>fn</code> (mandatory) The task function <code>(data?: Data) =&gt; Response | Promise&lt;Response&gt;</code> or task function object <code>{ taskFunction: (data?: Data) =&gt; Response | Promise&lt;Response&gt;, priority?: number, strategy?: WorkerChoiceStrategy }</code>. Priority range is the same as Unix nice levels.</p>
+<p>This method is available on both pool implementations and returns a boolean promise.</p>
+<a id="md:poolremovetaskfunctionname" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><code>pool.removeTaskFunction(name)</code><a href="#md:poolremovetaskfunctionname" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p><code>name</code> (mandatory) The task function name.</p>
+<p>This method is available on both pool implementations and returns a boolean promise.</p>
+<a id="md:poollisttaskfunctionsproperties" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><code>pool.listTaskFunctionsProperties()</code><a href="#md:poollisttaskfunctionsproperties" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p>This method is available on both pool implementations and returns an array of the task function properties.</p>
+<a id="md:poolsetdefaulttaskfunctionname" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><code>pool.setDefaultTaskFunction(name)</code><a href="#md:poolsetdefaulttaskfunctionname" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p><code>name</code> (mandatory) The task function name.</p>
+<p>This method is available on both pool implementations and returns a boolean promise.</p>
+<a id="md:pool-options" class="tsd-anchor"></a><h3 class="tsd-anchor-link">Pool options<a href="#md:pool-options" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p>An object with these properties:</p>
+<ul>
+<li>
+<p><code>onlineHandler</code> (optional) - A function that will listen for online event on each worker.<br>
+Default: <code>() =&gt; {}</code></p>
+</li>
+<li>
+<p><code>messageHandler</code> (optional) - A function that will listen for message event on each worker.<br>
+Default: <code>() =&gt; {}</code></p>
+</li>
+<li>
+<p><code>errorHandler</code> (optional) - A function that will listen for error event on each worker.<br>
+Default: <code>() =&gt; {}</code></p>
+</li>
+<li>
+<p><code>exitHandler</code> (optional) - A function that will listen for exit event on each worker.<br>
+Default: <code>() =&gt; {}</code></p>
+</li>
+<li>
+<p><code>workerChoiceStrategy</code> (optional) - The default worker choice strategy to use in this pool:</p>
+<ul>
+<li><code>WorkerChoiceStrategies.ROUND_ROBIN</code>: Submit tasks to worker in a round robin fashion</li>
+<li><code>WorkerChoiceStrategies.LEAST_USED</code>: Submit tasks to the worker with the minimum number of executing and queued tasks</li>
+<li><code>WorkerChoiceStrategies.LEAST_BUSY</code>: Submit tasks to the worker with the minimum tasks execution time</li>
+<li><code>WorkerChoiceStrategies.LEAST_ELU</code>: Submit tasks to the worker with the minimum event loop utilization (ELU)</li>
+<li><code>WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN</code>: Submit tasks to worker by using a <a href="worker_choice_strategies.html">weighted round robin scheduling algorithm</a> based on tasks execution time</li>
+<li><code>WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN</code>: Submit tasks to worker by using an <a href="worker_choice_strategies.html">interleaved weighted round robin scheduling algorithm</a> based on tasks execution time (experimental)</li>
+<li><code>WorkerChoiceStrategies.FAIR_SHARE</code>: Submit tasks to worker by using a <a href="worker_choice_strategies.html">fair share scheduling algorithm</a> based on tasks execution time (the default) or ELU active time</li>
+</ul>
+<p><code>WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN</code>, <code>WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN</code> and <code>WorkerChoiceStrategies.FAIR_SHARE</code> strategies are targeted to heavy and long tasks.<br>
+Default: <code>WorkerChoiceStrategies.ROUND_ROBIN</code></p>
+</li>
+<li>
+<p><code>workerChoiceStrategyOptions</code> (optional) - The worker choice strategy options object to use in this pool.<br>
+Properties:</p>
+<ul>
+<li><code>measurement</code> (optional) - The measurement to use in worker choice strategies: <code>runTime</code>, <code>waitTime</code> or <code>elu</code>.</li>
+<li><code>runTime</code> (optional) - Use the tasks <a href="worker_choice_strategies.html">simple moving median</a> runtime instead of the tasks simple moving average runtime in worker choice strategies.</li>
+<li><code>waitTime</code> (optional) - Use the tasks <a href="worker_choice_strategies.html">simple moving median</a> wait time instead of the tasks simple moving average wait time in worker choice strategies.</li>
+<li><code>elu</code> (optional) - Use the tasks <a href="worker_choice_strategies.html">simple moving median</a> ELU instead of the tasks simple moving average ELU in worker choice strategies.</li>
+<li><code>weights</code> (optional) - The worker weights to use in weighted round robin worker choice strategies: <code>Record&lt;number, number&gt;</code>.</li>
+</ul>
+<p>Default: <code>{ runTime: { median: false }, waitTime: { median: false }, elu: { median: false } }</code></p>
+</li>
+<li>
+<p><code>startWorkers</code> (optional) - Start the minimum number of workers at pool initialization.<br>
+Default: <code>true</code></p>
+</li>
+<li>
+<p><code>restartWorkerOnError</code> (optional) - Restart worker on uncaught error in this pool.<br>
+Default: <code>true</code></p>
+</li>
+<li>
+<p><code>enableEvents</code> (optional) - Pool events integrated with async resource emission enablement.<br>
+Default: <code>true</code></p>
+</li>
+<li>
+<p><code>enableTasksQueue</code> (optional) - Tasks queue per worker enablement in this pool.<br>
+Default: <code>false</code></p>
+</li>
+<li>
+<p><code>tasksQueueOptions</code> (optional) - The worker tasks queue options object to use in this pool.<br>
+Properties:</p>
+<ul>
+<li><code>size</code> (optional) - The maximum number of tasks that can be queued on a worker before flagging it as back pressured. It must be a positive integer.</li>
+<li><code>concurrency</code> (optional) - The maximum number of tasks that can be executed concurrently on a worker. It must be a positive integer.</li>
+<li><code>taskStealing</code> (optional) - Task stealing enablement on idle.</li>
+<li><code>tasksStealingOnBackPressure</code> (optional) - Tasks stealing enablement under back pressure.</li>
+<li><code>tasksStealingRatio</code> (optional) - The ratio of worker nodes that can steal tasks from another worker node. It must be a number between 0 and 1.</li>
+<li><code>tasksFinishedTimeout</code> (optional) - Queued tasks finished timeout in milliseconds at worker termination.</li>
+</ul>
+<p>Default: <code>{ size: (pool maximum size)^2, concurrency: 1, taskStealing: true, tasksStealingOnBackPressure: true, tasksStealingRatio: 0.6, tasksFinishedTimeout: 2000 }</code></p>
+</li>
+<li>
+<p><code>workerOptions</code> (optional) - An object with the worker options to pass to worker. See <a href="https://nodejs.org/api/worker_threads.html#worker_threads_new_worker_filename_options" target="_blank" class="external">worker_threads</a> for more details.</p>
+</li>
+<li>
+<p><code>env</code> (optional) - An object with the environment variables to pass to worker. See <a href="https://nodejs.org/api/cluster.html#cluster_cluster_fork_env" target="_blank" class="external">cluster</a> for more details.</p>
+</li>
+<li>
+<p><code>settings</code> (optional) - An object with the cluster settings. See <a href="https://nodejs.org/api/cluster.html#cluster_cluster_settings" target="_blank" class="external">cluster</a> for more details.</p>
+</li>
+</ul>
+<a id="md:worker" class="tsd-anchor"></a><h2 class="tsd-anchor-link">Worker<a href="#md:worker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2><a id="md:class-yourworker-extends-threadworkerclusterworker" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><code>class YourWorker extends ThreadWorker/ClusterWorker</code><a href="#md:class-yourworker-extends-threadworkerclusterworker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><p><code>taskFunctions</code> (mandatory) The task function or task functions object <code>Record&lt;string, (data?: Data) =&gt; Response | Promise&lt;Response&gt; | { taskFunction: (data?: Data) =&gt; Response | Promise&lt;Response&gt;, priority?: number, strategy?: WorkerChoiceStrategy }&gt;</code> that you want to execute on the worker. Priority range is the same as Unix nice levels.<br>
+<code>opts</code> (optional) An object with these properties:</p>
+<ul>
+<li>
+<p><code>killBehavior</code> (optional) - Dictates if your worker will be deleted in case a task is active on it.<br>
+<strong>KillBehaviors.SOFT</strong>: If <code>currentTime - lastActiveTime</code> is greater than <code>maxInactiveTime</code> but the worker is stealing tasks or a task is executing or queued, then the worker <strong>won't</strong> be deleted.<br>
+<strong>KillBehaviors.HARD</strong>: If <code>currentTime - lastActiveTime</code> is greater than <code>maxInactiveTime</code> but the worker is stealing tasks or a task is executing or queued, then the worker will be deleted.<br>
+This option only apply to the newly created workers.<br>
+Default: <code>KillBehaviors.SOFT</code></p>
+</li>
+<li>
+<p><code>maxInactiveTime</code> (optional) - Maximum waiting time in milliseconds for tasks on newly created workers. After this time newly created workers will die. It must be a positive integer greater or equal than 5.<br>
+The last active time of your worker will be updated when it terminates a task.<br>
+If <code>killBehavior</code> is set to <code>KillBehaviors.HARD</code> this value represents also the timeout for the tasks that you submit to the pool, when this timeout expires your tasks is interrupted before completion and removed. The worker is killed if is not part of the minimum size of the pool.<br>
+If <code>killBehavior</code> is set to <code>KillBehaviors.SOFT</code> your tasks have no timeout and your workers will not be terminated until your task is completed.<br>
+Default: <code>60000</code></p>
+</li>
+<li>
+<p><code>killHandler</code> (optional) - A function that will be called when a worker is killed.<br>
+Default: <code>() =&gt; {}</code></p>
+</li>
+</ul>
+<a id="md:yourworkerhastaskfunctionname" class="tsd-anchor"></a><h4 class="tsd-anchor-link"><code>YourWorker.hasTaskFunction(name)</code><a href="#md:yourworkerhastaskfunctionname" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p><code>name</code> (mandatory) The task function name.</p>
+<p>This method is available on both worker implementations and returns <code>{ status: boolean, error?: Error }</code>.</p>
+<a id="md:yourworkeraddtaskfunctionname-fn" class="tsd-anchor"></a><h4 class="tsd-anchor-link"><code>YourWorker.addTaskFunction(name, fn)</code><a href="#md:yourworkeraddtaskfunctionname-fn" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p><code>name</code> (mandatory) The task function name.<br>
+<code>fn</code> (mandatory) The task function <code>(data?: Data) =&gt; Response | Promise&lt;Response&gt;</code> or task function object <code>{ taskFunction: (data?: Data) =&gt; Response | Promise&lt;Response&gt;, priority?: number, strategy?: WorkerChoiceStrategy }</code>. Priority range is the same as Unix nice levels.</p>
+<p>This method is available on both worker implementations and returns <code>{ status: boolean, error?: Error }</code>.</p>
+<a id="md:yourworkerremovetaskfunctionname" class="tsd-anchor"></a><h4 class="tsd-anchor-link"><code>YourWorker.removeTaskFunction(name)</code><a href="#md:yourworkerremovetaskfunctionname" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p><code>name</code> (mandatory) The task function name.</p>
+<p>This method is available on both worker implementations and returns <code>{ status: boolean, error?: Error }</code>.</p>
+<a id="md:yourworkerlisttaskfunctionsproperties" class="tsd-anchor"></a><h4 class="tsd-anchor-link"><code>YourWorker.listTaskFunctionsProperties()</code><a href="#md:yourworkerlisttaskfunctionsproperties" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>This method is available on both worker implementations and returns an array of the task function properties.</p>
+<a id="md:yourworkersetdefaulttaskfunctionname" class="tsd-anchor"></a><h4 class="tsd-anchor-link"><code>YourWorker.setDefaultTaskFunction(name)</code><a href="#md:yourworkersetdefaulttaskfunctionname" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p><code>name</code> (mandatory) The task function name.</p>
+<p>This method is available on both worker implementations and returns <code>{ status: boolean, error?: Error }</code>.</p>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#md:api"><span>API</span></a><ul><li><a href="#md:table-of-contents"><span>Table of contents</span></a></li><li><a href="#md:pool"><span>Pool</span></a></li><li><ul><li><a href="#md:pool--new-fixedthreadpoolfixedclusterpoolnumberofthreadsnumberofworkers-filepath-opts"><span>pool = new <wbr/>Fixed<wbr/>Thread<wbr/>Pool/<wbr/>Fixed<wbr/>Cluster<wbr/>Pool(number<wbr/>Of<wbr/>Threads/number<wbr/>Of<wbr/>Workers, file<wbr/>Path, opts)</span></a></li><li><a href="#md:pool--new-dynamicthreadpooldynamicclusterpoolmin-max-filepath-opts"><span>pool = new <wbr/>Dynamic<wbr/>Thread<wbr/>Pool/<wbr/>Dynamic<wbr/>Cluster<wbr/>Pool(min, max, file<wbr/>Path, opts)</span></a></li><li><a href="#md:poolexecutedata-name-transferlist"><span>pool.execute(data, name, transfer<wbr/>List)</span></a></li><li><a href="#md:poolmapexecutedata-name-transferlist"><span>pool.map<wbr/>Execute(data, name, transfer<wbr/>List)</span></a></li><li><a href="#md:poolstart"><span>pool.start()</span></a></li><li><a href="#md:pooldestroy"><span>pool.destroy()</span></a></li><li><a href="#md:poolhastaskfunctionname"><span>pool.has<wbr/>Task<wbr/>Function(name)</span></a></li><li><a href="#md:pooladdtaskfunctionname-fn"><span>pool.add<wbr/>Task<wbr/>Function(name, fn)</span></a></li><li><a href="#md:poolremovetaskfunctionname"><span>pool.remove<wbr/>Task<wbr/>Function(name)</span></a></li><li><a href="#md:poollisttaskfunctionsproperties"><span>pool.list<wbr/>Task<wbr/>Functions<wbr/>Properties()</span></a></li><li><a href="#md:poolsetdefaulttaskfunctionname"><span>pool.set<wbr/>Default<wbr/>Task<wbr/>Function(name)</span></a></li><li><a href="#md:pool-options"><span>Pool options</span></a></li></ul></li><li><a href="#md:worker"><span>Worker</span></a></li><li><ul><li><a href="#md:class-yourworker-extends-threadworkerclusterworker"><span>class <wbr/>Your<wbr/>Worker extends <wbr/>Thread<wbr/>Worker/<wbr/>Cluster<wbr/>Worker</span></a></li><li><ul><li><a href="#md:yourworkerhastaskfunctionname"><span>Your<wbr/>Worker.has<wbr/>Task<wbr/>Function(name)</span></a></li><li><a href="#md:yourworkeraddtaskfunctionname-fn"><span>Your<wbr/>Worker.add<wbr/>Task<wbr/>Function(name, fn)</span></a></li><li><a href="#md:yourworkerremovetaskfunctionname"><span>Your<wbr/>Worker.remove<wbr/>Task<wbr/>Function(name)</span></a></li><li><a href="#md:yourworkerlisttaskfunctionsproperties"><span>Your<wbr/>Worker.list<wbr/>Task<wbr/>Functions<wbr/>Properties()</span></a></li><li><a href="#md:yourworkersetdefaulttaskfunctionname"><span>Your<wbr/>Worker.set<wbr/>Default<wbr/>Task<wbr/>Function(name)</span></a></li></ul></li></ul></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="../index.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1"></use></svg><span>poolifier - v4.4.5</span></a><ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base=".."><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>
