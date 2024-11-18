@@ -70,6 +70,7 @@ export default defineFlatConfig([
     globals: {
       ...globals.mocha,
     },
+    noJsx: true,
     ts: true,
   }),
   {
