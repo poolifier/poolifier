@@ -11,6 +11,27 @@ export default defineFlatConfig([
     ignores: ['docs/**', '**/dist/**', 'lib/**', 'outputs/**'],
   },
   cspellConfigs.recommended,
+  {
+    rules: {
+      '@cspell/spellchecker': [
+        'warn',
+        {
+          autoFix: true,
+          cspell: {
+            words: [
+              'Alessandro',
+              'Ardizio',
+              'Benoit',
+              'IWRR',
+              'Quadflieg',
+              'neostandard',
+              'poolifier',
+            ],
+          },
+        },
+      ],
+    },
+  },
   js.configs.recommended,
   plugins.promise.configs['flat/recommended'],
   ...plugins.n.configs['flat/mixed-esm-and-cjs'],
@@ -44,27 +65,6 @@ export default defineFlatConfig([
       ...plugins['typescript-eslint'].configs.disableTypeChecked,
     }
   ),
-  {
-    rules: {
-      '@cspell/spellchecker': [
-        'warn',
-        {
-          autoFix: true,
-          cspell: {
-            words: [
-              'Alessandro',
-              'Ardizio',
-              'Benoit',
-              'IWRR',
-              'Quadflieg',
-              'neostandard',
-              'poolifier',
-            ],
-          },
-        },
-      ],
-    },
-  },
   perfectionist.configs['recommended-natural'],
   ...neostandard({
     globals: {
