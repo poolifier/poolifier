@@ -34,7 +34,7 @@ import {
 import { KillBehaviors, type WorkerOptions } from './worker-options.js'
 
 const DEFAULT_MAX_INACTIVE_TIME = 60000
-const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
+const DEFAULT_WORKER_OPTIONS: Readonly<WorkerOptions> = Object.freeze({
   /**
    * The kill behavior option on this worker or its default value.
    */
@@ -48,7 +48,7 @@ const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
    * The pool automatically checks and terminates this worker when the time expires.
    */
   maxInactiveTime: DEFAULT_MAX_INACTIVE_TIME,
-}
+})
 
 /**
  * Base class that implements some shared logic for all poolifier workers.
@@ -68,7 +68,7 @@ export abstract class AbstractWorker<
   /**
    * Worker id.
    */
-  protected abstract id: number
+  protected abstract readonly id: number
   /**
    * Timestamp of the last task processed by this worker.
    */
@@ -194,7 +194,7 @@ export abstract class AbstractWorker<
     protected readonly isMain: boolean | undefined,
     private readonly mainWorker: MainWorker | null | undefined,
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
-    protected opts: WorkerOptions = DEFAULT_WORKER_OPTIONS
+    protected readonly opts: WorkerOptions = DEFAULT_WORKER_OPTIONS
   ) {
     if (this.isMain == null) {
       throw new Error('isMain parameter is mandatory')

@@ -24,7 +24,7 @@ export class LeastEluWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public override readonly taskStatisticsRequirements: TaskStatisticsRequirements =
-    {
+    Object.freeze({
       elu: {
         aggregate: true,
         average: false,
@@ -32,7 +32,7 @@ export class LeastEluWorkerChoiceStrategy<
       },
       runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
       waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-    }
+    })
 
   /** @inheritDoc */
   public constructor (

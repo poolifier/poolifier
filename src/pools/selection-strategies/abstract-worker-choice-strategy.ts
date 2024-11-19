@@ -41,11 +41,12 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
-    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-    runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-    waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-  }
+  public readonly taskStatisticsRequirements: TaskStatisticsRequirements =
+    Object.freeze({
+      elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+      runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+      waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+    })
 
   /**
    * Constructs a worker choice strategy bound to the pool.

@@ -41,7 +41,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   private workerNodeVirtualTaskExecutionTime = 0
   /** @inheritDoc */
   public override readonly taskStatisticsRequirements: TaskStatisticsRequirements =
-    {
+    Object.freeze({
       elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
       runTime: {
         aggregate: true,
@@ -53,7 +53,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
         average: true,
         median: false,
       },
-    }
+    })
 
   /** @inheritDoc */
   public constructor (
