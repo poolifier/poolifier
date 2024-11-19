@@ -194,7 +194,7 @@ export abstract class AbstractWorker<
     protected readonly isMain: boolean | undefined,
     private readonly mainWorker: MainWorker | null | undefined,
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
-    protected readonly opts: WorkerOptions = DEFAULT_WORKER_OPTIONS
+    protected opts: WorkerOptions = DEFAULT_WORKER_OPTIONS
   ) {
     if (this.isMain == null) {
       throw new Error('isMain parameter is mandatory')
