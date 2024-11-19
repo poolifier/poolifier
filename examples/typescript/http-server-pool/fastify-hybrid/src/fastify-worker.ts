@@ -13,6 +13,15 @@ class FastifyWorker extends ClusterWorker<
 > {
   private static fastify: FastifyInstance
 
+  public constructor () {
+    super(FastifyWorker.startFastify, {
+      killHandler: async () => {
+        await FastifyWorker.fastify.pool.destroy()
+        await FastifyWorker.fastify.close()
+      },
+    })
+  }
+
   private static readonly startFastify = async (
     workerData?: ClusterWorkerData
   ): Promise<ClusterWorkerResponse> => {
@@ -48,15 +57,6 @@ class FastifyWorker extends ClusterWorker<
       port: (FastifyWorker.fastify.server.address() as AddressInfo).port,
       status: true,
     }
-  }
-
-  public constructor () {
-    super(FastifyWorker.startFastify, {
-      killHandler: async () => {
-        await FastifyWorker.fastify.pool.destroy()
-        await FastifyWorker.fastify.close()
-      },
-    })
   }
 }
 

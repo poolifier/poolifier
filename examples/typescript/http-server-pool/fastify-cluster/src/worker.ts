@@ -6,6 +6,16 @@ import { ClusterWorker } from 'poolifier'
 import type { WorkerData, WorkerResponse } from './types.js'
 
 class FastifyWorker extends ClusterWorker<WorkerData, WorkerResponse> {
+  private static fastify: FastifyInstance
+
+  public constructor () {
+    super(FastifyWorker.startFastify, {
+      killHandler: async () => {
+        await FastifyWorker.fastify.close()
+      },
+    })
+  }
+
   private static readonly factorial = (n: bigint | number): bigint => {
     if (n === 0 || n === 1) {
       return 1n
@@ -18,8 +28,6 @@ class FastifyWorker extends ClusterWorker<WorkerData, WorkerResponse> {
       return factorial
     }
   }
-
-  private static fastify: FastifyInstance
 
   private static readonly startFastify = async (
     workerData?: WorkerData
@@ -47,14 +55,6 @@ class FastifyWorker extends ClusterWorker<WorkerData, WorkerResponse> {
       port: (FastifyWorker.fastify.server.address() as AddressInfo).port,
       status: true,
     }
-  }
-
-  public constructor () {
-    super(FastifyWorker.startFastify, {
-      killHandler: async () => {
-        await FastifyWorker.fastify.close()
-      },
-    })
   }
 }
 

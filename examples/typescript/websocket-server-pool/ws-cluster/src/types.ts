@@ -3,13 +3,13 @@ export enum MessageType {
   factorial = 'factorial',
 }
 
+export interface DataPayload {
+  number?: number
+}
+
 export interface MessagePayload<T = unknown> {
   data: T
   type: MessageType
-}
-
-export interface DataPayload {
-  number?: number
 }
 
 export interface WorkerData {

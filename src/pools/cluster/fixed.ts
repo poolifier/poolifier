@@ -22,6 +22,26 @@ export class FixedClusterPool<
   Data = unknown,
   Response = unknown
 > extends AbstractPool<Worker, Data, Response> {
+  /** @inheritDoc */
+  protected get backPressure (): boolean {
+    return this.internalBackPressure()
+  }
+
+  /** @inheritDoc */
+  protected get busy (): boolean {
+    return this.internalBusy()
+  }
+
+  /** @inheritDoc */
+  protected get type (): PoolType {
+    return PoolTypes.fixed
+  }
+
+  /** @inheritDoc */
+  protected get worker (): WorkerType {
+    return WorkerTypes.cluster
+  }
+
   /**
    * Constructs a new poolifier fixed cluster pool.
    * @param numberOfWorkers - Number of workers for this pool.
@@ -103,25 +123,5 @@ export class FixedClusterPool<
   /** @inheritDoc */
   protected shallCreateDynamicWorker (): boolean {
     return false
-  }
-
-  /** @inheritDoc */
-  protected get backPressure (): boolean {
-    return this.internalBackPressure()
-  }
-
-  /** @inheritDoc */
-  protected get busy (): boolean {
-    return this.internalBusy()
-  }
-
-  /** @inheritDoc */
-  protected get type (): PoolType {
-    return PoolTypes.fixed
-  }
-
-  /** @inheritDoc */
-  protected get worker (): WorkerType {
-    return WorkerTypes.cluster
   }
 }

@@ -8,11 +8,11 @@ export const defaultBufferSize = 2048
  * @internal
  */
 export class CircularBuffer {
+  public size: number
   private readonly items: Float32Array
   private readonly maxArrayIdx: number
   private readIdx: number
   private writeIdx: number
-  public size: number
 
   /**
    * @param size - Buffer size. @defaultValue defaultBufferSize
@@ -25,23 +25,6 @@ export class CircularBuffer {
     this.maxArrayIdx = size - 1
     this.size = 0
     this.items = new Float32Array(size).fill(-1)
-  }
-
-  /**
-   * Checks the buffer size.
-   * @param size - Buffer size.
-   */
-  private checkSize (size: number): void {
-    if (!Number.isSafeInteger(size)) {
-      throw new TypeError(
-        `Invalid circular buffer size: '${size.toString()}' is not an integer`
-      )
-    }
-    if (size < 0) {
-      throw new RangeError(
-        `Invalid circular buffer size: ${size.toString()} < 0`
-      )
-    }
   }
 
   /**
@@ -93,5 +76,22 @@ export class CircularBuffer {
    */
   public toArray (): number[] {
     return Array.from(this.items.filter(item => item !== -1))
+  }
+
+  /**
+   * Checks the buffer size.
+   * @param size - Buffer size.
+   */
+  private checkSize (size: number): void {
+    if (!Number.isSafeInteger(size)) {
+      throw new TypeError(
+        `Invalid circular buffer size: '${size.toString()}' is not an integer`
+      )
+    }
+    if (size < 0) {
+      throw new RangeError(
+        `Invalid circular buffer size: ${size.toString()} < 0`
+      )
+    }
   }
 }

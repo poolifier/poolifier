@@ -31,6 +31,15 @@ class ExpressWorker extends ClusterWorker<
 
   private static server: Server
 
+  public constructor () {
+    super(ExpressWorker.startExpress, {
+      killHandler: async () => {
+        await ExpressWorker.requestHandlerPool.destroy()
+        ExpressWorker.server.close()
+      },
+    })
+  }
+
   private static readonly startExpress = (
     workerData?: ClusterWorkerData
   ): ClusterWorkerResponse => {
@@ -83,15 +92,6 @@ class ExpressWorker extends ClusterWorker<
       port: listenerPort ?? port,
       status: true,
     }
-  }
-
-  public constructor () {
-    super(ExpressWorker.startExpress, {
-      killHandler: async () => {
-        await ExpressWorker.requestHandlerPool.destroy()
-        ExpressWorker.server.close()
-      },
-    })
   }
 }
 

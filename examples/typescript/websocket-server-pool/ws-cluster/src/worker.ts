@@ -10,6 +10,16 @@ import {
 } from './types.js'
 
 class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
+  private static wss: WebSocketServer
+
+  public constructor () {
+    super(WebSocketServerWorker.startWebSocketServer, {
+      killHandler: () => {
+        WebSocketServerWorker.wss.close()
+      },
+    })
+  }
+
   private static readonly factorial = (n: bigint | number): bigint => {
     if (n === 0 || n === 1) {
       return 1n
@@ -71,16 +81,6 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
       port: WebSocketServerWorker.wss.options.port,
       status: true,
     }
-  }
-
-  private static wss: WebSocketServer
-
-  public constructor () {
-    super(WebSocketServerWorker.startWebSocketServer, {
-      killHandler: () => {
-        WebSocketServerWorker.wss.close()
-      },
-    })
   }
 }
 
