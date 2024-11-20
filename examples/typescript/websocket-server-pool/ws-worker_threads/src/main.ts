@@ -18,7 +18,6 @@ wss.on('connection', ws => {
   ws.on('error', console.error)
   ws.on('message', (message: RawData) => {
     const { data, type } = JSON.parse(
-
       message.toString()
     ) as MessagePayload<DataPayload>
     switch (type) {
