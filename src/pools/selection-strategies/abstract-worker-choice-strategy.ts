@@ -25,10 +25,10 @@ export abstract class AbstractWorkerChoiceStrategy<
   Response = unknown
 > implements IWorkerChoiceStrategy {
   /** @inheritDoc */
-  public readonly strategyPolicy: StrategyPolicy = {
+  public readonly strategyPolicy: StrategyPolicy = Object.freeze({
     dynamicWorkerReady: true,
     dynamicWorkerUsage: false,
-  }
+  })
 
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements =
