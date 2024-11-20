@@ -25,17 +25,18 @@ export abstract class AbstractWorkerChoiceStrategy<
   Response = unknown
 > implements IWorkerChoiceStrategy {
   /** @inheritDoc */
-  public readonly strategyPolicy: StrategyPolicy = {
+  public readonly strategyPolicy: StrategyPolicy = Object.freeze({
     dynamicWorkerReady: true,
     dynamicWorkerUsage: false,
-  }
+  })
 
   /** @inheritDoc */
-  public readonly taskStatisticsRequirements: TaskStatisticsRequirements = {
-    elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-    runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-    waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-  }
+  public readonly taskStatisticsRequirements: TaskStatisticsRequirements =
+    Object.freeze({
+      elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+      runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+      waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+    })
 
   /**
    * The next worker node key.

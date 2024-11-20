@@ -17,6 +17,7 @@ import {
 export class PriorityQueue<T> {
   /** The priority queue maximum size. */
   public maxSize!: number
+
   /**
    * The number of filled prioritized buckets.
    * @returns The number of filled prioritized buckets.
@@ -83,11 +84,8 @@ export class PriorityQueue<T> {
   }
 
   private readonly bucketSize: number
-
   private head!: PriorityQueueNode<T>
-
   private priorityEnabled: boolean
-
   private tail!: PriorityQueueNode<T>
 
   /**
