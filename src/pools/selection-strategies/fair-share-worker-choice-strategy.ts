@@ -25,7 +25,7 @@ export class FairShareWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public override readonly taskStatisticsRequirements: TaskStatisticsRequirements =
-    {
+    Object.freeze({
       elu: {
         aggregate: true,
         average: true,
@@ -41,7 +41,7 @@ export class FairShareWorkerChoiceStrategy<
         average: true,
         median: false,
       },
-    }
+    })
 
   /** @inheritDoc */
   public constructor (

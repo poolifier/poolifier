@@ -25,7 +25,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public override readonly taskStatisticsRequirements: TaskStatisticsRequirements =
-    {
+    Object.freeze({
       elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
       runTime: {
         aggregate: true,
@@ -37,7 +37,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
         average: true,
         median: false,
       },
-    }
+    })
 
   /**
    * Worker node virtual execution time.

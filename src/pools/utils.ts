@@ -30,24 +30,24 @@ import {
 /**
  * Default measurement statistics requirements.
  */
-export const DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS: MeasurementStatisticsRequirements =
-  {
+export const DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS: Readonly<MeasurementStatisticsRequirements> =
+  Object.freeze({
     aggregate: false,
     average: false,
     median: false,
-  }
+  })
 
 export const getDefaultTasksQueueOptions = (
   poolMaxSize: number
-): Required<TasksQueueOptions> => {
-  return {
+): Required<Readonly<TasksQueueOptions>> => {
+  return Object.freeze({
     concurrency: 1,
     size: Math.pow(poolMaxSize, 2),
     tasksFinishedTimeout: 2000,
     tasksStealingOnBackPressure: true,
     tasksStealingRatio: 0.6,
     taskStealing: true,
-  }
+  })
 }
 
 export const checkFilePath = (filePath: string | undefined): void => {
