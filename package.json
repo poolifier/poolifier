@@ -45,9 +45,9 @@
   },
   "volta": {
     "node": "22.11.0",
-    "pnpm": "9.13.2"
+    "pnpm": "9.14.2"
   },
-  "packageManager": "pnpm@9.13.2",
+  "packageManager": "pnpm@9.14.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/poolifier/poolifier.git"
