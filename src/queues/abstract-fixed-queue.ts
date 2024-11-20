@@ -10,13 +10,13 @@ import {
  * @internal
  */
 export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
-  protected start!: number
   /** @inheritdoc */
   public readonly capacity: number
   /** @inheritdoc */
   public nodeArray: FixedQueueNode<T>[]
   /** @inheritdoc */
   public size!: number
+  protected start!: number
 
   /**
    * Constructs a fixed queue.
@@ -28,21 +28,6 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
     this.capacity = size
     this.nodeArray = new Array<FixedQueueNode<T>>(this.capacity)
     this.clear()
-  }
-
-  /**
-   * Checks the fixed queue size.
-   * @param size - Queue size.
-   */
-  private checkSize (size: number): void {
-    if (!Number.isSafeInteger(size)) {
-      throw new TypeError(
-        `Invalid fixed queue size: '${size.toString()}' is not an integer`
-      )
-    }
-    if (size < 0) {
-      throw new RangeError(`Invalid fixed queue size: ${size.toString()} < 0`)
-    }
   }
 
   /** @inheritdoc */
@@ -113,6 +98,21 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
           value,
         }
       },
+    }
+  }
+
+  /**
+   * Checks the fixed queue size.
+   * @param size - Queue size.
+   */
+  private checkSize (size: number): void {
+    if (!Number.isSafeInteger(size)) {
+      throw new TypeError(
+        `Invalid fixed queue size: '${size.toString()}' is not an integer`
+      )
+    }
+    if (size < 0) {
+      throw new RangeError(`Invalid fixed queue size: ${size.toString()} < 0`)
     }
   }
 }

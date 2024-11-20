@@ -23,11 +23,6 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
-  /**
-   * Worker node virtual execution time.
-   */
-  private workerNodeVirtualTaskExecutionTime = 0
-
   /** @inheritDoc */
   public override readonly taskStatisticsRequirements: TaskStatisticsRequirements =
     Object.freeze({
@@ -44,6 +39,11 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
       },
     })
 
+  /**
+   * Worker node virtual execution time.
+   */
+  private workerNodeVirtualTaskExecutionTime = 0
+
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
@@ -51,28 +51,6 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   ) {
     super(pool, opts)
     this.setTaskStatisticsRequirements(this.opts)
-  }
-
-  private weightedRoundRobinNextWorkerNodeKey (): number | undefined {
-    const workerWeight =
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.opts!.weights![this.nextWorkerNodeKey ?? this.previousWorkerNodeKey]
-    if (this.workerNodeVirtualTaskExecutionTime < workerWeight) {
-      this.workerNodeVirtualTaskExecutionTime +=
-        this.getWorkerNodeTaskWaitTime(
-          this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
-        ) +
-        this.getWorkerNodeTaskRunTime(
-          this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
-        )
-    } else {
-      this.nextWorkerNodeKey =
-        this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
-          ? 0
-          : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
-      this.workerNodeVirtualTaskExecutionTime = 0
-    }
-    return this.nextWorkerNodeKey
   }
 
   /** @inheritDoc */
@@ -114,5 +92,27 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public update (): boolean {
     return true
+  }
+
+  private weightedRoundRobinNextWorkerNodeKey (): number | undefined {
+    const workerWeight =
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.opts!.weights![this.nextWorkerNodeKey ?? this.previousWorkerNodeKey]
+    if (this.workerNodeVirtualTaskExecutionTime < workerWeight) {
+      this.workerNodeVirtualTaskExecutionTime +=
+        this.getWorkerNodeTaskWaitTime(
+          this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
+        ) +
+        this.getWorkerNodeTaskRunTime(
+          this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
+        )
+    } else {
+      this.nextWorkerNodeKey =
+        this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
+          ? 0
+          : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
+      this.workerNodeVirtualTaskExecutionTime = 0
+    }
+    return this.nextWorkerNodeKey
   }
 }

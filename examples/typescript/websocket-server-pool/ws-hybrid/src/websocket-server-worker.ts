@@ -28,6 +28,17 @@ class WebSocketServerWorker extends ClusterWorker<
     ThreadWorkerResponse<DataPayload>
   >
 
+  private static wss: WebSocketServer
+
+  public constructor () {
+    super(WebSocketServerWorker.startWebSocketServer, {
+      killHandler: async () => {
+        await WebSocketServerWorker.requestHandlerPool.destroy()
+        WebSocketServerWorker.wss.close()
+      },
+    })
+  }
+
   private static readonly startWebSocketServer = (
     workerData?: ClusterWorkerData
   ): ClusterWorkerResponse => {
@@ -55,6 +66,7 @@ class WebSocketServerWorker extends ClusterWorker<
       ws.on('error', console.error)
       ws.on('message', (message: RawData) => {
         const { data, type } = JSON.parse(
+          // eslint-disable-next-line @typescript-eslint/no-base-to-string
           message.toString()
         ) as MessagePayload<DataPayload>
         switch (type) {
@@ -97,17 +109,6 @@ class WebSocketServerWorker extends ClusterWorker<
       port: WebSocketServerWorker.wss.options.port,
       status: true,
     }
-  }
-
-  private static wss: WebSocketServer
-
-  public constructor () {
-    super(WebSocketServerWorker.startWebSocketServer, {
-      killHandler: async () => {
-        await WebSocketServerWorker.requestHandlerPool.destroy()
-        WebSocketServerWorker.wss.close()
-      },
-    })
   }
 }
 

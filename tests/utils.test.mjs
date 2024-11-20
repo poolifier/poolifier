@@ -181,10 +181,10 @@ describe('Utils test suite', () => {
     expect(isAsyncFunction(async function () {})).toBe(true)
     expect(isAsyncFunction(async function named () {})).toBe(true)
     class TestClass {
-      testArrowAsync = async () => {}
-      testArrowSync = () => {}
       static async testStaticAsync () {}
       static testStaticSync () {}
+      testArrowAsync = async () => {}
+      testArrowSync = () => {}
       async testAsync () {}
       testSync () {}
     }

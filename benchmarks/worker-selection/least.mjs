@@ -26,6 +26,23 @@ const tasksMap = generateRandomTasksMap(60, 20)
  * @param tasksMap
  * @returns
  */
+function arraySortSelect (tasksMap) {
+  const tasksArray = Array.from(tasksMap)
+  return tasksArray.sort((a, b) => {
+    if (a[1] < b[1]) {
+      return -1
+    } else if (a[1] > b[1]) {
+      return 1
+    }
+    return 0
+  })[0]
+}
+
+/**
+ *
+ * @param tasksMap
+ * @returns
+ */
 function loopSelect (tasksMap) {
   let minKey
   let minValue = Number.POSITIVE_INFINITY
@@ -40,23 +57,6 @@ function loopSelect (tasksMap) {
   return [minKey, minValue]
 }
 
-/**
- *
- * @param tasksMap
- * @returns
- */
-function arraySortSelect (tasksMap) {
-  const tasksArray = Array.from(tasksMap)
-  return tasksArray.sort((a, b) => {
-    if (a[1] < b[1]) {
-      return -1
-    } else if (a[1] > b[1]) {
-      return 1
-    }
-    return 0
-  })[0]
-}
-
 const defaultComparator = (a, b) => {
   return a < b
 }
@@ -67,18 +67,6 @@ const defaultPivotIndexSelect = (leftIndex, rightIndex) => {
 
 const randomPivotIndexSelect = (leftIndex, rightIndex) => {
   return randomInt(leftIndex, rightIndex)
-}
-
-/**
- *
- * @param array
- * @param index1
- * @param index2
- */
-function swap (array, index1, index2) {
-  const tmp = array[index1]
-  array[index1] = array[index2]
-  array[index2] = tmp
 }
 
 /**
@@ -108,68 +96,6 @@ function partition (
   }
   swap(array, rightIndex, storeIndex)
   return storeIndex
-}
-
-/**
- *
- * @param array
- * @param k
- * @param leftIndex
- * @param rightIndex
- * @param compare
- * @param pivotIndexSelect
- * @returns
- */
-function selectLoop (
-  array,
-  k,
-  leftIndex,
-  rightIndex,
-  compare = defaultComparator,
-  pivotIndexSelect = defaultPivotIndexSelect
-) {
-  while (true) {
-    if (leftIndex === rightIndex) return array[leftIndex]
-    let pivotIndex = pivotIndexSelect(leftIndex, rightIndex)
-    pivotIndex = partition(array, leftIndex, rightIndex, pivotIndex, compare)
-    if (k === pivotIndex) {
-      return array[k]
-    } else if (k < pivotIndex) {
-      rightIndex = pivotIndex - 1
-    } else {
-      leftIndex = pivotIndex + 1
-    }
-  }
-}
-
-/**
- *
- * @param array
- * @param k
- * @param leftIndex
- * @param rightIndex
- * @param compare
- * @param pivotIndexSelect
- * @returns
- */
-function selectRecursion (
-  array,
-  k,
-  leftIndex,
-  rightIndex,
-  compare = defaultComparator,
-  pivotIndexSelect = defaultPivotIndexSelect
-) {
-  if (leftIndex === rightIndex) return array[leftIndex]
-  let pivotIndex = pivotIndexSelect(leftIndex, rightIndex)
-  pivotIndex = partition(array, leftIndex, rightIndex, pivotIndex, compare)
-  if (k === pivotIndex) {
-    return array[k]
-  } else if (k < pivotIndex) {
-    return selectRecursion(array, k, leftIndex, pivotIndex - 1, compare)
-  } else {
-    return selectRecursion(array, k, pivotIndex + 1, rightIndex, k, compare)
-  }
 }
 
 /**
@@ -236,6 +162,80 @@ function quickSelectRecursionRandomPivot (tasksMap) {
     },
     randomPivotIndexSelect
   )
+}
+
+/**
+ *
+ * @param array
+ * @param k
+ * @param leftIndex
+ * @param rightIndex
+ * @param compare
+ * @param pivotIndexSelect
+ * @returns
+ */
+function selectLoop (
+  array,
+  k,
+  leftIndex,
+  rightIndex,
+  compare = defaultComparator,
+  pivotIndexSelect = defaultPivotIndexSelect
+) {
+  while (true) {
+    if (leftIndex === rightIndex) return array[leftIndex]
+    let pivotIndex = pivotIndexSelect(leftIndex, rightIndex)
+    pivotIndex = partition(array, leftIndex, rightIndex, pivotIndex, compare)
+    if (k === pivotIndex) {
+      return array[k]
+    } else if (k < pivotIndex) {
+      rightIndex = pivotIndex - 1
+    } else {
+      leftIndex = pivotIndex + 1
+    }
+  }
+}
+
+/**
+ *
+ * @param array
+ * @param k
+ * @param leftIndex
+ * @param rightIndex
+ * @param compare
+ * @param pivotIndexSelect
+ * @returns
+ */
+function selectRecursion (
+  array,
+  k,
+  leftIndex,
+  rightIndex,
+  compare = defaultComparator,
+  pivotIndexSelect = defaultPivotIndexSelect
+) {
+  if (leftIndex === rightIndex) return array[leftIndex]
+  let pivotIndex = pivotIndexSelect(leftIndex, rightIndex)
+  pivotIndex = partition(array, leftIndex, rightIndex, pivotIndex, compare)
+  if (k === pivotIndex) {
+    return array[k]
+  } else if (k < pivotIndex) {
+    return selectRecursion(array, k, leftIndex, pivotIndex - 1, compare)
+  } else {
+    return selectRecursion(array, k, pivotIndex + 1, rightIndex, k, compare)
+  }
+}
+
+/**
+ *
+ * @param array
+ * @param index1
+ * @param index2
+ */
+function swap (array, index1, index2) {
+  const tmp = array[index1]
+  array[index1] = array[index2]
+  array[index2] = tmp
 }
 
 group('Least used worker tasks distribution', () => {

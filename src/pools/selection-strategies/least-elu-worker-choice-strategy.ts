@@ -43,19 +43,6 @@ export class LeastEluWorkerChoiceStrategy<
     this.setTaskStatisticsRequirements(this.opts)
   }
 
-  private leastEluNextWorkerNodeKey (): number | undefined {
-    return this.pool.workerNodes.reduce(
-      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
-        return this.isWorkerNodeReady(workerNodeKey) &&
-          (workerNode.usage.elu.active.aggregate ?? 0) <
-            (workerNodes[minWorkerNodeKey].usage.elu.active.aggregate ?? 0)
-          ? workerNodeKey
-          : minWorkerNodeKey
-      },
-      0
-    )
-  }
-
   /** @inheritDoc */
   public choose (): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
@@ -76,5 +63,18 @@ export class LeastEluWorkerChoiceStrategy<
   /** @inheritDoc */
   public update (): boolean {
     return true
+  }
+
+  private leastEluNextWorkerNodeKey (): number | undefined {
+    return this.pool.workerNodes.reduce(
+      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
+        return this.isWorkerNodeReady(workerNodeKey) &&
+          (workerNode.usage.elu.active.aggregate ?? 0) <
+            (workerNodes[minWorkerNodeKey].usage.elu.active.aggregate ?? 0)
+          ? workerNodeKey
+          : minWorkerNodeKey
+      },
+      0
+    )
   }
 }

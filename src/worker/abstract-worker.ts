@@ -75,105 +75,6 @@ export abstract class AbstractWorker<
   protected lastTaskTimestamp!: number
 
   /**
-   * Runs the given task.
-   * @param task - The task to execute.
-   */
-  protected readonly run = (task: Task<Data>): void => {
-    const { data, name, taskId } = task
-    const taskFunctionName = name ?? DEFAULT_TASK_NAME
-    if (!this.taskFunctions.has(taskFunctionName)) {
-      this.sendToMainWorker({
-        taskId,
-        workerError: {
-          data,
-          name,
-          ...this.handleError(
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            new Error(`Task function '${name!}' not found`)
-          ),
-        },
-      })
-      return
-    }
-    const fn = this.taskFunctions.get(taskFunctionName)?.taskFunction
-    if (isAsyncFunction(fn)) {
-      this.runAsync(fn as TaskAsyncFunction<Data, Response>, task)
-    } else {
-      this.runSync(fn as TaskSyncFunction<Data, Response>, task)
-    }
-  }
-
-  /**
-   * Runs the given task function asynchronously.
-   * @param fn - Task function that will be executed.
-   * @param task - Input data for the task function.
-   */
-  protected readonly runAsync = (
-    fn: TaskAsyncFunction<Data, Response>,
-    task: Task<Data>
-  ): void => {
-    const { data, name, taskId } = task
-    let taskPerformance = this.beginTaskPerformance(name)
-    fn(data)
-      .then(res => {
-        taskPerformance = this.endTaskPerformance(taskPerformance)
-        this.sendToMainWorker({
-          data: res,
-          taskId,
-          taskPerformance,
-        })
-        return undefined
-      })
-      .catch((error: unknown) => {
-        this.sendToMainWorker({
-          taskId,
-          workerError: {
-            data,
-            name,
-            ...this.handleError(error as Error),
-          },
-        })
-      })
-      .finally(() => {
-        this.updateLastTaskTimestamp()
-      })
-      .catch(EMPTY_FUNCTION)
-  }
-
-  /**
-   * Runs the given task function synchronously.
-   * @param fn - Task function that will be executed.
-   * @param task - Input data for the task function.
-   */
-  protected readonly runSync = (
-    fn: TaskSyncFunction<Data, Response>,
-    task: Task<Data>
-  ): void => {
-    const { data, name, taskId } = task
-    try {
-      let taskPerformance = this.beginTaskPerformance(name)
-      const res = fn(data)
-      taskPerformance = this.endTaskPerformance(taskPerformance)
-      this.sendToMainWorker({
-        data: res,
-        taskId,
-        taskPerformance,
-      })
-    } catch (error) {
-      this.sendToMainWorker({
-        taskId,
-        workerError: {
-          data,
-          name,
-          ...this.handleError(error as Error),
-        },
-      })
-    } finally {
-      this.updateLastTaskTimestamp()
-    }
-  }
-
-  /**
    * Performance statistics computation requirements.
    */
   protected statistics?: WorkerStatistics
@@ -204,6 +105,148 @@ export abstract class AbstractWorker<
     if (!this.isMain) {
       // Should be once() but Node.js on windows has a bug that prevents it from working
       this.getMainWorker().on('message', this.handleReadyMessage.bind(this))
+    }
+  }
+
+  /**
+   * Adds a task function to the worker.
+   * If a task function with the same name already exists, it is replaced.
+   * @param name - The name of the task function to add.
+   * @param fn - The task function to add.
+   * @returns Whether the task function was added or not.
+   */
+  public addTaskFunction (
+    name: string,
+    fn: TaskFunction<Data, Response> | TaskFunctionObject<Data, Response>
+  ): TaskFunctionOperationResult {
+    try {
+      checkTaskFunctionName(name)
+      if (name === DEFAULT_TASK_NAME) {
+        throw new Error(
+          'Cannot add a task function with the default reserved name'
+        )
+      }
+      if (typeof fn === 'function') {
+        fn = { taskFunction: fn } satisfies TaskFunctionObject<Data, Response>
+      }
+      checkValidTaskFunctionObjectEntry<Data, Response>(name, fn)
+      fn.taskFunction = fn.taskFunction.bind(this)
+      if (
+        this.taskFunctions.get(name) ===
+        this.taskFunctions.get(DEFAULT_TASK_NAME)
+      ) {
+        this.taskFunctions.set(DEFAULT_TASK_NAME, fn)
+      }
+      this.taskFunctions.set(name, fn)
+      this.sendTaskFunctionsPropertiesToMainWorker()
+      return { status: true }
+    } catch (error) {
+      return { error: error as Error, status: false }
+    }
+  }
+
+  /**
+   * Checks if the worker has a task function with the given name.
+   * @param name - The name of the task function to check.
+   * @returns Whether the worker has a task function with the given name or not.
+   */
+  public hasTaskFunction (name: string): TaskFunctionOperationResult {
+    try {
+      checkTaskFunctionName(name)
+    } catch (error) {
+      return { error: error as Error, status: false }
+    }
+    return { status: this.taskFunctions.has(name) }
+  }
+
+  /**
+   * Lists the properties of the worker's task functions.
+   * @returns The properties of the worker's task functions.
+   */
+  public listTaskFunctionsProperties (): TaskFunctionProperties[] {
+    let defaultTaskFunctionName = DEFAULT_TASK_NAME
+    for (const [name, fnObj] of this.taskFunctions) {
+      if (
+        name !== DEFAULT_TASK_NAME &&
+        fnObj === this.taskFunctions.get(DEFAULT_TASK_NAME)
+      ) {
+        defaultTaskFunctionName = name
+        break
+      }
+    }
+    const taskFunctionsProperties: TaskFunctionProperties[] = []
+    for (const [name, fnObj] of this.taskFunctions) {
+      if (name === DEFAULT_TASK_NAME || name === defaultTaskFunctionName) {
+        continue
+      }
+      taskFunctionsProperties.push(buildTaskFunctionProperties(name, fnObj))
+    }
+    return [
+      buildTaskFunctionProperties(
+        DEFAULT_TASK_NAME,
+        this.taskFunctions.get(DEFAULT_TASK_NAME)
+      ),
+      buildTaskFunctionProperties(
+        defaultTaskFunctionName,
+        this.taskFunctions.get(defaultTaskFunctionName)
+      ),
+      ...taskFunctionsProperties,
+    ]
+  }
+
+  /**
+   * Removes a task function from the worker.
+   * @param name - The name of the task function to remove.
+   * @returns Whether the task function existed and was removed or not.
+   */
+  public removeTaskFunction (name: string): TaskFunctionOperationResult {
+    try {
+      checkTaskFunctionName(name)
+      if (name === DEFAULT_TASK_NAME) {
+        throw new Error(
+          'Cannot remove the task function with the default reserved name'
+        )
+      }
+      if (
+        this.taskFunctions.get(name) ===
+        this.taskFunctions.get(DEFAULT_TASK_NAME)
+      ) {
+        throw new Error(
+          'Cannot remove the task function used as the default task function'
+        )
+      }
+      const deleteStatus = this.taskFunctions.delete(name)
+      this.sendTaskFunctionsPropertiesToMainWorker()
+      return { status: deleteStatus }
+    } catch (error) {
+      return { error: error as Error, status: false }
+    }
+  }
+
+  /**
+   * Sets the default task function to use in the worker.
+   * @param name - The name of the task function to use as default task function.
+   * @returns Whether the default task function was set or not.
+   */
+  public setDefaultTaskFunction (name: string): TaskFunctionOperationResult {
+    try {
+      checkTaskFunctionName(name)
+      if (name === DEFAULT_TASK_NAME) {
+        throw new Error(
+          'Cannot set the default task function reserved name as the default task function'
+        )
+      }
+      if (!this.taskFunctions.has(name)) {
+        throw new Error(
+          'Cannot set the default task function to a non-existing task function'
+        )
+      }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.taskFunctions.set(DEFAULT_TASK_NAME, this.taskFunctions.get(name)!)
+      this.sendTaskFunctionsPropertiesToMainWorker()
+      return { status: true }
+    } catch (error) {
+      return { error: error as Error, status: false }
     }
   }
 
@@ -346,6 +389,105 @@ export abstract class AbstractWorker<
     } else if (kill === true) {
       // Kill message received
       this.handleKillMessage(message)
+    }
+  }
+
+  /**
+   * Runs the given task.
+   * @param task - The task to execute.
+   */
+  protected readonly run = (task: Task<Data>): void => {
+    const { data, name, taskId } = task
+    const taskFunctionName = name ?? DEFAULT_TASK_NAME
+    if (!this.taskFunctions.has(taskFunctionName)) {
+      this.sendToMainWorker({
+        taskId,
+        workerError: {
+          data,
+          name,
+          ...this.handleError(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            new Error(`Task function '${name!}' not found`)
+          ),
+        },
+      })
+      return
+    }
+    const fn = this.taskFunctions.get(taskFunctionName)?.taskFunction
+    if (isAsyncFunction(fn)) {
+      this.runAsync(fn as TaskAsyncFunction<Data, Response>, task)
+    } else {
+      this.runSync(fn as TaskSyncFunction<Data, Response>, task)
+    }
+  }
+
+  /**
+   * Runs the given task function asynchronously.
+   * @param fn - Task function that will be executed.
+   * @param task - Input data for the task function.
+   */
+  protected readonly runAsync = (
+    fn: TaskAsyncFunction<Data, Response>,
+    task: Task<Data>
+  ): void => {
+    const { data, name, taskId } = task
+    let taskPerformance = this.beginTaskPerformance(name)
+    fn(data)
+      .then(res => {
+        taskPerformance = this.endTaskPerformance(taskPerformance)
+        this.sendToMainWorker({
+          data: res,
+          taskId,
+          taskPerformance,
+        })
+        return undefined
+      })
+      .catch((error: unknown) => {
+        this.sendToMainWorker({
+          taskId,
+          workerError: {
+            data,
+            name,
+            ...this.handleError(error as Error),
+          },
+        })
+      })
+      .finally(() => {
+        this.updateLastTaskTimestamp()
+      })
+      .catch(EMPTY_FUNCTION)
+  }
+
+  /**
+   * Runs the given task function synchronously.
+   * @param fn - Task function that will be executed.
+   * @param task - Input data for the task function.
+   */
+  protected readonly runSync = (
+    fn: TaskSyncFunction<Data, Response>,
+    task: Task<Data>
+  ): void => {
+    const { data, name, taskId } = task
+    try {
+      let taskPerformance = this.beginTaskPerformance(name)
+      const res = fn(data)
+      taskPerformance = this.endTaskPerformance(taskPerformance)
+      this.sendToMainWorker({
+        data: res,
+        taskId,
+        taskPerformance,
+      })
+    } catch (error) {
+      this.sendToMainWorker({
+        taskId,
+        workerError: {
+          data,
+          name,
+          ...this.handleError(error as Error),
+        },
+      })
+    } finally {
+      this.updateLastTaskTimestamp()
     }
   }
 
@@ -503,148 +645,6 @@ export abstract class AbstractWorker<
   private updateLastTaskTimestamp (): void {
     if (this.activeInterval != null) {
       this.lastTaskTimestamp = performance.now()
-    }
-  }
-
-  /**
-   * Adds a task function to the worker.
-   * If a task function with the same name already exists, it is replaced.
-   * @param name - The name of the task function to add.
-   * @param fn - The task function to add.
-   * @returns Whether the task function was added or not.
-   */
-  public addTaskFunction (
-    name: string,
-    fn: TaskFunction<Data, Response> | TaskFunctionObject<Data, Response>
-  ): TaskFunctionOperationResult {
-    try {
-      checkTaskFunctionName(name)
-      if (name === DEFAULT_TASK_NAME) {
-        throw new Error(
-          'Cannot add a task function with the default reserved name'
-        )
-      }
-      if (typeof fn === 'function') {
-        fn = { taskFunction: fn } satisfies TaskFunctionObject<Data, Response>
-      }
-      checkValidTaskFunctionObjectEntry<Data, Response>(name, fn)
-      fn.taskFunction = fn.taskFunction.bind(this)
-      if (
-        this.taskFunctions.get(name) ===
-        this.taskFunctions.get(DEFAULT_TASK_NAME)
-      ) {
-        this.taskFunctions.set(DEFAULT_TASK_NAME, fn)
-      }
-      this.taskFunctions.set(name, fn)
-      this.sendTaskFunctionsPropertiesToMainWorker()
-      return { status: true }
-    } catch (error) {
-      return { error: error as Error, status: false }
-    }
-  }
-
-  /**
-   * Checks if the worker has a task function with the given name.
-   * @param name - The name of the task function to check.
-   * @returns Whether the worker has a task function with the given name or not.
-   */
-  public hasTaskFunction (name: string): TaskFunctionOperationResult {
-    try {
-      checkTaskFunctionName(name)
-    } catch (error) {
-      return { error: error as Error, status: false }
-    }
-    return { status: this.taskFunctions.has(name) }
-  }
-
-  /**
-   * Lists the properties of the worker's task functions.
-   * @returns The properties of the worker's task functions.
-   */
-  public listTaskFunctionsProperties (): TaskFunctionProperties[] {
-    let defaultTaskFunctionName = DEFAULT_TASK_NAME
-    for (const [name, fnObj] of this.taskFunctions) {
-      if (
-        name !== DEFAULT_TASK_NAME &&
-        fnObj === this.taskFunctions.get(DEFAULT_TASK_NAME)
-      ) {
-        defaultTaskFunctionName = name
-        break
-      }
-    }
-    const taskFunctionsProperties: TaskFunctionProperties[] = []
-    for (const [name, fnObj] of this.taskFunctions) {
-      if (name === DEFAULT_TASK_NAME || name === defaultTaskFunctionName) {
-        continue
-      }
-      taskFunctionsProperties.push(buildTaskFunctionProperties(name, fnObj))
-    }
-    return [
-      buildTaskFunctionProperties(
-        DEFAULT_TASK_NAME,
-        this.taskFunctions.get(DEFAULT_TASK_NAME)
-      ),
-      buildTaskFunctionProperties(
-        defaultTaskFunctionName,
-        this.taskFunctions.get(defaultTaskFunctionName)
-      ),
-      ...taskFunctionsProperties,
-    ]
-  }
-
-  /**
-   * Removes a task function from the worker.
-   * @param name - The name of the task function to remove.
-   * @returns Whether the task function existed and was removed or not.
-   */
-  public removeTaskFunction (name: string): TaskFunctionOperationResult {
-    try {
-      checkTaskFunctionName(name)
-      if (name === DEFAULT_TASK_NAME) {
-        throw new Error(
-          'Cannot remove the task function with the default reserved name'
-        )
-      }
-      if (
-        this.taskFunctions.get(name) ===
-        this.taskFunctions.get(DEFAULT_TASK_NAME)
-      ) {
-        throw new Error(
-          'Cannot remove the task function used as the default task function'
-        )
-      }
-      const deleteStatus = this.taskFunctions.delete(name)
-      this.sendTaskFunctionsPropertiesToMainWorker()
-      return { status: deleteStatus }
-    } catch (error) {
-      return { error: error as Error, status: false }
-    }
-  }
-
-  /**
-   * Sets the default task function to use in the worker.
-   * @param name - The name of the task function to use as default task function.
-   * @returns Whether the default task function was set or not.
-   */
-  public setDefaultTaskFunction (name: string): TaskFunctionOperationResult {
-    try {
-      checkTaskFunctionName(name)
-      if (name === DEFAULT_TASK_NAME) {
-        throw new Error(
-          'Cannot set the default task function reserved name as the default task function'
-        )
-      }
-      if (!this.taskFunctions.has(name)) {
-        throw new Error(
-          'Cannot set the default task function to a non-existing task function'
-        )
-      }
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.taskFunctions.set(DEFAULT_TASK_NAME, this.taskFunctions.get(name)!)
-      this.sendTaskFunctionsPropertiesToMainWorker()
-      return { status: true }
-    } catch (error) {
-      return { error: error as Error, status: false }
     }
   }
 }

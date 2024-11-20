@@ -24,13 +24,8 @@ export class ClusterWorker<
   Response = unknown
 > extends AbstractWorker<Worker, Data, Response> {
   /** @inheritDoc */
-  protected readonly sendToMainWorker = (
-    message: MessageValue<Response>
-  ): void => {
-    this.getMainWorker().send({
-      ...message,
-      workerId: this.id,
-    } satisfies MessageValue<Response>)
+  protected get id (): number {
+    return this.getMainWorker().id
   }
 
   /**
@@ -71,7 +66,12 @@ export class ClusterWorker<
   }
 
   /** @inheritDoc */
-  protected get id (): number {
-    return this.getMainWorker().id
+  protected readonly sendToMainWorker = (
+    message: MessageValue<Response>
+  ): void => {
+    this.getMainWorker().send({
+      ...message,
+      workerId: this.id,
+    } satisfies MessageValue<Response>)
   }
 }
