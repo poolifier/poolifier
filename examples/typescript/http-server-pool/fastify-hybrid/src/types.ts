@@ -13,16 +13,16 @@ export interface DataPayload {
   number?: number
 }
 
+export interface FastifyPoolifierOptions extends ThreadPoolOptions {
+  maxWorkers?: number
+  minWorkers?: number
+  workerFile: string
+}
+
 export interface ThreadWorkerData<T = unknown> {
   data: T
 }
 
 export interface ThreadWorkerResponse<T = unknown> {
   data: T
-}
-
-export interface FastifyPoolifierOptions extends ThreadPoolOptions {
-  maxWorkers?: number
-  minWorkers?: number
-  workerFile: string
 }

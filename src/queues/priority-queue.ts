@@ -15,12 +15,80 @@ import {
  * @internal
  */
 export class PriorityQueue<T> {
-  private readonly bucketSize: number
-  private head!: PriorityQueueNode<T>
-  private priorityEnabled: boolean
-  private tail!: PriorityQueueNode<T>
   /** The priority queue maximum size. */
   public maxSize!: number
+  /**
+   * The number of filled prioritized buckets.
+   * @returns The number of filled prioritized buckets.
+   */
+  public get buckets (): number {
+    return Math.trunc(this.size / this.bucketSize)
+  }
+
+  /**
+   * Whether priority is enabled.
+   * @returns Whether priority is enabled.
+   */
+  public get enablePriority (): boolean {
+    return this.priorityEnabled
+  }
+
+  /**
+   * Enables/disables priority.
+   * @param enablePriority - Whether to enable priority.
+   */
+  public set enablePriority (enablePriority: boolean) {
+    if (this.priorityEnabled === enablePriority) {
+      return
+    }
+    this.priorityEnabled = enablePriority
+    let head: PriorityQueueNode<T>
+    let tail: PriorityQueueNode<T>
+    let prev: PriorityQueueNode<T> | undefined
+    let node: PriorityQueueNode<T> | undefined = this.tail
+    let buckets = 0
+    while (node != null) {
+      const currentNode = this.getPriorityQueueNode(node.nodeArray)
+      if (buckets === 0) {
+        tail = currentNode
+      }
+      if (prev != null) {
+        prev.next = currentNode
+      }
+      prev = currentNode
+      if (node.next == null) {
+        head = currentNode
+      }
+      ++buckets
+      node = node.next
+    }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.head = head!
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.tail = tail!
+  }
+
+  /**
+   * The priority queue size.
+   * @returns The priority queue size.
+   */
+  public get size (): number {
+    let node: PriorityQueueNode<T> | undefined = this.tail
+    let size = 0
+    while (node != null) {
+      size += node.size
+      node = node.next
+    }
+    return size
+  }
+
+  private readonly bucketSize: number
+
+  private head!: PriorityQueueNode<T>
+
+  private priorityEnabled: boolean
+
+  private tail!: PriorityQueueNode<T>
 
   /**
    * Constructs a priority queue.
@@ -43,21 +111,6 @@ export class PriorityQueue<T> {
     this.bucketSize = bucketSize
     this.priorityEnabled = enablePriority
     this.clear()
-  }
-
-  private getPriorityQueueNode (
-    nodeArray?: FixedQueueNode<T>[]
-  ): PriorityQueueNode<T> {
-    let fixedQueue: IFixedQueue<T>
-    if (this.priorityEnabled) {
-      fixedQueue = new FixedPriorityQueue(this.bucketSize)
-    } else {
-      fixedQueue = new FixedQueue(this.bucketSize)
-    }
-    if (nodeArray != null) {
-      fixedQueue.nodeArray = nodeArray
-    }
-    return fixedQueue
   }
 
   /**
@@ -198,68 +251,18 @@ export class PriorityQueue<T> {
     }
   }
 
-  /**
-   * The number of filled prioritized buckets.
-   * @returns The number of filled prioritized buckets.
-   */
-  public get buckets (): number {
-    return Math.trunc(this.size / this.bucketSize)
-  }
-
-  /**
-   * Whether priority is enabled.
-   * @returns Whether priority is enabled.
-   */
-  public get enablePriority (): boolean {
-    return this.priorityEnabled
-  }
-
-  /**
-   * Enables/disables priority.
-   * @param enablePriority - Whether to enable priority.
-   */
-  public set enablePriority (enablePriority: boolean) {
-    if (this.priorityEnabled === enablePriority) {
-      return
+  private getPriorityQueueNode (
+    nodeArray?: FixedQueueNode<T>[]
+  ): PriorityQueueNode<T> {
+    let fixedQueue: IFixedQueue<T>
+    if (this.priorityEnabled) {
+      fixedQueue = new FixedPriorityQueue(this.bucketSize)
+    } else {
+      fixedQueue = new FixedQueue(this.bucketSize)
     }
-    this.priorityEnabled = enablePriority
-    let head: PriorityQueueNode<T>
-    let tail: PriorityQueueNode<T>
-    let prev: PriorityQueueNode<T> | undefined
-    let node: PriorityQueueNode<T> | undefined = this.tail
-    let buckets = 0
-    while (node != null) {
-      const currentNode = this.getPriorityQueueNode(node.nodeArray)
-      if (buckets === 0) {
-        tail = currentNode
-      }
-      if (prev != null) {
-        prev.next = currentNode
-      }
-      prev = currentNode
-      if (node.next == null) {
-        head = currentNode
-      }
-      ++buckets
-      node = node.next
+    if (nodeArray != null) {
+      fixedQueue.nodeArray = nodeArray
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.head = head!
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.tail = tail!
-  }
-
-  /**
-   * The priority queue size.
-   * @returns The priority queue size.
-   */
-  public get size (): number {
-    let node: PriorityQueueNode<T> | undefined = this.tail
-    let size = 0
-    while (node != null) {
-      size += node.size
-      node = node.next
-    }
-    return size
+    return fixedQueue
   }
 }

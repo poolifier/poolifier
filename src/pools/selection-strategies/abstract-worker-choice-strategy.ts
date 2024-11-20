@@ -24,16 +24,6 @@ export abstract class AbstractWorkerChoiceStrategy<
   Data = unknown,
   Response = unknown
 > implements IWorkerChoiceStrategy {
-  /**
-   * The next worker node key.
-   */
-  protected nextWorkerNodeKey: number | undefined = 0
-
-  /**
-   * The previous worker node key.
-   */
-  protected previousWorkerNodeKey = 0
-
   /** @inheritDoc */
   public readonly strategyPolicy: StrategyPolicy = {
     dynamicWorkerReady: true,
@@ -48,6 +38,16 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /**
+   * The next worker node key.
+   */
+  protected nextWorkerNodeKey: number | undefined = 0
+
+  /**
+   * The previous worker node key.
+   */
+  protected previousWorkerNodeKey = 0
+
+  /**
    * Constructs a worker choice strategy bound to the pool.
    * @param pool - The pool instance.
    * @param opts - The worker choice strategy options.
@@ -59,6 +59,27 @@ export abstract class AbstractWorkerChoiceStrategy<
     this.choose = this.choose.bind(this)
     this.setOptions(this.opts)
   }
+
+  /** @inheritDoc */
+  public abstract choose (): number | undefined
+
+  /** @inheritDoc */
+  public abstract remove (workerNodeKey: number): boolean
+
+  /** @inheritDoc */
+  public abstract reset (): boolean
+
+  /** @inheritDoc */
+  public setOptions (opts: undefined | WorkerChoiceStrategyOptions): void {
+    this.opts = buildWorkerChoiceStrategyOptions<Worker, Data, Response>(
+      this.pool,
+      opts
+    )
+    this.setTaskStatisticsRequirements(this.opts)
+  }
+
+  /** @inheritDoc */
+  public abstract update (workerNodeKey: number): boolean
 
   /**
    * Check the next worker node key.
@@ -156,25 +177,4 @@ export abstract class AbstractWorkerChoiceStrategy<
       opts!.elu!.median
     )
   }
-
-  /** @inheritDoc */
-  public abstract choose (): number | undefined
-
-  /** @inheritDoc */
-  public abstract remove (workerNodeKey: number): boolean
-
-  /** @inheritDoc */
-  public abstract reset (): boolean
-
-  /** @inheritDoc */
-  public setOptions (opts: undefined | WorkerChoiceStrategyOptions): void {
-    this.opts = buildWorkerChoiceStrategyOptions<Worker, Data, Response>(
-      this.pool,
-      opts
-    )
-    this.setTaskStatisticsRequirements(this.opts)
-  }
-
-  /** @inheritDoc */
-  public abstract update (workerNodeKey: number): boolean
 }

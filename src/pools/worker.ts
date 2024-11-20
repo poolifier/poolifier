@@ -6,36 +6,12 @@ import type { PriorityQueue } from '../queues/priority-queue.js'
 import type { Task, TaskFunctionProperties } from '../utility-types.js'
 
 /**
- * Callback invoked when the worker has started successfully.
- * @typeParam Worker - Type of worker.
- */
-export type OnlineHandler<Worker extends IWorker> = (this: Worker) => void
-
-/**
- * Callback invoked if the worker has received a message.
- * @typeParam Worker - Type of worker.
- */
-export type MessageHandler<Worker extends IWorker> = (
-  this: Worker,
-  message: unknown
-) => void
-
-/**
  * Callback invoked if the worker raised an error.
  * @typeParam Worker - Type of worker.
  */
 export type ErrorHandler<Worker extends IWorker> = (
   this: Worker,
   error: Error
-) => void
-
-/**
- * Callback invoked when the worker exits successfully.
- * @typeParam Worker - Type of worker.
- */
-export type ExitHandler<Worker extends IWorker> = (
-  this: Worker,
-  exitCode: number
 ) => void
 
 /**
@@ -49,9 +25,43 @@ export type EventHandler<Worker extends IWorker> =
   | OnlineHandler<Worker>
 
 /**
+ * Callback invoked when the worker exits successfully.
+ * @typeParam Worker - Type of worker.
+ */
+export type ExitHandler<Worker extends IWorker> = (
+  this: Worker,
+  exitCode: number
+) => void
+
+/**
+ * Callback invoked if the worker has received a message.
+ * @typeParam Worker - Type of worker.
+ */
+export type MessageHandler<Worker extends IWorker> = (
+  this: Worker,
+  message: unknown
+) => void
+
+/**
+ * Callback invoked when the worker has started successfully.
+ * @typeParam Worker - Type of worker.
+ */
+export type OnlineHandler<Worker extends IWorker> = (this: Worker) => void
+
+/**
  * Measurement history size.
  */
 export const MeasurementHistorySize = 386
+
+/**
+ * Event loop utilization measurement statistics.
+ * @internal
+ */
+export interface EventLoopUtilizationMeasurementStatistics {
+  readonly active: MeasurementStatistics
+  readonly idle: MeasurementStatistics
+  utilization?: number
+}
 
 /**
  * Measurement statistics.
@@ -82,16 +92,6 @@ export interface MeasurementStatistics {
    * Measurement minimum.
    */
   minimum?: number
-}
-
-/**
- * Event loop utilization measurement statistics.
- * @internal
- */
-export interface EventLoopUtilizationMeasurementStatistics {
-  readonly active: MeasurementStatistics
-  readonly idle: MeasurementStatistics
-  utilization?: number
 }
 
 /**
@@ -139,94 +139,6 @@ export const WorkerTypes: Readonly<{ cluster: 'cluster'; thread: 'thread' }> =
   } as const)
 
 /**
- * Worker type.
- */
-export type WorkerType = keyof typeof WorkerTypes
-
-/**
- * Worker information.
- * @internal
- */
-export interface WorkerInfo {
-  /**
-   * Back pressure flag.
-   * This flag is set to `true` when worker node tasks queue is back pressured.
-   */
-  backPressure: boolean
-  /**
-   * Back pressure stealing flag.
-   * This flag is set to `true` when worker node is stealing one task from another back pressured worker node.
-   */
-  backPressureStealing: boolean
-  /**
-   * Continuous stealing flag.
-   * This flag is set to `true` when worker node is continuously stealing tasks from other worker nodes.
-   */
-  continuousStealing: boolean
-  /**
-   * Dynamic flag.
-   */
-  dynamic: boolean
-  /**
-   * Worker id.
-   */
-  readonly id: number | undefined
-  /**
-   * Ready flag.
-   */
-  ready: boolean
-  /**
-   * Stealing flag.
-   * This flag is set to `true` when worker node is stealing one task from another worker node.
-   */
-  stealing: boolean
-  /**
-   * Stolen flag.
-   * This flag is set to `true` when worker node has one task stolen from another worker node.
-   */
-  stolen: boolean
-  /**
-   * Task functions properties.
-   */
-  taskFunctionsProperties?: TaskFunctionProperties[]
-  /**
-   * Worker type.
-   */
-  readonly type: WorkerType
-}
-
-/**
- * Worker usage statistics.
- * @internal
- */
-export interface WorkerUsage {
-  /**
-   * Tasks event loop utilization statistics.
-   */
-  readonly elu: EventLoopUtilizationMeasurementStatistics
-  /**
-   * Tasks runtime statistics.
-   */
-  readonly runTime: MeasurementStatistics
-  /**
-   * Tasks statistics.
-   */
-  readonly tasks: TaskStatistics
-  /**
-   * Tasks wait time statistics.
-   */
-  readonly waitTime: MeasurementStatistics
-}
-
-/**
- * Worker choice strategy data.
- * @internal
- */
-export interface StrategyData {
-  virtualTaskEndTimestamp?: number
-}
-
-/**
  * Worker interface.
  */
 export interface IWorker extends EventEmitter {
@@ -269,18 +181,6 @@ export interface IWorker extends EventEmitter {
    * @since v10.5.0
    */
   readonly unref?: () => void
-}
-
-/**
- * Worker node options.
- * @internal
- */
-export interface WorkerNodeOptions {
-  env?: Record<string, unknown>
-  tasksQueueBackPressureSize: number | undefined
-  tasksQueueBucketSize: number | undefined
-  tasksQueuePriority: boolean | undefined
-  workerOptions?: WorkerOptions
 }
 
 /**
@@ -395,6 +295,66 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
 }
 
 /**
+ * Worker choice strategy data.
+ * @internal
+ */
+export interface StrategyData {
+  virtualTaskEndTimestamp?: number
+}
+
+/**
+ * Worker information.
+ * @internal
+ */
+export interface WorkerInfo {
+  /**
+   * Back pressure flag.
+   * This flag is set to `true` when worker node tasks queue is back pressured.
+   */
+  backPressure: boolean
+  /**
+   * Back pressure stealing flag.
+   * This flag is set to `true` when worker node is stealing one task from another back pressured worker node.
+   */
+  backPressureStealing: boolean
+  /**
+   * Continuous stealing flag.
+   * This flag is set to `true` when worker node is continuously stealing tasks from other worker nodes.
+   */
+  continuousStealing: boolean
+  /**
+   * Dynamic flag.
+   */
+  dynamic: boolean
+  /**
+   * Worker id.
+   */
+  readonly id: number | undefined
+  /**
+   * Ready flag.
+   */
+  ready: boolean
+  /**
+   * Stealing flag.
+   * This flag is set to `true` when worker node is stealing one task from another worker node.
+   */
+  stealing: boolean
+  /**
+   * Stolen flag.
+   * This flag is set to `true` when worker node has one task stolen from another worker node.
+   */
+  stolen: boolean
+  /**
+   * Task functions properties.
+   */
+  taskFunctionsProperties?: TaskFunctionProperties[]
+  /**
+   * Worker type.
+   */
+  readonly type: WorkerType
+}
+
+/**
  * Worker node event detail.
  * @internal
  */
@@ -402,4 +362,44 @@ export interface WorkerNodeEventDetail {
   taskId?: `${string}-${string}-${string}-${string}-${string}`
   workerId?: number
   workerNodeKey?: number
+}
+
+/**
+ * Worker node options.
+ * @internal
+ */
+export interface WorkerNodeOptions {
+  env?: Record<string, unknown>
+  tasksQueueBackPressureSize: number | undefined
+  tasksQueueBucketSize: number | undefined
+  tasksQueuePriority: boolean | undefined
+  workerOptions?: WorkerOptions
+}
+
+/**
+ * Worker type.
+ */
+export type WorkerType = keyof typeof WorkerTypes
+
+/**
+ * Worker usage statistics.
+ * @internal
+ */
+export interface WorkerUsage {
+  /**
+   * Tasks event loop utilization statistics.
+   */
+  readonly elu: EventLoopUtilizationMeasurementStatistics
+  /**
+   * Tasks runtime statistics.
+   */
+  readonly runTime: MeasurementStatistics
+  /**
+   * Tasks statistics.
+   */
+  readonly tasks: TaskStatistics
+  /**
+   * Tasks wait time statistics.
+   */
+  readonly waitTime: MeasurementStatistics
 }

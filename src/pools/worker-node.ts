@@ -33,8 +33,6 @@ import {
 export class WorkerNode<Worker extends IWorker, Data = unknown>
   extends EventEmitter
   implements IWorkerNode<Worker, Data> {
-  private setBackPressureFlag: boolean
-  private readonly taskFunctionsUsage: Map<string, WorkerUsage>
   /** @inheritdoc */
   public readonly info: WorkerInfo
   /** @inheritdoc */
@@ -49,6 +47,8 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   public usage: WorkerUsage
   /** @inheritdoc */
   public readonly worker: Worker
+  private setBackPressureFlag: boolean
+  private readonly taskFunctionsUsage: Map<string, WorkerUsage>
 
   /**
    * Constructs a new worker node.
@@ -76,120 +76,6 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     )
     this.setBackPressureFlag = false
     this.taskFunctionsUsage = new Map<string, WorkerUsage>()
-  }
-
-  private closeMessageChannel (): void {
-    if (this.messageChannel != null) {
-      this.messageChannel.port1.unref()
-      this.messageChannel.port2.unref()
-      this.messageChannel.port1.close()
-      this.messageChannel.port2.close()
-      delete this.messageChannel
-    }
-  }
-
-  /**
-   * Whether the worker node is back pressured or not.
-   * @returns `true` if the worker node is back pressured, `false` otherwise.
-   */
-  private hasBackPressure (): boolean {
-    return this.tasksQueue.size >= this.tasksQueueBackPressureSize
-  }
-
-  private initTaskFunctionWorkerUsage (name: string): WorkerUsage {
-    const getTaskFunctionQueueSize = (): number => {
-      let taskFunctionQueueSize = 0
-      for (const task of this.tasksQueue) {
-        if (
-          (task.name === DEFAULT_TASK_NAME &&
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            name === this.info.taskFunctionsProperties![1].name) ||
-          (task.name !== DEFAULT_TASK_NAME && name === task.name)
-        ) {
-          ++taskFunctionQueueSize
-        }
-      }
-      return taskFunctionQueueSize
-    }
-    return {
-      elu: {
-        active: {
-          history: new CircularBuffer(MeasurementHistorySize),
-        },
-        idle: {
-          history: new CircularBuffer(MeasurementHistorySize),
-        },
-      },
-      runTime: {
-        history: new CircularBuffer(MeasurementHistorySize),
-      },
-      tasks: {
-        executed: 0,
-        executing: 0,
-        failed: 0,
-        get queued (): number {
-          return getTaskFunctionQueueSize()
-        },
-        sequentiallyStolen: 0,
-        stolen: 0,
-      },
-      waitTime: {
-        history: new CircularBuffer(MeasurementHistorySize),
-      },
-    }
-  }
-
-  private initWorkerInfo (worker: Worker): WorkerInfo {
-    return {
-      backPressure: false,
-      backPressureStealing: false,
-      continuousStealing: false,
-      dynamic: false,
-      id: getWorkerId(worker),
-      ready: false,
-      stealing: false,
-      stolen: false,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      type: getWorkerType(worker)!,
-    }
-  }
-
-  private initWorkerUsage (): WorkerUsage {
-    const getTasksQueueSize = (): number => {
-      return this.tasksQueue.size
-    }
-    const getTasksQueueMaxSize = (): number => {
-      return this.tasksQueue.maxSize
-    }
-    return {
-      elu: {
-        active: {
-          history: new CircularBuffer(MeasurementHistorySize),
-        },
-        idle: {
-          history: new CircularBuffer(MeasurementHistorySize),
-        },
-      },
-      runTime: {
-        history: new CircularBuffer(MeasurementHistorySize),
-      },
-      tasks: {
-        executed: 0,
-        executing: 0,
-        failed: 0,
-        get maxQueued (): number {
-          return getTasksQueueMaxSize()
-        },
-        get queued (): number {
-          return getTasksQueueSize()
-        },
-        sequentiallyStolen: 0,
-        stolen: 0,
-      },
-      waitTime: {
-        history: new CircularBuffer(MeasurementHistorySize),
-      },
-    }
   }
 
   /** @inheritdoc */
@@ -316,5 +202,119 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
         break
     }
     await waitWorkerExit
+  }
+
+  private closeMessageChannel (): void {
+    if (this.messageChannel != null) {
+      this.messageChannel.port1.unref()
+      this.messageChannel.port2.unref()
+      this.messageChannel.port1.close()
+      this.messageChannel.port2.close()
+      delete this.messageChannel
+    }
+  }
+
+  /**
+   * Whether the worker node is back pressured or not.
+   * @returns `true` if the worker node is back pressured, `false` otherwise.
+   */
+  private hasBackPressure (): boolean {
+    return this.tasksQueue.size >= this.tasksQueueBackPressureSize
+  }
+
+  private initTaskFunctionWorkerUsage (name: string): WorkerUsage {
+    const getTaskFunctionQueueSize = (): number => {
+      let taskFunctionQueueSize = 0
+      for (const task of this.tasksQueue) {
+        if (
+          (task.name === DEFAULT_TASK_NAME &&
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            name === this.info.taskFunctionsProperties![1].name) ||
+          (task.name !== DEFAULT_TASK_NAME && name === task.name)
+        ) {
+          ++taskFunctionQueueSize
+        }
+      }
+      return taskFunctionQueueSize
+    }
+    return {
+      elu: {
+        active: {
+          history: new CircularBuffer(MeasurementHistorySize),
+        },
+        idle: {
+          history: new CircularBuffer(MeasurementHistorySize),
+        },
+      },
+      runTime: {
+        history: new CircularBuffer(MeasurementHistorySize),
+      },
+      tasks: {
+        executed: 0,
+        executing: 0,
+        failed: 0,
+        get queued (): number {
+          return getTaskFunctionQueueSize()
+        },
+        sequentiallyStolen: 0,
+        stolen: 0,
+      },
+      waitTime: {
+        history: new CircularBuffer(MeasurementHistorySize),
+      },
+    }
+  }
+
+  private initWorkerInfo (worker: Worker): WorkerInfo {
+    return {
+      backPressure: false,
+      backPressureStealing: false,
+      continuousStealing: false,
+      dynamic: false,
+      id: getWorkerId(worker),
+      ready: false,
+      stealing: false,
+      stolen: false,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      type: getWorkerType(worker)!,
+    }
+  }
+
+  private initWorkerUsage (): WorkerUsage {
+    const getTasksQueueSize = (): number => {
+      return this.tasksQueue.size
+    }
+    const getTasksQueueMaxSize = (): number => {
+      return this.tasksQueue.maxSize
+    }
+    return {
+      elu: {
+        active: {
+          history: new CircularBuffer(MeasurementHistorySize),
+        },
+        idle: {
+          history: new CircularBuffer(MeasurementHistorySize),
+        },
+      },
+      runTime: {
+        history: new CircularBuffer(MeasurementHistorySize),
+      },
+      tasks: {
+        executed: 0,
+        executing: 0,
+        failed: 0,
+        get maxQueued (): number {
+          return getTasksQueueMaxSize()
+        },
+        get queued (): number {
+          return getTasksQueueSize()
+        },
+        sequentiallyStolen: 0,
+        stolen: 0,
+      },
+      waitTime: {
+        history: new CircularBuffer(MeasurementHistorySize),
+      },
+    }
   }
 }

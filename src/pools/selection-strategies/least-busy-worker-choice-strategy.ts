@@ -47,21 +47,6 @@ export class LeastBusyWorkerChoiceStrategy<
     this.setTaskStatisticsRequirements(this.opts)
   }
 
-  private leastBusyNextWorkerNodeKey (): number | undefined {
-    return this.pool.workerNodes.reduce(
-      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
-        return this.isWorkerNodeReady(workerNodeKey) &&
-          (workerNode.usage.waitTime.aggregate ?? 0) +
-            (workerNode.usage.runTime.aggregate ?? 0) <
-            (workerNodes[minWorkerNodeKey].usage.waitTime.aggregate ?? 0) +
-              (workerNodes[minWorkerNodeKey].usage.runTime.aggregate ?? 0)
-          ? workerNodeKey
-          : minWorkerNodeKey
-      },
-      0
-    )
-  }
-
   /** @inheritDoc */
   public choose (): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
@@ -82,5 +67,20 @@ export class LeastBusyWorkerChoiceStrategy<
   /** @inheritDoc */
   public update (): boolean {
     return true
+  }
+
+  private leastBusyNextWorkerNodeKey (): number | undefined {
+    return this.pool.workerNodes.reduce(
+      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
+        return this.isWorkerNodeReady(workerNodeKey) &&
+          (workerNode.usage.waitTime.aggregate ?? 0) +
+            (workerNode.usage.runTime.aggregate ?? 0) <
+            (workerNodes[minWorkerNodeKey].usage.waitTime.aggregate ?? 0) +
+              (workerNodes[minWorkerNodeKey].usage.runTime.aggregate ?? 0)
+          ? workerNodeKey
+          : minWorkerNodeKey
+      },
+      0
+    )
   }
 }

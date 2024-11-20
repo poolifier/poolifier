@@ -7,6 +7,16 @@ import { ClusterWorker } from 'poolifier'
 import type { WorkerData, WorkerResponse } from './types.js'
 
 class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
+  private static server: Server
+
+  public constructor () {
+    super(ExpressWorker.startExpress, {
+      killHandler: () => {
+        ExpressWorker.server.close()
+      },
+    })
+  }
+
   private static readonly factorial = (n: bigint | number): bigint => {
     if (n === 0 || n === 1) {
       return 1n
@@ -19,8 +29,6 @@ class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
       return factorial
     }
   }
-
-  private static server: Server
 
   private static readonly startExpress = (
     workerData?: WorkerData
@@ -57,14 +65,6 @@ class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
       port: listenerPort ?? port,
       status: true,
     }
-  }
-
-  public constructor () {
-    super(ExpressWorker.startExpress, {
-      killHandler: () => {
-        ExpressWorker.server.close()
-      },
-    })
   }
 }
 

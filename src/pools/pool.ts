@@ -73,187 +73,6 @@ export const PoolEvents: Readonly<{
 } as const)
 
 /**
- * Pool event.
- */
-export type PoolEvent = keyof typeof PoolEvents
-
-/**
- * Pool information.
- */
-export interface PoolInfo {
-  readonly backPressure?: boolean
-  /** Pool tasks back pressure worker nodes. */
-  readonly backPressureWorkerNodes?: number
-  /** Pool busy worker nodes. */
-  readonly busyWorkerNodes: number
-  readonly defaultStrategy: WorkerChoiceStrategy
-  /** Pool dynamic worker nodes. */
-  readonly dynamicWorkerNodes?: number
-  readonly elu?: {
-    active: {
-      readonly average?: number
-      readonly maximum: number
-      readonly median?: number
-      readonly minimum: number
-    }
-    idle: {
-      readonly average?: number
-      readonly maximum: number
-      readonly median?: number
-      readonly minimum: number
-    }
-    utilization: {
-      readonly average?: number
-      readonly median?: number
-    }
-  }
-  readonly executedTasks: number
-  readonly executingTasks: number
-  readonly failedTasks: number
-  /** Pool idle worker nodes. */
-  readonly idleWorkerNodes: number
-  readonly maxQueuedTasks?: number
-  readonly maxSize: number
-  readonly minSize: number
-  readonly queuedTasks?: number
-  readonly ready: boolean
-  readonly runTime?: {
-    readonly average?: number
-    readonly maximum: number
-    readonly median?: number
-    readonly minimum: number
-  }
-  readonly started: boolean
-  /** Pool tasks stealing worker nodes. */
-  readonly stealingWorkerNodes?: number
-  readonly stolenTasks?: number
-  readonly strategyRetries: number
-  readonly type: PoolType
-  /** Pool utilization. */
-  readonly utilization?: number
-  readonly version: string
-  readonly waitTime?: {
-    readonly average?: number
-    readonly maximum: number
-    readonly median?: number
-    readonly minimum: number
-  }
-  readonly worker: WorkerType
-  /** Pool total worker nodes. */
-  readonly workerNodes: number
-}
-
-/**
- * Worker node tasks queue options.
- */
-export interface TasksQueueOptions {
-  /**
-   * Maximum number of tasks that can be executed concurrently on a worker node.
-   * @defaultValue 1
-   */
-  readonly concurrency?: number
-  /**
-   * Maximum tasks queue size per worker node flagging it as back pressured.
-   * @defaultValue (pool maximum size)^2
-   */
-  readonly size?: number
-  /**
-   * Queued tasks finished timeout in milliseconds at worker node termination.
-   * @defaultValue 2000
-   */
-  readonly tasksFinishedTimeout?: number
-  /**
-   * Whether to enable tasks stealing under back pressure.
-   * @defaultValue true
-   */
-  readonly tasksStealingOnBackPressure?: boolean
-  /**
-   * Ratio of worker nodes that can steal tasks from another worker node.
-   * @defaultValue 0.6
-   */
-  readonly tasksStealingRatio?: number
-  /**
-   * Whether to enable task stealing on idle.
-   * @defaultValue true
-   */
-  readonly taskStealing?: boolean
-}
-
-/**
- * Options for a poolifier pool.
- * @typeParam Worker - Type of worker.
- */
-export interface PoolOptions<Worker extends IWorker> {
-  /**
-   * Pool events integrated with async resource emission.
-   * @defaultValue true
-   */
-  enableEvents?: boolean
-  /**
-   * Pool worker node tasks queue.
-   * @defaultValue false
-   */
-  enableTasksQueue?: boolean
-  /**
-   * Key/value pairs to add to worker process environment.
-   * @see https://nodejs.org/api/cluster.html#cluster_cluster_fork_env
-   */
-  env?: Record<string, unknown>
-  /**
-   * A function that will listen for error event on each worker.
-   * @defaultValue `() => {}`
-   */
-  errorHandler?: ErrorHandler<Worker>
-  /**
-   * A function that will listen for exit event on each worker.
-   * @defaultValue `() => {}`
-   */
-  exitHandler?: ExitHandler<Worker>
-  /**
-   * A function that will listen for message event on each worker.
-   * @defaultValue `() => {}`
-   */
-  messageHandler?: MessageHandler<Worker>
-  /**
-   * A function that will listen for online event on each worker.
-   * @defaultValue `() => {}`
-   */
-  onlineHandler?: OnlineHandler<Worker>
-  /**
-   * Restart worker on error.
-   */
-  restartWorkerOnError?: boolean
-  /**
-   * Cluster settings.
-   * @see https://nodejs.org/api/cluster.html#cluster_cluster_settings
-   */
-  settings?: ClusterSettings
-  /**
-   * Whether to start the minimum number of workers at pool initialization.
-   * @defaultValue true
-   */
-  startWorkers?: boolean
-  /**
-   * Pool worker node tasks queue options.
-   */
-  tasksQueueOptions?: TasksQueueOptions
-  /**
-   * The default worker choice strategy to use in this pool.
-   * @defaultValue WorkerChoiceStrategies.ROUND_ROBIN
-   */
-  workerChoiceStrategy?: WorkerChoiceStrategy
-  /**
-   * The worker choice strategy options.
-   */
-  workerChoiceStrategyOptions?: WorkerChoiceStrategyOptions
-  /**
-   * Worker options.
-   * @see https://nodejs.org/api/worker_threads.html#new-workerfilename-options
-   */
-  workerOptions?: WorkerOptions
-}
-
-/**
  * Contract definition for a poolifier pool.
  * @typeParam Worker - Type of worker which manages this pool.
  * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
@@ -395,4 +214,185 @@ export interface IPool<
    * @internal
    */
   readonly workerNodes: IWorkerNode<Worker, Data>[]
+}
+
+/**
+ * Pool event.
+ */
+export type PoolEvent = keyof typeof PoolEvents
+
+/**
+ * Pool information.
+ */
+export interface PoolInfo {
+  readonly backPressure?: boolean
+  /** Pool tasks back pressure worker nodes. */
+  readonly backPressureWorkerNodes?: number
+  /** Pool busy worker nodes. */
+  readonly busyWorkerNodes: number
+  readonly defaultStrategy: WorkerChoiceStrategy
+  /** Pool dynamic worker nodes. */
+  readonly dynamicWorkerNodes?: number
+  readonly elu?: {
+    active: {
+      readonly average?: number
+      readonly maximum: number
+      readonly median?: number
+      readonly minimum: number
+    }
+    idle: {
+      readonly average?: number
+      readonly maximum: number
+      readonly median?: number
+      readonly minimum: number
+    }
+    utilization: {
+      readonly average?: number
+      readonly median?: number
+    }
+  }
+  readonly executedTasks: number
+  readonly executingTasks: number
+  readonly failedTasks: number
+  /** Pool idle worker nodes. */
+  readonly idleWorkerNodes: number
+  readonly maxQueuedTasks?: number
+  readonly maxSize: number
+  readonly minSize: number
+  readonly queuedTasks?: number
+  readonly ready: boolean
+  readonly runTime?: {
+    readonly average?: number
+    readonly maximum: number
+    readonly median?: number
+    readonly minimum: number
+  }
+  readonly started: boolean
+  /** Pool tasks stealing worker nodes. */
+  readonly stealingWorkerNodes?: number
+  readonly stolenTasks?: number
+  readonly strategyRetries: number
+  readonly type: PoolType
+  /** Pool utilization. */
+  readonly utilization?: number
+  readonly version: string
+  readonly waitTime?: {
+    readonly average?: number
+    readonly maximum: number
+    readonly median?: number
+    readonly minimum: number
+  }
+  readonly worker: WorkerType
+  /** Pool total worker nodes. */
+  readonly workerNodes: number
+}
+
+/**
+ * Options for a poolifier pool.
+ * @typeParam Worker - Type of worker.
+ */
+export interface PoolOptions<Worker extends IWorker> {
+  /**
+   * Pool events integrated with async resource emission.
+   * @defaultValue true
+   */
+  enableEvents?: boolean
+  /**
+   * Pool worker node tasks queue.
+   * @defaultValue false
+   */
+  enableTasksQueue?: boolean
+  /**
+   * Key/value pairs to add to worker process environment.
+   * @see https://nodejs.org/api/cluster.html#cluster_cluster_fork_env
+   */
+  env?: Record<string, unknown>
+  /**
+   * A function that will listen for error event on each worker.
+   * @defaultValue `() => {}`
+   */
+  errorHandler?: ErrorHandler<Worker>
+  /**
+   * A function that will listen for exit event on each worker.
+   * @defaultValue `() => {}`
+   */
+  exitHandler?: ExitHandler<Worker>
+  /**
+   * A function that will listen for message event on each worker.
+   * @defaultValue `() => {}`
+   */
+  messageHandler?: MessageHandler<Worker>
+  /**
+   * A function that will listen for online event on each worker.
+   * @defaultValue `() => {}`
+   */
+  onlineHandler?: OnlineHandler<Worker>
+  /**
+   * Restart worker on error.
+   */
+  restartWorkerOnError?: boolean
+  /**
+   * Cluster settings.
+   * @see https://nodejs.org/api/cluster.html#cluster_cluster_settings
+   */
+  settings?: ClusterSettings
+  /**
+   * Whether to start the minimum number of workers at pool initialization.
+   * @defaultValue true
+   */
+  startWorkers?: boolean
+  /**
+   * Pool worker node tasks queue options.
+   */
+  tasksQueueOptions?: TasksQueueOptions
+  /**
+   * The default worker choice strategy to use in this pool.
+   * @defaultValue WorkerChoiceStrategies.ROUND_ROBIN
+   */
+  workerChoiceStrategy?: WorkerChoiceStrategy
+  /**
+   * The worker choice strategy options.
+   */
+  workerChoiceStrategyOptions?: WorkerChoiceStrategyOptions
+  /**
+   * Worker options.
+   * @see https://nodejs.org/api/worker_threads.html#new-workerfilename-options
+   */
+  workerOptions?: WorkerOptions
+}
+
+/**
+ * Worker node tasks queue options.
+ */
+export interface TasksQueueOptions {
+  /**
+   * Maximum number of tasks that can be executed concurrently on a worker node.
+   * @defaultValue 1
+   */
+  readonly concurrency?: number
+  /**
+   * Maximum tasks queue size per worker node flagging it as back pressured.
+   * @defaultValue (pool maximum size)^2
+   */
+  readonly size?: number
+  /**
+   * Queued tasks finished timeout in milliseconds at worker node termination.
+   * @defaultValue 2000
+   */
+  readonly tasksFinishedTimeout?: number
+  /**
+   * Whether to enable tasks stealing under back pressure.
+   * @defaultValue true
+   */
+  readonly tasksStealingOnBackPressure?: boolean
+  /**
+   * Ratio of worker nodes that can steal tasks from another worker node.
+   * @defaultValue 0.6
+   */
+  readonly tasksStealingRatio?: number
+  /**
+   * Whether to enable task stealing on idle.
+   * @defaultValue true
+   */
+  readonly taskStealing?: boolean
 }

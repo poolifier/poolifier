@@ -16,6 +16,16 @@ let nextWorkerIndex
 /**
  * @returns
  */
+function roundRobinIncrementModulo () {
+  const chosenWorker = workers[nextWorkerIndex]
+  nextWorkerIndex++
+  nextWorkerIndex %= workers.length
+  return chosenWorker
+}
+
+/**
+ * @returns
+ */
 function roundRobinTernaryOffByOne () {
   nextWorkerIndex =
     workers.length - 1 === nextWorkerIndex ? 0 : nextWorkerIndex + 1
@@ -40,16 +50,6 @@ function roundRobinTernaryWithPreChoosing () {
   const chosenWorker = workers[nextWorkerIndex]
   nextWorkerIndex =
     workers.length - 1 === nextWorkerIndex ? 0 : nextWorkerIndex + 1
-  return chosenWorker
-}
-
-/**
- * @returns
- */
-function roundRobinIncrementModulo () {
-  const chosenWorker = workers[nextWorkerIndex]
-  nextWorkerIndex++
-  nextWorkerIndex %= workers.length
   return chosenWorker
 }
 

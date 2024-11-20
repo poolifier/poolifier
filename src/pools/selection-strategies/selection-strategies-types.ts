@@ -60,105 +60,6 @@ export const Measurements: Readonly<{
 } as const)
 
 /**
- * Measurement.
- */
-export type Measurement = keyof typeof Measurements
-
-/**
- * Measurement options.
- */
-export interface MeasurementOptions {
-  /**
-   * Set measurement median.
-   */
-  readonly median: boolean
-}
-
-/**
- * Worker choice strategy options.
- */
-export interface WorkerChoiceStrategyOptions {
-  /**
-   * Event loop utilization options.
-   * @defaultValue \{ median: false \}
-   */
-  readonly elu?: MeasurementOptions
-  /**
-   * Measurement to use in worker choice strategy supporting it.
-   */
-  readonly measurement?: Measurement
-  /**
-   * Runtime options.
-   * @defaultValue \{ median: false \}
-   */
-  readonly runTime?: MeasurementOptions
-  /**
-   * Wait time options.
-   * @defaultValue \{ median: false \}
-   */
-  readonly waitTime?: MeasurementOptions
-  /**
-   * Worker weights to use for weighted round robin worker selection strategies.
-   * A weight is tasks maximum execution time in milliseconds for a worker node.
-   * @defaultValue Weights computed automatically given the CPU performance.
-   */
-  weights?: Record<number, number>
-}
-
-/**
- * Measurement statistics requirements.
- * @internal
- */
-export interface MeasurementStatisticsRequirements {
-  /**
-   * Requires measurement aggregate.
-   */
-  aggregate: boolean
-  /**
-   * Requires measurement average.
-   */
-  average: boolean
-  /**
-   * Requires measurement median.
-   */
-  median: boolean
-}
-
-/**
- * Pool worker node worker usage statistics requirements.
- * @internal
- */
-export interface TaskStatisticsRequirements {
-  /**
-   * Tasks event loop utilization requirements.
-   */
-  readonly elu: MeasurementStatisticsRequirements
-  /**
-   * Tasks runtime requirements.
-   */
-  readonly runTime: MeasurementStatisticsRequirements
-  /**
-   * Tasks wait time requirements.
-   */
-  readonly waitTime: MeasurementStatisticsRequirements
-}
-
-/**
- * Strategy policy.
- * @internal
- */
-export interface StrategyPolicy {
-  /**
-   * Expects the newly created dynamic worker to be flagged as ready.
-   */
-  readonly dynamicWorkerReady: boolean
-  /**
-   * Expects tasks execution on the newly created dynamic worker.
-   */
-  readonly dynamicWorkerUsage: boolean
-}
-
-/**
  * Worker choice strategy interface.
  * @internal
  */
@@ -200,4 +101,103 @@ export interface IWorkerChoiceStrategy {
    * @returns `true` if the update is successful, `false` otherwise.
    */
   readonly update: (workerNodeKey: number) => boolean
+}
+
+/**
+ * Measurement.
+ */
+export type Measurement = keyof typeof Measurements
+
+/**
+ * Measurement options.
+ */
+export interface MeasurementOptions {
+  /**
+   * Set measurement median.
+   */
+  readonly median: boolean
+}
+
+/**
+ * Measurement statistics requirements.
+ * @internal
+ */
+export interface MeasurementStatisticsRequirements {
+  /**
+   * Requires measurement aggregate.
+   */
+  aggregate: boolean
+  /**
+   * Requires measurement average.
+   */
+  average: boolean
+  /**
+   * Requires measurement median.
+   */
+  median: boolean
+}
+
+/**
+ * Strategy policy.
+ * @internal
+ */
+export interface StrategyPolicy {
+  /**
+   * Expects the newly created dynamic worker to be flagged as ready.
+   */
+  readonly dynamicWorkerReady: boolean
+  /**
+   * Expects tasks execution on the newly created dynamic worker.
+   */
+  readonly dynamicWorkerUsage: boolean
+}
+
+/**
+ * Pool worker node worker usage statistics requirements.
+ * @internal
+ */
+export interface TaskStatisticsRequirements {
+  /**
+   * Tasks event loop utilization requirements.
+   */
+  readonly elu: MeasurementStatisticsRequirements
+  /**
+   * Tasks runtime requirements.
+   */
+  readonly runTime: MeasurementStatisticsRequirements
+  /**
+   * Tasks wait time requirements.
+   */
+  readonly waitTime: MeasurementStatisticsRequirements
+}
+
+/**
+ * Worker choice strategy options.
+ */
+export interface WorkerChoiceStrategyOptions {
+  /**
+   * Event loop utilization options.
+   * @defaultValue \{ median: false \}
+   */
+  readonly elu?: MeasurementOptions
+  /**
+   * Measurement to use in worker choice strategy supporting it.
+   */
+  readonly measurement?: Measurement
+  /**
+   * Runtime options.
+   * @defaultValue \{ median: false \}
+   */
+  readonly runTime?: MeasurementOptions
+  /**
+   * Wait time options.
+   * @defaultValue \{ median: false \}
+   */
+  readonly waitTime?: MeasurementOptions
+  /**
+   * Worker weights to use for weighted round robin worker selection strategies.
+   * A weight is tasks maximum execution time in milliseconds for a worker node.
+   * @defaultValue Weights computed automatically given the CPU performance.
+   */
+  weights?: Record<number, number>
 }
