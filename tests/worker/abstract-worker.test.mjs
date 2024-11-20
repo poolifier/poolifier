@@ -1,4 +1,4 @@
-import { expect } from 'expect'
+import { expect } from '@std/expect'
 import { restore, stub } from 'sinon'
 
 import {

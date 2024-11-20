@@ -29,13 +29,8 @@ export class ThreadWorker<
   Response = unknown
 > extends AbstractWorker<MessagePort, Data, Response> {
   /** @inheritDoc */
-  protected readonly sendToMainWorker = (
-    message: MessageValue<Response>
-  ): void => {
-    this.port?.postMessage({
-      ...message,
-      workerId: this.id,
-    } satisfies MessageValue<Response>)
+  protected get id (): number {
+    return threadId
   }
 
   /**
@@ -97,7 +92,12 @@ export class ThreadWorker<
   }
 
   /** @inheritDoc */
-  protected get id (): number {
-    return threadId
+  protected readonly sendToMainWorker = (
+    message: MessageValue<Response>
+  ): void => {
+    this.port?.postMessage({
+      ...message,
+      workerId: this.id,
+    } satisfies MessageValue<Response>)
   }
 }

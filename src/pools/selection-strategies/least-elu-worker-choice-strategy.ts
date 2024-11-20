@@ -24,7 +24,7 @@ export class LeastEluWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public override readonly taskStatisticsRequirements: TaskStatisticsRequirements =
-    {
+    Object.freeze({
       elu: {
         aggregate: true,
         average: false,
@@ -32,7 +32,7 @@ export class LeastEluWorkerChoiceStrategy<
       },
       runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
       waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-    }
+    })
 
   /** @inheritDoc */
   public constructor (
@@ -41,19 +41,6 @@ export class LeastEluWorkerChoiceStrategy<
   ) {
     super(pool, opts)
     this.setTaskStatisticsRequirements(this.opts)
-  }
-
-  private leastEluNextWorkerNodeKey (): number | undefined {
-    return this.pool.workerNodes.reduce(
-      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
-        return this.isWorkerNodeReady(workerNodeKey) &&
-          (workerNode.usage.elu.active.aggregate ?? 0) <
-            (workerNodes[minWorkerNodeKey].usage.elu.active.aggregate ?? 0)
-          ? workerNodeKey
-          : minWorkerNodeKey
-      },
-      0
-    )
   }
 
   /** @inheritDoc */
@@ -76,5 +63,18 @@ export class LeastEluWorkerChoiceStrategy<
   /** @inheritDoc */
   public update (): boolean {
     return true
+  }
+
+  private leastEluNextWorkerNodeKey (): number | undefined {
+    return this.pool.workerNodes.reduce(
+      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
+        return this.isWorkerNodeReady(workerNodeKey) &&
+          (workerNode.usage.elu.active.aggregate ?? 0) <
+            (workerNodes[minWorkerNodeKey].usage.elu.active.aggregate ?? 0)
+          ? workerNodeKey
+          : minWorkerNodeKey
+      },
+      0
+    )
   }
 }

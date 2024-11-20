@@ -25,7 +25,7 @@ export class FairShareWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public override readonly taskStatisticsRequirements: TaskStatisticsRequirements =
-    {
+    Object.freeze({
       elu: {
         aggregate: true,
         average: true,
@@ -41,7 +41,7 @@ export class FairShareWorkerChoiceStrategy<
         average: true,
         median: false,
       },
-    }
+    })
 
   /** @inheritDoc */
   public constructor (
@@ -50,6 +50,35 @@ export class FairShareWorkerChoiceStrategy<
   ) {
     super(pool, opts)
     this.setTaskStatisticsRequirements(this.opts)
+  }
+
+  /** @inheritDoc */
+  public choose (): number | undefined {
+    this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
+    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey()
+    return this.nextWorkerNodeKey
+  }
+
+  /** @inheritDoc */
+  public remove (): boolean {
+    return true
+  }
+
+  /** @inheritDoc */
+  public reset (): boolean {
+    for (const workerNode of this.pool.workerNodes) {
+      delete workerNode.strategyData?.virtualTaskEndTimestamp
+    }
+    return true
+  }
+
+  /** @inheritDoc */
+  public update (workerNodeKey: number): boolean {
+    this.pool.workerNodes[workerNodeKey].strategyData = {
+      virtualTaskEndTimestamp:
+        this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey),
+    }
+    return true
   }
 
   /**
@@ -111,34 +140,5 @@ export class FairShareWorkerChoiceStrategy<
       ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       virtualTaskEndTimestamp!
       : now
-  }
-
-  /** @inheritDoc */
-  public choose (): number | undefined {
-    this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey()
-    return this.nextWorkerNodeKey
-  }
-
-  /** @inheritDoc */
-  public remove (): boolean {
-    return true
-  }
-
-  /** @inheritDoc */
-  public reset (): boolean {
-    for (const workerNode of this.pool.workerNodes) {
-      delete workerNode.strategyData?.virtualTaskEndTimestamp
-    }
-    return true
-  }
-
-  /** @inheritDoc */
-  public update (workerNodeKey: number): boolean {
-    this.pool.workerNodes[workerNodeKey].strategyData = {
-      virtualTaskEndTimestamp:
-        this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey),
-    }
-    return true
   }
 }

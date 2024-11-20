@@ -1,11 +1,11 @@
-import { expect } from 'expect'
+import { expect } from '@std/expect'
 import { Worker as ClusterWorker } from 'node:cluster'
 import { MessageChannel, Worker as ThreadWorker } from 'node:worker_threads'
 
 import { CircularBuffer } from '../../lib/circular-buffer.cjs'
 import { WorkerTypes } from '../../lib/index.cjs'
-import { MeasurementHistorySize } from '../../lib/pools/worker.cjs'
 import { WorkerNode } from '../../lib/pools/worker-node.cjs'
+import { MeasurementHistorySize } from '../../lib/pools/worker.cjs'
 import { PriorityQueue } from '../../lib/queues/priority-queue.cjs'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.cjs'
 

@@ -26,6 +26,26 @@ export class FixedThreadPool<
   Data = unknown,
   Response = unknown
 > extends AbstractPool<Worker, Data, Response> {
+  /** @inheritDoc */
+  protected get backPressure (): boolean {
+    return this.internalBackPressure()
+  }
+
+  /** @inheritDoc */
+  protected get busy (): boolean {
+    return this.internalBusy()
+  }
+
+  /** @inheritDoc */
+  protected get type (): PoolType {
+    return PoolTypes.fixed
+  }
+
+  /** @inheritDoc */
+  protected get worker (): WorkerType {
+    return WorkerTypes.thread
+  }
+
   /**
    * Constructs a new poolifier fixed thread pool.
    * @param numberOfThreads - Number of threads for this pool.
@@ -123,25 +143,5 @@ export class FixedThreadPool<
   /** @inheritDoc */
   protected shallCreateDynamicWorker (): boolean {
     return false
-  }
-
-  /** @inheritDoc */
-  protected get backPressure (): boolean {
-    return this.internalBackPressure()
-  }
-
-  /** @inheritDoc */
-  protected get busy (): boolean {
-    return this.internalBusy()
-  }
-
-  /** @inheritDoc */
-  protected get type (): PoolType {
-    return PoolTypes.fixed
-  }
-
-  /** @inheritDoc */
-  protected get worker (): WorkerType {
-    return WorkerTypes.thread
   }
 }

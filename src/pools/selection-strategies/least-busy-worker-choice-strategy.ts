@@ -24,7 +24,7 @@ export class LeastBusyWorkerChoiceStrategy<
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public override readonly taskStatisticsRequirements: TaskStatisticsRequirements =
-    {
+    Object.freeze({
       elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
       runTime: {
         aggregate: true,
@@ -36,7 +36,7 @@ export class LeastBusyWorkerChoiceStrategy<
         average: false,
         median: false,
       },
-    }
+    })
 
   /** @inheritDoc */
   public constructor (
@@ -45,21 +45,6 @@ export class LeastBusyWorkerChoiceStrategy<
   ) {
     super(pool, opts)
     this.setTaskStatisticsRequirements(this.opts)
-  }
-
-  private leastBusyNextWorkerNodeKey (): number | undefined {
-    return this.pool.workerNodes.reduce(
-      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
-        return this.isWorkerNodeReady(workerNodeKey) &&
-          (workerNode.usage.waitTime.aggregate ?? 0) +
-            (workerNode.usage.runTime.aggregate ?? 0) <
-            (workerNodes[minWorkerNodeKey].usage.waitTime.aggregate ?? 0) +
-              (workerNodes[minWorkerNodeKey].usage.runTime.aggregate ?? 0)
-          ? workerNodeKey
-          : minWorkerNodeKey
-      },
-      0
-    )
   }
 
   /** @inheritDoc */
@@ -82,5 +67,20 @@ export class LeastBusyWorkerChoiceStrategy<
   /** @inheritDoc */
   public update (): boolean {
     return true
+  }
+
+  private leastBusyNextWorkerNodeKey (): number | undefined {
+    return this.pool.workerNodes.reduce(
+      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
+        return this.isWorkerNodeReady(workerNodeKey) &&
+          (workerNode.usage.waitTime.aggregate ?? 0) +
+            (workerNode.usage.runTime.aggregate ?? 0) <
+            (workerNodes[minWorkerNodeKey].usage.waitTime.aggregate ?? 0) +
+              (workerNodes[minWorkerNodeKey].usage.runTime.aggregate ?? 0)
+          ? workerNodeKey
+          : minWorkerNodeKey
+      },
+      0
+    )
   }
 }
