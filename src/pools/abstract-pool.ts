@@ -84,6 +84,7 @@ export abstract class AbstractPool<
 > implements IPool<Worker, Data, Response> {
   /** @inheritDoc */
   public emitter?: EventEmitterAsyncResource
+
   /** @inheritDoc */
   public readonly workerNodes: IWorkerNode<Worker, Data>[] = []
 
