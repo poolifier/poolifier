@@ -66,7 +66,6 @@ class WebSocketServerWorker extends ClusterWorker<
       ws.on('error', console.error)
       ws.on('message', (message: RawData) => {
         const { data, type } = JSON.parse(
-          // eslint-disable-next-line @typescript-eslint/no-base-to-string
           message.toString()
         ) as MessagePayload<DataPayload>
         switch (type) {
