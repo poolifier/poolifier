@@ -5,15 +5,6 @@ export enum MessageType {
   factorial = 'factorial',
 }
 
-export interface MessagePayload<T = unknown> {
-  data: T
-  type: MessageType
-}
-
-export interface DataPayload {
-  number?: number
-}
-
 export interface ClusterWorkerData extends ThreadPoolOptions {
   maxWorkers?: number
   minWorkers?: number
@@ -24,6 +15,15 @@ export interface ClusterWorkerData extends ThreadPoolOptions {
 export interface ClusterWorkerResponse {
   port?: number
   status: boolean
+}
+
+export interface DataPayload {
+  number?: number
+}
+
+export interface MessagePayload<T = unknown> {
+  data: T
+  type: MessageType
 }
 
 export interface ThreadWorkerData<T = unknown> {

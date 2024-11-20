@@ -28,27 +28,6 @@ export class LeastUsedWorkerChoiceStrategy<
     super(pool, opts)
   }
 
-  private leastUsedNextWorkerNodeKey (
-    workerNodeKeys?: number[]
-  ): number | undefined {
-    workerNodeKeys = this.checkWorkerNodes(workerNodeKeys)
-    if (workerNodeKeys.length === 1) {
-      return workerNodeKeys[0]
-    }
-    return this.pool.workerNodes.reduce(
-      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
-        return this.isWorkerNodeReady(workerNodeKey) &&
-          workerNodeKeys.includes(workerNodeKey) &&
-          workerNode.usage.tasks.executing + workerNode.usage.tasks.queued <
-            workerNodes[minWorkerNodeKey].usage.tasks.executing +
-              workerNodes[minWorkerNodeKey].usage.tasks.queued
-          ? workerNodeKey
-          : minWorkerNodeKey
-      },
-      0
-    )
-  }
-
   /** @inheritDoc */
   public choose (workerNodes?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
@@ -69,5 +48,26 @@ export class LeastUsedWorkerChoiceStrategy<
   /** @inheritDoc */
   public update (): boolean {
     return true
+  }
+
+  private leastUsedNextWorkerNodeKey (
+    workerNodeKeys?: number[]
+  ): number | undefined {
+    workerNodeKeys = this.checkWorkerNodes(workerNodeKeys)
+    if (workerNodeKeys.length === 1) {
+      return workerNodeKeys[0]
+    }
+    return this.pool.workerNodes.reduce(
+      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
+        return this.isWorkerNodeReady(workerNodeKey) &&
+          workerNodeKeys.includes(workerNodeKey) &&
+          workerNode.usage.tasks.executing + workerNode.usage.tasks.queued <
+            workerNodes[minWorkerNodeKey].usage.tasks.executing +
+              workerNodes[minWorkerNodeKey].usage.tasks.queued
+          ? workerNodeKey
+          : minWorkerNodeKey
+      },
+      0
+    )
   }
 }

@@ -22,23 +22,6 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
-  /**
-   * Round id.
-   */
-  private roundId = 0
-
-  /**
-   * Round weights.
-   */
-  private roundWeights: number[]
-  /**
-   * Worker node id.
-   */
-  private workerNodeId = 0
-  /**
-   * Worker node virtual execution time.
-   */
-  private workerNodeVirtualTaskExecutionTime = 0
   /** @inheritDoc */
   public override readonly taskStatisticsRequirements: TaskStatisticsRequirements =
     {
@@ -55,6 +38,23 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
       },
     }
 
+  /**
+   * Round id.
+   */
+  private roundId = 0
+  /**
+   * Round weights.
+   */
+  private roundWeights: number[]
+  /**
+   * Worker node id.
+   */
+  private workerNodeId = 0
+  /**
+   * Worker node virtual execution time.
+   */
+  private workerNodeVirtualTaskExecutionTime = 0
+
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
@@ -63,34 +63,6 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
     super(pool, opts)
     this.setTaskStatisticsRequirements(this.opts)
     this.roundWeights = this.getRoundWeights()
-  }
-
-  private getRoundWeights (): number[] {
-    return [
-      ...new Set(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        Object.values(this.opts!.weights!)
-          .slice()
-          .sort((a, b) => a - b)
-      ),
-    ]
-  }
-
-  private interleavedWeightedRoundRobinNextWorkerNodeId (): void {
-    if (this.pool.workerNodes.length === 0) {
-      this.workerNodeId = 0
-    } else if (
-      this.roundId === this.roundWeights.length - 1 &&
-      this.workerNodeId === this.pool.workerNodes.length - 1
-    ) {
-      this.roundId = 0
-      this.workerNodeId = 0
-    } else if (this.workerNodeId === this.pool.workerNodes.length - 1) {
-      this.roundId = this.roundId + 1
-      this.workerNodeId = 0
-    } else {
-      this.workerNodeId = this.workerNodeId + 1
-    }
   }
 
   /** @inheritDoc */
@@ -177,5 +149,33 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public update (): boolean {
     return true
+  }
+
+  private getRoundWeights (): number[] {
+    return [
+      ...new Set(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        Object.values(this.opts!.weights!)
+          .slice()
+          .sort((a, b) => a - b)
+      ),
+    ]
+  }
+
+  private interleavedWeightedRoundRobinNextWorkerNodeId (): void {
+    if (this.pool.workerNodes.length === 0) {
+      this.workerNodeId = 0
+    } else if (
+      this.roundId === this.roundWeights.length - 1 &&
+      this.workerNodeId === this.pool.workerNodes.length - 1
+    ) {
+      this.roundId = 0
+      this.workerNodeId = 0
+    } else if (this.workerNodeId === this.pool.workerNodes.length - 1) {
+      this.roundId = this.roundId + 1
+      this.workerNodeId = 0
+    } else {
+      this.workerNodeId = this.workerNodeId + 1
+    }
   }
 }

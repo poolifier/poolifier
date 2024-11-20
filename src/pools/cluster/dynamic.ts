@@ -16,6 +16,21 @@ export class DynamicClusterPool<
   Data = unknown,
   Response = unknown
 > extends FixedClusterPool<Data, Response> {
+  /** @inheritDoc */
+  protected override get backPressure (): boolean {
+    return this.full && this.internalBackPressure()
+  }
+
+  /** @inheritDoc */
+  protected override get busy (): boolean {
+    return this.full && this.internalBusy()
+  }
+
+  /** @inheritDoc */
+  protected override get type (): PoolType {
+    return PoolTypes.dynamic
+  }
+
   /**
    * Whether the pool empty event has been emitted or not
    */
@@ -25,6 +40,28 @@ export class DynamicClusterPool<
    * Whether the pool full event has been emitted or not.
    */
   private fullEventEmitted: boolean
+
+  /**
+   * Whether the pool is empty or not.
+   * @returns The pool emptiness boolean status.
+   */
+  private get empty (): boolean {
+    return (
+      this.minimumNumberOfWorkers === 0 &&
+      this.workerNodes.length === this.minimumNumberOfWorkers
+    )
+  }
+
+  /**
+   * Whether the pool is full or not.
+   * @returns The pool fullness boolean status.
+   */
+  private get full (): boolean {
+    return (
+      this.workerNodes.length >=
+      (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers)
+    )
+  }
 
   /**
    * Constructs a new poolifier dynamic cluster pool.
@@ -78,42 +115,5 @@ export class DynamicClusterPool<
   /** @inheritDoc */
   protected override shallCreateDynamicWorker (): boolean {
     return (!this.full && this.internalBusy()) || this.empty
-  }
-
-  /** @inheritDoc */
-  protected override get backPressure (): boolean {
-    return this.full && this.internalBackPressure()
-  }
-
-  /** @inheritDoc */
-  protected override get busy (): boolean {
-    return this.full && this.internalBusy()
-  }
-
-  /**
-   * Whether the pool is empty or not.
-   * @returns The pool emptiness boolean status.
-   */
-  private get empty (): boolean {
-    return (
-      this.minimumNumberOfWorkers === 0 &&
-      this.workerNodes.length === this.minimumNumberOfWorkers
-    )
-  }
-
-  /**
-   * Whether the pool is full or not.
-   * @returns The pool fullness boolean status.
-   */
-  private get full (): boolean {
-    return (
-      this.workerNodes.length >=
-      (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers)
-    )
-  }
-
-  /** @inheritDoc */
-  protected override get type (): PoolType {
-    return PoolTypes.dynamic
   }
 }

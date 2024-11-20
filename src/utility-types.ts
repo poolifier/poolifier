@@ -6,130 +6,6 @@ import type { WorkerChoiceStrategy } from './pools/selection-strategies/selectio
 import type { KillBehavior } from './worker/worker-options.js'
 
 /**
- * Worker error.
- * @typeParam Data - Type of data sent to the worker triggering an error. This can only be structured-cloneable data.
- */
-export interface WorkerError<Data = unknown> {
-  /**
-   * Data triggering the error.
-   */
-  readonly data?: Data
-  /**
-   * Error object.
-   */
-  readonly error?: Error
-  /**
-   * Error message.
-   */
-  readonly message: string
-  /**
-   * Task function name triggering the error.
-   */
-  readonly name?: string
-  /**
-   * Error stack trace.
-   */
-  readonly stack?: string
-}
-
-/**
- * Task performance.
- * @internal
- */
-export interface TaskPerformance {
-  /**
-   * Task event loop utilization.
-   */
-  readonly elu?: EventLoopUtilization
-  /**
-   * Task name.
-   */
-  readonly name: string
-  /**
-   * Task runtime.
-   */
-  readonly runTime?: number
-  /**
-   * Task performance timestamp.
-   */
-  readonly timestamp: number
-}
-
-/**
- * Worker task performance statistics computation settings.
- * @internal
- */
-export interface WorkerStatistics {
-  /**
-   * Whether the worker computes the task event loop utilization (ELU) or not.
-   */
-  readonly elu: boolean
-  /**
-   * Whether the worker computes the task runtime or not.
-   */
-  readonly runTime: boolean
-}
-
-/**
- * Task function properties.
- */
-export interface TaskFunctionProperties {
-  /**
-   * Task function name.
-   */
-  readonly name: string
-  /**
-   * Task function priority. Lower values have higher priority.
-   */
-  readonly priority?: number
-  /**
-   * Task function worker choice strategy.
-   */
-  readonly strategy?: WorkerChoiceStrategy
-  /**
-   * Task function worker node keys affinity.
-   */
-  readonly workerNodes?: number[]
-}
-
-/**
- * Message object that is passed as a task between main worker and worker.
- * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
- * @internal
- */
-export interface Task<Data = unknown> {
-  /**
-   * Task input data that will be passed to the worker.
-   */
-  readonly data?: Data
-  /**
-   * Task name.
-   */
-  readonly name?: string
-  /**
-   * Task priority. Lower values have higher priority.
-   * @defaultValue 0
-   */
-  readonly priority?: number
-  /**
-   * Task worker choice strategy.
-   */
-  readonly strategy?: WorkerChoiceStrategy
-  /**
-   * Task UUID.
-   */
-  readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
-  /**
-   * Timestamp.
-   */
-  readonly timestamp?: number
-  /**
-   * Array of transferable objects.
-   */
-  readonly transferList?: readonly TransferListItem[]
-}
-
-/**
  * Message object that is passed between main worker and worker.
  * @typeParam Data - Type of data sent to the worker or execution response. This can only be structured-cloneable data.
  * @typeParam ErrorData - Type of data sent to the worker triggering an error. This can only be structured-cloneable data.
@@ -216,6 +92,130 @@ export interface PromiseResponseWrapper<Response = unknown> {
    * The worker node key executing the task.
    */
   readonly workerNodeKey: number
+}
+
+/**
+ * Message object that is passed as a task between main worker and worker.
+ * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @internal
+ */
+export interface Task<Data = unknown> {
+  /**
+   * Task input data that will be passed to the worker.
+   */
+  readonly data?: Data
+  /**
+   * Task name.
+   */
+  readonly name?: string
+  /**
+   * Task priority. Lower values have higher priority.
+   * @defaultValue 0
+   */
+  readonly priority?: number
+  /**
+   * Task worker choice strategy.
+   */
+  readonly strategy?: WorkerChoiceStrategy
+  /**
+   * Task UUID.
+   */
+  readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
+  /**
+   * Timestamp.
+   */
+  readonly timestamp?: number
+  /**
+   * Array of transferable objects.
+   */
+  readonly transferList?: readonly TransferListItem[]
+}
+
+/**
+ * Task function properties.
+ */
+export interface TaskFunctionProperties {
+  /**
+   * Task function name.
+   */
+  readonly name: string
+  /**
+   * Task function priority. Lower values have higher priority.
+   */
+  readonly priority?: number
+  /**
+   * Task function worker choice strategy.
+   */
+  readonly strategy?: WorkerChoiceStrategy
+  /**
+   * Task function worker node keys affinity.
+   */
+  readonly workerNodes?: number[]
+}
+
+/**
+ * Task performance.
+ * @internal
+ */
+export interface TaskPerformance {
+  /**
+   * Task event loop utilization.
+   */
+  readonly elu?: EventLoopUtilization
+  /**
+   * Task name.
+   */
+  readonly name: string
+  /**
+   * Task runtime.
+   */
+  readonly runTime?: number
+  /**
+   * Task performance timestamp.
+   */
+  readonly timestamp: number
+}
+
+/**
+ * Worker error.
+ * @typeParam Data - Type of data sent to the worker triggering an error. This can only be structured-cloneable data.
+ */
+export interface WorkerError<Data = unknown> {
+  /**
+   * Data triggering the error.
+   */
+  readonly data?: Data
+  /**
+   * Error object.
+   */
+  readonly error?: Error
+  /**
+   * Error message.
+   */
+  readonly message: string
+  /**
+   * Task function name triggering the error.
+   */
+  readonly name?: string
+  /**
+   * Error stack trace.
+   */
+  readonly stack?: string
+}
+
+/**
+ * Worker task performance statistics computation settings.
+ * @internal
+ */
+export interface WorkerStatistics {
+  /**
+   * Whether the worker computes the task event loop utilization (ELU) or not.
+   */
+  readonly elu: boolean
+  /**
+   * Whether the worker computes the task runtime or not.
+   */
+  readonly runTime: boolean
 }
 
 /**

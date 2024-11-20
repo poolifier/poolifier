@@ -29,6 +29,11 @@ export class WorkerChoiceStrategiesContext<
   Response = unknown
 > {
   /**
+   * The number of worker choice strategies execution retries.
+   */
+  public retriesCount: number
+
+  /**
    * The default worker choice strategy in the context.
    */
   private defaultWorkerChoiceStrategy: WorkerChoiceStrategy
@@ -55,11 +60,6 @@ export class WorkerChoiceStrategiesContext<
    * The active worker choice strategies in the context task statistics requirements.
    */
   private workerChoiceStrategiesTaskStatisticsRequirements: TaskStatisticsRequirements
-
-  /**
-   * The number of worker choice strategies execution retries.
-   */
-  public retriesCount: number
 
   /**
    * Worker choice strategies context constructor.
@@ -95,73 +95,6 @@ export class WorkerChoiceStrategiesContext<
       this.pool,
       opts
     )
-  }
-
-  /**
-   * Adds a worker choice strategy to the context.
-   * @param workerChoiceStrategy - The worker choice strategy to add.
-   * @param pool - The pool instance.
-   * @param opts - The worker choice strategy options.
-   * @returns The worker choice strategies.
-   */
-  private addWorkerChoiceStrategy (
-    workerChoiceStrategy: WorkerChoiceStrategy,
-    pool: IPool<Worker, Data, Response>,
-    opts?: WorkerChoiceStrategyOptions
-  ): Map<WorkerChoiceStrategy, IWorkerChoiceStrategy> {
-    if (!this.workerChoiceStrategies.has(workerChoiceStrategy)) {
-      return this.workerChoiceStrategies.set(
-        workerChoiceStrategy,
-        getWorkerChoiceStrategy<Worker, Data, Response>(
-          workerChoiceStrategy,
-          pool,
-          this,
-          opts
-        )
-      )
-    }
-    return this.workerChoiceStrategies
-  }
-
-  /**
-   * Executes the given worker choice strategy.
-   * @param workerChoiceStrategy - The worker choice strategy.
-   * @param workerNodes - Worker node keys affinity.
-   * @returns The key of the worker node.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If after computed retries the worker node key is null or undefined.
-   */
-  private executeStrategy (
-    workerChoiceStrategy: IWorkerChoiceStrategy,
-    workerNodes?: number[]
-  ): number {
-    let workerNodeKey: number | undefined
-    let chooseCount = 0
-    let retriesCount = 0
-    do {
-      workerNodeKey = workerChoiceStrategy.choose(workerNodes)
-      if (workerNodeKey == null && chooseCount > 0) {
-        ++retriesCount
-        ++this.retriesCount
-      }
-      ++chooseCount
-    } while (workerNodeKey == null && retriesCount < this.retries)
-    if (workerNodeKey == null) {
-      throw new Error(
-        `Worker node key chosen is null or undefined after ${retriesCount.toString()} retries`
-      )
-    }
-    return workerNodeKey
-  }
-
-  /**
-   * Removes a worker choice strategy from the context.
-   * @param workerChoiceStrategy - The worker choice strategy to remove.
-   * @returns `true` if the worker choice strategy is removed, `false` otherwise.
-   */
-  private removeWorkerChoiceStrategy (
-    workerChoiceStrategy: WorkerChoiceStrategy
-  ): boolean {
-    return this.workerChoiceStrategies.delete(workerChoiceStrategy)
   }
 
   /**
@@ -274,5 +207,72 @@ export class WorkerChoiceStrategiesContext<
       this.workerChoiceStrategies,
       ([_, workerChoiceStrategy]) => workerChoiceStrategy.update(workerNodeKey)
     ).every(r => r)
+  }
+
+  /**
+   * Adds a worker choice strategy to the context.
+   * @param workerChoiceStrategy - The worker choice strategy to add.
+   * @param pool - The pool instance.
+   * @param opts - The worker choice strategy options.
+   * @returns The worker choice strategies.
+   */
+  private addWorkerChoiceStrategy (
+    workerChoiceStrategy: WorkerChoiceStrategy,
+    pool: IPool<Worker, Data, Response>,
+    opts?: WorkerChoiceStrategyOptions
+  ): Map<WorkerChoiceStrategy, IWorkerChoiceStrategy> {
+    if (!this.workerChoiceStrategies.has(workerChoiceStrategy)) {
+      return this.workerChoiceStrategies.set(
+        workerChoiceStrategy,
+        getWorkerChoiceStrategy<Worker, Data, Response>(
+          workerChoiceStrategy,
+          pool,
+          this,
+          opts
+        )
+      )
+    }
+    return this.workerChoiceStrategies
+  }
+
+  /**
+   * Executes the given worker choice strategy.
+   * @param workerChoiceStrategy - The worker choice strategy.
+   * @param workerNodes - Worker node keys affinity.
+   * @returns The key of the worker node.
+   * @throws {@link https://nodejs.org/api/errors.html#class-error} If after computed retries the worker node key is null or undefined.
+   */
+  private executeStrategy (
+    workerChoiceStrategy: IWorkerChoiceStrategy,
+    workerNodes?: number[]
+  ): number {
+    let workerNodeKey: number | undefined
+    let chooseCount = 0
+    let retriesCount = 0
+    do {
+      workerNodeKey = workerChoiceStrategy.choose(workerNodes)
+      if (workerNodeKey == null && chooseCount > 0) {
+        ++retriesCount
+        ++this.retriesCount
+      }
+      ++chooseCount
+    } while (workerNodeKey == null && retriesCount < this.retries)
+    if (workerNodeKey == null) {
+      throw new Error(
+        `Worker node key chosen is null or undefined after ${retriesCount.toString()} retries`
+      )
+    }
+    return workerNodeKey
+  }
+
+  /**
+   * Removes a worker choice strategy from the context.
+   * @param workerChoiceStrategy - The worker choice strategy to remove.
+   * @returns `true` if the worker choice strategy is removed, `false` otherwise.
+   */
+  private removeWorkerChoiceStrategy (
+    workerChoiceStrategy: WorkerChoiceStrategy
+  ): boolean {
+    return this.workerChoiceStrategies.delete(workerChoiceStrategy)
   }
 }

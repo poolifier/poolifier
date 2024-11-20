@@ -10,6 +10,16 @@ import {
 } from './types.js'
 
 class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
+  private static wss: WebSocketServer
+
+  public constructor () {
+    super(WebSocketServerWorker.startWebSocketServer, {
+      killHandler: () => {
+        WebSocketServerWorker.wss.close()
+      },
+    })
+  }
+
   private static readonly factorial = (n: bigint | number): bigint => {
     if (n === 0 || n === 1) {
       return 1n
@@ -39,6 +49,7 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
       ws.on('error', console.error)
       ws.on('message', (message: RawData) => {
         const { data, type } = JSON.parse(
+          // eslint-disable-next-line @typescript-eslint/no-base-to-string
           message.toString()
         ) as MessagePayload<DataPayload>
         switch (type) {
@@ -71,16 +82,6 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
       port: WebSocketServerWorker.wss.options.port,
       status: true,
     }
-  }
-
-  private static wss: WebSocketServer
-
-  public constructor () {
-    super(WebSocketServerWorker.startWebSocketServer, {
-      killHandler: () => {
-        WebSocketServerWorker.wss.close()
-      },
-    })
   }
 }
 
