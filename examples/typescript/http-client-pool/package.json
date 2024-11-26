@@ -21,12 +21,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.7.7",
+    "axios": "^1.7.8",
     "node-fetch": "^3.3.2",
     "poolifier": "^4.4.5"
   },
   "devDependencies": {
-    "@types/node": "^22.9.3",
+    "@types/node": "^22.9.4",
     "typescript": "^5.7.2"
   }
 }
