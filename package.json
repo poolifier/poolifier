@@ -112,7 +112,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.1",
     "@std/expect": "npm:@jsr/std__expect@^1.0.8",
-    "@types/node": "^22.10.0",
+    "@types/node": "^22.10.1",
     "c8": "^10.1.2",
     "clean-publish": "^5.1.0",
     "cross-env": "^7.0.3",
@@ -134,7 +134,7 @@
     "rollup-plugin-dts": "^6.1.1",
     "sinon": "^19.0.2",
     "tatami-ng": "^0.8.14",
-    "typedoc": "^0.27.0",
+    "typedoc": "^0.27.1",
     "typescript": "~5.7.2"
   }
 }
