@@ -23,8 +23,8 @@ importers:
         version: 6.0.5
     devDependencies:
       '@types/node':
-        specifier: ^22.10.3
-        version: 22.10.3
+        specifier: ^22.10.4
+        version: 22.10.4
       '@types/ws':
         specifier: ^8.5.13
         version: 8.5.13
@@ -34,8 +34,8 @@ importers:
 
 packages:
 
-  '@types/node@22.10.3':
-    resolution: {integrity: sha512-DifAyw4BkrufCILvD3ucnuN8eydUfc/C1GlyrnI+LK6543w5/L3VeVgf05o3B4fqSXP1dKYLOZsKfutpxPzZrw==}
+  '@types/node@22.10.4':
+    resolution: {integrity: sha512-99l6wv4HEzBQhvaU/UGoeBoCK61SCROQaCCGyQSgX2tEQ3rKkNZ2S7CEWnS/4s1LV+8ODdK21UeyR1fHP2mXug==}
 
   '@types/ws@8.5.13':
     resolution: {integrity: sha512-osM/gWBTPKgHV8XkTunnegTRIsvF6owmf5w+JtAfOw472dptdm0dlGv4xCt6GwQRcC2XVOvvRE/0bAoQcL2QkA==}
@@ -78,13 +78,13 @@ packages:
 
 snapshots:
 
-  '@types/node@22.10.3':
+  '@types/node@22.10.4':
     dependencies:
       undici-types: 6.20.0
 
   '@types/ws@8.5.13':
     dependencies:
-      '@types/node': 22.10.3
+      '@types/node': 22.10.4
 
   bufferutil@4.0.9:
     dependencies:
