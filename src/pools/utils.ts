@@ -21,6 +21,7 @@ import {
   type IWorker,
   type IWorkerNode,
   type MeasurementStatistics,
+  type WorkerInfo,
   type WorkerNodeOptions,
   type WorkerType,
   WorkerTypes,
@@ -410,7 +411,7 @@ export const createWorker = <Worker extends IWorker>(
  * @returns The worker type of the given worker.
  * @internal
  */
-export const getWorkerType = (worker: IWorker): undefined | WorkerType => {
+const getWorkerType = (worker: IWorker): undefined | WorkerType => {
   if (worker instanceof ThreadWorker) {
     return WorkerTypes.thread
   } else if (worker instanceof ClusterWorker) {
@@ -424,11 +425,26 @@ export const getWorkerType = (worker: IWorker): undefined | WorkerType => {
  * @returns The worker id of the given worker.
  * @internal
  */
-export const getWorkerId = (worker: IWorker): number | undefined => {
+const getWorkerId = (worker: IWorker): number | undefined => {
   if (worker instanceof ThreadWorker) {
     return worker.threadId
   } else if (worker instanceof ClusterWorker) {
     return worker.id
+  }
+}
+
+export const initWorkerInfo = (worker: IWorker): WorkerInfo => {
+  return {
+    backPressure: false,
+    backPressureStealing: false,
+    continuousStealing: false,
+    dynamic: false,
+    id: getWorkerId(worker),
+    ready: false,
+    stealing: false,
+    stolen: false,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    type: getWorkerType(worker)!,
   }
 }
 
