@@ -55,14 +55,6 @@ export interface TaskFunctionOperationResult {
 }
 
 /**
- * Task function operation result.
- */
-export interface TaskFunctionOperationResult {
-  error?: Error
-  status: boolean
-}
-
-/**
  * Tasks functions that can be executed.
  * The key is the name of the task function or task function object.
  * The value is the task function or task function object.
