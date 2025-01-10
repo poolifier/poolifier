@@ -1,5 +1,5 @@
 import { expect } from '@std/expect'
-import cluster, { Worker as ClusterWorker } from 'node:cluster'
+import { Worker as ClusterWorker } from 'node:cluster'
 import { Worker as ThreadWorker } from 'node:worker_threads'
 
 import { CircularBuffer } from '../../lib/circular-buffer.cjs'
@@ -8,8 +8,7 @@ import {
   createWorker,
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   getDefaultTasksQueueOptions,
-  getWorkerId,
-  getWorkerType,
+  initWorkerInfo,
   updateMeasurementStatistics,
 } from '../../lib/pools/utils.cjs'
 import { MeasurementHistorySize } from '../../lib/pools/worker.cjs'
@@ -122,21 +121,40 @@ describe('Pool utils test suite', () => {
     ).toBeInstanceOf(ClusterWorker)
   })
 
-  it('Verify getWorkerType() behavior', () => {
-    expect(
-      getWorkerType(
-        new ThreadWorker('./tests/worker-files/thread/testWorker.mjs')
-      )
-    ).toBe(WorkerTypes.thread)
-    expect(getWorkerType(cluster.fork())).toBe(WorkerTypes.cluster)
-  })
-
-  it('Verify getWorkerId() behavior', () => {
-    const threadWorker = new ThreadWorker(
-      './tests/worker-files/thread/testWorker.mjs'
+  it('Verify initWorkerInfo() behavior', () => {
+    const threadWorker = createWorker(
+      WorkerTypes.thread,
+      './tests/worker-files/thread/testWorker.mjs',
+      {}
     )
-    const clusterWorker = cluster.fork()
-    expect(getWorkerId(threadWorker)).toBe(threadWorker.threadId)
-    expect(getWorkerId(clusterWorker)).toBe(clusterWorker.id)
+    const threadWorkerInfo = initWorkerInfo(threadWorker)
+    expect(threadWorkerInfo).toStrictEqual({
+      backPressure: false,
+      backPressureStealing: false,
+      continuousStealing: false,
+      dynamic: false,
+      id: threadWorker.threadId,
+      ready: false,
+      stealing: false,
+      stolen: false,
+      type: WorkerTypes.thread,
+    })
+    const clusterWorker = createWorker(
+      WorkerTypes.cluster,
+      './tests/worker-files/cluster/testWorker.mjs',
+      {}
+    )
+    const clusterWorkerInfo = initWorkerInfo(clusterWorker)
+    expect(clusterWorkerInfo).toMatchObject({
+      backPressure: false,
+      backPressureStealing: false,
+      continuousStealing: false,
+      dynamic: false,
+      id: clusterWorker.id,
+      ready: false,
+      stealing: false,
+      stolen: false,
+      type: WorkerTypes.cluster,
+    })
   })
 })
