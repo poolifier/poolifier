@@ -9,8 +9,7 @@ import { DEFAULT_TASK_NAME } from '../utils.js'
 import {
   checkWorkerNodeArguments,
   createWorker,
-  getWorkerId,
-  getWorkerType,
+  initWorkerInfo,
 } from './utils.js'
 import {
   type EventHandler,
@@ -62,7 +61,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
       env: opts.env,
       workerOptions: opts.workerOptions,
     })
-    this.info = this.initWorkerInfo(this.worker)
+    this.info = initWorkerInfo(this.worker)
     this.usage = this.initWorkerUsage()
     if (this.info.type === WorkerTypes.thread) {
       this.messageChannel = new MessageChannel()
@@ -256,21 +255,6 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
       waitTime: {
         history: new CircularBuffer(MeasurementHistorySize),
       },
-    }
-  }
-
-  private initWorkerInfo (worker: Worker): WorkerInfo {
-    return {
-      backPressure: false,
-      backPressureStealing: false,
-      continuousStealing: false,
-      dynamic: false,
-      id: getWorkerId(worker),
-      ready: false,
-      stealing: false,
-      stolen: false,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      type: getWorkerType(worker)!,
     }
   }
 
