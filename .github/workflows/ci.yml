@@ -45,14 +45,14 @@ jobs:
         run: pnpm build
 
       - name: Lint
-        if: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '20.x' }}
+        if: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '22.x' }}
         run: pnpm lint
 
       - name: Tests
         run: pnpm test
 
       - name: Coverage Report
-        if: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '20.x' }}
+        if: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '22.x' }}
         run: pnpm coverage
 
       - name: Check for SonarCloud Token Availability
@@ -66,7 +66,7 @@ jobs:
           fi
 
       - name: SonarCloud Code Analysis
-        if: ${{ steps.sonar-token.outputs.available == 'true' && github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '20.x' }}
+        if: ${{ steps.sonar-token.outputs.available == 'true' && github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '22.x' }}
         uses: sonarsource/sonarqube-scan-action@v4.2.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
