@@ -28,6 +28,12 @@ updates:
           - 'major'
         patterns:
           - 'typescript'
+      eslint:
+        update-types:
+          - 'major'
+        patterns:
+          - 'eslint'
+          - '@eslint/*'
       commitlint:
         patterns:
           - '@commitlint/*'

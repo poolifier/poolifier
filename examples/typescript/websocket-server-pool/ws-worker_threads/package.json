@@ -6,10 +6,10 @@
   "main": "dist/main.js",
   "type": "module",
   "volta": {
-    "node": "22.11.0",
-    "pnpm": "9.14.4"
+    "node": "22.13.0",
+    "pnpm": "9.15.4"
   },
-  "packageManager": "pnpm@9.14.4",
+  "packageManager": "pnpm@9.15.4",
   "scripts": {
     "build": "pnpm build:clean && tsc",
     "build:clean": "tsc --build --clean",
@@ -25,12 +25,12 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "@types/node": "^22.10.1",
-    "@types/ws": "^8.5.13",
-    "typescript": "^5.7.2"
+    "@types/node": "^22.10.10",
+    "@types/ws": "^8.5.14",
+    "typescript": "^5.7.3"
   },
   "optionalDependencies": {
-    "bufferutil": "^4.0.8",
+    "bufferutil": "^4.0.9",
     "utf-8-validate": "^6.0.5"
   }
 }
