@@ -30,7 +30,7 @@
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.1",
     "autocannon": "^8.0.0",
-    "rollup": "^4.34.3",
+    "rollup": "^4.34.4",
     "rollup-plugin-delete": "^2.1.0",
     "tslib": "^2.8.1",
     "typescript": "^5.7.3"
