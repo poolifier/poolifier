@@ -1811,6 +1811,25 @@ export abstract class AbstractPool<
     }
   }
 
+  private readonly workerNodeStealTask = (
+    workerNodeKey: number
+  ): Task<Data> | undefined => {
+    const workerNodes = this.workerNodes
+      .slice()
+      .sort(
+        (workerNodeA, workerNodeB) =>
+          workerNodeB.usage.tasks.queued - workerNodeA.usage.tasks.queued
+      )
+    const sourceWorkerNode = workerNodes.find(
+      (sourceWorkerNode, sourceWorkerNodeKey) =>
+        sourceWorkerNodeKey !== workerNodeKey &&
+        sourceWorkerNode.usage.tasks.queued > 0
+    )
+    if (sourceWorkerNode != null) {
+      return this.stealTask(sourceWorkerNode, workerNodeKey)
+    }
+  }
+
   private readonly handleWorkerNodeIdleEvent = (
     eventDetail: WorkerNodeEventDetail,
     previousStolenTask?: Task<Data>
@@ -2395,25 +2414,6 @@ export abstract class AbstractPool<
     ) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       ++workerNode.getTaskFunctionWorkerUsage(taskName)!.tasks.stolen
-    }
-  }
-
-  private readonly workerNodeStealTask = (
-    workerNodeKey: number
-  ): Task<Data> | undefined => {
-    const workerNodes = this.workerNodes
-      .slice()
-      .sort(
-        (workerNodeA, workerNodeB) =>
-          workerNodeB.usage.tasks.queued - workerNodeA.usage.tasks.queued
-      )
-    const sourceWorkerNode = workerNodes.find(
-      (sourceWorkerNode, sourceWorkerNodeKey) =>
-        sourceWorkerNodeKey !== workerNodeKey &&
-        sourceWorkerNode.usage.tasks.queued > 0
-    )
-    if (sourceWorkerNode != null) {
-      return this.stealTask(sourceWorkerNode, workerNodeKey)
     }
   }
 }

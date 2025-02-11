@@ -9,15 +9,15 @@ importers:
   .:
     dependencies:
       nodemailer:
-        specifier: ^6.9.16
-        version: 6.9.16
+        specifier: ^6.10.0
+        version: 6.10.0
       poolifier:
         specifier: ^4.4.5
         version: 4.4.5
     devDependencies:
       '@types/node':
-        specifier: ^22.10.5
-        version: 22.10.5
+        specifier: ^22.13.1
+        version: 22.13.1
       '@types/nodemailer':
         specifier: ^6.4.17
         version: 6.4.17
@@ -27,14 +27,14 @@ importers:
 
 packages:
 
-  '@types/node@22.10.5':
-    resolution: {integrity: sha512-F8Q+SeGimwOo86fiovQh8qiXfFEh2/ocYv7tU5pJ3EXMSSxk1Joj5wefpFK2fHTf/N6HKGSxIDBT9f3gCxXPkQ==}
+  '@types/node@22.13.1':
+    resolution: {integrity: sha512-jK8uzQlrvXqEU91UxiK5J7pKHyzgnI1Qnl0QDHIgVGuolJhRb9EEl28Cj9b3rGR8B2lhFCtvIm5os8lFnO/1Ew==}
 
   '@types/nodemailer@6.4.17':
     resolution: {integrity: sha512-I9CCaIp6DTldEg7vyUTZi8+9Vo0hi1/T8gv3C89yk1rSAAzoKQ8H8ki/jBYJSFoH/BisgLP8tkZMlQ91CIquww==}
 
-  nodemailer@6.9.16:
-    resolution: {integrity: sha512-psAuZdTIRN08HKVd/E8ObdV6NO7NTBY3KsC30F7M4H1OnmLCUNaS56FpYxyb26zWLSyYF9Ozch9KYHhHegsiOQ==}
+  nodemailer@6.10.0:
+    resolution: {integrity: sha512-SQ3wZCExjeSatLE/HBaXS5vqUOQk6GtBdIIKxiFdmm01mOQZX/POJkO3SUX1wDiYcwUOJwT23scFSC9fY2H8IA==}
     engines: {node: '>=6.0.0'}
 
   poolifier@4.4.5:
@@ -51,15 +51,15 @@ packages:
 
 snapshots:
 
-  '@types/node@22.10.5':
+  '@types/node@22.13.1':
     dependencies:
       undici-types: 6.20.0
 
   '@types/nodemailer@6.4.17':
     dependencies:
-      '@types/node': 22.10.5
+      '@types/node': 22.13.1
 
-  nodemailer@6.9.16: {}
+  nodemailer@6.10.0: {}
 
   poolifier@4.4.5: {}
 
