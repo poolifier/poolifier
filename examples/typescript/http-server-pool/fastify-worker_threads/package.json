@@ -27,7 +27,7 @@
     "poolifier": "^4.4.5"
   },
   "devDependencies": {
-    "@types/node": "^22.13.1",
+    "@types/node": "^22.13.2",
     "autocannon": "^8.0.0",
     "typescript": "^5.7.3"
   }
