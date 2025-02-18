@@ -527,8 +527,8 @@ packages:
   json-schema-traverse@1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
 
-  light-my-request@6.5.1:
-    resolution: {integrity: sha512-0q82RyxIextuDtkA0UDofhPHIiQ2kmpa7fwElCSlm/8nQl36cDU1Cw+CAO90Es0lReH2HChClKL84I86Nc52hg==}
+  light-my-request@6.6.0:
+    resolution: {integrity: sha512-CHYbu8RtboSIoVsHZ6Ye4cj4Aw/yg2oAFimlF7mNvfDV192LR7nDiKtSIfCuLT7KokPSTn/9kfVLm5OGN0A28A==}
 
   lodash.chunk@4.2.0:
     resolution: {integrity: sha512-ZzydJKfUHJwHa+hF5X66zLFCBrWn5GeF28OHEr4WVWtNDXlQ/IjWKPBiikqKo2ne0+v6JgCgJ0GzJp8k8bHC7w==}
@@ -1101,7 +1101,7 @@ snapshots:
       avvio: 9.1.0
       fast-json-stringify: 6.0.1
       find-my-way: 9.2.0
-      light-my-request: 6.5.1
+      light-my-request: 6.6.0
       pino: 9.6.0
       process-warning: 4.0.1
       rfdc: 1.4.1
@@ -1252,7 +1252,7 @@ snapshots:
 
   json-schema-traverse@1.0.0: {}
 
-  light-my-request@6.5.1:
+  light-my-request@6.6.0:
     dependencies:
       cookie: 1.0.2
       process-warning: 4.0.1
