@@ -120,7 +120,7 @@
     "eslint-define-config": "^2.1.0",
     "eslint-plugin-jsdoc": "^50.6.3",
     "eslint-plugin-perfectionist": "^4.9.0",
-    "globals": "^15.15.0",
+    "globals": "^16.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
     "mocha": "^11.1.0",
