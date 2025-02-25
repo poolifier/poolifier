@@ -107,8 +107,8 @@
     "@biomejs/biome": "^1.9.4",
     "@commitlint/cli": "^19.7.1",
     "@commitlint/config-conventional": "^19.7.1",
-    "@cspell/eslint-plugin": "^8.17.4",
-    "@eslint/js": "^9.20.0",
+    "@cspell/eslint-plugin": "^8.17.5",
+    "@eslint/js": "^9.21.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
     "@std/expect": "npm:@jsr/std__expect@^1.0.13",
@@ -116,7 +116,7 @@
     "c8": "^10.1.3",
     "clean-publish": "^5.1.0",
     "cross-env": "^7.0.3",
-    "eslint": "^9.20.1",
+    "eslint": "^9.21.0",
     "eslint-define-config": "^2.1.0",
     "eslint-plugin-jsdoc": "^50.6.3",
     "eslint-plugin-perfectionist": "^4.9.0",
@@ -126,7 +126,7 @@
     "mocha": "^11.1.0",
     "mochawesome": "^7.1.3",
     "neostandard": "^0.12.1",
-    "prettier": "^3.5.1",
+    "prettier": "^3.5.2",
     "rollup": "^4.34.8",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",
@@ -134,7 +134,7 @@
     "rollup-plugin-dts": "^6.1.1",
     "sinon": "^19.0.2",
     "tatami-ng": "^0.8.16",
-    "typedoc": "^0.27.7",
+    "typedoc": "^0.27.9",
     "typescript": "~5.7.3"
   }
 }
