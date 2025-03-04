@@ -28,9 +28,9 @@
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.1.2",
     "@types/express": "^5.0.0",
-    "@types/node": "^22.13.5",
+    "@types/node": "^22.13.9",
     "autocannon": "^8.0.0",
-    "rollup": "^4.34.8",
+    "rollup": "^4.34.9",
     "rollup-plugin-delete": "^3.0.0",
     "tslib": "^2.8.1",
     "typescript": "^5.8.2"
