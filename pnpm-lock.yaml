@@ -90,8 +90,8 @@ importers:
         specifier: ^1.1.3
         version: 1.1.3
       rollup-plugin-delete:
-        specifier: ^3.0.0
-        version: 3.0.0(rollup@4.34.9)
+        specifier: ^3.0.1
+        version: 3.0.1(rollup@4.34.9)
       rollup-plugin-dts:
         specifier: ^6.1.1
         version: 6.1.1(rollup@4.34.9)(typescript@5.8.2)
@@ -2284,8 +2284,8 @@ packages:
   rollup-plugin-command@1.1.3:
     resolution: {integrity: sha512-9nIcP5mgVYWGU7x/6ufTgtqI4vl5vvsYs6fTTil91NX53EIPcim42FXmq1TPdZRFJbUM1ikrg05clahPxObL1g==}
 
-  rollup-plugin-delete@3.0.0:
-    resolution: {integrity: sha512-7DSTm376WBFkxZJ9UlQfIsCjkXXzcaHB4jTDsbwv7KbjS8FF3WouZeAhuU7pdu40UnduqJn5eU5qa9s7rUZr6w==}
+  rollup-plugin-delete@3.0.1:
+    resolution: {integrity: sha512-4tyijMQFwSDLA04DAHwbI2TrRwPiRwAqBQ17dxyr9CgHeHXLdgk8IDVWHFWPrL3UZJWrAmHohQ2MgmVghQDrlg==}
     engines: {node: '>=18'}
     peerDependencies:
       rollup: '*'
@@ -5086,7 +5086,7 @@ snapshots:
 
   rollup-plugin-command@1.1.3: {}
 
-  rollup-plugin-delete@3.0.0(rollup@4.34.9):
+  rollup-plugin-delete@3.0.1(rollup@4.34.9):
     dependencies:
       del: 8.0.0
       rollup: 4.34.9
