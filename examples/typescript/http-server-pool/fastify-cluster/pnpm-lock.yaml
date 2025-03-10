@@ -353,9 +353,6 @@ packages:
   fastify@5.2.1:
     resolution: {integrity: sha512-rslrNBF67eg8/Gyn7P2URV8/6pz8kSAscFL4EThZJ8JBMaXacVdVE4hmUcnPNKERl5o/xTiBSLfdowBRhVF1WA==}
 
-  fastq@1.19.0:
-    resolution: {integrity: sha512-7SFSRCNjBQIZH/xZR3iy5iQYR8aGBE0h3VG6/cwlbrpdciNYBMotQav8c1XI3HjHH+NikUpP53nPdlZSdWmFzA==}
-
   fastq@1.19.1:
     resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
 
@@ -597,10 +594,6 @@ packages:
 
   retimer@3.0.0:
     resolution: {integrity: sha512-WKE0j11Pa0ZJI5YIk0nflGI7SQsfl2ljihVy7ogh7DeQSeYAUi0ubZ/yEueGtDfUPk6GH5LRw1hBdLq4IwUBWA==}
-
-  reusify@1.0.4:
-    resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
-    engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
   reusify@1.1.0:
     resolution: {integrity: sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==}
@@ -885,7 +878,7 @@ snapshots:
   avvio@9.1.0:
     dependencies:
       '@fastify/error': 4.0.0
-      fastq: 1.19.0
+      fastq: 1.19.1
 
   base64-js@1.5.1: {}
 
@@ -1016,10 +1009,6 @@ snapshots:
       secure-json-parse: 3.0.2
       semver: 7.7.1
       toad-cache: 3.7.0
-
-  fastq@1.19.0:
-    dependencies:
-      reusify: 1.0.4
 
   fastq@1.19.1:
     dependencies:
@@ -1234,8 +1223,6 @@ snapshots:
   ret@0.5.0: {}
 
   retimer@3.0.0: {}
-
-  reusify@1.0.4: {}
 
   reusify@1.1.0: {}
 
