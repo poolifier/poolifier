@@ -31,8 +31,8 @@ importers:
         specifier: ^4.34.9
         version: 4.34.9
       rollup-plugin-delete:
-        specifier: ^3.0.0
-        version: 3.0.0(rollup@4.34.9)
+        specifier: ^3.0.1
+        version: 3.0.1(rollup@4.34.9)
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -389,8 +389,8 @@ packages:
     resolution: {integrity: sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==}
     engines: {node: '>=8.6.0'}
 
-  fastq@1.19.0:
-    resolution: {integrity: sha512-7SFSRCNjBQIZH/xZR3iy5iQYR8aGBE0h3VG6/cwlbrpdciNYBMotQav8c1XI3HjHH+NikUpP53nPdlZSdWmFzA==}
+  fastq@1.19.1:
+    resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
 
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
@@ -666,12 +666,12 @@ packages:
   retimer@3.0.0:
     resolution: {integrity: sha512-WKE0j11Pa0ZJI5YIk0nflGI7SQsfl2ljihVy7ogh7DeQSeYAUi0ubZ/yEueGtDfUPk6GH5LRw1hBdLq4IwUBWA==}
 
-  reusify@1.0.4:
-    resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
+  reusify@1.1.0:
+    resolution: {integrity: sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
-  rollup-plugin-delete@3.0.0:
-    resolution: {integrity: sha512-7DSTm376WBFkxZJ9UlQfIsCjkXXzcaHB4jTDsbwv7KbjS8FF3WouZeAhuU7pdu40UnduqJn5eU5qa9s7rUZr6w==}
+  rollup-plugin-delete@3.0.1:
+    resolution: {integrity: sha512-4tyijMQFwSDLA04DAHwbI2TrRwPiRwAqBQ17dxyr9CgHeHXLdgk8IDVWHFWPrL3UZJWrAmHohQ2MgmVghQDrlg==}
     engines: {node: '>=18'}
     peerDependencies:
       rollup: '*'
@@ -817,7 +817,7 @@ snapshots:
   '@nodelib/fs.walk@1.2.8':
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
-      fastq: 1.19.0
+      fastq: 1.19.1
 
   '@rollup/plugin-typescript@12.1.2(rollup@4.34.9)(tslib@2.8.1)(typescript@5.8.2)':
     dependencies:
@@ -1159,9 +1159,9 @@ snapshots:
       merge2: 1.4.1
       micromatch: 4.0.8
 
-  fastq@1.19.0:
+  fastq@1.19.1:
     dependencies:
-      reusify: 1.0.4
+      reusify: 1.1.0
 
   fill-range@7.1.1:
     dependencies:
@@ -1395,9 +1395,9 @@ snapshots:
 
   retimer@3.0.0: {}
 
-  reusify@1.0.4: {}
+  reusify@1.1.0: {}
 
-  rollup-plugin-delete@3.0.0(rollup@4.34.9):
+  rollup-plugin-delete@3.0.1(rollup@4.34.9):
     dependencies:
       del: 8.0.0
       rollup: 4.34.9
