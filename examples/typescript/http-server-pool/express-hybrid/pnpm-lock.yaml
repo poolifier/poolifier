@@ -265,8 +265,8 @@ packages:
     resolution: {integrity: sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==}
     engines: {node: '>= 0.4'}
 
-  call-bound@1.0.3:
-    resolution: {integrity: sha512-YTd+6wGlNlPxSuri7Y6X8tY2dmm12UMH66RpKMhiX6rsk5wXXnYgbUcOt8kiS31/AjfoTOvCsE+w8nZQLQnzHA==}
+  call-bound@1.0.4:
+    resolution: {integrity: sha512-+ys997U96po4Kx/ABpBCqhA9EuxJaQWDQg7295H4hBphv3IZg0boBKuwYpt4YXp6MZ5AmZQnU/tyMTlRpaSejg==}
     engines: {node: '>= 0.4'}
 
   chalk@4.1.2:
@@ -420,8 +420,8 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
-  get-intrinsic@1.2.7:
-    resolution: {integrity: sha512-VW6Pxhsrk0KAOqs3WEd0klDiF/+V7gQOpAvY1jVU/LHmaD/kQO4523aiJuikX/QAKYiW6x8Jh+RJej1almdtCA==}
+  get-intrinsic@1.3.0:
+    resolution: {integrity: sha512-9fSjSaos/fRIVIp+xSJlE6lfwhES7LNtKaCBIamHsjr2na1BiABJPo0mOjjz8GJDURarmCPGqaiVg5mfjb98CQ==}
     engines: {node: '>= 0.4'}
 
   get-proto@1.0.1:
@@ -1019,10 +1019,10 @@ snapshots:
       es-errors: 1.3.0
       function-bind: 1.1.2
 
-  call-bound@1.0.3:
+  call-bound@1.0.4:
     dependencies:
       call-bind-apply-helpers: 1.0.2
-      get-intrinsic: 1.2.7
+      get-intrinsic: 1.3.0
 
   chalk@4.1.2:
     dependencies:
@@ -1105,7 +1105,7 @@ snapshots:
   es-set-tostringtag@2.1.0:
     dependencies:
       es-errors: 1.3.0
-      get-intrinsic: 1.2.7
+      get-intrinsic: 1.3.0
       has-tostringtag: 1.0.2
       hasown: 2.0.2
 
@@ -1195,7 +1195,7 @@ snapshots:
 
   function-bind@1.1.2: {}
 
-  get-intrinsic@1.2.7:
+  get-intrinsic@1.3.0:
     dependencies:
       call-bind-apply-helpers: 1.0.2
       es-define-property: 1.0.1
@@ -1473,16 +1473,16 @@ snapshots:
 
   side-channel-map@1.0.1:
     dependencies:
-      call-bound: 1.0.3
+      call-bound: 1.0.4
       es-errors: 1.3.0
-      get-intrinsic: 1.2.7
+      get-intrinsic: 1.3.0
       object-inspect: 1.13.4
 
   side-channel-weakmap@1.0.2:
     dependencies:
-      call-bound: 1.0.3
+      call-bound: 1.0.4
       es-errors: 1.3.0
-      get-intrinsic: 1.2.7
+      get-intrinsic: 1.3.0
       object-inspect: 1.13.4
       side-channel-map: 1.0.1
 
