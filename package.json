@@ -133,7 +133,7 @@
     "rollup-plugin-dts": "^6.2.1",
     "sinon": "^20.0.0",
     "tatami-ng": "^0.8.16",
-    "typedoc": "^0.28.1",
+    "typedoc": "^0.28.2",
     "typescript": "~5.8.2"
   }
 }
