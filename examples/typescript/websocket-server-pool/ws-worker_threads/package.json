@@ -7,9 +7,9 @@
   "type": "module",
   "volta": {
     "node": "22.14.0",
-    "pnpm": "10.7.1"
+    "pnpm": "10.8.0"
   },
-  "packageManager": "pnpm@10.7.1",
+  "packageManager": "pnpm@10.8.0",
   "scripts": {
     "build": "pnpm build:clean && tsc",
     "build:clean": "tsc --build --clean",
@@ -27,7 +27,7 @@
   "devDependencies": {
     "@types/node": "^22.14.0",
     "@types/ws": "^8.18.1",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.9",
