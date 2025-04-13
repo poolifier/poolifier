@@ -7,9 +7,9 @@
   "type": "module",
   "volta": {
     "node": "22.14.0",
-    "pnpm": "10.3.0"
+    "pnpm": "10.8.0"
   },
-  "packageManager": "pnpm@10.3.0",
+  "packageManager": "pnpm@10.8.0",
   "scripts": {
     "build": "pnpm build:clean && tsc",
     "build:clean": "tsc --build --clean",
@@ -22,13 +22,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^5.2.1",
+    "fastify": "^5.2.2",
     "fastify-plugin": "^5.0.1",
     "poolifier": "^4.4.5"
   },
   "devDependencies": {
-    "@types/node": "^22.13.1",
+    "@types/node": "^22.14.1",
     "autocannon": "^8.0.0",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.3"
   }
 }

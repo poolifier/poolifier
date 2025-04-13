@@ -11,7 +11,6 @@ import { dts } from 'rollup-plugin-dts'
 const availableParallelism = () => {
   let availableParallelism = 1
   try {
-    // eslint-disable-next-line n/no-unsupported-features/node-builtins
     availableParallelism = os.availableParallelism()
   } catch {
     const cpus = os.cpus()

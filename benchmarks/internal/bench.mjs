@@ -1,6 +1,5 @@
 import { writeFileSync } from 'node:fs'
 import { env } from 'node:process'
-// eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { parseArgs } from 'node:util'
 import { bmf } from 'tatami-ng'
 
