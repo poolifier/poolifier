@@ -22,12 +22,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.2",
+    "express": "^5.1.0",
     "poolifier": "^4.4.5"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.14.1",
     "autocannon": "^8.0.0",
     "typescript": "^5.8.3"
   }
