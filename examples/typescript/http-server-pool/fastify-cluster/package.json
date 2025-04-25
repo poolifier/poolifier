@@ -6,10 +6,10 @@
   "main": "dist/main.js",
   "type": "module",
   "volta": {
-    "node": "22.14.0",
-    "pnpm": "10.8.0"
+    "node": "22.15.0",
+    "pnpm": "10.9.0"
   },
-  "packageManager": "pnpm@10.8.0",
+  "packageManager": "pnpm@10.9.0",
   "scripts": {
     "build": "rollup --config --configPlugin typescript",
     "start": "node --enable-source-maps dist/main.cjs",
@@ -22,12 +22,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^5.2.2",
+    "fastify": "^5.3.2",
     "poolifier": "^4.4.5"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.1.2",
-    "@types/node": "^22.14.1",
+    "@types/node": "^22.15.2",
     "autocannon": "^8.0.0",
     "rollup": "^4.40.0",
     "rollup-plugin-delete": "^3.0.1",
