@@ -44,10 +44,10 @@
     "pnpm": ">=9.0.0"
   },
   "volta": {
-    "node": "22.14.0",
-    "pnpm": "10.8.1"
+    "node": "22.15.0",
+    "pnpm": "10.9.0"
   },
-  "packageManager": "pnpm@10.8.1",
+  "packageManager": "pnpm@10.9.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/poolifier/poolifier.git"
@@ -112,13 +112,13 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
     "@std/expect": "npm:@jsr/std__expect@^1.0.15",
-    "@types/node": "^22.14.1",
+    "@types/node": "^22.15.2",
     "c8": "^10.1.3",
     "clean-publish": "^5.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^9.25.1",
-    "eslint-plugin-jsdoc": "^50.6.10",
-    "eslint-plugin-perfectionist": "^4.12.2",
+    "eslint-plugin-jsdoc": "^50.6.11",
+    "eslint-plugin-perfectionist": "^4.12.3",
     "globals": "^16.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.1",
