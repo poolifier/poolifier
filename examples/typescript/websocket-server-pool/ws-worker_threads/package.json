@@ -22,10 +22,10 @@
   "license": "ISC",
   "dependencies": {
     "poolifier": "^4.4.5",
-    "ws": "^8.18.1"
+    "ws": "^8.18.2"
   },
   "devDependencies": {
-    "@types/node": "^22.15.3",
+    "@types/node": "^22.15.14",
     "@types/ws": "^8.18.1",
     "typescript": "^5.8.3"
   },
