@@ -105,7 +105,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@commitlint/cli": "^19.8.0",
+    "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.0",
     "@cspell/eslint-plugin": "^8.19.4",
     "@eslint/js": "^9.26.0",
