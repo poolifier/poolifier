@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       nodemailer:
-        specifier: ^7.0.2
+        specifier: ^7.0.3
         version: 7.0.3
       poolifier:
         specifier: ^4.4.5
