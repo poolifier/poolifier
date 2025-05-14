@@ -1,14 +1,9 @@
-'use strict'
-const {
-  availableParallelism,
-  DynamicThreadPool,
-  PoolEvents,
-} = require('poolifier')
+import { availableParallelism, DynamicThreadPool, PoolEvents } from 'poolifier'
 
 const pool = new DynamicThreadPool(
   Math.floor(availableParallelism() / 2),
   availableParallelism(),
-  './yourWorker.js',
+  './yourWorker.mjs',
   {
     errorHandler: e => console.error(e),
     onlineHandler: () => console.info('worker is online'),
