@@ -1,11 +1,6 @@
-'use strict'
-const {
-  availableParallelism,
-  FixedThreadPool,
-  PoolEvents,
-} = require('poolifier')
+import { availableParallelism, FixedThreadPool, PoolEvents } from 'poolifier'
 
-const pool = new FixedThreadPool(availableParallelism(), './yourWorker.cjs', {
+const pool = new FixedThreadPool(availableParallelism(), './yourWorker.mjs', {
   errorHandler: e => console.error(e),
   onlineHandler: () => console.info('worker is online'),
 })
