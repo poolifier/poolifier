@@ -1,5 +1,4 @@
-'use strict'
-const { ThreadWorker } = require('poolifier')
+import { ThreadWorker } from 'poolifier'
 
 /**
  * @returns
@@ -14,4 +13,4 @@ function yourFunction () {
   return { ok: 1 }
 }
 
-module.exports = new ThreadWorker(yourFunction)
+export default new ThreadWorker(yourFunction)
