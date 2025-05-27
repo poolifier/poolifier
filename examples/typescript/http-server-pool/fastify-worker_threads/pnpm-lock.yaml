@@ -19,8 +19,8 @@ importers:
         version: 4.4.5
     devDependencies:
       '@types/node':
-        specifier: ^22.15.18
-        version: 22.15.18
+        specifier: ^22.15.21
+        version: 22.15.21
       autocannon:
         specifier: ^8.0.0
         version: 8.0.0
@@ -58,8 +58,8 @@ packages:
   '@minimistjs/subarg@1.0.0':
     resolution: {integrity: sha512-Q/ONBiM2zNeYUy0mVSO44mWWKYM3UHuEK43PKIOzJCbvUnPoMH1K+gk3cf1kgnCVJFlWmddahQQCmrmBGlk9jQ==}
 
-  '@types/node@22.15.18':
-    resolution: {integrity: sha512-v1DKRfUdyW+jJhZNEI1PYy29S2YRxMV5AOO/x/SjKmW0acCIOqmbj6Haf9eHAhsPmrhlHSxEhv/1WszcLWV4cg==}
+  '@types/node@22.15.21':
+    resolution: {integrity: sha512-EV/37Td6c+MgKAbkcLG6vqZ2zEYHD7bvSrzqqs2RIhbA6w3x+Dqz8MZM3sP6kGTeLrdoOgKZe+Xja7tUB2DNkQ==}
 
   abstract-logging@2.0.1:
     resolution: {integrity: sha512-2BjRTZxTPvheOvGbBslFSYOUkr+SjPtOnrLP33f+VIWLzezQpZcqVg7ja3L4dBXmzzgwT+a029jRx5PCi3JuiA==}
@@ -318,8 +318,8 @@ packages:
   pino-std-serializers@7.0.0:
     resolution: {integrity: sha512-e906FRY0+tV27iq4juKzSYPbUj2do2X2JX4EzSca1631EB2QJQUqGbDuERal7LCtOpxl6x3+nvo9NPZcmjkiFA==}
 
-  pino@9.6.0:
-    resolution: {integrity: sha512-i85pKRCt4qMjZ1+L7sy2Ag4t1atFcdbEt76+7iRJn1g2BvsnRMGu9p8pivl9fs63M2kF/A0OacFZhTub+m/qMg==}
+  pino@9.7.0:
+    resolution: {integrity: sha512-vnMCM6xZTb1WDmLvtG2lE/2p+t9hDEIvTWJsu6FejkE62vB7gDhvzrpFR4Cw2to+9JNQxVnkAKVPA1KPB98vWg==}
     hasBin: true
 
   poolifier@4.4.5:
@@ -465,7 +465,7 @@ snapshots:
     dependencies:
       minimist: 1.2.8
 
-  '@types/node@22.15.18':
+  '@types/node@22.15.21':
     dependencies:
       undici-types: 6.21.0
 
@@ -625,7 +625,7 @@ snapshots:
       fast-json-stringify: 6.0.1
       find-my-way: 9.3.0
       light-my-request: 6.6.0
-      pino: 9.6.0
+      pino: 9.7.0
       process-warning: 5.0.0
       rfdc: 1.4.1
       secure-json-parse: 4.0.0
@@ -749,14 +749,14 @@ snapshots:
 
   pino-std-serializers@7.0.0: {}
 
-  pino@9.6.0:
+  pino@9.7.0:
     dependencies:
       atomic-sleep: 1.0.0
       fast-redact: 3.5.0
       on-exit-leak-free: 2.1.2
       pino-abstract-transport: 2.0.0
       pino-std-serializers: 7.0.0
-      process-warning: 4.0.1
+      process-warning: 5.0.0
       quick-format-unescaped: 4.0.4
       real-require: 0.2.0
       safe-stable-stringify: 2.5.0
