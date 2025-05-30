@@ -108,7 +108,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@cspell/eslint-plugin": "^9.0.2",
-    "@eslint/js": "^9.27.0",
+    "@eslint/js": "^9.28.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
     "@std/expect": "npm:@jsr/std__expect@^1.0.16",
