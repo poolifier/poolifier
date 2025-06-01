@@ -1,6 +1,6 @@
 import {
   isMainThread,
-  type TransferListItem,
+  type Transferable,
   type Worker,
 } from 'node:worker_threads'
 
@@ -129,7 +129,7 @@ export class FixedThreadPool<
   protected sendToWorker (
     workerNodeKey: number,
     message: MessageValue<Data>,
-    transferList?: readonly TransferListItem[]
+    transferList?: readonly Transferable[]
   ): void {
     this.workerNodes[workerNodeKey]?.messageChannel?.port1.postMessage(
       {

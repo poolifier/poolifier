@@ -1,4 +1,4 @@
-import type { TransferListItem } from 'node:worker_threads'
+import type { Transferable } from 'node:worker_threads'
 
 import { AsyncResource } from 'node:async_hooks'
 import { randomUUID } from 'node:crypto'
@@ -667,7 +667,7 @@ export abstract class AbstractPool<
   public async execute (
     data?: Data,
     name?: string,
-    transferList?: readonly TransferListItem[]
+    transferList?: readonly Transferable[]
   ): Promise<Response> {
     if (!this.started) {
       throw new Error('Cannot execute a task on not started pool')
@@ -711,7 +711,7 @@ export abstract class AbstractPool<
   public async mapExecute (
     data: Iterable<Data>,
     name?: string,
-    transferList?: readonly TransferListItem[]
+    transferList?: readonly Transferable[]
   ): Promise<Response[]> {
     if (!this.started) {
       throw new Error('Cannot execute task(s) on not started pool')
@@ -1274,7 +1274,7 @@ export abstract class AbstractPool<
   protected abstract sendToWorker (
     workerNodeKey: number,
     message: MessageValue<Data>,
-    transferList?: readonly TransferListItem[]
+    transferList?: readonly Transferable[]
   ): void
 
   /**
@@ -1896,7 +1896,7 @@ export abstract class AbstractPool<
   private async internalExecute (
     data?: Data,
     name?: string,
-    transferList?: readonly TransferListItem[]
+    transferList?: readonly Transferable[]
   ): Promise<Response> {
     return await new Promise<Response>((resolve, reject) => {
       const timestamp = performance.now()
