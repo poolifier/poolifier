@@ -147,6 +147,10 @@ export interface TaskFunctionProperties {
    * Task function worker choice strategy.
    */
   readonly strategy?: WorkerChoiceStrategy
+  /**
+   * Task function worker node keys affinity.
+   */
+  readonly workerNodes?: number[]
 }
 
 /**
