@@ -1,6 +1,6 @@
 import type { ClusterSettings } from 'node:cluster'
 import type { EventEmitterAsyncResource } from 'node:events'
-import type { TransferListItem, WorkerOptions } from 'node:worker_threads'
+import type { Transferable, WorkerOptions } from 'node:worker_threads'
 
 import type { TaskFunctionProperties } from '../utility-types.js'
 import type {
@@ -138,7 +138,7 @@ export interface IPool<
   readonly execute: (
     data?: Data,
     name?: string,
-    transferList?: readonly TransferListItem[]
+    transferList?: readonly Transferable[]
   ) => Promise<Response>
   /**
    * Whether the specified task function exists in this pool.
@@ -165,7 +165,7 @@ export interface IPool<
   readonly mapExecute: (
     data: Iterable<Data>,
     name?: string,
-    transferList?: readonly TransferListItem[]
+    transferList?: readonly Transferable[]
   ) => Promise<Response[]>
   /**
    * Removes a task function from this pool.
