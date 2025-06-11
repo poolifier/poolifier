@@ -40,8 +40,10 @@ const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
       async (
         data?: WorkerData,
         name?: string,
-        transferList?: readonly Transferable[]
-      ): Promise<WorkerResponse> => await pool.execute(data, name, transferList)
+        transferList?: readonly Transferable[],
+        abortSignal?: AbortSignal
+      ): Promise<WorkerResponse> =>
+        await pool.execute(data, name, transferList, abortSignal)
     )
   }
   if (!fastify.hasDecorator('mapExecute')) {
@@ -50,9 +52,10 @@ const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
       async (
         data: Iterable<WorkerData>,
         name?: string,
-        transferList?: readonly Transferable[]
+        transferList?: readonly Transferable[],
+        abortSignal?: AbortSignal
       ): Promise<WorkerResponse[]> =>
-        await pool.mapExecute(data, name, transferList)
+        await pool.mapExecute(data, name, transferList, abortSignal)
     )
   }
   done()
