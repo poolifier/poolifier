@@ -345,7 +345,10 @@ export abstract class AbstractWorker<
         response = this.removeTaskFunction(taskFunctionProperties.name)
         break
       default:
-        response = { error: new Error('Unknown task operation'), status: false }
+        response = {
+          error: new Error('Unknown task operation'),
+          status: false,
+        }
         break
     }
     const { error, status } = response
