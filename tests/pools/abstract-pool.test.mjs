@@ -598,7 +598,9 @@ describe('Abstract pool test suite', () => {
       )
     )
     expect(() =>
-      pool.setWorkerChoiceStrategyOptions({ measurement: 'invalidMeasurement' })
+      pool.setWorkerChoiceStrategyOptions({
+        measurement: 'invalidMeasurement',
+      })
     ).toThrow(
       new Error(
         "Invalid worker choice strategy options: invalid measurement 'invalidMeasurement'"
