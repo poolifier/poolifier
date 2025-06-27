@@ -7,9 +7,6 @@ updates:
       interval: 'daily'
     labels:
       - 'github-actions'
-    reviewers:
-      - 'pioardi'
-      - 'jerome-benoit'
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
@@ -39,9 +36,6 @@ updates:
           - '@commitlint/*'
     labels:
       - 'dependencies'
-    reviewers:
-      - 'pioardi'
-      - 'jerome-benoit'
     versioning-strategy: increase
   - package-ecosystem: 'npm'
     directories:
@@ -61,7 +55,4 @@ updates:
     labels:
       - 'dependencies'
       - 'examples'
-    reviewers:
-      - 'pioardi'
-      - 'jerome-benoit'
     versioning-strategy: increase
