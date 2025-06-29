@@ -130,7 +130,6 @@ export class FixedThreadPool<
     workerNodeKey: number,
     message: MessageValue<Data>,
     transferList?: readonly Transferable[]
-    // abortSignal?: AbortSignal
   ): void {
     this.workerNodes[workerNodeKey]?.messageChannel?.port1.postMessage(
       {

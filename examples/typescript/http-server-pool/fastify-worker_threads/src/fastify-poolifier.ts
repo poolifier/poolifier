@@ -53,9 +53,9 @@ const fastifyPoolifierPlugin: FastifyPluginCallback<FastifyPoolifierOptions> = (
         data: Iterable<WorkerData>,
         name?: string,
         transferList?: readonly Transferable[],
-        abortSignal?: AbortSignal
+        abortSignals?: Iterable<AbortSignal>
       ): Promise<WorkerResponse[]> =>
-        await pool.mapExecute(data, name, transferList, abortSignal)
+        await pool.mapExecute(data, name, transferList, abortSignals)
     )
   }
   done()

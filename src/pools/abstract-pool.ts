@@ -716,7 +716,7 @@ export abstract class AbstractPool<
     data: Iterable<Data>,
     name?: string,
     transferList?: readonly Transferable[],
-    abortSignal?: AbortSignal
+    abortSignals?: Iterable<AbortSignal>
   ): Promise<Response[]> {
     if (!this.started) {
       throw new Error('Cannot execute task(s) on not started pool')
@@ -740,14 +740,38 @@ export abstract class AbstractPool<
     if (transferList != null && !Array.isArray(transferList)) {
       throw new TypeError('transferList argument must be an array')
     }
-    if (abortSignal != null && !(abortSignal instanceof AbortSignal)) {
-      throw new TypeError('abortSignal argument must be an AbortSignal')
-    }
     if (!Array.isArray(data)) {
       data = [...data]
     }
+    if (abortSignals != null) {
+      if (typeof abortSignals[Symbol.iterator] !== 'function') {
+        throw new TypeError('abortSignals argument must be an iterable')
+      }
+      for (const abortSignal of abortSignals) {
+        if (!(abortSignal instanceof AbortSignal)) {
+          throw new TypeError(
+            'abortSignals argument must be an iterable of AbortSignal'
+          )
+        }
+      }
+      if (!Array.isArray(abortSignals)) {
+        abortSignals = [...abortSignals]
+      }
+      if ((data as Data[]).length !== (abortSignals as AbortSignal[]).length) {
+        throw new Error(
+          'data and abortSignals arguments must have the same length'
+        )
+      }
+    }
+    const tasks: [Data, AbortSignal | undefined][] = Array.from(
+      { length: (data as Data[]).length },
+      (_, i) => [
+        (data as Data[])[i],
+        abortSignals != null ? (abortSignals as AbortSignal[])[i] : undefined,
+      ]
+    )
     return await Promise.all(
-      (data as Data[]).map(data =>
+      tasks.map(([data, abortSignal]) =>
         this.internalExecute(data, name, transferList, abortSignal)
       )
     )
@@ -1284,7 +1308,6 @@ export abstract class AbstractPool<
     workerNodeKey: number,
     message: MessageValue<Data>,
     transferList?: readonly Transferable[]
-    // abortSignal?: AbortSignal
   ): void
 
   /**

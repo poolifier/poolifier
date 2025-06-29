@@ -16,7 +16,7 @@ declare module 'fastify' {
       data: Iterable<WorkerData>,
       name?: string,
       transferList?: readonly Transferable[],
-      abortSignal?: AbortSignal
+      abortSignals?: Iterable<AbortSignal>
     ) => Promise<WorkerResponse[]>
     pool: DynamicThreadPool<WorkerData, WorkerResponse>
   }
