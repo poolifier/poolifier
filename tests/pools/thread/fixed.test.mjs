@@ -206,6 +206,7 @@ describe('Fixed thread pool test suite', () => {
     expect(inError.message).toStrictEqual('Error Message from ThreadWorker')
     expect(typeof inError.stack === 'string').toBe(true)
     expect(taskError).toStrictEqual({
+      aborted: false,
       data,
       error: inError,
       message: inError.message,
@@ -241,6 +242,7 @@ describe('Fixed thread pool test suite', () => {
     )
     expect(typeof inError.stack === 'string').toBe(true)
     expect(taskError).toStrictEqual({
+      aborted: false,
       data,
       error: inError,
       message: inError.message,

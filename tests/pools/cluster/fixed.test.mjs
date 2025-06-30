@@ -180,6 +180,7 @@ describe('Fixed cluster pool test suite', () => {
     expect(inError.message).toStrictEqual('Error Message from ClusterWorker')
     expect(typeof inError.stack === 'string').toBe(true)
     expect(taskError).toStrictEqual({
+      aborted: false,
       data,
       message: inError.message,
       name: DEFAULT_TASK_NAME,
@@ -214,6 +215,7 @@ describe('Fixed cluster pool test suite', () => {
     )
     expect(typeof inError.stack === 'string').toBe(true)
     expect(taskError).toStrictEqual({
+      aborted: false,
       data,
       message: inError.message,
       name: DEFAULT_TASK_NAME,

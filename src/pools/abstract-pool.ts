@@ -1364,7 +1364,7 @@ export abstract class AbstractPool<
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.promiseResponseMap.delete(taskId!)
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          reject(new Error(`Task ${name!} id ${taskId!} aborted`))
+          reject(this.getAbortError(name!, taskId!))
           return
         }
       }
@@ -1636,6 +1636,19 @@ export abstract class AbstractPool<
     }
   }
 
+  private getAbortError (
+    taskName: string,
+    taskId: `${string}-${string}-${string}-${string}-${string}`
+  ): Error {
+    const abortError = this.promiseResponseMap.get(taskId)?.abortSignal
+      ?.reason as Error | string
+    return abortError instanceof Error
+      ? abortError
+      : typeof abortError === 'string'
+        ? new Error(abortError)
+        : new Error(`Task '${taskName}' id '${taskId}' aborted`)
+  }
+
   /**
    * Gets task function worker choice strategy, if any.
    * @param name - The task function name.
@@ -1757,7 +1770,8 @@ export abstract class AbstractPool<
       const workerNode = this.workerNodes[workerNodeKey]
       if (workerError != null) {
         this.emitter?.emit(PoolEvents.taskError, workerError)
-        const error = this.handleWorkerError(workerError)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const error = this.handleWorkerError(taskId!, workerError)
         asyncResource != null
           ? asyncResource.runInAsyncScope(reject, this.emitter, error)
           : reject(error)
@@ -1795,13 +1809,21 @@ export abstract class AbstractPool<
     }
   }
 
-  private handleWorkerError (workerError: WorkerError): Error {
-    if (workerError.error != null) {
-      return workerError.error
+  private handleWorkerError (
+    taskId: `${string}-${string}-${string}-${string}-${string}`,
+    workerError: WorkerError
+  ): Error {
+    const { aborted, error, message, name, stack } = workerError
+    if (aborted) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return this.getAbortError(name!, taskId)
     }
-    const error = new Error(workerError.message)
-    error.stack = workerError.stack
-    return error
+    if (error != null) {
+      return error
+    }
+    const wError = new Error(message)
+    wError.stack = stack
+    return wError
   }
 
   private readonly handleWorkerNodeBackPressureEvent = (

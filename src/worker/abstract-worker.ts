@@ -19,6 +19,7 @@ import type {
   TaskFunctions,
   TaskSyncFunction,
 } from './task-functions.js'
+import type { AbortTaskEventDetail } from './worker-types.js'
 
 import {
   buildTaskFunctionProperties,
@@ -27,16 +28,13 @@ import {
   isAsyncFunction,
   isPlainObject,
 } from '../utils.js'
+import { AbortError } from './abort-error.js'
 import {
   checkTaskFunctionName,
   checkValidTaskFunctionObjectEntry,
   checkValidWorkerOptions,
 } from './utils.js'
 import { KillBehaviors, type WorkerOptions } from './worker-options.js'
-
-interface AbortTaskEventDetail {
-  taskId: `${string}-${string}-${string}-${string}`
-}
 
 const DEFAULT_MAX_INACTIVE_TIME = 60000
 const DEFAULT_WORKER_OPTIONS: Readonly<WorkerOptions> = Object.freeze({
@@ -293,6 +291,7 @@ export abstract class AbstractWorker<
    * @returns The worker error object.
    */
   protected abstract handleError (error: Error): {
+    aborted: boolean
     error?: Error
     message: string
     stack?: string
@@ -684,7 +683,9 @@ export abstract class AbstractWorker<
       await new Promise<Response>(
         (resolve, reject: (reason?: unknown) => void) => {
           this.taskAbortFunctions.set(taskId, () => {
-            reject(new Error(`Task ${name} id ${taskId} aborted`))
+            reject(
+              new AbortError(`Task '${name}' id '${taskId}' aborted`, taskId)
+            )
           })
           const taskFunction = this.taskFunctions.get(name)?.taskFunction
           if (isAsyncFunction(taskFunction)) {

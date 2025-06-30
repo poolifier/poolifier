@@ -191,6 +191,10 @@ export interface TaskPerformance {
  */
 export interface WorkerError<Data = unknown> {
   /**
+   * Whether the error is an abort error or not.
+   */
+  readonly aborted: boolean
+  /**
    * Data triggering the error.
    */
   readonly data?: Data
