@@ -86,7 +86,7 @@ export abstract class AbstractWorker<
    * Task abort functions processed by the worker when task operation 'abort' is received.
    */
   protected taskAbortFunctions: Map<
-    `${string}-${string}-${string}-${string}`,
+    `${string}-${string}-${string}-${string}-${string}`,
     () => void
   >
 
@@ -114,7 +114,7 @@ export abstract class AbstractWorker<
     }
     this.checkTaskFunctions(taskFunctions)
     this.taskAbortFunctions = new Map<
-      `${string}-${string}-${string}-${string}`,
+      `${string}-${string}-${string}-${string}-${string}`,
       () => void
     >()
     this.on('abortTask', (eventDetail: AbortTaskEventDetail) => {
@@ -676,7 +676,7 @@ export abstract class AbstractWorker<
    */
   private getAbortableTaskFunction (
     name: string,
-    taskId: `${string}-${string}-${string}-${string}`
+    taskId: `${string}-${string}-${string}-${string}-${string}`
   ): TaskAsyncFunction<Data, Response> {
     return async (data?: Data): Promise<Response> =>
       await new Promise<Response>(

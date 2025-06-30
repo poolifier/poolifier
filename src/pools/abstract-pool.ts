@@ -1622,16 +1622,7 @@ export abstract class AbstractPool<
    * @param task - The task to execute.
    */
   private executeTask (workerNodeKey: number, task: Task<Data>): void {
-    const { taskId, transferList } = task
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { abortSignal, reject } = this.promiseResponseMap.get(
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      taskId!
-    )!
-    if (abortSignal?.aborted === true) {
-      reject(new Error('Cannot execute an already aborted task'))
-      return
-    }
+    const { transferList } = task
     this.beforeTaskExecutionHook(workerNodeKey, task)
     this.sendToWorker(workerNodeKey, task, transferList)
     this.checkAndEmitTaskExecutionEvents()

@@ -1,3 +1,3 @@
 export interface AbortTaskEventDetail {
-  taskId: `${string}-${string}-${string}-${string}`
+  taskId: `${string}-${string}-${string}-${string}-${string}`
 }
