@@ -1636,10 +1636,10 @@ export abstract class AbstractPool<
     }
   }
 
-  private getAbortError (
+  private readonly getAbortError = (
     taskName: string,
     taskId: `${string}-${string}-${string}-${string}-${string}`
-  ): Error {
+  ): Error => {
     const abortError = this.promiseResponseMap.get(taskId)?.abortSignal
       ?.reason as Error | string
     return abortError instanceof Error
@@ -1809,10 +1809,10 @@ export abstract class AbstractPool<
     }
   }
 
-  private handleWorkerError (
+  private readonly handleWorkerError = (
     taskId: `${string}-${string}-${string}-${string}-${string}`,
     workerError: WorkerError
-  ): Error {
+  ): Error => {
     const { aborted, error, message, name, stack } = workerError
     if (aborted) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
