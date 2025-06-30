@@ -141,13 +141,13 @@ describe('Fixed priority queue test suite', () => {
   it('Verify delete() behavior', () => {
     const fixedPriorityQueue = new FixedPriorityQueue()
     fixedPriorityQueue.enqueue(1)
-    fixedPriorityQueue.enqueue(2)
+    fixedPriorityQueue.enqueue(2, -1)
     fixedPriorityQueue.enqueue(3)
     expect(fixedPriorityQueue.start).toBe(0)
     expect(fixedPriorityQueue.size).toBe(3)
     expect(fixedPriorityQueue.nodeArray).toMatchObject([
+      { data: 2, priority: -1 },
       { data: 1, priority: 0 },
-      { data: 2, priority: 0 },
       { data: 3, priority: 0 },
     ])
     expect(fixedPriorityQueue.delete(2)).toBe(true)

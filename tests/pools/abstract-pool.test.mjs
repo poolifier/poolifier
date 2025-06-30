@@ -959,11 +959,11 @@ describe('Abstract pool test suite', () => {
       new TypeError('name argument must not be an empty string')
     )
     await expect(pool.execute(undefined, undefined, {})).rejects.toThrow(
-      new TypeError('transferList argument must be an array')
-    )
-    await expect(pool.execute(undefined, undefined, [], {})).rejects.toThrow(
       new TypeError('abortSignal argument must be an AbortSignal')
     )
+    await expect(
+      pool.execute(undefined, undefined, new AbortController().signal, {})
+    ).rejects.toThrow(new TypeError('transferList argument must be an array'))
     await expect(pool.execute(undefined, 'unknown')).rejects.toThrow(
       new Error("Task function 'unknown' not found")
     )
@@ -1920,29 +1920,30 @@ describe('Abstract pool test suite', () => {
     await expect(pool.mapExecute([undefined], '')).rejects.toThrow(
       new TypeError('name argument must not be an empty string')
     )
-    await expect(pool.mapExecute([undefined], undefined, {})).rejects.toThrow(
-      new TypeError('transferList argument must be an array')
-    )
-    await expect(
-      pool.mapExecute([undefined], undefined, [], 0)
-    ).rejects.toThrow(
+    await expect(pool.mapExecute([undefined], undefined, 0)).rejects.toThrow(
       new TypeError('abortSignals argument must be an iterable')
     )
     await expect(
-      pool.mapExecute([undefined], undefined, [], [undefined])
+      pool.mapExecute([undefined], undefined, [undefined])
     ).rejects.toThrow(
       new TypeError('abortSignals argument must be an iterable of AbortSignal')
+    )
+    await expect(
+      pool.mapExecute([undefined], undefined, [
+        new AbortController().signal,
+        new AbortController().signal,
+      ])
+    ).rejects.toThrow(
+      new Error('data and abortSignals arguments must have the same length')
     )
     await expect(
       pool.mapExecute(
         [undefined],
         undefined,
-        [],
-        [new AbortController().signal, new AbortController().signal]
+        [new AbortController().signal],
+        {}
       )
-    ).rejects.toThrow(
-      new Error('data and abortSignals arguments must have the same length')
-    )
+    ).rejects.toThrow(new TypeError('transferList argument must be an array'))
     await expect(pool.mapExecute([undefined], 'unknown')).rejects.toThrow(
       new Error("Task function 'unknown' not found")
     )

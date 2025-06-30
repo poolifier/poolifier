@@ -132,15 +132,15 @@ export interface IPool<
    * Executes the specified function in the worker constructor with the task data input parameter.
    * @param data - The optional task input data for the specified task function. This can only be structured-cloneable data.
    * @param name - The optional name of the task function to execute. If not specified, the default task function will be executed.
-   * @param transferList - The optional array of transferable objects to transfer ownership of. Ownership of the transferred objects is given to the chosen pool's worker_threads worker and they should not be used in the main thread afterwards.
    * @param abortSignal - The optional AbortSignal to abort the task.
+   * @param transferList - The optional array of transferable objects to transfer ownership of. Ownership of the transferred objects is given to the chosen pool's worker_threads worker and they should not be used in the main thread afterwards.
    * @returns Promise with a task function response that will be fulfilled when the task is completed.
    */
   readonly execute: (
     data?: Data,
     name?: string,
-    transferList?: readonly Transferable[],
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
+    transferList?: readonly Transferable[]
   ) => Promise<Response>
   /**
    * Whether the specified task function exists in this pool.
@@ -161,15 +161,15 @@ export interface IPool<
    * Executes the specified function in the worker constructor with the tasks data iterable input parameter.
    * @param data - The tasks iterable input data for the specified task function. This can only be an iterable of structured-cloneable data.
    * @param name - The optional name of the task function to execute. If not specified, the default task function will be executed.
-   * @param transferList - The optional array of transferable objects to transfer ownership of. Ownership of the transferred objects is given to the chosen pool's worker_threads worker and they should not be used in the main thread afterwards.
    * @param abortSignals - The optional iterable of AbortSignal to abort the tasks iterable.
+   * @param transferList - The optional array of transferable objects to transfer ownership of. Ownership of the transferred objects is given to the chosen pool's worker_threads worker and they should not be used in the main thread afterwards.
    * @returns Promise with an array of task function responses that will be fulfilled when the tasks are completed.
    */
   readonly mapExecute: (
     data: Iterable<Data>,
     name?: string,
-    transferList?: readonly Transferable[],
-    abortSignals?: Iterable<AbortSignal>
+    abortSignals?: Iterable<AbortSignal>,
+    transferList?: readonly Transferable[]
   ) => Promise<Response[]>
   /**
    * Removes a task function from this pool.

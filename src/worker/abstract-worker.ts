@@ -121,7 +121,6 @@ export abstract class AbstractWorker<
       const { taskId } = eventDetail
       if (this.taskAbortFunctions.has(taskId)) {
         this.taskAbortFunctions.get(taskId)?.()
-        this.taskAbortFunctions.delete(taskId)
       }
     })
     this.checkWorkerOptions(this.opts)
@@ -417,7 +416,7 @@ export abstract class AbstractWorker<
       this.run(message)
     } else if (taskOperation === 'abort' && taskId != null) {
       // Abort task operation message received
-      this.emit('abortTask', { taskId: message.taskId })
+      this.emit('abortTask', { taskId })
     } else if (kill === true) {
       // Kill message received
       this.handleKillMessage(message)

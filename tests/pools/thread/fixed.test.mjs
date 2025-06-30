@@ -165,7 +165,7 @@ describe('Fixed thread pool test suite', () => {
     let error
     let result
     try {
-      result = await pool.execute(undefined, undefined, [
+      result = await pool.execute(undefined, undefined, undefined, [
         new ArrayBuffer(16),
         new MessageChannel().port1,
       ])
@@ -175,7 +175,7 @@ describe('Fixed thread pool test suite', () => {
     expect(result).toStrictEqual({ ok: 1 })
     expect(error).toBeUndefined()
     try {
-      result = await pool.execute(undefined, undefined, [
+      result = await pool.execute(undefined, undefined, undefined, [
         new SharedArrayBuffer(16),
       ])
     } catch (e) {
@@ -263,6 +263,33 @@ describe('Fixed thread pool test suite', () => {
     const usedTime = performance.now() - startTime
     expect(result).toStrictEqual(data)
     expect(usedTime).toBeGreaterThanOrEqual(2000)
+  })
+
+  it('Verify that task can be aborted', async () => {
+    let error
+
+    try {
+      await asyncErrorPool.execute({}, 'default', AbortSignal.timeout(500))
+    } catch (e) {
+      error = e
+    }
+    expect(error).toBeInstanceOf(Error)
+    expect(error.name).toBe('TimeoutError')
+    expect(error.message).toBe('The operation was aborted due to timeout')
+    expect(error.stack).toBeDefined()
+
+    const abortController = new AbortController()
+    setTimeout(() => {
+      abortController.abort(new Error('Task aborted'))
+    }, 500)
+    try {
+      await asyncErrorPool.execute({}, 'default', abortController.signal)
+    } catch (e) {
+      error = e
+    }
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).toBe('Task aborted')
+    expect(error.stack).toBeDefined()
   })
 
   it('Shutdown test', async () => {

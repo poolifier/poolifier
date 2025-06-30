@@ -5,8 +5,8 @@
 - [Pool](#pool)
   - [`pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`](#pool--new-fixedthreadpoolfixedclusterpoolnumberofthreadsnumberofworkers-filepath-opts)
   - [`pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`](#pool--new-dynamicthreadpooldynamicclusterpoolmin-max-filepath-opts)
-  - [`pool.execute(data, name, transferList, abortSignal)`](#poolexecutedata-name-transferlist-abortsignal)
-  - [`pool.mapExecute(data, name, transferList, abortSignals)`](#poolmapexecutedata-name-transferlist-abortsignals)
+  - [`pool.execute(data, name, abortSignal, transferList)`](#poolexecutedata-name-abortsignal-transferlist)
+  - [`pool.mapExecute(data, name, abortSignals, transferList)`](#poolmapexecutedata-name-abortsignals-transferlist)
   - [`pool.start()`](#poolstart)
   - [`pool.destroy()`](#pooldestroy)
   - [`pool.hasTaskFunction(name)`](#poolhastaskfunctionname)
@@ -38,21 +38,21 @@
 `filePath` (mandatory) Path to a file with a worker implementation.  
 `opts` (optional) An object with the pool options properties described below.
 
-### `pool.execute(data, name, transferList, abortSignal)`
+### `pool.execute(data, name, abortSignal, transferList)`
 
 `data` (optional) An object that you want to pass to your worker task function implementation.  
 `name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
-`transferList` (optional) An array of transferable objects that you want to transfer to your [`ThreadWorker`](#class-yourworker-extends-threadworkerclusterworker) worker implementation.  
-`abortSignal` (optional) An abort signal to abort the task function execution.
+`abortSignal` (optional) An abort signal to abort the task function execution.  
+`transferList` (optional) An array of transferable objects that you want to transfer to your [`ThreadWorker`](#class-yourworker-extends-threadworkerclusterworker) worker implementation.
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
 
-### `pool.mapExecute(data, name, transferList, abortSignals)`
+### `pool.mapExecute(data, name, abortSignals, transferList)`
 
 `data` An iterable of objects that you want to pass to your worker task function implementation.  
 `name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
-`transferList` (optional) An array of transferable objects that you want to transfer to your [`ThreadWorker`](#class-yourworker-extends-threadworkerclusterworker) worker implementation.  
-`abortSignals` (optional) An iterable of AbortSignal to abort the matching object task function execution.
+`abortSignals` (optional) An iterable of AbortSignal to abort the matching object task function execution.  
+`transferList` (optional) An array of transferable objects that you want to transfer to your [`ThreadWorker`](#class-yourworker-extends-threadworkerclusterworker) worker implementation.
 
 This method is available on both pool implementations and returns a promise with the task function execution responses array.
 

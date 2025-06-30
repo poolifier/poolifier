@@ -667,8 +667,8 @@ export abstract class AbstractPool<
   public async execute (
     data?: Data,
     name?: string,
-    transferList?: readonly Transferable[],
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
+    transferList?: readonly Transferable[]
   ): Promise<Response> {
     if (!this.started) {
       throw new Error('Cannot execute a task on not started pool')
@@ -682,13 +682,13 @@ export abstract class AbstractPool<
     if (name != null && typeof name === 'string' && name.trim().length === 0) {
       throw new TypeError('name argument must not be an empty string')
     }
-    if (transferList != null && !Array.isArray(transferList)) {
-      throw new TypeError('transferList argument must be an array')
-    }
     if (abortSignal != null && !(abortSignal instanceof AbortSignal)) {
       throw new TypeError('abortSignal argument must be an AbortSignal')
     }
-    return await this.internalExecute(data, name, transferList, abortSignal)
+    if (transferList != null && !Array.isArray(transferList)) {
+      throw new TypeError('transferList argument must be an array')
+    }
+    return await this.internalExecute(data, name, abortSignal, transferList)
   }
 
   /** @inheritDoc */
@@ -715,8 +715,8 @@ export abstract class AbstractPool<
   public async mapExecute (
     data: Iterable<Data>,
     name?: string,
-    transferList?: readonly Transferable[],
-    abortSignals?: Iterable<AbortSignal>
+    abortSignals?: Iterable<AbortSignal>,
+    transferList?: readonly Transferable[]
   ): Promise<Response[]> {
     if (!this.started) {
       throw new Error('Cannot execute task(s) on not started pool')
@@ -736,9 +736,6 @@ export abstract class AbstractPool<
     }
     if (name != null && typeof name === 'string' && name.trim().length === 0) {
       throw new TypeError('name argument must not be an empty string')
-    }
-    if (transferList != null && !Array.isArray(transferList)) {
-      throw new TypeError('transferList argument must be an array')
     }
     if (!Array.isArray(data)) {
       data = [...data]
@@ -763,6 +760,9 @@ export abstract class AbstractPool<
         )
       }
     }
+    if (transferList != null && !Array.isArray(transferList)) {
+      throw new TypeError('transferList argument must be an array')
+    }
     const tasks: [Data, AbortSignal | undefined][] = Array.from(
       { length: (data as Data[]).length },
       (_, i) => [
@@ -772,7 +772,7 @@ export abstract class AbstractPool<
     )
     return await Promise.all(
       tasks.map(([data, abortSignal]) =>
-        this.internalExecute(data, name, transferList, abortSignal)
+        this.internalExecute(data, name, abortSignal, transferList)
       )
     )
   }
@@ -1352,9 +1352,16 @@ export abstract class AbstractPool<
   }
 
   private readonly abortTask = (eventDetail: WorkerNodeEventDetail): void => {
+    if (!this.started || this.destroying) {
+      return
+    }
     const { taskId, workerId } = eventDetail
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { abortSignal, reject } = this.promiseResponseMap.get(taskId!)!
+    const promiseResponse = this.promiseResponseMap.get(taskId!)
+    if (promiseResponse == null) {
+      return
+    }
+    const { abortSignal, reject } = promiseResponse
     const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
     if (this.opts.enableTasksQueue === true) {
       for (const task of this.workerNodes[workerNodeKey].tasksQueue) {
@@ -1369,7 +1376,7 @@ export abstract class AbstractPool<
         }
       }
     }
-    if (abortSignal != null) {
+    if (abortSignal?.aborted === true) {
       this.sendToWorker(workerNodeKey, { taskId, taskOperation: 'abort' })
     }
   }
@@ -1984,8 +1991,8 @@ export abstract class AbstractPool<
   private async internalExecute (
     data?: Data,
     name?: string,
-    transferList?: readonly Transferable[],
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
+    transferList?: readonly Transferable[]
   ): Promise<Response> {
     return await new Promise<Response>((resolve, reject) => {
       const timestamp = performance.now()

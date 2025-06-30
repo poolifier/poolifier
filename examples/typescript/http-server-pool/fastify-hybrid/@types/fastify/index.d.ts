@@ -9,14 +9,14 @@ declare module 'fastify' {
     execute: (
       data?: ThreadWorkerData,
       name?: string,
-      transferList?: readonly Transferable[],
-      abortSignal?: AbortSignal
+      abortSignal?: AbortSignal,
+      transferList?: readonly Transferable[]
     ) => Promise<ThreadWorkerResponse>
     mapExecute: (
       data: Iterable<ThreadWorkerData>,
       name?: string,
-      transferList?: readonly Transferable[],
-      abortSignals?: Iterable<AbortSignal>
+      abortSignals?: Iterable<AbortSignal>,
+      transferList?: readonly Transferable[]
     ) => Promise<ThreadWorkerResponse[]>
     pool: DynamicThreadPool<ThreadWorkerData, ThreadWorkerResponse>
   }

@@ -139,13 +139,13 @@ describe('Fixed queue test suite', () => {
   it('Verify delete() behavior', () => {
     const fixedQueue = new FixedQueue()
     fixedQueue.enqueue(1)
-    fixedQueue.enqueue(2)
+    fixedQueue.enqueue(2, -1)
     fixedQueue.enqueue(3)
     expect(fixedQueue.start).toBe(0)
     expect(fixedQueue.size).toBe(3)
     expect(fixedQueue.nodeArray).toMatchObject([
       { data: 1, priority: 0 },
-      { data: 2, priority: 0 },
+      { data: 2, priority: -1 },
       { data: 3, priority: 0 },
     ])
     expect(fixedQueue.delete(2)).toBe(true)
