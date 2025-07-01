@@ -104,8 +104,8 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected getWorkerNodeTaskElu (workerNodeKey: number): number {
     return this.taskStatisticsRequirements.elu.median
-      ? (this.pool.workerNodes[workerNodeKey].usage.elu.active.median ?? 0)
-      : (this.pool.workerNodes[workerNodeKey].usage.elu.active.average ?? 0)
+      ? (this.pool.workerNodes[workerNodeKey]?.usage.elu.active.median ?? 0)
+      : (this.pool.workerNodes[workerNodeKey]?.usage.elu.active.average ?? 0)
   }
 
   /**
@@ -117,8 +117,8 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected getWorkerNodeTaskRunTime (workerNodeKey: number): number {
     return this.taskStatisticsRequirements.runTime.median
-      ? (this.pool.workerNodes[workerNodeKey].usage.runTime.median ?? 0)
-      : (this.pool.workerNodes[workerNodeKey].usage.runTime.average ?? 0)
+      ? (this.pool.workerNodes[workerNodeKey]?.usage.runTime.median ?? 0)
+      : (this.pool.workerNodes[workerNodeKey]?.usage.runTime.average ?? 0)
   }
 
   /**
@@ -130,8 +130,8 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected getWorkerNodeTaskWaitTime (workerNodeKey: number): number {
     return this.taskStatisticsRequirements.waitTime.median
-      ? (this.pool.workerNodes[workerNodeKey].usage.waitTime.median ?? 0)
-      : (this.pool.workerNodes[workerNodeKey].usage.waitTime.average ?? 0)
+      ? (this.pool.workerNodes[workerNodeKey]?.usage.waitTime.median ?? 0)
+      : (this.pool.workerNodes[workerNodeKey]?.usage.waitTime.average ?? 0)
   }
 
   /**
@@ -140,7 +140,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @returns Whether the worker node is ready or not.
    */
   protected isWorkerNodeReady (workerNodeKey: number): boolean {
-    return this.pool.workerNodes[workerNodeKey]?.info?.ready ?? false
+    return this.pool.workerNodes[workerNodeKey]?.info.ready ?? false
   }
 
   protected resetWorkerNodeKeyProperties (): void {
