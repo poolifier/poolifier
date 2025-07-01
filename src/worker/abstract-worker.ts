@@ -682,9 +682,7 @@ export abstract class AbstractWorker<
       await new Promise<Response>(
         (resolve, reject: (reason?: unknown) => void) => {
           this.taskAbortFunctions.set(taskId, () => {
-            reject(
-              new AbortError(`Task '${name}' id '${taskId}' aborted`, taskId)
-            )
+            reject(new AbortError(`Task '${name}' id '${taskId}' aborted`))
           })
           const taskFunction = this.taskFunctions.get(name)?.taskFunction
           if (isAsyncFunction(taskFunction)) {

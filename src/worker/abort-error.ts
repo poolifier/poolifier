@@ -1,8 +1,5 @@
 export class AbortError extends Error {
-  public constructor (
-    message: string,
-    public taskId: `${string}-${string}-${string}-${string}-${string}`
-  ) {
+  public constructor (message: string) {
     super(message)
     this.name = 'AbortError'
   }
