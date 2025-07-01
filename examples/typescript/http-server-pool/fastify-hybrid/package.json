@@ -24,11 +24,11 @@
   "dependencies": {
     "fastify": "^5.4.0",
     "fastify-plugin": "^5.0.1",
-    "poolifier": "^5.0.0"
+    "poolifier": "^5.0.1"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.1.4",
-    "@types/node": "^24.0.8",
+    "@types/node": "^24.0.10",
     "autocannon": "^8.0.0",
     "rollup": "^4.44.1",
     "rollup-plugin-delete": "^3.0.1",
