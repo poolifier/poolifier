@@ -579,7 +579,8 @@ export abstract class AbstractWorker<
   private checkMessageWorkerId (message: MessageValue<Data>): void {
     if (message.workerId == null) {
       throw new Error('Message worker id is not set')
-    } else if (message.workerId !== this.id) {
+    }
+    if (message.workerId !== this.id) {
       throw new Error(
         `Message worker id ${message.workerId.toString()} does not match the worker id ${this.id.toString()}`
       )

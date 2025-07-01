@@ -58,7 +58,7 @@ export const exponentialDelay = (
   retryNumber = 0,
   delayFactor = 100
 ): number => {
-  const delay = Math.pow(2, retryNumber) * delayFactor
+  const delay = 2 ** retryNumber * delayFactor
   const randomSum = delay * 0.2 * secureRandom() // 0-20% of the delay
   return delay + randomSum
 }
@@ -72,7 +72,8 @@ export const exponentialDelay = (
 export const average = (dataSet: number[]): number => {
   if (Array.isArray(dataSet) && dataSet.length === 0) {
     return 0
-  } else if (Array.isArray(dataSet) && dataSet.length === 1) {
+  }
+  if (Array.isArray(dataSet) && dataSet.length === 1) {
     return dataSet[0]
   }
   return (
@@ -90,7 +91,8 @@ export const average = (dataSet: number[]): number => {
 export const median = (dataSet: number[]): number => {
   if (Array.isArray(dataSet) && dataSet.length === 0) {
     return 0
-  } else if (Array.isArray(dataSet) && dataSet.length === 1) {
+  }
+  if (Array.isArray(dataSet) && dataSet.length === 1) {
     return dataSet[0]
   }
   const sortedDataSet = dataSet.slice().sort((a, b) => a - b)
@@ -110,7 +112,7 @@ export const median = (dataSet: number[]): number => {
  * @internal
  */
 export const round = (num: number, scale = 2): number => {
-  const rounder = Math.pow(10, scale)
+  const rounder = 10 ** scale
   return Math.round(num * rounder * (1 + Number.EPSILON)) / rounder
 }
 

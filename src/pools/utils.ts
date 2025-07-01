@@ -43,7 +43,7 @@ export const getDefaultTasksQueueOptions = (
 ): Required<Readonly<TasksQueueOptions>> => {
   return Object.freeze({
     concurrency: 1,
-    size: Math.pow(poolMaxSize, 2),
+    size: poolMaxSize ** 2,
     tasksFinishedTimeout: 2000,
     tasksStealingOnBackPressure: true,
     tasksStealingRatio: 0.6,
@@ -71,19 +71,23 @@ export const checkDynamicPoolSize = (
     throw new TypeError(
       'Cannot instantiate a dynamic pool without specifying the maximum pool size'
     )
-  } else if (!Number.isSafeInteger(max)) {
+  }
+  if (!Number.isSafeInteger(max)) {
     throw new TypeError(
       'Cannot instantiate a dynamic pool with a non safe integer maximum pool size'
     )
-  } else if (min > max) {
+  }
+  if (min > max) {
     throw new RangeError(
       'Cannot instantiate a dynamic pool with a maximum pool size inferior to the minimum pool size'
     )
-  } else if (max === 0) {
+  }
+  if (max === 0) {
     throw new RangeError(
       'Cannot instantiate a dynamic pool with a maximum pool size equal to zero'
     )
-  } else if (min === max) {
+  }
+  if (min === max) {
     throw new RangeError(
       'Cannot instantiate a dynamic pool with a minimum pool size equal to the maximum pool size. Use a fixed pool instead'
     )
@@ -414,7 +418,8 @@ export const createWorker = <Worker extends IWorker>(
 const getWorkerType = (worker: IWorker): undefined | WorkerType => {
   if (worker instanceof ThreadWorker) {
     return WorkerTypes.thread
-  } else if (worker instanceof ClusterWorker) {
+  }
+  if (worker instanceof ClusterWorker) {
     return WorkerTypes.cluster
   }
 }
@@ -428,7 +433,8 @@ const getWorkerType = (worker: IWorker): undefined | WorkerType => {
 const getWorkerId = (worker: IWorker): number | undefined => {
   if (worker instanceof ThreadWorker) {
     return worker.threadId
-  } else if (worker instanceof ClusterWorker) {
+  }
+  if (worker instanceof ClusterWorker) {
     return worker.id
   }
 }
