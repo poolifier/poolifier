@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.1](https://github.com/poolifier/poolifier/compare/v5.0.0...v5.0.1) (2025-07-01)
+
+
+### ⚡ Performance
+
+* remove unneeded worker class event emitter inheritance ([8e77a4e](https://github.com/poolifier/poolifier/commit/8e77a4e6c2aab9717609ce5f687d4c0103de7c4a))
+
+
+### 📚 Documentation
+
+* publish documentation ([a839173](https://github.com/poolifier/poolifier/commit/a839173dd62763694ff06bbb32f3848ee4ca3ded))
+
 ## [5.0.0](https://github.com/poolifier/poolifier/compare/v4.4.5...v5.0.0) (2025-07-01)
 
 
