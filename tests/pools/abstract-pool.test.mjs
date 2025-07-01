@@ -1950,15 +1950,17 @@ describe('Abstract pool test suite', () => {
       new Error("Task function 'unknown' not found")
     )
     let results = await pool.mapExecute(
-      [{}, {}, {}, {}],
-      'jsonIntegerSerialization'
+      Array(4).fill({}),
+      'jsonIntegerSerialization',
+      Array(4).fill(AbortSignal.timeout(1000))
     )
     expect(results).toStrictEqual([{ ok: 1 }, { ok: 1 }, { ok: 1 }, { ok: 1 }])
     expect(pool.info.executingTasks).toBe(0)
     expect(pool.info.executedTasks).toBe(4)
     results = await pool.mapExecute(
       [{ n: 10 }, { n: 20 }, { n: 30 }, { n: 40 }],
-      'factorial'
+      'factorial',
+      Array(4).fill(AbortSignal.timeout(1000))
     )
     expect(results).toStrictEqual([
       3628800, 2432902008176640000, 2.6525285981219103e32, 8.159152832478977e47,
@@ -1967,7 +1969,13 @@ describe('Abstract pool test suite', () => {
     expect(pool.info.executedTasks).toBe(8)
     results = await pool.mapExecute(
       new Set([{ n: 10 }, { n: 20 }, { n: 30 }, { n: 40 }]),
-      'factorial'
+      'factorial',
+      new Set([
+        AbortSignal.timeout(1000),
+        AbortSignal.timeout(1500),
+        AbortSignal.timeout(2000),
+        AbortSignal.timeout(2500),
+      ])
     )
     expect(results).toStrictEqual([
       3628800, 2432902008176640000, 2.6525285981219103e32, 8.159152832478977e47,

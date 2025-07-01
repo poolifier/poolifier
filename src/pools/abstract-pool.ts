@@ -2042,7 +2042,7 @@ export abstract class AbstractPool<
       abortSignal?.addEventListener(
         'abort',
         () => {
-          this.workerNodes[workerNodeKey].emit('abortTask', {
+          this.workerNodes[workerNodeKey]?.emit('abortTask', {
             taskId: task.taskId,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             workerId: this.getWorkerInfo(workerNodeKey)!.id!,
