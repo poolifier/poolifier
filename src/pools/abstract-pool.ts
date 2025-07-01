@@ -1362,6 +1362,9 @@ export abstract class AbstractPool<
       return
     }
     const { abortSignal, reject } = promiseResponse
+    if (abortSignal?.aborted === false) {
+      return
+    }
     const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
     const workerNode = this.workerNodes[workerNodeKey]
     if (!workerNode.info.ready) {
@@ -1370,11 +1373,7 @@ export abstract class AbstractPool<
     if (this.opts.enableTasksQueue === true) {
       for (const task of workerNode.tasksQueue) {
         const { abortable, name } = task
-        if (
-          taskId === task.taskId &&
-          abortable === true &&
-          !workerNode.info.queuedTaskAbortion
-        ) {
+        if (taskId === task.taskId && abortable === true) {
           workerNode.info.queuedTaskAbortion = true
           workerNode.deleteTask(task)
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -1386,9 +1385,7 @@ export abstract class AbstractPool<
         }
       }
     }
-    if (abortSignal?.aborted === true) {
-      this.sendToWorker(workerNodeKey, { taskId, taskOperation: 'abort' })
-    }
+    this.sendToWorker(workerNodeKey, { taskId, taskOperation: 'abort' })
   }
 
   /**
