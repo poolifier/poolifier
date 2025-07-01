@@ -25,13 +25,21 @@ describe('Dynamic cluster pool test suite', () => {
   })
 
   it('Verify that the function is executed in a worker cluster', async () => {
-    let result = await pool.execute({
-      function: TaskFunctions.fibonacci,
-    })
+    let result = await pool.execute(
+      {
+        function: TaskFunctions.fibonacci,
+      },
+      'default',
+      AbortSignal.timeout(2000)
+    )
     expect(result).toBe(354224848179262000000)
-    result = await pool.execute({
-      function: TaskFunctions.factorial,
-    })
+    result = await pool.execute(
+      {
+        function: TaskFunctions.factorial,
+      },
+      'default',
+      AbortSignal.timeout(2000)
+    )
     expect(result).toBe(9.33262154439441e157)
   })
 
