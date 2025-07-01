@@ -94,6 +94,7 @@ describe('Thread worker test suite', () => {
     const error = new Error('Error as an error')
     const worker = new ThreadWorker(() => {})
     expect(worker.handleError(error)).toStrictEqual({
+      aborted: false,
       error,
       message: error.message,
       stack: error.stack,

@@ -5,8 +5,8 @@
 - [Pool](#pool)
   - [`pool = new FixedThreadPool/FixedClusterPool(numberOfThreads/numberOfWorkers, filePath, opts)`](#pool--new-fixedthreadpoolfixedclusterpoolnumberofthreadsnumberofworkers-filepath-opts)
   - [`pool = new DynamicThreadPool/DynamicClusterPool(min, max, filePath, opts)`](#pool--new-dynamicthreadpooldynamicclusterpoolmin-max-filepath-opts)
-  - [`pool.execute(data, name, transferList)`](#poolexecutedata-name-transferlist)
-  - [`pool.mapExecute(data, name, transferList)`](#poolmapexecutedata-name-transferlist)
+  - [`pool.execute(data, name, abortSignal, transferList)`](#poolexecutedata-name-abortsignal-transferlist)
+  - [`pool.mapExecute(data, name, abortSignals, transferList)`](#poolmapexecutedata-name-abortsignals-transferlist)
   - [`pool.start()`](#poolstart)
   - [`pool.destroy()`](#pooldestroy)
   - [`pool.hasTaskFunction(name)`](#poolhastaskfunctionname)
@@ -38,18 +38,20 @@
 `filePath` (mandatory) Path to a file with a worker implementation.  
 `opts` (optional) An object with the pool options properties described below.
 
-### `pool.execute(data, name, transferList)`
+### `pool.execute(data, name, abortSignal, transferList)`
 
 `data` (optional) An object that you want to pass to your worker task function implementation.  
 `name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
+`abortSignal` (optional) An abort signal to abort the task function execution.  
 `transferList` (optional) An array of transferable objects that you want to transfer to your [`ThreadWorker`](#class-yourworker-extends-threadworkerclusterworker) worker implementation.
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
 
-### `pool.mapExecute(data, name, transferList)`
+### `pool.mapExecute(data, name, abortSignals, transferList)`
 
-`data` Iterable objects that you want to pass to your worker task function implementation.  
+`data` An iterable of objects that you want to pass to your worker task function implementation.  
 `name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
+`abortSignals` (optional) An iterable of AbortSignal to abort the matching object task function execution.  
 `transferList` (optional) An array of transferable objects that you want to transfer to your [`ThreadWorker`](#class-yourworker-extends-threadworkerclusterworker) worker implementation.
 
 This method is available on both pool implementations and returns a promise with the task function execution responses array.
@@ -105,7 +107,6 @@ An object with these properties:
   Default: `() => {}`
 
 - `workerChoiceStrategy` (optional) - The default worker choice strategy to use in this pool:
-
   - `WorkerChoiceStrategies.ROUND_ROBIN`: Submit tasks to worker in a round robin fashion
   - `WorkerChoiceStrategies.LEAST_USED`: Submit tasks to the worker with the minimum number of executing and queued tasks
   - `WorkerChoiceStrategies.LEAST_BUSY`: Submit tasks to the worker with the minimum tasks execution time
@@ -119,7 +120,6 @@ An object with these properties:
 
 - `workerChoiceStrategyOptions` (optional) - The worker choice strategy options object to use in this pool.  
   Properties:
-
   - `measurement` (optional) - The measurement to use in worker choice strategies: `runTime`, `waitTime` or `elu`.
   - `runTime` (optional) - Use the tasks [simple moving median](./worker-choice-strategies.md) runtime instead of the tasks simple moving average runtime in worker choice strategies.
   - `waitTime` (optional) - Use the tasks [simple moving median](./worker-choice-strategies.md) wait time instead of the tasks simple moving average wait time in worker choice strategies.
@@ -139,7 +139,6 @@ An object with these properties:
 
 - `tasksQueueOptions` (optional) - The worker tasks queue options object to use in this pool.  
   Properties:
-
   - `size` (optional) - The maximum number of tasks that can be queued on a worker before flagging it as back pressured. It must be a positive integer.
   - `concurrency` (optional) - The maximum number of tasks that can be executed concurrently on a worker. It must be a positive integer.
   - `taskStealing` (optional) - Task stealing enablement on idle.

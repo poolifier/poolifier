@@ -136,6 +136,39 @@ describe('Fixed queue test suite', () => {
     expect(fixedQueue.capacity).toBe(queueSize)
   })
 
+  it('Verify delete() behavior', () => {
+    const fixedQueue = new FixedQueue()
+    fixedQueue.enqueue(1)
+    fixedQueue.enqueue(2, -1)
+    fixedQueue.enqueue(3)
+    expect(fixedQueue.start).toBe(0)
+    expect(fixedQueue.size).toBe(3)
+    expect(fixedQueue.nodeArray).toMatchObject([
+      { data: 1, priority: 0 },
+      { data: 2, priority: -1 },
+      { data: 3, priority: 0 },
+    ])
+    expect(fixedQueue.delete(2)).toBe(true)
+    expect(fixedQueue.start).toBe(0)
+    expect(fixedQueue.size).toBe(2)
+    expect(fixedQueue.nodeArray).toMatchObject([
+      { data: 1, priority: 0 },
+      { data: 3, priority: 0 },
+    ])
+    expect(fixedQueue.delete(3)).toBe(true)
+    expect(fixedQueue.start).toBe(0)
+    expect(fixedQueue.size).toBe(1)
+    expect(fixedQueue.nodeArray).toMatchObject([{ data: 1, priority: 0 }])
+    expect(fixedQueue.delete(1)).toBe(true)
+    expect(fixedQueue.start).toBe(0)
+    expect(fixedQueue.size).toBe(0)
+    expect(fixedQueue.nodeArray).toMatchObject([])
+    expect(fixedQueue.delete(2)).toBe(false)
+    expect(fixedQueue.start).toBe(0)
+    expect(fixedQueue.size).toBe(0)
+    expect(fixedQueue.nodeArray).toMatchObject([])
+  })
+
   it('Verify iterator behavior', () => {
     const fixedQueue = new FixedQueue()
     fixedQueue.enqueue(1)

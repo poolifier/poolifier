@@ -39,6 +39,8 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   /** @inheritdoc */
   public strategyData?: StrategyData
   /** @inheritdoc */
+  public readonly tasksQueue: PriorityQueue<Task<Data>>
+  /** @inheritdoc */
   public tasksQueueBackPressureSize: number
   /** @inheritdoc */
   public usage: WorkerUsage
@@ -46,7 +48,6 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   public readonly worker: Worker
   private setBackPressureFlag: boolean
   private readonly taskFunctionsUsage: Map<string, WorkerUsage>
-  private readonly tasksQueue: PriorityQueue<Task<Data>>
 
   /**
    * Constructs a new worker node.
@@ -79,6 +80,11 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   /** @inheritdoc */
   public clearTasksQueue (): void {
     this.tasksQueue.clear()
+  }
+
+  /** @inheritdoc */
+  public deleteTask (task: Task<Data>): boolean {
+    return this.tasksQueue.delete(task)
   }
 
   /** @inheritdoc */

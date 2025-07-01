@@ -4,6 +4,7 @@ import type { MessageValue } from '../utility-types.js'
 import type { TaskFunction, TaskFunctions } from './task-functions.js'
 import type { WorkerOptions } from './worker-options.js'
 
+import { AbortError } from './abort-error.js'
 import { AbstractWorker } from './abstract-worker.js'
 
 /**
@@ -43,8 +44,16 @@ export class ClusterWorker<
   /**
    * @inheritDoc
    */
-  protected handleError (error: Error): { message: string; stack?: string } {
-    return { message: error.message, stack: error.stack }
+  protected handleError (error: Error): {
+    aborted: boolean
+    message: string
+    stack?: string
+  } {
+    return {
+      aborted: error instanceof AbortError,
+      message: error.message,
+      stack: error.stack,
+    }
   }
 
   /** @inheritDoc */
