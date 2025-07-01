@@ -57,6 +57,11 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    */
   readonly taskFunctionsProperties?: TaskFunctionProperties[]
   /**
+   * Task operation:
+   * - `'abort'` - Abort a task.
+   */
+  readonly taskOperation?: 'abort'
+  /**
    * Task performance.
    */
   readonly taskPerformance?: TaskPerformance
@@ -76,6 +81,10 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
  * @internal
  */
 export interface PromiseResponseWrapper<Response = unknown> {
+  /**
+   * The task abort signal.
+   */
+  readonly abortSignal?: AbortSignal
   /**
    * The asynchronous resource used to track the task execution.
    */
@@ -100,6 +109,10 @@ export interface PromiseResponseWrapper<Response = unknown> {
  * @internal
  */
 export interface Task<Data = unknown> {
+  /**
+   * Whether the task is abortable or not.
+   */
+  readonly abortable?: boolean
   /**
    * Task input data that will be passed to the worker.
    */
@@ -177,6 +190,10 @@ export interface TaskPerformance {
  * @typeParam Data - Type of data sent to the worker triggering an error. This can only be structured-cloneable data.
  */
 export interface WorkerError<Data = unknown> {
+  /**
+   * Whether the error is an abort error or not.
+   */
+  readonly aborted: boolean
   /**
    * Data triggering the error.
    */

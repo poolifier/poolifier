@@ -180,6 +180,7 @@ describe('Fixed cluster pool test suite', () => {
     expect(inError.message).toStrictEqual('Error Message from ClusterWorker')
     expect(typeof inError.stack === 'string').toBe(true)
     expect(taskError).toStrictEqual({
+      aborted: false,
       data,
       message: inError.message,
       name: DEFAULT_TASK_NAME,
@@ -214,6 +215,7 @@ describe('Fixed cluster pool test suite', () => {
     )
     expect(typeof inError.stack === 'string').toBe(true)
     expect(taskError).toStrictEqual({
+      aborted: false,
       data,
       message: inError.message,
       name: DEFAULT_TASK_NAME,
@@ -233,6 +235,33 @@ describe('Fixed cluster pool test suite', () => {
     const usedTime = performance.now() - startTime
     expect(result).toStrictEqual(data)
     expect(usedTime).toBeGreaterThanOrEqual(2000)
+  })
+
+  it('Verify that task can be aborted', async () => {
+    let error
+
+    try {
+      await asyncErrorPool.execute({}, 'default', AbortSignal.timeout(500))
+    } catch (e) {
+      error = e
+    }
+    expect(error).toBeInstanceOf(Error)
+    expect(error.name).toBe('TimeoutError')
+    expect(error.message).toBe('The operation was aborted due to timeout')
+    expect(error.stack).toBeDefined()
+
+    const abortController = new AbortController()
+    setTimeout(() => {
+      abortController.abort(new Error('Task aborted'))
+    }, 500)
+    try {
+      await asyncErrorPool.execute({}, 'default', abortController.signal)
+    } catch (e) {
+      error = e
+    }
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).toBe('Task aborted')
+    expect(error.stack).toBeDefined()
   })
 
   it('Shutdown test', async () => {

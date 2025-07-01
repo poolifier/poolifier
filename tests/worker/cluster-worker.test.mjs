@@ -94,6 +94,7 @@ describe('Cluster worker test suite', () => {
     const error = new Error('Error as an error')
     const worker = new ClusterWorker(() => {})
     expect(worker.handleError(error)).toStrictEqual({
+      aborted: false,
       message: error.message,
       stack: error.stack,
     })

@@ -440,6 +440,7 @@ export const initWorkerInfo = (worker: IWorker): WorkerInfo => {
     continuousStealing: false,
     dynamic: false,
     id: getWorkerId(worker),
+    queuedTaskAbortion: false,
     ready: false,
     stealing: false,
     stolen: false,

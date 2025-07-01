@@ -667,6 +667,7 @@ export abstract class AbstractPool<
   public async execute (
     data?: Data,
     name?: string,
+    abortSignal?: AbortSignal,
     transferList?: readonly Transferable[]
   ): Promise<Response> {
     if (!this.started) {
@@ -681,10 +682,13 @@ export abstract class AbstractPool<
     if (name != null && typeof name === 'string' && name.trim().length === 0) {
       throw new TypeError('name argument must not be an empty string')
     }
+    if (abortSignal != null && !(abortSignal instanceof AbortSignal)) {
+      throw new TypeError('abortSignal argument must be an AbortSignal')
+    }
     if (transferList != null && !Array.isArray(transferList)) {
       throw new TypeError('transferList argument must be an array')
     }
-    return await this.internalExecute(data, name, transferList)
+    return await this.internalExecute(data, name, abortSignal, transferList)
   }
 
   /** @inheritDoc */
@@ -711,6 +715,7 @@ export abstract class AbstractPool<
   public async mapExecute (
     data: Iterable<Data>,
     name?: string,
+    abortSignals?: Iterable<AbortSignal>,
     transferList?: readonly Transferable[]
   ): Promise<Response[]> {
     if (!this.started) {
@@ -732,15 +737,42 @@ export abstract class AbstractPool<
     if (name != null && typeof name === 'string' && name.trim().length === 0) {
       throw new TypeError('name argument must not be an empty string')
     }
-    if (transferList != null && !Array.isArray(transferList)) {
-      throw new TypeError('transferList argument must be an array')
-    }
     if (!Array.isArray(data)) {
       data = [...data]
     }
+    if (abortSignals != null) {
+      if (typeof abortSignals[Symbol.iterator] !== 'function') {
+        throw new TypeError('abortSignals argument must be an iterable')
+      }
+      for (const abortSignal of abortSignals) {
+        if (!(abortSignal instanceof AbortSignal)) {
+          throw new TypeError(
+            'abortSignals argument must be an iterable of AbortSignal'
+          )
+        }
+      }
+      if (!Array.isArray(abortSignals)) {
+        abortSignals = [...abortSignals]
+      }
+      if ((data as Data[]).length !== (abortSignals as AbortSignal[]).length) {
+        throw new Error(
+          'data and abortSignals arguments must have the same length'
+        )
+      }
+    }
+    if (transferList != null && !Array.isArray(transferList)) {
+      throw new TypeError('transferList argument must be an array')
+    }
+    const tasks: [Data, AbortSignal | undefined][] = Array.from(
+      { length: (data as Data[]).length },
+      (_, i) => [
+        (data as Data[])[i],
+        abortSignals != null ? (abortSignals as AbortSignal[])[i] : undefined,
+      ]
+    )
     return await Promise.all(
-      (data as Data[]).map(data =>
-        this.internalExecute(data, name, transferList)
+      tasks.map(([data, abortSignal]) =>
+        this.internalExecute(data, name, abortSignal, transferList)
       )
     )
   }
@@ -969,6 +1001,7 @@ export abstract class AbstractPool<
         )
       }
     }
+    this.workerNodes[workerNodeKey].on('abortTask', this.abortTask)
   }
 
   /**
@@ -1318,6 +1351,43 @@ export abstract class AbstractPool<
     }
   }
 
+  private readonly abortTask = (eventDetail: WorkerNodeEventDetail): void => {
+    if (!this.started || this.destroying) {
+      return
+    }
+    const { taskId, workerId } = eventDetail
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const promiseResponse = this.promiseResponseMap.get(taskId!)
+    if (promiseResponse == null) {
+      return
+    }
+    const { abortSignal, reject } = promiseResponse
+    if (abortSignal?.aborted === false) {
+      return
+    }
+    const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+    const workerNode = this.workerNodes[workerNodeKey]
+    if (!workerNode.info.ready) {
+      return
+    }
+    if (this.opts.enableTasksQueue === true) {
+      for (const task of workerNode.tasksQueue) {
+        const { abortable, name } = task
+        if (taskId === task.taskId && abortable === true) {
+          workerNode.info.queuedTaskAbortion = true
+          workerNode.deleteTask(task)
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.promiseResponseMap.delete(taskId!)
+          workerNode.info.queuedTaskAbortion = false
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          reject(this.getAbortError(name!, taskId!))
+          return
+        }
+      }
+    }
+    this.sendToWorker(workerNodeKey, { taskId, taskOperation: 'abort' })
+  }
+
   /**
    * Adds the given worker node in the pool worker nodes.
    * @param workerNode - The worker node.
@@ -1559,8 +1629,9 @@ export abstract class AbstractPool<
    * @param task - The task to execute.
    */
   private executeTask (workerNodeKey: number, task: Task<Data>): void {
+    const { transferList } = task
     this.beforeTaskExecutionHook(workerNodeKey, task)
-    this.sendToWorker(workerNodeKey, task, task.transferList)
+    this.sendToWorker(workerNodeKey, task, transferList)
     this.checkAndEmitTaskExecutionEvents()
   }
 
@@ -1568,6 +1639,19 @@ export abstract class AbstractPool<
     for (const workerNodeKey of this.workerNodes.keys()) {
       this.flushTasksQueue(workerNodeKey)
     }
+  }
+
+  private readonly getAbortError = (
+    taskName: string,
+    taskId: `${string}-${string}-${string}-${string}-${string}`
+  ): Error => {
+    const abortError = this.promiseResponseMap.get(taskId)?.abortSignal
+      ?.reason as Error | string
+    return abortError instanceof Error
+      ? abortError
+      : typeof abortError === 'string'
+        ? new Error(abortError)
+        : new Error(`Task '${taskName}' id '${taskId}' aborted`)
   }
 
   /**
@@ -1691,7 +1775,8 @@ export abstract class AbstractPool<
       const workerNode = this.workerNodes[workerNodeKey]
       if (workerError != null) {
         this.emitter?.emit(PoolEvents.taskError, workerError)
-        const error = this.handleWorkerError(workerError)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const error = this.handleWorkerError(taskId!, workerError)
         asyncResource != null
           ? asyncResource.runInAsyncScope(reject, this.emitter, error)
           : reject(error)
@@ -1729,13 +1814,21 @@ export abstract class AbstractPool<
     }
   }
 
-  private handleWorkerError (workerError: WorkerError): Error {
-    if (workerError.error != null) {
-      return workerError.error
+  private readonly handleWorkerError = (
+    taskId: `${string}-${string}-${string}-${string}-${string}`,
+    workerError: WorkerError
+  ): Error => {
+    const { aborted, error, message, name, stack } = workerError
+    if (aborted) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return this.getAbortError(name!, taskId)
     }
-    const error = new Error(workerError.message)
-    error.stack = workerError.stack
-    return error
+    if (error != null) {
+      return error
+    }
+    const wError = new Error(message)
+    wError.stack = stack
+    return wError
   }
 
   private readonly handleWorkerNodeBackPressureEvent = (
@@ -1896,12 +1989,14 @@ export abstract class AbstractPool<
   private async internalExecute (
     data?: Data,
     name?: string,
+    abortSignal?: AbortSignal,
     transferList?: readonly Transferable[]
   ): Promise<Response> {
     return await new Promise<Response>((resolve, reject) => {
       const timestamp = performance.now()
       const workerNodeKey = this.chooseWorkerNode(name)
       const task: Task<Data> = {
+        abortable: abortSignal != null,
         data: data ?? ({} as Data),
         name: name ?? DEFAULT_TASK_NAME,
         priority: this.getWorkerNodeTaskFunctionPriority(workerNodeKey, name),
@@ -1913,6 +2008,30 @@ export abstract class AbstractPool<
         timestamp,
         transferList,
       }
+      abortSignal?.addEventListener(
+        'abort',
+        () => {
+          this.workerNodes[workerNodeKey].emit('abortTask', {
+            taskId: task.taskId,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            workerId: this.getWorkerInfo(workerNodeKey)!.id!,
+          })
+        },
+        { once: true }
+      )
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.promiseResponseMap.set(task.taskId!, {
+        reject,
+        resolve,
+        workerNodeKey,
+        ...(this.emitter != null && {
+          asyncResource: new AsyncResource('poolifier:task', {
+            requireManualDestroy: true,
+            triggerAsyncId: this.emitter.asyncId,
+          }),
+        }),
+        abortSignal,
+      })
       if (
         this.opts.enableTasksQueue === false ||
         (this.opts.enableTasksQueue === true &&
@@ -1922,20 +2041,6 @@ export abstract class AbstractPool<
       } else {
         this.enqueueTask(workerNodeKey, task)
       }
-      queueMicrotask(() => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.promiseResponseMap.set(task.taskId!, {
-          reject,
-          resolve,
-          workerNodeKey,
-          ...(this.emitter != null && {
-            asyncResource: new AsyncResource('poolifier:task', {
-              requireManualDestroy: true,
-              triggerAsyncId: this.emitter.asyncId,
-            }),
-          }),
-        })
-      })
     })
   }
 
@@ -2275,9 +2380,11 @@ export abstract class AbstractPool<
       !sourceWorkerNode.info.ready ||
       sourceWorkerNode.info.stolen ||
       sourceWorkerNode.info.stealing ||
+      sourceWorkerNode.info.queuedTaskAbortion ||
       !destinationWorkerNode.info.ready ||
       destinationWorkerNode.info.stolen ||
-      destinationWorkerNode.info.stealing
+      destinationWorkerNode.info.stealing ||
+      destinationWorkerNode.info.queuedTaskAbortion
     ) {
       return
     }
