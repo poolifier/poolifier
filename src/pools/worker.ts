@@ -331,6 +331,11 @@ export interface WorkerInfo {
    */
   readonly id: number | undefined
   /**
+   * Queued task abortion flag.
+   * This flag is set to `true` when worker node is aborting a queued task.
+   */
+  queuedTaskAbortion: boolean
+  /**
    * Ready flag.
    */
   ready: boolean

@@ -1363,13 +1363,23 @@ export abstract class AbstractPool<
     }
     const { abortSignal, reject } = promiseResponse
     const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+    const workerNode = this.workerNodes[workerNodeKey]
+    if (!workerNode.info.ready) {
+      return
+    }
     if (this.opts.enableTasksQueue === true) {
-      for (const task of this.workerNodes[workerNodeKey].tasksQueue) {
+      for (const task of workerNode.tasksQueue) {
         const { abortable, name } = task
-        if (taskId === task.taskId && abortable === true) {
-          this.workerNodes[workerNodeKey].deleteTask(task)
+        if (
+          taskId === task.taskId &&
+          abortable === true &&
+          !workerNode.info.queuedTaskAbortion
+        ) {
+          workerNode.info.queuedTaskAbortion = true
+          workerNode.deleteTask(task)
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.promiseResponseMap.delete(taskId!)
+          workerNode.info.queuedTaskAbortion = false
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           reject(this.getAbortError(name!, taskId!))
           return
@@ -2373,9 +2383,11 @@ export abstract class AbstractPool<
       !sourceWorkerNode.info.ready ||
       sourceWorkerNode.info.stolen ||
       sourceWorkerNode.info.stealing ||
+      sourceWorkerNode.info.queuedTaskAbortion ||
       !destinationWorkerNode.info.ready ||
       destinationWorkerNode.info.stolen ||
-      destinationWorkerNode.info.stealing
+      destinationWorkerNode.info.stealing ||
+      destinationWorkerNode.info.queuedTaskAbortion
     ) {
       return
     }
