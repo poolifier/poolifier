@@ -275,7 +275,7 @@ describe('Abstract pool test suite', () => {
       startWorkers: true,
       tasksQueueOptions: {
         concurrency: 2,
-        size: Math.pow(numberOfWorkers, 2),
+        size: numberOfWorkers ** 2,
         tasksFinishedTimeout: 2000,
         tasksStealingOnBackPressure: true,
         tasksStealingRatio: 0.6,
@@ -620,7 +620,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.enableTasksQueue).toBe(true)
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 1,
-      size: Math.pow(numberOfWorkers, 2),
+      size: numberOfWorkers ** 2,
       tasksFinishedTimeout: 2000,
       tasksStealingOnBackPressure: true,
       tasksStealingRatio: 0.6,
@@ -630,7 +630,7 @@ describe('Abstract pool test suite', () => {
     expect(pool.opts.enableTasksQueue).toBe(true)
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 2,
-      size: Math.pow(numberOfWorkers, 2),
+      size: numberOfWorkers ** 2,
       tasksFinishedTimeout: 2000,
       tasksStealingOnBackPressure: true,
       tasksStealingRatio: 0.6,
@@ -650,7 +650,7 @@ describe('Abstract pool test suite', () => {
     )
     expect(pool.opts.tasksQueueOptions).toStrictEqual({
       concurrency: 1,
-      size: Math.pow(numberOfWorkers, 2),
+      size: numberOfWorkers ** 2,
       tasksFinishedTimeout: 2000,
       tasksStealingOnBackPressure: true,
       tasksStealingRatio: 0.6,

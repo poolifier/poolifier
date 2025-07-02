@@ -31,7 +31,8 @@ function arraySortSelect (tasksMap) {
   return tasksArray.sort((a, b) => {
     if (a[1] < b[1]) {
       return -1
-    } else if (a[1] > b[1]) {
+    }
+    if (a[1] > b[1]) {
       return 1
     }
     return 0
@@ -49,7 +50,8 @@ function loopSelect (tasksMap) {
   for (const [key, value] of tasksMap) {
     if (value === 0) {
       return key
-    } else if (value < minValue) {
+    }
+    if (value < minValue) {
       minKey = key
       minValue = value
     }
@@ -188,7 +190,8 @@ function selectLoop (
     pivotIndex = partition(array, leftIndex, rightIndex, pivotIndex, compare)
     if (k === pivotIndex) {
       return array[k]
-    } else if (k < pivotIndex) {
+    }
+    if (k < pivotIndex) {
       rightIndex = pivotIndex - 1
     } else {
       leftIndex = pivotIndex + 1
@@ -219,11 +222,11 @@ function selectRecursion (
   pivotIndex = partition(array, leftIndex, rightIndex, pivotIndex, compare)
   if (k === pivotIndex) {
     return array[k]
-  } else if (k < pivotIndex) {
-    return selectRecursion(array, k, leftIndex, pivotIndex - 1, compare)
-  } else {
-    return selectRecursion(array, k, pivotIndex + 1, rightIndex, k, compare)
   }
+  if (k < pivotIndex) {
+    return selectRecursion(array, k, leftIndex, pivotIndex - 1, compare)
+  }
+  return selectRecursion(array, k, pivotIndex + 1, rightIndex, k, compare)
 }
 
 /**

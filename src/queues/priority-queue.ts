@@ -188,8 +188,9 @@ export class PriorityQueue<T> {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             delete tail!.next
             break
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          } else if (node.next === tail && tail!.next == null) {
+          }
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          if (node.next === tail && tail!.next == null) {
             delete node.next
             this.head = node
             break

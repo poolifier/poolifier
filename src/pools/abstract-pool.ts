@@ -1481,7 +1481,8 @@ export abstract class AbstractPool<
   private checkMessageWorkerId (message: MessageValue<Data | Response>): void {
     if (message.workerId == null) {
       throw new Error('Worker message received without worker id')
-    } else if (this.getWorkerNodeKeyByWorkerId(message.workerId) === -1) {
+    }
+    if (this.getWorkerNodeKeyByWorkerId(message.workerId) === -1) {
       throw new Error(
         `Worker message received from unknown worker '${message.workerId.toString()}'`
       )
@@ -1495,15 +1496,18 @@ export abstract class AbstractPool<
       throw new Error(
         'Cannot instantiate a pool without specifying the number of workers'
       )
-    } else if (!Number.isSafeInteger(minimumNumberOfWorkers)) {
+    }
+    if (!Number.isSafeInteger(minimumNumberOfWorkers)) {
       throw new TypeError(
         'Cannot instantiate a pool with a non safe integer number of workers'
       )
-    } else if (minimumNumberOfWorkers < 0) {
+    }
+    if (minimumNumberOfWorkers < 0) {
       throw new RangeError(
         'Cannot instantiate a pool with a negative number of workers'
       )
-    } else if (this.type === PoolTypes.fixed && minimumNumberOfWorkers === 0) {
+    }
+    if (this.type === PoolTypes.fixed && minimumNumberOfWorkers === 0) {
       throw new RangeError('Cannot instantiate a fixed pool with zero worker')
     }
   }
@@ -2273,7 +2277,7 @@ export abstract class AbstractPool<
     message: MessageValue<Data>
   ): Promise<boolean> {
     return await new Promise<boolean>((resolve, reject) => {
-      const responsesReceived = new Array<MessageValue<Response>>()
+      const responsesReceived: MessageValue<Response>[] = []
       const taskFunctionOperationsListener = (
         message: MessageValue<Response>
       ): void => {

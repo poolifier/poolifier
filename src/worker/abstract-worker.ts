@@ -1,7 +1,6 @@
 import type { Worker } from 'node:cluster'
 import type { MessagePort } from 'node:worker_threads'
 
-import { EventEmitter } from 'node:events'
 import { performance } from 'node:perf_hooks'
 
 import type {
@@ -19,7 +18,6 @@ import type {
   TaskFunctions,
   TaskSyncFunction,
 } from './task-functions.js'
-import type { AbortTaskEventDetail } from './worker-types.js'
 
 import {
   buildTaskFunctionProperties,
@@ -63,7 +61,7 @@ export abstract class AbstractWorker<
   MainWorker extends MessagePort | Worker,
   Data = unknown,
   Response = unknown
-> extends EventEmitter {
+> {
   /**
    * Handler id of the `activeInterval` worker activity check.
    */
@@ -108,7 +106,6 @@ export abstract class AbstractWorker<
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     protected opts: WorkerOptions = DEFAULT_WORKER_OPTIONS
   ) {
-    super()
     if (this.isMain == null) {
       throw new Error('isMain parameter is mandatory')
     }
@@ -117,12 +114,6 @@ export abstract class AbstractWorker<
       `${string}-${string}-${string}-${string}-${string}`,
       () => void
     >()
-    this.on('abortTask', (eventDetail: AbortTaskEventDetail) => {
-      const { taskId } = eventDetail
-      if (this.taskAbortFunctions.has(taskId)) {
-        this.taskAbortFunctions.get(taskId)?.()
-      }
-    })
     this.checkWorkerOptions(this.opts)
     if (!this.isMain) {
       // Should be once() but Node.js on windows has a bug that prevents it from working
@@ -319,7 +310,6 @@ export abstract class AbstractWorker<
         this.sendToMainWorker({ kill: 'failure' })
       }
     }
-    this.removeAllListeners()
   }
 
   /**
@@ -419,7 +409,9 @@ export abstract class AbstractWorker<
       this.run(message)
     } else if (taskOperation === 'abort' && taskId != null) {
       // Abort task operation message received
-      this.emit('abortTask', { taskId })
+      if (this.taskAbortFunctions.has(taskId)) {
+        this.taskAbortFunctions.get(taskId)?.()
+      }
     } else if (kill === true) {
       // Kill message received
       this.handleKillMessage(message)
@@ -590,7 +582,8 @@ export abstract class AbstractWorker<
   private checkMessageWorkerId (message: MessageValue<Data>): void {
     if (message.workerId == null) {
       throw new Error('Message worker id is not set')
-    } else if (message.workerId !== this.id) {
+    }
+    if (message.workerId !== this.id) {
       throw new Error(
         `Message worker id ${message.workerId.toString()} does not match the worker id ${this.id.toString()}`
       )

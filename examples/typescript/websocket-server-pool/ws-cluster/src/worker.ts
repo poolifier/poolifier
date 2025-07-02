@@ -23,14 +23,13 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static readonly factorial = (n: bigint | number): bigint => {
     if (n === 0 || n === 1) {
       return 1n
-    } else {
-      n = BigInt(n)
-      let factorial = 1n
-      for (let i = 1n; i <= n; i++) {
-        factorial *= i
-      }
-      return factorial
     }
+    n = BigInt(n)
+    let factorial = 1n
+    for (let i = 1n; i <= n; i++) {
+      factorial *= i
+    }
+    return factorial
   }
 
   private static readonly startWebSocketServer = (
