@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.2](https://github.com/poolifier/poolifier/compare/v5.0.1...v5.0.2) (2025-07-02)
+
+
+### ✨ Polish
+
+* coding style cleanups ([963e668](https://github.com/poolifier/poolifier/commit/963e6682981bfb39b95e252c5a83a2b4fca16302))
+
+
+### 📚 Documentation
+
+* publish documentation ([abd5fcb](https://github.com/poolifier/poolifier/commit/abd5fcbefd80cd9f9a9deca49e3472997e89d732))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump the regular group with 3 updates ([#2908](https://github.com/poolifier/poolifier/issues/2908)) ([fb89f99](https://github.com/poolifier/poolifier/commit/fb89f996dc1db22ca53a254bd5721ee6d1e61a4c))
+* **deps:** bump the regular group across 11 directories with 2 updates ([#2909](https://github.com/poolifier/poolifier/issues/2909)) ([e738863](https://github.com/poolifier/poolifier/commit/e7388636cd25ba430c56ed2b28c092bd6a18bd73))
+
 ## [5.0.1](https://github.com/poolifier/poolifier/compare/v5.0.0...v5.0.1) (2025-07-01)
 
 
