@@ -29,9 +29,9 @@ export class LeastUsedWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (workerNodes?: number[]): number | undefined {
+  public choose (workerNodeKeys?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.leastUsedNextWorkerNodeKey(workerNodes)
+    this.nextWorkerNodeKey = this.leastUsedNextWorkerNodeKey(workerNodeKeys)
     return this.nextWorkerNodeKey
   }
 

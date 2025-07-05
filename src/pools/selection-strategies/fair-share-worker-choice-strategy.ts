@@ -53,9 +53,9 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (workerNodes?: number[]): number | undefined {
+  public choose (workerNodeKeys?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey(workerNodes)
+    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey(workerNodeKeys)
     return this.nextWorkerNodeKey
   }
 
