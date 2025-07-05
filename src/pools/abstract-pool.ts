@@ -391,6 +391,11 @@ export abstract class AbstractPool<
     }
   }
 
+  /** @inheritDoc */
+  public get workerNodeKeys (): number[] {
+    return this.workerNodes.map((_, index) => index)
+  }
+
   /**
    * The task execution response promise map:
    * - `key`: The message id of each submitted task.
@@ -616,6 +621,22 @@ export abstract class AbstractPool<
     ) {
       throw new Error(
         'Cannot add a task function with more worker node keys affinity than the maximum number of workers'
+      )
+    }
+    const workerNodeKeys = Array.from(
+      {
+        length: this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers,
+      },
+      (_, index) => index
+    )
+    if (
+      fn.workerNodes != null &&
+      fn.workerNodes.filter(workerNodeKey =>
+        workerNodeKeys.includes(workerNodeKey)
+      ).length === 0
+    ) {
+      throw new Error(
+        `Cannot add a task function with worker nodes keys affinity outside the pool worker nodes keys: ${workerNodeKeys.toString()}`
       )
     }
     const opResult = await this.sendTaskFunctionOperationToWorkers({

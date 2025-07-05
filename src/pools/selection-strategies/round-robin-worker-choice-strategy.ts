@@ -72,7 +72,7 @@ export class RoundRobinWorkerChoiceStrategy<
   private roundRobinNextWorkerNodeKey (
     workerNodes?: number[]
   ): number | undefined {
-    workerNodes = this.checkWorkerNodes(workerNodes)
+    workerNodes = this.checkWorkerNodeKeys(workerNodes)
     if (workerNodes.length === 1) {
       return workerNodes[0]
     }

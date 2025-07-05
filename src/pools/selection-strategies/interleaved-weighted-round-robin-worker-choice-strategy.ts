@@ -67,7 +67,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (workerNodes?: number[]): number | undefined {
-    workerNodes = this.checkWorkerNodes(workerNodes)
+    workerNodes = this.checkWorkerNodeKeys(workerNodes)
     for (
       let roundIndex = this.roundId;
       roundIndex < this.roundWeights.length;

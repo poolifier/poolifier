@@ -72,7 +72,7 @@ export class LeastBusyWorkerChoiceStrategy<
   private leastBusyNextWorkerNodeKey (
     workerNodeKeys?: number[]
   ): number | undefined {
-    workerNodeKeys = this.checkWorkerNodes(workerNodeKeys)
+    workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
     if (workerNodeKeys.length === 1) {
       return workerNodeKeys[0]
     }
