@@ -29,10 +29,10 @@ export class RoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number | undefined {
+  public choose (workerNodes?: number[]): number | undefined {
     const chosenWorkerNodeKey = this.nextWorkerNodeKey
     this.setPreviousWorkerNodeKey(chosenWorkerNodeKey)
-    this.roundRobinNextWorkerNodeKey()
+    this.roundRobinNextWorkerNodeKey(workerNodes)
     this.checkNextWorkerNodeKey()
     return chosenWorkerNodeKey
   }
@@ -69,11 +69,16 @@ export class RoundRobinWorkerChoiceStrategy<
     return true
   }
 
-  private roundRobinNextWorkerNodeKey (): number | undefined {
-    this.nextWorkerNodeKey =
-      this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
-        ? 0
-        : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
+  private roundRobinNextWorkerNodeKey (
+    workerNodeKeys?: number[]
+  ): number | undefined {
+    workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
+    if (workerNodeKeys.length === 1) {
+      return workerNodeKeys[0]
+    }
+    do {
+      this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
+    } while (!workerNodeKeys.includes(this.nextWorkerNodeKey))
     return this.nextWorkerNodeKey
   }
 }

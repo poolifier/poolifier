@@ -53,9 +53,9 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number | undefined {
+  public choose (workerNodeKeys?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey()
+    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey(workerNodeKeys)
     return this.nextWorkerNodeKey
   }
 
@@ -95,7 +95,13 @@ export class FairShareWorkerChoiceStrategy<
     )
   }
 
-  private fairShareNextWorkerNodeKey (): number | undefined {
+  private fairShareNextWorkerNodeKey (
+    workerNodeKeys?: number[]
+  ): number | undefined {
+    workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
+    if (workerNodeKeys.length === 1) {
+      return workerNodeKeys[0]
+    }
     return this.pool.workerNodes.reduce(
       (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
         if (workerNode.strategyData?.virtualTaskEndTimestamp == null) {
@@ -105,6 +111,7 @@ export class FairShareWorkerChoiceStrategy<
           }
         }
         return this.isWorkerNodeReady(workerNodeKey) &&
+          workerNodeKeys.includes(workerNodeKey) &&
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           workerNode.strategyData.virtualTaskEndTimestamp! <
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

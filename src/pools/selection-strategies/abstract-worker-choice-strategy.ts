@@ -62,7 +62,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public abstract choose (): number | undefined
+  public abstract choose (workerNodeKeys?: number[]): number | undefined
 
   /** @inheritDoc */
   public abstract remove (workerNodeKey: number): boolean
@@ -93,6 +93,28 @@ export abstract class AbstractWorkerChoiceStrategy<
     ) {
       delete this.nextWorkerNodeKey
     }
+  }
+
+  /**
+   * Check the worker node keys affinity.
+   * @param workerNodeKeys - Worker node keys affinity.
+   * @returns Worker node keys affinity.
+   */
+  protected checkWorkerNodeKeys (workerNodeKeys?: number[]): number[] {
+    if (workerNodeKeys == null) {
+      return this.pool.workerNodeKeys
+    }
+    return workerNodeKeys.filter(key => this.pool.workerNodeKeys.includes(key))
+  }
+
+  /**
+   * Gets the next worker node key in a round-robin fashion.
+   * @returns The next worker node key.
+   */
+  protected getRoundRobinNextWorkerNodeKey (): number {
+    return this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
+      ? 0
+      : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
   }
 
   /**
