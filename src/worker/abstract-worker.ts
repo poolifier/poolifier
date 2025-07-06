@@ -680,7 +680,8 @@ export abstract class AbstractWorker<
           this.taskAbortFunctions.set(taskId, () => {
             reject(new AbortError(`Task '${name}' id '${taskId}' aborted`))
           })
-          const taskFunction = this.taskFunctions.get(name)?.taskFunction
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const taskFunction = this.taskFunctions.get(name)!.taskFunction
           if (isAsyncFunction(taskFunction)) {
             ;(taskFunction as TaskAsyncFunction<Data, Response>)(data)
               .then(resolve)

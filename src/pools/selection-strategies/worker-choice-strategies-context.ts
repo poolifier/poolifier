@@ -246,17 +246,13 @@ export class WorkerChoiceStrategiesContext<
     workerChoiceStrategy: IWorkerChoiceStrategy,
     workerNodes?: number[]
   ): number {
-    let workerNodeKey: number | undefined
-    let chooseCount = 0
+    let workerNodeKey: number | undefined = workerChoiceStrategy.choose()
     let retriesCount = 0
-    do {
+    while (workerNodeKey == null && retriesCount < this.retries) {
       workerNodeKey = workerChoiceStrategy.choose(workerNodes)
-      if (workerNodeKey == null && chooseCount > 0) {
-        ++retriesCount
-        ++this.retriesCount
-      }
-      ++chooseCount
-    } while (workerNodeKey == null && retriesCount < this.retries)
+      retriesCount++
+      this.retriesCount++
+    }
     if (workerNodeKey == null) {
       throw new Error(
         `Worker node key chosen is null or undefined after ${retriesCount.toString()} retries`

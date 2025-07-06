@@ -24,11 +24,8 @@ export const checkValidWorkerOptions = (
   }
   if (
     opts?.maxInactiveTime != null &&
-    !Number.isSafeInteger(opts.maxInactiveTime)
+    (!Number.isSafeInteger(opts.maxInactiveTime) || opts.maxInactiveTime < 5)
   ) {
-    throw new TypeError('maxInactiveTime option is not an integer')
-  }
-  if (opts?.maxInactiveTime != null && opts.maxInactiveTime < 5) {
     throw new TypeError(
       'maxInactiveTime option is not a positive integer greater or equal than 5'
     )
@@ -45,14 +42,7 @@ export const checkValidTaskFunctionObjectEntry = <
     name: string,
     fnObj: TaskFunctionObject<Data, Response>
   ): void => {
-  if (typeof name !== 'string') {
-    throw new TypeError('A taskFunctions parameter object key is not a string')
-  }
-  if (typeof name === 'string' && name.trim().length === 0) {
-    throw new TypeError(
-      'A taskFunctions parameter object key is an empty string'
-    )
-  }
+  checkTaskFunctionName(name)
   if (typeof fnObj.taskFunction !== 'function') {
     throw new TypeError(
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -68,7 +58,7 @@ export const checkTaskFunctionName = (name: string): void => {
   if (typeof name !== 'string') {
     throw new TypeError('name parameter is not a string')
   }
-  if (typeof name === 'string' && name.trim().length === 0) {
+  if (name.trim().length === 0) {
     throw new TypeError('name parameter is an empty string')
   }
 }

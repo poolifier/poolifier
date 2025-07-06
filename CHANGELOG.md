@@ -5,6 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.4](https://github.com/poolifier/poolifier/compare/v5.0.3...v5.0.4) (2025-07-06)
+
+
+### 🐞 Bug Fixes
+
+* fix worker usage statistics computation ([f6392d5](https://github.com/poolifier/poolifier/commit/f6392d503f33ca42d5125f9b524fd9454b87fbba))
+
+
+### 📚 Documentation
+
+* publish documentation ([ba4f2c7](https://github.com/poolifier/poolifier/commit/ba4f2c791a628adc00a7761f9052a4b5d8345cf6))
+
+## [5.0.3](https://github.com/poolifier/poolifier/compare/v5.0.2...v5.0.3) (2025-07-06)
+
+
+### 🐞 Bug Fixes
+
+* task queueing fixes ([#2912](https://github.com/poolifier/poolifier/issues/2912)) ([8a2bf75](https://github.com/poolifier/poolifier/commit/8a2bf757c04a2056ff94dda488e87d817c7291d5))
+
+
+### ⚡ Performance
+
+* remove unneeded null check at building abortable task function ([0961d2d](https://github.com/poolifier/poolifier/commit/0961d2de5e99f1c9ea11db7d317bdf6ca9ef2af1))
+
+
+### 📚 Documentation
+
+* publish documentation ([bf95519](https://github.com/poolifier/poolifier/commit/bf95519bc47c070d16139e857f42ea544ce9f3fc))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump rollup from 4.44.1 to 4.44.2 in the regular group ([c026beb](https://github.com/poolifier/poolifier/commit/c026beb886b1484105a069d700554b24d50fe97a))
+* **deps-dev:** bump rollup from 4.44.1 to 4.44.2 in the regular group ([6f8b8be](https://github.com/poolifier/poolifier/commit/6f8b8be7de3b325085157f1d6e2bd0ace17c252e))
+* **deps-dev:** bump the regular group across 6 directories with 1 update ([177eb45](https://github.com/poolifier/poolifier/commit/177eb456bc28a2664a21c095ed2aeae25c8eebf4))
+* **deps-dev:** bump the regular group across 6 directories with 1 update ([fa5a898](https://github.com/poolifier/poolifier/commit/fa5a898bcf68b2b9c4bfebb34d54872481c47f82))
+* **deps:** bump the regular group across 11 directories with 1 update ([#2911](https://github.com/poolifier/poolifier/issues/2911)) ([a3116ee](https://github.com/poolifier/poolifier/commit/a3116ee6e6c846a8eccbdefecfad994fd47bfbc4))
+
 ## [5.0.2](https://github.com/poolifier/poolifier/compare/v5.0.1...v5.0.2) (2025-07-02)
 
 

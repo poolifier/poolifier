@@ -4,7 +4,7 @@
 export const defaultBufferSize = 2048
 
 /**
- * Circular buffer designed for positive numbers.
+ * Circular buffer designed for numbers.
  * @internal
  */
 export class CircularBuffer {
@@ -24,7 +24,7 @@ export class CircularBuffer {
     this.writeIdx = 0
     this.maxArrayIdx = size - 1
     this.size = 0
-    this.items = new Float32Array(size).fill(-1)
+    this.items = new Float32Array(size)
   }
 
   /**
@@ -48,11 +48,10 @@ export class CircularBuffer {
    * @returns Number from buffer.
    */
   public get (): number | undefined {
-    const number = this.items[this.readIdx]
-    if (number === -1) {
-      return
+    if (this.empty()) {
+      return undefined
     }
-    this.items[this.readIdx] = -1
+    const number = this.items[this.readIdx]
     this.readIdx = this.readIdx === this.maxArrayIdx ? 0 : this.readIdx + 1
     --this.size
     return number
@@ -63,11 +62,13 @@ export class CircularBuffer {
    * @param number - Number to put into buffer.
    */
   public put (number: number): void {
-    this.items[this.writeIdx] = number
-    this.writeIdx = this.writeIdx === this.maxArrayIdx ? 0 : this.writeIdx + 1
-    if (this.size < this.items.length) {
+    if (this.full()) {
+      this.readIdx = this.readIdx === this.maxArrayIdx ? 0 : this.readIdx + 1
+    } else {
       ++this.size
     }
+    this.items[this.writeIdx] = number
+    this.writeIdx = this.writeIdx === this.maxArrayIdx ? 0 : this.writeIdx + 1
   }
 
   /**
@@ -75,7 +76,16 @@ export class CircularBuffer {
    * @returns Numbers' array.
    */
   public toArray (): number[] {
-    return Array.from(this.items.filter(item => item !== -1))
+    const array: number[] = []
+    if (this.empty()) {
+      return array
+    }
+    let currentIdx = this.readIdx
+    for (let i = 0; i < this.size; i++) {
+      array.push(this.items[currentIdx])
+      currentIdx = currentIdx === this.maxArrayIdx ? 0 : currentIdx + 1
+    }
+    return array
   }
 
   /**
