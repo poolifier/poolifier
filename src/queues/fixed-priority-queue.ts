@@ -16,27 +16,35 @@ export class FixedPriorityQueue<T>
       throw new Error('Fixed priority queue is full')
     }
     priority = priority ?? 0
-    let inserted = false
-    let index = this.start
+    let insertionPhysicalIndex = -1
+    let currentPhysicalIndex = this.start
     for (let i = 0; i < this.size; i++) {
-      if (this.nodeArray[index].priority > priority) {
-        this.nodeArray.splice(index, 0, { data, priority })
-        this.nodeArray.length = this.capacity
-        inserted = true
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      if (this.nodeArray[currentPhysicalIndex]!.priority > priority) {
+        insertionPhysicalIndex = currentPhysicalIndex
         break
       }
-      ++index
-      if (index === this.capacity) {
-        index = 0
+      currentPhysicalIndex++
+      if (currentPhysicalIndex === this.capacity) {
+        currentPhysicalIndex = 0
       }
     }
-    if (!inserted) {
-      let index = this.start + this.size
-      if (index >= this.capacity) {
-        index -= this.capacity
-      }
-      this.nodeArray[index] = { data, priority }
+    let end = this.start + this.size
+    if (end >= this.capacity) {
+      end -= this.capacity
     }
+    if (insertionPhysicalIndex === -1) {
+      insertionPhysicalIndex = end
+    } else {
+      let toShiftIndex = end
+      while (toShiftIndex !== insertionPhysicalIndex) {
+        const previousIndex =
+          toShiftIndex === 0 ? this.capacity - 1 : toShiftIndex - 1
+        this.nodeArray[toShiftIndex] = this.nodeArray[previousIndex]
+        toShiftIndex = previousIndex
+      }
+    }
+    this.nodeArray[insertionPhysicalIndex] = { data, priority }
     return ++this.size
   }
 }

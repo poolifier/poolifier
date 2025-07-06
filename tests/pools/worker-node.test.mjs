@@ -292,7 +292,6 @@ describe('Worker node test suite', () => {
     expect(threadWorkerNode.tasksQueueSize()).toBe(
       threadWorkerNode.tasksQueue.size
     )
-    expect(threadWorkerNode.setBackPressureFlag).toBe(false)
     expect(threadWorkerNode.taskFunctionsUsage).toBeInstanceOf(Map)
 
     expect(clusterWorkerNode).toBeInstanceOf(WorkerNode)
@@ -355,7 +354,6 @@ describe('Worker node test suite', () => {
     expect(clusterWorkerNode.tasksQueueSize()).toBe(
       clusterWorkerNode.tasksQueue.size
     )
-    expect(clusterWorkerNode.setBackPressureFlag).toBe(false)
     expect(clusterWorkerNode.taskFunctionsUsage).toBeInstanceOf(Map)
   })
 

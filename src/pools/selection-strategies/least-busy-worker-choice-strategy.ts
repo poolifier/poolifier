@@ -70,17 +70,23 @@ export class LeastBusyWorkerChoiceStrategy<
   }
 
   private leastBusyNextWorkerNodeKey (): number | undefined {
-    return this.pool.workerNodes.reduce(
-      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
-        return this.isWorkerNodeReady(workerNodeKey) &&
-          (workerNode.usage.waitTime.aggregate ?? 0) +
-            (workerNode.usage.runTime.aggregate ?? 0) <
-            (workerNodes[minWorkerNodeKey].usage.waitTime.aggregate ?? 0) +
-              (workerNodes[minWorkerNodeKey].usage.runTime.aggregate ?? 0)
+    const chosenWorkerNodeKey = this.pool.workerNodes.reduce(
+      (minWorkerNodeKey: number, workerNode, workerNodeKey, workerNodes) => {
+        if (!this.isWorkerNodeReady(workerNodeKey)) {
+          return minWorkerNodeKey
+        }
+        if (minWorkerNodeKey === -1) {
+          return workerNodeKey
+        }
+        return (workerNode.usage.waitTime.aggregate ?? 0) +
+          (workerNode.usage.runTime.aggregate ?? 0) <
+          (workerNodes[minWorkerNodeKey].usage.waitTime.aggregate ?? 0) +
+            (workerNodes[minWorkerNodeKey].usage.runTime.aggregate ?? 0)
           ? workerNodeKey
           : minWorkerNodeKey
       },
-      0
+      -1
     )
+    return chosenWorkerNodeKey === -1 ? undefined : chosenWorkerNodeKey
   }
 }

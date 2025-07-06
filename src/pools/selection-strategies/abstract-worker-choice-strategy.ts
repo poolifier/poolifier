@@ -83,16 +83,21 @@ export abstract class AbstractWorkerChoiceStrategy<
   public abstract update (workerNodeKey: number): boolean
 
   /**
-   * Check the next worker node key.
+   * Check the worker node key.
+   * @param workerNodeKey - The worker node key to check.
+   * @returns The worker node key if it is valid, otherwise undefined.
    */
-  protected checkNextWorkerNodeKey (): void {
+  protected checkWorkerNodeKey (
+    workerNodeKey: number | undefined
+  ): number | undefined {
     if (
-      this.nextWorkerNodeKey != null &&
-      (this.nextWorkerNodeKey < 0 ||
-        !this.isWorkerNodeReady(this.nextWorkerNodeKey))
+      workerNodeKey == null ||
+      workerNodeKey < 0 ||
+      workerNodeKey >= this.pool.workerNodes.length
     ) {
-      delete this.nextWorkerNodeKey
+      return undefined
     }
+    return workerNodeKey
   }
 
   /**
