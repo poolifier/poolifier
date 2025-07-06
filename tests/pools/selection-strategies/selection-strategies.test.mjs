@@ -336,12 +336,12 @@ describe('Selection strategies test suite', () => {
       pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       ).nextWorkerNodeKey
-    ).toBe(0)
+    ).toBe(pool.workerNodes.length - 1)
     expect(
       pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
         pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       ).previousWorkerNodeKey
-    ).toBe(pool.workerNodes.length - 1)
+    ).toBe(pool.workerNodes.length - 2)
     // We need to clean up the resources after our test
     await pool.destroy()
   })

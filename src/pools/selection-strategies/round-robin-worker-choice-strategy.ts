@@ -30,30 +30,23 @@ export class RoundRobinWorkerChoiceStrategy<
 
   /** @inheritDoc */
   public choose (): number | undefined {
-    const chosenWorkerNodeKey = this.nextWorkerNodeKey
-    this.setPreviousWorkerNodeKey(chosenWorkerNodeKey)
+    this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     this.roundRobinNextWorkerNodeKey()
-    this.checkNextWorkerNodeKey()
-    return chosenWorkerNodeKey
+    return this.checkWorkerNodeKey(this.nextWorkerNodeKey)
   }
 
   /** @inheritDoc */
   public remove (workerNodeKey: number): boolean {
     if (this.pool.workerNodes.length === 0) {
-      this.reset()
-      return true
+      return this.reset()
     }
     if (
-      this.nextWorkerNodeKey === workerNodeKey &&
-      this.nextWorkerNodeKey > this.pool.workerNodes.length - 1
+      this.nextWorkerNodeKey != null &&
+      this.nextWorkerNodeKey >= workerNodeKey
     ) {
-      this.nextWorkerNodeKey = this.pool.workerNodes.length - 1
-    }
-    if (
-      this.previousWorkerNodeKey === workerNodeKey &&
-      this.previousWorkerNodeKey > this.pool.workerNodes.length - 1
-    ) {
-      this.previousWorkerNodeKey = this.pool.workerNodes.length - 1
+      this.nextWorkerNodeKey =
+        (this.nextWorkerNodeKey - 1 + this.pool.workerNodes.length) %
+        this.pool.workerNodes.length
     }
     return true
   }

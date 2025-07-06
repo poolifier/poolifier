@@ -41,10 +41,14 @@ describe('Abstract worker test suite', () => {
       new TypeError("killBehavior option '0' is not valid")
     )
     expect(() => new ThreadWorker(() => {}, { maxInactiveTime: '' })).toThrow(
-      new TypeError('maxInactiveTime option is not an integer')
+      new TypeError(
+        'maxInactiveTime option is not a positive integer greater or equal than 5'
+      )
     )
     expect(() => new ThreadWorker(() => {}, { maxInactiveTime: 0.5 })).toThrow(
-      new TypeError('maxInactiveTime option is not an integer')
+      new TypeError(
+        'maxInactiveTime option is not a positive integer greater or equal than 5'
+      )
     )
     expect(() => new ThreadWorker(() => {}, { maxInactiveTime: 0 })).toThrow(
       new TypeError(
@@ -155,7 +159,7 @@ describe('Abstract worker test suite', () => {
     }
     const fn2 = ''
     expect(() => new ThreadWorker({ '': fn1 })).toThrow(
-      new TypeError('A taskFunctions parameter object key is an empty string')
+      new TypeError('name parameter is an empty string')
     )
     expect(() => new ThreadWorker({ fn1, fn2 })).toThrow(
       new TypeError(

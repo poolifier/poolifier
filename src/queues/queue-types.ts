@@ -68,7 +68,7 @@ export interface IFixedQueue<T> {
    */
   get: (index: number) => T | undefined
   /** The fixed queue node array. */
-  nodeArray: FixedQueueNode<T>[]
+  nodeArray: (FixedQueueNode<T> | undefined)[]
   /** The fixed queue size. */
   readonly size: number
 }

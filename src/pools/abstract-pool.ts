@@ -2245,56 +2245,59 @@ export abstract class AbstractPool<
   private async sendTaskFunctionOperationToWorkers (
     message: MessageValue<Data>
   ): Promise<boolean> {
-    return await new Promise<boolean>((resolve, reject) => {
-      const responsesReceived: MessageValue<Response>[] = []
-      const taskFunctionOperationsListener = (
-        message: MessageValue<Response>
-      ): void => {
-        this.checkMessageWorkerId(message)
-        if (message.taskFunctionOperationStatus != null) {
-          responsesReceived.push(message)
-          if (responsesReceived.length === this.workerNodes.length) {
-            if (
-              responsesReceived.every(
-                message => message.taskFunctionOperationStatus === true
+    const taskFunctionOperationsListener = (
+      message: MessageValue<Response>,
+      resolve: (value: boolean | PromiseLike<boolean>) => void,
+      reject: (reason?: unknown) => void,
+      responsesReceived: MessageValue<Response>[]
+    ): void => {
+      this.checkMessageWorkerId(message)
+      if (message.taskFunctionOperationStatus != null) {
+        responsesReceived.push(message)
+        if (responsesReceived.length === this.workerNodes.length) {
+          if (
+            responsesReceived.every(
+              msg => msg.taskFunctionOperationStatus === true
+            )
+          ) {
+            resolve(true)
+          } else {
+            const errorResponse = responsesReceived.find(
+              msg => msg.taskFunctionOperationStatus === false
+            )
+            reject(
+              new Error(
+                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                `Task function operation '${message.taskFunctionOperation as string}' failed on worker ${errorResponse?.workerId?.toString()} with error: '${errorResponse?.workerError?.error?.message ?? 'Unknown error'}'`
               )
-            ) {
-              resolve(true)
-            } else if (
-              responsesReceived.some(
-                message => message.taskFunctionOperationStatus === false
-              )
-            ) {
-              const errorResponse = responsesReceived.find(
-                response => response.taskFunctionOperationStatus === false
-              )
-              reject(
-                new Error(
-                  `Task function operation '${
-                    message.taskFunctionOperation as string
-                    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                  }' failed on worker ${errorResponse?.workerId?.toString()} with error: '${
-                    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                    errorResponse?.workerError?.message
-                  }'`
-                )
-              )
-            }
-            this.deregisterWorkerMessageListener(
-              this.getWorkerNodeKeyByWorkerId(message.workerId),
-              taskFunctionOperationsListener
             )
           }
         }
       }
+    }
+    let listener: (message: MessageValue<Response>) => void
+    try {
+      return await new Promise<boolean>((resolve, reject) => {
+        const responsesReceived: MessageValue<Response>[] = []
+        listener = (message: MessageValue<Response>) => {
+          taskFunctionOperationsListener(
+            message,
+            resolve,
+            reject,
+            responsesReceived
+          )
+        }
+        for (const workerNodeKey of this.workerNodes.keys()) {
+          this.registerWorkerMessageListener(workerNodeKey, listener)
+          this.sendToWorker(workerNodeKey, message)
+        }
+      })
+    } finally {
       for (const workerNodeKey of this.workerNodes.keys()) {
-        this.registerWorkerMessageListener(
-          workerNodeKey,
-          taskFunctionOperationsListener
-        )
-        this.sendToWorker(workerNodeKey, message)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.deregisterWorkerMessageListener(workerNodeKey, listener!)
       }
-    })
+    }
   }
 
   private setTasksQueuePriority (workerNodeKey: number): void {

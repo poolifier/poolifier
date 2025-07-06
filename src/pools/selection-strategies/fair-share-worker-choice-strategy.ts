@@ -60,7 +60,15 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public remove (): boolean {
+  public remove (workerNodeKey: number): boolean {
+    if (
+      this.pool.workerNodes[workerNodeKey]?.strategyData
+        ?.virtualTaskEndTimestamp != null
+    ) {
+      this.pool.workerNodes[
+        workerNodeKey
+      ].strategyData.virtualTaskEndTimestamp = undefined
+    }
     return true
   }
 
@@ -96,24 +104,34 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   private fairShareNextWorkerNodeKey (): number | undefined {
-    return this.pool.workerNodes.reduce(
-      (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
+    const chosenWorkerNodeKey = this.pool.workerNodes.reduce(
+      (minWorkerNodeKey: number, workerNode, workerNodeKey, workerNodes) => {
+        if (!this.isWorkerNodeReady(workerNodeKey)) {
+          return minWorkerNodeKey
+        }
+        if (minWorkerNodeKey === -1) {
+          workerNode.strategyData = {
+            virtualTaskEndTimestamp:
+              this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey),
+          }
+          return workerNodeKey
+        }
         if (workerNode.strategyData?.virtualTaskEndTimestamp == null) {
           workerNode.strategyData = {
             virtualTaskEndTimestamp:
               this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey),
           }
         }
-        return this.isWorkerNodeReady(workerNodeKey) &&
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return workerNode.strategyData.virtualTaskEndTimestamp! <
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          workerNode.strategyData.virtualTaskEndTimestamp! <
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            workerNodes[minWorkerNodeKey].strategyData!.virtualTaskEndTimestamp!
+          workerNodes[minWorkerNodeKey].strategyData!.virtualTaskEndTimestamp!
           ? workerNodeKey
           : minWorkerNodeKey
       },
-      0
+      -1
     )
+    return chosenWorkerNodeKey === -1 ? undefined : chosenWorkerNodeKey
   }
 
   private getWorkerNodeVirtualTaskEndTimestamp (

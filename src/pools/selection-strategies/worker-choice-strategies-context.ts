@@ -239,17 +239,13 @@ export class WorkerChoiceStrategiesContext<
    * @throws {@link https://nodejs.org/api/errors.html#class-error} If after computed retries the worker node key is null or undefined.
    */
   private executeStrategy (workerChoiceStrategy: IWorkerChoiceStrategy): number {
-    let workerNodeKey: number | undefined
-    let chooseCount = 0
+    let workerNodeKey: number | undefined = workerChoiceStrategy.choose()
     let retriesCount = 0
-    do {
+    while (workerNodeKey == null && retriesCount < this.retries) {
       workerNodeKey = workerChoiceStrategy.choose()
-      if (workerNodeKey == null && chooseCount > 0) {
-        ++retriesCount
-        ++this.retriesCount
-      }
-      ++chooseCount
-    } while (workerNodeKey == null && retriesCount < this.retries)
+      retriesCount++
+      this.retriesCount++
+    }
     if (workerNodeKey == null) {
       throw new Error(
         `Worker node key chosen is null or undefined after ${retriesCount.toString()} retries`

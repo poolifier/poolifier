@@ -113,16 +113,12 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
       return true
     }
     if (
-      this.workerNodeId === workerNodeKey &&
-      this.workerNodeId > this.pool.workerNodes.length - 1
+      this.nextWorkerNodeKey != null &&
+      this.nextWorkerNodeKey >= workerNodeKey
     ) {
-      this.workerNodeId = this.pool.workerNodes.length - 1
-    }
-    if (
-      this.previousWorkerNodeKey === workerNodeKey &&
-      this.previousWorkerNodeKey > this.pool.workerNodes.length - 1
-    ) {
-      this.previousWorkerNodeKey = this.pool.workerNodes.length - 1
+      this.nextWorkerNodeKey =
+        (this.nextWorkerNodeKey - 1 + this.pool.workerNodes.length) %
+        this.pool.workerNodes.length
     }
     return true
   }
