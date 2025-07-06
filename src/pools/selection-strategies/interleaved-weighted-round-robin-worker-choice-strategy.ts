@@ -120,6 +120,11 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
         (this.nextWorkerNodeKey - 1 + this.pool.workerNodes.length) %
         this.pool.workerNodes.length
     }
+    if (this.workerNodeId >= workerNodeKey) {
+      this.workerNodeId =
+        (this.workerNodeId - 1 + this.pool.workerNodes.length) %
+        this.pool.workerNodes.length
+    }
     return true
   }
 
