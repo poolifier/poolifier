@@ -57,6 +57,10 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   public choose (): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     this.weightedRoundRobinNextWorkerNodeKey()
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    if (!this.isWorkerNodeReady(this.nextWorkerNodeKey!)) {
+      return undefined
+    }
     return this.checkWorkerNodeKey(this.nextWorkerNodeKey)
   }
 
@@ -75,6 +79,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
       this.nextWorkerNodeKey =
         (this.nextWorkerNodeKey - 1 + this.pool.workerNodes.length) %
         this.pool.workerNodes.length
+      if (this.previousWorkerNodeKey >= workerNodeKey) {
+        this.previousWorkerNodeKey = this.nextWorkerNodeKey
+      }
     }
     return true
   }

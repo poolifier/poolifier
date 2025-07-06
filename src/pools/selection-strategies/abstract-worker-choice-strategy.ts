@@ -91,8 +91,9 @@ export abstract class AbstractWorkerChoiceStrategy<
     workerNodeKey: number | undefined
   ): number | undefined {
     if (
-      workerNodeKey != null &&
-      (workerNodeKey < 0 || !this.isWorkerNodeReady(workerNodeKey))
+      workerNodeKey == null ||
+      workerNodeKey < 0 ||
+      workerNodeKey >= this.pool.workerNodes.length
     ) {
       return undefined
     }
