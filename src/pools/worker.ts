@@ -59,6 +59,7 @@ export const MeasurementHistorySize = 386
  */
 export interface EventLoopUtilizationMeasurementStatistics {
   readonly active: MeasurementStatistics
+  count?: number
   readonly idle: MeasurementStatistics
   utilization?: number
 }
