@@ -187,6 +187,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
         break
     }
     await waitWorkerExit
+    this.worker.removeAllListeners()
   }
 
   private closeMessageChannel (): void {

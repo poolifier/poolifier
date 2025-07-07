@@ -99,7 +99,7 @@ describe('Fixed queue test suite', () => {
     expect(fixedQueue.size).toBe(2)
     expect(rtItem).toBe(1)
     expect(fixedQueue.nodeArray).toMatchObject([
-      { data: 1, priority: 0 },
+      undefined,
       { data: 2, priority: -1 },
       { data: 3, priority: 0 },
     ])
@@ -109,8 +109,8 @@ describe('Fixed queue test suite', () => {
     expect(fixedQueue.size).toBe(1)
     expect(rtItem).toBe(2)
     expect(fixedQueue.nodeArray).toMatchObject([
-      { data: 1, priority: 0 },
-      { data: 2, priority: -1 },
+      undefined,
+      undefined,
       { data: 3, priority: 0 },
     ])
     expect(fixedQueue.capacity).toBe(queueSize)
@@ -119,9 +119,9 @@ describe('Fixed queue test suite', () => {
     expect(fixedQueue.size).toBe(0)
     expect(rtItem).toBe(3)
     expect(fixedQueue.nodeArray).toMatchObject([
-      { data: 1, priority: 0 },
-      { data: 2, priority: -1 },
-      { data: 3, priority: 0 },
+      undefined,
+      undefined,
+      undefined,
     ])
     expect(fixedQueue.capacity).toBe(queueSize)
     rtItem = fixedQueue.dequeue()
@@ -129,9 +129,9 @@ describe('Fixed queue test suite', () => {
     expect(fixedQueue.size).toBe(0)
     expect(rtItem).toBe(undefined)
     expect(fixedQueue.nodeArray).toMatchObject([
-      { data: 1, priority: 0 },
-      { data: 2, priority: -1 },
-      { data: 3, priority: 0 },
+      undefined,
+      undefined,
+      undefined,
     ])
     expect(fixedQueue.capacity).toBe(queueSize)
   })
@@ -208,7 +208,7 @@ describe('Fixed queue test suite', () => {
   })
 
   it('Verify clear() behavior', () => {
-    const fixedQueue = new FixedQueue()
+    const fixedQueue = new FixedQueue(2)
     fixedQueue.start = 1
     fixedQueue.size = 2
     fixedQueue.nodeArray = [
@@ -218,9 +218,6 @@ describe('Fixed queue test suite', () => {
     fixedQueue.clear()
     expect(fixedQueue.start).toBe(0)
     expect(fixedQueue.size).toBe(0)
-    expect(fixedQueue.nodeArray).toMatchObject([
-      { data: 2, priority: 0 },
-      { data: 3, priority: 0 },
-    ])
+    expect(fixedQueue.nodeArray).toStrictEqual([undefined, undefined])
   })
 })

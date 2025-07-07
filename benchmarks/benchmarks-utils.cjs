@@ -24,10 +24,16 @@ const jsonIntegerSerialization = n => {
  * @returns - The nth fibonacci number.
  */
 const fibonacci = n => {
+  if (n === 0) {
+    return 0n
+  }
+  if (n === 1) {
+    return 1n
+  }
   n = BigInt(n)
   let current = 1n
   let previous = 0n
-  while (--n) {
+  while (n-- > 1n) {
     const tmp = current
     current += previous
     previous = tmp

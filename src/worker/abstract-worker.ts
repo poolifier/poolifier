@@ -116,8 +116,12 @@ export abstract class AbstractWorker<
     >()
     this.checkWorkerOptions(this.opts)
     if (!this.isMain) {
-      // Should be once() but Node.js on windows has a bug that prevents it from working
-      this.getMainWorker().on('message', this.handleReadyMessage.bind(this))
+      if (process.platform === 'win32') {
+        // Node.js on windows has a bug at worker side message counting
+        this.getMainWorker().on('message', this.handleReadyMessage.bind(this))
+      } else {
+        this.getMainWorker().once('message', this.handleReadyMessage.bind(this))
+      }
     }
   }
 

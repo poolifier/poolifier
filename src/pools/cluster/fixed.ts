@@ -73,7 +73,7 @@ export class FixedClusterPool<
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
   ): void {
-    this.workerNodes[workerNodeKey].worker.off('message', listener)
+    this.workerNodes[workerNodeKey]?.worker.off('message', listener)
   }
 
   /** @inheritDoc */

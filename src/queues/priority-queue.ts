@@ -4,7 +4,6 @@ import { FixedPriorityQueue } from './fixed-priority-queue.js'
 import { FixedQueue } from './fixed-queue.js'
 import {
   defaultBucketSize,
-  type FixedQueueNode,
   type IFixedQueue,
   type PriorityQueueNode,
 } from './queue-types.js'
@@ -98,18 +97,8 @@ export class PriorityQueue<T> {
     let prev: PriorityQueueNode<T> | undefined
     while (node != null) {
       if (node.delete(data)) {
-        if (node.empty() && this.head !== this.tail) {
-          if (node === this.tail) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.tail = node.next!
-          } else {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            prev!.next = node.next
-            if (node === this.head) {
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              this.head = prev!
-            }
-          }
+        if (node.empty()) {
+          this.removePriorityQueueNode(node, prev)
         }
         --this.size
         return true
@@ -154,18 +143,9 @@ export class PriorityQueue<T> {
     const data = targetNode!.dequeue()
     --this.size
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    if (targetNode!.empty() && this.head !== this.tail) {
-      if (targetNode === this.tail) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.tail = this.tail.next!
-      } else {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        prev!.next = targetNode!.next
-        if (targetNode === this.head) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this.head = prev!
-        }
-      }
+    if (targetNode!.empty()) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.removePriorityQueueNode(targetNode!, prev)
     }
     return data
   }
@@ -223,18 +203,36 @@ export class PriorityQueue<T> {
     }
   }
 
-  private getPriorityQueueNode (
-    nodeArray?: (FixedQueueNode<T> | undefined)[]
-  ): PriorityQueueNode<T> {
+  private getPriorityQueueNode (): PriorityQueueNode<T> {
     let fixedQueue: IFixedQueue<T>
     if (this.priorityEnabled) {
       fixedQueue = new FixedPriorityQueue(this.bucketSize)
     } else {
       fixedQueue = new FixedQueue(this.bucketSize)
     }
-    if (nodeArray != null) {
-      fixedQueue.nodeArray = nodeArray
-    }
     return fixedQueue
+  }
+
+  private removePriorityQueueNode (
+    nodeToRemove: PriorityQueueNode<T>,
+    previousNode?: PriorityQueueNode<T>
+  ): void {
+    if (this.head === this.tail) {
+      return
+    }
+
+    if (nodeToRemove === this.tail) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.tail = nodeToRemove.next!
+    } else if (nodeToRemove === this.head) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.head = previousNode!
+      this.head.next = undefined
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      previousNode!.next = nodeToRemove.next
+    }
+
+    nodeToRemove.next = undefined
   }
 }

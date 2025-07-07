@@ -2211,29 +2211,37 @@ export abstract class AbstractPool<
   }
 
   private async sendKillMessageToWorker (workerNodeKey: number): Promise<void> {
-    await new Promise<void>((resolve, reject) => {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (this.workerNodes[workerNodeKey] == null) {
-        resolve()
-        return
-      }
-      const killMessageListener = (message: MessageValue<Response>): void => {
-        this.checkMessageWorkerId(message)
-        if (message.kill === 'success') {
+    let killMessageListener:
+      | ((message: MessageValue<Response>) => void)
+      | undefined
+    try {
+      await new Promise<void>((resolve, reject) => {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (this.workerNodes[workerNodeKey] == null) {
           resolve()
-        } else if (message.kill === 'failure') {
-          reject(
-            new Error(
-              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              `Kill message handling failed on worker ${message.workerId?.toString()}`
-            )
-          )
+          return
         }
+        killMessageListener = (message: MessageValue<Response>): void => {
+          this.checkMessageWorkerId(message)
+          if (message.kill === 'success') {
+            resolve()
+          } else if (message.kill === 'failure') {
+            reject(
+              new Error(
+                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                `Kill message handling failed on worker ${message.workerId?.toString()}`
+              )
+            )
+          }
+        }
+        this.registerWorkerMessageListener(workerNodeKey, killMessageListener)
+        this.sendToWorker(workerNodeKey, { kill: true })
+      })
+    } finally {
+      if (killMessageListener != null) {
+        this.deregisterWorkerMessageListener(workerNodeKey, killMessageListener)
       }
-      // FIXME: should be registered only once
-      this.registerWorkerMessageListener(workerNodeKey, killMessageListener)
-      this.sendToWorker(workerNodeKey, { kill: true })
-    })
+    }
   }
 
   /**
@@ -2257,19 +2265,29 @@ export abstract class AbstractPool<
     workerNodeKey: number,
     message: MessageValue<Data>
   ): Promise<boolean> {
-    return await new Promise<boolean>((resolve, reject) => {
-      const taskFunctionOperationListener = (
-        message: MessageValue<Response>
-      ): void => {
-        this.checkMessageWorkerId(message)
-        const workerId = this.getWorkerInfo(workerNodeKey)?.id
-        if (
-          message.taskFunctionOperationStatus != null &&
-          message.workerId === workerId
-        ) {
-          if (message.taskFunctionOperationStatus) {
-            resolve(true)
-          } else {
+    let taskFunctionOperationListener:
+      | ((message: MessageValue<Response>) => void)
+      | undefined
+    try {
+      return await new Promise<boolean>((resolve, reject) => {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (this.workerNodes[workerNodeKey] == null) {
+          resolve(true)
+          return
+        }
+        taskFunctionOperationListener = (
+          message: MessageValue<Response>
+        ): void => {
+          this.checkMessageWorkerId(message)
+          const workerId = this.getWorkerInfo(workerNodeKey)?.id
+          if (
+            message.taskFunctionOperationStatus != null &&
+            message.workerId === workerId
+          ) {
+            if (message.taskFunctionOperationStatus) {
+              resolve(true)
+              return
+            }
             reject(
               new Error(
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -2280,23 +2298,27 @@ export abstract class AbstractPool<
               )
             )
           }
-          this.deregisterWorkerMessageListener(
-            this.getWorkerNodeKeyByWorkerId(message.workerId),
-            taskFunctionOperationListener
-          )
         }
+        this.registerWorkerMessageListener(
+          workerNodeKey,
+          taskFunctionOperationListener
+        )
+        this.sendToWorker(workerNodeKey, message)
+      })
+    } finally {
+      if (taskFunctionOperationListener != null) {
+        this.deregisterWorkerMessageListener(
+          workerNodeKey,
+          taskFunctionOperationListener
+        )
       }
-      this.registerWorkerMessageListener(
-        workerNodeKey,
-        taskFunctionOperationListener
-      )
-      this.sendToWorker(workerNodeKey, message)
-    })
+    }
   }
 
   private async sendTaskFunctionOperationToWorkers (
     message: MessageValue<Data>
   ): Promise<boolean> {
+    const targetWorkerNodeKeys = [...this.workerNodes.keys()]
     const taskFunctionOperationsListener = (
       message: MessageValue<Response>,
       resolve: (value: boolean | PromiseLike<boolean>) => void,
@@ -2304,9 +2326,14 @@ export abstract class AbstractPool<
       responsesReceived: MessageValue<Response>[]
     ): void => {
       this.checkMessageWorkerId(message)
-      if (message.taskFunctionOperationStatus != null) {
+      if (
+        message.taskFunctionOperationStatus != null &&
+        targetWorkerNodeKeys.includes(
+          this.getWorkerNodeKeyByWorkerId(message.workerId)
+        )
+      ) {
         responsesReceived.push(message)
-        if (responsesReceived.length >= this.workerNodes.length) {
+        if (responsesReceived.length >= targetWorkerNodeKeys.length) {
           if (
             responsesReceived.every(
               msg => msg.taskFunctionOperationStatus === true
@@ -2327,9 +2354,13 @@ export abstract class AbstractPool<
         }
       }
     }
-    let listener: (message: MessageValue<Response>) => void
+    let listener: ((message: MessageValue<Response>) => void) | undefined
     try {
       return await new Promise<boolean>((resolve, reject) => {
+        if (targetWorkerNodeKeys.length === 0) {
+          resolve(true)
+          return
+        }
         const responsesReceived: MessageValue<Response>[] = []
         listener = (message: MessageValue<Response>) => {
           taskFunctionOperationsListener(
@@ -2339,15 +2370,16 @@ export abstract class AbstractPool<
             responsesReceived
           )
         }
-        for (const workerNodeKey of this.workerNodes.keys()) {
+        for (const workerNodeKey of targetWorkerNodeKeys) {
           this.registerWorkerMessageListener(workerNodeKey, listener)
           this.sendToWorker(workerNodeKey, message)
         }
       })
     } finally {
-      for (const workerNodeKey of this.workerNodes.keys()) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.deregisterWorkerMessageListener(workerNodeKey, listener!)
+      if (listener != null) {
+        for (const workerNodeKey of targetWorkerNodeKeys) {
+          this.deregisterWorkerMessageListener(workerNodeKey, listener)
+        }
       }
     }
   }
