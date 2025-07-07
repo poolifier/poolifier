@@ -77,7 +77,7 @@ export class FixedThreadPool<
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
   ): void {
-    this.workerNodes[workerNodeKey].messageChannel?.port1.off(
+    this.workerNodes[workerNodeKey]?.messageChannel?.port1.off(
       'message',
       listener
     )
