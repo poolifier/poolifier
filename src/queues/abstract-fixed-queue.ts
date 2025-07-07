@@ -32,6 +32,16 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
 
   /** @inheritdoc */
   public clear (): void {
+    if (this.size > 0) {
+      let index = this.start
+      for (let i = 0; i < this.size; i++) {
+        this.nodeArray[index] = undefined
+        ++index
+        if (index === this.capacity) {
+          index = 0
+        }
+      }
+    }
     this.start = 0
     this.size = 0
   }
@@ -78,13 +88,15 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
       return undefined
     }
     const index = this.start
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const data = this.nodeArray[index]!.data
+    this.nodeArray[index] = undefined
     ++this.start
     if (this.start === this.capacity) {
       this.start = 0
     }
     --this.size
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.nodeArray[index]!.data
+    return data
   }
 
   /** @inheritdoc */

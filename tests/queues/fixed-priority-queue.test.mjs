@@ -101,7 +101,7 @@ describe('Fixed priority queue test suite', () => {
     expect(fixedPriorityQueue.size).toBe(2)
     expect(rtItem).toBe(2)
     expect(fixedPriorityQueue.nodeArray).toMatchObject([
-      { data: 2, priority: -1 },
+      undefined,
       { data: 1, priority: 0 },
       { data: 3, priority: 0 },
     ])
@@ -111,8 +111,8 @@ describe('Fixed priority queue test suite', () => {
     expect(fixedPriorityQueue.size).toBe(1)
     expect(rtItem).toBe(1)
     expect(fixedPriorityQueue.nodeArray).toMatchObject([
-      { data: 2, priority: -1 },
-      { data: 1, priority: 0 },
+      undefined,
+      undefined,
       { data: 3, priority: 0 },
     ])
     expect(fixedPriorityQueue.capacity).toBe(queueSize)
@@ -121,9 +121,9 @@ describe('Fixed priority queue test suite', () => {
     expect(fixedPriorityQueue.size).toBe(0)
     expect(rtItem).toBe(3)
     expect(fixedPriorityQueue.nodeArray).toMatchObject([
-      { data: 2, priority: -1 },
-      { data: 1, priority: 0 },
-      { data: 3, priority: 0 },
+      undefined,
+      undefined,
+      undefined,
     ])
     expect(fixedPriorityQueue.capacity).toBe(queueSize)
     rtItem = fixedPriorityQueue.dequeue()
@@ -131,9 +131,9 @@ describe('Fixed priority queue test suite', () => {
     expect(fixedPriorityQueue.size).toBe(0)
     expect(rtItem).toBe(undefined)
     expect(fixedPriorityQueue.nodeArray).toMatchObject([
-      { data: 2, priority: -1 },
-      { data: 1, priority: 0 },
-      { data: 3, priority: 0 },
+      undefined,
+      undefined,
+      undefined,
     ])
     expect(fixedPriorityQueue.capacity).toBe(queueSize)
   })
@@ -212,7 +212,7 @@ describe('Fixed priority queue test suite', () => {
   })
 
   it('Verify clear() behavior', () => {
-    const fixedPriorityQueue = new FixedPriorityQueue()
+    const fixedPriorityQueue = new FixedPriorityQueue(2)
     fixedPriorityQueue.start = 1
     fixedPriorityQueue.size = 2
     fixedPriorityQueue.nodeArray = [
@@ -222,9 +222,6 @@ describe('Fixed priority queue test suite', () => {
     fixedPriorityQueue.clear()
     expect(fixedPriorityQueue.start).toBe(0)
     expect(fixedPriorityQueue.size).toBe(0)
-    expect(fixedPriorityQueue.nodeArray).toMatchObject([
-      { data: 2, priority: 0 },
-      { data: 3, priority: 0 },
-    ])
+    expect(fixedPriorityQueue.nodeArray).toStrictEqual([undefined, undefined])
   })
 })
