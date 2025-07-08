@@ -377,7 +377,7 @@ export interface TasksQueueOptions {
   readonly size?: number
   /**
    * Queued tasks finished timeout in milliseconds at worker node termination.
-   * @defaultValue 10000
+   * @defaultValue 5000
    */
   readonly tasksFinishedTimeout?: number
   /**

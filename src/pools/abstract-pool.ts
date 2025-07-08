@@ -1331,6 +1331,10 @@ export abstract class AbstractPool<
   protected readonly workerMessageListener = (
     message: MessageValue<Response>
   ): void => {
+    // Kill messages response are handled in dedicated listeners
+    if (message.kill != null) {
+      return
+    }
     this.checkMessageWorkerId(message)
     const { ready, taskFunctionsProperties, taskId, workerId } = message
     if (ready != null && taskFunctionsProperties != null) {
@@ -2171,8 +2175,11 @@ export abstract class AbstractPool<
       | undefined
     try {
       await new Promise<void>((resolve, reject) => {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (this.workerNodes[workerNodeKey] == null) {
+        if (
+          this.workerNodes.length === 0 ||
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          this.workerNodes[workerNodeKey] == null
+        ) {
           resolve()
           return
         }
@@ -2225,8 +2232,11 @@ export abstract class AbstractPool<
       | undefined
     try {
       return await new Promise<boolean>((resolve, reject) => {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (this.workerNodes[workerNodeKey] == null) {
+        if (
+          this.workerNodes.length === 0 ||
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          this.workerNodes[workerNodeKey] == null
+        ) {
           resolve(true)
           return
         }
