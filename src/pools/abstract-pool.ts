@@ -2180,7 +2180,7 @@ export abstract class AbstractPool<
 
   private async sendKillMessageToWorker (
     workerNodeKey: number,
-    timeout = 2000
+    timeout = 1000
   ): Promise<void> {
     let timeoutHandle: NodeJS.Timeout | undefined
     let killMessageListener:

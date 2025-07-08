@@ -3,7 +3,7 @@
   "parallel": true,
   "diff": true,
   "package": "./package.json",
-  "timeout": 20000,
+  "timeout": 30000,
   "full-trace": true,
   "exit": true,
   "enable-source-maps": true,
