@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.6](https://github.com/poolifier/poolifier/compare/v5.0.5...v5.0.6) (2025-07-08)
+
+
+### 🐞 Bug Fixes
+
+* ensure dynamic worker can't be created at pool destroy ([#2916](https://github.com/poolifier/poolifier/issues/2916)) ([1e453b0](https://github.com/poolifier/poolifier/commit/1e453b0f9c372445a9f191f1c1d11bcb5532c1d1))
+* ensure worker kill message response is not handled by the generic ([1b20484](https://github.com/poolifier/poolifier/commit/1b204843dccdb3bf6a41bf6104667867256abe16))
+
+
+### ✨ Polish
+
+* add worker strategy name to help UTs debug ([8d3efca](https://github.com/poolifier/poolifier/commit/8d3efca6e146993ce209d73f783d3adb1dbf5363))
+* cleanup task function ops method ([62242b7](https://github.com/poolifier/poolifier/commit/62242b7d286af3251b00a48a90491ff1f4b1fac5))
+* ensure safer access to worker node status ([a92483b](https://github.com/poolifier/poolifier/commit/a92483beb1e3f715455dd11b4f8f0c0c4b56d488))
+* improve messaging worker id check error message ([d5e7715](https://github.com/poolifier/poolifier/commit/d5e7715416d850bf944bb23c6fe7e74b1c952fac))
+
+
+### 🧪 Tests
+
+* account properly for kill message timeout ([0a30f36](https://github.com/poolifier/poolifier/commit/0a30f3645925b2c92057ca6161dafee039664fec))
+* adjust elapsed max time at pool destroy ([eb3c07e](https://github.com/poolifier/poolifier/commit/eb3c07e6ccddb0980837e2777598027bd8da92f3))
+* enlarge mocha timeout ([fd79a70](https://github.com/poolifier/poolifier/commit/fd79a701dd91100e0a36343d1c8dd38b5ae682c7))
+* increase mocha timeout ([1670c56](https://github.com/poolifier/poolifier/commit/1670c568bc47d9daa87e9d13fb622dbc365dd39e))
+* put back initial margin at timeout expectation ([2879ec7](https://github.com/poolifier/poolifier/commit/2879ec7db5c9b7c4139362af15b87b73112ebb5f))
+* refine expectation ([5c5f380](https://github.com/poolifier/poolifier/commit/5c5f38057c0a1a7777f0dc31004ce1ca4ab7e999))
+
+
+### 📚 Documentation
+
+* publish documentation ([b1f2776](https://github.com/poolifier/poolifier/commit/b1f2776a21bd582157d8e17472fda9664c049a86))
+
 ## [5.0.5](https://github.com/poolifier/poolifier/compare/v5.0.4...v5.0.5) (2025-07-07)
 
 
