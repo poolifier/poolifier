@@ -27,7 +27,7 @@ describe('Pool utils test suite', () => {
     expect(getDefaultTasksQueueOptions(poolMaxSize)).toStrictEqual({
       concurrency: 1,
       size: poolMaxSize ** 2,
-      tasksFinishedTimeout: 2000,
+      tasksFinishedTimeout: 5000,
       tasksStealingOnBackPressure: true,
       tasksStealingRatio: 0.6,
       taskStealing: true,
