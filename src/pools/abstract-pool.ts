@@ -391,6 +391,11 @@ export abstract class AbstractPool<
   }
 
   /**
+   * Whether the pool is destroying or not.
+   */
+  protected destroying: boolean
+
+  /**
    * The task execution response promise map:
    * - `key`: The message id of each submitted task.
    * - `value`: An object that contains task's worker node key, execution response promise resolve and reject callbacks, async resource.
@@ -404,6 +409,16 @@ export abstract class AbstractPool<
     `${string}-${string}-${string}-${string}-${string}`,
     PromiseResponseWrapper<Response>
   >()
+
+  /**
+   * Whether the pool is started or not.
+   */
+  protected started: boolean
+
+  /**
+   * Whether the pool is starting or not.
+   */
+  protected starting: boolean
 
   /**
    * Worker choice strategies context referencing worker choice algorithms implementation.
@@ -449,24 +464,9 @@ export abstract class AbstractPool<
   private busyEventEmitted: boolean
 
   /**
-   * Whether the pool is destroying or not.
-   */
-  private destroying: boolean
-
-  /**
    * Whether the pool ready event has been emitted or not.
    */
   private readyEventEmitted: boolean
-
-  /**
-   * Whether the pool is started or not.
-   */
-  private started: boolean
-
-  /**
-   * Whether the pool is starting or not.
-   */
-  private starting: boolean
 
   /**
    * Whether the minimum number of workers is starting or not.
@@ -1331,9 +1331,9 @@ export abstract class AbstractPool<
   protected readonly workerMessageListener = (
     message: MessageValue<Response>
   ): void => {
-    if (message.kill != null) {
-      return
-    }
+    // if (message.kill != null) {
+    //   return
+    // }
     this.checkMessageWorkerId(message)
     const { ready, taskFunctionsProperties, taskId, workerId } = message
     if (ready != null && taskFunctionsProperties != null) {
@@ -1419,7 +1419,12 @@ export abstract class AbstractPool<
   }
 
   private cannotStealTask (): boolean {
-    return this.workerNodes.length <= 1 || this.info.queuedTasks === 0
+    return (
+      !this.started ||
+      this.destroying ||
+      this.workerNodes.length <= 1 ||
+      this.info.queuedTasks === 0
+    )
   }
 
   private checkAndEmitReadyEvent (): void {
