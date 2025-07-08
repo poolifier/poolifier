@@ -93,7 +93,7 @@ export class FixedThreadPool<
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
   ): void {
-    this.workerNodes[workerNodeKey].messageChannel?.port1.once(
+    this.workerNodes[workerNodeKey]?.messageChannel?.port1.once(
       'message',
       listener
     )
@@ -104,7 +104,7 @@ export class FixedThreadPool<
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
   ): void {
-    this.workerNodes[workerNodeKey].messageChannel?.port1.on(
+    this.workerNodes[workerNodeKey]?.messageChannel?.port1.on(
       'message',
       listener
     )
