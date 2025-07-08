@@ -1331,6 +1331,10 @@ export abstract class AbstractPool<
   protected readonly workerMessageListener = (
     message: MessageValue<Response>
   ): void => {
+    // Late worker ready message received
+    if (this.destroying && message.ready != null) {
+      return
+    }
     // Kill messages response are handled in dedicated listeners
     if (message.kill != null) {
       return
@@ -1356,7 +1360,7 @@ export abstract class AbstractPool<
   }
 
   private readonly abortTask = (eventDetail: WorkerNodeEventDetail): void => {
-    if (!this.started || this.destroying) {
+    if (!this.started) {
       return
     }
     const { taskId, workerId } = eventDetail
