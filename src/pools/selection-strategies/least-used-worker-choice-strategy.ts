@@ -1,11 +1,13 @@
 import type { IPool } from '../pool.js'
 import type { IWorker } from '../worker.js'
-import type {
-  IWorkerChoiceStrategy,
-  WorkerChoiceStrategyOptions,
-} from './selection-strategies-types.js'
 
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
+import {
+  type IWorkerChoiceStrategy,
+  WorkerChoiceStrategies,
+  type WorkerChoiceStrategy,
+  type WorkerChoiceStrategyOptions,
+} from './selection-strategies-types.js'
 
 /**
  * Selects the least used worker.
@@ -20,6 +22,9 @@ export class LeastUsedWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
+  /** @inheritDoc */
+  public readonly name: WorkerChoiceStrategy = WorkerChoiceStrategies.LEAST_USED
+
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,

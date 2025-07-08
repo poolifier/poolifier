@@ -114,6 +114,10 @@ export class DynamicThreadPool<
 
   /** @inheritDoc */
   protected override shallCreateDynamicWorker (): boolean {
-    return (!this.full && this.internalBusy()) || this.empty
+    return (
+      this.started &&
+      !this.destroying &&
+      ((!this.full && this.internalBusy()) || this.empty)
+    )
   }
 }

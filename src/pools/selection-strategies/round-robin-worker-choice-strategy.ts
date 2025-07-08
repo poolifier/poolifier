@@ -1,11 +1,13 @@
 import type { IPool } from '../pool.js'
 import type { IWorker } from '../worker.js'
-import type {
-  IWorkerChoiceStrategy,
-  WorkerChoiceStrategyOptions,
-} from './selection-strategies-types.js'
 
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
+import {
+  type IWorkerChoiceStrategy,
+  WorkerChoiceStrategies,
+  type WorkerChoiceStrategy,
+  type WorkerChoiceStrategyOptions,
+} from './selection-strategies-types.js'
 
 /**
  * Selects the next worker in a round robin fashion.
@@ -20,6 +22,10 @@ export class RoundRobinWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
+  /** @inheritDoc */
+  public readonly name: WorkerChoiceStrategy =
+    WorkerChoiceStrategies.ROUND_ROBIN
+
   /** @inheritDoc */
   public constructor (
     pool: IPool<Worker, Data, Response>,
