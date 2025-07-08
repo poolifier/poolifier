@@ -1480,7 +1480,7 @@ describe('Abstract pool test suite', () => {
     expect(tasksFinished).toBe(0)
     // Worker kill message response timeout is 1000ms
     expect(elapsedTime).toBeLessThanOrEqual(
-      tasksFinishedTimeout + 1000 * tasksFinished + 800
+      tasksFinishedTimeout + 1000 * tasksFinished + 100
     )
   })
 
