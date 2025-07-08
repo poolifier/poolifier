@@ -1331,9 +1331,6 @@ export abstract class AbstractPool<
   protected readonly workerMessageListener = (
     message: MessageValue<Response>
   ): void => {
-    // if (message.kill != null) {
-    //   return
-    // }
     this.checkMessageWorkerId(message)
     const { ready, taskFunctionsProperties, taskId, workerId } = message
     if (ready != null && taskFunctionsProperties != null) {
