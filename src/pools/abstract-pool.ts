@@ -1332,8 +1332,9 @@ export abstract class AbstractPool<
     message: MessageValue<Response>
   ): void => {
     const { kill, ready, taskFunctionsProperties, taskId, workerId } = message
+    const workerReadyMessage = ready != null && taskFunctionsProperties != null
     // Late worker ready message received
-    if (this.destroying && ready != null && taskFunctionsProperties != null) {
+    if (this.destroying && workerReadyMessage) {
       return
     }
     // Kill messages response are handled in dedicated listeners
@@ -1341,7 +1342,7 @@ export abstract class AbstractPool<
       return
     }
     this.checkMessageWorkerId(message)
-    if (ready != null && taskFunctionsProperties != null) {
+    if (workerReadyMessage) {
       // Worker ready response received from worker
       this.handleWorkerReadyResponse(message)
     } else if (taskFunctionsProperties != null) {
