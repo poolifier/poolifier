@@ -2192,7 +2192,6 @@ export abstract class AbstractPool<
             resolve()
             return
           }
-          this.checkMessageWorkerId(message)
           if (message.kill === 'success') {
             resolve()
           } else if (message.kill === 'failure') {
