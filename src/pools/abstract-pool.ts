@@ -2082,11 +2082,19 @@ export abstract class AbstractPool<
 
   private isWorkerNodeBackPressured (workerNodeKey: number): boolean {
     const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (workerNode == null) {
+      return false
+    }
     return workerNode.info.ready && workerNode.info.backPressure
   }
 
   private isWorkerNodeBusy (workerNodeKey: number): boolean {
     const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (workerNode == null) {
+      return false
+    }
     if (this.opts.enableTasksQueue === true) {
       return (
         workerNode.info.ready &&
@@ -2100,6 +2108,10 @@ export abstract class AbstractPool<
 
   private isWorkerNodeIdle (workerNodeKey: number): boolean {
     const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (workerNode == null) {
+      return false
+    }
     if (this.opts.enableTasksQueue === true) {
       return (
         workerNode.info.ready &&
@@ -2112,6 +2124,10 @@ export abstract class AbstractPool<
 
   private isWorkerNodeStealing (workerNodeKey: number): boolean {
     const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (workerNode == null) {
+      return false
+    }
     return (
       workerNode.info.ready &&
       (workerNode.info.continuousStealing ||
