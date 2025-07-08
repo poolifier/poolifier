@@ -2177,12 +2177,22 @@ export abstract class AbstractPool<
     }
   }
 
-  private async sendKillMessageToWorker (workerNodeKey: number): Promise<void> {
+  private async sendKillMessageToWorker (
+    workerNodeKey: number,
+    timeout = 2000
+  ): Promise<void> {
+    let timeoutHandle: NodeJS.Timeout | undefined
     let killMessageListener:
       | ((message: MessageValue<Response>) => void)
       | undefined
     try {
       await new Promise<void>((resolve, reject) => {
+        timeoutHandle =
+          timeout >= 0
+            ? setTimeout(() => {
+              resolve()
+            }, timeout)
+            : undefined
         killMessageListener = (message: MessageValue<Response>): void => {
           if (
             this.workerNodes.length === 0 ||
@@ -2207,6 +2217,9 @@ export abstract class AbstractPool<
         this.sendToWorker(workerNodeKey, { kill: true })
       })
     } finally {
+      if (timeoutHandle != null) {
+        clearTimeout(timeoutHandle)
+      }
       if (killMessageListener != null) {
         this.deregisterWorkerMessageListener(workerNodeKey, killMessageListener)
       }
