@@ -6,6 +6,8 @@ import {
   type IWorkerChoiceStrategy,
   Measurements,
   type TaskStatisticsRequirements,
+  WorkerChoiceStrategies,
+  type WorkerChoiceStrategy,
   type WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
 
@@ -23,6 +25,9 @@ export class FairShareWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
+  /** @inheritDoc */
+  public readonly name: WorkerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
+
   /** @inheritDoc */
   public override readonly taskStatisticsRequirements: TaskStatisticsRequirements =
     Object.freeze({
