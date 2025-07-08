@@ -2316,9 +2316,9 @@ export abstract class AbstractPool<
     const taskFunctionOperationsListener = (
       message: MessageValue<Response>,
       resolve: (value: boolean | PromiseLike<boolean>) => void,
-      reject: (reason?: unknown) => void,
-      responsesReceived: MessageValue<Response>[]
+      reject: (reason?: unknown) => void
     ): void => {
+      const responsesReceived: MessageValue<Response>[] = []
       this.checkMessageWorkerId(message)
       if (
         message.taskFunctionOperationStatus != null &&
@@ -2351,14 +2351,8 @@ export abstract class AbstractPool<
     let listener: ((message: MessageValue<Response>) => void) | undefined
     try {
       return await new Promise<boolean>((resolve, reject) => {
-        const responsesReceived: MessageValue<Response>[] = []
         listener = (message: MessageValue<Response>) => {
-          taskFunctionOperationsListener(
-            message,
-            resolve,
-            reject,
-            responsesReceived
-          )
+          taskFunctionOperationsListener(message, resolve, reject)
         }
         for (const workerNodeKey of targetWorkerNodeKeys) {
           this.registerWorkerMessageListener(workerNodeKey, listener)
