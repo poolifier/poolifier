@@ -72,6 +72,10 @@ export interface IWorkerChoiceStrategy {
    */
   readonly choose: () => number | undefined
   /**
+   * The worker choice strategy name.
+   */
+  readonly name: WorkerChoiceStrategy
+  /**
    * Removes the worker node key from strategy internals.
    * @param workerNodeKey - The worker node key.
    * @returns `true` if the worker node key is removed, `false` otherwise.

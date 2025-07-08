@@ -2082,11 +2082,19 @@ export abstract class AbstractPool<
 
   private isWorkerNodeBackPressured (workerNodeKey: number): boolean {
     const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (workerNode == null) {
+      return false
+    }
     return workerNode.info.ready && workerNode.info.backPressure
   }
 
   private isWorkerNodeBusy (workerNodeKey: number): boolean {
     const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (workerNode == null) {
+      return false
+    }
     if (this.opts.enableTasksQueue === true) {
       return (
         workerNode.info.ready &&
@@ -2100,6 +2108,10 @@ export abstract class AbstractPool<
 
   private isWorkerNodeIdle (workerNodeKey: number): boolean {
     const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (workerNode == null) {
+      return false
+    }
     if (this.opts.enableTasksQueue === true) {
       return (
         workerNode.info.ready &&
@@ -2112,6 +2124,10 @@ export abstract class AbstractPool<
 
   private isWorkerNodeStealing (workerNodeKey: number): boolean {
     const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (workerNode == null) {
+      return false
+    }
     return (
       workerNode.info.ready &&
       (workerNode.info.continuousStealing ||
@@ -2300,9 +2316,9 @@ export abstract class AbstractPool<
     const taskFunctionOperationsListener = (
       message: MessageValue<Response>,
       resolve: (value: boolean | PromiseLike<boolean>) => void,
-      reject: (reason?: unknown) => void,
-      responsesReceived: MessageValue<Response>[]
+      reject: (reason?: unknown) => void
     ): void => {
+      const responsesReceived: MessageValue<Response>[] = []
       this.checkMessageWorkerId(message)
       if (
         message.taskFunctionOperationStatus != null &&
@@ -2335,14 +2351,8 @@ export abstract class AbstractPool<
     let listener: ((message: MessageValue<Response>) => void) | undefined
     try {
       return await new Promise<boolean>((resolve, reject) => {
-        const responsesReceived: MessageValue<Response>[] = []
         listener = (message: MessageValue<Response>) => {
-          taskFunctionOperationsListener(
-            message,
-            resolve,
-            reject,
-            responsesReceived
-          )
+          taskFunctionOperationsListener(message, resolve, reject)
         }
         for (const workerNodeKey of targetWorkerNodeKeys) {
           this.registerWorkerMessageListener(workerNodeKey, listener)

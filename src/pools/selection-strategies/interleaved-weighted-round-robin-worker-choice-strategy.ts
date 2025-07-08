@@ -1,13 +1,15 @@
 import type { IPool } from '../pool.js'
 import type { IWorker } from '../worker.js'
-import type {
-  IWorkerChoiceStrategy,
-  TaskStatisticsRequirements,
-  WorkerChoiceStrategyOptions,
-} from './selection-strategies-types.js'
 
 import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../utils.js'
 import { AbstractWorkerChoiceStrategy } from './abstract-worker-choice-strategy.js'
+import {
+  type IWorkerChoiceStrategy,
+  type TaskStatisticsRequirements,
+  WorkerChoiceStrategies,
+  type WorkerChoiceStrategy,
+  type WorkerChoiceStrategyOptions,
+} from './selection-strategies-types.js'
 
 /**
  * Selects the next worker with an interleaved weighted round robin scheduling algorithm.
@@ -22,6 +24,10 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
+  /** @inheritDoc */
+  public readonly name: WorkerChoiceStrategy =
+    WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN
+
   /** @inheritDoc */
   public override readonly taskStatisticsRequirements: TaskStatisticsRequirements =
     Object.freeze({
