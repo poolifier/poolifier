@@ -2243,14 +2243,6 @@ export abstract class AbstractPool<
         taskFunctionOperationListener = (
           message: MessageValue<Response>
         ): void => {
-          if (
-            this.workerNodes.length === 0 ||
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            this.workerNodes[workerNodeKey] == null
-          ) {
-            resolve(true)
-            return
-          }
           this.checkMessageWorkerId(message)
           const workerId = this.getWorkerInfo(workerNodeKey)?.id
           if (
@@ -2298,10 +2290,6 @@ export abstract class AbstractPool<
       reject: (reason?: unknown) => void,
       responsesReceived: MessageValue<Response>[]
     ): void => {
-      if (targetWorkerNodeKeys.length === 0) {
-        resolve(true)
-        return
-      }
       this.checkMessageWorkerId(message)
       if (
         message.taskFunctionOperationStatus != null &&
