@@ -1338,7 +1338,7 @@ export abstract class AbstractPool<
     if (this.destroying && workerReadyMessage) {
       return
     }
-    // Kill messages response are handled in dedicated listeners
+    // Kill messages responses are handled in dedicated listeners
     if (kill != null) {
       return
     }
