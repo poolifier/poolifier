@@ -15,12 +15,12 @@ importers:
         specifier: ^5.0.1
         version: 5.0.1
       poolifier:
-        specifier: ^5.0.5
-        version: 5.0.5
+        specifier: ^5.0.6
+        version: 5.0.6
     devDependencies:
       '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.10
+        specifier: ^24.0.11
+        version: 24.0.11
       autocannon:
         specifier: ^8.0.0
         version: 8.0.0
@@ -58,8 +58,8 @@ packages:
   '@minimistjs/subarg@1.0.0':
     resolution: {integrity: sha512-Q/ONBiM2zNeYUy0mVSO44mWWKYM3UHuEK43PKIOzJCbvUnPoMH1K+gk3cf1kgnCVJFlWmddahQQCmrmBGlk9jQ==}
 
-  '@types/node@24.0.10':
-    resolution: {integrity: sha512-ENHwaH+JIRTDIEEbDK6QSQntAYGtbvdDXnMXnZaZ6k13Du1dPMmprkEHIL7ok2Wl2aZevetwTAb5S+7yIF+enA==}
+  '@types/node@24.0.11':
+    resolution: {integrity: sha512-CJV8eqrYnwQJGMrvcRhQmZfpyniDavB+7nAZYJc6w99hFYJyFN3INV1/2W3QfQrqM36WTLrijJ1fxxvGBmCSxA==}
 
   abstract-logging@2.0.1:
     resolution: {integrity: sha512-2BjRTZxTPvheOvGbBslFSYOUkr+SjPtOnrLP33f+VIWLzezQpZcqVg7ja3L4dBXmzzgwT+a029jRx5PCi3JuiA==}
@@ -322,8 +322,8 @@ packages:
     resolution: {integrity: sha512-vnMCM6xZTb1WDmLvtG2lE/2p+t9hDEIvTWJsu6FejkE62vB7gDhvzrpFR4Cw2to+9JNQxVnkAKVPA1KPB98vWg==}
     hasBin: true
 
-  poolifier@5.0.5:
-    resolution: {integrity: sha512-y6/4avwZGTSh/U44l8EXZ+6hgsv1ZOwP2j825+Fipvofi2jFqVOf3hcOoCH8lE093iBkPML0NN7ha8nCz8dRFA==}
+  poolifier@5.0.6:
+    resolution: {integrity: sha512-AcskPRmw/Y49qvchaPUBEvbDn1W4MVZD9qBue5Y1dWuNa5pwO+qlIN/nat7vYTG/ZbTzBCOzFbCuyVnHaPkYMA==}
     engines: {node: '>=20.11.0', pnpm: '>=9.0.0'}
 
   pretty-bytes@5.6.0:
@@ -465,7 +465,7 @@ snapshots:
     dependencies:
       minimist: 1.2.8
 
-  '@types/node@24.0.10':
+  '@types/node@24.0.11':
     dependencies:
       undici-types: 7.8.0
 
@@ -764,7 +764,7 @@ snapshots:
       sonic-boom: 4.2.0
       thread-stream: 3.1.0
 
-  poolifier@5.0.5: {}
+  poolifier@5.0.6: {}
 
   pretty-bytes@5.6.0: {}
 

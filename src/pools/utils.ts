@@ -459,7 +459,8 @@ export const waitWorkerNodeEvents = async <
   workerNode: IWorkerNode<Worker, Data>,
   workerNodeEvent: string,
   numberOfEventsToWait: number,
-  timeout: number
+  timeout: number,
+  timeoutRejection = true
 ): Promise<number> => {
   return await new Promise<number>((resolve, reject) => {
     let events = 0
@@ -479,7 +480,13 @@ export const waitWorkerNodeEvents = async <
       timeout >= 0
         ? setTimeout(() => {
           workerNode.off(workerNodeEvent, listener)
-          resolve(events)
+          timeoutRejection
+            ? reject(
+              new Error(
+                    `Timed out after ${timeout.toString()}ms waiting for ${numberOfEventsToWait.toString()} '${workerNodeEvent}' events. Received ${events.toString()} events`
+              )
+            )
+            : resolve(events)
         }, timeout)
         : undefined
     switch (workerNodeEvent) {
