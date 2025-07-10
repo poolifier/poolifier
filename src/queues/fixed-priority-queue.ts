@@ -24,7 +24,7 @@ export class FixedPriorityQueue<T>
         insertionPhysicalIndex = currentPhysicalIndex
         break
       }
-      currentPhysicalIndex++
+      ++currentPhysicalIndex
       if (currentPhysicalIndex === this.capacity) {
         currentPhysicalIndex = 0
       }
