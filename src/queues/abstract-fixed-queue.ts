@@ -55,7 +55,7 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
         logicalIndex = i
         break
       }
-      currentPhysicalIndex++
+      ++currentPhysicalIndex
       if (currentPhysicalIndex === this.capacity) {
         currentPhysicalIndex = 0
       }
