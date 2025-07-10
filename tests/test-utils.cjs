@@ -25,7 +25,7 @@ const waitWorkerEvents = async (
     }, timeoutMs)
     const listener = () => {
       events++
-      if (events === numberOfEventsToWait) {
+      if (events >= numberOfEventsToWait) {
         clearTimeout(timeout)
         listeners.forEach(({ listener, workerNode }) => {
           workerNode.worker.off(workerEvent, listener)

@@ -470,7 +470,7 @@ export const waitWorkerNodeEvents = async <
     }
     const listener = () => {
       ++events
-      if (events === numberOfEventsToWait) {
+      if (events >= numberOfEventsToWait) {
         if (timeoutHandle != null) clearTimeout(timeoutHandle)
         workerNode.off(workerNodeEvent, listener)
         resolve(events)
