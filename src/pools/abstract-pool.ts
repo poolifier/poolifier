@@ -1061,6 +1061,9 @@ export abstract class AbstractPool<
   protected createAndSetupDynamicWorkerNode (): number {
     const workerNodeKey = this.createAndSetupWorkerNode()
     this.registerWorkerMessageListener(workerNodeKey, message => {
+      if (this.destroying) {
+        return
+      }
       this.checkMessageWorkerId(message)
       const localWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(
         message.workerId
@@ -1072,8 +1075,6 @@ export abstract class AbstractPool<
           this.isWorkerNodeIdle(localWorkerNodeKey) &&
           !this.isWorkerNodeStealing(localWorkerNodeKey))
       ) {
-        // Flag the worker node as not ready immediately
-        this.flagWorkerNodeAsNotReady(localWorkerNodeKey)
         this.destroyWorkerNode(localWorkerNodeKey).catch((error: unknown) => {
           this.emitter?.emit(PoolEvents.error, error)
         })
@@ -1338,7 +1339,7 @@ export abstract class AbstractPool<
     if (this.destroying && workerReadyMessage) {
       return
     }
-    // Kill messages response are handled in dedicated listeners
+    // Kill messages responses are handled in dedicated listeners
     if (kill != null) {
       return
     }

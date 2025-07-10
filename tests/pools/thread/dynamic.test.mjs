@@ -52,8 +52,8 @@ describe('Dynamic thread pool test suite', () => {
     expect(pool.workerNodes.length).toBeLessThanOrEqual(max)
     expect(pool.workerNodes.length).toBeGreaterThan(min)
     expect(poolBusy).toBe(1)
-    const numberOfExitEvents = await waitWorkerEvents(pool, 'exit', max - min)
-    expect(numberOfExitEvents).toBe(max - min)
+    const exitEvents = await waitWorkerEvents(pool, 'exit', max - min)
+    expect(exitEvents).toBe(max - min)
     expect(pool.workerNodes.length).toBe(min)
   })
 
@@ -62,13 +62,15 @@ describe('Dynamic thread pool test suite', () => {
       pool.execute()
     }
     expect(pool.workerNodes.length).toBe(max)
-    await waitWorkerEvents(pool, 'exit', max - min)
+    let exitEvents = await waitWorkerEvents(pool, 'exit', max - min)
+    expect(exitEvents).toBe(max - min)
     expect(pool.workerNodes.length).toBe(min)
     for (let i = 0; i < max * 2; i++) {
       pool.execute()
     }
     expect(pool.workerNodes.length).toBe(max)
-    await waitWorkerEvents(pool, 'exit', max - min)
+    exitEvents = await waitWorkerEvents(pool, 'exit', max - min)
+    expect(exitEvents).toBe(max - min)
     expect(pool.workerNodes.length).toBe(min)
   })
 
@@ -82,7 +84,7 @@ describe('Dynamic thread pool test suite', () => {
       PoolEvents.destroy,
     ])
     await pool.destroy()
-    const numberOfExitEvents = await exitPromise
+    const exitEvents = await exitPromise
     expect(pool.info.started).toBe(false)
     expect(pool.info.ready).toBe(false)
     expect(pool.emitter.eventNames()).toStrictEqual([
@@ -95,7 +97,7 @@ describe('Dynamic thread pool test suite', () => {
     expect(pool.busyEventEmitted).toBe(false)
     expect(pool.backPressureEventEmitted).toBe(false)
     expect(pool.workerNodes.length).toBe(0)
-    expect(numberOfExitEvents).toBe(min)
+    expect(exitEvents).toBe(min)
     expect(poolDestroy).toBe(1)
   })
 
@@ -121,7 +123,12 @@ describe('Dynamic thread pool test suite', () => {
       longRunningPool.execute()
     }
     expect(longRunningPool.workerNodes.length).toBe(max)
-    await waitWorkerEvents(longRunningPool, 'exit', max - min)
+    const exitEvents = await waitWorkerEvents(
+      longRunningPool,
+      'exit',
+      max - min
+    )
+    expect(exitEvents).toBe(max - min)
     expect(longRunningPool.workerNodes.length).toBe(min)
     expect(
       longRunningPool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
