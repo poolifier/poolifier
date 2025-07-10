@@ -130,7 +130,7 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
     let index = this.start
     let i = 0
     return {
-      next: () => {
+      next: (): IteratorResult<T> => {
         if (i >= this.size) {
           return {
             done: true,

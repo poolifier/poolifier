@@ -136,16 +136,13 @@ export class PriorityQueue<T> {
         targetNode = targetNode.next
       }
     }
-    if (targetNode?.empty() === true) {
+    if (targetNode == null || targetNode.empty()) {
       return undefined
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const data = targetNode!.dequeue()
+    const data = targetNode.dequeue()
     --this.size
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    if (targetNode!.empty()) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.removePriorityQueueNode(targetNode!, prev)
+    if (targetNode.empty()) {
+      this.removePriorityQueueNode(targetNode, prev)
     }
     return data
   }
@@ -176,30 +173,29 @@ export class PriorityQueue<T> {
   public [Symbol.iterator] (): Iterator<T> {
     let node: PriorityQueueNode<T> | undefined = this.tail
     let index = 0
-    const getNextValue = (): IteratorResult<T> => {
-      if (node == null) {
-        return { done: true, value: undefined }
-      }
-
-      while (index >= node.size) {
-        node = node.next
-        index = 0
-        if (node == null) {
-          return { done: true, value: undefined }
-        }
-      }
-
-      const value = node.get(index)
-      if (value == null) {
-        ++index
-        return getNextValue()
-      }
-
-      ++index
-      return { done: false, value }
-    }
     return {
-      next: getNextValue,
+      next: (): IteratorResult<T> => {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        while (true) {
+          if (node == null) {
+            return { done: true, value: undefined }
+          }
+
+          while (index >= node.size) {
+            node = node.next
+            index = 0
+            if (node == null) {
+              return { done: true, value: undefined }
+            }
+          }
+
+          const value = node.get(index)
+          ++index
+          if (value != null) {
+            return { done: false, value }
+          }
+        }
+      },
     }
   }
 
@@ -221,16 +217,13 @@ export class PriorityQueue<T> {
       return
     }
 
-    if (nodeToRemove === this.tail) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.tail = nodeToRemove.next!
-    } else if (nodeToRemove === this.head) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.head = previousNode!
+    if (nodeToRemove === this.tail && nodeToRemove.next != null) {
+      this.tail = nodeToRemove.next
+    } else if (nodeToRemove === this.head && previousNode != null) {
+      this.head = previousNode
       this.head.next = undefined
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      previousNode!.next = nodeToRemove.next
+    } else if (previousNode != null) {
+      previousNode.next = nodeToRemove.next
     }
 
     nodeToRemove.next = undefined
