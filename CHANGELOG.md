@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.7](https://github.com/poolifier/poolifier/compare/v5.0.6...v5.0.7) (2025-07-10)
+
+
+### 🐞 Bug Fixes
+
+* worker node destroy race condition at pool destroy ([655eec0](https://github.com/poolifier/poolifier/commit/655eec07671468758ff6484391c8c8e8fb09701c))
+
+
+### ✨ Polish
+
+* refine waitWorkerNodeEvents() API ([840352e](https://github.com/poolifier/poolifier/commit/840352e3ba045c80c0e1e860e7d56355a12c3b2d))
+
+
+### 🧪 Tests
+
+* refine expectations ([365b12f](https://github.com/poolifier/poolifier/commit/365b12f66739fa23c0d093830d4e243728b5b712))
+* refine pool destroy time expectation ([e5a1ff9](https://github.com/poolifier/poolifier/commit/e5a1ff94fd11b014790b71348228e04a36398a75))
+
+
+### 📚 Documentation
+
+* comment spell fix ([c983795](https://github.com/poolifier/poolifier/commit/c98379537601a0e260d286db73306ac7ca5bebb3))
+* publish documentation ([c85e7e0](https://github.com/poolifier/poolifier/commit/c85e7e02381e81592de44d4eeef0818464f50e05))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump the regular group across 11 directories with 1 update ([#2920](https://github.com/poolifier/poolifier/issues/2920)) ([6023207](https://github.com/poolifier/poolifier/commit/6023207d4ea92e44a28ed2f5d4dbe35ccbee4857))
+* **deps:** bump the regular group across 11 directories with 2 updates ([#2919](https://github.com/poolifier/poolifier/issues/2919)) ([6d9800d](https://github.com/poolifier/poolifier/commit/6d9800dd8485b1fd8efcc6f961b646b3ab0e5719))
+
 ## [5.0.6](https://github.com/poolifier/poolifier/compare/v5.0.5...v5.0.6) (2025-07-08)
 
 
