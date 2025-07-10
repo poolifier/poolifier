@@ -279,7 +279,7 @@ describe('Fixed cluster pool test suite', () => {
     pool.emitter.on(PoolEvents.destroy, () => ++poolDestroy)
     expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.destroy])
     await pool.destroy()
-    const numberOfExitEvents = await exitPromise
+    const exitEvents = await exitPromise
     expect(pool.info.started).toBe(false)
     expect(pool.info.ready).toBe(false)
     expect(pool.emitter.eventNames()).toStrictEqual([PoolEvents.destroy])
@@ -287,7 +287,7 @@ describe('Fixed cluster pool test suite', () => {
     expect(pool.busyEventEmitted).toBe(false)
     expect(pool.backPressureEventEmitted).toBe(false)
     expect(pool.workerNodes.length).toBe(0)
-    expect(numberOfExitEvents).toBe(numberOfWorkers)
+    expect(exitEvents).toBe(numberOfWorkers)
     expect(poolDestroy).toBe(1)
   })
 
