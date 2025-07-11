@@ -3,7 +3,7 @@ import { expect } from '@std/expect'
 import { FixedThreadPool, PoolEvents } from '../../../lib/index.cjs'
 import { DEFAULT_TASK_NAME } from '../../../lib/utils.cjs'
 import { TaskFunctions } from '../../test-types.cjs'
-import { waitWorkerEvents } from '../../test-utils.cjs'
+import { sleep, waitWorkerEvents } from '../../test-utils.cjs'
 
 describe('Fixed thread pool test suite', () => {
   const numberOfThreads = 6
@@ -319,10 +319,11 @@ describe('Fixed thread pool test suite', () => {
     expect(poolDestroy).toBe(1)
   })
 
-  it.skip('Verify that thread pool options are checked', async () => {
+  it('Verify that thread pool options are checked', async () => {
     const workerFilePath = './tests/worker-files/thread/testWorker.mjs'
     let pool = new FixedThreadPool(numberOfThreads, workerFilePath)
     expect(pool.opts.workerOptions).toBeUndefined()
+    await sleep(500)
     await pool.destroy()
     pool = new FixedThreadPool(numberOfThreads, workerFilePath, {
       workerOptions: {
@@ -334,6 +335,7 @@ describe('Fixed thread pool test suite', () => {
       env: { TEST: 'test' },
       name: 'test',
     })
+    await sleep(500)
     await pool.destroy()
   })
 
