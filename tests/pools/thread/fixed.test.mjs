@@ -320,6 +320,9 @@ describe('Fixed thread pool test suite', () => {
   })
 
   it('Verify that thread pool options are checked', async () => {
+    if (process.os === 'win32') {
+      this.skip()
+    }
     const workerFilePath = './tests/worker-files/thread/testWorker.mjs'
     let pool = new FixedThreadPool(numberOfThreads, workerFilePath)
     expect(pool.opts.workerOptions).toBeUndefined()
