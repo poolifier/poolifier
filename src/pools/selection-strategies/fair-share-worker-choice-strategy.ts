@@ -145,8 +145,7 @@ export class FairShareWorkerChoiceStrategy<
   ): number {
     const workerNodeTaskExecutionTime =
       this.getWorkerNodeTaskWaitTime(workerNodeKey) +
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      (this.opts!.measurement === Measurements.elu
+      (this.opts?.measurement === Measurements.elu
         ? this.getWorkerNodeTaskElu(workerNodeKey)
         : this.getWorkerNodeTaskRunTime(workerNodeKey))
     return workerNodeVirtualTaskStartTimestamp + workerNodeTaskExecutionTime
