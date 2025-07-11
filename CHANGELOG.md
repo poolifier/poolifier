@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.10](https://github.com/poolifier/poolifier/compare/v5.0.9...v5.0.10) (2025-07-11)
+
+
+### 🧪 Tests
+
+* add sleep to avoid skipping ([a8135dd](https://github.com/poolifier/poolifier/commit/a8135ddb06a374b77a8ffc44586e52c39cd44b41))
+* reduce mocha timeout ([fe509db](https://github.com/poolifier/poolifier/commit/fe509dbdd8a07d94dae66064a8d7db3e928db493))
+* revert test skipping ([3d9c240](https://github.com/poolifier/poolifier/commit/3d9c240c28e65c370e882ffbb95e41d8ee2758f0))
+
+
+### 📚 Documentation
+
+* publish documentation ([8dae565](https://github.com/poolifier/poolifier/commit/8dae56540d73d286eeed363c336515308760ea28))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump the regular group with 2 updates ([#2927](https://github.com/poolifier/poolifier/issues/2927)) ([b39240e](https://github.com/poolifier/poolifier/commit/b39240ece1de9c5c38aca80383addf40fab13252))
+* **deps:** bump the regular group across 11 directories with 1 update ([#2926](https://github.com/poolifier/poolifier/issues/2926)) ([92acda5](https://github.com/poolifier/poolifier/commit/92acda5bd41bfe92f253e929986d3ad11c6a834a))
+
 ## [5.0.9](https://github.com/poolifier/poolifier/compare/v5.0.8...v5.0.9) (2025-07-11)
 
 
