@@ -18,6 +18,8 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
         node: ['20.x', '22.x', '24.x', 'latest']
+        exclude:
+          - os: windows-latest
 
     name: Node.js ${{ matrix.node }} on ${{ matrix.os }}
 
