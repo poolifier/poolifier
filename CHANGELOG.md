@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.9](https://github.com/poolifier/poolifier/compare/v5.0.8...v5.0.9) (2025-07-11)
+
+
+### 🐞 Bug Fixes
+
+* ensure worker ready handler is registered once on windows ([#2917](https://github.com/poolifier/poolifier/issues/2917)) ([906c321](https://github.com/poolifier/poolifier/commit/906c321c7ab883f633fbf3ae1649ad89d90490b5))
+
+
+### 📚 Documentation
+
+* publish documentation ([d89f17b](https://github.com/poolifier/poolifier/commit/d89f17b76445d88e2bdd04d8f3b14a395172bb82))
+
+
+### 🤖 Automation
+
+* **deps:** bump the regular group across 11 directories with 2 updates ([#2923](https://github.com/poolifier/poolifier/issues/2923)) ([d610205](https://github.com/poolifier/poolifier/commit/d610205581f913bd2a26aa48ba21f9a144451392))
+
 ## [5.0.8](https://github.com/poolifier/poolifier/compare/v5.0.7...v5.0.8) (2025-07-11)
 
 
