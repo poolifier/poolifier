@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.8](https://github.com/poolifier/poolifier/compare/v5.0.7...v5.0.8) (2025-07-11)
+
+
+### ⚡ Performance
+
+* avoid recursion in task queueing iterator ([359c1fd](https://github.com/poolifier/poolifier/commit/359c1fd0234b654adb375bd8dabd9910343d59b5))
+
+
+### 📚 Documentation
+
+* publish documentation ([4e1cfa8](https://github.com/poolifier/poolifier/commit/4e1cfa8976e79e57dff6946cf6527e76b1bb09a7))
+
 ## [5.0.7](https://github.com/poolifier/poolifier/compare/v5.0.6...v5.0.7) (2025-07-10)
 
 
