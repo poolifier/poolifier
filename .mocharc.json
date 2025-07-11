@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/mocharc",
-  "parallel": true,
+  "parallel": false,
   "diff": true,
   "package": "./package.json",
   "timeout": 60000,
