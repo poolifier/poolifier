@@ -116,12 +116,7 @@ export abstract class AbstractWorker<
     >()
     this.checkWorkerOptions(this.opts)
     if (!this.isMain) {
-      if (process.platform === 'win32') {
-        // Node.js on windows has a bug at worker side message counting
-        this.getMainWorker().on('message', this.handleReadyMessage.bind(this))
-      } else {
-        this.getMainWorker().once('message', this.handleReadyMessage.bind(this))
-      }
+      this.getMainWorker().once('message', this.handleReadyMessage.bind(this))
     }
   }
 

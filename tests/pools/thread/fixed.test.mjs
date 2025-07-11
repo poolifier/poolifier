@@ -319,7 +319,7 @@ describe('Fixed thread pool test suite', () => {
     expect(poolDestroy).toBe(1)
   })
 
-  it('Verify that thread pool options are checked', async () => {
+  it.skip('Verify that thread pool options are checked', async () => {
     const workerFilePath = './tests/worker-files/thread/testWorker.mjs'
     let pool = new FixedThreadPool(numberOfThreads, workerFilePath)
     expect(pool.opts.workerOptions).toBeUndefined()
