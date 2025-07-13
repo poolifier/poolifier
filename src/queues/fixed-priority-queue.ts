@@ -29,19 +29,20 @@ export class FixedPriorityQueue<T>
         currentPhysicalIndex = 0
       }
     }
-    let end = this.start + this.size
-    if (end >= this.capacity) {
-      end -= this.capacity
+    let endPhysicalIndex = this.start + this.size
+    if (endPhysicalIndex >= this.capacity) {
+      endPhysicalIndex -= this.capacity
     }
     if (insertionPhysicalIndex === -1) {
-      insertionPhysicalIndex = end
+      insertionPhysicalIndex = endPhysicalIndex
     } else {
-      let toShiftIndex = end
-      while (toShiftIndex !== insertionPhysicalIndex) {
-        const previousIndex =
-          toShiftIndex === 0 ? this.capacity - 1 : toShiftIndex - 1
-        this.nodeArray[toShiftIndex] = this.nodeArray[previousIndex]
-        toShiftIndex = previousIndex
+      let shiftPhysicalIndex = endPhysicalIndex
+      while (shiftPhysicalIndex !== insertionPhysicalIndex) {
+        const previousPhysicalIndex =
+          shiftPhysicalIndex === 0 ? this.capacity - 1 : shiftPhysicalIndex - 1
+        this.nodeArray[shiftPhysicalIndex] =
+          this.nodeArray[previousPhysicalIndex]
+        shiftPhysicalIndex = previousPhysicalIndex
       }
     }
     this.nodeArray[insertionPhysicalIndex] = { data, priority }

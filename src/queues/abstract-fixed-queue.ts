@@ -66,16 +66,16 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
         --this.size
         return true
       }
-      let physicalShiftIndex = currentPhysicalIndex
+      let shiftPhysicalIndex = currentPhysicalIndex
       for (let i = logicalIndex; i < this.size - 1; i++) {
-        let nextPhysicalIndex = physicalShiftIndex + 1
+        let nextPhysicalIndex = shiftPhysicalIndex + 1
         if (nextPhysicalIndex === this.capacity) {
           nextPhysicalIndex = 0
         }
-        this.nodeArray[physicalShiftIndex] = this.nodeArray[nextPhysicalIndex]
-        physicalShiftIndex = nextPhysicalIndex
+        this.nodeArray[shiftPhysicalIndex] = this.nodeArray[nextPhysicalIndex]
+        shiftPhysicalIndex = nextPhysicalIndex
       }
-      this.nodeArray[physicalShiftIndex] = undefined
+      this.nodeArray[shiftPhysicalIndex] = undefined
       --this.size
       return true
     }
