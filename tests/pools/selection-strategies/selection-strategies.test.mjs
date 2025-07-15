@@ -894,7 +894,7 @@ describe('Selection strategies test suite', () => {
         median: false,
       },
       waitTime: {
-        aggregate: false,
+        aggregate: true,
         average: false,
         median: false,
       },
@@ -920,7 +920,7 @@ describe('Selection strategies test suite', () => {
         median: false,
       },
       waitTime: {
-        aggregate: false,
+        aggregate: true,
         average: false,
         median: false,
       },
@@ -964,14 +964,19 @@ describe('Selection strategies test suite', () => {
           sequentiallyStolen: 0,
           stolen: 0,
         },
-        waitTime: {
+        waitTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
-        },
+        }),
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
+      if (workerNode.usage.waitTime.aggregate == null) {
+        expect(workerNode.usage.waitTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.aggregate).toBeGreaterThan(0)
+      }
       if (workerNode.usage.elu.active.aggregate == null) {
         expect(workerNode.usage.elu.active.aggregate).toBeUndefined()
       } else {
@@ -1039,14 +1044,19 @@ describe('Selection strategies test suite', () => {
           sequentiallyStolen: 0,
           stolen: 0,
         },
-        waitTime: {
+        waitTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
-        },
+        }),
       })
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         max * maxMultiplier
       )
+      if (workerNode.usage.waitTime.aggregate == null) {
+        expect(workerNode.usage.waitTime.aggregate).toBeUndefined()
+      } else {
+        expect(workerNode.usage.waitTime.aggregate).toBeGreaterThan(0)
+      }
       if (workerNode.usage.elu.active.aggregate == null) {
         expect(workerNode.usage.elu.active.aggregate).toBeUndefined()
       } else {

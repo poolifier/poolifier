@@ -351,6 +351,7 @@ describe('Fixed thread pool test suite', () => {
     expect(exitEvent).toBe(1)
     // Simulates an illegitimate worker node destroy and the minimum number of worker nodes is guaranteed
     expect(pool.workerNodes.length).toBe(numberOfThreads)
+    await sleep(500)
     await pool.destroy()
   })
 
