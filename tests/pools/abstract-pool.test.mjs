@@ -1658,13 +1658,24 @@ describe('Abstract pool test suite', () => {
           sequentiallyStolen: 0,
           stolen: 0,
         },
-        waitTime: {
+        waitTime: expect.objectContaining({
           history: expect.any(CircularBuffer),
-        },
+        }),
       })
       expect(
         workerNode.getTaskFunctionWorkerUsage('echo').tasks.executed
       ).toBeGreaterThan(0)
+      if (
+        workerNode.getTaskFunctionWorkerUsage('echo').waitTime.aggregate == null
+      ) {
+        expect(
+          workerNode.getTaskFunctionWorkerUsage('echo').waitTime.aggregate
+        ).toBeUndefined()
+      } else {
+        expect(
+          workerNode.getTaskFunctionWorkerUsage('echo').waitTime.aggregate
+        ).toBeGreaterThan(0)
+      }
       if (
         workerNode.getTaskFunctionWorkerUsage('echo').elu.active.aggregate ==
         null

@@ -36,7 +36,11 @@ export class LeastEluWorkerChoiceStrategy<
         median: false,
       },
       runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-      waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+      waitTime: {
+        aggregate: true,
+        average: false,
+        median: false,
+      },
     })
 
   /** @inheritDoc */
@@ -79,8 +83,10 @@ export class LeastEluWorkerChoiceStrategy<
         if (minWorkerNodeKey === -1) {
           return workerNodeKey
         }
-        return (workerNode.usage.elu.active.aggregate ?? 0) <
-          (workerNodes[minWorkerNodeKey].usage.elu.active.aggregate ?? 0)
+        return (workerNode.usage.waitTime.aggregate ?? 0) +
+          (workerNode.usage.elu.active.aggregate ?? 0) <
+          (workerNodes[minWorkerNodeKey].usage.waitTime.aggregate ?? 0) +
+            (workerNodes[minWorkerNodeKey].usage.elu.active.aggregate ?? 0)
           ? workerNodeKey
           : minWorkerNodeKey
       },
