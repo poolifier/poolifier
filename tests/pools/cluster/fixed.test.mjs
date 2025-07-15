@@ -4,7 +4,7 @@ import cluster from 'node:cluster'
 import { FixedClusterPool, PoolEvents } from '../../../lib/index.cjs'
 import { DEFAULT_TASK_NAME } from '../../../lib/utils.cjs'
 import { TaskFunctions } from '../../test-types.cjs'
-import { waitWorkerEvents } from '../../test-utils.cjs'
+import { sleep, waitWorkerEvents } from '../../test-utils.cjs'
 
 describe('Fixed cluster pool test suite', () => {
   const numberOfWorkers = 8
@@ -335,6 +335,7 @@ describe('Fixed cluster pool test suite', () => {
     expect(exitEvent).toBe(1)
     // Simulates an illegitimate worker node destroy and the minimum number of worker nodes is guaranteed
     expect(pool.workerNodes.length).toBe(numberOfWorkers)
+    await sleep(500)
     await pool.destroy()
   })
 
