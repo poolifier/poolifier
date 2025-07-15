@@ -80,7 +80,9 @@ export class FairShareWorkerChoiceStrategy<
   /** @inheritDoc */
   public reset (): boolean {
     for (const workerNode of this.pool.workerNodes) {
-      delete workerNode.strategyData?.virtualTaskEndTimestamp
+      if (workerNode.strategyData?.virtualTaskEndTimestamp != null) {
+        workerNode.strategyData.virtualTaskEndTimestamp = undefined
+      }
     }
     return true
   }
