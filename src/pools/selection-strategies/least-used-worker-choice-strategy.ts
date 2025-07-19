@@ -34,9 +34,9 @@ export class LeastUsedWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number | undefined {
+  public choose (workerNodeKeys?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.leastUsedNextWorkerNodeKey()
+    this.nextWorkerNodeKey = this.leastUsedNextWorkerNodeKey(workerNodeKeys)
     return this.nextWorkerNodeKey
   }
 
@@ -55,7 +55,13 @@ export class LeastUsedWorkerChoiceStrategy<
     return true
   }
 
-  private leastUsedNextWorkerNodeKey (): number | undefined {
+  private leastUsedNextWorkerNodeKey (
+    workerNodeKeys?: number[]
+  ): number | undefined {
+    workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
+    if (workerNodeKeys.length === 1) {
+      return workerNodeKeys[0]
+    }
     const chosenWorkerNodeKey = this.pool.workerNodes.reduce(
       (minWorkerNodeKey: number, workerNode, workerNodeKey, workerNodes) => {
         if (!this.isWorkerNodeReady(workerNodeKey)) {
@@ -64,10 +70,10 @@ export class LeastUsedWorkerChoiceStrategy<
         if (minWorkerNodeKey === -1) {
           return workerNodeKey
         }
-        return workerNode.usage.tasks.executing +
-          workerNode.usage.tasks.queued <
-          workerNodes[minWorkerNodeKey].usage.tasks.executing +
-            workerNodes[minWorkerNodeKey].usage.tasks.queued
+        return workerNodeKeys.includes(workerNodeKey) &&
+          workerNode.usage.tasks.executing + workerNode.usage.tasks.queued <
+            workerNodes[minWorkerNodeKey].usage.tasks.executing +
+              workerNodes[minWorkerNodeKey].usage.tasks.queued
           ? workerNodeKey
           : minWorkerNodeKey
       },
