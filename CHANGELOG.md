@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.1](https://github.com/poolifier/poolifier/compare/v5.1.0...v5.1.1) (2025-07-19)
+
+
+### ✨ Polish
+
+* avoid delete usage ([39cb900](https://github.com/poolifier/poolifier/commit/39cb900083048ed2c1f219301460b07d226ddd13))
+
+
+### 📚 Documentation
+
+* publish documentation ([8baa91d](https://github.com/poolifier/poolifier/commit/8baa91d868d430c7b219da58d20db9ebb5fa6a8e))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump eslint-plugin-jsdoc in the regular group ([#2933](https://github.com/poolifier/poolifier/issues/2933)) ([85e355c](https://github.com/poolifier/poolifier/commit/85e355c04a9b33e0570ce900cfc700fa54236f5f))
+* **deps-dev:** bump the regular group across 6 directories with 2 updates ([#2930](https://github.com/poolifier/poolifier/issues/2930)) ([287a21b](https://github.com/poolifier/poolifier/commit/287a21bd8550c9497035e8beb86ab838640d1d1e))
+* **deps-dev:** bump the regular group with 2 updates ([#2931](https://github.com/poolifier/poolifier/issues/2931)) ([76a12f4](https://github.com/poolifier/poolifier/commit/76a12f447767d25c9e843051b3cf52947ee465e3))
+* **deps:** bump the regular group across 11 directories with 3 updates ([#2932](https://github.com/poolifier/poolifier/issues/2932)) ([364bf42](https://github.com/poolifier/poolifier/commit/364bf4211ffc87c08de36d714591818cd8372c10))
+
 ## [5.1.0](https://github.com/poolifier/poolifier/compare/v5.0.9...v5.1.0) (2025-07-15)
 
 
