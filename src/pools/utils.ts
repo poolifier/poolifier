@@ -53,7 +53,7 @@ export const getDefaultTasksQueueOptions = (
 
 export const checkFilePath = (filePath: string | undefined): void => {
   if (filePath == null) {
-    throw new TypeError('The worker file path must be specified')
+    throw new TypeError('The worker file path must be defined')
   }
   if (typeof filePath !== 'string') {
     throw new TypeError('The worker file path must be a string')

@@ -79,7 +79,7 @@ describe('Abstract pool test suite', () => {
 
   it('Verify that filePath is checked', () => {
     expect(() => new FixedThreadPool(numberOfWorkers)).toThrow(
-      new TypeError('The worker file path must be specified')
+      new TypeError('The worker file path must be defined')
     )
     expect(() => new FixedThreadPool(numberOfWorkers, 0)).toThrow(
       new TypeError('The worker file path must be a string')
@@ -136,7 +136,7 @@ describe('Abstract pool test suite', () => {
         )
     ).toThrow(
       new Error(
-        'Cannot instantiate a fixed pool with a maximum number of workers specified at initialization'
+        'Cannot instantiate a fixed pool with a maximum number of workers defined at initialization'
       )
     )
   })
