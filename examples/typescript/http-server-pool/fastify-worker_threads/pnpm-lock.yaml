@@ -19,8 +19,8 @@ importers:
         version: 5.1.0
     devDependencies:
       '@types/node':
-        specifier: ^24.2.0
-        version: 24.2.0
+        specifier: ^24.2.1
+        version: 24.2.1
       autocannon:
         specifier: ^8.0.0
         version: 8.0.0
@@ -58,8 +58,8 @@ packages:
   '@minimistjs/subarg@1.0.0':
     resolution: {integrity: sha512-Q/ONBiM2zNeYUy0mVSO44mWWKYM3UHuEK43PKIOzJCbvUnPoMH1K+gk3cf1kgnCVJFlWmddahQQCmrmBGlk9jQ==}
 
-  '@types/node@24.2.0':
-    resolution: {integrity: sha512-3xyG3pMCq3oYCNg7/ZP+E1ooTaGB4cG8JWRsqqOYQdbWNY4zbaV0Ennrd7stjiJEFZCaybcIgpTjJWHRfBSIDw==}
+  '@types/node@24.2.1':
+    resolution: {integrity: sha512-DRh5K+ka5eJic8CjH7td8QpYEV6Zo10gfRkjHCO3weqZHWDtAaSTFtl4+VMqOJ4N5jcuhZ9/l+yy8rVgw7BQeQ==}
 
   abstract-logging@2.0.1:
     resolution: {integrity: sha512-2BjRTZxTPvheOvGbBslFSYOUkr+SjPtOnrLP33f+VIWLzezQpZcqVg7ja3L4dBXmzzgwT+a029jRx5PCi3JuiA==}
@@ -465,7 +465,7 @@ snapshots:
     dependencies:
       minimist: 1.2.8
 
-  '@types/node@24.2.0':
+  '@types/node@24.2.1':
     dependencies:
       undici-types: 7.10.0
 
