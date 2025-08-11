@@ -103,7 +103,7 @@ describe('Dynamic cluster pool test suite', () => {
 
   it('Validation of inputs test', () => {
     expect(() => new DynamicClusterPool(min)).toThrow(
-      'The worker file path must be specified'
+      'The worker file path must be defined'
     )
   })
 

@@ -1580,7 +1580,7 @@ export abstract class AbstractPool<
   private checkPoolType (): void {
     if (this.type === PoolTypes.fixed && this.maximumNumberOfWorkers != null) {
       throw new Error(
-        'Cannot instantiate a fixed pool with a maximum number of workers specified at initialization'
+        'Cannot instantiate a fixed pool with a maximum number of workers defined at initialization'
       )
     }
   }

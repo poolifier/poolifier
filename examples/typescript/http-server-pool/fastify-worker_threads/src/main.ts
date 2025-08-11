@@ -22,7 +22,7 @@ const workerFile = join(
 await fastify.register(fastifyPoolifier, {
   enableTasksQueue: true,
   errorHandler: (e: Error) => {
-    fastify.log.error('Thread worker error:', e)
+    fastify.log.error('Thread worker error:', e as unknown as undefined)
   },
   tasksQueueOptions: {
     concurrency: 8,
