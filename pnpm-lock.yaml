@@ -90,8 +90,8 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1(rollup@4.46.2)
       rollup-plugin-dts:
-        specifier: ^6.2.1
-        version: 6.2.1(rollup@4.46.2)(typescript@5.9.2)
+        specifier: ^6.2.3
+        version: 6.2.3(rollup@4.46.2)(typescript@5.9.2)
       sinon:
         specifier: ^21.0.0
         version: 21.0.0
@@ -274,8 +274,8 @@ packages:
   '@cspell/dict-bash@4.2.1':
     resolution: {integrity: sha512-SBnzfAyEAZLI9KFS7DUG6Xc1vDFuLllY3jz0WHvmxe8/4xV3ufFE3fGxalTikc1VVeZgZmxYiABw4iGxVldYEg==}
 
-  '@cspell/dict-companies@3.2.3':
-    resolution: {integrity: sha512-7ekwamRYeS7G3I3LEKM3t0WIyAytCbsx2I2h2z2eEvF+b3TmtJVcV7UI7BScLue3bep4sPB/b4CV3BUv3QfyzQ==}
+  '@cspell/dict-companies@3.2.4':
+    resolution: {integrity: sha512-36NoOjW3Vl1Sl+ccEvD6NDA4YhaKo2mg2zAyah8n7tpaFXf5QNBlnZsPCgRwPM6aG1UfN30jiyd2hIVOeoKj9A==}
 
   '@cspell/dict-cpp@6.0.9':
     resolution: {integrity: sha512-Xdq9MwGh0D5rsnbOqFW24NIClXXRhN11KJdySMibpcqYGeomxB2ODFBuhj1H7azO7kVGkGH0Okm4yQ2TRzBx0g==}
@@ -1539,8 +1539,9 @@ packages:
   fastq@1.19.1:
     resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
 
-  fdir@6.4.6:
-    resolution: {integrity: sha512-hiFoqpyZcfNm1yc4u8oWCf9A2c4D3QjCrks3zmoVKVxpQRzmPNar1hUJcBG2RQHvEVGDN+Jm81ZheVLAQMK6+w==}
+  fdir@6.5.0:
+    resolution: {integrity: sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==}
+    engines: {node: '>=12.0.0'}
     peerDependencies:
       picomatch: ^3 || ^4
     peerDependenciesMeta:
@@ -2378,8 +2379,8 @@ packages:
     peerDependencies:
       rollup: '*'
 
-  rollup-plugin-dts@6.2.1:
-    resolution: {integrity: sha512-sR3CxYUl7i2CHa0O7bA45mCrgADyAQ0tVtGSqi3yvH28M+eg1+g5d7kQ9hLvEz5dorK3XVsH5L2jwHLQf72DzA==}
+  rollup-plugin-dts@6.2.3:
+    resolution: {integrity: sha512-UgnEsfciXSPpASuOelix7m4DrmyQgiaWBnvI0TM4GxuDh5FkqW8E5hu57bCxXB90VvR1WNfLV80yEDN18UogSA==}
     engines: {node: '>=16'}
     peerDependencies:
       rollup: ^3.29.4 || ^4
@@ -2958,7 +2959,7 @@ snapshots:
       '@cspell/dict-al': 1.1.1
       '@cspell/dict-aws': 4.0.14
       '@cspell/dict-bash': 4.2.1
-      '@cspell/dict-companies': 3.2.3
+      '@cspell/dict-companies': 3.2.4
       '@cspell/dict-cpp': 6.0.9
       '@cspell/dict-cryptocurrencies': 5.0.5
       '@cspell/dict-csharp': 4.0.7
@@ -3033,7 +3034,7 @@ snapshots:
     dependencies:
       '@cspell/dict-shell': 1.1.1
 
-  '@cspell/dict-companies@3.2.3': {}
+  '@cspell/dict-companies@3.2.4': {}
 
   '@cspell/dict-cpp@6.0.9': {}
 
@@ -4415,7 +4416,7 @@ snapshots:
     dependencies:
       reusify: 1.1.0
 
-  fdir@6.4.6(picomatch@4.0.3):
+  fdir@6.5.0(picomatch@4.0.3):
     optionalDependencies:
       picomatch: 4.0.3
 
@@ -5262,7 +5263,7 @@ snapshots:
       del: 8.0.0
       rollup: 4.46.2
 
-  rollup-plugin-dts@6.2.1(rollup@4.46.2)(typescript@5.9.2):
+  rollup-plugin-dts@6.2.3(rollup@4.46.2)(typescript@5.9.2):
     dependencies:
       magic-string: 0.30.17
       rollup: 4.46.2
@@ -5558,7 +5559,7 @@ snapshots:
 
   tinyglobby@0.2.14:
     dependencies:
-      fdir: 6.4.6(picomatch@4.0.3)
+      fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
 
   to-regex-range@5.0.1:
