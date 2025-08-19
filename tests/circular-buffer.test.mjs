@@ -27,7 +27,7 @@ describe('Circular buffer test suite', () => {
       new TypeError("Invalid circular buffer size: '0.25' is not an integer")
     )
     expect(() => new CircularBuffer(-1)).toThrow(
-      new RangeError('Invalid circular buffer size: -1 < 0')
+      new RangeError('Invalid circular buffer size: -1 <= 0')
     )
     expect(() => new CircularBuffer(Number.MAX_SAFE_INTEGER + 1)).toThrow(
       new TypeError(

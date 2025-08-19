@@ -11,7 +11,7 @@ describe('Priority queue test suite', () => {
       new TypeError("Invalid bucket size: '' is not an integer")
     )
     expect(() => new PriorityQueue(-1)).toThrow(
-      new RangeError('Invalid bucket size: -1 < 0')
+      new RangeError('Invalid bucket size: -1 <= 0')
     )
     let priorityQueue = new PriorityQueue()
     expect(priorityQueue.bucketSize).toBe(defaultBucketSize)

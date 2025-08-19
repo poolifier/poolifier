@@ -35,7 +35,7 @@ export class LeastEluWorkerChoiceStrategy<
         average: false,
         median: false,
       },
-      runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+      runTime: { ...DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS },
       waitTime: {
         aggregate: true,
         average: false,

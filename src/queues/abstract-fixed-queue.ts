@@ -114,7 +114,7 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
 
   /** @inheritdoc */
   public get (index: number): T | undefined {
-    if (this.empty() || index >= this.size) {
+    if (this.empty() || index < 0 || index >= this.size) {
       return undefined
     }
     index += this.start
