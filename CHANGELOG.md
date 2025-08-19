@@ -5,6 +5,48 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.1](https://github.com/poolifier/poolifier/compare/v5.1.0...v5.1.1) (2025-08-19)
+
+
+### 🐞 Bug Fixes
+
+* handle more task function declaration signatures ([aa06657](https://github.com/poolifier/poolifier/commit/aa0665719e090b6fcd4e6a58b587c7d3d484e1b3))
+* worker index identification at tasks stealing under back pressure ([ae736ce](https://github.com/poolifier/poolifier/commit/ae736ce03e1f63459c4740e09ab274fb8af5cd59))
+
+
+### ✨ Polish
+
+* avoid delete usage ([39cb900](https://github.com/poolifier/poolifier/commit/39cb900083048ed2c1f219301460b07d226ddd13))
+* cleanup worker selection strategies code ([60da3e6](https://github.com/poolifier/poolifier/commit/60da3e651a8bb2fea1327c5ba5045ae67d81418f))
+* refine error messages ([d03a706](https://github.com/poolifier/poolifier/commit/d03a70632b89beaa18910aedf60cc95a7632399b))
+
+
+### 📚 Documentation
+
+* publish documentation ([8baa91d](https://github.com/poolifier/poolifier/commit/8baa91d868d430c7b219da58d20db9ebb5fa6a8e))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump @types/node in the regular group ([#2935](https://github.com/poolifier/poolifier/issues/2935)) ([cc27648](https://github.com/poolifier/poolifier/commit/cc2764849b1729d23f208a7a2049899d3d12da52))
+* **deps-dev:** bump eslint-plugin-jsdoc in the regular group ([#2933](https://github.com/poolifier/poolifier/issues/2933)) ([85e355c](https://github.com/poolifier/poolifier/commit/85e355c04a9b33e0570ce900cfc700fa54236f5f))
+* **deps-dev:** bump the regular group across 1 directory with 3 updates ([#2940](https://github.com/poolifier/poolifier/issues/2940)) ([3cb877a](https://github.com/poolifier/poolifier/commit/3cb877ac1f6449984f194fac42940b0d21ca0abb))
+* **deps-dev:** bump the regular group across 1 directory with 3 updates ([#2954](https://github.com/poolifier/poolifier/issues/2954)) ([d34f1ec](https://github.com/poolifier/poolifier/commit/d34f1ec6f0b3a7149ed943f8a3a39b10ca46d53e))
+* **deps-dev:** bump the regular group across 1 directory with 6 updates ([348ff1f](https://github.com/poolifier/poolifier/commit/348ff1fbd4bfcf653c5d8a631c5dabb7d5a2e05e))
+* **deps-dev:** bump the regular group across 11 directories with 1 update ([1614af7](https://github.com/poolifier/poolifier/commit/1614af721e9ef48421cbfb7170bc8395a1486a1f))
+* **deps-dev:** bump the regular group across 11 directories with 1 update ([#2936](https://github.com/poolifier/poolifier/issues/2936)) ([5d1e63c](https://github.com/poolifier/poolifier/commit/5d1e63cec93eb2cdc653e84162c88528d09bf00c))
+* **deps-dev:** bump the regular group across 11 directories with 1 update ([#2941](https://github.com/poolifier/poolifier/issues/2941)) ([f916f0a](https://github.com/poolifier/poolifier/commit/f916f0aea346f56111aaaed8720011de5d6b1886))
+* **deps-dev:** bump the regular group across 11 directories with 1 update ([#2955](https://github.com/poolifier/poolifier/issues/2955)) ([9a15e97](https://github.com/poolifier/poolifier/commit/9a15e97a77472da3b39b8468e47edbbf6f007128))
+* **deps-dev:** bump the regular group across 6 directories with 1 update ([#2938](https://github.com/poolifier/poolifier/issues/2938)) ([df3b3f2](https://github.com/poolifier/poolifier/commit/df3b3f2f6e5ce6bb0ad04028f45a650df0de309d))
+* **deps-dev:** bump the regular group across 6 directories with 2 updates ([#2930](https://github.com/poolifier/poolifier/issues/2930)) ([287a21b](https://github.com/poolifier/poolifier/commit/287a21bd8550c9497035e8beb86ab838640d1d1e))
+* **deps-dev:** bump the regular group with 2 updates ([#2931](https://github.com/poolifier/poolifier/issues/2931)) ([76a12f4](https://github.com/poolifier/poolifier/commit/76a12f447767d25c9e843051b3cf52947ee465e3))
+* **deps-dev:** bump the regular group with 2 updates ([#2943](https://github.com/poolifier/poolifier/issues/2943)) ([73060fd](https://github.com/poolifier/poolifier/commit/73060fd30daa4465cd992137cf0730170971a79a))
+* **deps-dev:** bump typescript in the typescript group ([#2942](https://github.com/poolifier/poolifier/issues/2942)) ([b65f4dc](https://github.com/poolifier/poolifier/commit/b65f4dcb115917c16d30f4854171be9d66791edf))
+* **deps:** bump actions/checkout from 4 to 5 ([#2950](https://github.com/poolifier/poolifier/issues/2950)) ([6cc40dd](https://github.com/poolifier/poolifier/commit/6cc40dd7bb00069d21317f00532f156297b3f0d9))
+* **deps:** bump sonarsource/sonarqube-scan-action from 5.2.0 to 5.3.0 ([#2934](https://github.com/poolifier/poolifier/issues/2934)) ([a18fcb5](https://github.com/poolifier/poolifier/commit/a18fcb5423139cf133fe247cc1889b335f540192))
+* **deps:** bump the regular group across 11 directories with 3 updates ([#2932](https://github.com/poolifier/poolifier/issues/2932)) ([364bf42](https://github.com/poolifier/poolifier/commit/364bf4211ffc87c08de36d714591818cd8372c10))
+* **deps:** bump the regular group across 3 directories with 1 update ([#2952](https://github.com/poolifier/poolifier/issues/2952)) ([cfc45f3](https://github.com/poolifier/poolifier/commit/cfc45f375379155497f8c86d2c52a40c4454fe3f))
+
 ## [5.1.0](https://github.com/poolifier/poolifier/compare/v5.0.9...v5.1.0) (2025-07-15)
 
 

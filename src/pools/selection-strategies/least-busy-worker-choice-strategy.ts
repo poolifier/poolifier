@@ -30,7 +30,7 @@ export class LeastBusyWorkerChoiceStrategy<
   /** @inheritDoc */
   public override readonly taskStatisticsRequirements: TaskStatisticsRequirements =
     Object.freeze({
-      elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+      elu: { ...DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS },
       runTime: {
         aggregate: true,
         average: false,

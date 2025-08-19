@@ -70,8 +70,8 @@ export class PriorityQueue<T> {
         `Invalid bucket size: '${bucketSize.toString()}' is not an integer`
       )
     }
-    if (bucketSize < 0) {
-      throw new RangeError(`Invalid bucket size: ${bucketSize.toString()} < 0`)
+    if (bucketSize <= 0) {
+      throw new RangeError(`Invalid bucket size: ${bucketSize.toString()} <= 0`)
     }
     this.bucketSize = bucketSize
     this.priorityEnabled = enablePriority

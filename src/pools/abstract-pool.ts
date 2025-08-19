@@ -91,6 +91,8 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public get info (): PoolInfo {
+    const taskStatisticsRequirements =
+      this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements()
     return {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       defaultStrategy: this.opts.workerChoiceStrategy!,
@@ -102,10 +104,8 @@ export abstract class AbstractPool<
       type: this.type,
       version,
       worker: this.worker,
-      ...(this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements()
-        .runTime.aggregate === true &&
-        this.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
-          .waitTime.aggregate && {
+      ...(taskStatisticsRequirements?.runTime.aggregate === true &&
+        taskStatisticsRequirements.waitTime.aggregate && {
         utilization: round(this.utilization),
       }),
       busyWorkerNodes: this.workerNodes.reduce(
@@ -173,8 +173,7 @@ export abstract class AbstractPool<
           0
         ),
       }),
-      ...(this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements()
-        .runTime.aggregate === true && {
+      ...(taskStatisticsRequirements?.runTime.aggregate === true && {
         runTime: {
           maximum: round(
             max(
@@ -192,8 +191,7 @@ export abstract class AbstractPool<
               )
             )
           ),
-          ...(this.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
-            .runTime.average && {
+          ...(taskStatisticsRequirements.runTime.average && {
             average: round(
               average(
                 this.workerNodes.reduce<number[]>(
@@ -206,8 +204,7 @@ export abstract class AbstractPool<
               )
             ),
           }),
-          ...(this.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
-            .runTime.median && {
+          ...(taskStatisticsRequirements.runTime.median && {
             median: round(
               median(
                 this.workerNodes.reduce<number[]>(
@@ -222,8 +219,7 @@ export abstract class AbstractPool<
           }),
         },
       }),
-      ...(this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements()
-        .waitTime.aggregate === true && {
+      ...(taskStatisticsRequirements?.waitTime.aggregate === true && {
         waitTime: {
           maximum: round(
             max(
@@ -241,8 +237,7 @@ export abstract class AbstractPool<
               )
             )
           ),
-          ...(this.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
-            .waitTime.average && {
+          ...(taskStatisticsRequirements.waitTime.average && {
             average: round(
               average(
                 this.workerNodes.reduce<number[]>(
@@ -255,8 +250,7 @@ export abstract class AbstractPool<
               )
             ),
           }),
-          ...(this.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
-            .waitTime.median && {
+          ...(taskStatisticsRequirements.waitTime.median && {
             median: round(
               median(
                 this.workerNodes.reduce<number[]>(
@@ -271,8 +265,7 @@ export abstract class AbstractPool<
           }),
         },
       }),
-      ...(this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements()
-        .elu.aggregate === true && {
+      ...(taskStatisticsRequirements?.elu.aggregate === true && {
         elu: {
           active: {
             maximum: round(
@@ -293,8 +286,7 @@ export abstract class AbstractPool<
                 )
               )
             ),
-            ...(this.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
-              .elu.average && {
+            ...(taskStatisticsRequirements.elu.average && {
               average: round(
                 average(
                   this.workerNodes.reduce<number[]>(
@@ -307,8 +299,7 @@ export abstract class AbstractPool<
                 )
               ),
             }),
-            ...(this.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
-              .elu.median && {
+            ...(taskStatisticsRequirements.elu.median && {
               median: round(
                 median(
                   this.workerNodes.reduce<number[]>(
@@ -341,8 +332,7 @@ export abstract class AbstractPool<
                 )
               )
             ),
-            ...(this.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
-              .elu.average && {
+            ...(taskStatisticsRequirements.elu.average && {
               average: round(
                 average(
                   this.workerNodes.reduce<number[]>(
@@ -355,8 +345,7 @@ export abstract class AbstractPool<
                 )
               ),
             }),
-            ...(this.workerChoiceStrategiesContext.getTaskStatisticsRequirements()
-              .elu.median && {
+            ...(taskStatisticsRequirements.elu.median && {
               median: round(
                 median(
                   this.workerNodes.reduce<number[]>(
@@ -524,6 +513,9 @@ export abstract class AbstractPool<
     const poolTimeCapacity =
       (performance.now() - this.startTimestamp) *
       (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers)
+    if (!Number.isFinite(poolTimeCapacity) || poolTimeCapacity <= 0) {
+      return 0
+    }
     const totalTasksRunTime = this.workerNodes.reduce(
       (accumulator, workerNode) =>
         accumulator + (workerNode.usage.runTime.aggregate ?? 0),
@@ -1271,6 +1263,7 @@ export abstract class AbstractPool<
    * @returns Worker nodes back pressure boolean status.
    */
   protected internalBackPressure (): boolean {
+    if (this.workerNodes.length === 0) return false
     return (
       this.workerNodes.reduce(
         (accumulator, _, workerNodeKey) =>
@@ -1287,6 +1280,7 @@ export abstract class AbstractPool<
    * @returns Worker nodes busyness boolean status.
    */
   protected internalBusy (): boolean {
+    if (this.workerNodes.length === 0) return false
     return (
       this.workerNodes.reduce(
         (accumulator, _, workerNodeKey) =>
@@ -1933,7 +1927,7 @@ export abstract class AbstractPool<
         (workerNodeA, workerNodeB) =>
           workerNodeA.usage.tasks.queued - workerNodeB.usage.tasks.queued
       )
-    for (const [workerNodeKey, workerNode] of workerNodes.entries()) {
+    for (const workerNode of workerNodes) {
       if (sourceWorkerNode.usage.tasks.queued === 0) {
         break
       }
@@ -1944,6 +1938,7 @@ export abstract class AbstractPool<
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.opts.tasksQueueOptions!.size! - sizeOffset
       ) {
+        const workerNodeKey = this.workerNodes.indexOf(workerNode)
         workerNode.info.backPressureStealing = true
         this.stealTask(sourceWorkerNode, workerNodeKey)
         workerNode.info.backPressureStealing = false
@@ -2029,10 +2024,9 @@ export abstract class AbstractPool<
    * @param workerNode - The worker node.
    */
   private initWorkerNodeUsage (workerNode: IWorkerNode<Worker, Data>): void {
-    if (
+    const taskStatisticsRequirements =
       this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements()
-        .runTime.aggregate === true
-    ) {
+    if (taskStatisticsRequirements?.runTime.aggregate === true) {
       workerNode.usage.runTime.aggregate = min(
         ...this.workerNodes.map(
           workerNode =>
@@ -2040,10 +2034,7 @@ export abstract class AbstractPool<
         )
       )
     }
-    if (
-      this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements()
-        .waitTime.aggregate === true
-    ) {
+    if (taskStatisticsRequirements?.waitTime.aggregate === true) {
       workerNode.usage.waitTime.aggregate = min(
         ...this.workerNodes.map(
           workerNode =>
@@ -2051,10 +2042,7 @@ export abstract class AbstractPool<
         )
       )
     }
-    if (
-      this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements().elu
-        .aggregate === true
-    ) {
+    if (taskStatisticsRequirements?.elu.aggregate === true) {
       workerNode.usage.elu.active.aggregate = min(
         ...this.workerNodes.map(
           workerNode =>
@@ -2196,15 +2184,22 @@ export abstract class AbstractPool<
     while (this.tasksQueueSize(sourceWorkerNodeKey) > 0) {
       const destinationWorkerNodeKey = this.workerNodes.reduce(
         (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
-          return sourceWorkerNodeKey !== workerNodeKey &&
-            workerNode.info.ready &&
-            workerNode.usage.tasks.queued <
-              workerNodes[minWorkerNodeKey].usage.tasks.queued
+          if (workerNodeKey === sourceWorkerNodeKey || !workerNode.info.ready) {
+            return minWorkerNodeKey
+          }
+          if (minWorkerNodeKey === -1) {
+            return workerNodeKey
+          }
+          return workerNode.usage.tasks.queued <
+            workerNodes[minWorkerNodeKey].usage.tasks.queued
             ? workerNodeKey
             : minWorkerNodeKey
         },
-        0
+        -1
       )
+      if (destinationWorkerNodeKey === -1) {
+        break
+      }
       this.handleTask(
         destinationWorkerNodeKey,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -2302,14 +2297,12 @@ export abstract class AbstractPool<
    * @param workerNodeKey - The worker node key.
    */
   private sendStatisticsMessageToWorker (workerNodeKey: number): void {
+    const taskStatisticsRequirements =
+      this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements()
     this.sendToWorker(workerNodeKey, {
       statistics: {
-        elu:
-          this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements()
-            .elu.aggregate ?? false,
-        runTime:
-          this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements()
-            .runTime.aggregate ?? false,
+        elu: taskStatisticsRequirements?.elu.aggregate ?? false,
+        runTime: taskStatisticsRequirements?.runTime.aggregate ?? false,
       },
     })
   }
@@ -2367,12 +2360,12 @@ export abstract class AbstractPool<
     message: MessageValue<Data>
   ): Promise<boolean> {
     const targetWorkerNodeKeys = [...this.workerNodes.keys()]
+    const responsesReceived: MessageValue<Response>[] = []
     const taskFunctionOperationsListener = (
       message: MessageValue<Response>,
       resolve: (value: boolean | PromiseLike<boolean>) => void,
       reject: (reason?: unknown) => void
     ): void => {
-      const responsesReceived: MessageValue<Response>[] = []
       this.checkMessageWorkerId(message)
       if (
         message.taskFunctionOperationStatus != null &&
@@ -2519,8 +2512,12 @@ export abstract class AbstractPool<
     }
     destinationWorkerNode.info.stealing = true
     sourceWorkerNode.info.stolen = true
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const stolenTask = sourceWorkerNode.dequeueLastPrioritizedTask()!
+    const stolenTask = sourceWorkerNode.dequeueLastPrioritizedTask()
+    if (stolenTask == null) {
+      sourceWorkerNode.info.stolen = false
+      destinationWorkerNode.info.stealing = false
+      return
+    }
     sourceWorkerNode.info.stolen = false
     destinationWorkerNode.info.stealing = false
     this.handleTask(destinationWorkerNodeKey, stolenTask)
@@ -2606,6 +2603,9 @@ export abstract class AbstractPool<
   private readonly workerNodeStealTask = (
     workerNodeKey: number
   ): Task<Data> | undefined => {
+    const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (workerNode == null) return
     const workerNodes = this.workerNodes
       .slice()
       .sort(
@@ -2613,8 +2613,8 @@ export abstract class AbstractPool<
           workerNodeB.usage.tasks.queued - workerNodeA.usage.tasks.queued
       )
     const sourceWorkerNode = workerNodes.find(
-      (sourceWorkerNode, sourceWorkerNodeKey) =>
-        sourceWorkerNodeKey !== workerNodeKey &&
+      sourceWorkerNode =>
+        sourceWorkerNode !== workerNode &&
         sourceWorkerNode.usage.tasks.queued > 0
     )
     if (sourceWorkerNode != null) {

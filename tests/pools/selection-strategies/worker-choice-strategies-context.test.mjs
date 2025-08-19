@@ -96,7 +96,7 @@ describe('Worker choice strategies context test suite', () => {
     )
     expect(() => workerChoiceStrategiesContext.execute()).toThrow(
       new Error(
-        `Worker node key chosen by ${workerChoiceStrategyUndefinedStub.name} is null or undefined after ${workerChoiceStrategiesContext.retries} retries`
+        `Worker node key chosen by ${workerChoiceStrategyUndefinedStub.name} is null or undefined after ${workerChoiceStrategiesContext.retries.toString()} retries (max: ${workerChoiceStrategiesContext.retries.toString()})`
       )
     )
     const workerChoiceStrategyNullStub = createStubInstance(
@@ -111,7 +111,7 @@ describe('Worker choice strategies context test suite', () => {
     )
     expect(() => workerChoiceStrategiesContext.execute()).toThrow(
       new Error(
-        `Worker node key chosen by ${workerChoiceStrategyNullStub.name} is null or undefined after ${workerChoiceStrategiesContext.retries} retries`
+        `Worker node key chosen by ${workerChoiceStrategyNullStub.name} is null or undefined after ${workerChoiceStrategiesContext.retries.toString()} retries (max: ${workerChoiceStrategiesContext.retries.toString()})`
       )
     )
   })

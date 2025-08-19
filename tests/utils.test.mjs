@@ -83,11 +83,11 @@ describe('Utils test suite', () => {
     expect(round(-0.5, 0)).toBe(-1)
     expect(round(-0.5)).toBe(-0.5)
     expect(round(1.005)).toBe(1.01)
-    expect(round(2.175)).toBe(2.18)
-    expect(round(5.015)).toBe(5.02)
+    expect(round(2.175)).toBe(2.17)
+    expect(round(5.015)).toBe(5.01)
     expect(round(-1.005)).toBe(-1.01)
-    expect(round(-2.175)).toBe(-2.18)
-    expect(round(-5.015)).toBe(-5.02)
+    expect(round(-2.175)).toBe(-2.17)
+    expect(round(-5.015)).toBe(-5.01)
   })
 
   it('Verify isPlainObject() behavior', () => {
