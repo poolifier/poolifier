@@ -198,10 +198,14 @@ export abstract class AbstractWorker<
         DEFAULT_TASK_NAME,
         this.taskFunctions.get(DEFAULT_TASK_NAME)
       ),
-      buildTaskFunctionProperties(
-        defaultTaskFunctionName,
-        this.taskFunctions.get(defaultTaskFunctionName)
-      ),
+      ...(defaultTaskFunctionName !== DEFAULT_TASK_NAME
+        ? [
+            buildTaskFunctionProperties(
+              defaultTaskFunctionName,
+              this.taskFunctions.get(defaultTaskFunctionName)
+            ),
+          ]
+        : []),
       ...taskFunctionsProperties,
     ]
   }
@@ -700,6 +704,7 @@ export abstract class AbstractWorker<
       this.checkActive.bind(this),
       (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME) / 2
     )
+    this.activeInterval.unref()
   }
 
   /**
