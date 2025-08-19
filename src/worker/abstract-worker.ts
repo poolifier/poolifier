@@ -342,7 +342,7 @@ export abstract class AbstractWorker<
         response = this.addTaskFunction(taskFunctionProperties.name, {
           // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func, @typescript-eslint/no-unsafe-call
           taskFunction: new Function(
-            `return ${taskFunction}`
+            `return (${taskFunction})`
           )() as TaskFunction<Data, Response>,
           ...(taskFunctionProperties.priority != null && {
             priority: taskFunctionProperties.priority,
@@ -360,7 +360,10 @@ export abstract class AbstractWorker<
         break
       default:
         response = {
-          error: new Error('Unknown task operation'),
+          error: new Error(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            `Unknown task function operation: ${taskFunctionOperation!}`
+          ),
           status: false,
         }
         break
@@ -432,8 +435,7 @@ export abstract class AbstractWorker<
           data,
           name,
           ...this.handleError(
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            new Error(`Task function '${name!}' not found`)
+            new Error(`Task function '${taskFunctionName}' not found`)
           ),
         },
       })
@@ -713,7 +715,7 @@ export abstract class AbstractWorker<
   private stopCheckActive (): void {
     if (this.activeInterval != null) {
       clearInterval(this.activeInterval)
-      delete this.activeInterval
+      this.activeInterval = undefined
     }
   }
 
