@@ -12,15 +12,15 @@ importers:
         specifier: ^7.0.5
         version: 7.0.5
       poolifier:
-        specifier: ^5.1.0
-        version: 5.1.0
+        specifier: ^5.1.1
+        version: 5.1.1
     devDependencies:
       '@types/node':
         specifier: ^24.3.0
         version: 24.3.0
       '@types/nodemailer':
-        specifier: ^7.0.0
-        version: 7.0.0
+        specifier: ^7.0.1
+        version: 7.0.1
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -319,8 +319,8 @@ packages:
   '@types/node@24.3.0':
     resolution: {integrity: sha512-aPTXCrfwnDLj4VvXrm+UUCQjNEvJgNA8s5F1cvwQU+3KNltTOkBm1j30uNLyqqPNe7gE3KFzImYoZEfLhp4Yow==}
 
-  '@types/nodemailer@7.0.0':
-    resolution: {integrity: sha512-APKHivjoJ1OyLrlhdJ/QJpnj78OaGSHQ18J12CeOVbffvBgUjqBiIzCW2lnRuwQiLxCpahgMf+T7G2dZBvgeYw==}
+  '@types/nodemailer@7.0.1':
+    resolution: {integrity: sha512-UfHAghPmGZVzaL8x9y+mKZMWyHC399+iq0MOmya5tIyenWX3lcdSb60vOmp0DocR6gCDTYTozv/ULQnREyyjkg==}
 
   '@types/uuid@9.0.8':
     resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
@@ -336,8 +336,8 @@ packages:
     resolution: {integrity: sha512-nsrh2lO3j4GkLLXoeEksAMgAOqxOv6QumNRVQTJwKH4nuiww6iC2y7GyANs9kRAxCexg3+lTWM3PZ91iLlVjfg==}
     engines: {node: '>=6.0.0'}
 
-  poolifier@5.1.0:
-    resolution: {integrity: sha512-F3cjdjEY18hzfL3QfppwQO+gkqYu9IRmrJAmAm7+iWAUE+OBn9koXFR0pFwxNXqCda/+4360v5RLJEor5/ELTA==}
+  poolifier@5.1.1:
+    resolution: {integrity: sha512-PCJBMYIEE8MIP3HbmPqd/1GZJrSerIPDy2CAxHE3frcxVqMHd9mysnmKP3Rr7BWJJAeTgyZVIOIaqLT8dKlvkw==}
     engines: {node: '>=20.11.0', pnpm: '>=9.0.0'}
 
   strnum@2.1.1:
@@ -1018,7 +1018,7 @@ snapshots:
     dependencies:
       undici-types: 7.10.0
 
-  '@types/nodemailer@7.0.0':
+  '@types/nodemailer@7.0.1':
     dependencies:
       '@aws-sdk/client-sesv2': 3.864.0
       '@types/node': 24.3.0
@@ -1035,7 +1035,7 @@ snapshots:
 
   nodemailer@7.0.5: {}
 
-  poolifier@5.1.0: {}
+  poolifier@5.1.1: {}
 
   strnum@2.1.1: {}
 
