@@ -93,6 +93,9 @@ export class PriorityQueue<T> {
    * @returns `true` if the data was deleted, `false` otherwise.
    */
   public delete (data: T): boolean {
+    if (this.size === 0) {
+      return false
+    }
     let node: PriorityQueueNode<T> | undefined = this.tail
     let prev: PriorityQueueNode<T> | undefined
     while (node != null) {
