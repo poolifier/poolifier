@@ -13,7 +13,7 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
   /** @inheritdoc */
   public readonly capacity: number
   /** @inheritdoc */
-  public nodeArray: (FixedQueueNode<T> | undefined)[]
+  public readonly nodeArray: (FixedQueueNode<T> | undefined)[]
   /** @inheritdoc */
   public size!: number
   protected start!: number
