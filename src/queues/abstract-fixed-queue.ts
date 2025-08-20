@@ -48,6 +48,7 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
 
   /** @inheritdoc */
   public delete (data: T): boolean {
+    if (this.empty()) return false
     let currentPhysicalIndex = this.start
     let logicalIndex = -1
     for (let i = 0; i < this.size; i++) {
@@ -162,8 +163,8 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
         `Invalid fixed queue size: '${size.toString()}' is not an integer`
       )
     }
-    if (size < 0) {
-      throw new RangeError(`Invalid fixed queue size: ${size.toString()} < 0`)
+    if (size <= 0) {
+      throw new RangeError(`Invalid fixed queue size: ${size.toString()} <= 0`)
     }
   }
 }

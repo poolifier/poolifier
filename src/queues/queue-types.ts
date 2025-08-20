@@ -12,6 +12,7 @@ export const defaultQueueSize = 2048
 export interface FixedQueueNode<T> {
   data: T
   priority: number
+  timestamp: number
 }
 
 /**
