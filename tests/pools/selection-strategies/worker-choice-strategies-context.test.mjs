@@ -1,5 +1,5 @@
 import { expect } from '@std/expect'
-import { createStubInstance, restore, stub } from 'sinon'
+import { restore, stub } from 'sinon'
 
 import {
   DynamicThreadPool,
@@ -84,72 +84,83 @@ describe('Worker choice strategies context test suite', () => {
     expect(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
-    const workerChoiceStrategyUndefinedStub = createStubInstance(
-      RoundRobinWorkerChoiceStrategy,
-      {
-        choose: stub().returns(undefined),
-      }
-    )
-    workerChoiceStrategiesContext.workerChoiceStrategies.set(
-      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
-      workerChoiceStrategyUndefinedStub
-    )
-    expect(() => workerChoiceStrategiesContext.execute()).toThrow(
-      new Error(
-        `Worker node key chosen by ${workerChoiceStrategyUndefinedStub.name} is null or undefined after ${workerChoiceStrategiesContext.retries.toString()} retries (max: ${workerChoiceStrategiesContext.retries.toString()})`
+    const workerChoiceStrategyUndefinedStub =
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
+    const chooseUndefinedStub = stub(
+      workerChoiceStrategyUndefinedStub,
+      'choose'
+    ).returns(undefined)
+    let err
+    try {
+      workerChoiceStrategiesContext.execute()
+    } catch (e) {
+      err = e
+    }
+    expect(err).toBeInstanceOf(Error)
+    expect(err.message).toBe(
+      `Worker node key chosen by ${workerChoiceStrategyUndefinedStub.name} is null or undefined after ${workerChoiceStrategyUndefinedStub.retriesCount.toString()} retries (max: ${workerChoiceStrategiesContext.retries.toString()})`
     )
-    const workerChoiceStrategyNullStub = createStubInstance(
-      RoundRobinWorkerChoiceStrategy,
-      {
-        choose: stub().returns(null),
-      }
+    expect(chooseUndefinedStub.callCount).toBe(
+      workerChoiceStrategyUndefinedStub.retriesCount + 1
     )
-    workerChoiceStrategiesContext.workerChoiceStrategies.set(
-      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
-      workerChoiceStrategyNullStub
+    expect(workerChoiceStrategiesContext.getStrategyRetries()).toBe(
+      workerChoiceStrategyUndefinedStub.retriesCount
     )
-    expect(() => workerChoiceStrategiesContext.execute()).toThrow(
-      new Error(
-        `Worker node key chosen by ${workerChoiceStrategyNullStub.name} is null or undefined after ${workerChoiceStrategiesContext.retries.toString()} retries (max: ${workerChoiceStrategiesContext.retries.toString()})`
+    chooseUndefinedStub.restore()
+    const workerChoiceStrategyNullStub =
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
+    const chooseNullStub = stub(workerChoiceStrategyNullStub, 'choose').returns(
+      null
     )
+    err = undefined
+    try {
+      workerChoiceStrategiesContext.execute()
+    } catch (e) {
+      err = e
+    }
+    expect(err).toBeInstanceOf(Error)
+    expect(err.message).toBe(
+      `Worker node key chosen by ${workerChoiceStrategyNullStub.name} is null or undefined after ${workerChoiceStrategyNullStub.retriesCount.toString()} retries (max: ${workerChoiceStrategiesContext.retries.toString()})`
+    )
+    expect(chooseNullStub.callCount).toBe(
+      workerChoiceStrategyNullStub.retriesCount + 1
+    )
+    expect(workerChoiceStrategiesContext.getStrategyRetries()).toBe(
+      workerChoiceStrategyNullStub.retriesCount
+    )
+    chooseNullStub.restore()
   })
 
   it('Verify that execute() retry until a worker node is chosen', () => {
     const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool
     )
-    const workerChoiceStrategyStub = createStubInstance(
-      RoundRobinWorkerChoiceStrategy,
-      {
-        choose: stub()
-          .onCall(0)
-          .returns(undefined)
-          .onCall(1)
-          .returns(undefined)
-          .onCall(2)
-          .returns(undefined)
-          .onCall(3)
-          .returns(undefined)
-          .onCall(4)
-          .returns(undefined)
-          .returns(1),
-      }
-    )
     expect(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
-    workerChoiceStrategiesContext.workerChoiceStrategies.set(
-      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
-      workerChoiceStrategyStub
-    )
-    const chosenWorkerKey = workerChoiceStrategiesContext.execute()
-    expect(
+    const workerChoiceStrategyStub =
       workerChoiceStrategiesContext.workerChoiceStrategies.get(
         workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-      ).choose.callCount
-    ).toBe(6)
+      )
+    stub(workerChoiceStrategyStub, 'choose')
+      .onCall(0)
+      .returns(undefined)
+      .onCall(1)
+      .returns(undefined)
+      .onCall(2)
+      .returns(undefined)
+      .onCall(3)
+      .returns(undefined)
+      .onCall(4)
+      .returns(undefined)
+      .returns(1)
+    const chosenWorkerKey = workerChoiceStrategiesContext.execute()
+    expect(workerChoiceStrategyStub.choose.callCount).toBe(6)
+    expect(workerChoiceStrategiesContext.getStrategyRetries()).toBe(5)
     expect(chosenWorkerKey).toBe(1)
   })
 
@@ -157,25 +168,17 @@ describe('Worker choice strategies context test suite', () => {
     const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool
     )
-    const workerChoiceStrategyStub = createStubInstance(
-      RoundRobinWorkerChoiceStrategy,
-      {
-        choose: stub().returns(0),
-      }
-    )
     expect(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
-    workerChoiceStrategiesContext.workerChoiceStrategies.set(
-      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
-      workerChoiceStrategyStub
-    )
-    const chosenWorkerKey = workerChoiceStrategiesContext.execute()
-    expect(
+    const workerChoiceStrategyStub =
       workerChoiceStrategiesContext.workerChoiceStrategies.get(
         workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-      ).choose.calledOnce
-    ).toBe(true)
+      )
+    stub(workerChoiceStrategyStub, 'choose').returns(0)
+    const chosenWorkerKey = workerChoiceStrategiesContext.execute()
+    expect(workerChoiceStrategyStub.choose.calledOnce).toBe(true)
+    expect(workerChoiceStrategiesContext.getStrategyRetries()).toBe(0)
     expect(chosenWorkerKey).toBe(0)
   })
 
@@ -183,25 +186,17 @@ describe('Worker choice strategies context test suite', () => {
     const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       dynamicPool
     )
-    const workerChoiceStrategyStub = createStubInstance(
-      RoundRobinWorkerChoiceStrategy,
-      {
-        choose: stub().returns(0),
-      }
-    )
     expect(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
-    workerChoiceStrategiesContext.workerChoiceStrategies.set(
-      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
-      workerChoiceStrategyStub
-    )
-    const chosenWorkerKey = workerChoiceStrategiesContext.execute()
-    expect(
+    const workerChoiceStrategyStub =
       workerChoiceStrategiesContext.workerChoiceStrategies.get(
         workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-      ).choose.calledOnce
-    ).toBe(true)
+      )
+    stub(workerChoiceStrategyStub, 'choose').returns(0)
+    const chosenWorkerKey = workerChoiceStrategiesContext.execute()
+    expect(workerChoiceStrategyStub.choose.calledOnce).toBe(true)
+    expect(workerChoiceStrategiesContext.getStrategyRetries()).toBe(0)
     expect(chosenWorkerKey).toBe(0)
   })
 

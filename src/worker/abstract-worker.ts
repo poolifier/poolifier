@@ -198,14 +198,10 @@ export abstract class AbstractWorker<
         DEFAULT_TASK_NAME,
         this.taskFunctions.get(DEFAULT_TASK_NAME)
       ),
-      ...(defaultTaskFunctionName !== DEFAULT_TASK_NAME
-        ? [
-            buildTaskFunctionProperties(
-              defaultTaskFunctionName,
-              this.taskFunctions.get(defaultTaskFunctionName)
-            ),
-          ]
-        : []),
+      buildTaskFunctionProperties(
+        defaultTaskFunctionName,
+        this.taskFunctions.get(defaultTaskFunctionName)
+      ),
       ...taskFunctionsProperties,
     ]
   }

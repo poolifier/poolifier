@@ -99,7 +99,8 @@ export abstract class AbstractPool<
       minSize: this.minimumNumberOfWorkers,
       ready: this.ready,
       started: this.started,
-      strategyRetries: this.workerChoiceStrategiesContext?.retriesCount ?? 0,
+      strategyRetries:
+        this.workerChoiceStrategiesContext?.getStrategyRetries() ?? 0,
       type: this.type,
       version,
       worker: this.worker,
