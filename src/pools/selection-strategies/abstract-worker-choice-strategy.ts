@@ -29,6 +29,9 @@ export abstract class AbstractWorkerChoiceStrategy<
   public abstract readonly name: WorkerChoiceStrategy
 
   /** @inheritDoc */
+  public retriesCount: number
+
+  /** @inheritDoc */
   public readonly strategyPolicy: StrategyPolicy = Object.freeze({
     dynamicWorkerReady: true,
     dynamicWorkerUsage: false,
@@ -45,12 +48,12 @@ export abstract class AbstractWorkerChoiceStrategy<
   /**
    * The next worker node key.
    */
-  protected nextWorkerNodeKey: number | undefined = 0
+  protected nextWorkerNodeKey: number | undefined
 
   /**
    * The previous worker node key.
    */
-  protected previousWorkerNodeKey = 0
+  protected previousWorkerNodeKey: number
 
   /**
    * Constructs a worker choice strategy bound to the pool.
@@ -61,6 +64,9 @@ export abstract class AbstractWorkerChoiceStrategy<
     protected readonly pool: IPool<Worker, Data, Response>,
     protected opts?: WorkerChoiceStrategyOptions
   ) {
+    this.retriesCount = 0
+    this.nextWorkerNodeKey = 0
+    this.previousWorkerNodeKey = 0
     this.choose = this.choose.bind(this)
     this.setOptions(this.opts)
   }

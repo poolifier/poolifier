@@ -100,7 +100,8 @@ export abstract class AbstractPool<
       minSize: this.minimumNumberOfWorkers,
       ready: this.ready,
       started: this.started,
-      strategyRetries: this.workerChoiceStrategiesContext?.retriesCount ?? 0,
+      strategyRetries:
+        this.workerChoiceStrategiesContext?.getStrategyRetries() ?? 0,
       type: this.type,
       version,
       worker: this.worker,
@@ -155,18 +156,8 @@ export abstract class AbstractPool<
             accumulator + (workerNode.usage.tasks.maxQueued ?? 0),
           0
         ),
-        queuedTasks: this.workerNodes.reduce(
-          (accumulator, workerNode) =>
-            accumulator + workerNode.usage.tasks.queued,
-          0
-        ),
-        stealingWorkerNodes: this.workerNodes.reduce(
-          (accumulator, _, workerNodeKey) =>
-            this.isWorkerNodeStealing(workerNodeKey)
-              ? accumulator + 1
-              : accumulator,
-          0
-        ),
+        queuedTasks: this.getQueuedTasks(),
+        stealingWorkerNodes: this.getStealingWorkerNodes(),
         stolenTasks: this.workerNodes.reduce(
           (accumulator, workerNode) =>
             accumulator + workerNode.usage.tasks.stolen,
@@ -664,7 +655,8 @@ export abstract class AbstractPool<
       })
     )
     if (this.emitter != null) {
-      this.emitter.emit(PoolEvents.destroy, this.info)
+      this.emitter.listenerCount(PoolEvents.destroy) > 0 &&
+        this.emitter.emit(PoolEvents.destroy, this.info)
       this.emitter.emitDestroy()
       this.readyEventEmitted = false
     }
@@ -1457,13 +1449,14 @@ export abstract class AbstractPool<
       !this.started ||
       this.destroying ||
       this.workerNodes.length <= 1 ||
-      this.info.queuedTasks === 0
+      this.getQueuedTasks() === 0
     )
   }
 
   private checkAndEmitReadyEvent (): void {
     if (this.emitter != null && !this.readyEventEmitted && this.ready) {
-      this.emitter.emit(PoolEvents.ready, this.info)
+      this.emitter.listenerCount(PoolEvents.ready) > 0 &&
+        this.emitter.emit(PoolEvents.ready, this.info)
       this.readyEventEmitted = true
     }
   }
@@ -1474,21 +1467,24 @@ export abstract class AbstractPool<
       this.backPressureEventEmitted &&
       !this.backPressure
     ) {
-      this.emitter.emit(PoolEvents.backPressureEnd, this.info)
+      this.emitter.listenerCount(PoolEvents.backPressureEnd) > 0 &&
+        this.emitter.emit(PoolEvents.backPressureEnd, this.info)
       this.backPressureEventEmitted = false
     }
   }
 
   private checkAndEmitTaskExecutionEvents (): void {
     if (this.emitter != null && !this.busyEventEmitted && this.busy) {
-      this.emitter.emit(PoolEvents.busy, this.info)
+      this.emitter.listenerCount(PoolEvents.busy) > 0 &&
+        this.emitter.emit(PoolEvents.busy, this.info)
       this.busyEventEmitted = true
     }
   }
 
   private checkAndEmitTaskExecutionFinishedEvents (): void {
     if (this.emitter != null && this.busyEventEmitted && !this.busy) {
-      this.emitter.emit(PoolEvents.busyEnd, this.info)
+      this.emitter.listenerCount(PoolEvents.busyEnd) > 0 &&
+        this.emitter.emit(PoolEvents.busyEnd, this.info)
       this.busyEventEmitted = false
     }
   }
@@ -1499,7 +1495,8 @@ export abstract class AbstractPool<
       !this.backPressureEventEmitted &&
       this.backPressure
     ) {
-      this.emitter.emit(PoolEvents.backPressure, this.info)
+      this.emitter.listenerCount(PoolEvents.backPressure) > 0 &&
+        this.emitter.emit(PoolEvents.backPressure, this.info)
       this.backPressureEventEmitted = true
     }
   }
@@ -1701,6 +1698,22 @@ export abstract class AbstractPool<
       : typeof abortError === 'string'
         ? new Error(abortError)
         : new Error(`Task '${taskName}' id '${taskId}' aborted`)
+  }
+
+  private getQueuedTasks (): number {
+    return this.workerNodes.reduce((accumulator, workerNode) => {
+      return accumulator + workerNode.usage.tasks.queued
+    }, 0)
+  }
+
+  private getStealingWorkerNodes (): number {
+    return this.workerNodes.reduce(
+      (accumulator, _, workerNodeKey) =>
+        this.isWorkerNodeStealing(workerNodeKey)
+          ? accumulator + 1
+          : accumulator,
+      0
+    )
   }
 
   /**
@@ -2113,7 +2126,7 @@ export abstract class AbstractPool<
   private readonly isStealingRatioReached = (): boolean => {
     return (
       this.opts.tasksQueueOptions?.tasksStealingRatio === 0 ||
-      (this.info.stealingWorkerNodes ?? 0) >
+      this.getStealingWorkerNodes() >
         Math.ceil(
           this.workerNodes.length *
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -2360,6 +2373,9 @@ export abstract class AbstractPool<
     message: MessageValue<Data>
   ): Promise<boolean> {
     const targetWorkerNodeKeys = [...this.workerNodes.keys()]
+    if (targetWorkerNodeKeys.length === 0) {
+      return true
+    }
     const responsesReceived: MessageValue<Response>[] = []
     const taskFunctionOperationsListener = (
       message: MessageValue<Response>,

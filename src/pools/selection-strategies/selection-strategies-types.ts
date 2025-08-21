@@ -88,6 +88,10 @@ export interface IWorkerChoiceStrategy {
    */
   readonly reset: () => boolean
   /**
+   * The worker choice strategy execution retries count.
+   */
+  retriesCount: number
+  /**
    * Sets the worker choice strategy options.
    * @param opts - The worker choice strategy options.
    */

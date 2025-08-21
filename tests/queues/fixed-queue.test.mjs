@@ -9,7 +9,7 @@ describe('Fixed queue test suite', () => {
       new TypeError("Invalid fixed queue size: '' is not an integer")
     )
     expect(() => new FixedQueue(-1)).toThrow(
-      new RangeError('Invalid fixed queue size: -1 < 0')
+      new RangeError('Invalid fixed queue size: -1 <= 0')
     )
     const fixedQueue = new FixedQueue()
     expect(fixedQueue.start).toBe(0)
@@ -25,15 +25,17 @@ describe('Fixed queue test suite', () => {
     expect(fixedQueue.start).toBe(0)
     expect(fixedQueue.size).toBe(1)
     expect(rtSize).toBe(fixedQueue.size)
-    expect(fixedQueue.nodeArray).toMatchObject([{ data: 1, priority: 0 }])
+    expect(fixedQueue.nodeArray).toMatchObject([
+      { data: 1, priority: 0, timestamp: expect.any(Number) },
+    ])
     expect(fixedQueue.capacity).toBe(queueSize)
     rtSize = fixedQueue.enqueue(2)
     expect(fixedQueue.start).toBe(0)
     expect(fixedQueue.size).toBe(2)
     expect(rtSize).toBe(fixedQueue.size)
     expect(fixedQueue.nodeArray).toMatchObject([
-      { data: 1, priority: 0 },
-      { data: 2, priority: 0 },
+      { data: 1, priority: 0, timestamp: expect.any(Number) },
+      { data: 2, priority: 0, timestamp: expect.any(Number) },
     ])
     expect(fixedQueue.capacity).toBe(queueSize)
     rtSize = fixedQueue.enqueue(3)
@@ -41,9 +43,9 @@ describe('Fixed queue test suite', () => {
     expect(fixedQueue.size).toBe(3)
     expect(rtSize).toBe(fixedQueue.size)
     expect(fixedQueue.nodeArray).toMatchObject([
-      { data: 1, priority: 0 },
-      { data: 2, priority: 0 },
-      { data: 3, priority: 0 },
+      { data: 1, priority: 0, timestamp: expect.any(Number) },
+      { data: 2, priority: 0, timestamp: expect.any(Number) },
+      { data: 3, priority: 0, timestamp: expect.any(Number) },
     ])
     expect(fixedQueue.capacity).toBe(queueSize)
     rtSize = fixedQueue.enqueue(3, -1)
@@ -51,10 +53,10 @@ describe('Fixed queue test suite', () => {
     expect(fixedQueue.size).toBe(4)
     expect(rtSize).toBe(fixedQueue.size)
     expect(fixedQueue.nodeArray).toMatchObject([
-      { data: 1, priority: 0 },
-      { data: 2, priority: 0 },
-      { data: 3, priority: 0 },
-      { data: 3, priority: -1 },
+      { data: 1, priority: 0, timestamp: expect.any(Number) },
+      { data: 2, priority: 0, timestamp: expect.any(Number) },
+      { data: 3, priority: 0, timestamp: expect.any(Number) },
+      { data: 3, priority: -1, timestamp: expect.any(Number) },
     ])
     expect(fixedQueue.capacity).toBe(queueSize)
     rtSize = fixedQueue.enqueue(1, 1)
@@ -62,11 +64,11 @@ describe('Fixed queue test suite', () => {
     expect(fixedQueue.size).toBe(5)
     expect(rtSize).toBe(fixedQueue.size)
     expect(fixedQueue.nodeArray).toMatchObject([
-      { data: 1, priority: 0 },
-      { data: 2, priority: 0 },
-      { data: 3, priority: 0 },
-      { data: 3, priority: -1 },
-      { data: 1, priority: 1 },
+      { data: 1, priority: 0, timestamp: expect.any(Number) },
+      { data: 2, priority: 0, timestamp: expect.any(Number) },
+      { data: 3, priority: 0, timestamp: expect.any(Number) },
+      { data: 3, priority: -1, timestamp: expect.any(Number) },
+      { data: 1, priority: 1, timestamp: expect.any(Number) },
     ])
     expect(fixedQueue.capacity).toBe(queueSize)
     expect(() => fixedQueue.enqueue(4)).toThrow(
@@ -100,8 +102,8 @@ describe('Fixed queue test suite', () => {
     expect(rtItem).toBe(1)
     expect(fixedQueue.nodeArray).toMatchObject([
       undefined,
-      { data: 2, priority: -1 },
-      { data: 3, priority: 0 },
+      { data: 2, priority: -1, timestamp: expect.any(Number) },
+      { data: 3, priority: 0, timestamp: expect.any(Number) },
     ])
     expect(fixedQueue.capacity).toBe(queueSize)
     rtItem = fixedQueue.dequeue()
@@ -111,7 +113,7 @@ describe('Fixed queue test suite', () => {
     expect(fixedQueue.nodeArray).toMatchObject([
       undefined,
       undefined,
-      { data: 3, priority: 0 },
+      { data: 3, priority: 0, timestamp: expect.any(Number) },
     ])
     expect(fixedQueue.capacity).toBe(queueSize)
     rtItem = fixedQueue.dequeue()
@@ -144,21 +146,23 @@ describe('Fixed queue test suite', () => {
     expect(fixedQueue.start).toBe(0)
     expect(fixedQueue.size).toBe(3)
     expect(fixedQueue.nodeArray).toMatchObject([
-      { data: 1, priority: 0 },
-      { data: 2, priority: -1 },
-      { data: 3, priority: 0 },
+      { data: 1, priority: 0, timestamp: expect.any(Number) },
+      { data: 2, priority: -1, timestamp: expect.any(Number) },
+      { data: 3, priority: 0, timestamp: expect.any(Number) },
     ])
     expect(fixedQueue.delete(2)).toBe(true)
     expect(fixedQueue.start).toBe(0)
     expect(fixedQueue.size).toBe(2)
     expect(fixedQueue.nodeArray).toMatchObject([
-      { data: 1, priority: 0 },
-      { data: 3, priority: 0 },
+      { data: 1, priority: 0, timestamp: expect.any(Number) },
+      { data: 3, priority: 0, timestamp: expect.any(Number) },
     ])
     expect(fixedQueue.delete(3)).toBe(true)
     expect(fixedQueue.start).toBe(0)
     expect(fixedQueue.size).toBe(1)
-    expect(fixedQueue.nodeArray).toMatchObject([{ data: 1, priority: 0 }])
+    expect(fixedQueue.nodeArray).toMatchObject([
+      { data: 1, priority: 0, timestamp: expect.any(Number) },
+    ])
     expect(fixedQueue.delete(1)).toBe(true)
     expect(fixedQueue.start).toBe(0)
     expect(fixedQueue.size).toBe(0)
@@ -208,16 +212,24 @@ describe('Fixed queue test suite', () => {
   })
 
   it('Verify clear() behavior', () => {
-    const fixedQueue = new FixedQueue(2)
-    fixedQueue.start = 1
-    fixedQueue.size = 2
-    fixedQueue.nodeArray = [
-      { data: 2, priority: 0 },
-      { data: 3, priority: 0 },
-    ]
+    const queueSize = 3
+    const fixedQueue = new FixedQueue(queueSize)
+    fixedQueue.enqueue(1)
+    fixedQueue.enqueue(2, -1)
+    fixedQueue.enqueue(3)
+    expect(fixedQueue.size).toBe(queueSize)
+    expect(fixedQueue.nodeArray).toMatchObject([
+      { data: 1, priority: 0, timestamp: expect.any(Number) },
+      { data: 2, priority: -1, timestamp: expect.any(Number) },
+      { data: 3, priority: 0, timestamp: expect.any(Number) },
+    ])
     fixedQueue.clear()
-    expect(fixedQueue.start).toBe(0)
     expect(fixedQueue.size).toBe(0)
-    expect(fixedQueue.nodeArray).toStrictEqual([undefined, undefined])
+    expect(fixedQueue.start).toBe(0)
+    expect(fixedQueue.nodeArray).toStrictEqual([
+      undefined,
+      undefined,
+      undefined,
+    ])
   })
 })
