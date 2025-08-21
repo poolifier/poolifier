@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.3](https://github.com/poolifier/poolifier/compare/v5.1.2...v5.1.3) (2025-08-21)
+
+
+### 🐞 Bug Fixes
+
+* properly account strategy retries on a per strategy basis ([910c169](https://github.com/poolifier/poolifier/commit/910c16976ee437c1b9011b6db197386a21c8739f))
+
+
+### ⚡ Performance
+
+* reduce pool info property internal usage ([662c6c1](https://github.com/poolifier/poolifier/commit/662c6c101161b8f263e304b461087082edb1c003))
+
+
+### 🧪 Tests
+
+* cleanup worker selection strategies test ([b283bd6](https://github.com/poolifier/poolifier/commit/b283bd67fb3b93265bda9b4f84bcff0b368502a1))
+
+
+### 📚 Documentation
+
+* publish documentation ([1f917ef](https://github.com/poolifier/poolifier/commit/1f917ef09dce557105622844d50b620bd2d10737))
+
+
+### 🤖 Automation
+
+* **deps:** bump the regular group across 11 directories with 1 update ([23a0e5f](https://github.com/poolifier/poolifier/commit/23a0e5fcad849aef0d0d4c3f301ae12789132e9a))
+* **deps:** bump the regular group across 11 directories with 1 update ([#2961](https://github.com/poolifier/poolifier/issues/2961)) ([6c58a40](https://github.com/poolifier/poolifier/commit/6c58a403b495785cda944d5d5a1289d907c28dcd))
+
 ## [5.1.2](https://github.com/poolifier/poolifier/compare/v5.1.1...v5.1.2) (2025-08-20)
 
 
