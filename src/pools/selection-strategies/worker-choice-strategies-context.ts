@@ -34,7 +34,7 @@ export class WorkerChoiceStrategiesContext<
   private defaultWorkerChoiceStrategy: WorkerChoiceStrategy
 
   /**
-   * The maximum number of worker choice strategies execution retries.
+   * The maximum number of worker choice strategy execution retries.
    */
   private readonly retries: number
 
