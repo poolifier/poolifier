@@ -11,16 +11,23 @@ export class FixedPriorityQueue<T>
   extends AbstractFixedQueue<T>
   implements IFixedQueue<T> {
   private readonly agingFactor: number
+  private readonly loadExponent: number
 
   /**
    * Constructs a FixedPriorityQueue.
    * @param size - Fixed queue size. @defaultValue defaultQueueSize
-   * @param agingFactor - Aging factor to apply to items in priority points per millisecond. A higher value makes items age faster.
+   * @param agingFactor - Aging factor to apply to items (priority points per millisecond).
+   * @param loadExponent - Load exponent applied to normalized load when computing effective aging.
    * @returns IFixedQueue.
    */
-  public constructor (size?: number, agingFactor = 0.001) {
+  public constructor (
+    size?: number,
+    agingFactor = 0.001,
+    loadExponent = 1.0 / 1.5
+  ) {
     super(size)
     this.agingFactor = agingFactor
+    this.loadExponent = loadExponent
   }
 
   /** @inheritdoc */
@@ -31,18 +38,18 @@ export class FixedPriorityQueue<T>
     priority = priority ?? 0
     const now = performance.now()
     const effectiveAgingFactor =
-      this.agingFactor * (1 + 2 * (this.size / this.capacity))
+      this.agingFactor *
+      (1 + ((this.size + 1) / this.capacity) ** this.loadExponent)
     let insertionPhysicalIndex = -1
     let currentPhysicalIndex = this.start
     for (let i = 0; i < this.size; i++) {
-      const node = this.nodeArray[currentPhysicalIndex]
-      if (node != null) {
-        const nodeEffectivePriority =
-          node.priority - (now - node.timestamp) * effectiveAgingFactor
-        if (nodeEffectivePriority > priority) {
-          insertionPhysicalIndex = currentPhysicalIndex
-          break
-        }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const node = this.nodeArray[currentPhysicalIndex]!
+      const nodeEffectivePriority =
+        node.priority - (now - node.timestamp) * effectiveAgingFactor
+      if (nodeEffectivePriority > priority) {
+        insertionPhysicalIndex = currentPhysicalIndex
+        break
       }
       ++currentPhysicalIndex
       if (currentPhysicalIndex === this.capacity) {
