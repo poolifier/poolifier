@@ -633,15 +633,15 @@ export abstract class AbstractPool<
         })
       )
     } finally {
+      delete this.startTimestamp
+      this.destroying = false
+      this.started = false
       if (this.emitter != null) {
         this.emitter.listenerCount(PoolEvents.destroy) > 0 &&
           this.emitter.emit(PoolEvents.destroy, this.info)
         this.emitter.emitDestroy()
         this.readyEventEmitted = false
       }
-      delete this.startTimestamp
-      this.destroying = false
-      this.started = false
     }
   }
 
