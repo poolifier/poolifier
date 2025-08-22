@@ -30,16 +30,19 @@ export class FixedPriorityQueue<T>
     }
     priority = priority ?? 0
     const now = performance.now()
+    const effectiveAgingFactor =
+      this.agingFactor * (1 + 2 * (this.size / this.capacity))
     let insertionPhysicalIndex = -1
     let currentPhysicalIndex = this.start
     for (let i = 0; i < this.size; i++) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const node = this.nodeArray[currentPhysicalIndex]!
-      const nodeEffectivePriority =
-        node.priority - (now - node.timestamp) * this.agingFactor
-      if (nodeEffectivePriority > priority) {
-        insertionPhysicalIndex = currentPhysicalIndex
-        break
+      const node = this.nodeArray[currentPhysicalIndex]
+      if (node != null) {
+        const nodeEffectivePriority =
+          node.priority - (now - node.timestamp) * effectiveAgingFactor
+        if (nodeEffectivePriority > priority) {
+          insertionPhysicalIndex = currentPhysicalIndex
+          break
+        }
       }
       ++currentPhysicalIndex
       if (currentPhysicalIndex === this.capacity) {
