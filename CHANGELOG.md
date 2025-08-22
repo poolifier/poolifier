@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.4](https://github.com/poolifier/poolifier/compare/v5.1.3...v5.1.4) (2025-08-22)
+
+
+### 🐞 Bug Fixes
+
+* ensure destroy event has up2date pool info ([c4138fc](https://github.com/poolifier/poolifier/commit/c4138fc3c739c33ad4e1d31cc8e583a97f4ef7aa))
+
+
+### ✨ Polish
+
+* make pool destroy() more robust ([8b444c5](https://github.com/poolifier/poolifier/commit/8b444c5b53ea4dcd204fe6b5f58db802ca4d88b2))
+* reorder task finished event emission ([e2f9978](https://github.com/poolifier/poolifier/commit/e2f99782c54b5c76bdb426c488d76539f949a906))
+
+
+### 📚 Documentation
+
+* publish documentation ([638d016](https://github.com/poolifier/poolifier/commit/638d016acf159db896a7588d2f123f3d6b7440ca))
+* refine some code comments ([e663df8](https://github.com/poolifier/poolifier/commit/e663df848432fe570330858ead87c8524a0968b0))
+
 ## [5.1.3](https://github.com/poolifier/poolifier/compare/v5.1.2...v5.1.3) (2025-08-21)
 
 
