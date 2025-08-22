@@ -24,7 +24,7 @@
   "dependencies": {
     "fastify": "^5.5.0",
     "fastify-plugin": "^5.0.1",
-    "poolifier": "^5.1.3"
+    "poolifier": "^5.1.4"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.1.4",
