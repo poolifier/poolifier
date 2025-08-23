@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.5](https://github.com/poolifier/poolifier/compare/v5.1.4...v5.1.5) (2025-08-23)
+
+
+### ⚡ Performance
+
+* add adaptive aging factor to priority queue ([66c08e6](https://github.com/poolifier/poolifier/commit/66c08e6f68fbe7aeaa8da91fe8ed812e1befefc9))
+* soften priority queue adaptive aging ([6730e51](https://github.com/poolifier/poolifier/commit/6730e51eee812924b6a39eeefb694df83aee9ca3))
+
+
+### 📚 Documentation
+
+* publish documentation ([3ce04bf](https://github.com/poolifier/poolifier/commit/3ce04bf8d9f3fdbebb9c7231118ab3b3fb7e8884))
+
 ## [5.1.4](https://github.com/poolifier/poolifier/compare/v5.1.3...v5.1.4) (2025-08-22)
 
 
