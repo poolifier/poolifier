@@ -28,6 +28,15 @@ export class CircularBuffer {
   }
 
   /**
+   * Clears the buffer.
+   */
+  public clear (): void {
+    this.readIdx = 0
+    this.writeIdx = 0
+    this.size = 0
+  }
+
+  /**
    * Checks whether the buffer is empty.
    * @returns Whether the buffer is empty.
    */
