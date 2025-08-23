@@ -61,6 +61,7 @@ import {
   checkValidPriority,
   checkValidTasksQueueOptions,
   checkValidWorkerChoiceStrategy,
+  checkValidWorkerNodes,
   getDefaultTasksQueueOptions,
   updateEluWorkerUsage,
   updateRunTimeWorkerUsage,
@@ -370,6 +371,11 @@ export abstract class AbstractPool<
     }
   }
 
+  /** @inheritDoc */
+  public get workerNodeKeys (): number[] {
+    return this.workerNodes.map((_, index) => index)
+  }
+
   /**
    * Whether the pool is destroying or not.
    */
@@ -590,6 +596,32 @@ export abstract class AbstractPool<
     }
     checkValidPriority(fn.priority)
     checkValidWorkerChoiceStrategy(fn.strategy)
+    checkValidWorkerNodes(fn.workerNodes)
+    if (
+      fn.workerNodes != null &&
+      fn.workerNodes.length >
+        (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers)
+    ) {
+      throw new Error(
+        'Cannot add a task function with more worker node keys affinity than the maximum number of workers'
+      )
+    }
+    const workerNodeKeys = Array.from(
+      {
+        length: this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers,
+      },
+      (_, index) => index
+    )
+    if (
+      fn.workerNodes != null &&
+      fn.workerNodes.filter(workerNodeKey =>
+        workerNodeKeys.includes(workerNodeKey)
+      ).length === 0
+    ) {
+      throw new Error(
+        `Cannot add a task function with worker nodes keys affinity outside the pool worker nodes keys: ${workerNodeKeys.toString()}`
+      )
+    }
     const opResult = await this.sendTaskFunctionOperationToWorkers({
       taskFunction: fn.taskFunction.toString(),
       taskFunctionOperation: 'add',
@@ -1594,7 +1626,8 @@ export abstract class AbstractPool<
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.workerChoiceStrategiesContext!.execute(
-      this.getTaskFunctionWorkerChoiceStrategy(name)
+      this.getTaskFunctionWorkerChoiceStrategy(name),
+      this.getTaskFunctionWorkerNodes(name)
     )
   }
 
@@ -1701,6 +1734,25 @@ export abstract class AbstractPool<
       (taskFunctionProperties: TaskFunctionProperties) =>
         taskFunctionProperties.name === name
     )?.strategy
+  }
+
+  /**
+   * Gets task function worker node keys affinity, if any.
+   * @param name - The task function name.
+   * @returns The task function worker node keys affinity if the task function worker node keys affinity is defined, `undefined` otherwise.
+   */
+  private readonly getTaskFunctionWorkerNodes = (
+    name?: string
+  ): number[] | undefined => {
+    name = name ?? DEFAULT_TASK_NAME
+    const taskFunctionsProperties = this.listTaskFunctionsProperties()
+    if (name === DEFAULT_TASK_NAME) {
+      name = taskFunctionsProperties[1]?.name
+    }
+    return taskFunctionsProperties.find(
+      (taskFunctionProperties: TaskFunctionProperties) =>
+        taskFunctionProperties.name === name
+    )?.workerNodes
   }
 
   private getTasksQueuePriority (): boolean {
