@@ -110,6 +110,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
       }
     }
     this.interleavedWeightedRoundRobinNextWorkerNodeId()
+    return undefined
   }
 
   /** @inheritDoc */

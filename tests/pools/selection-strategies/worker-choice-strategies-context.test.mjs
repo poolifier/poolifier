@@ -88,10 +88,7 @@ describe('Worker choice strategies context test suite', () => {
       workerChoiceStrategiesContext.workerChoiceStrategies.get(
         workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
-    const chooseUndefinedStub = stub(
-      workerChoiceStrategyUndefinedStub,
-      'choose'
-    ).returns(undefined)
+    stub(workerChoiceStrategyUndefinedStub, 'choose').returns(undefined)
     let err
     try {
       workerChoiceStrategiesContext.execute()
@@ -102,20 +99,18 @@ describe('Worker choice strategies context test suite', () => {
     expect(err.message).toBe(
       `Worker node key chosen by ${workerChoiceStrategyUndefinedStub.name} is null or undefined after ${workerChoiceStrategyUndefinedStub.retriesCount.toString()} retries (max: ${workerChoiceStrategiesContext.retries.toString()})`
     )
-    expect(chooseUndefinedStub.callCount).toBe(
+    expect(workerChoiceStrategyUndefinedStub.choose.callCount).toBe(
       workerChoiceStrategyUndefinedStub.retriesCount + 1
     )
     expect(workerChoiceStrategiesContext.getStrategyRetries()).toBe(
       workerChoiceStrategyUndefinedStub.retriesCount
     )
-    chooseUndefinedStub.restore()
+    workerChoiceStrategyUndefinedStub.choose.restore()
     const workerChoiceStrategyNullStub =
       workerChoiceStrategiesContext.workerChoiceStrategies.get(
         workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
-    const chooseNullStub = stub(workerChoiceStrategyNullStub, 'choose').returns(
-      null
-    )
+    stub(workerChoiceStrategyNullStub, 'choose').returns(null)
     err = undefined
     try {
       workerChoiceStrategiesContext.execute()
@@ -126,13 +121,13 @@ describe('Worker choice strategies context test suite', () => {
     expect(err.message).toBe(
       `Worker node key chosen by ${workerChoiceStrategyNullStub.name} is null or undefined after ${workerChoiceStrategyNullStub.retriesCount.toString()} retries (max: ${workerChoiceStrategiesContext.retries.toString()})`
     )
-    expect(chooseNullStub.callCount).toBe(
+    expect(workerChoiceStrategyNullStub.choose.callCount).toBe(
       workerChoiceStrategyNullStub.retriesCount + 1
     )
     expect(workerChoiceStrategiesContext.getStrategyRetries()).toBe(
       workerChoiceStrategyNullStub.retriesCount
     )
-    chooseNullStub.restore()
+    workerChoiceStrategyNullStub.choose.restore()
   })
 
   it('Verify that execute() retry until a worker node is chosen', () => {
@@ -162,6 +157,7 @@ describe('Worker choice strategies context test suite', () => {
     expect(workerChoiceStrategyStub.choose.callCount).toBe(6)
     expect(workerChoiceStrategiesContext.getStrategyRetries()).toBe(5)
     expect(chosenWorkerKey).toBe(1)
+    workerChoiceStrategyStub.choose.restore()
   })
 
   it('Verify that execute() return the worker node key chosen by the strategy with fixed pool', () => {
@@ -180,6 +176,7 @@ describe('Worker choice strategies context test suite', () => {
     expect(workerChoiceStrategyStub.choose.calledOnce).toBe(true)
     expect(workerChoiceStrategiesContext.getStrategyRetries()).toBe(0)
     expect(chosenWorkerKey).toBe(0)
+    workerChoiceStrategyStub.choose.restore()
   })
 
   it('Verify that execute() return the worker node key chosen by the strategy with dynamic pool', () => {
@@ -198,6 +195,7 @@ describe('Worker choice strategies context test suite', () => {
     expect(workerChoiceStrategyStub.choose.calledOnce).toBe(true)
     expect(workerChoiceStrategiesContext.getStrategyRetries()).toBe(0)
     expect(chosenWorkerKey).toBe(0)
+    workerChoiceStrategyStub.choose.restore()
   })
 
   it('Verify that setDefaultWorkerChoiceStrategy() works with ROUND_ROBIN and fixed pool', () => {

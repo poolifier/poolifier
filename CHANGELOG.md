@@ -5,6 +5,66 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.5](https://github.com/poolifier/poolifier/compare/v5.1.4...v5.1.5) (2025-08-23)
+
+
+### ⚡ Performance
+
+* add adaptive aging factor to priority queue ([66c08e6](https://github.com/poolifier/poolifier/commit/66c08e6f68fbe7aeaa8da91fe8ed812e1befefc9))
+* soften priority queue adaptive aging ([6730e51](https://github.com/poolifier/poolifier/commit/6730e51eee812924b6a39eeefb694df83aee9ca3))
+
+
+### 📚 Documentation
+
+* publish documentation ([3ce04bf](https://github.com/poolifier/poolifier/commit/3ce04bf8d9f3fdbebb9c7231118ab3b3fb7e8884))
+
+## [5.1.4](https://github.com/poolifier/poolifier/compare/v5.1.3...v5.1.4) (2025-08-22)
+
+
+### 🐞 Bug Fixes
+
+* ensure destroy event has up2date pool info ([c4138fc](https://github.com/poolifier/poolifier/commit/c4138fc3c739c33ad4e1d31cc8e583a97f4ef7aa))
+
+
+### ✨ Polish
+
+* make pool destroy() more robust ([8b444c5](https://github.com/poolifier/poolifier/commit/8b444c5b53ea4dcd204fe6b5f58db802ca4d88b2))
+* reorder task finished event emission ([e2f9978](https://github.com/poolifier/poolifier/commit/e2f99782c54b5c76bdb426c488d76539f949a906))
+
+
+### 📚 Documentation
+
+* publish documentation ([638d016](https://github.com/poolifier/poolifier/commit/638d016acf159db896a7588d2f123f3d6b7440ca))
+* refine some code comments ([e663df8](https://github.com/poolifier/poolifier/commit/e663df848432fe570330858ead87c8524a0968b0))
+
+## [5.1.3](https://github.com/poolifier/poolifier/compare/v5.1.2...v5.1.3) (2025-08-21)
+
+
+### 🐞 Bug Fixes
+
+* properly account strategy retries on a per strategy basis ([910c169](https://github.com/poolifier/poolifier/commit/910c16976ee437c1b9011b6db197386a21c8739f))
+
+
+### ⚡ Performance
+
+* reduce pool info property internal usage ([662c6c1](https://github.com/poolifier/poolifier/commit/662c6c101161b8f263e304b461087082edb1c003))
+
+
+### 🧪 Tests
+
+* cleanup worker selection strategies test ([b283bd6](https://github.com/poolifier/poolifier/commit/b283bd67fb3b93265bda9b4f84bcff0b368502a1))
+
+
+### 📚 Documentation
+
+* publish documentation ([1f917ef](https://github.com/poolifier/poolifier/commit/1f917ef09dce557105622844d50b620bd2d10737))
+
+
+### 🤖 Automation
+
+* **deps:** bump the regular group across 11 directories with 1 update ([23a0e5f](https://github.com/poolifier/poolifier/commit/23a0e5fcad849aef0d0d4c3f301ae12789132e9a))
+* **deps:** bump the regular group across 11 directories with 1 update ([#2961](https://github.com/poolifier/poolifier/issues/2961)) ([6c58a40](https://github.com/poolifier/poolifier/commit/6c58a403b495785cda944d5d5a1289d907c28dcd))
+
 ## [5.1.2](https://github.com/poolifier/poolifier/compare/v5.1.1...v5.1.2) (2025-08-20)
 
 
