@@ -1877,8 +1877,8 @@ export abstract class AbstractPool<
       return
     }
     const { workerId } = eventDetail
-    const sourceWorkerNode =
-      this.workerNodes[this.getWorkerNodeKeyByWorkerId(workerId)]
+    const sourceWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+    const sourceWorkerNode = this.workerNodes[sourceWorkerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (sourceWorkerNode == null) {
       return
@@ -1894,7 +1894,7 @@ export abstract class AbstractPool<
         break
       }
       if (
-        workerNode.info.id !== workerId &&
+        workerNode !== sourceWorkerNode &&
         !workerNode.info.backPressureStealing &&
         workerNode.usage.tasks.queued <
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
