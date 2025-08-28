@@ -655,12 +655,7 @@ export abstract class AbstractPool<
           try {
             await this.destroyWorkerNode(workerNodeKey)
           } catch (error) {
-            if (
-              this.emitter != null &&
-              this.emitter.listenerCount(PoolEvents.error) > 0
-            ) {
-              this.emitter.emit(PoolEvents.error, error)
-            }
+            this.emitter?.emit(PoolEvents.error, error)
           }
         })
       )
@@ -1159,23 +1154,17 @@ export abstract class AbstractPool<
     workerNode.registerOnceWorkerEventHandler('error', (error: Error) => {
       workerNode.info.ready = false
       this.emitter?.emit(PoolEvents.error, error)
-      if (
-        this.started &&
-        !this.destroying &&
-        this.opts.restartWorkerOnError === true
-      ) {
-        if (workerNode.info.dynamic) {
-          this.createAndSetupDynamicWorkerNode()
-        } else if (!this.startingMinimumNumberOfWorkers) {
-          this.startMinimumNumberOfWorkers(true)
+      if (this.started && !this.destroying) {
+        if (this.opts.restartWorkerOnError === true) {
+          if (workerNode.info.dynamic) {
+            this.createAndSetupDynamicWorkerNode()
+          } else if (!this.startingMinimumNumberOfWorkers) {
+            this.startMinimumNumberOfWorkers(true)
+          }
         }
-      }
-      if (
-        this.started &&
-        !this.destroying &&
-        this.opts.enableTasksQueue === true
-      ) {
-        this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
+        if (this.opts.enableTasksQueue === true) {
+          this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
+        }
       }
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, promise/no-promise-in-callback
       workerNode?.terminate().catch((error: unknown) => {
@@ -1940,8 +1929,8 @@ export abstract class AbstractPool<
       return
     }
     const { workerId } = eventDetail
-    const sourceWorkerNode =
-      this.workerNodes[this.getWorkerNodeKeyByWorkerId(workerId)]
+    const sourceWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+    const sourceWorkerNode = this.workerNodes[sourceWorkerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (sourceWorkerNode == null) {
       return
@@ -1957,7 +1946,7 @@ export abstract class AbstractPool<
         break
       }
       if (
-        workerNode.info.id !== workerId &&
+        workerNode !== sourceWorkerNode &&
         !workerNode.info.backPressureStealing &&
         workerNode.usage.tasks.queued <
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

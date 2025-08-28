@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.6](https://github.com/poolifier/poolifier/compare/v5.1.5...v5.1.6) (2025-08-26)
+
+
+### 🐞 Bug Fixes
+
+* use strict object equality in tasks stealing code ([eec0932](https://github.com/poolifier/poolifier/commit/eec09324ae02df9fe24c12c39cb2c7e802708c90))
+
+
+### ✨ Polish
+
+* cleanup nested conditions ([4377e4a](https://github.com/poolifier/poolifier/commit/4377e4a60ced3b5b91e2592ca573a08ecb2ce188))
+
+
+### 📚 Documentation
+
+* publish documentation ([161a550](https://github.com/poolifier/poolifier/commit/161a5501c5d948ff01c592c0b2b511f03e6fec86))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump the regular group with 2 updates ([#2966](https://github.com/poolifier/poolifier/issues/2966)) ([b988f54](https://github.com/poolifier/poolifier/commit/b988f5421dc8bdf6f312cc22bf96e7a17c9fdf78))
+* **deps:** bump the regular group across 11 directories with 2 updates ([#2967](https://github.com/poolifier/poolifier/issues/2967)) ([4119b66](https://github.com/poolifier/poolifier/commit/4119b66209e0af8dd254aae51f83fe3065491f6d))
+
 ## [5.1.5](https://github.com/poolifier/poolifier/compare/v5.1.4...v5.1.5) (2025-08-23)
 
 

@@ -88,9 +88,10 @@ export class CircularBuffer {
     if (this.empty()) {
       return []
     }
-    const array: number[] = new Array<number>(this.size)
+    const size = this.size
+    const array: number[] = new Array<number>(size)
     let currentIdx = this.readIdx
-    for (let i = 0; i < this.size; i++) {
+    for (let i = 0; i < size; i++) {
       array[i] = this.items[currentIdx]
       currentIdx = currentIdx === this.maxArrayIdx ? 0 : currentIdx + 1
     }
