@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.7](https://github.com/poolifier/poolifier/compare/v5.1.6...v5.1.7) (2025-08-30)
+
+
+### 🐞 Bug Fixes
+
+* potention race on circular buffer size ([3b33f0f](https://github.com/poolifier/poolifier/commit/3b33f0f5616d6f0fc4aa1514a5087710a4f40c82))
+
+
+### 📚 Documentation
+
+* publish documentation ([17dd5ca](https://github.com/poolifier/poolifier/commit/17dd5ca68dc01833306796f3b239ce6a5fb29b53))
+
+
+### 🤖 Automation
+
+* **deps-dev:** bump rollup from 4.48.1 to 4.49.0 in the regular group ([#2970](https://github.com/poolifier/poolifier/issues/2970)) ([6df2b5f](https://github.com/poolifier/poolifier/commit/6df2b5f3ad1608d159264213c272db2971e322ae))
+* **deps-dev:** bump the regular group across 6 directories with 1 update ([#2971](https://github.com/poolifier/poolifier/issues/2971)) ([b9650fc](https://github.com/poolifier/poolifier/commit/b9650fc71be5ad4ba24e5a98c1dd5514ef58fd90))
+* **deps:** bump sonarsource/sonarqube-scan-action from 5.3.0 to 5.3.1 ([#2972](https://github.com/poolifier/poolifier/issues/2972)) ([ec8faae](https://github.com/poolifier/poolifier/commit/ec8faaec0138100873ecbcfbc5ba1894fa8a7664))
+* **deps:** bump the regular group across 11 directories with 1 update ([#2969](https://github.com/poolifier/poolifier/issues/2969)) ([c01f744](https://github.com/poolifier/poolifier/commit/c01f7441f4046c4bb66e6bc96fa6faa2586eea24))
+
 ## [5.1.6](https://github.com/poolifier/poolifier/compare/v5.1.5...v5.1.6) (2025-08-26)
 
 
