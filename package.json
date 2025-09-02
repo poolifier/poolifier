@@ -45,10 +45,10 @@
     "pnpm": ">=9.0.0"
   },
   "volta": {
-    "node": "22.18.0",
-    "pnpm": "10.15.0"
+    "node": "22.19.0",
+    "pnpm": "10.15.1"
   },
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "pnpm@10.15.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/poolifier/poolifier.git"
@@ -120,7 +120,7 @@
     "clean-publish": "^5.2.2",
     "cross-env": "^10.0.0",
     "eslint": "^9.34.0",
-    "eslint-plugin-jsdoc": "^54.1.1",
+    "eslint-plugin-jsdoc": "^54.2.1",
     "eslint-plugin-perfectionist": "^4.15.0",
     "globals": "^16.3.0",
     "husky": "^9.1.7",
