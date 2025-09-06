@@ -6,10 +6,10 @@
   "main": "dist/main.js",
   "type": "module",
   "volta": {
-    "node": "22.18.0",
-    "pnpm": "10.14.0"
+    "node": "22.19.0",
+    "pnpm": "10.15.1"
   },
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.15.1",
   "scripts": {
     "build": "pnpm build:clean && tsc",
     "build:clean": "tsc --build --clean",
@@ -20,12 +20,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nodemailer": "^7.0.5",
-    "poolifier": "^5.1.0"
+    "nodemailer": "^7.0.6",
+    "poolifier": "^5.1.6"
   },
   "devDependencies": {
-    "@types/node": "^24.2.1",
-    "@types/nodemailer": "^6.4.17",
+    "@types/node": "^24.3.1",
+    "@types/nodemailer": "^7.0.1",
     "typescript": "^5.9.2"
   }
 }

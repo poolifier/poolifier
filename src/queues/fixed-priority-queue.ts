@@ -10,17 +10,44 @@ import { AbstractFixedQueue } from './abstract-fixed-queue.js'
 export class FixedPriorityQueue<T>
   extends AbstractFixedQueue<T>
   implements IFixedQueue<T> {
+  private readonly agingFactor: number
+  private readonly loadExponent: number
+
+  /**
+   * Constructs a FixedPriorityQueue.
+   * @param size - Fixed queue size. @defaultValue defaultQueueSize
+   * @param agingFactor - Aging factor to apply to items (priority points per millisecond).
+   * @param loadExponent - Load exponent applied to normalized load when computing effective aging.
+   * @returns IFixedQueue.
+   */
+  public constructor (
+    size?: number,
+    agingFactor = 0.001,
+    loadExponent = 1.0 / 1.5
+  ) {
+    super(size)
+    this.agingFactor = agingFactor
+    this.loadExponent = loadExponent
+  }
+
   /** @inheritdoc */
   public enqueue (data: T, priority?: number): number {
     if (this.full()) {
       throw new Error('Fixed priority queue is full')
     }
     priority = priority ?? 0
+    const now = performance.now()
+    const effectiveAgingFactor =
+      this.agingFactor *
+      (1 + ((this.size + 1) / this.capacity) ** this.loadExponent)
     let insertionPhysicalIndex = -1
     let currentPhysicalIndex = this.start
     for (let i = 0; i < this.size; i++) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      if (this.nodeArray[currentPhysicalIndex]!.priority > priority) {
+      const node = this.nodeArray[currentPhysicalIndex]!
+      const nodeEffectivePriority =
+        node.priority - (now - node.timestamp) * effectiveAgingFactor
+      if (nodeEffectivePriority > priority) {
         insertionPhysicalIndex = currentPhysicalIndex
         break
       }
@@ -45,7 +72,7 @@ export class FixedPriorityQueue<T>
         shiftPhysicalIndex = previousPhysicalIndex
       }
     }
-    this.nodeArray[insertionPhysicalIndex] = { data, priority }
+    this.nodeArray[insertionPhysicalIndex] = { data, priority, timestamp: now }
     return ++this.size
   }
 }

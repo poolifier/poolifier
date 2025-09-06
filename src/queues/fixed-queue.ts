@@ -19,7 +19,11 @@ export class FixedQueue<T>
     if (index >= this.capacity) {
       index -= this.capacity
     }
-    this.nodeArray[index] = { data, priority: priority ?? 0 }
+    this.nodeArray[index] = {
+      data,
+      priority: priority ?? 0,
+      timestamp: performance.now(),
+    }
     return ++this.size
   }
 }

@@ -12,6 +12,7 @@ export const defaultQueueSize = 2048
 export interface FixedQueueNode<T> {
   data: T
   priority: number
+  timestamp: number
 }
 
 /**
@@ -68,7 +69,7 @@ export interface IFixedQueue<T> {
    */
   get: (index: number) => T | undefined
   /** The fixed queue node array. */
-  nodeArray: (FixedQueueNode<T> | undefined)[]
+  readonly nodeArray: (FixedQueueNode<T> | undefined)[]
   /** The fixed queue size. */
   readonly size: number
 }

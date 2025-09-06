@@ -70,8 +70,8 @@ export class PriorityQueue<T> {
         `Invalid bucket size: '${bucketSize.toString()}' is not an integer`
       )
     }
-    if (bucketSize < 0) {
-      throw new RangeError(`Invalid bucket size: ${bucketSize.toString()} < 0`)
+    if (bucketSize <= 0) {
+      throw new RangeError(`Invalid bucket size: ${bucketSize.toString()} <= 0`)
     }
     this.bucketSize = bucketSize
     this.priorityEnabled = enablePriority
@@ -93,6 +93,9 @@ export class PriorityQueue<T> {
    * @returns `true` if the data was deleted, `false` otherwise.
    */
   public delete (data: T): boolean {
+    if (this.size === 0) {
+      return false
+    }
     let node: PriorityQueueNode<T> | undefined = this.tail
     let prev: PriorityQueueNode<T> | undefined
     while (node != null) {

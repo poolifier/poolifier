@@ -13,7 +13,7 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
   /** @inheritdoc */
   public readonly capacity: number
   /** @inheritdoc */
-  public nodeArray: (FixedQueueNode<T> | undefined)[]
+  public readonly nodeArray: (FixedQueueNode<T> | undefined)[]
   /** @inheritdoc */
   public size!: number
   protected start!: number
@@ -48,6 +48,7 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
 
   /** @inheritdoc */
   public delete (data: T): boolean {
+    if (this.empty()) return false
     let currentPhysicalIndex = this.start
     let logicalIndex = -1
     for (let i = 0; i < this.size; i++) {
@@ -114,7 +115,7 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
 
   /** @inheritdoc */
   public get (index: number): T | undefined {
-    if (this.empty() || index >= this.size) {
+    if (this.empty() || index < 0 || index >= this.size) {
       return undefined
     }
     index += this.start
@@ -162,8 +163,8 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
         `Invalid fixed queue size: '${size.toString()}' is not an integer`
       )
     }
-    if (size < 0) {
-      throw new RangeError(`Invalid fixed queue size: ${size.toString()} < 0`)
+    if (size <= 0) {
+      throw new RangeError(`Invalid fixed queue size: ${size.toString()} <= 0`)
     }
   }
 }

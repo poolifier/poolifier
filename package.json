@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "poolifier",
-  "version": "5.1.0",
+  "version": "5.1.6",
   "description": "Fast and small Node.js Worker_Threads and Cluster Worker Pool",
   "license": "MIT",
   "type": "module",
@@ -45,10 +45,10 @@
     "pnpm": ">=9.0.0"
   },
   "volta": {
-    "node": "22.18.0",
-    "pnpm": "10.14.0"
+    "node": "22.19.0",
+    "pnpm": "10.15.1"
   },
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.15.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/poolifier/poolifier.git"
@@ -107,36 +107,36 @@
     }
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.1.4",
+    "@biomejs/biome": "^2.2.2",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
-    "@cspell/eslint-plugin": "^9.2.0",
-    "@eslint/js": "^9.33.0",
+    "@cspell/eslint-plugin": "^9.2.1",
+    "@eslint/js": "^9.34.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.4",
-    "@std/expect": "npm:@jsr/std__expect@^1.0.16",
-    "@types/node": "^24.2.1",
+    "@std/expect": "npm:@jsr/std__expect@^1.0.17",
+    "@types/node": "^24.3.1",
     "c8": "^10.1.3",
     "clean-publish": "^5.2.2",
     "cross-env": "^10.0.0",
-    "eslint": "^9.33.0",
-    "eslint-plugin-jsdoc": "^52.0.4",
+    "eslint": "^9.34.0",
+    "eslint-plugin-jsdoc": "^54.3.1",
     "eslint-plugin-perfectionist": "^4.15.0",
     "globals": "^16.3.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.1.5",
-    "mocha": "^11.7.1",
+    "lint-staged": "^16.1.6",
+    "mocha": "^11.7.2",
     "mochawesome": "^7.1.3",
     "neostandard": "^0.12.2",
     "prettier": "^3.6.2",
-    "rollup": "^4.46.2",
+    "rollup": "^4.50.0",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",
     "rollup-plugin-delete": "^3.0.1",
-    "rollup-plugin-dts": "^6.2.1",
+    "rollup-plugin-dts": "^6.2.3",
     "sinon": "^21.0.0",
-    "tatami-ng": "^0.8.16",
-    "typedoc": "^0.28.9",
+    "tatami-ng": "^0.8.18",
+    "typedoc": "^0.28.12",
     "typescript": "~5.9.2"
   }
 }

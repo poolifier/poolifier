@@ -28,6 +28,15 @@ export class CircularBuffer {
   }
 
   /**
+   * Clears the buffer.
+   */
+  public clear (): void {
+    this.readIdx = 0
+    this.writeIdx = 0
+    this.size = 0
+  }
+
+  /**
    * Checks whether the buffer is empty.
    * @returns Whether the buffer is empty.
    */
@@ -76,13 +85,14 @@ export class CircularBuffer {
    * @returns Numbers' array.
    */
   public toArray (): number[] {
-    const array: number[] = []
     if (this.empty()) {
-      return array
+      return []
     }
+    const size = this.size
+    const array: number[] = new Array<number>(size)
     let currentIdx = this.readIdx
-    for (let i = 0; i < this.size; i++) {
-      array.push(this.items[currentIdx])
+    for (let i = 0; i < size; i++) {
+      array[i] = this.items[currentIdx]
       currentIdx = currentIdx === this.maxArrayIdx ? 0 : currentIdx + 1
     }
     return array
@@ -98,9 +108,9 @@ export class CircularBuffer {
         `Invalid circular buffer size: '${size.toString()}' is not an integer`
       )
     }
-    if (size < 0) {
+    if (size <= 0) {
       throw new RangeError(
-        `Invalid circular buffer size: ${size.toString()} < 0`
+        `Invalid circular buffer size: ${size.toString()} <= 0`
       )
     }
   }

@@ -89,7 +89,8 @@ export class DynamicThreadPool<
   protected override checkAndEmitDynamicWorkerCreationEvents (): void {
     if (this.emitter != null) {
       if (!this.fullEventEmitted && this.full) {
-        this.emitter.emit(PoolEvents.full, this.info)
+        this.emitter.listenerCount(PoolEvents.full) > 0 &&
+          this.emitter.emit(PoolEvents.full, this.info)
         this.fullEventEmitted = true
       }
       if (this.emptyEventEmitted && !this.empty) {
@@ -102,11 +103,13 @@ export class DynamicThreadPool<
   protected override checkAndEmitDynamicWorkerDestructionEvents (): void {
     if (this.emitter != null) {
       if (this.fullEventEmitted && !this.full) {
-        this.emitter.emit(PoolEvents.fullEnd, this.info)
+        this.emitter.listenerCount(PoolEvents.fullEnd) > 0 &&
+          this.emitter.emit(PoolEvents.fullEnd, this.info)
         this.fullEventEmitted = false
       }
       if (!this.emptyEventEmitted && this.empty) {
-        this.emitter.emit(PoolEvents.empty, this.info)
+        this.emitter.listenerCount(PoolEvents.empty) > 0 &&
+          this.emitter.emit(PoolEvents.empty, this.info)
         this.emptyEventEmitted = true
       }
     }

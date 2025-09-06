@@ -27,7 +27,7 @@ describe('Circular buffer test suite', () => {
       new TypeError("Invalid circular buffer size: '0.25' is not an integer")
     )
     expect(() => new CircularBuffer(-1)).toThrow(
-      new RangeError('Invalid circular buffer size: -1 < 0')
+      new RangeError('Invalid circular buffer size: -1 <= 0')
     )
     expect(() => new CircularBuffer(Number.MAX_SAFE_INTEGER + 1)).toThrow(
       new TypeError(
@@ -164,5 +164,21 @@ describe('Circular buffer test suite', () => {
     expect(circularBuffer.toArray()).toStrictEqual([2, 3, 4, 5])
     circularBuffer.put(6)
     expect(circularBuffer.toArray()).toStrictEqual([3, 4, 5, 6])
+  })
+
+  it('Verify that circular buffer clear() works as intended', () => {
+    const circularBuffer = new CircularBuffer(4)
+    circularBuffer.put(1)
+    circularBuffer.put(2)
+    circularBuffer.put(3)
+    circularBuffer.put(4)
+    circularBuffer.put(5)
+    expect(circularBuffer.readIdx).toBe(1)
+    expect(circularBuffer.writeIdx).toBe(1)
+    expect(circularBuffer.size).toBe(4)
+    circularBuffer.clear()
+    expect(circularBuffer.readIdx).toBe(0)
+    expect(circularBuffer.writeIdx).toBe(0)
+    expect(circularBuffer.size).toBe(0)
   })
 })

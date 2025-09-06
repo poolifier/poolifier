@@ -29,6 +29,9 @@ export abstract class AbstractWorkerChoiceStrategy<
   public abstract readonly name: WorkerChoiceStrategy
 
   /** @inheritDoc */
+  public retriesCount: number
+
+  /** @inheritDoc */
   public readonly strategyPolicy: StrategyPolicy = Object.freeze({
     dynamicWorkerReady: true,
     dynamicWorkerUsage: false,
@@ -37,20 +40,20 @@ export abstract class AbstractWorkerChoiceStrategy<
   /** @inheritDoc */
   public readonly taskStatisticsRequirements: TaskStatisticsRequirements =
     Object.freeze({
-      elu: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-      runTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
-      waitTime: DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
+      elu: { ...DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS },
+      runTime: { ...DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS },
+      waitTime: { ...DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS },
     })
 
   /**
    * The next worker node key.
    */
-  protected nextWorkerNodeKey: number | undefined = 0
+  protected nextWorkerNodeKey: number | undefined
 
   /**
    * The previous worker node key.
    */
-  protected previousWorkerNodeKey = 0
+  protected previousWorkerNodeKey: number
 
   /**
    * Constructs a worker choice strategy bound to the pool.
@@ -61,6 +64,9 @@ export abstract class AbstractWorkerChoiceStrategy<
     protected readonly pool: IPool<Worker, Data, Response>,
     protected opts?: WorkerChoiceStrategyOptions
   ) {
+    this.retriesCount = 0
+    this.nextWorkerNodeKey = 0
+    this.previousWorkerNodeKey = 0
     this.choose = this.choose.bind(this)
     this.setOptions(this.opts)
   }
@@ -163,7 +169,9 @@ export abstract class AbstractWorkerChoiceStrategy<
    */
   protected setPreviousWorkerNodeKey (workerNodeKey: number | undefined): void {
     this.previousWorkerNodeKey =
-      workerNodeKey != null && workerNodeKey >= 0
+      workerNodeKey != null &&
+      workerNodeKey >= 0 &&
+      workerNodeKey < this.pool.workerNodes.length
         ? workerNodeKey
         : this.previousWorkerNodeKey
   }
