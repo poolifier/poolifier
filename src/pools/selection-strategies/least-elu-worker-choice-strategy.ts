@@ -53,9 +53,9 @@ export class LeastEluWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number | undefined {
+  public choose (workerNodeKeys?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.leastEluNextWorkerNodeKey()
+    this.nextWorkerNodeKey = this.leastEluNextWorkerNodeKey(workerNodeKeys)
     return this.nextWorkerNodeKey
   }
 
@@ -74,7 +74,13 @@ export class LeastEluWorkerChoiceStrategy<
     return true
   }
 
-  private leastEluNextWorkerNodeKey (): number | undefined {
+  private leastEluNextWorkerNodeKey (
+    workerNodeKeys?: number[]
+  ): number | undefined {
+    workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
+    if (workerNodeKeys.length === 1) {
+      return workerNodeKeys[0]
+    }
     const chosenWorkerNodeKey = this.pool.workerNodes.reduce(
       (minWorkerNodeKey: number, workerNode, workerNodeKey, workerNodes) => {
         if (!this.isWorkerNodeReady(workerNodeKey)) {
@@ -83,10 +89,11 @@ export class LeastEluWorkerChoiceStrategy<
         if (minWorkerNodeKey === -1) {
           return workerNodeKey
         }
-        return (workerNode.usage.waitTime.aggregate ?? 0) +
-          (workerNode.usage.elu.active.aggregate ?? 0) <
-          (workerNodes[minWorkerNodeKey].usage.waitTime.aggregate ?? 0) +
-            (workerNodes[minWorkerNodeKey].usage.elu.active.aggregate ?? 0)
+        return workerNodeKeys.includes(workerNodeKey) &&
+          (workerNode.usage.waitTime.aggregate ?? 0) +
+            (workerNode.usage.elu.active.aggregate ?? 0) <
+            (workerNodes[minWorkerNodeKey].usage.waitTime.aggregate ?? 0) +
+              (workerNodes[minWorkerNodeKey].usage.elu.active.aggregate ?? 0)
           ? workerNodeKey
           : minWorkerNodeKey
       },

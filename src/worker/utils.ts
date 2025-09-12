@@ -3,6 +3,7 @@ import type { TaskFunctionObject } from './task-functions.js'
 import {
   checkValidPriority,
   checkValidWorkerChoiceStrategy,
+  checkValidWorkerNodes,
 } from '../pools/utils.js'
 import { isPlainObject } from '../utils.js'
 import { KillBehaviors, type WorkerOptions } from './worker-options.js'
@@ -50,6 +51,7 @@ export const checkValidTaskFunctionObjectEntry = <
   }
   checkValidPriority(fnObj.priority)
   checkValidWorkerChoiceStrategy(fnObj.strategy)
+  checkValidWorkerNodes(fnObj.workerNodes)
 }
 
 export const checkTaskFunctionName = (name: string): void => {
