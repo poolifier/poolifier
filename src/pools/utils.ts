@@ -118,6 +118,17 @@ export const checkValidWorkerChoiceStrategy = (
   }
 }
 
+export const checkValidWorkerNodes = (
+  workerNodes: number[] | undefined
+): void => {
+  if (workerNodes != null && !Array.isArray(workerNodes)) {
+    throw new TypeError('Invalid worker nodes: must be an array')
+  }
+  if (workerNodes != null && workerNodes.length === 0) {
+    throw new TypeError('Invalid worker nodes: must not be an empty array')
+  }
+}
+
 export const checkValidTasksQueueOptions = (
   tasksQueueOptions: TasksQueueOptions | undefined
 ): void => {
