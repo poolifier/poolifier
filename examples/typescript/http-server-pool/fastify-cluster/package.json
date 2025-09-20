@@ -7,9 +7,9 @@
   "type": "module",
   "volta": {
     "node": "22.19.0",
-    "pnpm": "10.15.1"
+    "pnpm": "10.16.1"
   },
-  "packageManager": "pnpm@10.15.1",
+  "packageManager": "pnpm@10.16.1",
   "scripts": {
     "build": "rollup --config --configPlugin typescript",
     "start": "node --enable-source-maps dist/main.cjs",
@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.1.4",
-    "@types/node": "^24.3.1",
+    "@types/node": "^24.4.0",
     "autocannon": "^8.0.0",
     "rollup": "^4.50.1",
     "rollup-plugin-delete": "^3.0.1",
