@@ -22,12 +22,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^5.6.0",
+    "fastify": "^5.6.1",
     "fastify-plugin": "^5.0.1",
     "poolifier": "^5.1.6"
   },
   "devDependencies": {
-    "@types/node": "^24.4.0",
+    "@types/node": "^24.5.2",
     "autocannon": "^8.0.0",
     "typescript": "^5.9.2"
   }
