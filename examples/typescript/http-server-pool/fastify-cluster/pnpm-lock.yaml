@@ -304,8 +304,8 @@ packages:
   cross-argv@2.0.0:
     resolution: {integrity: sha512-YIaY9TR5Nxeb8SMdtrU8asWVM4jqJDNDYlKV21LxtYcfNJhp1kEsgSa6qXwXgzN0WQWGODps0+TlGp2xQSHwOg==}
 
-  del@8.0.0:
-    resolution: {integrity: sha512-R6ep6JJ+eOBZsBr9esiNN1gxFbZE4Q2cULkUSFumGYecAiS6qodDvcPx/sFuWHMNul7DWmrtoEOpYSm7o6tbSA==}
+  del@8.0.1:
+    resolution: {integrity: sha512-gPqh0mKTPvaUZGAuHbrBUYKZWBNAeHG7TU3QH5EhVwPMyKvmfJaNXhcD2jTcXsJRRcffuho4vaYweu80dRrMGA==}
     engines: {node: '>=18'}
 
   delayed-stream@1.0.0:
@@ -569,6 +569,10 @@ packages:
   poolifier@5.1.6:
     resolution: {integrity: sha512-Mj3duauCUbM4TiatxNRWjNyl1IxtNSU0WCbUcFgGhYjTNw55uwwVoWld1MDwWAqVbqvHna6YzYVjK4OehXbghg==}
     engines: {node: '>=20.11.0', pnpm: '>=9.0.0'}
+
+  presentable-error@0.0.1:
+    resolution: {integrity: sha512-E6rsNU1QNJgB3sjj7OANinGncFKuK+164sLXw1/CqBjj/EkXSoSdHCtWQGBNlREIGLnL7IEUEGa08YFVUbrhVg==}
+    engines: {node: '>=16'}
 
   pretty-bytes@5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
@@ -952,13 +956,14 @@ snapshots:
 
   cross-argv@2.0.0: {}
 
-  del@8.0.0:
+  del@8.0.1:
     dependencies:
       globby: 14.1.0
       is-glob: 4.0.3
       is-path-cwd: 3.0.0
       is-path-inside: 4.0.0
       p-map: 7.0.3
+      presentable-error: 0.0.1
       slash: 5.1.0
 
   delayed-stream@1.0.0: {}
@@ -1226,6 +1231,8 @@ snapshots:
 
   poolifier@5.1.6: {}
 
+  presentable-error@0.0.1: {}
+
   pretty-bytes@5.6.0: {}
 
   process-warning@4.0.1: {}
@@ -1260,7 +1267,7 @@ snapshots:
 
   rollup-plugin-delete@3.0.1(rollup@4.52.2):
     dependencies:
-      del: 8.0.0
+      del: 8.0.1
       rollup: 4.52.2
 
   rollup@4.52.2:
