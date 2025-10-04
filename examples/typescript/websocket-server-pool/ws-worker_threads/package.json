@@ -25,9 +25,9 @@
     "ws": "^8.18.3"
   },
   "devDependencies": {
-    "@types/node": "^24.5.2",
+    "@types/node": "^24.6.1",
     "@types/ws": "^8.18.1",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.9",
