@@ -41,7 +41,7 @@ These instructions guide GitHub Copilot to generate changes consistent with this
 - **Interpretation**: include threshold guidelines; avoid overclaiming certainty.
 - **Artifacts**: timestamp outputs; include configuration metadata.
 
-# Documentation conventions
+## Documentation conventions
 
 - **Clarity**: plain, unambiguous language; avoid marketing jargon and speculation.
 - **Concision**: remove boilerplate; state facts directly without redundant phrasing.
