@@ -7,16 +7,42 @@ These instructions guide GitHub Copilot to generate changes consistent with this
 - **Tunables**: user-adjustable parameters that shape behavior, exposed via options or configuration files.
 - **Canonical defaults**: the single, authoritative definition of all tunables and their defaults.
 
+## Implementation guidance for Copilot
+
+- **Before coding**:
+  - Perform a comprehensive inventory of the codebase. Search for and read:
+    - README.md, CONTRIBUTING.md, and all other documentation files.
+    - code files related to the task.
+  - Identify existing code architecture, design patterns, canonical defaults, naming patterns and coding styles.
+- **When coding**:
+  - Follow the core principles and TypeScript/Node.js conventions below.
+  - Follow identified design patterns, naming patterns and coding styles.
+  - Write minimal, verifiable changes that preserve existing behavior when possible.
+- **After coding**:
+  - Ensure changes pass quality gates below.
+- **When adding a tunable**:
+  - Add to canonical defaults with safe value.
+  - Ensure the options and configuration section below is respected.
+  - Update documentation and serialization.
+- **When implementing analytical methods**:
+  - Follow statistical conventions below.
+- **When refactoring**:
+  - Keep APIs stable; provide aliases if renaming.
+  - Update code, tests, and documentation atomically.
+- **When documenting**:
+  - Follow documentation conventions below.
+
 ## Core principles
 
 - **Design patterns**: prefer established patterns (e.g., factory, singleton, strategy) for code organization and extensibility.
-- **Algorithmic**: prefer algorithms or heuristics minimizing time and space complexity.
+- **Algorithmic**: prefer algorithms or heuristics solving the problem while minimizing time and space complexity.
 - **DRY**: avoid duplication of logic, data, and naming. Factor out commonalities.
 - **Single source of truth**: maintain a canonical defaults map for configuration tunables. Derive all user-facing options automatically.
 - **Naming coherence**: prefer semantically accurate names across code, documentation, directories, and outputs. Avoid synonyms that create ambiguity.
 - **English-only**: code, tests, logs, comments, and documentation must be in English.
 - **Small, verifiable changes**: prefer minimal diffs that keep public behavior stable unless explicitly requested.
 - **Tests-first mindset**: add or update minimal tests before refactoring or feature changes.
+- **Documentation standards**: must follow established standards for programming languages.
 
 ## Options and configuration
 
@@ -40,22 +66,18 @@ These instructions guide GitHub Copilot to generate changes consistent with this
 - **Interpretation**: include threshold guidelines; avoid overclaiming certainty.
 - **Artifacts**: timestamp outputs; include configuration metadata.
 
-## Implementation guidance for Copilot
+## Documentation conventions
 
-- **Before coding**:
-  - Locate and analyze thoroughly relevant existing code.
-  - Identify code architecture and design patterns.
-  - Identify canonical defaults and naming patterns.
-- **When coding**:
-  - Follow TypeScript/Node.js conventions.
-- **When adding a tunable**:
-  - Add to defaults with safe value.
-  - Update documentation and serialization.
-- **When implementing analytical methods**:
-  - Follow statistical conventions above.
-- **When refactoring**:
-  - Keep APIs stable; provide aliases if renaming.
-  - Update code, tests, and docs atomically.
+- **Clarity**: plain, unambiguous language; avoid marketing jargon and speculation.
+- **Concision**: remove boilerplate; state facts directly without redundant phrasing.
+- **Structure**: use consistent section ordering; follow stable patterns for comparable content.
+- **Timeliness**: document current state; exclude historical evolution (except brief API breaking change notes).
+- **Terminology**: use correct and consistent terminology; distinguish clearly between related concepts.
+- **Exhaustivity**: cover all user-facing behavior and constraints; omit internal implementation details unless necessary for usage.
+- **Pertinence**: include information that aids understanding or usage; remove tangential content.
+- **No duplication**: maintain single authoritative documentation source; reference other sources rather than copying.
+
+Documentation serves as an operational specification, not narrative prose.
 
 ## TypeScript/Node.js conventions
 
@@ -70,11 +92,11 @@ These instructions guide GitHub Copilot to generate changes consistent with this
 
 ## Quality gates
 
-- Build/lint/type checks pass (where applicable).
-- Tests pass (where applicable).
-- Documentation updated to reflect changes.
+- Documented build/lint/type checks pass (where applicable).
+- Documented tests pass (where applicable).
+- Documentation updated to reflect changes when necessary.
 - Logs use appropriate levels (error, warn, info, debug).
-- PR title and commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) format.
+- Pull request title and commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) format.
 
 ## Examples
 
