@@ -17,7 +17,6 @@ These instructions guide GitHub Copilot to generate changes consistent with this
 - **When coding**:
   - Follow the core principles and TypeScript/Node.js conventions below.
   - Follow identified design patterns, naming patterns and coding styles.
-  - Write minimal, verifiable changes that preserve existing behavior when possible.
 - **After coding**:
   - Ensure changes pass quality gates below.
 - **When adding a tunable**:
