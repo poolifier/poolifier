@@ -27,7 +27,7 @@ These instructions guide GitHub Copilot to generate changes consistent with this
 - **When implementing analytical methods**:
   - Follow statistical conventions below.
 - **When refactoring**:
-  - Keep APIs stable; provide aliases if renaming.
+  - Keep public APIs stable; provide aliases if renaming unless explicitly requested.
   - Update code, tests, and documentation atomically.
 - **When documenting**:
   - Follow documentation conventions below.
