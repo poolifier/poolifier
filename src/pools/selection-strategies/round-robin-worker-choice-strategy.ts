@@ -35,9 +35,9 @@ export class RoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number | undefined {
+  public choose (workerNodeKeys?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.roundRobinNextWorkerNodeKey()
+    this.roundRobinNextWorkerNodeKey(workerNodeKeys)
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (!this.isWorkerNodeReady(this.nextWorkerNodeKey!)) {
       return undefined
@@ -75,11 +75,16 @@ export class RoundRobinWorkerChoiceStrategy<
     return true
   }
 
-  private roundRobinNextWorkerNodeKey (): number | undefined {
-    this.nextWorkerNodeKey =
-      this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
-        ? 0
-        : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
+  private roundRobinNextWorkerNodeKey (
+    workerNodeKeys?: number[]
+  ): number | undefined {
+    workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
+    if (workerNodeKeys.length === 1) {
+      return workerNodeKeys[0]
+    }
+    do {
+      this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
+    } while (!workerNodeKeys.includes(this.nextWorkerNodeKey))
     return this.nextWorkerNodeKey
   }
 }
