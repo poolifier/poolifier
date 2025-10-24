@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       nodemailer:
-        specifier: ^7.0.9
-        version: 7.0.9
+        specifier: ^7.0.10
+        version: 7.0.10
       poolifier:
         specifier: ^5.1.6
         version: 5.1.6
@@ -337,8 +337,8 @@ packages:
     resolution: {integrity: sha512-pfX9uG9Ki0yekDHx2SiuRIyFdyAr1kMIMitPvb0YBo8SUfKvia7w7FIyd/l6av85pFYRhZscS75MwMnbvY+hcQ==}
     hasBin: true
 
-  nodemailer@7.0.9:
-    resolution: {integrity: sha512-9/Qm0qXIByEP8lEV2qOqcAW7bRpL8CR9jcTwk3NBnHJNmP9fIJ86g2fgmIXqHY+nj55ZEMwWqYAT2QTDpRUYiQ==}
+  nodemailer@7.0.10:
+    resolution: {integrity: sha512-Us/Se1WtT0ylXgNFfyFSx4LElllVLJXQjWi2Xz17xWw7amDKO2MLtFnVp1WACy7GkVGs+oBlRopVNUzlrGSw1w==}
     engines: {node: '>=6.0.0'}
 
   poolifier@5.1.6:
@@ -1036,7 +1036,7 @@ snapshots:
     dependencies:
       strnum: 2.1.1
 
-  nodemailer@7.0.9: {}
+  nodemailer@7.0.10: {}
 
   poolifier@5.1.6: {}
 
