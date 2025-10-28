@@ -613,8 +613,7 @@ export abstract class AbstractPool<
       (_, index) => index
     )
     if (
-      fn.workerNodes != null &&
-      fn.workerNodes.filter(workerNodeKey =>
+      fn.workerNodes?.filter(workerNodeKey =>
         workerNodeKeys.includes(workerNodeKey)
       ).length === 0
     ) {

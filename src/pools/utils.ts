@@ -124,7 +124,7 @@ export const checkValidWorkerNodes = (
   if (workerNodes != null && !Array.isArray(workerNodes)) {
     throw new TypeError('Invalid worker nodes: must be an array')
   }
-  if (workerNodes != null && workerNodes.length === 0) {
+  if (workerNodes?.length === 0) {
     throw new TypeError('Invalid worker nodes: must not be an empty array')
   }
 }
