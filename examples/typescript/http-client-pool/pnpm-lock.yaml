@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       axios:
-        specifier: ^1.12.2
-        version: 1.12.2
+        specifier: ^1.13.0
+        version: 1.13.0
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
@@ -19,22 +19,22 @@ importers:
         version: 5.1.6
     devDependencies:
       '@types/node':
-        specifier: ^24.7.0
-        version: 24.7.0
+        specifier: ^24.9.1
+        version: 24.9.1
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
 
 packages:
 
-  '@types/node@24.7.0':
-    resolution: {integrity: sha512-IbKooQVqUBrlzWTi79E8Fw78l8k1RNtlDDNWsFZs7XonuQSJ8oNYfEeclhprUldXISRMLzBpILuKgPlIxm+/Yw==}
+  '@types/node@24.9.1':
+    resolution: {integrity: sha512-QoiaXANRkSXK6p0Duvt56W208du4P9Uye9hWLWgGMDTEoKPhuenzNcC4vGUmrNkiOKTlIrBoyNQYNpSwfEZXSg==}
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  axios@1.12.2:
-    resolution: {integrity: sha512-vMJzPewAlRyOgxV2dU0Cuz2O8zzzx9VYtbJOaBgXFeLc4IV/Eg50n4LowmehOOR61S8ZMpc2K5Sa7g6A4jfkUw==}
+  axios@1.13.0:
+    resolution: {integrity: sha512-zt40Pz4zcRXra9CVV31KeyofwiNvAbJ5B6YPz9pMJ+yOSLikvPT4Yi5LjfgjRa9CawVYBaD1JQzIVcIvBejKeA==}
 
   call-bind-apply-helpers@1.0.2:
     resolution: {integrity: sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==}
@@ -153,8 +153,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  undici-types@7.14.0:
-    resolution: {integrity: sha512-QQiYxHuyZ9gQUIrmPo3IA+hUl4KYk8uSA7cHrcKd/l3p1OTpZcM0Tbp9x7FAtXdAYhlasd60ncPpgu6ihG6TOA==}
+  undici-types@7.16.0:
+    resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
   web-streams-polyfill@3.3.3:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
@@ -162,13 +162,13 @@ packages:
 
 snapshots:
 
-  '@types/node@24.7.0':
+  '@types/node@24.9.1':
     dependencies:
-      undici-types: 7.14.0
+      undici-types: 7.16.0
 
   asynckit@0.4.0: {}
 
-  axios@1.12.2:
+  axios@1.13.0:
     dependencies:
       follow-redirects: 1.15.11
       form-data: 4.0.4
@@ -283,6 +283,6 @@ snapshots:
 
   typescript@5.9.3: {}
 
-  undici-types@7.14.0: {}
+  undici-types@7.16.0: {}
 
   web-streams-polyfill@3.3.3: {}
