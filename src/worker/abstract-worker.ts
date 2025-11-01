@@ -265,7 +265,7 @@ export abstract class AbstractWorker<
   /**
    * Returns the main worker.
    * @returns Reference to the main worker.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the main worker is not set.
+   * @throws {Error} If the main worker is not set.
    */
   protected getMainWorker (): MainWorker {
     if (this.mainWorker == null) {
@@ -575,7 +575,7 @@ export abstract class AbstractWorker<
   /**
    * Check if the message worker id is set and matches the worker id.
    * @param message - The message to check.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the message worker id is not set or does not match the worker id.
+   * @throws {Error} If the message worker id is not set or does not match the worker id.
    */
   private checkMessageWorkerId (message: MessageValue<Data>): void {
     if (message.workerId == null) {

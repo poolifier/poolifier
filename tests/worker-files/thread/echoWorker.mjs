@@ -1,9 +1,9 @@
 import { KillBehaviors, ThreadWorker } from '../../../lib/index.cjs'
 
 /**
- *
- * @param data
- * @returns
+ * Test worker function that echoes the input data.
+ * @param data - The task data to echo
+ * @returns The same data that was passed in
  */
 function echo (data) {
   return data

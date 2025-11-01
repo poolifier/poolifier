@@ -2,9 +2,9 @@ import { ThreadWorker } from '../../../lib/index.cjs'
 import { sleepTaskFunction } from '../../test-utils.cjs'
 
 /**
- *
- * @param data
- * @returns
+ * Test worker function that performs a long-running sleep operation with soft behavior.
+ * @param data - The task data
+ * @returns The result of the sleep operation
  */
 async function sleep (data) {
   return sleepTaskFunction(data, 50000)

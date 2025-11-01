@@ -20,7 +20,8 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
 
   /**
    * Constructs a fixed queue.
-   * @param size - Fixed queue size. @defaultValue defaultQueueSize
+   * @param size - Fixed queue size.
+   * @defaultValue defaultQueueSize
    * @returns IFixedQueue.
    */
   constructor (size: number = defaultQueueSize) {

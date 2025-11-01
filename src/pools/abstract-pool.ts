@@ -1390,7 +1390,7 @@ export abstract class AbstractPool<
    * Adds the given worker node in the pool worker nodes.
    * @param workerNode - The worker node.
    * @returns The added worker node key.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the added worker node is not found.
+   * @throws {Error} If the added worker node is not found.
    */
   private addWorkerNode (workerNode: IWorkerNode<Worker, Data>): number {
     this.workerNodes.push(workerNode)
@@ -1473,7 +1473,7 @@ export abstract class AbstractPool<
   /**
    * Checks if the worker id sent in the received message from a worker is valid.
    * @param message - The received message.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If the worker id is invalid.
+   * @throws {Error} If the worker id is invalid.
    */
   private checkMessageWorkerId (message: MessageValue<Data | Response>): void {
     if (message.workerId == null) {
@@ -2432,7 +2432,8 @@ export abstract class AbstractPool<
 
   /**
    * Starts the minimum number of workers.
-   * @param initWorkerNodeUsage - Whether to initialize the worker node usage or not. @defaultValue false
+   * @param initWorkerNodeUsage - Whether to initialize the worker node usage or not.
+   * @defaultValue false
    */
   private startMinimumNumberOfWorkers (initWorkerNodeUsage = false): void {
     if (this.minimumNumberOfWorkers === 0) {

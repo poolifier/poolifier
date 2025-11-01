@@ -3,9 +3,9 @@ import { TaskFunctions } from '../../test-types.cjs'
 import { executeTaskFunction } from '../../test-utils.cjs'
 
 /**
- *
- * @param data
- * @returns
+ * Test worker function that executes configurable task functions for testing.
+ * @param data - The task data containing function configuration
+ * @returns The result of the executed task function
  */
 function test (data) {
   data = data || {}

@@ -1,9 +1,9 @@
 import { ThreadWorker } from 'poolifier'
 
 /**
- *
- * @param data
- * @returns
+ * First worker function example.
+ * @param data - The input data containing text.
+ * @returns The processed result with modified text.
  */
 function fn0 (data) {
   console.info('Executing fn0')
@@ -11,9 +11,9 @@ function fn0 (data) {
 }
 
 /**
- *
- * @param data
- * @returns
+ * Second worker function example.
+ * @param data - The input data containing text.
+ * @returns The processed result with modified text.
  */
 function fn1 (data) {
   console.info('Executing fn1')
