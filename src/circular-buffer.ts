@@ -15,6 +15,7 @@ export class CircularBuffer {
   private writeIdx: number
 
   /**
+   * CircularBuffer constructor.
    * @param size - Buffer size.
    * @defaultValue defaultBufferSize
    * @returns CircularBuffer.
