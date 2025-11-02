@@ -1,9 +1,9 @@
 import { bench, group, run } from 'tatami-ng'
 
 /**
- *
- * @param numberOfWorkers
- * @returns
+ * Generates an array of worker indices.
+ * @param numberOfWorkers - The number of workers.
+ * @returns The array of worker indices.
  */
 function generateWorkersArray (numberOfWorkers) {
   return [...Array(numberOfWorkers).keys()]
@@ -14,7 +14,8 @@ const workers = generateWorkersArray(60)
 let nextWorkerIndex
 
 /**
- * @returns
+ * Round-robin worker selection using increment and modulo operation.
+ * @returns The selected worker.
  */
 function roundRobinIncrementModulo () {
   const chosenWorker = workers[nextWorkerIndex]
@@ -24,7 +25,8 @@ function roundRobinIncrementModulo () {
 }
 
 /**
- * @returns
+ * Round-robin worker selection using ternary operator with off-by-one logic.
+ * @returns The selected worker.
  */
 function roundRobinTernaryOffByOne () {
   nextWorkerIndex =
@@ -33,7 +35,8 @@ function roundRobinTernaryOffByOne () {
 }
 
 /**
- * @returns
+ * Round-robin worker selection using ternary operator with negation.
+ * @returns The selected worker.
  */
 function roundRobinTernaryWithNegation () {
   nextWorkerIndex =
@@ -44,7 +47,8 @@ function roundRobinTernaryWithNegation () {
 }
 
 /**
- * @returns
+ * Round-robin worker selection using ternary operator with pre-choosing.
+ * @returns The selected worker.
  */
 function roundRobinTernaryWithPreChoosing () {
   const chosenWorker = workers[nextWorkerIndex]

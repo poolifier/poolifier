@@ -59,7 +59,8 @@ export class WorkerChoiceStrategiesContext<
   /**
    * Worker choice strategies context constructor.
    * @param pool - The pool instance.
-   * @param workerChoiceStrategies - The worker choice strategies. @defaultValue [WorkerChoiceStrategies.ROUND_ROBIN]
+   * @param workerChoiceStrategies - The worker choice strategies.
+   * @defaultValue [WorkerChoiceStrategies.ROUND_ROBIN]
    * @param opts - The worker choice strategy options.
    */
   public constructor (
@@ -93,10 +94,10 @@ export class WorkerChoiceStrategiesContext<
 
   /**
    * Executes the given worker choice strategy in the context algorithm.
-   * @param workerChoiceStrategy - The worker choice strategy algorithm to execute. @defaultValue this.defaultWorkerChoiceStrategy
-   * @param workerNodes - Worker node keys affinity.
+   * @param workerChoiceStrategy - The worker choice strategy algorithm to execute.
+   * @defaultValue this.defaultWorkerChoiceStrategy
    * @returns The key of the worker node.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If after computed retries the worker node key is null or undefined.
+   * @throws {Error} If after computed retries the worker node key is null or undefined.
    */
   public execute (
     workerChoiceStrategy: WorkerChoiceStrategy = this
@@ -245,7 +246,7 @@ export class WorkerChoiceStrategiesContext<
    * @param workerChoiceStrategy - The worker choice strategy.
    * @param workerNodes - Worker node keys affinity.
    * @returns The key of the worker node.
-   * @throws {@link https://nodejs.org/api/errors.html#class-error} If after computed retries the worker node key is null or undefined.
+   * @throws {Error} If after computed retries the worker node key is null or undefined.
    */
   private executeStrategy (
     workerChoiceStrategy: IWorkerChoiceStrategy,

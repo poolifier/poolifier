@@ -3,9 +3,9 @@ const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
 const { sleepTaskFunction } = require('../../test-utils.cjs')
 
 /**
- *
- * @param data
- * @returns
+ * Test worker function that throws an error after sleeping.
+ * @param data - The task data.
+ * @returns The result after sleeping and potentially throwing an error.
  */
 async function error (data) {
   return sleepTaskFunction(

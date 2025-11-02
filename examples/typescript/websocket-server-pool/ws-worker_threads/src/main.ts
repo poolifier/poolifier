@@ -2,6 +2,7 @@ import { type RawData, WebSocketServer } from 'ws'
 
 import { requestHandlerPool } from './pool.js'
 import { type DataPayload, type MessagePayload, MessageType } from './types.js'
+import { rawDataToString } from './utils.js'
 
 const port = 8080
 const wss = new WebSocketServer({ port }, () => {
@@ -18,7 +19,7 @@ wss.on('connection', ws => {
   ws.on('error', console.error)
   ws.on('message', (message: RawData) => {
     const { data, type } = JSON.parse(
-      message.toString()
+      rawDataToString(message)
     ) as MessagePayload<DataPayload>
     switch (type) {
       case MessageType.echo:

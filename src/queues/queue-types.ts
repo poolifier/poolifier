@@ -54,7 +54,7 @@ export interface IFixedQueue<T> {
    * @param data - Data to enqueue.
    * @param priority - Priority of the data. Lower values have higher priority.
    * @returns The new size of the fixed queue.
-   * @throws If the fixed queue is full.
+   * @throws {Error} If the fixed queue is full.
    */
   enqueue: (data: T, priority?: number) => number
   /**

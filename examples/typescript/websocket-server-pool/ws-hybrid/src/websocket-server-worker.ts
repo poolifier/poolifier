@@ -14,6 +14,7 @@ import {
   type ThreadWorkerData,
   type ThreadWorkerResponse,
 } from './types.js'
+import { rawDataToString } from './utils.js'
 
 const emptyFunction = (): void => {
   /* Intentional */
@@ -66,7 +67,7 @@ class WebSocketServerWorker extends ClusterWorker<
       ws.on('error', console.error)
       ws.on('message', (message: RawData) => {
         const { data, type } = JSON.parse(
-          message.toString()
+          rawDataToString(message)
         ) as MessagePayload<DataPayload>
         switch (type) {
           case MessageType.echo:

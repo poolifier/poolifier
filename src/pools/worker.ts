@@ -215,7 +215,8 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
   readonly dequeueLastPrioritizedTask: () => Task<Data> | undefined
   /**
    * Dequeue task.
-   * @param bucket - The prioritized bucket to dequeue from. @defaultValue 0
+   * @param bucket - The prioritized bucket to dequeue from.
+   * @defaultValue 0
    * @returns The dequeued task.
    */
   readonly dequeueTask: (bucket?: number) => Task<Data> | undefined

@@ -26,6 +26,7 @@ export default defineConfig([
               'Quadflieg',
               'neostandard',
               'poolifier',
+              'quickselect',
             ],
           },
         },

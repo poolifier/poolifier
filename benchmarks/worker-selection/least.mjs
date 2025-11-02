@@ -2,10 +2,10 @@ import { randomInt } from 'node:crypto'
 import { bench, group, run } from 'tatami-ng'
 
 /**
- *
- * @param numberOfWorkers
- * @param maxNumberOfTasksPerWorker
- * @returns
+ * Generates a random tasks map for benchmarking.
+ * @param numberOfWorkers - The number of workers.
+ * @param maxNumberOfTasksPerWorker - The maximum number of tasks per worker.
+ * @returns The generated tasks map.
  */
 function generateRandomTasksMap (
   numberOfWorkers,
@@ -22,9 +22,9 @@ function generateRandomTasksMap (
 const tasksMap = generateRandomTasksMap(60, 20)
 
 /**
- *
- * @param tasksMap
- * @returns
+ * Selects the worker with least tasks using array sort.
+ * @param tasksMap - The tasks map.
+ * @returns The worker with least tasks.
  */
 function arraySortSelect (tasksMap) {
   const tasksArray = Array.from(tasksMap)
@@ -40,9 +40,9 @@ function arraySortSelect (tasksMap) {
 }
 
 /**
- *
- * @param tasksMap
- * @returns
+ * Selects the worker with least tasks using loop iteration.
+ * @param tasksMap - The tasks map.
+ * @returns The worker with least tasks.
  */
 function loopSelect (tasksMap) {
   let minKey
@@ -72,13 +72,13 @@ const randomPivotIndexSelect = (leftIndex, rightIndex) => {
 }
 
 /**
- *
- * @param array
- * @param leftIndex
- * @param rightIndex
- * @param pivotIndex
- * @param compare
- * @returns
+ * Partitions an array for quickselect algorithm.
+ * @param array - The array to partition.
+ * @param leftIndex - The left boundary index.
+ * @param rightIndex - The right boundary index.
+ * @param pivotIndex - The pivot element index.
+ * @param compare - The comparison function.
+ * @returns The new pivot index after partitioning.
  */
 function partition (
   array,
@@ -101,9 +101,9 @@ function partition (
 }
 
 /**
- *
- * @param tasksMap
- * @returns
+ * Selects the worker with least tasks using quickselect loop algorithm.
+ * @param tasksMap - The tasks map.
+ * @returns The worker with least tasks.
  */
 function quickSelectLoop (tasksMap) {
   const tasksArray = Array.from(tasksMap)
@@ -114,9 +114,9 @@ function quickSelectLoop (tasksMap) {
 }
 
 /**
- *
- * @param tasksMap
- * @returns
+ * Selects the worker with least tasks using quickselect loop with random pivot.
+ * @param tasksMap - The tasks map.
+ * @returns The worker with least tasks.
  */
 function quickSelectLoopRandomPivot (tasksMap) {
   const tasksArray = Array.from(tasksMap)
@@ -134,9 +134,9 @@ function quickSelectLoopRandomPivot (tasksMap) {
 }
 
 /**
- *
- * @param tasksMap
- * @returns
+ * Selects the worker with least tasks using quickselect recursion algorithm.
+ * @param tasksMap - The tasks map.
+ * @returns The worker with least tasks.
  */
 function quickSelectRecursion (tasksMap) {
   const tasksArray = Array.from(tasksMap)
@@ -147,9 +147,9 @@ function quickSelectRecursion (tasksMap) {
 }
 
 /**
- *
- * @param tasksMap
- * @returns
+ * Selects the worker with least tasks using quickselect recursion with random pivot.
+ * @param tasksMap - The tasks map.
+ * @returns The worker with least tasks.
  */
 function quickSelectRecursionRandomPivot (tasksMap) {
   const tasksArray = Array.from(tasksMap)
@@ -167,14 +167,14 @@ function quickSelectRecursionRandomPivot (tasksMap) {
 }
 
 /**
- *
- * @param array
- * @param k
- * @param leftIndex
- * @param rightIndex
- * @param compare
- * @param pivotIndexSelect
- * @returns
+ * Selects the k-th smallest element using quickselect loop algorithm.
+ * @param array - The array to select from.
+ * @param k - The index of the element to select.
+ * @param leftIndex - The left boundary index.
+ * @param rightIndex - The right boundary index.
+ * @param compare - The comparison function.
+ * @param pivotIndexSelect - The pivot selection function.
+ * @returns The k-th smallest element.
  */
 function selectLoop (
   array,
@@ -200,14 +200,14 @@ function selectLoop (
 }
 
 /**
- *
- * @param array
- * @param k
- * @param leftIndex
- * @param rightIndex
- * @param compare
- * @param pivotIndexSelect
- * @returns
+ * Selects the k-th smallest element using quickselect recursion algorithm.
+ * @param array - The array to select from.
+ * @param k - The index of the element to select.
+ * @param leftIndex - The left boundary index.
+ * @param rightIndex - The right boundary index.
+ * @param compare - The comparison function.
+ * @param pivotIndexSelect - The pivot selection function.
+ * @returns The k-th smallest element.
  */
 function selectRecursion (
   array,
@@ -230,10 +230,10 @@ function selectRecursion (
 }
 
 /**
- *
- * @param array
- * @param index1
- * @param index2
+ * Swaps two elements in an array.
+ * @param array - The array containing elements to swap.
+ * @param index1 - The index of the first element.
+ * @param index2 - The index of the second element.
  */
 function swap (array, index1, index2) {
   const tmp = array[index1]

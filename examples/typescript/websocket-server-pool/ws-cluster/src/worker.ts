@@ -8,6 +8,7 @@ import {
   type WorkerData,
   type WorkerResponse,
 } from './types.js'
+import { rawDataToString } from './utils.js'
 
 class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static wss: WebSocketServer
@@ -48,7 +49,7 @@ class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
       ws.on('error', console.error)
       ws.on('message', (message: RawData) => {
         const { data, type } = JSON.parse(
-          message.toString()
+          rawDataToString(message)
         ) as MessagePayload<DataPayload>
         switch (type) {
           case MessageType.echo:

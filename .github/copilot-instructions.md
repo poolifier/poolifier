@@ -78,7 +78,7 @@ These instructions guide GitHub Copilot to generate changes consistent with this
 
 Documentation serves as an operational specification, not narrative prose.
 
-## TypeScript/Node.js conventions
+## TypeScript conventions
 
 - **Naming**: Use camelCase for variables/functions/methods, PascalCase for classes/types/enums/interfaces.
 - **Async operations**: Prefer async/await over raw Promises; handle rejections explicitly with try/catch.
