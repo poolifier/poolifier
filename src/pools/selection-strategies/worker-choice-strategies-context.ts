@@ -95,6 +95,7 @@ export class WorkerChoiceStrategiesContext<
   /**
    * Executes the given worker choice strategy in the context algorithm.
    * @param workerChoiceStrategy - The worker choice strategy algorithm to execute.
+   * @param workerNodes
    * @defaultValue this.defaultWorkerChoiceStrategy
    * @returns The key of the worker node.
    * @throws {Error} If after computed retries the worker node key is null or undefined.
