@@ -24,9 +24,9 @@
     "build:prod": "rollup --config",
     "build:typedoc": "rollup --config --environment DOCUMENTATION,BUILD:development",
     "build:analyze": "rollup --config --environment ANALYZE,BUILD:development",
-    "benchmark:tatami-ng": "pnpm build && node --enable-source-maps benchmarks/internal/bench.mjs -t tatami-ng",
-    "benchmark:tatami-ng:prod": "pnpm build:prod && node --enable-source-maps benchmarks/internal/bench.mjs -t tatami-ng",
-    "benchmark:tatami-ng:debug": "pnpm build && node --enable-source-maps --inspect benchmarks/internal/bench.mjs -t tatami-ng",
+    "benchmark:tinybench": "pnpm build && node --enable-source-maps benchmarks/internal/bench.mjs -t tinybench",
+    "benchmark:tinybench:prod": "pnpm build:prod && node --enable-source-maps benchmarks/internal/bench.mjs -t tinybench",
+    "benchmark:tinybench:debug": "pnpm build && node --enable-source-maps --inspect benchmarks/internal/bench.mjs -t tinybench",
     "test": "pnpm build --environment SOURCEMAP:false && cross-env NODE_ENV=test c8 mocha 'tests/**/*.test.mjs'",
     "test:parallel": "pnpm build --environment SOURCEMAP:false && cross-env NODE_ENV=test c8 mocha --parallel 'tests/**/*.test.mjs'",
     "test:debug": "pnpm build && cross-env NODE_ENV=test mocha --inspect 'tests/**/*.test.mjs'",
@@ -135,7 +135,7 @@
     "rollup-plugin-delete": "^3.0.1",
     "rollup-plugin-dts": "^6.2.3",
     "sinon": "^21.0.0",
-    "tatami-ng": "^0.8.18",
+    "tinybench": "^5.1.0",
     "typedoc": "^0.28.14",
     "typescript": "~5.9.3"
   }

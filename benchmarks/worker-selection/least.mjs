@@ -1,5 +1,5 @@
 import { randomInt } from 'node:crypto'
-import { bench, group, run } from 'tatami-ng'
+import { Bench } from 'tinybench'
 
 /**
  * Generates a random tasks map for benchmarking.
@@ -241,25 +241,26 @@ function swap (array, index1, index2) {
   array[index2] = tmp
 }
 
-group('Least used worker tasks distribution', () => {
-  bench('Loop select', () => {
-    loopSelect(tasksMap)
-  })
-  bench('Array sort select', () => {
-    arraySortSelect(tasksMap)
-  })
-  bench('Quick select loop', () => {
-    quickSelectLoop(tasksMap)
-  })
-  bench('Quick select loop with random pivot', () => {
-    quickSelectLoopRandomPivot(tasksMap)
-  })
-  bench('Quick select recursion', () => {
-    quickSelectRecursion(tasksMap)
-  })
-  bench('Quick select recursion with random pivot', () => {
-    quickSelectRecursionRandomPivot(tasksMap)
-  })
+const bench = new Bench()
+
+bench.add('Loop select', () => {
+  loopSelect(tasksMap)
+})
+bench.add('Array sort select', () => {
+  arraySortSelect(tasksMap)
+})
+bench.add('Quick select loop', () => {
+  quickSelectLoop(tasksMap)
+})
+bench.add('Quick select loop with random pivot', () => {
+  quickSelectLoopRandomPivot(tasksMap)
+})
+bench.add('Quick select recursion', () => {
+  quickSelectRecursion(tasksMap)
+})
+bench.add('Quick select recursion with random pivot', () => {
+  quickSelectRecursionRandomPivot(tasksMap)
 })
 
-await run({ units: true })
+await bench.run()
+console.table(bench.table())

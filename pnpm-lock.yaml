@@ -95,9 +95,9 @@ importers:
       sinon:
         specifier: ^21.0.0
         version: 21.0.0
-      tatami-ng:
-        specifier: ^0.8.18
-        version: 0.8.18(typescript@5.9.3)
+      tinybench:
+        specifier: ^5.1.0
+        version: 5.1.0
       typedoc:
         specifier: ^0.28.14
         version: 0.28.14(typescript@5.9.3)
@@ -2601,12 +2601,6 @@ packages:
     resolution: {integrity: sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg==}
     engines: {node: '>=6'}
 
-  tatami-ng@0.8.18:
-    resolution: {integrity: sha512-Q22ZpW/yPXP1Hb4e2s1JQcTtoMaVHZLCt8AjAyBjARiXcorgHyvuWyIPFJOvmrTglXU2qQPLqL+7HEE0tIHdiA==}
-    hasBin: true
-    peerDependencies:
-      typescript: ^5.4.3
-
   tcomb-validation@3.4.1:
     resolution: {integrity: sha512-urVVMQOma4RXwiVCa2nM2eqrAomHROHvWPuj6UkDGz/eb5kcy0x6P0dVt6kzpUZtYMNoAqJLWmz1BPtxrtjtrA==}
 
@@ -2628,6 +2622,10 @@ packages:
 
   through@2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
+
+  tinybench@5.1.0:
+    resolution: {integrity: sha512-LXKNtFualiKOm6gADe1UXPtf8+Nfn1CtPMEHAT33Fd2YjQatrujkDcK0+4wRC1X6t7fxUDXUs6BsvuIgfkDgDg==}
+    engines: {node: '>=20.0.0'}
 
   tinyexec@1.0.1:
     resolution: {integrity: sha512-5uC6DDlmeqiOwCPmK9jMSdOuZTh8bU39Ys6yidB+UTt5hfZUPGAypSgFRiEp+jbi9qH40BLDvy85jIU88wKSqw==}
@@ -5570,11 +5568,6 @@ snapshots:
 
   tapable@2.3.0: {}
 
-  tatami-ng@0.8.18(typescript@5.9.3):
-    dependencies:
-      peowly: 1.3.2
-      typescript: 5.9.3
-
   tcomb-validation@3.4.1:
     dependencies:
       tcomb: 3.2.29
@@ -5597,6 +5590,8 @@ snapshots:
   text-extensions@2.4.0: {}
 
   through@2.3.8: {}
+
+  tinybench@5.1.0: {}
 
   tinyexec@1.0.1: {}
 

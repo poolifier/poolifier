@@ -49,4 +49,4 @@ jobs:
           --file benchmark-report.json \
           --err \
           --github-actions ${{ secrets.GITHUB_TOKEN }} \
-          "pnpm benchmark:tatami-ng:prod"
+          "pnpm benchmark:tinybench:prod"
