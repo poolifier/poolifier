@@ -1,7 +1,6 @@
 import { writeFileSync } from 'node:fs'
 import { env } from 'node:process'
 import { parseArgs } from 'node:util'
-import { bmf } from 'tatami-ng'
 
 import {
   availableParallelism,
@@ -9,7 +8,7 @@ import {
   WorkerTypes,
 } from '../../lib/index.mjs'
 import { TaskFunctions } from '../benchmarks-types.cjs'
-import { runPoolifierBenchmarkTatamiNg } from '../benchmarks-utils.mjs'
+import { runPoolifierBenchmarkTinyBench } from '../benchmarks-utils.mjs'
 
 const poolSize = availableParallelism()
 const taskExecutions = 1
@@ -33,14 +32,13 @@ switch (
     strict: true,
   }).values.type
 ) {
-  case 'tatami-ng':
+  case 'tinybench':
   default:
-    benchmarkReport = await runPoolifierBenchmarkTatamiNg(
+    benchmarkReport = await runPoolifierBenchmarkTinyBench(
       'FixedThreadPool',
       WorkerTypes.thread,
       PoolTypes.fixed,
       poolSize,
-      bmf,
       {
         taskExecutions,
         workerData,
@@ -48,12 +46,11 @@ switch (
     )
     benchmarkReport = {
       ...benchmarkReport,
-      ...(await runPoolifierBenchmarkTatamiNg(
+      ...(await runPoolifierBenchmarkTinyBench(
         'DynamicThreadPool',
         WorkerTypes.thread,
         PoolTypes.dynamic,
         poolSize,
-        bmf,
         {
           taskExecutions,
           workerData,
@@ -62,12 +59,11 @@ switch (
     }
     benchmarkReport = {
       ...benchmarkReport,
-      ...(await runPoolifierBenchmarkTatamiNg(
+      ...(await runPoolifierBenchmarkTinyBench(
         'FixedClusterPool',
         WorkerTypes.cluster,
         PoolTypes.fixed,
         poolSize,
-        bmf,
         {
           taskExecutions,
           workerData,
@@ -76,12 +72,11 @@ switch (
     }
     benchmarkReport = {
       ...benchmarkReport,
-      ...(await runPoolifierBenchmarkTatamiNg(
+      ...(await runPoolifierBenchmarkTinyBench(
         'DynamicClusterPool',
         WorkerTypes.cluster,
         PoolTypes.dynamic,
         poolSize,
-        bmf,
         {
           taskExecutions,
           workerData,

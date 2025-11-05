@@ -17,10 +17,10 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Tatami NG Benchmark Debug",
+      "name": "Launch Tinybench Benchmark Debug",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["run", "benchmark:tatami-ng:debug"],
+      "runtimeArgs": ["run", "benchmark:tinybench:debug"],
       "skipFiles": ["<node_internals>/**"],
       "stopOnEntry": true
     }

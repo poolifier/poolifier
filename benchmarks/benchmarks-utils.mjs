@@ -1,5 +1,5 @@
 import { strictEqual } from 'node:assert'
-import { bench, group, run } from 'tatami-ng'
+import { Bench } from 'tinybench'
 
 import {
   DynamicClusterPool,
@@ -58,57 +58,27 @@ const runPoolifierPool = async (pool, { taskExecutions, workerData }) => {
   }
 }
 
-export const runPoolifierBenchmarkTatamiNg = async (
+export const runPoolifierBenchmarkTinyBench = async (
   name,
   workerType,
   poolType,
   poolSize,
-  benchmarkReporter,
   { taskExecutions, workerData }
 ) => {
   try {
+    const bench = new Bench()
     const pool = buildPoolifierPool(workerType, poolType, poolSize)
+
     for (const workerChoiceStrategy of Object.values(WorkerChoiceStrategies)) {
       for (const enableTasksQueue of [false, true]) {
         if (workerChoiceStrategy === WorkerChoiceStrategies.FAIR_SHARE) {
           for (const measurement of [Measurements.runTime, Measurements.elu]) {
-            group(name, () => {
-              bench(
-                `${name} with ${workerChoiceStrategy}, with ${measurement} and ${
-                  enableTasksQueue ? 'with' : 'without'
-                } tasks queue`,
-                async () => {
-                  await runPoolifierPool(pool, {
-                    taskExecutions,
-                    workerData,
-                  })
-                },
-                {
-                  before: () => {
-                    pool.setWorkerChoiceStrategy(workerChoiceStrategy, {
-                      measurement,
-                    })
-                    pool.enableTasksQueue(enableTasksQueue)
-                    strictEqual(
-                      pool.opts.workerChoiceStrategy,
-                      workerChoiceStrategy
-                    )
-                    strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
-                    strictEqual(
-                      pool.opts.workerChoiceStrategyOptions.measurement,
-                      measurement
-                    )
-                  },
-                }
-              )
-            })
-          }
-        } else {
-          group(name, () => {
-            bench(
-              `${name} with ${workerChoiceStrategy} and ${
-                enableTasksQueue ? 'with' : 'without'
-              } tasks queue`,
+            const taskName = `${name} with ${workerChoiceStrategy}, with ${measurement} and ${
+              enableTasksQueue ? 'with' : 'without'
+            } tasks queue`
+
+            bench.add(
+              taskName,
               async () => {
                 await runPoolifierPool(pool, {
                   taskExecutions,
@@ -116,24 +86,73 @@ export const runPoolifierBenchmarkTatamiNg = async (
                 })
               },
               {
-                before: () => {
-                  pool.setWorkerChoiceStrategy(workerChoiceStrategy)
+                beforeAll: () => {
+                  pool.setWorkerChoiceStrategy(workerChoiceStrategy, {
+                    measurement,
+                  })
                   pool.enableTasksQueue(enableTasksQueue)
                   strictEqual(
                     pool.opts.workerChoiceStrategy,
                     workerChoiceStrategy
                   )
                   strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
+                  strictEqual(
+                    pool.opts.workerChoiceStrategyOptions.measurement,
+                    measurement
+                  )
                 },
               }
             )
-          })
+          }
+        } else {
+          const taskName = `${name} with ${workerChoiceStrategy} and ${
+            enableTasksQueue ? 'with' : 'without'
+          } tasks queue`
+
+          bench.add(
+            taskName,
+            async () => {
+              await runPoolifierPool(pool, {
+                taskExecutions,
+                workerData,
+              })
+            },
+            {
+              beforeAll: () => {
+                pool.setWorkerChoiceStrategy(workerChoiceStrategy)
+                pool.enableTasksQueue(enableTasksQueue)
+                strictEqual(
+                  pool.opts.workerChoiceStrategy,
+                  workerChoiceStrategy
+                )
+                strictEqual(pool.opts.enableTasksQueue, enableTasksQueue)
+              },
+            }
+          )
         }
       }
     }
-    const report = await run({ reporter: benchmarkReporter })
+
+    const tasks = await bench.run()
+    console.table(bench.table())
     await pool.destroy()
-    return report
+
+    const bmfResults = {}
+    for (const task of tasks) {
+      bmfResults[task.name] = {
+        latency: {
+          lower_value: task.result.latency.mean - task.result.latency.sd,
+          upper_value: task.result.latency.mean + task.result.latency.sd,
+          value: task.result.latency.mean,
+        },
+        throughput: {
+          lower_value: task.result.throughput.mean - task.result.throughput.sd,
+          upper_value: task.result.throughput.mean + task.result.throughput.sd,
+          value: task.result.throughput.mean,
+        },
+      }
+    }
+    return bmfResults
   } catch (error) {
     console.error(error)
   }

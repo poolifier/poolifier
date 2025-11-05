@@ -1,4 +1,4 @@
-import { bench, group, run } from 'tatami-ng'
+import { Bench } from 'tinybench'
 
 /**
  * Generates an array of worker indices.
@@ -57,23 +57,24 @@ function roundRobinTernaryWithPreChoosing () {
   return chosenWorker
 }
 
-group('Round robin tasks distribution', () => {
-  bench('Ternary off by one', () => {
-    nextWorkerIndex = 0
-    roundRobinTernaryOffByOne()
-  })
-  bench('Ternary with negation', () => {
-    nextWorkerIndex = 0
-    roundRobinTernaryWithNegation()
-  })
-  bench('Ternary with pre-choosing', () => {
-    nextWorkerIndex = 0
-    roundRobinTernaryWithPreChoosing()
-  })
-  bench('Increment+Modulo', () => {
-    nextWorkerIndex = 0
-    roundRobinIncrementModulo()
-  })
+const bench = new Bench()
+
+bench.add('Ternary off by one', () => {
+  nextWorkerIndex = 0
+  roundRobinTernaryOffByOne()
+})
+bench.add('Ternary with negation', () => {
+  nextWorkerIndex = 0
+  roundRobinTernaryWithNegation()
+})
+bench.add('Ternary with pre-choosing', () => {
+  nextWorkerIndex = 0
+  roundRobinTernaryWithPreChoosing()
+})
+bench.add('Increment+Modulo', () => {
+  nextWorkerIndex = 0
+  roundRobinIncrementModulo()
 })
 
-await run({ units: true })
+await bench.run()
+console.table(bench.table())

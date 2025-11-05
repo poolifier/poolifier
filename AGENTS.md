@@ -3,7 +3,7 @@
 ## Build/Test Commands
 
 - `pnpm build` - Build for development
-- `pnpm test` - Run all tests
+- `pnpm test` - Run tests
 - `pnpm test -- --grep "pattern"` - Run tests matching pattern
 - `pnpm lint` - Run ESLint
 - `pnpm format` - Format with Biome + ESLint fix
@@ -22,6 +22,7 @@
 - Export types with `export type {}` syntax
 - Use `.js` file extensions in imports even for `.ts` files
 - Follow established factory/strategy patterns for pool implementations
+- MessageChannel/MessagePort for worker communication, postMessage/on for worker messaging, store Promise resolvers in Maps
 - Maintain single source of truth for configuration defaults
 
 ## Repository Rules
