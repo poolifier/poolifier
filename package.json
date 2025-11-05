@@ -1,142 +1,142 @@
 {
-  "$schema": "https://json.schemastore.org/package",
-  "name": "poolifier",
-  "version": "5.1.6",
-  "description": "Fast and small Node.js Worker_Threads and Cluster Worker Pool",
-  "license": "MIT",
-  "type": "module",
-  "main": "./lib/index.cjs",
-  "module": "./lib/index.mjs",
-  "types": "./lib/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./lib/index.d.ts",
-      "require": "./lib/index.cjs",
-      "import": "./lib/index.mjs"
-    }
-  },
-  "publishConfig": {
-    "directory": "package"
-  },
-  "scripts": {
-    "prepare": "node prepare.mjs",
-    "build": "rollup --config --environment BUILD:development",
-    "build:prod": "rollup --config",
-    "build:typedoc": "rollup --config --environment DOCUMENTATION,BUILD:development",
-    "build:analyze": "rollup --config --environment ANALYZE,BUILD:development",
-    "benchmark:tinybench": "pnpm build && node --enable-source-maps benchmarks/internal/bench.mjs -t tinybench",
-    "benchmark:tinybench:prod": "pnpm build:prod && node --enable-source-maps benchmarks/internal/bench.mjs -t tinybench",
-    "benchmark:tinybench:debug": "pnpm build && node --enable-source-maps --inspect benchmarks/internal/bench.mjs -t tinybench",
-    "test": "pnpm build --environment SOURCEMAP:false && cross-env NODE_ENV=test c8 mocha 'tests/**/*.test.mjs'",
-    "test:parallel": "pnpm build --environment SOURCEMAP:false && cross-env NODE_ENV=test c8 mocha --parallel 'tests/**/*.test.mjs'",
-    "test:debug": "pnpm build && cross-env NODE_ENV=test mocha --inspect 'tests/**/*.test.mjs'",
-    "coverage": "c8 report --reporter=lcov",
-    "coverage:html": "c8 report --reporter=html",
-    "format": "biome format . --write; eslint . --cache --fix",
-    "lint": "eslint . --cache",
-    "lint:fix": "eslint . --cache --fix",
-    "lint:report": "eslint . --cache --format json --output-file reports/eslint.json",
-    "typedoc": "node typedoc.mjs",
-    "prepublishOnly": "pnpm build:prod && rm -rf ./package && clean-publish",
-    "postpublish": "rm -rf ./package"
-  },
-  "engines": {
-    "node": ">=20.11.0",
-    "pnpm": ">=9.0.0"
-  },
-  "volta": {
-    "node": "24.11.0",
-    "pnpm": "10.20.0"
-  },
-  "packageManager": "pnpm@10.20.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/poolifier/poolifier.git"
-  },
-  "keywords": [
-    "nodejs",
-    "worker pool",
-    "thread pool",
-    "worker_threads",
-    "cluster",
-    "concurrency",
-    "performance",
-    "cpu",
-    "computing",
-    "scheduling",
-    "parallelism",
-    "eventloop"
-  ],
-  "author": {
-    "name": "Alessandro Pio Ardizio",
-    "email": "alessandroardizio94@gmail.com",
-    "url": "https://github.com/pioardi"
-  },
-  "contributors": [
-    {
-      "name": "Christopher Quadflieg",
-      "email": "chrissi92@hotmail.de",
-      "url": "https://github.com/Shinigami92"
-    },
-    {
-      "name": "Jérôme Benoit",
-      "email": "jerome.benoit@piment-noir.org",
-      "url": "https://github.com/jerome-benoit"
-    }
-  ],
-  "funding": [
-    {
-      "type": "opencollective",
-      "url": "https://opencollective.com/poolifier"
-    },
-    {
-      "type": "github",
-      "url": "https://github.com/sponsors/poolifier"
-    }
-  ],
-  "bugs": {
-    "url": "https://github.com/poolifier/poolifier/issues"
-  },
-  "homepage": "https://github.com/poolifier/poolifier#readme",
-  "files": [
-    "lib"
-  ],
-  "pnpm": {
-    "overrides": {
-      "semver": "^7.5.3"
-    }
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^2.3.3",
-    "@commitlint/cli": "^20.1.0",
-    "@commitlint/config-conventional": "^20.0.0",
-    "@cspell/eslint-plugin": "^9.2.2",
-    "@eslint/js": "^9.39.1",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-typescript": "^12.3.0",
-    "@std/expect": "npm:@jsr/std__expect@^1.0.17",
-    "@types/node": "^24.10.0",
-    "c8": "^10.1.3",
-    "clean-publish": "^6.0.1",
-    "cross-env": "^10.1.0",
-    "eslint": "^9.39.1",
-    "eslint-plugin-jsdoc": "^61.1.12",
-    "eslint-plugin-perfectionist": "^4.15.1",
-    "globals": "^16.5.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.2.6",
-    "mocha": "^11.7.4",
-    "mochawesome": "^7.1.4",
-    "neostandard": "^0.12.2",
-    "prettier": "^3.6.2",
-    "rollup": "^4.52.5",
-    "rollup-plugin-analyzer": "^4.0.0",
-    "rollup-plugin-command": "^1.1.3",
-    "rollup-plugin-delete": "^3.0.1",
-    "rollup-plugin-dts": "^6.2.3",
-    "sinon": "^21.0.0",
-    "tinybench": "^5.1.0",
-    "typedoc": "^0.28.14",
-    "typescript": "~5.9.3"
-  }
+	"$schema": "https://json.schemastore.org/package",
+	"name": "poolifier",
+	"version": "5.1.6",
+	"description": "Fast and small Node.js Worker_Threads and Cluster Worker Pool",
+	"license": "MIT",
+	"type": "module",
+	"main": "./lib/index.cjs",
+	"module": "./lib/index.mjs",
+	"types": "./lib/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./lib/index.d.ts",
+			"require": "./lib/index.cjs",
+			"import": "./lib/index.mjs"
+		}
+	},
+	"publishConfig": {
+		"directory": "package"
+	},
+	"scripts": {
+		"prepare": "node prepare.mjs",
+		"build": "rollup --config --environment BUILD:development",
+		"build:prod": "rollup --config",
+		"build:typedoc": "rollup --config --environment DOCUMENTATION,BUILD:development",
+		"build:analyze": "rollup --config --environment ANALYZE,BUILD:development",
+		"benchmark:tinybench": "pnpm build && node --enable-source-maps benchmarks/internal/bench.mjs -t tinybench",
+		"benchmark:tinybench:prod": "pnpm build:prod && node --enable-source-maps benchmarks/internal/bench.mjs -t tinybench",
+		"benchmark:tinybench:debug": "pnpm build && node --enable-source-maps --inspect benchmarks/internal/bench.mjs -t tinybench",
+		"test": "pnpm build --environment SOURCEMAP:false && cross-env NODE_ENV=test c8 mocha 'tests/**/*.test.mjs'",
+		"test:parallel": "pnpm build --environment SOURCEMAP:false && cross-env NODE_ENV=test c8 mocha --parallel 'tests/**/*.test.mjs'",
+		"test:debug": "pnpm build && cross-env NODE_ENV=test mocha --inspect 'tests/**/*.test.mjs'",
+		"coverage": "c8 report --reporter=lcov",
+		"coverage:html": "c8 report --reporter=html",
+		"format": "biome format . --write; eslint . --cache --fix",
+		"lint": "eslint . --cache",
+		"lint:fix": "eslint . --cache --fix",
+		"lint:report": "eslint . --cache --format json --output-file reports/eslint.json",
+		"typedoc": "node typedoc.mjs",
+		"prepublishOnly": "pnpm build:prod && rm -rf ./package && clean-publish",
+		"postpublish": "rm -rf ./package"
+	},
+	"engines": {
+		"node": ">=20.11.0",
+		"pnpm": ">=9.0.0"
+	},
+	"volta": {
+		"node": "24.11.0",
+		"pnpm": "10.20.0"
+	},
+	"packageManager": "pnpm@10.20.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/poolifier/poolifier.git"
+	},
+	"keywords": [
+		"nodejs",
+		"worker pool",
+		"thread pool",
+		"worker_threads",
+		"cluster",
+		"concurrency",
+		"performance",
+		"cpu",
+		"computing",
+		"scheduling",
+		"parallelism",
+		"eventloop"
+	],
+	"author": {
+		"name": "Alessandro Pio Ardizio",
+		"email": "alessandroardizio94@gmail.com",
+		"url": "https://github.com/pioardi"
+	},
+	"contributors": [
+		{
+			"name": "Christopher Quadflieg",
+			"email": "chrissi92@hotmail.de",
+			"url": "https://github.com/Shinigami92"
+		},
+		{
+			"name": "Jérôme Benoit",
+			"email": "jerome.benoit@piment-noir.org",
+			"url": "https://github.com/jerome-benoit"
+		}
+	],
+	"funding": [
+		{
+			"type": "opencollective",
+			"url": "https://opencollective.com/poolifier"
+		},
+		{
+			"type": "github",
+			"url": "https://github.com/sponsors/poolifier"
+		}
+	],
+	"bugs": {
+		"url": "https://github.com/poolifier/poolifier/issues"
+	},
+	"homepage": "https://github.com/poolifier/poolifier#readme",
+	"files": [
+		"lib"
+	],
+	"pnpm": {
+		"overrides": {
+			"semver": "^7.5.3"
+		}
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.3.3",
+		"@commitlint/cli": "^20.1.0",
+		"@commitlint/config-conventional": "^20.0.0",
+		"@cspell/eslint-plugin": "^9.2.2",
+		"@eslint/js": "^9.39.1",
+		"@rollup/plugin-terser": "^0.4.4",
+		"@rollup/plugin-typescript": "^12.3.0",
+		"@std/expect": "npm:@jsr/std__expect@^1.0.17",
+		"@types/node": "^24.10.0",
+		"c8": "^10.1.3",
+		"clean-publish": "^6.0.1",
+		"cross-env": "^10.1.0",
+		"eslint": "^9.39.1",
+		"eslint-plugin-jsdoc": "^61.1.12",
+		"eslint-plugin-perfectionist": "^4.15.1",
+		"globals": "^16.5.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.2.6",
+		"mocha": "^11.7.5",
+		"mochawesome": "^7.1.4",
+		"neostandard": "^0.12.2",
+		"prettier": "^3.6.2",
+		"rollup": "^4.52.5",
+		"rollup-plugin-analyzer": "^4.0.0",
+		"rollup-plugin-command": "^1.1.3",
+		"rollup-plugin-delete": "^3.0.1",
+		"rollup-plugin-dts": "^6.2.3",
+		"sinon": "^21.0.0",
+		"tinybench": "^5.1.0",
+		"typedoc": "^0.28.14",
+		"typescript": "~5.9.3"
+	}
 }

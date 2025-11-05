@@ -1,56 +1,57 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.3/schema.json",
-  "assist": { "actions": { "source": { "organizeImports": "off" } } },
-  "linter": {
-    "enabled": false,
-    "rules": {
-      "recommended": true,
-      "style": {
-        "noParameterAssign": "error",
-        "useAsConstAssertion": "error",
-        "useDefaultParameterLast": "error",
-        "useEnumInitializers": "error",
-        "useSelfClosingElements": "error",
-        "useSingleVarDeclarator": "error",
-        "noUnusedTemplateLiteral": "error",
-        "useNumberNamespace": "error",
-        "noInferrableTypes": "error",
-        "noUselessElse": "error"
-      }
-    }
-  },
-  "formatter": {
-    "enabled": true,
-    "useEditorconfig": true,
-    "indentStyle": "space",
-    "indentWidth": 2
-  },
-  "javascript": {
-    "formatter": {
-      "arrowParentheses": "asNeeded",
-      "quoteStyle": "single",
-      "semicolons": "asNeeded",
-      "trailingCommas": "es5"
-    }
-  },
-  "json": {
-    "parser": {
-      "allowComments": true
-    }
-  },
-  "files": {
-    "maxSize": 2000000,
-    "includes": [
-      "**",
-      "!.nyc_output/**",
-      "!coverage/**",
-      "!docs/**/*.css",
-      "!docs/**/*.html",
-      "!docs/**/*.js",
-      "!lib/**",
-      "!outputs/**",
-      "!pnpm-lock.yaml",
-      "!reports/**"
-    ]
-  }
+	"root": false,
+	"$schema": "https://biomejs.dev/schemas/2.3.3/schema.json",
+	"assist": { "actions": { "source": { "organizeImports": "off" } } },
+	"linter": {
+		"enabled": false,
+		"rules": {
+			"recommended": true,
+			"style": {
+				"noParameterAssign": "error",
+				"useAsConstAssertion": "error",
+				"useDefaultParameterLast": "error",
+				"useEnumInitializers": "error",
+				"useSelfClosingElements": "error",
+				"useSingleVarDeclarator": "error",
+				"noUnusedTemplateLiteral": "error",
+				"useNumberNamespace": "error",
+				"noInferrableTypes": "error",
+				"noUselessElse": "error"
+			}
+		}
+	},
+	"formatter": {
+		"enabled": true,
+		"useEditorconfig": true,
+		"indentStyle": "space",
+		"indentWidth": 2
+	},
+	"javascript": {
+		"formatter": {
+			"arrowParentheses": "asNeeded",
+			"quoteStyle": "single",
+			"semicolons": "asNeeded",
+			"trailingCommas": "es5"
+		}
+	},
+	"json": {
+		"parser": {
+			"allowComments": true
+		}
+	},
+	"files": {
+		"maxSize": 2000000,
+		"includes": [
+			"**",
+			"!.nyc_output/**",
+			"!coverage/**",
+			"!docs/**/*.css",
+			"!docs/**/*.html",
+			"!docs/**/*.js",
+			"!lib/**",
+			"!outputs/**",
+			"!pnpm-lock.yaml",
+			"!reports/**"
+		]
+	}
 }
