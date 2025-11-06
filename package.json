@@ -107,10 +107,10 @@
 		}
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.3.3",
+		"@biomejs/biome": "^2.3.4",
 		"@commitlint/cli": "^20.1.0",
 		"@commitlint/config-conventional": "^20.0.0",
-		"@cspell/eslint-plugin": "^9.2.2",
+		"@cspell/eslint-plugin": "^9.3.0",
 		"@eslint/js": "^9.39.1",
 		"@rollup/plugin-terser": "^0.4.4",
 		"@rollup/plugin-typescript": "^12.3.0",
