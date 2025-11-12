@@ -122,10 +122,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     } else {
       do {
         this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
-      } while (
-        !workerNodeKeys.includes(this.nextWorkerNodeKey) &&
-        workerNodeKeys.length > 0
-      )
+      } while (!workerNodeKeys.includes(this.nextWorkerNodeKey))
       this.workerNodeVirtualTaskExecutionTime = 0
     }
     return this.nextWorkerNodeKey

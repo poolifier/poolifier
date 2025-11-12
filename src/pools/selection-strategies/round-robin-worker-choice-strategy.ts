@@ -85,10 +85,7 @@ export class RoundRobinWorkerChoiceStrategy<
     }
     do {
       this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
-    } while (
-      !workerNodeKeys.includes(this.nextWorkerNodeKey) &&
-      workerNodeKeys.length > 0
-    )
+    } while (!workerNodeKeys.includes(this.nextWorkerNodeKey))
     return this.nextWorkerNodeKey
   }
 }
