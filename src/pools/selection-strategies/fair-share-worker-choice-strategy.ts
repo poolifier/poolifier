@@ -124,6 +124,9 @@ export class FairShareWorkerChoiceStrategy<
         if (!this.isWorkerNodeReady(workerNodeKey)) {
           return minWorkerNodeKey
         }
+        if (!workerNodeKeys.includes(workerNodeKey)) {
+          return minWorkerNodeKey
+        }
         if (minWorkerNodeKey === -1) {
           workerNode.strategyData = {
             ...workerNode.strategyData,
@@ -138,9 +141,6 @@ export class FairShareWorkerChoiceStrategy<
             virtualTaskEndTimestamp:
               this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey),
           }
-        }
-        if (!workerNodeKeys.includes(workerNodeKey)) {
-          return minWorkerNodeKey
         }
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return workerNode.strategyData.virtualTaskEndTimestamp! <

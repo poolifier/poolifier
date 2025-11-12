@@ -87,11 +87,11 @@ export class LeastEluWorkerChoiceStrategy<
         if (!this.isWorkerNodeReady(workerNodeKey)) {
           return minWorkerNodeKey
         }
-        if (minWorkerNodeKey === -1) {
-          return workerNodeKey
-        }
         if (!workerNodeKeys.includes(workerNodeKey)) {
           return minWorkerNodeKey
+        }
+        if (minWorkerNodeKey === -1) {
+          return workerNodeKey
         }
         return (workerNode.usage.waitTime.aggregate ?? 0) +
           (workerNode.usage.elu.active.aggregate ?? 0) <
