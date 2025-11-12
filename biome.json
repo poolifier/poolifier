@@ -1,5 +1,6 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.3/schema.json",
+  "root": true,
+  "$schema": "https://biomejs.dev/schemas/2.3.5/schema.json",
   "assist": { "actions": { "source": { "organizeImports": "off" } } },
   "linter": {
     "enabled": false,
@@ -42,15 +43,15 @@
     "maxSize": 2000000,
     "includes": [
       "**",
-      "!.nyc_output/**",
-      "!coverage/**",
+      "!.nyc_output",
+      "!coverage",
       "!docs/**/*.css",
       "!docs/**/*.html",
       "!docs/**/*.js",
-      "!lib/**",
-      "!outputs/**",
+      "!lib",
+      "!outputs",
       "!pnpm-lock.yaml",
-      "!reports/**"
+      "!reports"
     ]
   }
 }
