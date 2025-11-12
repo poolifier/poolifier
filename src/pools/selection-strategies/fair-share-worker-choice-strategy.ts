@@ -116,7 +116,8 @@ export class FairShareWorkerChoiceStrategy<
   ): number | undefined {
     workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
     if (workerNodeKeys.length === 1) {
-      return workerNodeKeys[0]
+      const workerNodeKey = workerNodeKeys[0]
+      return this.isWorkerNodeReady(workerNodeKey) ? workerNodeKey : undefined
     }
     const chosenWorkerNodeKey = this.pool.workerNodes.reduce(
       (minWorkerNodeKey: number, workerNode, workerNodeKey, workerNodes) => {
