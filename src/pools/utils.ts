@@ -127,6 +127,16 @@ export const checkValidWorkerNodes = (
   if (workerNodes?.length === 0) {
     throw new TypeError('Invalid worker nodes: must not be an empty array')
   }
+  if (workerNodes != null && new Set(workerNodes).size !== workerNodes.length) {
+    throw new TypeError('Invalid worker nodes: must not contain duplicates')
+  }
+  if (workerNodes != null) {
+    for (const key of workerNodes) {
+      if (!Number.isSafeInteger(key) || key < 0) {
+        throw new TypeError(`Invalid worker node key: ${key}`)
+      }
+    }
+  }
 }
 
 export const checkValidTasksQueueOptions = (

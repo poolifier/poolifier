@@ -608,12 +608,14 @@ export abstract class AbstractPool<
     }
     const workerNodeKeys = this.workerNodeKeys
     if (
-      fn.workerNodes?.filter(workerNodeKey =>
+      fn.workerNodes &&
+      fn.workerNodes.length !== fn.workerNodes.filter(workerNodeKey =>
         workerNodeKeys.includes(workerNodeKey)
-      ).length === 0
+      ).length
     ) {
+      const invalidKeys = fn.workerNodes.filter(workerNodeKey => !workerNodeKeys.includes(workerNodeKey))
       throw new Error(
-        `Cannot add a task function with worker nodes keys affinity outside the pool worker nodes keys: ${workerNodeKeys.toString()}`
+        `Cannot add a task function with invalid worker node keys: ${invalidKeys.toString()}. Valid keys are: ${workerNodeKeys.toString()}`
       )
     }
     const opResult = await this.sendTaskFunctionOperationToWorkers({
