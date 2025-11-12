@@ -95,7 +95,7 @@ export class WorkerChoiceStrategiesContext<
   /**
    * Executes the given worker choice strategy in the context algorithm.
    * @param workerChoiceStrategy - The worker choice strategy algorithm to execute.
-   * @param workerNodes
+   * @param workerNodes - The worker nodes to choose from.
    * @defaultValue this.defaultWorkerChoiceStrategy
    * @returns The key of the worker node.
    * @throws {Error} If after computed retries the worker node key is null or undefined.
@@ -253,7 +253,8 @@ export class WorkerChoiceStrategiesContext<
     workerChoiceStrategy: IWorkerChoiceStrategy,
     workerNodes?: number[]
   ): number {
-    let workerNodeKey: number | undefined = workerChoiceStrategy.choose()
+    let workerNodeKey: number | undefined =
+      workerChoiceStrategy.choose(workerNodes)
     let retriesCount = 0
     while (workerNodeKey == null && retriesCount < this.retries) {
       retriesCount++

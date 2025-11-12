@@ -138,11 +138,13 @@ export class FairShareWorkerChoiceStrategy<
               this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey),
           }
         }
-        return workerNodeKeys.includes(workerNodeKey) &&
+        if (!workerNodeKeys.includes(workerNodeKey)) {
+          return minWorkerNodeKey
+        }
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return workerNode.strategyData.virtualTaskEndTimestamp! <
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          workerNode.strategyData.virtualTaskEndTimestamp! <
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            workerNodes[minWorkerNodeKey].strategyData!.virtualTaskEndTimestamp!
+          workerNodes[minWorkerNodeKey].strategyData!.virtualTaskEndTimestamp!
           ? workerNodeKey
           : minWorkerNodeKey
       },

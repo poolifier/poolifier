@@ -108,6 +108,10 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     workerNodeKeys?: number[]
   ): number | undefined {
     workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
+    if (workerNodeKeys.length === 1) {
+      const workerNodeKey = workerNodeKeys[0]
+      return this.isWorkerNodeReady(workerNodeKey) ? workerNodeKey : undefined
+    }
     const workerNodeKey = this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const workerWeight = this.opts!.weights![workerNodeKey]
@@ -118,7 +122,10 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     } else {
       do {
         this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
-      } while (!workerNodeKeys.includes(this.nextWorkerNodeKey))
+      } while (
+        !workerNodeKeys.includes(this.nextWorkerNodeKey) &&
+        workerNodeKeys.length > 0
+      )
       this.workerNodeVirtualTaskExecutionTime = 0
     }
     return this.nextWorkerNodeKey

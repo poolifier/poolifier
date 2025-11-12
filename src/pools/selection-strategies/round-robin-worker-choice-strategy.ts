@@ -80,11 +80,15 @@ export class RoundRobinWorkerChoiceStrategy<
   ): number | undefined {
     workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
     if (workerNodeKeys.length === 1) {
-      return workerNodeKeys[0]
+      const workerNodeKey = workerNodeKeys[0]
+      return this.isWorkerNodeReady(workerNodeKey) ? workerNodeKey : undefined
     }
     do {
       this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
-    } while (!workerNodeKeys.includes(this.nextWorkerNodeKey))
+    } while (
+      !workerNodeKeys.includes(this.nextWorkerNodeKey) &&
+      workerNodeKeys.length > 0
+    )
     return this.nextWorkerNodeKey
   }
 }
