@@ -606,12 +606,8 @@ export abstract class AbstractPool<
         'Cannot add a task function with more worker node keys affinity than the maximum number of workers'
       )
     }
-    const workerNodeKeys = Array.from(
-      {
-        length: this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers,
-      },
-      (_, index) => index
-    )
+    // Use the workerNodeKeys getter to avoid duplicating logic.
+    const workerNodeKeys = this.workerNodeKeys;
     if (
       fn.workerNodes?.filter(workerNodeKey =>
         workerNodeKeys.includes(workerNodeKey)
