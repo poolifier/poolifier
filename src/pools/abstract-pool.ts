@@ -607,7 +607,7 @@ export abstract class AbstractPool<
       )
     }
     // Use the workerNodeKeys getter to avoid duplicating logic.
-    const workerNodeKeys = this.workerNodeKeys;
+    const workerNodeKeys = this.workerNodeKeys
     if (
       fn.workerNodes?.filter(workerNodeKey =>
         workerNodeKeys.includes(workerNodeKey)
