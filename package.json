@@ -45,10 +45,10 @@
     "pnpm": ">=9.0.0"
   },
   "volta": {
-    "node": "24.11.0",
-    "pnpm": "10.21.0"
+    "node": "24.11.1",
+    "pnpm": "10.22.0"
   },
-  "packageManager": "pnpm@10.21.0",
+  "packageManager": "pnpm@10.22.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/poolifier/poolifier.git"
@@ -110,7 +110,7 @@
     "@biomejs/biome": "^2.3.5",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
-    "@cspell/eslint-plugin": "^9.3.1",
+    "@cspell/eslint-plugin": "^9.3.2",
     "@eslint/js": "^9.39.1",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.3.0",
@@ -120,7 +120,7 @@
     "clean-publish": "^6.0.1",
     "cross-env": "^10.1.0",
     "eslint": "^9.39.1",
-    "eslint-plugin-jsdoc": "^61.2.0",
+    "eslint-plugin-jsdoc": "^61.2.1",
     "eslint-plugin-perfectionist": "^4.15.1",
     "globals": "^16.5.0",
     "husky": "^9.1.7",
