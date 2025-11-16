@@ -1516,7 +1516,7 @@ export abstract class AbstractPool<
       this.opts.startWorkers = opts.startWorkers ?? true
       checkValidWorkerChoiceStrategy(opts.workerChoiceStrategy)
       this.opts.workerChoiceStrategy =
-        opts.workerChoiceStrategy ?? WorkerChoiceStrategies.ROUND_ROBIN
+        opts.workerChoiceStrategy ?? WorkerChoiceStrategies.LEAST_USED
       this.checkValidWorkerChoiceStrategyOptions(
         opts.workerChoiceStrategyOptions
       )

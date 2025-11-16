@@ -50,7 +50,7 @@ describe('Worker choice strategies context test suite', () => {
       workerChoiceStrategiesContext.workerChoiceStrategies.get(
         workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
-    ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
+    ).toBeInstanceOf(LeastUsedWorkerChoiceStrategy)
     workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       dynamicPool
     )
@@ -59,7 +59,7 @@ describe('Worker choice strategies context test suite', () => {
       workerChoiceStrategiesContext.workerChoiceStrategies.get(
         workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
-    ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
+    ).toBeInstanceOf(LeastUsedWorkerChoiceStrategy)
   })
 
   it('Verify that constructor() initializes the context with retries attribute properly set', () => {
@@ -82,7 +82,7 @@ describe('Worker choice strategies context test suite', () => {
       fixedPool
     )
     expect(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.ROUND_ROBIN
+      WorkerChoiceStrategies.LEAST_USED
     )
     const workerChoiceStrategyUndefinedStub =
       workerChoiceStrategiesContext.workerChoiceStrategies.get(
@@ -135,7 +135,7 @@ describe('Worker choice strategies context test suite', () => {
       fixedPool
     )
     expect(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.ROUND_ROBIN
+      WorkerChoiceStrategies.LEAST_USED
     )
     const workerChoiceStrategyStub =
       workerChoiceStrategiesContext.workerChoiceStrategies.get(
@@ -165,7 +165,7 @@ describe('Worker choice strategies context test suite', () => {
       fixedPool
     )
     expect(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.ROUND_ROBIN
+      WorkerChoiceStrategies.LEAST_USED
     )
     const workerChoiceStrategyStub =
       workerChoiceStrategiesContext.workerChoiceStrategies.get(
@@ -184,7 +184,7 @@ describe('Worker choice strategies context test suite', () => {
       dynamicPool
     )
     expect(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.ROUND_ROBIN
+      WorkerChoiceStrategies.LEAST_USED
     )
     const workerChoiceStrategyStub =
       workerChoiceStrategiesContext.workerChoiceStrategies.get(
@@ -206,7 +206,7 @@ describe('Worker choice strategies context test suite', () => {
       workerChoiceStrategiesContext.workerChoiceStrategies.get(
         workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
-    ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
+    ).toBeInstanceOf(LeastUsedWorkerChoiceStrategy)
     workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
       WorkerChoiceStrategies.ROUND_ROBIN
     )
@@ -225,7 +225,7 @@ describe('Worker choice strategies context test suite', () => {
       workerChoiceStrategiesContext.workerChoiceStrategies.get(
         workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       )
-    ).toBeInstanceOf(RoundRobinWorkerChoiceStrategy)
+    ).toBeInstanceOf(LeastUsedWorkerChoiceStrategy)
     workerChoiceStrategiesContext.setDefaultWorkerChoiceStrategy(
       WorkerChoiceStrategies.ROUND_ROBIN
     )

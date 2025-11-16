@@ -347,7 +347,7 @@ export interface PoolOptions<Worker extends IWorker> {
   tasksQueueOptions?: TasksQueueOptions
   /**
    * The default worker choice strategy to use in this pool.
-   * @defaultValue WorkerChoiceStrategies.ROUND_ROBIN
+   * @defaultValue WorkerChoiceStrategies.LEAST_USED
    */
   workerChoiceStrategy?: WorkerChoiceStrategy
   /**

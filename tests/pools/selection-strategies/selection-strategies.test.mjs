@@ -28,17 +28,17 @@ describe('Selection strategies test suite', () => {
     )
   })
 
-  it('Verify ROUND_ROBIN strategy is the default at pool creation', async () => {
+  it('Verify LEAST_USED strategy is the default at pool creation', async () => {
     const pool = new DynamicThreadPool(
       min,
       max,
       './tests/worker-files/thread/testWorker.mjs'
     )
     expect(pool.opts.workerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.ROUND_ROBIN
+      WorkerChoiceStrategies.LEAST_USED
     )
     expect(pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy).toBe(
-      WorkerChoiceStrategies.ROUND_ROBIN
+      WorkerChoiceStrategies.LEAST_USED
     )
     // We need to clean up the resources after our test
     await pool.destroy()
