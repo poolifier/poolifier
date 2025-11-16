@@ -60,13 +60,13 @@ export class WorkerChoiceStrategiesContext<
    * Worker choice strategies context constructor.
    * @param pool - The pool instance.
    * @param workerChoiceStrategies - The worker choice strategies.
-   * @defaultValue [WorkerChoiceStrategies.ROUND_ROBIN]
+   * @defaultValue [WorkerChoiceStrategies.LEAST_USED]
    * @param opts - The worker choice strategy options.
    */
   public constructor (
     private readonly pool: IPool<Worker, Data, Response>,
     workerChoiceStrategies: WorkerChoiceStrategy[] = [
-      WorkerChoiceStrategies.ROUND_ROBIN,
+      WorkerChoiceStrategies.LEAST_USED,
     ],
     opts?: WorkerChoiceStrategyOptions
   ) {

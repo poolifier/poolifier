@@ -228,7 +228,7 @@ describe('Abstract pool test suite', () => {
       enableTasksQueue: false,
       restartWorkerOnError: true,
       startWorkers: true,
-      workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
     })
     for (const [, workerChoiceStrategy] of pool.workerChoiceStrategiesContext
       .workerChoiceStrategies) {
@@ -751,7 +751,7 @@ describe('Abstract pool test suite', () => {
     )
     expect(pool.info).toStrictEqual({
       busyWorkerNodes: 0,
-      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.LEAST_USED,
       executedTasks: 0,
       executingTasks: 0,
       failedTasks: 0,
@@ -774,7 +774,7 @@ describe('Abstract pool test suite', () => {
     )
     expect(pool.info).toStrictEqual({
       busyWorkerNodes: 0,
-      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.LEAST_USED,
       dynamicWorkerNodes: 0,
       executedTasks: 0,
       executingTasks: 0,
@@ -1139,7 +1139,7 @@ describe('Abstract pool test suite', () => {
     expect(poolReady).toBe(1)
     expect(poolInfo).toStrictEqual({
       busyWorkerNodes: 0,
-      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.LEAST_USED,
       dynamicWorkerNodes: 0,
       executedTasks: 0,
       executingTasks: 0,
@@ -1188,7 +1188,7 @@ describe('Abstract pool test suite', () => {
     expect(poolBusy).toBe(1)
     expect(poolBusyInfo).toStrictEqual({
       busyWorkerNodes: numberOfWorkers,
-      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.LEAST_USED,
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
       failedTasks: expect.any(Number),
@@ -1206,7 +1206,7 @@ describe('Abstract pool test suite', () => {
     expect(poolBusyEnd).toBe(1)
     expect(poolBusyEndInfo).toStrictEqual({
       busyWorkerNodes: expect.any(Number),
-      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.LEAST_USED,
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
       failedTasks: expect.any(Number),
@@ -1256,7 +1256,7 @@ describe('Abstract pool test suite', () => {
     expect(poolFull).toBe(1)
     expect(poolFullInfo).toStrictEqual({
       busyWorkerNodes: expect.any(Number),
-      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.LEAST_USED,
       dynamicWorkerNodes: Math.floor(numberOfWorkers / 2),
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
@@ -1276,7 +1276,7 @@ describe('Abstract pool test suite', () => {
     expect(poolFullEnd).toBe(1)
     expect(poolFullEndInfo).toStrictEqual({
       busyWorkerNodes: expect.any(Number),
-      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.LEAST_USED,
       dynamicWorkerNodes: 0,
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
@@ -1330,7 +1330,7 @@ describe('Abstract pool test suite', () => {
       backPressure: true,
       backPressureWorkerNodes: numberOfWorkers,
       busyWorkerNodes: expect.any(Number),
-      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.LEAST_USED,
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
       failedTasks: expect.any(Number),
@@ -1354,7 +1354,7 @@ describe('Abstract pool test suite', () => {
       backPressure: false,
       backPressureWorkerNodes: expect.any(Number),
       busyWorkerNodes: expect.any(Number),
-      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.LEAST_USED,
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
       failedTasks: expect.any(Number),
@@ -1402,7 +1402,7 @@ describe('Abstract pool test suite', () => {
     expect(poolEmpty).toBe(1)
     expect(poolInfo).toStrictEqual({
       busyWorkerNodes: 0,
-      defaultStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      defaultStrategy: WorkerChoiceStrategies.LEAST_USED,
       dynamicWorkerNodes: 0,
       executedTasks: expect.any(Number),
       executingTasks: expect.any(Number),
@@ -1608,7 +1608,7 @@ describe('Abstract pool test suite', () => {
     ])
     expect([
       ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys(),
-    ]).toStrictEqual([WorkerChoiceStrategies.ROUND_ROBIN])
+    ]).toStrictEqual([WorkerChoiceStrategies.LEAST_USED])
     const echoTaskFunction = data => {
       return data
     }
@@ -1626,7 +1626,7 @@ describe('Abstract pool test suite', () => {
     expect([
       ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys(),
     ]).toStrictEqual([
-      WorkerChoiceStrategies.ROUND_ROBIN,
+      WorkerChoiceStrategies.LEAST_USED,
       WorkerChoiceStrategies.LEAST_ELU,
     ])
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
@@ -1746,7 +1746,7 @@ describe('Abstract pool test suite', () => {
     expect([
       ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys(),
     ]).toStrictEqual([
-      WorkerChoiceStrategies.ROUND_ROBIN,
+      WorkerChoiceStrategies.LEAST_USED,
       WorkerChoiceStrategies.LEAST_ELU,
     ])
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
@@ -1761,7 +1761,7 @@ describe('Abstract pool test suite', () => {
     expect(dynamicThreadPool.taskFunctions.get('echo')).toBeUndefined()
     expect([
       ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys(),
-    ]).toStrictEqual([WorkerChoiceStrategies.ROUND_ROBIN])
+    ]).toStrictEqual([WorkerChoiceStrategies.LEAST_USED])
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
       { name: DEFAULT_TASK_NAME },
       { name: 'test' },
