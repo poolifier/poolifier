@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       poolifier:
-        specifier: ^5.1.6
-        version: 5.1.6
+        specifier: ^5.1.7
+        version: 5.1.7
       ws:
         specifier: ^8.18.3
         version: 8.18.3(bufferutil@4.0.9)(utf-8-validate@6.0.5)
@@ -308,8 +308,8 @@ packages:
     resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
     engines: {node: '>=12'}
 
-  poolifier@5.1.6:
-    resolution: {integrity: sha512-Mj3duauCUbM4TiatxNRWjNyl1IxtNSU0WCbUcFgGhYjTNw55uwwVoWld1MDwWAqVbqvHna6YzYVjK4OehXbghg==}
+  poolifier@5.1.7:
+    resolution: {integrity: sha512-PFp0y/u6/bOzDkXNLOrH7pNuV9hxa1Fm1pER+bKn446mC0kaY7cFaokh7nUIjIpmMrlxA5HoBYHBR/NtUnN1Kg==}
     engines: {node: '>=20.11.0', pnpm: '>=9.0.0'}
 
   presentable-error@0.0.1:
@@ -591,7 +591,7 @@ snapshots:
 
   picomatch@4.0.3: {}
 
-  poolifier@5.1.6: {}
+  poolifier@5.1.7: {}
 
   presentable-error@0.0.1: {}
 
