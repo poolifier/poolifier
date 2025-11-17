@@ -202,8 +202,8 @@ packages:
     resolution: {integrity: sha512-eRoFWQw+Yv2tuYlK2pjFS2jGXSxSppAs3hSQjfxVKxM5amECzIgYYc1FEI8ZmhSh/Ig+FrKEz43NLRKJjYCZVg==}
     engines: {node: '>=20'}
 
-  form-data@4.0.4:
-    resolution: {integrity: sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==}
+  form-data@4.0.5:
+    resolution: {integrity: sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==}
     engines: {node: '>= 6'}
 
   function-bind@1.1.2:
@@ -501,7 +501,7 @@ snapshots:
       cli-table3: 0.6.5
       color-support: 1.1.3
       cross-argv: 2.0.0
-      form-data: 4.0.4
+      form-data: 4.0.5
       has-async-hooks: 1.0.0
       hdr-histogram-js: 3.0.1
       hdr-histogram-percentiles-obj: 3.0.0
@@ -641,7 +641,7 @@ snapshots:
       fast-querystring: 1.1.2
       safe-regex2: 5.0.0
 
-  form-data@4.0.4:
+  form-data@4.0.5:
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8

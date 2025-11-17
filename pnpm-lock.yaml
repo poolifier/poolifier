@@ -578,8 +578,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@jsr/std__assert@1.0.15':
-    resolution: {integrity: sha512-iaekOy2yP8hMA5pN5PHMXic4MH0pRggviqTvPd4iEMkS66lDOFTV0uxDRwRc3ia4btRB39QiSUXJPpVZCQu8nA==, tarball: https://npm.jsr.io/~/11/@jsr/std__assert/1.0.15.tgz}
+  '@jsr/std__assert@1.0.16':
+    resolution: {integrity: sha512-bX9ih0nR1kQ12/cnQRCQU0ppTCV7MFkP0qjyWxJRoDI8RC5cpTAmLFH/KcFgxmdN4flKkRbub8VtLuyKq+4OxA==, tarball: https://npm.jsr.io/~/11/@jsr/std__assert/1.0.16.tgz}
 
   '@jsr/std__expect@1.0.17':
     resolution: {integrity: sha512-+1wHqnotlmsLVrD9nAPTN0ITanwLCYmd9likMB7vn3/4vkTmotv/qUnzwtvegj7utgHrckR4Ksl1NDR8iaW3RQ==, tarball: https://npm.jsr.io/~/11/@jsr/std__expect/1.0.17.tgz}
@@ -3317,13 +3317,13 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@jsr/std__assert@1.0.15':
+  '@jsr/std__assert@1.0.16':
     dependencies:
       '@jsr/std__internal': 1.0.12
 
   '@jsr/std__expect@1.0.17':
     dependencies:
-      '@jsr/std__assert': 1.0.15
+      '@jsr/std__assert': 1.0.16
       '@jsr/std__internal': 1.0.12
 
   '@jsr/std__internal@1.0.12': {}
