@@ -2547,7 +2547,12 @@ export abstract class AbstractPool<
   }
 
   private tasksQueueSize (workerNodeKey: number): number {
-    return this.workerNodes[workerNodeKey].tasksQueueSize()
+    const workerNode = this.workerNodes[workerNodeKey]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (workerNode == null) {
+      return 0
+    }
+    return workerNode.tasksQueueSize()
   }
 
   private unsetTasksStealingOnBackPressure (): void {
