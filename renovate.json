@@ -4,6 +4,12 @@
   "lockFileMaintenance": {
     "enabled": true
   },
+  "packageRules": [
+    {
+      "matchFileNames": ["**/package.json"],
+      "rangeStrategy": "bump"
+    }
+  ],
   "ignorePaths": [
     "**/node_modules/**",
     "**/bower_components/**",
