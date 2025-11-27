@@ -75,8 +75,8 @@ importers:
         specifier: ^0.12.2
         version: 0.12.2(@typescript-eslint/utils@8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       prettier:
-        specifier: ^3.6.2
-        version: 3.6.2
+        specifier: ^3.7.0
+        version: 3.7.0
       rollup:
         specifier: ^4.53.3
         version: 4.53.3
@@ -90,8 +90,8 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1(rollup@4.53.3)
       rollup-plugin-dts:
-        specifier: ^6.2.3
-        version: 6.2.3(rollup@4.53.3)(typescript@5.9.3)
+        specifier: ^6.3.0
+        version: 6.3.0(rollup@4.53.3)(typescript@5.9.3)
       sinon:
         specifier: ^21.0.0
         version: 21.0.0
@@ -2302,8 +2302,8 @@ packages:
     resolution: {integrity: sha512-E6rsNU1QNJgB3sjj7OANinGncFKuK+164sLXw1/CqBjj/EkXSoSdHCtWQGBNlREIGLnL7IEUEGa08YFVUbrhVg==}
     engines: {node: '>=16'}
 
-  prettier@3.6.2:
-    resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
+  prettier@3.7.0:
+    resolution: {integrity: sha512-pBiBj/gjRY9Qpk1b7cDda6Rbwvkaggos779AHQ0Ek/odwDx6xG6DRBxtnp1QmxbuD7pAO8/SQ8vuhtGv9LoLWA==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -2395,8 +2395,8 @@ packages:
     peerDependencies:
       rollup: '*'
 
-  rollup-plugin-dts@6.2.3:
-    resolution: {integrity: sha512-UgnEsfciXSPpASuOelix7m4DrmyQgiaWBnvI0TM4GxuDh5FkqW8E5hu57bCxXB90VvR1WNfLV80yEDN18UogSA==}
+  rollup-plugin-dts@6.3.0:
+    resolution: {integrity: sha512-d0UrqxYd8KyZ6i3M2Nx7WOMy708qsV/7fTHMHxCMCBOAe3V/U7OMPu5GkX8hC+cmkHhzGnfeYongl1IgiooddA==}
     engines: {node: '>=16'}
     peerDependencies:
       rollup: ^3.29.4 || ^4
@@ -5193,7 +5193,7 @@ snapshots:
 
   presentable-error@0.0.1: {}
 
-  prettier@3.6.2: {}
+  prettier@3.7.0: {}
 
   prop-types@15.8.1:
     dependencies:
@@ -5277,7 +5277,7 @@ snapshots:
       del: 8.0.1
       rollup: 4.53.3
 
-  rollup-plugin-dts@6.2.3(rollup@4.53.3)(typescript@5.9.3):
+  rollup-plugin-dts@6.3.0(rollup@4.53.3)(typescript@5.9.3):
     dependencies:
       magic-string: 0.30.21
       rollup: 4.53.3
