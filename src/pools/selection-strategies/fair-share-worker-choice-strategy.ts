@@ -58,9 +58,9 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number | undefined {
+  public choose (workerNodeKeys?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey()
+    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey(workerNodeKeys)
     return this.nextWorkerNodeKey
   }
 
@@ -111,10 +111,20 @@ export class FairShareWorkerChoiceStrategy<
     )
   }
 
-  private fairShareNextWorkerNodeKey (): number | undefined {
+  private fairShareNextWorkerNodeKey (
+    workerNodeKeys?: number[]
+  ): number | undefined {
+    workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
+    if (workerNodeKeys.length === 1) {
+      const workerNodeKey = workerNodeKeys[0]
+      return this.isWorkerNodeReady(workerNodeKey) ? workerNodeKey : undefined
+    }
     const chosenWorkerNodeKey = this.pool.workerNodes.reduce(
       (minWorkerNodeKey: number, workerNode, workerNodeKey, workerNodes) => {
         if (!this.isWorkerNodeReady(workerNodeKey)) {
+          return minWorkerNodeKey
+        }
+        if (!workerNodeKeys.includes(workerNodeKey)) {
           return minWorkerNodeKey
         }
         if (minWorkerNodeKey === -1) {

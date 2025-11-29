@@ -60,9 +60,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number | undefined {
+  public choose (workerNodeKeys?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.weightedRoundRobinNextWorkerNodeKey()
+    this.weightedRoundRobinNextWorkerNodeKey(workerNodeKeys)
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (!this.isWorkerNodeReady(this.nextWorkerNodeKey!)) {
       return undefined
@@ -104,7 +104,14 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     return true
   }
 
-  private weightedRoundRobinNextWorkerNodeKey (): number | undefined {
+  private weightedRoundRobinNextWorkerNodeKey (
+    workerNodeKeys?: number[]
+  ): number | undefined {
+    workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
+    if (workerNodeKeys.length === 1) {
+      const workerNodeKey = workerNodeKeys[0]
+      return this.isWorkerNodeReady(workerNodeKey) ? workerNodeKey : undefined
+    }
     const workerNodeKey = this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const workerWeight = this.opts!.weights![workerNodeKey]
@@ -113,10 +120,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
         this.getWorkerNodeTaskWaitTime(workerNodeKey) +
         this.getWorkerNodeTaskRunTime(workerNodeKey)
     } else {
-      this.nextWorkerNodeKey =
-        this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
-          ? 0
-          : workerNodeKey + 1
+      do {
+        this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
+      } while (!workerNodeKeys.includes(this.nextWorkerNodeKey))
       this.workerNodeVirtualTaskExecutionTime = 0
     }
     return this.nextWorkerNodeKey
