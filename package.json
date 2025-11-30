@@ -128,7 +128,7 @@
     "mocha": "^11.7.5",
     "mochawesome": "^7.1.4",
     "neostandard": "^0.12.2",
-    "prettier": "^3.7.2",
+    "prettier": "^3.7.3",
     "rollup": "^4.53.3",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",
