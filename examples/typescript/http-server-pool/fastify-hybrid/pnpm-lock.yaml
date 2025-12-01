@@ -303,8 +303,8 @@ packages:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
 
-  cookie@1.0.2:
-    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+  cookie@1.1.1:
+    resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
     engines: {node: '>=18'}
 
   cross-argv@2.0.0:
@@ -455,8 +455,8 @@ packages:
     resolution: {integrity: sha512-Hs59xBNfUIunMFgWAbGX5cq6893IbWg4KnrjbYwX3tx0ztorVgTDA6B2sxf8ejHJ4wz8BqGUMYlnzNBer5NvGg==}
     engines: {node: '>= 4'}
 
-  ipaddr.js@2.2.0:
-    resolution: {integrity: sha512-Ag3wB2o37wslZS19hZqorUnrnzSkpOVy+IiiDEiTqNubEYpYuHWIf6K4psgN2ZWKExS4xhVCrRVfb/wfW8fWJA==}
+  ipaddr.js@2.3.0:
+    resolution: {integrity: sha512-Zv/pA+ciVFbCSBBjGfaKUya/CcGmUHzTydLMaTwrUUEM2DIEO3iZvueGxmacvmN50fGpGVKeTXpb2LcYQxeVdg==}
     engines: {node: '>= 10'}
 
   is-core-module@2.16.1:
@@ -753,7 +753,7 @@ snapshots:
   '@fastify/proxy-addr@5.1.0':
     dependencies:
       '@fastify/forwarded': 3.0.1
-      ipaddr.js: 2.2.0
+      ipaddr.js: 2.3.0
 
   '@minimistjs/subarg@1.0.0':
     dependencies:
@@ -959,7 +959,7 @@ snapshots:
     dependencies:
       delayed-stream: 1.0.0
 
-  cookie@1.0.2: {}
+  cookie@1.1.1: {}
 
   cross-argv@2.0.0: {}
 
@@ -1143,7 +1143,7 @@ snapshots:
 
   ignore@7.0.5: {}
 
-  ipaddr.js@2.2.0: {}
+  ipaddr.js@2.3.0: {}
 
   is-core-module@2.16.1:
     dependencies:
@@ -1171,7 +1171,7 @@ snapshots:
 
   light-my-request@6.6.0:
     dependencies:
-      cookie: 1.0.2
+      cookie: 1.1.1
       process-warning: 4.0.1
       set-cookie-parser: 2.7.2
 
