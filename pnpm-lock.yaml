@@ -96,8 +96,8 @@ importers:
         specifier: ^21.0.0
         version: 21.0.0
       tinybench:
-        specifier: ^5.1.0
-        version: 5.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       typedoc:
         specifier: ^0.28.15
         version: 0.28.15(typescript@5.9.3)
@@ -2615,8 +2615,8 @@ packages:
   through@2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
 
-  tinybench@5.1.0:
-    resolution: {integrity: sha512-LXKNtFualiKOm6gADe1UXPtf8+Nfn1CtPMEHAT33Fd2YjQatrujkDcK0+4wRC1X6t7fxUDXUs6BsvuIgfkDgDg==}
+  tinybench@6.0.0:
+    resolution: {integrity: sha512-BWlWpVbbZXaYjRV0twGLNQO00Zj4HA/sjLOQP2IvzQqGwRGp+2kh7UU3ijyJ3ywFRogYDRbiHDMrUOfaMnN56g==}
     engines: {node: '>=20.0.0'}
 
   tinyexec@1.0.2:
@@ -5566,7 +5566,7 @@ snapshots:
 
   through@2.3.8: {}
 
-  tinybench@5.1.0: {}
+  tinybench@6.0.0: {}
 
   tinyexec@1.0.2: {}
 
