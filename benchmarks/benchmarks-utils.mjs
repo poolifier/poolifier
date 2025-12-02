@@ -66,9 +66,10 @@ export const runPoolifierBenchmarkTinyBench = async (
   { taskExecutions, workerData }
 ) => {
   const bmfResults = {}
+  let pool
   try {
     const bench = new Bench()
-    const pool = buildPoolifierPool(workerType, poolType, poolSize)
+    pool = buildPoolifierPool(workerType, poolType, poolSize)
 
     for (const workerChoiceStrategy of Object.values(WorkerChoiceStrategies)) {
       for (const enableTasksQueue of [false, true]) {
@@ -136,7 +137,6 @@ export const runPoolifierBenchmarkTinyBench = async (
 
     const tasks = await bench.run()
     console.table(bench.table())
-    await pool.destroy()
 
     for (const task of tasks) {
       if (
@@ -163,6 +163,10 @@ export const runPoolifierBenchmarkTinyBench = async (
   } catch (error) {
     console.error(error)
     return bmfResults
+  } finally {
+    if (pool != null) {
+      await pool.destroy()
+    }
   }
 }
 
