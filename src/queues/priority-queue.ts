@@ -10,7 +10,7 @@ import {
 
 /**
  * Priority queue.
- * @typeParam T - Type of priority queue data.
+ * @template T - Type of priority queue data.
  * @internal
  */
 export class PriorityQueue<T> {

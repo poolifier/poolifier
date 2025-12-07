@@ -53,9 +53,9 @@ const DEFAULT_WORKER_OPTIONS: Readonly<WorkerOptions> = Object.freeze({
 
 /**
  * Base class that implements some shared logic for all poolifier workers.
- * @typeParam MainWorker - Type of main worker.
- * @typeParam Data - Type of data this worker receives from pool's execution. This can only be structured-cloneable data.
- * @typeParam Response - Type of response the worker sends back to the main worker. This can only be structured-cloneable data.
+ * @template MainWorker - Type of main worker.
+ * @template Data - Type of data this worker receives from pool's execution. This can only be structured-cloneable data.
+ * @template Response - Type of response the worker sends back to the main worker. This can only be structured-cloneable data.
  */
 export abstract class AbstractWorker<
   MainWorker extends MessagePort | Worker,

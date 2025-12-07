@@ -13,9 +13,9 @@ import {
 
 /**
  * Selects the worker with the least ELU.
- * @typeParam Worker - Type of worker which manages the strategy.
- * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
- * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
+ * @template Worker - Type of worker which manages the strategy.
+ * @template Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @template Response - Type of execution response. This can only be structured-cloneable data.
  */
 export class LeastEluWorkerChoiceStrategy<
     Worker extends IWorker,

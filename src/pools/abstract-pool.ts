@@ -73,9 +73,9 @@ import { WorkerNode } from './worker-node.js'
 
 /**
  * Base class that implements some shared logic for all poolifier pools.
- * @typeParam Worker - Type of worker which manages this pool.
- * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
- * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
+ * @template Worker - Type of worker which manages this pool.
+ * @template Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @template Response - Type of execution response. This can only be structured-cloneable data.
  */
 export abstract class AbstractPool<
   Worker extends IWorker,

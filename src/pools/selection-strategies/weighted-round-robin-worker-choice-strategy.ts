@@ -14,9 +14,9 @@ import {
 /**
  * Selects the next worker with a weighted round robin scheduling algorithm.
  * Loosely modeled after the weighted round robin queueing algorithm: https://en.wikipedia.org/wiki/Weighted_round_robin.
- * @typeParam Worker - Type of worker which manages the strategy.
- * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
- * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
+ * @template Worker - Type of worker which manages the strategy.
+ * @template Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @template Response - Type of execution response. This can only be structured-cloneable data.
  */
 export class WeightedRoundRobinWorkerChoiceStrategy<
     Worker extends IWorker,

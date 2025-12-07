@@ -6,7 +6,7 @@ export const defaultQueueSize = 2048
 
 /**
  * Fixed queue node.
- * @typeParam T - Type of fixed queue node data.
+ * @template T - Type of fixed queue node data.
  * @internal
  */
 export interface FixedQueueNode<T> {
@@ -17,7 +17,7 @@ export interface FixedQueueNode<T> {
 
 /**
  * Fixed queue.
- * @typeParam T - Type of fixed queue data.
+ * @template T - Type of fixed queue data.
  * @internal
  */
 export interface IFixedQueue<T> {
@@ -82,7 +82,7 @@ export const defaultBucketSize = 2048
 
 /**
  * Priority queue node.
- * @typeParam T - Type of priority queue node data.
+ * @template T - Type of priority queue node data.
  * @internal
  */
 export interface PriorityQueueNode<T> extends IFixedQueue<T> {

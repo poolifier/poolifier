@@ -74,9 +74,9 @@ export const PoolEvents: Readonly<{
 
 /**
  * Contract definition for a poolifier pool.
- * @typeParam Worker - Type of worker which manages this pool.
- * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
- * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
+ * @template Worker - Type of worker which manages this pool.
+ * @template Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @template Response - Type of execution response. This can only be structured-cloneable data.
  */
 export interface IPool<
   Worker extends IWorker,
@@ -289,7 +289,7 @@ export interface PoolInfo {
 
 /**
  * Options for a poolifier pool.
- * @typeParam Worker - Type of worker.
+ * @template Worker - Type of worker.
  */
 export interface PoolOptions<Worker extends IWorker> {
   /**
