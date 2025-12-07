@@ -4,7 +4,7 @@ import { AbstractFixedQueue } from './abstract-fixed-queue.js'
 
 /**
  * Fixed priority queue.
- * @typeParam T - Type of fixed priority queue data.
+ * @template T - Type of fixed priority queue data.
  * @internal
  */
 export class FixedPriorityQueue<T>

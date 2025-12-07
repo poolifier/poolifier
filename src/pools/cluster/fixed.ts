@@ -13,8 +13,8 @@ export type ClusterPoolOptions = PoolOptions<Worker>
 
 /**
  * A cluster pool with a fixed number of workers.
- * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
- * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
+ * @template Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @template Response - Type of execution response. This can only be structured-cloneable data.
  * @author [Christopher Quadflieg](https://github.com/Shinigami92)
  * @since 2.0.0
  */

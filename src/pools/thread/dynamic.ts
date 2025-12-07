@@ -7,8 +7,8 @@ import { FixedThreadPool, type ThreadPoolOptions } from './fixed.js'
  *
  * This thread pool creates new threads when the others are busy, up to the maximum number of threads.
  * When the maximum number of threads is reached and workers are busy, an event is emitted. If you want to listen to this event, use the pool's `emitter`.
- * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
- * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
+ * @template Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @template Response - Type of execution response. This can only be structured-cloneable data.
  * @author [Alessandro Pio Ardizio](https://github.com/pioardi)
  * @since 0.0.1
  */

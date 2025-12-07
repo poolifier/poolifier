@@ -7,7 +7,7 @@ import type { Task, TaskFunctionProperties } from '../utility-types.js'
 
 /**
  * Callback invoked if the worker raised an error.
- * @typeParam Worker - Type of worker.
+ * @template Worker - Type of worker.
  */
 export type ErrorHandler<Worker extends IWorker> = (
   this: Worker,
@@ -16,7 +16,7 @@ export type ErrorHandler<Worker extends IWorker> = (
 
 /**
  * Worker event handler.
- * @typeParam Worker - Type of worker.
+ * @template Worker - Type of worker.
  */
 export type EventHandler<Worker extends IWorker> =
   | ErrorHandler<Worker>
@@ -26,7 +26,7 @@ export type EventHandler<Worker extends IWorker> =
 
 /**
  * Callback invoked when the worker exits successfully.
- * @typeParam Worker - Type of worker.
+ * @template Worker - Type of worker.
  */
 export type ExitHandler<Worker extends IWorker> = (
   this: Worker,
@@ -35,7 +35,7 @@ export type ExitHandler<Worker extends IWorker> = (
 
 /**
  * Callback invoked if the worker has received a message.
- * @typeParam Worker - Type of worker.
+ * @template Worker - Type of worker.
  */
 export type MessageHandler<Worker extends IWorker> = (
   this: Worker,
@@ -44,7 +44,7 @@ export type MessageHandler<Worker extends IWorker> = (
 
 /**
  * Callback invoked when the worker has started successfully.
- * @typeParam Worker - Type of worker.
+ * @template Worker - Type of worker.
  */
 export type OnlineHandler<Worker extends IWorker> = (this: Worker) => void
 
@@ -186,8 +186,8 @@ export interface IWorker extends EventEmitter {
 
 /**
  * Worker node interface.
- * @typeParam Worker - Type of worker.
- * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @template Worker - Type of worker.
+ * @template Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @internal
  */
 export interface IWorkerNode<Worker extends IWorker, Data = unknown>

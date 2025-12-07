@@ -129,7 +129,7 @@ export const isPlainObject = (value: unknown): value is object =>
 
 /**
  * Detects whether the given value is a kill behavior or not.
- * @typeParam KB - Which specific KillBehavior type to test against.
+ * @template KB - Which specific KillBehavior type to test against.
  * @param killBehavior - Which kind of kill behavior to detect.
  * @param value - Unknown value.
  * @returns `true` if `value` was strictly equals to `killBehavior`, otherwise `false`.
@@ -197,9 +197,9 @@ export const max = (...args: number[]): number =>
  * @param fn - The function to wrap.
  * @param context - The context to bind the function to.
  * @returns The wrapped function.
- * @typeParam A - The function's arguments.
- * @typeParam R - The function's return value.
- * @typeParam C - The function's context.
+ * @template A - The function's arguments.
+ * @template R - The function's return value.
+ * @template C - The function's context.
  * @internal
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unnecessary-type-parameters

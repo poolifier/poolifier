@@ -26,8 +26,8 @@ import {
 
 /**
  * Worker node.
- * @typeParam Worker - Type of worker.
- * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @template Worker - Type of worker.
+ * @template Data - Type of data sent to the worker. This can only be structured-cloneable data.
  */
 export class WorkerNode<Worker extends IWorker, Data = unknown>
   extends EventEmitter
