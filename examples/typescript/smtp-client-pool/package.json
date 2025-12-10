@@ -7,9 +7,9 @@
   "type": "module",
   "volta": {
     "node": "24.11.1",
-    "pnpm": "10.24.0"
+    "pnpm": "10.25.0"
   },
-  "packageManager": "pnpm@10.24.0",
+  "packageManager": "pnpm@10.25.0",
   "scripts": {
     "build": "pnpm build:clean && tsc",
     "build:clean": "tsc --build --clean",
@@ -24,7 +24,7 @@
     "poolifier": "^5.1.7"
   },
   "devDependencies": {
-    "@types/node": "^24.10.1",
+    "@types/node": "^24.10.2",
     "@types/nodemailer": "^7.0.4",
     "typescript": "^5.9.3"
   }
