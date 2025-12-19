@@ -6,7 +6,7 @@ import {
 
 /**
  * Base fixed queue class.
- * @typeParam T - Type of fixed queue data.
+ * @template T - Type of fixed queue data.
  * @internal
  */
 export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {

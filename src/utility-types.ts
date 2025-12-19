@@ -7,8 +7,8 @@ import type { KillBehavior } from './worker/worker-options.js'
 
 /**
  * Message object that is passed between main worker and worker.
- * @typeParam Data - Type of data sent to the worker or execution response. This can only be structured-cloneable data.
- * @typeParam ErrorData - Type of data sent to the worker triggering an error. This can only be structured-cloneable data.
+ * @template Data - Type of data sent to the worker or execution response. This can only be structured-cloneable data.
+ * @template ErrorData - Type of data sent to the worker triggering an error. This can only be structured-cloneable data.
  * @internal
  */
 export interface MessageValue<Data = unknown, ErrorData = unknown>
@@ -77,7 +77,7 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
 
 /**
  * An object holding the task execution response promise resolve/reject callbacks.
- * @typeParam Response - Type of execution response. This can only be structured-cloneable data.
+ * @template Response - Type of execution response. This can only be structured-cloneable data.
  * @internal
  */
 export interface PromiseResponseWrapper<Response = unknown> {
@@ -105,7 +105,7 @@ export interface PromiseResponseWrapper<Response = unknown> {
 
 /**
  * Message object that is passed as a task between main worker and worker.
- * @typeParam Data - Type of data sent to the worker. This can only be structured-cloneable data.
+ * @template Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @internal
  */
 export interface Task<Data = unknown> {
@@ -191,7 +191,7 @@ export interface TaskPerformance {
 
 /**
  * Worker error.
- * @typeParam Data - Type of data sent to the worker triggering an error. This can only be structured-cloneable data.
+ * @template Data - Type of data sent to the worker triggering an error. This can only be structured-cloneable data.
  */
 export interface WorkerError<Data = unknown> {
   /**
@@ -237,7 +237,7 @@ export interface WorkerStatistics {
 
 /**
  * Remove readonly modifier from all properties of T.
- * @typeParam T - Type to remove readonly modifier.
+ * @template T - Type to remove readonly modifier.
  * @internal
  */
 export type Writable<T> = { -readonly [P in keyof T]: T[P] }
