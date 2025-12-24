@@ -210,6 +210,11 @@ export interface IPool<
    */
   readonly start: () => void
   /**
+   * Pool worker node keys.
+   * @internal
+   */
+  readonly workerNodeKeys: number[]
+  /**
    * Pool worker nodes.
    * @internal
    */
