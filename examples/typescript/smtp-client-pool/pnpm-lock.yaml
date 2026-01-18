@@ -16,8 +16,8 @@ importers:
         version: 5.1.7
     devDependencies:
       '@types/node':
-        specifier: ^24.10.7
-        version: 24.10.7
+        specifier: ^24.10.9
+        version: 24.10.9
       '@types/nodemailer':
         specifier: ^7.0.5
         version: 7.0.5
@@ -328,8 +328,8 @@ packages:
     resolution: {integrity: sha512-4aUIteuyxtBUhVdiQqcDhKFitwfd9hqoSDYY2KRXiWtgoWJ9Bmise+KfEPDiVHWeJepvF8xJO9/9+WDIciMFFw==}
     engines: {node: '>=18.0.0'}
 
-  '@types/node@24.10.7':
-    resolution: {integrity: sha512-+054pVMzVTmRQV8BhpGv3UyfZ2Llgl8rdpDTon+cUH9+na0ncBVXj3wTUKh14+Kiz18ziM3b4ikpP5/Pc0rQEQ==}
+  '@types/node@24.10.9':
+    resolution: {integrity: sha512-ne4A0IpG3+2ETuREInjPNhUGis1SFjv1d5asp8MzEAGtOZeTeHVDOYqOgqfhvseqg/iXty2hjBf1zAOb7RNiNw==}
 
   '@types/nodemailer@7.0.5':
     resolution: {integrity: sha512-7WtR4MFJUNN2UFy0NIowBRJswj5KXjXDhlZY43Hmots5eGu5q/dTeFd/I6GgJA/qj3RqO6dDy4SvfcV3fOVeIA==}
@@ -1037,14 +1037,14 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@types/node@24.10.7':
+  '@types/node@24.10.9':
     dependencies:
       undici-types: 7.16.0
 
   '@types/nodemailer@7.0.5':
     dependencies:
       '@aws-sdk/client-sesv2': 3.967.0
-      '@types/node': 24.10.7
+      '@types/node': 24.10.9
     transitivePeerDependencies:
       - aws-crt
 
