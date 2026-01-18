@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.8](https://github.com/poolifier/poolifier/compare/v5.1.7...v5.1.8) (2026-01-18)
+
+
+### 🐞 Bug Fixes
+
+* **benchmarks:** destroy pool in the error case ([ef7e70b](https://github.com/poolifier/poolifier/commit/ef7e70bfd44f6e4ffe1b70ffffe569bc70182f7b))
+* **benchmarks:** port to tinybench v6 API ([35553c4](https://github.com/poolifier/poolifier/commit/35553c4c1cde3bfc2ac8be90f605495fb632cfca))
+* **deps:** update all non-major dependencies ([#3067](https://github.com/poolifier/poolifier/issues/3067)) ([686695d](https://github.com/poolifier/poolifier/commit/686695d32b38e7c16ffcbeb3d78e2d9d38fe26ea))
+* **deps:** update all non-major dependencies ([#3074](https://github.com/poolifier/poolifier/issues/3074)) ([0fc358b](https://github.com/poolifier/poolifier/commit/0fc358bbc571c238dc0c2594a88ced74f1573fc2))
+* **deps:** update all non-major dependencies ([#3088](https://github.com/poolifier/poolifier/issues/3088)) ([fbe2b7e](https://github.com/poolifier/poolifier/commit/fbe2b7e4872c9752d7661d0cd4b18f48e330ad94))
+* **deps:** update all non-major dependencies ([#3093](https://github.com/poolifier/poolifier/issues/3093)) ([618e20f](https://github.com/poolifier/poolifier/commit/618e20fbb4458582dd3866fb7ea787825e61c1ed))
+* **deps:** update all non-major dependencies ([#3100](https://github.com/poolifier/poolifier/issues/3100)) ([90627c3](https://github.com/poolifier/poolifier/commit/90627c38473240504d019138dd2d3ae50e97c25a))
+* **deps:** update dependency poolifier to ^5.1.7 ([#3057](https://github.com/poolifier/poolifier/issues/3057)) ([acd2e28](https://github.com/poolifier/poolifier/commit/acd2e28098f6fbe89a69fa2f6cf0274420f8da9a))
+* **examples:** type warnings at build ([d6b712c](https://github.com/poolifier/poolifier/commit/d6b712c394c4a4a5fbe89779db2416a33e06710b))
+* fix benchmark report file generation ([e09bdfa](https://github.com/poolifier/poolifier/commit/e09bdfac2d4985187a145330c5bcc656d5db7c95))
+* safe access to tasks queue size ([f59708e](https://github.com/poolifier/poolifier/commit/f59708e59f29b19e926106829dfbd46128497556))
+
+
+### 📚 Documentation
+
+* publish documentation ([79d75fb](https://github.com/poolifier/poolifier/commit/79d75fb3bc764f116c274c8adbc65b075f20b592))
+
 ## [5.1.7](https://github.com/poolifier/poolifier/compare/v5.1.6...v5.1.7) (2025-11-16)
 
 
