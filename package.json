@@ -107,7 +107,7 @@
     }
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.11",
+    "@biomejs/biome": "^2.3.12",
     "@commitlint/cli": "^20.3.1",
     "@commitlint/config-conventional": "^20.3.1",
     "@cspell/eslint-plugin": "^9.6.0",
@@ -120,9 +120,9 @@
     "clean-publish": "^6.0.1",
     "cross-env": "^10.1.0",
     "eslint": "^9.39.2",
-    "eslint-plugin-jsdoc": "^62.3.0",
+    "eslint-plugin-jsdoc": "^62.4.0",
     "eslint-plugin-perfectionist": "^5.4.0",
-    "globals": "^17.0.0",
+    "globals": "^17.1.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "mocha": "^11.7.5",
