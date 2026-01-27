@@ -46,9 +46,12 @@ class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
 
     application.get('/api/factorial/:number', (req: Request, res: Response) => {
       const { number } = req.params
+      const numberValue = Array.isArray(number) ? number[0] : number
       res
         .send({
-          number: ExpressWorker.factorial(Number.parseInt(number)).toString(),
+          number: ExpressWorker.factorial(
+            Number.parseInt(numberValue)
+          ).toString(),
         })
         .end()
     })
