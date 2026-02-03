@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       fastify:
-        specifier: ^5.7.2
+        specifier: ^5.7.4
         version: 5.7.4
       poolifier:
         specifier: ^5.1.7
