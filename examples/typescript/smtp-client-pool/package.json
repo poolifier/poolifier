@@ -20,7 +20,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nodemailer": "^7.0.13",
+    "nodemailer": "^8.0.0",
     "poolifier": "^5.1.7"
   },
   "devDependencies": {
