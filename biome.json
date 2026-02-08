@@ -1,6 +1,7 @@
 {
+  "root": false,
   "root": true,
-  "$schema": "https://biomejs.dev/schemas/2.3.13/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.14/schema.json",
   "assist": {
     "actions": {
       "source": {
