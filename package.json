@@ -136,7 +136,7 @@
     "rollup-plugin-dts": "^6.3.0",
     "sinon": "^21.0.1",
     "tinybench": "^6.0.0",
-    "typedoc": "^0.28.16",
+    "typedoc": "^0.28.17",
     "typescript": "~5.9.3"
   }
 }
