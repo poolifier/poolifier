@@ -135,7 +135,7 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /**
    * Gets the worker node key from a single-element affinity set.
-   * @param workerNodeKeys - Worker node keys affinity.
+   * @param workerNodeKeys - Worker node keys affinity. If provided, restricts worker selection to the specified indices.
    * @returns The worker node key if the set has a single element and the worker is ready, `undefined` otherwise.
    */
   protected getSingleWorkerNodeKey (
