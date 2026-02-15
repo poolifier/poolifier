@@ -110,9 +110,9 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   private findWorkerNodeKeyInSet (workerNodeKeys: number[]): number | undefined {
     const workerNodesCount = this.pool.workerNodes.length
     for (let i = 0; i < workerNodesCount; i++) {
-      const key = this.getRoundRobinNextWorkerNodeKey()
-      if (workerNodeKeys.includes(key)) {
-        return key
+      this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
+      if (workerNodeKeys.includes(this.nextWorkerNodeKey)) {
+        return this.nextWorkerNodeKey
       }
     }
     return undefined

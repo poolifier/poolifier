@@ -74,6 +74,9 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public choose (workerNodeKeys?: number[]): number | undefined {
     workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
+    if (workerNodeKeys.length === 0) {
+      return undefined
+    }
     if (workerNodeKeys.length === 1) {
       const workerNodeKey = workerNodeKeys[0]
       return this.isWorkerNodeReady(workerNodeKey) ? workerNodeKey : undefined
