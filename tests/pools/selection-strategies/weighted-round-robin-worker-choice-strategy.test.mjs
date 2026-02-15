@@ -179,11 +179,37 @@ describe('Worker choice strategies choose() with workerNodeKeys test suite', () 
     expect(result).toBe(undefined)
   })
 
+  it('Verify that WeightedRoundRobin choose() with single workerNodeKey returns that key if ready', () => {
+    const strategy = new WeightedRoundRobinWorkerChoiceStrategy(pool)
+    const result = strategy.choose([0])
+    expect(result).toBe(0)
+  })
+
   it('Verify that WeightedRoundRobin choose() respects workerNodeKeys affinity', () => {
     const strategy = new WeightedRoundRobinWorkerChoiceStrategy(pool)
     const workerNodeKeys = [1, 2]
     const result = strategy.choose(workerNodeKeys)
     // WeightedRoundRobin may return undefined if worker not ready, or a valid key
+    expect(result === undefined || workerNodeKeys.includes(result)).toBe(true)
+  })
+
+  it('Verify that InterleavedWeightedRoundRobin choose() with empty workerNodeKeys returns undefined', () => {
+    const strategy = new InterleavedWeightedRoundRobinWorkerChoiceStrategy(pool)
+    const result = strategy.choose([])
+    expect(result).toBe(undefined)
+  })
+
+  it('Verify that InterleavedWeightedRoundRobin choose() with single workerNodeKey returns that key if ready', () => {
+    const strategy = new InterleavedWeightedRoundRobinWorkerChoiceStrategy(pool)
+    const result = strategy.choose([0])
+    expect(result).toBe(0)
+  })
+
+  it('Verify that InterleavedWeightedRoundRobin choose() respects workerNodeKeys affinity', () => {
+    const strategy = new InterleavedWeightedRoundRobinWorkerChoiceStrategy(pool)
+    const workerNodeKeys = [1, 2]
+    const result = strategy.choose(workerNodeKeys)
+    // InterleavedWeightedRoundRobin may return undefined if worker not ready, or a valid key
     expect(result === undefined || workerNodeKeys.includes(result)).toBe(true)
   })
 })
