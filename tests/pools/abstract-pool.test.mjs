@@ -1717,6 +1717,134 @@ describe('Abstract pool test suite', () => {
     await dynamicThreadPool.destroy()
   })
 
+  it('Verify that addTaskFunction() with workerNodeKeys is working', async () => {
+    const dynamicThreadPool = new DynamicThreadPool(
+      Math.floor(numberOfWorkers / 2),
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.mjs'
+    )
+    await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
+    const poolWorkerNodeKeys = dynamicThreadPool.workerNodeKeys
+
+    // Test with valid workerNodeKeys
+    const echoTaskFunction = data => {
+      return data
+    }
+    await expect(
+      dynamicThreadPool.addTaskFunction('affinityEcho', {
+        taskFunction: echoTaskFunction,
+        workerNodeKeys: [poolWorkerNodeKeys[0]],
+      })
+    ).resolves.toBe(true)
+    expect(dynamicThreadPool.taskFunctions.get('affinityEcho')).toStrictEqual({
+      taskFunction: echoTaskFunction,
+      workerNodeKeys: [poolWorkerNodeKeys[0]],
+    })
+
+    // Test with invalid workerNodeKeys (out of range)
+    await expect(
+      dynamicThreadPool.addTaskFunction('invalidKeys', {
+        taskFunction: () => {},
+        workerNodeKeys: [999],
+      })
+    ).rejects.toThrow(
+      /Cannot add a task function with invalid worker node keys: 999/
+    )
+
+    // Test with empty array workerNodeKeys
+    await expect(
+      dynamicThreadPool.addTaskFunction('emptyKeys', {
+        taskFunction: () => {},
+        workerNodeKeys: [],
+      })
+    ).rejects.toThrow(
+      new RangeError('Invalid worker nodes: must not be an empty array')
+    )
+
+    // Test exceeding max workers
+    const tooManyKeys = Array.from({ length: numberOfWorkers + 1 }, (_, i) => i)
+    await expect(
+      dynamicThreadPool.addTaskFunction('tooManyKeys', {
+        taskFunction: () => {},
+        workerNodeKeys: tooManyKeys,
+      })
+    ).rejects.toThrow(
+      /Cannot add a task function with more worker node keys affinity than the maximum number of workers/
+    )
+
+    // Test with duplicate workerNodeKeys
+    await expect(
+      dynamicThreadPool.addTaskFunction('duplicateKeys', {
+        taskFunction: () => {},
+        workerNodeKeys: [poolWorkerNodeKeys[0], poolWorkerNodeKeys[0]],
+      })
+    ).rejects.toThrow(/Invalid worker nodes: must not contain duplicates/)
+
+    // Test with non-integer values
+    await expect(
+      dynamicThreadPool.addTaskFunction('nonIntegerKeys', {
+        taskFunction: () => {},
+        workerNodeKeys: [1.5],
+      })
+    ).rejects.toThrow(/Invalid worker node key: 1.5/)
+
+    // Test with negative values
+    await expect(
+      dynamicThreadPool.addTaskFunction('negativeKeys', {
+        taskFunction: () => {},
+        workerNodeKeys: [-1],
+      })
+    ).rejects.toThrow(/Invalid worker node key: -1/)
+
+    await dynamicThreadPool.destroy()
+  })
+
+  it('Verify that execute() respects workerNodeKeys affinity', async () => {
+    const dynamicThreadPool = new DynamicThreadPool(
+      Math.floor(numberOfWorkers / 2),
+      numberOfWorkers,
+      './tests/worker-files/thread/testWorker.mjs'
+    )
+    await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
+    const poolWorkerNodeKeys = dynamicThreadPool.workerNodeKeys
+
+    // Add task function with affinity to first worker only
+    const affinityTaskFunction = data => {
+      return data
+    }
+    await dynamicThreadPool.addTaskFunction('affinityTask', {
+      taskFunction: affinityTaskFunction,
+      workerNodeKeys: [poolWorkerNodeKeys[0]],
+    })
+
+    // Reset task counts to track new executions
+    for (const workerNode of dynamicThreadPool.workerNodes) {
+      workerNode.usage.tasks.executed = 0
+    }
+
+    // Execute multiple tasks with affinity
+    const numTasks = 5
+    const tasks = []
+    for (let i = 0; i < numTasks; i++) {
+      tasks.push(dynamicThreadPool.execute({ test: i }, 'affinityTask'))
+    }
+    await Promise.all(tasks)
+
+    // Verify that only the affinity worker received the tasks
+    const affinityWorkerNode =
+      dynamicThreadPool.workerNodes[poolWorkerNodeKeys[0]]
+    expect(affinityWorkerNode.usage.tasks.executed).toBe(numTasks)
+
+    // Other workers should have 0 tasks from affinityTask
+    for (let i = 0; i < dynamicThreadPool.workerNodes.length; i++) {
+      if (i !== poolWorkerNodeKeys[0]) {
+        expect(dynamicThreadPool.workerNodes[i].usage.tasks.executed).toBe(0)
+      }
+    }
+
+    await dynamicThreadPool.destroy()
+  })
+
   it('Verify that removeTaskFunction() is working', async () => {
     const dynamicThreadPool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),

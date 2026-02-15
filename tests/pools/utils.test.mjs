@@ -182,5 +182,37 @@ describe('Pool utils test suite', () => {
     expect(() => checkValidWorkerNodes([])).toThrow(
       new RangeError('Invalid worker nodes: must not be an empty array')
     )
+    // Should throw TypeError for non-integer values
+    expect(() => checkValidWorkerNodes([1.5])).toThrow(
+      new TypeError('Invalid worker node key: 1.5')
+    )
+    expect(() => checkValidWorkerNodes([0, 1.5, 2])).toThrow(
+      new TypeError('Invalid worker node key: 1.5')
+    )
+    // Should throw TypeError for negative values
+    expect(() => checkValidWorkerNodes([-1])).toThrow(
+      new TypeError('Invalid worker node key: -1')
+    )
+    expect(() => checkValidWorkerNodes([0, -1, 2])).toThrow(
+      new TypeError('Invalid worker node key: -1')
+    )
+    // Should throw TypeError for NaN
+    expect(() => checkValidWorkerNodes([NaN])).toThrow(
+      new TypeError('Invalid worker node key: NaN')
+    )
+    // Should throw TypeError for Infinity
+    expect(() => checkValidWorkerNodes([Infinity])).toThrow(
+      new TypeError('Invalid worker node key: Infinity')
+    )
+    expect(() => checkValidWorkerNodes([-Infinity])).toThrow(
+      new TypeError('Invalid worker node key: -Infinity')
+    )
+    // Should throw TypeError for duplicate keys
+    expect(() => checkValidWorkerNodes([0, 0, 1])).toThrow(
+      new TypeError('Invalid worker nodes: must not contain duplicates')
+    )
+    expect(() => checkValidWorkerNodes([1, 2, 1])).toThrow(
+      new TypeError('Invalid worker nodes: must not contain duplicates')
+    )
   })
 })
