@@ -78,8 +78,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
       return undefined
     }
     if (workerNodeKeys.length === 1) {
-      const workerNodeKey = workerNodeKeys[0]
-      return this.isWorkerNodeReady(workerNodeKey) ? workerNodeKey : undefined
+      return this.getSingleWorkerNodeKey(workerNodeKeys)
     }
     for (
       let roundIndex = this.roundId;

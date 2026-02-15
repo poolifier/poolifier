@@ -126,8 +126,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
       return undefined
     }
     if (workerNodeKeys.length === 1) {
-      const workerNodeKey = workerNodeKeys[0]
-      return this.isWorkerNodeReady(workerNodeKey) ? workerNodeKey : undefined
+      return this.getSingleWorkerNodeKey(workerNodeKeys)
     }
     const workerNodeKey = this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

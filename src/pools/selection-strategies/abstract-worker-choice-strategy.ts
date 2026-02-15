@@ -133,6 +133,18 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /**
+   * Gets the worker node key from a single-element affinity set.
+   * @param workerNodeKeys - Worker node keys affinity.
+   * @returns The worker node key if the set has a single element and the worker is ready, `undefined` otherwise.
+   */
+  protected getSingleWorkerNodeKey (
+    workerNodeKeys: number[]
+  ): number | undefined {
+    const workerNodeKey = workerNodeKeys[0]
+    return this.isWorkerNodeReady(workerNodeKey) ? workerNodeKey : undefined
+  }
+
+  /**
    * Gets the worker node task ELU.
    * If the task statistics require the average ELU, the average ELU is returned.
    * If the task statistics require the median ELU, the median ELU is returned.

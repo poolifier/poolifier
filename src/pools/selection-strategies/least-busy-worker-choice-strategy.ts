@@ -82,8 +82,7 @@ export class LeastBusyWorkerChoiceStrategy<
       return undefined
     }
     if (workerNodeKeys.length === 1) {
-      const workerNodeKey = workerNodeKeys[0]
-      return this.isWorkerNodeReady(workerNodeKey) ? workerNodeKey : undefined
+      return this.getSingleWorkerNodeKey(workerNodeKeys)
     }
     const chosenWorkerNodeKey = this.pool.workerNodes.reduce(
       (minWorkerNodeKey: number, workerNode, workerNodeKey, workerNodes) => {
