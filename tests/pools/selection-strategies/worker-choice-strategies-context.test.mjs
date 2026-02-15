@@ -1,5 +1,5 @@
 import { expect } from '@std/expect'
-import { restore, stub } from 'sinon'
+import { createStubInstance, restore, stub } from 'sinon'
 
 import {
   DynamicThreadPool,
@@ -503,5 +503,104 @@ describe('Worker choice strategies context test suite', () => {
       workerChoiceStrategiesContext.getTaskStatisticsRequirements().waitTime
         .median
     ).toBe(true)
+  })
+
+  it('Verify that execute() passes workerNodes to strategy choose()', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
+      fixedPool
+    )
+    const workerChoiceStrategyStub = createStubInstance(
+      RoundRobinWorkerChoiceStrategy,
+      {
+        choose: stub().returns(1),
+      }
+    )
+    workerChoiceStrategiesContext.workerChoiceStrategies.set(
+      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
+      workerChoiceStrategyStub
+    )
+    const workerNodes = [1, 2]
+    const chosenWorkerKey = workerChoiceStrategiesContext.execute(
+      undefined,
+      workerNodes
+    )
+    expect(
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
+      ).choose.calledOnce
+    ).toBe(true)
+    expect(
+      workerChoiceStrategiesContext.workerChoiceStrategies
+        .get(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy)
+        .choose.calledWith(workerNodes)
+    ).toBe(true)
+    expect(chosenWorkerKey).toBe(1)
+  })
+
+  it('Verify that execute() with workerNodes affinity filters worker selection', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
+      fixedPool
+    )
+    // Stub returns the first valid key from workerNodes
+    const workerChoiceStrategyStub = createStubInstance(
+      RoundRobinWorkerChoiceStrategy,
+      {
+        choose: stub().callsFake(workerNodeKeys => {
+          if (workerNodeKeys != null && workerNodeKeys.length > 0) {
+            return workerNodeKeys[0]
+          }
+          return 0
+        }),
+      }
+    )
+    workerChoiceStrategiesContext.workerChoiceStrategies.set(
+      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
+      workerChoiceStrategyStub
+    )
+    // Test with specific worker node affinity
+    const workerNodes = [2]
+    const chosenWorkerKey = workerChoiceStrategiesContext.execute(
+      undefined,
+      workerNodes
+    )
+    expect(chosenWorkerKey).toBe(2)
+    expect(
+      workerChoiceStrategiesContext.workerChoiceStrategies
+        .get(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy)
+        .choose.calledWith(workerNodes)
+    ).toBe(true)
+  })
+
+  it('Verify that execute() retries with workerNodes until valid worker found', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
+      fixedPool
+    )
+    const workerChoiceStrategyStub = createStubInstance(
+      RoundRobinWorkerChoiceStrategy,
+      {
+        choose: stub()
+          .onCall(0)
+          .returns(undefined)
+          .onCall(1)
+          .returns(undefined)
+          .onCall(2)
+          .returns(1),
+      }
+    )
+    workerChoiceStrategiesContext.workerChoiceStrategies.set(
+      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
+      workerChoiceStrategyStub
+    )
+    const workerNodes = [0, 1, 2]
+    const chosenWorkerKey = workerChoiceStrategiesContext.execute(
+      undefined,
+      workerNodes
+    )
+    expect(
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
+      ).choose.callCount
+    ).toBe(3)
+    expect(chosenWorkerKey).toBe(1)
   })
 })

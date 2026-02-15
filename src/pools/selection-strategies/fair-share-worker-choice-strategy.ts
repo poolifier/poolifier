@@ -115,25 +115,20 @@ export class FairShareWorkerChoiceStrategy<
     workerNodeKeys?: number[]
   ): number | undefined {
     workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
+    if (workerNodeKeys.length === 0) {
+      return undefined
+    }
     if (workerNodeKeys.length === 1) {
       const workerNodeKey = workerNodeKeys[0]
       return this.isWorkerNodeReady(workerNodeKey) ? workerNodeKey : undefined
     }
     const chosenWorkerNodeKey = this.pool.workerNodes.reduce(
       (minWorkerNodeKey: number, workerNode, workerNodeKey, workerNodes) => {
-        if (!this.isWorkerNodeReady(workerNodeKey)) {
+        if (
+          !this.isWorkerNodeReady(workerNodeKey) ||
+          !workerNodeKeys.includes(workerNodeKey)
+        ) {
           return minWorkerNodeKey
-        }
-        if (!workerNodeKeys.includes(workerNodeKey)) {
-          return minWorkerNodeKey
-        }
-        if (minWorkerNodeKey === -1) {
-          workerNode.strategyData = {
-            ...workerNode.strategyData,
-            virtualTaskEndTimestamp:
-              this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey),
-          }
-          return workerNodeKey
         }
         if (workerNode.strategyData?.virtualTaskEndTimestamp == null) {
           workerNode.strategyData = {
@@ -141,6 +136,9 @@ export class FairShareWorkerChoiceStrategy<
             virtualTaskEndTimestamp:
               this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey),
           }
+        }
+        if (minWorkerNodeKey === -1) {
+          return workerNodeKey
         }
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return workerNode.strategyData.virtualTaskEndTimestamp! <

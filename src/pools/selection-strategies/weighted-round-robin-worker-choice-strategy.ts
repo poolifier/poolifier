@@ -62,12 +62,15 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public choose (workerNodeKeys?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.weightedRoundRobinNextWorkerNodeKey(workerNodeKeys)
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    if (!this.isWorkerNodeReady(this.nextWorkerNodeKey!)) {
+    const chosenWorkerNodeKey =
+      this.weightedRoundRobinNextWorkerNodeKey(workerNodeKeys)
+    if (chosenWorkerNodeKey == null) {
       return undefined
     }
-    return this.checkWorkerNodeKey(this.nextWorkerNodeKey)
+    if (!this.isWorkerNodeReady(chosenWorkerNodeKey)) {
+      return undefined
+    }
+    return this.checkWorkerNodeKey(chosenWorkerNodeKey)
   }
 
   /** @inheritDoc */
@@ -104,10 +107,24 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     return true
   }
 
+  private findWorkerNodeKeyInSet (workerNodeKeys: number[]): number | undefined {
+    const workerNodesCount = this.pool.workerNodes.length
+    for (let i = 0; i < workerNodesCount; i++) {
+      const key = this.getRoundRobinNextWorkerNodeKey()
+      if (workerNodeKeys.includes(key)) {
+        return key
+      }
+    }
+    return undefined
+  }
+
   private weightedRoundRobinNextWorkerNodeKey (
     workerNodeKeys?: number[]
   ): number | undefined {
     workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
+    if (workerNodeKeys.length === 0) {
+      return undefined
+    }
     if (workerNodeKeys.length === 1) {
       const workerNodeKey = workerNodeKeys[0]
       return this.isWorkerNodeReady(workerNodeKey) ? workerNodeKey : undefined
@@ -119,10 +136,14 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
       this.workerNodeVirtualTaskExecutionTime +=
         this.getWorkerNodeTaskWaitTime(workerNodeKey) +
         this.getWorkerNodeTaskRunTime(workerNodeKey)
+      if (
+        this.nextWorkerNodeKey != null &&
+        !workerNodeKeys.includes(this.nextWorkerNodeKey)
+      ) {
+        this.nextWorkerNodeKey = this.findWorkerNodeKeyInSet(workerNodeKeys)
+      }
     } else {
-      do {
-        this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
-      } while (!workerNodeKeys.includes(this.nextWorkerNodeKey))
+      this.nextWorkerNodeKey = this.findWorkerNodeKeyInSet(workerNodeKeys)
       this.workerNodeVirtualTaskExecutionTime = 0
     }
     return this.nextWorkerNodeKey

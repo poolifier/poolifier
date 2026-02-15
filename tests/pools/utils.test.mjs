@@ -5,6 +5,7 @@ import { Worker as ThreadWorker } from 'node:worker_threads'
 import { CircularBuffer } from '../../lib/circular-buffer.cjs'
 import { WorkerTypes } from '../../lib/index.cjs'
 import {
+  checkValidWorkerNodes,
   createWorker,
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   getDefaultTasksQueueOptions,
@@ -158,5 +159,28 @@ describe('Pool utils test suite', () => {
       stolen: false,
       type: WorkerTypes.cluster,
     })
+  })
+
+  it('Verify checkValidWorkerNodes() behavior', () => {
+    // Should not throw for undefined
+    expect(() => checkValidWorkerNodes(undefined)).not.toThrow()
+    // Should not throw for null
+    expect(() => checkValidWorkerNodes(null)).not.toThrow()
+    // Should not throw for valid array with elements
+    expect(() => checkValidWorkerNodes([0, 1, 2])).not.toThrow()
+    // Should throw TypeError for non-array
+    expect(() => checkValidWorkerNodes('not an array')).toThrow(
+      new TypeError('Invalid worker nodes: must be an array')
+    )
+    expect(() => checkValidWorkerNodes(123)).toThrow(
+      new TypeError('Invalid worker nodes: must be an array')
+    )
+    expect(() => checkValidWorkerNodes({})).toThrow(
+      new TypeError('Invalid worker nodes: must be an array')
+    )
+    // Should throw RangeError for empty array
+    expect(() => checkValidWorkerNodes([])).toThrow(
+      new RangeError('Invalid worker nodes: must not be an empty array')
+    )
   })
 })

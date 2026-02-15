@@ -37,12 +37,14 @@ export class RoundRobinWorkerChoiceStrategy<
   /** @inheritDoc */
   public choose (workerNodeKeys?: number[]): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.roundRobinNextWorkerNodeKey(workerNodeKeys)
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    if (!this.isWorkerNodeReady(this.nextWorkerNodeKey!)) {
+    const chosenWorkerNodeKey = this.roundRobinNextWorkerNodeKey(workerNodeKeys)
+    if (chosenWorkerNodeKey == null) {
       return undefined
     }
-    return this.checkWorkerNodeKey(this.nextWorkerNodeKey)
+    if (!this.isWorkerNodeReady(chosenWorkerNodeKey)) {
+      return undefined
+    }
+    return this.checkWorkerNodeKey(chosenWorkerNodeKey)
   }
 
   /** @inheritDoc */
@@ -79,13 +81,21 @@ export class RoundRobinWorkerChoiceStrategy<
     workerNodeKeys?: number[]
   ): number | undefined {
     workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
+    if (workerNodeKeys.length === 0) {
+      return undefined
+    }
     if (workerNodeKeys.length === 1) {
       const workerNodeKey = workerNodeKeys[0]
+      this.nextWorkerNodeKey = workerNodeKey
       return this.isWorkerNodeReady(workerNodeKey) ? workerNodeKey : undefined
     }
-    do {
+    const workerNodesCount = this.pool.workerNodes.length
+    for (let i = 0; i < workerNodesCount; i++) {
       this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
-    } while (!workerNodeKeys.includes(this.nextWorkerNodeKey))
-    return this.nextWorkerNodeKey
+      if (workerNodeKeys.includes(this.nextWorkerNodeKey)) {
+        return this.nextWorkerNodeKey
+      }
+    }
+    return undefined
   }
 }
