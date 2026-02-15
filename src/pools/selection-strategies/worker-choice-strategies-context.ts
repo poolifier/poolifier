@@ -95,7 +95,7 @@ export class WorkerChoiceStrategiesContext<
   /**
    * Executes the given worker choice strategy.
    * @param workerChoiceStrategy - The worker choice strategy.
-   * @param workerNodeKeys - Worker node keys affinity.
+   * @param workerNodeKeys - Worker node keys affinity. If provided, restricts worker selection to the specified indices. If undefined, all worker nodes are eligible for selection.
    * @returns The key of the worker node.
    * @throws {Error} If after computed retries the worker node key is null or undefined.
    */
@@ -244,7 +244,7 @@ export class WorkerChoiceStrategiesContext<
   /**
    * Executes the given worker choice strategy in the context algorithm.
    * @param workerChoiceStrategy - The worker choice strategy algorithm to execute.
-   * @param workerNodeKeys - Worker node keys affinity.
+   * @param workerNodeKeys - Worker node keys affinity. If provided, restricts worker selection to the specified indices. If undefined, all worker nodes are eligible for selection.
    * @returns The key of the worker node.
    * @throws {Error} If after computed retries the worker node key is null or undefined.
    */

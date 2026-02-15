@@ -211,6 +211,8 @@ export interface IPool<
   readonly start: () => void
   /**
    * Pool worker node keys.
+   * Returns an array of all valid worker node indices [0, 1, ..., n-1] where n is the number of worker nodes.
+   * Used internally for worker node affinity validation and filtering.
    * @internal
    */
   readonly workerNodeKeys: number[]

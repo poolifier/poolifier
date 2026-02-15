@@ -112,7 +112,7 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /**
    * Check the worker node keys affinity.
-   * @param workerNodeKeys - Worker node keys affinity.
+   * @param workerNodeKeys - Worker node keys affinity. If provided, restricts worker selection to the specified indices. If undefined, all worker nodes are eligible for selection.
    * @returns Worker node keys affinity as a Set for O(1) lookup.
    */
   protected checkWorkerNodeKeys (workerNodeKeys?: number[]): Set<number> {

@@ -131,7 +131,7 @@ export const checkValidWorkerNodes = (
     for (const workerNodeKey of workerNodes) {
       if (!Number.isSafeInteger(workerNodeKey) || workerNodeKey < 0) {
         throw new TypeError(
-          `Invalid worker node key: ${workerNodeKey.toString()}`
+          `Invalid worker node key '${workerNodeKey.toString()}': must be a non-negative safe integer`
         )
       }
     }

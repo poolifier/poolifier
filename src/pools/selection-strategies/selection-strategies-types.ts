@@ -68,7 +68,7 @@ export interface IWorkerChoiceStrategy {
    * Chooses a worker node in the pool and returns its key.
    * If no worker nodes are not eligible, `undefined` is returned.
    * If `undefined` is returned, the caller retry.
-   * @param workerNodeKeys - Worker node keys affinity.
+   * @param workerNodeKeys - Worker node keys affinity. If provided, restricts worker selection to the specified indices. If undefined, all worker nodes are eligible for selection.
    * @returns The worker node key or `undefined`.
    */
   readonly choose: (workerNodeKeys?: number[]) => number | undefined

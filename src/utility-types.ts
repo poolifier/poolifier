@@ -162,6 +162,9 @@ export interface TaskFunctionProperties {
   readonly strategy?: WorkerChoiceStrategy
   /**
    * Task function worker node keys affinity.
+   * Restricts task execution to specified worker nodes by their indices.
+   * Must contain valid indices within [0, pool size - 1].
+   * If undefined, task can execute on any worker node.
    */
   readonly workerNodeKeys?: number[]
 }

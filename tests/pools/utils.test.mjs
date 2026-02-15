@@ -184,28 +184,28 @@ describe('Pool utils test suite', () => {
     )
     // Should throw TypeError for non-integer values
     expect(() => checkValidWorkerNodes([1.5])).toThrow(
-      new TypeError('Invalid worker node key: 1.5')
+      /Invalid worker node key '1\.5': must be a non-negative safe integer/
     )
     expect(() => checkValidWorkerNodes([0, 1.5, 2])).toThrow(
-      new TypeError('Invalid worker node key: 1.5')
+      /Invalid worker node key '1\.5': must be a non-negative safe integer/
     )
     // Should throw TypeError for negative values
     expect(() => checkValidWorkerNodes([-1])).toThrow(
-      new TypeError('Invalid worker node key: -1')
+      /Invalid worker node key '-1': must be a non-negative safe integer/
     )
     expect(() => checkValidWorkerNodes([0, -1, 2])).toThrow(
-      new TypeError('Invalid worker node key: -1')
+      /Invalid worker node key '-1': must be a non-negative safe integer/
     )
     // Should throw TypeError for NaN
     expect(() => checkValidWorkerNodes([NaN])).toThrow(
-      new TypeError('Invalid worker node key: NaN')
+      /Invalid worker node key 'NaN': must be a non-negative safe integer/
     )
     // Should throw TypeError for Infinity
     expect(() => checkValidWorkerNodes([Infinity])).toThrow(
-      new TypeError('Invalid worker node key: Infinity')
+      /Invalid worker node key 'Infinity': must be a non-negative safe integer/
     )
     expect(() => checkValidWorkerNodes([-Infinity])).toThrow(
-      new TypeError('Invalid worker node key: -Infinity')
+      /Invalid worker node key '-Infinity': must be a non-negative safe integer/
     )
     // Should throw TypeError for duplicate keys
     expect(() => checkValidWorkerNodes([0, 0, 1])).toThrow(

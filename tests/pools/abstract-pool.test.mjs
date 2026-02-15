@@ -1786,7 +1786,9 @@ describe('Abstract pool test suite', () => {
         taskFunction: () => {},
         workerNodeKeys: [1.5],
       })
-    ).rejects.toThrow(/Invalid worker node key: 1.5/)
+    ).rejects.toThrow(
+      /Invalid worker node key '1\.5': must be a non-negative safe integer/
+    )
 
     // Test with negative values
     await expect(
@@ -1794,7 +1796,9 @@ describe('Abstract pool test suite', () => {
         taskFunction: () => {},
         workerNodeKeys: [-1],
       })
-    ).rejects.toThrow(/Invalid worker node key: -1/)
+    ).rejects.toThrow(
+      /Invalid worker node key '-1': must be a non-negative safe integer/
+    )
 
     await dynamicThreadPool.destroy()
   })
