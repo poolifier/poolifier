@@ -140,6 +140,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const workerWeight = this.opts!.weights![workerNodeKey]
     if (this.workerNodeVirtualTaskExecutionTime < workerWeight) {
+      this.nextWorkerNodeKey = workerNodeKey
       this.workerNodeVirtualTaskExecutionTime +=
         this.getWorkerNodeTaskWaitTime(workerNodeKey) +
         this.getWorkerNodeTaskRunTime(workerNodeKey)
