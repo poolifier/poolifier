@@ -58,9 +58,9 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (workerNodeKeys?: number[]): number | undefined {
+  public choose (workerNodeKeysSet?: Set<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey(workerNodeKeys)
+    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey(workerNodeKeysSet)
     return this.nextWorkerNodeKey
   }
 
@@ -112,21 +112,17 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   private fairShareNextWorkerNodeKey (
-    workerNodeKeys?: number[]
+    workerNodeKeysSet?: Set<number>
   ): number | undefined {
-    const workerNodeKeysSet = this.checkWorkerNodeKeys(workerNodeKeys)
-    if (workerNodeKeysSet.size === 0) {
+    if (workerNodeKeysSet?.size === 0) {
       return undefined
     }
-    if (workerNodeKeysSet.size === 1) {
-      return this.getSingleWorkerNodeKey([...workerNodeKeysSet])
+    if (workerNodeKeysSet?.size === 1) {
+      return this.getSingleWorkerNodeKey(workerNodeKeysSet)
     }
     const chosenWorkerNodeKey = this.pool.workerNodes.reduce(
       (minWorkerNodeKey: number, workerNode, workerNodeKey, workerNodes) => {
-        if (
-          !this.isWorkerNodeReady(workerNodeKey) ||
-          !workerNodeKeysSet.has(workerNodeKey)
-        ) {
+        if (!this.isWorkerNodeEligible(workerNodeKey, workerNodeKeysSet)) {
           return minWorkerNodeKey
         }
         if (workerNode.strategyData?.virtualTaskEndTimestamp == null) {

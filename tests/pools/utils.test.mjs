@@ -5,7 +5,7 @@ import { Worker as ThreadWorker } from 'node:worker_threads'
 import { CircularBuffer } from '../../lib/circular-buffer.cjs'
 import { WorkerTypes } from '../../lib/index.cjs'
 import {
-  checkValidWorkerNodes,
+  checkValidWorkerNodeKeys,
   createWorker,
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   getDefaultTasksQueueOptions,
@@ -161,58 +161,58 @@ describe('Pool utils test suite', () => {
     })
   })
 
-  it('Verify checkValidWorkerNodes() behavior', () => {
+  it('Verify checkValidWorkerNodeKeys() behavior', () => {
     // Should not throw for undefined
-    expect(() => checkValidWorkerNodes(undefined)).not.toThrow()
+    expect(() => checkValidWorkerNodeKeys(undefined)).not.toThrow()
     // Should not throw for null
-    expect(() => checkValidWorkerNodes(null)).not.toThrow()
+    expect(() => checkValidWorkerNodeKeys(null)).not.toThrow()
     // Should not throw for valid array with elements
-    expect(() => checkValidWorkerNodes([0, 1, 2])).not.toThrow()
+    expect(() => checkValidWorkerNodeKeys([0, 1, 2])).not.toThrow()
     // Should throw TypeError for non-array
-    expect(() => checkValidWorkerNodes('not an array')).toThrow(
-      new TypeError('Invalid worker nodes: must be an array')
+    expect(() => checkValidWorkerNodeKeys('not an array')).toThrow(
+      new TypeError('Invalid worker node keys: must be an array')
     )
-    expect(() => checkValidWorkerNodes(123)).toThrow(
-      new TypeError('Invalid worker nodes: must be an array')
+    expect(() => checkValidWorkerNodeKeys(123)).toThrow(
+      new TypeError('Invalid worker node keys: must be an array')
     )
-    expect(() => checkValidWorkerNodes({})).toThrow(
-      new TypeError('Invalid worker nodes: must be an array')
+    expect(() => checkValidWorkerNodeKeys({})).toThrow(
+      new TypeError('Invalid worker node keys: must be an array')
     )
     // Should throw RangeError for empty array
-    expect(() => checkValidWorkerNodes([])).toThrow(
-      new RangeError('Invalid worker nodes: must not be an empty array')
+    expect(() => checkValidWorkerNodeKeys([])).toThrow(
+      new RangeError('Invalid worker node keys: must not be an empty array')
     )
     // Should throw TypeError for non-integer values
-    expect(() => checkValidWorkerNodes([1.5])).toThrow(
+    expect(() => checkValidWorkerNodeKeys([1.5])).toThrow(
       /Invalid worker node key '1\.5': must be a non-negative safe integer/
     )
-    expect(() => checkValidWorkerNodes([0, 1.5, 2])).toThrow(
+    expect(() => checkValidWorkerNodeKeys([0, 1.5, 2])).toThrow(
       /Invalid worker node key '1\.5': must be a non-negative safe integer/
     )
     // Should throw TypeError for negative values
-    expect(() => checkValidWorkerNodes([-1])).toThrow(
+    expect(() => checkValidWorkerNodeKeys([-1])).toThrow(
       /Invalid worker node key '-1': must be a non-negative safe integer/
     )
-    expect(() => checkValidWorkerNodes([0, -1, 2])).toThrow(
+    expect(() => checkValidWorkerNodeKeys([0, -1, 2])).toThrow(
       /Invalid worker node key '-1': must be a non-negative safe integer/
     )
     // Should throw TypeError for NaN
-    expect(() => checkValidWorkerNodes([NaN])).toThrow(
+    expect(() => checkValidWorkerNodeKeys([NaN])).toThrow(
       /Invalid worker node key 'NaN': must be a non-negative safe integer/
     )
     // Should throw TypeError for Infinity
-    expect(() => checkValidWorkerNodes([Infinity])).toThrow(
+    expect(() => checkValidWorkerNodeKeys([Infinity])).toThrow(
       /Invalid worker node key 'Infinity': must be a non-negative safe integer/
     )
-    expect(() => checkValidWorkerNodes([-Infinity])).toThrow(
+    expect(() => checkValidWorkerNodeKeys([-Infinity])).toThrow(
       /Invalid worker node key '-Infinity': must be a non-negative safe integer/
     )
     // Should throw TypeError for duplicate keys
-    expect(() => checkValidWorkerNodes([0, 0, 1])).toThrow(
-      new TypeError('Invalid worker nodes: must not contain duplicates')
+    expect(() => checkValidWorkerNodeKeys([0, 0, 1])).toThrow(
+      new TypeError('Invalid worker node keys: must not contain duplicates')
     )
-    expect(() => checkValidWorkerNodes([1, 2, 1])).toThrow(
-      new TypeError('Invalid worker nodes: must not contain duplicates')
+    expect(() => checkValidWorkerNodeKeys([1, 2, 1])).toThrow(
+      new TypeError('Invalid worker node keys: must not contain duplicates')
     )
   })
 })

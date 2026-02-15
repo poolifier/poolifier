@@ -60,14 +60,14 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (workerNodeKeys?: number[]): number | undefined {
+  public choose (workerNodeKeysSet?: Set<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     const chosenWorkerNodeKey =
-      this.weightedRoundRobinNextWorkerNodeKey(workerNodeKeys)
+      this.weightedRoundRobinNextWorkerNodeKey(workerNodeKeysSet)
     if (chosenWorkerNodeKey == null) {
       return undefined
     }
-    if (!this.isWorkerNodeReady(chosenWorkerNodeKey)) {
+    if (!this.isWorkerNodeEligible(chosenWorkerNodeKey, workerNodeKeysSet)) {
       return undefined
     }
     return this.checkWorkerNodeKey(chosenWorkerNodeKey)
@@ -107,13 +107,16 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     return true
   }
 
-  private findWorkerNodeKeyInSet (
-    workerNodeKeysSet: Set<number>
+  private findEligibleWorkerNodeKey (
+    workerNodeKeysSet?: Set<number>
   ): number | undefined {
     const workerNodesCount = this.pool.workerNodes.length
     for (let i = 0; i < workerNodesCount; i++) {
       this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
-      if (workerNodeKeysSet.has(this.nextWorkerNodeKey)) {
+      if (
+        workerNodeKeysSet == null ||
+        workerNodeKeysSet.has(this.nextWorkerNodeKey)
+      ) {
         return this.nextWorkerNodeKey
       }
     }
@@ -121,19 +124,17 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   private weightedRoundRobinNextWorkerNodeKey (
-    workerNodeKeys?: number[]
+    workerNodeKeysSet?: Set<number>
   ): number | undefined {
-    const workerNodeKeysSet = this.checkWorkerNodeKeys(workerNodeKeys)
-    if (workerNodeKeysSet.size === 0) {
+    if (workerNodeKeysSet?.size === 0) {
       return undefined
     }
-    if (workerNodeKeysSet.size === 1) {
-      return this.getSingleWorkerNodeKey([...workerNodeKeysSet])
+    if (workerNodeKeysSet?.size === 1) {
+      return this.getSingleWorkerNodeKey(workerNodeKeysSet)
     }
     const workerNodeKey = this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
-    // If current worker not in affinity set, find one that is and reset state
-    if (!workerNodeKeysSet.has(workerNodeKey)) {
-      this.nextWorkerNodeKey = this.findWorkerNodeKeyInSet(workerNodeKeysSet)
+    if (workerNodeKeysSet != null && !workerNodeKeysSet.has(workerNodeKey)) {
+      this.nextWorkerNodeKey = this.findEligibleWorkerNodeKey(workerNodeKeysSet)
       this.workerNodeVirtualTaskExecutionTime = 0
       return this.nextWorkerNodeKey
     }
@@ -145,7 +146,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
         this.getWorkerNodeTaskWaitTime(workerNodeKey) +
         this.getWorkerNodeTaskRunTime(workerNodeKey)
     } else {
-      this.nextWorkerNodeKey = this.findWorkerNodeKeyInSet(workerNodeKeysSet)
+      this.nextWorkerNodeKey = this.findEligibleWorkerNodeKey(workerNodeKeysSet)
       this.workerNodeVirtualTaskExecutionTime = 0
     }
     return this.nextWorkerNodeKey

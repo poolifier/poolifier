@@ -505,7 +505,7 @@ describe('Worker choice strategies context test suite', () => {
     ).toBe(true)
   })
 
-  it('Verify that execute() passes workerNodes to strategy choose()', () => {
+  it('Verify that execute() passes workerNodeKeysSet to strategy choose()', () => {
     const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool
     )
@@ -519,35 +519,36 @@ describe('Worker choice strategies context test suite', () => {
       workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
       workerChoiceStrategyStub
     )
-    const workerNodes = [1, 2]
+    const workerNodeKeys = [1, 2]
     const chosenWorkerKey = workerChoiceStrategiesContext.execute(
       undefined,
-      workerNodes
+      workerNodeKeys
     )
     expect(
       workerChoiceStrategiesContext.workerChoiceStrategies.get(
         workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
       ).choose.calledOnce
     ).toBe(true)
-    expect(
-      workerChoiceStrategiesContext.workerChoiceStrategies
-        .get(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy)
-        .choose.calledWith(workerNodes)
-    ).toBe(true)
+    // Verify it was called with a Set containing the same elements
+    const callArg = workerChoiceStrategiesContext.workerChoiceStrategies.get(
+      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
+    ).choose.firstCall.args[0]
+    expect(callArg).toBeInstanceOf(Set)
+    expect([...callArg]).toStrictEqual(workerNodeKeys)
     expect(chosenWorkerKey).toBe(1)
   })
 
-  it('Verify that execute() with workerNodes affinity filters worker selection', () => {
+  it('Verify that execute() with workerNodeKeys affinity filters worker selection', () => {
     const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool
     )
-    // Stub returns the first valid key from workerNodes
+    // Stub returns the first valid key from workerNodeKeysSet
     const workerChoiceStrategyStub = createStubInstance(
       RoundRobinWorkerChoiceStrategy,
       {
-        choose: stub().callsFake(workerNodeKeys => {
-          if (workerNodeKeys != null && workerNodeKeys.length > 0) {
-            return workerNodeKeys[0]
+        choose: stub().callsFake(workerNodeKeysSet => {
+          if (workerNodeKeysSet != null && workerNodeKeysSet.size > 0) {
+            return [...workerNodeKeysSet][0]
           }
           return 0
         }),
@@ -558,17 +559,18 @@ describe('Worker choice strategies context test suite', () => {
       workerChoiceStrategyStub
     )
     // Test with specific worker node affinity
-    const workerNodes = [2]
+    const workerNodeKeys = [2]
     const chosenWorkerKey = workerChoiceStrategiesContext.execute(
       undefined,
-      workerNodes
+      workerNodeKeys
     )
     expect(chosenWorkerKey).toBe(2)
-    expect(
-      workerChoiceStrategiesContext.workerChoiceStrategies
-        .get(workerChoiceStrategiesContext.defaultWorkerChoiceStrategy)
-        .choose.calledWith(workerNodes)
-    ).toBe(true)
+    // Verify it was called with a Set containing the same elements
+    const callArg = workerChoiceStrategiesContext.workerChoiceStrategies.get(
+      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
+    ).choose.firstCall.args[0]
+    expect(callArg).toBeInstanceOf(Set)
+    expect([...callArg]).toStrictEqual(workerNodeKeys)
   })
 
   it('Verify that execute() retries with workerNodes until valid worker found', () => {

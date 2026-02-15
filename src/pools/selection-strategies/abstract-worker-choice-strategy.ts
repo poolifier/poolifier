@@ -72,7 +72,7 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public abstract choose (workerNodeKeys?: number[]): number | undefined
+  public abstract choose (workerNodeKeysSet?: Set<number>): number | undefined
 
   /** @inheritDoc */
   public abstract remove (workerNodeKey: number): boolean
@@ -111,19 +111,6 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /**
-   * Check the worker node keys affinity.
-   * @param workerNodeKeys - Worker node keys affinity. If provided, restricts worker selection to the specified indices. If undefined, all worker nodes are eligible for selection.
-   * @returns Worker node keys affinity as a Set for O(1) lookup.
-   */
-  protected checkWorkerNodeKeys (workerNodeKeys?: number[]): Set<number> {
-    if (workerNodeKeys == null) {
-      return new Set(this.pool.workerNodeKeys)
-    }
-    const poolWorkerNodeKeys = new Set(this.pool.workerNodeKeys)
-    return new Set(workerNodeKeys.filter(key => poolWorkerNodeKeys.has(key)))
-  }
-
-  /**
    * Gets the next worker node key in a round-robin fashion.
    * @returns The next worker node key.
    */
@@ -135,13 +122,13 @@ export abstract class AbstractWorkerChoiceStrategy<
 
   /**
    * Gets the worker node key from a single-element affinity set.
-   * @param workerNodeKeys - Worker node keys affinity. If provided, restricts worker selection to the specified indices.
-   * @returns The worker node key if the set has a single element and the worker is ready, `undefined` otherwise.
+   * @param workerNodeKeysSet - The worker node keys affinity set.
+   * @returns The worker node key if ready, `undefined` otherwise.
    */
   protected getSingleWorkerNodeKey (
-    workerNodeKeys: number[]
+    workerNodeKeysSet: Set<number>
   ): number | undefined {
-    const workerNodeKey = workerNodeKeys[0]
+    const [workerNodeKey] = workerNodeKeysSet
     return this.isWorkerNodeReady(workerNodeKey) ? workerNodeKey : undefined
   }
 
@@ -182,6 +169,22 @@ export abstract class AbstractWorkerChoiceStrategy<
     return this.taskStatisticsRequirements.waitTime.median
       ? (this.pool.workerNodes[workerNodeKey]?.usage.waitTime.median ?? 0)
       : (this.pool.workerNodes[workerNodeKey]?.usage.waitTime.average ?? 0)
+  }
+
+  /**
+   * Whether the worker node is eligible for selection (ready and in affinity set).
+   * @param workerNodeKey - The worker node key.
+   * @param workerNodeKeysSet - The worker node keys affinity set. If undefined, all workers are eligible.
+   * @returns Whether the worker node is eligible.
+   */
+  protected isWorkerNodeEligible (
+    workerNodeKey: number,
+    workerNodeKeysSet?: Set<number>
+  ): boolean {
+    return (
+      this.isWorkerNodeReady(workerNodeKey) &&
+      (workerNodeKeysSet == null || workerNodeKeysSet.has(workerNodeKey))
+    )
   }
 
   /**

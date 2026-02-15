@@ -118,17 +118,17 @@ export const checkValidWorkerChoiceStrategy = (
   }
 }
 
-export const checkValidWorkerNodes = (
-  workerNodes: number[] | undefined
+export const checkValidWorkerNodeKeys = (
+  workerNodeKeys: number[] | undefined
 ): void => {
-  if (workerNodes != null && !Array.isArray(workerNodes)) {
-    throw new TypeError('Invalid worker nodes: must be an array')
+  if (workerNodeKeys != null && !Array.isArray(workerNodeKeys)) {
+    throw new TypeError('Invalid worker node keys: must be an array')
   }
-  if (workerNodes?.length === 0) {
-    throw new RangeError('Invalid worker nodes: must not be an empty array')
+  if (workerNodeKeys?.length === 0) {
+    throw new RangeError('Invalid worker node keys: must not be an empty array')
   }
-  if (workerNodes != null) {
-    for (const workerNodeKey of workerNodes) {
+  if (workerNodeKeys != null) {
+    for (const workerNodeKey of workerNodeKeys) {
       if (!Number.isSafeInteger(workerNodeKey) || workerNodeKey < 0) {
         throw new TypeError(
           `Invalid worker node key '${workerNodeKey.toString()}': must be a non-negative safe integer`
@@ -136,8 +136,11 @@ export const checkValidWorkerNodes = (
       }
     }
   }
-  if (workerNodes != null && new Set(workerNodes).size !== workerNodes.length) {
-    throw new TypeError('Invalid worker nodes: must not contain duplicates')
+  if (
+    workerNodeKeys != null &&
+    new Set(workerNodeKeys).size !== workerNodeKeys.length
+  ) {
+    throw new TypeError('Invalid worker node keys: must not contain duplicates')
   }
 }
 

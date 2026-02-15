@@ -72,13 +72,12 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (workerNodeKeys?: number[]): number | undefined {
-    const workerNodeKeysSet = this.checkWorkerNodeKeys(workerNodeKeys)
-    if (workerNodeKeysSet.size === 0) {
+  public choose (workerNodeKeysSet?: Set<number>): number | undefined {
+    if (workerNodeKeysSet?.size === 0) {
       return undefined
     }
-    if (workerNodeKeysSet.size === 1) {
-      return this.getSingleWorkerNodeKey([...workerNodeKeysSet])
+    if (workerNodeKeysSet?.size === 1) {
+      return this.getSingleWorkerNodeKey(workerNodeKeysSet)
     }
     for (
       let roundIndex = this.roundId;
@@ -101,8 +100,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const workerWeight = this.opts!.weights![workerNodeKey]
         if (
-          this.isWorkerNodeReady(workerNodeKey) &&
-          workerNodeKeysSet.has(workerNodeKey) &&
+          this.isWorkerNodeEligible(workerNodeKey, workerNodeKeysSet) &&
           workerWeight >= this.roundWeights[roundIndex] &&
           this.workerNodeVirtualTaskExecutionTime < workerWeight
         ) {

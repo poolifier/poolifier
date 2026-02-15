@@ -1758,7 +1758,7 @@ describe('Abstract pool test suite', () => {
         workerNodeKeys: [],
       })
     ).rejects.toThrow(
-      new RangeError('Invalid worker nodes: must not be an empty array')
+      new RangeError('Invalid worker node keys: must not be an empty array')
     )
 
     // Test exceeding max workers
@@ -1778,7 +1778,7 @@ describe('Abstract pool test suite', () => {
         taskFunction: () => {},
         workerNodeKeys: [poolWorkerNodeKeys[0], poolWorkerNodeKeys[0]],
       })
-    ).rejects.toThrow(/Invalid worker nodes: must not contain duplicates/)
+    ).rejects.toThrow(/Invalid worker node keys: must not contain duplicates/)
 
     // Test with non-integer values
     await expect(

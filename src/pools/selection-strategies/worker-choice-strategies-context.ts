@@ -95,7 +95,7 @@ export class WorkerChoiceStrategiesContext<
   /**
    * Executes the given worker choice strategy.
    * @param workerChoiceStrategy - The worker choice strategy.
-   * @param workerNodeKeys - Worker node keys affinity. If provided, restricts worker selection to the specified indices. If undefined, all worker nodes are eligible for selection.
+   * @param workerNodeKeys - The worker node keys affinity. If undefined, all workers are eligible.
    * @returns The key of the worker node.
    * @throws {Error} If after computed retries the worker node key is null or undefined.
    */
@@ -244,7 +244,7 @@ export class WorkerChoiceStrategiesContext<
   /**
    * Executes the given worker choice strategy in the context algorithm.
    * @param workerChoiceStrategy - The worker choice strategy algorithm to execute.
-   * @param workerNodeKeys - Worker node keys affinity. If provided, restricts worker selection to the specified indices. If undefined, all worker nodes are eligible for selection.
+   * @param workerNodeKeys - The worker node keys affinity. If undefined, all workers are eligible.
    * @returns The key of the worker node.
    * @throws {Error} If after computed retries the worker node key is null or undefined.
    */
@@ -252,12 +252,15 @@ export class WorkerChoiceStrategiesContext<
     workerChoiceStrategy: IWorkerChoiceStrategy,
     workerNodeKeys?: number[]
   ): number {
+    // Create Set once before retry loop for O(1) lookups
+    const workerNodeKeysSet =
+      workerNodeKeys != null ? new Set(workerNodeKeys) : undefined
     let workerNodeKey: number | undefined =
-      workerChoiceStrategy.choose(workerNodeKeys)
+      workerChoiceStrategy.choose(workerNodeKeysSet)
     let retriesCount = 0
     while (workerNodeKey == null && retriesCount < this.retries) {
       retriesCount++
-      workerNodeKey = workerChoiceStrategy.choose(workerNodeKeys)
+      workerNodeKey = workerChoiceStrategy.choose(workerNodeKeysSet)
     }
     workerChoiceStrategy.retriesCount = retriesCount
     if (workerNodeKey == null) {

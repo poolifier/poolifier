@@ -76,140 +76,140 @@ describe('Worker choice strategies choose() with workerNodeKeys test suite', () 
     await pool.destroy()
   })
 
-  it('Verify that RoundRobin choose() with empty workerNodeKeys returns undefined', () => {
+  it('Verify that RoundRobin choose() with empty workerNodeKeysSet returns undefined', () => {
     const strategy = new RoundRobinWorkerChoiceStrategy(pool)
-    const result = strategy.choose([])
+    const result = strategy.choose(new Set())
     expect(result).toBe(undefined)
   })
 
   it('Verify that RoundRobin choose() with single workerNodeKey returns that key if ready', () => {
     const strategy = new RoundRobinWorkerChoiceStrategy(pool)
     // Worker node 0 should be ready in a fixed pool
-    const result = strategy.choose([0])
+    const result = strategy.choose(new Set([0]))
     expect(result).toBe(0)
   })
 
   it('Verify that RoundRobin choose() respects workerNodeKeys affinity', () => {
     const strategy = new RoundRobinWorkerChoiceStrategy(pool)
     // Should only return keys from the provided affinity set
-    const workerNodeKeys = [1, 2]
-    const result = strategy.choose(workerNodeKeys)
-    expect(workerNodeKeys.includes(result)).toBe(true)
+    const workerNodeKeysSet = new Set([1, 2])
+    const result = strategy.choose(workerNodeKeysSet)
+    expect(workerNodeKeysSet.has(result)).toBe(true)
   })
 
-  it('Verify that LeastUsed choose() with empty workerNodeKeys returns undefined', () => {
+  it('Verify that LeastUsed choose() with empty workerNodeKeysSet returns undefined', () => {
     const strategy = new LeastUsedWorkerChoiceStrategy(pool)
-    const result = strategy.choose([])
+    const result = strategy.choose(new Set())
     expect(result).toBe(undefined)
   })
 
   it('Verify that LeastUsed choose() with single workerNodeKey returns that key if ready', () => {
     const strategy = new LeastUsedWorkerChoiceStrategy(pool)
-    const result = strategy.choose([0])
+    const result = strategy.choose(new Set([0]))
     expect(result).toBe(0)
   })
 
   it('Verify that LeastUsed choose() respects workerNodeKeys affinity', () => {
     const strategy = new LeastUsedWorkerChoiceStrategy(pool)
-    const workerNodeKeys = [1, 2]
-    const result = strategy.choose(workerNodeKeys)
-    expect(workerNodeKeys.includes(result)).toBe(true)
+    const workerNodeKeysSet = new Set([1, 2])
+    const result = strategy.choose(workerNodeKeysSet)
+    expect(workerNodeKeysSet.has(result)).toBe(true)
   })
 
-  it('Verify that LeastBusy choose() with empty workerNodeKeys returns undefined', () => {
+  it('Verify that LeastBusy choose() with empty workerNodeKeysSet returns undefined', () => {
     const strategy = new LeastBusyWorkerChoiceStrategy(pool)
-    const result = strategy.choose([])
+    const result = strategy.choose(new Set())
     expect(result).toBe(undefined)
   })
 
   it('Verify that LeastBusy choose() with single workerNodeKey returns that key if ready', () => {
     const strategy = new LeastBusyWorkerChoiceStrategy(pool)
-    const result = strategy.choose([0])
+    const result = strategy.choose(new Set([0]))
     expect(result).toBe(0)
   })
 
   it('Verify that LeastBusy choose() respects workerNodeKeys affinity', () => {
     const strategy = new LeastBusyWorkerChoiceStrategy(pool)
-    const workerNodeKeys = [1, 2]
-    const result = strategy.choose(workerNodeKeys)
-    expect(workerNodeKeys.includes(result)).toBe(true)
+    const workerNodeKeysSet = new Set([1, 2])
+    const result = strategy.choose(workerNodeKeysSet)
+    expect(workerNodeKeysSet.has(result)).toBe(true)
   })
 
-  it('Verify that LeastElu choose() with empty workerNodeKeys returns undefined', () => {
+  it('Verify that LeastElu choose() with empty workerNodeKeysSet returns undefined', () => {
     const strategy = new LeastEluWorkerChoiceStrategy(pool)
-    const result = strategy.choose([])
+    const result = strategy.choose(new Set())
     expect(result).toBe(undefined)
   })
 
   it('Verify that LeastElu choose() with single workerNodeKey returns that key if ready', () => {
     const strategy = new LeastEluWorkerChoiceStrategy(pool)
-    const result = strategy.choose([0])
+    const result = strategy.choose(new Set([0]))
     expect(result).toBe(0)
   })
 
   it('Verify that LeastElu choose() respects workerNodeKeys affinity', () => {
     const strategy = new LeastEluWorkerChoiceStrategy(pool)
-    const workerNodeKeys = [1, 2]
-    const result = strategy.choose(workerNodeKeys)
-    expect(workerNodeKeys.includes(result)).toBe(true)
+    const workerNodeKeysSet = new Set([1, 2])
+    const result = strategy.choose(workerNodeKeysSet)
+    expect(workerNodeKeysSet.has(result)).toBe(true)
   })
 
-  it('Verify that FairShare choose() with empty workerNodeKeys returns undefined', () => {
+  it('Verify that FairShare choose() with empty workerNodeKeysSet returns undefined', () => {
     const strategy = new FairShareWorkerChoiceStrategy(pool)
-    const result = strategy.choose([])
+    const result = strategy.choose(new Set())
     expect(result).toBe(undefined)
   })
 
   it('Verify that FairShare choose() with single workerNodeKey returns that key if ready', () => {
     const strategy = new FairShareWorkerChoiceStrategy(pool)
-    const result = strategy.choose([0])
+    const result = strategy.choose(new Set([0]))
     expect(result).toBe(0)
   })
 
   it('Verify that FairShare choose() respects workerNodeKeys affinity', () => {
     const strategy = new FairShareWorkerChoiceStrategy(pool)
-    const workerNodeKeys = [1, 2]
-    const result = strategy.choose(workerNodeKeys)
-    expect(workerNodeKeys.includes(result)).toBe(true)
+    const workerNodeKeysSet = new Set([1, 2])
+    const result = strategy.choose(workerNodeKeysSet)
+    expect(workerNodeKeysSet.has(result)).toBe(true)
   })
 
-  it('Verify that WeightedRoundRobin choose() with empty workerNodeKeys returns undefined', () => {
+  it('Verify that WeightedRoundRobin choose() with empty workerNodeKeysSet returns undefined', () => {
     const strategy = new WeightedRoundRobinWorkerChoiceStrategy(pool)
-    const result = strategy.choose([])
+    const result = strategy.choose(new Set())
     expect(result).toBe(undefined)
   })
 
   it('Verify that WeightedRoundRobin choose() with single workerNodeKey returns that key if ready', () => {
     const strategy = new WeightedRoundRobinWorkerChoiceStrategy(pool)
-    const result = strategy.choose([0])
+    const result = strategy.choose(new Set([0]))
     expect(result).toBe(0)
   })
 
   it('Verify that WeightedRoundRobin choose() respects workerNodeKeys affinity', () => {
     const strategy = new WeightedRoundRobinWorkerChoiceStrategy(pool)
-    const workerNodeKeys = [1, 2]
-    const result = strategy.choose(workerNodeKeys)
+    const workerNodeKeysSet = new Set([1, 2])
+    const result = strategy.choose(workerNodeKeysSet)
     // WeightedRoundRobin may return undefined if worker not ready, or a valid key
-    expect(result === undefined || workerNodeKeys.includes(result)).toBe(true)
+    expect(result === undefined || workerNodeKeysSet.has(result)).toBe(true)
   })
 
-  it('Verify that InterleavedWeightedRoundRobin choose() with empty workerNodeKeys returns undefined', () => {
+  it('Verify that InterleavedWeightedRoundRobin choose() with empty workerNodeKeysSet returns undefined', () => {
     const strategy = new InterleavedWeightedRoundRobinWorkerChoiceStrategy(pool)
-    const result = strategy.choose([])
+    const result = strategy.choose(new Set())
     expect(result).toBe(undefined)
   })
 
   it('Verify that InterleavedWeightedRoundRobin choose() with single workerNodeKey returns that key if ready', () => {
     const strategy = new InterleavedWeightedRoundRobinWorkerChoiceStrategy(pool)
-    const result = strategy.choose([0])
+    const result = strategy.choose(new Set([0]))
     expect(result).toBe(0)
   })
 
   it('Verify that InterleavedWeightedRoundRobin choose() respects workerNodeKeys affinity', () => {
     const strategy = new InterleavedWeightedRoundRobinWorkerChoiceStrategy(pool)
-    const workerNodeKeys = [1, 2]
-    const result = strategy.choose(workerNodeKeys)
+    const workerNodeKeysSet = new Set([1, 2])
+    const result = strategy.choose(workerNodeKeysSet)
     // InterleavedWeightedRoundRobin may return undefined if worker not ready, or a valid key
-    expect(result === undefined || workerNodeKeys.includes(result)).toBe(true)
+    expect(result === undefined || workerNodeKeysSet.has(result)).toBe(true)
   })
 })
