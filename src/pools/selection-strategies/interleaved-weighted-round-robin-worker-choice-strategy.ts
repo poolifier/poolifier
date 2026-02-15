@@ -80,26 +80,42 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
     if (workerNodeKeysSet.size === 1) {
       return this.getSingleWorkerNodeKey([...workerNodeKeysSet])
     }
-    const result = this.interleavedWeightedRoundRobinChoose(workerNodeKeysSet)
-    if (result != null) {
-      return result
+    for (
+      let roundIndex = this.roundId;
+      roundIndex < this.roundWeights.length;
+      roundIndex++
+    ) {
+      this.roundId = roundIndex
+      for (
+        let workerNodeKey = this.workerNodeId;
+        workerNodeKey < this.pool.workerNodes.length;
+        workerNodeKey++
+      ) {
+        this.workerNodeId = workerNodeKey
+        if (
+          this.workerNodeId !== this.nextWorkerNodeKey &&
+          this.workerNodeVirtualTaskExecutionTime !== 0
+        ) {
+          this.workerNodeVirtualTaskExecutionTime = 0
+        }
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const workerWeight = this.opts!.weights![workerNodeKey]
+        if (
+          this.isWorkerNodeReady(workerNodeKey) &&
+          workerNodeKeysSet.has(workerNodeKey) &&
+          workerWeight >= this.roundWeights[roundIndex] &&
+          this.workerNodeVirtualTaskExecutionTime < workerWeight
+        ) {
+          this.workerNodeVirtualTaskExecutionTime +=
+            this.getWorkerNodeTaskWaitTime(workerNodeKey) +
+            this.getWorkerNodeTaskRunTime(workerNodeKey)
+          this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
+          this.nextWorkerNodeKey = workerNodeKey
+          return this.nextWorkerNodeKey
+        }
+      }
+      this.workerNodeId = 0
     }
-    // Wrap around: reset to beginning and try again
-    const savedRoundId = this.roundId
-    const savedWorkerNodeId = this.workerNodeId
-    this.roundId = 0
-    this.workerNodeId = 0
-    const resultAfterWrap = this.interleavedWeightedRoundRobinChoose(
-      workerNodeKeysSet,
-      savedRoundId,
-      savedWorkerNodeId
-    )
-    if (resultAfterWrap != null) {
-      return resultAfterWrap
-    }
-    // No valid worker found, restore state and advance
-    this.roundId = savedRoundId
-    this.workerNodeId = savedWorkerNodeId
     this.interleavedWeightedRoundRobinNextWorkerNodeId()
     return undefined
   }
@@ -159,58 +175,6 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
           .sort((a, b) => a - b)
       ),
     ]
-  }
-
-  private interleavedWeightedRoundRobinChoose (
-    workerNodeKeysSet: Set<number>,
-    stopRoundId?: number,
-    stopWorkerNodeId?: number
-  ): number | undefined {
-    for (
-      let roundIndex = this.roundId;
-      roundIndex < this.roundWeights.length;
-      roundIndex++
-    ) {
-      this.roundId = roundIndex
-      for (
-        let workerNodeKey = this.workerNodeId;
-        workerNodeKey < this.pool.workerNodes.length;
-        workerNodeKey++
-      ) {
-        // Stop if we've wrapped around to original position
-        if (
-          stopRoundId != null &&
-          roundIndex >= stopRoundId &&
-          workerNodeKey >= (stopWorkerNodeId ?? 0)
-        ) {
-          return undefined
-        }
-        this.workerNodeId = workerNodeKey
-        if (
-          this.workerNodeId !== this.nextWorkerNodeKey &&
-          this.workerNodeVirtualTaskExecutionTime !== 0
-        ) {
-          this.workerNodeVirtualTaskExecutionTime = 0
-        }
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const workerWeight = this.opts!.weights![workerNodeKey]
-        if (
-          this.isWorkerNodeReady(workerNodeKey) &&
-          workerNodeKeysSet.has(workerNodeKey) &&
-          workerWeight >= this.roundWeights[roundIndex] &&
-          this.workerNodeVirtualTaskExecutionTime < workerWeight
-        ) {
-          this.workerNodeVirtualTaskExecutionTime +=
-            this.getWorkerNodeTaskWaitTime(workerNodeKey) +
-            this.getWorkerNodeTaskRunTime(workerNodeKey)
-          this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-          this.nextWorkerNodeKey = workerNodeKey
-          return this.nextWorkerNodeKey
-        }
-      }
-      this.workerNodeId = 0
-    }
-    return undefined
   }
 
   private interleavedWeightedRoundRobinNextWorkerNodeId (): void {
