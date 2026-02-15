@@ -1620,7 +1620,10 @@ export abstract class AbstractPool<
         this.workerChoiceStrategiesContext?.getPolicy().dynamicWorkerUsage ===
         true
       ) {
-        return workerNodeKey
+        const workerNodeKeys = this.getTaskFunctionWorkerNodes(name)
+        if (workerNodeKeys == null || workerNodeKeys.includes(workerNodeKey)) {
+          return workerNodeKey
+        }
       }
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
