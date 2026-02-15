@@ -80,18 +80,19 @@ export class RoundRobinWorkerChoiceStrategy<
   private roundRobinNextWorkerNodeKey (
     workerNodeKeys?: number[]
   ): number | undefined {
-    workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
-    if (workerNodeKeys.length === 0) {
+    const workerNodeKeysSet = this.checkWorkerNodeKeys(workerNodeKeys)
+    if (workerNodeKeysSet.size === 0) {
       return undefined
     }
-    if (workerNodeKeys.length === 1) {
-      this.nextWorkerNodeKey = workerNodeKeys[0]
-      return this.getSingleWorkerNodeKey(workerNodeKeys)
+    if (workerNodeKeysSet.size === 1) {
+      const workerNodeKeysArray = [...workerNodeKeysSet]
+      this.nextWorkerNodeKey = workerNodeKeysArray[0]
+      return this.getSingleWorkerNodeKey(workerNodeKeysArray)
     }
     const workerNodesCount = this.pool.workerNodes.length
     for (let i = 0; i < workerNodesCount; i++) {
       this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
-      if (workerNodeKeys.includes(this.nextWorkerNodeKey)) {
+      if (workerNodeKeysSet.has(this.nextWorkerNodeKey)) {
         return this.nextWorkerNodeKey
       }
     }

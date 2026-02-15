@@ -113,13 +113,14 @@ export abstract class AbstractWorkerChoiceStrategy<
   /**
    * Check the worker node keys affinity.
    * @param workerNodeKeys - Worker node keys affinity.
-   * @returns Worker node keys affinity.
+   * @returns Worker node keys affinity as a Set for O(1) lookup.
    */
-  protected checkWorkerNodeKeys (workerNodeKeys?: number[]): number[] {
+  protected checkWorkerNodeKeys (workerNodeKeys?: number[]): Set<number> {
     if (workerNodeKeys == null) {
-      return this.pool.workerNodeKeys
+      return new Set(this.pool.workerNodeKeys)
     }
-    return workerNodeKeys.filter(key => this.pool.workerNodeKeys.includes(key))
+    const poolWorkerNodeKeys = new Set(this.pool.workerNodeKeys)
+    return new Set(workerNodeKeys.filter(key => poolWorkerNodeKeys.has(key)))
   }
 
   /**

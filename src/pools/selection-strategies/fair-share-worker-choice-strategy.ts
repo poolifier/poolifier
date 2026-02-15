@@ -114,18 +114,18 @@ export class FairShareWorkerChoiceStrategy<
   private fairShareNextWorkerNodeKey (
     workerNodeKeys?: number[]
   ): number | undefined {
-    workerNodeKeys = this.checkWorkerNodeKeys(workerNodeKeys)
-    if (workerNodeKeys.length === 0) {
+    const workerNodeKeysSet = this.checkWorkerNodeKeys(workerNodeKeys)
+    if (workerNodeKeysSet.size === 0) {
       return undefined
     }
-    if (workerNodeKeys.length === 1) {
-      return this.getSingleWorkerNodeKey(workerNodeKeys)
+    if (workerNodeKeysSet.size === 1) {
+      return this.getSingleWorkerNodeKey([...workerNodeKeysSet])
     }
     const chosenWorkerNodeKey = this.pool.workerNodes.reduce(
       (minWorkerNodeKey: number, workerNode, workerNodeKey, workerNodes) => {
         if (
           !this.isWorkerNodeReady(workerNodeKey) ||
-          !workerNodeKeys.includes(workerNodeKey)
+          !workerNodeKeysSet.has(workerNodeKey)
         ) {
           return minWorkerNodeKey
         }
