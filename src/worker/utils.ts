@@ -51,7 +51,7 @@ export const checkValidTaskFunctionObjectEntry = <
   }
   checkValidPriority(fnObj.priority)
   checkValidWorkerChoiceStrategy(fnObj.strategy)
-  checkValidWorkerNodes(fnObj.workerNodes)
+  checkValidWorkerNodes(fnObj.workerNodeKeys)
 }
 
 export const checkTaskFunctionName = (name: string): void => {

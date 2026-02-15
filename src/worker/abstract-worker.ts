@@ -346,8 +346,8 @@ export abstract class AbstractWorker<
           ...(taskFunctionProperties.strategy != null && {
             strategy: taskFunctionProperties.strategy,
           }),
-          ...(taskFunctionProperties.workerNodes != null && {
-            workerNodes: taskFunctionProperties.workerNodes,
+          ...(taskFunctionProperties.workerNodeKeys != null && {
+            workerNodeKeys: taskFunctionProperties.workerNodeKeys,
           }),
         })
         break

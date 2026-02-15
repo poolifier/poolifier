@@ -93,22 +93,21 @@ export class WorkerChoiceStrategiesContext<
   }
 
   /**
-   * Executes the given worker choice strategy in the context algorithm.
-   * @param workerChoiceStrategy - The worker choice strategy algorithm to execute.
-   * @param workerNodes - Worker node keys affinity.
-   * @defaultValue this.defaultWorkerChoiceStrategy
+   * Executes the given worker choice strategy.
+   * @param workerChoiceStrategy - The worker choice strategy.
+   * @param workerNodeKeys - Worker node keys affinity.
    * @returns The key of the worker node.
    * @throws {Error} If after computed retries the worker node key is null or undefined.
    */
   public execute (
     workerChoiceStrategy: WorkerChoiceStrategy = this
       .defaultWorkerChoiceStrategy,
-    workerNodes?: number[]
+    workerNodeKeys?: number[]
   ): number {
     return this.executeStrategy(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.workerChoiceStrategies.get(workerChoiceStrategy)!,
-      workerNodes
+      workerNodeKeys
     )
   }
 
@@ -243,22 +242,22 @@ export class WorkerChoiceStrategiesContext<
   }
 
   /**
-   * Executes the given worker choice strategy.
-   * @param workerChoiceStrategy - The worker choice strategy.
-   * @param workerNodes - Worker node keys affinity.
+   * Executes the given worker choice strategy in the context algorithm.
+   * @param workerChoiceStrategy - The worker choice strategy algorithm to execute.
+   * @param workerNodeKeys - Worker node keys affinity.
    * @returns The key of the worker node.
    * @throws {Error} If after computed retries the worker node key is null or undefined.
    */
   private executeStrategy (
     workerChoiceStrategy: IWorkerChoiceStrategy,
-    workerNodes?: number[]
+    workerNodeKeys?: number[]
   ): number {
     let workerNodeKey: number | undefined =
-      workerChoiceStrategy.choose(workerNodes)
+      workerChoiceStrategy.choose(workerNodeKeys)
     let retriesCount = 0
     while (workerNodeKey == null && retriesCount < this.retries) {
       retriesCount++
-      workerNodeKey = workerChoiceStrategy.choose(workerNodes)
+      workerNodeKey = workerChoiceStrategy.choose(workerNodeKeys)
     }
     workerChoiceStrategy.retriesCount = retriesCount
     if (workerNodeKey == null) {

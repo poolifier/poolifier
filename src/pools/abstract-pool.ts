@@ -596,29 +596,29 @@ export abstract class AbstractPool<
     }
     checkValidPriority(fn.priority)
     checkValidWorkerChoiceStrategy(fn.strategy)
-    checkValidWorkerNodes(fn.workerNodes)
+    checkValidWorkerNodes(fn.workerNodeKeys)
     if (
-      fn.workerNodes != null &&
-      fn.workerNodes.length >
+      fn.workerNodeKeys != null &&
+      fn.workerNodeKeys.length >
         (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers)
     ) {
       throw new Error(
         'Cannot add a task function with more worker node keys affinity than the maximum number of workers'
       )
     }
-    const workerNodeKeys = this.workerNodeKeys
+    const poolWorkerNodeKeys = this.workerNodeKeys
     if (
-      fn.workerNodes != null &&
-      fn.workerNodes.length !==
-        fn.workerNodes.filter(workerNodeKey =>
-          workerNodeKeys.includes(workerNodeKey)
+      fn.workerNodeKeys != null &&
+      fn.workerNodeKeys.length !==
+        fn.workerNodeKeys.filter(workerNodeKey =>
+          poolWorkerNodeKeys.includes(workerNodeKey)
         ).length
     ) {
-      const invalidWorkerNodeKeys = fn.workerNodes.filter(
-        workerNodeKey => !workerNodeKeys.includes(workerNodeKey)
+      const invalidWorkerNodeKeys = fn.workerNodeKeys.filter(
+        workerNodeKey => !poolWorkerNodeKeys.includes(workerNodeKey)
       )
       throw new Error(
-        `Cannot add a task function with invalid worker node keys: ${invalidWorkerNodeKeys.toString()}. Valid keys are: ${workerNodeKeys.toString()}`
+        `Cannot add a task function with invalid worker node keys: ${invalidWorkerNodeKeys.toString()}. Valid keys are: ${poolWorkerNodeKeys.toString()}`
       )
     }
     const opResult = await this.sendTaskFunctionOperationToWorkers({
@@ -1751,7 +1751,7 @@ export abstract class AbstractPool<
     return taskFunctionsProperties.find(
       (taskFunctionProperties: TaskFunctionProperties) =>
         taskFunctionProperties.name === name
-    )?.workerNodes
+    )?.workerNodeKeys
   }
 
   private getTasksQueuePriority (): boolean {

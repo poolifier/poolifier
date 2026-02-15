@@ -163,7 +163,7 @@ export interface TaskFunctionProperties {
   /**
    * Task function worker node keys affinity.
    */
-  readonly workerNodes?: number[]
+  readonly workerNodeKeys?: number[]
 }
 
 /**
