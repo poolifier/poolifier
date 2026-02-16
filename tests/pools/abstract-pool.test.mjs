@@ -1769,7 +1769,7 @@ describe('Abstract pool test suite', () => {
         workerNodeKeys: tooManyKeys,
       })
     ).rejects.toThrow(
-      /Cannot add a task function with more worker node keys affinity than the maximum number of workers/
+      /Cannot add a task function with more worker node keys than the maximum number of workers in the pool/
     )
 
     // Test with duplicate workerNodeKeys

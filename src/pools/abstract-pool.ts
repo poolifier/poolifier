@@ -598,7 +598,7 @@ export abstract class AbstractPool<
         (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers)
     ) {
       throw new Error(
-        'Cannot add a task function with more worker node keys affinity than the maximum number of workers'
+        'Cannot add a task function with more worker node keys than the maximum number of workers in the pool'
       )
     }
     if (fn.workerNodeKeys != null) {
