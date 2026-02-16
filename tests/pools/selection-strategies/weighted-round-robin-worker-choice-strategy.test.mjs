@@ -10,7 +10,7 @@ import { LeastUsedWorkerChoiceStrategy } from '../../../lib/pools/selection-stra
 import { RoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/round-robin-worker-choice-strategy.cjs'
 import { WeightedRoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy.cjs'
 
-describe('Worker choice strategies test suite', () => {
+describe('Weighted round robin worker choice strategy test suite', () => {
   const max = 3
   let pool
 
