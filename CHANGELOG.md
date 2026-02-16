@@ -5,6 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.2.0](https://github.com/poolifier/poolifier/compare/v5.1.7...v5.2.0) (2026-02-16)
+
+
+### 🚀 Features
+
+* task function worker node affinity  ([#2269](https://github.com/poolifier/poolifier/issues/2269)) ([8d9f9d7](https://github.com/poolifier/poolifier/commit/8d9f9d710c74ad72b7028fad325b8ccbf19a993b))
+
+
+### 🐞 Bug Fixes
+
+* **benchmarks:** destroy pool in the error case ([ef7e70b](https://github.com/poolifier/poolifier/commit/ef7e70bfd44f6e4ffe1b70ffffe569bc70182f7b))
+* **benchmarks:** port to tinybench v6 API ([35553c4](https://github.com/poolifier/poolifier/commit/35553c4c1cde3bfc2ac8be90f605495fb632cfca))
+* **deps:** update all non-major dependencies ([#3067](https://github.com/poolifier/poolifier/issues/3067)) ([686695d](https://github.com/poolifier/poolifier/commit/686695d32b38e7c16ffcbeb3d78e2d9d38fe26ea))
+* **deps:** update all non-major dependencies ([#3074](https://github.com/poolifier/poolifier/issues/3074)) ([0fc358b](https://github.com/poolifier/poolifier/commit/0fc358bbc571c238dc0c2594a88ced74f1573fc2))
+* **deps:** update all non-major dependencies ([#3088](https://github.com/poolifier/poolifier/issues/3088)) ([fbe2b7e](https://github.com/poolifier/poolifier/commit/fbe2b7e4872c9752d7661d0cd4b18f48e330ad94))
+* **deps:** update all non-major dependencies ([#3093](https://github.com/poolifier/poolifier/issues/3093)) ([618e20f](https://github.com/poolifier/poolifier/commit/618e20fbb4458582dd3866fb7ea787825e61c1ed))
+* **deps:** update all non-major dependencies ([#3100](https://github.com/poolifier/poolifier/issues/3100)) ([90627c3](https://github.com/poolifier/poolifier/commit/90627c38473240504d019138dd2d3ae50e97c25a))
+* **deps:** update all non-major dependencies ([#3104](https://github.com/poolifier/poolifier/issues/3104)) ([45dde62](https://github.com/poolifier/poolifier/commit/45dde6267a4b70907e5075089e6832e674f74c52))
+* **deps:** update all non-major dependencies ([#3108](https://github.com/poolifier/poolifier/issues/3108)) ([9eabef3](https://github.com/poolifier/poolifier/commit/9eabef3d591170d91601c6aa333fd88121089470))
+* **deps:** update all non-major dependencies ([#3114](https://github.com/poolifier/poolifier/issues/3114)) ([d8375f3](https://github.com/poolifier/poolifier/commit/d8375f31f900c63871c96cd0503165a28c69ffcb))
+* **deps:** update all non-major dependencies ([#3116](https://github.com/poolifier/poolifier/issues/3116)) ([0e34b31](https://github.com/poolifier/poolifier/commit/0e34b3129f0e8b9e3a6dace6306d43f5a325de87))
+* **deps:** update dependency nodemailer to v8 ([#3112](https://github.com/poolifier/poolifier/issues/3112)) ([1547823](https://github.com/poolifier/poolifier/commit/154782368d7fa15774b0754911809c1e10e7641a))
+* **deps:** update dependency poolifier to ^5.1.7 ([#3057](https://github.com/poolifier/poolifier/issues/3057)) ([acd2e28](https://github.com/poolifier/poolifier/commit/acd2e28098f6fbe89a69fa2f6cf0274420f8da9a))
+* **examples:** type warnings at build ([d6b712c](https://github.com/poolifier/poolifier/commit/d6b712c394c4a4a5fbe89779db2416a33e06710b))
+* fix benchmark report file generation ([e09bdfa](https://github.com/poolifier/poolifier/commit/e09bdfac2d4985187a145330c5bcc656d5db7c95))
+* safe access to tasks queue size ([f59708e](https://github.com/poolifier/poolifier/commit/f59708e59f29b19e926106829dfbd46128497556))
+* validate workerNodeKeys on worker ready and remove misleading JSDoc ([456af2f](https://github.com/poolifier/poolifier/commit/456af2f2a433d924b36cf1ed432414cc153a2313))
+
+
+### 📚 Documentation
+
+* publish documentation ([79d75fb](https://github.com/poolifier/poolifier/commit/79d75fb3bc764f116c274c8adbc65b075f20b592))
+
+
+### 🤖 Automation
+
+* update biome to 2.3.12 ([f81df44](https://github.com/poolifier/poolifier/commit/f81df444b6f06c8afdbc9dd0c1fd579ad6e67157))
+
 ## [5.1.7](https://github.com/poolifier/poolifier/compare/v5.1.6...v5.1.7) (2025-11-16)
 
 
