@@ -1909,9 +1909,9 @@ describe('Abstract pool test suite', () => {
     )
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
-      { name: DEFAULT_TASK_NAME },
-      { name: 'factorial' },
-      { name: 'fibonacci' },
+      { name: DEFAULT_TASK_NAME, priority: 1, workerNodeKeys: [0] },
+      { name: 'factorial', priority: 1, workerNodeKeys: [0] },
+      { name: 'fibonacci', priority: 2, workerNodeKeys: [0, 1] },
       { name: 'jsonIntegerSerialization' },
     ])
     await dynamicThreadPool.destroy()
@@ -1921,9 +1921,9 @@ describe('Abstract pool test suite', () => {
     )
     await waitPoolEvents(fixedClusterPool, PoolEvents.ready, 1)
     expect(fixedClusterPool.listTaskFunctionsProperties()).toStrictEqual([
-      { name: DEFAULT_TASK_NAME },
-      { name: 'factorial' },
-      { name: 'fibonacci' },
+      { name: DEFAULT_TASK_NAME, priority: 1, workerNodeKeys: [0] },
+      { name: 'factorial', priority: 1, workerNodeKeys: [0] },
+      { name: 'fibonacci', priority: 2, workerNodeKeys: [0, 1] },
       { name: 'jsonIntegerSerialization' },
     ])
     await fixedClusterPool.destroy()
@@ -1957,27 +1957,27 @@ describe('Abstract pool test suite', () => {
       )
     )
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
-      { name: DEFAULT_TASK_NAME },
-      { name: 'factorial' },
-      { name: 'fibonacci' },
+      { name: DEFAULT_TASK_NAME, priority: 1, workerNodeKeys: [0] },
+      { name: 'factorial', priority: 1, workerNodeKeys: [0] },
+      { name: 'fibonacci', priority: 2, workerNodeKeys: [0, 1] },
       { name: 'jsonIntegerSerialization' },
     ])
     await expect(
       dynamicThreadPool.setDefaultTaskFunction('factorial')
     ).resolves.toBe(true)
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
-      { name: DEFAULT_TASK_NAME },
-      { name: 'factorial' },
-      { name: 'fibonacci' },
+      { name: DEFAULT_TASK_NAME, priority: 1, workerNodeKeys: [0] },
+      { name: 'factorial', priority: 1, workerNodeKeys: [0] },
+      { name: 'fibonacci', priority: 2, workerNodeKeys: [0, 1] },
       { name: 'jsonIntegerSerialization' },
     ])
     await expect(
       dynamicThreadPool.setDefaultTaskFunction('fibonacci')
     ).resolves.toBe(true)
     expect(dynamicThreadPool.listTaskFunctionsProperties()).toStrictEqual([
-      { name: DEFAULT_TASK_NAME },
-      { name: 'fibonacci' },
-      { name: 'factorial' },
+      { name: DEFAULT_TASK_NAME, priority: 2, workerNodeKeys: [0, 1] },
+      { name: 'fibonacci', priority: 2, workerNodeKeys: [0, 1] },
+      { name: 'factorial', priority: 1, workerNodeKeys: [0] },
       { name: 'jsonIntegerSerialization' },
     ])
     await dynamicThreadPool.destroy()
@@ -2002,14 +2002,14 @@ describe('Abstract pool test suite', () => {
     expect(pool.info.executedTasks).toBe(4)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.info.taskFunctionsProperties).toStrictEqual([
-        { name: DEFAULT_TASK_NAME },
-        { name: 'factorial' },
-        { name: 'fibonacci' },
+        { name: DEFAULT_TASK_NAME, priority: 1, workerNodeKeys: [0] },
+        { name: 'factorial', priority: 1, workerNodeKeys: [0] },
+        { name: 'fibonacci', priority: 2, workerNodeKeys: [0, 1] },
         { name: 'jsonIntegerSerialization' },
       ])
       expect(workerNode.taskFunctionsUsage.size).toBe(3)
       expect(workerNode.usage.tasks.executed).toBeGreaterThan(0)
-      expect(workerNode.tasksQueue.enablePriority).toBe(false)
+      expect(workerNode.tasksQueue.enablePriority).toBe(true)
       for (const taskFunctionProperties of pool.listTaskFunctionsProperties()) {
         expect(
           workerNode.getTaskFunctionWorkerUsage(taskFunctionProperties.name)
@@ -2156,9 +2156,9 @@ describe('Abstract pool test suite', () => {
     expect(pool.info.executedTasks).toBe(4)
     for (const workerNode of pool.workerNodes) {
       expect(workerNode.info.taskFunctionsProperties).toStrictEqual([
-        { name: DEFAULT_TASK_NAME },
-        { name: 'factorial' },
-        { name: 'fibonacci', priority: -5 },
+        { name: DEFAULT_TASK_NAME, workerNodeKeys: [0] },
+        { name: 'factorial', workerNodeKeys: [0] },
+        { name: 'fibonacci', priority: -5, workerNodeKeys: [0, 1] },
         { name: 'jsonIntegerSerialization' },
       ])
       expect(workerNode.taskFunctionsUsage.size).toBe(3)
