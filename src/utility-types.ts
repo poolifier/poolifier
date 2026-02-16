@@ -163,7 +163,7 @@ export interface TaskFunctionProperties {
   /**
    * Task function worker node keys affinity.
    * Restricts task execution to specified worker nodes by their indices.
-   * Must contain valid indices within [0, pool size - 1].
+   * Must contain valid indices within [0, pool max size - 1].
    * - `undefined`: Uses the default (no affinity restriction).
    * - `null`: Explicitly disables any previously set affinity.
    * - `number[]`: Restricts execution to specified worker node indices.

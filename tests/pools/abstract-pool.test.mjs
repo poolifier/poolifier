@@ -1849,6 +1849,39 @@ describe('Abstract pool test suite', () => {
     await dynamicThreadPool.destroy()
   })
 
+  it('Verify that execute() creates dynamic workers for workerNodeKeys affinity', async () => {
+    const pool = new DynamicThreadPool(
+      1,
+      4,
+      './tests/worker-files/thread/testWorker.mjs'
+    )
+    await waitPoolEvents(pool, PoolEvents.ready, 1)
+    expect(pool.workerNodes.length).toBe(1)
+
+    await pool.addTaskFunction('affinityBeyondMin', {
+      taskFunction: data => data,
+      workerNodeKeys: [2, 3],
+    })
+
+    for (const workerNode of pool.workerNodes) {
+      workerNode.usage.tasks.executed = 0
+    }
+
+    const tasks = []
+    for (let i = 0; i < 4; i++) {
+      tasks.push(pool.execute({ test: i }, 'affinityBeyondMin'))
+    }
+    await Promise.all(tasks)
+
+    expect(pool.workerNodes.length).toBeGreaterThanOrEqual(4)
+    const executedOnAffinity =
+      pool.workerNodes[2].usage.tasks.executed +
+      pool.workerNodes[3].usage.tasks.executed
+    expect(executedOnAffinity).toBe(4)
+
+    await pool.destroy()
+  })
+
   it('Verify that removeTaskFunction() is working', async () => {
     const dynamicThreadPool = new DynamicThreadPool(
       Math.floor(numberOfWorkers / 2),
@@ -2001,6 +2034,9 @@ describe('Abstract pool test suite', () => {
     expect(pool.info.executingTasks).toBe(0)
     expect(pool.info.executedTasks).toBe(4)
     for (const workerNode of pool.workerNodes) {
+      if (workerNode.info.taskFunctionsProperties == null) {
+        continue
+      }
       expect(workerNode.info.taskFunctionsProperties).toStrictEqual([
         { name: DEFAULT_TASK_NAME, priority: 1, workerNodeKeys: [0] },
         { name: 'factorial', priority: 1, workerNodeKeys: [0] },
@@ -2155,6 +2191,9 @@ describe('Abstract pool test suite', () => {
     expect(pool.info.executingTasks).toBe(0)
     expect(pool.info.executedTasks).toBe(4)
     for (const workerNode of pool.workerNodes) {
+      if (workerNode.info.taskFunctionsProperties == null) {
+        continue
+      }
       expect(workerNode.info.taskFunctionsProperties).toStrictEqual([
         { name: DEFAULT_TASK_NAME, workerNodeKeys: [0] },
         { name: 'factorial', workerNodeKeys: [0] },

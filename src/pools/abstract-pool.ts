@@ -1607,7 +1607,19 @@ export abstract class AbstractPool<
    */
   private chooseWorkerNode (name?: string): number {
     const workerNodeKeysSet = this.getTaskFunctionWorkerNodeKeysSet(name)
-    if (workerNodeKeysSet == null && this.shallCreateDynamicWorker()) {
+    if (workerNodeKeysSet != null) {
+      const maxPoolSize =
+        this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers
+      const targetSize = Math.max(...workerNodeKeysSet) + 1
+      while (
+        this.started &&
+        !this.destroying &&
+        this.workerNodes.length < targetSize &&
+        this.workerNodes.length < maxPoolSize
+      ) {
+        this.createAndSetupDynamicWorkerNode()
+      }
+    } else if (this.shallCreateDynamicWorker()) {
       const workerNodeKey = this.createAndSetupDynamicWorkerNode()
       if (
         this.workerChoiceStrategiesContext?.getPolicy().dynamicWorkerUsage ===
