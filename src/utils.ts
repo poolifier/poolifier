@@ -231,5 +231,8 @@ export const buildTaskFunctionProperties = <Data, Response>(
     ...(taskFunctionObject?.strategy != null && {
       strategy: taskFunctionObject.strategy,
     }),
+    ...(taskFunctionObject?.workerNodeKeys != null && {
+      workerNodeKeys: taskFunctionObject.workerNodeKeys,
+    }),
   }
 }

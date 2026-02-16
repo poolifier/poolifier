@@ -1,5 +1,5 @@
 import { expect } from '@std/expect'
-import { restore, stub } from 'sinon'
+import { createStubInstance, restore, stub } from 'sinon'
 
 import {
   DynamicThreadPool,
@@ -503,5 +503,105 @@ describe('Worker choice strategies context test suite', () => {
       workerChoiceStrategiesContext.getTaskStatisticsRequirements().waitTime
         .median
     ).toBe(true)
+  })
+
+  it('Verify that execute() passes workerNodeKeysSet to strategy choose()', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
+      fixedPool
+    )
+    const workerChoiceStrategyStub = createStubInstance(
+      RoundRobinWorkerChoiceStrategy,
+      {
+        choose: stub().returns(1),
+      }
+    )
+    workerChoiceStrategiesContext.workerChoiceStrategies.set(
+      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
+      workerChoiceStrategyStub
+    )
+    const workerNodeKeys = [1, 2]
+    const chosenWorkerKey = workerChoiceStrategiesContext.execute(
+      undefined,
+      new Set(workerNodeKeys)
+    )
+    expect(
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
+      ).choose.calledOnce
+    ).toBe(true)
+    // Verify it was called with a Set containing the same elements
+    const callArg = workerChoiceStrategiesContext.workerChoiceStrategies.get(
+      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
+    ).choose.firstCall.args[0]
+    expect(callArg).toBeInstanceOf(Set)
+    expect([...callArg]).toStrictEqual(workerNodeKeys)
+    expect(chosenWorkerKey).toBe(1)
+  })
+
+  it('Verify that execute() with workerNodeKeys affinity filters worker selection', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
+      fixedPool
+    )
+    // Stub returns the first valid key from workerNodeKeysSet
+    const workerChoiceStrategyStub = createStubInstance(
+      RoundRobinWorkerChoiceStrategy,
+      {
+        choose: stub().callsFake(workerNodeKeysSet => {
+          if (workerNodeKeysSet != null && workerNodeKeysSet.size > 0) {
+            return [...workerNodeKeysSet][0]
+          }
+          return 0
+        }),
+      }
+    )
+    workerChoiceStrategiesContext.workerChoiceStrategies.set(
+      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
+      workerChoiceStrategyStub
+    )
+    // Test with specific worker node affinity
+    const workerNodeKeys = [2]
+    const chosenWorkerKey = workerChoiceStrategiesContext.execute(
+      undefined,
+      new Set(workerNodeKeys)
+    )
+    expect(chosenWorkerKey).toBe(2)
+    // Verify it was called with a Set containing the same elements
+    const callArg = workerChoiceStrategiesContext.workerChoiceStrategies.get(
+      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
+    ).choose.firstCall.args[0]
+    expect(callArg).toBeInstanceOf(Set)
+    expect([...callArg]).toStrictEqual(workerNodeKeys)
+  })
+
+  it('Verify that execute() retries with workerNodes until valid worker found', () => {
+    const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
+      fixedPool
+    )
+    const workerChoiceStrategyStub = createStubInstance(
+      RoundRobinWorkerChoiceStrategy,
+      {
+        choose: stub()
+          .onCall(0)
+          .returns(undefined)
+          .onCall(1)
+          .returns(undefined)
+          .onCall(2)
+          .returns(1),
+      }
+    )
+    workerChoiceStrategiesContext.workerChoiceStrategies.set(
+      workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
+      workerChoiceStrategyStub
+    )
+    const chosenWorkerKey = workerChoiceStrategiesContext.execute(
+      undefined,
+      new Set([0, 1, 2])
+    )
+    expect(
+      workerChoiceStrategiesContext.workerChoiceStrategies.get(
+        workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
+      ).choose.callCount
+    ).toBe(3)
+    expect(chosenWorkerKey).toBe(1)
   })
 })

@@ -60,14 +60,17 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number | undefined {
+  public choose (workerNodeKeysSet?: Set<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.weightedRoundRobinNextWorkerNodeKey()
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    if (!this.isWorkerNodeReady(this.nextWorkerNodeKey!)) {
+    const chosenWorkerNodeKey =
+      this.weightedRoundRobinNextWorkerNodeKey(workerNodeKeysSet)
+    if (chosenWorkerNodeKey == null) {
       return undefined
     }
-    return this.checkWorkerNodeKey(this.nextWorkerNodeKey)
+    if (!this.isWorkerNodeEligible(chosenWorkerNodeKey, workerNodeKeysSet)) {
+      return undefined
+    }
+    return this.checkWorkerNodeKey(chosenWorkerNodeKey)
   }
 
   /** @inheritDoc */
@@ -104,19 +107,49 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     return true
   }
 
-  private weightedRoundRobinNextWorkerNodeKey (): number | undefined {
+  private findEligibleWorkerNodeKey (
+    workerNodeKeysSet?: Set<number>
+  ): number | undefined {
+    const workerNodesCount = this.pool.workerNodes.length
+    for (let i = 0; i < workerNodesCount; i++) {
+      this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
+      if (
+        workerNodeKeysSet == null ||
+        workerNodeKeysSet.has(this.nextWorkerNodeKey)
+      ) {
+        return this.nextWorkerNodeKey
+      }
+    }
+    return undefined
+  }
+
+  private weightedRoundRobinNextWorkerNodeKey (
+    workerNodeKeysSet?: Set<number>
+  ): number | undefined {
+    if (workerNodeKeysSet?.size === 0) {
+      return undefined
+    }
+    if (workerNodeKeysSet?.size === 1) {
+      const [workerNodeKey] = workerNodeKeysSet
+      this.nextWorkerNodeKey = workerNodeKey
+      this.workerNodeVirtualTaskExecutionTime = 0
+      return this.getSingleWorkerNodeKey(workerNodeKeysSet)
+    }
     const workerNodeKey = this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
+    if (workerNodeKeysSet != null && !workerNodeKeysSet.has(workerNodeKey)) {
+      this.nextWorkerNodeKey = this.findEligibleWorkerNodeKey(workerNodeKeysSet)
+      this.workerNodeVirtualTaskExecutionTime = 0
+      return this.nextWorkerNodeKey
+    }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const workerWeight = this.opts!.weights![workerNodeKey]
     if (this.workerNodeVirtualTaskExecutionTime < workerWeight) {
+      this.nextWorkerNodeKey = workerNodeKey
       this.workerNodeVirtualTaskExecutionTime +=
         this.getWorkerNodeTaskWaitTime(workerNodeKey) +
         this.getWorkerNodeTaskRunTime(workerNodeKey)
     } else {
-      this.nextWorkerNodeKey =
-        this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
-          ? 0
-          : workerNodeKey + 1
+      this.nextWorkerNodeKey = this.findEligibleWorkerNodeKey(workerNodeKeysSet)
       this.workerNodeVirtualTaskExecutionTime = 0
     }
     return this.nextWorkerNodeKey

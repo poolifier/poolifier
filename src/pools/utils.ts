@@ -118,6 +118,32 @@ export const checkValidWorkerChoiceStrategy = (
   }
 }
 
+export const checkValidWorkerNodeKeys = (
+  workerNodeKeys: number[] | undefined
+): void => {
+  if (workerNodeKeys != null && !Array.isArray(workerNodeKeys)) {
+    throw new TypeError('Invalid worker node keys: must be an array')
+  }
+  if (workerNodeKeys?.length === 0) {
+    throw new RangeError('Invalid worker node keys: must not be an empty array')
+  }
+  if (workerNodeKeys != null) {
+    for (const workerNodeKey of workerNodeKeys) {
+      if (!Number.isSafeInteger(workerNodeKey) || workerNodeKey < 0) {
+        throw new TypeError(
+          `Invalid worker node key '${workerNodeKey.toString()}': must be a non-negative safe integer`
+        )
+      }
+    }
+  }
+  if (
+    workerNodeKeys != null &&
+    new Set(workerNodeKeys).size !== workerNodeKeys.length
+  ) {
+    throw new TypeError('Invalid worker node keys: must not contain duplicates')
+  }
+}
+
 export const checkValidTasksQueueOptions = (
   tasksQueueOptions: TasksQueueOptions | undefined
 ): void => {
