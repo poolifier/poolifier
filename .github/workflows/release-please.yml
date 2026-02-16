@@ -88,6 +88,10 @@ jobs:
     needs: build-release
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      id-token: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -111,26 +115,18 @@ jobs:
       - name: Publish Release
         if: ${{ contains(steps.package-version.outputs.version, '-') == false }}
         run: pnpm publish --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish Release Candidate
         if: ${{ contains(steps.package-version.outputs.version, '-rc') == true }}
         run: pnpm publish --no-git-checks --tag next
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish Beta Release
         if: ${{ contains(steps.package-version.outputs.version, '-beta') == true }}
         run: pnpm publish --no-git-checks --tag beta
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish Alpha Release
         if: ${{ contains(steps.package-version.outputs.version, '-alpha') == true }}
         run: pnpm publish --no-git-checks --tag alpha
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-documentation:
     needs: [publish-npm, publish-jsr]
