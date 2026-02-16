@@ -142,10 +142,13 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
       return undefined
     }
     if (workerNodeKeysSet.size === 1) {
-      const [workerNodeKey] = workerNodeKeysSet
-      this.nextWorkerNodeKey = workerNodeKey
-      this.workerNodeVirtualTaskExecutionTime = 0
-      return this.getSingleWorkerNodeKey(workerNodeKeysSet)
+      const selectedWorkerNodeKey =
+        this.getSingleWorkerNodeKey(workerNodeKeysSet)
+      if (selectedWorkerNodeKey != null) {
+        this.nextWorkerNodeKey = selectedWorkerNodeKey
+        this.workerNodeVirtualTaskExecutionTime = 0
+      }
+      return selectedWorkerNodeKey
     }
     const workerNodeKey = this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
     if (!workerNodeKeysSet.has(workerNodeKey)) {

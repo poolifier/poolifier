@@ -43,8 +43,10 @@ export interface TaskFunctionObject<Data = unknown, Response = unknown> {
   /**
    * Task function worker node keys affinity.
    * Restricts task execution to specified worker nodes by their indices.
-   * Must contain valid indices within [0, pool size - 1].
+   * Must contain valid indices within [0, pool max size - 1].
    * If undefined, task can execute on any worker node.
+   * @remarks `null` is not accepted here. Use `null` only via
+   * {@link TaskFunctionProperties.workerNodeKeys} to clear affinity at runtime.
    */
   workerNodeKeys?: number[]
 }

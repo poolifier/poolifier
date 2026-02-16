@@ -77,9 +77,9 @@ This method is available on both pool implementations and returns a boolean.
 
 #### Worker Node Affinity Notes
 
-- Worker node keys are validated at registration time against current pool size (`workerNodes.length`), not maximum size.
+- Worker node keys are validated at registration time against the pool's maximum size (`maximumNumberOfWorkers ?? minimumNumberOfWorkers`).
 - The number of worker node keys cannot exceed the pool's maximum size (`maximumNumberOfWorkers ?? minimumNumberOfWorkers`).
-- In dynamic pools, you cannot reference workers that don't exist yet.
+- In dynamic pools, you can reference worker node keys up to the maximum pool size, even if the corresponding workers don't exist yet.
 - At execution time, if no specified worker is ready, selection retries until one becomes available or retries are exhausted.
 
 This method is available on both pool implementations and returns a boolean promise.

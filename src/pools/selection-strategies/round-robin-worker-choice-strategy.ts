@@ -89,9 +89,12 @@ export class RoundRobinWorkerChoiceStrategy<
       return undefined
     }
     if (workerNodeKeysSet.size === 1) {
-      const [workerNodeKey] = workerNodeKeysSet
-      this.nextWorkerNodeKey = workerNodeKey
-      return this.getSingleWorkerNodeKey(workerNodeKeysSet)
+      const selectedWorkerNodeKey =
+        this.getSingleWorkerNodeKey(workerNodeKeysSet)
+      if (selectedWorkerNodeKey != null) {
+        this.nextWorkerNodeKey = selectedWorkerNodeKey
+      }
+      return selectedWorkerNodeKey
     }
     const workerNodesCount = this.pool.workerNodes.length
     for (let i = 0; i < workerNodesCount; i++) {

@@ -602,13 +602,14 @@ export abstract class AbstractPool<
       )
     }
     if (fn.workerNodeKeys != null) {
-      const poolSize = this.workerNodes.length
+      const maxPoolSize =
+        this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers
       const invalidWorkerNodeKeys = fn.workerNodeKeys.filter(
-        workerNodeKey => workerNodeKey < 0 || workerNodeKey >= poolSize
+        workerNodeKey => workerNodeKey < 0 || workerNodeKey >= maxPoolSize
       )
       if (invalidWorkerNodeKeys.length > 0) {
         throw new Error(
-          `Cannot add a task function with invalid worker node keys: ${invalidWorkerNodeKeys.toString()}. Valid keys are: 0..${(poolSize - 1).toString()}`
+          `Cannot add a task function with invalid worker node keys: ${invalidWorkerNodeKeys.toString()}. Valid keys are: 0..${(maxPoolSize - 1).toString()}`
         )
       }
     }
