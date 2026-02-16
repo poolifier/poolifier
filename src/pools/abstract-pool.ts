@@ -1592,7 +1592,7 @@ export abstract class AbstractPool<
     if (workerNodeKeysSet != null) {
       const maxPoolSize =
         this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers
-      const targetSize = Math.max(...workerNodeKeysSet) + 1
+      const targetSize = max(...workerNodeKeysSet) + 1
       while (
         this.started &&
         !this.destroying &&
