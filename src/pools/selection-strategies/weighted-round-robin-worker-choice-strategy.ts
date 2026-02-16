@@ -108,15 +108,12 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   private findEligibleWorkerNodeKey (
-    workerNodeKeysSet?: Set<number>
+    workerNodeKeysSet: Set<number>
   ): number | undefined {
     const workerNodesCount = this.pool.workerNodes.length
     for (let i = 0; i < workerNodesCount; i++) {
       this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
-      if (
-        workerNodeKeysSet == null ||
-        workerNodeKeysSet.has(this.nextWorkerNodeKey)
-      ) {
+      if (workerNodeKeysSet.has(this.nextWorkerNodeKey)) {
         return this.nextWorkerNodeKey
       }
     }
@@ -126,17 +123,32 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   private weightedRoundRobinNextWorkerNodeKey (
     workerNodeKeysSet?: Set<number>
   ): number | undefined {
-    if (workerNodeKeysSet?.size === 0) {
+    if (workerNodeKeysSet == null) {
+      const workerNodeKey = this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const workerWeight = this.opts!.weights![workerNodeKey]
+      if (this.workerNodeVirtualTaskExecutionTime < workerWeight) {
+        this.nextWorkerNodeKey = workerNodeKey
+        this.workerNodeVirtualTaskExecutionTime +=
+          this.getWorkerNodeTaskWaitTime(workerNodeKey) +
+          this.getWorkerNodeTaskRunTime(workerNodeKey)
+      } else {
+        this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()
+        this.workerNodeVirtualTaskExecutionTime = 0
+      }
+      return this.nextWorkerNodeKey
+    }
+    if (workerNodeKeysSet.size === 0) {
       return undefined
     }
-    if (workerNodeKeysSet?.size === 1) {
+    if (workerNodeKeysSet.size === 1) {
       const [workerNodeKey] = workerNodeKeysSet
       this.nextWorkerNodeKey = workerNodeKey
       this.workerNodeVirtualTaskExecutionTime = 0
       return this.getSingleWorkerNodeKey(workerNodeKeysSet)
     }
     const workerNodeKey = this.nextWorkerNodeKey ?? this.previousWorkerNodeKey
-    if (workerNodeKeysSet != null && !workerNodeKeysSet.has(workerNodeKey)) {
+    if (!workerNodeKeysSet.has(workerNodeKey)) {
       this.nextWorkerNodeKey = this.findEligibleWorkerNodeKey(workerNodeKeysSet)
       this.workerNodeVirtualTaskExecutionTime = 0
       return this.nextWorkerNodeKey
