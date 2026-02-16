@@ -93,19 +93,21 @@ export class WorkerChoiceStrategiesContext<
   }
 
   /**
-   * Executes the given worker choice strategy in the context algorithm.
-   * @param workerChoiceStrategy - The worker choice strategy algorithm to execute.
-   * @defaultValue this.defaultWorkerChoiceStrategy
+   * Executes the given worker choice strategy.
+   * @param workerChoiceStrategy - The worker choice strategy.
+   * @param workerNodeKeysSet - The worker node keys affinity set. If undefined, all workers are eligible.
    * @returns The key of the worker node.
    * @throws {Error} If after computed retries the worker node key is null or undefined.
    */
   public execute (
     workerChoiceStrategy: WorkerChoiceStrategy = this
-      .defaultWorkerChoiceStrategy
+      .defaultWorkerChoiceStrategy,
+    workerNodeKeysSet?: ReadonlySet<number>
   ): number {
     return this.executeStrategy(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.workerChoiceStrategies.get(workerChoiceStrategy)!
+      this.workerChoiceStrategies.get(workerChoiceStrategy)!,
+      workerNodeKeysSet
     )
   }
 
@@ -240,17 +242,22 @@ export class WorkerChoiceStrategiesContext<
   }
 
   /**
-   * Executes the given worker choice strategy.
-   * @param workerChoiceStrategy - The worker choice strategy.
+   * Executes the given worker choice strategy in the context algorithm.
+   * @param workerChoiceStrategy - The worker choice strategy algorithm to execute.
+   * @param workerNodeKeysSet - The worker node keys affinity set. If undefined, all workers are eligible.
    * @returns The key of the worker node.
    * @throws {Error} If after computed retries the worker node key is null or undefined.
    */
-  private executeStrategy (workerChoiceStrategy: IWorkerChoiceStrategy): number {
-    let workerNodeKey: number | undefined = workerChoiceStrategy.choose()
+  private executeStrategy (
+    workerChoiceStrategy: IWorkerChoiceStrategy,
+    workerNodeKeysSet?: ReadonlySet<number>
+  ): number {
+    let workerNodeKey: number | undefined =
+      workerChoiceStrategy.choose(workerNodeKeysSet)
     let retriesCount = 0
     while (workerNodeKey == null && retriesCount < this.retries) {
       retriesCount++
-      workerNodeKey = workerChoiceStrategy.choose()
+      workerNodeKey = workerChoiceStrategy.choose(workerNodeKeysSet)
     }
     workerChoiceStrategy.retriesCount = retriesCount
     if (workerNodeKey == null) {

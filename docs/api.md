@@ -73,7 +73,14 @@ This method is available on both pool implementations and returns a boolean.
 ### `pool.addTaskFunction(name, fn)`
 
 `name` (mandatory) The task function name.  
-`fn` (mandatory) The task function `(data?: Data) => Response | Promise<Response>` or task function object `{ taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy }`. Priority range is the same as Unix nice levels.
+`fn` (mandatory) The task function `(data?: Data) => Response | Promise<Response>` or task function object `{ taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }`. Priority range is the same as Unix nice levels. `workerNodeKeys` is an array of worker node keys to restrict task execution to specific workers (worker node affinity).
+
+#### Worker Node Affinity Notes
+
+- Worker node keys are validated at registration time against the pool's maximum size (`maximumNumberOfWorkers ?? minimumNumberOfWorkers`).
+- The number of worker node keys cannot exceed the pool's maximum size (`maximumNumberOfWorkers ?? minimumNumberOfWorkers`).
+- In dynamic pools, you can reference worker node keys up to the maximum pool size. Workers that don't exist yet are automatically created when a task targeting them is executed.
+- At execution time, if no specified worker is ready, selection retries until one becomes available or retries are exhausted.
 
 This method is available on both pool implementations and returns a boolean promise.
 
@@ -158,7 +165,7 @@ An object with these properties:
 
 ### `class YourWorker extends ThreadWorker/ClusterWorker`
 
-`taskFunctions` (mandatory) The task function or task functions object `Record<string, (data?: Data) => Response | Promise<Response> | { taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy }>` that you want to execute on the worker. Priority range is the same as Unix nice levels.  
+`taskFunctions` (mandatory) The task function or task functions object `Record<string, (data?: Data) => Response | Promise<Response> | { taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }>` that you want to execute on the worker. Priority range is the same as Unix nice levels. `workerNodeKeys` is an array of worker node keys to restrict task execution to specific workers (worker node affinity). See [Worker Node Affinity Notes](#worker-node-affinity-notes) above for validation behavior.  
 `opts` (optional) An object with these properties:
 
 - `killBehavior` (optional) - Dictates if your worker will be deleted in case a task is active on it.  
@@ -185,7 +192,7 @@ This method is available on both worker implementations and returns `{ status: b
 #### `YourWorker.addTaskFunction(name, fn)`
 
 `name` (mandatory) The task function name.  
-`fn` (mandatory) The task function `(data?: Data) => Response | Promise<Response>` or task function object `{ taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy }`. Priority range is the same as Unix nice levels.
+`fn` (mandatory) The task function `(data?: Data) => Response | Promise<Response>` or task function object `{ taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }`. Priority range is the same as Unix nice levels. `workerNodeKeys` is an array of worker node keys to restrict task execution to specific workers (worker node affinity). See [Worker Node Affinity Notes](#worker-node-affinity-notes) above for validation behavior.
 
 This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
 

@@ -66,11 +66,13 @@ export const Measurements: Readonly<{
 export interface IWorkerChoiceStrategy {
   /**
    * Chooses a worker node in the pool and returns its key.
-   * If no worker nodes are not eligible, `undefined` is returned.
-   * If `undefined` is returned, the caller retry.
+   * If no worker nodes are eligible, `undefined` is returned and the caller retries.
+   * @param workerNodeKeysSet - The worker node keys affinity set. If undefined, all workers are eligible.
    * @returns The worker node key or `undefined`.
    */
-  readonly choose: () => number | undefined
+  readonly choose: (
+    workerNodeKeysSet?: ReadonlySet<number>
+  ) => number | undefined
   /**
    * The worker choice strategy name.
    */

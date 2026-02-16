@@ -5,6 +5,7 @@ import { Worker as ThreadWorker } from 'node:worker_threads'
 import { CircularBuffer } from '../../lib/circular-buffer.cjs'
 import { WorkerTypes } from '../../lib/index.cjs'
 import {
+  checkValidWorkerNodeKeys,
   createWorker,
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   getDefaultTasksQueueOptions,
@@ -158,5 +159,93 @@ describe('Pool utils test suite', () => {
       stolen: false,
       type: WorkerTypes.cluster,
     })
+  })
+
+  it('Verify checkValidWorkerNodeKeys() behavior', () => {
+    // Should not throw for undefined
+    expect(() => checkValidWorkerNodeKeys(undefined)).not.toThrow()
+    // Should not throw for null
+    expect(() => checkValidWorkerNodeKeys(null)).not.toThrow()
+    // Should not throw for valid array with elements
+    expect(() => checkValidWorkerNodeKeys([0, 1, 2])).not.toThrow()
+    // Should throw TypeError for non-array
+    expect(() => checkValidWorkerNodeKeys('not an array')).toThrow(
+      new TypeError('Invalid worker node keys: must be an array')
+    )
+    expect(() => checkValidWorkerNodeKeys(123)).toThrow(
+      new TypeError('Invalid worker node keys: must be an array')
+    )
+    expect(() => checkValidWorkerNodeKeys({})).toThrow(
+      new TypeError('Invalid worker node keys: must be an array')
+    )
+    // Should throw RangeError for empty array
+    expect(() => checkValidWorkerNodeKeys([])).toThrow(
+      new RangeError('Invalid worker node keys: must not be an empty array')
+    )
+    // Should throw TypeError for non-integer values
+    expect(() => checkValidWorkerNodeKeys([1.5])).toThrow(
+      new TypeError(
+        "Invalid worker node key '1.5': must be a non-negative safe integer"
+      )
+    )
+    expect(() => checkValidWorkerNodeKeys([0, 1.5, 2])).toThrow(
+      new TypeError(
+        "Invalid worker node key '1.5': must be a non-negative safe integer"
+      )
+    )
+    // Should throw TypeError for negative values
+    expect(() => checkValidWorkerNodeKeys([-1])).toThrow(
+      new TypeError(
+        "Invalid worker node key '-1': must be a non-negative safe integer"
+      )
+    )
+    expect(() => checkValidWorkerNodeKeys([0, -1, 2])).toThrow(
+      new TypeError(
+        "Invalid worker node key '-1': must be a non-negative safe integer"
+      )
+    )
+    // Should throw TypeError for NaN
+    expect(() => checkValidWorkerNodeKeys([NaN])).toThrow(
+      new TypeError(
+        "Invalid worker node key 'NaN': must be a non-negative safe integer"
+      )
+    )
+    // Should throw TypeError for Infinity
+    expect(() => checkValidWorkerNodeKeys([Infinity])).toThrow(
+      new TypeError(
+        "Invalid worker node key 'Infinity': must be a non-negative safe integer"
+      )
+    )
+    expect(() => checkValidWorkerNodeKeys([-Infinity])).toThrow(
+      new TypeError(
+        "Invalid worker node key '-Infinity': must be a non-negative safe integer"
+      )
+    )
+    // Should throw TypeError for duplicate keys
+    expect(() => checkValidWorkerNodeKeys([0, 0, 1])).toThrow(
+      new TypeError('Invalid worker node keys: must not contain duplicates')
+    )
+    expect(() => checkValidWorkerNodeKeys([1, 2, 1])).toThrow(
+      new TypeError('Invalid worker node keys: must not contain duplicates')
+    )
+    // Should not throw with maxPoolSize when keys are in range
+    expect(() => checkValidWorkerNodeKeys([0, 1, 2], 4)).not.toThrow()
+    // Should throw RangeError when keys exceed maxPoolSize count
+    expect(() => checkValidWorkerNodeKeys([0, 1, 2, 3, 4], 4)).toThrow(
+      new RangeError(
+        'Cannot add a task function with more worker node keys than the maximum number of workers in the pool'
+      )
+    )
+    // Should throw RangeError when a key is out of range
+    expect(() => checkValidWorkerNodeKeys([0, 4], 4)).toThrow(
+      new RangeError(
+        'Cannot add a task function with invalid worker node keys: 4. Valid keys are: 0..3'
+      )
+    )
+    expect(() => checkValidWorkerNodeKeys([999], 4)).toThrow(
+      new RangeError(
+        'Cannot add a task function with invalid worker node keys: 999. Valid keys are: 0..3'
+      )
+    )
   })
 })

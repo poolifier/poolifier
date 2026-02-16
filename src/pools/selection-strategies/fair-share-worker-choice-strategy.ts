@@ -58,9 +58,9 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number | undefined {
+  public choose (workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey()
+    this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey(workerNodeKeysSet)
     return this.nextWorkerNodeKey
   }
 
@@ -111,19 +111,19 @@ export class FairShareWorkerChoiceStrategy<
     )
   }
 
-  private fairShareNextWorkerNodeKey (): number | undefined {
+  private fairShareNextWorkerNodeKey (
+    workerNodeKeysSet?: ReadonlySet<number>
+  ): number | undefined {
+    if (workerNodeKeysSet?.size === 0) {
+      return undefined
+    }
+    if (workerNodeKeysSet?.size === 1) {
+      return this.getSingleWorkerNodeKey(workerNodeKeysSet)
+    }
     const chosenWorkerNodeKey = this.pool.workerNodes.reduce(
       (minWorkerNodeKey: number, workerNode, workerNodeKey, workerNodes) => {
-        if (!this.isWorkerNodeReady(workerNodeKey)) {
+        if (!this.isWorkerNodeEligible(workerNodeKey, workerNodeKeysSet)) {
           return minWorkerNodeKey
-        }
-        if (minWorkerNodeKey === -1) {
-          workerNode.strategyData = {
-            ...workerNode.strategyData,
-            virtualTaskEndTimestamp:
-              this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey),
-          }
-          return workerNodeKey
         }
         if (workerNode.strategyData?.virtualTaskEndTimestamp == null) {
           workerNode.strategyData = {
@@ -131,6 +131,9 @@ export class FairShareWorkerChoiceStrategy<
             virtualTaskEndTimestamp:
               this.computeWorkerNodeVirtualTaskEndTimestamp(workerNodeKey),
           }
+        }
+        if (minWorkerNodeKey === -1) {
+          return workerNodeKey
         }
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return workerNode.strategyData.virtualTaskEndTimestamp! <

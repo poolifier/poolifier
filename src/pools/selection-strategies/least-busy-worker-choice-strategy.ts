@@ -53,9 +53,9 @@ export class LeastBusyWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number | undefined {
+  public choose (workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
-    this.nextWorkerNodeKey = this.leastBusyNextWorkerNodeKey()
+    this.nextWorkerNodeKey = this.leastBusyNextWorkerNodeKey(workerNodeKeysSet)
     return this.nextWorkerNodeKey
   }
 
@@ -74,10 +74,18 @@ export class LeastBusyWorkerChoiceStrategy<
     return true
   }
 
-  private leastBusyNextWorkerNodeKey (): number | undefined {
+  private leastBusyNextWorkerNodeKey (
+    workerNodeKeysSet?: ReadonlySet<number>
+  ): number | undefined {
+    if (workerNodeKeysSet?.size === 0) {
+      return undefined
+    }
+    if (workerNodeKeysSet?.size === 1) {
+      return this.getSingleWorkerNodeKey(workerNodeKeysSet)
+    }
     const chosenWorkerNodeKey = this.pool.workerNodes.reduce(
       (minWorkerNodeKey: number, workerNode, workerNodeKey, workerNodes) => {
-        if (!this.isWorkerNodeReady(workerNodeKey)) {
+        if (!this.isWorkerNodeEligible(workerNodeKey, workerNodeKeysSet)) {
           return minWorkerNodeKey
         }
         if (minWorkerNodeKey === -1) {

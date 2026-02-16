@@ -118,6 +118,48 @@ export const checkValidWorkerChoiceStrategy = (
   }
 }
 
+export const checkValidWorkerNodeKeys = (
+  workerNodeKeys: null | number[] | undefined,
+  maxPoolSize?: number
+): void => {
+  if (workerNodeKeys != null && !Array.isArray(workerNodeKeys)) {
+    throw new TypeError('Invalid worker node keys: must be an array')
+  }
+  if (workerNodeKeys?.length === 0) {
+    throw new RangeError('Invalid worker node keys: must not be an empty array')
+  }
+  if (workerNodeKeys != null) {
+    for (const workerNodeKey of workerNodeKeys) {
+      if (!Number.isSafeInteger(workerNodeKey) || workerNodeKey < 0) {
+        throw new TypeError(
+          `Invalid worker node key '${workerNodeKey.toString()}': must be a non-negative safe integer`
+        )
+      }
+    }
+  }
+  if (
+    workerNodeKeys != null &&
+    new Set(workerNodeKeys).size !== workerNodeKeys.length
+  ) {
+    throw new TypeError('Invalid worker node keys: must not contain duplicates')
+  }
+  if (maxPoolSize != null && workerNodeKeys != null) {
+    if (workerNodeKeys.length > maxPoolSize) {
+      throw new RangeError(
+        'Cannot add a task function with more worker node keys than the maximum number of workers in the pool'
+      )
+    }
+    const invalidWorkerNodeKeys = workerNodeKeys.filter(
+      workerNodeKey => workerNodeKey >= maxPoolSize
+    )
+    if (invalidWorkerNodeKeys.length > 0) {
+      throw new RangeError(
+        `Cannot add a task function with invalid worker node keys: ${invalidWorkerNodeKeys.toString()}. Valid keys are: 0..${(maxPoolSize - 1).toString()}`
+      )
+    }
+  }
+}
+
 export const checkValidTasksQueueOptions = (
   tasksQueueOptions: TasksQueueOptions | undefined
 ): void => {

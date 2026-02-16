@@ -72,7 +72,13 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (): number | undefined {
+  public choose (workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
+    if (workerNodeKeysSet?.size === 0) {
+      return undefined
+    }
+    if (workerNodeKeysSet?.size === 1) {
+      return this.getSingleWorkerNodeKey(workerNodeKeysSet)
+    }
     for (
       let roundIndex = this.roundId;
       roundIndex < this.roundWeights.length;
@@ -94,7 +100,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const workerWeight = this.opts!.weights![workerNodeKey]
         if (
-          this.isWorkerNodeReady(workerNodeKey) &&
+          this.isWorkerNodeEligible(workerNodeKey, workerNodeKeysSet) &&
           workerWeight >= this.roundWeights[roundIndex] &&
           this.workerNodeVirtualTaskExecutionTime < workerWeight
         ) {
@@ -106,6 +112,7 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
           return this.nextWorkerNodeKey
         }
       }
+      this.workerNodeId = 0
     }
     this.interleavedWeightedRoundRobinNextWorkerNodeId()
     return undefined

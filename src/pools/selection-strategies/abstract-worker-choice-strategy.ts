@@ -72,7 +72,9 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public abstract choose (): number | undefined
+  public abstract choose (
+    workerNodeKeysSet?: ReadonlySet<number>
+  ): number | undefined
 
   /** @inheritDoc */
   public abstract remove (workerNodeKey: number): boolean
@@ -108,6 +110,28 @@ export abstract class AbstractWorkerChoiceStrategy<
       return undefined
     }
     return workerNodeKey
+  }
+
+  /**
+   * Gets the next worker node key in a round-robin fashion.
+   * @returns The next worker node key.
+   */
+  protected getRoundRobinNextWorkerNodeKey (): number {
+    return this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
+      ? 0
+      : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
+  }
+
+  /**
+   * Gets the worker node key from a single-element affinity set.
+   * @param workerNodeKeysSet - The worker node keys affinity set.
+   * @returns The worker node key if ready, `undefined` otherwise.
+   */
+  protected getSingleWorkerNodeKey (
+    workerNodeKeysSet: ReadonlySet<number>
+  ): number | undefined {
+    const [workerNodeKey] = workerNodeKeysSet
+    return this.isWorkerNodeReady(workerNodeKey) ? workerNodeKey : undefined
   }
 
   /**
@@ -147,6 +171,22 @@ export abstract class AbstractWorkerChoiceStrategy<
     return this.taskStatisticsRequirements.waitTime.median
       ? (this.pool.workerNodes[workerNodeKey]?.usage.waitTime.median ?? 0)
       : (this.pool.workerNodes[workerNodeKey]?.usage.waitTime.average ?? 0)
+  }
+
+  /**
+   * Whether the worker node is eligible for selection (ready and in affinity set).
+   * @param workerNodeKey - The worker node key.
+   * @param workerNodeKeysSet - The worker node keys affinity set. If undefined, all workers are eligible.
+   * @returns Whether the worker node is eligible.
+   */
+  protected isWorkerNodeEligible (
+    workerNodeKey: number,
+    workerNodeKeysSet?: ReadonlySet<number>
+  ): boolean {
+    return (
+      this.isWorkerNodeReady(workerNodeKey) &&
+      (workerNodeKeysSet == null || workerNodeKeysSet.has(workerNodeKey))
+    )
   }
 
   /**
