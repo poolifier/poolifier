@@ -103,7 +103,7 @@
   ],
   "pnpm": {
     "overrides": {
-      "semver": "^7.5.3"
+      "diff@>=6.0.0 <8.0.3": ">=8.0.3"
     }
   },
   "devDependencies": {
