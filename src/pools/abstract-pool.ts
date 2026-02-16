@@ -2005,6 +2005,14 @@ export abstract class AbstractPool<
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`Worker ${workerId?.toString()} failed to initialize`)
     }
+    const maxPoolSize =
+      this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers
+    for (const taskFunctionProperties of taskFunctionsProperties ?? []) {
+      checkValidWorkerNodeKeys(
+        taskFunctionProperties.workerNodeKeys,
+        maxPoolSize
+      )
+    }
     const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
     const workerNode = this.workerNodes[workerNodeKey]
     workerNode.info.ready = ready
