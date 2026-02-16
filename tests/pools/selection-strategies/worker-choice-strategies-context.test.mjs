@@ -522,7 +522,7 @@ describe('Worker choice strategies context test suite', () => {
     const workerNodeKeys = [1, 2]
     const chosenWorkerKey = workerChoiceStrategiesContext.execute(
       undefined,
-      workerNodeKeys
+      new Set(workerNodeKeys)
     )
     expect(
       workerChoiceStrategiesContext.workerChoiceStrategies.get(
@@ -562,7 +562,7 @@ describe('Worker choice strategies context test suite', () => {
     const workerNodeKeys = [2]
     const chosenWorkerKey = workerChoiceStrategiesContext.execute(
       undefined,
-      workerNodeKeys
+      new Set(workerNodeKeys)
     )
     expect(chosenWorkerKey).toBe(2)
     // Verify it was called with a Set containing the same elements
@@ -593,10 +593,9 @@ describe('Worker choice strategies context test suite', () => {
       workerChoiceStrategiesContext.defaultWorkerChoiceStrategy,
       workerChoiceStrategyStub
     )
-    const workerNodes = [0, 1, 2]
     const chosenWorkerKey = workerChoiceStrategiesContext.execute(
       undefined,
-      workerNodes
+      new Set([0, 1, 2])
     )
     expect(
       workerChoiceStrategiesContext.workerChoiceStrategies.get(

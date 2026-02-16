@@ -1724,7 +1724,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.mjs'
     )
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
-    const poolWorkerNodeKeys = dynamicThreadPool.workerNodeKeys
+    const poolWorkerNodeKeys = [...dynamicThreadPool.workerNodes.keys()]
 
     // Test with valid workerNodeKeys
     const echoTaskFunction = data => {
@@ -1810,7 +1810,7 @@ describe('Abstract pool test suite', () => {
       './tests/worker-files/thread/testWorker.mjs'
     )
     await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
-    const poolWorkerNodeKeys = dynamicThreadPool.workerNodeKeys
+    const poolWorkerNodeKeys = [...dynamicThreadPool.workerNodes.keys()]
 
     // Add task function with affinity to first worker only
     const affinityTaskFunction = data => {

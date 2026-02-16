@@ -95,19 +95,19 @@ export class WorkerChoiceStrategiesContext<
   /**
    * Executes the given worker choice strategy.
    * @param workerChoiceStrategy - The worker choice strategy.
-   * @param workerNodeKeys - The worker node keys affinity. If undefined, all workers are eligible.
+   * @param workerNodeKeysSet - The worker node keys affinity set. If undefined, all workers are eligible.
    * @returns The key of the worker node.
    * @throws {Error} If after computed retries the worker node key is null or undefined.
    */
   public execute (
     workerChoiceStrategy: WorkerChoiceStrategy = this
       .defaultWorkerChoiceStrategy,
-    workerNodeKeys?: number[]
+    workerNodeKeysSet?: Set<number>
   ): number {
     return this.executeStrategy(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.workerChoiceStrategies.get(workerChoiceStrategy)!,
-      workerNodeKeys
+      workerNodeKeysSet
     )
   }
 
@@ -244,17 +244,14 @@ export class WorkerChoiceStrategiesContext<
   /**
    * Executes the given worker choice strategy in the context algorithm.
    * @param workerChoiceStrategy - The worker choice strategy algorithm to execute.
-   * @param workerNodeKeys - The worker node keys affinity. If undefined, all workers are eligible.
+   * @param workerNodeKeysSet - The worker node keys affinity set. If undefined, all workers are eligible.
    * @returns The key of the worker node.
    * @throws {Error} If after computed retries the worker node key is null or undefined.
    */
   private executeStrategy (
     workerChoiceStrategy: IWorkerChoiceStrategy,
-    workerNodeKeys?: number[]
+    workerNodeKeysSet?: Set<number>
   ): number {
-    // Create Set once before retry loop for O(1) lookups
-    const workerNodeKeysSet =
-      workerNodeKeys != null ? new Set(workerNodeKeys) : undefined
     let workerNodeKey: number | undefined =
       workerChoiceStrategy.choose(workerNodeKeysSet)
     let retriesCount = 0

@@ -371,11 +371,6 @@ export abstract class AbstractPool<
     }
   }
 
-  /** @inheritDoc */
-  public get workerNodeKeys (): number[] {
-    return this.workerNodes.map((_, index) => index)
-  }
-
   /**
    * Whether the pool is destroying or not.
    */
@@ -606,14 +601,14 @@ export abstract class AbstractPool<
         'Cannot add a task function with more worker node keys affinity than the maximum number of workers'
       )
     }
-    const poolWorkerNodeKeysSet = new Set(this.workerNodeKeys)
     if (fn.workerNodeKeys != null) {
+      const poolSize = this.workerNodes.length
       const invalidWorkerNodeKeys = fn.workerNodeKeys.filter(
-        workerNodeKey => !poolWorkerNodeKeysSet.has(workerNodeKey)
+        workerNodeKey => workerNodeKey < 0 || workerNodeKey >= poolSize
       )
       if (invalidWorkerNodeKeys.length > 0) {
         throw new Error(
-          `Cannot add a task function with invalid worker node keys: ${invalidWorkerNodeKeys.toString()}. Valid keys are: ${[...poolWorkerNodeKeysSet].toString()}`
+          `Cannot add a task function with invalid worker node keys: ${invalidWorkerNodeKeys.toString()}. Valid keys are: 0..${(poolSize - 1).toString()}`
         )
       }
     }
@@ -1610,14 +1605,14 @@ export abstract class AbstractPool<
    * @returns The chosen worker node key.
    */
   private chooseWorkerNode (name?: string): number {
-    const workerNodeKeys = this.getTaskFunctionWorkerNodes(name)
+    const workerNodeKeysSet = this.getTaskFunctionWorkerNodeKeysSet(name)
     if (this.shallCreateDynamicWorker()) {
       const workerNodeKey = this.createAndSetupDynamicWorkerNode()
       if (
         this.workerChoiceStrategiesContext?.getPolicy().dynamicWorkerUsage ===
         true
       ) {
-        if (workerNodeKeys == null || workerNodeKeys.includes(workerNodeKey)) {
+        if (workerNodeKeysSet == null || workerNodeKeysSet.has(workerNodeKey)) {
           return workerNodeKey
         }
       }
@@ -1625,7 +1620,7 @@ export abstract class AbstractPool<
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.workerChoiceStrategiesContext!.execute(
       this.getTaskFunctionWorkerChoiceStrategy(name),
-      workerNodeKeys
+      workerNodeKeysSet
     )
   }
 
@@ -1735,22 +1730,23 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Gets task function worker node keys affinity, if any.
+   * Gets task function worker node keys affinity set, if any.
    * @param name - The task function name.
-   * @returns The task function worker node keys affinity if the task function worker node keys affinity is defined, `undefined` otherwise.
+   * @returns The task function worker node keys affinity set, or `undefined` if not defined.
    */
-  private readonly getTaskFunctionWorkerNodes = (
+  private readonly getTaskFunctionWorkerNodeKeysSet = (
     name?: string
-  ): number[] | undefined => {
+  ): Set<number> | undefined => {
     name = name ?? DEFAULT_TASK_NAME
     const taskFunctionsProperties = this.listTaskFunctionsProperties()
     if (name === DEFAULT_TASK_NAME) {
       name = taskFunctionsProperties[1]?.name
     }
-    return taskFunctionsProperties.find(
+    const workerNodeKeys = taskFunctionsProperties.find(
       (taskFunctionProperties: TaskFunctionProperties) =>
         taskFunctionProperties.name === name
     )?.workerNodeKeys
+    return workerNodeKeys != null ? new Set(workerNodeKeys) : undefined
   }
 
   private getTasksQueuePriority (): boolean {
@@ -2371,8 +2367,8 @@ export abstract class AbstractPool<
   private async sendTaskFunctionOperationToWorkers (
     message: MessageValue<Data>
   ): Promise<boolean> {
-    const targetWorkerNodeKeysSet = new Set(this.workerNodes.keys())
-    if (targetWorkerNodeKeysSet.size === 0) {
+    const targetWorkerNodeCount = this.workerNodes.length
+    if (targetWorkerNodeCount === 0) {
       return true
     }
     const responsesReceived: MessageValue<Response>[] = []
@@ -2382,14 +2378,14 @@ export abstract class AbstractPool<
       reject: (reason?: unknown) => void
     ): void => {
       this.checkMessageWorkerId(message)
+      const workerNodeKey = this.getWorkerNodeKeyByWorkerId(message.workerId)
       if (
         message.taskFunctionOperationStatus != null &&
-        targetWorkerNodeKeysSet.has(
-          this.getWorkerNodeKeyByWorkerId(message.workerId)
-        )
+        workerNodeKey >= 0 &&
+        workerNodeKey < targetWorkerNodeCount
       ) {
         responsesReceived.push(message)
-        if (responsesReceived.length >= targetWorkerNodeKeysSet.size) {
+        if (responsesReceived.length >= targetWorkerNodeCount) {
           if (
             responsesReceived.every(
               msg => msg.taskFunctionOperationStatus === true
@@ -2416,14 +2412,14 @@ export abstract class AbstractPool<
         listener = (message: MessageValue<Response>) => {
           taskFunctionOperationsListener(message, resolve, reject)
         }
-        for (const workerNodeKey of targetWorkerNodeKeysSet) {
+        for (const workerNodeKey of this.workerNodes.keys()) {
           this.registerWorkerMessageListener(workerNodeKey, listener)
           this.sendToWorker(workerNodeKey, message)
         }
       })
     } finally {
       if (listener != null) {
-        for (const workerNodeKey of targetWorkerNodeKeysSet) {
+        for (const workerNodeKey of this.workerNodes.keys()) {
           this.deregisterWorkerMessageListener(workerNodeKey, listener)
         }
       }
