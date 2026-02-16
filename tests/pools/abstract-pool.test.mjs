@@ -1850,36 +1850,36 @@ describe('Abstract pool test suite', () => {
   })
 
   it('Verify that execute() creates dynamic workers for workerNodeKeys affinity', async () => {
-    const pool = new DynamicThreadPool(
+    const dynamicThreadPool = new DynamicThreadPool(
       1,
       4,
       './tests/worker-files/thread/testWorker.mjs'
     )
-    await waitPoolEvents(pool, PoolEvents.ready, 1)
-    expect(pool.workerNodes.length).toBe(1)
+    await waitPoolEvents(dynamicThreadPool, PoolEvents.ready, 1)
+    expect(dynamicThreadPool.workerNodes.length).toBe(1)
 
-    await pool.addTaskFunction('affinityBeyondMin', {
+    await dynamicThreadPool.addTaskFunction('affinityBeyondMin', {
       taskFunction: data => data,
       workerNodeKeys: [2, 3],
     })
 
-    for (const workerNode of pool.workerNodes) {
+    for (const workerNode of dynamicThreadPool.workerNodes) {
       workerNode.usage.tasks.executed = 0
     }
 
     const tasks = []
     for (let i = 0; i < 4; i++) {
-      tasks.push(pool.execute({ test: i }, 'affinityBeyondMin'))
+      tasks.push(dynamicThreadPool.execute({ test: i }, 'affinityBeyondMin'))
     }
     await Promise.all(tasks)
 
-    expect(pool.workerNodes.length).toBeGreaterThanOrEqual(4)
+    expect(dynamicThreadPool.workerNodes.length).toBeGreaterThanOrEqual(4)
     const executedOnAffinity =
-      pool.workerNodes[2].usage.tasks.executed +
-      pool.workerNodes[3].usage.tasks.executed
+      dynamicThreadPool.workerNodes[2].usage.tasks.executed +
+      dynamicThreadPool.workerNodes[3].usage.tasks.executed
     expect(executedOnAffinity).toBe(4)
 
-    await pool.destroy()
+    await dynamicThreadPool.destroy()
   })
 
   it('Verify that removeTaskFunction() is working', async () => {
