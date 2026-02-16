@@ -1748,7 +1748,9 @@ describe('Abstract pool test suite', () => {
         workerNodeKeys: [999],
       })
     ).rejects.toThrow(
-      /Cannot add a task function with invalid worker node keys: 999/
+      new RangeError(
+        'Cannot add a task function with invalid worker node keys: 999. Valid keys are: 0..1'
+      )
     )
 
     // Test with empty array workerNodeKeys
@@ -1769,7 +1771,9 @@ describe('Abstract pool test suite', () => {
         workerNodeKeys: tooManyKeys,
       })
     ).rejects.toThrow(
-      /Cannot add a task function with more worker node keys than the maximum number of workers in the pool/
+      new RangeError(
+        'Cannot add a task function with more worker node keys than the maximum number of workers in the pool'
+      )
     )
 
     // Test with duplicate workerNodeKeys
@@ -1778,7 +1782,9 @@ describe('Abstract pool test suite', () => {
         taskFunction: () => {},
         workerNodeKeys: [poolWorkerNodeKeys[0], poolWorkerNodeKeys[0]],
       })
-    ).rejects.toThrow(/Invalid worker node keys: must not contain duplicates/)
+    ).rejects.toThrow(
+      new TypeError('Invalid worker node keys: must not contain duplicates')
+    )
 
     // Test with non-integer values
     await expect(
@@ -1787,7 +1793,9 @@ describe('Abstract pool test suite', () => {
         workerNodeKeys: [1.5],
       })
     ).rejects.toThrow(
-      /Invalid worker node key '1\.5': must be a non-negative safe integer/
+      new TypeError(
+        "Invalid worker node key '1.5': must be a non-negative safe integer"
+      )
     )
 
     // Test with negative values
@@ -1797,7 +1805,9 @@ describe('Abstract pool test suite', () => {
         workerNodeKeys: [-1],
       })
     ).rejects.toThrow(
-      /Invalid worker node key '-1': must be a non-negative safe integer/
+      new TypeError(
+        "Invalid worker node key '-1': must be a non-negative safe integer"
+      )
     )
 
     await dynamicThreadPool.destroy()

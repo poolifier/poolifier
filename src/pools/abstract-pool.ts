@@ -591,28 +591,10 @@ export abstract class AbstractPool<
     }
     checkValidPriority(fn.priority)
     checkValidWorkerChoiceStrategy(fn.strategy)
-    checkValidWorkerNodeKeys(fn.workerNodeKeys)
-    if (
-      fn.workerNodeKeys != null &&
-      fn.workerNodeKeys.length >
-        (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers)
-    ) {
-      throw new Error(
-        'Cannot add a task function with more worker node keys than the maximum number of workers in the pool'
-      )
-    }
-    if (fn.workerNodeKeys != null) {
-      const maxPoolSize =
-        this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers
-      const invalidWorkerNodeKeys = fn.workerNodeKeys.filter(
-        workerNodeKey => workerNodeKey < 0 || workerNodeKey >= maxPoolSize
-      )
-      if (invalidWorkerNodeKeys.length > 0) {
-        throw new Error(
-          `Cannot add a task function with invalid worker node keys: ${invalidWorkerNodeKeys.toString()}. Valid keys are: 0..${(maxPoolSize - 1).toString()}`
-        )
-      }
-    }
+    checkValidWorkerNodeKeys(
+      fn.workerNodeKeys,
+      this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers
+    )
     const opResult = await this.sendTaskFunctionOperationToWorkers({
       taskFunction: fn.taskFunction.toString(),
       taskFunctionOperation: 'add',
