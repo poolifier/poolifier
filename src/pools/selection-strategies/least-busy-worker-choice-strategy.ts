@@ -53,7 +53,7 @@ export class LeastBusyWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (workerNodeKeysSet?: Set<number>): number | undefined {
+  public choose (workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     this.nextWorkerNodeKey = this.leastBusyNextWorkerNodeKey(workerNodeKeysSet)
     return this.nextWorkerNodeKey
@@ -75,7 +75,7 @@ export class LeastBusyWorkerChoiceStrategy<
   }
 
   private leastBusyNextWorkerNodeKey (
-    workerNodeKeysSet?: Set<number>
+    workerNodeKeysSet?: ReadonlySet<number>
   ): number | undefined {
     if (workerNodeKeysSet?.size === 0) {
       return undefined

@@ -34,7 +34,7 @@ export class LeastUsedWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (workerNodeKeysSet?: Set<number>): number | undefined {
+  public choose (workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     this.nextWorkerNodeKey = this.leastUsedNextWorkerNodeKey(workerNodeKeysSet)
     return this.nextWorkerNodeKey
@@ -56,7 +56,7 @@ export class LeastUsedWorkerChoiceStrategy<
   }
 
   private leastUsedNextWorkerNodeKey (
-    workerNodeKeysSet?: Set<number>
+    workerNodeKeysSet?: ReadonlySet<number>
   ): number | undefined {
     if (workerNodeKeysSet?.size === 0) {
       return undefined

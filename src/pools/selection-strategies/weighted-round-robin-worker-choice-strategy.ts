@@ -60,7 +60,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (workerNodeKeysSet?: Set<number>): number | undefined {
+  public choose (workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     const chosenWorkerNodeKey =
       this.weightedRoundRobinNextWorkerNodeKey(workerNodeKeysSet)
@@ -108,7 +108,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   private findEligibleWorkerNodeKey (
-    workerNodeKeysSet: Set<number>
+    workerNodeKeysSet: ReadonlySet<number>
   ): number | undefined {
     const workerNodesCount = this.pool.workerNodes.length
     for (let i = 0; i < workerNodesCount; i++) {
@@ -121,7 +121,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   private weightedRoundRobinNextWorkerNodeKey (
-    workerNodeKeysSet?: Set<number>
+    workerNodeKeysSet?: ReadonlySet<number>
   ): number | undefined {
     if (workerNodeKeysSet == null) {
       const workerNodeKey = this.nextWorkerNodeKey ?? this.previousWorkerNodeKey

@@ -70,7 +70,9 @@ export interface IWorkerChoiceStrategy {
    * @param workerNodeKeysSet - The worker node keys affinity set. If undefined, all workers are eligible.
    * @returns The worker node key or `undefined`.
    */
-  readonly choose: (workerNodeKeysSet?: Set<number>) => number | undefined
+  readonly choose: (
+    workerNodeKeysSet?: ReadonlySet<number>
+  ) => number | undefined
   /**
    * The worker choice strategy name.
    */

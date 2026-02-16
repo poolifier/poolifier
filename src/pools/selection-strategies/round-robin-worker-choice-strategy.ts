@@ -35,7 +35,7 @@ export class RoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (workerNodeKeysSet?: Set<number>): number | undefined {
+  public choose (workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     const chosenWorkerNodeKey =
       this.roundRobinNextWorkerNodeKey(workerNodeKeysSet)
@@ -79,7 +79,7 @@ export class RoundRobinWorkerChoiceStrategy<
   }
 
   private roundRobinNextWorkerNodeKey (
-    workerNodeKeysSet?: Set<number>
+    workerNodeKeysSet?: ReadonlySet<number>
   ): number | undefined {
     if (workerNodeKeysSet == null) {
       this.nextWorkerNodeKey = this.getRoundRobinNextWorkerNodeKey()

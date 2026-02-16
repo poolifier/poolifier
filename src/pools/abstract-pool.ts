@@ -1734,7 +1734,7 @@ export abstract class AbstractPool<
    */
   private readonly getTaskFunctionWorkerNodeKeysSet = (
     name?: string
-  ): Set<number> | undefined => {
+  ): ReadonlySet<number> | undefined => {
     name = name ?? DEFAULT_TASK_NAME
     const taskFunctionsProperties = this.listTaskFunctionsProperties()
     if (name === DEFAULT_TASK_NAME) {
@@ -2405,19 +2405,20 @@ export abstract class AbstractPool<
       }
     }
     let listener: ((message: MessageValue<Response>) => void) | undefined
+    const workerNodeKeys = [...this.workerNodes.keys()]
     try {
       return await new Promise<boolean>((resolve, reject) => {
         listener = (message: MessageValue<Response>) => {
           taskFunctionOperationsListener(message, resolve, reject)
         }
-        for (const workerNodeKey of this.workerNodes.keys()) {
+        for (const workerNodeKey of workerNodeKeys) {
           this.registerWorkerMessageListener(workerNodeKey, listener)
           this.sendToWorker(workerNodeKey, message)
         }
       })
     } finally {
       if (listener != null) {
-        for (const workerNodeKey of this.workerNodes.keys()) {
+        for (const workerNodeKey of workerNodeKeys) {
           this.deregisterWorkerMessageListener(workerNodeKey, listener)
         }
       }

@@ -53,7 +53,7 @@ export class LeastEluWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (workerNodeKeysSet?: Set<number>): number | undefined {
+  public choose (workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     this.nextWorkerNodeKey = this.leastEluNextWorkerNodeKey(workerNodeKeysSet)
     return this.nextWorkerNodeKey
@@ -75,7 +75,7 @@ export class LeastEluWorkerChoiceStrategy<
   }
 
   private leastEluNextWorkerNodeKey (
-    workerNodeKeysSet?: Set<number>
+    workerNodeKeysSet?: ReadonlySet<number>
   ): number | undefined {
     if (workerNodeKeysSet?.size === 0) {
       return undefined

@@ -102,7 +102,7 @@ export class WorkerChoiceStrategiesContext<
   public execute (
     workerChoiceStrategy: WorkerChoiceStrategy = this
       .defaultWorkerChoiceStrategy,
-    workerNodeKeysSet?: Set<number>
+    workerNodeKeysSet?: ReadonlySet<number>
   ): number {
     return this.executeStrategy(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -250,7 +250,7 @@ export class WorkerChoiceStrategiesContext<
    */
   private executeStrategy (
     workerChoiceStrategy: IWorkerChoiceStrategy,
-    workerNodeKeysSet?: Set<number>
+    workerNodeKeysSet?: ReadonlySet<number>
   ): number {
     let workerNodeKey: number | undefined =
       workerChoiceStrategy.choose(workerNodeKeysSet)
