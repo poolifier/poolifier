@@ -119,7 +119,7 @@ export const checkValidWorkerChoiceStrategy = (
 }
 
 export const checkValidWorkerNodeKeys = (
-  workerNodeKeys: number[] | undefined
+  workerNodeKeys: null | number[] | undefined
 ): void => {
   if (workerNodeKeys != null && !Array.isArray(workerNodeKeys)) {
     throw new TypeError('Invalid worker node keys: must be an array')

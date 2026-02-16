@@ -1606,15 +1606,13 @@ export abstract class AbstractPool<
    */
   private chooseWorkerNode (name?: string): number {
     const workerNodeKeysSet = this.getTaskFunctionWorkerNodeKeysSet(name)
-    if (this.shallCreateDynamicWorker()) {
+    if (workerNodeKeysSet == null && this.shallCreateDynamicWorker()) {
       const workerNodeKey = this.createAndSetupDynamicWorkerNode()
       if (
         this.workerChoiceStrategiesContext?.getPolicy().dynamicWorkerUsage ===
         true
       ) {
-        if (workerNodeKeysSet == null || workerNodeKeysSet.has(workerNodeKey)) {
-          return workerNodeKey
-        }
+        return workerNodeKey
       }
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

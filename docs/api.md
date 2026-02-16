@@ -75,9 +75,10 @@ This method is available on both pool implementations and returns a boolean.
 `name` (mandatory) The task function name.  
 `fn` (mandatory) The task function `(data?: Data) => Response | Promise<Response>` or task function object `{ taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }`. Priority range is the same as Unix nice levels. `workerNodeKeys` is an array of worker node keys to restrict task execution to specific workers (worker node affinity).
 
-**Worker Node Affinity Notes:**
+#### Worker Node Affinity Notes
 
-- Worker node keys are validated at registration time against current pool size, not maximum size.
+- Worker node keys are validated at registration time against current pool size (`workerNodes.length`), not maximum size.
+- The number of worker node keys cannot exceed the pool's maximum size (`maximumNumberOfWorkers ?? minimumNumberOfWorkers`).
 - In dynamic pools, you cannot reference workers that don't exist yet.
 - At execution time, if no specified worker is ready, selection retries until one becomes available or retries are exhausted.
 
