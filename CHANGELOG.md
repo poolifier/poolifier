@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.3.1](https://github.com/poolifier/poolifier/compare/v5.3.0...v5.3.1) (2026-02-20)
+
+
+### 🐞 Bug Fixes
+
+* **iwrr:** remove erroneous workerNodeId reset corrupting round-robin state ([8bd56e7](https://github.com/poolifier/poolifier/commit/8bd56e7249b2cd8e8f0a596108e40a966912bb31))
+
+
+### 📚 Documentation
+
+* publish documentation ([6a3b616](https://github.com/poolifier/poolifier/commit/6a3b616779e7d5e7f82a53b9cbd2c14221220e3c))
+
 ## [5.3.0](https://github.com/poolifier/poolifier/compare/v5.2.0...v5.3.0) (2026-02-20)
 
 
