@@ -1,6 +1,7 @@
 import { expect } from '@std/expect'
 import { randomInt } from 'node:crypto'
 import os from 'node:os'
+import { useFakeTimers } from 'sinon'
 
 import { KillBehaviors } from '../lib/index.cjs'
 import {
@@ -44,11 +45,21 @@ describe('Utils test suite', () => {
   })
 
   it('Verify sleep() behavior', async () => {
-    const start = performance.now()
-    const sleepMs = 1000
-    await sleep(sleepMs)
-    const elapsed = performance.now() - start
-    expect(elapsed).toBeGreaterThanOrEqual(sleepMs - 1)
+    const clock = useFakeTimers()
+    try {
+      const delay = 1000
+      let resolved = false
+      const sleepPromise = sleep(delay).then(() => {
+        resolved = true
+        return true
+      })
+      expect(resolved).toBe(false)
+      await clock.tickAsync(delay)
+      await sleepPromise
+      expect(resolved).toBe(true)
+    } finally {
+      clock.restore()
+    }
   })
 
   it('Verify exponentialDelay() behavior', () => {
