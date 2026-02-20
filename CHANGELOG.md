@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.3.0](https://github.com/poolifier/poolifier/compare/v5.2.0...v5.3.0) (2026-02-20)
+
+
+### 🚀 Features
+
+* **pool:** add agingFactor and loadExponent tunables to TasksQueueOptions ([d0b9cf8](https://github.com/poolifier/poolifier/commit/d0b9cf8acfc5f85faac4570b1b5d5a1a5bf4c9c4))
+
+
+### 🐞 Bug Fixes
+
+* **deps:** update all non-major dependencies ([#3126](https://github.com/poolifier/poolifier/issues/3126)) ([7a20707](https://github.com/poolifier/poolifier/commit/7a20707fc956ca610febe85c5896b3fc8aa68158))
+
+
+### 📚 Documentation
+
+* publish documentation ([d7bc989](https://github.com/poolifier/poolifier/commit/d7bc9891c39261dc3fa46f9baa95e4ceff26479a))
+
 ## [5.2.0](https://github.com/poolifier/poolifier/compare/v5.1.7...v5.2.0) (2026-02-16)
 
 
