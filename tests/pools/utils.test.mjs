@@ -26,7 +26,9 @@ describe('Pool utils test suite', () => {
   it('Verify getDefaultTasksQueueOptions() behavior', () => {
     const poolMaxSize = 4
     expect(getDefaultTasksQueueOptions(poolMaxSize)).toStrictEqual({
+      agingFactor: 0.001,
       concurrency: 1,
+      loadExponent: 0.6666666666666666,
       size: poolMaxSize ** 2,
       tasksFinishedTimeout: 2000,
       tasksStealingOnBackPressure: true,

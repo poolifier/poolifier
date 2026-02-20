@@ -1627,12 +1627,14 @@ export abstract class AbstractPool<
       this.filePath,
       {
         env: this.opts.env,
+        tasksQueueAgingFactor: this.opts.tasksQueueOptions?.agingFactor,
         tasksQueueBackPressureSize:
           this.opts.tasksQueueOptions?.size ??
           getDefaultTasksQueueOptions(
             this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers
           ).size,
         tasksQueueBucketSize: defaultBucketSize,
+        tasksQueueLoadExponent: this.opts.tasksQueueOptions?.loadExponent,
         tasksQueuePriority: this.getTasksQueuePriority(),
         workerOptions: this.opts.workerOptions,
       }

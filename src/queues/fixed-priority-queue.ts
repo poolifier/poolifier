@@ -14,11 +14,13 @@ export class FixedPriorityQueue<T>
   private readonly loadExponent: number
 
   /**
-   * Constructs a FixedPriorityQueue.
-   * @param size - Fixed queue size.
+   * Constructs a fixed priority queue.
+   * @param size - Fixed priority queue size.
    * @defaultValue defaultQueueSize
-   * @param agingFactor - Aging factor to apply to items (priority points per millisecond).
-   * @param loadExponent - Load exponent applied to normalized load when computing effective aging.
+   * @param agingFactor - Aging factor for priority boosting (priority points per millisecond).
+   * @defaultValue defaultAgingFactor
+   * @param loadExponent - Load exponent for aging adjustment based on queue fill ratio.
+   * @defaultValue defaultLoadExponent
    * @returns IFixedQueue.
    */
   public constructor (

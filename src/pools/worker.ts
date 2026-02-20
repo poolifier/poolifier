@@ -377,8 +377,10 @@ export interface WorkerNodeEventDetail {
  */
 export interface WorkerNodeOptions {
   env?: Record<string, unknown>
+  tasksQueueAgingFactor: number | undefined
   tasksQueueBackPressureSize: number | undefined
   tasksQueueBucketSize: number | undefined
+  tasksQueueLoadExponent: number | undefined
   tasksQueuePriority: boolean | undefined
   workerOptions?: WorkerOptions
 }

@@ -1,7 +1,11 @@
 import { expect } from '@std/expect'
 
 import { FixedPriorityQueue } from '../../lib/queues/fixed-priority-queue.cjs'
-import { defaultQueueSize } from '../../lib/queues/queue-types.cjs'
+import {
+  defaultAgingFactor,
+  defaultLoadExponent,
+  defaultQueueSize,
+} from '../../lib/queues/queue-types.cjs'
 
 describe('Fixed priority queue test suite', () => {
   it('Verify constructor() behavior', () => {
@@ -16,6 +20,8 @@ describe('Fixed priority queue test suite', () => {
     expect(fixedPriorityQueue.size).toBe(0)
     expect(fixedPriorityQueue.nodeArray).toBeInstanceOf(Array)
     expect(fixedPriorityQueue.capacity).toBe(defaultQueueSize)
+    expect(fixedPriorityQueue.agingFactor).toBe(defaultAgingFactor)
+    expect(fixedPriorityQueue.loadExponent).toBe(defaultLoadExponent)
   })
 
   it('Verify enqueue() behavior', () => {

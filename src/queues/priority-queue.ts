@@ -3,7 +3,9 @@
 import { FixedPriorityQueue } from './fixed-priority-queue.js'
 import { FixedQueue } from './fixed-queue.js'
 import {
+  defaultAgingFactor,
   defaultBucketSize,
+  defaultLoadExponent,
   type IFixedQueue,
   type PriorityQueueNode,
 } from './queue-types.js'
@@ -16,8 +18,10 @@ import {
 export class PriorityQueue<T> {
   /** The priority queue maximum size. */
   public maxSize!: number
+
   /** The priority queue size. */
   public size!: number
+
   /**
    * The number of filled prioritized buckets.
    * @returns The number of filled prioritized buckets.
@@ -50,8 +54,10 @@ export class PriorityQueue<T> {
     }
   }
 
+  private readonly agingFactor: number
   private readonly bucketSize: number
   private head!: PriorityQueueNode<T>
+  private readonly loadExponent: number
   private priorityEnabled: boolean
   private tail!: PriorityQueueNode<T>
 
@@ -61,11 +67,17 @@ export class PriorityQueue<T> {
    * @defaultValue defaultBucketSize
    * @param enablePriority - Whether to enable priority.
    * @defaultValue false
+   * @param agingFactor - Aging factor for priority boosting (priority points per millisecond).
+   * @defaultValue defaultAgingFactor
+   * @param loadExponent - Load exponent for aging adjustment based on queue fill ratio.
+   * @defaultValue defaultLoadExponent
    * @returns PriorityQueue.
    */
   public constructor (
     bucketSize: number = defaultBucketSize,
-    enablePriority = false
+    enablePriority = false,
+    agingFactor?: number,
+    loadExponent?: number
   ) {
     if (!Number.isSafeInteger(bucketSize)) {
       throw new TypeError(
@@ -77,6 +89,8 @@ export class PriorityQueue<T> {
     }
     this.bucketSize = bucketSize
     this.priorityEnabled = enablePriority
+    this.agingFactor = agingFactor ?? defaultAgingFactor
+    this.loadExponent = loadExponent ?? defaultLoadExponent
     this.clear()
   }
 
@@ -207,7 +221,11 @@ export class PriorityQueue<T> {
   private getPriorityQueueNode (): PriorityQueueNode<T> {
     let fixedQueue: IFixedQueue<T>
     if (this.priorityEnabled) {
-      fixedQueue = new FixedPriorityQueue(this.bucketSize)
+      fixedQueue = new FixedPriorityQueue(
+        this.bucketSize,
+        this.agingFactor,
+        this.loadExponent
+      )
     } else {
       fixedQueue = new FixedQueue(this.bucketSize)
     }

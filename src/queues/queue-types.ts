@@ -5,6 +5,18 @@
 export const defaultQueueSize = 2048
 
 /**
+ * Default aging factor for priority queue aging mechanism.
+ * @internal
+ */
+export const defaultAgingFactor = 0.001
+
+/**
+ * Default load exponent for priority queue aging mechanism.
+ * @internal
+ */
+export const defaultLoadExponent = 1.0 / 1.5
+
+/**
  * Fixed queue node.
  * @template T - Type of fixed queue node data.
  * @internal

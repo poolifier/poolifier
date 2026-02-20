@@ -11,6 +11,10 @@ import type { MessageValue, Task } from '../utility-types.js'
 import type { TasksQueueOptions } from './pool.js'
 import type { WorkerChoiceStrategiesContext } from './selection-strategies/worker-choice-strategies-context.js'
 
+import {
+  defaultAgingFactor,
+  defaultLoadExponent,
+} from '../queues/queue-types.js'
 import { average, isPlainObject, max, median, min } from '../utils.js'
 import {
   type MeasurementStatisticsRequirements,
@@ -42,7 +46,9 @@ export const getDefaultTasksQueueOptions = (
   poolMaxSize: number
 ): Required<Readonly<TasksQueueOptions>> => {
   return Object.freeze({
+    agingFactor: defaultAgingFactor,
     concurrency: 1,
+    loadExponent: defaultLoadExponent,
     size: poolMaxSize ** 2,
     tasksFinishedTimeout: 2000,
     tasksStealingOnBackPressure: true,
@@ -193,6 +199,38 @@ export const checkValidTasksQueueOptions = (
   if (tasksQueueOptions?.size != null && tasksQueueOptions.size <= 0) {
     throw new RangeError(
       `Invalid worker node tasks queue size: ${tasksQueueOptions.size.toString()} is a negative integer or zero`
+    )
+  }
+  if (
+    tasksQueueOptions?.agingFactor != null &&
+    typeof tasksQueueOptions.agingFactor !== 'number'
+  ) {
+    throw new TypeError(
+      'Invalid worker node tasks queue aging factor: must be a number'
+    )
+  }
+  if (
+    tasksQueueOptions?.agingFactor != null &&
+    tasksQueueOptions.agingFactor < 0
+  ) {
+    throw new RangeError(
+      'Invalid worker node tasks queue aging factor: must be greater than or equal to 0'
+    )
+  }
+  if (
+    tasksQueueOptions?.loadExponent != null &&
+    typeof tasksQueueOptions.loadExponent !== 'number'
+  ) {
+    throw new TypeError(
+      'Invalid worker node tasks queue load exponent: must be a number'
+    )
+  }
+  if (
+    tasksQueueOptions?.loadExponent != null &&
+    tasksQueueOptions.loadExponent <= 0
+  ) {
+    throw new RangeError(
+      'Invalid worker node tasks queue load exponent: must be greater than 0'
     )
   }
   if (

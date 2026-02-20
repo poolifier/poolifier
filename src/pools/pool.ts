@@ -366,10 +366,20 @@ export interface PoolOptions<Worker extends IWorker> {
  */
 export interface TasksQueueOptions {
   /**
+   * Controls the priority queue anti-starvation aging rate.
+   * @defaultValue 0.001
+   */
+  readonly agingFactor?: number
+  /**
    * Maximum number of tasks that can be executed concurrently on a worker node.
    * @defaultValue 1
    */
   readonly concurrency?: number
+  /**
+   * Controls load-based aging adjustment exponent.
+   * @defaultValue 0.667
+   */
+  readonly loadExponent?: number
   /**
    * Maximum tasks queue size per worker node flagging it as back pressured.
    * @defaultValue (pool maximum size)^2

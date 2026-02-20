@@ -1,0 +1,2 @@
+export const defaultAgingFactor = 0.001
+export const defaultLoadExponent = 1.0 / 1.5
