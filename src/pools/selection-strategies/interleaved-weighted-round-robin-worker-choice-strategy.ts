@@ -112,7 +112,6 @@ export class InterleavedWeightedRoundRobinWorkerChoiceStrategy<
           return this.nextWorkerNodeKey
         }
       }
-      this.workerNodeId = 0
     }
     this.interleavedWeightedRoundRobinNextWorkerNodeId()
     return undefined
