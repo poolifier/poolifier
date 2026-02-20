@@ -1,2 +1,0 @@
-402:  readonly agingFactor?: number
-407:  readonly loadExponent?: number
