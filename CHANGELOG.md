@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.3.2](https://github.com/poolifier/poolifier/compare/v5.3.1...v5.3.2) (2026-02-22)
+
+
+### 🐞 Bug Fixes
+
+* **deps:** update all non-major dependencies ([#3131](https://github.com/poolifier/poolifier/issues/3131)) ([6feccf8](https://github.com/poolifier/poolifier/commit/6feccf899538c5dd40663aa23154b17858b563b9))
+* **test:** use fake timers for sleep() test to avoid flakiness ([9aecfea](https://github.com/poolifier/poolifier/commit/9aecfea894df51341667235bebaabf8b6010339a))
+
+
+### 📚 Documentation
+
+* consolidate multiple task functions features in README ([4a55f12](https://github.com/poolifier/poolifier/commit/4a55f12c6f30239ae7dee6fef52b9737c5337df5))
+* publish documentation ([9abaa2b](https://github.com/poolifier/poolifier/commit/9abaa2b426b37f9ea111351eee510649542b3683))
+
 ## [5.3.1](https://github.com/poolifier/poolifier/compare/v5.3.0...v5.3.1) (2026-02-20)
 
 
