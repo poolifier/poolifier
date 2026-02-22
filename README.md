@@ -47,9 +47,11 @@ Please consult our [general guidelines](#general-guidelines).
   - Tasks redistribution on worker error :white_check_mark:
 - Support for sync and async task function :white_check_mark:
 - Support for abortable task function :white_check_mark:
-- Support for multiple task functions with per task function queuing priority and tasks distribution strategy :white_check_mark:
-- Support for worker node affinity per task function :white_check_mark:
-- Support for task functions [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) operations at runtime :white_check_mark:
+- Support for multiple task functions:
+  - Queuing priority :white_check_mark:
+  - Tasks distribution strategy :white_check_mark:
+  - Worker node affinity :white_check_mark:
+  - [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) operations at runtime :white_check_mark:
 - General guidelines on pool choice :white_check_mark:
 - Error handling out of the box :white_check_mark:
 - Widely tested :white_check_mark:
