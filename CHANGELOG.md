@@ -5,6 +5,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.3.2](https://github.com/poolifier/poolifier/compare/v5.3.1...v5.3.2) (2026-02-23)
+
+
+### 🐞 Bug Fixes
+
+* **build:** exclude vitest.config.ts from TypeScript build ([0f7e7ab](https://github.com/poolifier/poolifier/commit/0f7e7ab9d579993354dc1e663844f34fb50bde8f))
+* **deps:** update all non-major dependencies ([#3131](https://github.com/poolifier/poolifier/issues/3131)) ([6feccf8](https://github.com/poolifier/poolifier/commit/6feccf899538c5dd40663aa23154b17858b563b9))
+* **test:** use fake timers for sleep() test to avoid flakiness ([9aecfea](https://github.com/poolifier/poolifier/commit/9aecfea894df51341667235bebaabf8b6010339a))
+
+
+### 🧪 Tests
+
+* add custom toMatchObject matcher for @std/expect compatibility ([5b2ecea](https://github.com/poolifier/poolifier/commit/5b2ecea52bf01a9af1b8248f3ece243c75ac9594))
+* add retry for flaky tests on CI ([c218777](https://github.com/poolifier/poolifier/commit/c218777649840d60911d08d3acc387bd3c27cd0b))
+* fix async kill handler test for vitest compatibility ([ba7ffbf](https://github.com/poolifier/poolifier/commit/ba7ffbfb10819c1461f97dc5f84c958b0685c687))
+* increase vitest timeouts to 120s ([127fcc0](https://github.com/poolifier/poolifier/commit/127fcc07277e3dda457c8641e87e3f13c57405c6))
+* increase vitest timeouts to 240s for slow CI runners ([cf65892](https://github.com/poolifier/poolifier/commit/cf65892cbe8e7c963297bae6c74c75d14ae1182d))
+* migrate from mocha to vitest ([b806a34](https://github.com/poolifier/poolifier/commit/b806a348b9c91a9e9bdd0e9658d7555ed30d4a41))
+* relax coverage thresholds and increase timeouts ([a2ac50d](https://github.com/poolifier/poolifier/commit/a2ac50d33c1b36101bed3f8ce366994952cf3ac3))
+* skip pool.destroy() in afterAll hooks on CI to avoid timeout ([468b846](https://github.com/poolifier/poolifier/commit/468b8469c2dc770df289997538a7b00cbce4d3ba))
+* skip shutdown tests on CI ([ccc69a4](https://github.com/poolifier/poolifier/commit/ccc69a4dc6ce9ace2661c38e1cd243d701e6a650))
+* update imports to .mjs files ([c607391](https://github.com/poolifier/poolifier/commit/c607391d37451f36faaf9f3b9bfe1f041664f05a))
+* update queue test imports to .mjs files ([6395858](https://github.com/poolifier/poolifier/commit/6395858a4fa7d13fe4361fdd9d899c4c4835298d))
+* use ESM imports in worker threads files ([55a8302](https://github.com/poolifier/poolifier/commit/55a83023a8406c0aa6fe74e32700f9314e5bdc4b))
+* use forks pool for better process isolation ([a5f29e6](https://github.com/poolifier/poolifier/commit/a5f29e645b686baef5f8c4a97129e79e19e78f61))
+* use strict spy call count assertions in worker tests ([eb45f98](https://github.com/poolifier/poolifier/commit/eb45f98076a0090a5f5306f31f17d64e662299c6))
+* **worker:** add 22 tests for abstract-worker coverage ([dc8f667](https://github.com/poolifier/poolifier/commit/dc8f66791f48b825e8926e3fc9c861e2f885083d))
+
+
+### 📚 Documentation
+
+* add JSDoc types and descriptions to vitest setup ([f30fcf5](https://github.com/poolifier/poolifier/commit/f30fcf57d6a066e5cd9002bb513f24f2bde7f57d))
+* consolidate multiple task functions features in README ([4a55f12](https://github.com/poolifier/poolifier/commit/4a55f12c6f30239ae7dee6fef52b9737c5337df5))
+* publish documentation ([9abaa2b](https://github.com/poolifier/poolifier/commit/9abaa2b426b37f9ea111351eee510649542b3683))
+
+
+### 🤖 Automation
+
+* add build step to coverage scripts ([9dc3187](https://github.com/poolifier/poolifier/commit/9dc3187034f1f6a961d7d0ecfd9dece35efa0ef0))
+* rename coverage to test:coverage, remove redundant coverage:html ([a02d55c](https://github.com/poolifier/poolifier/commit/a02d55c0c6c7ea639f0e5ab8594a34dcde8246c0))
+
 ## [5.3.1](https://github.com/poolifier/poolifier/compare/v5.3.0...v5.3.1) (2026-02-20)
 
 
