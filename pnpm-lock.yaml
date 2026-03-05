@@ -29,8 +29,8 @@ importers:
         specifier: ^9.39.3
         version: 9.39.3
       '@rollup/plugin-terser':
-        specifier: ^0.4.4
-        version: 0.4.4(rollup@4.59.0)
+        specifier: ^1.0.0
+        version: 1.0.0(rollup@4.59.0)
       '@rollup/plugin-typescript':
         specifier: ^12.3.0
         version: 12.3.0(rollup@4.59.0)(tslib@2.8.1)(typescript@5.9.3)
@@ -749,9 +749,9 @@ packages:
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@rollup/plugin-terser@0.4.4':
-    resolution: {integrity: sha512-XHeJC5Bgvs8LfukDwWZp7yeqin6ns8RTl2B9avbejt6tZqsqvVoWI7ZTQrcNsfKEDWBTnTxM8nMDkO2IFFbd0A==}
-    engines: {node: '>=14.0.0'}
+  '@rollup/plugin-terser@1.0.0':
+    resolution: {integrity: sha512-FnCxhTBx6bMOYQrar6C8h3scPt8/JwIzw3+AJ2K++6guogH5fYaIFia+zZuhqv0eo1RN7W1Pz630SyvLbDjhtQ==}
+    engines: {node: '>=20.0.0'}
     peerDependencies:
       rollup: ^2.0.0||^3.0.0||^4.0.0
     peerDependenciesMeta:
@@ -3389,7 +3389,7 @@ snapshots:
 
   '@pkgr/core@0.2.9': {}
 
-  '@rollup/plugin-terser@0.4.4(rollup@4.59.0)':
+  '@rollup/plugin-terser@1.0.0(rollup@4.59.0)':
     dependencies:
       serialize-javascript: 7.0.4
       smob: 1.6.1
