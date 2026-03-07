@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.3.3](https://github.com/poolifier/poolifier/compare/v5.3.2...v5.3.3) (2026-03-07)
+
+
+### 🐞 Bug Fixes
+
+* **deps:** update all non-major dependencies ([#3136](https://github.com/poolifier/poolifier/issues/3136)) ([11017b8](https://github.com/poolifier/poolifier/commit/11017b8f3f43f0f89fb6721c8a05d977ca3601c5))
+* **deps:** update all non-major dependencies ([#3139](https://github.com/poolifier/poolifier/issues/3139)) ([3c842e3](https://github.com/poolifier/poolifier/commit/3c842e3bc827022681b2d8327c392fca382e4969))
+* **deps:** update all non-major dependencies ([#3148](https://github.com/poolifier/poolifier/issues/3148)) ([41bad3f](https://github.com/poolifier/poolifier/commit/41bad3f33470ad8e1a89da114f7f91741a2f81de))
+* **deps:** update all non-major dependencies ([#3149](https://github.com/poolifier/poolifier/issues/3149)) ([7b23048](https://github.com/poolifier/poolifier/commit/7b230485bdefbfeec641da1f9db8f24b8d2ee86a))
+
+
+### 📚 Documentation
+
+* publish documentation ([bf154d1](https://github.com/poolifier/poolifier/commit/bf154d1c47ee0f9b967cc87376c7ac759d6d8e8b))
+
 ## [5.3.2](https://github.com/poolifier/poolifier/compare/v5.3.1...v5.3.2) (2026-02-23)
 
 
