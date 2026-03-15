@@ -123,7 +123,7 @@
     "eslint-plugin-perfectionist": "^5.6.0",
     "globals": "^17.4.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.3.3",
+    "lint-staged": "^16.4.0",
     "neostandard": "^0.13.0",
     "prettier": "^3.8.1",
     "rollup": "^4.59.0",

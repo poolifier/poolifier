@@ -62,8 +62,8 @@ importers:
         specifier: ^9.1.7
         version: 9.1.7
       lint-staged:
-        specifier: ^16.3.3
-        version: 16.3.3
+        specifier: ^16.4.0
+        version: 16.4.0
       neostandard:
         specifier: ^0.13.0
         version: 0.13.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
@@ -2024,8 +2024,8 @@ packages:
   linkify-it@5.0.0:
     resolution: {integrity: sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==}
 
-  lint-staged@16.3.3:
-    resolution: {integrity: sha512-RLq2koZ5fGWrx7tcqx2tSTMQj4lRkfNJaebO/li/uunhCJbtZqwTuwPHpgIimAHHi/2nZIiGrkCHDCOeR1onxA==}
+  lint-staged@16.4.0:
+    resolution: {integrity: sha512-lBWt8hujh/Cjysw5GYVmZpFHXDCgZzhrOm8vbcUdobADZNOK/bRshr2kM3DfgrrtR1DQhfupW9gnIXOfiFi+bw==}
     engines: {node: '>=20.17'}
     hasBin: true
 
@@ -2576,6 +2576,10 @@ packages:
 
   tinyexec@1.0.2:
     resolution: {integrity: sha512-W/KYk+NFhkmsYpuHq5JykngiOCnxeVL8v8dFnqxSD8qEEdRfXk1SDM6JzNqcERbcGYj9tMrDQBYV9cjgnunFIg==}
+    engines: {node: '>=18'}
+
+  tinyexec@1.0.4:
+    resolution: {integrity: sha512-u9r3uZC0bdpGOXtlxUIdwf9pkmvhqJdrVCH9fapQtgy/OeTTMZ1nqH7agtvEfmGui6e1XxjcdrlxvxJvc3sMqw==}
     engines: {node: '>=18'}
 
   tinyglobby@0.2.15:
@@ -4845,13 +4849,13 @@ snapshots:
     dependencies:
       uc.micro: 2.1.0
 
-  lint-staged@16.3.3:
+  lint-staged@16.4.0:
     dependencies:
       commander: 14.0.3
       listr2: 9.0.5
-      micromatch: 4.0.8
+      picomatch: 4.0.3
       string-argv: 0.3.2
-      tinyexec: 1.0.2
+      tinyexec: 1.0.4
       yaml: 2.8.2
 
   listr2@9.0.5:
@@ -5462,6 +5466,8 @@ snapshots:
   tinybench@6.0.0: {}
 
   tinyexec@1.0.2: {}
+
+  tinyexec@1.0.4: {}
 
   tinyglobby@0.2.15:
     dependencies:
