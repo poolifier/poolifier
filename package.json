@@ -115,7 +115,7 @@
     "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/node": "^24.12.0",
-    "@vitest/coverage-v8": "^4.1.1",
+    "@vitest/coverage-v8": "^4.1.2",
     "clean-publish": "^6.0.4",
     "cross-env": "^10.1.0",
     "eslint": "^9.39.4",
@@ -136,6 +136,6 @@
     "tslib": "^2.8.1",
     "typedoc": "^0.28.18",
     "typescript": "~5.9.3",
-    "vitest": "^4.1.1"
+    "vitest": "^4.1.2"
   }
 }
