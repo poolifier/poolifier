@@ -17,7 +17,7 @@ importers:
     devDependencies:
       '@rollup/plugin-typescript':
         specifier: ^12.3.0
-        version: 12.3.0(rollup@4.60.1)(tslib@2.8.1)(typescript@6.0.2)
+        version: 12.3.0(rollup@4.60.1)(tslib@2.8.1)(typescript@6.0.3)
       '@types/node':
         specifier: ^24.12.2
         version: 24.12.2
@@ -34,8 +34,8 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       typescript:
-        specifier: ^6.0.2
-        version: 6.0.2
+        specifier: ^6.0.3
+        version: 6.0.3
 
 packages:
 
@@ -730,8 +730,8 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
-  typescript@6.0.2:
-    resolution: {integrity: sha512-bGdAIrZ0wiGDo5l8c++HWtbaNCWTS4UTv7RaTH/ThVIgjkveJt83m74bBHMJkuCbslY8ixgLBVZJIOiQlQTjfQ==}
+  typescript@6.0.3:
+    resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -797,11 +797,11 @@ snapshots:
 
   '@pinojs/redact@0.4.0': {}
 
-  '@rollup/plugin-typescript@12.3.0(rollup@4.60.1)(tslib@2.8.1)(typescript@6.0.2)':
+  '@rollup/plugin-typescript@12.3.0(rollup@4.60.1)(tslib@2.8.1)(typescript@6.0.3)':
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@4.60.1)
       resolve: 1.22.12
-      typescript: 6.0.2
+      typescript: 6.0.3
     optionalDependencies:
       rollup: 4.60.1
       tslib: 2.8.1
@@ -1394,7 +1394,7 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  typescript@6.0.2: {}
+  typescript@6.0.3: {}
 
   undici-types@7.16.0: {}
 

@@ -6,7 +6,7 @@
   "main": "dist/main.js",
   "type": "module",
   "volta": {
-    "node": "24.14.1",
+    "node": "24.15.0",
     "pnpm": "10.33.0"
   },
   "packageManager": "pnpm@10.33.0",
@@ -26,6 +26,6 @@
   "devDependencies": {
     "@types/node": "^24.12.2",
     "@types/nodemailer": "^8.0.0",
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.3"
   }
 }
