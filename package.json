@@ -99,13 +99,6 @@
   "files": [
     "lib"
   ],
-  "pnpm": {
-    "overrides": {
-      "diff@>=6.0.0 <8.0.3": ">=8.0.3",
-      "minimatch@<10.2.1": ">=10.2.1",
-      "serialize-javascript@<=7.0.2": ">=7.0.3"
-    }
-  },
   "devDependencies": {
     "@biomejs/biome": "^2.4.15",
     "@commitlint/cli": "^21.0.0",
