@@ -1127,6 +1127,8 @@ export abstract class AbstractPool<
     workerNode.registerOnceWorkerEventHandler('error', (error: Error) => {
       workerNode.info.ready = false
       this.emitter?.emit(PoolEvents.error, error)
+      const crashedWorkerNodeKey = this.workerNodes.indexOf(workerNode)
+      this.rejectInFlightPromises(crashedWorkerNodeKey, error)
       if (this.started && !this.destroying) {
         if (this.opts.restartWorkerOnError === true) {
           if (workerNode.info.dynamic) {
@@ -1136,7 +1138,7 @@ export abstract class AbstractPool<
           }
         }
         if (this.opts.enableTasksQueue === true) {
-          this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
+          this.redistributeQueuedTasks(crashedWorkerNodeKey)
         }
       }
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, promise/no-promise-in-callback
@@ -2216,6 +2218,42 @@ export abstract class AbstractPool<
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.dequeueTask(sourceWorkerNodeKey)!
       )
+    }
+  }
+
+  /**
+   * Rejects in-flight task promises for the given crashed worker node key.
+   * @param workerNodeKey - The worker node key.
+   * @param error - The error that caused the worker to crash.
+   */
+  private rejectInFlightPromises (workerNodeKey: number, error: Error): void {
+    if (workerNodeKey === -1) {
+      return
+    }
+    const queuedTaskIds = new Set<string>()
+    const workerNode = this.workerNodes[workerNodeKey]
+    for (const task of workerNode.tasksQueue) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      queuedTaskIds.add(task.taskId!)
+    }
+    for (const [taskId, promiseResponse] of this.promiseResponseMap) {
+      if (
+        promiseResponse.workerNodeKey === workerNodeKey &&
+        !queuedTaskIds.has(taskId)
+      ) {
+        const crashError = new Error(
+          `Worker node crashed with error: '${error.message}'`
+        )
+        promiseResponse.asyncResource != null
+          ? promiseResponse.asyncResource.runInAsyncScope(
+            promiseResponse.reject,
+            this.emitter,
+            crashError
+          )
+          : promiseResponse.reject(crashError)
+        promiseResponse.asyncResource?.emitDestroy()
+        this.promiseResponseMap.delete(taskId)
+      }
     }
   }
 
