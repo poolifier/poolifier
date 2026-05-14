@@ -16,13 +16,6 @@ import type {
   TaskFunction,
   TaskFunctionObject,
 } from '../worker/task-functions.js'
-import type {
-  IWorker,
-  IWorkerNode,
-  WorkerInfo,
-  WorkerNodeEventDetail,
-  WorkerType,
-} from './worker.js'
 
 import { defaultBucketSize } from '../queues/queue-types.js'
 import {
@@ -71,6 +64,14 @@ import {
 } from './utils.js'
 import { version } from './version.js'
 import { WorkerNode } from './worker-node.js'
+import {
+  type IWorker,
+  type IWorkerNode,
+  type WorkerInfo,
+  type WorkerNodeEventDetail,
+  type WorkerType,
+  WorkerTypes,
+} from './worker.js'
 
 /**
  * Base class that implements some shared logic for all poolifier pools.
@@ -1125,22 +1126,7 @@ export abstract class AbstractPool<
       this.opts.errorHandler ?? EMPTY_FUNCTION
     )
     workerNode.registerOnceWorkerEventHandler('error', (error: Error) => {
-      workerNode.info.ready = false
-      this.emitter?.emit(PoolEvents.error, error)
-      const crashedWorkerNodeKey = this.workerNodes.indexOf(workerNode)
-      this.rejectInFlightTaskPromises(crashedWorkerNodeKey, error)
-      if (this.started && !this.destroying) {
-        if (this.opts.restartWorkerOnError === true) {
-          if (workerNode.info.dynamic) {
-            this.createAndSetupDynamicWorkerNode()
-          } else if (!this.startingMinimumNumberOfWorkers) {
-            this.startMinimumNumberOfWorkers(true)
-          }
-        }
-        if (this.opts.enableTasksQueue === true) {
-          this.redistributeQueuedTasks(crashedWorkerNodeKey)
-        }
-      }
+      this.handleWorkerNodeCrash(workerNode, error)
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, promise/no-promise-in-callback
       workerNode?.terminate().catch((error: unknown) => {
         this.emitter?.emit(PoolEvents.error, error)
@@ -1150,7 +1136,25 @@ export abstract class AbstractPool<
       'exit',
       this.opts.exitHandler ?? EMPTY_FUNCTION
     )
-    workerNode.registerOnceWorkerEventHandler('exit', () => {
+    workerNode.registerOnceWorkerEventHandler('exit', (exitCode: number) => {
+      // Cluster workers do not emit 'error' on uncaught exceptions;
+      // detect crashes via non-zero exit code. Signal-based kills
+      // (intentional) produce a null code at runtime, skipping this.
+      const workerNodeKey = this.workerNodes.indexOf(workerNode)
+      if (
+        workerNode.info.type === WorkerTypes.cluster &&
+        workerNode.info.ready &&
+        workerNodeKey !== -1 &&
+        !this.destroying &&
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        exitCode != null &&
+        exitCode !== 0
+      ) {
+        this.handleWorkerNodeCrash(
+          workerNode,
+          new Error(`Worker node exited with code ${exitCode.toString()}`)
+        )
+      }
       this.removeWorkerNode(workerNode)
       if (
         this.started &&
@@ -1959,6 +1963,34 @@ export abstract class AbstractPool<
     }
   }
 
+  /**
+   * Handles a crashed worker node: emits error, rejects in-flight promises,
+   * restarts the worker, and redistributes queued tasks.
+   * @param workerNode - The crashed worker node.
+   * @param error - The error that caused the crash.
+   */
+  private handleWorkerNodeCrash (
+    workerNode: IWorkerNode<Worker, Data>,
+    error: Error
+  ): void {
+    workerNode.info.ready = false
+    this.emitter?.emit(PoolEvents.error, error)
+    const crashedWorkerNodeKey = this.workerNodes.indexOf(workerNode)
+    this.rejectInFlightTaskPromises(crashedWorkerNodeKey, error)
+    if (this.started && !this.destroying) {
+      if (this.opts.restartWorkerOnError === true) {
+        if (workerNode.info.dynamic) {
+          this.createAndSetupDynamicWorkerNode()
+        } else if (!this.startingMinimumNumberOfWorkers) {
+          this.startMinimumNumberOfWorkers(true)
+        }
+      }
+      if (this.opts.enableTasksQueue === true) {
+        this.redistributeQueuedTasks(crashedWorkerNodeKey)
+      }
+    }
+  }
+
   private readonly handleWorkerNodeIdleEvent = (
     eventDetail: WorkerNodeEventDetail,
     previousStolenTask?: Task<Data>
@@ -2629,6 +2661,12 @@ export abstract class AbstractPool<
     }
   }
 
+  /**
+   * Updates the promise response worker node key after task steal or redistribute.
+   * Ensures crash-time rejection targets the correct worker.
+   * @param taskId - The task id.
+   * @param workerNodeKey - The destination worker node key.
+   */
   private updatePromiseResponseWorkerNodeKey (
     taskId: `${string}-${string}-${string}-${string}-${string}` | undefined,
     workerNodeKey: number

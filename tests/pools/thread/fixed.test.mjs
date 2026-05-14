@@ -8,7 +8,14 @@ import { sleep, waitWorkerEvents } from '../../test-utils.cjs'
 describe('Fixed thread pool test suite', () => {
   const numberOfThreads = 6
   const tasksConcurrency = 2
-  let asyncErrorPool, asyncPool, echoPool, emptyPool, errorPool, pool, queuePool
+  let asyncErrorPool,
+    asyncPool,
+    crashPool,
+    echoPool,
+    emptyPool,
+    errorPool,
+    pool,
+    queuePool
 
   beforeAll(() => {
     pool = new FixedThreadPool(
@@ -56,6 +63,15 @@ describe('Fixed thread pool test suite', () => {
       numberOfThreads,
       './tests/worker-files/thread/asyncWorker.mjs'
     )
+    crashPool = new FixedThreadPool(
+      1,
+      './tests/worker-files/thread/crashWorker.mjs',
+      {
+        enableTasksQueue: true,
+        restartWorkerOnError: false,
+        tasksQueueOptions: { concurrency: 1 },
+      }
+    )
   })
 
   afterAll(async () => {
@@ -68,6 +84,7 @@ describe('Fixed thread pool test suite', () => {
     await asyncErrorPool.destroy()
     await emptyPool.destroy()
     await queuePool.destroy()
+    await crashPool.destroy()
   })
 
   it('Verify that the function is executed in a worker thread', async () => {
@@ -274,17 +291,8 @@ describe('Fixed thread pool test suite', () => {
   })
 
   it('Verify that in-flight task promises reject on worker crash', async () => {
-    const crashPool = new FixedThreadPool(
-      1,
-      './tests/worker-files/thread/crashWorker.mjs',
-      {
-        enableTasksQueue: true,
-        restartWorkerOnError: false,
-        tasksQueueOptions: { concurrency: 1 },
-      }
-    )
     let poolError
-    crashPool.emitter.on(PoolEvents.error, e => {
+    crashPool.emitter.once(PoolEvents.error, e => {
       poolError = e
     })
     let error
@@ -299,7 +307,6 @@ describe('Fixed thread pool test suite', () => {
     expect(poolError).toBeInstanceOf(Error)
     expect(poolError.message).toBe('Simulated worker crash')
     await sleep(250)
-    await crashPool.destroy()
   })
 
   it('Verify that async function is working properly', async () => {

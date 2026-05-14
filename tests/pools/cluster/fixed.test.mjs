@@ -9,7 +9,14 @@ import { sleep, waitWorkerEvents } from '../../test-utils.cjs'
 describe('Fixed cluster pool test suite', () => {
   const numberOfWorkers = 8
   const tasksConcurrency = 2
-  let asyncErrorPool, asyncPool, echoPool, emptyPool, errorPool, pool, queuePool
+  let asyncErrorPool,
+    asyncPool,
+    crashPool,
+    echoPool,
+    emptyPool,
+    errorPool,
+    pool,
+    queuePool
 
   beforeAll(() => {
     pool = new FixedClusterPool(
@@ -57,6 +64,15 @@ describe('Fixed cluster pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/cluster/asyncWorker.cjs'
     )
+    crashPool = new FixedClusterPool(
+      1,
+      './tests/worker-files/cluster/crashWorker.cjs',
+      {
+        enableTasksQueue: true,
+        restartWorkerOnError: false,
+        tasksQueueOptions: { concurrency: 1 },
+      }
+    )
   })
 
   afterAll(async () => {
@@ -69,6 +85,7 @@ describe('Fixed cluster pool test suite', () => {
     await asyncErrorPool.destroy()
     await emptyPool.destroy()
     await queuePool.destroy()
+    await crashPool.destroy()
   })
 
   it('Verify that the function is executed in a worker cluster', async () => {
@@ -243,6 +260,25 @@ describe('Fixed cluster pool test suite', () => {
         workerNode => workerNode.usage.tasks.failed === 1
       )
     ).toBe(true)
+  })
+
+  it('Verify that in-flight task promises reject on worker crash', async () => {
+    let poolError
+    crashPool.emitter.once(PoolEvents.error, e => {
+      poolError = e
+    })
+    let error
+    try {
+      await crashPool.execute()
+    } catch (e) {
+      error = e
+    }
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).toMatch(/Worker node crashed with error:/)
+    expect(error.message).toMatch(/exited with code 1/)
+    expect(poolError).toBeInstanceOf(Error)
+    expect(poolError.message).toMatch(/Worker node exited with code 1/)
+    await sleep(250)
   })
 
   it('Verify that async function is working properly', async () => {
