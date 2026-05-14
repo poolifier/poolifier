@@ -2267,14 +2267,17 @@ export abstract class AbstractPool<
     if (workerNodeKey === -1) {
       return
     }
+    const workerNode = this.workerNodes[workerNodeKey]
+    const crashedWorkerId = workerNode.info.id
+    if (crashedWorkerId == null) {
+      return
+    }
     const queuedTaskIds =
       new Set<`${string}-${string}-${string}-${string}-${string}`>()
-    const workerNode = this.workerNodes[workerNodeKey]
     for (const task of workerNode.tasksQueue) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       queuedTaskIds.add(task.taskId!)
     }
-    const crashedWorkerId = workerNode.info.id
     const crashError = new Error(
       `Worker node crashed with error: '${error.message}'`
     )
