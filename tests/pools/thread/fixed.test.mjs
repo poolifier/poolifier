@@ -169,18 +169,21 @@ describe('Fixed thread pool test suite', () => {
         0
       )
       expect(workerNode.usage.tasks.sequentiallyStolen).toBeLessThanOrEqual(
-        numberOfThreads * maxMultiplier
+        numberOfThreads *
+          (maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency)
       )
       expect(workerNode.usage.tasks.stolen).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.stolen).toBeLessThanOrEqual(
-        numberOfThreads * maxMultiplier
+        numberOfThreads *
+          (maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency)
       )
     }
     expect(queuePool.info.executedTasks).toBe(numberOfThreads * maxMultiplier)
     expect(queuePool.info.backPressure).toBe(false)
     expect(queuePool.info.stolenTasks).toBeGreaterThanOrEqual(0)
     expect(queuePool.info.stolenTasks).toBeLessThanOrEqual(
-      numberOfThreads * maxMultiplier
+      numberOfThreads *
+        (maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency)
     )
   })
 

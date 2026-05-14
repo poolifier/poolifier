@@ -70,7 +70,6 @@ import {
   type WorkerInfo,
   type WorkerNodeEventDetail,
   type WorkerType,
-  WorkerTypes,
 } from './worker.js'
 
 /**
@@ -1137,13 +1136,10 @@ export abstract class AbstractPool<
       this.opts.exitHandler ?? EMPTY_FUNCTION
     )
     workerNode.registerOnceWorkerEventHandler('exit', (exitCode: number) => {
-      // Cluster workers do not emit 'error' on uncaught exceptions;
-      // detect crashes via non-zero exit code. Intentional signal-based kills
-      // produce a null code at runtime, skipping this.
       const workerNodeKey = this.workerNodes.indexOf(workerNode)
       if (
-        workerNode.info.type === WorkerTypes.cluster &&
         workerNode.info.ready &&
+        !workerNode.info.crashHandled &&
         workerNodeKey !== -1 &&
         !this.destroying &&
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -1970,6 +1966,7 @@ export abstract class AbstractPool<
     error: Error
   ): void {
     workerNode.info.ready = false
+    workerNode.info.crashHandled = true
     this.emitter?.emit(PoolEvents.error, error)
     const crashedWorkerNodeKey = this.workerNodes.indexOf(workerNode)
     this.rejectInFlightTaskPromises(crashedWorkerNodeKey, error)
@@ -2288,6 +2285,10 @@ export abstract class AbstractPool<
       ) {
         this.rejectTaskPromiseResponse(promiseResponse, crashError)
         this.promiseResponseMap.delete(taskId)
+        if (workerNode.usage.tasks.executing > 0) {
+          --workerNode.usage.tasks.executing
+        }
+        ++workerNode.usage.tasks.failed
         workerNode.emit('taskFinished', taskId)
       }
     }
@@ -2728,11 +2729,16 @@ export abstract class AbstractPool<
     taskId: `${string}-${string}-${string}-${string}-${string}` | undefined,
     workerNodeKey: number
   ): void {
-    if (taskId != null) {
-      const promiseResponse = this.promiseResponseMap.get(taskId)
-      if (promiseResponse != null) {
-        promiseResponse.workerId = this.workerNodes[workerNodeKey].info.id
-      }
+    if (taskId == null || workerNodeKey === -1) {
+      return
+    }
+    const workerNode = this.workerNodes[workerNodeKey]
+    if (workerNode.info.id == null) {
+      return
+    }
+    const promiseResponse = this.promiseResponseMap.get(taskId)
+    if (promiseResponse != null) {
+      promiseResponse.workerId = workerNode.info.id
     }
   }
 

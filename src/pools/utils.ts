@@ -517,6 +517,7 @@ export const initWorkerInfo = (worker: IWorker): WorkerInfo => {
     backPressure: false,
     backPressureStealing: false,
     continuousStealing: false,
+    crashHandled: false,
     dynamic: false,
     id: getWorkerId(worker),
     queuedTaskAbortion: false,

@@ -325,6 +325,11 @@ export interface WorkerInfo {
    */
   continuousStealing: boolean
   /**
+   * Crash handled flag.
+   * This flag is set to `true` when worker node crash has been handled.
+   */
+  crashHandled: boolean
+  /**
    * Dynamic flag.
    */
   dynamic: boolean
