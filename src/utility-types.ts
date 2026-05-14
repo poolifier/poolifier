@@ -100,7 +100,7 @@ export interface PromiseResponseWrapper<Response = unknown> {
   /**
    * The worker node key executing the task.
    */
-  readonly workerNodeKey: number
+  workerNodeKey: number
 }
 
 /**

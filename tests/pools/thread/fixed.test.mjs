@@ -266,6 +266,35 @@ describe('Fixed thread pool test suite', () => {
     ).toBe(true)
   })
 
+  it('Verify that in-flight task promises reject on worker crash', async () => {
+    const crashPool = new FixedThreadPool(
+      1,
+      './tests/worker-files/thread/crashWorker.mjs',
+      {
+        enableTasksQueue: true,
+        restartWorkerOnError: false,
+        tasksQueueOptions: { concurrency: 1 },
+      }
+    )
+    let poolError
+    crashPool.emitter.on(PoolEvents.error, e => {
+      poolError = e
+    })
+    let error
+    try {
+      await crashPool.execute()
+    } catch (e) {
+      error = e
+    }
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).toMatch(/Worker node crashed with error:/)
+    expect(error.message).toMatch(/Simulated worker crash/)
+    expect(poolError).toBeInstanceOf(Error)
+    expect(poolError.message).toBe('Simulated worker crash')
+    await sleep(250)
+    await crashPool.destroy()
+  })
+
   it('Verify that async function is working properly', async () => {
     const data = { f: 10 }
     const startTime = performance.now()

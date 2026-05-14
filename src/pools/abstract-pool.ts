@@ -1128,7 +1128,7 @@ export abstract class AbstractPool<
       workerNode.info.ready = false
       this.emitter?.emit(PoolEvents.error, error)
       const crashedWorkerNodeKey = this.workerNodes.indexOf(workerNode)
-      this.rejectInFlightPromises(crashedWorkerNodeKey, error)
+      this.rejectInFlightTaskPromises(crashedWorkerNodeKey, error)
       if (this.started && !this.destroying) {
         if (this.opts.restartWorkerOnError === true) {
           if (workerNode.info.dynamic) {
@@ -1155,7 +1155,8 @@ export abstract class AbstractPool<
       if (
         this.started &&
         !this.startingMinimumNumberOfWorkers &&
-        !this.destroying
+        !this.destroying &&
+        this.opts.restartWorkerOnError === true
       ) {
         this.startMinimumNumberOfWorkers(true)
       }
@@ -2213,10 +2214,12 @@ export abstract class AbstractPool<
       if (destinationWorkerNodeKey === -1) {
         break
       }
-      this.handleTask(
-        destinationWorkerNodeKey,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.dequeueTask(sourceWorkerNodeKey)!
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const task = this.dequeueTask(sourceWorkerNodeKey)!
+      this.handleTask(destinationWorkerNodeKey, task)
+      this.updatePromiseResponseWorkerNodeKey(
+        task.taskId,
+        destinationWorkerNodeKey
       )
     }
   }
@@ -2226,7 +2229,10 @@ export abstract class AbstractPool<
    * @param workerNodeKey - The worker node key.
    * @param error - The error that caused the worker to crash.
    */
-  private rejectInFlightPromises (workerNodeKey: number, error: Error): void {
+  private rejectInFlightTaskPromises (
+    workerNodeKey: number,
+    error: Error
+  ): void {
     if (workerNodeKey === -1) {
       return
     }
@@ -2253,8 +2259,10 @@ export abstract class AbstractPool<
           : promiseResponse.reject(crashError)
         promiseResponse.asyncResource?.emitDestroy()
         this.promiseResponseMap.delete(taskId)
+        workerNode.emit('taskFinished', taskId)
       }
     }
+    this.checkAndEmitTaskExecutionFinishedEvents()
   }
 
   /**
@@ -2575,6 +2583,10 @@ export abstract class AbstractPool<
     sourceWorkerNode.info.stolen = false
     destinationWorkerNode.info.stealing = false
     this.handleTask(destinationWorkerNodeKey, stolenTask)
+    this.updatePromiseResponseWorkerNodeKey(
+      stolenTask.taskId,
+      destinationWorkerNodeKey
+    )
     this.updateTaskStolenStatisticsWorkerUsage(
       destinationWorkerNodeKey,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -2607,6 +2619,18 @@ export abstract class AbstractPool<
         'idle',
         this.handleWorkerNodeIdleEvent
       )
+    }
+  }
+
+  private updatePromiseResponseWorkerNodeKey (
+    taskId: `${string}-${string}-${string}-${string}-${string}` | undefined,
+    workerNodeKey: number
+  ): void {
+    if (taskId != null) {
+      const promiseResponse = this.promiseResponseMap.get(taskId)
+      if (promiseResponse != null) {
+        promiseResponse.workerNodeKey = workerNodeKey
+      }
     }
   }
 
