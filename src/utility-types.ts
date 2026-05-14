@@ -98,6 +98,10 @@ export interface PromiseResponseWrapper<Response = unknown> {
    */
   readonly resolve: (value: PromiseLike<Response> | Response) => void
   /**
+   * The worker id executing the task.
+   */
+  workerId: number | undefined
+  /**
    * The worker node key executing the task.
    */
   workerNodeKey: number

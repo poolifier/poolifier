@@ -1138,8 +1138,8 @@ export abstract class AbstractPool<
     )
     workerNode.registerOnceWorkerEventHandler('exit', (exitCode: number) => {
       // Cluster workers do not emit 'error' on uncaught exceptions;
-      // detect crashes via non-zero exit code. Signal-based kills
-      // (intentional) produce a null code at runtime, skipping this.
+      // detect crashes via non-zero exit code. Intentional signal-based kills
+      // produce a null code at runtime, skipping this.
       const workerNodeKey = this.workerNodes.indexOf(workerNode)
       if (
         workerNode.info.type === WorkerTypes.cluster &&
@@ -1981,8 +1981,6 @@ export abstract class AbstractPool<
       if (this.opts.restartWorkerOnError === true) {
         if (workerNode.info.dynamic) {
           this.createAndSetupDynamicWorkerNode()
-        } else if (!this.startingMinimumNumberOfWorkers) {
-          this.startMinimumNumberOfWorkers(true)
         }
       }
       if (this.opts.enableTasksQueue === true) {
@@ -2142,6 +2140,7 @@ export abstract class AbstractPool<
       this.promiseResponseMap.set(task.taskId!, {
         reject,
         resolve,
+        workerId: this.workerNodes[workerNodeKey].info.id,
         workerNodeKey,
         ...(this.emitter != null && {
           asyncResource: new AsyncResource('poolifier:task', {
@@ -2281,9 +2280,10 @@ export abstract class AbstractPool<
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       queuedTaskIds.add(task.taskId!)
     }
+    const crashedWorkerId = workerNode.info.id
     for (const [taskId, promiseResponse] of this.promiseResponseMap) {
       if (
-        promiseResponse.workerNodeKey === workerNodeKey &&
+        promiseResponse.workerId === crashedWorkerId &&
         !queuedTaskIds.has(taskId)
       ) {
         const crashError = new Error(
@@ -2675,6 +2675,7 @@ export abstract class AbstractPool<
       const promiseResponse = this.promiseResponseMap.get(taskId)
       if (promiseResponse != null) {
         promiseResponse.workerNodeKey = workerNodeKey
+        promiseResponse.workerId = this.workerNodes[workerNodeKey].info.id
       }
     }
   }
