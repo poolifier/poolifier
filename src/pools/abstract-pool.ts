@@ -1135,32 +1135,34 @@ export abstract class AbstractPool<
       'exit',
       this.opts.exitHandler ?? EMPTY_FUNCTION
     )
-    workerNode.registerOnceWorkerEventHandler('exit', (exitCode: number) => {
-      const workerNodeKey = this.workerNodes.indexOf(workerNode)
-      if (
-        workerNode.info.ready &&
-        !workerNode.info.crashHandled &&
-        workerNodeKey !== -1 &&
-        !this.destroying &&
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        exitCode != null &&
-        exitCode !== 0
-      ) {
-        this.handleWorkerNodeCrash(
-          workerNode,
-          new Error(`Worker node exited with code ${exitCode.toString()}`)
-        )
+    workerNode.registerOnceWorkerEventHandler(
+      'exit',
+      (exitCode: null | number) => {
+        const workerNodeKey = this.workerNodes.indexOf(workerNode)
+        if (
+          workerNode.info.ready &&
+          !workerNode.info.crashHandled &&
+          workerNodeKey !== -1 &&
+          !this.destroying &&
+          exitCode != null &&
+          exitCode !== 0
+        ) {
+          this.handleWorkerNodeCrash(
+            workerNode,
+            new Error(`Worker node exited with code ${exitCode.toString()}`)
+          )
+        }
+        this.removeWorkerNode(workerNode)
+        if (
+          this.started &&
+          !this.startingMinimumNumberOfWorkers &&
+          !this.destroying &&
+          (this.opts.restartWorkerOnError === true || exitCode === 0)
+        ) {
+          this.startMinimumNumberOfWorkers(true)
+        }
       }
-      this.removeWorkerNode(workerNode)
-      if (
-        this.started &&
-        !this.startingMinimumNumberOfWorkers &&
-        !this.destroying &&
-        (this.opts.restartWorkerOnError === true || exitCode === 0)
-      ) {
-        this.startMinimumNumberOfWorkers(true)
-      }
-    })
+    )
     const workerNodeKey = this.addWorkerNode(workerNode)
     this.afterWorkerNodeSetup(workerNodeKey)
     return workerNodeKey
