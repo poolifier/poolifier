@@ -1156,7 +1156,7 @@ export abstract class AbstractPool<
         this.started &&
         !this.startingMinimumNumberOfWorkers &&
         !this.destroying &&
-        this.opts.restartWorkerOnError === true
+        (this.opts.restartWorkerOnError === true || exitCode === 0)
       ) {
         this.startMinimumNumberOfWorkers(true)
       }
@@ -2267,6 +2267,18 @@ export abstract class AbstractPool<
     const workerNode = this.workerNodes[workerNodeKey]
     const crashedWorkerId = workerNode.info.id
     if (crashedWorkerId == null) {
+      const crashError = new Error(
+        `Worker node crashed with error: '${error.message}'`,
+        { cause: error }
+      )
+      for (const [taskId, promiseResponse] of this.promiseResponseMap) {
+        if (promiseResponse.workerId == null) {
+          this.rejectTaskPromiseResponse(promiseResponse, crashError)
+          this.promiseResponseMap.delete(taskId)
+          workerNode.emit('taskFinished', taskId)
+        }
+      }
+      this.checkAndEmitTaskExecutionFinishedEvents()
       return
     }
     const queuedTaskIds =
@@ -2276,7 +2288,8 @@ export abstract class AbstractPool<
       queuedTaskIds.add(task.taskId!)
     }
     const crashError = new Error(
-      `Worker node crashed with error: '${error.message}'`
+      `Worker node crashed with error: '${error.message}'`,
+      { cause: error }
     )
     for (const [taskId, promiseResponse] of this.promiseResponseMap) {
       if (
@@ -2312,7 +2325,8 @@ export abstract class AbstractPool<
       return
     }
     const crashError = new Error(
-      `Worker node crashed with error: '${error.message}'`
+      `Worker node crashed with error: '${error.message}'`,
+      { cause: error }
     )
     while (this.tasksQueueSize(workerNodeKey) > 0) {
       const task = this.dequeueTask(workerNodeKey)
