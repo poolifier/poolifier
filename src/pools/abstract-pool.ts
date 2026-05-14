@@ -2178,10 +2178,20 @@ export abstract class AbstractPool<
       abortSignal?.addEventListener(
         'abort',
         () => {
-          this.workerNodes[workerNodeKey]?.emit('abortTask', {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const promiseResponse = this.promiseResponseMap.get(task.taskId!)
+          if (promiseResponse == null) {
+            return
+          }
+          const currentWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(
+            promiseResponse.workerId
+          )
+          if (currentWorkerNodeKey === -1) {
+            return
+          }
+          this.workerNodes[currentWorkerNodeKey]?.emit('abortTask', {
             taskId: task.taskId,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            workerId: this.getWorkerInfo(workerNodeKey)!.id!,
+            workerId: promiseResponse.workerId,
           })
         },
         { once: true }
