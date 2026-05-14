@@ -2335,6 +2335,7 @@ export abstract class AbstractPool<
         if (promiseResponse != null) {
           this.rejectTaskPromiseResponse(promiseResponse, crashError)
           this.promiseResponseMap.delete(task.taskId)
+          ++workerNode.usage.tasks.failed
           workerNode.emit('taskFinished', task.taskId)
         }
       }
