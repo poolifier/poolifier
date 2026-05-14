@@ -1985,6 +1985,7 @@ export abstract class AbstractPool<
       }
       if (this.opts.enableTasksQueue === true) {
         this.redistributeQueuedTasks(crashedWorkerNodeKey)
+        this.rejectRemainingQueuedTaskPromises(crashedWorkerNodeKey, error)
       }
     }
   }
@@ -2281,14 +2282,14 @@ export abstract class AbstractPool<
       queuedTaskIds.add(task.taskId!)
     }
     const crashedWorkerId = workerNode.info.id
+    const crashError = new Error(
+      `Worker node crashed with error: '${error.message}'`
+    )
     for (const [taskId, promiseResponse] of this.promiseResponseMap) {
       if (
         promiseResponse.workerId === crashedWorkerId &&
         !queuedTaskIds.has(taskId)
       ) {
-        const crashError = new Error(
-          `Worker node crashed with error: '${error.message}'`
-        )
         promiseResponse.asyncResource != null
           ? promiseResponse.asyncResource.runInAsyncScope(
             promiseResponse.reject,
@@ -2299,6 +2300,41 @@ export abstract class AbstractPool<
         promiseResponse.asyncResource?.emitDestroy()
         this.promiseResponseMap.delete(taskId)
         workerNode.emit('taskFinished', taskId)
+      }
+    }
+    this.checkAndEmitTaskExecutionFinishedEvents()
+  }
+
+  private rejectRemainingQueuedTaskPromises (
+    workerNodeKey: number,
+    error: Error
+  ): void {
+    if (workerNodeKey === -1) {
+      return
+    }
+    const workerNode = this.workerNodes[workerNodeKey]
+    if (this.tasksQueueSize(workerNodeKey) === 0) {
+      return
+    }
+    const crashError = new Error(
+      `Worker node crashed with error: '${error.message}'`
+    )
+    while (this.tasksQueueSize(workerNodeKey) > 0) {
+      const task = this.dequeueTask(workerNodeKey)
+      if (task?.taskId != null) {
+        const promiseResponse = this.promiseResponseMap.get(task.taskId)
+        if (promiseResponse != null) {
+          promiseResponse.asyncResource != null
+            ? promiseResponse.asyncResource.runInAsyncScope(
+              promiseResponse.reject,
+              this.emitter,
+              crashError
+            )
+            : promiseResponse.reject(crashError)
+          promiseResponse.asyncResource?.emitDestroy()
+          this.promiseResponseMap.delete(task.taskId)
+          workerNode.emit('taskFinished', task.taskId)
+        }
       }
     }
     this.checkAndEmitTaskExecutionFinishedEvents()

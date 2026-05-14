@@ -267,6 +267,7 @@ describe('Fixed cluster pool test suite', () => {
     crashPool.emitter.once(PoolEvents.error, e => {
       poolError = e
     })
+    const exitPromise = waitWorkerEvents(crashPool, 'exit', 1)
     let error
     try {
       await crashPool.execute()
@@ -278,7 +279,7 @@ describe('Fixed cluster pool test suite', () => {
     expect(error.message).toMatch(/exited with code 1/)
     expect(poolError).toBeInstanceOf(Error)
     expect(poolError.message).toMatch(/Worker node exited with code 1/)
-    await sleep(250)
+    await exitPromise
   })
 
   it('Verify that async function is working properly', async () => {
