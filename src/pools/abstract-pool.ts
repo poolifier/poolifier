@@ -1374,6 +1374,9 @@ export abstract class AbstractPool<
       return
     }
     const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+    if (workerNodeKey === -1) {
+      return
+    }
     const workerNode = this.workerNodes[workerNodeKey]
     if (!workerNode.info.ready) {
       return
@@ -1980,8 +1983,10 @@ export abstract class AbstractPool<
       }
       if (this.opts.enableTasksQueue === true) {
         this.redistributeQueuedTasks(crashedWorkerNodeKey)
-        this.rejectRemainingQueuedTaskPromises(crashedWorkerNodeKey, error)
       }
+    }
+    if (this.opts.enableTasksQueue === true) {
+      this.rejectRemainingQueuedTaskPromises(crashedWorkerNodeKey, error)
     }
   }
 
@@ -2751,6 +2756,10 @@ export abstract class AbstractPool<
     }
     const workerNode = this.workerNodes[workerNodeKey]
     if (workerNode.info.id == null) {
+      const promiseResponse = this.promiseResponseMap.get(taskId)
+      if (promiseResponse != null) {
+        promiseResponse.workerId = undefined
+      }
       return
     }
     const promiseResponse = this.promiseResponseMap.get(taskId)
