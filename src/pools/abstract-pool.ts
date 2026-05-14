@@ -2142,7 +2142,6 @@ export abstract class AbstractPool<
         reject,
         resolve,
         workerId: this.workerNodes[workerNodeKey].info.id,
-        workerNodeKey,
         ...(this.emitter != null && {
           asyncResource: new AsyncResource('poolifier:task', {
             requireManualDestroy: true,
@@ -2256,10 +2255,7 @@ export abstract class AbstractPool<
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const task = this.dequeueTask(sourceWorkerNodeKey)!
       this.handleTask(destinationWorkerNodeKey, task)
-      this.updatePromiseResponseWorkerNodeKey(
-        task.taskId,
-        destinationWorkerNodeKey
-      )
+      this.updatePromiseResponseWorkerId(task.taskId, destinationWorkerNodeKey)
     }
   }
 
@@ -2275,7 +2271,8 @@ export abstract class AbstractPool<
     if (workerNodeKey === -1) {
       return
     }
-    const queuedTaskIds = new Set<string>()
+    const queuedTaskIds =
+      new Set<`${string}-${string}-${string}-${string}-${string}`>()
     const workerNode = this.workerNodes[workerNodeKey]
     for (const task of workerNode.tasksQueue) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -2658,7 +2655,7 @@ export abstract class AbstractPool<
     sourceWorkerNode.info.stolen = false
     destinationWorkerNode.info.stealing = false
     this.handleTask(destinationWorkerNodeKey, stolenTask)
-    this.updatePromiseResponseWorkerNodeKey(
+    this.updatePromiseResponseWorkerId(
       stolenTask.taskId,
       destinationWorkerNodeKey
     )
@@ -2698,19 +2695,18 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Updates the promise response worker node key after task steal or redistribute.
+   * Updates the promise response worker id after task steal or redistribute.
    * Ensures crash-time rejection targets the correct worker.
    * @param taskId - The task id.
    * @param workerNodeKey - The destination worker node key.
    */
-  private updatePromiseResponseWorkerNodeKey (
+  private updatePromiseResponseWorkerId (
     taskId: `${string}-${string}-${string}-${string}-${string}` | undefined,
     workerNodeKey: number
   ): void {
     if (taskId != null) {
       const promiseResponse = this.promiseResponseMap.get(taskId)
       if (promiseResponse != null) {
-        promiseResponse.workerNodeKey = workerNodeKey
         promiseResponse.workerId = this.workerNodes[workerNodeKey].info.id
       }
     }
