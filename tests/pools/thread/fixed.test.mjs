@@ -136,7 +136,14 @@ describe('Fixed thread pool test suite', () => {
       expect(workerNode.usage.tasks.executing).toBeLessThanOrEqual(
         numberOfThreads * maxMultiplier
       )
-      expect(workerNode.usage.tasks.executed).toBe(maxMultiplier)
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(
+        queuePool.opts.tasksQueueOptions.concurrency
+      )
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
+        numberOfThreads *
+          (maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency) +
+          queuePool.opts.tasksQueueOptions.concurrency
+      )
       expect(workerNode.usage.tasks.queued).toBe(0)
       expect(workerNode.usage.tasks.maxQueued).toBe(
         maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency

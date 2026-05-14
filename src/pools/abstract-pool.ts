@@ -1841,12 +1841,14 @@ export abstract class AbstractPool<
   }
 
   private handleTaskExecutionResponse (message: MessageValue<Response>): void {
-    const { data, taskId, workerError } = message
+    const { data, taskId, workerError, workerId } = message
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const promiseResponse = this.promiseResponseMap.get(taskId!)
     if (promiseResponse != null) {
-      const { asyncResource, reject, resolve, workerNodeKey } = promiseResponse
-      const workerNode = this.workerNodes[workerNodeKey]
+      const { asyncResource, reject, resolve } = promiseResponse
+      const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+      const workerNode =
+        workerNodeKey !== -1 ? this.workerNodes[workerNodeKey] : undefined
       if (workerError != null) {
         this.emitter?.emit(PoolEvents.taskError, workerError)
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -1860,14 +1862,19 @@ export abstract class AbstractPool<
           : resolve(data as Response)
       }
       asyncResource?.emitDestroy()
-      this.afterTaskExecutionHook(workerNodeKey, message)
+      if (workerNodeKey !== -1) {
+        this.afterTaskExecutionHook(workerNodeKey, message)
+      }
       queueMicrotask(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         workerNode?.emit('taskFinished', taskId)
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.promiseResponseMap.delete(taskId!)
         this.checkAndEmitTaskExecutionFinishedEvents()
-        if (this.opts.enableTasksQueue === true && !this.destroying) {
+        if (
+          workerNodeKey !== -1 &&
+          this.opts.enableTasksQueue === true &&
+          !this.destroying
+        ) {
           if (
             !this.isWorkerNodeBusy(workerNodeKey) &&
             this.tasksQueueSize(workerNodeKey) > 0
@@ -1876,7 +1883,7 @@ export abstract class AbstractPool<
             this.executeTask(workerNodeKey, this.dequeueTask(workerNodeKey)!)
           }
           if (this.isWorkerNodeIdle(workerNodeKey)) {
-            workerNode.emit('idle', {
+            workerNode?.emit('idle', {
               workerNodeKey,
             })
           }
