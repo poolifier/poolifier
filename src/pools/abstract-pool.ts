@@ -1857,13 +1857,9 @@ export abstract class AbstractPool<
         this.emitter?.emit(PoolEvents.taskError, workerError)
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const error = this.handleWorkerError(taskId!, workerError)
-        asyncResource != null
-          ? asyncResource.runInAsyncScope(reject, this.emitter, error)
-          : reject(error)
+        this.runInAsyncScope(promiseResponse, reject, error)
       } else {
-        asyncResource != null
-          ? asyncResource.runInAsyncScope(resolve, this.emitter, data)
-          : resolve(data as Response)
+        this.runInAsyncScope(promiseResponse, resolve, data)
       }
       asyncResource?.emitDestroy()
       if (workerNodeKey !== -1) {
@@ -2287,14 +2283,7 @@ export abstract class AbstractPool<
         promiseResponse.workerId === crashedWorkerId &&
         !queuedTaskIds.has(taskId)
       ) {
-        promiseResponse.asyncResource != null
-          ? promiseResponse.asyncResource.runInAsyncScope(
-            promiseResponse.reject,
-            this.emitter,
-            crashError
-          )
-          : promiseResponse.reject(crashError)
-        promiseResponse.asyncResource?.emitDestroy()
+        this.rejectTaskPromiseResponse(promiseResponse, crashError)
         this.promiseResponseMap.delete(taskId)
         workerNode.emit('taskFinished', taskId)
       }
@@ -2302,6 +2291,11 @@ export abstract class AbstractPool<
     this.checkAndEmitTaskExecutionFinishedEvents()
   }
 
+  /**
+   * Rejects remaining queued task promises for the given crashed worker node key.
+   * @param workerNodeKey - The worker node key.
+   * @param error - The error that caused the worker to crash.
+   */
   private rejectRemainingQueuedTaskPromises (
     workerNodeKey: number,
     error: Error
@@ -2321,20 +2315,26 @@ export abstract class AbstractPool<
       if (task?.taskId != null) {
         const promiseResponse = this.promiseResponseMap.get(task.taskId)
         if (promiseResponse != null) {
-          promiseResponse.asyncResource != null
-            ? promiseResponse.asyncResource.runInAsyncScope(
-              promiseResponse.reject,
-              this.emitter,
-              crashError
-            )
-            : promiseResponse.reject(crashError)
-          promiseResponse.asyncResource?.emitDestroy()
+          this.rejectTaskPromiseResponse(promiseResponse, crashError)
           this.promiseResponseMap.delete(task.taskId)
           workerNode.emit('taskFinished', task.taskId)
         }
       }
     }
     this.checkAndEmitTaskExecutionFinishedEvents()
+  }
+
+  /**
+   * Rejects a task promise response, running the rejection in async scope if available.
+   * @param promiseResponse - The promise response wrapper to reject.
+   * @param error - The rejection error.
+   */
+  private rejectTaskPromiseResponse (
+    promiseResponse: PromiseResponseWrapper<Response>,
+    error: Error
+  ): void {
+    this.runInAsyncScope(promiseResponse, promiseResponse.reject, error)
+    promiseResponse.asyncResource?.emitDestroy()
   }
 
   /**
@@ -2370,6 +2370,27 @@ export abstract class AbstractPool<
         taskName
       )!.tasks.sequentiallyStolen = 0
     }
+  }
+
+  /**
+   * Runs a callback in the promise response async scope if available, otherwise calls it directly.
+   * @param promiseResponse - The promise response wrapper.
+   * @param callback - The callback to run.
+   * @param args - The arguments to pass to the callback.
+   */
+  private runInAsyncScope (
+    promiseResponse: PromiseResponseWrapper<Response>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    callback: (...args: any[]) => void,
+    ...args: unknown[]
+  ): void {
+    promiseResponse.asyncResource != null
+      ? promiseResponse.asyncResource.runInAsyncScope(
+        callback,
+        this.emitter,
+        ...args
+      )
+      : callback(...args)
   }
 
   private async sendKillMessageToWorker (
