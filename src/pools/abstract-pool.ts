@@ -10,6 +10,7 @@ import type {
   PromiseResponseWrapper,
   Task,
   TaskFunctionProperties,
+  TaskUUID,
   WorkerError,
 } from '../utility-types.js'
 import type {
@@ -393,12 +394,9 @@ export abstract class AbstractPool<
    * When we receive a message from the worker, we get a map entry with the promise resolve/reject bound to the message id.
    */
   protected promiseResponseMap: Map<
-    `${string}-${string}-${string}-${string}-${string}`,
+    TaskUUID,
     PromiseResponseWrapper<Response>
-  > = new Map<
-    `${string}-${string}-${string}-${string}-${string}`,
-    PromiseResponseWrapper<Response>
-  >()
+  > = new Map<TaskUUID, PromiseResponseWrapper<Response>>()
 
   /**
    * Whether the pool is started or not.
@@ -1474,7 +1472,7 @@ export abstract class AbstractPool<
   private buildWorkerCrashError (
     cause: Error,
     workerNode: IWorkerNode<Worker, Data>,
-    taskId?: `${string}-${string}-${string}-${string}-${string}`
+    taskId?: TaskUUID
   ): WorkerCrashError {
     const exitCode = cause instanceof WorkerCrashError ? cause.exitCode : null
     const signal = cause instanceof WorkerCrashError ? cause.signal : null
@@ -1772,7 +1770,7 @@ export abstract class AbstractPool<
 
   private readonly getAbortError = (
     taskName: string,
-    taskId: `${string}-${string}-${string}-${string}-${string}`
+    taskId: TaskUUID
   ): Error => {
     const abortError = this.promiseResponseMap.get(taskId)?.abortSignal
       ?.reason as Error | string
@@ -1991,7 +1989,7 @@ export abstract class AbstractPool<
   }
 
   private readonly handleWorkerError = (
-    taskId: `${string}-${string}-${string}-${string}-${string}`,
+    taskId: TaskUUID,
     workerError: WorkerError
   ): Error => {
     const { aborted, error, message, name, stack } = workerError
@@ -2086,7 +2084,8 @@ export abstract class AbstractPool<
     ) {
       return
     }
-    this.flagWorkerNodeAsNotReady(this.workerNodes.indexOf(workerNode))
+    const crashedWorkerNodeKey = this.workerNodes.indexOf(workerNode)
+    workerNode.info.ready = false
     workerNode.info.crashHandled = true
     // Emit RAW cause (preserves backward-compatible PoolEvents.error
     // payload contract documented in docs/api.md).
@@ -2101,7 +2100,6 @@ export abstract class AbstractPool<
         this.createAndSetupDynamicWorkerNode()
       }
       if (this.opts.enableTasksQueue === true) {
-        const crashedWorkerNodeKey = this.workerNodes.indexOf(workerNode)
         this.redistributeQueuedTasks(crashedWorkerNodeKey)
         this.rejectRemainingQueuedTaskPromises(crashedWorkerNodeKey, taskId =>
           this.buildWorkerCrashError(cause, workerNode, taskId)
@@ -2409,17 +2407,17 @@ export abstract class AbstractPool<
     workerNode: IWorkerNode<Worker, Data>,
     workerId: number | undefined,
     errorFactory: (
-      taskId: `${string}-${string}-${string}-${string}-${string}`
+      taskId: TaskUUID
     ) => WorkerCrashError | WorkerTerminationError
   ): void {
     if (workerId == null) {
       return
     }
-    const queuedTaskIds =
-      new Set<`${string}-${string}-${string}-${string}-${string}`>()
+    const queuedTaskIds = new Set<TaskUUID>()
     for (const task of workerNode.tasksQueue) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      queuedTaskIds.add(task.taskId!)
+      if (task.taskId != null) {
+        queuedTaskIds.add(task.taskId)
+      }
     }
     let firstError: undefined | WorkerCrashError | WorkerTerminationError
     for (const [taskId, promiseResponse] of this.promiseResponseMap) {
@@ -2445,7 +2443,7 @@ export abstract class AbstractPool<
   private rejectRemainingQueuedTaskPromises (
     workerNodeKey: number,
     errorFactory: (
-      taskId: `${string}-${string}-${string}-${string}-${string}`
+      taskId: TaskUUID
     ) => WorkerCrashError | WorkerTerminationError
   ): void {
     if (workerNodeKey === -1) {
@@ -2474,7 +2472,7 @@ export abstract class AbstractPool<
   }
 
   private rejectTaskPromise (
-    taskId: `${string}-${string}-${string}-${string}-${string}`,
+    taskId: TaskUUID,
     promiseResponse: PromiseResponseWrapper<Response>,
     workerNode: IWorkerNode<Worker, Data>,
     error: Error,
@@ -2912,7 +2910,7 @@ export abstract class AbstractPool<
    * @param workerNodeKey - The destination worker node key.
    */
   private updatePromiseResponseWorkerId (
-    taskId: `${string}-${string}-${string}-${string}-${string}` | undefined,
+    taskId: TaskUUID | undefined,
     workerNodeKey: number
   ): void {
     if (taskId == null || workerNodeKey === -1) {

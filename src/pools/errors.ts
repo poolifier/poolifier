@@ -6,13 +6,13 @@
  * 'WorkerTerminationError'` — robust across dual-package (CJS/ESM) bundle
  * boundaries. `instanceof` is supported only within a single bundle realm.
  *
- * Visibility (TS4063 declaration-emit compliance + Creep-2 intent):
- * `*Options` interfaces are `export`ed at file level so TypeScript can name
- * them in the public class's `.d.ts` declaration emit. They are
- * deliberately NOT re-exported from `src/index.ts` — consumers do not
- * construct these errors; the pool does. `package.json:exports` blocks
- * deep imports outside the public barrel.
+ * `*Options` interfaces are `export`ed at file level for TS4063
+ * declaration-emit compliance. They are deliberately NOT re-exported from
+ * `src/index.ts` — consumers do not construct these errors; the pool does.
+ * `package.json:exports` blocks deep imports outside the public barrel.
  */
+
+import type { TaskUUID } from '../utility-types.js'
 
 /**
  * Options for {@link WorkerCrashError}.
@@ -29,7 +29,7 @@ export interface WorkerCrashErrorOptions {
   readonly cause?: unknown
   readonly exitCode?: null | number
   readonly signal?: NodeJS.Signals | null
-  readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
+  readonly taskId?: TaskUUID
   readonly workerId?: number
 }
 
@@ -39,7 +39,7 @@ export interface WorkerCrashErrorOptions {
  */
 export interface WorkerTerminationErrorOptions {
   readonly cause?: unknown
-  readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
+  readonly taskId?: TaskUUID
   readonly workerId?: number
 }
 
@@ -55,7 +55,7 @@ export interface WorkerTerminationErrorOptions {
 export class WorkerCrashError extends Error {
   public readonly exitCode: null | number
   public readonly signal: NodeJS.Signals | null
-  public readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
+  public readonly taskId?: TaskUUID
   public readonly workerId?: number
   public constructor (message: string, options: WorkerCrashErrorOptions = {}) {
     super(message, options.cause != null ? { cause: options.cause } : undefined)
@@ -84,7 +84,7 @@ export class WorkerCrashError extends Error {
  * Discriminate via `error.name === 'WorkerTerminationError'`.
  */
 export class WorkerTerminationError extends Error {
-  public readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
+  public readonly taskId?: TaskUUID
   public readonly workerId?: number
   public constructor (
     message: string,

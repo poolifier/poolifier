@@ -133,7 +133,7 @@ export interface Task<Data = unknown> {
   /**
    * Task UUID.
    */
-  readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
+  readonly taskId?: TaskUUID
   /**
    * Timestamp.
    */
@@ -191,6 +191,12 @@ export interface TaskPerformance {
    */
   readonly timestamp: number
 }
+
+/**
+ * UUIDv4 string template type used for task identifiers.
+ * @internal
+ */
+export type TaskUUID = `${string}-${string}-${string}-${string}-${string}`
 
 /**
  * Worker error.

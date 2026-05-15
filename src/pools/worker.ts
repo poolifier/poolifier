@@ -3,7 +3,11 @@ import type { MessageChannel, WorkerOptions } from 'node:worker_threads'
 
 import type { CircularBuffer } from '../circular-buffer.js'
 import type { PriorityQueue } from '../queues/priority-queue.js'
-import type { Task, TaskFunctionProperties } from '../utility-types.js'
+import type {
+  Task,
+  TaskFunctionProperties,
+  TaskUUID,
+} from '../utility-types.js'
 
 /**
  * Callback invoked if the worker raised an error.
@@ -385,7 +389,7 @@ export interface WorkerInfo {
  * @internal
  */
 export interface WorkerNodeEventDetail {
-  taskId?: `${string}-${string}-${string}-${string}-${string}`
+  taskId?: TaskUUID
   workerId?: number
   workerNodeKey?: number
 }
