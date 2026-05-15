@@ -1143,8 +1143,8 @@ export abstract class AbstractPool<
     )
     workerNode.registerOnceWorkerEventHandler('error', (error: Error) => {
       this.handleWorkerNodeCrash(workerNode, error)
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, promise/no-promise-in-callback
-      workerNode?.terminate().catch((error: unknown) => {
+      // eslint-disable-next-line promise/no-promise-in-callback
+      workerNode.terminate().catch((error: unknown) => {
         this.safeEmitPoolError(error)
       })
     })
@@ -1156,7 +1156,6 @@ export abstract class AbstractPool<
       exitCode: null | number,
       signal: NodeJS.Signals | null
     ) => {
-      const workerNodeKey = this.workerNodes.indexOf(workerNode)
       // Crash detection: voluntary termination (`info.terminating`,
       // `this.destroying`) and prior `'error'`-triggered crash handling
       // (`info.crashHandled`) all bypass this branch. For thread workers
@@ -1170,7 +1169,6 @@ export abstract class AbstractPool<
         !workerNode.info.terminating &&
         !this.destroying &&
         !workerNode.info.crashHandled &&
-        workerNodeKey !== -1 &&
         abnormalExit
       ) {
         this.handleWorkerNodeCrash(
@@ -1216,6 +1214,7 @@ export abstract class AbstractPool<
    * In-flight task promises that do not complete within
    * `tasksFinishedTimeout` are rejected with {@link WorkerTerminationError}.
    * @param workerNodeKey - The worker node key.
+   * @internal
    */
   protected async destroyWorkerNode (workerNodeKey: number): Promise<void> {
     this.flagWorkerNodeAsNotReady(workerNodeKey)
@@ -1309,7 +1308,8 @@ export abstract class AbstractPool<
    *
    * Idempotent: returns early if `info.terminating | crashHandled` or
    * `this.destroying` is set. Static worker restart is handled by the
-   * exit event handler.
+   * once-`'exit'` handler in {@link createAndSetupWorkerNode} (gated by
+   * `exitCode === 0 || restartWorkerOnError === true`).
    * @param workerNode - The crashed worker node.
    * @param cause - The error that caused the crash.
    * @internal
