@@ -4,7 +4,7 @@ import { FixedClusterPool, FixedThreadPool } from '../../../lib/index.mjs'
 import {
   buildWorkerChoiceStrategyOptions,
   getWorkerChoiceStrategiesRetries,
-} from '../../../lib/pools/selection-strategies/selection-strategies-utils.mjs'
+} from '../../../lib/pools/selection-strategies/selection-strategies-helpers.mjs'
 
 describe('Selection strategies utils test suite', () => {
   const numberOfWorkers = 4

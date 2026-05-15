@@ -31,7 +31,8 @@ import {
  */
 export class WorkerNode<Worker extends IWorker, Data = unknown>
   extends EventEmitter
-  implements IWorkerNode<Worker, Data> {
+  implements IWorkerNode<Worker, Data>
+{
   /** @inheritdoc */
   public readonly info: WorkerInfo
   /** @inheritdoc */
@@ -54,7 +55,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
    * @param filePath - Path to the worker file.
    * @param opts - The worker node options.
    */
-  constructor (type: WorkerType, filePath: string, opts: WorkerNodeOptions) {
+  constructor(type: WorkerType, filePath: string, opts: WorkerNodeOptions) {
     super()
     checkWorkerNodeArguments(type, filePath, opts)
     this.worker = createWorker<Worker>(type, filePath, {
@@ -78,28 +79,28 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   }
 
   /** @inheritdoc */
-  public clearTasksQueue (): void {
+  public clearTasksQueue(): void {
     this.tasksQueue.clear()
   }
 
   /** @inheritdoc */
-  public deleteTask (task: Task<Data>): boolean {
+  public deleteTask(task: Task<Data>): boolean {
     return this.tasksQueue.delete(task)
   }
 
   /** @inheritdoc */
-  public deleteTaskFunctionWorkerUsage (name: string): boolean {
+  public deleteTaskFunctionWorkerUsage(name: string): boolean {
     return this.taskFunctionsUsage.delete(name)
   }
 
   /** @inheritdoc */
-  public dequeueLastPrioritizedTask (): Task<Data> | undefined {
+  public dequeueLastPrioritizedTask(): Task<Data> | undefined {
     // Start from the last empty or partially filled bucket
     return this.dequeueTask(this.tasksQueue.buckets + 1)
   }
 
   /** @inheritdoc */
-  public dequeueTask (bucket?: number): Task<Data> | undefined {
+  public dequeueTask(bucket?: number): Task<Data> | undefined {
     const task = this.tasksQueue.dequeue(bucket)
     if (!this.hasBackPressure() && this.info.backPressure) {
       this.info.backPressure = false
@@ -108,7 +109,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   }
 
   /** @inheritdoc */
-  public enqueueTask (task: Task<Data>): number {
+  public enqueueTask(task: Task<Data>): number {
     const tasksQueueSize = this.tasksQueue.enqueue(task, task.priority)
     if (this.hasBackPressure() && !this.info.backPressure) {
       this.info.backPressure = true
@@ -118,7 +119,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   }
 
   /** @inheritdoc */
-  public getTaskFunctionWorkerUsage (name: string): undefined | WorkerUsage {
+  public getTaskFunctionWorkerUsage(name: string): undefined | WorkerUsage {
     if (!Array.isArray(this.info.taskFunctionsProperties)) {
       throw new Error(
         `Cannot get task function worker usage for task function name '${name}' when task function properties list is not yet defined`
@@ -142,7 +143,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   }
 
   /** @inheritdoc */
-  public registerOnceWorkerEventHandler (
+  public registerOnceWorkerEventHandler(
     event: string,
     handler: EventHandler<Worker>
   ): void {
@@ -150,7 +151,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   }
 
   /** @inheritdoc */
-  public registerWorkerEventHandler (
+  public registerWorkerEventHandler(
     event: string,
     handler: EventHandler<Worker>
   ): void {
@@ -158,17 +159,17 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   }
 
   /** @inheritdoc */
-  public setTasksQueuePriority (enablePriority: boolean): void {
+  public setTasksQueuePriority(enablePriority: boolean): void {
     this.tasksQueue.enablePriority = enablePriority
   }
 
   /** @inheritdoc */
-  public tasksQueueSize (): number {
+  public tasksQueueSize(): number {
     return this.tasksQueue.size
   }
 
   /** @inheritdoc */
-  public async terminate (): Promise<void> {
+  public async terminate(): Promise<void> {
     const waitWorkerExit = new Promise<void>(resolve => {
       this.registerOnceWorkerEventHandler('exit', () => {
         resolve()
@@ -192,7 +193,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     this.worker.removeAllListeners()
   }
 
-  private closeMessageChannel (): void {
+  private closeMessageChannel(): void {
     if (this.messageChannel != null) {
       this.messageChannel.port1.unref()
       this.messageChannel.port2.unref()
@@ -206,11 +207,11 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
    * Whether the worker node is back pressured or not.
    * @returns `true` if the worker node is back pressured, `false` otherwise.
    */
-  private hasBackPressure (): boolean {
+  private hasBackPressure(): boolean {
     return this.tasksQueue.size >= this.tasksQueueBackPressureSize
   }
 
-  private initTaskFunctionWorkerUsage (name: string): WorkerUsage {
+  private initTaskFunctionWorkerUsage(name: string): WorkerUsage {
     const getTaskFunctionQueueSize = (): number => {
       let taskFunctionQueueSize = 0
       for (const task of this.tasksQueue) {
@@ -241,7 +242,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
         executed: 0,
         executing: 0,
         failed: 0,
-        get queued (): number {
+        get queued(): number {
           return getTaskFunctionQueueSize()
         },
         sequentiallyStolen: 0,
@@ -253,7 +254,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     }
   }
 
-  private initWorkerUsage (): WorkerUsage {
+  private initWorkerUsage(): WorkerUsage {
     const getTasksQueueSize = (): number => {
       return this.tasksQueue.size
     }
@@ -276,10 +277,10 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
         executed: 0,
         executing: 0,
         failed: 0,
-        get maxQueued (): number {
+        get maxQueued(): number {
           return getTasksQueueMaxSize()
         },
-        get queued (): number {
+        get queued(): number {
           return getTasksQueueSize()
         },
         sequentiallyStolen: 0,

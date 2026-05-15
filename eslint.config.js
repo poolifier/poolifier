@@ -75,6 +75,18 @@ export default defineConfig([
     noJsx: true,
     ts: true,
   }),
+  // Whole-repo style alignment with Biome formatter (no space before function parens):
+  // disable the conflicting neostandard stylistic rules rather than fight a
+  // biome<->eslint cycle on every commit. Biome owns formatting; ESLint
+  // owns semantic rules.
+  {
+    rules: {
+      '@stylistic/brace-style': 'off',
+      '@stylistic/comma-dangle': 'off',
+      '@stylistic/indent': 'off',
+      '@stylistic/space-before-function-paren': 'off',
+    },
+  },
   {
     files: [
       'src/pools/selection-strategies/fair-share-worker-choice-strategy.ts',

@@ -12,7 +12,7 @@ import { DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS } from '../utils.js'
 import {
   buildWorkerChoiceStrategyOptions,
   toggleMedianMeasurementStatisticsRequirements,
-} from './selection-strategies-utils.js'
+} from './selection-strategies-helpers.js'
 
 /**
  * Worker choice strategy abstract base class.
@@ -23,8 +23,9 @@ import {
 export abstract class AbstractWorkerChoiceStrategy<
   Worker extends IWorker,
   Data = unknown,
-  Response = unknown
-> implements IWorkerChoiceStrategy {
+  Response = unknown,
+> implements IWorkerChoiceStrategy
+{
   /** @inheritDoc */
   public abstract readonly name: WorkerChoiceStrategy
 
@@ -60,7 +61,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @param pool - The pool instance.
    * @param opts - The worker choice strategy options.
    */
-  public constructor (
+  public constructor(
     protected readonly pool: IPool<Worker, Data, Response>,
     protected opts?: WorkerChoiceStrategyOptions
   ) {
@@ -72,18 +73,18 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public abstract choose (
+  public abstract choose(
     workerNodeKeysSet?: ReadonlySet<number>
   ): number | undefined
 
   /** @inheritDoc */
-  public abstract remove (workerNodeKey: number): boolean
+  public abstract remove(workerNodeKey: number): boolean
 
   /** @inheritDoc */
-  public abstract reset (): boolean
+  public abstract reset(): boolean
 
   /** @inheritDoc */
-  public setOptions (opts: undefined | WorkerChoiceStrategyOptions): void {
+  public setOptions(opts: undefined | WorkerChoiceStrategyOptions): void {
     this.opts = buildWorkerChoiceStrategyOptions<Worker, Data, Response>(
       this.pool,
       opts
@@ -92,14 +93,14 @@ export abstract class AbstractWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public abstract update (workerNodeKey: number): boolean
+  public abstract update(workerNodeKey: number): boolean
 
   /**
    * Check the worker node key.
    * @param workerNodeKey - The worker node key to check.
    * @returns The worker node key if it is valid, otherwise undefined.
    */
-  protected checkWorkerNodeKey (
+  protected checkWorkerNodeKey(
     workerNodeKey: number | undefined
   ): number | undefined {
     if (
@@ -116,7 +117,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    * Gets the next worker node key in a round-robin fashion.
    * @returns The next worker node key.
    */
-  protected getRoundRobinNextWorkerNodeKey (): number {
+  protected getRoundRobinNextWorkerNodeKey(): number {
     return this.nextWorkerNodeKey === this.pool.workerNodes.length - 1
       ? 0
       : (this.nextWorkerNodeKey ?? this.previousWorkerNodeKey) + 1
@@ -127,7 +128,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @param workerNodeKeysSet - The worker node keys affinity set.
    * @returns The worker node key if ready, `undefined` otherwise.
    */
-  protected getSingleWorkerNodeKey (
+  protected getSingleWorkerNodeKey(
     workerNodeKeysSet: ReadonlySet<number>
   ): number | undefined {
     const [workerNodeKey] = workerNodeKeysSet
@@ -141,7 +142,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @param workerNodeKey - The worker node key.
    * @returns The worker node task ELU.
    */
-  protected getWorkerNodeTaskElu (workerNodeKey: number): number {
+  protected getWorkerNodeTaskElu(workerNodeKey: number): number {
     return this.taskStatisticsRequirements.elu.median
       ? (this.pool.workerNodes[workerNodeKey]?.usage.elu.active.median ?? 0)
       : (this.pool.workerNodes[workerNodeKey]?.usage.elu.active.average ?? 0)
@@ -154,7 +155,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @param workerNodeKey - The worker node key.
    * @returns The worker node task runtime.
    */
-  protected getWorkerNodeTaskRunTime (workerNodeKey: number): number {
+  protected getWorkerNodeTaskRunTime(workerNodeKey: number): number {
     return this.taskStatisticsRequirements.runTime.median
       ? (this.pool.workerNodes[workerNodeKey]?.usage.runTime.median ?? 0)
       : (this.pool.workerNodes[workerNodeKey]?.usage.runTime.average ?? 0)
@@ -167,7 +168,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @param workerNodeKey - The worker node key.
    * @returns The worker node task wait time.
    */
-  protected getWorkerNodeTaskWaitTime (workerNodeKey: number): number {
+  protected getWorkerNodeTaskWaitTime(workerNodeKey: number): number {
     return this.taskStatisticsRequirements.waitTime.median
       ? (this.pool.workerNodes[workerNodeKey]?.usage.waitTime.median ?? 0)
       : (this.pool.workerNodes[workerNodeKey]?.usage.waitTime.average ?? 0)
@@ -179,7 +180,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @param workerNodeKeysSet - The worker node keys affinity set. If undefined, all workers are eligible.
    * @returns Whether the worker node is eligible.
    */
-  protected isWorkerNodeEligible (
+  protected isWorkerNodeEligible(
     workerNodeKey: number,
     workerNodeKeysSet?: ReadonlySet<number>
   ): boolean {
@@ -194,11 +195,11 @@ export abstract class AbstractWorkerChoiceStrategy<
    * @param workerNodeKey - The worker node key.
    * @returns Whether the worker node is ready or not.
    */
-  protected isWorkerNodeReady (workerNodeKey: number): boolean {
+  protected isWorkerNodeReady(workerNodeKey: number): boolean {
     return this.pool.workerNodes[workerNodeKey]?.info.ready ?? false
   }
 
-  protected resetWorkerNodeKeyProperties (): void {
+  protected resetWorkerNodeKeyProperties(): void {
     this.nextWorkerNodeKey = 0
     this.previousWorkerNodeKey = 0
   }
@@ -207,7 +208,7 @@ export abstract class AbstractWorkerChoiceStrategy<
    * Sets safely the previous worker node key.
    * @param workerNodeKey - The worker node key.
    */
-  protected setPreviousWorkerNodeKey (workerNodeKey: number | undefined): void {
+  protected setPreviousWorkerNodeKey(workerNodeKey: number | undefined): void {
     this.previousWorkerNodeKey =
       workerNodeKey != null &&
       workerNodeKey >= 0 &&
@@ -216,7 +217,7 @@ export abstract class AbstractWorkerChoiceStrategy<
         : this.previousWorkerNodeKey
   }
 
-  protected setTaskStatisticsRequirements (
+  protected setTaskStatisticsRequirements(
     opts: undefined | WorkerChoiceStrategyOptions
   ): void {
     toggleMedianMeasurementStatisticsRequirements(

@@ -5,7 +5,7 @@ import { Bench } from 'tinybench'
  * @param numberOfWorkers - The number of workers.
  * @returns The array of worker indices.
  */
-function generateWorkersArray (numberOfWorkers) {
+function generateWorkersArray(numberOfWorkers) {
   return [...Array(numberOfWorkers).keys()]
 }
 
@@ -17,7 +17,7 @@ let nextWorkerIndex
  * Round-robin worker selection using increment and modulo operation.
  * @returns The selected worker.
  */
-function roundRobinIncrementModulo () {
+function roundRobinIncrementModulo() {
   const chosenWorker = workers[nextWorkerIndex]
   nextWorkerIndex++
   nextWorkerIndex %= workers.length
@@ -28,7 +28,7 @@ function roundRobinIncrementModulo () {
  * Round-robin worker selection using ternary operator with off-by-one logic.
  * @returns The selected worker.
  */
-function roundRobinTernaryOffByOne () {
+function roundRobinTernaryOffByOne() {
   nextWorkerIndex =
     workers.length - 1 === nextWorkerIndex ? 0 : nextWorkerIndex + 1
   return workers[nextWorkerIndex]
@@ -38,7 +38,7 @@ function roundRobinTernaryOffByOne () {
  * Round-robin worker selection using ternary operator with negation.
  * @returns The selected worker.
  */
-function roundRobinTernaryWithNegation () {
+function roundRobinTernaryWithNegation() {
   nextWorkerIndex =
     !nextWorkerIndex || workers.length - 1 === nextWorkerIndex
       ? 0
@@ -50,7 +50,7 @@ function roundRobinTernaryWithNegation () {
  * Round-robin worker selection using ternary operator with pre-choosing.
  * @returns The selected worker.
  */
-function roundRobinTernaryWithPreChoosing () {
+function roundRobinTernaryWithPreChoosing() {
   const chosenWorker = workers[nextWorkerIndex]
   nextWorkerIndex =
     workers.length - 1 === nextWorkerIndex ? 0 : nextWorkerIndex + 1

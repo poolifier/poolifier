@@ -9,7 +9,7 @@ class SmtpClientWorker extends ThreadWorker<
   WorkerData,
   SMTPTransport.SentMessageInfo
 > {
-  public constructor () {
+  public constructor() {
     super({
       nodemailer: async (workerData?: WorkerData) => {
         return await createTransport(workerData?.smtpTransport).sendMail(

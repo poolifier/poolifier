@@ -6,7 +6,7 @@ import { expect } from 'vitest'
  * @param indent - The indentation level.
  * @returns The formatted value string.
  */
-function formatValue (value, indent = 0) {
+function formatValue(value, indent = 0) {
   const spaces = '  '.repeat(indent)
   if (value === null) return 'null'
   if (value === undefined) return 'undefined'
@@ -56,7 +56,7 @@ function formatValue (value, indent = 0) {
  * @param [asymmetricMatchers] - Optional asymmetric matchers.
  * @returns Whether the received value matches the expected subset.
  */
-function subsetMatch (received, expected, asymmetricMatchers) {
+function subsetMatch(received, expected, asymmetricMatchers) {
   // Handle asymmetric matchers (like expect.any(Number))
   if (
     expected != null &&
@@ -138,7 +138,7 @@ expect.extend({
    * @param expected - The expected subset to match.
    * @returns The matcher result with pass and message.
    */
-  toMatchObject (received, expected) {
+  toMatchObject(received, expected) {
     const pass = subsetMatch(received, expected)
 
     return {

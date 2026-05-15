@@ -27,10 +27,10 @@ import { AbstractWorker } from './abstract-worker.js'
  */
 export class ThreadWorker<
   Data = unknown,
-  Response = unknown
+  Response = unknown,
 > extends AbstractWorker<MessagePort, Data, Response> {
   /** @inheritDoc */
-  protected get id (): number {
+  protected get id(): number {
     return threadId
   }
 
@@ -44,7 +44,7 @@ export class ThreadWorker<
    * @param taskFunctions - Task function(s) processed by the worker when the pool's `execute` method is invoked.
    * @param opts - Options for the worker.
    */
-  public constructor (
+  public constructor(
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     opts: WorkerOptions = {}
   ) {
@@ -54,7 +54,7 @@ export class ThreadWorker<
   /**
    * @inheritDoc
    */
-  protected handleError (error: Error): {
+  protected handleError(error: Error): {
     aborted: boolean
     error: Error
     message: string
@@ -69,14 +69,14 @@ export class ThreadWorker<
   }
 
   /** @inheritDoc */
-  protected override handleKillMessage (message: MessageValue<Data>): void {
+  protected override handleKillMessage(message: MessageValue<Data>): void {
     super.handleKillMessage(message)
     this.port?.unref()
     this.port?.close()
   }
 
   /** @inheritDoc */
-  protected handleReadyMessage (message: MessageValue<Data>): void {
+  protected handleReadyMessage(message: MessageValue<Data>): void {
     if (
       message.workerId === this.id &&
       message.ready === false &&

@@ -5,7 +5,7 @@ import type { RawData } from 'ws'
  * @param message - The RawData from WebSocket
  * @returns String representation of the message
  */
-export function rawDataToString (message: RawData): string {
+export function rawDataToString(message: RawData): string {
   if (message instanceof Buffer) {
     return message.toString()
   }

@@ -9,9 +9,10 @@ import { AbstractFixedQueue } from './abstract-fixed-queue.js'
  */
 export class FixedQueue<T>
   extends AbstractFixedQueue<T>
-  implements IFixedQueue<T> {
+  implements IFixedQueue<T>
+{
   /** @inheritdoc */
-  public enqueue (data: T, priority?: number): number {
+  public enqueue(data: T, priority?: number): number {
     if (this.full()) {
       throw new Error('Fixed queue is full')
     }

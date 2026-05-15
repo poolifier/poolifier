@@ -5,7 +5,7 @@ import { KillBehaviors, ThreadWorker } from '../../../lib/index.mjs'
  * The async function never resolves, keeping the task in-flight while the scheduled
  * throw kills the worker thread and triggers the 'error' event on the parent.
  */
-async function crash () {
+async function crash() {
   setTimeout(() => {
     throw new Error('Simulated worker crash')
   }, 10)

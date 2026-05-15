@@ -7,7 +7,7 @@ import { Bench } from 'tinybench'
  * @param maxNumberOfTasksPerWorker - The maximum number of tasks per worker.
  * @returns The generated tasks map.
  */
-function generateRandomTasksMap (
+function generateRandomTasksMap(
   numberOfWorkers,
   maxNumberOfTasksPerWorker = 10
 ) {
@@ -26,7 +26,7 @@ const tasksMap = generateRandomTasksMap(60, 20)
  * @param tasksMap - The tasks map.
  * @returns The worker with least tasks.
  */
-function arraySortSelect (tasksMap) {
+function arraySortSelect(tasksMap) {
   const tasksArray = Array.from(tasksMap)
   return tasksArray.sort((a, b) => {
     if (a[1] < b[1]) {
@@ -44,7 +44,7 @@ function arraySortSelect (tasksMap) {
  * @param tasksMap - The tasks map.
  * @returns The worker with least tasks.
  */
-function loopSelect (tasksMap) {
+function loopSelect(tasksMap) {
   let minKey
   let minValue = Number.POSITIVE_INFINITY
   for (const [key, value] of tasksMap) {
@@ -80,7 +80,7 @@ const randomPivotIndexSelect = (leftIndex, rightIndex) => {
  * @param compare - The comparison function.
  * @returns The new pivot index after partitioning.
  */
-function partition (
+function partition(
   array,
   leftIndex,
   rightIndex,
@@ -105,7 +105,7 @@ function partition (
  * @param tasksMap - The tasks map.
  * @returns The worker with least tasks.
  */
-function quickSelectLoop (tasksMap) {
+function quickSelectLoop(tasksMap) {
   const tasksArray = Array.from(tasksMap)
 
   return selectLoop(tasksArray, 0, 0, tasksArray.length - 1, (a, b) => {
@@ -118,7 +118,7 @@ function quickSelectLoop (tasksMap) {
  * @param tasksMap - The tasks map.
  * @returns The worker with least tasks.
  */
-function quickSelectLoopRandomPivot (tasksMap) {
+function quickSelectLoopRandomPivot(tasksMap) {
   const tasksArray = Array.from(tasksMap)
 
   return selectLoop(
@@ -138,7 +138,7 @@ function quickSelectLoopRandomPivot (tasksMap) {
  * @param tasksMap - The tasks map.
  * @returns The worker with least tasks.
  */
-function quickSelectRecursion (tasksMap) {
+function quickSelectRecursion(tasksMap) {
   const tasksArray = Array.from(tasksMap)
 
   return selectRecursion(tasksArray, 0, 0, tasksArray.length - 1, (a, b) => {
@@ -151,7 +151,7 @@ function quickSelectRecursion (tasksMap) {
  * @param tasksMap - The tasks map.
  * @returns The worker with least tasks.
  */
-function quickSelectRecursionRandomPivot (tasksMap) {
+function quickSelectRecursionRandomPivot(tasksMap) {
   const tasksArray = Array.from(tasksMap)
 
   return selectRecursion(
@@ -176,7 +176,7 @@ function quickSelectRecursionRandomPivot (tasksMap) {
  * @param pivotIndexSelect - The pivot selection function.
  * @returns The k-th smallest element.
  */
-function selectLoop (
+function selectLoop(
   array,
   k,
   leftIndex,
@@ -209,7 +209,7 @@ function selectLoop (
  * @param pivotIndexSelect - The pivot selection function.
  * @returns The k-th smallest element.
  */
-function selectRecursion (
+function selectRecursion(
   array,
   k,
   leftIndex,
@@ -235,7 +235,7 @@ function selectRecursion (
  * @param index1 - The index of the first element.
  * @param index2 - The index of the second element.
  */
-function swap (array, index1, index2) {
+function swap(array, index1, index2) {
   const tmp = array[index1]
   array[index1] = array[index2]
   array[index2] = tmp

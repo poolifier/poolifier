@@ -5,7 +5,7 @@ import { KillBehaviors, ThreadWorker } from '../../../lib/index.mjs'
  * @param data - The task data to echo
  * @returns The same data that was passed in
  */
-function echo (data) {
+function echo(data) {
   return data
 }
 

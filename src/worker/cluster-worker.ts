@@ -22,10 +22,10 @@ import { AbstractWorker } from './abstract-worker.js'
  */
 export class ClusterWorker<
   Data = unknown,
-  Response = unknown
+  Response = unknown,
 > extends AbstractWorker<Worker, Data, Response> {
   /** @inheritDoc */
-  protected get id (): number {
+  protected get id(): number {
     return this.getMainWorker().id
   }
 
@@ -34,7 +34,7 @@ export class ClusterWorker<
    * @param taskFunctions - Task function(s) processed by the worker when the pool's `execute` method is invoked.
    * @param opts - Options for the worker.
    */
-  public constructor (
+  public constructor(
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
     opts: WorkerOptions = {}
   ) {
@@ -44,7 +44,7 @@ export class ClusterWorker<
   /**
    * @inheritDoc
    */
-  protected handleError (error: Error): {
+  protected handleError(error: Error): {
     aborted: boolean
     message: string
     stack?: string
@@ -57,7 +57,7 @@ export class ClusterWorker<
   }
 
   /** @inheritDoc */
-  protected handleReadyMessage (message: MessageValue<Data>): void {
+  protected handleReadyMessage(message: MessageValue<Data>): void {
     if (message.workerId === this.id && message.ready === false) {
       try {
         this.getMainWorker().on('message', this.messageListener.bind(this))

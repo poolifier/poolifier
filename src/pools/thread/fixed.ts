@@ -24,25 +24,25 @@ export type ThreadPoolOptions = PoolOptions<Worker>
  */
 export class FixedThreadPool<
   Data = unknown,
-  Response = unknown
+  Response = unknown,
 > extends AbstractPool<Worker, Data, Response> {
   /** @inheritDoc */
-  protected get backPressure (): boolean {
+  protected get backPressure(): boolean {
     return this.internalBackPressure()
   }
 
   /** @inheritDoc */
-  protected get busy (): boolean {
+  protected get busy(): boolean {
     return this.internalBusy()
   }
 
   /** @inheritDoc */
-  protected get type (): PoolType {
+  protected get type(): PoolType {
     return PoolTypes.fixed
   }
 
   /** @inheritDoc */
-  protected get worker (): WorkerType {
+  protected get worker(): WorkerType {
     return WorkerTypes.thread
   }
 
@@ -53,7 +53,7 @@ export class FixedThreadPool<
    * @param opts - Options for this fixed thread pool.
    * @param maximumNumberOfThreads - The maximum number of threads for this pool.
    */
-  public constructor (
+  public constructor(
     numberOfThreads: number,
     filePath: string,
     opts: ThreadPoolOptions = {},
@@ -63,12 +63,12 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
-  protected checkAndEmitDynamicWorkerCreationEvents (): void {
+  protected checkAndEmitDynamicWorkerCreationEvents(): void {
     /* noop */
   }
 
   /** @inheritDoc */
-  protected checkAndEmitDynamicWorkerDestructionEvents (): void {
+  protected checkAndEmitDynamicWorkerDestructionEvents(): void {
     /* noop */
   }
 
@@ -84,7 +84,7 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
-  protected isMain (): boolean {
+  protected isMain(): boolean {
     return isMainThread
   }
 
@@ -111,7 +111,7 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
-  protected sendStartupMessageToWorker (workerNodeKey: number): void {
+  protected sendStartupMessageToWorker(workerNodeKey: number): void {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const port2 = workerNode.messageChannel!.port2
@@ -126,7 +126,7 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
-  protected sendToWorker (
+  protected sendToWorker(
     workerNodeKey: number,
     message: MessageValue<Data>,
     transferList?: readonly Transferable[]
@@ -141,7 +141,7 @@ export class FixedThreadPool<
   }
 
   /** @inheritDoc */
-  protected shallCreateDynamicWorker (): boolean {
+  protected shallCreateDynamicWorker(): boolean {
     return false
   }
 }

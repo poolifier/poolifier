@@ -5,5 +5,11 @@
   "out": "./docs",
   "readme": "none",
   "projectDocuments": ["./docs/*.md"],
-  "includeVersion": true
+  "includeVersion": true,
+  "treatWarningsAsErrors": true,
+  "externalSymbolLinkMappings": {
+    "@types/node": {
+      "EventEmitter.defaultMaxListeners": "https://nodejs.org/api/events.html#eventsdefaultmaxlisteners"
+    }
+  }
 }

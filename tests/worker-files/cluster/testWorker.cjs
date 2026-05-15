@@ -8,7 +8,7 @@ const { executeTaskFunction } = require('../../test-utils.cjs')
  * @param data - The task data containing function configuration.
  * @returns The result of the executed task function.
  */
-function test (data) {
+function test(data) {
   data = data || {}
   data.function = data.function || TaskFunctions.jsonIntegerSerialization
   return executeTaskFunction(data)

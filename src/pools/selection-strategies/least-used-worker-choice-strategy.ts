@@ -18,15 +18,16 @@ import {
 export class LeastUsedWorkerChoiceStrategy<
     Worker extends IWorker,
     Data = unknown,
-    Response = unknown
+    Response = unknown,
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
-  implements IWorkerChoiceStrategy {
+  implements IWorkerChoiceStrategy
+{
   /** @inheritDoc */
   public readonly name: WorkerChoiceStrategy = WorkerChoiceStrategies.LEAST_USED
 
   /** @inheritDoc */
-  public constructor (
+  public constructor(
     pool: IPool<Worker, Data, Response>,
     opts?: WorkerChoiceStrategyOptions
   ) {
@@ -34,28 +35,28 @@ export class LeastUsedWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
+  public choose(workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     this.nextWorkerNodeKey = this.leastUsedNextWorkerNodeKey(workerNodeKeysSet)
     return this.nextWorkerNodeKey
   }
 
   /** @inheritDoc */
-  public remove (): boolean {
+  public remove(): boolean {
     return true
   }
 
   /** @inheritDoc */
-  public reset (): boolean {
+  public reset(): boolean {
     return true
   }
 
   /** @inheritDoc */
-  public update (): boolean {
+  public update(): boolean {
     return true
   }
 
-  private leastUsedNextWorkerNodeKey (
+  private leastUsedNextWorkerNodeKey(
     workerNodeKeysSet?: ReadonlySet<number>
   ): number | undefined {
     if (workerNodeKeysSet?.size === 0) {

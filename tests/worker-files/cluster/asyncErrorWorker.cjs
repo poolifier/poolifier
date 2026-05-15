@@ -7,7 +7,7 @@ const { sleepTaskFunction } = require('../../test-utils.cjs')
  * @param data - The task data.
  * @returns The result after sleeping and potentially throwing an error.
  */
-async function error (data) {
+async function error(data) {
   return sleepTaskFunction(
     data,
     2000,

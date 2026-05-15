@@ -4,9 +4,9 @@ import type { BodyPayload, WorkerData, WorkerResponse } from './types.js'
 
 class RequestHandlerWorker<
   Data extends WorkerData<BodyPayload>,
-  Response extends WorkerResponse<BodyPayload>
+  Response extends WorkerResponse<BodyPayload>,
 > extends ThreadWorker<Data, Response> {
-  public constructor () {
+  public constructor() {
     super({
       echo: (workerData?: Data) => {
         return workerData as unknown as Response

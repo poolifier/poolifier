@@ -81,7 +81,7 @@ export const PoolEvents: Readonly<{
 export interface IPool<
   Worker extends IWorker,
   Data = unknown,
-  Response = unknown
+  Response = unknown,
 > {
   /**
    * Adds a task function to this pool.

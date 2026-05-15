@@ -7,7 +7,7 @@ const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
  * throw causes the worker process to exit with a non-zero code, which is detected
  * by the exit handler on the parent.
  */
-async function crash () {
+async function crash() {
   setTimeout(() => {
     throw new Error('Simulated worker crash')
   }, 10)

@@ -20,10 +20,11 @@ import {
 export class LeastEluWorkerChoiceStrategy<
     Worker extends IWorker,
     Data = unknown,
-    Response = unknown
+    Response = unknown,
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
-  implements IWorkerChoiceStrategy {
+  implements IWorkerChoiceStrategy
+{
   /** @inheritDoc */
   public readonly name: WorkerChoiceStrategy = WorkerChoiceStrategies.LEAST_ELU
 
@@ -44,7 +45,7 @@ export class LeastEluWorkerChoiceStrategy<
     })
 
   /** @inheritDoc */
-  public constructor (
+  public constructor(
     pool: IPool<Worker, Data, Response>,
     opts?: WorkerChoiceStrategyOptions
   ) {
@@ -53,28 +54,28 @@ export class LeastEluWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
+  public choose(workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     this.nextWorkerNodeKey = this.leastEluNextWorkerNodeKey(workerNodeKeysSet)
     return this.nextWorkerNodeKey
   }
 
   /** @inheritDoc */
-  public remove (): boolean {
+  public remove(): boolean {
     return true
   }
 
   /** @inheritDoc */
-  public reset (): boolean {
+  public reset(): boolean {
     return true
   }
 
   /** @inheritDoc */
-  public update (): boolean {
+  public update(): boolean {
     return true
   }
 
-  private leastEluNextWorkerNodeKey (
+  private leastEluNextWorkerNodeKey(
     workerNodeKeysSet?: ReadonlySet<number>
   ): number | undefined {
     if (workerNodeKeysSet?.size === 0) {

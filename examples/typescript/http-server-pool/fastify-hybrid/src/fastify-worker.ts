@@ -13,7 +13,7 @@ class FastifyWorker extends ClusterWorker<
 > {
   private static fastify: FastifyInstance
 
-  public constructor () {
+  public constructor() {
     super(FastifyWorker.startFastify, {
       killHandler: async () => {
         await FastifyWorker.fastify.pool.destroy()

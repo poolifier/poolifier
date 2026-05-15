@@ -26,7 +26,7 @@ import {
 export class WorkerChoiceStrategiesContext<
   Worker extends IWorker,
   Data = unknown,
-  Response = unknown
+  Response = unknown,
 > {
   /**
    * The default worker choice strategy in the context.
@@ -63,7 +63,7 @@ export class WorkerChoiceStrategiesContext<
    * @defaultValue [WorkerChoiceStrategies.LEAST_USED]
    * @param opts - The worker choice strategy options.
    */
-  public constructor (
+  public constructor(
     private readonly pool: IPool<Worker, Data, Response>,
     workerChoiceStrategies: WorkerChoiceStrategy[] = [
       WorkerChoiceStrategies.LEAST_USED,
@@ -99,7 +99,7 @@ export class WorkerChoiceStrategiesContext<
    * @returns The key of the worker node.
    * @throws {Error} If after computed retries the worker node key is null or undefined.
    */
-  public execute (
+  public execute(
     workerChoiceStrategy: WorkerChoiceStrategy = this
       .defaultWorkerChoiceStrategy,
     workerNodeKeysSet?: ReadonlySet<number>
@@ -115,7 +115,7 @@ export class WorkerChoiceStrategiesContext<
    * Gets the active worker choice strategies in the context policy.
    * @returns The strategies policy.
    */
-  public getPolicy (): StrategyPolicy {
+  public getPolicy(): StrategyPolicy {
     return this.workerChoiceStrategiesPolicy
   }
 
@@ -123,7 +123,7 @@ export class WorkerChoiceStrategiesContext<
    * Gets the number of worker choice strategies execution retries.
    * @returns The number of retries.
    */
-  public getStrategyRetries (): number {
+  public getStrategyRetries(): number {
     return Array.from(
       this.workerChoiceStrategies,
       ([_, workerChoiceStrategy]) => workerChoiceStrategy.retriesCount
@@ -134,7 +134,7 @@ export class WorkerChoiceStrategiesContext<
    * Gets the active worker choice strategies in the context task statistics requirements.
    * @returns The strategies task statistics requirements.
    */
-  public getTaskStatisticsRequirements (): TaskStatisticsRequirements {
+  public getTaskStatisticsRequirements(): TaskStatisticsRequirements {
     return this.workerChoiceStrategiesTaskStatisticsRequirements
   }
 
@@ -143,7 +143,7 @@ export class WorkerChoiceStrategiesContext<
    * @param workerNodeKey - The worker node key.
    * @returns `true` if the removal is successful, `false` otherwise.
    */
-  public remove (workerNodeKey: number): boolean {
+  public remove(workerNodeKey: number): boolean {
     return Array.from(
       this.workerChoiceStrategies,
       ([_, workerChoiceStrategy]) => workerChoiceStrategy.remove(workerNodeKey)
@@ -155,7 +155,7 @@ export class WorkerChoiceStrategiesContext<
    * @param workerChoiceStrategy - The default worker choice strategy to set.
    * @param opts - The worker choice strategy options.
    */
-  public setDefaultWorkerChoiceStrategy (
+  public setDefaultWorkerChoiceStrategy(
     workerChoiceStrategy: WorkerChoiceStrategy,
     opts?: WorkerChoiceStrategyOptions
   ): void {
@@ -169,7 +169,7 @@ export class WorkerChoiceStrategiesContext<
    * Sets the active worker choice strategies in the context options.
    * @param opts - The worker choice strategy options.
    */
-  public setOptions (opts: undefined | WorkerChoiceStrategyOptions): void {
+  public setOptions(opts: undefined | WorkerChoiceStrategyOptions): void {
     for (const workerChoiceStrategy of this.workerChoiceStrategies.values()) {
       workerChoiceStrategy.setOptions(opts)
     }
@@ -180,7 +180,7 @@ export class WorkerChoiceStrategiesContext<
    * @param workerChoiceStrategies - The worker choice strategies to synchronize.
    * @param opts - The worker choice strategy options.
    */
-  public syncWorkerChoiceStrategies (
+  public syncWorkerChoiceStrategies(
     workerChoiceStrategies: Set<WorkerChoiceStrategy>,
     opts?: WorkerChoiceStrategyOptions
   ): void {
@@ -208,7 +208,7 @@ export class WorkerChoiceStrategiesContext<
    * @param workerNodeKey - The worker node key.
    * @returns `true` if the update is successful, `false` otherwise.
    */
-  public update (workerNodeKey: number): boolean {
+  public update(workerNodeKey: number): boolean {
     return Array.from(
       this.workerChoiceStrategies,
       ([_, workerChoiceStrategy]) => workerChoiceStrategy.update(workerNodeKey)
@@ -222,7 +222,7 @@ export class WorkerChoiceStrategiesContext<
    * @param opts - The worker choice strategy options.
    * @returns The worker choice strategies.
    */
-  private addWorkerChoiceStrategy (
+  private addWorkerChoiceStrategy(
     workerChoiceStrategy: WorkerChoiceStrategy,
     pool: IPool<Worker, Data, Response>,
     opts?: WorkerChoiceStrategyOptions
@@ -248,7 +248,7 @@ export class WorkerChoiceStrategiesContext<
    * @returns The key of the worker node.
    * @throws {Error} If after computed retries the worker node key is null or undefined.
    */
-  private executeStrategy (
+  private executeStrategy(
     workerChoiceStrategy: IWorkerChoiceStrategy,
     workerNodeKeysSet?: ReadonlySet<number>
   ): number {
@@ -273,7 +273,7 @@ export class WorkerChoiceStrategiesContext<
    * @param workerChoiceStrategy - The worker choice strategy to remove.
    * @returns `true` if the worker choice strategy is removed, `false` otherwise.
    */
-  private removeWorkerChoiceStrategy (
+  private removeWorkerChoiceStrategy(
     workerChoiceStrategy: WorkerChoiceStrategy
   ): boolean {
     return this.workerChoiceStrategies.delete(workerChoiceStrategy)

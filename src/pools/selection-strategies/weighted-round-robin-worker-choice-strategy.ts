@@ -21,10 +21,11 @@ import {
 export class WeightedRoundRobinWorkerChoiceStrategy<
     Worker extends IWorker,
     Data = unknown,
-    Response = unknown
+    Response = unknown,
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
-  implements IWorkerChoiceStrategy {
+  implements IWorkerChoiceStrategy
+{
   /** @inheritDoc */
   public readonly name: WorkerChoiceStrategy =
     WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN
@@ -51,7 +52,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   private workerNodeVirtualTaskExecutionTime = 0
 
   /** @inheritDoc */
-  public constructor (
+  public constructor(
     pool: IPool<Worker, Data, Response>,
     opts?: WorkerChoiceStrategyOptions
   ) {
@@ -60,7 +61,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose (workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
+  public choose(workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     const chosenWorkerNodeKey =
       this.weightedRoundRobinNextWorkerNodeKey(workerNodeKeysSet)
@@ -74,7 +75,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public remove (workerNodeKey: number): boolean {
+  public remove(workerNodeKey: number): boolean {
     if (this.pool.workerNodes.length === 0) {
       return this.reset()
     }
@@ -96,18 +97,18 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public reset (): boolean {
+  public reset(): boolean {
     this.resetWorkerNodeKeyProperties()
     this.workerNodeVirtualTaskExecutionTime = 0
     return true
   }
 
   /** @inheritDoc */
-  public update (): boolean {
+  public update(): boolean {
     return true
   }
 
-  private findEligibleWorkerNodeKey (
+  private findEligibleWorkerNodeKey(
     workerNodeKeysSet: ReadonlySet<number>
   ): number | undefined {
     const workerNodesCount = this.pool.workerNodes.length
@@ -120,7 +121,7 @@ export class WeightedRoundRobinWorkerChoiceStrategy<
     return undefined
   }
 
-  private weightedRoundRobinNextWorkerNodeKey (
+  private weightedRoundRobinNextWorkerNodeKey(
     workerNodeKeysSet?: ReadonlySet<number>
   ): number | undefined {
     if (workerNodeKeysSet == null) {

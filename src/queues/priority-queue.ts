@@ -26,7 +26,7 @@ export class PriorityQueue<T> {
    * The number of filled prioritized buckets.
    * @returns The number of filled prioritized buckets.
    */
-  public get buckets (): number {
+  public get buckets(): number {
     return Math.trunc(this.size / this.bucketSize)
   }
 
@@ -34,7 +34,7 @@ export class PriorityQueue<T> {
    * Whether priority is enabled.
    * @returns Whether priority is enabled.
    */
-  public get enablePriority (): boolean {
+  public get enablePriority(): boolean {
     return this.priorityEnabled
   }
 
@@ -42,7 +42,7 @@ export class PriorityQueue<T> {
    * Enables/disables priority.
    * @param enablePriority - Whether to enable priority.
    */
-  public set enablePriority (enablePriority: boolean) {
+  public set enablePriority(enablePriority: boolean) {
     if (this.priorityEnabled === enablePriority) {
       return
     }
@@ -73,7 +73,7 @@ export class PriorityQueue<T> {
    * @defaultValue defaultLoadExponent
    * @returns PriorityQueue.
    */
-  public constructor (
+  public constructor(
     bucketSize: number = defaultBucketSize,
     enablePriority = false,
     agingFactor?: number,
@@ -97,7 +97,7 @@ export class PriorityQueue<T> {
   /**
    * Clears the priority queue.
    */
-  public clear (): void {
+  public clear(): void {
     this.head = this.tail = this.getPriorityQueueNode()
     this.size = 0
     this.maxSize = 0
@@ -108,7 +108,7 @@ export class PriorityQueue<T> {
    * @param data - Data to delete.
    * @returns `true` if the data was deleted, `false` otherwise.
    */
-  public delete (data: T): boolean {
+  public delete(data: T): boolean {
     if (this.size === 0) {
       return false
     }
@@ -133,7 +133,7 @@ export class PriorityQueue<T> {
    * @param bucket - The prioritized bucket to dequeue from.
    * @returns The dequeued data or `undefined` if the priority queue is empty.
    */
-  public dequeue (bucket?: number): T | undefined {
+  public dequeue(bucket?: number): T | undefined {
     if (this.size === 0) {
       return undefined
     }
@@ -172,7 +172,7 @@ export class PriorityQueue<T> {
    * @param priority - Priority of the data. Lower values have higher priority.
    * @returns The new size of the priority queue.
    */
-  public enqueue (data: T, priority?: number): number {
+  public enqueue(data: T, priority?: number): number {
     if (this.head.full()) {
       this.head = this.head.next = this.getPriorityQueueNode()
     }
@@ -189,7 +189,7 @@ export class PriorityQueue<T> {
    * @returns An iterator for the priority queue.
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
    */
-  public [Symbol.iterator] (): Iterator<T> {
+  public [Symbol.iterator](): Iterator<T> {
     let node: PriorityQueueNode<T> | undefined = this.tail
     let index = 0
     return {
@@ -218,7 +218,7 @@ export class PriorityQueue<T> {
     }
   }
 
-  private getPriorityQueueNode (): PriorityQueueNode<T> {
+  private getPriorityQueueNode(): PriorityQueueNode<T> {
     let fixedQueue: IFixedQueue<T>
     if (this.priorityEnabled) {
       fixedQueue = new FixedPriorityQueue(
@@ -232,7 +232,7 @@ export class PriorityQueue<T> {
     return fixedQueue
   }
 
-  private removePriorityQueueNode (
+  private removePriorityQueueNode(
     nodeToRemove: PriorityQueueNode<T>,
     previousNode?: PriorityQueueNode<T>
   ): void {

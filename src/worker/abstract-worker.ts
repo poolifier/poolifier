@@ -60,7 +60,7 @@ const DEFAULT_WORKER_OPTIONS: Readonly<WorkerOptions> = Object.freeze({
 export abstract class AbstractWorker<
   MainWorker extends MessagePort | Worker,
   Data = unknown,
-  Response = unknown
+  Response = unknown,
 > {
   /**
    * Handler id of the `activeInterval` worker activity check.
@@ -100,7 +100,7 @@ export abstract class AbstractWorker<
    * @param taskFunctions - Task function(s) processed by the worker when the pool's `execute` method is invoked. The first function is the default function.
    * @param opts - Options for the worker.
    */
-  public constructor (
+  public constructor(
     protected readonly isMain: boolean | undefined,
     private readonly mainWorker: MainWorker | null | undefined,
     taskFunctions: TaskFunction<Data, Response> | TaskFunctions<Data, Response>,
@@ -127,7 +127,7 @@ export abstract class AbstractWorker<
    * @param fn - The task function to add.
    * @returns Whether the task function was added or not.
    */
-  public addTaskFunction (
+  public addTaskFunction(
     name: string,
     fn: TaskFunction<Data, Response> | TaskFunctionObject<Data, Response>
   ): TaskFunctionOperationResult {
@@ -162,7 +162,7 @@ export abstract class AbstractWorker<
    * @param name - The name of the task function to check.
    * @returns Whether the worker has a task function with the given name or not.
    */
-  public hasTaskFunction (name: string): TaskFunctionOperationResult {
+  public hasTaskFunction(name: string): TaskFunctionOperationResult {
     try {
       checkTaskFunctionName(name)
     } catch (error) {
@@ -175,7 +175,7 @@ export abstract class AbstractWorker<
    * Lists the properties of the worker's task functions.
    * @returns The properties of the worker's task functions.
    */
-  public listTaskFunctionsProperties (): TaskFunctionProperties[] {
+  public listTaskFunctionsProperties(): TaskFunctionProperties[] {
     let defaultTaskFunctionName = DEFAULT_TASK_NAME
     for (const [name, fnObj] of this.taskFunctions) {
       if (
@@ -211,7 +211,7 @@ export abstract class AbstractWorker<
    * @param name - The name of the task function to remove.
    * @returns Whether the task function existed and was removed or not.
    */
-  public removeTaskFunction (name: string): TaskFunctionOperationResult {
+  public removeTaskFunction(name: string): TaskFunctionOperationResult {
     try {
       checkTaskFunctionName(name)
       if (name === DEFAULT_TASK_NAME) {
@@ -240,7 +240,7 @@ export abstract class AbstractWorker<
    * @param name - The name of the task function to use as default task function.
    * @returns Whether the default task function was set or not.
    */
-  public setDefaultTaskFunction (name: string): TaskFunctionOperationResult {
+  public setDefaultTaskFunction(name: string): TaskFunctionOperationResult {
     try {
       checkTaskFunctionName(name)
       if (name === DEFAULT_TASK_NAME) {
@@ -267,7 +267,7 @@ export abstract class AbstractWorker<
    * @returns Reference to the main worker.
    * @throws {Error} If the main worker is not set.
    */
-  protected getMainWorker (): MainWorker {
+  protected getMainWorker(): MainWorker {
     if (this.mainWorker == null) {
       throw new Error('Main worker not set')
     }
@@ -279,7 +279,7 @@ export abstract class AbstractWorker<
    * @param error - The error raised by the worker.
    * @returns The worker error object.
    */
-  protected abstract handleError (error: Error): {
+  protected abstract handleError(error: Error): {
     aborted: boolean
     error?: Error
     message: string
@@ -290,7 +290,7 @@ export abstract class AbstractWorker<
    * Handles a kill message sent by the main worker.
    * @param message - The kill message.
    */
-  protected handleKillMessage (message: MessageValue<Data>): void {
+  protected handleKillMessage(message: MessageValue<Data>): void {
     this.stopCheckActive()
     try {
       const result = this.opts.killHandler?.()
@@ -315,9 +315,9 @@ export abstract class AbstractWorker<
    * Handles the ready message sent by the main worker.
    * @param message - The ready message.
    */
-  protected abstract handleReadyMessage (message: MessageValue<Data>): void
+  protected abstract handleReadyMessage(message: MessageValue<Data>): void
 
-  protected handleTaskFunctionOperationMessage (
+  protected handleTaskFunctionOperationMessage(
     message: MessageValue<Data>
   ): void {
     const { taskFunction, taskFunctionOperation, taskFunctionProperties } =
@@ -374,11 +374,11 @@ export abstract class AbstractWorker<
       taskFunctionProperties,
       ...(!status &&
         error != null && {
-        workerError: {
-          name: taskFunctionProperties.name,
-          ...this.handleError(error),
-        },
-      }),
+          workerError: {
+            name: taskFunctionProperties.name,
+            ...this.handleError(error),
+          },
+        }),
     })
   }
 
@@ -386,7 +386,7 @@ export abstract class AbstractWorker<
    * Worker message listener.
    * @param message - The received message.
    */
-  protected messageListener (message: MessageValue<Data>): void {
+  protected messageListener(message: MessageValue<Data>): void {
     this.checkMessageWorkerId(message)
     const {
       checkActive,
@@ -536,7 +536,7 @@ export abstract class AbstractWorker<
   /**
    * Sends task functions properties to the main worker.
    */
-  protected sendTaskFunctionsPropertiesToMainWorker (): void {
+  protected sendTaskFunctionsPropertiesToMainWorker(): void {
     this.sendToMainWorker({
       taskFunctionsProperties: this.listTaskFunctionsProperties(),
     })
@@ -546,11 +546,11 @@ export abstract class AbstractWorker<
    * Sends a message to main worker.
    * @param message - The response message.
    */
-  protected abstract sendToMainWorker (
+  protected abstract sendToMainWorker(
     message: MessageValue<Response, Data>
   ): void
 
-  private beginTaskPerformance (name?: string): TaskPerformance {
+  private beginTaskPerformance(name?: string): TaskPerformance {
     if (this.statistics == null) {
       throw new Error('Performance statistics computation requirements not set')
     }
@@ -566,7 +566,7 @@ export abstract class AbstractWorker<
   /**
    * Checks if the worker should be terminated, because its living too long.
    */
-  private checkActive (): void {
+  private checkActive(): void {
     if (
       performance.now() - this.lastTaskTimestamp >
       (this.opts.maxInactiveTime ?? DEFAULT_MAX_INACTIVE_TIME)
@@ -580,7 +580,7 @@ export abstract class AbstractWorker<
    * @param message - The message to check.
    * @throws {Error} If the message worker id is not set or does not match the worker id.
    */
-  private checkMessageWorkerId (message: MessageValue<Data>): void {
+  private checkMessageWorkerId(message: MessageValue<Data>): void {
     if (message.workerId == null) {
       throw new Error(
         `Message worker id is not set: ${JSON.stringify(message)}`
@@ -597,7 +597,7 @@ export abstract class AbstractWorker<
    * Checks if the `taskFunctions` parameter is passed to the constructor and valid.
    * @param taskFunctions - The task function(s) parameter that should be checked.
    */
-  private checkTaskFunctions (
+  private checkTaskFunctions(
     taskFunctions:
       | TaskFunction<Data, Response>
       | TaskFunctions<Data, Response>
@@ -644,12 +644,12 @@ export abstract class AbstractWorker<
     }
   }
 
-  private checkWorkerOptions (opts: WorkerOptions): void {
+  private checkWorkerOptions(opts: WorkerOptions): void {
     checkValidWorkerOptions(opts)
     this.opts = { ...DEFAULT_WORKER_OPTIONS, ...opts }
   }
 
-  private endTaskPerformance (
+  private endTaskPerformance(
     taskPerformance: TaskPerformance
   ): TaskPerformance {
     if (this.statistics == null) {
@@ -673,7 +673,7 @@ export abstract class AbstractWorker<
    * @param taskId - The task id.
    * @returns The abortable task function.
    */
-  private getAbortableTaskFunction (
+  private getAbortableTaskFunction(
     name: string,
     taskId: `${string}-${string}-${string}-${string}-${string}`
   ): TaskAsyncFunction<Data, Response> {
@@ -699,7 +699,7 @@ export abstract class AbstractWorker<
   /**
    * Starts the worker check active interval.
    */
-  private startCheckActive (): void {
+  private startCheckActive(): void {
     this.lastTaskTimestamp = performance.now()
     this.activeInterval = setInterval(
       this.checkActive.bind(this),
@@ -711,14 +711,14 @@ export abstract class AbstractWorker<
   /**
    * Stops the worker check active interval.
    */
-  private stopCheckActive (): void {
+  private stopCheckActive(): void {
     if (this.activeInterval != null) {
       clearInterval(this.activeInterval)
       this.activeInterval = undefined
     }
   }
 
-  private updateLastTaskTimestamp (): void {
+  private updateLastTaskTimestamp(): void {
     if (this.activeInterval != null) {
       this.lastTaskTimestamp = performance.now()
     }

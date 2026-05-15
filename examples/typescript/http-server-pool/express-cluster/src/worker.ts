@@ -9,7 +9,7 @@ import type { WorkerData, WorkerResponse } from './types.js'
 class ExpressWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static server: Server
 
-  public constructor () {
+  public constructor() {
     super(ExpressWorker.startExpress, {
       killHandler: () => {
         ExpressWorker.server.close()

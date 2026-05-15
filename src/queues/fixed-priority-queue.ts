@@ -9,7 +9,8 @@ import { AbstractFixedQueue } from './abstract-fixed-queue.js'
  */
 export class FixedPriorityQueue<T>
   extends AbstractFixedQueue<T>
-  implements IFixedQueue<T> {
+  implements IFixedQueue<T>
+{
   private readonly agingFactor: number
   private readonly loadExponent: number
 
@@ -23,7 +24,7 @@ export class FixedPriorityQueue<T>
    * @defaultValue defaultLoadExponent
    * @returns IFixedQueue.
    */
-  public constructor (
+  public constructor(
     size?: number,
     agingFactor = 0.001,
     loadExponent = 1.0 / 1.5
@@ -34,7 +35,7 @@ export class FixedPriorityQueue<T>
   }
 
   /** @inheritdoc */
-  public enqueue (data: T, priority?: number): number {
+  public enqueue(data: T, priority?: number): number {
     if (this.full()) {
       throw new Error('Fixed priority queue is full')
     }

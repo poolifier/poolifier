@@ -6,7 +6,7 @@ import { sleepTaskFunction } from '../../test-utils.cjs'
  * @param data - The task data.
  * @returns Promise that rejects with an error message.
  */
-async function error (data) {
+async function error(data) {
   return sleepTaskFunction(
     data,
     2000,
