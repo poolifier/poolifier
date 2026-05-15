@@ -1,11 +1,7 @@
 import cluster from 'node:cluster'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
-import {
-  FixedClusterPool,
-  PoolEvents,
-  WorkerCrashError,
-} from '../../../lib/index.mjs'
+import { FixedClusterPool, PoolEvents } from '../../../lib/index.mjs'
 import { DEFAULT_TASK_NAME } from '../../../lib/utils.mjs'
 import { TaskFunctions } from '../../test-types.cjs'
 import { sleep, waitWorkerEvents } from '../../test-utils.cjs'
@@ -269,7 +265,12 @@ describe('Fixed cluster pool test suite', () => {
     ).toBe(true)
   })
 
-  it('Verify that in-flight task promises reject on worker crash', async () => {
+  // T6 (cluster): plan §2.7 — discriminate via `error.name` (NOT
+  // instanceof — dual-package safety per O2/D3). `{ retry: 0 }` per
+  // Round-2 B-T18 (deterministic by design).
+  it('Verify that in-flight task promises reject on worker crash', {
+    retry: 0,
+  }, async () => {
     let poolError
     crashPool.emitter.once(PoolEvents.error, e => {
       poolError = e
@@ -283,7 +284,6 @@ describe('Fixed cluster pool test suite', () => {
     }
     expect(error).toBeInstanceOf(Error)
     expect(error.name).toBe('WorkerCrashError')
-    expect(error).toBeInstanceOf(WorkerCrashError)
     expect(error.exitCode).toBe(1)
     expect(error.cause).toBeInstanceOf(Error)
     expect(error.cause.name).toBe('WorkerCrashError')

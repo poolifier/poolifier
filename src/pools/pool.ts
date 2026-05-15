@@ -328,7 +328,20 @@ export interface PoolOptions<Worker extends IWorker> {
    */
   onlineHandler?: OnlineHandler<Worker>
   /**
-   * Restart worker on error.
+   * Restart worker on unexpected exit.
+   *
+   * Replenishment policy after a worker exit:
+   *   - Clean exit (`exitCode === 0`): always replenished, regardless
+   *     of this option (preserves self-healing for voluntary worker
+   *     `process.exit(0)`).
+   *   - Crashed exit (non-zero code, or signal kill, or signal-only
+   *     OOM event): replenished only when `restartWorkerOnError === true`.
+   *
+   * Independently of replenishment, in-flight task promises bound to a
+   * crashed worker are rejected with `WorkerCrashError` regardless of
+   * this option — setting it to `false` does NOT silently swallow
+   * crashes; consumers always see the rejection.
+   * @defaultValue `true`
    */
   restartWorkerOnError?: boolean
   /**

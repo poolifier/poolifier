@@ -64,6 +64,19 @@ This method is available on both pool implementations and will start the minimum
 
 This method is available on both pool implementations and will call the terminate method on each worker.
 
+In-flight task promises that do not finish within `tasksFinishedTimeout` (default `2000` ms; configurable via `tasksQueueOptions.tasksFinishedTimeout`) are rejected with a `WorkerTerminationError`. Fire-and-forget callers (`pool.execute()` without an attached `.catch`) must attach a handler if they want to swallow the rejection — otherwise Node logs an unhandled rejection. Discriminate via `error.name === 'WorkerTerminationError'` (dual-package safe; `instanceof` works only within a single bundle).
+
+### Error handling on worker crash
+
+The pool rejects every in-flight task promise assigned to a worker that exits unexpectedly:
+
+- uncaught exception in the worker;
+- `process.exit(N)` from worker code;
+- signal kills (SIGKILL, SIGSEGV) and OOM-killer events on cluster workers;
+- pre-ready crashes (worker dies before signalling readiness).
+
+Rejection error is `WorkerCrashError` carrying `name === 'WorkerCrashError'`, `cause`, `exitCode`, `signal`, `taskId`, `workerId`. Discriminate via `error.name`. The pool also emits `PoolEvents.error` with the raw cause once per worker (subscribers may receive a typed `WorkerTerminationError` on the destroy path or a raw `Error` on the crash path — inspect `error.name`).
+
 ### `pool.hasTaskFunction(name)`
 
 `name` (mandatory) The task function name.

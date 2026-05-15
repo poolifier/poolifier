@@ -332,7 +332,13 @@ export interface WorkerInfo {
   continuousStealing: boolean
   /**
    * Crash handled flag.
-   * This flag is set to `true` when worker node crash has been handled.
+   *
+   * Write-once terminal: set to `true` by `handleWorkerNodeCrash` on
+   * the FIRST of `'error'` or `'exit'` to fire. Subsequent crash signals
+   * for the same node observe `crashHandled === true` and short-circuit
+   * (no double rejection, no double restart).
+   *
+   * Mutually exclusive with `terminating` in steady state.
    */
   crashHandled: boolean
   /**
