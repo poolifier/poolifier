@@ -224,13 +224,11 @@ describe('Crash recovery regression test suite', () => {
     expect(rejected.taskId).toBeDefined()
   })
 
-  // T3b is gated `it.skip` — the synchronous module-top throw races
-  // the parent's first task dispatch. On slow runners the worker may
-  // exit before any in-flight promise exists, leaving nothing to
-  // reject. The fixture `tests/worker-files/{thread,cluster}/preReadyCrashWorker.{mjs,cjs}`
-  // exists for future hardening (see §11 Lessons learned in
-  // pr-3211-followup.md). F4 pre-ready coverage remains a known gap.
-  it.skip('T3b: pre-ready worker crash (F4 known gap, fixture exercised but flaky on slow CI runners)', {
+  // T3b — pre-ready crash. The synchronous module-top throw races
+  // the parent's first task dispatch; we accept either path
+  // (PoolEvents.error event OR rejected execute) via Promise.race so
+  // the test is deterministic on slow runners.
+  it('T3b: pre-ready worker crash surfaces via error event or rejected dispatch', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -238,21 +236,17 @@ describe('Crash recovery regression test suite', () => {
       new DynamicClusterPool(
         1,
         2,
-        './tests/worker-files/cluster/preReadyCrashWorker.cjs'
+        './tests/worker-files/cluster/preReadyCrashWorker.cjs',
+        { errorHandler: () => undefined }
       )
     )
-    let rejected
-    try {
-      await pool.execute()
-    } catch (e) {
-      rejected = e
-    }
-    // EITHER pool.ready rejected, OR the dispatched task rejected
-    // with a typed error.
-    expect(rejected).toBeDefined()
-    if (rejected instanceof WorkerCrashError) {
-      expect(rejected.name).toBe('WorkerCrashError')
-    }
+    const errorEvent = new Promise(resolve => {
+      pool.emitter.once(PoolEvents.error, resolve)
+    })
+    const executePromise = pool.execute().catch(e => e)
+    const result = await Promise.race([errorEvent, executePromise])
+    expect(result).toBeDefined()
+    expect(result instanceof Error).toBe(true)
   })
 
   it('T4 (thread): worker uncaught throw mid-task rejects with WorkerCrashError', {
@@ -517,6 +511,39 @@ describe('Crash recovery regression test suite', () => {
     expect(events.length).toBeLessThanOrEqual(2)
   })
 
+  // Direct mutation-killer for HOLE #2 (crashHandled re-entry guard).
+  // After the first crash settles, invoke the private crash handler a
+  // second time on the SAME workerNode and assert NO new event is
+  // emitted. With the early-return guard, the second invocation is a
+  // no-op; without it, the crash body re-runs and emits again.
+  it('T9b: synthesised re-entry into the crash handler is a no-op', {
+    retry: 0,
+    timeout: 10_000,
+  }, async () => {
+    const pool = trackPool(
+      new FixedThreadPool(1, './tests/worker-files/thread/crashWorker.mjs', {
+        errorHandler: () => undefined,
+      })
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    const workerNode = pool.workerNodes[0]
+    let rejected
+    try {
+      await pool.execute()
+    } catch (e) {
+      rejected = e
+    }
+    expect(rejected.name).toBe('WorkerCrashError')
+    const eventsAfter = []
+    pool.emitter.on(PoolEvents.error, e => {
+      eventsAfter.push(e)
+    })
+    pool.handleWorkerNodeCrash(workerNode, new Error('synthetic re-entry'))
+    expect(eventsAfter.length).toBe(0)
+  })
+
   it('T10: crashed worker is not chosen and usage.failed reflects in-flight rejections', {
     retry: 0,
     timeout: 10_000,
@@ -595,6 +622,40 @@ describe('Crash recovery regression test suite', () => {
     expect(['WorkerCrashError', 'WorkerTerminationError']).toContain(
       rejections[0].name
     )
+  })
+
+  // Direct mutation-killer for HOLE #1 (firstError != null emit-gate).
+  // T11 alone cannot distinguish whether the gate exists, because the
+  // downstream nil-guard in safeEmitPoolError absorbs `undefined`. We
+  // monkey-patch safeEmitPoolError to record every call and assert it
+  // is never invoked with `undefined`. The wrapper restores itself in
+  // afterEach via pool destruction.
+  it('T11b: safeEmitPoolError is never called with undefined during crash+destroy race', {
+    retry: 0,
+    timeout: 10_000,
+  }, async () => {
+    const pool = trackPool(
+      new FixedThreadPool(1, './tests/worker-files/thread/crashWorker.mjs', {
+        enableTasksQueue: true,
+        errorHandler: () => undefined,
+        tasksQueueOptions: { tasksFinishedTimeout: 200 },
+      })
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    const calls = []
+    const originalSafeEmit = pool.safeEmitPoolError.bind(pool)
+    pool.safeEmitPoolError = error => {
+      calls.push(error)
+      return originalSafeEmit(error)
+    }
+    const taskPromise = pool.execute().catch(() => undefined)
+    await new Promise(resolve => setTimeout(resolve, 5))
+    const destroyPromise = pool.destroy().catch(() => undefined)
+    await Promise.allSettled([taskPromise, destroyPromise])
+    expect(calls.length).toBeGreaterThan(0)
+    expect(calls.every(c => c != null)).toBe(true)
   })
 
   it('T12: concurrent pool.destroy() rejects the second call (idempotency-by-rejection)', {

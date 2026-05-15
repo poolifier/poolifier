@@ -77,6 +77,10 @@ The pool rejects every in-flight task promise assigned to a worker that exits un
 
 Rejection error is `WorkerCrashError` carrying `name === 'WorkerCrashError'`, `cause`, `exitCode`, `signal`, `taskId`, `workerId`. Discriminate via `error.name`. The pool also emits `PoolEvents.error` with the raw cause once per worker (subscribers may receive a typed `WorkerTerminationError` on the destroy path or a raw `Error` on the crash path — inspect `error.name`).
 
+> Note: a single worker crash typically emits up to two `PoolEvents.error` events: (1) the raw `cause` (preserves backward-compatible payload), (2) the typed `WorkerCrashError`/`WorkerTerminationError` from the first rejected in-flight task. Subscribers receive both payloads; discriminate via `error.name` to filter to the typed one when needed.
+
+> Note (cluster): on cluster pools, the worker's original throw text does NOT propagate via `error.cause.message` — Node's `child_process` does not emit an `'error'` event for unhandled exceptions; the crash surfaces only via the `'exit'` handler with non-zero `exitCode` / non-null `signal`. The original throw text lives in the worker process's stderr.
+
 ### `pool.hasTaskFunction(name)`
 
 `name` (mandatory) The task function name.
