@@ -1130,29 +1130,12 @@ export abstract class AbstractPool<
       signal: NodeJS.Signals | null
     ) => {
       const workerNodeKey = this.workerNodes.indexOf(workerNode)
-      // A worker exit is an *unexpected crash* iff:
-      //   1. The pool did not initiate the termination
-      //      (`info.terminating === false`).
-      //   2. The pool is not being destroyed (`this.destroying === false`).
-      //   3. Crash handling has not already fired via 'error'
-      //      (`!info.crashHandled`).
-      //   4. The worker is still tracked (`workerNodeKey !== -1`).
-      //
-      // Under these conditions, EITHER a non-zero exit code OR a non-null
-      // signal means the worker died abnormally:
-      //   * Thread: an uncaught exception emits 'error' first (handled
-      //     separately), so reaching this branch with a non-zero exit
-      //     code means `process.exit(N)` was called inside the worker
-      //     without a throw. Treat as crash.
-      //   * Cluster: child_process never emits 'error' for uncaught
-      //     exceptions; 'exit' is the only crash channel. Non-zero code
-      //     = throw / process.exit. null code + signal = SIGKILL /
-      //     SIGSEGV / OOM-killer. Treat as crash.
-      //
-      // Voluntary terminations (worker.terminate(), worker.kill(), pool
-      // destroy, dynamic eviction) all set `info.terminating = true` (or
-      // `this.destroying = true`) before the exit fires and are correctly
-      // skipped here.
+      // Crash detection: voluntary termination (`info.terminating`,
+      // `this.destroying`) and prior `'error'`-triggered crash handling
+      // (`info.crashHandled`) all bypass this branch. For thread workers
+      // an uncaught exception fires `'error'` first, so a non-zero code
+      // here implies `process.exit(N)`. For cluster workers `'exit'` is
+      // the only crash channel: non-zero code or non-null signal.
       const abnormalExit =
         (exitCode != null && exitCode !== 0) ||
         (exitCode == null && signal != null)
@@ -1203,15 +1186,8 @@ export abstract class AbstractPool<
   /**
    * Terminates the worker node given its worker node key.
    *
-   * Sets the `terminating` flag synchronously BEFORE any await so the
-   * once-`'exit'` handler treats the upcoming exit as a voluntary
-   * termination (no crash detection). In-flight task promises that did
-   * not complete within `tasksFinishedTimeout` are rejected with
-   * {@link WorkerTerminationError} via the helper.
-   *
-   * Uses stable references captured BEFORE `terminate()` so the
-   * helper survives `removeWorkerNode`'s `splice` in the once-`'exit'`
-   * handler (use-after-remove safety).
+   * In-flight task promises that do not complete within
+   * `tasksFinishedTimeout` are rejected with {@link WorkerTerminationError}.
    * @param workerNodeKey - The worker node key.
    */
   protected async destroyWorkerNode (workerNodeKey: number): Promise<void> {
@@ -1485,8 +1461,6 @@ export abstract class AbstractPool<
 
   /**
    * Builds a typed crash error for the given worker node and task id.
-   * Per-task error construction so each rejection carries its own
-   * `taskId` (closes Round-2 Gap-1: error.taskId was previously dead).
    *
    * If `cause` is itself a {@link WorkerCrashError} (the exit-handler
    * synthesised one), propagates `exitCode` and `signal` so the per-task
@@ -2454,12 +2428,6 @@ export abstract class AbstractPool<
       }
     }
     this.checkAndEmitTaskExecutionFinishedEvents()
-    // Gate the emit on firstError != null. When iteration matches zero
-    // entries (e.g., promiseResponseMap already drained by a concurrent
-    // handleWorkerNodeCrash, or destroy of a worker with no in-flight
-    // tasks), firstError stays undefined; without this gate,
-    // safeEmitPoolError(undefined) would be a no-op anyway thanks to the
-    // helper's nil-guard, but skipping the call documents intent.
     if (firstError != null) {
       this.safeEmitPoolError(firstError)
     }
@@ -2467,10 +2435,7 @@ export abstract class AbstractPool<
 
   /**
    * Rejects remaining queued task promises for the given crashed worker
-   * node key.
-   *
-   * Per-task error construction so each rejection carries its own
-   * `taskId` (closes Round-2 Gap-1).
+   * node key. Each rejection carries its own `taskId`.
    * @param workerNodeKey - The worker node key.
    * @param errorFactory - Per-task error factory — invoked once per
    * rejection.
@@ -2594,21 +2559,10 @@ export abstract class AbstractPool<
   /**
    * Safely emits a {@link PoolEvents.error} event.
    *
-   * Skips emission entirely when no listener is registered, because Node
-   * EventEmitter throws synchronously when `'error'` is emitted with zero
-   * listeners (https://nodejs.org/api/events.html#error-events). Without
-   * the listener-count guard, fire-and-forget pool consumers would see
-   * `destroyWorkerNode` and `handleWorkerNodeCrash` crash on the emit
-   * call, leaking the worker.
-   *
-   * Also catches and swallows user-listener throws so that crash recovery,
-   * dynamic restart, and destroy cleanup cannot be aborted by faulty
-   * consumer code. Pool integrity takes precedence over listener
-   * observability for a single emit.
-   *
-   * Defense-in-depth nil-guard: callers should never pass `undefined`,
-   * but if they do, the call is a measured no-op (no garbage payload
-   * delivered).
+   * No-op when `error == null` or when no listener is registered (Node
+   * EventEmitter throws synchronously on `'error'` with zero listeners).
+   * Listener throws are swallowed so crash recovery and destroy cleanup
+   * cannot be aborted by faulty consumer code.
    * @param error - The error to emit.
    */
   private safeEmitPoolError (error: unknown): void {

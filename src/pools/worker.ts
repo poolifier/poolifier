@@ -332,13 +332,8 @@ export interface WorkerInfo {
   continuousStealing: boolean
   /**
    * Crash handled flag.
-   *
-   * Write-once terminal: set to `true` by `handleWorkerNodeCrash` on
-   * the FIRST of `'error'` or `'exit'` to fire. Subsequent crash signals
-   * for the same node observe `crashHandled === true` and short-circuit
-   * (no double rejection, no double restart).
-   *
-   * Mutually exclusive with `terminating` in steady state.
+   * Set to `true` on the first crash signal (`'error'` or `'exit'`)
+   * to short-circuit re-entry. Never reset.
    */
   crashHandled: boolean
   /**
@@ -374,17 +369,9 @@ export interface WorkerInfo {
   taskFunctionsProperties?: TaskFunctionProperties[]
   /**
    * Terminating flag.
-   * This flag is set to `true` by the pool BEFORE initiating a voluntary
-   * worker termination (`pool.destroy()`, `destroyWorkerNode()`, dynamic
-   * `maxInactiveTime` self-eviction). It is the canonical signal that a
-   * subsequent `'exit'` event MUST NOT be treated as a crash, regardless
-   * of exit code or signal.
-   *
-   * Mutually exclusive with `crashHandled` in steady state: the pool-
-   * initiated termination path sets `terminating`; an unexpected exit
-   * sets `crashHandled`.
-   *
-   * Write-once terminal flag: never reset.
+   * Set to `true` before voluntary worker termination (`pool.destroy()`,
+   * `destroyWorkerNode()`, dynamic `maxInactiveTime` self-eviction) so
+   * the subsequent `'exit'` event is not treated as a crash. Never reset.
    */
   terminating: boolean
   /**
