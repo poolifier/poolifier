@@ -625,20 +625,18 @@ describe('Crash recovery regression test suite', () => {
   })
 
   // Direct mutation-killer for HOLE #1 (firstError != null emit-gate).
-  // T11 alone cannot distinguish whether the gate exists, because the
-  // downstream nil-guard in safeEmitPoolError absorbs `undefined`. We
-  // monkey-patch safeEmitPoolError to record every call and assert it
-  // is never invoked with `undefined`. The wrapper restores itself in
-  // afterEach via pool destruction.
-  it('T11b: safeEmitPoolError is never called with undefined during crash+destroy race', {
+  // Invoke rejectInFlightTaskPromisesByRef synthetically with a
+  // workerId that matches no entry in promiseResponseMap. Iteration
+  // is empty, so firstError stays undefined. The gate must skip the
+  // safeEmitPoolError call; without the gate, undefined would reach
+  // the helper (its downstream nil-guard is defense-in-depth).
+  it('T11b: empty rejection iteration does not invoke safeEmitPoolError', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
     const pool = trackPool(
-      new FixedThreadPool(1, './tests/worker-files/thread/crashWorker.mjs', {
-        enableTasksQueue: true,
+      new FixedThreadPool(1, './tests/worker-files/thread/echoWorker.mjs', {
         errorHandler: () => undefined,
-        tasksQueueOptions: { tasksFinishedTimeout: 200 },
       })
     )
     await new Promise(resolve => {
@@ -650,12 +648,13 @@ describe('Crash recovery regression test suite', () => {
       calls.push(error)
       return originalSafeEmit(error)
     }
-    const taskPromise = pool.execute().catch(() => undefined)
-    await new Promise(resolve => setTimeout(resolve, 5))
-    const destroyPromise = pool.destroy().catch(() => undefined)
-    await Promise.allSettled([taskPromise, destroyPromise])
-    expect(calls.length).toBeGreaterThan(0)
-    expect(calls.every(c => c != null)).toBe(true)
+    pool.rejectInFlightTaskPromisesByRef(
+      pool.workerNodes[0],
+      999_999,
+      taskId =>
+        new WorkerTerminationError('synthetic empty iteration', { taskId })
+    )
+    expect(calls.length).toBe(0)
   })
 
   it('T12: concurrent pool.destroy() calls are silently idempotent', {
