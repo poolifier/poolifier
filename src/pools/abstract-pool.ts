@@ -70,6 +70,7 @@ import {
   type WorkerInfo,
   type WorkerNodeEventDetail,
   type WorkerType,
+  WorkerTypes,
 } from './worker.js'
 
 /**
@@ -1139,29 +1140,24 @@ export abstract class AbstractPool<
       'exit',
       (exitCode: null | number) => {
         const workerNodeKey = this.workerNodes.indexOf(workerNode)
-        const exitError =
-          exitCode == null
-            ? new Error('Worker node killed by signal')
-            : new Error(`Worker node exited with code ${exitCode.toString()}`)
+        // Cluster workers do not emit 'error' on uncaught exceptions; detect
+        // their crashes via a non-zero exit code. Thread workers emit 'error'
+        // for crashes, so a non-zero exit code there denotes a voluntary
+        // termination (e.g. worker.terminate()) and must not trigger crash
+        // handling. Intentional signal-based kills produce a null exit code
+        // and are likewise skipped.
         if (
+          workerNode.info.type === WorkerTypes.cluster &&
           workerNode.info.ready &&
           !workerNode.info.crashHandled &&
           workerNodeKey !== -1 &&
           !this.destroying &&
+          exitCode != null &&
           exitCode !== 0
         ) {
-          this.handleWorkerNodeCrash(workerNode, exitError)
-        }
-        if (
-          workerNodeKey !== -1 &&
-          !workerNode.info.crashHandled &&
-          exitCode !== 0
-        ) {
-          this.flushWorkerNodePromises(
+          this.handleWorkerNodeCrash(
             workerNode,
-            this.destroying
-              ? new Error('Worker node terminated during pool destroy')
-              : exitError
+            new Error(`Worker node exited with code ${exitCode.toString()}`)
           )
         }
         this.removeWorkerNode(workerNode)
@@ -1694,30 +1690,6 @@ export abstract class AbstractPool<
     for (const workerNodeKey of this.workerNodes.keys()) {
       this.flushTasksQueue(workerNodeKey)
     }
-  }
-
-  /**
-   * Rejects all unsettled promises targeting the given worker node.
-   * Used as a catch-all when crash handling was bypassed (e.g., during pool
-   * destroy or for non-ready worker exits). Idempotent: already-deleted
-   * entries are simply skipped.
-   * @param workerNode - The worker node whose promises to flush.
-   * @param error - The rejection error.
-   */
-  private flushWorkerNodePromises (
-    workerNode: IWorkerNode<Worker, Data>,
-    error: Error
-  ): void {
-    const workerId = workerNode.info.id
-    for (const [taskId, promiseResponse] of this.promiseResponseMap) {
-      if (
-        promiseResponse.workerId === workerId ||
-        (workerId == null && promiseResponse.workerId == null)
-      ) {
-        this.rejectTaskPromise(taskId, promiseResponse, workerNode, error)
-      }
-    }
-    this.checkAndEmitTaskExecutionFinishedEvents()
   }
 
   private readonly getAbortError = (
