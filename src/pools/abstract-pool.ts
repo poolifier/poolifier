@@ -1151,46 +1151,46 @@ export abstract class AbstractPool<
       'exit',
       this.opts.exitHandler ?? EMPTY_FUNCTION
     )
-    workerNode.registerOnceWorkerEventHandler('exit', (
-      exitCode: null | number,
-      signal?: NodeJS.Signals | null
-    ) => {
-      // Crash detection: voluntary termination (`info.terminating`,
-      // `this.destroying`) and any prior crash signal — `'error'` or a
-      // first `'exit'` — (`info.crashHandled`) all bypass this branch.
-      // For thread workers an uncaught exception fires `'error'` first,
-      // so a non-zero code here implies `process.exit(N)`. For cluster
-      // workers `'exit'` is the only crash channel: non-zero code or
-      // non-null signal.
-      const abnormalExit =
-        (exitCode != null && exitCode !== 0) ||
-        (exitCode == null && signal != null)
-      if (
-        !workerNode.info.terminating &&
-        !this.destroying &&
-        !workerNode.info.crashHandled &&
-        abnormalExit
-      ) {
-        this.handleWorkerNodeCrash(
-          workerNode,
-          new WorkerCrashError(
-            `Worker node exited unexpectedly (code=${String(
-              exitCode
-            )}, signal=${String(signal)})`,
-            { exitCode, signal, workerId: workerNode.info.id }
+    workerNode.registerOnceWorkerEventHandler(
+      'exit',
+      (exitCode: null | number, signal?: NodeJS.Signals | null) => {
+        // Crash detection: voluntary termination (`info.terminating`,
+        // `this.destroying`) and any prior crash signal — `'error'` or a
+        // first `'exit'` — (`info.crashHandled`) all bypass this branch.
+        // For thread workers an uncaught exception fires `'error'` first,
+        // so a non-zero code here implies `process.exit(N)`. For cluster
+        // workers `'exit'` is the only crash channel: non-zero code or
+        // non-null signal.
+        const abnormalExit =
+          (exitCode != null && exitCode !== 0) ||
+          (exitCode == null && signal != null)
+        if (
+          !workerNode.info.terminating &&
+          !this.destroying &&
+          !workerNode.info.crashHandled &&
+          abnormalExit
+        ) {
+          this.handleWorkerNodeCrash(
+            workerNode,
+            new WorkerCrashError(
+              `Worker node exited unexpectedly (code=${String(
+                exitCode
+              )}, signal=${String(signal)})`,
+              { exitCode, signal, workerId: workerNode.info.id }
+            )
           )
-        )
+        }
+        this.removeWorkerNode(workerNode)
+        if (
+          this.started &&
+          !this.startingMinimumNumberOfWorkers &&
+          !this.destroying &&
+          (exitCode === 0 || this.opts.restartWorkerOnError === true)
+        ) {
+          this.startMinimumNumberOfWorkers(true)
+        }
       }
-      this.removeWorkerNode(workerNode)
-      if (
-        this.started &&
-        !this.startingMinimumNumberOfWorkers &&
-        !this.destroying &&
-        (exitCode === 0 || this.opts.restartWorkerOnError === true)
-      ) {
-        this.startMinimumNumberOfWorkers(true)
-      }
-    })
+    )
     const workerNodeKey = this.addWorkerNode(workerNode)
     this.afterWorkerNodeSetup(workerNodeKey)
     return workerNodeKey
