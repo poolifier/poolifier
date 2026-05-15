@@ -1029,6 +1029,35 @@ export abstract class AbstractPool<
   }
 
   /**
+   * Builds a typed crash error for the given worker node and task id.
+   *
+   * If `cause` is itself a {@link WorkerCrashError} (the exit-handler
+   * synthesised one), propagates `exitCode` and `signal` so the per-task
+   * rejection carries the same diagnostic context as the pool-level
+   * emission.
+   * @param cause - The original error that caused the crash.
+   * @param workerNode - The crashed worker node.
+   * @param taskId - The task id (optional).
+   * @returns A {@link WorkerCrashError} wrapping the cause.
+   * @internal
+   */
+  protected buildWorkerCrashError (
+    cause: Error,
+    workerNode: IWorkerNode<Worker, Data>,
+    taskId?: TaskUUID
+  ): WorkerCrashError {
+    const exitCode = cause instanceof WorkerCrashError ? cause.exitCode : null
+    const signal = cause instanceof WorkerCrashError ? cause.signal : null
+    return new WorkerCrashError(`Worker node crashed: ${cause.message}`, {
+      cause,
+      exitCode,
+      signal,
+      taskId,
+      workerId: workerNode.info.id,
+    })
+  }
+
+  /**
    * Emits dynamic worker creation events.
    */
   protected abstract checkAndEmitDynamicWorkerCreationEvents (): void
@@ -1194,12 +1223,8 @@ export abstract class AbstractPool<
     // removeWorkerNode's splice in the once-'exit' handler.
     const workerNode = this.workerNodes[workerNodeKey]
     const stableWorkerId = workerNode.info.id
-    // Mark as voluntarily terminating so the once-'exit' handler skips
-    // crash detection for the upcoming exit event.
     workerNode.info.terminating = true
     try {
-      // flushTasksQueue inside the try-block: a synchronous throw must
-      // still trigger the finally-block cleanup (sendKill + terminate).
       const flushedTasks = this.flushTasksQueue(workerNodeKey)
       await waitWorkerNodeEvents(
         workerNode,
@@ -1212,7 +1237,6 @@ export abstract class AbstractPool<
         false
       )
     } finally {
-      // Cleanup MUST run even if rejection logic throws synchronously.
       try {
         const firstReject = this.rejectInFlightTaskPromisesByRef(
           workerNode,
@@ -1229,7 +1253,16 @@ export abstract class AbstractPool<
       } catch (error) {
         this.safeEmitPoolError(error)
       }
-      await this.sendKillMessageToWorker(workerNodeKey).catch(() => undefined)
+      // Recompute the live index — a sibling worker's exit handler may
+      // have spliced workerNodes during the awaited waitWorkerNodeEvents
+      // above, shifting our key. If the worker is already gone, skip
+      // sendKill (terminate() then short-circuits).
+      const liveWorkerNodeKey = this.workerNodes.indexOf(workerNode)
+      if (liveWorkerNodeKey !== -1) {
+        await this.sendKillMessageToWorker(liveWorkerNodeKey).catch(
+          () => undefined
+        )
+      }
       await workerNode.terminate().catch(() => undefined)
     }
   }
@@ -1259,6 +1292,61 @@ export abstract class AbstractPool<
    */
   protected getWorkerInfo (workerNodeKey: number): undefined | WorkerInfo {
     return this.workerNodes[workerNodeKey]?.info
+  }
+
+  /**
+   * Handles a crashed worker node:
+   *   1. Rejects every in-flight task promise assigned to this worker
+   *      with a {@link WorkerCrashError} carrying the task's own
+   *      `taskId`.
+   *   2. Emits exactly one {@link PoolEvents.error}: the typed first
+   *      rejection when in-flight tasks existed, otherwise a fresh
+   *      {@link WorkerCrashError} carrying the raw `cause`.
+   *   3. If `restartWorkerOnError` is enabled and the worker is
+   *      dynamic, spawns a replacement worker.
+   *   4. If `enableTasksQueue` is enabled, redistributes queued tasks
+   *      to other workers and rejects any that cannot be redistributed.
+   *
+   * Idempotent: returns early if `info.terminating | crashHandled` or
+   * `this.destroying` is set. Static worker restart is handled by the
+   * exit event handler.
+   * @param workerNode - The crashed worker node.
+   * @param cause - The error that caused the crash.
+   * @internal
+   */
+  protected handleWorkerNodeCrash (
+    workerNode: IWorkerNode<Worker, Data>,
+    cause: Error
+  ): void {
+    if (
+      workerNode.info.terminating ||
+      this.destroying ||
+      workerNode.info.crashHandled
+    ) {
+      return
+    }
+    const crashedWorkerNodeKey = this.workerNodes.indexOf(workerNode)
+    workerNode.info.ready = false
+    workerNode.info.crashHandled = true
+    const firstReject = this.rejectInFlightTaskPromisesByRef(
+      workerNode,
+      workerNode.info.id,
+      taskId => this.buildWorkerCrashError(cause, workerNode, taskId)
+    )
+    this.safeEmitPoolError(
+      firstReject ?? this.buildWorkerCrashError(cause, workerNode)
+    )
+    if (this.started) {
+      if (this.opts.restartWorkerOnError === true && workerNode.info.dynamic) {
+        this.createAndSetupDynamicWorkerNode()
+      }
+      if (this.opts.enableTasksQueue === true) {
+        this.redistributeQueuedTasks(crashedWorkerNodeKey)
+        this.rejectRemainingQueuedTaskPromises(crashedWorkerNodeKey, taskId =>
+          this.buildWorkerCrashError(cause, workerNode, taskId)
+        )
+      }
+    }
   }
 
   /**
@@ -1322,6 +1410,81 @@ export abstract class AbstractPool<
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
   ): void
+
+  /**
+   * Rejects in-flight task promises for the given worker node by stable
+   * reference. Safe to call AFTER the worker has been removed from the
+   * pool because it does not index into `this.workerNodes`.
+   *
+   * Skips entries whose ids are still queued (those are handled by
+   * {@link rejectRemainingQueuedTaskPromises} or redistributed). Each
+   * rejection carries its own `taskId`. Returns the first rejection so
+   * the caller can route the {@link PoolEvents.error} emission.
+   *
+   * Returns `undefined` (no-op) when `workerId == null`: a worker without
+   * an assigned id cannot have been chosen for dispatch, so no in-flight
+   * promises can match it.
+   * @param workerNode - The worker node (stable reference).
+   * @param workerId - The worker id (stable reference, captured pre-await).
+   * @param errorFactory - Per-task error factory — invoked once per
+   * rejection.
+   * @returns The first rejection, or `undefined` if no in-flight tasks were
+   * matched.
+   * @internal
+   */
+  protected rejectInFlightTaskPromisesByRef (
+    workerNode: IWorkerNode<Worker, Data>,
+    workerId: number | undefined,
+    errorFactory: (
+      taskId: TaskUUID
+    ) => WorkerCrashError | WorkerTerminationError
+  ): undefined | WorkerCrashError | WorkerTerminationError {
+    if (workerId == null) {
+      return undefined
+    }
+    const queuedTaskIds = new Set<TaskUUID>()
+    for (const task of workerNode.tasksQueue) {
+      if (task.taskId != null) {
+        queuedTaskIds.add(task.taskId)
+      }
+    }
+    let firstError: undefined | WorkerCrashError | WorkerTerminationError
+    for (const [taskId, promiseResponse] of this.promiseResponseMap) {
+      if (promiseResponse.workerId === workerId && !queuedTaskIds.has(taskId)) {
+        const err = errorFactory(taskId)
+        firstError ??= err
+        this.rejectTaskPromise(taskId, promiseResponse, workerNode, err)
+      }
+    }
+    this.checkAndEmitTaskExecutionFinishedEvents()
+    return firstError
+  }
+
+  /**
+   * Safely emits a {@link PoolEvents.error} event.
+   *
+   * No-op when `error == null` or when no listener is registered (Node
+   * EventEmitter throws synchronously on `'error'` with zero listeners).
+   * Listener throws are swallowed so crash recovery and destroy cleanup
+   * cannot be aborted by faulty consumer code.
+   * @param error - The error to emit.
+   * @internal
+   */
+  protected safeEmitPoolError (error: unknown): void {
+    if (error == null) {
+      return
+    }
+    if (
+      this.emitter != null &&
+      this.emitter.listenerCount(PoolEvents.error) > 0
+    ) {
+      try {
+        this.emitter.emit(PoolEvents.error, error)
+      } catch {
+        // Swallow listener throws — see method JSDoc.
+      }
+    }
+  }
 
   /**
    * Sends the startup message to worker given its worker node key.
@@ -1456,34 +1619,6 @@ export abstract class AbstractPool<
       ...this.opts.tasksQueueOptions,
       ...tasksQueueOptions,
     }
-  }
-
-  /**
-   * Builds a typed crash error for the given worker node and task id.
-   *
-   * If `cause` is itself a {@link WorkerCrashError} (the exit-handler
-   * synthesised one), propagates `exitCode` and `signal` so the per-task
-   * rejection carries the same diagnostic context as the pool-level
-   * emission.
-   * @param cause - The original error that caused the crash.
-   * @param workerNode - The crashed worker node.
-   * @param taskId - The task id (optional).
-   * @returns A {@link WorkerCrashError} wrapping the cause.
-   */
-  private buildWorkerCrashError (
-    cause: Error,
-    workerNode: IWorkerNode<Worker, Data>,
-    taskId?: TaskUUID
-  ): WorkerCrashError {
-    const exitCode = cause instanceof WorkerCrashError ? cause.exitCode : null
-    const signal = cause instanceof WorkerCrashError ? cause.signal : null
-    return new WorkerCrashError(`Worker node crashed: ${cause.message}`, {
-      cause,
-      exitCode,
-      signal,
-      taskId,
-      workerId: workerNode.info.id,
-    })
   }
 
   private cannotStealTask (): boolean {
@@ -2053,61 +2188,6 @@ export abstract class AbstractPool<
     }
   }
 
-  /**
-   * Handles a crashed worker node:
-   *   1. Rejects every in-flight task promise assigned to this worker
-   *      with a {@link WorkerCrashError} carrying the task's own
-   *      `taskId`.
-   *   2. Emits exactly one {@link PoolEvents.error}: the typed first
-   *      rejection when in-flight tasks existed, otherwise a fresh
-   *      {@link WorkerCrashError} carrying the raw `cause`.
-   *   3. If `restartWorkerOnError` is enabled and the worker is
-   *      dynamic, spawns a replacement worker.
-   *   4. If `enableTasksQueue` is enabled, redistributes queued tasks
-   *      to other workers and rejects any that cannot be redistributed.
-   *
-   * Refuses re-entry on `info.terminating`, `this.destroying` or
-   * `info.crashHandled` so the symmetric guard between `'error'` and
-   * `'exit'` handlers cannot trigger double rejection paths.
-   * Static worker restart is handled by the exit event handler.
-   * @param workerNode - The crashed worker node.
-   * @param cause - The error that caused the crash.
-   */
-  private handleWorkerNodeCrash (
-    workerNode: IWorkerNode<Worker, Data>,
-    cause: Error
-  ): void {
-    if (
-      workerNode.info.terminating ||
-      this.destroying ||
-      workerNode.info.crashHandled
-    ) {
-      return
-    }
-    const crashedWorkerNodeKey = this.workerNodes.indexOf(workerNode)
-    workerNode.info.ready = false
-    workerNode.info.crashHandled = true
-    const firstReject = this.rejectInFlightTaskPromisesByRef(
-      workerNode,
-      workerNode.info.id,
-      taskId => this.buildWorkerCrashError(cause, workerNode, taskId)
-    )
-    this.safeEmitPoolError(
-      firstReject ?? this.buildWorkerCrashError(cause, workerNode)
-    )
-    if (this.started) {
-      if (this.opts.restartWorkerOnError === true && workerNode.info.dynamic) {
-        this.createAndSetupDynamicWorkerNode()
-      }
-      if (this.opts.enableTasksQueue === true) {
-        this.redistributeQueuedTasks(crashedWorkerNodeKey)
-        this.rejectRemainingQueuedTaskPromises(crashedWorkerNodeKey, taskId =>
-          this.buildWorkerCrashError(cause, workerNode, taskId)
-        )
-      }
-    }
-  }
-
   private readonly handleWorkerNodeIdleEvent = (
     eventDetail: WorkerNodeEventDetail,
     previousStolenTask?: Task<Data>
@@ -2388,50 +2468,6 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Rejects in-flight task promises for the given worker node by stable
-   * reference. Safe to call AFTER the worker has been removed from the
-   * pool because it does not index into `this.workerNodes`.
-   *
-   * Skips entries whose ids are still queued (those are handled by
-   * {@link rejectRemainingQueuedTaskPromises} or redistributed). Each
-   * rejection carries its own `taskId`. Returns the first rejection so
-   * the caller can route the {@link PoolEvents.error} emission.
-   * @param workerNode - The worker node (stable reference).
-   * @param workerId - The worker id (stable reference, captured pre-await).
-   * @param errorFactory - Per-task error factory — invoked once per
-   * rejection.
-   * @returns The first rejection, or `undefined` if no in-flight tasks were
-   * matched.
-   */
-  private rejectInFlightTaskPromisesByRef (
-    workerNode: IWorkerNode<Worker, Data>,
-    workerId: number | undefined,
-    errorFactory: (
-      taskId: TaskUUID
-    ) => WorkerCrashError | WorkerTerminationError
-  ): undefined | WorkerCrashError | WorkerTerminationError {
-    if (workerId == null) {
-      return undefined
-    }
-    const queuedTaskIds = new Set<TaskUUID>()
-    for (const task of workerNode.tasksQueue) {
-      if (task.taskId != null) {
-        queuedTaskIds.add(task.taskId)
-      }
-    }
-    let firstError: undefined | WorkerCrashError | WorkerTerminationError
-    for (const [taskId, promiseResponse] of this.promiseResponseMap) {
-      if (promiseResponse.workerId === workerId && !queuedTaskIds.has(taskId)) {
-        const err = errorFactory(taskId)
-        firstError ??= err
-        this.rejectTaskPromise(taskId, promiseResponse, workerNode, err)
-      }
-    }
-    this.checkAndEmitTaskExecutionFinishedEvents()
-    return firstError
-  }
-
-  /**
    * Rejects remaining queued task promises for the given crashed worker
    * node key. Each rejection carries its own `taskId`.
    * @param workerNodeKey - The worker node key.
@@ -2552,31 +2588,6 @@ export abstract class AbstractPool<
         ...args
       )
       : callback(...args)
-  }
-
-  /**
-   * Safely emits a {@link PoolEvents.error} event.
-   *
-   * No-op when `error == null` or when no listener is registered (Node
-   * EventEmitter throws synchronously on `'error'` with zero listeners).
-   * Listener throws are swallowed so crash recovery and destroy cleanup
-   * cannot be aborted by faulty consumer code.
-   * @param error - The error to emit.
-   */
-  private safeEmitPoolError (error: unknown): void {
-    if (error == null) {
-      return
-    }
-    if (
-      this.emitter != null &&
-      this.emitter.listenerCount(PoolEvents.error) > 0
-    ) {
-      try {
-        this.emitter.emit(PoolEvents.error, error)
-      } catch {
-        // Swallow listener throws — see method JSDoc.
-      }
-    }
   }
 
   private async sendKillMessageToWorker (

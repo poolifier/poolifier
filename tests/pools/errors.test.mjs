@@ -60,10 +60,9 @@ describe('Pool error classes test suite', () => {
     })
     it('resists name tampering (Object.assign attempt)', () => {
       const e = new WorkerCrashError('boom')
-      // Object.assign on a non-writable property throws in strict mode but
-      // the .mjs test file is not strict-by-default — defineProperty makes
-      // it non-writable+non-configurable so the assign is silently a no-op
-      // in sloppy mode, and the discrimination contract holds either way.
+      // Object.assign on a non-writable name property: silently no-op
+      // (sloppy mode) or TypeError (strict mode). Both are acceptable —
+      // the discrimination contract holds either way.
       try {
         Object.assign(e, { name: 'fake' })
       } catch {

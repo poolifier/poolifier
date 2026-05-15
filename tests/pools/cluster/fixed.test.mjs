@@ -265,9 +265,8 @@ describe('Fixed cluster pool test suite', () => {
     ).toBe(true)
   })
 
-  // T6 (cluster): plan §2.7 — discriminate via `error.name` (NOT
-  // instanceof — dual-package safety per O2/D3). `{ retry: 0 }` per
-  // Round-2 B-T18 (deterministic by design).
+  // Discriminate via `error.name` (NOT instanceof — dual-package
+  // safety). `{ retry: 0 }` because the test is deterministic.
   it('Verify that in-flight task promises reject on worker crash', {
     retry: 0,
   }, async () => {

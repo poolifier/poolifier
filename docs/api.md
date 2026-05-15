@@ -68,6 +68,8 @@ In-flight task promises that do not finish within `tasksFinishedTimeout` (defaul
 
 `PoolEvents.error` is emitted exactly once per voluntary destruction with at least one in-flight task, payload `WorkerTerminationError`. Idle workers terminated voluntarily emit no event.
 
+The same `WorkerTerminationError` is emitted (and rejects the in-flight task) when a dynamic worker self-evicts via `maxInactiveTime` while a task is still executing.
+
 ### Error handling on worker crash
 
 The pool rejects every in-flight task promise assigned to a worker that exits unexpectedly:

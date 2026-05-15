@@ -1,15 +1,11 @@
 /**
- * Pool error classes.
+ * Pool-level typed error classes.
  *
- * Two flat classes extending `Error` directly. Discrimination at runtime is
- * via `error.name === 'WorkerCrashError'` / `error.name ===
- * 'WorkerTerminationError'` — robust across dual-package (CJS/ESM) bundle
- * boundaries. `instanceof` is supported only within a single bundle realm.
+ * `*Options` interfaces are file-scoped exports for TS4063 declaration-emit
+ * compliance and are deliberately NOT re-exported from `src/index.ts`.
  *
- * `*Options` interfaces are `export`ed at file level for TS4063
- * declaration-emit compliance. They are deliberately NOT re-exported from
- * `src/index.ts` — consumers do not construct these errors; the pool does.
- * `package.json:exports` blocks deep imports outside the public barrel.
+ * For discrimination semantics and dual-package (CJS/ESM) guidance, see
+ * `docs/api.md` §"Error handling on worker crash".
  */
 
 import type { TaskUUID } from '../utility-types.js'
@@ -47,10 +43,6 @@ export interface WorkerTerminationErrorOptions {
  * Raised when a task promise is rejected because its assigned worker exited
  * unexpectedly (uncaught exception, signal kill, OOM-killer,
  * `process.exit(N)` from worker code, etc.).
- *
- * Discriminate via `error.name === 'WorkerCrashError'`, which works across
- * dual-package (CJS/ESM) boundaries. `instanceof` is supported only within
- * a single bundle realm.
  */
 export class WorkerCrashError extends Error {
   public readonly exitCode: null | number
@@ -80,8 +72,6 @@ export class WorkerCrashError extends Error {
  * Raised when a task promise is rejected because the pool initiated worker
  * termination while the task was still in-flight (`pool.destroy()` reached
  * its `tasksFinishedTimeout`, or a queued task could not be redistributed).
- *
- * Discriminate via `error.name === 'WorkerTerminationError'`.
  */
 export class WorkerTerminationError extends Error {
   public readonly taskId?: TaskUUID

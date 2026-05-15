@@ -11,19 +11,14 @@ import {
 } from '../../lib/index.mjs'
 
 /*
- * Regression tests for the crash-recovery contract introduced in PR #3211
- * follow-up. Each test uses `{ retry: 0 }` to surface flakes immediately
- * (override the global `retry: 2` in vitest.config.ts).
+ * Regression suite for the worker crash-recovery contract:
+ *   - every in-flight task promise settles (typed rejection or success);
+ *   - exactly one PoolEvents.error per crash, payload typed;
+ *   - voluntary worker termination is not surfaced as a crash;
+ *   - destroy() is idempotent and concurrent-safe.
  *
- * Invariant coverage map (per .sisyphus/plans/pr-3211-followup.md §1.4):
- *   * I1 (every in-flight promise settles):   T1a, T1b, T2, T5, T5b, T8b
- *   * I2 (no pool-emitted unhandled reject):  T7
- *   * I3 (voluntary termination not a crash): T8
- *   * I4 (crashHandled write-once):           T9, T11
- *   * I5 (replenishment predicate branches):  T-I5
- *   * I6 (strategies skip crashed worker):    T10
- *   * HOLE #1 / #2 (race on destroy + crash): T11, T12
- *   * H4.3 (enableTasksQueue:false crash):    T13
+ * Each test pins `{ retry: 0 }` to surface flakes immediately
+ * (overrides the global `retry: 2` in vitest.config.ts).
  */
 describe('Crash recovery regression test suite', () => {
   // Track pools created by tests so afterEach can drain them on failure.
@@ -101,9 +96,9 @@ describe('Crash recovery regression test suite', () => {
       await new Promise(resolve => setTimeout(resolve, 100))
       const workerNode = pool.workerNodes[0]
       // cluster.Worker#kill() defaults to SIGTERM, mapped to
-      // TerminateProcess on Windows. Per plan §2.7 row T1b, the
-      // resulting `error.signal` may be null OR 'SIGTERM' depending
-      // on Node version (F2 cross-platform tolerance).
+      // TerminateProcess on Windows. The resulting `error.signal` may
+      // be null OR 'SIGTERM' depending on Node version (cross-platform
+      // tolerance).
       workerNode.worker.kill()
       let rejected
       try {
@@ -151,9 +146,8 @@ describe('Crash recovery regression test suite', () => {
   }, async () => {
     // Thread variant — the thrown Error propagates as `cause` because
     // worker_threads emits an 'error' event with the raw exception.
-    // Plan §2.7 T3 specified a Dynamic pool; we use Fixed here to
-    // reduce the risk of dynamic-eviction interactions confounding
-    // the assertion. The dynamic-branch coverage lives in T4.
+    // Use a Fixed pool to avoid dynamic-eviction interactions
+    // confounding the assertion. The dynamic-branch coverage is in T4.
     const pool = trackPool(
       new FixedThreadPool(
         1,
@@ -184,10 +178,9 @@ describe('Crash recovery regression test suite', () => {
     // Cluster variant — child_process never emits 'error' for an
     // unhandled exception, so the crash surfaces only via the 'exit'
     // handler with non-zero `exitCode`. The original throw text lives
-    // in the worker's stderr, NOT in `error.cause.message`. Plan §2.7
-    // row T3 asserts `cause.message === 'post-online crash'` which is
-    // accurate only for thread workers; cluster relaxes to exit-code
-    // detection (documented deviation, audit-method §10 Minor).
+    // in the worker's stderr, NOT in `error.cause.message`. The
+    // assertion therefore relaxes to exit-code detection (cluster
+    // documented deviation from the thread-pool symmetry).
     const pool = trackPool(
       new DynamicClusterPool(
         1,
@@ -243,11 +236,10 @@ describe('Crash recovery regression test suite', () => {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // Plan §2.7 T4 specified a Dynamic pool to exercise the dynamic
-    // branch in handleWorkerNodeCrash. We use Fixed here because the
-    // dispatch-to-static-worker pattern means the dynamic branch is
-    // not actually exercised regardless of pool type. The static
-    // worker uncaught-throw is what plan F9 requires "closed".
+    // Static-worker uncaught-throw variant. Dispatch always lands on
+    // the static worker, so the dynamic branch in handleWorkerNodeCrash
+    // is not exercised here regardless of pool type — Fixed keeps the
+    // assertion focused.
     const pool = trackPool(
       new FixedThreadPool(1, './tests/worker-files/thread/crashWorker.mjs', {
         errorHandler: () => undefined,
@@ -322,10 +314,9 @@ describe('Crash recovery regression test suite', () => {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // 2-worker pool. We dispatch ONE task only — round-robin places it
-    // on worker[0]. worker[1] remains idle and has no in-flight task at
-    // destroy time. The plan §2.7 row T5b regression guard: the pool
-    // must NOT spuriously fabricate a rejection for worker[1].
+    // 2-worker pool. Only ONE task is dispatched — round-robin places
+    // it on worker[0]. worker[1] stays idle. The pool must NOT
+    // fabricate a spurious rejection for worker[1] at destroy time.
     const pool = trackPool(
       new FixedThreadPool(2, './tests/worker-files/thread/hangWorker.mjs', {
         enableTasksQueue: true,
@@ -391,9 +382,8 @@ describe('Crash recovery regression test suite', () => {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // Plan §2.7 T8: voluntary termination via maxInactiveTime is NOT
-    // a crash. No WorkerTerminationError, no WorkerCrashError, no
-    // PoolEvents.error.
+    // Voluntary termination via maxInactiveTime is NOT a crash. No
+    // WorkerTerminationError, no WorkerCrashError, no PoolEvents.error.
     const pool = trackPool(
       new DynamicThreadPool(
         1,
@@ -410,10 +400,9 @@ describe('Crash recovery regression test suite', () => {
       errorEvents.push(e)
     })
     // Dispatch enough tasks to spawn an additional dynamic worker, then
-    // let it sit idle. (We cannot easily trigger maxInactiveTime in
-    // <10s, so we manually destroy a dynamic worker via
-    // destroyWorkerNode to simulate voluntary termination on an idle
-    // worker.)
+    // let it sit idle. (Triggering maxInactiveTime takes >10 s, so we
+    // manually destroy a dynamic worker via destroyWorkerNode to
+    // simulate voluntary termination on an idle worker.)
     await Promise.all([pool.execute(), pool.execute(), pool.execute()])
     // Wait for any concurrent crash-emit microtasks to settle.
     await new Promise(resolve => setTimeout(resolve, 50))
@@ -427,9 +416,8 @@ describe('Crash recovery regression test suite', () => {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // Plan §2.7 T8b: exercises the §2.4 destroy-path on the dynamic
-    // eviction call site. Use destroyWorkerNode directly on a worker
-    // with a hanging in-flight task.
+    // Exercises the destroy path on the dynamic-eviction call site.
+    // Use destroyWorkerNode directly on a worker holding a hung task.
     const pool = trackPool(
       new DynamicThreadPool(
         1,
@@ -451,8 +439,8 @@ describe('Crash recovery regression test suite', () => {
       return undefined
     })
     await new Promise(resolve => setTimeout(resolve, 50))
-    // Trigger voluntary termination of the in-flight worker (simulating
-    // the dynamic-eviction call-site at line ~1075 of abstract-pool.ts).
+    // Trigger voluntary termination of the in-flight worker
+    // (simulating the dynamic-eviction call-site).
     const targetKey = pool.workerNodes.findIndex(
       wn => wn.usage.tasks.executing > 0
     )
@@ -470,8 +458,8 @@ describe('Crash recovery regression test suite', () => {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // Plan §2.7 T9 / Round-3 I4: handleWorkerNodeCrash refuses re-entry
-    // when info.crashHandled is true.
+    // handleWorkerNodeCrash refuses re-entry when info.crashHandled is
+    // true: subsequent worker error/exit events must not emit again.
     const pool = trackPool(
       new FixedThreadPool(1, './tests/worker-files/thread/crashWorker.mjs', {
         errorHandler: () => undefined,
@@ -497,11 +485,11 @@ describe('Crash recovery regression test suite', () => {
     expect(events[0]).toBeInstanceOf(WorkerCrashError)
   })
 
-  // Direct mutation-killer for HOLE #2 (crashHandled re-entry guard).
-  // After the first crash settles, invoke the private crash handler a
-  // second time on the SAME workerNode and assert NO new event is
-  // emitted. With the early-return guard, the second invocation is a
-  // no-op; without it, the crash body re-runs and emits again.
+  // Mutation-killer for the crashHandled re-entry guard. After the
+  // first crash settles, invoke the crash handler a second time on the
+  // SAME workerNode and assert NO new event is emitted. With the
+  // early-return guard, the second invocation is a no-op; without it,
+  // the crash body re-runs and emits again.
   it('T9b: synthesised re-entry into the crash handler is a no-op', {
     retry: 0,
     timeout: 10_000,
@@ -534,8 +522,8 @@ describe('Crash recovery regression test suite', () => {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // Plan §2.7 T10 / Round-3 I6: info.ready=false gating in
-    // isWorkerNodeReady at abstract-worker-choice-strategy.ts:197-198.
+    // info.ready=false gating in isWorkerNodeReady prevents
+    // dispatch to the crashed worker.
     const pool = trackPool(
       new FixedThreadPool(
         2,
@@ -571,8 +559,8 @@ describe('Crash recovery regression test suite', () => {
   }, async () => {
     // Race: worker throws ~10 ms after dispatch; destroy starts ~5 ms
     // earlier, so crash and destroy interleave non-deterministically.
-    // Listener must observe only typed payloads (HOLE #1 emit-gate);
-    // exactly one in-flight rejection (HOLE #2 crashHandled write-once).
+    // Listener must observe only typed payloads (emit-gate); exactly
+    // one in-flight rejection (crashHandled write-once).
     const pool = trackPool(
       new FixedThreadPool(1, './tests/worker-files/thread/crashWorker.mjs', {
         enableTasksQueue: true,
@@ -610,10 +598,10 @@ describe('Crash recovery regression test suite', () => {
     )
   })
 
-  // Direct mutation-killer for HOLE #1 (firstError != null emit-gate).
-  // Invoke rejectInFlightTaskPromisesByRef synthetically with a
-  // workerId that matches no entry in promiseResponseMap. Iteration
-  // is empty, so firstError stays undefined. The gate must skip the
+  // Mutation-killer for the firstError != null emit-gate. Invoke
+  // rejectInFlightTaskPromisesByRef synthetically with a workerId that
+  // matches no entry in promiseResponseMap. Iteration is empty, so
+  // firstError stays undefined. The gate must skip the
   // safeEmitPoolError call; without the gate, undefined would reach
   // the helper (its downstream nil-guard is defense-in-depth).
   it('T11b: empty rejection iteration does not invoke safeEmitPoolError', {
@@ -642,9 +630,9 @@ describe('Crash recovery regression test suite', () => {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // Plan §2.7 T12 / Round-4 H4.2: concurrent destroy() calls share
-    // the same in-flight promise (idempotent destruction). Both
-    // resolve, no error is emitted, pool reaches the destroyed state.
+    // Concurrent destroy() calls share the same in-flight promise
+    // (idempotent destruction). Both resolve, no error is emitted, the
+    // pool reaches the destroyed state.
     const pool = trackPool(
       new FixedThreadPool(2, './tests/worker-files/thread/echoWorker.mjs', {
         errorHandler: () => undefined,
@@ -667,9 +655,9 @@ describe('Crash recovery regression test suite', () => {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // Plan §2.7 T13 / Round-4 H4.3: redistribute/rejectRemainingQueued
-    // is gated on enableTasksQueue === true. With queue disabled, the
-    // in-flight rejection is the ONLY path; queue paths are skipped.
+    // redistribute/rejectRemainingQueued is gated on
+    // enableTasksQueue === true. With queue disabled, the in-flight
+    // rejection is the ONLY path; queue paths are skipped.
     const pool = trackPool(
       new FixedThreadPool(
         2,
@@ -710,7 +698,7 @@ describe('Crash recovery regression test suite', () => {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // Plan §2.7 T-I5 sub-test (a): predicate `code === 0` branch.
+    // Replenishment predicate: `code === 0` branch.
     const pool = trackPool(
       new FixedThreadPool(
         1,
@@ -733,7 +721,7 @@ describe('Crash recovery regression test suite', () => {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // Plan §2.7 T-I5 sub-test (b): predicate `code === 0` is false AND
+    // Replenishment predicate: `code === 0` is false AND
     // `restartWorkerOnError === true` is false → no replenishment.
     const pool = trackPool(
       new FixedThreadPool(
