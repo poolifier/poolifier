@@ -361,6 +361,21 @@ export interface WorkerInfo {
    */
   taskFunctionsProperties?: TaskFunctionProperties[]
   /**
+   * Terminating flag.
+   * This flag is set to `true` by the pool BEFORE initiating a voluntary
+   * worker termination (`pool.destroy()`, `destroyWorkerNode()`, dynamic
+   * `maxInactiveTime` self-eviction). It is the canonical signal that a
+   * subsequent `'exit'` event MUST NOT be treated as a crash, regardless
+   * of exit code or signal.
+   *
+   * Mutually exclusive with `crashHandled` in steady state: the pool-
+   * initiated termination path sets `terminating`; an unexpected exit
+   * sets `crashHandled`.
+   *
+   * Write-once terminal flag: never reset.
+   */
+  terminating: boolean
+  /**
    * Worker type.
    */
   readonly type: WorkerType

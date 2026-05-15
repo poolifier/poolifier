@@ -989,6 +989,7 @@ describe('Abstract pool test suite', () => {
         ready: true,
         stealing: false,
         stolen: false,
+        terminating: false,
         type: WorkerTypes.cluster,
       })
     }
@@ -1011,6 +1012,7 @@ describe('Abstract pool test suite', () => {
         ready: true,
         stealing: false,
         stolen: false,
+        terminating: false,
         type: WorkerTypes.thread,
       })
     }

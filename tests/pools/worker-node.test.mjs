@@ -247,6 +247,7 @@ describe('Worker node test suite', () => {
       ready: false,
       stealing: false,
       stolen: false,
+      terminating: false,
       type: WorkerTypes.thread,
     })
     expect(threadWorkerNode.usage).toStrictEqual({
@@ -310,6 +311,7 @@ describe('Worker node test suite', () => {
       ready: false,
       stealing: false,
       stolen: false,
+      terminating: false,
       type: WorkerTypes.cluster,
     })
     expect(clusterWorkerNode.usage).toStrictEqual({

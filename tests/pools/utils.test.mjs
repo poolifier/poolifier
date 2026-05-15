@@ -142,6 +142,7 @@ describe('Pool utils test suite', () => {
       ready: false,
       stealing: false,
       stolen: false,
+      terminating: false,
       type: WorkerTypes.thread,
     })
     const clusterWorker = createWorker(

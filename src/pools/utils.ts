@@ -524,6 +524,7 @@ export const initWorkerInfo = (worker: IWorker): WorkerInfo => {
     ready: false,
     stealing: false,
     stolen: false,
+    terminating: false,
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     type: getWorkerType(worker)!,
   }
