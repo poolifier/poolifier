@@ -1,32 +1,28 @@
-import { execSync } from 'node:child_process'
+import { execFileSync } from 'node:child_process'
 import { copyFileSync, mkdirSync, readdirSync, rmSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+const root = dirname(fileURLToPath(import.meta.url))
+const tmpDir = join(root, 'tmp')
+const docsDir = join(root, 'docs')
+const markdownFiles = readdirSync(docsDir).filter(file => file.endsWith('.md'))
+
+mkdirSync(tmpDir, { recursive: true })
+for (const markdownFile of markdownFiles) {
+  copyFileSync(join(docsDir, markdownFile), join(tmpDir, markdownFile))
+}
+
 try {
-  mkdirSync(join(dirname(fileURLToPath(import.meta.url)), 'tmp'), {
-    recursive: true,
+  // execFileSync inherits stdio and throws on non-zero exit, propagating the
+  // typedoc exit status to this wrapper's parent (pnpm). Wrapping in
+  // try/finally ensures the docs/*.md restoration runs even on failure.
+  execFileSync('pnpm', ['exec', 'typedoc', ...process.argv.slice(2)], {
+    stdio: 'inherit',
   })
-  const markdownFiles = readdirSync(
-    join(dirname(fileURLToPath(import.meta.url)), 'docs')
-  ).filter(file => file.endsWith('.md'))
+} finally {
   for (const markdownFile of markdownFiles) {
-    copyFileSync(
-      join(dirname(fileURLToPath(import.meta.url)), 'docs', markdownFile),
-      join(dirname(fileURLToPath(import.meta.url)), 'tmp', markdownFile)
-    )
+    copyFileSync(join(tmpDir, markdownFile), join(docsDir, markdownFile))
   }
-  execSync('pnpm exec typedoc', { stdio: 'inherit' })
-  for (const markdownFile of markdownFiles) {
-    copyFileSync(
-      join(dirname(fileURLToPath(import.meta.url)), 'tmp', markdownFile),
-      join(dirname(fileURLToPath(import.meta.url)), 'docs', markdownFile)
-    )
-  }
-  rmSync(join(dirname(fileURLToPath(import.meta.url)), 'tmp'), {
-    force: true,
-    recursive: true,
-  })
-} catch (e) {
-  console.error(e)
+  rmSync(tmpDir, { force: true, recursive: true })
 }
