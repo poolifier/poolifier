@@ -57,7 +57,7 @@ export class WorkerCrashError extends Error {
   public readonly signal: NodeJS.Signals | null
   public readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
   public readonly workerId?: number
-  public constructor(message: string, options: WorkerCrashErrorOptions = {}) {
+  public constructor (message: string, options: WorkerCrashErrorOptions = {}) {
     super(message, options.cause != null ? { cause: options.cause } : undefined)
     Object.setPrototypeOf(this, new.target.prototype)
     // Tamper-resistant `name`: non-writable so subclass shadowing or
@@ -86,7 +86,7 @@ export class WorkerCrashError extends Error {
 export class WorkerTerminationError extends Error {
   public readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
   public readonly workerId?: number
-  public constructor(
+  public constructor (
     message: string,
     options: WorkerTerminationErrorOptions = {}
   ) {

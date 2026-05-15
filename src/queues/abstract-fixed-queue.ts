@@ -24,7 +24,7 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
    * @defaultValue defaultQueueSize
    * @returns IFixedQueue.
    */
-  constructor(size: number = defaultQueueSize) {
+  constructor (size: number = defaultQueueSize) {
     this.checkSize(size)
     this.capacity = size
     this.nodeArray = new Array<FixedQueueNode<T>>(this.capacity)
@@ -32,7 +32,7 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
   }
 
   /** @inheritdoc */
-  public clear(): void {
+  public clear (): void {
     if (this.size > 0) {
       let index = this.start
       for (let i = 0; i < this.size; i++) {
@@ -48,7 +48,7 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
   }
 
   /** @inheritdoc */
-  public delete(data: T): boolean {
+  public delete (data: T): boolean {
     if (this.empty()) return false
     let currentPhysicalIndex = this.start
     let logicalIndex = -1
@@ -85,7 +85,7 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
   }
 
   /** @inheritdoc */
-  public dequeue(): T | undefined {
+  public dequeue (): T | undefined {
     if (this.empty()) {
       return undefined
     }
@@ -102,20 +102,20 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
   }
 
   /** @inheritdoc */
-  public empty(): boolean {
+  public empty (): boolean {
     return this.size === 0
   }
 
   /** @inheritdoc */
-  public abstract enqueue(data: T, priority?: number): number
+  public abstract enqueue (data: T, priority?: number): number
 
   /** @inheritdoc */
-  public full(): boolean {
+  public full (): boolean {
     return this.size === this.capacity
   }
 
   /** @inheritdoc */
-  public get(index: number): T | undefined {
+  public get (index: number): T | undefined {
     if (this.empty() || index < 0 || index >= this.size) {
       return undefined
     }
@@ -128,7 +128,7 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
   }
 
   /** @inheritdoc */
-  public [Symbol.iterator](): Iterator<T> {
+  public [Symbol.iterator] (): Iterator<T> {
     let index = this.start
     let i = 0
     return {
@@ -158,7 +158,7 @@ export abstract class AbstractFixedQueue<T> implements IFixedQueue<T> {
    * Checks the fixed queue size.
    * @param size - Queue size.
    */
-  private checkSize(size: number): void {
+  private checkSize (size: number): void {
     if (!Number.isSafeInteger(size)) {
       throw new TypeError(
         `Invalid fixed queue size: '${size.toString()}' is not an integer`

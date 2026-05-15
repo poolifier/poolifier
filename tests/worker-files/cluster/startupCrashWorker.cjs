@@ -17,7 +17,7 @@ setTimeout(() => {
 /**
  *
  */
-async function hang() {
+async function hang () {
   await new Promise(() => {
     // Never resolve — keeps the dispatched task in-flight when the
     // module-level timer throws.

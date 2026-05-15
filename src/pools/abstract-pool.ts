@@ -83,9 +83,8 @@ import {
 export abstract class AbstractPool<
   Worker extends IWorker,
   Data = unknown,
-  Response = unknown,
-> implements IPool<Worker, Data, Response>
-{
+  Response = unknown
+> implements IPool<Worker, Data, Response> {
   /** @inheritDoc */
   public emitter?: EventEmitterAsyncResource
 
@@ -93,7 +92,7 @@ export abstract class AbstractPool<
   public readonly workerNodes: IWorkerNode<Worker, Data>[] = []
 
   /** @inheritDoc */
-  public get info(): PoolInfo {
+  public get info (): PoolInfo {
     const taskStatisticsRequirements =
       this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements()
     return {
@@ -110,8 +109,8 @@ export abstract class AbstractPool<
       worker: this.worker,
       ...(taskStatisticsRequirements?.runTime.aggregate === true &&
         taskStatisticsRequirements.waitTime.aggregate && {
-          utilization: round(this.utilization),
-        }),
+        utilization: round(this.utilization),
+      }),
       busyWorkerNodes: this.workerNodes.reduce(
         (accumulator, _, workerNodeKey) =>
           this.isWorkerNodeBusy(workerNodeKey) ? accumulator + 1 : accumulator,
@@ -424,25 +423,25 @@ export abstract class AbstractPool<
    * Whether the pool is back pressured or not.
    * @returns The pool back pressure boolean status.
    */
-  protected abstract get backPressure(): boolean
+  protected abstract get backPressure (): boolean
 
   /**
    * Whether the pool is busy or not.
    * @returns The pool busyness boolean status.
    */
-  protected abstract get busy(): boolean
+  protected abstract get busy (): boolean
 
   /**
    * The pool type.
    *
    * If it is `'dynamic'`, it provides the `max` property.
    */
-  protected abstract get type(): PoolType
+  protected abstract get type (): PoolType
 
   /**
    * The worker type.
    */
-  protected abstract get worker(): WorkerType
+  protected abstract get worker (): WorkerType
 
   /**
    * Whether the pool back pressure event has been emitted or not.
@@ -483,7 +482,7 @@ export abstract class AbstractPool<
    * Whether the pool is ready or not.
    * @returns The pool readiness boolean status.
    */
-  private get ready(): boolean {
+  private get ready (): boolean {
     if (!this.started) {
       return false
     }
@@ -502,7 +501,7 @@ export abstract class AbstractPool<
    * The approximate pool utilization.
    * @returns The pool utilization.
    */
-  private get utilization(): number {
+  private get utilization (): number {
     if (this.startTimestamp == null) {
       return 0
     }
@@ -532,7 +531,7 @@ export abstract class AbstractPool<
    * @param opts - Options for the pool.
    * @param maximumNumberOfWorkers - Maximum number of workers that this pool manages.
    */
-  public constructor(
+  public constructor (
     protected readonly minimumNumberOfWorkers: number,
     protected readonly filePath: string,
     protected readonly opts: PoolOptions<Worker>,
@@ -583,7 +582,7 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public async addTaskFunction(
+  public async addTaskFunction (
     name: string,
     fn: TaskFunction<Data, Response> | TaskFunctionObject<Data, Response>
   ): Promise<boolean> {
@@ -621,7 +620,7 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public async destroy(): Promise<void> {
+  public async destroy (): Promise<void> {
     if (this.starting) {
       throw new Error('Cannot destroy a starting pool')
     }
@@ -636,7 +635,7 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public enableTasksQueue(
+  public enableTasksQueue (
     enable: boolean,
     tasksQueueOptions?: TasksQueueOptions
   ): void {
@@ -650,7 +649,7 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public async execute(
+  public async execute (
     data?: Data,
     name?: string,
     abortSignal?: AbortSignal,
@@ -678,14 +677,14 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public hasTaskFunction(name: string): boolean {
+  public hasTaskFunction (name: string): boolean {
     return this.listTaskFunctionsProperties().some(
       taskFunctionProperties => taskFunctionProperties.name === name
     )
   }
 
   /** @inheritDoc */
-  public listTaskFunctionsProperties(): TaskFunctionProperties[] {
+  public listTaskFunctionsProperties (): TaskFunctionProperties[] {
     for (const workerNode of this.workerNodes) {
       if (
         Array.isArray(workerNode.info.taskFunctionsProperties) &&
@@ -698,7 +697,7 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public async mapExecute(
+  public async mapExecute (
     data: Iterable<Data>,
     name?: string,
     abortSignals?: Iterable<AbortSignal>,
@@ -764,7 +763,7 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public async removeTaskFunction(name: string): Promise<boolean> {
+  public async removeTaskFunction (name: string): Promise<boolean> {
     if (!this.taskFunctions.has(name)) {
       throw new Error(
         'Cannot remove a task function not handled on the pool side'
@@ -791,7 +790,7 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public async setDefaultTaskFunction(name: string): Promise<boolean> {
+  public async setDefaultTaskFunction (name: string): Promise<boolean> {
     return await this.sendTaskFunctionOperationToWorkers({
       taskFunctionOperation: 'default',
       taskFunctionProperties: buildTaskFunctionProperties(
@@ -802,7 +801,7 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public setTasksQueueOptions(
+  public setTasksQueueOptions (
     tasksQueueOptions: TasksQueueOptions | undefined
   ): void {
     if (this.opts.enableTasksQueue === true) {
@@ -829,7 +828,7 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public setWorkerChoiceStrategy(
+  public setWorkerChoiceStrategy (
     workerChoiceStrategy: WorkerChoiceStrategy,
     workerChoiceStrategyOptions?: WorkerChoiceStrategyOptions
   ): void {
@@ -860,7 +859,7 @@ export abstract class AbstractPool<
   }
 
   /** @inheritDoc */
-  public setWorkerChoiceStrategyOptions(
+  public setWorkerChoiceStrategyOptions (
     workerChoiceStrategyOptions: undefined | WorkerChoiceStrategyOptions
   ): boolean {
     this.checkValidWorkerChoiceStrategyOptions(workerChoiceStrategyOptions)
@@ -885,7 +884,7 @@ export abstract class AbstractPool<
   }
 
   /** @inheritdoc */
-  public start(): void {
+  public start (): void {
     if (this.started) {
       throw new Error('Cannot start an already started pool')
     }
@@ -909,7 +908,7 @@ export abstract class AbstractPool<
    * @param workerNodeKey - The worker node key.
    * @param message - The received message.
    */
-  protected afterTaskExecutionHook(
+  protected afterTaskExecutionHook (
     workerNodeKey: number,
     message: MessageValue<Response>
   ): void {
@@ -964,7 +963,7 @@ export abstract class AbstractPool<
    * Can be overridden.
    * @param workerNodeKey - The newly created worker node key.
    */
-  protected afterWorkerNodeSetup(workerNodeKey: number): void {
+  protected afterWorkerNodeSetup (workerNodeKey: number): void {
     // Listen to worker messages.
     this.registerWorkerMessageListener(
       workerNodeKey,
@@ -997,7 +996,7 @@ export abstract class AbstractPool<
    * @param workerNodeKey - The worker node key.
    * @param task - The task to execute.
    */
-  protected beforeTaskExecutionHook(
+  protected beforeTaskExecutionHook (
     workerNodeKey: number,
     task: Task<Data>
   ): void {
@@ -1034,18 +1033,18 @@ export abstract class AbstractPool<
   /**
    * Emits dynamic worker creation events.
    */
-  protected abstract checkAndEmitDynamicWorkerCreationEvents(): void
+  protected abstract checkAndEmitDynamicWorkerCreationEvents (): void
 
   /**
    * Emits dynamic worker destruction events.
    */
-  protected abstract checkAndEmitDynamicWorkerDestructionEvents(): void
+  protected abstract checkAndEmitDynamicWorkerDestructionEvents (): void
 
   /**
    * Creates a new, completely set up dynamic worker node.
    * @returns New, completely set up dynamic worker node key.
    */
-  protected createAndSetupDynamicWorkerNode(): number {
+  protected createAndSetupDynamicWorkerNode (): number {
     const workerNodeKey = this.createAndSetupWorkerNode()
     this.registerWorkerMessageListener(workerNodeKey, message => {
       if (this.destroying) {
@@ -1101,7 +1100,7 @@ export abstract class AbstractPool<
    * Creates a new, completely set up worker node.
    * @returns New, completely set up worker node key.
    */
-  protected createAndSetupWorkerNode(): number {
+  protected createAndSetupWorkerNode (): number {
     const workerNode = this.createWorkerNode()
     workerNode.registerWorkerEventHandler(
       'online',
@@ -1195,7 +1194,7 @@ export abstract class AbstractPool<
    * @param listener - The message listener callback.
    */
   protected abstract deregisterWorkerMessageListener<
-    Message extends Data | Response,
+    Message extends Data | Response
   >(
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
@@ -1215,7 +1214,7 @@ export abstract class AbstractPool<
    * handler (use-after-remove safety).
    * @param workerNodeKey - The worker node key.
    */
-  protected async destroyWorkerNode(workerNodeKey: number): Promise<void> {
+  protected async destroyWorkerNode (workerNodeKey: number): Promise<void> {
     this.flagWorkerNodeAsNotReady(workerNodeKey)
     // Capture stable references BEFORE any await — they survive
     // removeWorkerNode's splice in the once-'exit' handler.
@@ -1260,14 +1259,14 @@ export abstract class AbstractPool<
     }
   }
 
-  protected flagWorkerNodeAsNotReady(workerNodeKey: number): void {
+  protected flagWorkerNodeAsNotReady (workerNodeKey: number): void {
     const workerInfo = this.getWorkerInfo(workerNodeKey)
     if (workerInfo != null) {
       workerInfo.ready = false
     }
   }
 
-  protected flushTasksQueue(workerNodeKey: number): number {
+  protected flushTasksQueue (workerNodeKey: number): number {
     let flushedTasks = 0
     while (this.tasksQueueSize(workerNodeKey) > 0) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -1283,7 +1282,7 @@ export abstract class AbstractPool<
    * @param workerNodeKey - The worker node key.
    * @returns The worker information.
    */
-  protected getWorkerInfo(workerNodeKey: number): undefined | WorkerInfo {
+  protected getWorkerInfo (workerNodeKey: number): undefined | WorkerInfo {
     return this.workerNodes[workerNodeKey]?.info
   }
 
@@ -1291,7 +1290,7 @@ export abstract class AbstractPool<
    * Whether the worker nodes are back pressured or not.
    * @returns Worker nodes back pressure boolean status.
    */
-  protected internalBackPressure(): boolean {
+  protected internalBackPressure (): boolean {
     if (this.workerNodes.length === 0) return false
     return (
       this.workerNodes.reduce(
@@ -1308,7 +1307,7 @@ export abstract class AbstractPool<
    * Whether worker nodes are executing concurrently their tasks quota or not.
    * @returns Worker nodes busyness boolean status.
    */
-  protected internalBusy(): boolean {
+  protected internalBusy (): boolean {
     if (this.workerNodes.length === 0) return false
     return (
       this.workerNodes.reduce(
@@ -1323,7 +1322,7 @@ export abstract class AbstractPool<
    * Returns whether the worker is the main worker or not.
    * @returns `true` if the worker is the main worker, `false` otherwise.
    */
-  protected abstract isMain(): boolean
+  protected abstract isMain (): boolean
 
   /**
    * Registers once a listener callback on the worker given its worker node key.
@@ -1331,7 +1330,7 @@ export abstract class AbstractPool<
    * @param listener - The message listener callback.
    */
   protected abstract registerOnceWorkerMessageListener<
-    Message extends Data | Response,
+    Message extends Data | Response
   >(
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
@@ -1343,7 +1342,7 @@ export abstract class AbstractPool<
    * @param listener - The message listener callback.
    */
   protected abstract registerWorkerMessageListener<
-    Message extends Data | Response,
+    Message extends Data | Response
   >(
     workerNodeKey: number,
     listener: (message: MessageValue<Message>) => void
@@ -1353,7 +1352,7 @@ export abstract class AbstractPool<
    * Sends the startup message to worker given its worker node key.
    * @param workerNodeKey - The worker node key.
    */
-  protected abstract sendStartupMessageToWorker(workerNodeKey: number): void
+  protected abstract sendStartupMessageToWorker (workerNodeKey: number): void
 
   /**
    * Sends a message to worker given its worker node key.
@@ -1361,7 +1360,7 @@ export abstract class AbstractPool<
    * @param message - The message.
    * @param transferList - The optional array of transferable objects.
    */
-  protected abstract sendToWorker(
+  protected abstract sendToWorker (
     workerNodeKey: number,
     message: MessageValue<Data>,
     transferList?: readonly Transferable[]
@@ -1371,7 +1370,7 @@ export abstract class AbstractPool<
    * Setup hook to execute code before worker nodes are created in the abstract constructor.
    * Can be overridden.
    */
-  protected setupHook(): void {
+  protected setupHook (): void {
     /* Intentionally empty */
   }
 
@@ -1379,7 +1378,7 @@ export abstract class AbstractPool<
    * Conditions for dynamic worker creation.
    * @returns Whether to create a dynamic worker or not.
    */
-  protected abstract shallCreateDynamicWorker(): boolean
+  protected abstract shallCreateDynamicWorker (): boolean
 
   /**
    * This method is the message listener registered on each worker.
@@ -1463,7 +1462,7 @@ export abstract class AbstractPool<
    * @returns The added worker node key.
    * @throws {Error} If the added worker node is not found.
    */
-  private addWorkerNode(workerNode: IWorkerNode<Worker, Data>): number {
+  private addWorkerNode (workerNode: IWorkerNode<Worker, Data>): number {
     this.workerNodes.push(workerNode)
     const workerNodeKey = this.workerNodes.indexOf(workerNode)
     if (workerNodeKey === -1) {
@@ -1472,7 +1471,7 @@ export abstract class AbstractPool<
     return workerNodeKey
   }
 
-  private buildTasksQueueOptions(
+  private buildTasksQueueOptions (
     tasksQueueOptions: TasksQueueOptions | undefined
   ): TasksQueueOptions {
     return {
@@ -1498,7 +1497,7 @@ export abstract class AbstractPool<
    * @param taskId - The task id (optional).
    * @returns A {@link WorkerCrashError} wrapping the cause.
    */
-  private buildWorkerCrashError(
+  private buildWorkerCrashError (
     cause: Error,
     workerNode: IWorkerNode<Worker, Data>,
     taskId?: `${string}-${string}-${string}-${string}-${string}`
@@ -1514,7 +1513,7 @@ export abstract class AbstractPool<
     })
   }
 
-  private cannotStealTask(): boolean {
+  private cannotStealTask (): boolean {
     return (
       !this.started ||
       this.destroying ||
@@ -1523,7 +1522,7 @@ export abstract class AbstractPool<
     )
   }
 
-  private checkAndEmitReadyEvent(): void {
+  private checkAndEmitReadyEvent (): void {
     if (this.emitter != null && !this.readyEventEmitted && this.ready) {
       this.emitter.listenerCount(PoolEvents.ready) > 0 &&
         this.emitter.emit(PoolEvents.ready, this.info)
@@ -1531,7 +1530,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private checkAndEmitTaskDequeuingEvents(): void {
+  private checkAndEmitTaskDequeuingEvents (): void {
     if (
       this.emitter != null &&
       this.backPressureEventEmitted &&
@@ -1543,7 +1542,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private checkAndEmitTaskExecutionEvents(): void {
+  private checkAndEmitTaskExecutionEvents (): void {
     if (this.emitter != null && !this.busyEventEmitted && this.busy) {
       this.emitter.listenerCount(PoolEvents.busy) > 0 &&
         this.emitter.emit(PoolEvents.busy, this.info)
@@ -1551,7 +1550,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private checkAndEmitTaskExecutionFinishedEvents(): void {
+  private checkAndEmitTaskExecutionFinishedEvents (): void {
     if (this.emitter != null && this.busyEventEmitted && !this.busy) {
       this.emitter.listenerCount(PoolEvents.busyEnd) > 0 &&
         this.emitter.emit(PoolEvents.busyEnd, this.info)
@@ -1559,7 +1558,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private checkAndEmitTaskQueuingEvents(): void {
+  private checkAndEmitTaskQueuingEvents (): void {
     if (
       this.emitter != null &&
       !this.backPressureEventEmitted &&
@@ -1576,7 +1575,7 @@ export abstract class AbstractPool<
    * @param message - The received message.
    * @throws {Error} If the worker id is invalid.
    */
-  private checkMessageWorkerId(message: MessageValue<Data | Response>): void {
+  private checkMessageWorkerId (message: MessageValue<Data | Response>): void {
     if (message.workerId == null) {
       throw new Error(
         `Worker message '${JSON.stringify(message)}' received without worker id`
@@ -1589,7 +1588,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private checkMinimumNumberOfWorkers(
+  private checkMinimumNumberOfWorkers (
     minimumNumberOfWorkers: number | undefined
   ): void {
     if (minimumNumberOfWorkers == null) {
@@ -1612,7 +1611,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private checkPoolOptions(opts: PoolOptions<Worker>): void {
+  private checkPoolOptions (opts: PoolOptions<Worker>): void {
     if (isPlainObject(opts)) {
       this.opts.startWorkers = opts.startWorkers ?? true
       checkValidWorkerChoiceStrategy(opts.workerChoiceStrategy)
@@ -1638,7 +1637,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private checkPoolType(): void {
+  private checkPoolType (): void {
     if (this.type === PoolTypes.fixed && this.maximumNumberOfWorkers != null) {
       throw new Error(
         'Cannot instantiate a fixed pool with a maximum number of workers defined at initialization'
@@ -1646,7 +1645,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private checkValidWorkerChoiceStrategyOptions(
+  private checkValidWorkerChoiceStrategyOptions (
     workerChoiceStrategyOptions: undefined | WorkerChoiceStrategyOptions
   ): void {
     if (
@@ -1683,7 +1682,7 @@ export abstract class AbstractPool<
    * @param name - The task function name.
    * @returns The chosen worker node key.
    */
-  private chooseWorkerNode(name?: string): number {
+  private chooseWorkerNode (name?: string): number {
     const workerNodeKeysSet = this.getTaskFunctionWorkerNodeKeysSet(name)
     if (workerNodeKeysSet != null) {
       const maxPoolSize =
@@ -1717,7 +1716,7 @@ export abstract class AbstractPool<
    * Creates a worker node.
    * @returns The created worker node.
    */
-  private createWorkerNode(): IWorkerNode<Worker, Data> {
+  private createWorkerNode (): IWorkerNode<Worker, Data> {
     const workerNode = new WorkerNode<Worker, Data>(
       this.worker,
       this.filePath,
@@ -1742,13 +1741,13 @@ export abstract class AbstractPool<
     return workerNode
   }
 
-  private dequeueTask(workerNodeKey: number): Task<Data> | undefined {
+  private dequeueTask (workerNodeKey: number): Task<Data> | undefined {
     const task = this.workerNodes[workerNodeKey].dequeueTask()
     this.checkAndEmitTaskDequeuingEvents()
     return task
   }
 
-  private async doDestroy(): Promise<void> {
+  private async doDestroy (): Promise<void> {
     this.destroying = true
     try {
       await Promise.allSettled(
@@ -1773,7 +1772,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private enqueueTask(workerNodeKey: number, task: Task<Data>): number {
+  private enqueueTask (workerNodeKey: number, task: Task<Data>): number {
     const tasksQueueSize = this.workerNodes[workerNodeKey].enqueueTask(task)
     this.checkAndEmitTaskQueuingEvents()
     return tasksQueueSize
@@ -1784,14 +1783,14 @@ export abstract class AbstractPool<
    * @param workerNodeKey - The worker node key.
    * @param task - The task to execute.
    */
-  private executeTask(workerNodeKey: number, task: Task<Data>): void {
+  private executeTask (workerNodeKey: number, task: Task<Data>): void {
     const { transferList } = task
     this.beforeTaskExecutionHook(workerNodeKey, task)
     this.sendToWorker(workerNodeKey, task, transferList)
     this.checkAndEmitTaskExecutionEvents()
   }
 
-  private flushTasksQueues(): void {
+  private flushTasksQueues (): void {
     for (const workerNodeKey of this.workerNodes.keys()) {
       this.flushTasksQueue(workerNodeKey)
     }
@@ -1810,13 +1809,13 @@ export abstract class AbstractPool<
         : new Error(`Task '${taskName}' id '${taskId}' aborted`)
   }
 
-  private getQueuedTasks(): number {
+  private getQueuedTasks (): number {
     return this.workerNodes.reduce((accumulator, workerNode) => {
       return accumulator + workerNode.usage.tasks.queued
     }, 0)
   }
 
-  private getStealingWorkerNodes(): number {
+  private getStealingWorkerNodes (): number {
     return this.workerNodes.reduce(
       (accumulator, _, workerNodeKey) =>
         this.isWorkerNodeStealing(workerNodeKey)
@@ -1865,7 +1864,7 @@ export abstract class AbstractPool<
     return workerNodeKeys != null ? new Set(workerNodeKeys) : undefined
   }
 
-  private getTasksQueuePriority(): boolean {
+  private getTasksQueuePriority (): boolean {
     return this.listTaskFunctionsProperties().some(
       taskFunctionProperties => taskFunctionProperties.priority != null
     )
@@ -1896,7 +1895,7 @@ export abstract class AbstractPool<
    * @param workerId - The worker id.
    * @returns The worker node key if the worker id is found in the pool worker nodes, `-1` otherwise.
    */
-  private getWorkerNodeKeyByWorkerId(workerId: number | undefined): number {
+  private getWorkerNodeKeyByWorkerId (workerId: number | undefined): number {
     if (workerId == null) {
       return -1
     }
@@ -1953,7 +1952,7 @@ export abstract class AbstractPool<
     )?.strategy
   }
 
-  private handleTask(workerNodeKey: number, task: Task<Data>): void {
+  private handleTask (workerNodeKey: number, task: Task<Data>): void {
     if (this.shallExecuteTask(workerNodeKey)) {
       this.executeTask(workerNodeKey, task)
     } else {
@@ -1961,7 +1960,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private handleTaskExecutionResponse(message: MessageValue<Response>): void {
+  private handleTaskExecutionResponse (message: MessageValue<Response>): void {
     const { data, taskId, workerError, workerId } = message
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const promiseResponse = this.promiseResponseMap.get(taskId!)
@@ -2100,7 +2099,7 @@ export abstract class AbstractPool<
    * @param workerNode - The crashed worker node.
    * @param cause - The error that caused the crash.
    */
-  private handleWorkerNodeCrash(
+  private handleWorkerNodeCrash (
     workerNode: IWorkerNode<Worker, Data>,
     cause: Error
   ): void {
@@ -2187,7 +2186,7 @@ export abstract class AbstractPool<
       })
   }
 
-  private handleWorkerReadyResponse(message: MessageValue<Response>): void {
+  private handleWorkerReadyResponse (message: MessageValue<Response>): void {
     const { ready, taskFunctionsProperties, workerId } = message
     if (ready == null || !ready) {
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -2210,7 +2209,7 @@ export abstract class AbstractPool<
     this.checkAndEmitReadyEvent()
   }
 
-  private initEventEmitter(): void {
+  private initEventEmitter (): void {
     this.emitter = new EventEmitterAsyncResource({
       name: `poolifier:${this.type}-${this.worker}-pool`,
     })
@@ -2220,7 +2219,7 @@ export abstract class AbstractPool<
    * Initializes the worker node usage with sensible default values gathered during runtime.
    * @param workerNode - The worker node.
    */
-  private initWorkerNodeUsage(workerNode: IWorkerNode<Worker, Data>): void {
+  private initWorkerNodeUsage (workerNode: IWorkerNode<Worker, Data>): void {
     const taskStatisticsRequirements =
       this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements()
     if (taskStatisticsRequirements?.runTime.aggregate === true) {
@@ -2249,7 +2248,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private async internalExecute(
+  private async internalExecute (
     data?: Data,
     name?: string,
     abortSignal?: AbortSignal,
@@ -2329,7 +2328,7 @@ export abstract class AbstractPool<
     )
   }
 
-  private isWorkerNodeBackPressured(workerNodeKey: number): boolean {
+  private isWorkerNodeBackPressured (workerNodeKey: number): boolean {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (workerNode == null) {
@@ -2338,7 +2337,7 @@ export abstract class AbstractPool<
     return workerNode.info.ready && workerNode.info.backPressure
   }
 
-  private isWorkerNodeBusy(workerNodeKey: number): boolean {
+  private isWorkerNodeBusy (workerNodeKey: number): boolean {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (workerNode == null) {
@@ -2355,7 +2354,7 @@ export abstract class AbstractPool<
     return workerNode.info.ready && workerNode.usage.tasks.executing > 0
   }
 
-  private isWorkerNodeIdle(workerNodeKey: number): boolean {
+  private isWorkerNodeIdle (workerNodeKey: number): boolean {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (workerNode == null) {
@@ -2371,7 +2370,7 @@ export abstract class AbstractPool<
     return workerNode.info.ready && workerNode.usage.tasks.executing === 0
   }
 
-  private isWorkerNodeStealing(workerNodeKey: number): boolean {
+  private isWorkerNodeStealing (workerNodeKey: number): boolean {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (workerNode == null) {
@@ -2384,7 +2383,7 @@ export abstract class AbstractPool<
     )
   }
 
-  private redistributeQueuedTasks(sourceWorkerNodeKey: number): void {
+  private redistributeQueuedTasks (sourceWorkerNodeKey: number): void {
     if (sourceWorkerNodeKey === -1 || this.cannotStealTask()) {
       return
     }
@@ -2430,7 +2429,7 @@ export abstract class AbstractPool<
    * @param errorFactory - Per-task error factory — invoked once per
    * rejection.
    */
-  private rejectInFlightTaskPromisesByRef(
+  private rejectInFlightTaskPromisesByRef (
     workerNode: IWorkerNode<Worker, Data>,
     workerId: number | undefined,
     errorFactory: (
@@ -2476,7 +2475,7 @@ export abstract class AbstractPool<
    * @param errorFactory - Per-task error factory — invoked once per
    * rejection.
    */
-  private rejectRemainingQueuedTaskPromises(
+  private rejectRemainingQueuedTaskPromises (
     workerNodeKey: number,
     errorFactory: (
       taskId: `${string}-${string}-${string}-${string}-${string}`
@@ -2507,7 +2506,7 @@ export abstract class AbstractPool<
     this.checkAndEmitTaskExecutionFinishedEvents()
   }
 
-  private rejectTaskPromise(
+  private rejectTaskPromise (
     taskId: `${string}-${string}-${string}-${string}-${string}`,
     promiseResponse: PromiseResponseWrapper<Response>,
     workerNode: IWorkerNode<Worker, Data>,
@@ -2528,7 +2527,7 @@ export abstract class AbstractPool<
    * @param promiseResponse - The promise response wrapper to reject.
    * @param error - The rejection error.
    */
-  private rejectTaskPromiseResponse(
+  private rejectTaskPromiseResponse (
     promiseResponse: PromiseResponseWrapper<Response>,
     error: Error
   ): void {
@@ -2540,7 +2539,7 @@ export abstract class AbstractPool<
    * Removes the worker node from the pool worker nodes.
    * @param workerNode - The worker node.
    */
-  private removeWorkerNode(workerNode: IWorkerNode<Worker, Data>): void {
+  private removeWorkerNode (workerNode: IWorkerNode<Worker, Data>): void {
     const workerNodeKey = this.workerNodes.indexOf(workerNode)
     if (workerNodeKey !== -1) {
       this.workerNodes.splice(workerNodeKey, 1)
@@ -2550,7 +2549,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private resetTaskSequentiallyStolenStatisticsWorkerUsage(
+  private resetTaskSequentiallyStolenStatisticsWorkerUsage (
     workerNodeKey: number,
     taskName?: string
   ): void {
@@ -2577,7 +2576,7 @@ export abstract class AbstractPool<
    * @param callback - The callback to run.
    * @param args - The arguments to pass to the callback.
    */
-  private runInAsyncScope(
+  private runInAsyncScope (
     promiseResponse: PromiseResponseWrapper<Response>,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     callback: (...args: any[]) => void,
@@ -2585,10 +2584,10 @@ export abstract class AbstractPool<
   ): void {
     promiseResponse.asyncResource != null
       ? promiseResponse.asyncResource.runInAsyncScope(
-          callback,
-          this.emitter,
-          ...args
-        )
+        callback,
+        this.emitter,
+        ...args
+      )
       : callback(...args)
   }
 
@@ -2612,7 +2611,7 @@ export abstract class AbstractPool<
    * delivered).
    * @param error - The error to emit.
    */
-  private safeEmitPoolError(error: unknown): void {
+  private safeEmitPoolError (error: unknown): void {
     if (error == null) {
       return
     }
@@ -2628,7 +2627,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private async sendKillMessageToWorker(
+  private async sendKillMessageToWorker (
     workerNodeKey: number,
     timeout = 1000
   ): Promise<void> {
@@ -2641,8 +2640,8 @@ export abstract class AbstractPool<
         timeoutHandle =
           timeout >= 0
             ? setTimeout(() => {
-                resolve()
-              }, timeout)
+              resolve()
+            }, timeout)
             : undefined
         killMessageListener = (message: MessageValue<Response>): void => {
           if (
@@ -2681,7 +2680,7 @@ export abstract class AbstractPool<
    * Sends the statistics message to worker given its worker node key.
    * @param workerNodeKey - The worker node key.
    */
-  private sendStatisticsMessageToWorker(workerNodeKey: number): void {
+  private sendStatisticsMessageToWorker (workerNodeKey: number): void {
     const taskStatisticsRequirements =
       this.workerChoiceStrategiesContext?.getTaskStatisticsRequirements()
     this.sendToWorker(workerNodeKey, {
@@ -2692,7 +2691,7 @@ export abstract class AbstractPool<
     })
   }
 
-  private async sendTaskFunctionOperationToWorker(
+  private async sendTaskFunctionOperationToWorker (
     workerNodeKey: number,
     message: MessageValue<Data>
   ): Promise<boolean> {
@@ -2741,7 +2740,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private async sendTaskFunctionOperationToWorkers(
+  private async sendTaskFunctionOperationToWorkers (
     message: MessageValue<Data>
   ): Promise<boolean> {
     const targetWorkerNodeCount = this.workerNodes.length
@@ -2804,19 +2803,19 @@ export abstract class AbstractPool<
     }
   }
 
-  private setTasksQueuePriority(workerNodeKey: number): void {
+  private setTasksQueuePriority (workerNodeKey: number): void {
     this.workerNodes[workerNodeKey].setTasksQueuePriority(
       this.getTasksQueuePriority()
     )
   }
 
-  private setTasksQueueSize(size: number): void {
+  private setTasksQueueSize (size: number): void {
     for (const workerNode of this.workerNodes) {
       workerNode.tasksQueueBackPressureSize = size
     }
   }
 
-  private setTasksStealingOnBackPressure(): void {
+  private setTasksStealingOnBackPressure (): void {
     for (const workerNodeKey of this.workerNodes.keys()) {
       this.workerNodes[workerNodeKey].on(
         'backPressure',
@@ -2825,13 +2824,13 @@ export abstract class AbstractPool<
     }
   }
 
-  private setTaskStealing(): void {
+  private setTaskStealing (): void {
     for (const workerNodeKey of this.workerNodes.keys()) {
       this.workerNodes[workerNodeKey].on('idle', this.handleWorkerNodeIdleEvent)
     }
   }
 
-  private shallExecuteTask(workerNodeKey: number): boolean {
+  private shallExecuteTask (workerNodeKey: number): boolean {
     return (
       this.tasksQueueSize(workerNodeKey) === 0 &&
       this.workerNodes[workerNodeKey].usage.tasks.executing <
@@ -2845,7 +2844,7 @@ export abstract class AbstractPool<
    * @param workerNodeKey - The worker node key.
    * @returns `true` if the worker node shall update its task function worker usage, `false` otherwise.
    */
-  private shallUpdateTaskFunctionWorkerUsage(workerNodeKey: number): boolean {
+  private shallUpdateTaskFunctionWorkerUsage (workerNodeKey: number): boolean {
     const workerInfo = this.getWorkerInfo(workerNodeKey)
     return (
       workerInfo != null &&
@@ -2859,7 +2858,7 @@ export abstract class AbstractPool<
    * @param initWorkerNodeUsage - Whether to initialize the worker node usage or not.
    * @defaultValue false
    */
-  private startMinimumNumberOfWorkers(initWorkerNodeUsage = false): void {
+  private startMinimumNumberOfWorkers (initWorkerNodeUsage = false): void {
     if (this.minimumNumberOfWorkers === 0) {
       return
     }
@@ -2923,7 +2922,7 @@ export abstract class AbstractPool<
     return stolenTask
   }
 
-  private tasksQueueSize(workerNodeKey: number): number {
+  private tasksQueueSize (workerNodeKey: number): number {
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (workerNode == null) {
@@ -2932,7 +2931,7 @@ export abstract class AbstractPool<
     return workerNode.tasksQueueSize()
   }
 
-  private unsetTasksStealingOnBackPressure(): void {
+  private unsetTasksStealingOnBackPressure (): void {
     for (const workerNodeKey of this.workerNodes.keys()) {
       this.workerNodes[workerNodeKey].off(
         'backPressure',
@@ -2941,7 +2940,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private unsetTaskStealing(): void {
+  private unsetTaskStealing (): void {
     for (const workerNodeKey of this.workerNodes.keys()) {
       this.workerNodes[workerNodeKey].off(
         'idle',
@@ -2956,7 +2955,7 @@ export abstract class AbstractPool<
    * @param taskId - The task id.
    * @param workerNodeKey - The destination worker node key.
    */
-  private updatePromiseResponseWorkerId(
+  private updatePromiseResponseWorkerId (
     taskId: `${string}-${string}-${string}-${string}-${string}` | undefined,
     workerNodeKey: number
   ): void {
@@ -2977,7 +2976,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private updateTaskSequentiallyStolenStatisticsWorkerUsage(
+  private updateTaskSequentiallyStolenStatisticsWorkerUsage (
     workerNodeKey: number,
     taskName?: string,
     previousTaskName?: string
@@ -3008,7 +3007,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private updateTaskStolenStatisticsWorkerUsage(
+  private updateTaskStolenStatisticsWorkerUsage (
     workerNodeKey: number,
     taskName: string
   ): void {

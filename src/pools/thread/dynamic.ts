@@ -14,20 +14,20 @@ import { FixedThreadPool, type ThreadPoolOptions } from './fixed.js'
  */
 export class DynamicThreadPool<
   Data = unknown,
-  Response = unknown,
+  Response = unknown
 > extends FixedThreadPool<Data, Response> {
   /** @inheritDoc */
-  protected override get backPressure(): boolean {
+  protected override get backPressure (): boolean {
     return this.full && this.internalBackPressure()
   }
 
   /** @inheritDoc */
-  protected override get busy(): boolean {
+  protected override get busy (): boolean {
     return this.full && this.internalBusy()
   }
 
   /** @inheritDoc */
-  protected override get type(): PoolType {
+  protected override get type (): PoolType {
     return PoolTypes.dynamic
   }
 
@@ -45,7 +45,7 @@ export class DynamicThreadPool<
    * Whether the pool is empty or not.
    * @returns The pool emptiness boolean status.
    */
-  private get empty(): boolean {
+  private get empty (): boolean {
     return (
       this.minimumNumberOfWorkers === 0 &&
       this.workerNodes.length === this.minimumNumberOfWorkers
@@ -56,7 +56,7 @@ export class DynamicThreadPool<
    * Whether the pool is full or not.
    * @returns The pool fullness boolean status.
    */
-  private get full(): boolean {
+  private get full (): boolean {
     return (
       this.workerNodes.length >=
       (this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers)
@@ -70,7 +70,7 @@ export class DynamicThreadPool<
    * @param filePath - Path to an implementation of a `ThreadWorker` file, which can be relative or absolute.
    * @param opts - Options for this dynamic thread pool.
    */
-  public constructor(
+  public constructor (
     min: number,
     max: number,
     filePath: string,
@@ -86,7 +86,7 @@ export class DynamicThreadPool<
   }
 
   /** @inheritDoc */
-  protected override checkAndEmitDynamicWorkerCreationEvents(): void {
+  protected override checkAndEmitDynamicWorkerCreationEvents (): void {
     if (this.emitter != null) {
       if (!this.fullEventEmitted && this.full) {
         this.emitter.listenerCount(PoolEvents.full) > 0 &&
@@ -100,7 +100,7 @@ export class DynamicThreadPool<
   }
 
   /** @inheritDoc */
-  protected override checkAndEmitDynamicWorkerDestructionEvents(): void {
+  protected override checkAndEmitDynamicWorkerDestructionEvents (): void {
     if (this.emitter != null) {
       if (this.fullEventEmitted && !this.full) {
         this.emitter.listenerCount(PoolEvents.fullEnd) > 0 &&
@@ -116,7 +116,7 @@ export class DynamicThreadPool<
   }
 
   /** @inheritDoc */
-  protected override shallCreateDynamicWorker(): boolean {
+  protected override shallCreateDynamicWorker (): boolean {
     return (
       this.started &&
       !this.destroying &&

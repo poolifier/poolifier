@@ -37,11 +37,11 @@ export const checkValidWorkerOptions = (
 
 export const checkValidTaskFunctionObjectEntry = <
   Data = unknown,
-  Response = unknown,
+  Response = unknown
 >(
-  name: string,
-  fnObj: TaskFunctionObject<Data, Response>
-): void => {
+    name: string,
+    fnObj: TaskFunctionObject<Data, Response>
+  ): void => {
   checkTaskFunctionName(name)
   if (typeof fnObj.taskFunction !== 'function') {
     throw new TypeError(

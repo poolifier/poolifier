@@ -5,7 +5,7 @@ import { KillBehaviors, ThreadWorker } from '../../../lib/index.mjs'
  * The hang ensures the task is in-flight when the exit fires, exercising
  * the exit-handler crash detection for thread workers (F2 fix).
  */
-async function processExit() {
+async function processExit () {
   setTimeout(() => {
     // eslint-disable-next-line n/no-process-exit
     process.exit(2)

@@ -20,25 +20,25 @@ export type ClusterPoolOptions = PoolOptions<Worker>
  */
 export class FixedClusterPool<
   Data = unknown,
-  Response = unknown,
+  Response = unknown
 > extends AbstractPool<Worker, Data, Response> {
   /** @inheritDoc */
-  protected get backPressure(): boolean {
+  protected get backPressure (): boolean {
     return this.internalBackPressure()
   }
 
   /** @inheritDoc */
-  protected get busy(): boolean {
+  protected get busy (): boolean {
     return this.internalBusy()
   }
 
   /** @inheritDoc */
-  protected get type(): PoolType {
+  protected get type (): PoolType {
     return PoolTypes.fixed
   }
 
   /** @inheritDoc */
-  protected get worker(): WorkerType {
+  protected get worker (): WorkerType {
     return WorkerTypes.cluster
   }
 
@@ -49,7 +49,7 @@ export class FixedClusterPool<
    * @param opts - Options for this fixed cluster pool.
    * @param maximumNumberOfWorkers - The maximum number of workers for this pool.
    */
-  public constructor(
+  public constructor (
     numberOfWorkers: number,
     filePath: string,
     opts: ClusterPoolOptions = {},
@@ -59,12 +59,12 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
-  protected checkAndEmitDynamicWorkerCreationEvents(): void {
+  protected checkAndEmitDynamicWorkerCreationEvents (): void {
     /* noop */
   }
 
   /** @inheritDoc */
-  protected checkAndEmitDynamicWorkerDestructionEvents(): void {
+  protected checkAndEmitDynamicWorkerDestructionEvents (): void {
     /* noop */
   }
 
@@ -77,7 +77,7 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
-  protected isMain(): boolean {
+  protected isMain (): boolean {
     return cluster.isPrimary
   }
 
@@ -98,14 +98,14 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
-  protected sendStartupMessageToWorker(workerNodeKey: number): void {
+  protected sendStartupMessageToWorker (workerNodeKey: number): void {
     this.sendToWorker(workerNodeKey, {
       ready: false,
     })
   }
 
   /** @inheritDoc */
-  protected sendToWorker(
+  protected sendToWorker (
     workerNodeKey: number,
     message: MessageValue<Data>
   ): void {
@@ -116,12 +116,12 @@ export class FixedClusterPool<
   }
 
   /** @inheritDoc */
-  protected override setupHook(): void {
+  protected override setupHook (): void {
     cluster.setupPrimary({ ...this.opts.settings, exec: this.filePath })
   }
 
   /** @inheritDoc */
-  protected shallCreateDynamicWorker(): boolean {
+  protected shallCreateDynamicWorker (): boolean {
     return false
   }
 }

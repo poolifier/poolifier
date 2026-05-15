@@ -18,17 +18,16 @@ import {
 export class RoundRobinWorkerChoiceStrategy<
     Worker extends IWorker,
     Data = unknown,
-    Response = unknown,
+    Response = unknown
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
-  implements IWorkerChoiceStrategy
-{
+  implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public readonly name: WorkerChoiceStrategy =
     WorkerChoiceStrategies.ROUND_ROBIN
 
   /** @inheritDoc */
-  public constructor(
+  public constructor (
     pool: IPool<Worker, Data, Response>,
     opts?: WorkerChoiceStrategyOptions
   ) {
@@ -36,7 +35,7 @@ export class RoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose(workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
+  public choose (workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     const chosenWorkerNodeKey =
       this.roundRobinNextWorkerNodeKey(workerNodeKeysSet)
@@ -50,7 +49,7 @@ export class RoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public remove(workerNodeKey: number): boolean {
+  public remove (workerNodeKey: number): boolean {
     if (this.pool.workerNodes.length === 0) {
       return this.reset()
     }
@@ -69,17 +68,17 @@ export class RoundRobinWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public reset(): boolean {
+  public reset (): boolean {
     this.resetWorkerNodeKeyProperties()
     return true
   }
 
   /** @inheritDoc */
-  public update(): boolean {
+  public update (): boolean {
     return true
   }
 
-  private roundRobinNextWorkerNodeKey(
+  private roundRobinNextWorkerNodeKey (
     workerNodeKeysSet?: ReadonlySet<number>
   ): number | undefined {
     if (workerNodeKeysSet == null) {

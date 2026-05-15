@@ -12,7 +12,7 @@ import { sleep } from '../test-utils.cjs'
 
 describe('Abstract worker test suite', () => {
   class StubWorkerWithMainWorker extends ThreadWorker {
-    constructor(fn, opts) {
+    constructor (fn, opts) {
       super(fn, opts)
       delete this.mainWorker
     }

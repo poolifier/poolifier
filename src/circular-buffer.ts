@@ -20,7 +20,7 @@ export class CircularBuffer {
    * @defaultValue defaultBufferSize
    * @returns CircularBuffer.
    */
-  constructor(size: number = defaultBufferSize) {
+  constructor (size: number = defaultBufferSize) {
     this.checkSize(size)
     this.readIdx = 0
     this.writeIdx = 0
@@ -32,7 +32,7 @@ export class CircularBuffer {
   /**
    * Clears the buffer.
    */
-  public clear(): void {
+  public clear (): void {
     this.readIdx = 0
     this.writeIdx = 0
     this.size = 0
@@ -42,7 +42,7 @@ export class CircularBuffer {
    * Checks whether the buffer is empty.
    * @returns Whether the buffer is empty.
    */
-  public empty(): boolean {
+  public empty (): boolean {
     return this.size === 0
   }
 
@@ -50,7 +50,7 @@ export class CircularBuffer {
    * Checks whether the buffer is full.
    * @returns Whether the buffer is full.
    */
-  public full(): boolean {
+  public full (): boolean {
     return this.size === this.items.length
   }
 
@@ -58,7 +58,7 @@ export class CircularBuffer {
    * Gets number from buffer.
    * @returns Number from buffer.
    */
-  public get(): number | undefined {
+  public get (): number | undefined {
     if (this.empty()) {
       return undefined
     }
@@ -72,7 +72,7 @@ export class CircularBuffer {
    * Puts number into buffer.
    * @param number - Number to put into buffer.
    */
-  public put(number: number): void {
+  public put (number: number): void {
     if (this.full()) {
       this.readIdx = this.readIdx === this.maxArrayIdx ? 0 : this.readIdx + 1
     } else {
@@ -86,7 +86,7 @@ export class CircularBuffer {
    * Returns buffer as numbers' array.
    * @returns Numbers' array.
    */
-  public toArray(): number[] {
+  public toArray (): number[] {
     if (this.empty()) {
       return []
     }
@@ -104,7 +104,7 @@ export class CircularBuffer {
    * Checks the buffer size.
    * @param size - Buffer size.
    */
-  private checkSize(size: number): void {
+  private checkSize (size: number): void {
     if (!Number.isSafeInteger(size)) {
       throw new TypeError(
         `Invalid circular buffer size: '${size.toString()}' is not an integer`

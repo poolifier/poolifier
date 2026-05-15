@@ -3,7 +3,7 @@ import { KillBehaviors, ThreadWorker } from '../../../lib/index.mjs'
 /**
  *
  */
-function error() {
+function error () {
   throw new Error('Error Message from ThreadWorker')
 }
 

@@ -33,7 +33,7 @@ describe('Abstract pool test suite', () => {
   ).version
   const numberOfWorkers = 2
   class StubPoolWithIsMain extends FixedThreadPool {
-    isMain() {
+    isMain () {
       return false
     }
   }
@@ -1642,19 +1642,19 @@ describe('Abstract pool test suite', () => {
     let afterCalls = 0
     let resolveCalls = 0
     const hook = createHook({
-      after(asyncId) {
+      after (asyncId) {
         if (asyncId === taskAsyncId) afterCalls++
       },
-      before(asyncId) {
+      before (asyncId) {
         if (asyncId === taskAsyncId) beforeCalls++
       },
-      init(asyncId, type) {
+      init (asyncId, type) {
         if (type === 'poolifier:task') {
           initCalls++
           taskAsyncId = asyncId
         }
       },
-      promiseResolve() {
+      promiseResolve () {
         if (executionAsyncId() === taskAsyncId) resolveCalls++
       },
     })

@@ -186,17 +186,17 @@ describe('Utils test suite', () => {
     expect(isAsyncFunction({ a: 1 })).toBe(false)
     expect(isAsyncFunction(() => {})).toBe(false)
     expect(isAsyncFunction(function () {})).toBe(false)
-    expect(isAsyncFunction(function named() {})).toBe(false)
+    expect(isAsyncFunction(function named () {})).toBe(false)
     expect(isAsyncFunction(async () => {})).toBe(true)
     expect(isAsyncFunction(async function () {})).toBe(true)
-    expect(isAsyncFunction(async function named() {})).toBe(true)
+    expect(isAsyncFunction(async function named () {})).toBe(true)
     class TestClass {
-      static async testStaticAsync() {}
-      static testStaticSync() {}
+      static async testStaticAsync () {}
+      static testStaticSync () {}
       testArrowAsync = async () => {}
       testArrowSync = () => {}
-      async testAsync() {}
-      testSync() {}
+      async testAsync () {}
+      testSync () {}
     }
     const testClass = new TestClass()
     expect(isAsyncFunction(testClass.testSync)).toBe(false)

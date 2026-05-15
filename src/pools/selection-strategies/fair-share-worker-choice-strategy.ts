@@ -21,11 +21,10 @@ import {
 export class FairShareWorkerChoiceStrategy<
     Worker extends IWorker,
     Data = unknown,
-    Response = unknown,
+    Response = unknown
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
-  implements IWorkerChoiceStrategy
-{
+  implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public readonly name: WorkerChoiceStrategy = WorkerChoiceStrategies.FAIR_SHARE
 
@@ -50,7 +49,7 @@ export class FairShareWorkerChoiceStrategy<
     })
 
   /** @inheritDoc */
-  public constructor(
+  public constructor (
     pool: IPool<Worker, Data, Response>,
     opts?: WorkerChoiceStrategyOptions
   ) {
@@ -59,14 +58,14 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose(workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
+  public choose (workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     this.nextWorkerNodeKey = this.fairShareNextWorkerNodeKey(workerNodeKeysSet)
     return this.nextWorkerNodeKey
   }
 
   /** @inheritDoc */
-  public remove(workerNodeKey: number): boolean {
+  public remove (workerNodeKey: number): boolean {
     if (
       this.pool.workerNodes[workerNodeKey]?.strategyData
         ?.virtualTaskEndTimestamp != null
@@ -79,7 +78,7 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public reset(): boolean {
+  public reset (): boolean {
     for (const workerNode of this.pool.workerNodes) {
       if (workerNode.strategyData?.virtualTaskEndTimestamp != null) {
         workerNode.strategyData.virtualTaskEndTimestamp = undefined
@@ -89,7 +88,7 @@ export class FairShareWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public update(workerNodeKey: number): boolean {
+  public update (workerNodeKey: number): boolean {
     this.pool.workerNodes[workerNodeKey].strategyData = {
       ...this.pool.workerNodes[workerNodeKey].strategyData,
       virtualTaskEndTimestamp:
@@ -103,7 +102,7 @@ export class FairShareWorkerChoiceStrategy<
    * @param workerNodeKey - The worker node key.
    * @returns The worker node key virtual task end timestamp.
    */
-  private computeWorkerNodeVirtualTaskEndTimestamp(
+  private computeWorkerNodeVirtualTaskEndTimestamp (
     workerNodeKey: number
   ): number {
     return this.getWorkerNodeVirtualTaskEndTimestamp(
@@ -112,7 +111,7 @@ export class FairShareWorkerChoiceStrategy<
     )
   }
 
-  private fairShareNextWorkerNodeKey(
+  private fairShareNextWorkerNodeKey (
     workerNodeKeysSet?: ReadonlySet<number>
   ): number | undefined {
     if (workerNodeKeysSet?.size === 0) {
@@ -148,7 +147,7 @@ export class FairShareWorkerChoiceStrategy<
     return chosenWorkerNodeKey === -1 ? undefined : chosenWorkerNodeKey
   }
 
-  private getWorkerNodeVirtualTaskEndTimestamp(
+  private getWorkerNodeVirtualTaskEndTimestamp (
     workerNodeKey: number,
     workerNodeVirtualTaskStartTimestamp: number
   ): number {
@@ -160,7 +159,7 @@ export class FairShareWorkerChoiceStrategy<
     return workerNodeVirtualTaskStartTimestamp + workerNodeTaskExecutionTime
   }
 
-  private getWorkerNodeVirtualTaskStartTimestamp(
+  private getWorkerNodeVirtualTaskStartTimestamp (
     workerNodeKey: number
   ): number {
     const virtualTaskEndTimestamp =
@@ -169,7 +168,7 @@ export class FairShareWorkerChoiceStrategy<
     const now = performance.now()
     return now < (virtualTaskEndTimestamp ?? Number.NEGATIVE_INFINITY)
       ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        virtualTaskEndTimestamp!
+      virtualTaskEndTimestamp!
       : now
   }
 }

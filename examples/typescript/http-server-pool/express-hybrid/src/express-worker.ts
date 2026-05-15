@@ -31,7 +31,7 @@ class ExpressWorker extends ClusterWorker<
 
   private static server: Server
 
-  public constructor() {
+  public constructor () {
     super(ExpressWorker.startExpress, {
       killHandler: async () => {
         await ExpressWorker.requestHandlerPool.destroy()

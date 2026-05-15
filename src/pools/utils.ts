@@ -368,14 +368,14 @@ export { updateMeasurementStatistics }
 export const updateWaitTimeWorkerUsage = <
   Worker extends IWorker,
   Data = unknown,
-  Response = unknown,
+  Response = unknown
 >(
-  workerChoiceStrategiesContext:
+    workerChoiceStrategiesContext:
     | undefined
     | WorkerChoiceStrategiesContext<Worker, Data, Response>,
-  workerUsage: WorkerUsage,
-  task: Task<Data>
-): void => {
+    workerUsage: WorkerUsage,
+    task: Task<Data>
+  ): void => {
   const timestamp = performance.now()
   const taskWaitTime = timestamp - (task.timestamp ?? timestamp)
   updateMeasurementStatistics(
@@ -407,14 +407,14 @@ export const updateTaskStatisticsWorkerUsage = <Response = unknown>(
 export const updateRunTimeWorkerUsage = <
   Worker extends IWorker,
   Data = unknown,
-  Response = unknown,
+  Response = unknown
 >(
-  workerChoiceStrategiesContext:
+    workerChoiceStrategiesContext:
     | undefined
     | WorkerChoiceStrategiesContext<Worker, Data, Response>,
-  workerUsage: WorkerUsage,
-  message: MessageValue<Response>
-): void => {
+    workerUsage: WorkerUsage,
+    message: MessageValue<Response>
+  ): void => {
   if (message.workerError != null) {
     return
   }
@@ -428,14 +428,14 @@ export const updateRunTimeWorkerUsage = <
 export const updateEluWorkerUsage = <
   Worker extends IWorker,
   Data = unknown,
-  Response = unknown,
+  Response = unknown
 >(
-  workerChoiceStrategiesContext:
+    workerChoiceStrategiesContext:
     | undefined
     | WorkerChoiceStrategiesContext<Worker, Data, Response>,
-  workerUsage: WorkerUsage,
-  message: MessageValue<Response>
-): void => {
+    workerUsage: WorkerUsage,
+    message: MessageValue<Response>
+  ): void => {
   if (message.workerError != null) {
     return
   }
@@ -532,7 +532,7 @@ export const initWorkerInfo = (worker: IWorker): WorkerInfo => {
 
 export const waitWorkerNodeEvents = async <
   Worker extends IWorker,
-  Data = unknown,
+  Data = unknown
 >(
   workerNode: IWorkerNode<Worker, Data>,
   workerNodeEvent: string,
@@ -557,15 +557,15 @@ export const waitWorkerNodeEvents = async <
     const timeoutHandle =
       timeout >= 0
         ? setTimeout(() => {
-            workerNode.off(workerNodeEvent, listener)
-            timeoutRejection
-              ? reject(
-                  new Error(
+          workerNode.off(workerNodeEvent, listener)
+          timeoutRejection
+            ? reject(
+              new Error(
                     `Timed out after ${timeout.toString()}ms waiting for ${numberOfEventsToWait.toString()} '${workerNodeEvent}' events. Received ${events.toString()} events`
-                  )
-                )
-              : resolve(events)
-          }, timeout)
+              )
+            )
+            : resolve(events)
+        }, timeout)
         : undefined
     switch (workerNodeEvent) {
       case 'backPressure':

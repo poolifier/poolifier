@@ -17,7 +17,7 @@ setTimeout(() => {
 /**
  *
  */
-function noop() {
+function noop () {
   // No-op handler — see fixture rationale above.
 }
 

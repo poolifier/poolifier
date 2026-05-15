@@ -31,7 +31,7 @@ class WebSocketServerWorker extends ClusterWorker<
 
   private static wss: WebSocketServer
 
-  public constructor() {
+  public constructor () {
     super(WebSocketServerWorker.startWebSocketServer, {
       killHandler: async () => {
         await WebSocketServerWorker.requestHandlerPool.destroy()

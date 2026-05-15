@@ -8,9 +8,9 @@ import type {
 
 class RequestHandlerWorker<
   Data extends ThreadWorkerData<DataPayload>,
-  Response extends ThreadWorkerResponse<DataPayload>,
+  Response extends ThreadWorkerResponse<DataPayload>
 > extends ThreadWorker<Data, Response> {
-  public constructor() {
+  public constructor () {
     super({
       echo: (workerData?: Data) => {
         return workerData as unknown as Response

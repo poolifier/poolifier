@@ -8,7 +8,7 @@ import { ThreadWorker } from 'poolifier'
 import type { WorkerData, WorkerResponse } from './types.js'
 
 class HttpClientWorker extends ThreadWorker<WorkerData, WorkerResponse> {
-  public constructor() {
+  public constructor () {
     super({
       axios: async (workerData?: WorkerData) => {
         const response = await axios({

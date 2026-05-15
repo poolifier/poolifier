@@ -8,7 +8,7 @@ import type { WorkerData, WorkerResponse } from './types.js'
 class FastifyWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static fastify: FastifyInstance
 
-  public constructor() {
+  public constructor () {
     super(FastifyWorker.startFastify, {
       killHandler: async () => {
         await FastifyWorker.fastify.close()

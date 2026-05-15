@@ -61,11 +61,11 @@ const getDefaultWeights = (
 export const getWorkerChoiceStrategiesRetries = <
   Worker extends IWorker,
   Data,
-  Response,
+  Response
 >(
-  pool: IPool<Worker, Data, Response>,
-  opts?: WorkerChoiceStrategyOptions
-): number => {
+    pool: IPool<Worker, Data, Response>,
+    opts?: WorkerChoiceStrategyOptions
+  ): number => {
   return (
     pool.info.maxSize +
     Object.keys(opts?.weights ?? getDefaultWeights(pool.info.maxSize)).length
@@ -75,11 +75,11 @@ export const getWorkerChoiceStrategiesRetries = <
 export const buildWorkerChoiceStrategyOptions = <
   Worker extends IWorker,
   Data,
-  Response,
+  Response
 >(
-  pool: IPool<Worker, Data, Response>,
-  opts?: WorkerChoiceStrategyOptions
-): WorkerChoiceStrategyOptions => {
+    pool: IPool<Worker, Data, Response>,
+    opts?: WorkerChoiceStrategyOptions
+  ): WorkerChoiceStrategyOptions => {
   opts = structuredClone(opts ?? {})
   opts.weights = opts.weights ?? getDefaultWeights(pool.info.maxSize)
   return {

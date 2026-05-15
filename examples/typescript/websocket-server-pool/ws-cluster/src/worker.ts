@@ -13,7 +13,7 @@ import { rawDataToString } from './utils.js'
 class WebSocketServerWorker extends ClusterWorker<WorkerData, WorkerResponse> {
   private static wss: WebSocketServer
 
-  public constructor() {
+  public constructor () {
     super(WebSocketServerWorker.startWebSocketServer, {
       killHandler: () => {
         WebSocketServerWorker.wss.close()

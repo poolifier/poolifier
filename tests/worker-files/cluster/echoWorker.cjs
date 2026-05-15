@@ -6,7 +6,7 @@ const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
  * @param data - The task data to echo.
  * @returns The same data that was passed in.
  */
-function echo(data) {
+function echo (data) {
   return data
 }
 

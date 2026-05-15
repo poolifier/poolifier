@@ -4,7 +4,7 @@ const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
 /**
  *
  */
-function error() {
+function error () {
   throw new Error('Error Message from ClusterWorker')
 }
 

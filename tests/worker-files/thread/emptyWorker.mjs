@@ -3,7 +3,7 @@ import { KillBehaviors, ThreadWorker } from '../../../lib/index.mjs'
 /**
  *
  */
-function test() {}
+function test () {}
 
 export default new ThreadWorker(test, {
   killBehavior: KillBehaviors.HARD,

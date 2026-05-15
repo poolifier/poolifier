@@ -20,11 +20,10 @@ import {
 export class LeastBusyWorkerChoiceStrategy<
     Worker extends IWorker,
     Data = unknown,
-    Response = unknown,
+    Response = unknown
   >
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
-  implements IWorkerChoiceStrategy
-{
+  implements IWorkerChoiceStrategy {
   /** @inheritDoc */
   public readonly name: WorkerChoiceStrategy = WorkerChoiceStrategies.LEAST_BUSY
 
@@ -45,7 +44,7 @@ export class LeastBusyWorkerChoiceStrategy<
     })
 
   /** @inheritDoc */
-  public constructor(
+  public constructor (
     pool: IPool<Worker, Data, Response>,
     opts?: WorkerChoiceStrategyOptions
   ) {
@@ -54,28 +53,28 @@ export class LeastBusyWorkerChoiceStrategy<
   }
 
   /** @inheritDoc */
-  public choose(workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
+  public choose (workerNodeKeysSet?: ReadonlySet<number>): number | undefined {
     this.setPreviousWorkerNodeKey(this.nextWorkerNodeKey)
     this.nextWorkerNodeKey = this.leastBusyNextWorkerNodeKey(workerNodeKeysSet)
     return this.nextWorkerNodeKey
   }
 
   /** @inheritDoc */
-  public remove(): boolean {
+  public remove (): boolean {
     return true
   }
 
   /** @inheritDoc */
-  public reset(): boolean {
+  public reset (): boolean {
     return true
   }
 
   /** @inheritDoc */
-  public update(): boolean {
+  public update (): boolean {
     return true
   }
 
-  private leastBusyNextWorkerNodeKey(
+  private leastBusyNextWorkerNodeKey (
     workerNodeKeysSet?: ReadonlySet<number>
   ): number | undefined {
     if (workerNodeKeysSet?.size === 0) {
