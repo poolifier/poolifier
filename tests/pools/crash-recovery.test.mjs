@@ -658,18 +658,13 @@ describe('Crash recovery regression test suite', () => {
     expect(calls.every(c => c != null)).toBe(true)
   })
 
-  it('T12: concurrent pool.destroy() rejects the second call (idempotency-by-rejection)', {
+  it('T12: concurrent pool.destroy() calls are silently idempotent', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // Plan §2.7 T12 / Round-4 H4.2: the plan envisaged silent
-    // idempotency for concurrent destroy calls. The implementation
-    // (abstract-pool.ts:624-626) instead REJECTS the second call with
-    // an explicit "Cannot destroy an already destroying pool" error.
-    // This deviation is documented in the audit report (§10 Major).
-    // The test asserts the actual contract: first call resolves,
-    // second call rejects with the explicit message; pool reaches the
-    // empty/destroyed state regardless.
+    // Plan §2.7 T12 / Round-4 H4.2: concurrent destroy() calls share
+    // the same in-flight promise (idempotent destruction). Both
+    // resolve, no error is emitted, pool reaches the destroyed state.
     const pool = trackPool(
       new FixedThreadPool(2, './tests/worker-files/thread/echoWorker.mjs', {
         errorHandler: () => undefined,
@@ -683,15 +678,7 @@ describe('Crash recovery regression test suite', () => {
       errorEvents.push(e)
     })
     const results = await Promise.allSettled([pool.destroy(), pool.destroy()])
-    // Exactly one fulfilled, one rejected.
-    const fulfilled = results.filter(r => r.status === 'fulfilled').length
-    const rejected = results.filter(r => r.status === 'rejected').length
-    expect(fulfilled).toBe(1)
-    expect(rejected).toBe(1)
-    const rejection = results.find(r => r.status === 'rejected')
-    expect(rejection.reason).toBeInstanceOf(Error)
-    expect(rejection.reason.message).toContain('already destroying')
-    // Pool ends destroyed regardless of which call won the race.
+    expect(results.every(r => r.status === 'fulfilled')).toBe(true)
     expect(pool.workerNodes.length).toBe(0)
     expect(errorEvents.length).toBe(0)
   })

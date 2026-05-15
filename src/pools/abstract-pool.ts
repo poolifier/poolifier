@@ -380,6 +380,13 @@ export abstract class AbstractPool<
   protected destroying: boolean
 
   /**
+   * In-flight destruction promise. Set on the first {@link destroy}
+   * call and reused by every subsequent concurrent call so they share
+   * the same outcome (idempotent destruction).
+   */
+  protected destroyPromise?: Promise<void>
+
+  /**
    * The task execution response promise map:
    * - `key`: The message id of each submitted task.
    * - `value`: An object that contains task's worker node key, execution response promise resolve and reject callbacks, async resource.
@@ -615,37 +622,17 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public async destroy(): Promise<void> {
+    if (this.starting) {
+      throw new Error('Cannot destroy a starting pool')
+    }
     if (!this.started) {
       throw new Error('Cannot destroy an already destroyed pool')
     }
-    if (this.starting) {
-      throw new Error('Cannot destroy an starting pool')
+    if (this.destroyPromise != null) {
+      return this.destroyPromise
     }
-    if (this.destroying) {
-      throw new Error('Cannot destroy an already destroying pool')
-    }
-    this.destroying = true
-    try {
-      await Promise.allSettled(
-        this.workerNodes.map(async (_, workerNodeKey) => {
-          try {
-            await this.destroyWorkerNode(workerNodeKey)
-          } catch (error) {
-            this.safeEmitPoolError(error)
-          }
-        })
-      )
-    } finally {
-      delete this.startTimestamp
-      this.destroying = false
-      this.started = false
-      if (this.emitter != null) {
-        this.emitter.listenerCount(PoolEvents.destroy) > 0 &&
-          this.emitter.emit(PoolEvents.destroy, this.info)
-        this.emitter.emitDestroy()
-        this.readyEventEmitted = false
-      }
-    }
+    this.destroyPromise = this.doDestroy()
+    return this.destroyPromise
   }
 
   /** @inheritDoc */
@@ -909,6 +896,7 @@ export abstract class AbstractPool<
       throw new Error('Cannot start a destroying pool')
     }
     this.starting = true
+    this.destroyPromise = undefined
     this.startMinimumNumberOfWorkers()
     this.startTimestamp = performance.now()
     this.starting = false
@@ -1758,6 +1746,31 @@ export abstract class AbstractPool<
     const task = this.workerNodes[workerNodeKey].dequeueTask()
     this.checkAndEmitTaskDequeuingEvents()
     return task
+  }
+
+  private async doDestroy(): Promise<void> {
+    this.destroying = true
+    try {
+      await Promise.allSettled(
+        this.workerNodes.map(async (_, workerNodeKey) => {
+          try {
+            await this.destroyWorkerNode(workerNodeKey)
+          } catch (error) {
+            this.safeEmitPoolError(error)
+          }
+        })
+      )
+    } finally {
+      delete this.startTimestamp
+      this.destroying = false
+      this.started = false
+      if (this.emitter != null) {
+        this.emitter.listenerCount(PoolEvents.destroy) > 0 &&
+          this.emitter.emit(PoolEvents.destroy, this.info)
+        this.emitter.emitDestroy()
+        this.readyEventEmitted = false
+      }
+    }
   }
 
   private enqueueTask(workerNodeKey: number, task: Task<Data>): number {
