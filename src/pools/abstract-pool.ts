@@ -67,7 +67,6 @@ import {
 import { version } from './version.js'
 import { WorkerNode } from './worker-node.js'
 import {
-  type EventHandler,
   type IWorker,
   type IWorkerNode,
   type WorkerInfo,
@@ -1144,24 +1143,25 @@ export abstract class AbstractPool<
     workerNode.registerOnceWorkerEventHandler('error', (error: Error) => {
       this.handleWorkerNodeCrash(workerNode, error)
       // eslint-disable-next-line promise/no-promise-in-callback
-      workerNode.terminate().catch((error: unknown) => {
-        this.safeEmitPoolError(error)
+      workerNode.terminate().catch((terminateError: unknown) => {
+        this.safeEmitPoolError(terminateError)
       })
     })
     workerNode.registerWorkerEventHandler(
       'exit',
       this.opts.exitHandler ?? EMPTY_FUNCTION
     )
-    workerNode.registerOnceWorkerEventHandler('exit', ((
+    workerNode.registerOnceWorkerEventHandler('exit', (
       exitCode: null | number,
-      signal: NodeJS.Signals | null
+      signal?: NodeJS.Signals | null
     ) => {
       // Crash detection: voluntary termination (`info.terminating`,
-      // `this.destroying`) and prior `'error'`-triggered crash handling
-      // (`info.crashHandled`) all bypass this branch. For thread workers
-      // an uncaught exception fires `'error'` first, so a non-zero code
-      // here implies `process.exit(N)`. For cluster workers `'exit'` is
-      // the only crash channel: non-zero code or non-null signal.
+      // `this.destroying`) and any prior crash signal — `'error'` or a
+      // first `'exit'` — (`info.crashHandled`) all bypass this branch.
+      // For thread workers an uncaught exception fires `'error'` first,
+      // so a non-zero code here implies `process.exit(N)`. For cluster
+      // workers `'exit'` is the only crash channel: non-zero code or
+      // non-null signal.
       const abnormalExit =
         (exitCode != null && exitCode !== 0) ||
         (exitCode == null && signal != null)
@@ -1190,7 +1190,7 @@ export abstract class AbstractPool<
       ) {
         this.startMinimumNumberOfWorkers(true)
       }
-    }) as EventHandler<Worker>)
+    })
     const workerNodeKey = this.addWorkerNode(workerNode)
     this.afterWorkerNodeSetup(workerNodeKey)
     return workerNodeKey

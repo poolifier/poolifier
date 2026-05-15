@@ -3,7 +3,7 @@ import { KillBehaviors, ThreadWorker } from '../../../lib/index.mjs'
 /**
  * Test worker that calls process.exit(N) mid-task while the handler hangs.
  * The hang ensures the task is in-flight when the exit fires, exercising
- * the exit-handler crash detection for thread workers (F2 fix).
+ * the exit-handler crash detection for thread workers.
  */
 async function processExit () {
   setTimeout(() => {
