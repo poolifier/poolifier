@@ -2056,19 +2056,21 @@ export abstract class AbstractPool<
 
   /**
    * Handles a crashed worker node:
-   *   1. Emits {@link PoolEvents.error} with the raw cause (preserves
-   *      backward-compatible payload contract).
+   *   1. Emits {@link PoolEvents.error} with the raw `cause` (preserves
+   *      the backward-compatible payload contract).
    *   2. Rejects every in-flight task promise assigned to this worker
-   *      with a {@link WorkerCrashError}.
+   *      with a {@link WorkerCrashError}; emits a second
+   *      {@link PoolEvents.error} carrying the typed first rejection
+   *      when at least one in-flight task was rejected. Discriminate
+   *      payloads via `error.name`.
    *   3. If `restartWorkerOnError` is enabled and the worker is
    *      dynamic, spawns a replacement worker.
    *   4. If `enableTasksQueue` is enabled, redistributes queued tasks
    *      to other workers and rejects any that cannot be redistributed.
    *
-   * Refuses re-entry when the pool already considers this worker a
-   * voluntary termination target OR a previously-handled crash, so
-   * the symmetric guard between `'error'` and `'exit'` handlers
-   * cannot trigger double rejection paths during a destroy race.
+   * Refuses re-entry on `info.terminating`, `this.destroying` or
+   * `info.crashHandled` so the symmetric guard between `'error'` and
+   * `'exit'` handlers cannot trigger double rejection paths.
    * Static worker restart is handled by the exit event handler.
    * @param workerNode - The crashed worker node.
    * @param cause - The error that caused the crash.
