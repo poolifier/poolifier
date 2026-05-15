@@ -81,19 +81,9 @@ describe('Crash recovery regression test suite', () => {
       expect(rejected.exitCode).toBeNull()
       expect(rejected.signal).toBe('SIGKILL')
       expect(rejected.taskId).toBeDefined()
-      // Plan §2.7 T1a says "PoolEvents.error emitted once". The
-      // implementation actually emits TWO events per crash (by design):
-      //   1. raw `cause` emit at handleWorkerNodeCrash:2106 (preserves
-      //      pre-PR-3211 PoolEvents.error payload contract documented in
-      //      docs/api.md)
-      //   2. typed `firstError` emit at rejectInFlightTaskPromisesByRef:2455
-      //      gated on `firstError != null` (the HOLE #1 fix)
-      // The 2-emit shape is therefore the deterministic ground truth for
-      // a 1-in-flight crash. Tightening to `.toBe(1)` per the handoff
-      // directive would contradict the implementation; we instead bound
-      // the upper count to 2 and assert lower bound 1 (no missed emit).
-      expect(events.length).toBeGreaterThanOrEqual(1)
-      expect(events.length).toBeLessThanOrEqual(2)
+      // Exactly one PoolEvents.error per crash, payload WorkerCrashError.
+      expect(events.length).toBe(1)
+      expect(events[0]).toBeInstanceOf(WorkerCrashError)
     }
   )
 
@@ -501,14 +491,10 @@ describe('Crash recovery regression test suite', () => {
       rejected = e
     }
     expect(rejected).toBeInstanceOf(WorkerCrashError)
-    // Plan §2.7 T9 says "EXACTLY ONCE". The implementation actually
-    // emits up to 2 PoolEvents.error per crash (cause + firstError —
-    // see T1a comment for design rationale). The crashHandled
-    // write-once invariant guarantees the SAME crash is not
-    // re-emitted on a subsequent worker error event; we assert the
-    // upper bound matches a single crash, not a doubled crash.
-    expect(events.length).toBeGreaterThanOrEqual(1)
-    expect(events.length).toBeLessThanOrEqual(2)
+    // Exactly one PoolEvents.error per crash; crashHandled write-once
+    // guarantees no second emit on subsequent worker error events.
+    expect(events.length).toBe(1)
+    expect(events[0]).toBeInstanceOf(WorkerCrashError)
   })
 
   // Direct mutation-killer for HOLE #2 (crashHandled re-entry guard).
@@ -716,8 +702,8 @@ describe('Crash recovery regression test suite', () => {
     expect(rejections.length).toBe(N)
     expect(rejections.every(e => e?.name === 'WorkerCrashError')).toBe(true)
     expect(rejections.every(e => e instanceof WorkerCrashError)).toBe(true)
-    // One pool error per crashed worker — at least one must have fired.
-    expect(poolErrorCount).toBeGreaterThanOrEqual(1)
+    // Exactly one PoolEvents.error per crashed worker.
+    expect(poolErrorCount).toBe(N)
   })
 
   it('T-I5 (a): clean process.exit(0) replenishes even with restartWorkerOnError:false', {

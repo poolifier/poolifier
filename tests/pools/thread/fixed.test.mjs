@@ -315,7 +315,8 @@ describe('Fixed thread pool test suite', () => {
     expect(error.cause).toBeInstanceOf(Error)
     expect(error.cause.message).toBe('Simulated worker crash')
     expect(poolError).toBeInstanceOf(Error)
-    expect(poolError.message).toBe('Simulated worker crash')
+    expect(poolError.name).toBe('WorkerCrashError')
+    expect(poolError.cause.message).toBe('Simulated worker crash')
     await exitPromise
   })
 

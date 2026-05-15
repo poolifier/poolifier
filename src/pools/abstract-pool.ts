@@ -1214,7 +1214,7 @@ export abstract class AbstractPool<
     } finally {
       // Cleanup MUST run even if rejection logic throws synchronously.
       try {
-        this.rejectInFlightTaskPromisesByRef(
+        const firstReject = this.rejectInFlightTaskPromisesByRef(
           workerNode,
           stableWorkerId,
           taskId =>
@@ -1223,6 +1223,9 @@ export abstract class AbstractPool<
               { taskId, workerId: stableWorkerId }
             )
         )
+        if (firstReject != null) {
+          this.safeEmitPoolError(firstReject)
+        }
       } catch (error) {
         this.safeEmitPoolError(error)
       }
@@ -2052,13 +2055,12 @@ export abstract class AbstractPool<
 
   /**
    * Handles a crashed worker node:
-   *   1. Emits {@link PoolEvents.error} with the raw `cause` (preserves
-   *      the backward-compatible payload contract).
-   *   2. Rejects every in-flight task promise assigned to this worker
-   *      with a {@link WorkerCrashError}; emits a second
-   *      {@link PoolEvents.error} carrying the typed first rejection
-   *      when at least one in-flight task was rejected. Discriminate
-   *      payloads via `error.name`.
+   *   1. Rejects every in-flight task promise assigned to this worker
+   *      with a {@link WorkerCrashError} carrying the task's own
+   *      `taskId`.
+   *   2. Emits exactly one {@link PoolEvents.error}: the typed first
+   *      rejection when in-flight tasks existed, otherwise a fresh
+   *      {@link WorkerCrashError} carrying the raw `cause`.
    *   3. If `restartWorkerOnError` is enabled and the worker is
    *      dynamic, spawns a replacement worker.
    *   4. If `enableTasksQueue` is enabled, redistributes queued tasks
@@ -2085,13 +2087,13 @@ export abstract class AbstractPool<
     const crashedWorkerNodeKey = this.workerNodes.indexOf(workerNode)
     workerNode.info.ready = false
     workerNode.info.crashHandled = true
-    // Emit RAW cause (preserves backward-compatible PoolEvents.error
-    // payload contract documented in docs/api.md).
-    this.safeEmitPoolError(cause)
-    this.rejectInFlightTaskPromisesByRef(
+    const firstReject = this.rejectInFlightTaskPromisesByRef(
       workerNode,
       workerNode.info.id,
       taskId => this.buildWorkerCrashError(cause, workerNode, taskId)
+    )
+    this.safeEmitPoolError(
+      firstReject ?? this.buildWorkerCrashError(cause, workerNode)
     )
     if (this.started) {
       if (this.opts.restartWorkerOnError === true && workerNode.info.dynamic) {
@@ -2390,16 +2392,16 @@ export abstract class AbstractPool<
    * reference. Safe to call AFTER the worker has been removed from the
    * pool because it does not index into `this.workerNodes`.
    *
-   * Per-task error construction so each rejection carries its own
-   * `taskId`. Skips entries whose ids are still queued (those are handled
-   * by {@link rejectRemainingQueuedTaskPromises} or redistributed).
-   *
-   * Single {@link PoolEvents.error} emission per worker (not per task) when
-   * at least one in-flight promise was rejected.
+   * Skips entries whose ids are still queued (those are handled by
+   * {@link rejectRemainingQueuedTaskPromises} or redistributed). Each
+   * rejection carries its own `taskId`. Returns the first rejection so
+   * the caller can route the {@link PoolEvents.error} emission.
    * @param workerNode - The worker node (stable reference).
    * @param workerId - The worker id (stable reference, captured pre-await).
    * @param errorFactory - Per-task error factory — invoked once per
    * rejection.
+   * @returns The first rejection, or `undefined` if no in-flight tasks were
+   * matched.
    */
   private rejectInFlightTaskPromisesByRef (
     workerNode: IWorkerNode<Worker, Data>,
@@ -2407,9 +2409,9 @@ export abstract class AbstractPool<
     errorFactory: (
       taskId: TaskUUID
     ) => WorkerCrashError | WorkerTerminationError
-  ): void {
+  ): undefined | WorkerCrashError | WorkerTerminationError {
     if (workerId == null) {
-      return
+      return undefined
     }
     const queuedTaskIds = new Set<TaskUUID>()
     for (const task of workerNode.tasksQueue) {
@@ -2426,9 +2428,7 @@ export abstract class AbstractPool<
       }
     }
     this.checkAndEmitTaskExecutionFinishedEvents()
-    if (firstError != null) {
-      this.safeEmitPoolError(firstError)
-    }
+    return firstError
   }
 
   /**
