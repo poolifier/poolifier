@@ -23,6 +23,7 @@
  * `exitCode` and `signal` mirror the args of Node's worker `'exit'` event.
  * For thread workers the `'exit'` event passes `(exitCode)` only — `signal`
  * is normalised to `null` at construction.
+ * @internal
  */
 export interface WorkerCrashErrorOptions {
   readonly cause?: unknown
@@ -34,6 +35,7 @@ export interface WorkerCrashErrorOptions {
 
 /**
  * Options for {@link WorkerTerminationError}.
+ * @internal
  */
 export interface WorkerTerminationErrorOptions {
   readonly cause?: unknown

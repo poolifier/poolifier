@@ -1,7 +1,11 @@
 import cluster from 'node:cluster'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
-import { FixedClusterPool, PoolEvents } from '../../../lib/index.mjs'
+import {
+  FixedClusterPool,
+  PoolEvents,
+  WorkerCrashError,
+} from '../../../lib/index.mjs'
 import { DEFAULT_TASK_NAME } from '../../../lib/utils.mjs'
 import { TaskFunctions } from '../../test-types.cjs'
 import { sleep, waitWorkerEvents } from '../../test-utils.cjs'
@@ -278,10 +282,15 @@ describe('Fixed cluster pool test suite', () => {
       error = e
     }
     expect(error).toBeInstanceOf(Error)
-    expect(error.message).toMatch(/Worker node crashed with error:/)
-    expect(error.message).toMatch(/exited with code 1/)
+    expect(error.name).toBe('WorkerCrashError')
+    expect(error).toBeInstanceOf(WorkerCrashError)
+    expect(error.exitCode).toBe(1)
+    expect(error.cause).toBeInstanceOf(Error)
+    expect(error.cause.name).toBe('WorkerCrashError')
+    expect(error.cause.exitCode).toBe(1)
     expect(poolError).toBeInstanceOf(Error)
-    expect(poolError.message).toMatch(/Worker node exited with code 1/)
+    expect(poolError.name).toBe('WorkerCrashError')
+    expect(poolError.exitCode).toBe(1)
     await exitPromise
   })
 

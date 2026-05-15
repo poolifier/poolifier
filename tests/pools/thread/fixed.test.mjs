@@ -1,6 +1,10 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
-import { FixedThreadPool, PoolEvents } from '../../../lib/index.mjs'
+import {
+  FixedThreadPool,
+  PoolEvents,
+  WorkerCrashError,
+} from '../../../lib/index.mjs'
 import { DEFAULT_TASK_NAME } from '../../../lib/utils.mjs'
 import { TaskFunctions } from '../../test-types.cjs'
 import { sleep, waitWorkerEvents } from '../../test-utils.cjs'
@@ -306,8 +310,10 @@ describe('Fixed thread pool test suite', () => {
       error = e
     }
     expect(error).toBeInstanceOf(Error)
-    expect(error.message).toMatch(/Worker node crashed with error:/)
-    expect(error.message).toMatch(/Simulated worker crash/)
+    expect(error.name).toBe('WorkerCrashError')
+    expect(error).toBeInstanceOf(WorkerCrashError)
+    expect(error.cause).toBeInstanceOf(Error)
+    expect(error.cause.message).toBe('Simulated worker crash')
     expect(poolError).toBeInstanceOf(Error)
     expect(poolError.message).toBe('Simulated worker crash')
     await exitPromise

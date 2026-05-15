@@ -25,12 +25,18 @@ export type EventHandler<Worker extends IWorker> =
   | OnlineHandler<Worker>
 
 /**
- * Callback invoked when the worker exits successfully.
+ * Callback invoked when the worker exits.
+ *
+ * Signature mirrors Node's worker `'exit'` event:
+ *   Thread workers pass `(exitCode)` only (`signal` will be `null`).
+ *   Cluster workers pass `(exitCode, signal)`. `signal` is non-null for
+ *     externally-killed processes (SIGKILL, SIGSEGV, OOM-killer, etc.).
  * @template Worker - Type of worker.
  */
 export type ExitHandler<Worker extends IWorker> = (
   this: Worker,
-  exitCode: number
+  exitCode: null | number,
+  signal?: NodeJS.Signals | null
 ) => void
 
 /**

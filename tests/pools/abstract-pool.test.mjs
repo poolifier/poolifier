@@ -15,6 +15,7 @@ import {
   PoolEvents,
   PoolTypes,
   WorkerChoiceStrategies,
+  WorkerTerminationError,
   WorkerTypes,
 } from '../../lib/index.mjs'
 import { WorkerNode } from '../../lib/pools/worker-node.mjs'
@@ -1554,18 +1555,33 @@ describe('Abstract pool test suite', () => {
         ++tasksFinished
       })
     }
+    // .catch collection: pool.destroy() may reject in-flight task promises
+    // with WorkerTerminationError when tasksFinishedTimeout elapses.
+    // Tasks that finish before destroy() returns resolve normally; only
+    // the in-flight ones at the timeout boundary reject.
+    const rejections = []
+    const promises = []
     for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
-      pool.execute()
+      promises.push(
+        pool.execute().catch(e => {
+          rejections.push(e)
+          return undefined
+        })
+      )
     }
     expect(pool.info.queuedTasks).toBeGreaterThan(0)
     const startTime = performance.now()
     await pool.destroy()
+    await Promise.allSettled(promises)
     const elapsedTime = performance.now() - startTime
     expect(tasksFinished).toBeLessThanOrEqual(numberOfWorkers * maxMultiplier)
     expect(elapsedTime).toBeGreaterThanOrEqual(2000)
     // Worker kill message response timeout is 1000ms
     expect(elapsedTime).toBeLessThanOrEqual(
       tasksFinishedTimeout + 1000 * tasksFinished + 1000
+    )
+    expect(rejections.every(e => e?.name === 'WorkerTerminationError')).toBe(
+      true
     )
   })
 
@@ -1586,17 +1602,36 @@ describe('Abstract pool test suite', () => {
         ++tasksFinished
       })
     }
+    // .catch collection — see preceding test for rationale.
+    const rejections = []
+    const promises = []
     for (let i = 0; i < numberOfWorkers * maxMultiplier; i++) {
-      pool.execute()
+      promises.push(
+        pool.execute().catch(e => {
+          rejections.push(e)
+          return undefined
+        })
+      )
     }
     expect(pool.info.queuedTasks).toBeGreaterThan(0)
     const startTime = performance.now()
     await pool.destroy()
+    await Promise.allSettled(promises)
     const elapsedTime = performance.now() - startTime
-    expect(tasksFinished).toBe(0)
+    // New contract: rejectTaskPromise emits 'taskFinished' for each
+    // rejected in-flight task, so tasksFinished now reflects the number
+    // of rejected (terminated) tasks rather than zero.
+    expect(tasksFinished).toBe(rejections.length)
     // Worker kill message response timeout is 1000ms
     expect(elapsedTime).toBeLessThanOrEqual(
       tasksFinishedTimeout + 1000 * tasksFinished + 1000
+    )
+    expect(rejections.length).toBeGreaterThan(0)
+    expect(rejections.every(e => e instanceof WorkerTerminationError)).toBe(
+      true
+    )
+    expect(rejections.every(e => e.name === 'WorkerTerminationError')).toBe(
+      true
     )
   })
 
