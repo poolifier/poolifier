@@ -1223,10 +1223,8 @@ export abstract class AbstractPool<
               { taskId, workerId: stableWorkerId }
             )
         )
-      } catch {
-        // Pool integrity takes precedence over rejection-helper failures.
-        // Caller's outer .catch() will surface the partial failure via
-        // PoolEvents.error if a listener is registered.
+      } catch (error) {
+        this.safeEmitPoolError(error)
       }
       await this.sendKillMessageToWorker(workerNodeKey).catch(() => undefined)
       await workerNode.terminate().catch(() => undefined)
