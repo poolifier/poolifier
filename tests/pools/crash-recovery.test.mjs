@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import {
   DynamicClusterPool,
@@ -642,19 +642,14 @@ describe('Crash recovery regression test suite', () => {
     await new Promise(resolve => {
       pool.emitter.once(PoolEvents.ready, resolve)
     })
-    const calls = []
-    const originalSafeEmit = pool.safeEmitPoolError.bind(pool)
-    pool.safeEmitPoolError = error => {
-      calls.push(error)
-      return originalSafeEmit(error)
-    }
+    const spy = vi.spyOn(pool, 'safeEmitPoolError')
     pool.rejectInFlightTaskPromisesByRef(
       pool.workerNodes[0],
       999_999,
       taskId =>
         new WorkerTerminationError('synthetic empty iteration', { taskId })
     )
-    expect(calls.length).toBe(0)
+    expect(spy).not.toHaveBeenCalled()
   })
 
   it('T12: concurrent pool.destroy() calls are silently idempotent', {
