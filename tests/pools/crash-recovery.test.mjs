@@ -552,21 +552,14 @@ describe('Crash recovery regression test suite', () => {
     // post-crash invariant that the rejections were typed correctly).
   })
 
-  it('T11: crash DURING destroy — HOLE #1+#2 regression (no undefined payload, single typed rejection)', {
+  it('T11: crash during destroy emits no undefined payload and surfaces a single typed rejection', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // Plan §2.7 T11 / Round-4 HOLE #1+#2: crash fires DURING destroy.
-    // Use crashWorker (delayed throw at +10ms) and start destroy a
-    // few ms later so the timing race is real (not synthetic).
-    //
-    // Asserts:
-    //   (a) Listener observes only typed-error payloads (no `undefined`)
-    //       — the firstError != null gate (HOLE #1 fix).
-    //   (b) The in-flight rejection is one of the two typed errors.
-    //   (c) crashHandled write-once (HOLE #2 fix) — the destroy path
-    //       does not re-trigger handleWorkerNodeCrash for the same
-    //       worker.
+    // Race: worker throws ~10 ms after dispatch; destroy starts ~5 ms
+    // earlier, so crash and destroy interleave non-deterministically.
+    // Listener must observe only typed payloads (HOLE #1 emit-gate);
+    // exactly one in-flight rejection (HOLE #2 crashHandled write-once).
     const pool = trackPool(
       new FixedThreadPool(1, './tests/worker-files/thread/crashWorker.mjs', {
         enableTasksQueue: true,

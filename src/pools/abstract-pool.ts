@@ -1237,9 +1237,8 @@ export abstract class AbstractPool<
     // crash detection for the upcoming exit event.
     workerNode.info.terminating = true
     try {
-      // flushTasksQueue moved INSIDE the try-block: even if it throws
-      // synchronously, the finally still runs cleanup (sendKill +
-      // terminate). This closes the HC1 hole.
+      // flushTasksQueue inside the try-block: a synchronous throw must
+      // still trigger the finally-block cleanup (sendKill + terminate).
       const flushedTasks = this.flushTasksQueue(workerNodeKey)
       await waitWorkerNodeEvents(
         workerNode,
@@ -2099,7 +2098,7 @@ export abstract class AbstractPool<
     ) {
       return
     }
-    workerNode.info.ready = false
+    this.flagWorkerNodeAsNotReady(this.workerNodes.indexOf(workerNode))
     workerNode.info.crashHandled = true
     // Emit RAW cause (preserves backward-compatible PoolEvents.error
     // payload contract documented in docs/api.md).
@@ -2109,8 +2108,6 @@ export abstract class AbstractPool<
       workerNode.info.id,
       taskId => this.buildWorkerCrashError(cause, workerNode, taskId)
     )
-    // (`!this.destroying` is implicit — the early-return guard above
-    //  short-circuits when `this.destroying === true`.)
     if (this.started) {
       if (this.opts.restartWorkerOnError === true && workerNode.info.dynamic) {
         this.createAndSetupDynamicWorkerNode()
