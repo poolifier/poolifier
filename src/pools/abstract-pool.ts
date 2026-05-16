@@ -1031,7 +1031,7 @@ export abstract class AbstractPool<
    * Builds a typed crash error for the given worker node and task id.
    *
    * If `cause` is itself a {@link WorkerCrashError} (the exit-handler
-   * synthesised one), propagates `exitCode` and `signal` so the per-task
+   * synthesized one), propagates `exitCode` and `signal` so the per-task
    * rejection carries the same diagnostic context as the pool-level
    * emission.
    * @param cause - The original error that caused the crash.
@@ -1154,13 +1154,10 @@ export abstract class AbstractPool<
     workerNode.registerOnceWorkerEventHandler(
       'exit',
       (exitCode: null | number, signal?: NodeJS.Signals | null) => {
-        // Crash detection: voluntary termination (`info.terminating`,
-        // `this.destroying`) and any prior crash signal — `'error'` or a
-        // first `'exit'` — (`info.crashHandled`) all bypass this branch.
-        // For thread workers an uncaught exception fires `'error'` first,
-        // so a non-zero code here implies `process.exit(N)`. For cluster
-        // workers `'exit'` is the only crash channel: non-zero code or
-        // non-null signal.
+        // Crash detection — voluntary termination and prior crash bypass
+        // this branch (see `info.terminating`, `this.destroying`,
+        // `info.crashHandled`). Channel semantics: see `ExitHandler` in
+        // `worker.ts`.
         const abnormalExit =
           (exitCode != null && exitCode !== 0) ||
           (exitCode == null && signal != null)
@@ -1252,10 +1249,8 @@ export abstract class AbstractPool<
       } catch (error) {
         this.safeEmitPoolError(error)
       }
-      // Recompute the live index — a sibling worker's exit handler may
-      // have spliced workerNodes during the awaited waitWorkerNodeEvents
-      // above, shifting our key. If the worker is already gone, skip
-      // sendKill (terminate() then short-circuits).
+      // Sibling exit handlers may splice `workerNodes` during the await
+      // above; recompute the live index, skip sendKill if already gone.
       const liveWorkerNodeKey = this.workerNodes.indexOf(workerNode)
       if (liveWorkerNodeKey !== -1) {
         await this.sendKillMessageToWorker(liveWorkerNodeKey).catch(

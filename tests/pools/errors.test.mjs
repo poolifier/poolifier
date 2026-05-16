@@ -53,7 +53,7 @@ describe('Pool error classes test suite', () => {
       expect(e.cause).toBeUndefined()
       expect(e.exitCode).toBe(2)
     })
-    it('handles signal-only (exitCode normalised to null)', () => {
+    it('handles signal-only (exitCode normalized to null)', () => {
       const e = new WorkerCrashError('signal', { signal: 'SIGSEGV' })
       expect(e.exitCode).toBeNull()
       expect(e.signal).toBe('SIGSEGV')

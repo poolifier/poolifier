@@ -1,11 +1,9 @@
 /**
  * Pool-level typed error classes.
  *
- * `*Options` interfaces are file-scoped exports for TS4063 declaration-emit
- * compliance and are deliberately NOT re-exported from `src/index.ts`.
- *
- * For discrimination semantics and dual-package (CJS/ESM) guidance, see
- * `docs/api.md` §"Error handling on worker crash".
+ * `*Options` interfaces are file-scoped (`@internal`) for TS4063
+ * declaration-emit compliance and are not re-exported from
+ * `src/index.ts`. Discrimination contract: `docs/api.md`.
  */
 
 import type { TaskUUID } from '../utility-types.js'
@@ -17,8 +15,9 @@ import type { TaskUUID } from '../utility-types.js'
  * can identify which task failed when handling N concurrent in-flight tasks.
  *
  * `exitCode` and `signal` mirror the args of Node's worker `'exit'` event.
- * For thread workers the `'exit'` event passes `(exitCode)` only — `signal`
- * is normalised to `null` at construction.
+ * Both default to `null` when the constructor option is omitted (thread
+ * workers always pass `signal === null`; cluster workers may pass a
+ * non-null `NodeJS.Signals` for SIGKILL/SIGSEGV/OOM).
  * @internal
  */
 export interface WorkerCrashErrorOptions {
@@ -52,9 +51,8 @@ export class WorkerCrashError extends Error {
   public constructor (message: string, options: WorkerCrashErrorOptions = {}) {
     super(message, options.cause != null ? { cause: options.cause } : undefined)
     Object.setPrototypeOf(this, new.target.prototype)
-    // Tamper-resistant `name`: non-writable so subclass shadowing or
-    // `Object.assign(err, { name: 'fake' })` cannot break the string-equal
-    // discrimination contract documented in docs/api.md.
+    // Non-writable per the `error.name` discrimination contract — see
+    // docs/api.md §"Error handling on worker crash".
     Object.defineProperty(this, 'name', {
       configurable: false,
       enumerable: false,

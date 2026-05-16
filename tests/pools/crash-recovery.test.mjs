@@ -490,7 +490,7 @@ describe('Crash recovery regression test suite', () => {
   // SAME workerNode and assert NO new event is emitted. With the
   // early-return guard, the second invocation is a no-op; without it,
   // the crash body re-runs and emits again.
-  it('T9b: synthesised re-entry into the crash handler is a no-op', {
+  it('T9b: synthesized re-entry into the crash handler is a no-op', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -616,6 +616,9 @@ describe('Crash recovery regression test suite', () => {
     await new Promise(resolve => {
       pool.emitter.once(PoolEvents.ready, resolve)
     })
+    // Spy installed AFTER pool readiness so any setup-phase emission
+    // is observed only via `errorEvents` upstream — the call window
+    // measured here is the synthetic invocation below.
     const spy = vi.spyOn(pool, 'safeEmitPoolError')
     pool.rejectInFlightTaskPromisesByRef(
       pool.workerNodes[0],
