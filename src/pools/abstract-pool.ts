@@ -880,7 +880,7 @@ export abstract class AbstractPool<
     return false
   }
 
-  /** @inheritdoc */
+  /** @inheritDoc */
   public start (): void {
     if (this.started) {
       throw new Error('Cannot start an already started pool')
@@ -1156,7 +1156,7 @@ export abstract class AbstractPool<
       (exitCode: null | number, signal?: NodeJS.Signals | null) => {
         // Crash detection — voluntary termination and prior crash bypass
         // this branch (see `info.terminating`, `this.destroying`,
-        // `info.crashHandled`). Channel semantics: see `ExitHandler` in
+        // `info.crashHandled`). Signature: see `ExitHandler` in
         // `worker.ts`.
         const abnormalExit =
           (exitCode != null && exitCode !== 0) ||
@@ -1320,13 +1320,18 @@ export abstract class AbstractPool<
     ) {
       return
     }
+    // `redistributeQueuedTasks` and `rejectRemainingQueuedTaskPromises`
+    // both treat -1 as a no-op, so a stale `workerNode` (already spliced)
+    // is safe.
     const crashedWorkerNodeKey = this.workerNodes.indexOf(workerNode)
     workerNode.info.ready = false
     workerNode.info.crashHandled = true
+    const crashErrorFactory = (taskId: TaskUUID): WorkerCrashError =>
+      this.buildWorkerCrashError(cause, workerNode, taskId)
     const firstReject = this.rejectInFlightTaskPromisesByRef(
       workerNode,
       workerNode.info.id,
-      taskId => this.buildWorkerCrashError(cause, workerNode, taskId)
+      crashErrorFactory
     )
     this.safeEmitPoolError(
       firstReject ?? this.buildWorkerCrashError(cause, workerNode)
@@ -1337,8 +1342,9 @@ export abstract class AbstractPool<
       }
       if (this.opts.enableTasksQueue === true) {
         this.redistributeQueuedTasks(crashedWorkerNodeKey)
-        this.rejectRemainingQueuedTaskPromises(crashedWorkerNodeKey, taskId =>
-          this.buildWorkerCrashError(cause, workerNode, taskId)
+        this.rejectRemainingQueuedTaskPromises(
+          crashedWorkerNodeKey,
+          crashErrorFactory
         )
       }
     }
@@ -1866,6 +1872,7 @@ export abstract class AbstractPool<
       delete this.startTimestamp
       this.destroying = false
       this.started = false
+      this.destroyPromise = undefined
       if (this.emitter != null) {
         this.emitter.listenerCount(PoolEvents.destroy) > 0 &&
           this.emitter.emit(PoolEvents.destroy, this.info)

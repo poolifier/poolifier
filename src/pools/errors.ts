@@ -80,6 +80,8 @@ export class WorkerTerminationError extends Error {
   ) {
     super(message, options.cause != null ? { cause: options.cause } : undefined)
     Object.setPrototypeOf(this, new.target.prototype)
+    // Non-writable per the `error.name` discrimination contract — see
+    // docs/api.md §"pool.destroy()".
     Object.defineProperty(this, 'name', {
       configurable: false,
       enumerable: false,
