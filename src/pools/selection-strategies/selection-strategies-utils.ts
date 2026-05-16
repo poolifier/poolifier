@@ -16,14 +16,6 @@ import {
 } from './selection-strategies-types.js'
 import { WeightedRoundRobinWorkerChoiceStrategy } from './weighted-round-robin-worker-choice-strategy.js'
 
-export {
-  buildWorkerChoiceStrategiesPolicy,
-  buildWorkerChoiceStrategiesTaskStatisticsRequirements,
-  buildWorkerChoiceStrategyOptions,
-  getWorkerChoiceStrategiesRetries,
-  toggleMedianMeasurementStatisticsRequirements,
-} from './selection-strategies-helpers.js'
-
 export const getWorkerChoiceStrategy = <Worker extends IWorker, Data, Response>(
   workerChoiceStrategy: WorkerChoiceStrategy,
   pool: IPool<Worker, Data, Response>,
