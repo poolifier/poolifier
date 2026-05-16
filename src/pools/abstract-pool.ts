@@ -1301,7 +1301,7 @@ export abstract class AbstractPool<
    *   4. If `enableTasksQueue` is enabled, redistributes queued tasks
    *      to other workers and rejects any that cannot be redistributed.
    *
-   * Idempotent: returns early if `info.terminating | crashHandled` or
+   * Idempotent: returns early if `info.terminating || crashHandled` or
    * `this.destroying` is set. Static worker restart is handled by the
    * once-`'exit'` handler in {@link createAndSetupWorkerNode} (gated by
    * `exitCode === 0 || restartWorkerOnError === true`).
