@@ -2120,12 +2120,12 @@ export abstract class AbstractPool<
     const promiseResponse = this.promiseResponseMap.get(taskId!)
     if (promiseResponse != null) {
       const { asyncResource, reject, resolve } = promiseResponse
-      let workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
-      if (workerNodeKey === -1) {
-        workerNodeKey = this.getWorkerNodeKeyByWorkerId(
-          promiseResponse.workerId
-        )
-      }
+      // Invariant: `promiseResponse.workerId` is rewritten only on
+      // queued tasks (steal / redistribute), synchronously before
+      // re-dispatch. The responding worker is therefore always the one
+      // currently targeted by `promiseResponse`, so `message.workerId`
+      // is the authoritative key here.
+      const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
       const workerNode =
         workerNodeKey !== -1 ? this.workerNodes[workerNodeKey] : undefined
       if (workerError != null) {
