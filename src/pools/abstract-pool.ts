@@ -1510,8 +1510,11 @@ export abstract class AbstractPool<
     ) {
       try {
         this.emitter.emit(PoolEvents.error, error)
-      } catch {
-        /* ignore */
+      } catch (listenerError) {
+        console.error(
+          '[poolifier] PoolEvents.error listener threw:',
+          listenerError
+        )
       }
     }
   }
