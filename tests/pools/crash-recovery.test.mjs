@@ -541,6 +541,9 @@ describe('Crash recovery regression test suite', () => {
     expect(events[0]).toBeInstanceOf(WorkerCrashError)
   })
 
+  // T9b/T11b/T11c reach into protected pool methods by name; .mjs
+  // runtime ignores TS visibility, so renames must update both sites.
+  //
   // Mutation-killer for the crashHandled re-entry guard. After the
   // first crash settles, invoke the crash handler a second time on the
   // SAME workerNode and assert NO new event is emitted. With the
@@ -649,13 +652,12 @@ describe('Crash recovery regression test suite', () => {
     )
   })
 
-  // Mutation-killer for the firstError != null emit-gate. Invoke
-  // rejectInFlightTaskPromisesByRef synthetically with a workerId that
-  // matches no entry in promiseResponseMap. Iteration is empty, so
-  // firstError stays undefined. The gate must skip the
-  // safeEmitPoolError call; without the gate, undefined would reach
-  // the helper (its downstream nil-guard is defense-in-depth).
-  it('T11b: empty rejection iteration does not invoke safeEmitPoolError', {
+  // Defense-in-depth: rejectInFlightTaskPromisesByRef must never
+  // invoke safeEmitPoolError itself. The firstError != null emit-gate
+  // lives at its callers (destroyWorkerNode, handleWorkerNodeCrash);
+  // a refactor that moved emit logic into the helper would bypass the
+  // gate and emit `undefined` on empty iteration.
+  it('T11b: rejectInFlightTaskPromisesByRef does not invoke safeEmitPoolError on empty iteration', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -798,10 +800,17 @@ describe('Crash recovery regression test suite', () => {
     })
     const initialCount = pool.workerNodes.length
     expect(initialCount).toBe(1)
-    // The cleanExitWorker module fires process.exit(0) after ~300ms.
-    // Wait long enough for the exit + replenishment to settle.
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    // cleanExitWorker fires process.exit(0); poll until replenishment.
+    const deadline = performance.now() + 5_000
+    while (
+      (pool.workerNodes.length !== 1 ||
+        pool.workerNodes[0].info.ready !== true) &&
+      performance.now() < deadline
+    ) {
+      await new Promise(resolve => setTimeout(resolve, 50))
+    }
     expect(pool.workerNodes.length).toBe(1)
+    expect(pool.workerNodes[0].info.ready).toBe(true)
   })
 
   it('T-I5 (b): crash with restartWorkerOnError:false does NOT replenish', {

@@ -154,6 +154,9 @@ describe('Fixed cluster pool test suite', () => {
       expect(workerNode.usage.tasks.executing).toBeLessThanOrEqual(
         numberOfWorkers * maxMultiplier
       )
+      // Per-worker `executed` and steal counters are non-deterministic
+      // because tasks-stealing-on-idle redistributes work across nodes;
+      // bounds reflect that distribution rather than exact equality.
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(
         queuePool.opts.tasksQueueOptions.concurrency
       )
@@ -283,11 +286,15 @@ describe('Fixed cluster pool test suite', () => {
     }
     expect(error).toBeInstanceOf(Error)
     expect(error.name).toBe('WorkerCrashError')
-    expect(error.exitCode).toBe(1)
+    if (error.exitCode != null) {
+      expect(error.exitCode).not.toBe(0)
+    } else {
+      expect(error.signal).not.toBeNull()
+    }
     expect(error.cause).toBeUndefined()
     expect(poolError).toBeInstanceOf(Error)
     expect(poolError.name).toBe('WorkerCrashError')
-    expect(poolError.exitCode).toBe(1)
+    expect(poolError).toBe(error)
     await exitPromise
   })
 

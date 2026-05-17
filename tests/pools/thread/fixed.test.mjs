@@ -153,6 +153,9 @@ describe('Fixed thread pool test suite', () => {
       expect(workerNode.usage.tasks.executing).toBeLessThanOrEqual(
         numberOfThreads * maxMultiplier
       )
+      // Per-worker `executed` and steal counters are non-deterministic
+      // because tasks-stealing-on-idle redistributes work across nodes;
+      // bounds reflect that distribution rather than exact equality.
       expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(
         queuePool.opts.tasksQueueOptions.concurrency
       )
