@@ -18,9 +18,9 @@ setTimeout(() => {
 }, 300)
 
 /**
- *
+ * Test handler — returns immediately.
  */
-function noop () {
+async function noop () {
   /* intentional no-op */
 }
 
