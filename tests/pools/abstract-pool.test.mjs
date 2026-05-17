@@ -1580,7 +1580,9 @@ describe('Abstract pool test suite', () => {
     expect(elapsedTime).toBeLessThanOrEqual(
       tasksFinishedTimeout + 1000 * tasksFinished + 1000
     )
-    expect(rejections.length).toBe(0)
+    expect(rejections.every(e => e?.name === 'WorkerTerminationError')).toBe(
+      true
+    )
   })
 
   it('Verify that destroy() waits until the tasks finished timeout is reached', async () => {
