@@ -1159,8 +1159,6 @@ export abstract class AbstractPool<
     workerNode.registerOnceWorkerEventHandler(
       'exit',
       (exitCode: null | number, signal?: NodeJS.Signals | null) => {
-        // Voluntary termination and post-crash exits bypass via
-        // `info.terminating`, `this.destroying`, `info.crashHandled`.
         // Clean `exit(0)` is abnormal when an in-flight task is still
         // expected to settle on this worker.
         const hasInFlightTask =

@@ -18,7 +18,7 @@ setTimeout(() => {
  *
  */
 function noop () {
-  // No-op handler — see fixture rationale above.
+  /* intentional no-op */
 }
 
 module.exports = new ClusterWorker(noop, {

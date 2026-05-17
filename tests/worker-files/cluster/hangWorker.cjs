@@ -15,9 +15,7 @@ const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
  * @returns Never returns.
  */
 async function hang () {
-  await new Promise(() => {
-    // Never resolve.
-  })
+  await new Promise(() => {})
 }
 
 module.exports = new ClusterWorker(hang, {

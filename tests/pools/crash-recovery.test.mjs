@@ -51,7 +51,6 @@ describe('Crash recovery regression test suite', () => {
       const pool = trackPool(
         new FixedClusterPool(1, './tests/worker-files/cluster/hangWorker.cjs')
       )
-      // Wait for the worker to come online.
       await new Promise(resolve => {
         pool.emitter.once(PoolEvents.ready, resolve)
       })
@@ -76,7 +75,6 @@ describe('Crash recovery regression test suite', () => {
       expect(rejected.exitCode).toBeNull()
       expect(rejected.signal).toBe('SIGKILL')
       expect(rejected.taskId).toBeDefined()
-      // Exactly one PoolEvents.error per crash, payload WorkerCrashError.
       expect(events.length).toBe(1)
       expect(events[0]).toBeInstanceOf(WorkerCrashError)
     }
@@ -299,10 +297,8 @@ describe('Crash recovery regression test suite', () => {
     taskPromise.catch(e => {
       rejected = e
     })
-    // Give dispatch a moment.
     await new Promise(resolve => setTimeout(resolve, 50))
     await pool.destroy()
-    // Allow the rejection to flush.
     await taskPromise.catch(() => undefined)
     expect(rejected).toBeInstanceOf(WorkerTerminationError)
     expect(rejected.name).toBe('WorkerTerminationError')
@@ -334,8 +330,6 @@ describe('Crash recovery regression test suite', () => {
     await new Promise(resolve => setTimeout(resolve, 50))
     await pool.destroy()
     await Promise.allSettled([promise])
-    // Exactly ONE rejection — the in-flight task on worker[0]. The
-    // idle worker[1] generates no spurious rejection.
     expect(rejections.length).toBe(1)
     expect(rejections[0]).toBeInstanceOf(WorkerTerminationError)
     expect(rejections[0].name).toBe('WorkerTerminationError')
@@ -345,12 +339,8 @@ describe('Crash recovery regression test suite', () => {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // Single worker, single hung in-flight task, NO queued tasks.
-    // Regression guard for the canonical-counter destroy wait: with
-    // the previous `flushedTasks`-only count the wait short-circuited
-    // on 0 and the in-flight task was rejected immediately, ignoring
-    // `tasksFinishedTimeout`. The wait must now elapse the full
-    // ceiling before the rejection fires.
+    // Regression guard: with no queued tasks, the destroy wait must
+    // elapse `tasksFinishedTimeout` before the in-flight task is rejected.
     const ceiling = 300
     const pool = trackPool(
       new FixedThreadPool(1, './tests/worker-files/thread/hangWorker.mjs', {
@@ -366,7 +356,6 @@ describe('Crash recovery regression test suite', () => {
     taskPromise.catch(e => {
       rejected = e
     })
-    // Let dispatch land; queue stays empty.
     await new Promise(resolve => setTimeout(resolve, 50))
     expect(pool.workerNodes[0].usage.tasks.executing).toBe(1)
     expect(pool.workerNodes[0].tasksQueueSize()).toBe(0)
@@ -414,7 +403,6 @@ describe('Crash recovery regression test suite', () => {
     // Bounded well under the ceiling — proves the wait was honored
     // for the in-flight task without stalling.
     expect(elapsed).toBeLessThan(ceiling - 1000)
-    // No spurious WorkerTerminationError emission on the success path.
     expect(errorEvents.length).toBe(0)
   })
 
@@ -449,7 +437,6 @@ describe('Crash recovery regression test suite', () => {
     expect(rejections.every(e => e?.name === 'WorkerTerminationError')).toBe(
       true
     )
-    // taskIds are unique.
     const taskIds = rejections.map(e => e.taskId).filter(id => id != null)
     expect(new Set(taskIds).size).toBe(taskIds.length)
     expect(taskIds.length).toBe(N)
@@ -476,10 +463,8 @@ describe('Crash recovery regression test suite', () => {
     pool.emitter.on(PoolEvents.error, e => {
       errorEvents.push(e)
     })
-    // Dispatch enough tasks to spawn an additional dynamic worker, then
-    // let it sit idle. (Triggering maxInactiveTime takes >10 s, so we
-    // manually destroy a dynamic worker via destroyWorkerNode to
-    // simulate voluntary termination on an idle worker.)
+    // Dispatch tasks to engage the dynamic pool; voluntary
+    // terminations must not emit error events.
     await Promise.all([pool.execute(), pool.execute(), pool.execute()])
     // Wait for any concurrent crash-emit microtasks to settle.
     await new Promise(resolve => setTimeout(resolve, 50))
@@ -493,8 +478,6 @@ describe('Crash recovery regression test suite', () => {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // Exercises the destroy path on the dynamic-eviction call site.
-    // Use destroyWorkerNode directly on a worker holding a hung task.
     const pool = trackPool(
       new DynamicThreadPool(
         1,
@@ -516,8 +499,6 @@ describe('Crash recovery regression test suite', () => {
       return undefined
     })
     await new Promise(resolve => setTimeout(resolve, 50))
-    // Trigger voluntary termination of the in-flight worker
-    // (simulating the dynamic-eviction call-site).
     const targetKey = pool.workerNodes.findIndex(
       wn => wn.usage.tasks.executing > 0
     )
@@ -556,8 +537,6 @@ describe('Crash recovery regression test suite', () => {
       rejected = e
     }
     expect(rejected).toBeInstanceOf(WorkerCrashError)
-    // Exactly one PoolEvents.error per crash; crashHandled write-once
-    // guarantees no second emit on subsequent worker error events.
     expect(events.length).toBe(1)
     expect(events[0]).toBeInstanceOf(WorkerCrashError)
   })
@@ -625,9 +604,6 @@ describe('Crash recovery regression test suite', () => {
     await Promise.allSettled(promises)
     expect(rejections.length).toBe(N)
     expect(rejections.every(e => e instanceof WorkerCrashError)).toBe(true)
-    // Pool aggregate: failed task count >= N at some point during
-    // crash handling (worker is removed afterward; we verify the
-    // post-crash invariant that the rejections were typed correctly).
   })
 
   it('T11: crash during destroy emits no undefined payload and surfaces a single typed rejection', {
@@ -657,8 +633,6 @@ describe('Crash recovery regression test suite', () => {
       rejections.push(e)
       return undefined
     })
-    // Start destroy concurrently with the imminent crash (worker
-    // throws ~10 ms after dispatch).
     await new Promise(resolve => setTimeout(resolve, 5))
     const destroyPromise = pool.destroy().catch(() => undefined)
     await Promise.allSettled([taskPromise, destroyPromise])
@@ -693,9 +667,7 @@ describe('Crash recovery regression test suite', () => {
     await new Promise(resolve => {
       pool.emitter.once(PoolEvents.ready, resolve)
     })
-    // Spy installed AFTER pool readiness so any setup-phase emission
-    // is observed only via `errorEvents` upstream — the call window
-    // measured here is the synthetic invocation below.
+    // Spy installed after readiness so it scopes to the synthetic invocation below.
     const spy = vi.spyOn(pool, 'safeEmitPoolError')
     pool.rejectInFlightTaskPromisesByRef(
       pool.workerNodes[0],
@@ -770,7 +742,6 @@ describe('Crash recovery regression test suite', () => {
     expect(rejections.length).toBe(N)
     expect(rejections.every(e => e?.name === 'WorkerCrashError')).toBe(true)
     expect(rejections.every(e => e instanceof WorkerCrashError)).toBe(true)
-    // Exactly one PoolEvents.error per crashed worker.
     expect(poolErrorCount).toBe(N)
   })
 

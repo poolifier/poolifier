@@ -10,9 +10,7 @@ async function processExit () {
     // eslint-disable-next-line n/no-process-exit
     process.exit(2)
   }, 50)
-  await new Promise(() => {
-    // Never resolve — keep the task in-flight when process.exit fires.
-  })
+  await new Promise(() => {})
 }
 
 export default new ThreadWorker(processExit, {

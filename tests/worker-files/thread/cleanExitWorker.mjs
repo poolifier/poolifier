@@ -21,7 +21,7 @@ setTimeout(() => {
  *
  */
 function noop () {
-  // No-op handler — see fixture rationale above.
+  /* intentional no-op */
 }
 
 export default new ThreadWorker(noop, {

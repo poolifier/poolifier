@@ -5,9 +5,7 @@ import { KillBehaviors, ThreadWorker } from '../../../lib/index.mjs'
  * Used by in-flight rejection regression tests.
  */
 async function hang () {
-  await new Promise(() => {
-    // Never resolve.
-  })
+  await new Promise(() => {})
 }
 
 export default new ThreadWorker(hang, {
