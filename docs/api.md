@@ -66,7 +66,7 @@ This method is available on both pool implementations and will call the terminat
 
 In-flight task promises that do not finish within `tasksFinishedTimeout` (default `2000` ms; configurable via `tasksQueueOptions.tasksFinishedTimeout`) are rejected with a `WorkerTerminationError`. Fire-and-forget callers (`pool.execute()` without an attached `.catch`) must attach a handler if they want to swallow the rejection — otherwise Node logs an unhandled rejection. Discriminate via `error.name === 'WorkerTerminationError'` (dual-package safe; `instanceof` works only within a single bundle).
 
-`PoolEvents.error` is emitted exactly once per voluntary destruction with at least one in-flight task, payload `WorkerTerminationError`. Idle workers terminated voluntarily emit no event.
+`PoolEvents.error` is emitted exactly once per voluntarily terminated worker that had in-flight tasks at termination, payload `WorkerTerminationError`. Idle workers terminated voluntarily emit no event.
 
 The same `WorkerTerminationError` is emitted (and rejects the in-flight task) when a dynamic worker self-evicts via `maxInactiveTime` while a task is still executing.
 
