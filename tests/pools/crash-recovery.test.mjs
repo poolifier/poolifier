@@ -751,4 +751,37 @@ describe('Crash recovery regression test suite', () => {
     await new Promise(resolve => setTimeout(resolve, 200))
     expect(pool.workerNodes.length).toBe(0)
   })
+
+  it('T-I5 (c): clean process.exit(0) mid-task rejects in-flight with WorkerCrashError', {
+    retry: 0,
+    timeout: 10_000,
+  }, async () => {
+    // Predicate clause: `(exitCode === 0 && hasInFlightTask)`.
+    // The fixture exits with code 0 while a task is still dispatched —
+    // without the in-flight guard the dispatched promise would hang.
+    const pool = trackPool(
+      new FixedThreadPool(
+        1,
+        './tests/worker-files/thread/cleanExitInFlightWorker.mjs',
+        {
+          enableTasksQueue: false,
+          errorHandler: () => undefined,
+        }
+      )
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    let rejected
+    try {
+      await pool.execute()
+    } catch (e) {
+      rejected = e
+    }
+    expect(rejected).toBeInstanceOf(WorkerCrashError)
+    expect(rejected.name).toBe('WorkerCrashError')
+    expect(rejected.exitCode).toBe(0)
+    expect(rejected.signal).toBeNull()
+    expect(rejected.taskId).toBeDefined()
+  })
 })

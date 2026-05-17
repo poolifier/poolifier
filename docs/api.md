@@ -75,7 +75,7 @@ The same `WorkerTerminationError` is emitted (and rejects the in-flight task) wh
 The pool rejects every in-flight task promise assigned to a worker that exits unexpectedly:
 
 - uncaught exception in the worker;
-- `process.exit(N)` from worker code;
+- `process.exit(N)` from worker code (any `N`, including `0` while a task is still in-flight);
 - signal kills (SIGKILL, SIGSEGV) and OOM-killer events on cluster workers;
 - pre-ready crashes (worker dies before signalling readiness).
 
@@ -131,7 +131,7 @@ An object with these properties:
   Default: `() => {}`
 - `errorHandler` (optional) - A function that will listen for error event on each worker.  
   Default: `() => {}`
-- `exitHandler` (optional) - A function that will listen for exit event on each worker.  
+- `exitHandler` (optional) - A function `(exitCode: null | number, signal?: NodeJS.Signals | null) => void` that will listen for exit event on each worker. `exitCode` is `null` when the worker was killed by a signal; `signal` is non-null in that case (cluster pools).  
   Default: `() => {}`
 
 - `workerChoiceStrategy` (optional) - The default worker choice strategy to use in this pool:

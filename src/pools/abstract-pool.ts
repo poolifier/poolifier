@@ -1031,9 +1031,12 @@ export abstract class AbstractPool<
    * Builds a typed crash error for the given worker node and task id.
    *
    * If `cause` is itself a {@link WorkerCrashError} (the exit-handler
-   * synthesized one), propagates `exitCode` and `signal` so the per-task
-   * rejection carries the same diagnostic context as the pool-level
-   * emission.
+   * synthesizes one when no upstream `'error'` event was emitted),
+   * propagates `exitCode`, `signal` and the inner `cause` instead of
+   * nesting another wrapper. The returned error therefore satisfies
+   * the contract documented in `docs/api.md`: `error.cause` is either
+   * the original throw from the worker (`'error'` path) or `undefined`
+   * (exit-only path), never another `WorkerCrashError`.
    * @param cause - The original error that caused the crash.
    * @param workerNode - The crashed worker node.
    * @param taskId - The task id (optional).
@@ -1045,12 +1048,19 @@ export abstract class AbstractPool<
     workerNode: IWorkerNode<Worker, Data>,
     taskId?: TaskUUID
   ): WorkerCrashError {
-    const exitCode = cause instanceof WorkerCrashError ? cause.exitCode : null
-    const signal = cause instanceof WorkerCrashError ? cause.signal : null
+    if (cause instanceof WorkerCrashError) {
+      return new WorkerCrashError(cause.message, {
+        cause: cause.cause,
+        exitCode: cause.exitCode,
+        signal: cause.signal,
+        taskId,
+        workerId: workerNode.info.id,
+      })
+    }
     return new WorkerCrashError(`Worker node crashed: ${cause.message}`, {
       cause,
-      exitCode,
-      signal,
+      exitCode: null,
+      signal: null,
       taskId,
       workerId: workerNode.info.id,
     })
@@ -1136,10 +1146,10 @@ export abstract class AbstractPool<
       'message',
       this.opts.messageHandler ?? EMPTY_FUNCTION
     )
-    workerNode.registerWorkerEventHandler(
-      'error',
-      this.opts.errorHandler ?? EMPTY_FUNCTION
-    )
+    // Register once-handlers BEFORE user handlers: Node EventEmitter
+    // fires listeners in registration order, and a user handler that
+    // throws synchronously on `'error'` would prevent the crash-recovery
+    // listener from running.
     workerNode.registerOnceWorkerEventHandler('error', (error: Error) => {
       this.handleWorkerNodeCrash(workerNode, error)
       // eslint-disable-next-line promise/no-promise-in-callback
@@ -1147,20 +1157,26 @@ export abstract class AbstractPool<
         this.safeEmitPoolError(terminateError)
       })
     })
-    workerNode.registerWorkerEventHandler(
-      'exit',
-      this.opts.exitHandler ?? EMPTY_FUNCTION
-    )
     workerNode.registerOnceWorkerEventHandler(
       'exit',
       (exitCode: null | number, signal?: NodeJS.Signals | null) => {
         // Crash detection — voluntary termination and prior crash bypass
         // this branch (see `info.terminating`, `this.destroying`,
         // `info.crashHandled`). Signature: see `ExitHandler` in
-        // `worker.ts`.
+        // `worker.ts`. A clean `process.exit(0)` is also abnormal when
+        // a task is still dispatched: the caller's promise would never
+        // settle. Match by `promiseResponseMap` reference so the check
+        // covers exactly the entries `rejectInFlightTaskPromisesByRef`
+        // would reject.
+        const hasInFlightTask =
+          workerNode.info.id != null &&
+          [...this.promiseResponseMap.values()].some(
+            promiseResponse => promiseResponse.workerId === workerNode.info.id
+          )
         const abnormalExit =
           (exitCode != null && exitCode !== 0) ||
-          (exitCode == null && signal != null)
+          (exitCode == null && signal != null) ||
+          (exitCode === 0 && hasInFlightTask)
         if (
           !workerNode.info.terminating &&
           !this.destroying &&
@@ -1187,6 +1203,14 @@ export abstract class AbstractPool<
           this.startMinimumNumberOfWorkers(true)
         }
       }
+    )
+    workerNode.registerWorkerEventHandler(
+      'error',
+      this.opts.errorHandler ?? EMPTY_FUNCTION
+    )
+    workerNode.registerWorkerEventHandler(
+      'exit',
+      this.opts.exitHandler ?? EMPTY_FUNCTION
     )
     const workerNodeKey = this.addWorkerNode(workerNode)
     this.afterWorkerNodeSetup(workerNodeKey)
@@ -1254,10 +1278,14 @@ export abstract class AbstractPool<
       const liveWorkerNodeKey = this.workerNodes.indexOf(workerNode)
       if (liveWorkerNodeKey !== -1) {
         await this.sendKillMessageToWorker(liveWorkerNodeKey).catch(
-          () => undefined
+          (error: unknown) => {
+            this.safeEmitPoolError(error)
+          }
         )
       }
-      await workerNode.terminate().catch(() => undefined)
+      await workerNode.terminate().catch((error: unknown) => {
+        this.safeEmitPoolError(error)
+      })
     }
   }
 
@@ -1441,6 +1469,11 @@ export abstract class AbstractPool<
     ) => WorkerCrashError | WorkerTerminationError
   ): undefined | WorkerCrashError | WorkerTerminationError {
     if (workerId == null) {
+      // Invariant: dispatch sets `promiseResponse.workerId` from the
+      // chosen worker's `info.id`. Thread/cluster workers receive their
+      // id synchronously at construction (`Worker#threadId` /
+      // `cluster.Worker#id`), so any worker that has been selected for
+      // dispatch has a defined id — no in-flight entry can match.
       return undefined
     }
     const queuedTaskIds = new Set<TaskUUID>()
@@ -2486,9 +2519,6 @@ export abstract class AbstractPool<
       return
     }
     const workerNode = this.workerNodes[workerNodeKey]
-    if (this.tasksQueueSize(workerNodeKey) === 0) {
-      return
-    }
     while (this.tasksQueueSize(workerNodeKey) > 0) {
       const task = this.dequeueTask(workerNodeKey)
       if (task?.taskId != null) {
