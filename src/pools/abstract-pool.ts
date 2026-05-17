@@ -1246,10 +1246,25 @@ export abstract class AbstractPool<
     workerNode.info.terminating = true
     try {
       const flushedTasks = this.flushTasksQueue(workerNodeKey)
+      // Wait for every in-flight task promise targeting this worker
+      // (pre-existing executing AND just-flushed) so
+      // `tasksFinishedTimeout` applies to the full in-flight set as
+      // documented in `docs/api.md`. Falls back to `flushedTasks`
+      // when `stableWorkerId == null`: same defensive rationale as
+      // {@link rejectInFlightTaskPromisesByRef}.
+      let pendingTaskFinishCount = flushedTasks
+      if (stableWorkerId != null) {
+        pendingTaskFinishCount = 0
+        for (const promiseResponse of this.promiseResponseMap.values()) {
+          if (promiseResponse.workerId === stableWorkerId) {
+            ++pendingTaskFinishCount
+          }
+        }
+      }
       await waitWorkerNodeEvents(
         workerNode,
         'taskFinished',
-        flushedTasks,
+        pendingTaskFinishCount,
         this.opts.tasksQueueOptions?.tasksFinishedTimeout ??
           getDefaultTasksQueueOptions(
             this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers
@@ -1273,8 +1288,12 @@ export abstract class AbstractPool<
       } catch (error) {
         this.safeEmitPoolError(error)
       }
-      // Sibling exit handlers may splice `workerNodes` during the await
-      // above; recompute the live index, skip sendKill if already gone.
+      // Sibling exit handlers may splice `workerNodes` during the
+      // await above; recompute the live index. Skip both sendKill and
+      // terminate when the worker has already been removed: the crash
+      // path's once-'exit' handler ran, the worker has exited, and a
+      // second `workerNode.terminate()` would hang registering a
+      // once-'exit' listener on an already-exited worker.
       const liveWorkerNodeKey = this.workerNodes.indexOf(workerNode)
       if (liveWorkerNodeKey !== -1) {
         await this.sendKillMessageToWorker(liveWorkerNodeKey).catch(
@@ -1282,10 +1301,10 @@ export abstract class AbstractPool<
             this.safeEmitPoolError(error)
           }
         )
+        await workerNode.terminate().catch((error: unknown) => {
+          this.safeEmitPoolError(error)
+        })
       }
-      await workerNode.terminate().catch((error: unknown) => {
-        this.safeEmitPoolError(error)
-      })
     }
   }
 
