@@ -678,6 +678,42 @@ describe('Crash recovery regression test suite', () => {
     expect(spy).not.toHaveBeenCalled()
   })
 
+  it('T11c: handleTaskExecutionResponse deletes promiseResponseMap entry synchronously', {
+    retry: 0,
+    timeout: 10_000,
+  }, async () => {
+    // Race-fix invariant: the map entry must be gone before the next
+    // microtask drains. A crash sweep arriving in the post-settle gap
+    // would otherwise re-iterate an already-settled task and double
+    // the failed counter via rejectInFlightTaskPromisesByRef.
+    const pool = trackPool(
+      new FixedThreadPool(1, './tests/worker-files/thread/echoWorker.mjs', {
+        errorHandler: () => undefined,
+      })
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    const workerNode = pool.workerNodes[0]
+    const workerId = workerNode.info.id
+    const taskId = '00000000-0000-0000-0000-000000000001'
+    const failedBefore = workerNode.usage.tasks.failed
+    pool.promiseResponseMap.set(taskId, {
+      asyncResource: undefined,
+      reject: () => undefined,
+      resolve: () => undefined,
+      workerId,
+    })
+    pool.handleTaskExecutionResponse({ data: undefined, taskId, workerId })
+    expect(pool.promiseResponseMap.has(taskId)).toBe(false)
+    pool.rejectInFlightTaskPromisesByRef(
+      workerNode,
+      workerId,
+      id => new WorkerCrashError('synthetic post-settle sweep', { taskId: id })
+    )
+    expect(workerNode.usage.tasks.failed).toBe(failedBefore)
+  })
+
   it('T12: concurrent pool.destroy() calls are silently idempotent', {
     retry: 0,
     timeout: 10_000,

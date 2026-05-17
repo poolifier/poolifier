@@ -2113,7 +2113,6 @@ export abstract class AbstractPool<
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const promiseResponse = this.promiseResponseMap.get(taskId!)
     if (promiseResponse != null) {
-      const { asyncResource, reject, resolve } = promiseResponse
       const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
       const workerNode =
         workerNodeKey !== -1 ? this.workerNodes[workerNodeKey] : undefined
@@ -2121,18 +2120,19 @@ export abstract class AbstractPool<
         this.emitter?.emit(PoolEvents.taskError, workerError)
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const error = this.handleWorkerError(taskId!, workerError)
-        this.runInAsyncScope(promiseResponse, reject, error)
+        this.rejectTaskPromiseResponse(promiseResponse, error)
       } else {
-        this.runInAsyncScope(promiseResponse, resolve, data)
+        this.resolveTaskPromiseResponse(promiseResponse, data as Response)
       }
-      asyncResource?.emitDestroy()
+      // Concurrency invariant: rejectInFlightTaskPromisesByRef must
+      // never observe a settled taskId in promiseResponseMap.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.promiseResponseMap.delete(taskId!)
       if (workerNodeKey !== -1) {
         this.afterTaskExecutionHook(workerNodeKey, message)
       }
       queueMicrotask(() => {
         workerNode?.emit('taskFinished', taskId)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.promiseResponseMap.delete(taskId!)
         this.checkAndEmitTaskExecutionFinishedEvents()
         if (
           workerNodeKey !== -1 &&
@@ -2608,6 +2608,19 @@ export abstract class AbstractPool<
         taskName
       )!.tasks.sequentiallyStolen = 0
     }
+  }
+
+  /**
+   * Resolves a task promise response, running the resolution in async scope if available.
+   * @param promiseResponse - The promise response wrapper to resolve.
+   * @param value - The resolved value.
+   */
+  private resolveTaskPromiseResponse (
+    promiseResponse: PromiseResponseWrapper<Response>,
+    value: Response
+  ): void {
+    this.runInAsyncScope(promiseResponse, promiseResponse.resolve, value)
+    promiseResponse.asyncResource?.emitDestroy()
   }
 
   /**
