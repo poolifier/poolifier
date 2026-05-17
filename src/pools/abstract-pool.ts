@@ -1245,26 +1245,18 @@ export abstract class AbstractPool<
     const stableWorkerId = workerNode.info.id
     workerNode.info.terminating = true
     try {
-      const flushedTasks = this.flushTasksQueue(workerNodeKey)
-      // Wait for every in-flight task promise targeting this worker
-      // (pre-existing executing AND just-flushed) so
-      // `tasksFinishedTimeout` applies to the full in-flight set as
-      // documented in `docs/api.md`. Falls back to `flushedTasks`
-      // when `stableWorkerId == null`: same defensive rationale as
-      // {@link rejectInFlightTaskPromisesByRef}.
-      let pendingTaskFinishCount = flushedTasks
-      if (stableWorkerId != null) {
-        pendingTaskFinishCount = 0
-        for (const promiseResponse of this.promiseResponseMap.values()) {
-          if (promiseResponse.workerId === stableWorkerId) {
-            ++pendingTaskFinishCount
-          }
-        }
-      }
+      this.flushTasksQueue(workerNodeKey)
+      // `workerNode.usage.tasks.executing` is the canonical in-flight
+      // counter (maintained by `beforeTaskExecutionHook` /
+      // `afterTaskExecutionHook`). After `flushTasksQueue`, it covers
+      // pre-existing in-flight tasks plus the just-redispatched queued
+      // ones; each settlement emits exactly one `'taskFinished'` event.
+      // Anything less would short-circuit the `tasksFinishedTimeout`
+      // contract documented in `docs/api.md`.
       await waitWorkerNodeEvents(
         workerNode,
         'taskFinished',
-        pendingTaskFinishCount,
+        workerNode.usage.tasks.executing,
         this.opts.tasksQueueOptions?.tasksFinishedTimeout ??
           getDefaultTasksQueueOptions(
             this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers
