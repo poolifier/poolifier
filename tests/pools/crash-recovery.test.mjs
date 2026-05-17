@@ -341,6 +341,83 @@ describe('Crash recovery regression test suite', () => {
     expect(rejections[0].name).toBe('WorkerTerminationError')
   })
 
+  it('T5c: tasksFinishedTimeout is honored as a ceiling for pre-existing in-flight tasks (no queue)', {
+    retry: 0,
+    timeout: 10_000,
+  }, async () => {
+    // Single worker, single hung in-flight task, NO queued tasks.
+    // Regression guard for the canonical-counter destroy wait: with
+    // the previous `flushedTasks`-only count the wait short-circuited
+    // on 0 and the in-flight task was rejected immediately, ignoring
+    // `tasksFinishedTimeout`. The wait must now elapse the full
+    // ceiling before the rejection fires.
+    const ceiling = 300
+    const pool = trackPool(
+      new FixedThreadPool(1, './tests/worker-files/thread/hangWorker.mjs', {
+        enableTasksQueue: true,
+        tasksQueueOptions: { tasksFinishedTimeout: ceiling },
+      })
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    const taskPromise = pool.execute()
+    let rejected
+    taskPromise.catch(e => {
+      rejected = e
+    })
+    // Let dispatch land; queue stays empty.
+    await new Promise(resolve => setTimeout(resolve, 50))
+    expect(pool.workerNodes[0].usage.tasks.executing).toBe(1)
+    expect(pool.workerNodes[0].tasksQueueSize()).toBe(0)
+    const start = Date.now()
+    await pool.destroy()
+    const elapsed = Date.now() - start
+    await taskPromise.catch(() => undefined)
+    expect(rejected).toBeInstanceOf(WorkerTerminationError)
+    expect(rejected.taskId).toBeDefined()
+    // Ceiling actually elapsed (allow scheduling slack on slow CI).
+    expect(elapsed).toBeGreaterThanOrEqual(ceiling - 50)
+    // And destroy did not stall longer than the ceiling + reasonable slack.
+    expect(elapsed).toBeLessThan(ceiling + 2000)
+  })
+
+  it('T5d: destroy resolves promptly when in-flight task settles within tasksFinishedTimeout', {
+    retry: 0,
+    timeout: 10_000,
+  }, async () => {
+    // asyncWorker sleeps ~2000 ms. With a 5 s ceiling the task
+    // completes naturally well before the deadline; destroy must
+    // proceed immediately on the `'taskFinished'` event without
+    // stalling the full ceiling AND must NOT reject the task.
+    const ceiling = 5000
+    const pool = trackPool(
+      new FixedThreadPool(1, './tests/worker-files/thread/asyncWorker.mjs', {
+        enableTasksQueue: true,
+        tasksQueueOptions: { tasksFinishedTimeout: ceiling },
+      })
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    const errorEvents = []
+    pool.emitter.on(PoolEvents.error, e => {
+      errorEvents.push(e)
+    })
+    const taskPromise = pool.execute()
+    await new Promise(resolve => setTimeout(resolve, 50))
+    expect(pool.workerNodes[0].usage.tasks.executing).toBe(1)
+    const start = Date.now()
+    await pool.destroy()
+    const elapsed = Date.now() - start
+    await expect(taskPromise).resolves.toBeDefined()
+    // Bounded well under the ceiling — proves the wait was honored
+    // for the in-flight task without stalling.
+    expect(elapsed).toBeLessThan(ceiling - 1000)
+    // No spurious WorkerTerminationError emission on the success path.
+    expect(errorEvents.length).toBe(0)
+  })
+
   it('T7: fire-and-forget × N + destroy collects N WorkerTerminationError rejections, no Pool unhandled rejection', {
     retry: 0,
     timeout: 10_000,
