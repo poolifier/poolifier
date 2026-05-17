@@ -134,6 +134,8 @@ An object with these properties:
 - `exitHandler` (optional) - A function `(exitCode: null | number, signal?: NodeJS.Signals | null) => void` that will listen for exit event on each worker. `exitCode` is `null` when the worker was killed by a signal; `signal` is non-null in that case (cluster pools).  
   Default: `() => {}`
 
+  > **Breaking change (v4)**: `exitCode` may be `null` and a `signal` parameter is exposed. TypeScript handlers using `ExitHandler<Worker>` must accept `null | number` for `exitCode`; cluster handlers should branch on `signal != null` to detect external signal kills.
+
 - `workerChoiceStrategy` (optional) - The default worker choice strategy to use in this pool:
   - `WorkerChoiceStrategies.ROUND_ROBIN`: Submit tasks to worker in a round robin fashion
   - `WorkerChoiceStrategies.LEAST_USED`: Submit tasks to the worker with the minimum number of executing and queued tasks
