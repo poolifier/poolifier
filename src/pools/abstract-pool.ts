@@ -1146,10 +1146,9 @@ export abstract class AbstractPool<
       'message',
       this.opts.messageHandler ?? EMPTY_FUNCTION
     )
-    // Register once-handlers BEFORE user handlers: Node EventEmitter
-    // fires listeners in registration order, and a user handler that
-    // throws synchronously on `'error'` would prevent the crash-recovery
-    // listener from running.
+    // EventEmitter fires listeners in registration order; register
+    // once-handlers before user handlers so a sync-throwing user
+    // handler cannot abort crash recovery.
     workerNode.registerOnceWorkerEventHandler('error', (error: Error) => {
       this.handleWorkerNodeCrash(workerNode, error)
       // eslint-disable-next-line promise/no-promise-in-callback
@@ -1160,14 +1159,10 @@ export abstract class AbstractPool<
     workerNode.registerOnceWorkerEventHandler(
       'exit',
       (exitCode: null | number, signal?: NodeJS.Signals | null) => {
-        // Crash detection — voluntary termination and prior crash bypass
-        // this branch (see `info.terminating`, `this.destroying`,
-        // `info.crashHandled`). Signature: see `ExitHandler` in
-        // `worker.ts`. A clean `process.exit(0)` is also abnormal when
-        // a task is still dispatched: the caller's promise would never
-        // settle. Match by `promiseResponseMap` reference so the check
-        // covers exactly the entries `rejectInFlightTaskPromisesByRef`
-        // would reject.
+        // Voluntary termination and post-crash exits bypass via
+        // `info.terminating`, `this.destroying`, `info.crashHandled`.
+        // Clean `exit(0)` is abnormal when an in-flight task is still
+        // expected to settle on this worker.
         const hasInFlightTask =
           workerNode.info.id != null &&
           [...this.promiseResponseMap.values()].some(
@@ -1234,25 +1229,31 @@ export abstract class AbstractPool<
    *
    * In-flight task promises that do not complete within
    * `tasksFinishedTimeout` are rejected with {@link WorkerTerminationError}.
+   *
+   * Implementation notes:
+   * - `workerNode` and `stableWorkerId` are captured before the await
+   *   because the once-`'exit'` handler in
+   *   {@link createAndSetupWorkerNode} can splice
+   *   {@link AbstractPool.workerNodes} during the wait.
+   * - The wait observes `usage.tasks.executing` (the canonical in-flight
+   *   counter maintained by
+   *   {@link AbstractPool.beforeTaskExecutionHook} /
+   *   {@link AbstractPool.afterTaskExecutionHook}); after
+   *   `flushTasksQueue` it covers queued + in-flight tasks, each of
+   *   which emits exactly one `'taskFinished'` event.
+   * - When a sibling crash path has already terminated the worker, both
+   *   `sendKillMessageToWorker` and `terminate` are skipped: a second
+   *   `terminate()` would await an already-fired `'exit'`.
    * @param workerNodeKey - The worker node key.
    * @internal
    */
   protected async destroyWorkerNode (workerNodeKey: number): Promise<void> {
     this.flagWorkerNodeAsNotReady(workerNodeKey)
-    // Capture stable references BEFORE any await — they survive
-    // removeWorkerNode's splice in the once-'exit' handler.
     const workerNode = this.workerNodes[workerNodeKey]
     const stableWorkerId = workerNode.info.id
     workerNode.info.terminating = true
     try {
       this.flushTasksQueue(workerNodeKey)
-      // `workerNode.usage.tasks.executing` is the canonical in-flight
-      // counter (maintained by `beforeTaskExecutionHook` /
-      // `afterTaskExecutionHook`). After `flushTasksQueue`, it covers
-      // pre-existing in-flight tasks plus the just-redispatched queued
-      // ones; each settlement emits exactly one `'taskFinished'` event.
-      // Anything less would short-circuit the `tasksFinishedTimeout`
-      // contract documented in `docs/api.md`.
       await waitWorkerNodeEvents(
         workerNode,
         'taskFinished',
@@ -1280,12 +1281,6 @@ export abstract class AbstractPool<
       } catch (error) {
         this.safeEmitPoolError(error)
       }
-      // Sibling exit handlers may splice `workerNodes` during the
-      // await above; recompute the live index. Skip both sendKill and
-      // terminate when the worker has already been removed: the crash
-      // path's once-'exit' handler ran, the worker has exited, and a
-      // second `workerNode.terminate()` would hang registering a
-      // once-'exit' listener on an already-exited worker.
       const liveWorkerNodeKey = this.workerNodes.indexOf(workerNode)
       if (liveWorkerNodeKey !== -1) {
         await this.sendKillMessageToWorker(liveWorkerNodeKey).catch(
@@ -1359,9 +1354,6 @@ export abstract class AbstractPool<
     ) {
       return
     }
-    // `redistributeQueuedTasks` and `rejectRemainingQueuedTaskPromises`
-    // both treat -1 as a no-op, so a stale `workerNode` (already spliced)
-    // is safe.
     const crashedWorkerNodeKey = this.workerNodes.indexOf(workerNode)
     workerNode.info.ready = false
     workerNode.info.crashHandled = true
@@ -1480,11 +1472,6 @@ export abstract class AbstractPool<
     ) => WorkerCrashError | WorkerTerminationError
   ): undefined | WorkerCrashError | WorkerTerminationError {
     if (workerId == null) {
-      // Invariant: dispatch sets `promiseResponse.workerId` from the
-      // chosen worker's `info.id`. Thread/cluster workers receive their
-      // id synchronously at construction (`Worker#threadId` /
-      // `cluster.Worker#id`), so any worker that has been selected for
-      // dispatch has a defined id — no in-flight entry can match.
       return undefined
     }
     const queuedTaskIds = new Set<TaskUUID>()
@@ -1526,7 +1513,7 @@ export abstract class AbstractPool<
       try {
         this.emitter.emit(PoolEvents.error, error)
       } catch {
-        // Swallow listener throws — see method JSDoc.
+        /* ignore */
       }
     }
   }
@@ -2114,17 +2101,21 @@ export abstract class AbstractPool<
     }
   }
 
+  /**
+   * Handles a task execution response from a worker.
+   *
+   * The responding worker is identified by `message.workerId`:
+   * `promiseResponse.workerId` is rewritten only on queued tasks (steal /
+   * redistribute) synchronously before re-dispatch, so it always matches
+   * `message.workerId` at response time.
+   * @param message - The response message.
+   */
   private handleTaskExecutionResponse (message: MessageValue<Response>): void {
     const { data, taskId, workerError, workerId } = message
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const promiseResponse = this.promiseResponseMap.get(taskId!)
     if (promiseResponse != null) {
       const { asyncResource, reject, resolve } = promiseResponse
-      // Invariant: `promiseResponse.workerId` is rewritten only on
-      // queued tasks (steal / redistribute), synchronously before
-      // re-dispatch. The responding worker is therefore always the one
-      // currently targeted by `promiseResponse`, so `message.workerId`
-      // is the authoritative key here.
       const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
       const workerNode =
         workerNodeKey !== -1 ? this.workerNodes[workerNodeKey] : undefined
@@ -2483,6 +2474,13 @@ export abstract class AbstractPool<
     )
   }
 
+  /**
+   * Redistributes the queued tasks of the given source worker node to the
+   * other ready worker nodes.
+   *
+   * No-op when `sourceWorkerNodeKey === -1`.
+   * @param sourceWorkerNodeKey - The source worker node key.
+   */
   private redistributeQueuedTasks (sourceWorkerNodeKey: number): void {
     if (sourceWorkerNodeKey === -1 || this.cannotStealTask()) {
       return
@@ -2516,6 +2514,8 @@ export abstract class AbstractPool<
   /**
    * Rejects remaining queued task promises for the given crashed worker
    * node key. Each rejection carries its own `taskId`.
+   *
+   * No-op when `workerNodeKey === -1`.
    * @param workerNodeKey - The worker node key.
    * @param errorFactory - Per-task error factory — invoked once per
    * rejection.
