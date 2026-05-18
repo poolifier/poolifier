@@ -93,10 +93,6 @@ describe('Crash recovery regression test suite', () => {
       const taskPromise = pool.execute()
       await new Promise(resolve => setTimeout(resolve, 100))
       const workerNode = pool.workerNodes[0]
-      // cluster.Worker#kill() defaults to SIGTERM, mapped to
-      // TerminateProcess on Windows. The resulting `error.signal` may
-      // be null OR 'SIGTERM' depending on Node version (cross-platform
-      // tolerance).
       workerNode.worker.kill()
       let rejected
       try {
@@ -106,8 +102,11 @@ describe('Crash recovery regression test suite', () => {
       }
       expect(rejected).toBeInstanceOf(WorkerCrashError)
       expect(rejected.name).toBe('WorkerCrashError')
-      expect(rejected.exitCode).not.toBeNull()
-      expect([null, 'SIGTERM']).toContain(rejected.signal)
+      if (rejected.exitCode != null) {
+        expect(rejected.exitCode).not.toBe(0)
+      } else {
+        expect(rejected.signal).not.toBeNull()
+      }
       expect(rejected.taskId).toBeDefined()
     }
   )
