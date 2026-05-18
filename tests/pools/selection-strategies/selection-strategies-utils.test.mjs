@@ -1,82 +1,57 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
-import { FixedClusterPool, FixedThreadPool } from '../../../lib/index.mjs'
-import {
-  buildWorkerChoiceStrategyOptions,
-  getWorkerChoiceStrategiesRetries,
-} from '../../../lib/pools/selection-strategies/selection-strategies-helpers.mjs'
+import { FixedThreadPool, WorkerChoiceStrategies } from '../../../lib/index.mjs'
+import { FairShareWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy.mjs'
+import { InterleavedWeightedRoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/interleaved-weighted-round-robin-worker-choice-strategy.mjs'
+import { LeastBusyWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/least-busy-worker-choice-strategy.mjs'
+import { LeastEluWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/least-elu-worker-choice-strategy.mjs'
+import { LeastUsedWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/least-used-worker-choice-strategy.mjs'
+import { RoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/round-robin-worker-choice-strategy.mjs'
+import { getWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/selection-strategies-utils.mjs'
+import { WeightedRoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/weighted-round-robin-worker-choice-strategy.mjs'
+import { WorkerChoiceStrategiesContext } from '../../../lib/pools/selection-strategies/worker-choice-strategies-context.mjs'
 
 describe('Selection strategies utils test suite', () => {
-  const numberOfWorkers = 4
   const numberOfThreads = 4
-  let clusterFixedPool, threadFixedPool
+  let context, threadFixedPool
 
   beforeAll(() => {
-    clusterFixedPool = new FixedClusterPool(
-      numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.cjs'
-    )
     threadFixedPool = new FixedThreadPool(
       numberOfThreads,
       './tests/worker-files/thread/testWorker.mjs'
     )
+    context = new WorkerChoiceStrategiesContext(threadFixedPool)
   })
 
   afterAll(async () => {
     // Skip on CI to avoid afterAll hook timeout
     if (process.env.CI != null) return
-    await clusterFixedPool.destroy()
     await threadFixedPool.destroy()
   })
 
-  it('Verify buildWorkerChoiceStrategyOptions() behavior', async () => {
-    expect(buildWorkerChoiceStrategyOptions(clusterFixedPool)).toStrictEqual({
-      elu: { median: false },
-      runTime: { median: false },
-      waitTime: { median: false },
-      weights: expect.objectContaining({
-        0: expect.any(Number),
-        [clusterFixedPool.info.maxSize - 1]: expect.any(Number),
-      }),
-    })
-    const workerChoiceStrategyOptions = {
-      elu: { median: true },
-      runTime: { median: true },
-      waitTime: { median: true },
-      weights: {
-        0: 100,
-        1: 100,
-      },
-    }
+  it.each([
+    [WorkerChoiceStrategies.FAIR_SHARE, FairShareWorkerChoiceStrategy],
+    [
+      WorkerChoiceStrategies.INTERLEAVED_WEIGHTED_ROUND_ROBIN,
+      InterleavedWeightedRoundRobinWorkerChoiceStrategy,
+    ],
+    [WorkerChoiceStrategies.LEAST_BUSY, LeastBusyWorkerChoiceStrategy],
+    [WorkerChoiceStrategies.LEAST_ELU, LeastEluWorkerChoiceStrategy],
+    [WorkerChoiceStrategies.LEAST_USED, LeastUsedWorkerChoiceStrategy],
+    [WorkerChoiceStrategies.ROUND_ROBIN, RoundRobinWorkerChoiceStrategy],
+    [
+      WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN,
+      WeightedRoundRobinWorkerChoiceStrategy,
+    ],
+  ])('Verify getWorkerChoiceStrategy() instantiates %s', (strategy, StrategyClass) => {
     expect(
-      buildWorkerChoiceStrategyOptions(
-        clusterFixedPool,
-        workerChoiceStrategyOptions
-      )
-    ).toStrictEqual(workerChoiceStrategyOptions)
+      getWorkerChoiceStrategy(strategy, threadFixedPool, context)
+    ).toBeInstanceOf(StrategyClass)
   })
 
-  it('Verify getWorkerChoiceStrategyRetries() behavior', async () => {
-    expect(getWorkerChoiceStrategiesRetries(threadFixedPool)).toBe(
-      threadFixedPool.info.maxSize * 2
-    )
-    const workerChoiceStrategyOptions = {
-      elu: { median: true },
-      runTime: { median: true },
-      waitTime: { median: true },
-      weights: {
-        0: 100,
-        1: 100,
-      },
-    }
-    expect(
-      getWorkerChoiceStrategiesRetries(
-        threadFixedPool,
-        workerChoiceStrategyOptions
-      )
-    ).toBe(
-      threadFixedPool.info.maxSize +
-        Object.keys(workerChoiceStrategyOptions.weights).length
-    )
+  it('Verify getWorkerChoiceStrategy() throws on unknown strategy', () => {
+    expect(() =>
+      getWorkerChoiceStrategy('UNKNOWN', threadFixedPool, context)
+    ).toThrow(new Error("Worker choice strategy 'UNKNOWN' is not valid"))
   })
 })
