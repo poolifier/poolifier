@@ -62,28 +62,28 @@ This method is available on both pool implementations and will start the minimum
 
 ### `pool.destroy()`
 
-This method is available on both pool implementations and will call the terminate method on each worker. Concurrent calls share the same in-flight promise (idempotent).
+This method is available on both pool implementations and will call the terminate method on each worker. Concurrent calls share the same in-flight termination promise; calling `destroy()` again after it has resolved throws.
 
-In-flight task promises that do not finish within `tasksFinishedTimeout` (default `2000` ms; configurable via `tasksQueueOptions.tasksFinishedTimeout`) are rejected with a `WorkerTerminationError`. Fire-and-forget callers (`pool.execute()` without an attached `.catch`) must attach a handler if they want to swallow the rejection — otherwise Node logs an unhandled rejection. Discriminate via `error.name === 'WorkerTerminationError'` (dual-package safe; `instanceof` works only within a single bundle).
+In-flight tasks that do not finish within `tasksFinishedTimeout` (default `2000` ms; `tasksQueueOptions.tasksFinishedTimeout`) are rejected with a `WorkerTerminationError`. Attach a `.catch` to every `pool.execute()` you want to drain quietly; otherwise an unhandled rejection will be logged.
 
-`PoolEvents.error` is emitted exactly once per voluntarily terminated worker that had in-flight tasks at termination, payload `WorkerTerminationError`. Idle workers terminated voluntarily emit no event.
+Workers that had at least one in-flight task at termination emit `PoolEvents.error` once with a `WorkerTerminationError` payload. Idle workers terminated voluntarily emit nothing.
 
-The same `WorkerTerminationError` is emitted (and rejects the in-flight task) when a dynamic worker self-evicts via `maxInactiveTime` while a task is still executing.
+Dynamic workers self-evicting via `maxInactiveTime` while a task is still executing reject the task with `WorkerTerminationError` through the same path.
 
 ### Error handling on worker crash
 
-The pool rejects every in-flight task promise assigned to a worker that exits unexpectedly:
+The pool rejects every in-flight task assigned to a worker that exits unexpectedly:
 
 - uncaught exception in the worker;
-- `process.exit(N)` from worker code (any `N`, including `0` while a task is still in-flight);
+- `process.exit(N)` from worker code (any non-zero `N`, or `0` while a task is in-flight);
 - signal kills (SIGKILL, SIGSEGV) and OOM-killer events on cluster workers;
-- pre-ready crashes (worker dies before signalling readiness).
+- crashes during worker startup.
 
-Rejection error is `WorkerCrashError` carrying `name === 'WorkerCrashError'`, `cause`, `exitCode`, `signal`, `taskId`, `workerId`. Discriminate via `error.name`.
+The rejection is a `WorkerCrashError` with `cause`, `exitCode`, `signal`, `workerId`, and `taskId` (set only when the crashed worker had an in-flight task at the time of crash). `PoolEvents.error` is emitted once per crash with a `WorkerCrashError` payload.
 
-`PoolEvents.error` is emitted exactly once per worker crash, payload `WorkerCrashError`. When in-flight tasks existed, the payload is the first task's rejection (carrying its `taskId`); otherwise it carries the raw `cause`.
+Discriminate `WorkerCrashError` and `WorkerTerminationError` via `error.name` — this works across CJS and ESM imports of the package.
 
-> Note (cluster): on cluster pools, the worker's original throw text does NOT propagate via `error.cause.message` — Node's `child_process` does not emit an `'error'` event for unhandled exceptions; the crash surfaces only via the `'exit'` handler with non-zero `exitCode` / non-null `signal`. The original throw text lives in the worker process's stderr.
+> Cluster note: when a cluster worker throws, the original throw text is only available on the worker's stderr — it does not propagate to `error.cause`. Use `error.exitCode` and `error.signal` to inspect how the worker exited.
 
 ### `pool.hasTaskFunction(name)`
 
@@ -131,7 +131,7 @@ An object with these properties:
   Default: `() => {}`
 - `errorHandler` (optional) - A function that will listen for error event on each worker.  
   Default: `() => {}`
-- `exitHandler` (optional) - A function `(exitCode: null | number, signal?: NodeJS.Signals | null) => void` that will listen for exit event on each worker. `exitCode` is `null` when the worker was killed by a signal; `signal` is non-null in that case (cluster pools).  
+- `exitHandler` (optional) - A function that will listen for exit event on each worker.  
   Default: `() => {}`
 
 - `workerChoiceStrategy` (optional) - The default worker choice strategy to use in this pool:
