@@ -62,7 +62,7 @@ This method is available on both pool implementations and will start the minimum
 
 ### `pool.destroy()`
 
-This method is available on both pool implementations and will call the terminate method on each worker. Concurrent calls share the same in-flight termination promise; calling `destroy()` again after it has resolved throws.
+This method is available on both pool implementations and will call the terminate method on each worker. Concurrent calls all resolve when termination completes; calling `destroy()` after completion throws.
 
 In-flight tasks that do not finish within `tasksFinishedTimeout` (default `2000` ms; `tasksQueueOptions.tasksFinishedTimeout`) are rejected with a `WorkerTerminationError`. Attach a `.catch` to every `pool.execute()` you want to drain quietly; otherwise an unhandled rejection will be logged.
 
