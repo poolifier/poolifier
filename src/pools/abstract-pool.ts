@@ -1133,9 +1133,11 @@ export abstract class AbstractPool<
         ) {
           this.handleWorkerNodeCrash(
             workerNode,
-            new WorkerCrashError(
-              `Worker node exited unexpectedly (${formatExitDetail(exitCode, signal)})`,
-              { exitCode, signal, workerId: workerNode.info.id }
+            this.makeUnexpectedExitError(
+              'lifecycle',
+              exitCode,
+              signal,
+              workerNode.info.id
             )
           )
         }
@@ -1218,9 +1220,11 @@ export abstract class AbstractPool<
       (exitCode: null | number, signal?: NodeJS.Signals | null) => {
         if (!captureEnabled || teardownCause != null) return
         if (this.isAbnormalExit(exitCode, signal, stableWorkerId)) {
-          teardownCause = new WorkerCrashError(
-            `Worker node exited unexpectedly during teardown (${formatExitDetail(exitCode, signal)})`,
-            { exitCode, signal, workerId: stableWorkerId }
+          teardownCause = this.makeUnexpectedExitError(
+            'teardown',
+            exitCode,
+            signal,
+            stableWorkerId
           )
         }
       }
@@ -2513,6 +2517,27 @@ export abstract class AbstractPool<
       workerNode.info.ready &&
       (workerNode.info.continuousStealing ||
         workerNode.info.backPressureStealing)
+    )
+  }
+
+  /**
+   * Builds a {@link WorkerCrashError} for an unexpected worker exit.
+   * @param context - The exit context.
+   * @param exitCode - The exit code.
+   * @param signal - The exit signal.
+   * @param workerId - The worker id.
+   * @returns A {@link WorkerCrashError} describing the unexpected exit.
+   */
+  private makeUnexpectedExitError (
+    context: 'lifecycle' | 'teardown',
+    exitCode: null | number,
+    signal: NodeJS.Signals | null | undefined,
+    workerId: number | undefined
+  ): WorkerCrashError {
+    const where = context === 'teardown' ? ' during teardown' : ''
+    return new WorkerCrashError(
+      `Worker node exited unexpectedly${where} (${formatExitDetail(exitCode, signal)})`,
+      { exitCode, signal, workerId }
     )
   }
 
