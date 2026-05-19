@@ -74,6 +74,14 @@ import {
   type WorkerType,
 } from './worker.js'
 
+const formatExitDetail = (
+  exitCode: null | number,
+  signal: NodeJS.Signals | null | undefined
+): string =>
+  signal != null
+    ? `code=${String(exitCode)}, signal=${signal}`
+    : `code=${String(exitCode)}`
+
 /**
  * Base class that implements some shared logic for all poolifier pools.
  * @template Worker - Type of worker which manages this pool.
@@ -1044,7 +1052,7 @@ export abstract class AbstractPool<
   ): WorkerCrashError {
     if (cause instanceof WorkerCrashError) {
       return new WorkerCrashError(cause.message, {
-        cause: cause.cause,
+        cause: cause.cause instanceof Error ? cause.cause : undefined,
         exitCode: cause.exitCode,
         signal: cause.signal,
         taskId,
@@ -1174,9 +1182,7 @@ export abstract class AbstractPool<
           this.handleWorkerNodeCrash(
             workerNode,
             new WorkerCrashError(
-              `Worker node exited unexpectedly (code=${String(
-                exitCode
-              )}, signal=${String(signal)})`,
+              `Worker node exited unexpectedly (${formatExitDetail(exitCode, signal)})`,
               { exitCode, signal, workerId: workerNode.info.id }
             )
           )
@@ -1272,9 +1278,7 @@ export abstract class AbstractPool<
           (exitCode === 0 && hasInFlightTask)
         if (abnormalExit) {
           teardownCause = new WorkerCrashError(
-            `Worker node exited unexpectedly during teardown (code=${String(
-              exitCode
-            )}, signal=${String(signal)})`,
+            `Worker node exited unexpectedly during teardown (${formatExitDetail(exitCode, signal)})`,
             { exitCode, signal, workerId: stableWorkerId }
           )
         }
@@ -1535,7 +1539,9 @@ export abstract class AbstractPool<
 
   /**
    * Safely emits a {@link PoolEvents.error} event. No-op when `error`
-   * is nullish or no listener is registered; listener throws are swallowed.
+   * is nullish or no listener is registered; listener throws are
+   * re-thrown via `queueMicrotask` to surface as `'uncaughtException'`
+   * without aborting the synchronous cleanup path.
    * @param error - The error to emit.
    * @internal
    */
@@ -1550,10 +1556,9 @@ export abstract class AbstractPool<
       try {
         this.emitter.emit(PoolEvents.error, error)
       } catch (listenerError) {
-        console.error(
-          '[poolifier] PoolEvents.error listener threw:',
-          listenerError
-        )
+        queueMicrotask(() => {
+          throw listenerError
+        })
       }
     }
   }
