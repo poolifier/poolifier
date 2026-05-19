@@ -195,8 +195,8 @@ export interface TaskPerformance {
 }
 
 /**
- * UUIDv4 string template type used for task identifiers.
- * @internal
+ * UUIDv4 string template type used for task identifiers (e.g. on
+ * {@link WorkerCrashError.taskId} and {@link WorkerTerminationError.taskId}).
  */
 export type TaskUUID = `${string}-${string}-${string}-${string}-${string}`
 

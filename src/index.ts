@@ -58,6 +58,7 @@ export type {
   Task,
   TaskFunctionProperties,
   TaskPerformance,
+  TaskUUID,
   WorkerError,
   WorkerStatistics,
   Writable,
