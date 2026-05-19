@@ -1145,6 +1145,7 @@ export abstract class AbstractPool<
     // handler cannot abort crash recovery.
     workerNode.registerOnceWorkerEventHandler('error', (error: Error) => {
       this.handleWorkerNodeCrash(workerNode, error)
+      workerNode.info.terminating = true
       // eslint-disable-next-line promise/no-promise-in-callback
       workerNode.terminate().catch((terminateError: unknown) => {
         this.safeEmitPoolError(terminateError)
@@ -1185,7 +1186,8 @@ export abstract class AbstractPool<
           this.started &&
           !this.startingMinimumNumberOfWorkers &&
           !this.destroying &&
-          (exitCode === 0 || this.opts.restartWorkerOnError === true)
+          ((exitCode === 0 && !abnormalExit) ||
+            this.opts.restartWorkerOnError === true)
         ) {
           this.startMinimumNumberOfWorkers(true)
         }
@@ -1260,6 +1262,35 @@ export abstract class AbstractPool<
     this.flagWorkerNodeAsNotReady(workerNodeKey)
     const workerNode = this.workerNodes[workerNodeKey]
     const stableWorkerId = workerNode.info.id
+    let captureEnabled = true
+    let teardownCause: undefined | WorkerCrashError
+    workerNode.registerOnceWorkerEventHandler('error', (error: Error) => {
+      if (!captureEnabled || teardownCause != null) return
+      teardownCause = this.buildWorkerCrashError(error, workerNode)
+    })
+    workerNode.registerOnceWorkerEventHandler(
+      'exit',
+      (exitCode: null | number, signal?: NodeJS.Signals | null) => {
+        if (!captureEnabled || teardownCause != null) return
+        const hasInFlightTask =
+          stableWorkerId != null &&
+          [...this.promiseResponseMap.values()].some(
+            promiseResponse => promiseResponse.workerId === stableWorkerId
+          )
+        const abnormalExit =
+          (exitCode != null && exitCode !== 0) ||
+          (exitCode == null && signal != null) ||
+          (exitCode === 0 && hasInFlightTask)
+        if (abnormalExit) {
+          teardownCause = new WorkerCrashError(
+            `Worker node exited unexpectedly during teardown (code=${String(
+              exitCode
+            )}, signal=${String(signal)})`,
+            { exitCode, signal, workerId: stableWorkerId }
+          )
+        }
+      }
+    )
     workerNode.info.terminating = true
     try {
       this.flushTasksQueue(workerNodeKey)
@@ -1274,15 +1305,21 @@ export abstract class AbstractPool<
         false
       )
     } finally {
+      captureEnabled = false
       try {
+        const errorFactory =
+          teardownCause != null
+            ? (taskId: TaskUUID): WorkerCrashError =>
+                this.buildWorkerCrashError(teardownCause, workerNode, taskId)
+            : (taskId: TaskUUID): WorkerTerminationError =>
+                new WorkerTerminationError(
+                  'Worker node terminated by pool (in-flight task did not complete within tasksFinishedTimeout)',
+                  { taskId, workerId: stableWorkerId }
+                )
         const firstReject = this.rejectInFlightTaskPromisesByRef(
           workerNode,
           stableWorkerId,
-          taskId =>
-            new WorkerTerminationError(
-              'Worker node terminated by pool (in-flight task did not complete within tasksFinishedTimeout)',
-              { taskId, workerId: stableWorkerId }
-            )
+          errorFactory
         )
         if (firstReject != null) {
           this.safeEmitPoolError(firstReject)

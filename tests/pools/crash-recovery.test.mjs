@@ -916,6 +916,64 @@ describe('Crash recovery regression test suite', () => {
     expect(errorEvents.length).toBe(0)
   })
 
+  it('T13f: worker crash during destroyWorkerNode wait surfaces WorkerCrashError', {
+    retry: 0,
+    timeout: 10_000,
+  }, async () => {
+    const pool = trackPool(
+      new FixedThreadPool(1, './tests/worker-files/thread/crashWorker.mjs', {
+        enableTasksQueue: false,
+        errorHandler: () => undefined,
+        tasksQueueOptions: { tasksFinishedTimeout: 5_000 },
+      })
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    const taskPromise = pool.execute()
+    await new Promise(resolve => setTimeout(resolve, 5))
+    const destroyPromise = pool.destroy()
+    let rejected
+    try {
+      await taskPromise
+    } catch (e) {
+      rejected = e
+    }
+    await destroyPromise
+    expect(rejected).toBeInstanceOf(WorkerCrashError)
+    expect(rejected.name).toBe('WorkerCrashError')
+    expect(rejected.taskId).toBeDefined()
+  })
+
+  it('T13g: clean exit(0) mid-task with restartWorkerOnError:false does NOT replenish', {
+    retry: 0,
+    timeout: 10_000,
+  }, async () => {
+    const pool = trackPool(
+      new FixedThreadPool(
+        1,
+        './tests/worker-files/thread/cleanExitInFlightWorker.mjs',
+        {
+          enableTasksQueue: false,
+          errorHandler: () => undefined,
+          restartWorkerOnError: false,
+        }
+      )
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    let rejected
+    try {
+      await pool.execute()
+    } catch (e) {
+      rejected = e
+    }
+    expect(rejected).toBeInstanceOf(WorkerCrashError)
+    await new Promise(resolve => setTimeout(resolve, 200))
+    expect(pool.workerNodes.length).toBe(0)
+  })
+
   it('T-I5a: clean process.exit(0) replenishes even with restartWorkerOnError:false', {
     retry: 0,
     timeout: 10_000,
