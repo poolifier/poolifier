@@ -1036,14 +1036,13 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Builds a typed crash error. If `cause` is already a
-   * {@link WorkerCrashError}, propagates its `exitCode`, `signal` and
-   * inner `cause` to avoid double-wrapping.
+   * Builds a typed crash error.
+   * If `cause` is already a {@link WorkerCrashError}, propagates its
+   * `exitCode`, `signal` and inner `cause` to avoid double-wrapping.
    * @param cause - The original error that caused the crash.
    * @param workerNode - The crashed worker node.
    * @param taskId - The task id (optional).
    * @returns A {@link WorkerCrashError} wrapping the cause.
-   * @internal
    */
   protected buildWorkerCrashError (
     cause: Error,
@@ -1237,7 +1236,6 @@ export abstract class AbstractPool<
 
   /**
    * Terminates the worker node given its worker node key.
-   *
    * Queued tasks are redistributed to ready peer workers; tasks that
    * cannot be redistributed reject with {@link WorkerTerminationError}.
    * In-flight task promises that do not complete within
@@ -1245,7 +1243,6 @@ export abstract class AbstractPool<
    * or with {@link WorkerCrashError} if the worker exited abnormally
    * during the wait.
    * @param workerNodeKey - The worker node key.
-   * @internal
    */
   protected async destroyWorkerNode (workerNodeKey: number): Promise<void> {
     this.flagWorkerNodeAsNotReady(workerNodeKey)
@@ -1358,22 +1355,13 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Handles a crashed worker node:
-   *   1. Rejects every in-flight task promise assigned to this worker
-   *      with a {@link WorkerCrashError} carrying the task's own
-   *      `taskId`.
-   *   2. Emits exactly one {@link PoolEvents.error}: the typed first
-   *      rejection when in-flight tasks existed, otherwise a fresh
-   *      {@link WorkerCrashError} carrying the raw `cause`.
-   *   3. If `restartWorkerOnError` is enabled and the worker is
-   *      dynamic, spawns a replacement worker.
-   *   4. If `enableTasksQueue` is enabled, redistributes queued tasks
-   *      to other workers and rejects any that cannot be redistributed.
-   *
-   * Idempotent: no-op when `terminating`, `crashHandled`, or `destroying` is set.
+   * Handles a crashed worker node.
+   * Rejects in-flight task promises, emits one {@link PoolEvents.error},
+   * spawns a replacement dynamic worker when `restartWorkerOnError` is set,
+   * and redistributes queued tasks when `enableTasksQueue` is set.
+   * No-op when `terminating`, `crashHandled`, or `destroying` is set.
    * @param workerNode - The crashed worker node.
-   * @param cause - The error that caused the crash.
-   * @internal
+   * @param cause - The crash cause.
    */
   protected handleWorkerNodeCrash (
     workerNode: IWorkerNode<Worker, Data>,
@@ -1419,9 +1407,8 @@ export abstract class AbstractPool<
   /**
    * Whether the given worker id has any in-flight task in
    * {@link AbstractPool.promiseResponseMap}.
-   * @param workerId - The worker id (stable reference).
+   * @param workerId - The worker id.
    * @returns `true` when at least one entry's `workerId` matches.
-   * @internal
    */
   protected hasInFlightTaskForWorkerId (workerId: number | undefined): boolean {
     if (workerId == null) {
@@ -1518,20 +1505,16 @@ export abstract class AbstractPool<
   ): void
 
   /**
-   * Rejects in-flight task promises for the given worker node by stable
-   * reference. Safe to call AFTER the worker has been removed from the
-   * pool because it does not index into `this.workerNodes`. Skips
-   * entries whose ids are still queued (handled by
-   * {@link rejectRemainingQueuedTaskPromises} or redistributed). Returns
-   * the first rejection so the caller can route the
-   * {@link PoolEvents.error} emission.
-   * @param workerNode - The worker node (stable reference).
-   * @param workerId - The worker id (stable reference, captured pre-await).
-   * @param errorFactory - Per-task error factory — invoked once per
-   * rejection.
-   * @returns The first rejection, or `undefined` if no in-flight tasks were
-   * matched.
-   * @internal
+   * Rejects in-flight task promises for the given worker node.
+   * Safe to call after the worker node has been removed from
+   * {@link AbstractPool.workerNodes}: it iterates
+   * {@link AbstractPool.promiseResponseMap} and skips entries whose
+   * task ids are still queued (handled by
+   * {@link AbstractPool.rejectRemainingQueuedTaskPromises} or redistributed).
+   * @param workerNode - The worker node.
+   * @param workerId - The worker id.
+   * @param errorFactory - The per-task error factory.
+   * @returns The first rejection, or `undefined` when no in-flight task matched.
    */
   protected rejectInFlightTaskPromisesByRef (
     workerNode: IWorkerNode<Worker, Data>,
@@ -1562,12 +1545,11 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Safely emits a {@link PoolEvents.error} event. No-op when `error`
-   * is nullish or no listener is registered; listener throws are
-   * re-thrown via `queueMicrotask` to surface as `'uncaughtException'`
-   * without aborting the synchronous cleanup path.
+   * Safely emits a {@link PoolEvents.error} event.
+   * No-op when `error` is nullish or no listener is registered.
+   * Listener throws are re-thrown via `queueMicrotask` so they surface
+   * as `'uncaughtException'` without aborting the synchronous cleanup path.
    * @param error - The error to emit.
-   * @internal
    */
   protected safeEmitPoolError (error: unknown): void {
     if (error == null) {
