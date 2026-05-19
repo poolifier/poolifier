@@ -25,6 +25,13 @@ import {
 } from './worker.js'
 
 /**
+ * Grace cap for `worker.terminate()` which can hang on Node 22 Windows after
+ * an uncaught worker exception (https://github.com/nodejs/node/pull/58070,
+ * not backported to v22).
+ */
+const WORKER_TERMINATION_GRACE_MS = 5000
+
+/**
  * Worker node.
  * @template Worker - Type of worker.
  * @template Data - Type of data sent to the worker. This can only be structured-cloneable data.
@@ -47,6 +54,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   /** @inheritdoc */
   public readonly worker: Worker
   private readonly taskFunctionsUsage: Map<string, WorkerUsage>
+  private terminationPromise?: Promise<void>
 
   /**
    * Constructs a new worker node.
@@ -169,27 +177,11 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
 
   /** @inheritdoc */
   public async terminate (): Promise<void> {
-    const waitWorkerExit = new Promise<void>(resolve => {
-      this.registerOnceWorkerEventHandler('exit', () => {
-        resolve()
-      })
-    })
-    this.closeMessageChannel()
-    this.removeAllListeners()
-    switch (this.info.type) {
-      case WorkerTypes.cluster:
-        this.registerOnceWorkerEventHandler('disconnect', () => {
-          this.worker.kill?.()
-        })
-        this.worker.disconnect?.()
-        break
-      case WorkerTypes.thread:
-        this.worker.unref?.()
-        await this.worker.terminate?.()
-        break
+    if (this.terminationPromise != null) {
+      return this.terminationPromise
     }
-    await waitWorkerExit
-    this.worker.removeAllListeners()
+    this.terminationPromise = this.doTerminate()
+    return this.terminationPromise
   }
 
   private closeMessageChannel (): void {
@@ -200,6 +192,54 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
       this.messageChannel.port2.close()
       delete this.messageChannel
     }
+  }
+
+  private async doTerminate (): Promise<void> {
+    let exitFired = false
+    const waitWorkerExit = new Promise<void>(resolve => {
+      this.registerOnceWorkerEventHandler('exit', () => {
+        exitFired = true
+        resolve()
+      })
+    })
+    this.closeMessageChannel()
+    switch (this.info.type) {
+      case WorkerTypes.cluster:
+        this.registerOnceWorkerEventHandler('disconnect', () => {
+          this.worker.kill?.()
+        })
+        this.worker.disconnect?.()
+        break
+      case WorkerTypes.thread:
+        this.worker.unref?.()
+        this.worker.terminate?.().catch(() => undefined)
+        break
+    }
+    let timeoutHandle: NodeJS.Timeout | undefined
+    try {
+      await Promise.race([
+        waitWorkerExit,
+        new Promise<void>(resolve => {
+          timeoutHandle = setTimeout(resolve, WORKER_TERMINATION_GRACE_MS)
+          timeoutHandle.unref()
+        }),
+      ])
+    } finally {
+      if (timeoutHandle != null) clearTimeout(timeoutHandle)
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- info.type narrowing is lost after switch break
+    if (!exitFired && this.info.type === WorkerTypes.cluster) {
+      // Cluster disconnect() is async; if grace expired before the once-'disconnect'
+      // hook fired kill(), force-kill now (catch ESRCH on already-dead PID).
+      try {
+        this.worker.kill?.()
+      } catch {
+        /* empty */
+      }
+    }
+    this.worker.removeAllListeners()
+    this.emit('terminated')
+    this.removeAllListeners()
   }
 
   /**

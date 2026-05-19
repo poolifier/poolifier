@@ -293,7 +293,9 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   readonly tasksQueueSize: () => number
   /**
-   * Terminates the worker node.
+   * Terminates the worker node. Idempotent: repeated calls share the
+   * in-flight termination and resolve identically. Best-effort: settles
+   * within a bounded grace period even if the worker never exits.
    */
   readonly terminate: () => Promise<void>
   /**

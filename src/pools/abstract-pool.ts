@@ -1205,6 +1205,20 @@ export abstract class AbstractPool<
       'exit',
       this.opts.exitHandler ?? EMPTY_FUNCTION
     )
+    workerNode.once('terminated', () => {
+      // Grace-expiry path: 'exit' may never fire on Node 22 Windows wedge.
+      // The includes guard dedupes with the natural 'exit' path.
+      if (!this.workerNodes.includes(workerNode)) return
+      this.removeWorkerNode(workerNode)
+      if (
+        this.started &&
+        !this.startingMinimumNumberOfWorkers &&
+        !this.destroying &&
+        this.opts.restartWorkerOnError === true
+      ) {
+        this.startMinimumNumberOfWorkers(true)
+      }
+    })
     const workerNodeKey = this.addWorkerNode(workerNode)
     this.afterWorkerNodeSetup(workerNodeKey)
     return workerNodeKey
@@ -1239,9 +1253,9 @@ export abstract class AbstractPool<
    *   {@link AbstractPool.afterTaskExecutionHook}); after
    *   `flushTasksQueue` it covers queued + in-flight tasks, each of
    *   which emits exactly one `'taskFinished'` event.
-   * - When a sibling crash path has already terminated the worker, both
-   *   `sendKillMessageToWorker` and `terminate` are skipped: a second
-   *   `terminate()` would await an already-fired `'exit'`.
+   * - When a sibling crash path has already terminated the worker,
+   *   `sendKillMessageToWorker` is skipped via `liveWorkerNodeKey === -1`,
+   *   while `workerNode.terminate()` is always called (it is idempotent).
    * @param workerNodeKey - The worker node key.
    * @internal
    */
@@ -1286,10 +1300,10 @@ export abstract class AbstractPool<
             this.safeEmitPoolError(error)
           }
         )
-        await workerNode.terminate().catch((error: unknown) => {
-          this.safeEmitPoolError(error)
-        })
       }
+      await workerNode.terminate().catch((error: unknown) => {
+        this.safeEmitPoolError(error)
+      })
     }
   }
 

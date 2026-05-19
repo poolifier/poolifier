@@ -715,6 +715,48 @@ describe('Crash recovery regression test suite', () => {
     expect(workerNode.usage.tasks.failed).toBe(failedBefore)
   })
 
+  it('T11d: workerNode.terminate() resolves within grace period when worker exit never fires', {
+    retry: 0,
+    timeout: 15_000,
+  }, async () => {
+    // Upstream V8 isolate teardown bug (Node 22 Windows, fixed in v24
+    // by https://github.com/nodejs/node/pull/58070) wedges
+    // worker.terminate() and suppresses 'exit' indefinitely.
+    const pool = trackPool(
+      new FixedThreadPool(1, './tests/worker-files/thread/echoWorker.mjs', {
+        errorHandler: () => undefined,
+      })
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    const workerNode = pool.workerNodes[0]
+    const nativeOnce = workerNode.worker.once.bind(workerNode.worker)
+    const onceSpy = vi
+      .spyOn(workerNode.worker, 'once')
+      .mockImplementation(function (event, handler) {
+        if (event === 'exit') return this
+        return nativeOnce(event, handler)
+      })
+    const terminateSpy = vi
+      .spyOn(workerNode.worker, 'terminate')
+      .mockImplementation(async () => await new Promise(() => undefined))
+    const emitSpy = vi.spyOn(workerNode, 'emit')
+    try {
+      const start = performance.now()
+      await workerNode.terminate()
+      const elapsed = performance.now() - start
+      expect(elapsed).toBeGreaterThanOrEqual(4500)
+      expect(elapsed).toBeLessThan(6000)
+      expect(emitSpy).toHaveBeenCalledWith('terminated')
+      expect(pool.workerNodes.includes(workerNode)).toBe(false)
+    } finally {
+      onceSpy.mockRestore()
+      terminateSpy.mockRestore()
+      emitSpy.mockRestore()
+    }
+  })
+
   it('T12: concurrent pool.destroy() calls are silently idempotent', {
     retry: 0,
     timeout: 10_000,

@@ -571,6 +571,7 @@ export const waitWorkerNodeEvents = async <
       case 'backPressure':
       case 'idle':
       case 'taskFinished':
+      case 'terminated':
         workerNode.on(workerNodeEvent, listener)
         break
       default:
