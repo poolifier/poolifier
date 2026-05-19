@@ -338,8 +338,7 @@ export interface WorkerInfo {
   continuousStealing: boolean
   /**
    * Crash handled flag.
-   * Set to `true` on the first crash signal (`'error'` or `'exit'`)
-   * to short-circuit re-entry. Never reset.
+   * This flag is set to `true` on the first worker crash signal (`'error'` or `'exit'`) to prevent re-entry.
    */
   crashHandled: boolean
   /**
@@ -375,9 +374,7 @@ export interface WorkerInfo {
   taskFunctionsProperties?: TaskFunctionProperties[]
   /**
    * Terminating flag.
-   * Set to `true` before voluntary worker termination (`pool.destroy()`,
-   * `destroyWorkerNode()`, dynamic `maxInactiveTime` self-eviction) so
-   * the subsequent `'exit'` event is not treated as a crash. Never reset.
+   * This flag is set to `true` before voluntary worker termination so the subsequent `'exit'` event is not treated as a crash.
    */
   terminating: boolean
   /**
