@@ -523,7 +523,7 @@ describe('Crash recovery regression test suite', () => {
   })
 
   // T9b, T11b, T11c, T13b reach into protected pool members by name
-  // (handleWorkerNodeCrash, rejectInFlightTaskPromisesByRef,
+  // (handleWorkerNodeCrash, rejectInFlightTaskPromises,
   // promiseResponseMap). The .mjs runtime erases TS visibility; renames
   // must update both the production declarations and these mutation-
   // killer tests in lockstep.
@@ -627,7 +627,7 @@ describe('Crash recovery regression test suite', () => {
     )
   })
 
-  it('T11b: rejectInFlightTaskPromisesByRef returns the first rejection without emitting', {
+  it('T11b: rejectInFlightTaskPromises returns the first rejection without emitting', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -655,7 +655,7 @@ describe('Crash recovery regression test suite', () => {
       resolve: () => undefined,
       workerId,
     })
-    const result = pool.rejectInFlightTaskPromisesByRef(
+    const result = pool.rejectInFlightTaskPromises(
       workerNode,
       workerId,
       id => new WorkerCrashError('synthetic', { taskId: id })
@@ -686,7 +686,7 @@ describe('Crash recovery regression test suite', () => {
     const failedBefore = workerNode.usage.tasks.failed
     await pool.execute()
     expect(pool.promiseResponseMap.size).toBe(0)
-    const result = pool.rejectInFlightTaskPromisesByRef(
+    const result = pool.rejectInFlightTaskPromises(
       workerNode,
       workerId,
       id => new WorkerCrashError('synthetic post-settle', { taskId: id })
@@ -803,7 +803,7 @@ describe('Crash recovery regression test suite', () => {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // Queued-only path: rejectInFlightTaskPromisesByRef finds no match,
+    // Queued-only path: rejectInFlightTaskPromises finds no match,
     // so the emission falls back to the first queued rejection.
     const pool = trackPool(
       new FixedThreadPool(1, './tests/worker-files/thread/echoWorker.mjs', {

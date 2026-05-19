@@ -1302,7 +1302,7 @@ export abstract class AbstractPool<
                   'Worker node terminated by pool (in-flight task did not complete within tasksFinishedTimeout)',
                   { taskId, workerId: stableWorkerId }
                 )
-        const firstReject = this.rejectInFlightTaskPromisesByRef(
+        const firstReject = this.rejectInFlightTaskPromises(
           workerNode,
           stableWorkerId,
           errorFactory
@@ -1379,7 +1379,7 @@ export abstract class AbstractPool<
     workerNode.info.crashHandled = true
     const crashErrorFactory = (taskId: TaskUUID): WorkerCrashError =>
       this.buildWorkerCrashError(cause, workerNode, taskId)
-    const firstReject = this.rejectInFlightTaskPromisesByRef(
+    const firstReject = this.rejectInFlightTaskPromises(
       workerNode,
       workerNode.info.id,
       crashErrorFactory
@@ -1516,7 +1516,7 @@ export abstract class AbstractPool<
    * @param errorFactory - The per-task error factory.
    * @returns The first rejection, or `undefined` when no in-flight task matched.
    */
-  protected rejectInFlightTaskPromisesByRef (
+  protected rejectInFlightTaskPromises (
     workerNode: IWorkerNode<Worker, Data>,
     workerId: number | undefined,
     errorFactory: (
@@ -2177,7 +2177,7 @@ export abstract class AbstractPool<
       } else {
         this.resolveTaskPromiseResponse(promiseResponse, data as Response)
       }
-      // Concurrency invariant: rejectInFlightTaskPromisesByRef must
+      // Concurrency invariant: rejectInFlightTaskPromises must
       // never observe a settled taskId in promiseResponseMap.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.promiseResponseMap.delete(taskId!)
