@@ -1238,23 +1238,12 @@ export abstract class AbstractPool<
   /**
    * Terminates the worker node given its worker node key.
    *
+   * Queued tasks are redistributed to ready peer workers; tasks that
+   * cannot be redistributed reject with {@link WorkerTerminationError}.
    * In-flight task promises that do not complete within
-   * `tasksFinishedTimeout` are rejected with {@link WorkerTerminationError}.
-   *
-   * Implementation notes:
-   * - `workerNode` and `stableWorkerId` are captured before the await
-   *   because the once-`'exit'` handler in
-   *   {@link createAndSetupWorkerNode} can splice
-   *   {@link AbstractPool.workerNodes} during the wait.
-   * - The wait observes `usage.tasks.executing` (the canonical in-flight
-   *   counter maintained by
-   *   {@link AbstractPool.beforeTaskExecutionHook} /
-   *   {@link AbstractPool.afterTaskExecutionHook}); after
-   *   `flushTasksQueue` it covers queued + in-flight tasks, each of
-   *   which emits exactly one `'taskFinished'` event.
-   * - When a sibling crash path has already terminated the worker,
-   *   `sendKillMessageToWorker` is skipped via `liveWorkerNodeKey === -1`,
-   *   while `workerNode.terminate()` is always called (it is idempotent).
+   * `tasksFinishedTimeout` reject with {@link WorkerTerminationError},
+   * or with {@link WorkerCrashError} if the worker exited abnormally
+   * during the wait.
    * @param workerNodeKey - The worker node key.
    * @internal
    */
@@ -1293,7 +1282,18 @@ export abstract class AbstractPool<
     )
     workerNode.info.terminating = true
     try {
-      this.flushTasksQueue(workerNodeKey)
+      this.redistributeQueuedTasks(workerNodeKey)
+      const firstQueuedReject = this.rejectRemainingQueuedTaskPromises(
+        workerNodeKey,
+        taskId =>
+          new WorkerTerminationError(
+            'Worker node terminated by pool (queued task could not be redistributed)',
+            { taskId, workerId: stableWorkerId }
+          )
+      )
+      if (firstQueuedReject != null) {
+        this.safeEmitPoolError(firstQueuedReject)
+      }
       await waitWorkerNodeEvents(
         workerNode,
         'taskFinished',
