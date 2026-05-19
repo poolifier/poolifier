@@ -1162,15 +1162,11 @@ export abstract class AbstractPool<
     workerNode.registerOnceWorkerEventHandler(
       'exit',
       (exitCode: null | number, signal?: NodeJS.Signals | null) => {
-        // Clean `exit(0)` is abnormal when an in-flight task is still
-        // expected to settle on this worker.
-        const hasInFlightTask = this.hasInFlightTaskForWorkerId(
+        const abnormalExit = this.isAbnormalExit(
+          exitCode,
+          signal,
           workerNode.info.id
         )
-        const abnormalExit =
-          (exitCode != null && exitCode !== 0) ||
-          (exitCode == null && signal != null) ||
-          (exitCode === 0 && hasInFlightTask)
         if (
           !workerNode.info.terminating &&
           !this.destroying &&
@@ -1265,12 +1261,7 @@ export abstract class AbstractPool<
       'exit',
       (exitCode: null | number, signal?: NodeJS.Signals | null) => {
         if (!captureEnabled || teardownCause != null) return
-        const hasInFlightTask = this.hasInFlightTaskForWorkerId(stableWorkerId)
-        const abnormalExit =
-          (exitCode != null && exitCode !== 0) ||
-          (exitCode == null && signal != null) ||
-          (exitCode === 0 && hasInFlightTask)
-        if (abnormalExit) {
+        if (this.isAbnormalExit(exitCode, signal, stableWorkerId)) {
           teardownCause = new WorkerCrashError(
             `Worker node exited unexpectedly during teardown (${formatExitDetail(exitCode, signal)})`,
             { exitCode, signal, workerId: stableWorkerId }
@@ -1473,6 +1464,26 @@ export abstract class AbstractPool<
           this.isWorkerNodeBusy(workerNodeKey) ? accumulator + 1 : accumulator,
         0
       ) === this.workerNodes.length
+    )
+  }
+
+  /**
+   * Whether the given worker exit is abnormal or not.
+   * Clean `exit(0)` is abnormal when an in-flight task is still expected to settle on this worker.
+   * @param exitCode - The exit code.
+   * @param signal - The exit signal.
+   * @param workerId - The worker id.
+   * @returns Worker exit abnormality boolean status.
+   */
+  protected isAbnormalExit (
+    exitCode: null | number,
+    signal: NodeJS.Signals | null | undefined,
+    workerId: number | undefined
+  ): boolean {
+    return (
+      (exitCode != null && exitCode !== 0) ||
+      (exitCode == null && signal != null) ||
+      (exitCode === 0 && this.hasInFlightTaskForWorkerId(workerId))
     )
   }
 
