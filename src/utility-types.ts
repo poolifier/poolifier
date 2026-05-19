@@ -78,6 +78,9 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
 /**
  * An object holding the task execution response promise resolve/reject callbacks.
  * @template Response - Type of execution response. This can only be structured-cloneable data.
+ * @deprecated Internal type re-exported from the package root for legacy
+ * reasons. Will stop being re-exported in a future major version. Do not
+ * import; consumers must not depend on the wrapper shape.
  * @internal
  */
 export interface PromiseResponseWrapper<Response = unknown> {

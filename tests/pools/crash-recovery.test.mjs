@@ -350,9 +350,7 @@ describe('Crash recovery regression test suite', () => {
     await taskPromise.catch(() => undefined)
     expect(rejected).toBeInstanceOf(WorkerTerminationError)
     expect(rejected.taskId).toBeDefined()
-    // Ceiling actually elapsed (allow scheduling slack on slow CI).
     expect(elapsed).toBeGreaterThanOrEqual(ceiling - 50)
-    // And destroy did not stall longer than the ceiling + reasonable slack.
     expect(elapsed).toBeLessThan(ceiling + 2000)
   })
 
@@ -385,8 +383,6 @@ describe('Crash recovery regression test suite', () => {
     await pool.destroy()
     const elapsed = Date.now() - start
     await expect(taskPromise).resolves.toBeDefined()
-    // Bounded well under the ceiling — proves the wait was honored
-    // for the in-flight task without stalling.
     expect(elapsed).toBeLessThan(ceiling - 1000)
     expect(errorEvents.length).toBe(0)
   })
@@ -450,8 +446,6 @@ describe('Crash recovery regression test suite', () => {
     pool.emitter.on(PoolEvents.error, e => {
       errorEvents.push(e)
     })
-    // Dispatch tasks to engage the dynamic pool; voluntary
-    // terminations must not emit error events.
     await Promise.all([pool.execute(), pool.execute(), pool.execute()])
     // Wait for any concurrent crash-emit microtasks to settle.
     await new Promise(resolve => setTimeout(resolve, 50))
@@ -624,9 +618,7 @@ describe('Crash recovery regression test suite', () => {
     await new Promise(resolve => setTimeout(resolve, 5))
     const destroyPromise = pool.destroy().catch(() => undefined)
     await Promise.allSettled([taskPromise, destroyPromise])
-    // (a) Listener observed only typed payloads (no undefined).
     expect(events.every(e => e != null)).toBe(true)
-    // (b) Exactly one rejection — typed.
     expect(rejections.length).toBe(1)
     expect(
       rejections[0] instanceof WorkerCrashError ||

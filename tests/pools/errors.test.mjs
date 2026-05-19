@@ -66,7 +66,7 @@ describe('Pool error classes test suite', () => {
       try {
         Object.assign(e, { name: 'fake' })
       } catch {
-        // strict-mode TypeError — acceptable
+        /* empty */
       }
       expect(e.name).toBe('WorkerCrashError')
     })
