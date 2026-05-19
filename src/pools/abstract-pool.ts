@@ -3030,7 +3030,10 @@ export abstract class AbstractPool<
     if (promiseResponse == null) {
       return
     }
-    promiseResponse.workerId = this.workerNodes[workerNodeKey].info.id
+    this.promiseResponseMap.set(taskId, {
+      ...promiseResponse,
+      workerId: this.workerNodes[workerNodeKey].info.id,
+    })
   }
 
   private updateTaskSequentiallyStolenStatisticsWorkerUsage (
