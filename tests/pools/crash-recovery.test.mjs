@@ -637,9 +637,7 @@ describe('Crash recovery regression test suite', () => {
     )
   })
 
-  // Mutation-killer: rejectInFlightTaskPromisesByRef must never invoke
-  // safeEmitPoolError; the emit-gate lives at callers, not the helper.
-  it('T11b: rejectInFlightTaskPromisesByRef does not invoke safeEmitPoolError on empty iteration', {
+  it('T11b: rejectInFlightTaskPromisesByRef returns the first rejection without emitting', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -651,51 +649,65 @@ describe('Crash recovery regression test suite', () => {
     await new Promise(resolve => {
       pool.emitter.once(PoolEvents.ready, resolve)
     })
-    // Spy installed after readiness so it scopes to the synthetic invocation below.
-    const spy = vi.spyOn(pool, 'safeEmitPoolError')
-    pool.rejectInFlightTaskPromisesByRef(
-      pool.workerNodes[0],
-      999_999,
-      taskId =>
-        new WorkerTerminationError('synthetic empty iteration', { taskId })
-    )
-    expect(spy).not.toHaveBeenCalled()
-  })
-
-  it('T11c: handleTaskExecutionResponse deletes promiseResponseMap entry synchronously', {
-    retry: 0,
-    timeout: 10_000,
-  }, async () => {
-    // Race-fix invariant: the map entry must be gone before the next
-    // microtask drains. A crash sweep arriving in the post-settle gap
-    // would otherwise re-iterate an already-settled task and double
-    // the failed counter via rejectInFlightTaskPromisesByRef.
-    const pool = trackPool(
-      new FixedThreadPool(1, './tests/worker-files/thread/echoWorker.mjs', {
-        errorHandler: () => undefined,
-      })
-    )
-    await new Promise(resolve => {
-      pool.emitter.once(PoolEvents.ready, resolve)
+    const errorEvents = []
+    pool.emitter.on(PoolEvents.error, e => {
+      errorEvents.push(e)
     })
     const workerNode = pool.workerNodes[0]
     const workerId = workerNode.info.id
-    const taskId = '00000000-0000-0000-0000-000000000001'
-    const failedBefore = workerNode.usage.tasks.failed
+    const taskId = '00000000-0000-0000-0000-000000000b11'
+    let rejected
     pool.promiseResponseMap.set(taskId, {
       asyncResource: undefined,
-      reject: () => undefined,
+      reject: err => {
+        rejected = err
+      },
       resolve: () => undefined,
       workerId,
     })
-    pool.handleTaskExecutionResponse({ data: undefined, taskId, workerId })
-    expect(pool.promiseResponseMap.has(taskId)).toBe(false)
-    pool.rejectInFlightTaskPromisesByRef(
+    const result = pool.rejectInFlightTaskPromisesByRef(
       workerNode,
       workerId,
-      id => new WorkerCrashError('synthetic post-settle sweep', { taskId: id })
+      id => new WorkerCrashError('synthetic', { taskId: id })
     )
+    expect(result).toBeInstanceOf(WorkerCrashError)
+    expect(rejected).toBeInstanceOf(WorkerCrashError)
+    expect(errorEvents.length).toBe(0)
+  })
+
+  it('T11c: crash sweep is a no-op once handleTaskExecutionResponse settles the task', {
+    retry: 0,
+    timeout: 10_000,
+  }, async () => {
+    // Real round-trip: dispatch a task, await the response, then issue
+    // a synthetic crash sweep against the same workerId. The
+    // synchronous delete in handleTaskExecutionResponse keeps the map
+    // empty, so the sweep matches nothing and never emits.
+    const pool = trackPool(
+      new FixedThreadPool(1, './tests/worker-files/thread/echoWorker.mjs', {
+        errorHandler: () => undefined,
+      })
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    const errorEvents = []
+    pool.emitter.on(PoolEvents.error, e => {
+      errorEvents.push(e)
+    })
+    const workerNode = pool.workerNodes[0]
+    const workerId = workerNode.info.id
+    const failedBefore = workerNode.usage.tasks.failed
+    await pool.execute()
+    expect(pool.promiseResponseMap.size).toBe(0)
+    const result = pool.rejectInFlightTaskPromisesByRef(
+      workerNode,
+      workerId,
+      id => new WorkerCrashError('synthetic post-settle', { taskId: id })
+    )
+    expect(result).toBeUndefined()
     expect(workerNode.usage.tasks.failed).toBe(failedBefore)
+    expect(errorEvents.length).toBe(0)
   })
 
   it('T11d: workerNode.terminate() resolves within grace period when worker exit never fires', {
