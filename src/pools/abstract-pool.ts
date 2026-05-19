@@ -2978,18 +2978,14 @@ export abstract class AbstractPool<
     if (taskId == null || workerNodeKey === -1) {
       return
     }
-    const workerNode = this.workerNodes[workerNodeKey]
-    if (workerNode.info.id == null) {
-      const promiseResponse = this.promiseResponseMap.get(taskId)
-      if (promiseResponse != null) {
-        promiseResponse.workerId = undefined
-      }
+    const promiseResponse = this.promiseResponseMap.get(taskId)
+    if (promiseResponse == null) {
       return
     }
-    const promiseResponse = this.promiseResponseMap.get(taskId)
-    if (promiseResponse != null) {
-      promiseResponse.workerId = workerNode.info.id
-    }
+    // `info.id` is set synchronously at worker construction
+    // (`worker.threadId` / `cluster.Worker.id`); callers always pass
+    // an indexed worker node, so the id is non-null here.
+    promiseResponse.workerId = this.workerNodes[workerNodeKey].info.id
   }
 
   private updateTaskSequentiallyStolenStatisticsWorkerUsage (
