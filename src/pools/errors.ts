@@ -10,14 +10,6 @@ import type { TaskUUID } from '../utility-types.js'
 
 /**
  * Options for {@link WorkerCrashError}.
- *
- * `taskId` is set by the pool at rejection time so fire-and-forget callers
- * can identify which task failed when handling N concurrent in-flight tasks.
- *
- * `exitCode` and `signal` mirror the args of Node's worker `'exit'` event.
- * Both default to `null` when the constructor option is omitted (thread
- * workers always pass `signal === null`; cluster workers may pass a
- * non-null `NodeJS.Signals` for SIGKILL/SIGSEGV/OOM).
  * @internal
  */
 export interface WorkerCrashErrorOptions {
