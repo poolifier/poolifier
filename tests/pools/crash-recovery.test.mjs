@@ -1013,4 +1013,87 @@ describe('Crash recovery regression test suite', () => {
     expect(rejected.signal).toBeNull()
     expect(rejected.taskId).toBeDefined()
   })
+
+  it('T2-cluster: cluster process.exit(N) mid-task rejects with WorkerCrashError', {
+    retry: 0,
+    timeout: 10_000,
+  }, async () => {
+    const pool = trackPool(
+      new FixedClusterPool(
+        1,
+        './tests/worker-files/cluster/processExitWorker.cjs'
+      )
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    let rejected
+    try {
+      await pool.execute()
+    } catch (e) {
+      rejected = e
+    }
+    expect(rejected).toBeInstanceOf(WorkerCrashError)
+    expect(rejected.name).toBe('WorkerCrashError')
+    expect(rejected.exitCode).toBe(2)
+    expect(rejected.taskId).toBeDefined()
+  })
+
+  it('T-I5b-cluster: cluster crash with restartWorkerOnError:false does NOT replenish', {
+    retry: 0,
+    timeout: 10_000,
+  }, async () => {
+    const pool = trackPool(
+      new FixedClusterPool(
+        1,
+        './tests/worker-files/cluster/processExitWorker.cjs',
+        {
+          enableTasksQueue: false,
+          errorHandler: () => undefined,
+          restartWorkerOnError: false,
+        }
+      )
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    let rejected
+    try {
+      await pool.execute()
+    } catch (e) {
+      rejected = e
+    }
+    expect(rejected).toBeInstanceOf(WorkerCrashError)
+    await new Promise(resolve => setTimeout(resolve, 200))
+    expect(pool.workerNodes.length).toBe(0)
+  })
+
+  it('T-I5c-cluster: cluster clean process.exit(0) mid-task rejects with WorkerCrashError', {
+    retry: 0,
+    timeout: 10_000,
+  }, async () => {
+    const pool = trackPool(
+      new FixedClusterPool(
+        1,
+        './tests/worker-files/cluster/cleanExitInFlightWorker.cjs',
+        {
+          enableTasksQueue: false,
+          errorHandler: () => undefined,
+        }
+      )
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    let rejected
+    try {
+      await pool.execute()
+    } catch (e) {
+      rejected = e
+    }
+    expect(rejected).toBeInstanceOf(WorkerCrashError)
+    expect(rejected.name).toBe('WorkerCrashError')
+    expect(rejected.exitCode).toBe(0)
+    expect(rejected.taskId).toBeDefined()
+  })
 })

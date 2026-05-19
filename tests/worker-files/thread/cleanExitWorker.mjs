@@ -8,7 +8,7 @@ setTimeout(() => {
 }, 300)
 
 /** Test handler — returns immediately. */
-async function noop () {}
+function noop () {}
 
 export default new ThreadWorker(noop, {
   killBehavior: KillBehaviors.HARD,
