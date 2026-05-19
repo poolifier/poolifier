@@ -1,19 +1,9 @@
 'use strict'
 const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
 
-/*
- * Cluster worker that hangs forever once a task is dispatched. Used by
- * the in-flight rejection regression tests:
- *   * SIGKILL from parent (cluster signal kill)
- *   * pool.destroy() with tasksFinishedTimeout
- * The hang guarantees the task stays in-flight long enough to exercise
- * the rejection path.
- */
-
-/**
- * Hangs forever; never resolves.
- * @returns Never returns.
- */
+// Hangs forever — keeps the dispatched task in-flight for SIGKILL and
+// pool.destroy(tasksFinishedTimeout) regression tests.
+/** Hangs forever — keeps the dispatched task in-flight. */
 async function hang () {
   await new Promise(() => {})
 }

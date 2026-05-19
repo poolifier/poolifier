@@ -1,12 +1,9 @@
 'use strict'
 const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
 
-/**
- * Worker that simulates a crash via an unhandled exception during task execution.
- * The async function never resolves, keeping the task in-flight while the scheduled
- * throw causes the worker process to exit with a non-zero code, which is detected
- * by the exit handler on the parent.
- */
+// Crash via uncaught exception during task execution; handler hangs
+// so the parent observes non-zero exit while the task is in-flight.
+/** Schedules an uncaught throw mid-task; handler hangs to keep the task in-flight. */
 async function crash () {
   setTimeout(() => {
     throw new Error('Simulated worker crash')

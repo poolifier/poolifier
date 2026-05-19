@@ -1,22 +1,13 @@
 'use strict'
 const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
 
-/*
- * Test fixture for T3 (post-online crash) regression coverage —
- * cluster mirror of tests/worker-files/thread/startupCrashWorker.mjs.
- *
- * The module-level setTimeout fires AFTER ClusterWorker has sent its
- * 'ready' IPC. When the timer throws, the unhandled exception causes
- * the worker process to exit non-zero while the dispatched task is
- * still in-flight (handler hangs forever).
- */
+// T3b: cluster mirror of thread/startupCrashWorker.mjs. Timer throws
+// AFTER 'ready' IPC; handler hangs to keep the task in-flight.
 setTimeout(() => {
   throw new Error('post-online crash')
 }, 200)
 
-/**
- *
- */
+/** Hangs forever — keeps the dispatched task in-flight at crash time. */
 async function hang () {
   await new Promise(() => {})
 }

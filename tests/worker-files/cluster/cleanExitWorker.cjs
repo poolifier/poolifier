@@ -1,25 +1,15 @@
 'use strict'
 const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
 
-/*
- * Test fixture for T-I5 sub-test (a) — cluster mirror of
- * tests/worker-files/thread/cleanExitWorker.mjs.
- *
- * The handler returns immediately; the module-level setTimeout
- * triggers `process.exit(0)` after a short delay so the pool's
- * exit handler observes a clean exit (exitCode === 0).
- */
+// T-I5a: cluster mirror of thread/cleanExitWorker.mjs. Handler returns
+// immediately, module timer triggers `process.exit(0)`.
 setTimeout(() => {
   // eslint-disable-next-line n/no-process-exit
   process.exit(0)
 }, 300)
 
-/**
- * Test handler — returns immediately.
- */
-function noop () {
-  /* intentional no-op */
-}
+/** Test handler — returns immediately. */
+function noop () {}
 
 module.exports = new ClusterWorker(noop, {
   killBehavior: KillBehaviors.HARD,

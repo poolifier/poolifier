@@ -1,14 +1,8 @@
 import { KillBehaviors, ThreadWorker } from '../../../lib/index.mjs'
 
-/*
- * Test fixture for T-I5 sub-test (c) — clean process.exit(0) DURING
- * an in-flight task. Mirrors processExitWorker.mjs but with exit code 0
- * to exercise the abnormalExit branch that catches `exitCode === 0`
- * combined with a still-dispatched task.
- */
-/**
- *
- */
+// T-I5c: clean `process.exit(0)` DURING an in-flight task — exercises
+// the `exitCode === 0 && hasInFlightTask` abnormalExit branch.
+/** Hangs while a deferred `process.exit(0)` fires — exercises clean-exit-with-in-flight-task. */
 async function hangThenCleanExit () {
   setTimeout(() => {
     // eslint-disable-next-line n/no-process-exit
