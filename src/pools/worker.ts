@@ -31,8 +31,8 @@ export type EventHandler<Worker extends IWorker> =
 /**
  * Callback invoked when the worker exits. Signature mirrors Node's
  * worker `'exit'` event: thread workers pass `(exitCode)` only
- * (`signal === null`); cluster workers pass `(exitCode, signal)` with
- * `signal` non-null for external kills (SIGKILL/SIGSEGV/OOM).
+ * (`signal === undefined`); cluster workers pass `(exitCode, signal)`
+ * with `signal` non-null for external kills (SIGKILL/SIGSEGV/OOM).
  * @template Worker - Type of worker.
  */
 export type ExitHandler<Worker extends IWorker> = (
