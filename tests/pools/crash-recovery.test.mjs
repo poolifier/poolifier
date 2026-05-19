@@ -15,6 +15,9 @@ import {
  * in-flight task promise settles, exactly one typed PoolEvents.error
  * per crash, voluntary termination is not surfaced as a crash, and
  * destroy() is idempotent and concurrent-safe.
+ *
+ * Each `it()` pins `{ retry: 0 }` to surface flakes immediately,
+ * overriding the global `retry: 2` in vitest.config.ts.
  */
 describe('Crash recovery regression test suite', () => {
   // Track pools created by tests so afterEach can drain them on failure.
@@ -525,6 +528,8 @@ describe('Crash recovery regression test suite', () => {
     expect(events[0]).toBeInstanceOf(WorkerCrashError)
   })
 
+  // T9b/T11b/T11c reach into protected pool methods by name; .mjs
+  // runtime erases TS visibility, so renames must update both sites.
   // Mutation-killer for the crashHandled re-entry guard. After the
   // first crash settles, invoke the crash handler a second time on the
   // SAME workerNode and assert NO new event is emitted. With the

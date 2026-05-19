@@ -1,9 +1,7 @@
 'use strict'
 const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
 
-// Hangs forever — keeps the dispatched task in-flight for SIGKILL and
-// pool.destroy(tasksFinishedTimeout) regression tests.
-/** Hangs forever — keeps the dispatched task in-flight. */
+/** Hangs forever — keeps the dispatched task in-flight (used by SIGKILL and pool.destroy regression tests). */
 async function hang () {
   await new Promise(() => {})
 }
