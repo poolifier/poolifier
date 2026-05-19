@@ -522,13 +522,11 @@ describe('Crash recovery regression test suite', () => {
     expect(events[0]).toBeInstanceOf(WorkerCrashError)
   })
 
-  // T9b/T11b/T11c reach into protected pool methods by name; .mjs
-  // runtime erases TS visibility, so renames must update both sites.
-  // Mutation-killer for the crashHandled re-entry guard. After the
-  // first crash settles, invoke the crash handler a second time on the
-  // SAME workerNode and assert NO new event is emitted. With the
-  // early-return guard, the second invocation is a no-op; without it,
-  // the crash body re-runs and emits again.
+  // T9b, T11b, T11c, T13b reach into protected pool members by name
+  // (handleWorkerNodeCrash, rejectInFlightTaskPromisesByRef,
+  // promiseResponseMap). The .mjs runtime erases TS visibility; renames
+  // must update both the production declarations and these mutation-
+  // killer tests in lockstep.
   it('T9b: synthesized re-entry into the crash handler is a no-op', {
     retry: 0,
     timeout: 10_000,
