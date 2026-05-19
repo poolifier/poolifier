@@ -98,12 +98,9 @@ export interface PromiseResponseWrapper<Response = unknown> {
    */
   readonly resolve: (value: PromiseLike<Response> | Response) => void
   /**
-   * Id of the worker currently bound to the in-flight task.
-   *
-   * Mutable: rewritten by `updatePromiseResponseWorkerId` on steal /
-   * redistribute. May be `undefined` between redistribution and
-   * destination readiness; `rejectInFlightTaskPromisesByRef` skips
-   * such entries (no crash can match them).
+   * Id of the worker currently bound to the in-flight task. Mutable:
+   * rewritten by `updatePromiseResponseWorkerId` on steal / redistribute.
+   * May be `undefined` between redistribution and destination readiness.
    */
   workerId: number | undefined
 }
