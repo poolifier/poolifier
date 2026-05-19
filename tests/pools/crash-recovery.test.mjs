@@ -861,6 +861,64 @@ describe('Crash recovery regression test suite', () => {
     }
   )
 
+  it('T13d: simultaneous multi-worker crash rejects every in-flight task with WorkerCrashError', {
+    retry: 0,
+    timeout: 15_000,
+  }, async () => {
+    const N = 4
+    const pool = trackPool(
+      new FixedThreadPool(N, './tests/worker-files/thread/crashWorker.mjs', {
+        errorHandler: () => undefined,
+      })
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    const errorEvents = []
+    pool.emitter.on(PoolEvents.error, e => {
+      errorEvents.push(e)
+    })
+    const rejections = []
+    await Promise.allSettled(
+      Array.from({ length: N }, () =>
+        pool.execute().catch(e => {
+          rejections.push(e)
+          return undefined
+        })
+      )
+    )
+    expect(rejections.length).toBe(N)
+    expect(rejections.every(e => e instanceof WorkerCrashError)).toBe(true)
+    expect(errorEvents.length).toBe(N)
+    expect(errorEvents.every(e => e instanceof WorkerCrashError)).toBe(true)
+  })
+
+  it('T13e: result-then-process.exit(0) resolves the task without emitting PoolEvents.error', {
+    retry: 0,
+    timeout: 10_000,
+  }, async () => {
+    // The synchronous delete in handleTaskExecutionResponse ensures
+    // promiseResponseMap is empty by the time 'exit' fires, so
+    // hasInFlightTask is false and no abnormalExit is reported.
+    const pool = trackPool(
+      new FixedThreadPool(
+        1,
+        './tests/worker-files/thread/resolveThenExitWorker.mjs',
+        { errorHandler: () => undefined }
+      )
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    const errorEvents = []
+    pool.emitter.on(PoolEvents.error, e => {
+      errorEvents.push(e)
+    })
+    await expect(pool.execute()).resolves.toEqual({ ok: true })
+    await new Promise(resolve => setTimeout(resolve, 350))
+    expect(errorEvents.length).toBe(0)
+  })
+
   it('T-I5a: clean process.exit(0) replenishes even with restartWorkerOnError:false', {
     retry: 0,
     timeout: 10_000,
