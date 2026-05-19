@@ -1255,11 +1255,12 @@ export abstract class AbstractPool<
       )
     } finally {
       captureEnabled = false
+      const cause = teardownCause
       try {
         const errorFactory =
-          teardownCause != null
+          cause != null
             ? (taskId: TaskUUID): WorkerCrashError =>
-                this.buildWorkerCrashError(teardownCause, workerNode, taskId)
+                this.buildWorkerCrashError(cause, workerNode, taskId)
             : (taskId: TaskUUID): WorkerTerminationError =>
                 new WorkerTerminationError(
                   'Worker node terminated by pool (in-flight task did not complete within tasksFinishedTimeout)',
@@ -1319,7 +1320,7 @@ export abstract class AbstractPool<
 
   /**
    * Handles a crashed worker node.
-   * Rejects in-flight task promises, emits one {@link PoolEvents.error},
+   * Rejects in-flight task promises, emits one `PoolEvents.error`,
    * spawns a replacement dynamic worker when `restartWorkerOnError` is set,
    * and redistributes queued tasks when `enableTasksQueue` is set.
    * No-op when `terminating`, `crashHandled`, or `destroying` is set.
@@ -1473,7 +1474,7 @@ export abstract class AbstractPool<
    * {@link AbstractPool.workerNodes}: it iterates
    * {@link AbstractPool.promiseResponseMap} and skips entries whose
    * task ids are still queued (handled by
-   * {@link AbstractPool.rejectRemainingQueuedTaskPromises} or redistributed).
+   * `rejectRemainingQueuedTaskPromises` or redistributed).
    * @param workerNode - The worker node.
    * @param workerId - The worker id.
    * @param errorFactory - The per-task error factory.
@@ -1508,7 +1509,7 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Safely emits a {@link PoolEvents.error} event.
+   * Safely emits a `PoolEvents.error` event.
    * No-op when `error` is nullish or no listener is registered.
    * Listener throws are re-thrown via `queueMicrotask` so they surface
    * as `'uncaughtException'` without aborting the synchronous cleanup path.
