@@ -671,10 +671,6 @@ describe('Crash recovery regression test suite', () => {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // Real round-trip: dispatch a task, await the response, then issue
-    // a synthetic crash sweep against the same workerId. The
-    // synchronous delete in handleTaskExecutionResponse keeps the map
-    // empty, so the sweep matches nothing and never emits.
     const pool = trackPool(
       new FixedThreadPool(1, './tests/worker-files/thread/echoWorker.mjs', {
         errorHandler: () => undefined,
@@ -901,9 +897,6 @@ describe('Crash recovery regression test suite', () => {
     retry: 0,
     timeout: 10_000,
   }, async () => {
-    // The synchronous delete in handleTaskExecutionResponse ensures
-    // promiseResponseMap is empty by the time 'exit' fires, so
-    // hasInFlightTask is false and no abnormalExit is reported.
     const pool = trackPool(
       new FixedThreadPool(
         1,

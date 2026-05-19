@@ -2,9 +2,7 @@
 const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
 
 /**
- * Cluster mirror of thread/cleanExitInFlightWorker.mjs. Hangs while a
- * deferred process.exit(0) fires — exercises the
- * `exitCode === 0 && hasInFlightTask` abnormalExit branch for cluster.
+ * Calls process.exit(0) mid-task; handler hangs to keep the task in-flight.
  * @returns Never — the handler hangs forever.
  */
 async function hangThenCleanExit () {

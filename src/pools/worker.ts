@@ -293,10 +293,9 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
   /**
    * Terminates the worker node. Idempotent: repeated calls share the
    * in-flight termination and resolve identically. Best-effort: settles
-   * within a bounded grace period even if the worker never exits — the
-   * underlying isolate may keep running past grace expiry on the
-   * Node 22 Windows wedge, and any user listeners attached to the
-   * worker are removed once the grace window closes.
+   * within a bounded grace period and removes worker listeners; on the
+   * Node 22 Windows wedge the underlying isolate may keep running past
+   * grace expiry.
    */
   readonly terminate: () => Promise<void>
   /**

@@ -2,9 +2,7 @@
 const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
 
 /**
- * Cluster mirror of thread/processExitWorker.mjs. Calls process.exit(N)
- * mid-task while the handler hangs, exercising the cluster exit-handler
- * crash detection.
+ * Calls process.exit(N) mid-task; handler hangs to keep the task in-flight.
  * @returns Never — the handler hangs forever.
  */
 async function processExit () {

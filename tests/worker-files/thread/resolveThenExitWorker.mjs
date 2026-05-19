@@ -1,7 +1,7 @@
 import { KillBehaviors, ThreadWorker } from '../../../lib/index.mjs'
 
 /**
- * Returns synchronously, then exits 0 once the response has drained.
+ * Returns synchronously; calls process.exit(0) at +200 ms.
  * @returns Static result object.
  */
 function resolveThenExit () {

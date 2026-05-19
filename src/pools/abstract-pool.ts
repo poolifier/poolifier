@@ -1189,8 +1189,6 @@ export abstract class AbstractPool<
         ) {
           this.startMinimumNumberOfWorkers(true)
         }
-        // Symmetric cleanup with once-'error': releases worker
-        // listeners on signal-kill paths that never emit 'error'.
         workerNode.terminate().catch((terminateError: unknown) => {
           this.safeEmitPoolError(terminateError)
         })
@@ -2518,11 +2516,8 @@ export abstract class AbstractPool<
 
   /**
    * Rejects remaining queued task promises for the given crashed worker
-   * node key. Each rejection carries its own `taskId`. Returns the first
-   * rejection so the caller can route the {@link PoolEvents.error}
-   * emission for queued-only crashes.
-   *
-   * No-op when `workerNodeKey === -1`.
+   * node key. Each rejection carries its own `taskId`. No-op when
+   * `workerNodeKey === -1`.
    * @param workerNodeKey - The worker node key.
    * @param errorFactory - Per-task error factory — invoked once per
    * rejection.
@@ -2998,9 +2993,6 @@ export abstract class AbstractPool<
     if (promiseResponse == null) {
       return
     }
-    // `info.id` is set synchronously at worker construction
-    // (`worker.threadId` / `cluster.Worker.id`); callers always pass
-    // an indexed worker node, so the id is non-null here.
     promiseResponse.workerId = this.workerNodes[workerNodeKey].info.id
   }
 
