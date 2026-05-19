@@ -1036,38 +1036,6 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Builds a typed crash error.
-   * If `cause` is already a {@link WorkerCrashError}, propagates its
-   * `exitCode`, `signal` and inner `cause` to avoid double-wrapping.
-   * @param cause - The original error that caused the crash.
-   * @param workerNode - The crashed worker node.
-   * @param taskId - The task id (optional).
-   * @returns A {@link WorkerCrashError} wrapping the cause.
-   */
-  protected buildWorkerCrashError (
-    cause: Error,
-    workerNode: IWorkerNode<Worker, Data>,
-    taskId?: TaskUUID
-  ): WorkerCrashError {
-    if (cause instanceof WorkerCrashError) {
-      return new WorkerCrashError(cause.message, {
-        cause: cause.cause instanceof Error ? cause.cause : undefined,
-        exitCode: cause.exitCode,
-        signal: cause.signal,
-        taskId,
-        workerId: workerNode.info.id,
-      })
-    }
-    return new WorkerCrashError(`Worker node crashed: ${cause.message}`, {
-      cause,
-      exitCode: null,
-      signal: null,
-      taskId,
-      workerId: workerNode.info.id,
-    })
-  }
-
-  /**
    * Emits dynamic worker creation events.
    */
   protected abstract checkAndEmitDynamicWorkerCreationEvents (): void
@@ -1700,6 +1668,38 @@ export abstract class AbstractPool<
       ...this.opts.tasksQueueOptions,
       ...tasksQueueOptions,
     }
+  }
+
+  /**
+   * Builds a typed crash error.
+   * If `cause` is already a {@link WorkerCrashError}, propagates its
+   * `exitCode`, `signal` and inner `cause` to avoid double-wrapping.
+   * @param cause - The original error that caused the crash.
+   * @param workerNode - The crashed worker node.
+   * @param taskId - The task id (optional).
+   * @returns A {@link WorkerCrashError} wrapping the cause.
+   */
+  private buildWorkerCrashError (
+    cause: Error,
+    workerNode: IWorkerNode<Worker, Data>,
+    taskId?: TaskUUID
+  ): WorkerCrashError {
+    if (cause instanceof WorkerCrashError) {
+      return new WorkerCrashError(cause.message, {
+        cause: cause.cause instanceof Error ? cause.cause : undefined,
+        exitCode: cause.exitCode,
+        signal: cause.signal,
+        taskId,
+        workerId: workerNode.info.id,
+      })
+    }
+    return new WorkerCrashError(`Worker node crashed: ${cause.message}`, {
+      cause,
+      exitCode: null,
+      signal: null,
+      taskId,
+      workerId: workerNode.info.id,
+    })
   }
 
   private cannotStealTask (): boolean {
