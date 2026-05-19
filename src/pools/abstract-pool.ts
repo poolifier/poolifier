@@ -1189,6 +1189,11 @@ export abstract class AbstractPool<
         ) {
           this.startMinimumNumberOfWorkers(true)
         }
+        // Symmetric cleanup with once-'error': releases worker
+        // listeners on signal-kill paths that never emit 'error'.
+        workerNode.terminate().catch((terminateError: unknown) => {
+          this.safeEmitPoolError(terminateError)
+        })
       }
     )
     workerNode.registerWorkerEventHandler(
@@ -1367,21 +1372,24 @@ export abstract class AbstractPool<
       workerNode.info.id,
       crashErrorFactory
     )
-    this.safeEmitPoolError(
-      firstReject ?? this.buildWorkerCrashError(cause, workerNode)
-    )
+    let firstQueuedReject: undefined | WorkerCrashError
     if (this.started) {
       if (this.opts.restartWorkerOnError === true && workerNode.info.dynamic) {
         this.createAndSetupDynamicWorkerNode()
       }
       if (this.opts.enableTasksQueue === true) {
         this.redistributeQueuedTasks(crashedWorkerNodeKey)
-        this.rejectRemainingQueuedTaskPromises(
+        firstQueuedReject = this.rejectRemainingQueuedTaskPromises(
           crashedWorkerNodeKey,
           crashErrorFactory
-        )
+        ) as undefined | WorkerCrashError
       }
     }
+    this.safeEmitPoolError(
+      firstReject ??
+        firstQueuedReject ??
+        this.buildWorkerCrashError(cause, workerNode)
+    )
   }
 
   /**
@@ -2510,39 +2518,47 @@ export abstract class AbstractPool<
 
   /**
    * Rejects remaining queued task promises for the given crashed worker
-   * node key. Each rejection carries its own `taskId`.
+   * node key. Each rejection carries its own `taskId`. Returns the first
+   * rejection so the caller can route the {@link PoolEvents.error}
+   * emission for queued-only crashes.
    *
    * No-op when `workerNodeKey === -1`.
    * @param workerNodeKey - The worker node key.
    * @param errorFactory - Per-task error factory — invoked once per
    * rejection.
+   * @returns The first rejection, or `undefined` if no queued tasks were
+   * matched.
    */
   private rejectRemainingQueuedTaskPromises (
     workerNodeKey: number,
     errorFactory: (
       taskId: TaskUUID
     ) => WorkerCrashError | WorkerTerminationError
-  ): void {
+  ): undefined | WorkerCrashError | WorkerTerminationError {
     if (workerNodeKey === -1) {
-      return
+      return undefined
     }
     const workerNode = this.workerNodes[workerNodeKey]
+    let firstError: undefined | WorkerCrashError | WorkerTerminationError
     while (this.tasksQueueSize(workerNodeKey) > 0) {
       const task = this.dequeueTask(workerNodeKey)
       if (task?.taskId != null) {
         const promiseResponse = this.promiseResponseMap.get(task.taskId)
         if (promiseResponse != null) {
+          const err = errorFactory(task.taskId)
+          firstError ??= err
           this.rejectTaskPromise(
             task.taskId,
             promiseResponse,
             workerNode,
-            errorFactory(task.taskId),
+            err,
             false
           )
         }
       }
     }
     this.checkAndEmitTaskExecutionFinishedEvents()
+    return firstError
   }
 
   private rejectTaskPromise (

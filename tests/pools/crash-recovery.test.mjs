@@ -801,6 +801,66 @@ describe('Crash recovery regression test suite', () => {
     expect(poolErrorCount).toBe(N)
   })
 
+  it('T13b: queued-only crash emits a typed PoolEvents.error', {
+    retry: 0,
+    timeout: 10_000,
+  }, async () => {
+    // Queued-only path: rejectInFlightTaskPromisesByRef finds no match,
+    // so the emission falls back to the first queued rejection.
+    const pool = trackPool(
+      new FixedThreadPool(1, './tests/worker-files/thread/echoWorker.mjs', {
+        enableTasksQueue: true,
+        errorHandler: () => undefined,
+      })
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    const events = []
+    pool.emitter.on(PoolEvents.error, e => {
+      events.push(e)
+    })
+    const workerNode = pool.workerNodes[0]
+    const taskId = '00000000-0000-0000-0000-000000000abc'
+    let rejected
+    pool.promiseResponseMap.set(taskId, {
+      asyncResource: undefined,
+      reject: err => {
+        rejected = err
+      },
+      resolve: () => undefined,
+      workerId: 999_999,
+    })
+    workerNode.enqueueTask({ data: undefined, taskId })
+    pool.handleWorkerNodeCrash(workerNode, new Error('synthetic queued-only'))
+    expect(events.length).toBe(1)
+    expect(events[0]).toBeInstanceOf(WorkerCrashError)
+    expect(rejected).toBeInstanceOf(WorkerCrashError)
+    expect(rejected.taskId).toBe(taskId)
+  })
+
+  it.runIf(process.platform !== 'win32')(
+    'T13c: cluster signal-kill once-exit invokes terminate symmetric cleanup',
+    { retry: 0, timeout: 10_000 },
+    async () => {
+      const pool = trackPool(
+        new FixedClusterPool(1, './tests/worker-files/cluster/hangWorker.cjs')
+      )
+      await new Promise(resolve => {
+        pool.emitter.once(PoolEvents.ready, resolve)
+      })
+      const workerNode = pool.workerNodes[0]
+      const terminateSpy = vi.spyOn(workerNode, 'terminate')
+      const taskPromise = pool.execute().catch(() => undefined)
+      await new Promise(resolve => setTimeout(resolve, 100))
+      process.kill(workerNode.worker.process.pid, 'SIGKILL')
+      await taskPromise
+      await new Promise(resolve => setTimeout(resolve, 50))
+      expect(terminateSpy).toHaveBeenCalled()
+      terminateSpy.mockRestore()
+    }
+  )
+
   it('T-I5a: clean process.exit(0) replenishes even with restartWorkerOnError:false', {
     retry: 0,
     timeout: 10_000,
