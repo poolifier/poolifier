@@ -137,7 +137,7 @@ describe('Crash recovery regression test suite', () => {
     expect(rejected.taskId).toBeDefined()
   })
 
-  it('T3 (thread): post-online crash rejects in-flight with WorkerCrashError', {
+  it('T3a: thread post-online crash rejects in-flight with WorkerCrashError', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -168,7 +168,7 @@ describe('Crash recovery regression test suite', () => {
     expect(rejected.taskId).toBeDefined()
   })
 
-  it('T3 (cluster): post-online crash rejects in-flight with WorkerCrashError', {
+  it('T3b: cluster post-online crash rejects in-flight with WorkerCrashError', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -208,7 +208,7 @@ describe('Crash recovery regression test suite', () => {
   // the parent's first task dispatch; we accept either path
   // (PoolEvents.error event OR rejected execute) via Promise.race so
   // the test is deterministic on slow runners.
-  it('T3b: pre-ready worker crash surfaces via error event or rejected dispatch', {
+  it('T3c: pre-ready worker crash surfaces via error event or rejected dispatch', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -229,7 +229,7 @@ describe('Crash recovery regression test suite', () => {
     expect(result instanceof Error).toBe(true)
   })
 
-  it('T4 (thread): worker uncaught throw mid-task rejects with WorkerCrashError', {
+  it('T4a: thread worker uncaught throw mid-task rejects with WorkerCrashError', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -256,7 +256,7 @@ describe('Crash recovery regression test suite', () => {
     expect(rejected.cause?.message).toBe('Simulated worker crash')
   })
 
-  it('T4 (cluster): worker uncaught throw mid-task rejects with WorkerCrashError', {
+  it('T4b: cluster worker uncaught throw mid-task rejects with WorkerCrashError', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -404,6 +404,8 @@ describe('Crash recovery regression test suite', () => {
     expect(elapsed).toBeLessThan(ceiling - 1000)
     expect(errorEvents.length).toBe(0)
   })
+
+  // T6 intentionally skipped — no scenario fits between T5d (destroy timing) and T7 (fire-and-forget).
 
   it('T7: fire-and-forget × N + destroy collects N WorkerTerminationError rejections, no Pool unhandled rejection', {
     retry: 0,
@@ -824,7 +826,7 @@ describe('Crash recovery regression test suite', () => {
     expect(poolErrorCount).toBe(N)
   })
 
-  it('T-I5 (a): clean process.exit(0) replenishes even with restartWorkerOnError:false', {
+  it('T-I5a: clean process.exit(0) replenishes even with restartWorkerOnError:false', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -854,7 +856,7 @@ describe('Crash recovery regression test suite', () => {
     expect(pool.workerNodes[0].info.ready).toBe(true)
   })
 
-  it('T-I5 (b): crash with restartWorkerOnError:false does NOT replenish', {
+  it('T-I5b: crash with restartWorkerOnError:false does NOT replenish', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -886,7 +888,7 @@ describe('Crash recovery regression test suite', () => {
     expect(pool.workerNodes.length).toBe(0)
   })
 
-  it('T-I5 (c): clean process.exit(0) mid-task rejects in-flight with WorkerCrashError', {
+  it('T-I5c: clean process.exit(0) mid-task rejects in-flight with WorkerCrashError', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
