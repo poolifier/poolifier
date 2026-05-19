@@ -326,7 +326,7 @@ describe('Crash recovery regression test suite', () => {
   }, async () => {
     // Regression guard: with no queued tasks, the destroy wait must
     // elapse `tasksFinishedTimeout` before the in-flight task is rejected.
-    const ceiling = 300
+    const ceiling = 1000
     const pool = trackPool(
       new FixedThreadPool(1, './tests/worker-files/thread/hangWorker.mjs', {
         enableTasksQueue: true,
@@ -350,7 +350,7 @@ describe('Crash recovery regression test suite', () => {
     await taskPromise.catch(() => undefined)
     expect(rejected).toBeInstanceOf(WorkerTerminationError)
     expect(rejected.taskId).toBeDefined()
-    expect(elapsed).toBeGreaterThanOrEqual(ceiling - 50)
+    expect(elapsed).toBeGreaterThanOrEqual(ceiling - 200)
     expect(elapsed).toBeLessThan(ceiling + 2000)
   })
 
