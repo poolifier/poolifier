@@ -22,6 +22,7 @@
     - [`YourWorker.removeTaskFunction(name)`](#yourworkerremovetaskfunctionname)
     - [`YourWorker.listTaskFunctionsProperties()`](#yourworkerlisttaskfunctionsproperties)
     - [`YourWorker.setDefaultTaskFunction(name)`](#yourworkersetdefaulttaskfunctionname)
+- [Migration notes](#migration-notes)
 
 ## Pool
 
@@ -131,7 +132,10 @@ An object with these properties:
   Default: `() => {}`
 - `errorHandler` (optional) - A function that will listen for error event on each worker.  
   Default: `() => {}`
-- `exitHandler` (optional) - A function that will listen for exit event on each worker.  
+- `exitHandler` (optional) - A function that will listen for exit event on each worker.
+  Signature: `(this: Worker, exitCode: number | null, signal?: NodeJS.Signals | null) => void`.
+  Thread workers pass `exitCode` only (`signal` is always `null`); cluster workers pass both,
+  with `signal` non-null for externally-killed processes (SIGKILL, SIGSEGV, OOM).  
   Default: `() => {}`
 
 - `workerChoiceStrategy` (optional) - The default worker choice strategy to use in this pool:
@@ -234,3 +238,39 @@ This method is available on both worker implementations and returns an array of 
 `name` (mandatory) The task function name.
 
 This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
+
+## Migration notes
+
+### `ExitHandler` signature widening
+
+`ExitHandler` was widened to mirror Node's worker `'exit'` event arity exactly:
+`(exitCode: number | null, signal?: NodeJS.Signals | null) => void`. Thread
+workers still receive only `exitCode` (`signal` is always `null`); cluster
+workers receive both, with `signal` non-null on external kills (SIGKILL,
+SIGSEGV, OOM-killer). Update typed handlers that previously declared
+`(exitCode: number) => void` to accept `null` for `exitCode`, and to ignore or
+guard the optional `signal` parameter.
+
+### `pool.execute()` rejects on worker crash or pool destroy
+
+In-flight `pool.execute()` promises now reject with a typed error when their
+bound worker exits unexpectedly or the pool is destroyed before the task
+completes. Previously these promises could hang silently. Callers must attach
+`.catch()` to handle the new rejections — see the Error handling on worker
+crash section above for the discrimination contract.
+
+```js
+pool.execute(data).catch(err => {
+  if (err.name === 'WorkerCrashError') {
+    // worker exited unexpectedly mid-task — err.exitCode / err.signal available
+  } else if (err.name === 'WorkerTerminationError') {
+    // pool was destroyed while task was in-flight
+  }
+})
+```
+
+### `pool.destroy()` is idempotent on concurrent calls
+
+Concurrent `pool.destroy()` calls now share the same in-flight promise and
+all resolve with the same outcome. Calls issued after destroy completed still
+throw (`Cannot destroy an already destroyed pool`).
