@@ -1164,11 +1164,9 @@ export abstract class AbstractPool<
       (exitCode: null | number, signal?: NodeJS.Signals | null) => {
         // Clean `exit(0)` is abnormal when an in-flight task is still
         // expected to settle on this worker.
-        const hasInFlightTask =
-          workerNode.info.id != null &&
-          [...this.promiseResponseMap.values()].some(
-            promiseResponse => promiseResponse.workerId === workerNode.info.id
-          )
+        const hasInFlightTask = this.hasInFlightTaskForWorkerId(
+          workerNode.info.id
+        )
         const abnormalExit =
           (exitCode != null && exitCode !== 0) ||
           (exitCode == null && signal != null) ||
@@ -1267,11 +1265,7 @@ export abstract class AbstractPool<
       'exit',
       (exitCode: null | number, signal?: NodeJS.Signals | null) => {
         if (!captureEnabled || teardownCause != null) return
-        const hasInFlightTask =
-          stableWorkerId != null &&
-          [...this.promiseResponseMap.values()].some(
-            promiseResponse => promiseResponse.workerId === stableWorkerId
-          )
+        const hasInFlightTask = this.hasInFlightTaskForWorkerId(stableWorkerId)
         const abnormalExit =
           (exitCode != null && exitCode !== 0) ||
           (exitCode == null && signal != null) ||
@@ -1429,6 +1423,25 @@ export abstract class AbstractPool<
         firstQueuedReject ??
         this.buildWorkerCrashError(cause, workerNode)
     )
+  }
+
+  /**
+   * Whether the given worker id has any in-flight task in
+   * {@link AbstractPool.promiseResponseMap}.
+   * @param workerId - The worker id (stable reference).
+   * @returns `true` when at least one entry's `workerId` matches.
+   * @internal
+   */
+  protected hasInFlightTaskForWorkerId (workerId: number | undefined): boolean {
+    if (workerId == null) {
+      return false
+    }
+    for (const promiseResponse of this.promiseResponseMap.values()) {
+      if (promiseResponse.workerId === workerId) {
+        return true
+      }
+    }
+    return false
   }
 
   /**
