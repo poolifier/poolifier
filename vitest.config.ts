@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     coverage: {
-      include: ['lib/**/*.mjs'],
+      include: ['lib/**/*.{mjs,cjs}'],
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
       thresholds: {
