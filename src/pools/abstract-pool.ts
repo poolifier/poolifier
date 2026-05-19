@@ -1147,9 +1147,7 @@ export abstract class AbstractPool<
       'message',
       this.opts.messageHandler ?? EMPTY_FUNCTION
     )
-    // EventEmitter fires listeners in registration order; register
-    // once-handlers before user handlers so a sync-throwing user
-    // handler cannot abort crash recovery.
+    // Pool once-handlers registered before user handlers: user handler throws must not abort crash recovery.
     workerNode.registerOnceWorkerEventHandler('error', (error: Error) => {
       this.handleWorkerNodeCrash(workerNode, error)
       workerNode.info.terminating = true
