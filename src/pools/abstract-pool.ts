@@ -57,6 +57,7 @@ import {
   checkValidTasksQueueOptions,
   checkValidWorkerChoiceStrategy,
   checkValidWorkerNodeKeys,
+  formatExitDetail,
   getDefaultTasksQueueOptions,
   updateEluWorkerUsage,
   updateRunTimeWorkerUsage,
@@ -73,14 +74,6 @@ import {
   type WorkerNodeEventDetail,
   type WorkerType,
 } from './worker.js'
-
-const formatExitDetail = (
-  exitCode: null | number,
-  signal: NodeJS.Signals | null | undefined
-): string =>
-  signal != null
-    ? `code=${String(exitCode)}, signal=${signal}`
-    : `code=${String(exitCode)}`
 
 /**
  * Base class that implements some shared logic for all poolifier pools.

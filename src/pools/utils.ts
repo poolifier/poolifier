@@ -318,6 +318,20 @@ export const checkWorkerNodeArguments = (
 }
 
 /**
+ * Formats a worker exit event detail string.
+ * @param exitCode - The exit code.
+ * @param signal - The exit signal.
+ * @returns The formatted exit detail string.
+ */
+export const formatExitDetail = (
+  exitCode: null | number,
+  signal: NodeJS.Signals | null | undefined
+): string =>
+  signal != null
+    ? `code=${String(exitCode)}, signal=${signal}`
+    : `code=${String(exitCode)}`
+
+/**
  * Updates the given measurement statistics.
  * @param measurementStatistics - The measurement statistics to update.
  * @param measurementRequirements - The measurement statistics requirements.
