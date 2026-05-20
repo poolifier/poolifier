@@ -738,6 +738,26 @@ describe('Crash recovery regression test suite', () => {
     }
   })
 
+  it('T11e: workerNode.terminate() fast-path skips grace timer when worker has already exited', {
+    retry: 0,
+    timeout: 5_000,
+  }, async () => {
+    const pool = trackPool(
+      new FixedThreadPool(1, './tests/worker-files/thread/echoWorker.mjs', {
+        errorHandler: () => undefined,
+      })
+    )
+    await new Promise(resolve => {
+      pool.emitter.once(PoolEvents.ready, resolve)
+    })
+    const workerNode = pool.workerNodes[0]
+    workerNode.exited = true
+    const start = performance.now()
+    await workerNode.terminate()
+    const elapsed = performance.now() - start
+    expect(elapsed).toBeLessThan(250)
+  })
+
   it('T12: concurrent pool.destroy() calls are silently idempotent', {
     retry: 0,
     timeout: 10_000,

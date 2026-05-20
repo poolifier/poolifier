@@ -53,6 +53,7 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   public usage: WorkerUsage
   /** @inheritdoc */
   public readonly worker: Worker
+  private exited = false
   private readonly taskFunctionsUsage: Map<string, WorkerUsage>
   private terminationPromise?: Promise<void>
 
@@ -68,6 +69,9 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     this.worker = createWorker<Worker>(type, filePath, {
       env: opts.env,
       workerOptions: opts.workerOptions,
+    })
+    this.worker.once('exit', () => {
+      this.exited = true
     })
     this.info = initWorkerInfo(this.worker)
     this.usage = this.initWorkerUsage()
@@ -195,6 +199,13 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   }
 
   private async doTerminate (): Promise<void> {
+    if (this.exited) {
+      this.closeMessageChannel()
+      this.worker.removeAllListeners()
+      this.emit('terminated')
+      this.removeAllListeners()
+      return
+    }
     let exitFired = false
     const waitWorkerExit = new Promise<void>(resolve => {
       this.registerOnceWorkerEventHandler('exit', () => {
