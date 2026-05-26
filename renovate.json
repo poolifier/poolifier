@@ -6,7 +6,8 @@
     ":configMigration",
     "group:allNonMajor",
     "schedule:daily",
-    ":maintainLockFilesWeekly"
+    ":maintainLockFilesWeekly",
+    "security:minimumReleaseAgeNpm"
   ],
   "packageRules": [
     {
