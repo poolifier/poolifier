@@ -5,6 +5,69 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.4.0](https://github.com/poolifier/poolifier/compare/v5.3.2...v5.4.0) (2026-05-30)
+
+
+### 🚀 Features
+
+* add Zed project settings ([3fd722a](https://github.com/poolifier/poolifier/commit/3fd722ac01de7646412c7c89d467a292e704b3f8))
+
+
+### 🐞 Bug Fixes
+
+* **build:** add explicit node types to rollup typescript plugin ([82f0d62](https://github.com/poolifier/poolifier/commit/82f0d62ae9e7f68a2ca5adcb51e148c0dda804bd))
+* **build:** add explicit rootDir and module/moduleResolution for TS 6.0 compatibility ([9a4fb79](https://github.com/poolifier/poolifier/commit/9a4fb793bb2327d5e1e9a693a761c79e8b830d03))
+* **build:** harmonize TS configs and rollup compilerOptions for TS 6.0 compatibility ([4fea146](https://github.com/poolifier/poolifier/commit/4fea14667f2eff5282d05ff3d5d84fb665ade7b8))
+* **ci:** add --frozen-lockfile to autofix.ci and regenerate lockfile ([4862810](https://github.com/poolifier/poolifier/commit/48628107031a4821e141580fde860b1c1598ced2))
+* **ci:** disable manage-package-manager-versions to prevent lockfile corruption ([87e5778](https://github.com/poolifier/poolifier/commit/87e5778b8c27a6a050f3926f5674f61219cc1aca))
+* **ci:** enable pnpm store caching via pnpm/action-setup ([e6b7724](https://github.com/poolifier/poolifier/commit/e6b77247253861d186175fcc506aea3babb0fbef))
+* **ci:** restore original order for GitHub-hosted runners, keep fix for self-hosted ([826e4d3](https://github.com/poolifier/poolifier/commit/826e4d300cf76a242b98b86281ad9c1b624d5da4))
+* **ci:** revert pnpm/action-setup to v5 to prevent lockfile corruption ([c5c9bb6](https://github.com/poolifier/poolifier/commit/c5c9bb686306de073c0e76c06bbeedcd8d817834))
+* **ci:** swap setup-node before pnpm/action-setup and remove cache ([388af1e](https://github.com/poolifier/poolifier/commit/388af1eed17158345e5b897a0a87f30d152d6aab))
+* **deps:** update all non-major dependencies ([#3136](https://github.com/poolifier/poolifier/issues/3136)) ([11017b8](https://github.com/poolifier/poolifier/commit/11017b8f3f43f0f89fb6721c8a05d977ca3601c5))
+* **deps:** update all non-major dependencies ([#3139](https://github.com/poolifier/poolifier/issues/3139)) ([3c842e3](https://github.com/poolifier/poolifier/commit/3c842e3bc827022681b2d8327c392fca382e4969))
+* **deps:** update all non-major dependencies ([#3148](https://github.com/poolifier/poolifier/issues/3148)) ([41bad3f](https://github.com/poolifier/poolifier/commit/41bad3f33470ad8e1a89da114f7f91741a2f81de))
+* **deps:** update all non-major dependencies ([#3149](https://github.com/poolifier/poolifier/issues/3149)) ([7b23048](https://github.com/poolifier/poolifier/commit/7b230485bdefbfeec641da1f9db8f24b8d2ee86a))
+* **deps:** update all non-major dependencies ([#3150](https://github.com/poolifier/poolifier/issues/3150)) ([0299137](https://github.com/poolifier/poolifier/commit/029913703383afaa2408a79484bbdfb0cc42b36c))
+* **deps:** update all non-major dependencies ([#3158](https://github.com/poolifier/poolifier/issues/3158)) ([9e61a86](https://github.com/poolifier/poolifier/commit/9e61a865617a41a9e46631a77267e13c458e83f3))
+* **deps:** update all non-major dependencies ([#3160](https://github.com/poolifier/poolifier/issues/3160)) ([63c0577](https://github.com/poolifier/poolifier/commit/63c0577e9235ba0cdbf9bef39050f487b4ac36c4))
+* **deps:** update all non-major dependencies ([#3162](https://github.com/poolifier/poolifier/issues/3162)) ([746e78c](https://github.com/poolifier/poolifier/commit/746e78c2399d51b2477d4c268d4a8d637ff95b97))
+* **deps:** update all non-major dependencies ([#3164](https://github.com/poolifier/poolifier/issues/3164)) ([061a58d](https://github.com/poolifier/poolifier/commit/061a58d2fa9e13582338865785e088ec8a8ec1b7))
+* **deps:** update all non-major dependencies ([#3178](https://github.com/poolifier/poolifier/issues/3178)) ([bdc8705](https://github.com/poolifier/poolifier/commit/bdc87050e7ddd5868a1b536a934680aee881a757))
+* **deps:** update all non-major dependencies ([#3187](https://github.com/poolifier/poolifier/issues/3187)) ([9aab153](https://github.com/poolifier/poolifier/commit/9aab153ed6ddcafaf624ea415ac53be0121a8010))
+* **deps:** update all non-major dependencies ([#3189](https://github.com/poolifier/poolifier/issues/3189)) ([17301a3](https://github.com/poolifier/poolifier/commit/17301a3d47a02784352fc3e347f82d4c45d1c962))
+* **deps:** update all non-major dependencies ([#3191](https://github.com/poolifier/poolifier/issues/3191)) ([182a2ee](https://github.com/poolifier/poolifier/commit/182a2ee4c789c5f9972c6faa314e6662ff894b66))
+* **deps:** update all non-major dependencies ([#3210](https://github.com/poolifier/poolifier/issues/3210)) ([71beccb](https://github.com/poolifier/poolifier/commit/71beccbb9737ebadc5b775bb9b81f87d14caa89c))
+* **deps:** update all non-major dependencies ([#3212](https://github.com/poolifier/poolifier/issues/3212)) ([3e5d98a](https://github.com/poolifier/poolifier/commit/3e5d98a5c124974228c8da34f9bc742dd12c03be))
+* **deps:** update all non-major dependencies ([#3219](https://github.com/poolifier/poolifier/issues/3219)) ([7d4fc8c](https://github.com/poolifier/poolifier/commit/7d4fc8ceac651f59003b14c546c7a8524589791e))
+* **deps:** update all non-major dependencies ([#3221](https://github.com/poolifier/poolifier/issues/3221)) ([20eb13f](https://github.com/poolifier/poolifier/commit/20eb13f6386ba01de4f5c8e9c0ac17dd09e8038d))
+* **deps:** update dependency axios to ^1.14.0 ([#3169](https://github.com/poolifier/poolifier/issues/3169)) ([afece30](https://github.com/poolifier/poolifier/commit/afece300f03e3c0c93babcd9a7a83a1995dbe044))
+* **deps:** update dependency axios to ^1.16.0 ([#3198](https://github.com/poolifier/poolifier/issues/3198)) ([9b56a4e](https://github.com/poolifier/poolifier/commit/9b56a4e90ad6a21952ef176da29c9a272e75df34))
+* **deps:** update dependency nodemailer to ^8.0.7 ([#3193](https://github.com/poolifier/poolifier/issues/3193)) ([573b84f](https://github.com/poolifier/poolifier/commit/573b84f3bde8857fc119655d3e1aca19d13c39e2))
+* drop Node.js 20.x support (pnpm requires &gt;= 22.13) ([24e4573](https://github.com/poolifier/poolifier/commit/24e457378b0e6ca738c07c514c0b18290e3157d5))
+* regenerate clean lockfile ([f6e269a](https://github.com/poolifier/poolifier/commit/f6e269a48be937967a7f7cbe855975538a62d372))
+* regenerate clean lockfile ([a10ea5e](https://github.com/poolifier/poolifier/commit/a10ea5e60b23265ad54ce62b6aee04f5026c9d37))
+* regenerate clean single-document lockfile ([9c614cd](https://github.com/poolifier/poolifier/commit/9c614cd6b2470c547efaf5470b37b7c771fb0243))
+* regenerate lockfile to fix multi-document YAML issue ([d45a11a](https://github.com/poolifier/poolifier/commit/d45a11a466ccfd5f123cf199f743f5abc6bff60a))
+* remove parasitic pnpm self-installer document from lockfile ([149bc7a](https://github.com/poolifier/poolifier/commit/149bc7aa452ebbd59bf92ed24dd47e1962105c4c))
+* replace isAsyncFunction with instanceof Promise in handleKillMessage ([c71e61c](https://github.com/poolifier/poolifier/commit/c71e61c65de3e4b6d880cfb0c40bc5c52df5f025))
+
+
+### ✨ Polish
+
+* align Zed settings with biome → eslint formatter pipeline ([0f4b1b5](https://github.com/poolifier/poolifier/commit/0f4b1b5c11a97aaae5681a2d7d23ff29b0b5fae1))
+
+
+### 📚 Documentation
+
+* neutralize Copilot-specific references in agent instructions ([dc4cb71](https://github.com/poolifier/poolifier/commit/dc4cb719e43de307ac0d09248285ac788f1c0e85))
+* publish documentation ([bf154d1](https://github.com/poolifier/poolifier/commit/bf154d1c47ee0f9b967cc87376c7ac759d6d8e8b))
+
+
+### 🤖 Automation
+
+* **typedoc:** harden gate and propagate CLI exit code ([a4c2af2](https://github.com/poolifier/poolifier/commit/a4c2af2b3e97993b51cdbbdf0522fcfda111c873))
+
 ## [5.3.2](https://github.com/poolifier/poolifier/compare/v5.3.1...v5.3.2) (2026-02-23)
 
 
