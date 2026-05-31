@@ -132,7 +132,9 @@ describe('Dynamic cluster pool test suite', () => {
     )
     expect(longRunningPool.workerNodes.length).toBe(min)
     for (let i = 0; i < max * 2; i++) {
-      longRunningPool.execute()
+      // .catch(noop): long-running tasks may be in-flight when
+      // longRunningPool.destroy() rejects them with WorkerTerminationError.
+      longRunningPool.execute().catch(() => undefined)
     }
     expect(longRunningPool.workerNodes.length).toBe(max)
     const exitEvents = await waitWorkerEvents(
@@ -159,7 +161,9 @@ describe('Dynamic cluster pool test suite', () => {
     )
     expect(longRunningPool.workerNodes.length).toBe(min)
     for (let i = 0; i < max * 2; i++) {
-      longRunningPool.execute()
+      // .catch(noop): long-running tasks may be in-flight when
+      // longRunningPool.destroy() rejects them with WorkerTerminationError.
+      longRunningPool.execute().catch(() => undefined)
     }
     expect(longRunningPool.workerNodes.length).toBe(max)
     await sleep(1000)

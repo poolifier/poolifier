@@ -8,13 +8,13 @@ import type {
   WorkerChoiceStrategyOptions,
 } from './selection-strategies-types.js'
 
-import { WorkerChoiceStrategies } from './selection-strategies-types.js'
 import {
   buildWorkerChoiceStrategiesPolicy,
   buildWorkerChoiceStrategiesTaskStatisticsRequirements,
   getWorkerChoiceStrategiesRetries,
-  getWorkerChoiceStrategy,
-} from './selection-strategies-utils.js'
+} from './selection-strategies-helpers.js'
+import { WorkerChoiceStrategies } from './selection-strategies-types.js'
+import { getWorkerChoiceStrategy } from './selection-strategies-utils.js'
 
 /**
  * The worker choice strategies context.

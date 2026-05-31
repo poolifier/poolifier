@@ -3,7 +3,11 @@ import type { MessageChannel, WorkerOptions } from 'node:worker_threads'
 
 import type { CircularBuffer } from '../circular-buffer.js'
 import type { PriorityQueue } from '../queues/priority-queue.js'
-import type { Task, TaskFunctionProperties } from '../utility-types.js'
+import type {
+  Task,
+  TaskFunctionProperties,
+  TaskUUID,
+} from '../utility-types.js'
 
 /**
  * Callback invoked if the worker raised an error.
@@ -25,12 +29,16 @@ export type EventHandler<Worker extends IWorker> =
   | OnlineHandler<Worker>
 
 /**
- * Callback invoked when the worker exits successfully.
+ * Callback invoked when the worker exits. Signature mirrors Node's
+ * worker `'exit'` event: thread workers pass `(exitCode)` only
+ * (`signal === undefined`); cluster workers pass `(exitCode, signal)`
+ * with `signal` non-null for external kills (SIGKILL/SIGSEGV/OOM).
  * @template Worker - Type of worker.
  */
 export type ExitHandler<Worker extends IWorker> = (
   this: Worker,
-  exitCode: number
+  exitCode: null | number,
+  signal?: NodeJS.Signals | null
 ) => void
 
 /**
@@ -283,7 +291,11 @@ export interface IWorkerNode<Worker extends IWorker, Data = unknown>
    */
   readonly tasksQueueSize: () => number
   /**
-   * Terminates the worker node.
+   * Terminates the worker node. Idempotent: repeated calls share the
+   * in-flight termination and resolve identically. Best-effort: settles
+   * within a bounded grace period and removes worker listeners; on the
+   * Node 22 Windows wedge the underlying isolate may keep running past
+   * grace expiry.
    */
   readonly terminate: () => Promise<void>
   /**
@@ -325,6 +337,11 @@ export interface WorkerInfo {
    */
   continuousStealing: boolean
   /**
+   * Crash handled flag.
+   * This flag is set to `true` on the first worker crash signal (`'error'` or `'exit'`) to prevent re-entry.
+   */
+  crashHandled: boolean
+  /**
    * Dynamic flag.
    */
   dynamic: boolean
@@ -356,6 +373,11 @@ export interface WorkerInfo {
    */
   taskFunctionsProperties?: TaskFunctionProperties[]
   /**
+   * Terminating flag.
+   * This flag is set to `true` before voluntary worker termination so the subsequent `'exit'` event is not treated as a crash.
+   */
+  terminating: boolean
+  /**
    * Worker type.
    */
   readonly type: WorkerType
@@ -366,7 +388,7 @@ export interface WorkerInfo {
  * @internal
  */
 export interface WorkerNodeEventDetail {
-  taskId?: `${string}-${string}-${string}-${string}-${string}`
+  taskId?: TaskUUID
   workerId?: number
   workerNodeKey?: number
 }

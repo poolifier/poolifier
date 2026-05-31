@@ -98,9 +98,11 @@ export interface PromiseResponseWrapper<Response = unknown> {
    */
   readonly resolve: (value: PromiseLike<Response> | Response) => void
   /**
-   * The worker node key executing the task.
+   * Id of the worker currently bound to the in-flight task. Rewritten on
+   * steal / redistribute by replacing the {@link PromiseResponseWrapper}
+   * entry in the pool's response map.
    */
-  readonly workerNodeKey: number
+  readonly workerId: number | undefined
 }
 
 /**
@@ -133,7 +135,7 @@ export interface Task<Data = unknown> {
   /**
    * Task UUID.
    */
-  readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
+  readonly taskId?: TaskUUID
   /**
    * Timestamp.
    */
@@ -191,6 +193,12 @@ export interface TaskPerformance {
    */
   readonly timestamp: number
 }
+
+/**
+ * UUIDv4 string template type used for task identifiers (e.g. on
+ * {@link WorkerCrashError.taskId} and {@link WorkerTerminationError.taskId}).
+ */
+export type TaskUUID = `${string}-${string}-${string}-${string}-${string}`
 
 /**
  * Worker error.

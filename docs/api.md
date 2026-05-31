@@ -62,7 +62,28 @@ This method is available on both pool implementations and will start the minimum
 
 ### `pool.destroy()`
 
-This method is available on both pool implementations and will call the terminate method on each worker.
+This method is available on both pool implementations and will call the terminate method on each worker. Concurrent calls all resolve when termination completes; calling `destroy()` after completion throws.
+
+In-flight tasks that do not finish within `tasksFinishedTimeout` (default `2000` ms; `tasksQueueOptions.tasksFinishedTimeout`) are rejected with a `WorkerTerminationError`. Attach a `.catch` to every `pool.execute()` you want to drain quietly; otherwise an unhandled rejection will be logged.
+
+Workers that had at least one in-flight task at termination emit `PoolEvents.error` once with a `WorkerTerminationError` payload. Idle workers terminated voluntarily emit nothing.
+
+Dynamic workers self-evicting via `maxInactiveTime` while a task is still executing reject the task with `WorkerTerminationError` through the same path.
+
+### Error handling on worker crash
+
+The pool rejects every in-flight task assigned to a worker that exits unexpectedly:
+
+- uncaught exception in the worker;
+- `process.exit(N)` from worker code (any non-zero `N`, or `0` while a task is in-flight);
+- signal kills (SIGKILL, SIGSEGV) and OOM-killer events on cluster workers;
+- crashes during worker startup.
+
+The rejection is a `WorkerCrashError` with `cause`, `exitCode`, `signal`, `workerId`, and `taskId` (set only when the crashed worker had an in-flight task at the time of crash). `PoolEvents.error` is emitted once per crash with a `WorkerCrashError` payload.
+
+Discriminate `WorkerCrashError` and `WorkerTerminationError` via `error.name` — this works across CJS and ESM imports of the package.
+
+> Cluster note: when a cluster worker throws, the original throw text is only available on the worker's stderr — it does not propagate to `error.cause`. Use `error.exitCode` and `error.signal` to inspect how the worker exited.
 
 ### `pool.hasTaskFunction(name)`
 
