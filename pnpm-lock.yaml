@@ -18,7 +18,7 @@ importers:
         specifier: ^21.0.2
         version: 21.0.2
       '@cspell/eslint-plugin':
-        specifier: ^10.0.0
+        specifier: ^10.0.1
         version: 10.0.1(eslint@9.39.4(jiti@2.6.1))
       '@eslint/js':
         specifier: ^9.39.4
@@ -33,7 +33,7 @@ importers:
         specifier: ^24.12.4
         version: 24.12.4
       '@vitest/coverage-v8':
-        specifier: ^4.1.7
+        specifier: ^4.1.8
         version: 4.1.8(vitest@4.1.8)
       clean-publish:
         specifier: ^7.1.0
@@ -45,7 +45,7 @@ importers:
         specifier: ^9.39.4
         version: 9.39.4(jiti@2.6.1)
       eslint-plugin-jsdoc:
-        specifier: ^63.0.0
+        specifier: ^63.0.1
         version: 63.0.1(eslint@9.39.4(jiti@2.6.1))
       eslint-plugin-perfectionist:
         specifier: ^5.9.0
@@ -57,7 +57,7 @@ importers:
         specifier: ^9.1.7
         version: 9.1.7
       lint-staged:
-        specifier: ^17.0.6
+        specifier: ^17.0.7
         version: 17.0.7
       neostandard:
         specifier: ^0.13.0
@@ -66,7 +66,7 @@ importers:
         specifier: ^3.8.3
         version: 3.8.3
       rollup:
-        specifier: ^4.60.4
+        specifier: ^4.61.0
         version: 4.61.0
       rollup-plugin-analyzer:
         specifier: ^4.0.0
@@ -96,7 +96,7 @@ importers:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
-        specifier: ^4.1.7
+        specifier: ^4.1.8
         version: 4.1.8(@types/node@24.12.4)(@vitest/coverage-v8@4.1.8)(vite@8.0.16(@types/node@24.12.4)(jiti@2.6.1)(terser@5.48.0)(yaml@2.9.0))
     publishDirectory: package
 
