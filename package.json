@@ -112,7 +112,7 @@
     "clean-publish": "^7.1.0",
     "cross-env": "^10.1.0",
     "eslint": "^9.39.4",
-    "eslint-plugin-jsdoc": "^63.0.4",
+    "eslint-plugin-jsdoc": "^63.0.5",
     "eslint-plugin-perfectionist": "^5.9.1",
     "globals": "^17.6.0",
     "husky": "^9.1.7",
