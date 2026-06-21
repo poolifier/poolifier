@@ -45,7 +45,7 @@ importers:
         specifier: ^9.39.4
         version: 9.39.4(jiti@2.6.1)
       eslint-plugin-jsdoc:
-        specifier: ^63.0.5
+        specifier: ^63.0.6
         version: 63.0.6(eslint@9.39.4(jiti@2.6.1))
       eslint-plugin-perfectionist:
         specifier: ^5.9.1
