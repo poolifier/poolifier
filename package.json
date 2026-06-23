@@ -119,7 +119,7 @@
     "lint-staged": "^17.0.7",
     "neostandard": "^0.13.0",
     "prettier": "^3.8.4",
-    "rollup": "^4.62.0",
+    "rollup": "^4.62.2",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",
     "rollup-plugin-delete": "^3.0.2",
