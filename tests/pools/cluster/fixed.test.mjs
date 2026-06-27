@@ -9,7 +9,14 @@ import { sleep, waitWorkerEvents } from '../../test-utils.cjs'
 describe('Fixed cluster pool test suite', () => {
   const numberOfWorkers = 8
   const tasksConcurrency = 2
-  let asyncErrorPool, asyncPool, echoPool, emptyPool, errorPool, pool, queuePool
+  let asyncErrorPool,
+    asyncPool,
+    crashPool,
+    echoPool,
+    emptyPool,
+    errorPool,
+    pool,
+    queuePool
 
   beforeAll(() => {
     pool = new FixedClusterPool(
@@ -57,6 +64,15 @@ describe('Fixed cluster pool test suite', () => {
       numberOfWorkers,
       './tests/worker-files/cluster/asyncWorker.cjs'
     )
+    crashPool = new FixedClusterPool(
+      1,
+      './tests/worker-files/cluster/crashWorker.cjs',
+      {
+        enableTasksQueue: true,
+        restartWorkerOnError: false,
+        tasksQueueOptions: { concurrency: 1 },
+      }
+    )
   })
 
   afterAll(async () => {
@@ -69,6 +85,7 @@ describe('Fixed cluster pool test suite', () => {
     await asyncErrorPool.destroy()
     await emptyPool.destroy()
     await queuePool.destroy()
+    await crashPool.destroy()
   })
 
   it('Verify that the function is executed in a worker cluster', async () => {
@@ -137,7 +154,17 @@ describe('Fixed cluster pool test suite', () => {
       expect(workerNode.usage.tasks.executing).toBeLessThanOrEqual(
         numberOfWorkers * maxMultiplier
       )
-      expect(workerNode.usage.tasks.executed).toBe(maxMultiplier)
+      // Per-worker `executed` and steal counters are non-deterministic
+      // because tasks-stealing-on-idle redistributes work across nodes;
+      // bounds reflect that distribution rather than exact equality.
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(
+        queuePool.opts.tasksQueueOptions.concurrency
+      )
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
+        numberOfWorkers *
+          (maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency) +
+          queuePool.opts.tasksQueueOptions.concurrency
+      )
       expect(workerNode.usage.tasks.queued).toBe(0)
       expect(workerNode.usage.tasks.maxQueued).toBe(
         maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency
@@ -146,18 +173,21 @@ describe('Fixed cluster pool test suite', () => {
         0
       )
       expect(workerNode.usage.tasks.sequentiallyStolen).toBeLessThanOrEqual(
-        numberOfWorkers * maxMultiplier
+        numberOfWorkers *
+          (maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency)
       )
       expect(workerNode.usage.tasks.stolen).toBeGreaterThanOrEqual(0)
       expect(workerNode.usage.tasks.stolen).toBeLessThanOrEqual(
-        numberOfWorkers * maxMultiplier
+        numberOfWorkers *
+          (maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency)
       )
     }
     expect(queuePool.info.executedTasks).toBe(numberOfWorkers * maxMultiplier)
     expect(queuePool.info.backPressure).toBe(false)
     expect(queuePool.info.stolenTasks).toBeGreaterThanOrEqual(0)
     expect(queuePool.info.stolenTasks).toBeLessThanOrEqual(
-      numberOfWorkers * maxMultiplier
+      numberOfWorkers *
+        (maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency)
     )
   })
 
@@ -236,6 +266,36 @@ describe('Fixed cluster pool test suite', () => {
         workerNode => workerNode.usage.tasks.failed === 1
       )
     ).toBe(true)
+  })
+
+  // Discriminate via `error.name` (NOT instanceof — dual-package
+  // safety). `{ retry: 0 }` because the test is deterministic.
+  it('Verify that in-flight task promises reject on worker crash', {
+    retry: 0,
+  }, async () => {
+    let poolError
+    crashPool.emitter.once(PoolEvents.error, e => {
+      poolError = e
+    })
+    const exitPromise = waitWorkerEvents(crashPool, 'exit', 1)
+    let error
+    try {
+      await crashPool.execute()
+    } catch (e) {
+      error = e
+    }
+    expect(error).toBeInstanceOf(Error)
+    expect(error.name).toBe('WorkerCrashError')
+    if (error.exitCode != null) {
+      expect(error.exitCode).not.toBe(0)
+    } else {
+      expect(error.signal).not.toBeNull()
+    }
+    expect(error.cause).toBeUndefined()
+    expect(poolError).toBeInstanceOf(Error)
+    expect(poolError.name).toBe('WorkerCrashError')
+    expect(poolError).toBe(error)
+    await exitPromise
   })
 
   it('Verify that async function is working properly', async () => {
