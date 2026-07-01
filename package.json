@@ -43,10 +43,10 @@
     "pnpm": ">=9.0.0"
   },
   "volta": {
-    "node": "24.16.0",
-    "pnpm": "11.5.3"
+    "node": "24.18.0",
+    "pnpm": "11.9.0"
   },
-  "packageManager": "pnpm@11.5.3",
+  "packageManager": "pnpm@11.9.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/poolifier/poolifier.git"
@@ -100,26 +100,26 @@
     "lib"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^2.4.16",
-    "@commitlint/cli": "^21.0.2",
-    "@commitlint/config-conventional": "^21.0.2",
+    "@biomejs/biome": "^2.5.1",
+    "@commitlint/cli": "^21.1.0",
+    "@commitlint/config-conventional": "^21.1.0",
     "@cspell/eslint-plugin": "^10.0.1",
     "@eslint/js": "^9.39.4",
     "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/node": "^24.13.2",
-    "@vitest/coverage-v8": "^4.1.8",
+    "@vitest/coverage-v8": "^4.1.9",
     "clean-publish": "^7.1.0",
     "cross-env": "^10.1.0",
     "eslint": "^9.39.4",
-    "eslint-plugin-jsdoc": "^63.0.2",
-    "eslint-plugin-perfectionist": "^5.9.0",
-    "globals": "^17.6.0",
+    "eslint-plugin-jsdoc": "^63.0.10",
+    "eslint-plugin-perfectionist": "^5.9.1",
+    "globals": "^17.7.0",
     "husky": "^9.1.7",
-    "lint-staged": "^17.0.7",
+    "lint-staged": "^17.0.8",
     "neostandard": "^0.13.0",
-    "prettier": "^3.8.4",
-    "rollup": "^4.61.1",
+    "prettier": "^3.9.1",
+    "rollup": "^4.62.2",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",
     "rollup-plugin-delete": "^3.0.2",
@@ -129,6 +129,6 @@
     "tslib": "^2.8.1",
     "typedoc": "^0.28.19",
     "typescript": "~6.0.3",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.9"
   }
 }
