@@ -318,6 +318,20 @@ export const checkWorkerNodeArguments = (
 }
 
 /**
+ * Formats a worker exit event detail string.
+ * @param exitCode - The exit code.
+ * @param signal - The exit signal.
+ * @returns The formatted exit detail string.
+ */
+export const formatExitDetail = (
+  exitCode: null | number,
+  signal: NodeJS.Signals | null | undefined
+): string =>
+  signal != null
+    ? `code=${String(exitCode)}, signal=${signal}`
+    : `code=${String(exitCode)}`
+
+/**
  * Updates the given measurement statistics.
  * @param measurementStatistics - The measurement statistics to update.
  * @param measurementRequirements - The measurement statistics requirements.
@@ -517,12 +531,14 @@ export const initWorkerInfo = (worker: IWorker): WorkerInfo => {
     backPressure: false,
     backPressureStealing: false,
     continuousStealing: false,
+    crashHandled: false,
     dynamic: false,
     id: getWorkerId(worker),
     queuedTaskAbortion: false,
     ready: false,
     stealing: false,
     stolen: false,
+    terminating: false,
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     type: getWorkerType(worker)!,
   }
@@ -569,6 +585,7 @@ export const waitWorkerNodeEvents = async <
       case 'backPressure':
       case 'idle':
       case 'taskFinished':
+      case 'terminated':
         workerNode.on(workerNodeEvent, listener)
         break
       default:

@@ -1,0 +1,86 @@
+/**
+ * Pool-level typed error classes.
+ *
+ * `*Options` interfaces are file-scoped (`@internal`) for TS4063
+ * declaration-emit compliance and are not re-exported from
+ * `src/index.ts`. Discrimination contract: `docs/api.md`.
+ */
+
+import type { TaskUUID } from '../utility-types.js'
+
+/**
+ * Options for {@link WorkerCrashError}.
+ * @internal
+ */
+export interface WorkerCrashErrorOptions {
+  readonly cause?: unknown
+  readonly exitCode?: null | number
+  readonly signal?: NodeJS.Signals | null
+  readonly taskId?: TaskUUID
+  readonly workerId?: number
+}
+
+/**
+ * Options for {@link WorkerTerminationError}.
+ * @internal
+ */
+export interface WorkerTerminationErrorOptions {
+  readonly cause?: unknown
+  readonly taskId?: TaskUUID
+  readonly workerId?: number
+}
+
+/**
+ * Raised when a task promise is rejected because its assigned worker exited
+ * unexpectedly (uncaught exception, signal kill, OOM-killer,
+ * `process.exit(N)` from worker code, etc.).
+ */
+export class WorkerCrashError extends Error {
+  public readonly exitCode: null | number
+  public readonly signal: NodeJS.Signals | null
+  public readonly taskId?: TaskUUID
+  public readonly workerId?: number
+  public constructor (message: string, options: WorkerCrashErrorOptions = {}) {
+    super(message, options.cause != null ? { cause: options.cause } : undefined)
+    Object.setPrototypeOf(this, new.target.prototype)
+    // Non-writable per the `error.name` discrimination contract — see
+    // docs/api.md §"Error handling on worker crash".
+    Object.defineProperty(this, 'name', {
+      configurable: false,
+      enumerable: false,
+      value: 'WorkerCrashError',
+      writable: false,
+    })
+    this.exitCode = options.exitCode ?? null
+    this.signal = options.signal ?? null
+    this.taskId = options.taskId
+    this.workerId = options.workerId
+  }
+}
+
+/**
+ * Raised when a task promise is rejected because the pool initiated worker
+ * termination while the task was still in-flight (`pool.destroy()` reached
+ * its `tasksFinishedTimeout`, or a queued task could not be redistributed).
+ */
+export class WorkerTerminationError extends Error {
+  public readonly taskId?: TaskUUID
+  public readonly workerId?: number
+  public constructor (
+    message: string,
+    options: WorkerTerminationErrorOptions = {}
+  ) {
+    super(message, options.cause != null ? { cause: options.cause } : undefined)
+    Object.setPrototypeOf(this, new.target.prototype)
+    // Non-writable per the `error.name` discrimination contract — see
+    // docs/api.md §"pool.destroy()".
+    Object.defineProperty(this, 'name', {
+      configurable: false,
+      enumerable: false,
+      value: 'WorkerTerminationError',
+      writable: false,
+    })
+    this.taskId = options.taskId
+    this.workerId = options.workerId
+  }
+}

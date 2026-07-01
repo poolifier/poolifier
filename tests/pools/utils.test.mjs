@@ -135,12 +135,14 @@ describe('Pool utils test suite', () => {
       backPressure: false,
       backPressureStealing: false,
       continuousStealing: false,
+      crashHandled: false,
       dynamic: false,
       id: threadWorker.threadId,
       queuedTaskAbortion: false,
       ready: false,
       stealing: false,
       stolen: false,
+      terminating: false,
       type: WorkerTypes.thread,
     })
     const clusterWorker = createWorker(
@@ -153,6 +155,7 @@ describe('Pool utils test suite', () => {
       backPressure: false,
       backPressureStealing: false,
       continuousStealing: false,
+      crashHandled: false,
       dynamic: false,
       id: clusterWorker.id,
       queuedTaskAbortion: false,
