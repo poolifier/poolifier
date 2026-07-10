@@ -108,12 +108,12 @@
     "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/node": "^24.13.2",
-    "@vitest/coverage-v8": "^4.1.9",
+    "@vitest/coverage-v8": "^4.1.10",
     "clean-publish": "^7.1.0",
     "cross-env": "^10.1.0",
     "eslint": "^9.39.4",
     "eslint-plugin-jsdoc": "^63.0.12",
-    "eslint-plugin-perfectionist": "^5.9.1",
+    "eslint-plugin-perfectionist": "^5.10.0",
     "globals": "^17.7.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.8",
@@ -129,6 +129,6 @@
     "tslib": "^2.8.1",
     "typedoc": "^0.28.20",
     "typescript": "~6.0.3",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   }
 }
