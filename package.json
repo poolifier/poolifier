@@ -100,14 +100,14 @@
     "lib"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^2.5.2",
-    "@commitlint/cli": "^21.2.0",
+    "@biomejs/biome": "^2.5.3",
+    "@commitlint/cli": "^21.2.1",
     "@commitlint/config-conventional": "^21.2.0",
     "@cspell/eslint-plugin": "^10.0.1",
     "@eslint/js": "^9.39.4",
     "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^12.3.0",
-    "@types/node": "^24.13.2",
+    "@types/node": "^24.13.3",
     "@vitest/coverage-v8": "^4.1.10",
     "clean-publish": "^7.1.0",
     "cross-env": "^10.1.0",
