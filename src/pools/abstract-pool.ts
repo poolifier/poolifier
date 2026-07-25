@@ -360,7 +360,7 @@ export abstract class AbstractPool<
         this.publishPoolEvent(PoolEvents.degraded, event)
       },
       publishDegradedEnd: () => {
-        this.publishPoolEvent(PoolEvents.degradedEnd, undefined)
+        this.publishPoolEvent(PoolEvents.degradedEnd, this.info)
       },
       readyWorkerNodeCount: () => this.readyWorkerNodeCount(),
       started: () => this.started,
@@ -1945,6 +1945,10 @@ export abstract class AbstractPool<
           if (!this.started) {
             throw new WorkerTerminationError('Worker node terminated by pool')
           }
+          // Recompute health before the read: the breaker trips synchronously in
+          // shouldReplace(), but the topology-driven refresh that latches #state
+          // only lands at reconciliation finalize. This closes the staleness
+          // window so an unrecoverable pool fast-fails on submission.
           this.poolHealthMonitor.refresh()
           if (this.poolHealthMonitor.unrecoverable) {
             throw new PoolUnrecoverableError('Pool has no recoverable worker')
