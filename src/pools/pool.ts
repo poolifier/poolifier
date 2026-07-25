@@ -474,7 +474,7 @@ export interface WorkerRestartPolicyOptions {
    * `windowTime`. Exceeding it trips the pool into an unrecoverable state.
    * Must be a safe integer in the range `1..1000`, or `Infinity` to disable
    * the bound.
-   * @defaultValue `Infinity`
+   * @defaultValue Infinity
    */
   readonly maxRestarts?: number
   /**
