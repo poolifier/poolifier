@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import { FixedThreadPool, PoolEvents } from '../../lib/index.mjs'
+import {
+  FixedThreadPool,
+  PoolEvents,
+  WorkerCrashError,
+} from '../../lib/index.mjs'
 import { createCrashRecoveryTestContext } from './crash-recovery-test-support.mjs'
 import { collectRejection } from './crash-recovery-utils.mjs'
 
@@ -39,6 +43,10 @@ describe('Pool degraded health regression test suite', () => {
       [...pool.workerNodes].map(() =>
         collectRejection(pool.execute(), rejections)
       )
+    )
+    expect(rejections).toHaveLength(2)
+    expect(rejections.every(error => error instanceof WorkerCrashError)).toBe(
+      true
     )
 
     const recoveryInfo = await recovered
