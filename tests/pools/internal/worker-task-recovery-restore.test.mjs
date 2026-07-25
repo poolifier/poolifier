@@ -98,3 +98,49 @@ it('does not re-reject already restored tasks when apply throws mid-restore', as
   expect(apply).toHaveBeenCalledOnce()
   expect(reject).not.toHaveBeenCalled()
 })
+
+it('applies every committed placement even when the signal aborts mid-restore', async () => {
+  const lease = { generation: 1, id: 13 }
+  const first = {
+    lease,
+    previousState: 'queued',
+    taskId: '00000000-0000-0000-0000-000000000c01',
+  }
+  const second = {
+    lease,
+    previousState: 'queued',
+    taskId: '00000000-0000-0000-0000-000000000c02',
+  }
+  const controller = new AbortController()
+  const apply = vi.fn(() => {
+    controller.abort()
+  })
+  const reject = vi.fn(() => true)
+  const restore = vi.fn(reservations =>
+    reservations.map(() => ({ kind: 'committed' }))
+  )
+  const recovery = new WorkerTaskRecovery(
+    {
+      classification: 'faulted',
+      handle: { lease, worker: { info: { dynamic: false } } },
+      ownedTaskIds: [first.taskId, second.taskId],
+      previousState: 'ready',
+    },
+    [first, second],
+    {
+      apply,
+      error: () => new Error('crash'),
+      finalize: vi.fn(),
+      prepare: () => Promise.resolve(),
+      reject,
+      restore,
+    }
+  )
+
+  await recovery.prepare(controller.signal)
+  await recovery.restore(controller.signal)
+
+  expect(restore).toHaveBeenCalledOnce()
+  expect(apply).toHaveBeenCalledTimes(2)
+  expect(reject).not.toHaveBeenCalled()
+})

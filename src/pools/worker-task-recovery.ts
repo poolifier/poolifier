@@ -117,7 +117,6 @@ implements WorkerReconciliationPreparation {
       this.#pending.delete(reservation.taskId)
     }
     for (const result of results) {
-      signal.throwIfAborted()
       this.callbacks.apply(result)
     }
     return Promise.resolve()
