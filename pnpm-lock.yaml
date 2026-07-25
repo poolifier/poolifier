@@ -9,7 +9,7 @@ importers:
   .:
     devDependencies:
       '@biomejs/biome':
-        specifier: ^2.5.4
+        specifier: ^2.5.5
         version: 2.5.5
       '@commitlint/cli':
         specifier: ^21.2.1
@@ -57,13 +57,13 @@ importers:
         specifier: ^9.1.7
         version: 9.1.7
       lint-staged:
-        specifier: ^17.1.0
+        specifier: ^17.1.1
         version: 17.1.1
       neostandard:
         specifier: ^0.13.0
         version: 0.13.0(eslint@9.39.5(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       prettier:
-        specifier: ^3.9.5
+        specifier: ^3.9.6
         version: 3.9.6
       rollup:
         specifier: ^4.62.2
@@ -81,7 +81,7 @@ importers:
         specifier: ^6.4.1
         version: 6.4.1(rollup@4.62.2)(typescript@6.0.3)
       sinon:
-        specifier: ^22.0.0
+        specifier: ^22.1.0
         version: 22.1.0
       tinybench:
         specifier: ^6.0.2
