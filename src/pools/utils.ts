@@ -287,6 +287,38 @@ export const checkValidTasksQueueOptions = (
   }
 }
 
+const checkWorkerRestartPolicyBound = (
+  value: number | undefined,
+  label: string,
+  min: number,
+  max: number,
+  allowInfinity: boolean
+): void => {
+  if (value == null) {
+    return
+  }
+  if (allowInfinity && value === Number.POSITIVE_INFINITY) {
+    return
+  }
+  if (!Number.isSafeInteger(value)) {
+    throw new TypeError(
+      `Invalid worker restart policy ${label}: must be an integer${
+        allowInfinity ? ' or Infinity' : ''
+      }`
+    )
+  }
+  if (value < min) {
+    throw new RangeError(
+      `Invalid worker restart policy ${label}: ${value.toString()} is less than ${min.toString()}`
+    )
+  }
+  if (value > max) {
+    throw new RangeError(
+      `Invalid worker restart policy ${label}: ${value.toString()} is greater than ${max.toString()}`
+    )
+  }
+}
+
 export const checkValidWorkerRestartPolicyOptions = (
   restartPolicy: undefined | WorkerRestartPolicyOptions
 ): void => {
@@ -295,54 +327,22 @@ export const checkValidWorkerRestartPolicyOptions = (
       'Invalid worker restart policy options: must be a plain object'
     )
   }
-  if (
-    restartPolicy?.maxRestarts != null &&
-    restartPolicy.maxRestarts !== Number.POSITIVE_INFINITY &&
-    !Number.isSafeInteger(restartPolicy.maxRestarts)
-  ) {
-    throw new TypeError(
-      'Invalid worker restart policy max restarts: must be an integer or Infinity'
-    )
-  }
-  if (
-    restartPolicy?.maxRestarts != null &&
-    restartPolicy.maxRestarts !== Number.POSITIVE_INFINITY &&
-    restartPolicy.maxRestarts < 1
-  ) {
-    throw new RangeError(
-      `Invalid worker restart policy max restarts: ${restartPolicy.maxRestarts.toString()} is less than 1`
-    )
-  }
-  if (
-    restartPolicy?.maxRestarts != null &&
-    restartPolicy.maxRestarts !== Number.POSITIVE_INFINITY &&
-    restartPolicy.maxRestarts > 1000
-  ) {
-    throw new RangeError(
-      `Invalid worker restart policy max restarts: ${restartPolicy.maxRestarts.toString()} is greater than 1000`
-    )
-  }
-  if (
-    restartPolicy?.windowTime != null &&
-    !Number.isSafeInteger(restartPolicy.windowTime)
-  ) {
-    throw new TypeError(
-      'Invalid worker restart policy window time: must be an integer'
-    )
-  }
-  if (restartPolicy?.windowTime != null && restartPolicy.windowTime < 1000) {
-    throw new RangeError(
-      `Invalid worker restart policy window time: ${restartPolicy.windowTime.toString()} is less than 1000`
-    )
-  }
-  if (
-    restartPolicy?.windowTime != null &&
-    restartPolicy.windowTime > 2_147_483_647
-  ) {
-    throw new RangeError(
-      `Invalid worker restart policy window time: ${restartPolicy.windowTime.toString()} is greater than 2147483647`
-    )
-  }
+  checkWorkerRestartPolicyBound(
+    restartPolicy?.maxRestarts,
+    'max restarts',
+    1,
+    1000,
+    true
+  )
+  // Upper bound mirrors the timeout validators for configuration consistency;
+  // windowTime feeds sliding-window arithmetic (performance.now()), not a timer.
+  checkWorkerRestartPolicyBound(
+    restartPolicy?.windowTime,
+    'window time',
+    1000,
+    2_147_483_647,
+    false
+  )
 }
 
 export const checkWorkerNodeArguments: (
