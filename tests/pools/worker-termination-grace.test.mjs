@@ -11,7 +11,7 @@ describe('Worker termination grace behavior', () => {
   const { cleanupPools, trackPool } = createPoolCleanup()
   afterEach(cleanupPools)
 
-  it('T11d: workerNode.terminate() resolves within grace period when worker exit never fires', {
+  it('workerNode.terminate() resolves within grace period when worker exit never fires', {
     retry: 0,
     timeout: 15_000,
   }, async () => {
@@ -57,7 +57,7 @@ describe('Worker termination grace behavior', () => {
     }
   })
 
-  it('T11e: workerNode.terminate() fast-path skips grace timer when worker has already exited', {
+  it('workerNode.terminate() fast-path skips grace timer when worker has already exited', {
     retry: 0,
     timeout: 5_000,
   }, async () => {
@@ -87,7 +87,7 @@ describe('Worker termination grace behavior', () => {
     }
   })
 
-  it('T11f: standalone workerNode.terminate() stays alive until the grace race settles', {
+  it('standalone workerNode.terminate() stays alive until the grace race settles', {
     retry: 0,
     timeout: 15_000,
   }, () => {
@@ -133,7 +133,7 @@ describe('Worker termination grace behavior', () => {
     expect(elapsed).toBeLessThan(7000)
   })
 
-  it('T11g: workerNode.terminate() clears the grace timer after natural exit', {
+  it('workerNode.terminate() clears the grace timer after natural exit', {
     retry: 0,
     timeout: 5_000,
   }, async () => {

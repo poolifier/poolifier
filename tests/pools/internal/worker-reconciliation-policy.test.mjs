@@ -194,7 +194,7 @@ it('does not finish execution after a timed-out drain preparation resumes', asyn
   expect(callbacks.executionFinished).not.toHaveBeenCalled()
 })
 
-it('T13b: publishes a transition crash without a task separately from task rejection', async () => {
+it('publishes a transition crash without a task separately from task rejection', async () => {
   const taskId = '00000000-0000-0000-0000-000000000abc'
   const rawCause = new Error('queued transition raw crash')
   const callbacks = createCallbacks()
@@ -251,7 +251,7 @@ it('T13b: publishes a transition crash without a task separately from task rejec
   expect(callbacks.publishError.mock.calls[0][1]).toBe(handle.lease)
 })
 
-it('T13h: full pool drain rejects reserved queued work without redistribution', async () => {
+it('full pool drain rejects reserved queued work without redistribution', async () => {
   const taskId = '00000000-0000-0000-0000-000000000d13'
   const callbacks = createCallbacks()
   callbacks.isRunning.mockReturnValue(false)
@@ -282,7 +282,7 @@ it('T13h: full pool drain rejects reserved queued work without redistribution', 
   expect(callbacks.reject.mock.calls[0][2].taskId).toBe(taskId)
 })
 
-it('T13i: single worker drain restores reserved queued work through recovery', async () => {
+it('single worker drain restores reserved queued work through recovery', async () => {
   const taskId = '00000000-0000-0000-0000-000000000d14'
   const lease = { generation: 1, id: 11 }
   const callbacks = createCallbacks()

@@ -10,7 +10,7 @@ import { createCrashRecoveryTestContext } from './crash-recovery-test-support.mj
 describe('Crash recovery regression test suite', () => {
   const { trackPool } = createCrashRecoveryTestContext()
 
-  it('T9: worker error then exit settles and emits once', {
+  it('worker error then exit settles and emits once', {
     retry: 0,
     timeout: 10_000,
   }, async () => {

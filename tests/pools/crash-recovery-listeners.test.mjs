@@ -31,7 +31,7 @@ describe('Crash recovery regression test suite', () => {
   }
 
   it.each(['error-handler', 'exit-handler', 'pool-error-listener'])(
-    'T14: %s throw is rethrown once only after typed settlement and cleanup',
+    '%s throw is rethrown once only after typed settlement and cleanup',
     {
       retry: 0,
       timeout: 15_000,
@@ -72,7 +72,7 @@ describe('Crash recovery regression test suite', () => {
     }
   )
 
-  it('T14b: combined listener throws retain identity without duplicate drains', {
+  it('combined listener throws retain identity without duplicate drains', {
     retry: 0,
     timeout: 15_000,
   }, () => {
@@ -96,7 +96,7 @@ describe('Crash recovery regression test suite', () => {
   })
 
   it.each(['no-listener', 'non-throwing'])(
-    'T14c: %s control schedules no uncaught exception',
+    '%s control schedules no uncaught exception',
     {
       retry: 0,
       timeout: 15_000,
@@ -115,7 +115,7 @@ describe('Crash recovery regression test suite', () => {
     }
   )
 
-  it('T14d: in-process crash settles before one captured handler throw drains', {
+  it('in-process crash settles before one captured handler throw drains', {
     retry: 0,
     timeout: 10_000,
   }, async () => {

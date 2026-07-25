@@ -21,7 +21,7 @@ describe('Pool in-flight termination', () => {
       './tests/worker-files/cluster/hangWorker.cjs',
     ],
   ])(
-    'T5: %s pool.destroy() with hung task rejects in-flight with WorkerTerminationError',
+    '%s pool.destroy() with hung task rejects in-flight with WorkerTerminationError',
     {
       retry: 0,
       timeout: 10_000,
@@ -60,7 +60,7 @@ describe('Pool in-flight termination', () => {
     }
   )
 
-  it('T5b: destroy with one in-flight worker leaves idle worker promises unaffected', {
+  it('destroy with one in-flight worker leaves idle worker promises unaffected', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -86,7 +86,7 @@ describe('Pool in-flight termination', () => {
     expect(rejections[0].name).toBe('WorkerTerminationError')
   })
 
-  it('T5c: tasksFinishedTimeout is honored as a ceiling for pre-existing in-flight tasks (no queue)', {
+  it('tasksFinishedTimeout is honored as a ceiling for pre-existing in-flight tasks (no queue)', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -119,7 +119,7 @@ describe('Pool in-flight termination', () => {
     expect(elapsed).toBeLessThan(ceiling + 2000)
   })
 
-  it('T5d: in-flight task settling before tasksFinishedTimeout keeps its normal outcome', {
+  it('in-flight task settling before tasksFinishedTimeout keeps its normal outcome', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -172,7 +172,7 @@ describe('Pool in-flight termination', () => {
     expect(workerNode.usage.tasks.failed).toBe(0)
   })
 
-  it('T7: fire-and-forget × N + destroy collects N WorkerTerminationError rejections, no Pool unhandled rejection', {
+  it('fire-and-forget × N + destroy collects N WorkerTerminationError rejections, no Pool unhandled rejection', {
     retry: 0,
     timeout: 10_000,
   }, async () => {

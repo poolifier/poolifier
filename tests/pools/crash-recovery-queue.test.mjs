@@ -10,7 +10,7 @@ import { createCrashRecoveryTestContext } from './crash-recovery-test-support.mj
 describe('Crash recovery regression test suite', () => {
   const { trackPool } = createCrashRecoveryTestContext()
 
-  it('T13: enableTasksQueue=false + worker crash rejects all in-flight with WorkerCrashError', {
+  it('enableTasksQueue=false + worker crash rejects all in-flight with WorkerCrashError', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -53,7 +53,7 @@ describe('Crash recovery regression test suite', () => {
     expect(poolErrorCount).toBe(N)
   })
 
-  it('T13d: simultaneous multi-worker crash rejects every in-flight task with WorkerCrashError', {
+  it('simultaneous multi-worker crash rejects every in-flight task with WorkerCrashError', {
     retry: 0,
     timeout: 15_000,
   }, async () => {

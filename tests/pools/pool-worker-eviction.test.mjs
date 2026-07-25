@@ -14,7 +14,7 @@ describe('Pool worker eviction', () => {
   const { cleanupPools, trackPool } = createPoolCleanup()
   afterEach(cleanupPools)
 
-  it('T8: dynamic worker idle eviction (no in-flight) does NOT emit error events', {
+  it('dynamic worker idle eviction (no in-flight) does NOT emit error events', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -57,7 +57,7 @@ describe('Pool worker eviction', () => {
     expect(destroyWorkerNodeSpy).toHaveBeenCalledTimes(1)
   })
 
-  it('T8b: dynamic-eviction destroyWorkerNode WITH in-flight task rejects via WorkerTerminationError', {
+  it('dynamic-eviction destroyWorkerNode WITH in-flight task rejects via WorkerTerminationError', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -97,7 +97,7 @@ describe('Pool worker eviction', () => {
     expect(rejections[0].taskId).toBeDefined()
   })
 
-  it('T8c: queued abort rejects through async resource cleanup', {
+  it('queued abort rejects through async resource cleanup', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -140,7 +140,7 @@ describe('Pool worker eviction', () => {
     expect(inFlight.reason).toBeInstanceOf(WorkerTerminationError)
   })
 
-  it('T8d: destroyWorkerNode redistributes queued work with single abort cleanup', {
+  it('destroyWorkerNode redistributes queued work with single abort cleanup', {
     retry: 0,
     timeout: 15_000,
   }, async () => {

@@ -13,7 +13,7 @@ describe('Crash recovery regression test suite', () => {
   const { expectWorkerCrashErrorForWorker, trackPool } =
     createCrashRecoveryTestContext()
 
-  it('T11: crash during destroy emits no undefined payload and surfaces a single typed rejection', {
+  it('crash during destroy emits no undefined payload and surfaces a single typed rejection', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -59,7 +59,7 @@ describe('Crash recovery regression test suite', () => {
     expect(poolError.cause).toBe(rejected.cause)
     expect(poolError.message).toBe(rejected.message)
   })
-  it('T13f: spontaneous crash after drain rejects with WorkerCrashError', {
+  it('spontaneous crash after drain rejects with WorkerCrashError', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -96,7 +96,7 @@ describe('Crash recovery regression test suite', () => {
       './tests/worker-files/cluster/processExitWorker.cjs',
     ],
   ])(
-    'T13j: destroy keeps distinct crash causes for active and queued %s work',
+    'destroy keeps distinct crash causes for active and queued %s work',
     {
       retry: 0,
       timeout: 10_000,
@@ -157,7 +157,7 @@ describe('Crash recovery regression test suite', () => {
       expect(poolError.message).toBe(activeRejected.message)
     }
   )
-  it('T-I5c-cluster: cluster clean process.exit(0) mid-task rejects with WorkerCrashError', {
+  it('cluster clean process.exit(0) mid-task rejects with WorkerCrashError', {
     retry: 0,
     timeout: 10_000,
   }, async () => {

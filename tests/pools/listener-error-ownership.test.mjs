@@ -12,7 +12,7 @@ describe('Listener error drain ownership regression test suite', () => {
 
   afterEach(cleanupPools)
 
-  it('T14e: crash-first listener throws transfer to overlapping full destroy', {
+  it('crash-first listener throws transfer to overlapping full destroy', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -120,7 +120,7 @@ describe('Listener error drain ownership regression test suite', () => {
     }
   })
 
-  it('T14f: standalone destroy-first listener throw transfers to full destroy', {
+  it('standalone destroy-first listener throw transfers to full destroy', {
     retry: 0,
     timeout: 10_000,
   }, async () => {

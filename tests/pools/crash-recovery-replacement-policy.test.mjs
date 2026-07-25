@@ -12,7 +12,7 @@ import { collectRejection } from './crash-recovery-utils.mjs'
 describe('Crash recovery regression test suite', () => {
   const { trackPool } = createCrashRecoveryTestContext()
 
-  it('T10: crashed worker failed usage is updated and replacement remains selectable', {
+  it('crashed worker failed usage is updated and replacement remains selectable', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -50,7 +50,7 @@ describe('Crash recovery regression test suite', () => {
     )
   })
 
-  it('T13g: clean exit(0) mid-task with restartWorkerOnError:false does NOT replenish', {
+  it('clean exit(0) mid-task with restartWorkerOnError:false does NOT replenish', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -83,7 +83,7 @@ describe('Crash recovery regression test suite', () => {
     await terminated
     expect(pool.workerNodes.length).toBe(0)
   })
-  it('T-I5a: clean process.exit(0) replenishes even with restartWorkerOnError:false', {
+  it('clean process.exit(0) replenishes even with restartWorkerOnError:false', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -149,7 +149,7 @@ describe('Crash recovery regression test suite', () => {
     expect(pool.info).toMatchObject({ executingTasks: 0, queuedTasks: 0 })
   })
 
-  it('T-I5b: crash with restartWorkerOnError:false does NOT replenish', {
+  it('crash with restartWorkerOnError:false does NOT replenish', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -184,7 +184,7 @@ describe('Crash recovery regression test suite', () => {
     await terminated
     expect(pool.workerNodes.length).toBe(0)
   })
-  it('T-I5b-cluster: cluster crash with restartWorkerOnError:false does NOT replenish', {
+  it('cluster crash with restartWorkerOnError:false does NOT replenish', {
     retry: 0,
     timeout: 10_000,
   }, async () => {

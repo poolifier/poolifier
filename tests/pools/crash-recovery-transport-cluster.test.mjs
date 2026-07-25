@@ -56,7 +56,7 @@ const createInbox = async () => {
 const once = (pool, event) =>
   new Promise(resolve => pool.emitter.once(event, resolve))
 
-describe('T8 cluster-only observable crash matrix', {
+describe('cluster-only observable crash matrix', {
   retry: 0,
   timeout: 240_000,
 }, () => {

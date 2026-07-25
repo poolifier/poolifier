@@ -9,7 +9,7 @@ const matrixIterations = Number(
   process.env.POOLIFIER_CRASH_RECOVERY_ITERATIONS ?? 10
 )
 
-describe('T7 thread-only observable crash matrix', {
+describe('thread-only observable crash matrix', {
   retry: 0,
   timeout: 240_000,
 }, () => {

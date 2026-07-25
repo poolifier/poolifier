@@ -10,7 +10,7 @@ describe('Pool destroy idempotency', () => {
   const { cleanupPools, trackPool } = createPoolCleanup()
   afterEach(cleanupPools)
 
-  it('T12: concurrent pool.destroy() calls are silently idempotent', {
+  it('concurrent pool.destroy() calls are silently idempotent', {
     retry: 0,
     timeout: 10_000,
   }, async () => {

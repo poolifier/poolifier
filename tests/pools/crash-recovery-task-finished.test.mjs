@@ -10,7 +10,7 @@ import { createCrashRecoveryTestContext } from './crash-recovery-test-support.mj
 describe('Crash recovery regression test suite', () => {
   const { trackPool } = createCrashRecoveryTestContext()
 
-  it('T13k: single-worker crash emits one taskFinished per rejected in-flight task', {
+  it('single-worker crash emits one taskFinished per rejected in-flight task', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
@@ -52,7 +52,7 @@ describe('Crash recovery regression test suite', () => {
     expect(taskFinishedCount).toBe(N)
   })
 
-  it('T13l: crash-to-settlement latency stays well under the termination grace window', {
+  it('crash-to-settlement latency stays well under the termination grace window', {
     retry: 0,
     timeout: 10_000,
   }, async () => {
