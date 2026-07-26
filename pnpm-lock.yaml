@@ -57,8 +57,8 @@ importers:
         specifier: ^9.1.7
         version: 9.1.7
       lint-staged:
-        specifier: ^17.1.1
-        version: 17.1.1
+        specifier: ^17.2.0
+        version: 17.2.0
       neostandard:
         specifier: ^0.13.0
         version: 0.13.0(eslint@9.39.5(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
@@ -84,8 +84,8 @@ importers:
         specifier: ^22.1.0
         version: 22.1.0
       tinybench:
-        specifier: ^6.0.2
-        version: 6.0.2
+        specifier: ^6.1.1
+        version: 6.1.2
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -2015,8 +2015,8 @@ packages:
   linkify-it@5.0.2:
     resolution: {integrity: sha512-ONTm2jCMAVZjgQa/Fy1kScXsuOoF5NPTsoFBdE1KVIZ2vAh/r9+Bqo+0jINCBYnavTPQZz38QzFTme79ENoN3Q==}
 
-  lint-staged@17.1.1:
-    resolution: {integrity: sha512-FnHWpSe5cPRtrDG+soOuNdBxb4XQb2gN5EqpEWKdweyqyOfpl4QSjbrz3ilcIf0WXmkiNQGZZRQ23R5YtB3TEw==}
+  lint-staged@17.2.0:
+    resolution: {integrity: sha512-FchGnFe4i4B1C/a35SPU9bNGPEHSC1+1iV0plLjzBmKVe9klZrlRfSgK6Cw4VeHyqOXbJUXP0vON61uRftNQ0A==}
     engines: {node: '>=22.22.1'}
     hasBin: true
 
@@ -2490,8 +2490,8 @@ packages:
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
-  tinybench@6.0.2:
-    resolution: {integrity: sha512-FlHoQpcFvCzeXK5kVPvV7IVgW/hs/B36QWTz876iSdeJguBDfdTSRQmYmaHX+fQNt4hp+gEFB2XXw+8hT4/y8A==}
+  tinybench@6.1.2:
+    resolution: {integrity: sha512-REdMxUreK3VSUeWcLd5+ijUGNKFyHT8s1trKmYEE/tlYE6ggdOkFOlKba/vI/l1fIqh/NTEEr1Cyw4AwttOicA==}
     engines: {node: '>=20.0.0'}
 
   tinyexec@1.2.4:
@@ -4764,7 +4764,7 @@ snapshots:
     dependencies:
       uc.micro: 2.1.0
 
-  lint-staged@17.1.1:
+  lint-staged@17.2.0:
     dependencies:
       picomatch: 4.0.5
       string-argv: 0.3.2
@@ -5325,7 +5325,7 @@ snapshots:
 
   tinybench@2.9.0: {}
 
-  tinybench@6.0.2: {}
+  tinybench@6.1.2: {}
 
   tinyexec@1.2.4: {}
 
