@@ -45,13 +45,13 @@ importers:
         specifier: ^9.39.5
         version: 9.39.5(jiti@2.6.1)(supports-color@7.2.0)
       eslint-plugin-jsdoc:
-        specifier: ^63.2.2
+        specifier: ^63.3.1
         version: 63.3.2(eslint@9.39.5(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)
       eslint-plugin-perfectionist:
         specifier: ^5.10.0
         version: 5.10.0(eslint@9.39.5(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       globals:
-        specifier: ^17.7.0
+        specifier: ^17.8.0
         version: 17.8.0
       husky:
         specifier: ^9.1.7
@@ -66,7 +66,7 @@ importers:
         specifier: ^3.9.6
         version: 3.9.6
       rollup:
-        specifier: ^4.62.2
+        specifier: ^4.62.3
         version: 4.62.3
       rollup-plugin-analyzer:
         specifier: ^4.0.0
