@@ -9,7 +9,7 @@ importers:
   .:
     devDependencies:
       '@biomejs/biome':
-        specifier: ^2.5.6
+        specifier: ^2.5.7
         version: 2.5.7
       '@commitlint/cli':
         specifier: ^21.2.1
@@ -78,7 +78,7 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2(rollup@4.62.4)
       rollup-plugin-dts:
-        specifier: ^6.5.0
+        specifier: ^6.5.1
         version: 6.5.1(rollup@4.62.4)(typescript@6.0.3)
       sinon:
         specifier: ^22.1.0
