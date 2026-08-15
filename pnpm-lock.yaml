@@ -51,7 +51,7 @@ importers:
         specifier: ^5.10.1
         version: 5.10.1(eslint@9.39.5(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       globals:
-        specifier: ^17.9.0
+        specifier: ^17.10.0
         version: 17.11.0
       husky:
         specifier: ^9.1.7
