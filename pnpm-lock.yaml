@@ -12,10 +12,10 @@ importers:
         specifier: ^2.5.8
         version: 2.5.8
       '@commitlint/cli':
-        specifier: ^21.2.1
+        specifier: ^21.2.2
         version: 21.2.2(@types/node@24.13.3)(conventional-commits-parser@7.1.2)(typescript@6.0.3)
       '@commitlint/config-conventional':
-        specifier: ^21.2.0
+        specifier: ^21.2.2
         version: 21.2.2
       '@cspell/eslint-plugin':
         specifier: ^10.0.1
