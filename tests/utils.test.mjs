@@ -87,6 +87,29 @@ describe('Utils test suite', () => {
     expect(median([0.25, 4.75, 3.05, 6.04, 1.01, 2.02])).toBe(2.535)
   })
 
+  it('computes finite averages when same-sign finite sums overflow', () => {
+    expect(average([Number.MAX_VALUE, Number.MAX_VALUE])).toBe(Number.MAX_VALUE)
+  })
+
+  it('computes finite averages when overflowed sums include opposite signs', () => {
+    const result = average([
+      Number.MAX_VALUE,
+      Number.MAX_VALUE,
+      -Number.MAX_VALUE,
+    ])
+
+    expect(Number.isFinite(result)).toBe(true)
+    expect(result / Number.MAX_VALUE).toBeCloseTo(1 / 3)
+    expect(average([Number.MAX_VALUE, -Number.MAX_VALUE])).toBe(0)
+  })
+
+  it('computes finite even medians when finite midpoints overflow', () => {
+    expect(median([Number.MAX_VALUE, Number.MAX_VALUE])).toBe(Number.MAX_VALUE)
+    expect(median([-Number.MAX_VALUE, -Number.MAX_VALUE])).toBe(
+      -Number.MAX_VALUE
+    )
+  })
+
   it('Verify round() behavior', () => {
     expect(round(0)).toBe(0)
     expect(round(0.5, 0)).toBe(1)

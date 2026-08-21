@@ -1,7 +1,7 @@
 import { randomInt } from 'node:crypto'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
-import { FixedThreadPool } from '../../../lib/index.mjs'
+import { FixedThreadPool, PoolEvents } from '../../../lib/index.mjs'
 import { FairShareWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/fair-share-worker-choice-strategy.mjs'
 import { InterleavedWeightedRoundRobinWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/interleaved-weighted-round-robin-worker-choice-strategy.mjs'
 import { LeastBusyWorkerChoiceStrategy } from '../../../lib/pools/selection-strategies/least-busy-worker-choice-strategy.mjs'
@@ -14,11 +14,14 @@ describe('Weighted round robin worker choice strategy test suite', () => {
   const max = 3
   let pool
 
-  beforeAll(() => {
+  beforeAll(async () => {
     pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.mjs'
     )
+    if (!pool.info.ready) {
+      await new Promise(resolve => pool.emitter.once(PoolEvents.ready, resolve))
+    }
   })
 
   afterAll(async () => {

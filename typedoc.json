@@ -8,6 +8,13 @@
   "includeVersion": true,
   "treatWarningsAsErrors": true,
   "excludeInternal": true,
+  "intentionallyNotExported": [
+    "TaskRegistry",
+    "WorkerCrashErrorOptions",
+    "WorkerHandle",
+    "WorkerLifecycleCoordinator",
+    "WorkerTerminationErrorOptions"
+  ],
   "externalSymbolLinkMappings": {
     "@types/node": {
       "EventEmitter.defaultMaxListeners": "https://nodejs.org/api/events.html#eventsdefaultmaxlisteners"

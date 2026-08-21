@@ -51,6 +51,8 @@ export const PoolEvents: Readonly<{
   backPressureEnd: 'backPressureEnd'
   busy: 'busy'
   busyEnd: 'busyEnd'
+  degraded: 'degraded'
+  degradedEnd: 'degradedEnd'
   destroy: 'destroy'
   empty: 'empty'
   error: 'error'
@@ -63,6 +65,8 @@ export const PoolEvents: Readonly<{
   backPressureEnd: 'backPressureEnd',
   busy: 'busy',
   busyEnd: 'busyEnd',
+  degraded: 'degraded',
+  degradedEnd: 'degradedEnd',
   destroy: 'destroy',
   empty: 'empty',
   error: 'error',
@@ -97,7 +101,8 @@ export interface IPool<
     fn: TaskFunction<Data, Response> | TaskFunctionObject<Data, Response>
   ) => Promise<boolean>
   /**
-   * Terminates all workers in this pool.
+   * Terminates all workers in this pool. Calls made during the same destruction
+   * return the shared completion promise. A completed pool can be restarted.
    */
   readonly destroy: () => Promise<void>
   /**
@@ -113,10 +118,12 @@ export interface IPool<
    * - `'fullEnd'`: Emitted when the pool is dynamic and the number of workers created has no longer reached the maximum size expected.
    * - `'empty'`: Emitted when the pool is dynamic with a minimum number of workers set to zero and the number of workers has reached the minimum size expected.
    * - `'destroy'`: Emitted when the pool is destroyed.
-   * - `'error'`: Emitted when an uncaught error occurs.
+   * - `'error'`: Emitted once with a `WorkerCrashError` when a worker crashes. Other pool failures are emitted as their corresponding `Error` value.
    * - `'taskError'`: Emitted when an error occurs while executing a task.
    * - `'backPressure'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are back pressured (i.e. their tasks queue is full: queue size \>= maximum queue size).
    * - `'backPressureEnd'`: Emitted when the number of workers created in the pool has reached the maximum size expected and are no longer back pressured (i.e. their tasks queue is no longer full: queue size \< maximum queue size).
+   * - `'degraded'`: Emitted with a `PoolDegradedEvent` when the pool health transitions away from healthy, either because the number of ready worker nodes dropped below the minimum size or because the worker restart circuit breaker tripped (rendering the pool unrecoverable).
+   * - `'degradedEnd'`: Emitted when the pool health recovers back to healthy.
    */
   readonly emitter?: EventEmitterAsyncResource
   /**
@@ -206,7 +213,8 @@ export interface IPool<
     workerChoiceStrategyOptions: WorkerChoiceStrategyOptions
   ) => boolean
   /**
-   * Starts the minimum number of workers in this pool.
+   * Starts the minimum number of workers as one operation. A failed attempt
+   * preserves the original thrown value and leaves the pool restartable.
    */
   readonly start: () => void
   /**
@@ -217,9 +225,42 @@ export interface IPool<
 }
 
 /**
+ * Payload emitted with the `'degraded'` pool event when the pool health
+ * transitions away from healthy.
+ */
+export interface PoolDegradedEvent {
+  /** Pool minimum size. */
+  readonly minSize: number
+  /** Number of ready worker nodes at the time of the transition. */
+  readonly readyWorkerNodeCount: number
+  /** Reason for the transition. */
+  readonly reason: PoolDegradedReason
+  /** Whether the pool has become unrecoverable (circuit breaker tripped). */
+  readonly unrecoverable: boolean
+}
+
+/**
+ * Reason the pool health transitions away from healthy.
+ *
+ * - `'belowMinimum'`: The number of ready worker nodes dropped below the pool minimum size.
+ * - `'circuitBreakerTripped'`: The worker restart circuit breaker tripped, rendering the pool unrecoverable.
+ */
+export type PoolDegradedReason = 'belowMinimum' | 'circuitBreakerTripped'
+
+/**
  * Pool event.
  */
 export type PoolEvent = keyof typeof PoolEvents
+
+/**
+ * Pool health state.
+ *
+ * - `'healthy'`: The pool has at least its minimum number of ready worker nodes and the worker restart circuit breaker has not tripped.
+ * - `'degraded'`: The pool is started but the number of ready worker nodes dropped below its minimum size.
+ * - `'unrecoverable'`: The worker restart circuit breaker tripped; the pool can no longer replace faulted workers. Latched.
+ * @internal
+ */
+export type PoolHealthState = 'degraded' | 'healthy' | 'unrecoverable'
 
 /**
  * Pool information.
@@ -308,12 +349,14 @@ export interface PoolOptions<Worker extends IWorker> {
    */
   env?: Record<string, unknown>
   /**
-   * A function that will listen for error event on each worker.
+   * Synchronous worker error callback. A throw is rethrown asynchronously
+   * exactly once after task settlement and cleanup complete.
    * @defaultValue `() => {}`
    */
   errorHandler?: ErrorHandler<Worker>
   /**
-   * A function that will listen for exit event on each worker.
+   * Synchronous worker exit callback. See {@link ExitHandler} for argument
+   * semantics and throw behavior.
    * @defaultValue `() => {}`
    */
   exitHandler?: ExitHandler<Worker>
@@ -328,7 +371,19 @@ export interface PoolOptions<Worker extends IWorker> {
    */
   onlineHandler?: OnlineHandler<Worker>
   /**
-   * Restart worker on error.
+   * Bounds faulted worker replacements within a sliding time window. Prevents a
+   * crash loop (e.g. a poison task or a leaking worker) from replacing workers
+   * unboundedly; once the bound is exceeded the pool becomes unrecoverable.
+   * Disabled by default.
+   */
+  restartPolicy?: WorkerRestartPolicyOptions
+  /**
+   * Restart workers after abnormal exits. A clean exit with no in-flight task
+   * replenishes the pool minimum regardless of this option. A clean exit while
+   * a task is in-flight is treated as abnormal and follows this option.
+   * In-flight task promises bound to an abnormal exit always reject with
+   * `WorkerCrashError` regardless of this option.
+   * @defaultValue `true`
    */
   restartWorkerOnError?: boolean
   /**
@@ -386,7 +441,10 @@ export interface TasksQueueOptions {
    */
   readonly size?: number
   /**
-   * Queued tasks finished timeout in milliseconds at worker node termination.
+   * Maximum time in milliseconds to wait for in-flight tasks to finish during
+   * worker node termination.
+   * Must be an integer in the range `0..2_147_483_647`. A value of `0`
+   * applies the timeout immediately.
    * @defaultValue 2000
    */
   readonly tasksFinishedTimeout?: number
@@ -405,4 +463,25 @@ export interface TasksQueueOptions {
    * @defaultValue true
    */
   readonly taskStealing?: boolean
+}
+
+/**
+ * Worker restart policy options.
+ */
+export interface WorkerRestartPolicyOptions {
+  /**
+   * Maximum number of faulted worker replacements permitted within
+   * `windowTime`. Exceeding it trips the pool into an unrecoverable state.
+   * Must be a safe integer in the range `1..1000`, or `Infinity` to disable
+   * the bound.
+   * @defaultValue Infinity
+   */
+  readonly maxRestarts?: number
+  /**
+   * Trailing sliding window in milliseconds over which `maxRestarts` faulted
+   * replacements are counted.
+   * Must be an integer in the range `1000..2_147_483_647`.
+   * @defaultValue 60_000
+   */
+  readonly windowTime?: number
 }
