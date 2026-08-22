@@ -7,6 +7,20 @@ on:
     types: [opened, synchronize, reopened]
   merge_group:
     branches: [master]
+  workflow_dispatch:
+    inputs:
+      pull_request:
+        description: Pull request number
+        required: true
+        type: string
+      head_ref:
+        description: Pull request head branch
+        required: true
+        type: string
+      base_ref:
+        description: Pull request base branch
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -69,6 +83,9 @@ jobs:
       - name: SonarCloud Code Analysis
         if: ${{ steps.sonar-token.outputs.available == 'true' && github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '22.x' }}
         uses: sonarsource/sonarqube-scan-action@v8.2
+        with:
+          args: >-
+            ${{ github.event_name == 'workflow_dispatch' && format('-Dsonar.pullrequest.key={0} -Dsonar.pullrequest.branch={1} -Dsonar.pullrequest.base={2}', inputs.pull_request, inputs.head_ref, inputs.base_ref) || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
