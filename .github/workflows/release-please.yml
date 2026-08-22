@@ -14,7 +14,9 @@ jobs:
     if: github.repository == 'poolifier/poolifier'
 
     permissions:
+      actions: write
       contents: write
+      issues: write
       pull-requests: write
 
     outputs:
@@ -24,9 +26,25 @@ jobs:
       - uses: googleapis/release-please-action@v5
         id: release
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
           config-file: .github/release-please/config.json
           manifest-file: .github/release-please/manifest.json
+
+      - name: Dispatch CI for release pull request
+        if: ${{ steps.release.outputs.prs_created == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_PR: ${{ steps.release.outputs.pr }}
+        run: |
+          pull_request=$(jq -r '.number' <<< "$RELEASE_PR")
+          head_ref=$(jq -r '.headBranchName' <<< "$RELEASE_PR")
+          base_ref=$(jq -r '.baseBranchName' <<< "$RELEASE_PR")
+
+          gh workflow run ci.yml \
+            --repo "${{ github.repository }}" \
+            --ref "$head_ref" \
+            --raw-field pull_request="$pull_request" \
+            --raw-field head_ref="$head_ref" \
+            --raw-field base_ref="$base_ref"
 
   build-release:
     needs: release-please
