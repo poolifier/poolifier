@@ -35,13 +35,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_PR: ${{ steps.release.outputs.pr }}
         run: |
+          pull_request=$(jq -r '.number' <<< "$RELEASE_PR")
           head_ref=$(jq -r '.headBranchName' <<< "$RELEASE_PR")
+          base_ref=$(jq -r '.baseBranchName' <<< "$RELEASE_PR")
+
           gh workflow run ci.yml \
             --repo "${{ github.repository }}" \
             --ref "$head_ref" \
-            --field pull_request="$(jq -r '.number' <<< "$RELEASE_PR")" \
-            --field head_ref="$head_ref" \
-            --field base_ref="$(jq -r '.baseBranchName' <<< "$RELEASE_PR")"
+            --raw-field pull_request="$pull_request" \
+            --raw-field head_ref="$head_ref" \
+            --raw-field base_ref="$base_ref"
 
   build-release:
     needs: release-please
