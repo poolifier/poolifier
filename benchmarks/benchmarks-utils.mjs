@@ -1,5 +1,5 @@
 import { strictEqual } from 'node:assert'
-import { Bench } from 'tinybench'
+import { Bench, mToNs } from 'tinybench'
 
 import {
   DynamicClusterPool,
@@ -145,11 +145,9 @@ export const runPoolifierBenchmarkTinyBench = async (
       bmfResults[task.name] = {
         latency: {
           // Tinybench reports milliseconds; Bencher latency uses nanoseconds.
-          lower_value:
-            (task.result.latency.mean - task.result.latency.sd) * 1e6,
-          upper_value:
-            (task.result.latency.mean + task.result.latency.sd) * 1e6,
-          value: task.result.latency.mean * 1e6,
+          lower_value: mToNs(task.result.latency.mean - task.result.latency.sd),
+          upper_value: mToNs(task.result.latency.mean + task.result.latency.sd),
+          value: mToNs(task.result.latency.mean),
         },
         throughput: {
           lower_value: task.result.throughput.mean - task.result.throughput.sd,
