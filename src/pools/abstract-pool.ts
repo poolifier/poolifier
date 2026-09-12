@@ -162,11 +162,6 @@ export abstract class AbstractPool<
     Response
   >
 
-  private readonly workerReconciliationPolicy: WorkerReconciliationPolicy<
-    Worker,
-    Data
-  >
-
   protected readonly workerLifecycleCoordinator =
     new WorkerLifecycleCoordinator<IWorkerNode<Worker, Data>>({
       complete: (input, signal) =>
@@ -216,9 +211,9 @@ export abstract class AbstractPool<
   protected abstract get worker (): WorkerType
 
   private readonly eventPublisher: PoolEventPublisher
+
   private readonly poolHealthMonitor: PoolHealthMonitor
   private readonly poolLifecycle = new PoolLifecycle()
-
   private readonly publishedWorkerReconciliations = new WeakSet<
     Promise<WorkerReconciliationResult>
   >()
@@ -285,6 +280,11 @@ export abstract class AbstractPool<
   >
 
   private readonly workerProvisioner: WorkerProvisioner<Worker, Data>
+
+  private readonly workerReconciliationPolicy: WorkerReconciliationPolicy<
+    Worker,
+    Data
+  >
 
   private readonly workerRestartCircuitBreaker: WorkerRestartCircuitBreaker
 

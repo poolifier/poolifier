@@ -51,13 +51,13 @@ export class PoolUnrecoverableError extends Error {
  */
 export class WorkerCrashError extends Error {
   /** Raw Node.js exit code, or `null` when unavailable or signal-terminated. */
-  public declare readonly exitCode: null | number
+  declare public readonly exitCode: null | number
   /** Raw Node.js exit signal, or `null` when the exit was not signal-driven. */
-  public declare readonly signal: NodeJS.Signals | null
+  declare public readonly signal: NodeJS.Signals | null
   /** Identifier of the task rejected by this error. */
-  public declare readonly taskId?: TaskUUID
+  declare public readonly taskId?: TaskUUID
   /** Stable runtime identifier of the worker that owned the task. */
-  public declare readonly workerId?: number
+  declare public readonly workerId?: number
   public constructor (message: string, options: WorkerCrashErrorOptions = {}) {
     super(message, options.cause != null ? { cause: options.cause } : undefined)
     Object.setPrototypeOf(this, new.target.prototype)
