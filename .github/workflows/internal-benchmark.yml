@@ -33,9 +33,17 @@ jobs:
         run: pnpm install --ignore-scripts --frozen-lockfile
       - uses: bencherdev/bencher@main
       - name: Run production benchmark
+        run: pnpm benchmark:tinybench:prod
+      - name: Publish benchmark
+        shell: bash
         run: |
+          args=()
+          if [[ "$GITHUB_REF" != refs/heads/master ]]; then
+            args+=(--dry-run)
+          fi
           bencher run \
-          --branch master \
+          "${args[@]}" \
+          --branch "$GITHUB_REF_NAME" \
           --threshold-measure latency \
           --threshold-test t_test \
           --threshold-max-sample-size 64 \
@@ -48,6 +56,4 @@ jobs:
           --threshold-upper-boundary _ \
           --thresholds-reset \
           --file benchmark-report.json \
-          --err \
-          --github-actions ${{ secrets.GITHUB_TOKEN }} \
-          "pnpm benchmark:tinybench:prod"
+          --err
