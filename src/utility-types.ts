@@ -30,6 +30,10 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    */
   readonly ready?: boolean
   /**
+   * Properties of task functions declared by the worker file.
+   */
+  readonly staticTaskFunctionsProperties?: TaskFunctionProperties[]
+  /**
    * Whether the worker computes the given statistics or not.
    */
   readonly statistics?: WorkerStatistics
@@ -44,6 +48,10 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    * - `'default'` - Set a task function as default.
    */
   readonly taskFunctionOperation?: 'add' | 'default' | 'remove'
+  /**
+   * Task function operation correlation id.
+   */
+  readonly taskFunctionOperationId?: string
   /**
    * Whether the task function operation is successful or not.
    */
@@ -70,7 +78,7 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    */
   readonly workerError?: WorkerError<ErrorData>
   /**
-   * Worker id.
+   * Runtime worker id.
    */
   readonly workerId?: number
 }
@@ -78,7 +86,6 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
 /**
  * An object holding the task execution response promise resolve/reject callbacks.
  * @template Response - Type of execution response. This can only be structured-cloneable data.
- * @internal
  */
 export interface PromiseResponseWrapper<Response = unknown> {
   /**
@@ -98,9 +105,9 @@ export interface PromiseResponseWrapper<Response = unknown> {
    */
   readonly resolve: (value: PromiseLike<Response> | Response) => void
   /**
-   * The worker node key executing the task.
+   * Runtime worker id currently bound to the in-flight task.
    */
-  readonly workerNodeKey: number
+  readonly workerId: number | undefined
 }
 
 /**
@@ -133,7 +140,7 @@ export interface Task<Data = unknown> {
   /**
    * Task UUID.
    */
-  readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
+  readonly taskId?: TaskUUID
   /**
    * Timestamp.
    */
@@ -191,6 +198,13 @@ export interface TaskPerformance {
    */
   readonly timestamp: number
 }
+
+/**
+ * UUIDv4 string template type used for queued and in-flight task identifiers
+ * (e.g. on {@link WorkerCrashError.taskId} and
+ * {@link WorkerTerminationError.taskId}).
+ */
+export type TaskUUID = `${string}-${string}-${string}-${string}-${string}`
 
 /**
  * Worker error.
