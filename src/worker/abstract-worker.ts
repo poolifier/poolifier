@@ -8,6 +8,7 @@ import type {
   Task,
   TaskFunctionProperties,
   TaskPerformance,
+  TaskUUID,
   WorkerStatistics,
 } from '../utility-types.js'
 import type {
@@ -20,13 +21,13 @@ import type {
 } from './task-functions.js'
 
 import {
-  buildTaskFunctionProperties,
   DEFAULT_TASK_NAME,
   EMPTY_FUNCTION,
   isAsyncFunction,
   isPlainObject,
 } from '../utils.js'
 import { AbortError } from './abort-error.js'
+import { TaskFunctionLayers } from './task-function-layers.js'
 import {
   checkTaskFunctionName,
   checkValidTaskFunctionObjectEntry,
@@ -83,15 +84,19 @@ export abstract class AbstractWorker<
   /**
    * Task abort functions processed by the worker when task operation 'abort' is received.
    */
-  protected taskAbortFunctions: Map<
-    `${string}-${string}-${string}-${string}-${string}`,
-    () => void
-  >
+  protected taskAbortFunctions: Map<TaskUUID, () => void>
+
+  protected get taskFunctions (): Map<
+    string,
+    TaskFunctionObject<Data, Response>
+  > {
+    return this.taskFunctionLayers
+  }
 
   /**
    * Task function object(s) processed by the worker when the pool's `execute` method is invoked.
    */
-  protected taskFunctions!: Map<string, TaskFunctionObject<Data, Response>>
+  private readonly taskFunctionLayers: TaskFunctionLayers<Data, Response>
 
   /**
    * Constructs a new poolifier worker.
@@ -109,11 +114,8 @@ export abstract class AbstractWorker<
     if (this.isMain == null) {
       throw new Error('isMain parameter is mandatory')
     }
-    this.checkTaskFunctions(taskFunctions)
-    this.taskAbortFunctions = new Map<
-      `${string}-${string}-${string}-${string}-${string}`,
-      () => void
-    >()
+    this.taskFunctionLayers = this.checkTaskFunctions(taskFunctions)
+    this.taskAbortFunctions = new Map<TaskUUID, () => void>()
     this.checkWorkerOptions(this.opts)
     if (!this.isMain) {
       this.getMainWorker().once('message', this.handleReadyMessage.bind(this))
@@ -143,13 +145,7 @@ export abstract class AbstractWorker<
       }
       checkValidTaskFunctionObjectEntry<Data, Response>(name, fn)
       fn.taskFunction = fn.taskFunction.bind(this)
-      if (
-        this.taskFunctions.get(name) ===
-        this.taskFunctions.get(DEFAULT_TASK_NAME)
-      ) {
-        this.taskFunctions.set(DEFAULT_TASK_NAME, fn)
-      }
-      this.taskFunctions.set(name, fn)
+      this.taskFunctionLayers.addOverlay(name, fn)
       this.sendTaskFunctionsPropertiesToMainWorker()
       return { status: true }
     } catch (error) {
@@ -168,7 +164,7 @@ export abstract class AbstractWorker<
     } catch (error) {
       return { error: error as Error, status: false }
     }
-    return { status: this.taskFunctions.has(name) }
+    return { status: this.taskFunctionLayers.has(name) }
   }
 
   /**
@@ -176,34 +172,7 @@ export abstract class AbstractWorker<
    * @returns The properties of the worker's task functions.
    */
   public listTaskFunctionsProperties (): TaskFunctionProperties[] {
-    let defaultTaskFunctionName = DEFAULT_TASK_NAME
-    for (const [name, fnObj] of this.taskFunctions) {
-      if (
-        name !== DEFAULT_TASK_NAME &&
-        fnObj === this.taskFunctions.get(DEFAULT_TASK_NAME)
-      ) {
-        defaultTaskFunctionName = name
-        break
-      }
-    }
-    const taskFunctionsProperties: TaskFunctionProperties[] = []
-    for (const [name, fnObj] of this.taskFunctions) {
-      if (name === DEFAULT_TASK_NAME || name === defaultTaskFunctionName) {
-        continue
-      }
-      taskFunctionsProperties.push(buildTaskFunctionProperties(name, fnObj))
-    }
-    return [
-      buildTaskFunctionProperties(
-        DEFAULT_TASK_NAME,
-        this.taskFunctions.get(DEFAULT_TASK_NAME)
-      ),
-      buildTaskFunctionProperties(
-        defaultTaskFunctionName,
-        this.taskFunctions.get(defaultTaskFunctionName)
-      ),
-      ...taskFunctionsProperties,
-    ]
+    return this.taskFunctionLayers.listEffectiveProperties()
   }
 
   /**
@@ -227,7 +196,7 @@ export abstract class AbstractWorker<
           'Cannot remove the task function used as the default task function'
         )
       }
-      const deleteStatus = this.taskFunctions.delete(name)
+      const deleteStatus = this.taskFunctionLayers.removePermanently(name)
       this.sendTaskFunctionsPropertiesToMainWorker()
       return { status: deleteStatus }
     } catch (error) {
@@ -248,13 +217,11 @@ export abstract class AbstractWorker<
           'Cannot set the default task function reserved name as the default task function'
         )
       }
-      if (!this.taskFunctions.has(name)) {
+      if (!this.taskFunctionLayers.setDefault(name)) {
         throw new Error(
           'Cannot set the default task function to a non-existing task function'
         )
       }
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.taskFunctions.set(DEFAULT_TASK_NAME, this.taskFunctions.get(name)!)
       this.sendTaskFunctionsPropertiesToMainWorker()
       return { status: true }
     } catch (error) {
@@ -320,8 +287,12 @@ export abstract class AbstractWorker<
   protected handleTaskFunctionOperationMessage (
     message: MessageValue<Data>
   ): void {
-    const { taskFunction, taskFunctionOperation, taskFunctionProperties } =
-      message
+    const {
+      taskFunction,
+      taskFunctionOperation,
+      taskFunctionOperationId,
+      taskFunctionProperties,
+    } = message
     if (taskFunctionProperties == null) {
       throw new Error(
         'Cannot handle task function operation message without task function properties'
@@ -355,7 +326,12 @@ export abstract class AbstractWorker<
         response = this.setDefaultTaskFunction(taskFunctionProperties.name)
         break
       case 'remove':
-        response = this.removeTaskFunction(taskFunctionProperties.name)
+        response = {
+          status: this.taskFunctionLayers.removeOverlay(
+            taskFunctionProperties.name
+          ),
+        }
+        this.sendTaskFunctionsPropertiesToMainWorker()
         break
       default:
         response = {
@@ -370,6 +346,7 @@ export abstract class AbstractWorker<
     const { error, status } = response
     this.sendToMainWorker({
       taskFunctionOperation,
+      ...(taskFunctionOperationId != null && { taskFunctionOperationId }),
       taskFunctionOperationStatus: status,
       taskFunctionProperties,
       ...(!status &&
@@ -380,6 +357,10 @@ export abstract class AbstractWorker<
         },
       }),
     })
+  }
+
+  protected listStaticTaskFunctionsProperties (): TaskFunctionProperties[] {
+    return this.taskFunctionLayers.listStaticProperties()
   }
 
   /**
@@ -427,7 +408,8 @@ export abstract class AbstractWorker<
   protected readonly run = (task: Task<Data>): void => {
     const { abortable, data, name, taskId } = task
     const taskFunctionName = name ?? DEFAULT_TASK_NAME
-    if (!this.taskFunctions.has(taskFunctionName)) {
+    const taskFunctionObject = this.taskFunctionLayers.get(taskFunctionName)
+    if (taskFunctionObject == null) {
       this.sendToMainWorker({
         taskId,
         workerError: {
@@ -441,77 +423,27 @@ export abstract class AbstractWorker<
       return
     }
     let fn: TaskFunction<Data, Response>
-    if (abortable === true) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      fn = this.getAbortableTaskFunction(taskFunctionName, taskId!)
+    if (abortable === true && taskId != null) {
+      fn = this.getAbortableTaskFunction(
+        taskFunctionName,
+        taskId,
+        taskFunctionObject.taskFunction
+      )
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      fn = this.taskFunctions.get(taskFunctionName)!.taskFunction
+      fn = taskFunctionObject.taskFunction
     }
-    if (isAsyncFunction(fn)) {
-      this.runAsync(fn as TaskAsyncFunction<Data, Response>, task)
-    } else {
-      this.runSync(fn as TaskSyncFunction<Data, Response>, task)
-    }
-  }
-
-  /**
-   * Runs the given task function asynchronously.
-   * @param fn - Task function that will be executed.
-   * @param task - Input data for the task function.
-   */
-  protected readonly runAsync = (
-    fn: TaskAsyncFunction<Data, Response>,
-    task: Task<Data>
-  ): void => {
-    const { abortable, data, name, taskId } = task
-    let taskPerformance = this.beginTaskPerformance(name)
-    fn(data)
-      .then(res => {
-        taskPerformance = this.endTaskPerformance(taskPerformance)
-        this.sendToMainWorker({
-          data: res,
-          taskId,
-          taskPerformance,
-        })
-        return undefined
-      })
-      .catch((error: unknown) => {
-        this.sendToMainWorker({
-          taskId,
-          workerError: {
-            data,
-            name,
-            ...this.handleError(error as Error),
-          },
-        })
-      })
-      .finally(() => {
-        this.updateLastTaskTimestamp()
-        if (abortable === true) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this.taskAbortFunctions.delete(taskId!)
-        }
-      })
-      .catch(EMPTY_FUNCTION)
-  }
-
-  /**
-   * Runs the given task function synchronously.
-   * @param fn - Task function that will be executed.
-   * @param task - Input data for the task function.
-   */
-  protected readonly runSync = (
-    fn: TaskSyncFunction<Data, Response>,
-    task: Task<Data>
-  ): void => {
-    const { abortable, data, name, taskId } = task
+    let settlesAsynchronously = false
     try {
       let taskPerformance = this.beginTaskPerformance(name)
-      const res = fn(data)
+      const result = fn(data)
+      if (this.isThenable(result)) {
+        settlesAsynchronously = true
+        this.settleTaskPromise(result, task, taskPerformance)
+        return
+      }
       taskPerformance = this.endTaskPerformance(taskPerformance)
       this.sendToMainWorker({
-        data: res,
+        data: result,
         taskId,
         taskPerformance,
       })
@@ -525,10 +457,8 @@ export abstract class AbstractWorker<
         },
       })
     } finally {
-      this.updateLastTaskTimestamp()
-      if (abortable === true) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.taskAbortFunctions.delete(taskId!)
+      if (!settlesAsynchronously) {
+        this.finalizeTask(abortable, taskId)
       }
     }
   }
@@ -596,27 +526,30 @@ export abstract class AbstractWorker<
   /**
    * Checks if the `taskFunctions` parameter is passed to the constructor and valid.
    * @param taskFunctions - The task function(s) parameter that should be checked.
+   * @returns The worker task function layers.
    */
   private checkTaskFunctions (
     taskFunctions:
       | TaskFunction<Data, Response>
       | TaskFunctions<Data, Response>
       | undefined
-  ): void {
+  ): TaskFunctionLayers<Data, Response> {
     if (taskFunctions == null) {
       throw new Error('taskFunctions parameter is mandatory')
     }
-    this.taskFunctions = new Map<string, TaskFunctionObject<Data, Response>>()
+    const staticTaskFunctions = new Map<
+      string,
+      TaskFunctionObject<Data, Response>
+    >()
+    let defaultTaskFunctionName: string | undefined
     if (typeof taskFunctions === 'function') {
       const fnObj = { taskFunction: taskFunctions.bind(this) }
-      this.taskFunctions.set(DEFAULT_TASK_NAME, fnObj)
-      this.taskFunctions.set(
+      defaultTaskFunctionName =
         typeof taskFunctions.name === 'string' &&
-          taskFunctions.name.trim().length > 0
+        taskFunctions.name.trim().length > 0
           ? taskFunctions.name
-          : 'fn1',
-        fnObj
-      )
+          : 'fn1'
+      staticTaskFunctions.set(defaultTaskFunctionName, fnObj)
     } else if (isPlainObject(taskFunctions)) {
       let firstEntry = true
       for (let [name, fnObj] of Object.entries(taskFunctions)) {
@@ -629,10 +562,10 @@ export abstract class AbstractWorker<
         checkValidTaskFunctionObjectEntry<Data, Response>(name, fnObj)
         fnObj.taskFunction = fnObj.taskFunction.bind(this)
         if (firstEntry) {
-          this.taskFunctions.set(DEFAULT_TASK_NAME, fnObj)
+          defaultTaskFunctionName = name
           firstEntry = false
         }
-        this.taskFunctions.set(name, fnObj)
+        staticTaskFunctions.set(name, fnObj)
       }
       if (firstEntry) {
         throw new Error('taskFunctions parameter object is empty')
@@ -642,6 +575,10 @@ export abstract class AbstractWorker<
         'taskFunctions parameter is not a function or a plain object'
       )
     }
+    if (defaultTaskFunctionName == null) {
+      throw new Error('Task function default name is not defined')
+    }
+    return new TaskFunctionLayers(staticTaskFunctions, defaultTaskFunctionName)
   }
 
   private checkWorkerOptions (opts: WorkerOptions): void {
@@ -666,16 +603,28 @@ export abstract class AbstractWorker<
     }
   }
 
+  private finalizeTask (
+    abortable: boolean | undefined,
+    taskId: TaskUUID | undefined
+  ): void {
+    this.updateLastTaskTimestamp()
+    if (abortable === true && taskId != null) {
+      this.taskAbortFunctions.delete(taskId)
+    }
+  }
+
   /**
    * Gets abortable task function.
    * An abortable promise is built to permit the task to be aborted.
    * @param name - The name of the task.
    * @param taskId - The task id.
+   * @param taskFunction - The task function to run.
    * @returns The abortable task function.
    */
   private getAbortableTaskFunction (
     name: string,
-    taskId: `${string}-${string}-${string}-${string}-${string}`
+    taskId: TaskUUID,
+    taskFunction: TaskFunction<Data, Response>
   ): TaskAsyncFunction<Data, Response> {
     return async (data?: Data): Promise<Response> =>
       await new Promise<Response>(
@@ -683,8 +632,6 @@ export abstract class AbstractWorker<
           this.taskAbortFunctions.set(taskId, () => {
             reject(new AbortError(`Task '${name}' id '${taskId}' aborted`))
           })
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const taskFunction = this.taskFunctions.get(name)!.taskFunction
           if (isAsyncFunction(taskFunction)) {
             ;(taskFunction as TaskAsyncFunction<Data, Response>)(data)
               .then(resolve)
@@ -694,6 +641,53 @@ export abstract class AbstractWorker<
           }
         }
       )
+  }
+
+  private isThenable (value: unknown): value is PromiseLike<Response> {
+    return (
+      ((typeof value === 'object' && value !== null) ||
+        typeof value === 'function') &&
+      'then' in value &&
+      typeof value.then === 'function'
+    )
+  }
+
+  /**
+   * Settles the given task function promise.
+   * @param result - Task function promise or thenable.
+   * @param task - The task being executed.
+   * @param taskPerformance - Task performance measurement started before invocation.
+   */
+  private readonly settleTaskPromise = (
+    result: PromiseLike<Response>,
+    task: Task<Data>,
+    taskPerformance: TaskPerformance
+  ): void => {
+    const { abortable, data, name, taskId } = task
+    Promise.resolve(result)
+      .then(res => {
+        taskPerformance = this.endTaskPerformance(taskPerformance)
+        this.sendToMainWorker({
+          data: res,
+          taskId,
+          taskPerformance,
+        })
+        return undefined
+      })
+      .catch((error: unknown) => {
+        this.sendToMainWorker({
+          taskId,
+          workerError: {
+            data,
+            name,
+            ...this.handleError(error as Error),
+          },
+        })
+      })
+      .finally(() => {
+        this.finalizeTask(abortable, taskId)
+      })
+      .catch(EMPTY_FUNCTION)
   }
 
   /**

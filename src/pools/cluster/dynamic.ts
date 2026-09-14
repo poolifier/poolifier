@@ -89,9 +89,8 @@ export class DynamicClusterPool<
   protected override checkAndEmitDynamicWorkerCreationEvents (): void {
     if (this.emitter != null) {
       if (!this.fullEventEmitted && this.full) {
-        this.emitter.listenerCount(PoolEvents.full) > 0 &&
-          this.emitter.emit(PoolEvents.full, this.info)
         this.fullEventEmitted = true
+        this.publishPoolEvent(PoolEvents.full, this.info)
       }
       if (this.emptyEventEmitted && !this.empty) {
         this.emptyEventEmitted = false
@@ -103,14 +102,12 @@ export class DynamicClusterPool<
   protected override checkAndEmitDynamicWorkerDestructionEvents (): void {
     if (this.emitter != null) {
       if (this.fullEventEmitted && !this.full) {
-        this.emitter.listenerCount(PoolEvents.fullEnd) > 0 &&
-          this.emitter.emit(PoolEvents.fullEnd, this.info)
         this.fullEventEmitted = false
+        this.publishPoolEvent(PoolEvents.fullEnd, this.info)
       }
       if (!this.emptyEventEmitted && this.empty) {
-        this.emitter.listenerCount(PoolEvents.empty) > 0 &&
-          this.emitter.emit(PoolEvents.empty, this.info)
         this.emptyEventEmitted = true
+        this.publishPoolEvent(PoolEvents.empty, this.info)
       }
     }
   }
@@ -120,7 +117,8 @@ export class DynamicClusterPool<
     return (
       this.started &&
       !this.destroying &&
-      ((!this.full && this.internalBusy()) || this.empty)
+      ((!this.full && (this.internalBusy() || this.waitingReadyTasks() > 0)) ||
+        this.empty)
     )
   }
 }
