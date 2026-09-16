@@ -20,7 +20,7 @@ export const compareWorkerHandles = <Worker>(
   left: WorkerHandle<Worker>,
   right: WorkerHandle<Worker>
 ): number =>
-    left.lease.id - right.lease.id ||
+  left.lease.id - right.lease.id ||
   left.lease.generation - right.lease.generation
 
 export const createWorkerReconciliationInput = <Worker extends LifecycleWorker>(
