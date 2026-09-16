@@ -16,10 +16,10 @@ import {
  * @template Response - Type of execution response. This can only be structured-cloneable data.
  */
 export class RoundRobinWorkerChoiceStrategy<
-    Worker extends IWorker,
-    Data = unknown,
-    Response = unknown
-  >
+  Worker extends IWorker,
+  Data = unknown,
+  Response = unknown
+>
   extends AbstractWorkerChoiceStrategy<Worker, Data, Response>
   implements IWorkerChoiceStrategy {
   /** @inheritDoc */
