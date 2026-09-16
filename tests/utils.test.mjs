@@ -35,7 +35,7 @@ describe('Utils test suite', () => {
     const parallelism = availableParallelism()
     expect(typeof parallelism === 'number').toBe(true)
     expect(Number.isSafeInteger(parallelism)).toBe(true)
-    let expectedParallelism = 1
+    let expectedParallelism
     try {
       expectedParallelism = os.availableParallelism()
     } catch {
