@@ -19,7 +19,7 @@ const workerData = {
 const benchmarkReportFile = 'benchmark-report.json'
 
 const runBenchmark = async () => {
-  let benchmarkReport = {}
+  let benchmarkReport
 
   switch (
     parseArgs({
