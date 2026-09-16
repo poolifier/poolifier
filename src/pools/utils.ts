@@ -370,12 +370,12 @@ export const updateWaitTimeWorkerUsage = <
   Data = unknown,
   Response = unknown
 >(
-    workerChoiceStrategiesContext:
+  workerChoiceStrategiesContext:
     | undefined
     | WorkerChoiceStrategiesContext<Worker, Data, Response>,
-    workerUsage: WorkerUsage,
-    task: Task<Data>
-  ): void => {
+  workerUsage: WorkerUsage,
+  task: Task<Data>
+): void => {
   const timestamp = performance.now()
   const taskWaitTime = timestamp - (task.timestamp ?? timestamp)
   updateMeasurementStatistics(
@@ -409,12 +409,12 @@ export const updateRunTimeWorkerUsage = <
   Data = unknown,
   Response = unknown
 >(
-    workerChoiceStrategiesContext:
+  workerChoiceStrategiesContext:
     | undefined
     | WorkerChoiceStrategiesContext<Worker, Data, Response>,
-    workerUsage: WorkerUsage,
-    message: MessageValue<Response>
-  ): void => {
+  workerUsage: WorkerUsage,
+  message: MessageValue<Response>
+): void => {
   if (message.workerError != null) {
     return
   }
@@ -430,12 +430,12 @@ export const updateEluWorkerUsage = <
   Data = unknown,
   Response = unknown
 >(
-    workerChoiceStrategiesContext:
+  workerChoiceStrategiesContext:
     | undefined
     | WorkerChoiceStrategiesContext<Worker, Data, Response>,
-    workerUsage: WorkerUsage,
-    message: MessageValue<Response>
-  ): void => {
+  workerUsage: WorkerUsage,
+  message: MessageValue<Response>
+): void => {
   if (message.workerError != null) {
     return
   }
