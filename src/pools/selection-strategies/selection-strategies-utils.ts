@@ -159,7 +159,7 @@ export const buildWorkerChoiceStrategiesTaskStatisticsRequirements = (
 export const getWorkerChoiceStrategy = <Worker extends IWorker, Data, Response>(
   workerChoiceStrategy: WorkerChoiceStrategy,
   pool: IPool<Worker, Data, Response>,
-  context: ThisType<WorkerChoiceStrategiesContext<Worker, Data, Response>>,
+  context: WorkerChoiceStrategiesContext<Worker, Data, Response>,
   opts?: WorkerChoiceStrategyOptions
 ): IWorkerChoiceStrategy => {
   switch (workerChoiceStrategy) {
