@@ -167,7 +167,7 @@ importers:
   .:
     devDependencies:
       '@biomejs/biome':
-        specifier: ^2.5.13
+        specifier: ^2.5.14
         version: 2.5.14
       '@commitlint/cli':
         specifier: ^21.2.2
@@ -176,7 +176,7 @@ importers:
         specifier: ^21.2.2
         version: 21.2.2
       '@cspell/eslint-plugin':
-        specifier: ^10.3.2
+        specifier: ^10.3.3
         version: 10.3.3(eslint@10.10.0(jiti@2.6.1))
       '@eslint/js':
         specifier: ^10.0.1
@@ -203,7 +203,7 @@ importers:
         specifier: ^10.10.0
         version: 10.10.0(jiti@2.6.1)
       eslint-plugin-jsdoc:
-        specifier: ^64.5.0
+        specifier: ^64.5.2
         version: 64.5.2(eslint@10.10.0(jiti@2.6.1))(typescript@6.0.3)
       eslint-plugin-perfectionist:
         specifier: ^5.11.1
@@ -221,7 +221,7 @@ importers:
         specifier: ^0.14.0-next.1
         version: 0.14.0-next.1(eslint@10.10.0(jiti@2.6.1))(typescript@6.0.3)
       prettier:
-        specifier: ^3.9.6
+        specifier: ^3.9.8
         version: 3.9.8
       rollup:
         specifier: ^4.63.3
