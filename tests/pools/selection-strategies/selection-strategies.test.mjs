@@ -7,8 +7,15 @@ import {
   DynamicThreadPool,
   FixedClusterPool,
   FixedThreadPool,
+  PoolEvents,
   WorkerChoiceStrategies,
 } from '../../../lib/index.mjs'
+
+const waitForReady = async pool => {
+  if (!pool.info.ready) {
+    await new Promise(resolve => pool.emitter.once(PoolEvents.ready, resolve))
+  }
+}
 
 describe('Selection strategies test suite', () => {
   const min = 0
@@ -248,6 +255,7 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
+    await waitForReady(pool)
     // TODO: Create a better test to cover `RoundRobinWorkerChoiceStrategy#choose`
     const promises = new Set()
     const maxMultiplier = 2
@@ -342,16 +350,6 @@ describe('Selection strategies test suite', () => {
         max * maxMultiplier
       )
     }
-    expect(
-      pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
-        pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-      ).nextWorkerNodeKey
-    ).toBe(pool.workerNodes.length - 1)
-    expect(
-      pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
-        pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-      ).previousWorkerNodeKey
-    ).toBe(pool.workerNodes.length - 2)
     // We need to clean up the resources after our test
     await pool.destroy()
   })
@@ -363,6 +361,7 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/cluster/testWorker.cjs',
       { workerChoiceStrategy }
     )
+    await waitForReady(pool)
     let results = new Set()
     for (let i = 0; i < max; i++) {
       results.add(pool.workerNodes[pool.chooseWorkerNode()].info.id)
@@ -374,6 +373,7 @@ describe('Selection strategies test suite', () => {
       './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
+    await waitForReady(pool)
     results = new Set()
     for (let i = 0; i < max; i++) {
       results.add(pool.workerNodes[pool.chooseWorkerNode()].info.id)
@@ -382,54 +382,34 @@ describe('Selection strategies test suite', () => {
     await pool.destroy()
   })
 
-  it("Verify ROUND_ROBIN strategy internals aren't reset after setting it", async () => {
+  it("Verify ROUND_ROBIN distribution isn't reset after setting it", async () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
     let pool = new FixedThreadPool(
       max,
       './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
-    pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
-      pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-    ).nextWorkerNodeKey = randomInt(1, max - 1)
-    pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
-      pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-    ).previousWorkerNodeKey = randomInt(1, max - 1)
+    await waitForReady(pool)
+    await pool.execute()
     pool.setWorkerChoiceStrategy(workerChoiceStrategy)
+    await pool.execute()
     expect(
-      pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
-        pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-      ).nextWorkerNodeKey
-    ).toBeGreaterThan(0)
-    expect(
-      pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
-        pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-      ).previousWorkerNodeKey
-    ).toBeGreaterThan(0)
+      pool.workerNodes.map(workerNode => workerNode.usage.tasks.executed).sort()
+    ).toStrictEqual([0, 1, 1])
     await pool.destroy()
     pool = new DynamicThreadPool(
-      min,
+      2,
       max,
       './tests/worker-files/thread/testWorker.mjs',
       { workerChoiceStrategy }
     )
-    pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
-      pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-    ).nextWorkerNodeKey = randomInt(1, max - 1)
-    pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
-      pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-    ).previousWorkerNodeKey = randomInt(1, max - 1)
+    await waitForReady(pool)
+    await pool.execute()
     pool.setWorkerChoiceStrategy(workerChoiceStrategy)
+    await pool.execute()
     expect(
-      pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
-        pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-      ).nextWorkerNodeKey
-    ).toBeGreaterThan(0)
-    expect(
-      pool.workerChoiceStrategiesContext.workerChoiceStrategies.get(
-        pool.workerChoiceStrategiesContext.defaultWorkerChoiceStrategy
-      ).previousWorkerNodeKey
-    ).toBeGreaterThan(0)
+      pool.workerNodes.map(workerNode => workerNode.usage.tasks.executed)
+    ).toStrictEqual([1, 1])
     // We need to clean up the resources after our test
     await pool.destroy()
   })

@@ -8,6 +8,7 @@ import {
   WorkerChoiceStrategies,
 } from '../../lib/index.mjs'
 import { DEFAULT_TASK_NAME, EMPTY_FUNCTION } from '../../lib/utils.mjs'
+import { TaskFunctionLayers } from '../../lib/worker/task-function-layers.mjs'
 import { sleep } from '../test-utils.cjs'
 
 describe('Abstract worker test suite', () => {
@@ -15,6 +16,24 @@ describe('Abstract worker test suite', () => {
     constructor (fn, opts) {
       super(fn, opts)
       delete this.mainWorker
+    }
+  }
+
+  class MutableTaskFunctionsWorker extends ThreadWorker {
+    clearTaskFunctions () {
+      this.taskFunctions.clear()
+    }
+
+    deleteTaskFunction (name) {
+      return this.taskFunctions.delete(name)
+    }
+
+    setTaskFunction (name, taskFunction) {
+      this.taskFunctions.set(name, { taskFunction })
+    }
+
+    staticTaskFunctionsProperties () {
+      return this.listStaticTaskFunctionsProperties()
     }
   }
 
@@ -555,6 +574,119 @@ describe('Abstract worker test suite', () => {
   })
 
   describe('Task execution', () => {
+    it('keeps sentinel task function layers unique across map projections', () => {
+      const sentinelTaskFunction = { taskFunction: () => 'sentinel' }
+      const namedTaskFunction = { taskFunction: () => 'named' }
+      const replacementTaskFunction = { taskFunction: () => 'replacement' }
+      const overlayTaskFunction = { taskFunction: () => 'overlay' }
+      const taskFunctionLayers = new TaskFunctionLayers(
+        new Map([
+          ['named', namedTaskFunction],
+          [DEFAULT_TASK_NAME, sentinelTaskFunction],
+        ]),
+        DEFAULT_TASK_NAME
+      )
+
+      expect([...taskFunctionLayers]).toStrictEqual([
+        [DEFAULT_TASK_NAME, sentinelTaskFunction],
+        ['named', namedTaskFunction],
+      ])
+      expect([...taskFunctionLayers.entries()]).toStrictEqual([
+        [DEFAULT_TASK_NAME, sentinelTaskFunction],
+        ['named', namedTaskFunction],
+      ])
+      expect([...taskFunctionLayers.keys()]).toStrictEqual([
+        DEFAULT_TASK_NAME,
+        'named',
+      ])
+      expect([...taskFunctionLayers.values()]).toStrictEqual([
+        sentinelTaskFunction,
+        namedTaskFunction,
+      ])
+      expect(taskFunctionLayers.size).toBe(
+        [...taskFunctionLayers.keys()].length
+      )
+      expect(taskFunctionLayers.listEffectiveProperties()).toStrictEqual([
+        { name: DEFAULT_TASK_NAME },
+        { name: 'named' },
+      ])
+      expect(taskFunctionLayers.listStaticProperties()).toStrictEqual([
+        { name: DEFAULT_TASK_NAME },
+        { name: 'named' },
+      ])
+
+      taskFunctionLayers.set(DEFAULT_TASK_NAME, replacementTaskFunction)
+      expect(taskFunctionLayers.get(DEFAULT_TASK_NAME)).toBe(
+        replacementTaskFunction
+      )
+      expect([...taskFunctionLayers.keys()]).toStrictEqual([
+        DEFAULT_TASK_NAME,
+        'named',
+      ])
+
+      taskFunctionLayers.addOverlay(DEFAULT_TASK_NAME, overlayTaskFunction)
+      expect(taskFunctionLayers.get(DEFAULT_TASK_NAME)).toBe(
+        overlayTaskFunction
+      )
+      expect(taskFunctionLayers.removeOverlay(DEFAULT_TASK_NAME)).toBe(true)
+      expect(taskFunctionLayers.get(DEFAULT_TASK_NAME)).toBe(
+        replacementTaskFunction
+      )
+
+      expect(taskFunctionLayers.setDefault('named')).toBe(true)
+      expect(taskFunctionLayers.defaultName).toBe('named')
+      expect(taskFunctionLayers.get(DEFAULT_TASK_NAME)).toBe(namedTaskFunction)
+      expect([...taskFunctionLayers.keys()]).toStrictEqual([
+        DEFAULT_TASK_NAME,
+        'named',
+      ])
+      expect(taskFunctionLayers.size).toBe(
+        [...taskFunctionLayers.keys()].length
+      )
+      expect(taskFunctionLayers.listEffectiveProperties()).toStrictEqual([
+        { name: DEFAULT_TASK_NAME },
+        { name: 'named' },
+      ])
+      expect(taskFunctionLayers.listStaticProperties()).toStrictEqual([
+        { name: DEFAULT_TASK_NAME },
+        { name: 'named' },
+      ])
+
+      expect(taskFunctionLayers.delete(DEFAULT_TASK_NAME)).toBe(true)
+      expect([...taskFunctionLayers]).toStrictEqual([])
+      expect(taskFunctionLayers.size).toBe(0)
+
+      taskFunctionLayers.clear()
+      expect([...taskFunctionLayers]).toStrictEqual([])
+      expect(taskFunctionLayers.listEffectiveProperties()).toStrictEqual([])
+      expect(taskFunctionLayers.listStaticProperties()).toStrictEqual([])
+    })
+
+    it('executes a task function added through the protected live map', () => {
+      const worker = new MutableTaskFunctionsWorker({ fn1: () => 1 })
+      worker.statistics = { elu: false, runTime: false }
+      const sendToMainWorkerStub = stub(worker, 'sendToMainWorker').returns()
+
+      worker.setTaskFunction('fn2', data => data * 2)
+      worker.setDefaultTaskFunction('fn2')
+      worker.run({
+        data: 21,
+        taskId: '550e8400-e29b-41d4-a716-446655440000',
+      })
+
+      expect(sendToMainWorkerStub.lastCall.args[0].data).toBe(42)
+      expect(worker.listTaskFunctionsProperties()).toStrictEqual([
+        { name: DEFAULT_TASK_NAME },
+        { name: 'fn2' },
+        { name: 'fn1' },
+      ])
+      expect(worker.staticTaskFunctionsProperties()).toStrictEqual([
+        { name: DEFAULT_TASK_NAME },
+        { name: 'fn2' },
+        { name: 'fn1' },
+      ])
+    })
+
     it('Verify that run() executes sync task function', () => {
       const worker = new ThreadWorker(data => data * 2)
       worker.statistics = { elu: false, runTime: false }
@@ -677,6 +809,80 @@ describe('Abstract worker test suite', () => {
   })
 
   describe('Task function operations via messages', () => {
+    it('shadows protected map mutations with an overlay and reveals the latest static value', () => {
+      const worker = new MutableTaskFunctionsWorker({
+        fn1: () => 1,
+        fn2: () => 2,
+      })
+      stub(worker, 'sendToMainWorker').returns()
+
+      worker.handleTaskFunctionOperationMessage({
+        taskFunction: '() => 3',
+        taskFunctionOperation: 'add',
+        taskFunctionProperties: { name: 'fn2' },
+      })
+      worker.setTaskFunction('fn2', () => 4)
+      expect(worker.taskFunctions.get('fn2').taskFunction()).toBe(3)
+      expect(worker.staticTaskFunctionsProperties()).toStrictEqual([
+        { name: DEFAULT_TASK_NAME },
+        { name: 'fn1' },
+        { name: 'fn2' },
+      ])
+
+      worker.handleTaskFunctionOperationMessage({
+        taskFunctionOperation: 'remove',
+        taskFunctionProperties: { name: 'fn2' },
+      })
+      expect(worker.taskFunctions.get('fn2').taskFunction()).toBe(4)
+
+      expect(worker.deleteTaskFunction('fn2')).toBe(true)
+      expect(worker.taskFunctions.has('fn2')).toBe(false)
+      expect(worker.staticTaskFunctionsProperties()).toStrictEqual([
+        { name: DEFAULT_TASK_NAME },
+        { name: 'fn1' },
+      ])
+    })
+
+    it('clears static and overlay task functions through the protected map', () => {
+      const worker = new MutableTaskFunctionsWorker({ fn1: () => 1 })
+      stub(worker, 'sendToMainWorker').returns()
+      worker.handleTaskFunctionOperationMessage({
+        taskFunction: 'data => data + 1',
+        taskFunctionOperation: 'add',
+        taskFunctionProperties: { name: 'overlay' },
+      })
+      worker.setDefaultTaskFunction('overlay')
+
+      worker.clearTaskFunctions()
+
+      expect(worker.taskFunctions.size).toBe(0)
+      expect([...worker.taskFunctions]).toStrictEqual([])
+      expect(worker.taskFunctions.get(DEFAULT_TASK_NAME)).toBeUndefined()
+      expect(worker.listTaskFunctionsProperties()).toStrictEqual([])
+      expect(worker.staticTaskFunctionsProperties()).toStrictEqual([])
+    })
+
+    it('deletes the effective name from static and overlay task functions', () => {
+      const worker = new MutableTaskFunctionsWorker({
+        fn1: () => 1,
+        fn2: () => 2,
+      })
+      stub(worker, 'sendToMainWorker').returns()
+      worker.setDefaultTaskFunction('fn2')
+      worker.handleTaskFunctionOperationMessage({
+        taskFunction: '() => 3',
+        taskFunctionOperation: 'add',
+        taskFunctionProperties: { name: 'fn2' },
+      })
+
+      expect(worker.deleteTaskFunction(DEFAULT_TASK_NAME)).toBe(true)
+
+      expect(worker.taskFunctions.has(DEFAULT_TASK_NAME)).toBe(false)
+      expect(worker.taskFunctions.has('fn2')).toBe(false)
+      expect(worker.taskFunctions.size).toBe(1)
+      expect([...worker.taskFunctions.keys()]).toStrictEqual(['fn1'])
+    })
+
     it('Verify that handleTaskFunctionOperationMessage() handles add operation', () => {
       const worker = new ThreadWorker(() => {})
       const sendToMainWorkerStub = stub(worker, 'sendToMainWorker').returns()
@@ -691,20 +897,84 @@ describe('Abstract worker test suite', () => {
       expect(lastCall.args[0].taskFunctionOperationStatus).toBe(true)
     })
 
-    it('Verify that handleTaskFunctionOperationMessage() handles remove operation', () => {
+    it('echoes the task function operation id when supplied', () => {
+      const worker = new ThreadWorker(() => {})
+      const sendToMainWorkerStub = stub(worker, 'sendToMainWorker').returns()
+
+      worker.handleTaskFunctionOperationMessage({
+        taskFunctionOperation: 'remove',
+        taskFunctionOperationId: 'operation-1',
+        taskFunctionProperties: { name: 'missing' },
+      })
+
+      expect(sendToMainWorkerStub.lastCall.args[0]).toMatchObject({
+        taskFunctionOperationId: 'operation-1',
+        taskFunctionOperationStatus: false,
+      })
+    })
+
+    it('keeps legacy task function responses free of an operation id', () => {
+      const worker = new ThreadWorker(() => {})
+      const sendToMainWorkerStub = stub(worker, 'sendToMainWorker').returns()
+
+      worker.handleTaskFunctionOperationMessage({
+        taskFunctionOperation: 'remove',
+        taskFunctionProperties: { name: 'missing' },
+      })
+
+      expect(sendToMainWorkerStub.lastCall.args[0]).not.toHaveProperty(
+        'taskFunctionOperationId'
+      )
+    })
+
+    it('removes only the runtime overlay and restores the static function', () => {
       const fn1 = () => 1
       const fn2 = () => 2
       const worker = new ThreadWorker({ fn1, fn2 })
       const sendToMainWorkerStub = stub(worker, 'sendToMainWorker').returns()
-      expect(worker.taskFunctions.has('fn2')).toBe(true)
+      worker.handleTaskFunctionOperationMessage({
+        taskFunction: '() => 3',
+        taskFunctionOperation: 'add',
+        taskFunctionProperties: { name: 'fn2' },
+      })
+      expect(worker.taskFunctions.get('fn2').taskFunction()).toBe(3)
       worker.handleTaskFunctionOperationMessage({
         taskFunctionOperation: 'remove',
         taskFunctionProperties: { name: 'fn2' },
       })
-      expect(worker.taskFunctions.has('fn2')).toBe(false)
-      expect(sendToMainWorkerStub.callCount).toBe(2)
-      const lastCall = sendToMainWorkerStub.getCall(1)
+      expect(worker.taskFunctions.get('fn2').taskFunction()).toBe(2)
+      expect(sendToMainWorkerStub.callCount).toBe(4)
+      const lastCall = sendToMainWorkerStub.getCall(3)
       expect(lastCall.args[0].taskFunctionOperationStatus).toBe(true)
+    })
+
+    it('preserves the logical default while an overlay shadows and restores it', () => {
+      const worker = new ThreadWorker({ fn1: () => 1, fn2: () => 2 })
+      stub(worker, 'sendToMainWorker').returns()
+      worker.setDefaultTaskFunction('fn2')
+
+      worker.handleTaskFunctionOperationMessage({
+        taskFunction: '() => 3',
+        taskFunctionOperation: 'add',
+        taskFunctionProperties: { name: 'fn2' },
+      })
+      expect(worker.taskFunctions.get(DEFAULT_TASK_NAME).taskFunction()).toBe(3)
+
+      worker.handleTaskFunctionOperationMessage({
+        taskFunctionOperation: 'remove',
+        taskFunctionProperties: { name: 'fn2' },
+      })
+      expect(worker.taskFunctions.get(DEFAULT_TASK_NAME).taskFunction()).toBe(2)
+      expect(worker.listTaskFunctionsProperties()[1].name).toBe('fn2')
+    })
+
+    it('keeps direct worker removal permanently deleting a static function', () => {
+      const worker = new ThreadWorker({ fn1: () => 1, fn2: () => 2 })
+      stub(worker, 'sendToMainWorker').returns()
+
+      expect(worker.removeTaskFunction('fn2')).toStrictEqual({ status: true })
+
+      expect(worker.taskFunctions.has('fn2')).toBe(false)
     })
 
     it('Verify that handleTaskFunctionOperationMessage() handles default operation', () => {

@@ -4,6 +4,7 @@ import {
   DynamicThreadPool,
   PoolEvents,
   WorkerChoiceStrategies,
+  WorkerTerminationError,
 } from '../../../lib/index.mjs'
 import { TaskFunctions } from '../../test-types.cjs'
 import { sleep, waitPoolEvents, waitWorkerEvents } from '../../test-utils.cjs'
@@ -59,7 +60,7 @@ describe('Dynamic thread pool test suite', () => {
     }
     expect(pool.workerNodes.length).toBeLessThanOrEqual(max)
     expect(pool.workerNodes.length).toBeGreaterThan(min)
-    expect(poolBusy).toBe(1)
+    expect(poolBusy).toBe(0)
     const exitEvents = await waitWorkerEvents(pool, 'exit', max - min)
     expect(exitEvents).toBe(max - min)
     expect(pool.workerNodes.length).toBe(min)
@@ -80,6 +81,51 @@ describe('Dynamic thread pool test suite', () => {
     exitEvents = await waitWorkerEvents(pool, 'exit', max - min)
     expect(exitEvents).toBe(max - min)
     expect(pool.workerNodes.length).toBe(min)
+  })
+
+  it('emits busy only after every ready thread reaches queue concurrency', async () => {
+    const concurrencyPool = new DynamicThreadPool(
+      1,
+      2,
+      './tests/worker-files/thread/longRunningWorkerSoftBehavior.mjs',
+      {
+        enableTasksQueue: true,
+        tasksQueueOptions: { concurrency: 2 },
+      }
+    )
+    await waitPoolEvents(concurrencyPool, PoolEvents.ready, 1)
+    await concurrencyPool.addTaskFunction(
+      'delayedResult',
+      async data =>
+        await new Promise(resolve => setTimeout(() => resolve(data), 1000))
+    )
+    const busyEvents = []
+    concurrencyPool.emitter.on(PoolEvents.busy, info => {
+      busyEvents.push(info)
+    })
+
+    const taskPromises = Array.from({ length: 2 }, () =>
+      concurrencyPool.execute(undefined, 'delayedResult')
+    )
+
+    expect(concurrencyPool.workerNodes).toHaveLength(2)
+    expect(busyEvents).toHaveLength(0)
+    await expect
+      .poll(() =>
+        concurrencyPool.workerNodes.every(workerNode => workerNode.info.ready)
+      )
+      .toBe(true)
+    const busyEventPromise = waitPoolEvents(concurrencyPool, PoolEvents.busy, 1)
+    taskPromises.push(
+      concurrencyPool.execute(undefined, 'delayedResult'),
+      concurrencyPool.execute(undefined, 'delayedResult')
+    )
+    await busyEventPromise
+    expect(busyEvents).toHaveLength(1)
+    expect(busyEvents[0].busyWorkerNodes).toBe(2)
+    expect(busyEvents[0].executingTasks).toBe(4)
+    await Promise.all(taskPromises)
+    await concurrencyPool.destroy()
   })
 
   it('Shutdown test', { retry: 0 }, async ({ skip }) => {
@@ -103,11 +149,8 @@ describe('Dynamic thread pool test suite', () => {
       PoolEvents.busy,
       PoolEvents.destroy,
     ])
-    expect(pool.readyEventEmitted).toBe(false)
     expect(pool.emptyEventEmitted).toBe(false)
     expect(pool.fullEventEmitted).toBe(false)
-    expect(pool.busyEventEmitted).toBe(false)
-    expect(pool.backPressureEventEmitted).toBe(false)
     expect(pool.workerNodes.length).toBe(0)
     expect(exitEvents).toBe(min)
     expect(poolDestroy).toBe(1)
@@ -120,30 +163,40 @@ describe('Dynamic thread pool test suite', () => {
   })
 
   it('Verify scale thread up and down is working when long executing task is used:hard', async () => {
+    const exitEvents = Promise.withResolvers()
+    let exitEventCount = 0
     const longRunningPool = new DynamicThreadPool(
       min,
       max,
       './tests/worker-files/thread/longRunningWorkerHardBehavior.mjs',
       {
         errorHandler: e => console.error(e),
-        exitHandler: () => console.info('long executing worker exited'),
+        exitHandler: () => {
+          console.info('long executing worker exited')
+          if (++exitEventCount === max - min) exitEvents.resolve(exitEventCount)
+        },
         onlineHandler: () => console.info('long executing worker is online'),
       }
     )
     expect(longRunningPool.workerNodes.length).toBe(min)
-    for (let i = 0; i < max * 2; i++) {
+    const taskPromises = Array.from({ length: max * 2 }, () =>
       longRunningPool.execute()
-    }
-    expect(longRunningPool.workerNodes.length).toBe(max)
-    const exitEvents = await waitWorkerEvents(
-      longRunningPool,
-      'exit',
-      max - min
     )
-    expect(exitEvents).toBe(max - min)
+    const taskOutcomesPromise = Promise.allSettled(taskPromises)
+    expect(longRunningPool.workerNodes.length).toBe(max)
+    expect(await exitEvents.promise).toBe(max - min)
     expect(longRunningPool.workerNodes.length).toBe(min)
     // We need to clean up the resources after our test
     await longRunningPool.destroy()
+    const taskOutcomes = await taskOutcomesPromise
+    expect(taskOutcomes).toHaveLength(max * 2)
+    expect(
+      taskOutcomes.every(
+        outcome =>
+          outcome.status === 'rejected' &&
+          outcome.reason instanceof WorkerTerminationError
+      )
+    ).toBe(true)
   })
 
   it('Verify scale thread up and down is working when long executing task is used:soft', async () => {
@@ -158,15 +211,25 @@ describe('Dynamic thread pool test suite', () => {
       }
     )
     expect(longRunningPool.workerNodes.length).toBe(min)
-    for (let i = 0; i < max * 2; i++) {
+    const taskPromises = Array.from({ length: max * 2 }, () =>
       longRunningPool.execute()
-    }
+    )
+    const taskOutcomesPromise = Promise.allSettled(taskPromises)
     expect(longRunningPool.workerNodes.length).toBe(max)
     await sleep(1000)
     // Here we expect the workerNodes to be at the max size since the task is still executing
     expect(longRunningPool.workerNodes.length).toBe(max)
     // We need to clean up the resources after our test
     await longRunningPool.destroy()
+    const taskOutcomes = await taskOutcomesPromise
+    expect(taskOutcomes).toHaveLength(max * 2)
+    expect(
+      taskOutcomes.every(
+        outcome =>
+          outcome.status === 'rejected' &&
+          outcome.reason instanceof WorkerTerminationError
+      )
+    ).toBe(true)
   })
 
   it('Verify that a pool with zero worker can be instantiated', async () => {
