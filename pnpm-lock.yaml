@@ -206,7 +206,7 @@ importers:
         specifier: ^64.5.4
         version: 64.5.4(eslint@10.11.0(jiti@2.6.1))(typescript@6.0.3)
       eslint-plugin-perfectionist:
-        specifier: ^5.12.0
+        specifier: ^5.12.1
         version: 5.12.1(eslint@10.11.0(jiti@2.6.1))(typescript@6.0.3)
       globals:
         specifier: ^17.12.0
@@ -224,7 +224,7 @@ importers:
         specifier: ^3.9.9
         version: 3.9.9
       rollup:
-        specifier: ^4.63.4
+        specifier: ^4.63.5
         version: 4.63.5
       rollup-plugin-analyzer:
         specifier: ^4.0.0

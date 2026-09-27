@@ -167,7 +167,7 @@ importers:
   .:
     dependencies:
       fastify:
-        specifier: ^5.12.1
+        specifier: ^5.12.5
         version: 5.12.5
       poolifier:
         specifier: ^5.3.2
@@ -183,7 +183,7 @@ importers:
         specifier: ^8.0.0
         version: 8.0.0
       rollup:
-        specifier: ^4.63.4
+        specifier: ^4.63.5
         version: 4.63.5
       rollup-plugin-delete:
         specifier: ^3.0.2
