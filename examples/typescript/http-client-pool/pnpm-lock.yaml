@@ -167,7 +167,7 @@ importers:
   .:
     dependencies:
       axios:
-        specifier: ^1.18.1
+        specifier: ^1.20.0
         version: 1.20.0(debug@4.4.3)
       node-fetch:
         specifier: ^3.3.2
