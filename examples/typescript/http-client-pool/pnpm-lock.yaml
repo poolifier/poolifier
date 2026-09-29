@@ -177,16 +177,16 @@ importers:
         version: 5.3.2
     devDependencies:
       '@types/node':
-        specifier: ^24.13.6
-        version: 24.13.6
+        specifier: ^24.19.0
+        version: 24.19.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
 
 packages:
 
-  '@types/node@24.13.6':
-    resolution: {integrity: sha512-SGrw/h3KPFshy3OE6ZL53LMBG5vGQQ8/gIpiqz/kRZhPJ7HgwCEs8LBuNtWLa8dvGZVpSF7+Bf+c11HUrCb/yg==}
+  '@types/node@24.19.0':
+    resolution: {integrity: sha512-zY+5tKxXdhGh1PYI0ac+7juvEu4OI6vWtVVoj5i2m42jxAY1U+zHGt6QCyOFwykdP62sM3MJ9stoYYUw5aCWew==}
 
   agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
@@ -336,8 +336,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  undici-types@7.18.2:
-    resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
+  undici-types@7.24.6:
+    resolution: {integrity: sha512-WRNW+sJgj5OBN4/0JpHFqtqzhpbnV0GuB+OozA9gCL7a993SmU+1JBZCzLNxYsbMfIeDL+lTsphD5jN5N+n0zg==}
 
   web-streams-polyfill@3.3.3:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
@@ -345,9 +345,9 @@ packages:
 
 snapshots:
 
-  '@types/node@24.13.6':
+  '@types/node@24.19.0':
     dependencies:
-      undici-types: 7.18.2
+      undici-types: 7.24.6
 
   agent-base@6.0.2:
     dependencies:
@@ -493,6 +493,6 @@ snapshots:
 
   typescript@6.0.3: {}
 
-  undici-types@7.18.2: {}
+  undici-types@7.24.6: {}
 
   web-streams-polyfill@3.3.3: {}
