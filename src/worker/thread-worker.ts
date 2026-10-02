@@ -87,11 +87,15 @@ export class ThreadWorker<
         this.port.on('message', this.messageListener.bind(this))
         this.sendToMainWorker({
           ready: true,
+          staticTaskFunctionsProperties:
+            this.listStaticTaskFunctionsProperties(),
           taskFunctionsProperties: this.listTaskFunctionsProperties(),
         })
       } catch {
         this.sendToMainWorker({
           ready: false,
+          staticTaskFunctionsProperties:
+            this.listStaticTaskFunctionsProperties(),
           taskFunctionsProperties: this.listTaskFunctionsProperties(),
         })
       }

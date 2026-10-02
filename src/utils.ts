@@ -38,12 +38,32 @@ export const availableParallelism = (): number => {
 /**
  * Sleeps for the given amount of milliseconds.
  * @param ms - The amount of milliseconds to sleep.
- * @returns A promise that resolves after the given amount of milliseconds.
+ * @param abortSignal - Optional cancellation signal.
+ * @returns A promise that resolves after the given amount of milliseconds, or rejects with the abort reason if `abortSignal` fires.
  * @internal
  */
-export const sleep = async (ms: number): Promise<void> => {
-  await new Promise(resolve => {
-    setTimeout(resolve, ms)
+export const sleep = async (
+  ms: number,
+  abortSignal?: AbortSignal
+): Promise<void> => {
+  await new Promise<void>((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      abortSignal?.removeEventListener('abort', abortListener)
+      resolve()
+    }, ms)
+    const abortListener = (): void => {
+      clearTimeout(timeout)
+      reject(
+        abortSignal?.reason instanceof Error
+          ? abortSignal.reason
+          : new Error('Sleep aborted')
+      )
+    }
+    if (abortSignal?.aborted === true) {
+      abortListener()
+      return
+    }
+    abortSignal?.addEventListener('abort', abortListener, { once: true })
   })
 }
 
@@ -76,10 +96,25 @@ export const average = (dataSet: number[]): number => {
   if (dataSet.length === 1) {
     return dataSet[0]
   }
-  return (
+  const average =
     dataSet.reduce((accumulator, number) => accumulator + number, 0) /
     dataSet.length
-  )
+  if (Number.isFinite(average)) {
+    return average
+  }
+  let fallbackAverage = dataSet[0]
+  for (let index = 1; index < dataSet.length; index++) {
+    const number = dataSet[index]
+    const count = index + 1
+    const previousCount = count - 1
+    const fallbackNegative = fallbackAverage < 0
+    const numberNegative = number < 0
+    fallbackAverage =
+      fallbackNegative === numberNegative
+        ? fallbackAverage + (number - fallbackAverage) / count
+        : fallbackAverage * (previousCount / count) + number / count
+  }
+  return fallbackAverage
 }
 
 /**
@@ -96,11 +131,10 @@ export const median = (dataSet: number[]): number => {
     return dataSet[0]
   }
   const sortedDataSet = dataSet.slice().sort((a, b) => a - b)
-  return (
-    (sortedDataSet[(sortedDataSet.length - 1) >> 1] +
-      sortedDataSet[sortedDataSet.length >> 1]) /
-    2
-  )
+  const left = sortedDataSet[(sortedDataSet.length - 1) >> 1]
+  const right = sortedDataSet[sortedDataSet.length >> 1]
+  const midpoint = (left + right) / 2
+  return Number.isFinite(midpoint) ? midpoint : left / 2 + right / 2
 }
 
 /**
