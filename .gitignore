@@ -66,6 +66,10 @@ build/config.gypi
 # Mac
 .DS_Store
 
+# mise local overrides
+mise.local.toml
+mise.*.local.toml
+
 # pnpm
 package-lock.json
 
