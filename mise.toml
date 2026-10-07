@@ -1,5 +1,0 @@
-[tools]
-node = "24.21.0"
-
-[settings]
-idiomatic_version_file_enable_tools = ["pnpm"]

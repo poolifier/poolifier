@@ -69,6 +69,8 @@ build/config.gypi
 # mise local overrides
 mise.local.toml
 mise.*.local.toml
+mise.local.lock
+mise.*.local.lock
 
 # pnpm
 package-lock.json
