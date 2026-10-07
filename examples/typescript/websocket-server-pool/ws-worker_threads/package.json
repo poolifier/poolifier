@@ -5,11 +5,7 @@
   "description": "ws request pool",
   "main": "dist/main.js",
   "type": "module",
-  "volta": {
-    "node": "24.21.0",
-    "pnpm": "12.5.1"
-  },
-  "packageManager": "pnpm@12.5.1",
+  "packageManager": "pnpm@12.8.2",
   "scripts": {
     "build": "pnpm build:clean && tsc",
     "build:clean": "tsc --build --clean",
@@ -22,11 +18,11 @@
   "license": "ISC",
   "dependencies": {
     "poolifier": "^5.3.2",
-    "ws": "^8.20.1"
+    "ws": "^8.22.0"
   },
   "devDependencies": {
-    "@types/node": "^24.13.6",
-    "@types/ws": "^8.18.1",
+    "@types/node": "^24.19.0",
+    "@types/ws": "^8.18.2",
     "typescript": "^6.0.3"
   },
   "optionalDependencies": {

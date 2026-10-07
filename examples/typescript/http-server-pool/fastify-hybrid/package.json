@@ -5,11 +5,7 @@
   "description": "Fastify hybrid pool",
   "main": "dist/main.js",
   "type": "module",
-  "volta": {
-    "node": "24.21.0",
-    "pnpm": "12.5.1"
-  },
-  "packageManager": "pnpm@12.5.1",
+  "packageManager": "pnpm@12.8.2",
   "scripts": {
     "build": "rollup --config --configPlugin typescript",
     "start": "node --enable-source-maps dist/main.cjs",
@@ -22,15 +18,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^5.12.1",
+    "fastify": "^5.12.5",
     "fastify-plugin": "^6.0.0",
     "poolifier": "^5.3.2"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.3.0",
-    "@types/node": "^24.13.6",
+    "@types/node": "^24.19.0",
     "autocannon": "^8.0.0",
-    "rollup": "^4.63.4",
+    "rollup": "^4.63.6",
     "rollup-plugin-delete": "^3.0.2",
     "tslib": "^2.8.1",
     "typescript": "^6.0.3"
