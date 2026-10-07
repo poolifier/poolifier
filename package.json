@@ -42,9 +42,12 @@
     "node": ">=22.13.0",
     "pnpm": ">=9.0.0"
   },
-  "volta": {
-    "node": "24.21.0",
-    "pnpm": "12.8.2"
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.21.0",
+      "onFail": "ignore"
+    }
   },
   "packageManager": "pnpm@12.8.2",
   "repository": {

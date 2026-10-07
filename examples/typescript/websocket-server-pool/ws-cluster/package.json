@@ -5,10 +5,6 @@
   "description": "ws cluster pool",
   "main": "dist/main.js",
   "type": "module",
-  "volta": {
-    "node": "24.21.0",
-    "pnpm": "12.8.2"
-  },
   "packageManager": "pnpm@12.8.2",
   "scripts": {
     "build": "rollup --config --configPlugin typescript",
