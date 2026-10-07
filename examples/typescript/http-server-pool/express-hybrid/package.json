@@ -5,7 +5,7 @@
   "description": "Express hybrid pool",
   "main": "dist/main.js",
   "type": "module",
-  "packageManager": "pnpm@12.8.2",
+  "packageManager": "pnpm@12.9.1",
   "scripts": {
     "build": "rollup --config --configPlugin typescript",
     "start": "node --enable-source-maps dist/main.cjs",
@@ -24,9 +24,9 @@
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/express": "^5.0.6",
-    "@types/node": "^24.19.0",
+    "@types/node": "^24.19.1",
     "autocannon": "^8.0.0",
-    "rollup": "^4.63.6",
+    "rollup": "^4.64.0",
     "rollup-plugin-delete": "^3.0.2",
     "tslib": "^2.8.1",
     "typescript": "^6.0.3"

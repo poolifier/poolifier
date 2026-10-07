@@ -5,7 +5,7 @@
   "description": "Express request pool",
   "main": "dist/main.js",
   "type": "module",
-  "packageManager": "pnpm@12.8.2",
+  "packageManager": "pnpm@12.9.1",
   "scripts": {
     "build": "pnpm build:clean && tsc",
     "build:clean": "tsc --build --clean",
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
-    "@types/node": "^24.19.0",
+    "@types/node": "^24.19.1",
     "autocannon": "^8.0.0",
     "typescript": "^6.0.3"
   }
