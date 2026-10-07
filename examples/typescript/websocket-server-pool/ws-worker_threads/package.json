@@ -5,7 +5,7 @@
   "description": "ws request pool",
   "main": "dist/main.js",
   "type": "module",
-  "packageManager": "pnpm@12.8.2",
+  "packageManager": "pnpm@12.9.1",
   "scripts": {
     "build": "pnpm build:clean && tsc",
     "build:clean": "tsc --build --clean",
@@ -21,7 +21,7 @@
     "ws": "^8.22.0"
   },
   "devDependencies": {
-    "@types/node": "^24.19.0",
+    "@types/node": "^24.19.1",
     "@types/ws": "^8.18.2",
     "typescript": "^6.0.3"
   },
