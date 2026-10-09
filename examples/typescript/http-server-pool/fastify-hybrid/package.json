@@ -5,7 +5,7 @@
   "description": "Fastify hybrid pool",
   "main": "dist/main.js",
   "type": "module",
-  "packageManager": "pnpm@12.9.1",
+  "packageManager": "pnpm@12.10.0",
   "scripts": {
     "build": "rollup --config --configPlugin typescript",
     "start": "node --enable-source-maps dist/main.cjs",
