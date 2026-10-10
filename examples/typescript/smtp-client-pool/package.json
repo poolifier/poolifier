@@ -5,7 +5,7 @@
   "description": "SMTP client pool",
   "main": "dist/main.js",
   "type": "module",
-  "packageManager": "pnpm@12.10.0",
+  "packageManager": "pnpm@12.10.1",
   "scripts": {
     "build": "pnpm build:clean && tsc",
     "build:clean": "tsc --build --clean",
