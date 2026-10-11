@@ -186,7 +186,7 @@ importers:
         specifier: ^8.0.0
         version: 8.0.0
       rollup:
-        specifier: ^4.64.1
+        specifier: ^4.64.2
         version: 4.64.3
       rollup-plugin-delete:
         specifier: ^3.0.2
