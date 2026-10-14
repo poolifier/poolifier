@@ -314,6 +314,11 @@ describe('Worker option prototype pollution', () => {
         )
       )
       clearPrototypePollution()
+      if (process.platform === 'win32') {
+        // Node.js cannot pass a connected TCP socket as child process stdio on
+        // Windows. The socket is only needed to exercise native handle checks.
+        cluster.setupPrimary({ stdio: ['ignore', 'ignore', 'ignore', 'ipc'] })
+      }
       polluteObjectPrototype('handle', 'polluted')
       pool.start()
       clearPrototypePollution()
