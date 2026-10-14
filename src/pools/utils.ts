@@ -1,4 +1,7 @@
-import cluster, { Worker as ClusterWorker } from 'node:cluster'
+import cluster, {
+  type ClusterSettings,
+  Worker as ClusterWorker,
+} from 'node:cluster'
 import { existsSync } from 'node:fs'
 import {
   SHARE_ENV,
@@ -40,6 +43,367 @@ export const DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS: Readonly<MeasurementSt
     average: false,
     median: false,
   })
+
+/**
+ * Copies own enumerable properties into an object without a prototype.
+ * @param sources - Objects to copy properties from.
+ * @returns A new object without a prototype.
+ * @internal
+ */
+export const withNullPrototype = <T extends object>(
+  ...sources: (Partial<T> | undefined)[]
+): T => {
+  const target = Object.create(null) as T
+  Object.assign(target, ...sources)
+  return target
+}
+
+const defineEnumerableDataProperty = (
+  target: object,
+  key: PropertyKey,
+  value: unknown
+): void => {
+  const descriptor = Object.create(null) as PropertyDescriptor
+  descriptor.configurable = true
+  descriptor.enumerable = true
+  descriptor.value = value
+  descriptor.writable = true
+  Object.defineProperty(target, key, descriptor)
+}
+
+const cloneDenseExecArgv = (
+  execArgv: readonly string[],
+  optionName: string
+): string[] => {
+  const clone = new Array<string>(execArgv.length)
+  for (let index = 0; index < execArgv.length; index++) {
+    if (!Object.hasOwn(execArgv, index)) {
+      throw new TypeError(`Invalid ${optionName}: must not be a sparse array`)
+    }
+    defineEnumerableDataProperty(clone, index, execArgv[index])
+  }
+  return clone
+}
+
+const cloneArrayOwnSlots = <T>(values: readonly T[]): T[] => {
+  const clone = new Array<T>(values.length)
+  for (let index = 0; index < values.length; index++) {
+    if (Object.hasOwn(values, index)) {
+      defineEnumerableDataProperty(clone, index, values[index])
+    }
+  }
+  Object.setPrototypeOf(clone, null)
+  return clone
+}
+
+const materializeArray = <T>(values: readonly T[]): (T | undefined)[] => {
+  const clone = new Array<T | undefined>(values.length)
+  for (let index = 0; index < values.length; index++) {
+    defineEnumerableDataProperty(
+      clone,
+      index,
+      Object.hasOwn(values, index) ? values[index] : undefined
+    )
+  }
+  return clone
+}
+
+const isOwnPlainObject = (value: unknown): value is object => {
+  if (typeof value !== 'object' || value === null) {
+    return false
+  }
+  const prototype = Object.getPrototypeOf(value) as null | object
+  return prototype === null || prototype === Object.prototype
+}
+
+const normalizeStdioDescriptor = (value: unknown): unknown => {
+  if (!isOwnPlainObject(value)) {
+    return value
+  }
+  const descriptor = Object.create(null) as Record<PropertyKey, unknown>
+  for (const key of ['fd', 'handle', '_handle']) {
+    defineEnumerableDataProperty(descriptor, key, undefined)
+  }
+  for (const key of Reflect.ownKeys(value)) {
+    const propertyDescriptor = Object.getOwnPropertyDescriptor(value, key)
+    if (propertyDescriptor != null) {
+      Object.setPrototypeOf(propertyDescriptor, null)
+      Object.defineProperty(descriptor, key, propertyDescriptor)
+    }
+  }
+  return descriptor
+}
+
+const cloneStdio = (stdio: readonly unknown[]): unknown[] => {
+  const clone = new Array<unknown>(stdio.length)
+  for (let index = 0; index < stdio.length; index++) {
+    defineEnumerableDataProperty(
+      clone,
+      index,
+      Object.hasOwn(stdio, index)
+        ? normalizeStdioDescriptor(stdio[index])
+        : undefined
+    )
+  }
+  return clone
+}
+
+const getPropertyOwner = (value: object, key: string): null | object => {
+  let owner: null | object = value
+  while (owner !== null && !Object.hasOwn(owner, key)) {
+    owner = Object.getPrototypeOf(owner) as null | object
+  }
+  return owner
+}
+
+const getStdioControlValue = (
+  entry: object,
+  key: string,
+  owner: null | object
+): unknown => {
+  if (owner !== Object.prototype) {
+    return owner === null ? undefined : Reflect.get(entry, key)
+  }
+  const descriptor = Object.getOwnPropertyDescriptor(Object.prototype, key)
+  if (descriptor == null) {
+    return undefined
+  }
+  if (!Object.hasOwn(descriptor, 'value')) {
+    throw new TypeError(
+      `Invalid cluster.settings.stdio entry: inherited accessor '${key}' from Object.prototype is not allowed`
+    )
+  }
+  return descriptor.value
+}
+
+/**
+ * Materializes missing cluster stdio slots and validates object-valued entries
+ * before Node reads them.
+ * @param stdio - Effective cluster stdio configuration.
+ * @internal
+ */
+export const validateAndMaterializeClusterStdio = (stdio: unknown): void => {
+  if (!Array.isArray(stdio)) {
+    return
+  }
+  for (let index = 0; index < stdio.length; index++) {
+    if (!Object.hasOwn(stdio, index)) {
+      defineEnumerableDataProperty(stdio, index, undefined)
+    }
+  }
+  for (const entry of stdio as unknown[]) {
+    if (typeof entry !== 'object' || entry === null) {
+      continue
+    }
+    const fdOwner = getPropertyOwner(entry, 'fd')
+    const fdValue = getStdioControlValue(entry, 'fd', fdOwner)
+    if (typeof fdValue === 'number') {
+      if (fdOwner === Object.prototype) {
+        throw new TypeError(
+          "Invalid cluster.settings.stdio entry: inherited 'fd' from Object.prototype is not allowed"
+        )
+      }
+      continue
+    }
+    for (const key of ['handle', '_handle']) {
+      const owner = getPropertyOwner(entry, key)
+      const value = getStdioControlValue(entry, key, owner)
+      if (
+        owner === Object.prototype &&
+        ((typeof value === 'object' && value !== null) ||
+          typeof value === 'function')
+      ) {
+        throw new TypeError(
+          `Invalid cluster.settings.stdio entry: inherited '${key}' from Object.prototype is not allowed`
+        )
+      }
+    }
+  }
+}
+
+const normalizeResourceLimits = (resourceLimits: object): object => {
+  const normalizedResourceLimits = Object.create(null) as Record<
+    string,
+    unknown
+  >
+  for (const key of [
+    'maxYoungGenerationSizeMb',
+    'maxOldGenerationSizeMb',
+    'codeRangeSizeMb',
+    'stackSizeMb',
+  ]) {
+    if (Object.hasOwn(resourceLimits, key)) {
+      defineEnumerableDataProperty(
+        normalizedResourceLimits,
+        key,
+        Reflect.get(resourceLimits, key)
+      )
+    }
+  }
+  return normalizedResourceLimits
+}
+
+/**
+ * Builds the environment passed through Node's cluster boundary.
+ * @param processEnv - The process environment.
+ * @param workerEnv - Explicit worker environment entries.
+ * @param caseInsensitive - Whether environment names are case-insensitive.
+ * @returns A normalized environment without a prototype.
+ * @internal
+ */
+export const buildClusterWorkerEnvironment = (
+  processEnv: NodeJS.ProcessEnv,
+  workerEnv: Record<string, unknown> | undefined,
+  caseInsensitive = process.platform === 'win32'
+): Record<string, unknown> => {
+  if (!caseInsensitive) {
+    const environment = withNullPrototype<Record<string, unknown>>(
+      processEnv,
+      workerEnv
+    )
+    for (const key of Object.keys(Object.prototype)) {
+      if (!Object.hasOwn(environment, key)) {
+        environment[key] = undefined
+      }
+    }
+    return environment
+  }
+
+  const effectiveEntries = new Map<string, { key: string; value: unknown }>()
+  for (const source of [processEnv, workerEnv]) {
+    if (source == null) {
+      continue
+    }
+    const sourceEntries = new Map<string, string>()
+    for (const key of Object.keys(source)) {
+      const logicalKey = key.toUpperCase()
+      const previousKey = sourceEntries.get(logicalKey)
+      if (previousKey == null || key < previousKey) {
+        sourceEntries.set(logicalKey, key)
+      }
+    }
+    for (const [logicalKey, sourceKey] of sourceEntries) {
+      const previousEntry = effectiveEntries.get(logicalKey)
+      const key =
+        previousEntry != null && previousEntry.key < sourceKey
+          ? previousEntry.key
+          : sourceKey
+      effectiveEntries.set(logicalKey, { key, value: source[sourceKey] })
+    }
+  }
+
+  const prototypeEntries = new Map<string, string>()
+  for (const key of Object.keys(Object.prototype)) {
+    const logicalKey = key.toUpperCase()
+    const previousKey = prototypeEntries.get(logicalKey)
+    if (previousKey == null || key < previousKey) {
+      prototypeEntries.set(logicalKey, key)
+    }
+  }
+
+  const environment = Object.create(null) as Record<string, unknown>
+  for (const [logicalKey, effectiveEntry] of effectiveEntries) {
+    const prototypeKey = prototypeEntries.get(logicalKey)
+    const key =
+      prototypeKey != null && prototypeKey < effectiveEntry.key
+        ? prototypeKey
+        : effectiveEntry.key
+    environment[key] = effectiveEntry.value
+  }
+  for (const [logicalKey, prototypeKey] of prototypeEntries) {
+    if (!effectiveEntries.has(logicalKey)) {
+      environment[prototypeKey] = undefined
+    }
+  }
+  return environment
+}
+
+/**
+ * Builds cluster settings safe for Node's ordinary-object reconstruction.
+ * @param currentSettings - Current Node cluster settings.
+ * @param settings - Explicit pool cluster settings.
+ * @param exec - Pool worker executable.
+ * @returns Normalized cluster settings.
+ * @internal
+ */
+export const buildClusterSettings = (
+  currentSettings: ClusterSettings | undefined,
+  settings: ClusterSettings | undefined,
+  exec: string
+): ClusterSettings => {
+  const normalizedSettings = withNullPrototype<ClusterSettings>(
+    {
+      cwd: undefined,
+      gid: undefined,
+      inspectPort: undefined,
+      serialization: undefined,
+      stdio: undefined,
+      uid: undefined,
+      windowsHide: undefined,
+    },
+    currentSettings,
+    settings,
+    { exec }
+  )
+  if (Array.isArray(normalizedSettings.args)) {
+    normalizedSettings.args = materializeArray(
+      normalizedSettings.args
+    ) as string[]
+  }
+  if (Array.isArray(normalizedSettings.execArgv)) {
+    normalizedSettings.execArgv = cloneDenseExecArgv(
+      normalizedSettings.execArgv,
+      'settings.execArgv'
+    )
+  }
+  if (Array.isArray(normalizedSettings.stdio)) {
+    normalizedSettings.stdio = cloneStdio(normalizedSettings.stdio)
+  }
+  return normalizedSettings
+}
+
+/**
+ * Builds options for a worker thread launch.
+ * @param workerOptions - Explicit worker options.
+ * @returns Normalized worker options.
+ * @internal
+ */
+export const buildThreadWorkerOptions = (
+  workerOptions: undefined | WorkerOptions
+): WorkerOptions => {
+  const normalizedWorkerOptions = withNullPrototype<WorkerOptions>(
+    { env: SHARE_ENV },
+    workerOptions
+  )
+  if (Array.isArray(normalizedWorkerOptions.argv)) {
+    normalizedWorkerOptions.argv = cloneArrayOwnSlots(
+      normalizedWorkerOptions.argv
+    )
+  }
+  if (Array.isArray(normalizedWorkerOptions.execArgv)) {
+    normalizedWorkerOptions.execArgv = cloneDenseExecArgv(
+      normalizedWorkerOptions.execArgv,
+      'workerOptions.execArgv'
+    )
+  }
+  if (
+    Object.hasOwn(normalizedWorkerOptions, 'resourceLimits') &&
+    typeof normalizedWorkerOptions.resourceLimits === 'object' &&
+    // Node accepts null as the absence of resource limits at runtime.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    normalizedWorkerOptions.resourceLimits !== null
+  ) {
+    normalizedWorkerOptions.resourceLimits = normalizeResourceLimits(
+      normalizedWorkerOptions.resourceLimits
+    )
+  }
+  if (Array.isArray(normalizedWorkerOptions.transferList)) {
+    normalizedWorkerOptions.transferList = materializeArray(
+      normalizedWorkerOptions.transferList
+    ) as NonNullable<WorkerOptions['transferList']>
+  }
+  return normalizedWorkerOptions
+}
 
 export const getDefaultTasksQueueOptions = (
   poolMaxSize: number
@@ -470,12 +834,15 @@ export const createWorker = <Worker extends IWorker>(
 ): Worker => {
   switch (type) {
     case WorkerTypes.cluster:
-      return cluster.fork(opts.env) as unknown as Worker
+      validateAndMaterializeClusterStdio(cluster.settings.stdio)
+      return cluster.fork(
+        buildClusterWorkerEnvironment(process.env, opts.env)
+      ) as unknown as Worker
     case WorkerTypes.thread:
-      return new ThreadWorker(filePath, {
-        env: SHARE_ENV,
-        ...opts.workerOptions,
-      }) as unknown as Worker
+      return new ThreadWorker(
+        filePath,
+        buildThreadWorkerOptions(opts.workerOptions)
+      ) as unknown as Worker
     default:
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`Unknown worker type '${type}'`)

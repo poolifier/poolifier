@@ -906,9 +906,12 @@ export abstract class AbstractPool<
       throw new Error('Cannot start a destroying pool')
     }
     this.starting = true
-    this.startMinimumNumberOfWorkers()
-    this.startTimestamp = performance.now()
-    this.starting = false
+    try {
+      this.startMinimumNumberOfWorkers()
+      this.startTimestamp = performance.now()
+    } finally {
+      this.starting = false
+    }
     this.started = true
   }
 
@@ -1626,7 +1629,7 @@ export abstract class AbstractPool<
       this.worker,
       this.filePath,
       {
-        env: this.opts.env,
+        env: Object.hasOwn(this.opts, 'env') ? this.opts.env : undefined,
         tasksQueueAgingFactor: this.opts.tasksQueueOptions?.agingFactor,
         tasksQueueBackPressureSize:
           this.opts.tasksQueueOptions?.size ??
@@ -1636,7 +1639,9 @@ export abstract class AbstractPool<
         tasksQueueBucketSize: defaultBucketSize,
         tasksQueueLoadExponent: this.opts.tasksQueueOptions?.loadExponent,
         tasksQueuePriority: this.getTasksQueuePriority(),
-        workerOptions: this.opts.workerOptions,
+        workerOptions: Object.hasOwn(this.opts, 'workerOptions')
+          ? this.opts.workerOptions
+          : undefined,
       }
     )
     // Flag the worker node as ready at pool startup.
@@ -2490,18 +2495,21 @@ export abstract class AbstractPool<
       return
     }
     this.startingMinimumNumberOfWorkers = true
-    while (
-      this.workerNodes.reduce(
-        (accumulator, workerNode) =>
-          !workerNode.info.dynamic ? accumulator + 1 : accumulator,
-        0
-      ) < this.minimumNumberOfWorkers
-    ) {
-      const workerNodeKey = this.createAndSetupWorkerNode()
-      initWorkerNodeUsage &&
-        this.initWorkerNodeUsage(this.workerNodes[workerNodeKey])
+    try {
+      while (
+        this.workerNodes.reduce(
+          (accumulator, workerNode) =>
+            !workerNode.info.dynamic ? accumulator + 1 : accumulator,
+          0
+        ) < this.minimumNumberOfWorkers
+      ) {
+        const workerNodeKey = this.createAndSetupWorkerNode()
+        initWorkerNodeUsage &&
+          this.initWorkerNodeUsage(this.workerNodes[workerNodeKey])
+      }
+    } finally {
+      this.startingMinimumNumberOfWorkers = false
     }
-    this.startingMinimumNumberOfWorkers = false
   }
 
   private readonly stealTask = (

@@ -1,16 +1,21 @@
 import { Worker as ClusterWorker } from 'node:cluster'
-import { Worker as ThreadWorker } from 'node:worker_threads'
+import { PassThrough } from 'node:stream'
+import { SHARE_ENV, Worker as ThreadWorker } from 'node:worker_threads'
 import { describe, expect, it } from 'vitest'
 
 import { CircularBuffer } from '../../lib/circular-buffer.mjs'
 import { WorkerTypes } from '../../lib/index.mjs'
 import {
+  buildClusterSettings,
+  buildClusterWorkerEnvironment,
+  buildThreadWorkerOptions,
   checkValidWorkerNodeKeys,
   createWorker,
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   getDefaultTasksQueueOptions,
   initWorkerInfo,
   updateMeasurementStatistics,
+  validateAndMaterializeClusterStdio,
 } from '../../lib/pools/utils.mjs'
 import { MeasurementHistorySize } from '../../lib/pools/worker.mjs'
 
@@ -35,6 +40,493 @@ describe('Pool utils test suite', () => {
       tasksStealingRatio: 0.6,
       taskStealing: true,
     })
+  })
+
+  it('builds cluster worker environments from own properties', () => {
+    const inheritedEnvironment = { INHERITED_SOURCE_KEY: 'inherited' }
+    const processEnvironment = Object.assign(
+      Object.create(inheritedEnvironment),
+      {
+        BASE_KEY: 'base',
+        OVERRIDDEN_KEY: 'base',
+      }
+    )
+    const workerEnvironment = Object.assign(
+      Object.create(inheritedEnvironment),
+      {
+        OVERRIDDEN_KEY: 'worker',
+        WORKER_KEY: 'worker',
+      }
+    )
+    const pollutionKey = 'POOLIFIER_ARBITRARY_ENV_POLLUTION'
+    // eslint-disable-next-line no-extend-native
+    Object.defineProperty(Object.prototype, pollutionKey, {
+      configurable: true,
+      enumerable: true,
+      value: 'polluted',
+      writable: true,
+    })
+    try {
+      const environment = buildClusterWorkerEnvironment(
+        processEnvironment,
+        workerEnvironment,
+        false
+      )
+      expect(Object.getPrototypeOf(environment)).toBeNull()
+      expect(environment).toMatchObject({
+        BASE_KEY: 'base',
+        OVERRIDDEN_KEY: 'worker',
+        WORKER_KEY: 'worker',
+      })
+      expect(Object.hasOwn(environment, 'INHERITED_SOURCE_KEY')).toBe(false)
+      expect(Object.hasOwn(environment, pollutionKey)).toBe(true)
+      expect(environment[pollutionKey]).toBeUndefined()
+    } finally {
+      Reflect.deleteProperty(Object.prototype, pollutionKey)
+    }
+  })
+
+  it('preserves explicit Windows environment precedence by logical key', () => {
+    const processEnvironment = {
+      NODE_OPTIONS: '--no-deprecation',
+      PATH: 'base-path',
+    }
+    const environment = buildClusterWorkerEnvironment(
+      processEnvironment,
+      {
+        node_options: '--no-warnings',
+        path: 'worker-path',
+      },
+      true
+    )
+    expect(Object.getPrototypeOf(environment)).toBeNull()
+    expect(
+      Object.keys(environment).filter(
+        key => key.toUpperCase() === 'NODE_OPTIONS'
+      )
+    ).toStrictEqual(['NODE_OPTIONS'])
+    expect(environment.NODE_OPTIONS).toBe('--no-warnings')
+    expect(
+      Object.keys(environment).filter(key => key.toUpperCase() === 'PATH')
+    ).toStrictEqual(['PATH'])
+    expect(environment.PATH).toBe('worker-path')
+
+    const environmentWithRemovedOption = buildClusterWorkerEnvironment(
+      processEnvironment,
+      { node_options: undefined },
+      true
+    )
+    expect(Object.hasOwn(environmentWithRemovedOption, 'NODE_OPTIONS')).toBe(
+      true
+    )
+    expect(environmentWithRemovedOption.NODE_OPTIONS).toBeUndefined()
+    expect(Object.hasOwn(environmentWithRemovedOption, 'node_options')).toBe(
+      false
+    )
+  })
+
+  it('uses Object.prototype keys to mask Windows environment variants', () => {
+    // eslint-disable-next-line no-extend-native
+    Object.defineProperty(Object.prototype, 'NODE_OPTIONS', {
+      configurable: true,
+      enumerable: true,
+      value: undefined,
+      writable: true,
+    })
+    try {
+      const environment = buildClusterWorkerEnvironment(
+        { node_options: '--no-deprecation' },
+        undefined,
+        true
+      )
+      expect(Object.keys(environment)).toStrictEqual(['NODE_OPTIONS'])
+      expect(environment.NODE_OPTIONS).toBe('--no-deprecation')
+    } finally {
+      Reflect.deleteProperty(Object.prototype, 'NODE_OPTIONS')
+    }
+  })
+
+  it('builds cluster settings with safe optional shadows and precedence', () => {
+    const execArgv = ['--no-warnings']
+    const stdio = ['ignore', 'pipe', 'pipe', 'ipc']
+    const settings = buildClusterSettings(
+      {
+        cwd: '/current',
+        exec: './current.cjs',
+        execArgv: ['--trace-warnings'],
+        silent: true,
+      },
+      {
+        cwd: '/explicit',
+        exec: './ignored.cjs',
+        execArgv,
+        stdio,
+      },
+      './worker.cjs'
+    )
+    expect(Object.getPrototypeOf(settings)).toBeNull()
+    expect(settings).toMatchObject({
+      cwd: '/explicit',
+      exec: './worker.cjs',
+      execArgv,
+      silent: true,
+    })
+    expect(settings.execArgv).not.toBe(execArgv)
+    expect(settings.stdio).not.toBe(stdio)
+    expect(Array.isArray(settings.stdio)).toBe(true)
+    expect(Object.getPrototypeOf(settings.stdio)).toBe(Array.prototype)
+    expect([...settings.stdio]).toStrictEqual(stdio)
+    expect(settings.stdio.map(value => value)).toStrictEqual(stdio)
+    expect(settings.stdio.length).toBe(stdio.length)
+    for (let index = 0; index < stdio.length; index++) {
+      expect(Object.hasOwn(settings.stdio, index)).toBe(true)
+      expect(settings.stdio[index]).toBe(stdio[index])
+    }
+    for (const key of [
+      'cwd',
+      'serialization',
+      'windowsHide',
+      'stdio',
+      'gid',
+      'uid',
+      'inspectPort',
+    ]) {
+      expect(Object.hasOwn(settings, key)).toBe(true)
+    }
+  })
+
+  it('builds thread worker options without cloning opaque values', () => {
+    const workerData = { value: true }
+    const execArgv = ['--no-warnings']
+    const workerOptions = buildThreadWorkerOptions({ execArgv, workerData })
+    expect(Object.getPrototypeOf(workerOptions)).toBeNull()
+    expect(workerOptions.env).toBe(SHARE_ENV)
+    expect(workerOptions.workerData).toBe(workerData)
+    expect(workerOptions.execArgv).toStrictEqual(execArgv)
+    expect(workerOptions.execArgv).not.toBe(execArgv)
+  })
+
+  it('normalizes worker option arrays and resource limits by own slots', () => {
+    const argvValue = { value: 'argv' }
+    const argv = new Array(2)
+    argv[1] = argvValue
+    const transferable = new ArrayBuffer(8)
+    const transferList = new Array(2)
+    transferList[1] = transferable
+    const inheritedResourceLimits = { maxYoungGenerationSizeMb: 1 }
+    const resourceLimits = Object.create(inheritedResourceLimits)
+    Object.defineProperty(resourceLimits, 'maxOldGenerationSizeMb', {
+      value: 32,
+    })
+    const workerData = { value: 'workerData' }
+
+    const workerOptions = buildThreadWorkerOptions({
+      argv,
+      resourceLimits,
+      transferList,
+      workerData,
+    })
+
+    expect(Object.getPrototypeOf(workerOptions.argv)).toBeNull()
+    expect(workerOptions.argv).not.toBe(argv)
+    expect(Object.hasOwn(workerOptions.argv, 0)).toBe(false)
+    expect(workerOptions.argv[1]).toBe(argvValue)
+    expect(workerOptions.transferList).not.toBe(transferList)
+    expect(Object.hasOwn(workerOptions.transferList, 0)).toBe(true)
+    expect(workerOptions.transferList[0]).toBeUndefined()
+    expect(workerOptions.transferList[1]).toBe(transferable)
+    expect(Object.getPrototypeOf(workerOptions.resourceLimits)).toBeNull()
+    expect(
+      Object.hasOwn(workerOptions.resourceLimits, 'maxYoungGenerationSizeMb')
+    ).toBe(false)
+    expect(workerOptions.resourceLimits.maxOldGenerationSizeMb).toBe(32)
+    expect(workerOptions.workerData).toBe(workerData)
+  })
+
+  it('normalizes cluster positional arrays without reading inherited slots', () => {
+    const args = new Array(2)
+    args[1] = '--worker-argument'
+    const accessor = Symbol('accessor')
+    let accessorCalls = 0
+    const descriptor = {}
+    const accessorGetter = () => {
+      accessorCalls++
+      return 'accessor-value'
+    }
+    Object.defineProperties(descriptor, {
+      [accessor]: {
+        configurable: true,
+        enumerable: true,
+        get: accessorGetter,
+      },
+      custom: {
+        value: 'descriptor-value',
+      },
+    })
+    const opaqueStream = new PassThrough()
+    const stdio = new Array(4)
+    stdio[0] = descriptor
+    stdio[1] = opaqueStream
+    stdio[3] = 'ipc'
+
+    const settings = buildClusterSettings(
+      { exec: './current.cjs' },
+      { args, stdio },
+      './worker.cjs'
+    )
+    const accessorCallsAfterBuild = accessorCalls
+
+    expect(settings.args).not.toBe(args)
+    expect(Object.hasOwn(settings.args, 0)).toBe(true)
+    expect(settings.args[0]).toBeUndefined()
+    expect(settings.args[1]).toBe('--worker-argument')
+    expect(Object.getPrototypeOf(settings.stdio)).toBe(Array.prototype)
+    expect(Object.hasOwn(settings.stdio, 2)).toBe(true)
+    expect(settings.stdio[2]).toBeUndefined()
+    expect(settings.stdio[0]).not.toBe(descriptor)
+    expect(settings.stdio[1]).toBe(opaqueStream)
+    expect(Object.getPrototypeOf(settings.stdio[0])).toBeNull()
+    const customDescriptor = Object.getOwnPropertyDescriptor(
+      descriptor,
+      'custom'
+    )
+    const clonedCustomDescriptor = Object.getOwnPropertyDescriptor(
+      settings.stdio[0],
+      'custom'
+    )
+    expect(clonedCustomDescriptor.configurable).toBe(
+      customDescriptor.configurable
+    )
+    expect(clonedCustomDescriptor.enumerable).toBe(customDescriptor.enumerable)
+    expect(clonedCustomDescriptor.value).toBe(customDescriptor.value)
+    expect(clonedCustomDescriptor.writable).toBe(customDescriptor.writable)
+    const accessorDescriptor = Object.getOwnPropertyDescriptor(
+      settings.stdio[0],
+      accessor
+    )
+    expect(accessorDescriptor.configurable).toBe(true)
+    expect(accessorDescriptor.enumerable).toBe(true)
+    expect(accessorDescriptor.get).toBe(accessorGetter)
+    expect(Object.hasOwn(accessorDescriptor, 'set')).toBe(true)
+    expect(accessorDescriptor.set).toBeUndefined()
+    expect(accessorCallsAfterBuild).toBe(0)
+    for (const key of ['fd', 'handle', '_handle']) {
+      expect(Object.hasOwn(settings.stdio[0], key)).toBe(true)
+      expect(settings.stdio[0][key]).toBeUndefined()
+    }
+    opaqueStream.destroy()
+  })
+
+  it('shadows inherited controls on plain stdio descriptors', () => {
+    // eslint-disable-next-line no-extend-native
+    Object.defineProperties(Object.prototype, {
+      _handle: {
+        configurable: true,
+        enumerable: true,
+        value: 'polluted',
+        writable: true,
+      },
+      handle: {
+        configurable: true,
+        enumerable: true,
+        value: 'polluted',
+        writable: true,
+      },
+    })
+    try {
+      const settings = buildClusterSettings(
+        { exec: './current.cjs' },
+        { stdio: [{ fd: 1 }] },
+        './worker.cjs'
+      )
+      expect(settings.stdio[0].fd).toBe(1)
+      expect(Object.hasOwn(settings.stdio[0], 'handle')).toBe(true)
+      expect(settings.stdio[0].handle).toBeUndefined()
+      expect(Object.hasOwn(settings.stdio[0], '_handle')).toBe(true)
+      expect(settings.stdio[0]._handle).toBeUndefined()
+    } finally {
+      Reflect.deleteProperty(Object.prototype, '_handle')
+      Reflect.deleteProperty(Object.prototype, 'handle')
+    }
+  })
+
+  it('accepts numeric stdio fd before irrelevant inherited controls', () => {
+    const opaqueStdioEntry = Object.create({})
+    Object.defineProperty(opaqueStdioEntry, 'fd', { value: 0 })
+    // eslint-disable-next-line no-extend-native
+    Object.defineProperty(Object.prototype, 'handle', {
+      configurable: true,
+      enumerable: true,
+      value: -1,
+      writable: true,
+    })
+    try {
+      expect(() =>
+        validateAndMaterializeClusterStdio([opaqueStdioEntry])
+      ).not.toThrow()
+    } finally {
+      Reflect.deleteProperty(Object.prototype, 'handle')
+    }
+  })
+
+  it('ignores nonnumeric inherited fd before a legitimate handle', () => {
+    const handle = {}
+    const opaqueStdioEntry = Object.create({ handle })
+    // eslint-disable-next-line no-extend-native
+    Object.defineProperty(Object.prototype, 'fd', {
+      configurable: true,
+      enumerable: true,
+      value: 'polluted',
+      writable: true,
+    })
+    try {
+      expect(() =>
+        validateAndMaterializeClusterStdio([opaqueStdioEntry])
+      ).not.toThrow()
+    } finally {
+      Reflect.deleteProperty(Object.prototype, 'fd')
+    }
+  })
+
+  it('rejects inherited stdio accessors without invoking them', () => {
+    for (const key of ['fd', 'handle']) {
+      let accessorCalls = 0
+      // eslint-disable-next-line no-extend-native
+      Object.defineProperty(Object.prototype, key, {
+        configurable: true,
+        get: () => {
+          accessorCalls++
+          return key === 'fd' ? 1 : {}
+        },
+      })
+      try {
+        expect(() => validateAndMaterializeClusterStdio([{}])).toThrow(
+          new TypeError(
+            `Invalid cluster.settings.stdio entry: inherited accessor '${key}' from Object.prototype is not allowed`
+          )
+        )
+        expect(accessorCalls).toBe(0)
+      } finally {
+        Reflect.deleteProperty(Object.prototype, key)
+      }
+    }
+  })
+
+  it('builds worker options with polluted descriptor fields', () => {
+    for (const key of ['get', 'set']) {
+      let accessorCalls = 0
+      const stdioDescriptor = {}
+      const accessor = Symbol('accessor')
+      const accessorGetter = () => {
+        accessorCalls++
+        return 'accessor-value'
+      }
+      Object.defineProperty(stdioDescriptor, accessor, {
+        get: accessorGetter,
+      })
+      // eslint-disable-next-line no-extend-native
+      Object.defineProperty(Object.prototype, key, {
+        configurable: true,
+        value: () => undefined,
+        writable: true,
+      })
+      let buildError
+      let clonedAccessorGetter
+      let settings
+      let workerOptions
+      try {
+        settings = buildClusterSettings(
+          undefined,
+          {
+            args: new Array(1),
+            execArgv: ['--no-warnings'],
+            stdio: [stdioDescriptor, 'ignore', 'ignore', 'ipc'],
+          },
+          './worker.cjs'
+        )
+        workerOptions = buildThreadWorkerOptions({
+          argv: new Array(1),
+          execArgv: ['--no-warnings'],
+          resourceLimits: { maxOldGenerationSizeMb: 32 },
+          transferList: new Array(1),
+        })
+        clonedAccessorGetter = Object.getOwnPropertyDescriptor(
+          settings.stdio[0],
+          accessor
+        ).get
+      } catch (error) {
+        buildError = error
+      } finally {
+        Reflect.deleteProperty(Object.prototype, key)
+      }
+      expect(buildError).toBeUndefined()
+      expect(Object.hasOwn(settings.args, 0)).toBe(true)
+      expect(Object.hasOwn(settings.stdio, 0)).toBe(true)
+      expect(clonedAccessorGetter).toBe(accessorGetter)
+      expect(Object.hasOwn(workerOptions.argv, 0)).toBe(false)
+      expect(Object.hasOwn(workerOptions.execArgv, 0)).toBe(true)
+      expect(Object.hasOwn(workerOptions.transferList, 0)).toBe(true)
+      expect(workerOptions.resourceLimits.maxOldGenerationSizeMb).toBe(32)
+      expect(accessorCalls).toBe(0)
+    }
+  })
+
+  it('leaves invalid non-array execArgv values for Node validation', () => {
+    const invalidExecArgv = '--no-warnings'
+    expect(
+      buildClusterSettings(
+        { exec: './current.cjs' },
+        { execArgv: invalidExecArgv },
+        './worker.cjs'
+      ).execArgv
+    ).toBe(invalidExecArgv)
+    expect(
+      buildThreadWorkerOptions({ execArgv: invalidExecArgv }).execArgv
+    ).toBe(invalidExecArgv)
+  })
+
+  it('leaves invalid non-object resource limits for Node validation', () => {
+    const resourceLimits = 'invalid'
+    expect(buildThreadWorkerOptions({ resourceLimits }).resourceLimits).toBe(
+      resourceLimits
+    )
+  })
+
+  it('preserves null resource limits for Node runtime defaults', () => {
+    expect(
+      buildThreadWorkerOptions({ resourceLimits: null }).resourceLimits
+    ).toBeNull()
+  })
+
+  it('rejects sparse effective execArgv arrays', () => {
+    const sparseExecArgv = new Array(1)
+    // eslint-disable-next-line no-extend-native
+    Object.defineProperty(Object.prototype, '0', {
+      configurable: true,
+      enumerable: true,
+      value: '--no-warnings',
+      writable: true,
+    })
+    try {
+      expect(() =>
+        buildClusterSettings(
+          { exec: './current.cjs' },
+          { execArgv: sparseExecArgv },
+          './worker.cjs'
+        )
+      ).toThrow(
+        new TypeError('Invalid settings.execArgv: must not be a sparse array')
+      )
+      expect(() =>
+        buildThreadWorkerOptions({ execArgv: sparseExecArgv })
+      ).toThrow(
+        new TypeError(
+          'Invalid workerOptions.execArgv: must not be a sparse array'
+        )
+      )
+    } finally {
+      Reflect.deleteProperty(Object.prototype, '0')
+    }
   })
 
   it('Verify updateMeasurementStatistics() behavior', () => {

@@ -4,6 +4,7 @@ import type { MessageValue } from '../../utility-types.js'
 
 import { AbstractPool } from '../abstract-pool.js'
 import { type PoolOptions, type PoolType, PoolTypes } from '../pool.js'
+import { buildClusterSettings } from '../utils.js'
 import { type WorkerType, WorkerTypes } from '../worker.js'
 
 /**
@@ -117,7 +118,13 @@ export class FixedClusterPool<
 
   /** @inheritDoc */
   protected override setupHook (): void {
-    cluster.setupPrimary({ ...this.opts.settings, exec: this.filePath })
+    cluster.setupPrimary(
+      buildClusterSettings(
+        cluster.settings,
+        Object.hasOwn(this.opts, 'settings') ? this.opts.settings : undefined,
+        this.filePath
+      )
+    )
   }
 
   /** @inheritDoc */
