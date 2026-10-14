@@ -203,7 +203,7 @@ importers:
         specifier: ^10.12.0
         version: 10.12.0(jiti@2.6.1)
       eslint-plugin-jsdoc:
-        specifier: ^65.2.4
+        specifier: ^65.3.0
         version: 65.3.1(eslint@10.12.0(jiti@2.6.1))(typescript@6.0.3)
       eslint-plugin-perfectionist:
         specifier: ^5.12.1
@@ -221,10 +221,10 @@ importers:
         specifier: ^0.14.0
         version: 0.14.0(eslint@10.12.0(jiti@2.6.1))(typescript@6.0.3)
       prettier:
-        specifier: ^3.9.9
+        specifier: ^3.9.10
         version: 3.9.10
       rollup:
-        specifier: ^4.64.4
+        specifier: ^4.64.5
         version: 4.64.5
       rollup-plugin-analyzer:
         specifier: ^4.0.0
@@ -242,7 +242,7 @@ importers:
         specifier: ^22.1.0
         version: 22.1.0
       tinybench:
-        specifier: ^6.2.1
+        specifier: ^6.2.2
         version: 6.2.2
       tslib:
         specifier: ^2.8.1
