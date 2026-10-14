@@ -58,8 +58,10 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     super()
     checkWorkerNodeArguments(type, filePath, opts)
     this.worker = createWorker<Worker>(type, filePath, {
-      env: opts.env,
-      workerOptions: opts.workerOptions,
+      env: Object.hasOwn(opts, 'env') ? opts.env : undefined,
+      workerOptions: Object.hasOwn(opts, 'workerOptions')
+        ? opts.workerOptions
+        : undefined,
     })
     this.info = initWorkerInfo(this.worker)
     this.usage = this.initWorkerUsage()
