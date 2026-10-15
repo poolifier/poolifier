@@ -360,6 +360,59 @@ for (const [workerType, PoolClass, workerFile] of [
       }
     })
 
+    it('can abort a redistributing task from backPressureEnd', async () => {
+      const pool = await createPool(2, {
+        enableTasksQueue: true,
+        tasksQueueOptions: {
+          concurrency: 1,
+          size: 1,
+          tasksStealingOnBackPressure: false,
+          taskStealing: false,
+        },
+      })
+      try {
+        await pool.execute({ warmup: true })
+        const [source, destination] = pool.workerNodes
+        const sourceStarted = started(source, 'source')
+        const destinationStarted = started(destination, 'destination')
+        const sourceResult = pool
+          .execute({ id: 'source', wait: true })
+          .catch(error => error)
+        const destinationData = { id: 'destination', wait: true }
+        const destinationResult = pool.execute(destinationData)
+        const controller = new AbortController()
+        const backPressure = once(pool.emitter, 'backPressure')
+        let abortedError
+        const abortedResult = pool
+          .execute({ id: 'aborted' }, undefined, controller.signal)
+          .catch(error => {
+            abortedError = error
+            return error
+          })
+        const healthyData = { id: 'healthy' }
+        const healthyResult = pool.execute(healthyData)
+        await bounded(
+          Promise.all([sourceStarted, destinationStarted, backPressure])
+        )
+        pool.emitter.once('backPressureEnd', () => {
+          controller.abort()
+        })
+        const exit = new Promise(resolve => source.worker.once('exit', resolve))
+        send(source, { crash: true })
+        expect(await bounded(sourceResult)).toBeInstanceOf(Error)
+        expect(controller.signal.aborted).toBe(true)
+        expect(abortedError).toBeInstanceOf(Error)
+        send(destination, { release: 'destination' })
+        expect(await bounded(abortedResult)).toBeInstanceOf(Error)
+        expect(await bounded(destinationResult)).toStrictEqual(destinationData)
+        expect(await bounded(healthyResult)).toStrictEqual(healthyData)
+        await bounded(exit)
+        expect(pool.promiseResponseMap.size).toBe(0)
+      } finally {
+        await pool.destroy()
+      }
+    })
+
     it('routes a queued task abort to its new owner after redistribution and index shifting', async () => {
       const pool = await createPool(2, {
         enableTasksQueue: true,

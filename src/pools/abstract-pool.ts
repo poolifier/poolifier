@@ -2354,10 +2354,10 @@ export abstract class AbstractPool<
       if (destinationWorkerNodeKey === -1) {
         continue
       }
+      this.handleTask(destinationWorkerNodeKey, task)
       if (notifyDequeuing) {
         this.checkAndEmitTaskDequeuingEvents()
       }
-      this.handleTask(destinationWorkerNodeKey, task)
     }
   }
 
