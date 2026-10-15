@@ -1194,25 +1194,28 @@ export abstract class AbstractPool<
         workerNode.clearTasksQueue()
       }
       this.removeWorkerNode(workerNode)
-      if (
-        this.started &&
-        !this.startingMinimumNumberOfWorkers &&
-        !this.destroying
-      ) {
-        this.startMinimumNumberOfWorkers(true)
-      }
-      if (settlingTasks && this.opts.enableTasksQueue === true) {
-        this.checkAndEmitTaskDequeuingEvents()
-      }
-      if (taskResponses != null) {
-        for (const message of taskResponses) {
-          this.handleTaskExecutionResponse(message)
+      try {
+        if (
+          this.started &&
+          !this.startingMinimumNumberOfWorkers &&
+          !this.destroying
+        ) {
+          this.startMinimumNumberOfWorkers(true)
         }
+      } finally {
+        if (settlingTasks && this.opts.enableTasksQueue === true) {
+          this.checkAndEmitTaskDequeuingEvents()
+        }
+        if (taskResponses != null) {
+          for (const message of taskResponses) {
+            this.handleTaskExecutionResponse(message)
+          }
+        }
+        if (workerNodeTasks != null) {
+          this.rejectWorkerNodeTasks(workerNodeTasks, workerError)
+        }
+        this.checkAndEmitTaskExecutionFinishedEvents()
       }
-      if (workerNodeTasks != null) {
-        this.rejectWorkerNodeTasks(workerNodeTasks, workerError)
-      }
-      this.checkAndEmitTaskExecutionFinishedEvents()
     })
     workerNode.registerWorkerEventHandler(
       'exit',

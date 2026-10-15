@@ -1,7 +1,9 @@
 // Required to exercise synchronous destruction from task async resource callbacks.
 // eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { createHook } from 'node:async_hooks'
+import { execFile } from 'node:child_process'
 import { once } from 'node:events'
+import { promisify } from 'node:util'
 import { describe, expect, it } from 'vitest'
 
 import {
@@ -450,6 +452,82 @@ for (const [workerType, PoolClass, workerFile] of [
     })
 
     if (workerType === 'thread') {
+      it('settles exited worker tasks when replacement construction throws', async () => {
+        const { stdout } = await promisify(execFile)(
+          process.execPath,
+          [
+            '--eval',
+            `
+              const { setImmediate } = require('node:timers/promises')
+              const { MessageChannel } = require('node:worker_threads')
+              const { FixedThreadPool } = require('./lib/index.cjs')
+
+              const channel = new MessageChannel()
+              let pool
+              let outcome = { status: 'pending' }
+              let observeException
+              const exception = new Promise(resolve => {
+                observeException = resolve
+              })
+              process.once('uncaughtException', observeException)
+
+              ;(async () => {
+                try {
+                  pool = new FixedThreadPool(
+                    1,
+                    './tests/worker-files/thread/crashWorker.mjs',
+                    {
+                      workerOptions: {
+                        workerData: { port: channel.port1 },
+                        transferList: [channel.port1],
+                      },
+                    }
+                  )
+                  pool.execute({ exitCode: 0 }).then(
+                    () => { outcome = { status: 'fulfilled' } },
+                    error => {
+                      outcome = {
+                        status: 'rejected',
+                        reasonIsError: error instanceof Error,
+                      }
+                    }
+                  )
+                  const error = await exception
+                  // Observe settlement after all rejection microtasks have run.
+                  await setImmediate()
+                  console.log(JSON.stringify({
+                    exceptionName: error.name,
+                    outcome,
+                    promiseResponseMapSize: pool.promiseResponseMap.size,
+                    workerNodesLength: pool.workerNodes.length,
+                    startingMinimumNumberOfWorkers: pool.startingMinimumNumberOfWorkers,
+                  }))
+                } finally {
+                  try {
+                    if (pool != null) await pool.destroy()
+                  } finally {
+                    channel.port1.close()
+                    channel.port2.close()
+                    process.off('uncaughtException', observeException)
+                  }
+                }
+              })().catch(error => {
+                console.error(error)
+                process.exitCode = 1
+              })
+            `,
+          ],
+          { timeout: 10000 }
+        )
+        expect(JSON.parse(stdout)).toStrictEqual({
+          exceptionName: 'DataCloneError',
+          outcome: { reasonIsError: true, status: 'rejected' },
+          promiseResponseMapSize: 0,
+          startingMinimumNumberOfWorkers: false,
+          workerNodesLength: 0,
+        })
+      })
+
       for (const [description, message] of [
         ['number', { crashWith: 42 }],
         ['string', { crashWith: 'Worker threw a string' }],

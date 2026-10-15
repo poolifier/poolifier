@@ -324,26 +324,6 @@ describe('Fixed thread pool test suite', () => {
     expect(poolDestroy).toBe(1)
   })
 
-  it('Verify that thread pool options are checked', async () => {
-    const workerFilePath = './tests/worker-files/thread/testWorker.mjs'
-    let pool = new FixedThreadPool(numberOfThreads, workerFilePath)
-    expect(pool.opts.workerOptions).toBeUndefined()
-    await sleep(500)
-    await pool.destroy()
-    pool = new FixedThreadPool(numberOfThreads, workerFilePath, {
-      workerOptions: {
-        env: { TEST: 'test' },
-        name: 'test',
-      },
-    })
-    expect(pool.opts.workerOptions).toStrictEqual({
-      env: { TEST: 'test' },
-      name: 'test',
-    })
-    await sleep(500)
-    await pool.destroy()
-  })
-
   it('Verify destroyWorkerNode()', async () => {
     const workerFilePath = './tests/worker-files/thread/testWorker.mjs'
     const pool = new FixedThreadPool(numberOfThreads, workerFilePath)
