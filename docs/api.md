@@ -47,7 +47,7 @@
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
 
-If a worker crashes or exits unexpectedly, tasks still assigned to it reject with an `Error` once it exits. Task responses already posted by the worker retain their successful result or task error even if the worker subsequently crashes. Tasks already dispatched to that worker are not retried. Queued tasks are redistributed to ready workers when possible; queued tasks that cannot be redistributed also reject. This does not change intentional pool or worker destruction behavior.
+If a worker crashes or exits unexpectedly, tasks still assigned to it reject with an `Error` once it exits. Thread task responses already posted to the pool retain their successful result or task error even if the worker subsequently crashes. Cluster task responses retain their outcome only if delivered to the pool before the worker exits; responses still in transit over IPC may be lost. Tasks already dispatched to that worker are not retried. Queued tasks are redistributed to ready workers when possible; queued tasks that cannot be redistributed also reject. This does not change intentional pool or worker destruction behavior.
 
 ### `pool.mapExecute(data, name, abortSignals, transferList)`
 
