@@ -1162,9 +1162,6 @@ export abstract class AbstractPool<
               this.startMinimumNumberOfWorkers(true)
             }
           }
-          if (this.opts.enableTasksQueue === true) {
-            this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
-          }
         }
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         workerNode?.terminate().catch((error: unknown) => {
@@ -1188,15 +1185,11 @@ export abstract class AbstractPool<
           | undefined
         if (settlingTasks) {
           const workerNodeKey = this.workerNodes.indexOf(workerNode)
-          if (this.opts.enableTasksQueue === true) {
-            this.redistributeQueuedTasks(workerNodeKey, false)
-          }
           for (const [taskId, promiseResponse] of this.promiseResponseMap) {
             if (promiseResponse.workerNodeKey === workerNodeKey) {
               ;(workerNodeTasks ??= new Map()).set(taskId, promiseResponse)
             }
           }
-          workerNode.clearTasksQueue()
         }
         this.removeWorkerNode(workerNode)
         try {
@@ -1208,6 +1201,12 @@ export abstract class AbstractPool<
             this.startMinimumNumberOfWorkers(true)
           }
         } finally {
+          if (settlingTasks) {
+            if (this.opts.enableTasksQueue === true) {
+              this.redistributeQueuedTasks(workerNode)
+            }
+            workerNode.clearTasksQueue()
+          }
           if (settlingTasks && this.opts.enableTasksQueue === true) {
             this.checkAndEmitTaskDequeuingEvents()
           }
@@ -1735,14 +1734,9 @@ export abstract class AbstractPool<
     return workerNode
   }
 
-  private dequeueTask (
-    workerNodeKey: number,
-    notify = true
-  ): Task<Data> | undefined {
+  private dequeueTask (workerNodeKey: number): Task<Data> | undefined {
     const task = this.workerNodes[workerNodeKey].dequeueTask()
-    if (notify) {
-      this.checkAndEmitTaskDequeuingEvents()
-    }
+    this.checkAndEmitTaskDequeuingEvents()
     return task
   }
 
@@ -2315,15 +2309,23 @@ export abstract class AbstractPool<
   }
 
   private redistributeQueuedTasks (
-    sourceWorkerNodeKey: number,
-    notifyDequeuing = true
+    sourceWorkerNode: IWorkerNode<Worker, Data>
   ): void {
-    if (sourceWorkerNodeKey === -1 || this.cannotStealTask()) {
-      return
-    }
-    while (this.tasksQueueSize(sourceWorkerNodeKey) > 0) {
+    while (sourceWorkerNode.tasksQueue.size > 0) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const task = this.dequeueTask(sourceWorkerNodeKey, false)!
+      const task = sourceWorkerNode.dequeueTask()!
+      const promiseResponse =
+        task.taskId != null
+          ? this.promiseResponseMap.get(task.taskId)
+          : undefined
+      if (
+        !this.started ||
+        this.destroying ||
+        promiseResponse == null ||
+        promiseResponse.abortSignal?.aborted === true
+      ) {
+        continue
+      }
       const workerNodeKeys = this.getTaskFunctionWorkerNodeKeys(task.name)
       const candidateCount = workerNodeKeys?.length ?? this.workerNodes.length
       let destinationWorkerNodeKey = -1
@@ -2331,10 +2333,7 @@ export abstract class AbstractPool<
       for (let i = 0; i < candidateCount; i++) {
         const candidateWorkerNodeKey =
           workerNodeKeys == null ? i : workerNodeKeys[i]
-        if (
-          candidateWorkerNodeKey === sourceWorkerNodeKey ||
-          candidateWorkerNodeKey >= this.workerNodes.length
-        ) {
+        if (candidateWorkerNodeKey >= this.workerNodes.length) {
           continue
         }
         const candidateWorkerNode = this.workerNodes[candidateWorkerNodeKey]
@@ -2356,9 +2355,6 @@ export abstract class AbstractPool<
       }
       this.handleTask(destinationWorkerNodeKey, task)
     }
-    if (notifyDequeuing) {
-      this.checkAndEmitTaskDequeuingEvents()
-    }
   }
 
   /**
@@ -2374,7 +2370,10 @@ export abstract class AbstractPool<
     error?: Error
   ): void {
     for (const [taskId, promiseResponse] of workerNodeTasks) {
-      if (this.promiseResponseMap.get(taskId) === promiseResponse) {
+      if (
+        this.promiseResponseMap.get(taskId) === promiseResponse &&
+        promiseResponse.workerNodeKey === -1
+      ) {
         error ??= new Error('Worker exited before completing the task')
         this.promiseResponseMap.delete(taskId)
         const { asyncResource, reject } = promiseResponse

@@ -232,6 +232,98 @@ for (const [workerType, PoolClass, workerFile] of [
       }
     })
 
+    for (const [failure, message] of [
+      ['crash', { crash: true }],
+      ['silent exit', { exitCode: 1 }],
+    ]) {
+      it(`preserves sparse affinity against live worker indices after a ${failure}`, async () => {
+        const executions = []
+        const completions = []
+        class AffinityPool extends PoolClass {
+          afterTaskExecutionHook (workerNodeKey, response) {
+            if (response.data?.id === 'affinity') {
+              completions.push({
+                workerId: this.workerNodes[workerNodeKey].info.id,
+                workerNodeKey,
+              })
+            }
+            super.afterTaskExecutionHook(workerNodeKey, response)
+          }
+
+          beforeTaskExecutionHook (workerNodeKey, task) {
+            if (task.data?.id === 'affinity') {
+              executions.push({
+                workerId: this.workerNodes[workerNodeKey].info.id,
+                workerNodeKey,
+              })
+            }
+            super.beforeTaskExecutionHook(workerNodeKey, task)
+          }
+        }
+        const pool = new AffinityPool(3, workerFile, {
+          enableTasksQueue: true,
+          tasksQueueOptions: {
+            concurrency: 1,
+            tasksStealingOnBackPressure: false,
+            taskStealing: false,
+          },
+          workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+        })
+        pool.emitter.on('error', () => {})
+        try {
+          if (!pool.info.ready) await bounded(once(pool.emitter, 'ready'))
+          await bounded(
+            pool.addTaskFunction('affinityEcho', {
+              taskFunction: data => data,
+              workerNodeKeys: [0, 2],
+            })
+          )
+          const [source, firstHealthy, secondHealthy] = pool.workerNodes
+          const healthyData = [
+            { id: 'first-healthy', wait: true },
+            { id: 'second-healthy', wait: true },
+          ]
+          const running = [
+            started(firstHealthy, 'first-healthy'),
+            started(secondHealthy, 'second-healthy'),
+            started(source, 'source'),
+          ]
+          const healthy = healthyData.map(data => pool.execute(data))
+          const failed = pool
+            .execute({ id: 'source', wait: true })
+            .catch(error => error)
+          await bounded(Promise.all(running))
+          const queuedData = [{ id: 'first-queued' }, { id: 'second-queued' }]
+          const queued = queuedData.map(data => pool.execute(data))
+          const affinityData = { id: 'affinity' }
+          const affinity = pool
+            .execute(affinityData, 'affinityEcho')
+            .catch(error => error)
+          expect(source.tasksQueue.size).toBe(1)
+          const exit = new Promise(resolve =>
+            source.worker.once('exit', resolve)
+          )
+          send(source, message)
+          await bounded(exit)
+          expect(await bounded(failed)).toBeInstanceOf(Error)
+          send(firstHealthy, { release: 'first-healthy' })
+          send(secondHealthy, { release: 'second-healthy' })
+          expect(await bounded(Promise.all(healthy))).toStrictEqual(healthyData)
+          expect(await bounded(Promise.all(queued))).toStrictEqual(queuedData)
+          expect(await bounded(affinity)).toStrictEqual(affinityData)
+          expect(executions).toHaveLength(1)
+          expect([0, 2]).toContain(executions[0].workerNodeKey)
+          expect(executions[0].workerId).toBe(
+            pool.workerNodes[executions[0].workerNodeKey].info.id
+          )
+          expect(completions).toStrictEqual(executions)
+          expect(pool.promiseResponseMap.size).toBe(0)
+        } finally {
+          await pool.destroy()
+        }
+      })
+    }
+
     it('rejects a queued default task pinned to the exited worker', async () => {
       const pool = await createPool(2, {
         enableTasksQueue: true,
@@ -432,6 +524,65 @@ for (const [workerType, PoolClass, workerFile] of [
       }
     })
 
+    it('skips a detached queued task aborted by an earlier migration hook', async () => {
+      const controller = new AbortController()
+      const executions = []
+      class AbortingPool extends PoolClass {
+        beforeTaskExecutionHook (workerNodeKey, task) {
+          executions.push(task.data?.id)
+          if (task.data?.id === 'first-migrated') controller.abort()
+          super.beforeTaskExecutionHook(workerNodeKey, task)
+        }
+      }
+      const pool = new AbortingPool(2, workerFile, {
+        enableTasksQueue: true,
+        tasksQueueOptions: {
+          concurrency: 1,
+          tasksStealingOnBackPressure: false,
+          taskStealing: false,
+        },
+        workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      })
+      pool.emitter.on('error', () => {})
+      try {
+        if (!pool.info.ready) await bounded(once(pool.emitter, 'ready'))
+        await bounded(pool.execute({ warmup: true }))
+        const [source, destination] = pool.workerNodes
+        const sourceStarted = started(source, 'source')
+        const destinationStarted = started(destination, 'destination')
+        const failed = pool
+          .execute({ id: 'source', wait: true })
+          .catch(error => error)
+        const healthyData = { id: 'destination', wait: true }
+        const healthy = pool.execute(healthyData)
+        const firstData = { id: 'first-migrated' }
+        const first = pool.execute(firstData)
+        const quickData = { id: 'healthy-queued' }
+        const quick = pool.execute(quickData)
+        const later = pool
+          .execute({ id: 'later-migrated' }, undefined, controller.signal)
+          .catch(error => error)
+        await bounded(Promise.all([sourceStarted, destinationStarted]))
+        expect(source.tasksQueue.size).toBe(2)
+        send(destination, { release: 'destination' })
+        expect(await bounded(healthy)).toStrictEqual(healthyData)
+        expect(await bounded(quick)).toStrictEqual(quickData)
+        const exit = new Promise(resolve => source.worker.once('exit', resolve))
+        send(source, { exitCode: 1 })
+        await bounded(exit)
+        expect(await bounded(failed)).toBeInstanceOf(Error)
+        expect(await bounded(first)).toStrictEqual(firstData)
+        expect(await bounded(later)).toBeInstanceOf(Error)
+        expect(controller.signal.aborted).toBe(true)
+        expect(executions.filter(id => id === 'first-migrated')).toHaveLength(1)
+        expect(executions).not.toContain('later-migrated')
+        expect(source.tasksQueue.size).toBe(0)
+        expect(pool.promiseResponseMap.size).toBe(0)
+      } finally {
+        await pool.destroy()
+      }
+    })
+
     it('routes a queued task abort to its new owner after redistribution and index shifting', async () => {
       const pool = await createPool(2, {
         enableTasksQueue: true,
@@ -538,7 +689,7 @@ for (const [workerType, PoolClass, workerFile] of [
               let pool
               let exitedWorker
               const exitHandlerCalls = []
-              let outcome = { status: 'pending' }
+              const outcomes = []
               let observeException
               const exception = new Promise(resolve => {
                 observeException = resolve
@@ -551,6 +702,7 @@ for (const [workerType, PoolClass, workerFile] of [
                     1,
                     './tests/worker-files/thread/crashWorker.mjs',
                     {
+                      enableTasksQueue: true,
                       exitHandler (exitCode) {
                         exitHandlerCalls.push({
                           exitCode,
@@ -563,23 +715,29 @@ for (const [workerType, PoolClass, workerFile] of [
                       },
                     }
                   )
-                  exitedWorker = pool.workerNodes[0].worker
-                  pool.execute({ exitCode: 0 }).then(
-                    () => { outcome = { status: 'fulfilled' } },
-                    error => {
-                      outcome = {
-                        status: 'rejected',
-                        reasonIsError: error instanceof Error,
+                  const exitedNode = pool.workerNodes[0]
+                  exitedWorker = exitedNode.worker
+                  for (const data of [{ exitCode: 0 }, { id: 'queued' }]) {
+                    const index = outcomes.length
+                    outcomes.push({ status: 'pending' })
+                    pool.execute(data).then(
+                      () => { outcomes[index] = { status: 'fulfilled' } },
+                      error => {
+                        outcomes[index] = {
+                          status: 'rejected',
+                          reasonIsError: error instanceof Error,
+                        }
                       }
-                    }
-                  )
+                    )
+                  }
                   const error = await exception
                   // Observe settlement after all rejection microtasks have run.
                   await setImmediate()
                   console.log(JSON.stringify({
                     exceptionName: error.name,
                     exitHandlerCalls,
-                    outcome,
+                    outcomes,
+                    detachedQueueSize: exitedNode.tasksQueue.size,
                     promiseResponseMapSize: pool.promiseResponseMap.size,
                     workerNodesLength: pool.workerNodes.length,
                     startingMinimumNumberOfWorkers: pool.startingMinimumNumberOfWorkers,
@@ -602,9 +760,13 @@ for (const [workerType, PoolClass, workerFile] of [
           { timeout: 10000 }
         )
         expect(JSON.parse(stdout)).toStrictEqual({
+          detachedQueueSize: 0,
           exceptionName: 'DataCloneError',
           exitHandlerCalls: [{ exitCode: 0, receiverMatches: true }],
-          outcome: { reasonIsError: true, status: 'rejected' },
+          outcomes: [
+            { reasonIsError: true, status: 'rejected' },
+            { reasonIsError: true, status: 'rejected' },
+          ],
           promiseResponseMapSize: 0,
           startingMinimumNumberOfWorkers: false,
           workerNodesLength: 0,
@@ -779,6 +941,82 @@ for (const [workerType, PoolClass, workerFile] of [
         })
       }
     }
+
+    it('skips a detached task aborted by fullEnd during dynamic worker removal', async () => {
+      const DynamicPoolClass =
+        workerType === 'thread' ? DynamicThreadPool : DynamicClusterPool
+      const executions = []
+      class ObservedDynamicPool extends DynamicPoolClass {
+        beforeTaskExecutionHook (workerNodeKey, task) {
+          executions.push(task.data?.id)
+          super.beforeTaskExecutionHook(workerNodeKey, task)
+        }
+      }
+      const pool = new ObservedDynamicPool(1, 2, workerFile, {
+        enableTasksQueue: true,
+        tasksQueueOptions: {
+          concurrency: 1,
+          tasksStealingOnBackPressure: false,
+          taskStealing: false,
+        },
+        workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+      })
+      pool.emitter.on('error', () => {})
+      try {
+        if (!pool.info.ready) await bounded(once(pool.emitter, 'ready'))
+        const minimumNode = pool.workerNodes[0]
+        const minimumStarted = started(minimumNode, 'minimum')
+        const minimumData = { id: 'minimum', wait: true }
+        const minimum = pool.execute(minimumData)
+        await bounded(minimumStarted)
+        const full = once(pool.emitter, 'full')
+        const failed = pool
+          .execute({ id: 'dynamic', wait: true })
+          .catch(error => error)
+        const source = pool.workerNodes[1]
+        await bounded(Promise.all([full, started(source, 'dynamic')]))
+        await bounded(
+          pool.addTaskFunction('cursorEcho', {
+            taskFunction: data => data,
+            workerNodeKeys: [0],
+          })
+        )
+        await bounded(
+          pool.addTaskFunction('migratingEcho', {
+            taskFunction: data => data,
+            workerNodeKeys: [0, 1],
+          })
+        )
+        const cursorData = { id: 'cursor' }
+        const cursor = pool.execute(cursorData, 'cursorEcho')
+        const controller = new AbortController()
+        const target = pool
+          .execute({ id: 'detached' }, 'migratingEcho', controller.signal)
+          .catch(error => error)
+        expect(source.tasksQueue.size).toBe(1)
+        let fullEndCalls = 0
+        pool.emitter.once('fullEnd', () => {
+          ++fullEndCalls
+          controller.abort()
+        })
+        const exit = new Promise(resolve => source.worker.once('exit', resolve))
+        send(source, { exitCode: 1 })
+        await bounded(exit)
+        expect(await bounded(failed)).toBeInstanceOf(Error)
+        expect(await bounded(target)).toBeInstanceOf(Error)
+        expect(fullEndCalls).toBe(1)
+        expect(controller.signal.aborted).toBe(true)
+        expect(executions).not.toContain('detached')
+        expect(minimumNode.tasksQueue.size).toBe(1)
+        send(minimumNode, { release: 'minimum' })
+        expect(await bounded(minimum)).toStrictEqual(minimumData)
+        expect(await bounded(cursor)).toStrictEqual(cursorData)
+        expect(source.tasksQueue.size).toBe(0)
+        expect(pool.promiseResponseMap.size).toBe(0)
+      } finally {
+        await pool.destroy()
+      }
+    })
 
     it('rejects an exited dynamic worker task and accepts subsequent work', async () => {
       const DynamicPoolClass =
