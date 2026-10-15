@@ -1,4 +1,5 @@
 import { Worker as ClusterWorker } from 'node:cluster'
+import { once } from 'node:events'
 import { PassThrough } from 'node:stream'
 import { SHARE_ENV, Worker as ThreadWorker } from 'node:worker_threads'
 import { describe, expect, it } from 'vitest'
@@ -204,6 +205,73 @@ describe('Pool utils test suite', () => {
     expect(workerOptions.workerData).toBe(workerData)
     expect(workerOptions.execArgv).toStrictEqual(execArgv)
     expect(workerOptions.execArgv).not.toBe(execArgv)
+  })
+
+  it('preserves non-enumerable own thread worker options', () => {
+    let accessorCalls = 0
+    const accessorGetter = () => {
+      accessorCalls++
+      return 'ignored'
+    }
+    const environment = { EXPLICIT_ENV: 'worker' }
+    const execArgv = ['--no-warnings']
+    const explicitWorkerOptions = Object.create({ name: 'inherited' })
+    Object.defineProperties(explicitWorkerOptions, {
+      env: { value: environment },
+      execArgv: { value: execArgv },
+      ignored: { get: accessorGetter },
+    })
+
+    const workerOptions = buildThreadWorkerOptions(explicitWorkerOptions)
+
+    expect(Object.getPrototypeOf(workerOptions)).toBeNull()
+    expect(Object.hasOwn(workerOptions, 'env')).toBe(true)
+    expect(workerOptions.env).toBe(environment)
+    expect(Object.hasOwn(workerOptions, 'execArgv')).toBe(true)
+    expect(workerOptions.execArgv).toStrictEqual(execArgv)
+    expect(workerOptions.execArgv).not.toBe(execArgv)
+    expect(Object.hasOwn(workerOptions, 'name')).toBe(false)
+    expect(Object.getOwnPropertyDescriptor(workerOptions, 'ignored').get).toBe(
+      accessorGetter
+    )
+    expect(accessorCalls).toBe(0)
+  })
+
+  it('preserves non-enumerable restrictions at the thread worker boundary', async () => {
+    const environmentKey = 'POOLIFIER_EXPLICIT_WORKER_ENV'
+    const originalEnvironmentValue = process.env[environmentKey]
+    process.env[environmentKey] = 'parent'
+    const explicitWorkerOptions = {}
+    Object.defineProperties(explicitWorkerOptions, {
+      env: { value: { [environmentKey]: 'worker' } },
+      eval: { value: true },
+      execArgv: { value: ['--no-warnings'] },
+    })
+    let worker
+    try {
+      worker = new ThreadWorker(
+        `const { parentPort } = require('node:worker_threads')
+parentPort.postMessage({
+  envValue: process.env.${environmentKey},
+  execArgv: process.execArgv
+})`,
+        buildThreadWorkerOptions(explicitWorkerOptions)
+      )
+      const [message] = await once(worker, 'message')
+      expect(message).toStrictEqual({
+        envValue: 'worker',
+        execArgv: ['--no-warnings'],
+      })
+    } finally {
+      if (worker != null) {
+        await worker.terminate()
+      }
+      if (originalEnvironmentValue == null) {
+        Reflect.deleteProperty(process.env, environmentKey)
+      } else {
+        process.env[environmentKey] = originalEnvironmentValue
+      }
+    }
   })
 
   it('normalizes worker option arrays and resource limits by own slots', () => {

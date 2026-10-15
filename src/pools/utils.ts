@@ -71,6 +71,52 @@ const defineEnumerableDataProperty = (
   Object.defineProperty(target, key, descriptor)
 }
 
+const cloneOwnPropertiesWithNullPrototype = (
+  source: object,
+  materializedKeys: readonly PropertyKey[],
+  materializeEnumerableProperties = false,
+  omittedKeys: readonly PropertyKey[] = []
+): Record<PropertyKey, unknown> => {
+  const clone = Object.create(null) as Record<PropertyKey, unknown>
+  for (const key of Reflect.ownKeys(source)) {
+    const descriptor = Object.getOwnPropertyDescriptor(source, key)
+    if (descriptor == null) {
+      continue
+    }
+    if (omittedKeys.includes(key)) {
+      if (materializeEnumerableProperties && descriptor.enumerable === true) {
+        Reflect.get(source, key)
+      }
+      continue
+    }
+    if (
+      materializedKeys.includes(key) ||
+      (materializeEnumerableProperties && descriptor.enumerable === true)
+    ) {
+      defineEnumerableDataProperty(clone, key, Reflect.get(source, key))
+    } else {
+      Object.setPrototypeOf(descriptor, null)
+      Object.defineProperty(clone, key, descriptor)
+    }
+  }
+  return clone
+}
+
+const threadWorkerOptionKeys: readonly PropertyKey[] = [
+  'argv',
+  'env',
+  'eval',
+  'execArgv',
+  'name',
+  'resourceLimits',
+  'stderr',
+  'stdin',
+  'stdout',
+  'trackUnmanagedFds',
+  'transferList',
+  'workerData',
+]
+
 const cloneDenseExecArgv = (
   execArgv: readonly string[],
   optionName: string
@@ -371,10 +417,17 @@ export const buildClusterSettings = (
 export const buildThreadWorkerOptions = (
   workerOptions: undefined | WorkerOptions
 ): WorkerOptions => {
-  const normalizedWorkerOptions = withNullPrototype<WorkerOptions>(
-    { env: SHARE_ENV },
-    workerOptions
-  )
+  const normalizedWorkerOptions =
+    workerOptions == null
+      ? withNullPrototype<WorkerOptions>()
+      : (cloneOwnPropertiesWithNullPrototype(
+          workerOptions,
+          threadWorkerOptionKeys,
+          true
+        ) as WorkerOptions)
+  if (!Object.hasOwn(normalizedWorkerOptions, 'env')) {
+    defineEnumerableDataProperty(normalizedWorkerOptions, 'env', SHARE_ENV)
+  }
   if (Array.isArray(normalizedWorkerOptions.argv)) {
     normalizedWorkerOptions.argv = cloneArrayOwnSlots(
       normalizedWorkerOptions.argv
@@ -836,12 +889,17 @@ export const createWorker = <Worker extends IWorker>(
     case WorkerTypes.cluster:
       validateAndMaterializeClusterStdio(cluster.settings.stdio)
       return cluster.fork(
-        buildClusterWorkerEnvironment(process.env, opts.env)
+        buildClusterWorkerEnvironment(
+          process.env,
+          Object.hasOwn(opts, 'env') ? opts.env : undefined
+        )
       ) as unknown as Worker
     case WorkerTypes.thread:
       return new ThreadWorker(
         filePath,
-        buildThreadWorkerOptions(opts.workerOptions)
+        buildThreadWorkerOptions(
+          Object.hasOwn(opts, 'workerOptions') ? opts.workerOptions : undefined
+        )
       ) as unknown as Worker
     default:
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
