@@ -1124,6 +1124,7 @@ export abstract class AbstractPool<
   protected createAndSetupWorkerNode (): number {
     const workerNode = this.createWorkerNode()
     let workerError: Error | undefined
+    let taskResponses: MessageValue<Response>[] | undefined
     workerNode.registerWorkerEventHandler(
       'online',
       this.opts.onlineHandler ?? EMPTY_FUNCTION
@@ -1138,6 +1139,7 @@ export abstract class AbstractPool<
     )
     workerNode.registerOnceWorkerEventHandler('error', (error: Error) => {
       workerError = error
+      taskResponses = this.captureTaskResponses(workerNode, taskResponses)
       workerNode.info.ready = false
       this.emitter?.emit(PoolEvents.error, error)
       if (this.started && !this.destroying) {
@@ -1157,29 +1159,28 @@ export abstract class AbstractPool<
         this.emitter?.emit(PoolEvents.error, error)
       })
     })
-    workerNode.registerWorkerEventHandler(
-      'exit',
-      this.opts.exitHandler ?? EMPTY_FUNCTION
-    )
     workerNode.registerOnceWorkerEventHandler('exit', () => {
-      // Preserve responses posted before exit on the thread's private channel.
-      while (workerNode.messageChannel != null) {
-        const response = receiveMessageOnPort(workerNode.messageChannel.port1)
-        if (response == null) {
-          break
-        }
-        const message = response.message as MessageValue<Response>
-        if (message.taskId != null) {
-          this.checkMessageWorkerId(message)
-          this.handleTaskExecutionResponse(message, true)
-        }
-      }
-      if (workerError != null || !this.terminatingWorkerNodes.has(workerNode)) {
-        workerNode.info.ready = false
+      const settlingTasks =
+        workerError != null || !this.terminatingWorkerNodes.has(workerNode)
+      taskResponses = this.captureTaskResponses(workerNode, taskResponses)
+      workerNode.info.ready = false
+      let workerNodeTasks:
+        | Map<
+            `${string}-${string}-${string}-${string}-${string}`,
+            PromiseResponseWrapper<Response>
+          >
+        | undefined
+      if (settlingTasks) {
+        const workerNodeKey = this.workerNodes.indexOf(workerNode)
         if (this.opts.enableTasksQueue === true) {
-          this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
+          this.redistributeQueuedTasks(workerNodeKey, false)
         }
-        this.rejectWorkerNodeTasks(workerNode, workerError)
+        for (const [taskId, promiseResponse] of this.promiseResponseMap) {
+          if (promiseResponse.workerNodeKey === workerNodeKey) {
+            ;(workerNodeTasks ??= new Map()).set(taskId, promiseResponse)
+          }
+        }
+        workerNode.clearTasksQueue()
       }
       this.removeWorkerNode(workerNode)
       if (
@@ -1189,8 +1190,23 @@ export abstract class AbstractPool<
       ) {
         this.startMinimumNumberOfWorkers(true)
       }
+      if (settlingTasks && this.opts.enableTasksQueue === true) {
+        this.checkAndEmitTaskDequeuingEvents()
+      }
+      if (taskResponses != null) {
+        for (const message of taskResponses) {
+          this.handleTaskExecutionResponse(message)
+        }
+      }
+      if (workerNodeTasks != null) {
+        this.rejectWorkerNodeTasks(workerNodeTasks, workerError)
+      }
       this.checkAndEmitTaskExecutionFinishedEvents()
     })
+    workerNode.registerWorkerEventHandler(
+      'exit',
+      this.opts.exitHandler ?? EMPTY_FUNCTION
+    )
     const workerNodeKey = this.addWorkerNode(workerNode)
     this.afterWorkerNodeSetup(workerNodeKey)
     return workerNodeKey
@@ -1461,6 +1477,25 @@ export abstract class AbstractPool<
     )
   }
 
+  private captureTaskResponses (
+    workerNode: IWorkerNode<Worker, Data>,
+    taskResponses: MessageValue<Response>[] | undefined
+  ): MessageValue<Response>[] | undefined {
+    // Capture before termination closes the thread's private channel.
+    while (workerNode.messageChannel != null) {
+      const response = receiveMessageOnPort(workerNode.messageChannel.port1)
+      if (response == null) {
+        break
+      }
+      const message = response.message as MessageValue<Response>
+      if (message.taskId != null) {
+        this.checkMessageWorkerId(message)
+        ;(taskResponses ??= []).push(message)
+      }
+    }
+    return taskResponses
+  }
+
   private checkAndEmitReadyEvent (): void {
     if (this.emitter != null && !this.readyEventEmitted && this.ready) {
       this.emitter.listenerCount(PoolEvents.ready) > 0 &&
@@ -1682,9 +1717,14 @@ export abstract class AbstractPool<
     return workerNode
   }
 
-  private dequeueTask (workerNodeKey: number): Task<Data> | undefined {
+  private dequeueTask (
+    workerNodeKey: number,
+    notify = true
+  ): Task<Data> | undefined {
     const task = this.workerNodes[workerNodeKey].dequeueTask()
-    this.checkAndEmitTaskDequeuingEvents()
+    if (notify) {
+      this.checkAndEmitTaskDequeuingEvents()
+    }
     return task
   }
 
@@ -1875,10 +1915,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private handleTaskExecutionResponse (
-    message: MessageValue<Response>,
-    deferTaskErrorEvent = false
-  ): void {
+  private handleTaskExecutionResponse (message: MessageValue<Response>): void {
     const { data, taskId, workerError } = message
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const promiseResponse = this.promiseResponseMap.get(taskId!)
@@ -1893,14 +1930,7 @@ export abstract class AbstractPool<
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.promiseResponseMap.delete(taskId!)
       if (workerError != null) {
-        if (deferTaskErrorEvent) {
-          // The exited worker must be removed before invoking public listeners.
-          queueMicrotask(() => {
-            this.emitter?.emit(PoolEvents.taskError, workerError)
-          })
-        } else {
-          this.emitter?.emit(PoolEvents.taskError, workerError)
-        }
+        this.emitter?.emit(PoolEvents.taskError, workerError)
         asyncResource != null
           ? asyncResource.runInAsyncScope(reject, this.emitter, error)
           : reject(error)
@@ -2258,7 +2288,10 @@ export abstract class AbstractPool<
     )
   }
 
-  private redistributeQueuedTasks (sourceWorkerNodeKey: number): void {
+  private redistributeQueuedTasks (
+    sourceWorkerNodeKey: number,
+    notifyDequeuing = true
+  ): void {
     if (sourceWorkerNodeKey === -1 || this.cannotStealTask()) {
       return
     }
@@ -2284,27 +2317,25 @@ export abstract class AbstractPool<
       this.handleTask(
         destinationWorkerNodeKey,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.dequeueTask(sourceWorkerNodeKey)!
+        this.dequeueTask(sourceWorkerNodeKey, notifyDequeuing)!
       )
     }
   }
 
   /**
    * Rejects tasks still owned by a worker that cannot complete them.
-   * @param workerNode - The failed worker node.
+   * @param workerNodeTasks - The task wrappers owned by the failed worker node.
    * @param error - The worker failure.
    */
   private rejectWorkerNodeTasks (
-    workerNode: IWorkerNode<Worker, Data>,
+    workerNodeTasks: Map<
+      `${string}-${string}-${string}-${string}-${string}`,
+      PromiseResponseWrapper<Response>
+    >,
     error?: Error
   ): void {
-    const workerNodeKey = this.workerNodes.indexOf(workerNode)
-    if (workerNodeKey === -1) {
-      return
-    }
-    workerNode.clearTasksQueue()
-    for (const [taskId, promiseResponse] of this.promiseResponseMap) {
-      if (promiseResponse.workerNodeKey === workerNodeKey) {
+    for (const [taskId, promiseResponse] of workerNodeTasks) {
+      if (this.promiseResponseMap.get(taskId) === promiseResponse) {
         error ??= new Error('Worker exited before completing the task')
         this.promiseResponseMap.delete(taskId)
         const { asyncResource, reject } = promiseResponse

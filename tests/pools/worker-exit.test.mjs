@@ -1,3 +1,6 @@
+// Required to exercise synchronous destruction from task async resource callbacks.
+// eslint-disable-next-line n/no-unsupported-features/node-builtins
+import { createHook } from 'node:async_hooks'
 import { once } from 'node:events'
 import { describe, expect, it } from 'vitest'
 
@@ -105,6 +108,91 @@ for (const [workerType, PoolClass, workerFile] of [
         }
       })
     }
+
+    it('can destroy the pool from the configured exit handler', async () => {
+      let destruction
+      const pool = await createPool(1, {
+        exitHandler () {
+          destruction ??= pool.destroy()
+        },
+      })
+      try {
+        expect(
+          await bounded(pool.execute({ exitCode: 1 }).catch(error => error))
+        ).toBeInstanceOf(Error)
+        await bounded(destruction)
+        expect(pool.promiseResponseMap.size).toBe(0)
+        expect(pool.info.started).toBe(false)
+      } finally {
+        if (pool.info.started) await bounded(pool.destroy())
+      }
+    })
+
+    it('can destroy the pool from a task async resource before callback', async () => {
+      const pool = await createPool()
+      const taskResources = new Set()
+      let destruction
+      const hook = createHook({
+        before (asyncId) {
+          if (taskResources.has(asyncId) && destruction == null) {
+            destruction = pool.destroy()
+          }
+        },
+        init (asyncId, type) {
+          if (type === 'poolifier:task') taskResources.add(asyncId)
+        },
+      })
+      hook.enable()
+      try {
+        expect(
+          await bounded(pool.execute({ exitCode: 1 }).catch(error => error))
+        ).toBeInstanceOf(Error)
+        await bounded(destruction)
+        expect(pool.promiseResponseMap.size).toBe(0)
+        expect(pool.info.started).toBe(false)
+      } finally {
+        hook.disable()
+        if (pool.info.started) await bounded(pool.destroy())
+      }
+    })
+
+    it('can destroy the pool from backPressureEnd during exit redistribution', async () => {
+      const pool = await createPool(2, {
+        enableTasksQueue: true,
+        tasksQueueOptions: {
+          concurrency: 1,
+          size: 1,
+          tasksStealingOnBackPressure: false,
+          taskStealing: false,
+        },
+      })
+      let destruction
+      try {
+        await pool.execute({ warmup: true })
+        const [source, destination] = pool.workerNodes
+        const sourceStarted = started(source, 'source')
+        const destinationStarted = started(destination, 'destination')
+        const failed = pool
+          .execute({ id: 'source', wait: true })
+          .catch(error => error)
+        pool.execute({ id: 'destination', wait: true }).catch(() => {})
+        const backPressure = once(pool.emitter, 'backPressure')
+        pool.execute({ id: 'source-queued' }).catch(() => {})
+        pool.execute({ id: 'destination-queued' }).catch(() => {})
+        await bounded(
+          Promise.all([sourceStarted, destinationStarted, backPressure])
+        )
+        pool.emitter.once('backPressureEnd', () => {
+          destruction = pool.destroy()
+        })
+        send(source, { exitCode: 1 })
+        expect(await bounded(failed)).toBeInstanceOf(Error)
+        await bounded(destruction)
+        expect(pool.info.started).toBe(false)
+      } finally {
+        if (pool.info.started) await bounded(pool.destroy())
+      }
+    })
 
     it('keeps healthy tasks and redistributed queued tasks after an earlier worker exits', async () => {
       const pool = await createPool(2, {
@@ -278,8 +366,13 @@ for (const [workerType, PoolClass, workerFile] of [
     })
 
     if (workerType === 'thread') {
-      for (const fail of [false, true]) {
-        it(`preserves a buffered response after exit (task failure: ${fail})`, async () => {
+      for (const [crashAfterResponse, fail] of [
+        [false, false],
+        [false, true],
+        [true, false],
+        [true, true],
+      ]) {
+        it(`preserves a buffered response after exit (task failure: ${fail}, uncaught error: ${crashAfterResponse})`, async () => {
           const pool = await createPool()
           const workerNode = pool.workerNodes[0]
           // Keep real responses buffered until the native exit notification.
@@ -301,6 +394,7 @@ for (const [workerType, PoolClass, workerFile] of [
             const response = { completed: true }
             const result = pool
               .execute({
+                crashAfterResponse,
                 exitAfterResponse: status.buffer,
                 fail,
                 response,
@@ -310,7 +404,9 @@ for (const [workerType, PoolClass, workerFile] of [
             Atomics.wait(status, 0, 0, 5000)
             expect(Atomics.load(status, 0)).toBe(1)
             if (fail) {
-              expect(await bounded(result)).toBeInstanceOf(Error)
+              const error = await bounded(result)
+              expect(error).toBeInstanceOf(Error)
+              expect(error.message).toBe('Task failed before worker exit')
               await bounded(destruction)
               expect(pool.info.started).toBe(false)
             } else {

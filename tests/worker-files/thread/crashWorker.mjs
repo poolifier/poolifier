@@ -8,6 +8,10 @@ parentPort.on('message', message => {
   if (message.crash === true) {
     throw new Error('Worker crashed')
   }
+  if (message.exitCode != null) {
+    // eslint-disable-next-line n/no-process-exit
+    process.exit(message.exitCode)
+  }
   if (message.release != null) {
     pendingTasks.get(message.release)?.()
     pendingTasks.delete(message.release)
@@ -25,6 +29,9 @@ export default new ThreadWorker(async data => {
     setImmediate(() => {
       Atomics.store(status, 0, 1)
       Atomics.notify(status, 0)
+      if (data.crashAfterResponse === true) {
+        throw new Error('Worker crashed after task response')
+      }
       // eslint-disable-next-line n/no-process-exit
       process.exit(0)
     })

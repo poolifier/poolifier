@@ -9,6 +9,10 @@ process.on('message', message => {
   if (message.crash === true) {
     throw new Error('Worker crashed')
   }
+  if (message.exitCode != null) {
+    // eslint-disable-next-line n/no-process-exit
+    process.exit(message.exitCode)
+  }
   if (message.release != null) {
     pendingTasks.get(message.release)?.()
     pendingTasks.delete(message.release)

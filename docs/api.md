@@ -47,7 +47,7 @@
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
 
-If a worker crashes or exits unexpectedly, tasks still assigned to it reject with an `Error` once it exits. Tasks already dispatched to that worker are not retried. Queued tasks are redistributed to ready workers when possible; queued tasks that cannot be redistributed also reject. This does not change intentional pool or worker destruction behavior.
+If a worker crashes or exits unexpectedly, tasks still assigned to it reject with an `Error` once it exits. Task responses already posted by the worker retain their successful result or task error even if the worker subsequently crashes. Tasks already dispatched to that worker are not retried. Queued tasks are redistributed to ready workers when possible; queued tasks that cannot be redistributed also reject. This does not change intentional pool or worker destruction behavior.
 
 ### `pool.mapExecute(data, name, abortSignals, transferList)`
 
@@ -114,7 +114,7 @@ An object with these properties:
   Default: `() => {}`
 - `errorHandler` (optional) - A function that will listen for error event on each worker.  
   Default: `() => {}`
-- `exitHandler` (optional) - A function that will listen for exit event on each worker.  
+- `exitHandler` (optional) - A function that will listen for exit event on each worker, after the pool's internal worker exit cleanup.
   Default: `() => {}`
 
 - `workerChoiceStrategy` (optional) - The default worker choice strategy to use in this pool:
