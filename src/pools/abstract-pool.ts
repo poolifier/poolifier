@@ -2355,9 +2355,9 @@ export abstract class AbstractPool<
         continue
       }
       this.handleTask(destinationWorkerNodeKey, task)
-      if (notifyDequeuing) {
-        this.checkAndEmitTaskDequeuingEvents()
-      }
+    }
+    if (notifyDequeuing) {
+      this.checkAndEmitTaskDequeuingEvents()
     }
   }
 

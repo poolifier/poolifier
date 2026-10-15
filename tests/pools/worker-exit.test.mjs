@@ -360,12 +360,12 @@ for (const [workerType, PoolClass, workerFile] of [
       }
     })
 
-    it('can abort a redistributing task from backPressureEnd', async () => {
+    it('can abort all redistributing tasks from backPressureEnd', async () => {
       const pool = await createPool(2, {
         enableTasksQueue: true,
         tasksQueueOptions: {
           concurrency: 1,
-          size: 1,
+          size: 2,
           tasksStealingOnBackPressure: false,
           taskStealing: false,
         },
@@ -382,6 +382,16 @@ for (const [workerType, PoolClass, workerFile] of [
         const destinationResult = pool.execute(destinationData)
         const controller = new AbortController()
         const backPressure = once(pool.emitter, 'backPressure')
+        const firstController = new AbortController()
+        let firstAbortedError
+        const firstAbortedResult = pool
+          .execute({ id: 'first-aborted' }, undefined, firstController.signal)
+          .catch(error => {
+            firstAbortedError = error
+            return error
+          })
+        const firstHealthyData = { id: 'first-healthy' }
+        const firstHealthyResult = pool.execute(firstHealthyData)
         let abortedError
         const abortedResult = pool
           .execute({ id: 'aborted' }, undefined, controller.signal)
@@ -394,16 +404,23 @@ for (const [workerType, PoolClass, workerFile] of [
         await bounded(
           Promise.all([sourceStarted, destinationStarted, backPressure])
         )
+        expect(source.tasksQueue.size).toBe(2)
+        expect(destination.tasksQueue.size).toBe(2)
         pool.emitter.once('backPressureEnd', () => {
+          firstController.abort()
           controller.abort()
         })
         const exit = new Promise(resolve => source.worker.once('exit', resolve))
         send(source, { crash: true })
         expect(await bounded(sourceResult)).toBeInstanceOf(Error)
         expect(controller.signal.aborted).toBe(true)
+        expect(firstController.signal.aborted).toBe(true)
+        expect(firstAbortedError).toBeInstanceOf(Error)
         expect(abortedError).toBeInstanceOf(Error)
         send(destination, { release: 'destination' })
         expect(await bounded(abortedResult)).toBeInstanceOf(Error)
+        expect(await bounded(firstAbortedResult)).toBeInstanceOf(Error)
+        expect(await bounded(firstHealthyResult)).toStrictEqual(firstHealthyData)
         expect(await bounded(destinationResult)).toStrictEqual(destinationData)
         expect(await bounded(healthyResult)).toStrictEqual(healthyData)
         await bounded(exit)
