@@ -420,7 +420,9 @@ for (const [workerType, PoolClass, workerFile] of [
         send(destination, { release: 'destination' })
         expect(await bounded(abortedResult)).toBeInstanceOf(Error)
         expect(await bounded(firstAbortedResult)).toBeInstanceOf(Error)
-        expect(await bounded(firstHealthyResult)).toStrictEqual(firstHealthyData)
+        expect(await bounded(firstHealthyResult)).toStrictEqual(
+          firstHealthyData
+        )
         expect(await bounded(destinationResult)).toStrictEqual(destinationData)
         expect(await bounded(healthyResult)).toStrictEqual(healthyData)
         await bounded(exit)
