@@ -1137,28 +1137,39 @@ export abstract class AbstractPool<
       'error',
       this.opts.errorHandler ?? EMPTY_FUNCTION
     )
-    workerNode.registerOnceWorkerEventHandler('error', (error: Error) => {
-      workerError = error
-      taskResponses = this.captureTaskResponses(workerNode, taskResponses)
-      workerNode.info.ready = false
-      this.emitter?.emit(PoolEvents.error, error)
-      if (this.started && !this.destroying) {
-        if (this.opts.restartWorkerOnError === true) {
-          if (workerNode.info.dynamic) {
-            this.createAndSetupDynamicWorkerNode()
-          } else if (!this.startingMinimumNumberOfWorkers) {
-            this.startMinimumNumberOfWorkers(true)
+    workerNode.registerOnceWorkerEventHandler(
+      'error',
+      (rawWorkerError: unknown) => {
+        workerError =
+          rawWorkerError instanceof Error
+            ? rawWorkerError
+            : new Error(
+              typeof rawWorkerError === 'string'
+                ? rawWorkerError
+                : 'Worker failed with a non-Error value',
+              { cause: rawWorkerError }
+            )
+        taskResponses = this.captureTaskResponses(workerNode, taskResponses)
+        workerNode.info.ready = false
+        this.emitter?.emit(PoolEvents.error, rawWorkerError)
+        if (this.started && !this.destroying) {
+          if (this.opts.restartWorkerOnError === true) {
+            if (workerNode.info.dynamic) {
+              this.createAndSetupDynamicWorkerNode()
+            } else if (!this.startingMinimumNumberOfWorkers) {
+              this.startMinimumNumberOfWorkers(true)
+            }
+          }
+          if (this.opts.enableTasksQueue === true) {
+            this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
           }
         }
-        if (this.opts.enableTasksQueue === true) {
-          this.redistributeQueuedTasks(this.workerNodes.indexOf(workerNode))
-        }
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        workerNode?.terminate().catch((error: unknown) => {
+          this.emitter?.emit(PoolEvents.error, error)
+        })
       }
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, promise/no-promise-in-callback
-      workerNode?.terminate().catch((error: unknown) => {
-        this.emitter?.emit(PoolEvents.error, error)
-      })
-    })
+    )
     workerNode.registerOnceWorkerEventHandler('exit', () => {
       const settlingTasks =
         workerError != null || !this.terminatingWorkerNodes.has(workerNode)
@@ -1657,11 +1668,11 @@ export abstract class AbstractPool<
    * @returns The chosen worker node key.
    */
   private chooseWorkerNode (name?: string): number {
-    const workerNodeKeysSet = this.getTaskFunctionWorkerNodeKeysSet(name)
-    if (workerNodeKeysSet != null) {
+    const workerNodeKeys = this.getTaskFunctionWorkerNodeKeys(name)
+    if (workerNodeKeys != null) {
       const maxPoolSize =
         this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers
-      const targetSize = max(...workerNodeKeysSet) + 1
+      const targetSize = max(...workerNodeKeys) + 1
       while (
         this.started &&
         !this.destroying &&
@@ -1682,7 +1693,7 @@ export abstract class AbstractPool<
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.workerChoiceStrategiesContext!.execute(
       this.getTaskFunctionWorkerChoiceStrategy(name),
-      workerNodeKeysSet
+      workerNodeKeys != null ? new Set(workerNodeKeys) : undefined
     )
   }
 
@@ -1803,23 +1814,27 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Gets task function worker node keys affinity set, if any.
+   * Gets task function worker node keys affinity array, if any.
    * @param name - The task function name.
-   * @returns The task function worker node keys affinity set, or `undefined` if not defined.
+   * @returns The task function worker node keys affinity array, or `undefined` if not defined.
    */
-  private readonly getTaskFunctionWorkerNodeKeysSet = (
+  private readonly getTaskFunctionWorkerNodeKeys = (
     name?: string
-  ): ReadonlySet<number> | undefined => {
+  ): readonly number[] | undefined => {
     name = name ?? DEFAULT_TASK_NAME
     const taskFunctionsProperties = this.listTaskFunctionsProperties()
     if (name === DEFAULT_TASK_NAME) {
       name = taskFunctionsProperties[1]?.name
     }
-    const workerNodeKeys = taskFunctionsProperties.find(
-      (taskFunctionProperties: TaskFunctionProperties) =>
-        taskFunctionProperties.name === name
-    )?.workerNodeKeys
-    return workerNodeKeys != null ? new Set(workerNodeKeys) : undefined
+    // Keep the affinity lookup free of iterator allocation.
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
+    for (let i = 0; i < taskFunctionsProperties.length; i++) {
+      const taskFunctionProperties = taskFunctionsProperties[i]
+      if (taskFunctionProperties.name === name) {
+        return taskFunctionProperties.workerNodeKeys
+      }
+    }
+    return undefined
   }
 
   private getTasksQueuePriority (): boolean {
@@ -2296,29 +2311,42 @@ export abstract class AbstractPool<
       return
     }
     while (this.tasksQueueSize(sourceWorkerNodeKey) > 0) {
-      const destinationWorkerNodeKey = this.workerNodes.reduce(
-        (minWorkerNodeKey, workerNode, workerNodeKey, workerNodes) => {
-          if (workerNodeKey === sourceWorkerNodeKey || !workerNode.info.ready) {
-            return minWorkerNodeKey
-          }
-          if (minWorkerNodeKey === -1) {
-            return workerNodeKey
-          }
-          return workerNode.usage.tasks.queued <
-            workerNodes[minWorkerNodeKey].usage.tasks.queued
-            ? workerNodeKey
-            : minWorkerNodeKey
-        },
-        -1
-      )
-      if (destinationWorkerNodeKey === -1) {
-        break
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const task = this.dequeueTask(sourceWorkerNodeKey, false)!
+      const workerNodeKeys = this.getTaskFunctionWorkerNodeKeys(task.name)
+      const candidateCount = workerNodeKeys?.length ?? this.workerNodes.length
+      let destinationWorkerNodeKey = -1
+      let minimumQueuedTasks = Number.POSITIVE_INFINITY
+      for (let i = 0; i < candidateCount; i++) {
+        const candidateWorkerNodeKey =
+          workerNodeKeys == null ? i : workerNodeKeys[i]
+        if (
+          candidateWorkerNodeKey === sourceWorkerNodeKey ||
+          candidateWorkerNodeKey >= this.workerNodes.length
+        ) {
+          continue
+        }
+        const candidateWorkerNode = this.workerNodes[candidateWorkerNodeKey]
+        if (!candidateWorkerNode.info.ready) {
+          continue
+        }
+        const queuedTasks = candidateWorkerNode.usage.tasks.queued
+        if (
+          queuedTasks < minimumQueuedTasks ||
+          (queuedTasks === minimumQueuedTasks &&
+            candidateWorkerNodeKey < destinationWorkerNodeKey)
+        ) {
+          destinationWorkerNodeKey = candidateWorkerNodeKey
+          minimumQueuedTasks = queuedTasks
+        }
       }
-      this.handleTask(
-        destinationWorkerNodeKey,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.dequeueTask(sourceWorkerNodeKey, notifyDequeuing)!
-      )
+      if (destinationWorkerNodeKey === -1) {
+        continue
+      }
+      if (notifyDequeuing) {
+        this.checkAndEmitTaskDequeuingEvents()
+      }
+      this.handleTask(destinationWorkerNodeKey, task)
     }
   }
 

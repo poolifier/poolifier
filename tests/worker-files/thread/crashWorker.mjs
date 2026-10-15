@@ -5,6 +5,9 @@ import { ThreadWorker } from '../../../lib/index.mjs'
 const pendingTasks = new Map()
 
 parentPort.on('message', message => {
+  if (Object.hasOwn(message, 'crashWith')) {
+    throw message.crashWith
+  }
   if (message.crash === true) {
     throw new Error('Worker crashed')
   }

@@ -230,6 +230,90 @@ for (const [workerType, PoolClass, workerFile] of [
       }
     })
 
+    it('rejects a queued default task pinned to the exited worker', async () => {
+      const pool = await createPool(2, {
+        enableTasksQueue: true,
+        tasksQueueOptions: {
+          concurrency: 1,
+          tasksStealingOnBackPressure: false,
+          taskStealing: false,
+        },
+      })
+      try {
+        await bounded(
+          pool.addTaskFunction('pinnedEcho', {
+            taskFunction: data => data,
+            workerNodeKeys: [1],
+          })
+        )
+        const source = pool.workerNodes[1]
+        const running = started(source, 'running')
+        const runningResult = pool
+          .execute({ id: 'running', wait: true })
+          .catch(error => error)
+        await bounded(running)
+        await bounded(pool.setDefaultTaskFunction('pinnedEcho'))
+        const queuedResult = pool
+          .execute({ id: 'queued' })
+          .catch(error => error)
+        expect(source.tasksQueue.size).toBe(1)
+        const exit = new Promise(resolve => source.worker.once('exit', resolve))
+        send(source, { exitCode: 0 })
+        const outcomes = await bounded(
+          Promise.all([runningResult, queuedResult])
+        )
+        expect(outcomes[0]).toBeInstanceOf(Error)
+        expect(outcomes[1]).toBeInstanceOf(Error)
+        await bounded(exit)
+      } finally {
+        await pool.destroy()
+      }
+    })
+
+    it('redistributes a later eligible task after a stranded pinned task', async () => {
+      const pool = await createPool(2, {
+        enableTasksQueue: true,
+        tasksQueueOptions: {
+          concurrency: 1,
+          tasksStealingOnBackPressure: false,
+          taskStealing: false,
+        },
+      })
+      try {
+        await bounded(
+          pool.addTaskFunction('pinnedEcho', {
+            taskFunction: data => data,
+            workerNodeKeys: [1],
+          })
+        )
+        const source = pool.workerNodes[1]
+        const running = started(source, 'running')
+        const runningResult = pool
+          .execute({ id: 'running', wait: true })
+          .catch(error => error)
+        await bounded(running)
+        const pinnedResult = pool
+          .execute({ id: 'pinned' }, 'pinnedEcho')
+          .catch(error => error)
+        const quickData = { id: 'quick' }
+        expect(await bounded(pool.execute(quickData))).toStrictEqual(quickData)
+        const eligibleData = { id: 'eligible' }
+        const eligibleResult = pool.execute(eligibleData)
+        expect(source.tasksQueue.size).toBe(2)
+        const exit = new Promise(resolve => source.worker.once('exit', resolve))
+        send(source, { exitCode: 0 })
+        const outcomes = await bounded(
+          Promise.all([runningResult, pinnedResult, eligibleResult])
+        )
+        expect(outcomes[0]).toBeInstanceOf(Error)
+        expect(outcomes[1]).toBeInstanceOf(Error)
+        expect(outcomes[2]).toStrictEqual(eligibleData)
+        await bounded(exit)
+      } finally {
+        await pool.destroy()
+      }
+    })
+
     it('rejects a stolen task only when its actual execution worker crashes', async () => {
       const pool = await createPool(2, {
         enableTasksQueue: true,
@@ -366,6 +450,53 @@ for (const [workerType, PoolClass, workerFile] of [
     })
 
     if (workerType === 'thread') {
+      for (const [description, message] of [
+        ['number', { crashWith: 42 }],
+        ['string', { crashWith: 'Worker threw a string' }],
+        ['false', { crashWith: false }],
+        ['undefined', { crashWith: undefined }],
+        [
+          'object without coercion methods',
+          { crashWith: { toString: null, valueOf: null } },
+        ],
+        ['Error', { crash: true }],
+      ]) {
+        it(`rejects a task with an Error after a native ${description} failure`, async () => {
+          const pool = await createPool()
+          try {
+            const workerNode = pool.workerNodes[0]
+            const running = started(workerNode, 'running')
+            const result = pool
+              .execute({ id: 'running', wait: true })
+              .catch(error => error)
+            await bounded(running)
+            const nativeError = new Promise(resolve =>
+              pool.emitter.once('error', resolve)
+            )
+            send(workerNode, message)
+            const [error, rawWorkerError] = await bounded(
+              Promise.all([result, nativeError])
+            )
+            expect(error).toBeInstanceOf(Error)
+            if (Object.hasOwn(message, 'crashWith')) {
+              expect(rawWorkerError).toStrictEqual(message.crashWith)
+              expect(rawWorkerError).not.toBeInstanceOf(Error)
+              expect(error.cause).toBe(rawWorkerError)
+              if (message.crashWith === undefined) {
+                expect(Object.hasOwn(error, 'cause')).toBe(true)
+              }
+              if (typeof message.crashWith === 'string') {
+                expect(error.message).toBe(message.crashWith)
+              }
+            } else {
+              expect(error).toBe(rawWorkerError)
+            }
+          } finally {
+            await pool.destroy()
+          }
+        })
+      }
+
       for (const [crashAfterResponse, fail] of [
         [false, false],
         [false, true],
