@@ -47,6 +47,8 @@
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
 
+If a worker crashes or exits unexpectedly, tasks still assigned to it reject with an `Error` once it exits. Tasks already dispatched to that worker are not retried. Queued tasks are redistributed to ready workers when possible; queued tasks that cannot be redistributed also reject. This does not change intentional pool or worker destruction behavior.
+
 ### `pool.mapExecute(data, name, abortSignals, transferList)`
 
 `data` An iterable of objects that you want to pass to your worker task function implementation.  
@@ -55,6 +57,8 @@ This method is available on both pool implementations and returns a promise with
 `transferList` (optional) An array of transferable objects that you want to transfer to your [`ThreadWorker`](#class-yourworker-extends-threadworkerclusterworker) worker implementation.
 
 This method is available on both pool implementations and returns a promise with the task function execution responses array.
+
+Worker failures reject this promise under the same conditions as [`pool.execute()`](#poolexecutedata-name-abortsignal-transferlist).
 
 ### `pool.start()`
 
