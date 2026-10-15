@@ -1,4 +1,5 @@
 import { Worker as ClusterWorker } from 'node:cluster'
+import { once } from 'node:events'
 import { MessageChannel, Worker as ThreadWorker } from 'node:worker_threads'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
@@ -38,6 +39,40 @@ describe('Worker node test suite', () => {
     if (process.env.CI != null) return
     await threadWorkerNode.terminate()
     await clusterWorkerNode.terminate()
+  })
+
+  it('terminates a thread worker node after its native worker has exited', async () => {
+    const workerNode = new WorkerNode(
+      WorkerTypes.thread,
+      './tests/worker-files/thread/testWorker.mjs',
+      {
+        tasksQueueBackPressureSize: 12,
+        tasksQueueBucketSize: 6,
+        tasksQueuePriority: true,
+      }
+    )
+    let timeout
+    try {
+      await once(workerNode.worker, 'online')
+      await workerNode.worker.terminate()
+      await expect(
+        Promise.race([
+          workerNode.terminate(),
+          new Promise((resolve, reject) => {
+            timeout = setTimeout(
+              () =>
+                reject(new Error('Worker node termination remained pending')),
+              5000
+            )
+          }),
+        ])
+      ).resolves.toBeUndefined()
+    } finally {
+      clearTimeout(timeout)
+      await workerNode.worker.terminate()
+      workerNode.messageChannel?.port1.close()
+      workerNode.messageChannel?.port2.close()
+    }
   })
 
   it('Worker node instantiation', () => {

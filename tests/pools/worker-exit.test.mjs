@@ -464,6 +464,8 @@ for (const [workerType, PoolClass, workerFile] of [
 
               const channel = new MessageChannel()
               let pool
+              let exitedWorker
+              const exitHandlerCalls = []
               let outcome = { status: 'pending' }
               let observeException
               const exception = new Promise(resolve => {
@@ -477,12 +479,19 @@ for (const [workerType, PoolClass, workerFile] of [
                     1,
                     './tests/worker-files/thread/crashWorker.mjs',
                     {
+                      exitHandler (exitCode) {
+                        exitHandlerCalls.push({
+                          exitCode,
+                          receiverMatches: this === exitedWorker,
+                        })
+                      },
                       workerOptions: {
                         workerData: { port: channel.port1 },
                         transferList: [channel.port1],
                       },
                     }
                   )
+                  exitedWorker = pool.workerNodes[0].worker
                   pool.execute({ exitCode: 0 }).then(
                     () => { outcome = { status: 'fulfilled' } },
                     error => {
@@ -497,6 +506,7 @@ for (const [workerType, PoolClass, workerFile] of [
                   await setImmediate()
                   console.log(JSON.stringify({
                     exceptionName: error.name,
+                    exitHandlerCalls,
                     outcome,
                     promiseResponseMapSize: pool.promiseResponseMap.size,
                     workerNodesLength: pool.workerNodes.length,
@@ -521,6 +531,7 @@ for (const [workerType, PoolClass, workerFile] of [
         )
         expect(JSON.parse(stdout)).toStrictEqual({
           exceptionName: 'DataCloneError',
+          exitHandlerCalls: [{ exitCode: 0, receiverMatches: true }],
           outcome: { reasonIsError: true, status: 'rejected' },
           promiseResponseMapSize: 0,
           startingMinimumNumberOfWorkers: false,
@@ -574,6 +585,72 @@ for (const [workerType, PoolClass, workerFile] of [
           }
         })
       }
+
+      it('only calls the task execution hook for a live worker owner', async () => {
+        const hookOwners = []
+        const invalidKeys = []
+        class LiveOwnerThreadPool extends FixedThreadPool {
+          afterTaskExecutionHook (workerNodeKey, message) {
+            const workerNode = this.workerNodes[workerNodeKey]
+            if (workerNode == null) {
+              invalidKeys.push(workerNodeKey)
+              return
+            }
+            hookOwners.push(workerNode)
+            super.afterTaskExecutionHook(workerNodeKey, message)
+          }
+        }
+        const pool = new LiveOwnerThreadPool(1, workerFile, {
+          enableTasksQueue: true,
+          tasksQueueOptions: {
+            concurrency: 1,
+            tasksStealingOnBackPressure: false,
+            taskStealing: false,
+          },
+        })
+        pool.emitter.on('error', () => {})
+        let workerNode
+        try {
+          if (!pool.info.ready) await bounded(once(pool.emitter, 'ready'))
+          workerNode = pool.workerNodes[0]
+          const controlData = { control: true }
+          expect(await bounded(pool.execute(controlData))).toStrictEqual(
+            controlData
+          )
+          expect(hookOwners).toHaveLength(1)
+          expect(hookOwners[0]).toBe(workerNode)
+          workerNode.messageChannel.port1.off(
+            'message',
+            pool.workerMessageListener
+          )
+          const status = new Int32Array(new SharedArrayBuffer(4))
+          const exit = new Promise(resolve =>
+            workerNode.worker.once('exit', resolve)
+          )
+          const response = { completed: true }
+          const result = pool.execute({
+            exitAfterResponse: status.buffer,
+            response,
+          })
+          const stranded = pool
+            .execute({ id: 'stranded' })
+            .catch(error => error)
+          expect(workerNode.tasksQueue.size).toBe(1)
+          Atomics.wait(status, 0, 0, 5000)
+          expect(Atomics.load(status, 0)).toBe(1)
+          const outcomes = await bounded(Promise.all([result, stranded]))
+          expect(outcomes[0]).toStrictEqual(response)
+          expect(outcomes[1]).toBeInstanceOf(Error)
+          await bounded(exit)
+          expect(hookOwners).toHaveLength(1)
+          expect(invalidKeys).toStrictEqual([])
+          expect(pool.promiseResponseMap.size).toBe(0)
+        } finally {
+          workerNode?.messageChannel?.port1.close()
+          workerNode?.messageChannel?.port2.close()
+          if (pool.info.started) await bounded(pool.destroy())
+        }
+      })
 
       for (const [crashAfterResponse, fail] of [
         [false, false],

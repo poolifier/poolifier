@@ -924,9 +924,10 @@ export abstract class AbstractPool<
   }
 
   /**
-   * Hook executed after the worker task execution.
+   * Hook executed after task execution for a live worker node.
+   * Recovered responses from removed worker nodes do not invoke this hook.
    * Can be overridden.
-   * @param workerNodeKey - The worker node key.
+   * @param workerNodeKey - The live worker node key.
    * @param message - The received message.
    */
   protected afterTaskExecutionHook (
@@ -1123,6 +1124,7 @@ export abstract class AbstractPool<
    */
   protected createAndSetupWorkerNode (): number {
     const workerNode = this.createWorkerNode()
+    const exitHandler = this.opts.exitHandler
     let workerError: Error | undefined
     let taskResponses: MessageValue<Response>[] | undefined
     workerNode.registerWorkerEventHandler(
@@ -1170,57 +1172,59 @@ export abstract class AbstractPool<
         })
       }
     )
-    workerNode.registerOnceWorkerEventHandler('exit', () => {
-      const settlingTasks =
-        workerError != null || !this.terminatingWorkerNodes.has(workerNode)
-      taskResponses = this.captureTaskResponses(workerNode, taskResponses)
-      workerNode.info.ready = false
-      let workerNodeTasks:
-        | Map<
-            `${string}-${string}-${string}-${string}-${string}`,
-            PromiseResponseWrapper<Response>
-          >
-        | undefined
-      if (settlingTasks) {
-        const workerNodeKey = this.workerNodes.indexOf(workerNode)
-        if (this.opts.enableTasksQueue === true) {
-          this.redistributeQueuedTasks(workerNodeKey, false)
-        }
-        for (const [taskId, promiseResponse] of this.promiseResponseMap) {
-          if (promiseResponse.workerNodeKey === workerNodeKey) {
-            ;(workerNodeTasks ??= new Map()).set(taskId, promiseResponse)
-          }
-        }
-        workerNode.clearTasksQueue()
-      }
-      this.removeWorkerNode(workerNode)
+    workerNode.registerOnceWorkerEventHandler('exit', (exitCode: number) => {
       try {
-        if (
-          this.started &&
-          !this.startingMinimumNumberOfWorkers &&
-          !this.destroying
-        ) {
-          this.startMinimumNumberOfWorkers(true)
+        const settlingTasks =
+          workerError != null || !this.terminatingWorkerNodes.has(workerNode)
+        if (settlingTasks) {
+          taskResponses = this.captureTaskResponses(workerNode, taskResponses)
+        }
+        workerNode.info.ready = false
+        let workerNodeTasks:
+          | Map<
+              `${string}-${string}-${string}-${string}-${string}`,
+              PromiseResponseWrapper<Response>
+            >
+          | undefined
+        if (settlingTasks) {
+          const workerNodeKey = this.workerNodes.indexOf(workerNode)
+          if (this.opts.enableTasksQueue === true) {
+            this.redistributeQueuedTasks(workerNodeKey, false)
+          }
+          for (const [taskId, promiseResponse] of this.promiseResponseMap) {
+            if (promiseResponse.workerNodeKey === workerNodeKey) {
+              ;(workerNodeTasks ??= new Map()).set(taskId, promiseResponse)
+            }
+          }
+          workerNode.clearTasksQueue()
+        }
+        this.removeWorkerNode(workerNode)
+        try {
+          if (
+            this.started &&
+            !this.startingMinimumNumberOfWorkers &&
+            !this.destroying
+          ) {
+            this.startMinimumNumberOfWorkers(true)
+          }
+        } finally {
+          if (settlingTasks && this.opts.enableTasksQueue === true) {
+            this.checkAndEmitTaskDequeuingEvents()
+          }
+          if (taskResponses != null) {
+            for (const message of taskResponses) {
+              this.handleTaskExecutionResponse(message)
+            }
+          }
+          if (workerNodeTasks != null) {
+            this.rejectWorkerNodeTasks(workerNodeTasks, workerError)
+          }
+          this.checkAndEmitTaskExecutionFinishedEvents()
         }
       } finally {
-        if (settlingTasks && this.opts.enableTasksQueue === true) {
-          this.checkAndEmitTaskDequeuingEvents()
-        }
-        if (taskResponses != null) {
-          for (const message of taskResponses) {
-            this.handleTaskExecutionResponse(message)
-          }
-        }
-        if (workerNodeTasks != null) {
-          this.rejectWorkerNodeTasks(workerNodeTasks, workerError)
-        }
-        this.checkAndEmitTaskExecutionFinishedEvents()
+        exitHandler?.call(workerNode.worker, exitCode)
       }
     })
-    workerNode.registerWorkerEventHandler(
-      'exit',
-      this.opts.exitHandler ?? EMPTY_FUNCTION
-    )
     const workerNodeKey = this.addWorkerNode(workerNode)
     this.afterWorkerNodeSetup(workerNodeKey)
     return workerNodeKey
@@ -1958,7 +1962,11 @@ export abstract class AbstractPool<
           : resolve(data as Response)
       }
       asyncResource?.emitDestroy()
-      this.afterTaskExecutionHook(workerNodeKey, message)
+      // A replayed response can outlive its removed worker node.
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (workerNode != null) {
+        this.afterTaskExecutionHook(workerNodeKey, message)
+      }
       queueMicrotask(() => {
         const currentWorkerNodeKey =
           this.workerNodes[workerNodeKey] === workerNode

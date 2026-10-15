@@ -66,7 +66,7 @@ This method is available on both pool implementations and will start the minimum
 
 ### `pool.destroy()`
 
-This method is available on both pool implementations and will call the terminate method on each worker.
+This method is available on both pool implementations and returns a promise for pool destruction. Thread workers that have already exited do not block destruction.
 
 ### `pool.hasTaskFunction(name)`
 
@@ -114,7 +114,7 @@ An object with these properties:
   Default: `() => {}`
 - `errorHandler` (optional) - A function that will listen for error event on each worker.  
   Default: `() => {}`
-- `exitHandler` (optional) - A function that will listen for exit event on each worker, after the pool's internal worker exit cleanup.
+- `exitHandler` (optional) - A function called once for each worker exit after the pool's internal exit cleanup, even if constructing a replacement worker throws. Receives the exit code with the native worker as `this`.
   Default: `() => {}`
 
 - `workerChoiceStrategy` (optional) - The default worker choice strategy to use in this pool:
