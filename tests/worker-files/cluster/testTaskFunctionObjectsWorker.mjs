@@ -1,12 +1,11 @@
-'use strict'
-const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
-const {
+import { ClusterWorker, KillBehaviors } from '../../../lib/index.mjs'
+import {
   factorial,
   fibonacci,
   jsonIntegerSerialization,
-} = require('../../test-utils.cjs')
+} from '../../test-utils.cjs'
 
-module.exports = new ClusterWorker(
+export default new ClusterWorker(
   {
     factorial: { taskFunction: data => factorial(data.n) },
     fibonacci: { priority: -5, taskFunction: data => fibonacci(data.n) },

@@ -21,7 +21,7 @@ const buildPoolifierPool = (workerType, poolType, poolSize, poolOptions) => {
           return new DynamicClusterPool(
             Math.floor(poolSize / 2),
             poolSize,
-            './benchmarks/internal/cluster-worker.cjs',
+            './benchmarks/internal/cluster-worker.mjs',
             poolOptions
           )
         case WorkerTypes.thread:
@@ -38,7 +38,7 @@ const buildPoolifierPool = (workerType, poolType, poolSize, poolOptions) => {
         case WorkerTypes.cluster:
           return new FixedClusterPool(
             poolSize,
-            './benchmarks/internal/cluster-worker.cjs',
+            './benchmarks/internal/cluster-worker.mjs',
             poolOptions
           )
         case WorkerTypes.thread:

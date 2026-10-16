@@ -1,8 +1,8 @@
-const { isPrimary } = require('node:cluster')
+import { isPrimary } from 'node:cluster'
 
-const { ClusterWorker } = require('../../lib/index.cjs')
-const { TaskFunctions } = require('../benchmarks-types.cjs')
-const { executeTaskFunction } = require('../benchmarks-utils.cjs')
+import { ClusterWorker } from '../../lib/index.mjs'
+import { TaskFunctions } from '../benchmarks-types.cjs'
+import { executeTaskFunction } from '../benchmarks-utils.mjs'
 
 const taskFunction = data => {
   data = data || {}
@@ -14,4 +14,4 @@ const taskFunction = data => {
   return res
 }
 
-module.exports = new ClusterWorker(taskFunction)
+export default new ClusterWorker(taskFunction)

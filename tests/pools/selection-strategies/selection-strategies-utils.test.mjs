@@ -14,7 +14,7 @@ describe('Selection strategies utils test suite', () => {
   beforeAll(() => {
     clusterFixedPool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.cjs'
+      './tests/worker-files/cluster/testWorker.mjs'
     )
     threadFixedPool = new FixedThreadPool(
       numberOfThreads,

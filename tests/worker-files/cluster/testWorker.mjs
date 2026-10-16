@@ -1,7 +1,6 @@
-'use strict'
-const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
-const { TaskFunctions } = require('../../test-types.cjs')
-const { executeTaskFunction } = require('../../test-utils.cjs')
+import { ClusterWorker, KillBehaviors } from '../../../lib/index.mjs'
+import { TaskFunctions } from '../../test-types.cjs'
+import { executeTaskFunction } from '../../test-utils.cjs'
 
 /**
  * Test worker function that executes configurable task functions for testing.
@@ -14,7 +13,7 @@ function test (data) {
   return executeTaskFunction(data)
 }
 
-module.exports = new ClusterWorker(test, {
+export default new ClusterWorker(test, {
   killBehavior: KillBehaviors.HARD,
   maxInactiveTime: 500,
 })

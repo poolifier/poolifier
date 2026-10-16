@@ -181,6 +181,9 @@ An object with these properties:
 
 ### `class YourWorker extends ThreadWorker/ClusterWorker`
 
+Cluster workers support CommonJS and ESM on the [supported Node.js versions](../README.md#nodejs-versions).
+Construct `ClusterWorker` before awaiting asynchronous initialization that yields to the event loop, including in imported modules. Otherwise, the initial pool startup message can be lost before the worker installs its listener, leaving the pool unable to execute tasks.
+
 `taskFunctions` (mandatory) The task function or task functions object `Record<string, (data?: Data) => Response | Promise<Response> | { taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }>` that you want to execute on the worker. Priority range is the same as Unix nice levels. `workerNodeKeys` is an array of worker node keys to restrict task execution to specific workers (worker node affinity). See [Worker Node Affinity Notes](#worker-node-affinity-notes) above for validation behavior.  
 `opts` (optional) An object with these properties:
 

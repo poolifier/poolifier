@@ -1,6 +1,5 @@
-'use strict'
-const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
-const { sleepTaskFunction } = require('../../test-utils.cjs')
+import { ClusterWorker, KillBehaviors } from '../../../lib/index.mjs'
+import { sleepTaskFunction } from '../../test-utils.cjs'
 
 /**
  * Test worker function that sleeps for a specified duration.
@@ -11,7 +10,7 @@ async function sleep (data) {
   return sleepTaskFunction(data, 2000)
 }
 
-module.exports = new ClusterWorker(sleep, {
+export default new ClusterWorker(sleep, {
   killBehavior: KillBehaviors.HARD,
   maxInactiveTime: 500,
 })

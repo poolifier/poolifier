@@ -25,7 +25,7 @@ describe('Worker node test suite', () => {
     )
     clusterWorkerNode = new WorkerNode(
       WorkerTypes.cluster,
-      './tests/worker-files/cluster/testWorker.cjs',
+      './tests/worker-files/cluster/testWorker.mjs',
       {
         tasksQueueBackPressureSize: 12,
         tasksQueueBucketSize: 6,
@@ -78,13 +78,13 @@ describe('Worker node test suite', () => {
   it('terminates an already disconnected cluster worker node and can terminate it again after exit', async () => {
     const clusterSettings = { ...cluster.settings }
     cluster.setupPrimary({
-      exec: './tests/worker-files/cluster/crashWorker.cjs',
+      exec: './tests/worker-files/cluster/crashWorker.mjs',
     })
     let workerNode
     try {
       workerNode = new WorkerNode(
         WorkerTypes.cluster,
-        './tests/worker-files/cluster/crashWorker.cjs',
+        './tests/worker-files/cluster/crashWorker.mjs',
         {
           tasksQueueBackPressureSize: 12,
           tasksQueueBucketSize: 6,

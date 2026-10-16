@@ -13,9 +13,9 @@ import {
   FixedThreadPool,
 } from '../../lib/index.mjs'
 
-const clusterWorker = './tests/worker-files/cluster/testWorker.cjs'
+const clusterWorker = './tests/worker-files/cluster/testWorker.mjs'
 const clusterIntrospectionWorker = resolve(
-  './tests/worker-files/cluster/prototypePollutionWorker.cjs'
+  './tests/worker-files/cluster/prototypePollutionWorker.mjs'
 )
 const environmentPollutionKey = 'POOLIFIER_ARBITRARY_ENV_POLLUTION'
 const pollutedProperties = [

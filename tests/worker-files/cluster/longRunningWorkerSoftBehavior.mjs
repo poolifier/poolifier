@@ -1,6 +1,5 @@
-'use strict'
-const { ClusterWorker } = require('../../../lib/index.cjs')
-const { sleepTaskFunction } = require('../../test-utils.cjs')
+import { ClusterWorker } from '../../../lib/index.mjs'
+import { sleepTaskFunction } from '../../test-utils.cjs'
 
 /**
  * Test worker function that performs a long-running sleep operation with soft behavior.
@@ -11,6 +10,6 @@ async function sleep (data) {
   return sleepTaskFunction(data, 50000)
 }
 
-module.exports = new ClusterWorker(sleep, {
+export default new ClusterWorker(sleep, {
   maxInactiveTime: 500,
 })

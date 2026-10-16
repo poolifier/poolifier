@@ -174,7 +174,9 @@ Remember that workers can only send and receive structured-cloneable data.
 
 ## Node.js versions
 
-Node.js versions >= 22.x.x are supported.
+Supported Node.js versions are **22.18.0 or later in the 22.x line**, or **24.3.0 and later**.
+
+These minimum versions include the [Node.js ESM loading change](https://github.com/nodejs/node/pull/57419) needed for cluster worker startup messages to reach ESM workers.
 
 ## [API](./docs/api.md)
 

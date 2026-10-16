@@ -17,7 +17,7 @@ describe('Dynamic cluster pool test suite', () => {
     pool = new DynamicClusterPool(
       min,
       max,
-      './tests/worker-files/cluster/testWorker.cjs',
+      './tests/worker-files/cluster/testWorker.mjs',
       {
         errorHandler: e => console.error(e),
       }
@@ -123,7 +123,7 @@ describe('Dynamic cluster pool test suite', () => {
     const longRunningPool = new DynamicClusterPool(
       min,
       max,
-      './tests/worker-files/cluster/longRunningWorkerHardBehavior.cjs',
+      './tests/worker-files/cluster/longRunningWorkerHardBehavior.mjs',
       {
         errorHandler: e => console.error(e),
         exitHandler: () => console.info('long executing worker exited'),
@@ -150,7 +150,7 @@ describe('Dynamic cluster pool test suite', () => {
     const longRunningPool = new DynamicClusterPool(
       min,
       max,
-      './tests/worker-files/cluster/longRunningWorkerSoftBehavior.cjs',
+      './tests/worker-files/cluster/longRunningWorkerSoftBehavior.mjs',
       {
         errorHandler: e => console.error(e),
         exitHandler: () => console.info('long executing worker exited'),
@@ -173,7 +173,7 @@ describe('Dynamic cluster pool test suite', () => {
     const pool = new DynamicClusterPool(
       0,
       max,
-      './tests/worker-files/cluster/testWorker.cjs'
+      './tests/worker-files/cluster/testWorker.mjs'
     )
     expect(pool).toBeInstanceOf(DynamicClusterPool)
     // We need to clean up the resources after our test
@@ -185,7 +185,7 @@ describe('Dynamic cluster pool test suite', () => {
       const pool = new DynamicClusterPool(
         0,
         max,
-        './tests/worker-files/cluster/testWorker.cjs',
+        './tests/worker-files/cluster/testWorker.mjs',
         {
           startWorkers: false,
           workerChoiceStrategy,
