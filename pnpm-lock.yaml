@@ -191,7 +191,7 @@ importers:
         specifier: ^24.19.2
         version: 24.19.2
       '@vitest/coverage-v8':
-        specifier: ^5.0.3
+        specifier: ^5.0.4
         version: 5.0.4(vitest@5.0.4)
       clean-publish:
         specifier: ^7.1.0
@@ -203,7 +203,7 @@ importers:
         specifier: ^10.12.0
         version: 10.12.0(jiti@2.6.1)
       eslint-plugin-jsdoc:
-        specifier: ^65.3.0
+        specifier: ^65.3.1
         version: 65.3.1(eslint@10.12.0(jiti@2.6.1))(typescript@6.0.3)
       eslint-plugin-perfectionist:
         specifier: ^5.12.1
@@ -254,7 +254,7 @@ importers:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
-        specifier: ^5.0.3
+        specifier: ^5.0.4
         version: 5.0.4(@types/node@24.19.2)(@vitest/coverage-v8@5.0.4)(vite@8.3.4(@types/node@24.19.2)(jiti@2.6.1)(terser@5.51.2)(yaml@2.9.1))
     publishDirectory: package
 
