@@ -14,23 +14,7 @@ import {
   FixedThreadPool,
   WorkerChoiceStrategies,
 } from '../../lib/index.mjs'
-
-const bounded = async promise => {
-  let timeout
-  try {
-    return await Promise.race([
-      promise,
-      new Promise((resolve, reject) => {
-        timeout = setTimeout(
-          () => reject(new Error('Task remained pending')),
-          5000
-        )
-      }),
-    ])
-  } finally {
-    clearTimeout(timeout)
-  }
-}
+import { bounded } from '../test-utils.cjs'
 
 const send = (workerNode, message) => {
   const workerMessage = { ...message, workerId: workerNode.info.id }

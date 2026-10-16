@@ -1,3 +1,4 @@
+import type { UUID } from 'node:crypto'
 import type { Transferable } from 'node:worker_threads'
 
 import { AsyncResource } from 'node:async_hooks'
@@ -384,13 +385,8 @@ export abstract class AbstractPool<
    *
    * When we receive a message from the worker, we get a map entry with the promise resolve/reject bound to the message id.
    */
-  protected promiseResponseMap: Map<
-    `${string}-${string}-${string}-${string}-${string}`,
-    PromiseResponseWrapper<Response>
-  > = new Map<
-    `${string}-${string}-${string}-${string}-${string}`,
-    PromiseResponseWrapper<Response>
-  >()
+  protected promiseResponseMap: Map<UUID, PromiseResponseWrapper<Response>> =
+    new Map<UUID, PromiseResponseWrapper<Response>>()
 
   /**
    * Whether the pool is started or not.
@@ -957,7 +953,9 @@ export abstract class AbstractPool<
       needWorkerChoiceStrategiesUpdate = true
     }
     if (
-      this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
+      this.shallUpdateTaskFunctionWorkerUsage(
+        this.workerNodes[workerNodeKey]
+      ) &&
       message.taskPerformance?.name != null &&
       this.workerNodes[workerNodeKey].getTaskFunctionWorkerUsage(
         message.taskPerformance.name
@@ -1038,7 +1036,9 @@ export abstract class AbstractPool<
       )
     }
     if (
-      this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
+      this.shallUpdateTaskFunctionWorkerUsage(
+        this.workerNodes[workerNodeKey]
+      ) &&
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.workerNodes[workerNodeKey].getTaskFunctionWorkerUsage(task.name!) !=
         null
@@ -1184,10 +1184,7 @@ export abstract class AbstractPool<
         }
         workerNode.info.ready = false
         let workerNodeTasks:
-          | Map<
-              `${string}-${string}-${string}-${string}-${string}`,
-              PromiseResponseWrapper<Response>
-            >
+          | Map<UUID, PromiseResponseWrapper<Response>>
           | undefined
         if (settlingTasks) {
           const workerNodeKey = this.workerNodes.indexOf(workerNode)
@@ -1780,10 +1777,7 @@ export abstract class AbstractPool<
       if (workerNode.usage.tasks.executing > 0) {
         --workerNode.usage.tasks.executing
       }
-      if (
-        Array.isArray(workerNode.info.taskFunctionsProperties) &&
-        workerNode.info.taskFunctionsProperties.length > 2
-      ) {
+      if (this.shallUpdateTaskFunctionWorkerUsage(workerNode)) {
         const taskFunctionWorkerUsage =
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           workerNode.getTaskFunctionWorkerUsage(task.name!)
@@ -1812,10 +1806,7 @@ export abstract class AbstractPool<
     }
   }
 
-  private readonly getAbortError = (
-    taskName: string,
-    taskId: `${string}-${string}-${string}-${string}-${string}`
-  ): Error => {
+  private readonly getAbortError = (taskName: string, taskId: UUID): Error => {
     const abortError = this.promiseResponseMap.get(taskId)?.abortSignal
       ?.reason as Error | string
     return abortError instanceof Error
@@ -2065,7 +2056,7 @@ export abstract class AbstractPool<
   }
 
   private readonly handleWorkerError = (
-    taskId: `${string}-${string}-${string}-${string}-${string}`,
+    taskId: UUID,
     workerError: WorkerError
   ): Error => {
     const { aborted, error, message, name, stack } = workerError
@@ -2452,7 +2443,7 @@ export abstract class AbstractPool<
   }
 
   private rejectTask (
-    taskId: `${string}-${string}-${string}-${string}-${string}`,
+    taskId: UUID,
     promiseResponse: PromiseResponseWrapper<Response>,
     error: unknown
   ): void {
@@ -2476,10 +2467,7 @@ export abstract class AbstractPool<
    * @param error - The worker failure.
    */
   private rejectWorkerNodeTasks (
-    workerNodeTasks: Map<
-      `${string}-${string}-${string}-${string}-${string}`,
-      PromiseResponseWrapper<Response>
-    >,
+    workerNodeTasks: Map<UUID, PromiseResponseWrapper<Response>>,
     error?: Error
   ): void {
     for (const [taskId, promiseResponse] of workerNodeTasks) {
@@ -2525,7 +2513,7 @@ export abstract class AbstractPool<
     }
     if (
       taskName != null &&
-      this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
+      this.shallUpdateTaskFunctionWorkerUsage(workerNode) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
     ) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -2749,11 +2737,13 @@ export abstract class AbstractPool<
 
   /**
    * Whether the worker node shall update its task function worker usage or not.
-   * @param workerNodeKey - The worker node key.
+   * @param workerNode - The worker node.
    * @returns `true` if the worker node shall update its task function worker usage, `false` otherwise.
    */
-  private shallUpdateTaskFunctionWorkerUsage (workerNodeKey: number): boolean {
-    const workerInfo = this.getWorkerInfo(workerNodeKey)
+  private shallUpdateTaskFunctionWorkerUsage (
+    workerNode: IWorkerNode<Worker, Data> | undefined
+  ): boolean {
+    const workerInfo = workerNode?.info
     return (
       workerInfo != null &&
       Array.isArray(workerInfo.taskFunctionsProperties) &&
@@ -2868,7 +2858,7 @@ export abstract class AbstractPool<
     }
     if (
       taskName != null &&
-      this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
+      this.shallUpdateTaskFunctionWorkerUsage(workerNode) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
     ) {
       const taskFunctionWorkerUsage =
@@ -2897,7 +2887,7 @@ export abstract class AbstractPool<
       ++workerNode.usage.tasks.stolen
     }
     if (
-      this.shallUpdateTaskFunctionWorkerUsage(workerNodeKey) &&
+      this.shallUpdateTaskFunctionWorkerUsage(workerNode) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
     ) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
