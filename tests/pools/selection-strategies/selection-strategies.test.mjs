@@ -77,7 +77,7 @@ describe('Selection strategies test suite', () => {
       const pool = new DynamicClusterPool(
         min,
         max,
-        './tests/worker-files/cluster/testWorker.cjs'
+        './tests/worker-files/cluster/testWorker.mjs'
       )
       pool.setWorkerChoiceStrategy(workerChoiceStrategy)
       expect(pool.opts.workerChoiceStrategy).toBe(workerChoiceStrategy)
@@ -360,7 +360,7 @@ describe('Selection strategies test suite', () => {
     const workerChoiceStrategy = WorkerChoiceStrategies.ROUND_ROBIN
     let pool = new FixedClusterPool(
       max,
-      './tests/worker-files/cluster/testWorker.cjs',
+      './tests/worker-files/cluster/testWorker.mjs',
       { workerChoiceStrategy }
     )
     let results = new Set()

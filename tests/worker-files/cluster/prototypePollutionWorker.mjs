@@ -1,5 +1,4 @@
-'use strict'
-const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
+import { ClusterWorker, KillBehaviors } from '../../../lib/index.mjs'
 
 /**
  * Returns the cluster worker launch context needed by security regressions.
@@ -15,7 +14,7 @@ function inspectLaunchContext (data = {}) {
   }
 }
 
-module.exports = new ClusterWorker(inspectLaunchContext, {
+export default new ClusterWorker(inspectLaunchContext, {
   killBehavior: KillBehaviors.HARD,
   maxInactiveTime: 500,
 })

@@ -14,14 +14,14 @@ describe('Fixed cluster pool test suite', () => {
   beforeAll(() => {
     pool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.cjs',
+      './tests/worker-files/cluster/testWorker.mjs',
       {
         errorHandler: e => console.error(e),
       }
     )
     queuePool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/testWorker.cjs',
+      './tests/worker-files/cluster/testWorker.mjs',
       {
         enableTasksQueue: true,
         errorHandler: e => console.error(e),
@@ -32,30 +32,30 @@ describe('Fixed cluster pool test suite', () => {
     )
     emptyPool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/emptyWorker.cjs',
+      './tests/worker-files/cluster/emptyWorker.mjs',
       { exitHandler: () => console.info('empty pool worker exited') }
     )
     echoPool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/echoWorker.cjs'
+      './tests/worker-files/cluster/echoWorker.mjs'
     )
     errorPool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/errorWorker.cjs',
+      './tests/worker-files/cluster/errorWorker.mjs',
       {
         errorHandler: e => console.error(e),
       }
     )
     asyncErrorPool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/asyncErrorWorker.cjs',
+      './tests/worker-files/cluster/asyncErrorWorker.mjs',
       {
         errorHandler: e => console.error(e),
       }
     )
     asyncPool = new FixedClusterPool(
       numberOfWorkers,
-      './tests/worker-files/cluster/asyncWorker.cjs'
+      './tests/worker-files/cluster/asyncWorker.mjs'
     )
   })
 
@@ -294,7 +294,7 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it('Verify that cluster pool options are checked', async () => {
-    const workerFilePath = './tests/worker-files/cluster/testWorker.cjs'
+    const workerFilePath = './tests/worker-files/cluster/testWorker.mjs'
     let pool = new FixedClusterPool(numberOfWorkers, workerFilePath)
     expect(pool.opts.env).toBeUndefined()
     expect(pool.opts.settings).toBeUndefined()
@@ -321,7 +321,7 @@ describe('Fixed cluster pool test suite', () => {
   })
 
   it('Verify destroyWorkerNode()', async () => {
-    const workerFilePath = './tests/worker-files/cluster/testWorker.cjs'
+    const workerFilePath = './tests/worker-files/cluster/testWorker.mjs'
     const pool = new FixedClusterPool(numberOfWorkers, workerFilePath)
     const workerNodeKey = 0
     let disconnectEvent = 0
@@ -344,7 +344,7 @@ describe('Fixed cluster pool test suite', () => {
   it('Verify that a pool with zero worker fails', () => {
     expect(
       () =>
-        new FixedClusterPool(0, './tests/worker-files/cluster/testWorker.cjs')
+        new FixedClusterPool(0, './tests/worker-files/cluster/testWorker.mjs')
     ).toThrow('Cannot instantiate a fixed pool with zero worker')
   })
 })

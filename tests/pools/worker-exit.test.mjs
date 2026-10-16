@@ -49,7 +49,7 @@ const cleanupRegressionPool = async (pool, capturedNodes) => {
 
 for (const [workerType, PoolClass, workerFile] of [
   ['thread', FixedThreadPool, './tests/worker-files/thread/crashWorker.mjs'],
-  ['cluster', FixedClusterPool, './tests/worker-files/cluster/crashWorker.cjs'],
+  ['cluster', FixedClusterPool, './tests/worker-files/cluster/crashWorker.mjs'],
 ]) {
   describe(`${workerType} worker exit`, { retry: 0 }, () => {
     const createPool = async (size = 1, options = {}) => {

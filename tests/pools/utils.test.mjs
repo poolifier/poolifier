@@ -678,7 +678,7 @@ parentPort.postMessage({
     expect(
       createWorker(
         WorkerTypes.cluster,
-        './tests/worker-files/cluster/testWorker.cjs',
+        './tests/worker-files/cluster/testWorker.mjs',
         {}
       )
     ).toBeInstanceOf(ClusterWorker)
@@ -705,7 +705,7 @@ parentPort.postMessage({
     })
     const clusterWorker = createWorker(
       WorkerTypes.cluster,
-      './tests/worker-files/cluster/testWorker.cjs',
+      './tests/worker-files/cluster/testWorker.mjs',
       {}
     )
     const clusterWorkerInfo = initWorkerInfo(clusterWorker)

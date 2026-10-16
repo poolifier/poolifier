@@ -39,7 +39,7 @@
     "postpublish": "rm -rf ./package"
   },
   "engines": {
-    "node": ">=22.13.0",
+    "node": "^22.18.0 || >=24.3.0",
     "pnpm": ">=9.0.0"
   },
   "devEngines": {

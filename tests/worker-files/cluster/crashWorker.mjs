@@ -1,7 +1,6 @@
-'use strict'
-const cluster = require('node:cluster')
+import cluster from 'node:cluster'
 
-const { ClusterWorker } = require('../../../lib/index.cjs')
+import { ClusterWorker } from '../../../lib/index.mjs'
 
 const pendingTasks = new Map()
 
@@ -24,7 +23,7 @@ process.on('message', message => {
   }
 })
 
-module.exports = new ClusterWorker(async data => {
+export default new ClusterWorker(async data => {
   if (data.exitCode != null) {
     // Exit without an error event to exercise lost task responses.
     // eslint-disable-next-line n/no-process-exit

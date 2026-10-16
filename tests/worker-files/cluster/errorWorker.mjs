@@ -1,5 +1,4 @@
-'use strict'
-const { ClusterWorker, KillBehaviors } = require('../../../lib/index.cjs')
+import { ClusterWorker, KillBehaviors } from '../../../lib/index.mjs'
 
 /**
  *
@@ -8,7 +7,7 @@ function error () {
   throw new Error('Error Message from ClusterWorker')
 }
 
-module.exports = new ClusterWorker(error, {
+export default new ClusterWorker(error, {
   killBehavior: KillBehaviors.HARD,
   maxInactiveTime: 500,
 })
