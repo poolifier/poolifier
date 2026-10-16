@@ -132,11 +132,13 @@ describe('Fixed thread pool test suite', () => {
     expect(queuePool.info.stolenTasks).toBe(0)
     await Promise.all(promises)
     for (const workerNode of queuePool.workerNodes) {
-      expect(workerNode.usage.tasks.executing).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.tasks.executing).toBeLessThanOrEqual(
+      expect(workerNode.usage.tasks.executing).toBe(0)
+      // Stolen tasks are counted on the worker that actually executed them,
+      // so completion counts need not match the original task distribution.
+      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
+      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
         numberOfThreads * maxMultiplier
       )
-      expect(workerNode.usage.tasks.executed).toBe(maxMultiplier)
       expect(workerNode.usage.tasks.queued).toBe(0)
       expect(workerNode.usage.tasks.maxQueued).toBe(
         maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency

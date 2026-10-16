@@ -97,10 +97,6 @@ export interface PromiseResponseWrapper<Response = unknown> {
    * Resolve callback to fulfill the promise.
    */
   readonly resolve: (value: PromiseLike<Response> | Response) => void
-  /**
-   * The worker node key executing the task.
-   */
-  readonly workerNodeKey: number
 }
 
 /**

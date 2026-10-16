@@ -1843,11 +1843,14 @@ export abstract class AbstractPool<
   }
 
   private handleTaskExecutionResponse (message: MessageValue<Response>): void {
-    const { data, taskId, workerError } = message
+    const { data, taskId, workerError, workerId } = message
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const promiseResponse = this.promiseResponseMap.get(taskId!)
     if (promiseResponse != null) {
-      const { asyncResource, reject, resolve, workerNodeKey } = promiseResponse
+      const { asyncResource, reject, resolve } = promiseResponse
+      // The submitted task's worker node key can become stale after worker
+      // removal or task stealing. Account for the worker that actually replied.
+      const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
       const workerNode = this.workerNodes[workerNodeKey]
       if (workerError != null) {
         this.emitter?.emit(PoolEvents.taskError, workerError)
@@ -1869,17 +1872,27 @@ export abstract class AbstractPool<
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.promiseResponseMap.delete(taskId!)
         this.checkAndEmitTaskExecutionFinishedEvents()
-        if (this.opts.enableTasksQueue === true && !this.destroying) {
+        // Promise continuations and taskFinished listeners can remove workers
+        // before this microtask drains the queue. Resolve the node's index again.
+        const currentWorkerNodeKey = this.workerNodes.indexOf(workerNode)
+        if (
+          this.opts.enableTasksQueue === true &&
+          !this.destroying &&
+          currentWorkerNodeKey !== -1
+        ) {
           if (
-            !this.isWorkerNodeBusy(workerNodeKey) &&
-            this.tasksQueueSize(workerNodeKey) > 0
+            !this.isWorkerNodeBusy(currentWorkerNodeKey) &&
+            this.tasksQueueSize(currentWorkerNodeKey) > 0
           ) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.executeTask(workerNodeKey, this.dequeueTask(workerNodeKey)!)
+            this.executeTask(
+              currentWorkerNodeKey,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              this.dequeueTask(currentWorkerNodeKey)!
+            )
           }
-          if (this.isWorkerNodeIdle(workerNodeKey)) {
+          if (this.isWorkerNodeIdle(currentWorkerNodeKey)) {
             workerNode.emit('idle', {
-              workerNodeKey,
+              workerNodeKey: currentWorkerNodeKey,
             })
           }
         }
@@ -1998,7 +2011,15 @@ export abstract class AbstractPool<
     )
     sleep(exponentialDelay(workerNodeTasksUsage.sequentiallyStolen))
       .then(() => {
-        this.handleWorkerNodeIdleEvent(eventDetail, stolenTask)
+        // Worker nodes can be removed during the delay, shifting the keys.
+        const currentWorkerNodeKey = this.workerNodes.indexOf(workerNode)
+        if (currentWorkerNodeKey === -1) {
+          return undefined
+        }
+        this.handleWorkerNodeIdleEvent(
+          { ...eventDetail, workerNodeKey: currentWorkerNodeKey },
+          stolenTask
+        )
         return undefined
       })
       .catch((error: unknown) => {
@@ -2105,7 +2126,6 @@ export abstract class AbstractPool<
       this.promiseResponseMap.set(task.taskId!, {
         reject,
         resolve,
-        workerNodeKey,
         ...(this.emitter != null && {
           asyncResource: new AsyncResource('poolifier:task', {
             requireManualDestroy: true,
