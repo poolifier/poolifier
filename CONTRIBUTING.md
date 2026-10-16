@@ -13,10 +13,6 @@ Please do your PR on **master** branch.
   pnpm test:coverage
 ```
 
-For promise deadlines in regression tests, use `bounded(promise, message?, timeoutMs?)` from `tests/test-utils.cjs`.
-It preserves the result or rejection and rejects with the supplied message on timeout. Use a contextual message when diagnosing a specific stage.
-Keep non-fatal cleanup deadlines separate.
-
 **How to check if your new code is standard JS style**
 
 ```bash
