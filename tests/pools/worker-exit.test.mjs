@@ -4,6 +4,7 @@ import { createHook } from 'node:async_hooks'
 import { execFile } from 'node:child_process'
 import { once } from 'node:events'
 import { promisify } from 'node:util'
+import { MessageChannel } from 'node:worker_threads'
 import { describe, expect, it } from 'vitest'
 
 import {
@@ -675,6 +676,228 @@ for (const [workerType, PoolClass, workerFile] of [
     })
 
     if (workerType === 'thread') {
+      it('settles an initial native transfer failure without retaining execution usage', async () => {
+        const pool = await createPool()
+        const channel = new MessageChannel()
+        const transferredPort = structuredClone(channel.port1, {
+          transfer: [channel.port1],
+        })
+        try {
+          await bounded(pool.addTaskFunction('echo', data => ({ id: data.id })))
+          const workerNode = pool.workerNodes[0]
+          const error = await bounded(
+            pool
+              .execute({ port: channel.port1 }, 'echo', undefined, [
+                channel.port1,
+              ])
+              .catch(error => error)
+          )
+          expect(error).toBeInstanceOf(Error)
+          expect(error.name).toBe('DataCloneError')
+          expect(pool.promiseResponseMap.size).toBe(0)
+          expect(workerNode.usage.tasks.executing).toBe(0)
+          expect(
+            workerNode.getTaskFunctionWorkerUsage('echo').tasks.executing
+          ).toBe(0)
+          const data = { id: 'followup' }
+          expect(await bounded(pool.execute(data, 'echo'))).toStrictEqual(data)
+        } finally {
+          channel.port1.close()
+          channel.port2.close()
+          transferredPort.close()
+          if (pool.info.started) await bounded(pool.destroy())
+        }
+      })
+
+      it('preserves a buffered response when a queued transfer fails during exit migration', async () => {
+        const pool = await createPool(2, {
+          enableTasksQueue: true,
+          restartWorkerOnError: false,
+          tasksQueueOptions: {
+            concurrency: 1,
+            tasksStealingOnBackPressure: false,
+            taskStealing: false,
+          },
+        })
+        const channel = new MessageChannel()
+        let transferredPort
+        const source = pool.workerNodes[0]
+        try {
+          await bounded(
+            pool.addTaskFunction('migratingEcho', {
+              taskFunction: data => ({ id: data.id }),
+              workerNodeKeys: [0],
+            })
+          )
+          await bounded(pool.execute({ warmup: true }))
+          const destination = pool.workerNodes[1]
+          source.messageChannel.port1.off('message', pool.workerMessageListener)
+          const status = new Int32Array(new SharedArrayBuffer(4))
+          const response = { completed: true }
+          const result = pool.execute({
+            exitAfterResponse: status.buffer,
+            response,
+          })
+          const bad = pool
+            .execute({ port: channel.port1 }, 'migratingEcho', undefined, [
+              channel.port1,
+            ])
+            .catch(error => error)
+          const laterData = { id: 'later' }
+          const later = pool.execute(laterData, 'migratingEcho')
+          expect(source.tasksQueue.size).toBe(2)
+          transferredPort = structuredClone(channel.port1, {
+            transfer: [channel.port1],
+          })
+          const exit = new Promise(resolve =>
+            source.worker.once('exit', resolve)
+          )
+          Atomics.wait(status, 0, 0, 5000)
+          expect(Atomics.load(status, 0)).toBe(1)
+          const outcomes = await bounded(Promise.all([result, bad, later]))
+          expect(outcomes[0]).toStrictEqual(response)
+          expect(outcomes[1]).toBeInstanceOf(Error)
+          expect(outcomes[1].name).toBe('DataCloneError')
+          expect(outcomes[2]).toStrictEqual(laterData)
+          await bounded(exit)
+          expect(pool.promiseResponseMap.size).toBe(0)
+          expect(source.tasksQueue.size).toBe(0)
+          expect(destination.usage.tasks.executing).toBe(0)
+          expect(
+            destination.getTaskFunctionWorkerUsage('migratingEcho').tasks
+              .executing
+          ).toBe(0)
+        } finally {
+          channel.port1.close()
+          channel.port2.close()
+          transferredPort?.close()
+          source.messageChannel.port1.close()
+          source.messageChannel.port2.close()
+          if (pool.info.started) await bounded(pool.destroy())
+        }
+      })
+
+      it('does not wait for a taskFinished event for a failed transfer during destroy', async () => {
+        const pool = await createPool(1, {
+          enableTasksQueue: true,
+          tasksQueueOptions: {
+            concurrency: 1,
+            tasksFinishedTimeout: 30000,
+            tasksStealingOnBackPressure: false,
+            taskStealing: false,
+          },
+        })
+        const channel = new MessageChannel()
+        let transferredPort
+        try {
+          const workerNode = pool.workerNodes[0]
+          const runningStarted = started(workerNode, 'running')
+          pool.execute({ id: 'running', wait: true }).catch(() => {})
+          await bounded(runningStarted)
+          const bad = pool
+            .execute({ port: channel.port1 }, undefined, undefined, [
+              channel.port1,
+            ])
+            .catch(error => error)
+          transferredPort = structuredClone(channel.port1, {
+            transfer: [channel.port1],
+          })
+          await bounded(pool.destroy())
+          const error = await bounded(bad)
+          expect(error).toBeInstanceOf(Error)
+          expect(error.name).toBe('DataCloneError')
+          expect(pool.info.started).toBe(false)
+        } finally {
+          channel.port1.close()
+          channel.port2.close()
+          transferredPort?.close()
+          if (pool.info.started) await bounded(pool.destroy())
+        }
+      })
+
+      for (const destinationBusy of [false, true]) {
+        it(`isolates a queued transfer failure after worker exit (destination busy: ${destinationBusy})`, async () => {
+          const pool = await createPool(2, {
+            enableTasksQueue: true,
+            restartWorkerOnError: false,
+            tasksQueueOptions: {
+              concurrency: 1,
+              tasksStealingOnBackPressure: false,
+              taskStealing: false,
+            },
+          })
+          const channel = new MessageChannel()
+          let transferredPort
+          try {
+            await bounded(pool.execute({ warmup: true }))
+            const [source, destination] = pool.workerNodes
+            const sourceStarted = started(source, 'source')
+            const destinationStarted = started(destination, 'destination')
+            const running = pool
+              .execute({ id: 'source', wait: true })
+              .catch(error => error)
+            const healthyData = { id: 'destination', wait: true }
+            const healthy = pool.execute(healthyData)
+            await bounded(Promise.all([sourceStarted, destinationStarted]))
+            await bounded(
+              pool.addTaskFunction('migratingEcho', {
+                taskFunction: data => ({ id: data.id }),
+                workerNodeKeys: [0],
+              })
+            )
+            const bad = pool
+              .execute(
+                { id: 'bad', port: channel.port1 },
+                'migratingEcho',
+                undefined,
+                [channel.port1]
+              )
+              .catch(error => error)
+            const laterData = { id: 'later' }
+            const later = pool.execute(laterData, 'migratingEcho')
+            expect(source.tasksQueue.size).toBe(2)
+            transferredPort = structuredClone(channel.port1, {
+              transfer: [channel.port1],
+            })
+            if (!destinationBusy) {
+              send(destination, { release: 'destination' })
+              expect(await bounded(healthy)).toStrictEqual(healthyData)
+            }
+            const exit = new Promise(resolve =>
+              source.worker.once('exit', resolve)
+            )
+            send(source, { exitCode: 0 })
+            await bounded(exit)
+            if (destinationBusy) {
+              expect(destination.tasksQueue.size).toBe(2)
+              send(destination, { release: 'destination' })
+              expect(await bounded(healthy)).toStrictEqual(healthyData)
+            }
+            const outcomes = await bounded(Promise.all([running, bad, later]))
+            expect(outcomes[0]).toBeInstanceOf(Error)
+            expect(outcomes[1]).toBeInstanceOf(Error)
+            expect(outcomes[1].name).toBe('DataCloneError')
+            expect(outcomes[2]).toStrictEqual(laterData)
+            const followupData = { id: 'followup' }
+            expect(await bounded(pool.execute(followupData))).toStrictEqual(
+              followupData
+            )
+            expect(source.tasksQueue.size).toBe(0)
+            expect(pool.promiseResponseMap.size).toBe(0)
+            expect(destination.usage.tasks.executing).toBe(0)
+            expect(
+              destination.getTaskFunctionWorkerUsage('migratingEcho').tasks
+                .executing
+            ).toBe(0)
+          } finally {
+            channel.port1.close()
+            channel.port2.close()
+            transferredPort?.close()
+            if (pool.info.started) await bounded(pool.destroy())
+          }
+        })
+      }
+
       it('settles exited worker tasks when replacement construction throws', async () => {
         const { stdout } = await promisify(execFile)(
           process.execPath,

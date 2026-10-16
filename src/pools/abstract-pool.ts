@@ -1201,24 +1201,27 @@ export abstract class AbstractPool<
             this.startMinimumNumberOfWorkers(true)
           }
         } finally {
-          if (settlingTasks) {
-            if (this.opts.enableTasksQueue === true) {
+          try {
+            if (settlingTasks && this.opts.enableTasksQueue === true) {
               this.redistributeQueuedTasks(workerNode)
             }
-            workerNode.clearTasksQueue()
-          }
-          if (settlingTasks && this.opts.enableTasksQueue === true) {
-            this.checkAndEmitTaskDequeuingEvents()
-          }
-          if (taskResponses != null) {
-            for (const message of taskResponses) {
-              this.handleTaskExecutionResponse(message)
+          } finally {
+            if (settlingTasks) {
+              workerNode.clearTasksQueue()
             }
+            if (settlingTasks && this.opts.enableTasksQueue === true) {
+              this.checkAndEmitTaskDequeuingEvents()
+            }
+            if (taskResponses != null) {
+              for (const message of taskResponses) {
+                this.handleTaskExecutionResponse(message)
+              }
+            }
+            if (workerNodeTasks != null) {
+              this.rejectWorkerNodeTasks(workerNodeTasks, workerError)
+            }
+            this.checkAndEmitTaskExecutionFinishedEvents()
           }
-          if (workerNodeTasks != null) {
-            this.rejectWorkerNodeTasks(workerNodeTasks, workerError)
-          }
-          this.checkAndEmitTaskExecutionFinishedEvents()
         }
       } finally {
         exitHandler?.call(workerNode.worker, exitCode)
@@ -1275,8 +1278,9 @@ export abstract class AbstractPool<
     let flushedTasks = 0
     while (this.tasksQueueSize(workerNodeKey) > 0) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.executeTask(workerNodeKey, this.dequeueTask(workerNodeKey)!)
-      ++flushedTasks
+      if (this.executeTask(workerNodeKey, this.dequeueTask(workerNodeKey)!)) {
+        ++flushedTasks
+      }
     }
     this.workerNodes[workerNodeKey].clearTasksQueue()
     return flushedTasks
@@ -1751,13 +1755,43 @@ export abstract class AbstractPool<
    * Executes the given task on the worker given its worker node key.
    * @param workerNodeKey - The worker node key.
    * @param task - The task to execute.
+   * @returns Whether the worker accepted the task.
    */
-  private executeTask (workerNodeKey: number, task: Task<Data>): void {
+  private executeTask (workerNodeKey: number, task: Task<Data>): boolean {
     this.updateTaskWorkerNodeKey(workerNodeKey, task)
+    const workerNode = this.workerNodes[workerNodeKey]
     const { transferList } = task
     this.beforeTaskExecutionHook(workerNodeKey, task)
-    this.sendToWorker(workerNodeKey, task, transferList)
+    try {
+      this.sendToWorker(workerNodeKey, task, transferList)
+    } catch (error) {
+      if (workerNode.usage.tasks.executing > 0) {
+        --workerNode.usage.tasks.executing
+      }
+      if (
+        Array.isArray(workerNode.info.taskFunctionsProperties) &&
+        workerNode.info.taskFunctionsProperties.length > 2
+      ) {
+        const taskFunctionWorkerUsage =
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          workerNode.getTaskFunctionWorkerUsage(task.name!)
+        if (
+          taskFunctionWorkerUsage != null &&
+          taskFunctionWorkerUsage.tasks.executing > 0
+        ) {
+          --taskFunctionWorkerUsage.tasks.executing
+        }
+      }
+      if (task.taskId != null) {
+        const promiseResponse = this.promiseResponseMap.get(task.taskId)
+        if (promiseResponse != null) {
+          this.rejectTask(task.taskId, promiseResponse, error)
+        }
+      }
+      return false
+    }
     this.checkAndEmitTaskExecutionEvents()
+    return true
   }
 
   private flushTasksQueues (): void {
@@ -1962,7 +1996,7 @@ export abstract class AbstractPool<
         this.afterTaskExecutionHook(workerNodeKey, message)
       }
       queueMicrotask(() => {
-        const currentWorkerNodeKey =
+        let currentWorkerNodeKey =
           this.workerNodes[workerNodeKey] === workerNode
             ? workerNodeKey
             : this.workerNodes.indexOf(workerNode)
@@ -1972,16 +2006,37 @@ export abstract class AbstractPool<
         if (currentWorkerNodeKey === -1 || !workerNode.info.ready) {
           return
         }
-        if (this.opts.enableTasksQueue === true && !this.destroying) {
-          if (
+        if (
+          this.started &&
+          this.opts.enableTasksQueue === true &&
+          !this.destroying
+        ) {
+          while (
             !this.isWorkerNodeBusy(currentWorkerNodeKey) &&
             this.tasksQueueSize(currentWorkerNodeKey) > 0
           ) {
-            this.executeTask(
-              currentWorkerNodeKey,
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              this.dequeueTask(currentWorkerNodeKey)!
-            )
+            if (
+              this.executeTask(
+                currentWorkerNodeKey,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                this.dequeueTask(currentWorkerNodeKey)!
+              )
+            ) {
+              break
+            }
+            currentWorkerNodeKey = this.workerNodes.indexOf(workerNode)
+            // Rejection callbacks can synchronously change pool and worker state.
+            /* eslint-disable @typescript-eslint/no-unnecessary-condition */
+            if (
+              currentWorkerNodeKey === -1 ||
+              !this.started ||
+              this.destroying ||
+              !workerNode.info.ready ||
+              !this.opts.enableTasksQueue
+            ) {
+              return
+            }
+            /* eslint-enable @typescript-eslint/no-unnecessary-condition */
           }
           if (this.isWorkerNodeIdle(currentWorkerNodeKey)) {
             workerNode.emit('idle', {
@@ -2357,6 +2412,25 @@ export abstract class AbstractPool<
     }
   }
 
+  private rejectTask (
+    taskId: `${string}-${string}-${string}-${string}-${string}`,
+    promiseResponse: PromiseResponseWrapper<Response>,
+    error: unknown
+  ): void {
+    if (this.promiseResponseMap.get(taskId) !== promiseResponse) {
+      return
+    }
+    this.promiseResponseMap.delete(taskId)
+    const { asyncResource, reject } = promiseResponse
+    try {
+      asyncResource != null
+        ? asyncResource.runInAsyncScope(reject, this.emitter, error)
+        : reject(error)
+    } finally {
+      asyncResource?.emitDestroy()
+    }
+  }
+
   /**
    * Rejects tasks still owned by a worker that cannot complete them.
    * @param workerNodeTasks - The task wrappers owned by the failed worker node.
@@ -2375,12 +2449,7 @@ export abstract class AbstractPool<
         promiseResponse.workerNodeKey === -1
       ) {
         error ??= new Error('Worker exited before completing the task')
-        this.promiseResponseMap.delete(taskId)
-        const { asyncResource, reject } = promiseResponse
-        asyncResource != null
-          ? asyncResource.runInAsyncScope(reject, this.emitter, error)
-          : reject(error)
-        asyncResource?.emitDestroy()
+        this.rejectTask(taskId, promiseResponse, error)
       }
     }
   }
