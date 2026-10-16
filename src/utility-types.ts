@@ -1,4 +1,5 @@
 import type { AsyncResource } from 'node:async_hooks'
+import type { UUID } from 'node:crypto'
 import type { EventLoopUtilization } from 'node:perf_hooks'
 import type { MessagePort, Transferable } from 'node:worker_threads'
 
@@ -133,7 +134,7 @@ export interface Task<Data = unknown> {
   /**
    * Task UUID.
    */
-  readonly taskId?: `${string}-${string}-${string}-${string}-${string}`
+  readonly taskId?: UUID
   /**
    * Timestamp.
    */

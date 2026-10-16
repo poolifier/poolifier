@@ -14,23 +14,7 @@ import {
   FixedThreadPool,
   WorkerChoiceStrategies,
 } from '../../lib/index.mjs'
-
-const bounded = async promise => {
-  let timeout
-  try {
-    return await Promise.race([
-      promise,
-      new Promise((resolve, reject) => {
-        timeout = setTimeout(
-          () => reject(new Error('Task remained pending')),
-          5000
-        )
-      }),
-    ])
-  } finally {
-    clearTimeout(timeout)
-  }
-}
+import { bounded, waitForMessage } from '../test-utils.cjs'
 
 const send = (workerNode, message) => {
   const workerMessage = { ...message, workerId: workerNode.info.id }
@@ -41,17 +25,8 @@ const send = (workerNode, message) => {
   }
 }
 
-const started = (workerNode, id) => {
-  return new Promise(resolve => {
-    const listener = message => {
-      if (message.started === id) {
-        workerNode.worker.off('message', listener)
-        resolve()
-      }
-    }
-    workerNode.worker.on('message', listener)
-  })
-}
+const started = (workerNode, id) =>
+  waitForMessage(workerNode.worker, message => message.started === id)
 
 const cleanupRegressionPool = async (pool, capturedNodes) => {
   pool.opts.restartWorkerOnError = false
@@ -111,7 +86,10 @@ for (const [workerType, PoolClass, workerFile] of [
           await bounded(exit)
           expect(pool.promiseResponseMap.size).toBe(0)
         } finally {
-          await pool.destroy()
+          await bounded(
+            pool.destroy(),
+            'Worker exit pool cleanup remained pending'
+          )
         }
       })
     }
@@ -126,7 +104,10 @@ for (const [workerType, PoolClass, workerFile] of [
           expect(result).toBeInstanceOf(Error)
           expect(pool.promiseResponseMap.size).toBe(0)
         } finally {
-          await pool.destroy()
+          await bounded(
+            pool.destroy(),
+            'Silent exit pool cleanup remained pending'
+          )
         }
       })
     }
@@ -190,7 +171,10 @@ for (const [workerType, PoolClass, workerFile] of [
       })
       let destruction
       try {
-        await pool.execute({ warmup: true })
+        await bounded(
+          pool.execute({ warmup: true }),
+          'Exit redistribution warmup remained pending'
+        )
         const [source, destination] = pool.workerNodes
         const sourceStarted = started(source, 'source')
         const destinationStarted = started(destination, 'destination')
@@ -225,7 +209,10 @@ for (const [workerType, PoolClass, workerFile] of [
         },
       })
       try {
-        await pool.execute({ warmup: true })
+        await bounded(
+          pool.execute({ warmup: true }),
+          'Worker index shift warmup remained pending'
+        )
         const [failedNode, healthyNode] = pool.workerNodes
         const failedStarted = started(failedNode, 'failed')
         const healthyStarted = started(healthyNode, 'healthy')
@@ -248,7 +235,10 @@ for (const [workerType, PoolClass, workerFile] of [
         expect(await bounded(queued)).toStrictEqual(queuedData)
         expect(healthyNode.usage.tasks.executing).toBe(0)
       } finally {
-        await pool.destroy()
+        await bounded(
+          pool.destroy(),
+          'Worker index shift pool cleanup remained pending'
+        )
       }
     })
 
@@ -339,7 +329,10 @@ for (const [workerType, PoolClass, workerFile] of [
           expect(completions).toStrictEqual(executions)
           expect(pool.promiseResponseMap.size).toBe(0)
         } finally {
-          await pool.destroy()
+          await bounded(
+            pool.destroy(),
+            'Affinity pool cleanup remained pending'
+          )
         }
       })
     }
@@ -380,7 +373,10 @@ for (const [workerType, PoolClass, workerFile] of [
         expect(outcomes[1]).toBeInstanceOf(Error)
         await bounded(exit)
       } finally {
-        await pool.destroy()
+        await bounded(
+          pool.destroy(),
+          'Default affinity pool cleanup remained pending'
+        )
       }
     })
 
@@ -424,7 +420,10 @@ for (const [workerType, PoolClass, workerFile] of [
         expect(outcomes[2]).toStrictEqual(eligibleData)
         await bounded(exit)
       } finally {
-        await pool.destroy()
+        await bounded(
+          pool.destroy(),
+          'Eligible migration pool cleanup remained pending'
+        )
       }
     })
 
@@ -437,7 +436,10 @@ for (const [workerType, PoolClass, workerFile] of [
         },
       })
       try {
-        await pool.execute({ warmup: true })
+        await bounded(
+          pool.execute({ warmup: true }),
+          'Stolen task warmup remained pending'
+        )
         const [source, destination] = pool.workerNodes
         const sourceStarted = started(source, 'source')
         const destinationStarted = started(destination, 'destination')
@@ -468,7 +470,10 @@ for (const [workerType, PoolClass, workerFile] of [
         expect(await bounded(stolenResult)).toBeInstanceOf(Error)
         await bounded(destinationExit)
       } finally {
-        await pool.destroy()
+        await bounded(
+          pool.destroy(),
+          'Stolen task pool cleanup remained pending'
+        )
       }
     })
 
@@ -483,7 +488,10 @@ for (const [workerType, PoolClass, workerFile] of [
         },
       })
       try {
-        await pool.execute({ warmup: true })
+        await bounded(
+          pool.execute({ warmup: true }),
+          'Redistribution abort warmup remained pending'
+        )
         const [source, destination] = pool.workerNodes
         const sourceStarted = started(source, 'source')
         const destinationStarted = started(destination, 'destination')
@@ -540,7 +548,10 @@ for (const [workerType, PoolClass, workerFile] of [
         await bounded(exit)
         expect(pool.promiseResponseMap.size).toBe(0)
       } finally {
-        await pool.destroy()
+        await bounded(
+          pool.destroy(),
+          'Redistribution abort pool cleanup remained pending'
+        )
       }
     })
 
@@ -599,7 +610,10 @@ for (const [workerType, PoolClass, workerFile] of [
         expect(source.tasksQueue.size).toBe(0)
         expect(pool.promiseResponseMap.size).toBe(0)
       } finally {
-        await pool.destroy()
+        await bounded(
+          pool.destroy(),
+          'Queued abort pool cleanup remained pending'
+        )
       }
     })
 
@@ -612,7 +626,10 @@ for (const [workerType, PoolClass, workerFile] of [
         },
       })
       try {
-        await pool.execute({ warmup: true })
+        await bounded(
+          pool.execute({ warmup: true }),
+          'Abort routing warmup remained pending'
+        )
         const [source, destination] = pool.workerNodes
         const sourceStarted = started(source, 'source')
         const destinationStarted = started(destination, 'destination')
@@ -637,7 +654,10 @@ for (const [workerType, PoolClass, workerFile] of [
         expect(await bounded(destinationResult)).toStrictEqual(destinationData)
         expect(destination.tasksQueue.size).toBe(0)
       } finally {
-        await pool.destroy()
+        await bounded(
+          pool.destroy(),
+          'Abort routing pool cleanup remained pending'
+        )
       }
     })
     it('can destroy the pool immediately after catching a worker failure', async () => {
@@ -670,7 +690,10 @@ for (const [workerType, PoolClass, workerFile] of [
     it('does not attribute intentionally terminated tasks to a later crashed worker', async () => {
       const pool = await createPool(2)
       try {
-        await pool.execute({ warmup: true })
+        await bounded(
+          pool.execute({ warmup: true }),
+          'Intentional termination warmup remained pending'
+        )
         const [removed, survivor] = pool.workerNodes
         const removedStarted = started(removed, 'removed')
         const survivorStarted = started(survivor, 'survivor')
@@ -690,7 +713,10 @@ for (const [workerType, PoolClass, workerFile] of [
         expect(await bounded(survivorResult)).toBeInstanceOf(Error)
         expect(removedTaskSettled).toBe(false)
       } finally {
-        await pool.destroy()
+        await bounded(
+          pool.destroy(),
+          'Intentional termination pool cleanup remained pending'
+        )
       }
     })
 
@@ -1057,7 +1083,10 @@ for (const [workerType, PoolClass, workerFile] of [
               expect(error).toBe(rawWorkerError)
             }
           } finally {
-            await pool.destroy()
+            await bounded(
+              pool.destroy(),
+              'Native failure pool cleanup remained pending'
+            )
           }
         })
       }
@@ -1178,7 +1207,12 @@ for (const [workerType, PoolClass, workerFile] of [
           } finally {
             workerNode.messageChannel?.port1.close()
             workerNode.messageChannel?.port2.close()
-            if (pool.info.started) await pool.destroy()
+            if (pool.info.started) {
+              await bounded(
+                pool.destroy(),
+                'Buffered response pool cleanup remained pending'
+              )
+            }
           }
         })
       }
@@ -1472,37 +1506,25 @@ for (const [workerType, PoolClass, workerFile] of [
         const data = { recovered: true }
         expect(await bounded(pool.execute(data))).toStrictEqual(data)
       } finally {
-        await pool.destroy()
+        await bounded(
+          pool.destroy(),
+          'Dynamic recovery pool cleanup remained pending'
+        )
       }
     })
   })
 }
 
 describe('thread worker exit bootstrap affinity metadata', { retry: 0 }, () => {
-  const bootstrapMessage = (workerNode, predicate) =>
-    new Promise(resolve => {
-      const listener = message => {
-        if (predicate(message)) {
-          workerNode.worker.off('message', listener)
-          resolve(message)
-        }
-      }
-      workerNode.worker.on('message', listener)
-    })
-
   const metadataReady = workerNode => {
     if (workerNode.info.taskFunctionsProperties?.length > 0) {
       return Promise.resolve()
     }
-    return new Promise(resolve => {
-      const listener = message => {
-        if (message.ready === true && message.taskFunctionsProperties != null) {
-          workerNode.messageChannel.port1.off('message', listener)
-          resolve()
-        }
-      }
-      workerNode.messageChannel.port1.on('message', listener)
-    })
+    return waitForMessage(
+      workerNode.messageChannel.port1,
+      message =>
+        message.ready === true && message.taskFunctionsProperties != null
+    )
   }
 
   it.each([
@@ -1570,8 +1592,8 @@ describe('thread worker exit bootstrap affinity metadata', { retry: 0 }, () => {
         capturedNodes.push(pool.workerNodes[0])
         const heldStarted = [started(capturedNodes[0], 'held-0')]
         const firstClaim = await bounded(
-          bootstrapMessage(
-            capturedNodes[0],
+          waitForMessage(
+            capturedNodes[0].worker,
             message => message.bootstrapRole === 0
           )
         )
@@ -1588,8 +1610,8 @@ describe('thread worker exit bootstrap affinity metadata', { retry: 0 }, () => {
         capturedNodes.push(pool.workerNodes[1])
         heldStarted.push(started(capturedNodes[1], 'held-1'))
         const secondClaim = await bounded(
-          bootstrapMessage(
-            capturedNodes[1],
+          waitForMessage(
+            capturedNodes[1].worker,
             message => message.bootstrapRole === 1
           )
         )

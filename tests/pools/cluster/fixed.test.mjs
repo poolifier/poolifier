@@ -133,10 +133,7 @@ describe('Fixed cluster pool test suite', () => {
     expect(queuePool.info.stolenTasks).toBe(0)
     await Promise.all(promises)
     for (const workerNode of queuePool.workerNodes) {
-      expect(workerNode.usage.tasks.executing).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.tasks.executing).toBeLessThanOrEqual(
-        numberOfWorkers * maxMultiplier
-      )
+      expect(workerNode.usage.tasks.executing).toBe(0)
       expect(workerNode.usage.tasks.queued).toBe(0)
       expect(workerNode.usage.tasks.maxQueued).toBe(
         maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency

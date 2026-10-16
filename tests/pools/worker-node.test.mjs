@@ -9,6 +9,7 @@ import { WorkerNode } from '../../lib/pools/worker-node.mjs'
 import { MeasurementHistorySize } from '../../lib/pools/worker.mjs'
 import { PriorityQueue } from '../../lib/queues/priority-queue.mjs'
 import { DEFAULT_TASK_NAME } from '../../lib/utils.mjs'
+import { bounded } from '../test-utils.cjs'
 
 describe('Worker node test suite', () => {
   let clusterWorkerNode, threadWorkerNode
@@ -51,27 +52,31 @@ describe('Worker node test suite', () => {
         tasksQueuePriority: true,
       }
     )
-    let timeout
     try {
-      await once(workerNode.worker, 'online')
-      await workerNode.worker.terminate()
+      await bounded(
+        once(workerNode.worker, 'online'),
+        'Worker node online remained pending'
+      )
+      await bounded(
+        workerNode.worker.terminate(),
+        'Native worker termination remained pending'
+      )
       await expect(
-        Promise.race([
+        bounded(
           workerNode.terminate(),
-          new Promise((resolve, reject) => {
-            timeout = setTimeout(
-              () =>
-                reject(new Error('Worker node termination remained pending')),
-              5000
-            )
-          }),
-        ])
+          'Worker node termination remained pending'
+        )
       ).resolves.toBeUndefined()
     } finally {
-      clearTimeout(timeout)
-      await workerNode.worker.terminate()
-      workerNode.messageChannel?.port1.close()
-      workerNode.messageChannel?.port2.close()
+      try {
+        await bounded(
+          workerNode.worker.terminate(),
+          'Native worker cleanup remained pending'
+        )
+      } finally {
+        workerNode.messageChannel?.port1.close()
+        workerNode.messageChannel?.port2.close()
+      }
     }
   })
 
@@ -94,37 +99,30 @@ describe('Worker node test suite', () => {
     } finally {
       cluster.setupPrimary(clusterSettings)
     }
-    let timeout
-    const boundedWait = async (promise, stage) => {
-      try {
-        await Promise.race([
-          promise,
-          new Promise((resolve, reject) => {
-            timeout = setTimeout(
-              () => reject(new Error(`Worker node ${stage} remained pending`)),
-              5000
-            )
-          }),
-        ])
-      } finally {
-        clearTimeout(timeout)
-      }
-    }
     try {
-      await boundedWait(once(workerNode.worker, 'online'), 'online')
+      await bounded(
+        once(workerNode.worker, 'online'),
+        'Worker node online remained pending'
+      )
       const disconnect = once(workerNode.worker, 'disconnect')
       workerNode.worker.send({ disconnect: true })
-      await boundedWait(disconnect, 'disconnect')
+      await bounded(disconnect, 'Worker node disconnect remained pending')
       expect(workerNode.worker.isConnected()).toBe(false)
       expect(workerNode.worker.isDead()).toBe(false)
-      await boundedWait(workerNode.terminate(), 'disconnected termination')
+      await bounded(
+        workerNode.terminate(),
+        'Worker node disconnected termination remained pending'
+      )
       expect(workerNode.worker.isDead()).toBe(true)
-      await boundedWait(workerNode.terminate(), 'post-exit termination')
+      await bounded(
+        workerNode.terminate(),
+        'Worker node post-exit termination remained pending'
+      )
     } finally {
       if (!workerNode.worker.isDead()) {
         const exit = once(workerNode.worker, 'exit')
         workerNode.worker.process.kill()
-        await boundedWait(exit, 'native cleanup exit')
+        await bounded(exit, 'Worker node native cleanup exit remained pending')
       }
     }
   })
