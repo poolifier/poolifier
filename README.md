@@ -170,15 +170,11 @@ You can do the same with the classes _ClusterWorker_, _FixedClusterPool_ and _Dy
     - [ws cluster pool](./examples/typescript/websocket-server-pool/ws-cluster/)
     - [ws hybrid pool](./examples/typescript/websocket-server-pool/ws-hybrid/)
 
-The TypeScript cluster and hybrid server examples build ESM only. Run `pnpm build` followed by `pnpm start` from the example directory.
-
 Remember that workers can only send and receive structured-cloneable data.
 
 ## Node.js versions
 
 Supported Node.js versions are **22.18.0 or later in the 22.x line**, or **24.3.0 and later**.
-
-These minimum versions include the [Node.js ESM loading change](https://github.com/nodejs/node/pull/57419) needed for cluster worker startup messages to reach ESM workers.
 
 ## [API](./docs/api.md)
 
