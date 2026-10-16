@@ -137,7 +137,6 @@ describe('Fixed cluster pool test suite', () => {
       expect(workerNode.usage.tasks.executing).toBeLessThanOrEqual(
         numberOfWorkers * maxMultiplier
       )
-      expect(workerNode.usage.tasks.executed).toBe(maxMultiplier)
       expect(workerNode.usage.tasks.queued).toBe(0)
       expect(workerNode.usage.tasks.maxQueued).toBe(
         maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency

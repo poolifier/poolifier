@@ -171,26 +171,34 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
 
   /** @inheritdoc */
   public async terminate (): Promise<void> {
-    const waitWorkerExit = new Promise<void>(resolve => {
-      this.registerOnceWorkerEventHandler('exit', () => {
-        resolve()
-      })
-    })
     this.closeMessageChannel()
     this.removeAllListeners()
     switch (this.info.type) {
-      case WorkerTypes.cluster:
-        this.registerOnceWorkerEventHandler('disconnect', () => {
-          this.worker.kill?.()
+      case WorkerTypes.cluster: {
+        if (this.worker.isDead?.() === true) {
+          break
+        }
+        const waitWorkerExit = new Promise<void>(resolve => {
+          this.registerOnceWorkerEventHandler('exit', () => {
+            resolve()
+          })
         })
-        this.worker.disconnect?.()
+        if (this.worker.isConnected?.() === true) {
+          this.registerOnceWorkerEventHandler('disconnect', () => {
+            this.worker.kill?.()
+          })
+          this.worker.disconnect?.()
+        } else {
+          this.worker.kill?.()
+        }
+        await waitWorkerExit
         break
+      }
       case WorkerTypes.thread:
         this.worker.unref?.()
         await this.worker.terminate?.()
         break
     }
-    await waitWorkerExit
     this.worker.removeAllListeners()
   }
 
