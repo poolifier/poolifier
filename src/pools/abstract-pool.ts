@@ -954,7 +954,7 @@ export abstract class AbstractPool<
     }
     if (
       this.shallUpdateTaskFunctionWorkerUsage(
-        this.workerNodes[workerNodeKey]
+        this.getWorkerInfo(workerNodeKey)
       ) &&
       message.taskPerformance?.name != null &&
       this.workerNodes[workerNodeKey].getTaskFunctionWorkerUsage(
@@ -1037,7 +1037,7 @@ export abstract class AbstractPool<
     }
     if (
       this.shallUpdateTaskFunctionWorkerUsage(
-        this.workerNodes[workerNodeKey]
+        this.getWorkerInfo(workerNodeKey)
       ) &&
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.workerNodes[workerNodeKey].getTaskFunctionWorkerUsage(task.name!) !=
@@ -1777,7 +1777,7 @@ export abstract class AbstractPool<
       if (workerNode.usage.tasks.executing > 0) {
         --workerNode.usage.tasks.executing
       }
-      if (this.shallUpdateTaskFunctionWorkerUsage(workerNode)) {
+      if (this.shallUpdateTaskFunctionWorkerUsage(workerNode.info)) {
         const taskFunctionWorkerUsage =
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           workerNode.getTaskFunctionWorkerUsage(task.name!)
@@ -2513,7 +2513,9 @@ export abstract class AbstractPool<
     }
     if (
       taskName != null &&
-      this.shallUpdateTaskFunctionWorkerUsage(workerNode) &&
+      this.shallUpdateTaskFunctionWorkerUsage(
+        this.getWorkerInfo(workerNodeKey)
+      ) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
     ) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -2737,13 +2739,12 @@ export abstract class AbstractPool<
 
   /**
    * Whether the worker node shall update its task function worker usage or not.
-   * @param workerNode - The worker node.
+   * @param workerInfo - The worker information.
    * @returns `true` if the worker node shall update its task function worker usage, `false` otherwise.
    */
   private shallUpdateTaskFunctionWorkerUsage (
-    workerNode: IWorkerNode<Worker, Data> | undefined
+    workerInfo: undefined | WorkerInfo
   ): boolean {
-    const workerInfo = workerNode?.info
     return (
       workerInfo != null &&
       Array.isArray(workerInfo.taskFunctionsProperties) &&
@@ -2858,7 +2859,9 @@ export abstract class AbstractPool<
     }
     if (
       taskName != null &&
-      this.shallUpdateTaskFunctionWorkerUsage(workerNode) &&
+      this.shallUpdateTaskFunctionWorkerUsage(
+        this.getWorkerInfo(workerNodeKey)
+      ) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
     ) {
       const taskFunctionWorkerUsage =
@@ -2887,7 +2890,9 @@ export abstract class AbstractPool<
       ++workerNode.usage.tasks.stolen
     }
     if (
-      this.shallUpdateTaskFunctionWorkerUsage(workerNode) &&
+      this.shallUpdateTaskFunctionWorkerUsage(
+        this.getWorkerInfo(workerNodeKey)
+      ) &&
       workerNode.getTaskFunctionWorkerUsage(taskName) != null
     ) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

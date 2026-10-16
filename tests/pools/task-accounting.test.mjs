@@ -8,7 +8,7 @@ import {
   PoolEvents,
   WorkerChoiceStrategies,
 } from '../../lib/index.mjs'
-import { bounded } from '../test-utils.cjs'
+import { bounded, waitForMessage } from '../test-utils.cjs'
 
 const workerFile = './tests/worker-files/thread/taskAccountingWorker.mjs'
 
@@ -193,6 +193,73 @@ describe('Task response worker accounting', () => {
     } finally {
       gates.forEach(release)
       await finishTasksAndDestroy(pool, tasks)
+    }
+  })
+
+  it('preserves worker info overrides in task function statistics', async () => {
+    class ProjectedInfoPool extends FixedThreadPool {
+      projectInfo = false
+
+      getWorkerInfo (workerNodeKey) {
+        const workerInfo = super.getWorkerInfo(workerNodeKey)
+        return this.projectInfo && workerInfo != null
+          ? {
+              ...workerInfo,
+              taskFunctionsProperties:
+                workerInfo.taskFunctionsProperties?.slice(0, 2),
+            }
+          : workerInfo
+      }
+    }
+
+    const pool = new ProjectedInfoPool(1, workerFile)
+    try {
+      await bounded(
+        once(pool.emitter, PoolEvents.ready),
+        'Override regression pool readiness remained pending'
+      )
+      const workerNode = pool.workerNodes[0]
+      const metadata = waitForMessage(
+        workerNode.messageChannel.port1,
+        message =>
+          message.taskFunctionsProperties?.length === 3 &&
+          message.taskFunctionsProperties.some(({ name }) => name === 'extra')
+      )
+      const [, added] = await bounded(
+        Promise.all([metadata, pool.addTaskFunction('extra', data => data)]),
+        'Extra task function metadata remained pending'
+      )
+      expect(added).toBe(true)
+      const taskFunctionUsage = workerNode.getTaskFunctionWorkerUsage('extra')
+      const controlData = { phase: 'control' }
+      expect(
+        await bounded(
+          pool.execute(controlData, 'extra'),
+          'Control task remained pending'
+        )
+      ).toStrictEqual(controlData)
+      expect(workerNode.usage.tasks.executed).toBe(1)
+      expect(taskFunctionUsage.tasks.executed).toBe(1)
+      expect(taskFunctionUsage.tasks.executing).toBe(0)
+
+      pool.projectInfo = true
+      const projectedData = { phase: 'projected' }
+      expect(
+        await bounded(
+          pool.execute(projectedData, 'extra'),
+          'Projected task remained pending'
+        )
+      ).toStrictEqual(projectedData)
+      expect(workerNode.usage.tasks.executed).toBe(2)
+      expect(workerNode.usage.tasks.executing).toBe(0)
+      expect(taskFunctionUsage.tasks.executed).toBe(1)
+      expect(taskFunctionUsage.tasks.executing).toBe(0)
+    } finally {
+      pool.projectInfo = false
+      await bounded(
+        pool.destroy(),
+        'Override regression pool cleanup remained pending'
+      )
     }
   })
 })
