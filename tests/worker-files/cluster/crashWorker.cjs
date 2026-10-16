@@ -6,6 +6,11 @@ const { ClusterWorker } = require('../../../lib/index.cjs')
 const pendingTasks = new Map()
 
 process.on('message', message => {
+  if (message.disconnect === true) {
+    // Keep the disconnected process alive until its owner terminates it.
+    setInterval(() => {}, 1000)
+    cluster.worker.disconnect()
+  }
   if (message.crash === true) {
     throw new Error('Worker crashed')
   }

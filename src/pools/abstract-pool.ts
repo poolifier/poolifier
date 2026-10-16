@@ -1202,7 +1202,7 @@ export abstract class AbstractPool<
           }
         } finally {
           try {
-            if (settlingTasks && this.opts.enableTasksQueue === true) {
+            if (settlingTasks) {
               this.redistributeQueuedTasks(workerNode)
             }
           } finally {
@@ -2369,16 +2369,23 @@ export abstract class AbstractPool<
     while (sourceWorkerNode.tasksQueue.size > 0) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const task = sourceWorkerNode.dequeueTask()!
-      const promiseResponse =
-        task.taskId != null
-          ? this.promiseResponseMap.get(task.taskId)
-          : undefined
-      if (
-        !this.started ||
-        this.destroying ||
-        promiseResponse == null ||
-        promiseResponse.abortSignal?.aborted === true
-      ) {
+      const { taskId } = task
+      if (taskId == null) {
+        continue
+      }
+      const promiseResponse = this.promiseResponseMap.get(taskId)
+      if (promiseResponse == null) {
+        continue
+      }
+      if (promiseResponse.abortSignal?.aborted === true) {
+        this.rejectTask(
+          taskId,
+          promiseResponse,
+          this.getAbortError(task.name ?? DEFAULT_TASK_NAME, taskId)
+        )
+        continue
+      }
+      if (!this.started || this.destroying) {
         continue
       }
       const workerNodeKeys = this.getTaskFunctionWorkerNodeKeys(task.name)
@@ -2408,7 +2415,11 @@ export abstract class AbstractPool<
       if (destinationWorkerNodeKey === -1) {
         continue
       }
-      this.handleTask(destinationWorkerNodeKey, task)
+      if (this.opts.enableTasksQueue === true) {
+        this.handleTask(destinationWorkerNodeKey, task)
+      } else {
+        this.executeTask(destinationWorkerNodeKey, task)
+      }
     }
   }
 

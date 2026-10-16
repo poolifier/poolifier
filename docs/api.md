@@ -51,6 +51,8 @@ If sending a task to a worker throws, only that task rejects with the original s
 
 If a worker crashes or exits unexpectedly, tasks still assigned to it reject with an `Error` once it exits. Failure to construct a replacement worker does not prevent task settlement; the construction error still propagates. Native worker error values received by the pool that are not `Error` instances are wrapped in an `Error`, with the received value in `cause`; the pool's `error` event retains the received value. Thread task responses already posted to the pool retain their successful result or task error even if the worker subsequently crashes. Cluster task responses retain their outcome only if delivered to the pool before the worker exits; responses still in transit over IPC may be lost. Tasks already dispatched to that worker are not retried. Queued tasks are redistributed to ready workers respecting the task function's worker node affinity, evaluated against current worker node indices after the exited worker is removed and any replacement is created; queued tasks without an eligible destination also reject. All eligible, non-aborted queued tasks are handed off before redistribution emits `backPressureEnd`, so its listeners can abort any redistributed queued task. This does not change intentional pool or worker destruction behavior.
 
+If a failed cluster worker is already disconnected, the pool terminates it without waiting for another disconnect event. Queued tasks remain eligible for redistribution if a worker-removal event listener disables task queues; they are then dispatched directly to an eligible ready worker. Queued tasks aborted during worker removal reject with the original abort reason if it is an `Error`, an `Error` containing the reason if it is a string, or a task-specific abort `Error` otherwise.
+
 ### `pool.mapExecute(data, name, abortSignals, transferList)`
 
 `data` An iterable of objects that you want to pass to your worker task function implementation.  
@@ -68,7 +70,7 @@ This method is available on both pool implementations and will start the minimum
 
 ### `pool.destroy()`
 
-This method is available on both pool implementations and returns a promise for pool destruction. Thread workers that have already exited do not block destruction.
+This method is available on both pool implementations and returns a promise for pool destruction. Workers that have already exited do not block destruction.
 
 ### `pool.hasTaskFunction(name)`
 

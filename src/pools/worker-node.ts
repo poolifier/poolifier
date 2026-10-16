@@ -175,15 +175,22 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
     this.removeAllListeners()
     switch (this.info.type) {
       case WorkerTypes.cluster: {
+        if (this.worker.isDead?.() === true) {
+          break
+        }
         const waitWorkerExit = new Promise<void>(resolve => {
           this.registerOnceWorkerEventHandler('exit', () => {
             resolve()
           })
         })
-        this.registerOnceWorkerEventHandler('disconnect', () => {
+        if (this.worker.isConnected?.() === true) {
+          this.registerOnceWorkerEventHandler('disconnect', () => {
+            this.worker.kill?.()
+          })
+          this.worker.disconnect?.()
+        } else {
           this.worker.kill?.()
-        })
-        this.worker.disconnect?.()
+        }
         await waitWorkerExit
         break
       }
