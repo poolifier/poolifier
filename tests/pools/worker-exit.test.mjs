@@ -1236,78 +1236,128 @@ for (const [workerType, PoolClass, workerFile] of [
       })
     }
 
-    it('executes detached queued tasks when fullEnd disables task queues', async () => {
-      const DynamicPoolClass =
-        workerType === 'thread' ? DynamicThreadPool : DynamicClusterPool
-      const pool = new DynamicPoolClass(1, 2, workerFile, {
-        enableTasksQueue: true,
-        restartWorkerOnError: false,
-        tasksQueueOptions: {
-          concurrency: 1,
-          tasksStealingOnBackPressure: false,
-          taskStealing: false,
-        },
-        workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
-      })
-      pool.emitter.on('error', () => {})
-      const capturedNodes = new Set(pool.workerNodes)
-      try {
-        if (!pool.info.ready) await bounded(once(pool.emitter, 'ready'))
-        const minimumNode = pool.workerNodes[0]
-        const minimumStarted = started(minimumNode, 'minimum')
-        const minimumData = { id: 'minimum', wait: true }
-        const minimum = pool.execute(minimumData).catch(error => error)
-        await bounded(minimumStarted)
-        const full = once(pool.emitter, 'full')
-        const failed = pool
-          .execute({ id: 'dynamic', wait: true })
-          .catch(error => error)
-        const source = pool.workerNodes[1]
-        capturedNodes.add(source)
-        await bounded(Promise.all([full, started(source, 'dynamic')]))
-        await bounded(
-          pool.addTaskFunction('cursorEcho', {
-            taskFunction: data => data,
-            workerNodeKeys: [0],
-          })
-        )
-        await bounded(
-          pool.addTaskFunction('migratingEcho', {
-            taskFunction: data => data,
-            workerNodeKeys: [0, 1],
-          })
-        )
-        const healthyData = { id: 'healthy-queued' }
-        const detachedData = { id: 'detached-queued' }
-        const healthy = pool
-          .execute(healthyData, 'cursorEcho')
-          .catch(error => error)
-        const detached = pool
-          .execute(detachedData, 'migratingEcho')
-          .catch(error => error)
-        expect(minimumNode.tasksQueue.size).toBe(1)
-        expect(source.tasksQueue.size).toBe(1)
-        let fullEndCalls = 0
-        pool.emitter.once('fullEnd', () => {
-          ++fullEndCalls
-          pool.enableTasksQueue(false)
+    it.each(['healthy-flush', 'detached-migration'])(
+      'defers backPressureEnd until fullEnd queue-disable handoffs finish (%s)',
+      async abortTarget => {
+        const DynamicPoolClass =
+          workerType === 'thread' ? DynamicThreadPool : DynamicClusterPool
+        const pool = new DynamicPoolClass(1, 2, workerFile, {
+          enableTasksQueue: true,
+          restartWorkerOnError: false,
+          tasksQueueOptions: {
+            concurrency: 1,
+            size: 1,
+            tasksStealingOnBackPressure: false,
+            taskStealing: false,
+          },
+          workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
         })
-        const exit = new Promise(resolve => source.worker.once('exit', resolve))
-        send(source, { crash: true })
-        await bounded(exit)
-        expect(await bounded(failed)).toBeInstanceOf(Error)
-        expect(await bounded(healthy)).toStrictEqual(healthyData)
-        expect(await bounded(detached)).toStrictEqual(detachedData)
-        expect(fullEndCalls).toBe(1)
-        send(minimumNode, { release: 'minimum' })
-        expect(await bounded(minimum)).toStrictEqual(minimumData)
-        expect(minimumNode.tasksQueue.size).toBe(0)
-        expect(source.tasksQueue.size).toBe(0)
-        expect(pool.promiseResponseMap.size).toBe(0)
-      } finally {
-        await cleanupRegressionPool(pool, capturedNodes)
+        pool.emitter.on('error', () => {})
+        const capturedNodes = new Set(pool.workerNodes)
+        try {
+          if (!pool.info.ready) await bounded(once(pool.emitter, 'ready'))
+          const minimumNode = pool.workerNodes[0]
+          const minimumStarted = started(minimumNode, 'minimum')
+          const minimumData = { id: 'minimum', wait: true }
+          const minimum = pool.execute(minimumData).catch(error => error)
+          await bounded(minimumStarted)
+          const full = once(pool.emitter, 'full')
+          const failed = pool
+            .execute({ id: 'dynamic', wait: true })
+            .catch(error => error)
+          const source = pool.workerNodes[1]
+          capturedNodes.add(source)
+          await bounded(Promise.all([full, started(source, 'dynamic')]))
+          for (const [name, workerNodeKeys] of [
+            ['cursorEcho', [0]],
+            ['migratingEcho', [0, 1]],
+          ]) {
+            await bounded(
+              pool.addTaskFunction(name, {
+                taskFunction: async data =>
+                  data.wait ? await new Promise(() => {}) : data,
+                workerNodeKeys,
+              })
+            )
+          }
+          const controller = new AbortController()
+          const abortReason = new Error(`Abort ${abortTarget} after handoff`)
+          const healthyData = {
+            id: 'healthy-queued',
+            wait: abortTarget === 'healthy-flush',
+          }
+          const detachedData = {
+            id: 'detached-queued',
+            wait: abortTarget === 'detached-migration',
+          }
+          const backPressure = once(pool.emitter, 'backPressure')
+          const healthy = pool
+            .execute(
+              healthyData,
+              'cursorEcho',
+              abortTarget === 'healthy-flush' ? controller.signal : undefined
+            )
+            .catch(error => error)
+          const healthyWrapper = [...pool.promiseResponseMap.values()].at(-1)
+          const detached = pool
+            .execute(
+              detachedData,
+              'migratingEcho',
+              abortTarget === 'detached-migration'
+                ? controller.signal
+                : undefined
+            )
+            .catch(error => error)
+          const detachedWrapper = [...pool.promiseResponseMap.values()].at(-1)
+          await bounded(backPressure)
+          expect(minimumNode.tasksQueue.size).toBe(1)
+          expect(source.tasksQueue.size).toBe(1)
+          let fullEndCalls = 0
+          let endState
+          pool.emitter.once('fullEnd', () => {
+            ++fullEndCalls
+            pool.enableTasksQueue(false)
+          })
+          pool.emitter.once('backPressureEnd', () => {
+            endState = {
+              detachedOwner: detachedWrapper.workerNodeKey,
+              executing: minimumNode.usage.tasks.executing,
+              healthyOwner: healthyWrapper.workerNodeKey,
+              sourceQueue: source.tasksQueue.size,
+            }
+            controller.abort(abortReason)
+          })
+          const exit = new Promise(resolve =>
+            source.worker.once('exit', resolve)
+          )
+          send(source, { crash: true })
+          await bounded(exit)
+          expect(await bounded(failed)).toBeInstanceOf(Error)
+          expect(
+            await bounded(abortTarget === 'healthy-flush' ? healthy : detached)
+          ).toBe(abortReason)
+          expect(
+            await bounded(abortTarget === 'healthy-flush' ? detached : healthy)
+          ).toStrictEqual(
+            abortTarget === 'healthy-flush' ? detachedData : healthyData
+          )
+          expect(endState).toStrictEqual({
+            detachedOwner: 0,
+            executing: 3,
+            healthyOwner: 0,
+            sourceQueue: 0,
+          })
+          expect(fullEndCalls).toBe(1)
+          send(minimumNode, { release: 'minimum' })
+          expect(await bounded(minimum)).toStrictEqual(minimumData)
+          expect(minimumNode.tasksQueue.size).toBe(0)
+          expect(source.tasksQueue.size).toBe(0)
+          expect(pool.promiseResponseMap.size).toBe(0)
+        } finally {
+          await cleanupRegressionPool(pool, capturedNodes)
+        }
       }
-    })
+    )
 
     it.each([
       new Error('Detached task cancelled'),

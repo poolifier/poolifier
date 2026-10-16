@@ -461,6 +461,11 @@ export abstract class AbstractPool<
   private startTimestamp?: number
 
   /**
+   * Whether task dequeuing events are deferred until worker exit handoffs finish.
+   */
+  private taskDequeuingEventsDeferred = false
+
+  /**
    * The task functions added at runtime map:
    * - `key`: The task function name.
    * - `value`: The task function object.
@@ -1170,6 +1175,7 @@ export abstract class AbstractPool<
       }
     )
     workerNode.registerOnceWorkerEventHandler('exit', (exitCode: number) => {
+      const taskDequeuingEventsDeferred = this.taskDequeuingEventsDeferred
       try {
         const settlingTasks =
           workerError != null || !this.terminatingWorkerNodes.has(workerNode)
@@ -1191,6 +1197,9 @@ export abstract class AbstractPool<
             }
           }
         }
+        if (settlingTasks) {
+          this.taskDequeuingEventsDeferred = true
+        }
         this.removeWorkerNode(workerNode)
         try {
           if (
@@ -1209,7 +1218,8 @@ export abstract class AbstractPool<
             if (settlingTasks) {
               workerNode.clearTasksQueue()
             }
-            if (settlingTasks && this.opts.enableTasksQueue === true) {
+            if (settlingTasks) {
+              this.taskDequeuingEventsDeferred = taskDequeuingEventsDeferred
               this.checkAndEmitTaskDequeuingEvents()
             }
             if (taskResponses != null) {
@@ -1224,6 +1234,7 @@ export abstract class AbstractPool<
           }
         }
       } finally {
+        this.taskDequeuingEventsDeferred = taskDequeuingEventsDeferred
         exitHandler?.call(workerNode.worker, exitCode)
       }
     })
@@ -1529,6 +1540,7 @@ export abstract class AbstractPool<
     if (
       this.emitter != null &&
       this.backPressureEventEmitted &&
+      !this.taskDequeuingEventsDeferred &&
       !this.backPressure
     ) {
       this.emitter.listenerCount(PoolEvents.backPressureEnd) > 0 &&
