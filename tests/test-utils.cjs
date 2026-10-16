@@ -18,6 +18,17 @@ const bounded = async (
   }
 }
 
+const waitForMessage = (emitter, predicate) =>
+  new Promise(resolve => {
+    const listener = message => {
+      if (predicate(message)) {
+        emitter.off('message', listener)
+        resolve(message)
+      }
+    }
+    emitter.on('message', listener)
+  })
+
 const waitWorkerEvents = async (
   pool,
   workerEvent,
@@ -175,6 +186,7 @@ module.exports = {
   jsonIntegerSerialization,
   sleep,
   sleepTaskFunction,
+  waitForMessage,
   waitPoolEvents,
   waitWorkerEvents,
 }

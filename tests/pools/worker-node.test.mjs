@@ -53,8 +53,14 @@ describe('Worker node test suite', () => {
       }
     )
     try {
-      await once(workerNode.worker, 'online')
-      await workerNode.worker.terminate()
+      await bounded(
+        once(workerNode.worker, 'online'),
+        'Worker node online remained pending'
+      )
+      await bounded(
+        workerNode.worker.terminate(),
+        'Native worker termination remained pending'
+      )
       await expect(
         bounded(
           workerNode.terminate(),
@@ -62,9 +68,15 @@ describe('Worker node test suite', () => {
         )
       ).resolves.toBeUndefined()
     } finally {
-      await workerNode.worker.terminate()
-      workerNode.messageChannel?.port1.close()
-      workerNode.messageChannel?.port2.close()
+      try {
+        await bounded(
+          workerNode.worker.terminate(),
+          'Native worker cleanup remained pending'
+        )
+      } finally {
+        workerNode.messageChannel?.port1.close()
+        workerNode.messageChannel?.port2.close()
+      }
     }
   })
 

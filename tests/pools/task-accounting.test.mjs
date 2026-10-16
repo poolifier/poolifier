@@ -8,6 +8,7 @@ import {
   PoolEvents,
   WorkerChoiceStrategies,
 } from '../../lib/index.mjs'
+import { bounded } from '../test-utils.cjs'
 
 const workerFile = './tests/worker-files/thread/taskAccountingWorker.mjs'
 
@@ -41,7 +42,7 @@ const finishTasksAndDestroy = async (pool, tasks) => {
       delay(5000, undefined, { ref: false }),
     ])
   } finally {
-    await pool.destroy()
+    await bounded(pool.destroy(), 'Accounting pool cleanup remained pending')
   }
 }
 
@@ -59,7 +60,10 @@ describe('Task response worker accounting', () => {
       const gates = [createGate(), createGate(), createGate()]
       const tasks = []
       try {
-        await once(pool.emitter, PoolEvents.ready)
+        await bounded(
+          once(pool.emitter, PoolEvents.ready),
+          'Accounting pool readiness remained pending'
+        )
         for (let i = 0; i < gates.length; i++) {
           tasks.push(
             pool
@@ -80,12 +84,15 @@ describe('Task response worker accounting', () => {
           signal: AbortSignal.timeout(5000),
         })
         release(gates[1])
-        await tasks[1]
+        await bounded(tasks[1], 'Retiring worker task remained pending')
         await retired
         expect(pool.workerNodes.indexOf(shiftedWorker)).toBe(1)
 
         release(gates[2])
-        const result = await tasks[2]
+        const result = await bounded(
+          tasks[2],
+          'Shifted worker task remained pending'
+        )
         if (fail) {
           expect(result.error.message).toBe('task-2')
         } else {
@@ -97,7 +104,7 @@ describe('Task response worker accounting', () => {
 
         // The minimum worker remains unaffected by surplus-worker retirement.
         release(gates[0])
-        await tasks[0]
+        await bounded(tasks[0], 'Minimum worker task remained pending')
         expect(pool.workerNodes[0].usage.tasks.executing).toBe(0)
         expect(pool.workerNodes[0].usage.tasks.executed).toBe(1)
         await vi.waitFor(() => expect(pool.workerNodes).toHaveLength(1), {
@@ -116,7 +123,10 @@ describe('Task response worker accounting', () => {
     const gates = [createGate(), createGate(), createGate()]
     const tasks = []
     try {
-      await once(pool.emitter, PoolEvents.ready)
+      await bounded(
+        once(pool.emitter, PoolEvents.ready),
+        'Queue regression pool readiness remained pending'
+      )
       for (let i = 0; i < gates.length; i++) {
         tasks.push(pool.execute({ gate: gates[i], label: `task-${i}` }))
         await waitForStart(started, `task-${i}`)
@@ -130,12 +140,14 @@ describe('Task response worker accounting', () => {
         signal: AbortSignal.timeout(5000),
       })
       release(gates[1])
-      await tasks[1]
+      await bounded(tasks[1], 'Retiring worker task remained pending')
       await retired
       release(gates[2])
-      await tasks[2]
+      await bounded(tasks[2], 'Shifted worker task remained pending')
       await waitForStart(started, 'queued')
-      expect(await queued).toBe('queued')
+      expect(await bounded(queued, 'Queued task remained pending')).toBe(
+        'queued'
+      )
       expect(shiftedWorker.usage.tasks.executing).toBe(0)
       expect(shiftedWorker.usage.tasks.executed).toBe(2)
       expect(shiftedWorker.usage.tasks.queued).toBe(0)
@@ -151,7 +163,10 @@ describe('Task response worker accounting', () => {
     const gates = [createGate(), createGate()]
     const tasks = []
     try {
-      await once(pool.emitter, PoolEvents.ready)
+      await bounded(
+        once(pool.emitter, PoolEvents.ready),
+        'Stealing regression pool readiness remained pending'
+      )
       for (let i = 0; i < gates.length; i++) {
         vi.spyOn(pool, 'chooseWorkerNode').mockReturnValueOnce(i)
         tasks.push(pool.execute({ gate: gates[i], label: `task-${i}` }))
@@ -166,9 +181,11 @@ describe('Task response worker accounting', () => {
       expect(source.usage.tasks.queued).toBe(0)
       expect(destination.usage.tasks.queued).toBe(1)
       release(gates[1])
-      await tasks[1]
+      await bounded(tasks[1], 'Destination worker task remained pending')
       await waitForStart(started, 'stolen')
-      expect(await stolen).toBe('stolen')
+      expect(await bounded(stolen, 'Stolen task remained pending')).toBe(
+        'stolen'
+      )
       expect(source.usage.tasks.executing).toBe(1)
       expect(source.usage.tasks.executed).toBe(0)
       expect(destination.usage.tasks.executing).toBe(0)
@@ -232,7 +249,10 @@ describe('Idle stealing retry accounting', () => {
       )
     }
     try {
-      await once(pool.emitter, PoolEvents.ready)
+      await bounded(
+        once(pool.emitter, PoolEvents.ready),
+        'Idle retry pool readiness remained pending'
+      )
       execute(gates.block, 'block')
       await waitForMessage(message => message.label === 'block')
       execute(gates.loader1, 'loader-1')
@@ -296,7 +316,10 @@ describe('Idle stealing retry accounting', () => {
           }),
         ])
       } finally {
-        await pool.destroy()
+        await bounded(
+          pool.destroy(),
+          'Idle retry pool cleanup remained pending'
+        )
       }
     }
   })
