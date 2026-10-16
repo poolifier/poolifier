@@ -1,4 +1,4 @@
-import { dirname, extname, join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { availableParallelism, FixedClusterPool } from 'poolifier'
 
@@ -6,12 +6,12 @@ import type { ClusterWorkerData, ClusterWorkerResponse } from './types.js'
 
 const expressWorkerFile = join(
   dirname(fileURLToPath(import.meta.url)),
-  `express-worker${extname(fileURLToPath(import.meta.url))}`
+  'express-worker.js'
 )
 
 const requestHandlerWorkerFile = join(
   dirname(fileURLToPath(import.meta.url)),
-  `request-handler-worker${extname(fileURLToPath(import.meta.url))}`
+  'request-handler-worker.js'
 )
 
 const pool = new FixedClusterPool<ClusterWorkerData, ClusterWorkerResponse>(

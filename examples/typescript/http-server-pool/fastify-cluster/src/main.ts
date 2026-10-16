@@ -1,13 +1,10 @@
-import { dirname, extname, join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { availableParallelism, FixedClusterPool } from 'poolifier'
 
 import type { WorkerData, WorkerResponse } from './types.js'
 
-const workerFile = join(
-  dirname(fileURLToPath(import.meta.url)),
-  `worker${extname(fileURLToPath(import.meta.url))}`
-)
+const workerFile = join(dirname(fileURLToPath(import.meta.url)), 'worker.js')
 
 const pool = new FixedClusterPool<WorkerData, WorkerResponse>(
   availableParallelism(),

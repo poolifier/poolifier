@@ -5,20 +5,11 @@ import del from 'rollup-plugin-delete'
 export default defineConfig({
   external: ['fastify', /^node:*/, 'poolifier'],
   input: ['./src/main.ts', './src/worker.ts'],
-  output: [
-    {
-      chunkFileNames: '[name]-[hash].cjs',
-      dir: './dist',
-      entryFileNames: '[name].cjs',
-      format: 'cjs',
-      sourcemap: true,
-    },
-    {
-      dir: './dist',
-      format: 'esm',
-      sourcemap: true,
-    },
-  ],
+  output: {
+    dir: './dist',
+    format: 'esm',
+    sourcemap: true,
+  },
   plugins: [
     typescript({
       compilerOptions: {
