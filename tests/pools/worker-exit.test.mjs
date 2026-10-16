@@ -1477,3 +1477,206 @@ for (const [workerType, PoolClass, workerFile] of [
     })
   })
 }
+
+describe('thread worker exit bootstrap affinity metadata', { retry: 0 }, () => {
+  const bootstrapMessage = (workerNode, predicate) =>
+    new Promise(resolve => {
+      const listener = message => {
+        if (predicate(message)) {
+          workerNode.worker.off('message', listener)
+          resolve(message)
+        }
+      }
+      workerNode.worker.on('message', listener)
+    })
+
+  const metadataReady = workerNode => {
+    if (workerNode.info.taskFunctionsProperties?.length > 0) {
+      return Promise.resolve()
+    }
+    return new Promise(resolve => {
+      const listener = message => {
+        if (message.ready === true && message.taskFunctionsProperties != null) {
+          workerNode.messageChannel.port1.off('message', listener)
+          resolve()
+        }
+      }
+      workerNode.messageChannel.port1.on('message', listener)
+    })
+  }
+
+  it.each([
+    { mode: 'named pinned rejection', reject: true },
+    { defaultPinned: true, mode: 'default pinned rejection', reject: true },
+    { mode: 'legal pinned migration after compaction', sourceIndex: 0 },
+    { mode: 'unrestricted migration', unrestricted: true },
+    { live: true, mode: 'live unrestricted metadata precedence' },
+    {
+      defaultPinned: true,
+      live: true,
+      mode: 'live default mapping precedence',
+    },
+  ])(
+    'preserves bootstrap affinity metadata: $mode',
+    async ({
+      defaultPinned = false,
+      live = false,
+      reject = false,
+      sourceIndex = 1,
+      unrestricted = false,
+    }) => {
+      const status = new Int32Array(new SharedArrayBuffer(8))
+      const targetIndex = 1 - sourceIndex
+      const roles = [{}, {}]
+      roles[sourceIndex] = {
+        defaultPinned,
+        workerNodeKeys: [sourceIndex],
+      }
+      const pool = new DynamicThreadPool(
+        0,
+        2,
+        './tests/worker-files/thread/bootstrapAffinityWorker.mjs',
+        {
+          enableTasksQueue: true,
+          restartWorkerOnError: false,
+          tasksQueueOptions: {
+            concurrency: 1,
+            tasksStealingOnBackPressure: false,
+            taskStealing: false,
+          },
+          workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+          workerOptions: {
+            workerData: {
+              blockedRole: targetIndex,
+              bootstrapStatus: status.buffer,
+              roles,
+            },
+          },
+        }
+      )
+      pool.emitter.on('error', () => {})
+      const capturedNodes = []
+      const held = []
+      const releaseBootstrap = () => {
+        Atomics.store(status, 1, 1)
+        Atomics.notify(status, 1)
+      }
+      try {
+        held.push(
+          pool
+            .execute({ id: 'held-0', wait: true }, 'echo')
+            .catch(error => error)
+        )
+        capturedNodes.push(pool.workerNodes[0])
+        const heldStarted = [started(capturedNodes[0], 'held-0')]
+        const firstClaim = await bounded(
+          bootstrapMessage(
+            capturedNodes[0],
+            message => message.bootstrapRole === 0
+          )
+        )
+        expect(firstClaim.blocked).toBe(targetIndex === 0)
+        // The first native claim must arrive before the second worker can claim.
+        if (sourceIndex === 0) {
+          await bounded(metadataReady(capturedNodes[0]))
+        }
+        held.push(
+          pool
+            .execute({ id: 'held-1', wait: true }, 'echo')
+            .catch(error => error)
+        )
+        capturedNodes.push(pool.workerNodes[1])
+        heldStarted.push(started(capturedNodes[1], 'held-1'))
+        const secondClaim = await bounded(
+          bootstrapMessage(
+            capturedNodes[1],
+            message => message.bootstrapRole === 1
+          )
+        )
+        expect(secondClaim.blocked).toBe(targetIndex === 1)
+        const source = capturedNodes[sourceIndex]
+        const target = capturedNodes[targetIndex]
+        const targetStarted = heldStarted[targetIndex]
+        await bounded(
+          Promise.all([metadataReady(source), heldStarted[sourceIndex]])
+        )
+        expect(
+          source.info.taskFunctionsProperties.find(
+            properties => properties.name === 'pinned'
+          ).workerNodeKeys
+        ).toStrictEqual([sourceIndex])
+        if (defaultPinned) {
+          expect(source.info.taskFunctionsProperties[1].name).toBe('pinned')
+        }
+        expect(target.info.taskFunctionsProperties ?? []).toHaveLength(0)
+        expect(target.info.ready).toBe(true)
+        let filler
+        if (unrestricted) {
+          filler = pool.execute({ id: 'filler' }, 'echo').catch(error => error)
+          expect(target.tasksQueue.size).toBe(1)
+        }
+        const queuedData = { id: 'queued' }
+        const queued = pool
+          .execute(
+            queuedData,
+            defaultPinned ? undefined : unrestricted ? 'echo' : 'pinned'
+          )
+          .catch(error => error)
+        const queuedTaskId = [...pool.promiseResponseMap.keys()].at(-1)
+        expect(source.tasksQueue.size).toBe(1)
+        if (live) {
+          const ready = metadataReady(target)
+          releaseBootstrap()
+          await bounded(Promise.all([ready, targetStarted]))
+          expect(
+            target.info.taskFunctionsProperties.find(
+              properties => properties.name === 'pinned'
+            ).workerNodeKeys
+          ).toBeUndefined()
+          if (defaultPinned) {
+            expect(target.info.taskFunctionsProperties[1].name).toBe('echo')
+          }
+        }
+        const exit = new Promise(resolve => source.worker.once('exit', resolve))
+        send(source, { exitCode: 0 })
+        await bounded(exit)
+        expect(await bounded(held[sourceIndex])).toBeInstanceOf(Error)
+        expect(pool.workerNodes).toStrictEqual([target])
+        expect(source.tasksQueue.size).toBe(0)
+        if (reject) {
+          // Fail before unblocking or cleanup can execute a forbidden migration.
+          expect(target.info.taskFunctionsProperties ?? []).toHaveLength(0)
+          expect(target.tasksQueue.size).toBe(0)
+          expect(pool.promiseResponseMap.has(queuedTaskId)).toBe(false)
+          expect(await bounded(queued)).toBeInstanceOf(Error)
+        } else {
+          expect(target.tasksQueue.size).toBe(unrestricted ? 2 : 1)
+        }
+        releaseBootstrap()
+        await bounded(targetStarted)
+        send(target, { release: `held-${targetIndex}` })
+        expect(await bounded(held[targetIndex])).toMatchObject({
+          id: `held-${targetIndex}`,
+          workerId: target.info.id,
+        })
+        if (!reject) {
+          expect(await bounded(queued)).toStrictEqual({
+            ...queuedData,
+            taskFunction: defaultPinned || unrestricted ? 'echo' : 'pinned',
+            workerId: target.info.id,
+          })
+        }
+        if (filler != null) {
+          expect(await bounded(filler)).toMatchObject({
+            id: 'filler',
+            workerId: target.info.id,
+          })
+        }
+        expect(pool.promiseResponseMap.size).toBe(0)
+      } finally {
+        releaseBootstrap()
+        await cleanupRegressionPool(pool, capturedNodes)
+      }
+    }
+  )
+})

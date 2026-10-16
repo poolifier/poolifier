@@ -1863,13 +1863,14 @@ export abstract class AbstractPool<
   /**
    * Gets task function worker node keys affinity array, if any.
    * @param name - The task function name.
+   * @param taskFunctionsProperties - The task function properties used to resolve affinity.
    * @returns The task function worker node keys affinity array, or `undefined` if not defined.
    */
   private readonly getTaskFunctionWorkerNodeKeys = (
-    name?: string
+    name?: string,
+    taskFunctionsProperties: readonly TaskFunctionProperties[] = this.listTaskFunctionsProperties()
   ): readonly number[] | undefined => {
     name = name ?? DEFAULT_TASK_NAME
-    const taskFunctionsProperties = this.listTaskFunctionsProperties()
     if (name === DEFAULT_TASK_NAME) {
       name = taskFunctionsProperties[1]?.name
     }
@@ -2400,7 +2401,14 @@ export abstract class AbstractPool<
       if (!this.started || this.destroying) {
         continue
       }
-      const workerNodeKeys = this.getTaskFunctionWorkerNodeKeys(task.name)
+      const liveTaskFunctionsProperties = this.listTaskFunctionsProperties()
+      const workerNodeKeys = this.getTaskFunctionWorkerNodeKeys(
+        task.name,
+        liveTaskFunctionsProperties.length > 0
+          ? liveTaskFunctionsProperties
+          : (sourceWorkerNode.info.taskFunctionsProperties ??
+              liveTaskFunctionsProperties)
+      )
       const candidateCount = workerNodeKeys?.length ?? this.workerNodes.length
       let destinationWorkerNodeKey = -1
       let minimumQueuedTasks = Number.POSITIVE_INFINITY

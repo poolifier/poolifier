@@ -51,7 +51,7 @@ This method is available on both pool implementations and returns a promise with
 
 - If sending a task throws, its promise rejects with the original error, without failing other tasks.
 - On unexpected worker exit, unfinished dispatched tasks reject with an `Error` and are not retried. Thread responses already posted to the pool retain their result or task error; cluster responses must reach the pool before exit.
-- Queued tasks are redistributed to ready workers respecting worker node affinity. Affinity uses current worker node indices after removal and any replacement attempt. Tasks without an eligible destination reject. Eligible handoffs complete before `backPressureEnd` is emitted, including when worker-removal event listeners disable task queues.
+- Queued tasks are redistributed to ready workers respecting worker node affinity. Worker node affinity is preserved while other workers initialize. Affinity uses current worker node indices after removal and any replacement attempt. Tasks without an eligible destination reject. Eligible handoffs complete before `backPressureEnd` is emitted, including when worker-removal event listeners disable task queues.
 - Disabling task queues from a worker-removal event listener does not discard queued tasks awaiting redistribution: eligible tasks are dispatched directly.
 - Queued tasks aborted after worker removal and before reassignment reject with the original abort reason if it is an `Error`, a new `Error` with that message if it is a string, or a task-specific abort `Error` otherwise.
 - Non-`Error` native worker failures are wrapped in an `Error` with the original value in `cause`. The pool's `error` event retains the original value.
