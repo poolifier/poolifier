@@ -5,6 +5,9 @@
   "description": "Fastify cluster pool",
   "main": "dist/main.js",
   "type": "module",
+  "engines": {
+    "node": "^22.18.0 || >=24.3.0"
+  },
   "packageManager": "pnpm@12.11.2",
   "scripts": {
     "build": "rollup --config --configPlugin typescript",
