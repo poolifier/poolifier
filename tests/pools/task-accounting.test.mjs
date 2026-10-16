@@ -1,10 +1,12 @@
-import { once } from 'node:events'
+import { EventEmitter, once } from 'node:events'
+import { setTimeout as delay } from 'node:timers/promises'
 import { describe, expect, it, vi } from 'vitest'
 
 import {
   DynamicThreadPool,
   FixedThreadPool,
   PoolEvents,
+  WorkerChoiceStrategies,
 } from '../../lib/index.mjs'
 
 const workerFile = './tests/worker-files/thread/taskAccountingWorker.mjs'
@@ -28,6 +30,19 @@ const createOptions = started => ({
 
 const waitForStart = async (started, label) => {
   await vi.waitFor(() => expect(started.has(label)).toBe(true))
+}
+
+const finishTasksAndDestroy = async (pool, tasks) => {
+  try {
+    // Let released tasks settle before intentional termination can discard responses.
+    // Bound cleanup without replacing an assertion failure with a cleanup timeout.
+    await Promise.race([
+      Promise.allSettled(tasks),
+      delay(5000, undefined, { ref: false }),
+    ])
+  } finally {
+    await pool.destroy()
+  }
 }
 
 describe('Task response worker accounting', () => {
@@ -90,8 +105,7 @@ describe('Task response worker accounting', () => {
         })
       } finally {
         gates.forEach(release)
-        await pool.destroy()
-        await Promise.all(tasks)
+        await finishTasksAndDestroy(pool, tasks)
       }
     }
   )
@@ -127,8 +141,7 @@ describe('Task response worker accounting', () => {
       expect(shiftedWorker.usage.tasks.queued).toBe(0)
     } finally {
       gates.forEach(release)
-      await pool.destroy()
-      await Promise.all(tasks)
+      await finishTasksAndDestroy(pool, tasks)
     }
   })
 
@@ -162,8 +175,129 @@ describe('Task response worker accounting', () => {
       expect(destination.usage.tasks.executed).toBe(2)
     } finally {
       gates.forEach(release)
-      await pool.destroy()
-      await Promise.all(tasks)
+      await finishTasksAndDestroy(pool, tasks)
+    }
+  })
+})
+
+describe('Idle stealing retry accounting', () => {
+  it('keeps the idle stealing retry on its worker after native retirement shifts its index', {
+    retry: 0,
+  }, async () => {
+    const messages = new EventEmitter()
+    const received = []
+    const gates = {
+      anchor: createGate(),
+      block: createGate(),
+      kill: createGate(),
+      loader1: createGate(),
+      loader2: createGate(),
+      survivor: createGate(),
+    }
+    const waitForMessage = async predicate => {
+      const signal = AbortSignal.timeout(5000)
+      while (!received.some(predicate)) {
+        await once(messages, 'message', { signal })
+      }
+      return received.find(predicate)
+    }
+    const pool = new DynamicThreadPool(
+      1,
+      4,
+      './tests/worker-files/thread/taskStealingRetryWorker.mjs',
+      {
+        enableTasksQueue: true,
+        messageHandler: message => {
+          received.push(message)
+          messages.emit('message')
+        },
+        tasksQueueOptions: {
+          concurrency: 1,
+          tasksStealingOnBackPressure: false,
+          taskStealing: true,
+        },
+        workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
+        workerOptions: { workerData: { killGate: gates.kill } },
+      }
+    )
+    const tasks = []
+    const execute = (gate, label, name) => {
+      const task = pool.execute({ gate, label }, name)
+      // Attach rejection handling immediately, including when setup fails.
+      tasks.push(
+        task.then(
+          value => ({ value }),
+          error => ({ error })
+        )
+      )
+    }
+    try {
+      await once(pool.emitter, PoolEvents.ready)
+      execute(gates.block, 'block')
+      await waitForMessage(message => message.label === 'block')
+      execute(gates.loader1, 'loader-1')
+      execute(gates.loader2, 'loader-2')
+      execute(gates.anchor, 'anchor', 'anchor')
+      execute(gates.survivor, 'survivor', 'survivor')
+      const [, retiree, retrying, wrongTarget] = pool.workerNodes
+      await waitForMessage(message => message.label === 'anchor')
+      await waitForMessage(message => message.label === 'survivor')
+
+      // The actual SOFT retirement is already waiting for its public killHandler.
+      // Boot duration cannot remove R before the retry is armed.
+      await waitForMessage(
+        message =>
+          message.label === 'kill-handler' &&
+          message.workerId === retiree.info.id
+      )
+      expect(pool.workerNodes.indexOf(retrying)).toBe(2)
+      const retired = once(retiree.worker, 'exit', {
+        signal: AbortSignal.timeout(5000),
+      })
+      release(gates.anchor)
+      await waitForMessage(
+        message =>
+          ['loader-1', 'loader-2'].includes(message.label) &&
+          message.workerId === retrying.info.id
+      )
+      expect(retrying.usage.tasks.sequentiallyStolen).toBe(1)
+      expect(retrying.info.continuousStealing).toBe(true)
+      expect(pool.workerNodes).toHaveLength(4)
+      release(gates.kill)
+      await retired
+      expect(pool.workerNodes.indexOf(retrying)).toBe(1)
+      expect(pool.workerNodes.indexOf(wrongTarget)).toBe(2)
+      // Prove the splice happened inside the pending retry window, not after it.
+      expect(retrying.usage.tasks.sequentiallyStolen).toBe(1)
+      expect(retrying.info.continuousStealing).toBe(true)
+      expect(wrongTarget.usage.tasks.stolen).toBe(0)
+
+      await vi.waitFor(
+        () => {
+          expect(
+            retrying.usage.tasks.sequentiallyStolen === 0 ||
+              wrongTarget.usage.tasks.stolen > 0
+          ).toBe(true)
+        },
+        { interval: 5, timeout: 2000 }
+      )
+      // A stale-key retry steals a real queued loader into the busy wrong worker.
+      expect(wrongTarget.usage.tasks.stolen).toBe(0)
+      expect(wrongTarget.usage.tasks.queued).toBe(0)
+      expect(retrying.usage.tasks.sequentiallyStolen).toBe(0)
+      expect(pool.info.stolenTasks).toBe(1)
+    } finally {
+      Object.values(gates).forEach(release)
+      try {
+        await Promise.race([
+          Promise.all(tasks),
+          delay(5000, undefined, { ref: false }).then(() => {
+            throw new Error('Gated tasks did not finish')
+          }),
+        ])
+      } finally {
+        await pool.destroy()
+      }
     }
   })
 })

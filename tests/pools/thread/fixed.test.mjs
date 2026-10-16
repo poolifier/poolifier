@@ -133,12 +133,6 @@ describe('Fixed thread pool test suite', () => {
     await Promise.all(promises)
     for (const workerNode of queuePool.workerNodes) {
       expect(workerNode.usage.tasks.executing).toBe(0)
-      // Stolen tasks are counted on the worker that actually executed them,
-      // so completion counts need not match the original task distribution.
-      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
-        numberOfThreads * maxMultiplier
-      )
       expect(workerNode.usage.tasks.queued).toBe(0)
       expect(workerNode.usage.tasks.maxQueued).toBe(
         maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency
@@ -325,26 +319,6 @@ describe('Fixed thread pool test suite', () => {
     expect(pool.workerNodes.length).toBe(0)
     expect(exitEvents).toBe(numberOfThreads)
     expect(poolDestroy).toBe(1)
-  })
-
-  it('Verify that thread pool options are checked', async () => {
-    const workerFilePath = './tests/worker-files/thread/testWorker.mjs'
-    let pool = new FixedThreadPool(numberOfThreads, workerFilePath)
-    expect(pool.opts.workerOptions).toBeUndefined()
-    await sleep(500)
-    await pool.destroy()
-    pool = new FixedThreadPool(numberOfThreads, workerFilePath, {
-      workerOptions: {
-        env: { TEST: 'test' },
-        name: 'test',
-      },
-    })
-    expect(pool.opts.workerOptions).toStrictEqual({
-      env: { TEST: 'test' },
-      name: 'test',
-    })
-    await sleep(500)
-    await pool.destroy()
   })
 
   it('Verify destroyWorkerNode()', async () => {

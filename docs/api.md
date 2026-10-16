@@ -47,6 +47,18 @@
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
 
+#### Task failures
+
+- If sending a task throws, its promise rejects with the original error, without failing other tasks.
+- On unexpected worker exit, unfinished dispatched tasks reject with an `Error` and are not retried. Thread responses already posted to the pool retain their result or task error; cluster responses must reach the pool before exit.
+- Queued tasks are redistributed to ready workers respecting worker node affinity. Worker node affinity is preserved while other workers initialize. Affinity uses current worker node indices after removal and any replacement attempt. Tasks without an eligible destination reject. Eligible handoffs complete before `backPressureEnd` is emitted, including when worker-removal event listeners disable task queues.
+- Disabling task queues from a worker-removal event listener does not discard queued tasks awaiting redistribution: eligible tasks are dispatched directly.
+- Queued tasks aborted after worker removal and before reassignment reject with the original abort reason if it is an `Error`, a new `Error` with that message if it is a string, or a task-specific abort `Error` otherwise.
+- Non-`Error` native worker failures are wrapped in an `Error` with the original value in `cause`. The pool's `error` event retains the original value.
+- Failure to construct a replacement worker does not prevent task settlement; the construction error still propagates.
+
+Unexpected-exit handling does not apply to intentional pool or worker termination.
+
 ### `pool.mapExecute(data, name, abortSignals, transferList)`
 
 `data` An iterable of objects that you want to pass to your worker task function implementation.  
@@ -56,13 +68,15 @@ This method is available on both pool implementations and returns a promise with
 
 This method is available on both pool implementations and returns a promise with the task function execution responses array.
 
+Task failures follow the same rules as [`pool.execute()`](#task-failures).
+
 ### `pool.start()`
 
 This method is available on both pool implementations and will start the minimum number of workers.
 
 ### `pool.destroy()`
 
-This method is available on both pool implementations and will call the terminate method on each worker.
+This method is available on both pool implementations and returns a promise for pool destruction. Workers that have already exited do not block destruction.
 
 ### `pool.hasTaskFunction(name)`
 
@@ -110,7 +124,7 @@ An object with these properties:
   Default: `() => {}`
 - `errorHandler` (optional) - A function that will listen for error event on each worker.  
   Default: `() => {}`
-- `exitHandler` (optional) - A function that will listen for exit event on each worker.  
+- `exitHandler` (optional) - A function called once per worker exit after pool cleanup, including when replacement construction fails. Receives the exit code with the native worker as `this`.  
   Default: `() => {}`
 
 - `workerChoiceStrategy` (optional) - The default worker choice strategy to use in this pool:
@@ -148,7 +162,7 @@ An object with these properties:
   Properties:
   - `size` (optional) - The maximum number of tasks that can be queued on a worker before flagging it as back pressured. It must be a positive integer.
   - `concurrency` (optional) - The maximum number of tasks that can be executed concurrently on a worker. It must be a positive integer.
-  - `taskStealing` (optional) - Task stealing enablement on idle.
+  - `taskStealing` (optional) - Task stealing enablement on idle. Pending retries follow the same worker after pool resizing and stop when it exits.
   - `tasksStealingOnBackPressure` (optional) - Tasks stealing enablement under back pressure.
   - `tasksStealingRatio` (optional) - The ratio of worker nodes that can steal tasks from another worker node. It must be a number between 0 and 1.
   - `tasksFinishedTimeout` (optional) - Queued tasks finished timeout in milliseconds at worker termination.

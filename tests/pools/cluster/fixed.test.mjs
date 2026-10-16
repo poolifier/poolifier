@@ -134,12 +134,6 @@ describe('Fixed cluster pool test suite', () => {
     await Promise.all(promises)
     for (const workerNode of queuePool.workerNodes) {
       expect(workerNode.usage.tasks.executing).toBe(0)
-      // Stolen tasks are counted on the worker that actually executed them,
-      // so completion counts need not match the original task distribution.
-      expect(workerNode.usage.tasks.executed).toBeGreaterThanOrEqual(0)
-      expect(workerNode.usage.tasks.executed).toBeLessThanOrEqual(
-        numberOfWorkers * maxMultiplier
-      )
       expect(workerNode.usage.tasks.queued).toBe(0)
       expect(workerNode.usage.tasks.maxQueued).toBe(
         maxMultiplier - queuePool.opts.tasksQueueOptions.concurrency

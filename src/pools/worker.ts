@@ -152,6 +152,14 @@ export interface IWorker extends EventEmitter {
    */
   readonly id?: number
   /**
+   * Whether the cluster worker is connected to its primary process.
+   */
+  readonly isConnected?: () => boolean
+  /**
+   * Whether the cluster worker process has exited.
+   */
+  readonly isDead?: () => boolean
+  /**
    * Cluster worker kill.
    */
   readonly kill?: (signal?: string) => void

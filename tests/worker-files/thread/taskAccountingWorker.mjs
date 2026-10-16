@@ -13,5 +13,12 @@ export default new ThreadWorker(
     }
     return label
   },
-  { maxInactiveTime: 100 }
+  {
+    killHandler: () => {
+      // Preserve native SOFT retirement without racing a kill ACK against node removal.
+      // eslint-disable-next-line n/no-process-exit
+      process.exit(0)
+    },
+    maxInactiveTime: 100,
+  }
 )

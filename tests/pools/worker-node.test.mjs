@@ -1,4 +1,5 @@
-import { Worker as ClusterWorker } from 'node:cluster'
+import cluster, { Worker as ClusterWorker } from 'node:cluster'
+import { once } from 'node:events'
 import { MessageChannel, Worker as ThreadWorker } from 'node:worker_threads'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
@@ -38,6 +39,94 @@ describe('Worker node test suite', () => {
     if (process.env.CI != null) return
     await threadWorkerNode.terminate()
     await clusterWorkerNode.terminate()
+  })
+
+  it('terminates a thread worker node after its native worker has exited', async () => {
+    const workerNode = new WorkerNode(
+      WorkerTypes.thread,
+      './tests/worker-files/thread/testWorker.mjs',
+      {
+        tasksQueueBackPressureSize: 12,
+        tasksQueueBucketSize: 6,
+        tasksQueuePriority: true,
+      }
+    )
+    let timeout
+    try {
+      await once(workerNode.worker, 'online')
+      await workerNode.worker.terminate()
+      await expect(
+        Promise.race([
+          workerNode.terminate(),
+          new Promise((resolve, reject) => {
+            timeout = setTimeout(
+              () =>
+                reject(new Error('Worker node termination remained pending')),
+              5000
+            )
+          }),
+        ])
+      ).resolves.toBeUndefined()
+    } finally {
+      clearTimeout(timeout)
+      await workerNode.worker.terminate()
+      workerNode.messageChannel?.port1.close()
+      workerNode.messageChannel?.port2.close()
+    }
+  })
+
+  it('terminates an already disconnected cluster worker node and can terminate it again after exit', async () => {
+    const clusterSettings = { ...cluster.settings }
+    cluster.setupPrimary({
+      exec: './tests/worker-files/cluster/crashWorker.cjs',
+    })
+    let workerNode
+    try {
+      workerNode = new WorkerNode(
+        WorkerTypes.cluster,
+        './tests/worker-files/cluster/crashWorker.cjs',
+        {
+          tasksQueueBackPressureSize: 12,
+          tasksQueueBucketSize: 6,
+          tasksQueuePriority: true,
+        }
+      )
+    } finally {
+      cluster.setupPrimary(clusterSettings)
+    }
+    let timeout
+    const boundedWait = async (promise, stage) => {
+      try {
+        await Promise.race([
+          promise,
+          new Promise((resolve, reject) => {
+            timeout = setTimeout(
+              () => reject(new Error(`Worker node ${stage} remained pending`)),
+              5000
+            )
+          }),
+        ])
+      } finally {
+        clearTimeout(timeout)
+      }
+    }
+    try {
+      await boundedWait(once(workerNode.worker, 'online'), 'online')
+      const disconnect = once(workerNode.worker, 'disconnect')
+      workerNode.worker.send({ disconnect: true })
+      await boundedWait(disconnect, 'disconnect')
+      expect(workerNode.worker.isConnected()).toBe(false)
+      expect(workerNode.worker.isDead()).toBe(false)
+      await boundedWait(workerNode.terminate(), 'disconnected termination')
+      expect(workerNode.worker.isDead()).toBe(true)
+      await boundedWait(workerNode.terminate(), 'post-exit termination')
+    } finally {
+      if (!workerNode.worker.isDead()) {
+        const exit = once(workerNode.worker, 'exit')
+        workerNode.worker.process.kill()
+        await boundedWait(exit, 'native cleanup exit')
+      }
+    }
   })
 
   it('Worker node instantiation', () => {
