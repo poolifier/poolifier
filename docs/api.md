@@ -47,11 +47,17 @@
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
 
-If sending a task to a worker throws, only that task rejects with the original send error, including transfer errors. Other running and queued tasks continue independently, including during redistribution after a worker exits.
+#### Task failures
 
-If a worker crashes or exits unexpectedly, tasks still assigned to it reject with an `Error` once it exits. Failure to construct a replacement worker does not prevent task settlement; the construction error still propagates. Native worker error values received by the pool that are not `Error` instances are wrapped in an `Error`, with the received value in `cause`; the pool's `error` event retains the received value. Thread task responses already posted to the pool retain their successful result or task error even if the worker subsequently crashes. Cluster task responses retain their outcome only if delivered to the pool before the worker exits; responses still in transit over IPC may be lost. Tasks already dispatched to that worker are not retried. Queued tasks are redistributed to ready workers respecting the task function's worker node affinity, evaluated against current worker node indices after the exited worker is removed and any replacement is created; queued tasks without an eligible destination also reject. All eligible, non-aborted queued tasks are handed off before redistribution emits `backPressureEnd`, so its listeners can abort any redistributed queued task. This does not change intentional pool or worker destruction behavior.
+- If sending a task throws, its promise rejects with the original error, without failing other tasks.
+- On unexpected worker exit, unfinished dispatched tasks reject with an `Error` and are not retried. Thread responses already posted to the pool retain their result or task error; cluster responses must reach the pool before exit.
+- Queued tasks are redistributed to ready workers respecting worker node affinity. Affinity uses current worker node indices after removal and any replacement attempt. Tasks without an eligible destination reject. Eligible handoffs complete before `backPressureEnd` is emitted.
+- Disabling task queues from a worker-removal event listener does not discard queued tasks awaiting redistribution: eligible tasks are dispatched directly.
+- Queued tasks aborted after worker removal and before reassignment reject with the original abort reason if it is an `Error`, a new `Error` with that message if it is a string, or a task-specific abort `Error` otherwise.
+- Non-`Error` native worker failures are wrapped in an `Error` with the original value in `cause`. The pool's `error` event retains the original value.
+- Failure to construct a replacement worker does not prevent task settlement; the construction error still propagates.
 
-If a failed cluster worker is already disconnected, the pool terminates it without waiting for another disconnect event. Queued tasks remain eligible for redistribution if a worker-removal event listener disables task queues; they are then dispatched directly to an eligible ready worker. Queued tasks aborted during worker removal reject with the original abort reason if it is an `Error`, an `Error` containing the reason if it is a string, or a task-specific abort `Error` otherwise.
+Unexpected-exit handling does not apply to intentional pool or worker termination.
 
 ### `pool.mapExecute(data, name, abortSignals, transferList)`
 
@@ -62,7 +68,7 @@ If a failed cluster worker is already disconnected, the pool terminates it witho
 
 This method is available on both pool implementations and returns a promise with the task function execution responses array.
 
-Worker failures reject this promise under the same conditions as [`pool.execute()`](#poolexecutedata-name-abortsignal-transferlist).
+Task failures follow the same rules as [`pool.execute()`](#task-failures).
 
 ### `pool.start()`
 
@@ -118,7 +124,7 @@ An object with these properties:
   Default: `() => {}`
 - `errorHandler` (optional) - A function that will listen for error event on each worker.  
   Default: `() => {}`
-- `exitHandler` (optional) - A function called once for each worker exit after the pool's internal exit cleanup, even if constructing a replacement worker throws. Receives the exit code with the native worker as `this`.
+- `exitHandler` (optional) - A function called once per worker exit after pool cleanup, including when replacement construction fails. Receives the exit code with the native worker as `this`.  
   Default: `() => {}`
 
 - `workerChoiceStrategy` (optional) - The default worker choice strategy to use in this pool:
