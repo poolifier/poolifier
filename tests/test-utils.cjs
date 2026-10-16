@@ -1,5 +1,34 @@
 const { TaskFunctions } = require('./test-types.cjs')
 
+const bounded = async (
+  promise,
+  message = 'Task remained pending',
+  timeoutMs = 5000
+) => {
+  let timeout
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((resolve, reject) => {
+        timeout = setTimeout(() => reject(new Error(message)), timeoutMs)
+      }),
+    ])
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
+const waitForMessage = (emitter, predicate) =>
+  new Promise(resolve => {
+    const listener = message => {
+      if (predicate(message)) {
+        emitter.off('message', listener)
+        resolve(message)
+      }
+    }
+    emitter.on('message', listener)
+  })
+
 const waitWorkerEvents = async (
   pool,
   workerEvent,
@@ -150,12 +179,14 @@ const executeTaskFunction = data => {
 }
 
 module.exports = {
+  bounded,
   executeTaskFunction,
   factorial,
   fibonacci,
   jsonIntegerSerialization,
   sleep,
   sleepTaskFunction,
+  waitForMessage,
   waitPoolEvents,
   waitWorkerEvents,
 }

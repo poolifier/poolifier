@@ -1,3 +1,4 @@
+import type { UUID } from 'node:crypto'
 import type { EventEmitter } from 'node:events'
 import type { MessageChannel, WorkerOptions } from 'node:worker_threads'
 
@@ -374,7 +375,7 @@ export interface WorkerInfo {
  * @internal
  */
 export interface WorkerNodeEventDetail {
-  taskId?: `${string}-${string}-${string}-${string}-${string}`
+  taskId?: UUID
   workerId?: number
   workerNodeKey?: number
 }

@@ -1,4 +1,5 @@
 import type { Worker } from 'node:cluster'
+import type { UUID } from 'node:crypto'
 import type { MessagePort } from 'node:worker_threads'
 
 import { performance } from 'node:perf_hooks'
@@ -83,10 +84,7 @@ export abstract class AbstractWorker<
   /**
    * Task abort functions processed by the worker when task operation 'abort' is received.
    */
-  protected taskAbortFunctions: Map<
-    `${string}-${string}-${string}-${string}-${string}`,
-    () => void
-  >
+  protected taskAbortFunctions: Map<UUID, () => void>
 
   /**
    * Task function object(s) processed by the worker when the pool's `execute` method is invoked.
@@ -110,10 +108,7 @@ export abstract class AbstractWorker<
       throw new Error('isMain parameter is mandatory')
     }
     this.checkTaskFunctions(taskFunctions)
-    this.taskAbortFunctions = new Map<
-      `${string}-${string}-${string}-${string}-${string}`,
-      () => void
-    >()
+    this.taskAbortFunctions = new Map<UUID, () => void>()
     this.checkWorkerOptions(this.opts)
     if (!this.isMain) {
       this.getMainWorker().once('message', this.handleReadyMessage.bind(this))
@@ -675,7 +670,7 @@ export abstract class AbstractWorker<
    */
   private getAbortableTaskFunction (
     name: string,
-    taskId: `${string}-${string}-${string}-${string}-${string}`
+    taskId: UUID
   ): TaskAsyncFunction<Data, Response> {
     return async (data?: Data): Promise<Response> =>
       await new Promise<Response>(
