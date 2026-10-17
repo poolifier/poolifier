@@ -69,13 +69,6 @@ export class ThreadWorker<
   }
 
   /** @inheritDoc */
-  protected override handleKillMessage (message: MessageValue<Data>): void {
-    super.handleKillMessage(message)
-    this.port?.unref()
-    this.port?.close()
-  }
-
-  /** @inheritDoc */
   protected handleReadyMessage (message: MessageValue<Data>): void {
     if (
       message.workerId === this.id &&
@@ -106,5 +99,9 @@ export class ThreadWorker<
       ...message,
       workerId: this.id,
     } satisfies MessageValue<Response>)
+    if (message.kill === 'success' || message.kill === 'failure') {
+      this.port?.unref()
+      this.port?.close()
+    }
   }
 }

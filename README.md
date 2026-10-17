@@ -50,7 +50,7 @@ Please consult our [general guidelines](#general-guidelines).
 - Support for multiple task functions:
   - Queuing priority :white_check_mark:
   - Tasks distribution strategy :white_check_mark:
-  - Worker node affinity :white_check_mark:
+  - [Worker node affinity](./docs/api.md#worker-node-affinity-notes) :white_check_mark:
   - [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) operations at runtime :white_check_mark:
 - General guidelines on pool choice :white_check_mark:
 - Error handling out of the box :white_check_mark:

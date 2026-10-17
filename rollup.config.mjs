@@ -6,7 +6,6 @@ import { defineConfig } from 'rollup'
 import analyze from 'rollup-plugin-analyzer'
 import command from 'rollup-plugin-command'
 import del from 'rollup-plugin-delete'
-import { dts } from 'rollup-plugin-dts'
 
 const availableParallelism = () => {
   let availableParallelism = 1
@@ -85,22 +84,6 @@ export default defineConfig([
       }),
       isAnalyzeBuild && analyze(),
       isDocumentationBuild && command('pnpm typedoc'),
-    ],
-    strictDeprecations: true,
-  },
-  {
-    external: [/^node:*/],
-    input: './lib/index.d.ts',
-    output: [{ file: './lib/index.d.ts', format: 'esm' }],
-    plugins: [
-      dts(),
-      del({
-        hook: 'buildEnd',
-        targets: isDevelopmentBuild
-          ? ['./lib/**/*.d.ts', '!./lib/index.d.ts']
-          : ['./lib/**/*.d.ts', '!./lib/index.d.ts', './lib/*/'],
-      }),
-      isAnalyzeBuild && analyze(),
     ],
     strictDeprecations: true,
   },

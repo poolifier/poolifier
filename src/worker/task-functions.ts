@@ -42,9 +42,11 @@ export interface TaskFunctionObject<Data = unknown, Response = unknown> {
   taskFunction: TaskFunction<Data, Response>
   /**
    * Task function worker node keys affinity.
-   * Restricts task execution to specified worker nodes by their indices.
+   * Restricts initial task dispatch to specified worker nodes by their indices.
    * Must contain valid indices within [0, pool max size - 1].
    * If undefined, task can execute on any worker node.
+   * Task stealing ignores affinity. For strict affinity with task queues enabled,
+   * disable both `taskStealing` and `tasksStealingOnBackPressure`.
    */
   workerNodeKeys?: number[]
 }

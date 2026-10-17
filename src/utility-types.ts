@@ -46,6 +46,10 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    */
   readonly taskFunctionOperation?: 'add' | 'default' | 'remove'
   /**
+   * Task function operation UUID.
+   */
+  readonly taskFunctionOperationId?: UUID
+  /**
    * Whether the task function operation is successful or not.
    */
   readonly taskFunctionOperationStatus?: boolean
@@ -90,6 +94,10 @@ export interface PromiseResponseWrapper<Response = unknown> {
    * The asynchronous resource used to track the task execution.
    */
   readonly asyncResource?: AsyncResource
+  /**
+   * Original input retained for errors from tasks with transferred objects.
+   */
+  readonly originalData?: unknown
   /**
    * Reject callback to reject the promise.
    */
@@ -163,9 +171,11 @@ export interface TaskFunctionProperties {
   readonly strategy?: WorkerChoiceStrategy
   /**
    * Task function worker node keys affinity.
-   * Restricts task execution to specified worker nodes by their indices.
+   * Restricts initial task dispatch to specified worker nodes by their indices.
    * Must contain valid indices within [0, pool max size - 1].
    * If undefined, task can execute on any worker node.
+   * Task stealing ignores affinity. For strict affinity with task queues enabled,
+   * disable both `taskStealing` and `tasksStealingOnBackPressure`.
    */
   readonly workerNodeKeys?: number[]
 }

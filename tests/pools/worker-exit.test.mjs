@@ -649,7 +649,7 @@ for (const [workerType, PoolClass, workerFile] of [
         await bounded(exit)
         const reason = new Error('Cancel redistributed task')
         controller.abort(reason)
-        expect(await bounded(queued)).toBeInstanceOf(Error)
+        expect(await bounded(queued)).toBe(reason)
         send(destination, { release: 'destination' })
         expect(await bounded(destinationResult)).toStrictEqual(destinationData)
         expect(destination.tasksQueue.size).toBe(0)
@@ -1040,6 +1040,108 @@ for (const [workerType, PoolClass, workerFile] of [
           workerNodesLength: 0,
         })
       })
+
+      it.each([
+        [false, false],
+        [false, true],
+        [true, false],
+      ])(
+        'settles queued cleanup ACKs after owner exit (dynamic: %s, failure: %s)',
+        async (dynamic, failCleanup) => {
+          const { stdout } = await promisify(execFile)(
+            process.execPath,
+            [
+              '--eval',
+              `
+                const { getEventListeners } = require('node:events')
+                const { FixedThreadPool, DynamicThreadPool } = require('./lib/index.cjs')
+                const { bounded, waitForMessage } = require('./tests/test-utils.cjs')
+                const dynamic = ${JSON.stringify(dynamic)}
+                const failCleanup = ${JSON.stringify(failCleanup)}
+                const startupGate = new SharedArrayBuffer(4)
+                const PoolClass = dynamic ? DynamicThreadPool : FixedThreadPool
+                class DelayedDeliveryPool extends PoolClass {
+                  sendToWorker (workerNodeKey, message) {
+                    super.sendToWorker(workerNodeKey, message)
+                    const node = this.workerNodes[workerNodeKey]
+                    if (message.kill === true && node === this.pauseTarget) {
+                      this.pauseTarget = undefined
+                      const port = node.messageChannel.port1
+                      const listeners = getEventListeners(port, 'message')
+                      for (const listener of listeners) port.off('message', listener)
+                      node.worker.prependOnceListener('exit', () => {
+                        for (const listener of listeners) port.on('message', listener)
+                      })
+                      Atomics.store(new Int32Array(startupGate), 0, 1)
+                      Atomics.notify(new Int32Array(startupGate), 0)
+                    }
+                  }
+                }
+                const options = {
+                  workerOptions: {
+                    execArgv: [],
+                    workerData: { startupGate, failCleanup },
+                  },
+                }
+                const workerFile = './tests/worker-files/thread/taskLifecycleWorker.mjs'
+                let pool
+                ;(async () => {
+                  try {
+                    pool = dynamic
+                      ? new DelayedDeliveryPool(0, 1, workerFile, options)
+                      : new DelayedDeliveryPool(1, workerFile, options)
+                    if (dynamic) pool.createAndSetupDynamicWorkerNode()
+                    const original = pool.workerNodes[0]
+                    await bounded(waitForMessage(original.worker, message => message.startupBlocked))
+                    pool.pauseTarget = original
+                    const operation = await bounded(pool.destroyWorkerNode(0)).then(
+                      () => ({ status: 'fulfilled' }),
+                      error => ({ status: 'rejected', message: error.message })
+                    )
+                    if (!dynamic && !pool.workerNodes[0].info.ready) {
+                      await bounded(waitForMessage(
+                        pool.workerNodes[0].messageChannel.port1,
+                        message => message.ready === true
+                      ))
+                    }
+                    const response = await bounded(pool.execute({ recovered: true }, 'echo'))
+                    console.log(JSON.stringify({
+                      operation,
+                      response,
+                      replacement: pool.workerNodes[0] !== original,
+                    }))
+                  } finally {
+                    Atomics.store(new Int32Array(startupGate), 0, 1)
+                    Atomics.notify(new Int32Array(startupGate), 0)
+                    if (pool != null) {
+                      try {
+                        await bounded(pool.destroy())
+                      } catch (error) {
+                        if (!failCleanup || !error.message.startsWith('Kill message handling failed')) throw error
+                      }
+                    }
+                  }
+                })().catch(error => {
+                  console.error(error)
+                  process.exitCode = 1
+                })
+              `,
+            ],
+            { timeout: 10000 }
+          )
+          const result = JSON.parse(stdout)
+          expect(result.operation.status).toBe(
+            failCleanup ? 'rejected' : 'fulfilled'
+          )
+          if (failCleanup) {
+            expect(result.operation.message).toContain(
+              'Kill message handling failed'
+            )
+          }
+          expect(result.replacement).toBe(true)
+          expect(result.response).toStrictEqual({ recovered: true })
+        }
+      )
 
       for (const [description, message] of [
         ['number', { crashWith: 42 }],
