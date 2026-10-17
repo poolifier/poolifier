@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.0.0](https://github.com/poolifier/poolifier/compare/v5.4.1...v6.0.0) (2026-10-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* Node.js ^22.18.0 || >=24.3.0 is required. Upgrade older Node.js installations before updating Poolifier.
+
+### 🐞 Bug Fixes
+
+* **deps:** update all non-major dependencies ([#3359](https://github.com/poolifier/poolifier/issues/3359)) ([14ab8cf](https://github.com/poolifier/poolifier/commit/14ab8cfdcf2d1cd8076807f65e86736004d110da))
+* **pool:** keep idle stealing retries on their worker ([#3346](https://github.com/poolifier/poolifier/issues/3346)) ([e061241](https://github.com/poolifier/poolifier/commit/e0612414a9a74a798f12acb20edea170603e4696))
+* **pool:** reject task promises on unexpected worker exit ([#3343](https://github.com/poolifier/poolifier/issues/3343)) ([aba7015](https://github.com/poolifier/poolifier/commit/aba7015b6994daf843b73bd8d49fdfdf0ebadadc))
+* require Node.js versions with ESM cluster support ([#3348](https://github.com/poolifier/poolifier/issues/3348)) ([7df0edb](https://github.com/poolifier/poolifier/commit/7df0edbd60e53f789312ca64920c37d827aa69dc))
+
 ## [5.4.1](https://github.com/poolifier/poolifier/compare/v5.4.0...v5.4.1) (2026-10-15)
 
 
