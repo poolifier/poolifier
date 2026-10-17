@@ -8,7 +8,7 @@
   "engines": {
     "node": "^22.18.0 || >=24.3.0"
   },
-  "packageManager": "pnpm@12.11.2",
+  "packageManager": "pnpm@12.13.0",
   "scripts": {
     "build": "rollup --config --configPlugin typescript",
     "start": "node --enable-source-maps dist/main.js",
@@ -20,7 +20,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^5.12.5",
+    "fastify": "^5.12.7",
     "fastify-plugin": "^6.0.1",
     "poolifier": "^5.3.2"
   },
@@ -28,7 +28,7 @@
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/node": "^24.19.2",
     "autocannon": "^8.0.0",
-    "rollup": "^4.64.5",
+    "rollup": "^4.64.6",
     "rollup-plugin-delete": "^3.0.2",
     "tslib": "^2.8.1",
     "typescript": "^6.0.3"
