@@ -2,6 +2,11 @@ import { parentPort, workerData } from 'node:worker_threads'
 
 import { ThreadWorker } from '../../../lib/index.mjs'
 
+if (workerData?.startupGate != null) {
+  parentPort.postMessage({ startupBlocked: true })
+  Atomics.wait(new Int32Array(workerData.startupGate), 0, 0)
+}
+
 let promiseExecutions = 0
 
 export default new ThreadWorker(

@@ -1030,7 +1030,7 @@ export abstract class AbstractPool<
    */
   protected afterWorkerNodeSetup (workerNodeKey: number): void {
     // Listen to worker messages.
-    this.registerWorkerMessageListener(
+    this.registerWorkerLifecycleMessageListener(
       workerNodeKey,
       this.workerMessageListener
     )
@@ -1113,7 +1113,7 @@ export abstract class AbstractPool<
    */
   protected createAndSetupDynamicWorkerNode (): number {
     const workerNodeKey = this.createAndSetupWorkerNode()
-    this.registerWorkerMessageListener(workerNodeKey, message => {
+    this.registerWorkerLifecycleMessageListener(workerNodeKey, message => {
       if (
         this.destroying ||
         message.kill === 'success' ||
@@ -2544,6 +2544,19 @@ export abstract class AbstractPool<
         this.executeTask(destinationWorkerNodeKey, task)
       }
     }
+  }
+
+  private registerWorkerLifecycleMessageListener (
+    workerNodeKey: number,
+    listener: (message: MessageValue<Response>) => void
+  ): void {
+    const workerNode = this.workerNodes[workerNodeKey]
+    const messageTarget = workerNode.messageChannel?.port1 ?? workerNode.worker
+    // Retire lifecycle consumers without discarding buffered kill acknowledgements.
+    workerNode.worker.prependOnceListener('exit', () => {
+      messageTarget.off('message', listener)
+    })
+    this.registerWorkerMessageListener(workerNodeKey, listener)
   }
 
   private rejectTask (
