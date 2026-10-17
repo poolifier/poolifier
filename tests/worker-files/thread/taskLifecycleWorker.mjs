@@ -6,6 +6,14 @@ let promiseExecutions = 0
 
 export default new ThreadWorker(
   {
+    block: {
+      taskFunction: ({ gate }) => {
+        parentPort.postMessage({ blocked: true })
+        Atomics.wait(new Int32Array(gate), 0, 0)
+        return 'released'
+      },
+      workerNodeKeys: workerData?.blockWorkerKeys,
+    },
     closedFailure: async ({ port }) => {
       port.close()
       throw new Error('Expected task failure')

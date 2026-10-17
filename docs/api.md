@@ -43,7 +43,7 @@
 `data` (optional) An object that you want to pass to your worker task function implementation.  
 `name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
 `abortSignal` (optional) An abort signal to abort the task function execution.  
-`transferList` (optional) An array of transferable objects that you want to transfer to your [`ThreadWorker`](#class-yourworker-extends-threadworkerclusterworker) worker implementation.
+`transferList` (optional) An array of transferable objects that you want to transfer to your [`ThreadWorker`](#class-yourworker-extends-threadworkerclusterworker) worker implementation. The array is copied at submission.
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
 
@@ -67,7 +67,7 @@ Unexpected-exit handling does not apply to intentional pool or worker terminatio
 `data` An iterable of objects that you want to pass to your worker task function implementation.  
 `name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
 `abortSignals` (optional) An iterable of AbortSignal matching the input order and length. One-shot iterables are supported.  
-`transferList` (optional) An array of transferable objects that you want to transfer to your [`ThreadWorker`](#class-yourworker-extends-threadworkerclusterworker) worker implementation.
+`transferList` (optional) Same as [`pool.execute()`](#poolexecutedata-name-abortsignal-transferlist), with one array snapshot for the batch.
 
 This method is available on both pool implementations and returns a promise with the task function execution responses array.
 
@@ -103,7 +103,7 @@ This method is available on both pool implementations and returns a boolean.
 
 This method is available on both pool implementations and returns a boolean promise.
 
-Registered task functions are restored on replacement workers.
+Replacement workers preserve successful task-function additions, updates and removals, including operations in progress when replacement starts.
 
 ### `pool.removeTaskFunction(name)`
 

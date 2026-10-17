@@ -256,6 +256,76 @@ describe('Task lifecycle regressions', () => {
     }
   })
 
+  it('ignores inherited original input when reporting an ordinary task error', async () => {
+    const pool = new FixedThreadPool(1, workerFile)
+    const errors = []
+    pool.emitter.on(PoolEvents.taskError, error => errors.push(error))
+    try {
+      await ready(pool)
+      // eslint-disable-next-line no-extend-native
+      Object.defineProperty(Object.prototype, 'originalData', {
+        configurable: true,
+        value: 'inherited sentinel',
+      })
+      await expect(
+        bounded(pool.execute({ input: true }, 'mutatedFailure'))
+      ).rejects.toThrow('Expected task failure')
+      expect(errors[0].data).toEqual({ input: true, workerMutation: true })
+      expect(pool.promiseResponseMap.size).toBe(0)
+    } finally {
+      Reflect.deleteProperty(Object.prototype, 'originalData')
+      await bounded(pool.destroy())
+    }
+  })
+
+  it.each([
+    [false, false],
+    [false, true],
+    [true, false],
+    [true, true],
+  ])(
+    'snapshots a queued transfer list (batch: %s, initially nonempty: %s)',
+    async (batch, initiallyNonempty) => {
+      const pool = new FixedThreadPool(1, workerFile, queueOptions)
+      const gate = new SharedArrayBuffer(4)
+      const data = { input: true }
+      const buffer = new ArrayBuffer(8)
+      const transferList = initiallyNonempty ? [buffer] : []
+      const errors = []
+      pool.emitter.on(PoolEvents.taskError, error => errors.push(error))
+      let held
+      let failure
+      try {
+        await ready(pool)
+        const started = waitForMessage(
+          pool.workerNodes[0].worker,
+          message => message.started
+        )
+        held = settle(pool.execute({ gate }, 'hold'))
+        await bounded(started)
+        failure = settle(
+          batch
+            ? pool.mapExecute([data], 'mutatedFailure', undefined, transferList)
+            : pool.execute(data, 'mutatedFailure', undefined, transferList)
+        )
+        if (initiallyNonempty) transferList.length = 0
+        else transferList.push(buffer)
+        release(gate)
+        expect((await bounded(failure)).error.message).toBe(
+          'Expected task failure'
+        )
+        expect(buffer.byteLength).toBe(initiallyNonempty ? 0 : 8)
+        expect(errors[0].data).toEqual(
+          initiallyNonempty ? data : { input: true, workerMutation: true }
+        )
+      } finally {
+        release(gate)
+        await bounded(Promise.all([held, failure]))
+        await bounded(pool.destroy())
+      }
+    }
+  )
+
   it.each([false, true])(
     'receives the async kill acknowledgement (failure: %s)',
     async failCleanup => {
