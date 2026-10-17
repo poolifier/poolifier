@@ -47,6 +47,8 @@
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
 
+Promise-returning task functions are awaited even when not declared `async`, including promises from other JavaScript realms.
+
 An already-aborted signal rejects the task before submission.
 
 #### Task failures
@@ -103,7 +105,7 @@ This method is available on both pool implementations and returns a boolean.
 
 This method is available on both pool implementations and returns a boolean promise.
 
-New and replacement workers wait for in-flight task-function operations, then become ready after restoring committed runtime registrations and their scheduling metadata.
+New and replacement workers wait for in-flight task-function operations, then become ready after restoring committed runtime registrations, the default selection, and scheduling metadata.
 
 If a target exits mid-operation, the remaining targets must acknowledge success. The operation rejects if no target acknowledges it or any acknowledgement reports failure.
 
@@ -122,6 +124,8 @@ This method is available on both pool implementations and returns an array of th
 `name` (mandatory) The task function name.
 
 This method is available on both pool implementations and returns a boolean promise.
+
+With no workers, this method returns `true` without changing the default selection.
 
 ### Pool options
 

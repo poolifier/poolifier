@@ -288,9 +288,9 @@ export abstract class AbstractWorker<
   protected handleKillMessage (message: MessageValue<Data>): void {
     this.stopCheckActive()
     try {
-      const result = this.opts.killHandler?.()
-      if (result instanceof Promise) {
-        result
+      const promise = this.getResultPromise(this.opts.killHandler?.())
+      if (promise != null) {
+        promise
           .then(() => {
             this.sendToMainWorker({ kill: 'success' })
             return undefined
@@ -472,12 +472,14 @@ export abstract class AbstractWorker<
     task: Task<Data>
   ): void => {
     const { abortable, data, name, taskId } = task
-    let res: Promise<Response> | Response | undefined
+    let asynchronous = false
     try {
       let taskPerformance = this.beginTaskPerformance(name)
-      res = fn(data)
-      if (res instanceof Promise) {
-        this.completeAsyncTask(res, task, taskPerformance)
+      const res = fn(data)
+      const promise = this.getResultPromise(res)
+      if (promise != null) {
+        this.completeAsyncTask(promise, task, taskPerformance)
+        asynchronous = true
         return
       }
       taskPerformance = this.endTaskPerformance(taskPerformance)
@@ -489,7 +491,7 @@ export abstract class AbstractWorker<
     } catch (error) {
       this.sendTaskError(task, error as Error)
     } finally {
-      if (!(res instanceof Promise)) {
+      if (!asynchronous) {
         this.updateLastTaskTimestamp()
         if (abortable === true) {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -681,14 +683,34 @@ export abstract class AbstractWorker<
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const taskFunction = this.taskFunctions.get(name)!.taskFunction
           const result = taskFunction(data)
-          if (result instanceof Promise) {
+          const promise = this.getResultPromise(result)
+          if (promise != null) {
             // eslint-disable-next-line promise/catch-or-return -- The second callback handles rejection.
-            result.then(resolve, reject)
+            promise.then(resolve, reject)
           } else {
             resolve(result)
           }
         }
       )
+  }
+
+  private getResultPromise<Result>(
+    result: PromiseLike<Result> | Result
+  ): Promise<Result> | undefined {
+    if (result instanceof Promise) return result
+    if (
+      result == null ||
+      (typeof result !== 'object' && typeof result !== 'function')
+    ) {
+      return
+    }
+    const then: unknown = Reflect.get(result, 'then')
+    if (typeof then === 'function') {
+      // The declared result type determines the callable's fulfillment type.
+      const promiseThen = then as PromiseLike<Result>['then']
+      return Promise.resolve({ then: promiseThen.bind(result) })
+    }
+    return undefined
   }
 
   private sendTaskError (task: Task<Data>, error: Error): void {

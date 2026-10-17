@@ -1,3 +1,4 @@
+import { runInNewContext } from 'node:vm'
 import { parentPort, workerData } from 'node:worker_threads'
 
 import { ThreadWorker } from '../../../lib/index.mjs'
@@ -67,11 +68,18 @@ export default new TaskLifecycleWorker(
     },
   },
   {
-    killHandler: async () => {
-      await new Promise(resolve => setImmediate(resolve))
-      if (workerData?.failCleanup === true) {
-        throw new Error('Cleanup failure')
-      }
-    },
+    killHandler:
+      workerData?.foreignCleanup === true
+        ? () =>
+            runInNewContext(
+              'new Promise((resolve, reject) => setImmediate(() => failCleanup ? reject(new Error("Cleanup failure")) : resolve()))',
+              { failCleanup: workerData?.failCleanup === true, setImmediate }
+            )
+        : async () => {
+          await new Promise(resolve => setImmediate(resolve))
+          if (workerData?.failCleanup === true) {
+            throw new Error('Cleanup failure')
+          }
+        },
   }
 )

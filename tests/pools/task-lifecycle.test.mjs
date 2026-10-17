@@ -202,6 +202,114 @@ describe('Task lifecycle regressions', () => {
     }
   )
 
+  it.each([false, true])(
+    'settles foreign promise results and rejections (abortable: %s)',
+    async abortable => {
+      const pool = new FixedThreadPool(1, workerFile)
+      try {
+        await ready(pool)
+        await pool.addTaskFunction('foreign', data =>
+          process
+            .getBuiltinModule('node:vm')
+            .runInNewContext('Promise.resolve(data)', { data })
+        )
+        await pool.addTaskFunction('foreignFailure', () =>
+          process
+            .getBuiltinModule('node:vm')
+            .runInNewContext(
+              'Promise.reject(new Error("Foreign task failure"))'
+            )
+        )
+        const signal = abortable ? new AbortController().signal : undefined
+        expect(
+          await bounded(pool.execute({ foreign: true }, 'foreign', signal))
+        ).toEqual({
+          foreign: true,
+        })
+        await expect(
+          bounded(pool.execute({}, 'foreignFailure', signal))
+        ).rejects.toThrow('Foreign task failure')
+      } finally {
+        await bounded(pool.destroy())
+      }
+    }
+  )
+
+  it.each([false, true])(
+    'uses thenable receivers and reads callable then getters once (abortable: %s)',
+    async abortable => {
+      const pool = new FixedThreadPool(1, workerFile)
+      try {
+        await ready(pool)
+        await pool.addTaskFunction('thenable', () => {
+          const result = {
+            reads: 0,
+            get then () {
+              if (++this.reads > 1) throw new Error('Then getter read twice')
+              return function (resolve) {
+                resolve({ reads: this.reads, sameReceiver: this === result })
+              }
+            },
+          }
+          return result
+        })
+        await pool.addTaskFunction('badThen', () => ({
+          get then () {
+            throw new Error('Then getter failure')
+          },
+        }))
+        const signal = abortable ? new AbortController().signal : undefined
+        expect(await bounded(pool.execute({}, 'thenable', signal))).toEqual({
+          reads: 1,
+          sameReceiver: true,
+        })
+        await expect(
+          bounded(pool.execute({}, 'badThen', signal))
+        ).rejects.toThrow('Then getter failure')
+        expect(await bounded(pool.execute({ next: true }, 'echo'))).toEqual({
+          next: true,
+        })
+      } finally {
+        await bounded(pool.destroy())
+      }
+    }
+  )
+
+  it('preserves active cancellation while a foreign promise remains pending', async () => {
+    const pool = new FixedThreadPool(1, workerFile)
+    const gate = new SharedArrayBuffer(4)
+    let running
+    try {
+      await ready(pool)
+      await pool.addTaskFunction('foreignHold', ({ gate }) =>
+        process
+          .getBuiltinModule('node:vm')
+          .runInNewContext(
+            'new Promise(resolve => { port.postMessage({ started: true }); Atomics.waitAsync(new Int32Array(gate), 0, 0).value.then(() => resolve("released")) })',
+            {
+              gate,
+              port: process.getBuiltinModule('node:worker_threads').parentPort,
+            }
+          )
+      )
+      const entered = waitForMessage(
+        pool.workerNodes[0].worker,
+        message => message.started
+      )
+      const controller = new AbortController()
+      running = settle(pool.execute({ gate }, 'foreignHold', controller.signal))
+      await bounded(entered)
+      const reason = new Error('Cancel foreign promise')
+      controller.abort(reason)
+      expect((await bounded(running)).error).toBe(reason)
+      expect(pool.info.executingTasks).toBe(0)
+    } finally {
+      release(gate)
+      await bounded(running)
+      await bounded(pool.destroy())
+    }
+  })
+
   it.each([
     ['failure', false, 'Expected task failure'],
     ['failure', true, 'Expected task failure'],
@@ -326,11 +434,16 @@ describe('Task lifecycle regressions', () => {
     }
   )
 
-  it.each([false, true])(
-    'receives the async kill acknowledgement (failure: %s)',
-    async failCleanup => {
+  it.each([
+    [false, false],
+    [false, true],
+    [true, false],
+    [true, true],
+  ])(
+    'receives the async kill acknowledgement (foreign: %s, failure: %s)',
+    async (foreignCleanup, failCleanup) => {
       const pool = new FixedThreadPool(1, workerFile, {
-        workerOptions: { workerData: { failCleanup } },
+        workerOptions: { workerData: { failCleanup, foreignCleanup } },
       })
       const errors = []
       pool.emitter.on(PoolEvents.error, error => errors.push(error))

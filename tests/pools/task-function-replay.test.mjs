@@ -549,4 +549,135 @@ describe('Runtime task function replay', () => {
       if (pool.info.started) await bounded(pool.destroy())
     }
   })
+
+  it.each([
+    ['runtime', 'replacement'],
+    ['runtime', 'restart'],
+    ['echo', 'replacement'],
+    ['echo', 'restart'],
+  ])('preserves the %s default after %s', async (name, transition) => {
+    const pool = new FixedThreadPool(
+      2,
+      './tests/worker-files/thread/taskLifecycleWorker.mjs',
+      { workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN }
+    )
+    const gate = new SharedArrayBuffer(4)
+    release(gate)
+    const data = { gate, value: 'selected' }
+    try {
+      await bounded(once(pool.emitter, PoolEvents.ready))
+      if (name === 'runtime') {
+        await bounded(pool.addTaskFunction(name, () => 'selected'))
+      }
+      await bounded(pool.setDefaultTaskFunction(name))
+      await expect(
+        bounded(pool.setDefaultTaskFunction('missing'))
+      ).rejects.toBeInstanceOf(Error)
+      if (transition === 'replacement') {
+        const original = pool.workerNodes[0]
+        await original.worker.terminate()
+        await vi.waitFor(() => {
+          expect(pool.workerNodes).toHaveLength(2)
+          expect(pool.workerNodes.includes(original)).toBe(false)
+          expect(pool.workerNodes.every(node => node.info.ready)).toBe(true)
+        })
+      } else {
+        await bounded(pool.destroy())
+        await expect(
+          bounded(pool.setDefaultTaskFunction('missing'))
+        ).resolves.toBe(true)
+        const ready = once(pool.emitter, PoolEvents.ready)
+        pool.start()
+        await bounded(ready)
+      }
+      for (let i = 0; i < 2; ++i) {
+        expect(await bounded(pool.execute(data))).toStrictEqual(
+          name === 'runtime' ? 'selected' : data
+        )
+      }
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
+  it('clears a selected runtime default only after its successful removal while empty', async () => {
+    const pool = new FixedThreadPool(
+      1,
+      './tests/worker-files/thread/taskLifecycleWorker.mjs'
+    )
+    const gate = new SharedArrayBuffer(4)
+    release(gate)
+    try {
+      await bounded(once(pool.emitter, PoolEvents.ready))
+      await bounded(pool.addTaskFunction('runtime', () => 'selected'))
+      await bounded(pool.setDefaultTaskFunction('runtime'))
+      await expect(
+        bounded(pool.removeTaskFunction('runtime'))
+      ).rejects.toBeInstanceOf(Error)
+      expect(await bounded(pool.execute({ gate }))).toBe('selected')
+      await bounded(pool.destroy())
+      expect(await bounded(pool.removeTaskFunction('runtime'))).toBe(true)
+      const ready = once(pool.emitter, PoolEvents.ready)
+      pool.start()
+      await bounded(ready)
+      expect(await bounded(pool.execute({ gate }))).toBe('released')
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
+  it('replays many functions without warnings when another exit shifts its index', async () => {
+    const replayGate = new SharedArrayBuffer(4)
+    release(replayGate)
+    const replayBlocked = Promise.withResolvers()
+    const warnings = []
+    const onWarning = warning => {
+      if (warning.name === 'MaxListenersExceededWarning') {
+        warnings.push(warning.message)
+      }
+    }
+    process.on('warning', onWarning)
+    const pool = new FixedThreadPool(
+      2,
+      './tests/worker-files/thread/taskLifecycleWorker.mjs',
+      {
+        messageHandler: message => {
+          if (message.replayBlocked) replayBlocked.resolve(message.workerId)
+        },
+        workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+        workerOptions: { workerData: { replayGate } },
+      }
+    )
+    try {
+      await bounded(once(pool.emitter, PoolEvents.ready))
+      for (let i = 0; i < 12; i++) {
+        await bounded(pool.addTaskFunction(`runtime${i}`, () => 'restored'))
+      }
+      const [first, second] = pool.workerNodes
+      Atomics.store(new Int32Array(replayGate), 0, 0)
+      await second.worker.terminate()
+      const replayingWorkerId = await bounded(replayBlocked.promise)
+      const replaying = pool.workerNodes.find(
+        node => node.info.id === replayingWorkerId
+      )
+      await first.worker.terminate()
+      expect(pool.workerNodes[0]).toBe(replaying)
+      release(replayGate)
+      await vi.waitFor(
+        () => {
+          expect(pool.workerNodes).toHaveLength(2)
+          expect(pool.workerNodes.every(node => node.info.ready)).toBe(true)
+        },
+        { timeout: 5000 }
+      )
+      for (let i = 0; i < 2; i++) {
+        expect(await bounded(pool.execute({}, 'runtime11'))).toBe('restored')
+      }
+      expect(warnings).toStrictEqual([])
+    } finally {
+      release(replayGate)
+      await bounded(pool.destroy())
+      process.off('warning', onWarning)
+    }
+  })
 })

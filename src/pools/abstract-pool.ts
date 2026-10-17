@@ -441,6 +441,11 @@ export abstract class AbstractPool<
    */
   private busyEventEmitted: boolean
 
+  /**
+   * The last explicit default acknowledged by an operation's worker cohort.
+   */
+  private defaultTaskFunctionName?: string
+
   private pendingTaskFunctionOperations = 0
 
   /**
@@ -834,6 +839,9 @@ export abstract class AbstractPool<
         workerNode.deleteTaskFunctionWorkerUsage(name)
       }
       this.taskFunctions.delete(name)
+      if (this.defaultTaskFunctionName === name) {
+        this.defaultTaskFunctionName = undefined
+      }
       this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
         this.getWorkerChoiceStrategies()
       )
@@ -853,13 +861,16 @@ export abstract class AbstractPool<
     }
     this.beginTaskFunctionOperation()
     try {
-      return await this.sendTaskFunctionOperationToWorkers({
+      const hadTargets = this.workerNodes.length > 0
+      const opResult = await this.sendTaskFunctionOperationToWorkers({
         taskFunctionOperation: 'default',
         taskFunctionProperties: buildTaskFunctionProperties(
           name,
           this.taskFunctions.get(name)
         ),
       })
+      if (hadTargets) this.defaultTaskFunctionName = name
+      return opResult
     } finally {
       this.endTaskFunctionOperation()
     }
@@ -1280,7 +1291,11 @@ export abstract class AbstractPool<
       }
     })
     const workerNodeKey = this.addWorkerNode(workerNode)
-    if (this.pendingTaskFunctionOperations > 0 || this.taskFunctions.size > 0) {
+    if (
+      this.pendingTaskFunctionOperations > 0 ||
+      this.taskFunctions.size > 0 ||
+      this.defaultTaskFunctionName != null
+    ) {
       const bootstrap: { promise?: Promise<void>; ready: boolean } = {
         ready: false,
       }
@@ -2678,20 +2693,19 @@ export abstract class AbstractPool<
 
   private async replayTaskFunctions (workerNodeKey: number): Promise<void> {
     if (this.taskFunctions.size === 0) return
-    const operations: Promise<boolean>[] = []
+    const workerNode = this.workerNodes[workerNodeKey]
     for (const [taskFunctionName, taskFunctionObject] of this.taskFunctions) {
-      operations.push(
-        this.sendTaskFunctionOperationToWorker(workerNodeKey, {
-          taskFunction: taskFunctionObject.taskFunction.toString(),
-          taskFunctionOperation: 'add',
-          taskFunctionProperties: buildTaskFunctionProperties(
-            taskFunctionName,
-            taskFunctionObject
-          ),
-        })
-      )
+      const currentWorkerNodeKey = this.getWorkerNodeKeyForBootstrap(workerNode)
+      if (currentWorkerNodeKey === -1) return
+      await this.sendTaskFunctionOperationToWorker(currentWorkerNodeKey, {
+        taskFunction: taskFunctionObject.taskFunction.toString(),
+        taskFunctionOperation: 'add',
+        taskFunctionProperties: buildTaskFunctionProperties(
+          taskFunctionName,
+          taskFunctionObject
+        ),
+      })
     }
-    await Promise.all(operations)
   }
 
   private async replayTaskFunctionsAfterOperations (
@@ -2708,6 +2722,17 @@ export abstract class AbstractPool<
       await this.replayTaskFunctions(workerNodeKey)
       workerNodeKey = this.getWorkerNodeKeyForBootstrap(workerNode)
       if (workerNodeKey === -1) return
+      if (this.defaultTaskFunctionName != null) {
+        await this.sendTaskFunctionOperationToWorker(workerNodeKey, {
+          taskFunctionOperation: 'default',
+          taskFunctionProperties: buildTaskFunctionProperties(
+            this.defaultTaskFunctionName,
+            this.taskFunctions.get(this.defaultTaskFunctionName)
+          ),
+        })
+        workerNodeKey = this.getWorkerNodeKeyForBootstrap(workerNode)
+        if (workerNodeKey === -1) return
+      }
       this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
         this.getWorkerChoiceStrategies(workerNode.info.taskFunctionsProperties)
       )
