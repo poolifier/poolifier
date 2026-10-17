@@ -408,32 +408,40 @@ describe('Task lifecycle regressions', () => {
     }
   )
 
-  it.each([false, true])(
-    'assimilates decorated native promises independently of then return values (abortable: %s)',
-    async abortable => {
+  it.each([
+    [false, false],
+    [false, true],
+    [true, false],
+    [true, true],
+  ])(
+    'assimilates decorated promises independently of then return values (async: %s, abortable: %s)',
+    async (asyncCallable, abortable) => {
       const pool = new FixedThreadPool(1, workerFile)
       try {
         await ready(pool)
-        await pool.addTaskFunction('decorated', data => {
-          const promise = data.fail
-            ? Promise.reject(new Error('Decorated task failure'))
-            : Promise.resolve(42)
-          const originalThen = promise.then
-          let reads = 0
-          Object.defineProperty(promise, 'then', {
-            get () {
-              if (++reads > 1) throw new Error('Repeated then access')
-              return function (resolve, reject) {
-                originalThen.call(this, resolve, reject)
-              }
-            },
+        if (!asyncCallable) {
+          await pool.addTaskFunction('decorated', data => {
+            const promise = data.fail
+              ? Promise.reject(new Error('Decorated task failure'))
+              : Promise.resolve(42)
+            const originalThen = promise.then
+            let reads = 0
+            Object.defineProperty(promise, 'then', {
+              get () {
+                if (++reads > 1) throw new Error('Repeated then access')
+                return function (resolve, reject) {
+                  originalThen.call(this, resolve, reject)
+                }
+              },
+            })
+            return promise
           })
-          return promise
-        })
+        }
+        const name = asyncCallable ? 'proxyPromise' : 'decorated'
         const signal = abortable ? new AbortController().signal : undefined
-        expect(await bounded(pool.execute({}, 'decorated', signal))).toBe(42)
+        expect(await bounded(pool.execute({}, name, signal))).toBe(42)
         await expect(
-          bounded(pool.execute({ fail: true }, 'decorated', signal))
+          bounded(pool.execute({ fail: true }, name, signal))
         ).rejects.toThrow('Decorated task failure')
         expect(
           await bounded(pool.execute({ recovered: true }, 'echo'))
@@ -457,9 +465,18 @@ describe('Task lifecycle regressions', () => {
             reads: 0,
             get then () {
               if (++this.reads > 1) throw new Error('Then getter read twice')
-              return function (resolve) {
+              const then = function (resolve) {
                 resolve({ reads: this.reads, sameReceiver: this === result })
               }
+              Object.setPrototypeOf(then, null)
+              for (const name of ['apply', 'bind', 'call']) {
+                Object.defineProperty(then, name, {
+                  get () {
+                    throw new Error('Unexpected callable property access')
+                  },
+                })
+              }
+              return then
             },
           }
           return result

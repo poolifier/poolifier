@@ -47,7 +47,7 @@
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
 
-Promise-returning task functions are awaited even when not declared `async`, including promises from other JavaScript realms.
+Promise and thenable task results are awaited, including promises from other JavaScript realms. Functions need not be declared `async`.
 
 An already-aborted signal rejects the task before submission.
 

@@ -470,7 +470,12 @@ export abstract class AbstractWorker<
   ): void => {
     try {
       const taskPerformance = this.beginTaskPerformance(task.name)
-      this.completeAsyncTask(fn(task.data), task, taskPerformance)
+      const result = fn(task.data)
+      this.completeAsyncTask(
+        this.getResultPromise(result) ?? Promise.resolve(result),
+        task,
+        taskPerformance
+      )
     } catch (error) {
       try {
         this.sendTaskError(task, error as Error)
@@ -726,7 +731,11 @@ export abstract class AbstractWorker<
     if (typeof then === 'function') {
       // The declared result type determines the callable's fulfillment type.
       const promiseThen = then as PromiseLike<Result>['then']
-      return Promise.resolve({ then: promiseThen.bind(result) })
+      return Promise.resolve({
+        then (...args: Parameters<typeof promiseThen>): void {
+          Reflect.apply(promiseThen, result, args)
+        },
+      })
     }
     return undefined
   }

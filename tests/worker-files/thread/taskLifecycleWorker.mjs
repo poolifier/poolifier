@@ -89,6 +89,28 @@ export default new TaskLifecycleWorker(
         return Reflect.apply(target, receiver, args)
       },
     }),
+    proxyPromise: new Proxy(
+      async data => {
+        if (data.fail) throw new Error('Decorated task failure')
+        return 42
+      },
+      {
+        apply (target, receiver, args) {
+          const promise = Reflect.apply(target, receiver, args)
+          const originalThen = promise.then
+          let reads = 0
+          Object.defineProperty(promise, 'then', {
+            get () {
+              if (++reads > 1) throw new Error('Repeated then access')
+              return function (resolve, reject) {
+                Reflect.apply(originalThen, this, [resolve, reject])
+              }
+            },
+          })
+          return promise
+        },
+      }
+    ),
     syncFailure: () => {
       throw new Error('Expected task failure')
     },
@@ -119,11 +141,11 @@ export default new TaskLifecycleWorker(
                   })
                 })
                 const originalThen = promise.then
-                Object.defineProperty(promise, 'then', {
-                  value (resolve, reject) {
-                    originalThen.call(this, resolve, reject)
-                  },
-                })
+                const then = function (resolve, reject) {
+                  Reflect.apply(originalThen, this, [resolve, reject])
+                }
+                Object.setPrototypeOf(then, null)
+                Object.defineProperty(promise, 'then', { value: then })
                 return promise
               }
             : async () => {
