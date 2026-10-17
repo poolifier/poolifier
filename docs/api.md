@@ -112,7 +112,7 @@ The function's source and options, including `workerNodeKeys`, are captured at c
 
 Pool-wide task-function mutations run in call order. Failed mutations do not block subsequent calls; changes already applied to workers are not rolled back.
 
-New and replacement workers wait for in-flight task-function operations, then become ready after restoring committed runtime registrations, the default selection, and scheduling metadata.
+New and replacement workers wait for in-flight task-function operations, then become ready after restoring committed runtime registrations, the default selection, and scheduling metadata. Workers undergoing termination remain unavailable.
 
 If a target exits mid-operation, the remaining targets must acknowledge success. The operation rejects if no target acknowledges it or any acknowledgement reports failure.
 

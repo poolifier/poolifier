@@ -2096,7 +2096,7 @@ export abstract class AbstractPool<
   private getWorkerNodeKeyForBootstrap (
     workerNode: IWorkerNode<Worker, Data>
   ): number {
-    if (this.destroying) return -1
+    if (this.destroying || this.terminatingWorkerNodes.has(workerNode)) { return -1 }
     return this.workerNodes.indexOf(workerNode)
   }
 

@@ -43,6 +43,82 @@ class WrappedThreadPool extends FixedThreadPool {
 }
 
 describe('Runtime task function replay', () => {
+  it('keeps a HARD-terminating dynamic worker unavailable after replay', async () => {
+    const replayGate = new SharedArrayBuffer(4)
+    const cleanupGate = new SharedArrayBuffer(4)
+    const taskGate = new SharedArrayBuffer(4)
+    const started = new SharedArrayBuffer(4)
+    const cleanup = Promise.withResolvers()
+    const pool = new DynamicThreadPool(
+      0,
+      1,
+      './tests/worker-files/thread/taskLifecycleWorker.mjs',
+      {
+        messageHandler: message => {
+          if (message.cleanupStarted) cleanup.resolve()
+        },
+        workerOptions: {
+          workerData: {
+            asyncReplay: true,
+            cleanupGate,
+            hardReplayKill: true,
+            replayGate,
+          },
+        },
+      }
+    )
+    const errors = []
+    pool.emitter.on(PoolEvents.error, error => errors.push(error))
+    let execution
+    let settled = false
+    try {
+      await pool.addTaskFunction('runtime', async data => {
+        Atomics.store(new Int32Array(data.started), 0, 1)
+        await Atomics.waitAsync(new Int32Array(data.taskGate), 0, 0).value
+        return data.buffer.byteLength
+      })
+      const data = { buffer: new ArrayBuffer(8), started, taskGate }
+      execution = pool.execute(data, 'runtime', undefined, [data.buffer]).then(
+        value => {
+          settled = true
+          return { value }
+        },
+        error => {
+          settled = true
+          return { error }
+        }
+      )
+      await bounded(cleanup.promise)
+      const node = pool.workerNodes[0]
+      const exited = once(node.worker, 'exit')
+      expect(node.info.ready).toBe(false)
+      release(replayGate)
+      await vi.waitFor(() => {
+        expect(settled || Atomics.load(new Int32Array(started), 0) === 1).toBe(
+          true
+        )
+      })
+      expect(node.info.ready).toBe(false)
+      expect(Atomics.load(new Int32Array(started), 0)).toBe(0)
+      expect(data.buffer.byteLength).toBe(8)
+      expect((await bounded(execution)).error).toBeInstanceOf(Error)
+      expect(node.worker.threadId).toBeGreaterThan(0)
+      expect(pool.info.executingTasks).toBe(0)
+      release(cleanupGate)
+      await bounded(exited)
+      expect(pool.workerNodes).toEqual([])
+      expect(errors).toEqual([])
+    } finally {
+      release(replayGate)
+      release(taskGate)
+      if (Atomics.load(new Int32Array(started), 0) === 1 && execution != null) {
+        await bounded(execution)
+      }
+      release(cleanupGate)
+      await bounded(pool.destroy())
+    }
+  })
+
   it.each(['replacement', 'restart'])(
     'replays the captured source after %s',
     async transition => {

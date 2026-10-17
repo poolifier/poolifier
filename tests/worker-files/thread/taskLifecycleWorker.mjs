@@ -1,7 +1,7 @@
 import { runInNewContext } from 'node:vm'
 import { parentPort, workerData } from 'node:worker_threads'
 
-import { ThreadWorker } from '../../../lib/index.mjs'
+import { KillBehaviors, ThreadWorker } from '../../../lib/index.mjs'
 
 if (workerData?.startupGate != null) {
   parentPort.postMessage({ startupBlocked: true })
@@ -38,6 +38,19 @@ class TaskLifecycleWorker extends ThreadWorker {
         replayGeneration,
         workerId: this.id,
       })
+      if (workerData?.asyncReplay === true) {
+        Promise.resolve(Atomics.waitAsync(replayState, 0, 0).value)
+          .then(() => {
+            super.handleTaskFunctionOperationMessage(message)
+            return undefined
+          })
+          .catch(error => {
+            queueMicrotask(() => {
+              throw error
+            })
+          })
+        return
+      }
       Atomics.wait(replayState, 0, 0)
     }
     super.handleTaskFunctionOperationMessage(message)
@@ -116,6 +129,10 @@ export default new TaskLifecycleWorker(
     },
   },
   {
+    ...(workerData?.hardReplayKill === true && {
+      killBehavior: KillBehaviors.HARD,
+      maxInactiveTime: 50,
+    }),
     killHandler:
       workerData?.syncCleanup === true
         ? () => {
@@ -149,7 +166,16 @@ export default new TaskLifecycleWorker(
                 return promise
               }
             : async () => {
-              await new Promise(resolve => setImmediate(resolve))
+              if (workerData?.cleanupGate != null) {
+                parentPort.postMessage({ cleanupStarted: true })
+                await Atomics.waitAsync(
+                  new Int32Array(workerData.cleanupGate),
+                  0,
+                  0
+                ).value
+              } else {
+                await new Promise(resolve => setImmediate(resolve))
+              }
               if (workerData?.failCleanup === true) {
                 throw new Error('Cleanup failure')
               }
