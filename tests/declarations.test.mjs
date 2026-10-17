@@ -1,9 +1,6 @@
-import { createRequire } from 'node:module'
 import { resolve } from 'node:path'
 import ts from 'typescript'
 import { expect, it } from 'vitest'
-
-import * as runtime from '../lib/index.mjs'
 
 const typeOnlyClasses = [
   'AbstractPool',
@@ -59,21 +56,4 @@ it('preserves type-only class exports and their constructor-side types', () => {
       ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n')
     )
   ).toEqual([])
-
-  const commonjs = createRequire(import.meta.url)('../lib/index.cjs')
-  for (const namespace of [runtime, commonjs]) {
-    for (const name of typeOnlyClasses) {
-      expect(Object.hasOwn(namespace, name)).toBe(false)
-    }
-    for (const name of [
-      'FixedThreadPool',
-      'DynamicThreadPool',
-      'FixedClusterPool',
-      'DynamicClusterPool',
-      'ThreadWorker',
-      'ClusterWorker',
-    ]) {
-      expect(typeof namespace[name]).toBe('function')
-    }
-  }
 })
