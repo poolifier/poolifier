@@ -43,6 +43,60 @@ class WrappedThreadPool extends FixedThreadPool {
 }
 
 describe('Runtime task function replay', () => {
+  it.each(['remove', 'default'])(
+    'waits for workers created while resuming a %s operation',
+    async operation => {
+      const gate = new SharedArrayBuffer(4)
+      const tasks = []
+      const pool = new DynamicThreadPool(
+        1,
+        3,
+        './tests/worker-files/thread/taskLifecycleWorker.mjs'
+      )
+      try {
+        await bounded(once(pool.emitter, PoolEvents.ready))
+        await bounded(pool.addTaskFunction('runtime', data => data))
+        await bounded(
+          pool.addTaskFunction('secondHold', {
+            taskFunction: async ({ gate }) => {
+              await Atomics.waitAsync(new Int32Array(gate), 0, 0).value
+              return 'released'
+            },
+            workerNodeKeys: [1],
+          })
+        )
+        tasks.push(pool.execute({ gate }, 'hold'))
+        tasks.push(pool.execute({}, 'echo'))
+        const bootstrap = pool.workerTaskFunctionBootstraps.get(
+          pool.workerNodes[1]
+        ).promise
+        const change =
+          operation === 'remove'
+            ? pool.removeTaskFunction('runtime')
+            : pool.setDefaultTaskFunction('runtime')
+        await Promise.resolve()
+        const growth = bootstrap.then(() => {
+          tasks.push(pool.execute({ gate }, 'secondHold'))
+          tasks.push(pool.execute({}, 'echo'))
+          return undefined
+        })
+        await expect(bounded(change)).resolves.toBe(true)
+        await bounded(growth)
+        expect(pool.workerNodes).toHaveLength(3)
+        expect(pool.hasTaskFunction('runtime')).toBe(operation !== 'remove')
+        if (operation === 'default') {
+          expect(await bounded(pool.execute({ selected: true }))).toEqual({
+            selected: true,
+          })
+        }
+      } finally {
+        release(gate)
+        await bounded(Promise.allSettled(tasks))
+        await bounded(pool.destroy())
+      }
+    }
+  )
+
   it('keeps a HARD-terminating dynamic worker unavailable after replay', async () => {
     const replayGate = new SharedArrayBuffer(4)
     const cleanupGate = new SharedArrayBuffer(4)

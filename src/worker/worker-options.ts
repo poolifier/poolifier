@@ -19,9 +19,10 @@ export const KillBehaviors: Readonly<{ HARD: 'HARD'; SOFT: 'SOFT' }> =
 export type KillBehavior = keyof typeof KillBehaviors
 
 /**
- * Handler called when a worker is killed.
+ * Cleanup handler called when the pool requests worker termination.
+ * Returned promises and other thenable values are awaited.
  */
-export type KillHandler = () => Promise<void> | void
+export type KillHandler = () => PromiseLike<void> | void
 
 /**
  * Options for workers.

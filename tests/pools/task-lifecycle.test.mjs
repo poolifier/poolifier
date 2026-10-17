@@ -33,6 +33,170 @@ const queueOptions = {
 }
 
 describe('Task lifecycle regressions', () => {
+  it.each([
+    ['thread', FixedThreadPool],
+    ['cluster', FixedClusterPool],
+  ])(
+    'preserves operations through an existing protected override (%s)',
+    async (workerType, Pool) => {
+      const pool = new Pool(
+        1,
+        workerType === 'thread'
+          ? workerFile
+          : './tests/worker-files/cluster/legacyTaskFunctionWorker.mjs',
+        workerType === 'thread'
+          ? {
+              workerOptions: {
+                workerData: { legacyTaskFunctionMessages: true },
+              },
+            }
+          : undefined
+      )
+      try {
+        await ready(pool)
+        await expect(
+          bounded(pool.addTaskFunction('runtime', data => ({ runtime: data })))
+        ).resolves.toBe(true)
+        await expect(
+          bounded(pool.setDefaultTaskFunction('runtime'))
+        ).resolves.toBe(true)
+        expect(await bounded(pool.execute('selected'))).toEqual({
+          runtime: 'selected',
+        })
+        await expect(
+          bounded(pool.setDefaultTaskFunction('missing'))
+        ).rejects.toBeInstanceOf(Error)
+        await bounded(pool.addTaskFunction('fallback', data => data))
+        await bounded(pool.setDefaultTaskFunction('fallback'))
+        await expect(bounded(pool.removeTaskFunction('runtime'))).resolves.toBe(
+          true
+        )
+        expect(pool.hasTaskFunction('runtime')).toBe(false)
+      } finally {
+        await bounded(pool.destroy())
+      }
+    }
+  )
+
+  it('does not let a delayed override acknowledgement complete a later operation', async () => {
+    const replayGate = new SharedArrayBuffer(4)
+    const duplicateAckGate = new SharedArrayBuffer(4)
+    release(replayGate)
+    const blocked = Promise.withResolvers()
+    const duplicate = Promise.withResolvers()
+    const pool = new FixedThreadPool(1, workerFile, {
+      messageHandler: message => {
+        if (message.replayBlocked) blocked.resolve()
+        if (message.duplicateSent) duplicate.resolve()
+      },
+      workerOptions: {
+        workerData: {
+          asyncReplay: true,
+          duplicateAckGate,
+          legacyTaskFunctionMessages: true,
+          replayGate,
+        },
+      },
+    })
+    let change
+    try {
+      await ready(pool)
+      await bounded(pool.addTaskFunction('first', () => 'first'))
+      Atomics.store(new Int32Array(replayGate), 0, 0)
+      let completed = false
+      change = pool
+        .addTaskFunction('second', () => 'second')
+        .then(result => {
+          completed = true
+          return result
+        })
+      await bounded(blocked.promise)
+      release(duplicateAckGate)
+      await bounded(duplicate.promise)
+      expect(await bounded(pool.execute({ barrier: true }, 'echo'))).toEqual({
+        barrier: true,
+      })
+      expect(completed).toBe(false)
+      expect(pool.hasTaskFunction('second')).toBe(false)
+      release(replayGate)
+      expect(await bounded(change)).toBe(true)
+      expect(await bounded(pool.execute({}, 'second'))).toBe('second')
+    } finally {
+      release(duplicateAckGate)
+      release(replayGate)
+      if (change != null) await bounded(settle(change))
+      await bounded(pool.destroy())
+    }
+  })
+
+  it.each([false, true])(
+    'does not reassimilate an ordinary native promise result (async: %s)',
+    async asyncCallable => {
+      const pool = new FixedThreadPool(1, workerFile)
+      try {
+        await ready(pool)
+        const task = async () => {
+          let reads = 0
+          return Object.defineProperty({ ok: true }, 'then', {
+            get () {
+              if (++reads > 1) throw new Error('Repeated result assimilation')
+              return undefined
+            },
+          })
+        }
+        await bounded(
+          pool.addTaskFunction(
+            'native',
+            asyncCallable
+              ? task
+              : () => {
+                  let reads = 0
+                  return Promise.resolve(
+                    Object.defineProperty({ ok: true }, 'then', {
+                      get () {
+                        if (++reads > 1) {
+                          throw new Error('Repeated result assimilation')
+                        }
+                        return undefined
+                      },
+                    })
+                  )
+                }
+          )
+        )
+        expect(await bounded(pool.execute({}, 'native'))).toEqual({ ok: true })
+        expect(
+          await bounded(pool.execute({ recovered: true }, 'echo'))
+        ).toEqual({
+          recovered: true,
+        })
+      } finally {
+        await bounded(pool.destroy())
+      }
+    }
+  )
+
+  it('reads a decorated native then getter once even when it returns the native method', async () => {
+    const pool = new FixedThreadPool(1, workerFile)
+    try {
+      await ready(pool)
+      await bounded(
+        pool.addTaskFunction('decoratedNative', () => {
+          let reads = 0
+          return Object.defineProperty(Promise.resolve(42), 'then', {
+            get () {
+              if (++reads > 1) throw new Error('Repeated native then access')
+              return Promise.prototype.then
+            },
+          })
+        })
+      )
+      expect(await bounded(pool.execute({}, 'decoratedNative'))).toBe(42)
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
   it.each([false, true])(
     'reports synchronous invocation failure from an async callable (abortable: %s)',
     async abortable => {

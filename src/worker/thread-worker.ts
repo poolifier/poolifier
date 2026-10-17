@@ -95,10 +95,12 @@ export class ThreadWorker<
   protected readonly sendToMainWorker = (
     message: MessageValue<Response>
   ): void => {
-    this.port?.postMessage({
-      ...message,
-      workerId: this.id,
-    } satisfies MessageValue<Response>)
+    const response = { ...message, workerId: this.id }
+    if (response.taskFunctionOperationStatus != null) {
+      response.taskFunctionOperationId ??=
+        this.taskFunctionOperationContext.getStore()
+    }
+    this.port?.postMessage(response)
     if (message.kill === 'success' || message.kill === 'failure') {
       this.port?.unref()
       this.port?.close()

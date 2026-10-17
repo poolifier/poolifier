@@ -2,7 +2,9 @@ import type { Worker } from 'node:cluster'
 import type { UUID } from 'node:crypto'
 import type { MessagePort } from 'node:worker_threads'
 
+import { AsyncLocalStorage } from 'node:async_hooks'
 import { performance } from 'node:perf_hooks'
+import { isPromise } from 'node:util/types'
 
 import type {
   MessageValue,
@@ -85,6 +87,13 @@ export abstract class AbstractWorker<
    * Task abort functions processed by the worker when task operation 'abort' is received.
    */
   protected taskAbortFunctions: Map<UUID, () => void>
+
+  /**
+   * Correlation of task function operations across protected handler overrides.
+   */
+  protected readonly taskFunctionOperationContext = new AsyncLocalStorage<
+    undefined | UUID
+  >()
 
   /**
    * Task function object(s) processed by the worker when the pool's `execute` method is invoked.
@@ -415,7 +424,11 @@ export abstract class AbstractWorker<
       checkActive ? this.startCheckActive() : this.stopCheckActive()
     } else if (taskFunctionOperation != null) {
       // Task function operation message received
-      this.handleTaskFunctionOperationMessage(message)
+      this.taskFunctionOperationContext.run(
+        message.taskFunctionOperationId,
+        this.runTaskFunctionOperation,
+        message
+      )
     } else if (taskId != null && data != null) {
       // Task message received
       this.run(message)
@@ -727,6 +740,13 @@ export abstract class AbstractWorker<
     ) {
       return
     }
+    if (
+      isPromise(result) &&
+      Object.getPrototypeOf(result) === Promise.prototype &&
+      !Object.hasOwn(result, 'then')
+    ) {
+      return result as Promise<Result>
+    }
     const then: unknown = Reflect.get(result, 'then')
     if (typeof then === 'function') {
       // The declared result type determines the callable's fulfillment type.
@@ -738,6 +758,12 @@ export abstract class AbstractWorker<
       })
     }
     return undefined
+  }
+
+  private readonly runTaskFunctionOperation = (
+    message: MessageValue<Data>
+  ): void => {
+    this.handleTaskFunctionOperationMessage(message)
   }
 
   private sendTaskError (task: Task<Data>, error: Error): void {

@@ -14,13 +14,13 @@ export type TaskAsyncFunction<Data = unknown, Response = unknown> = (
 
 /**
  * Task function that can be executed.
- * This function can be synchronous or asynchronous.
+ * This function can return a value, a promise or another thenable.
  * @template Data - Type of data sent to the worker. This can only be structured-cloneable data.
  * @template Response - Type of execution response. This can only be structured-cloneable data.
  */
-export type TaskFunction<Data = unknown, Response = unknown> =
-  | TaskAsyncFunction<Data, Response>
-  | TaskSyncFunction<Data, Response>
+export type TaskFunction<Data = unknown, Response = unknown> = (
+  data?: Data
+) => PromiseLike<Response> | Response
 
 /**
  * Task function object.

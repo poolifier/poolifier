@@ -23,15 +23,51 @@ const replayState = replayGate == null ? undefined : new Int32Array(replayGate)
 class TaskLifecycleWorker extends ThreadWorker {
   sendToMainWorker = (() => {
     const send = this.sendToMainWorker
+    let duplicateScheduled = false
     return message => {
       if (message.kill != null && workerData?.failAckSend === message.kill) {
         throw new Error('Kill ACK transport failed')
       }
       send(message)
+      if (
+        message.taskFunctionOperationStatus != null &&
+        workerData?.duplicateAckGate != null &&
+        !duplicateScheduled
+      ) {
+        duplicateScheduled = true
+        Promise.resolve(
+          Atomics.waitAsync(new Int32Array(workerData.duplicateAckGate), 0, 0)
+            .value
+        )
+          .then(() => {
+            send(message)
+            parentPort.postMessage({ duplicateSent: true })
+            return undefined
+          })
+          .catch(error => {
+            queueMicrotask(() => {
+              throw error
+            })
+          })
+      }
     }
   })()
 
   handleTaskFunctionOperationMessage (message) {
+    if (workerData?.legacyTaskFunctionMessages === true) {
+      const {
+        taskFunction,
+        taskFunctionOperation,
+        taskFunctionProperties,
+        workerId,
+      } = message
+      message = {
+        taskFunction,
+        taskFunctionOperation,
+        taskFunctionProperties,
+        workerId,
+      }
+    }
     if (replayState != null && Atomics.load(replayState, 0) === 0) {
       parentPort.postMessage({
         replayBlocked: true,

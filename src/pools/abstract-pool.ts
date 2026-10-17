@@ -643,7 +643,7 @@ export abstract class AbstractPool<
       taskFunctionProperties: buildTaskFunctionProperties(name, definition),
     } satisfies MessageValue<Data>
     return await this.queueTaskFunctionOperation(async () => {
-      if (this.workerTaskFunctionBootstraps.size > 0) {
+      while (this.workerTaskFunctionBootstraps.size > 0) {
         await this.waitForWorkerTaskFunctionBootstraps()
       }
       this.beginTaskFunctionOperation()
@@ -842,7 +842,7 @@ export abstract class AbstractPool<
           'Cannot remove a task function not handled on the pool side'
         )
       }
-      if (this.workerTaskFunctionBootstraps.size > 0) {
+      while (this.workerTaskFunctionBootstraps.size > 0) {
         await this.waitForWorkerTaskFunctionBootstraps()
       }
       this.beginTaskFunctionOperation()
@@ -875,7 +875,7 @@ export abstract class AbstractPool<
   /** @inheritDoc */
   public async setDefaultTaskFunction (name: string): Promise<boolean> {
     return await this.queueTaskFunctionOperation(async () => {
-      if (this.workerTaskFunctionBootstraps.size > 0) {
+      while (this.workerTaskFunctionBootstraps.size > 0) {
         await this.waitForWorkerTaskFunctionBootstraps()
       }
       this.beginTaskFunctionOperation()
