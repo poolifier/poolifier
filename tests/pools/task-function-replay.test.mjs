@@ -16,7 +16,355 @@ const release = gate => {
   Atomics.notify(new Int32Array(gate), 0)
 }
 
+class WrappedThreadPool extends FixedThreadPool {
+  deregisterWorkerMessageListener (workerNodeKey, listener) {
+    const wrappers = this.listenerWrappers.get(this.workerNodes[workerNodeKey])
+    const wrapped = wrappers?.get(listener)
+    wrappers?.delete(listener)
+    super.deregisterWorkerMessageListener(workerNodeKey, wrapped ?? listener)
+    this.onListenerRemoval?.(workerNodeKey)
+  }
+
+  registerWorkerMessageListener (workerNodeKey, listener) {
+    const workerNode = this.workerNodes[workerNodeKey]
+    let wrappers = this.listenerWrappers.get(workerNode)
+    if (wrappers == null) {
+      wrappers = new Map()
+      this.listenerWrappers.set(workerNode, wrappers)
+    }
+    const wrapped = listener.bind(this)
+    wrappers.set(listener, wrapped)
+    super.registerWorkerMessageListener(workerNodeKey, wrapped)
+  }
+
+  setupHook () {
+    this.listenerWrappers = new WeakMap()
+  }
+}
+
 describe('Runtime task function replay', () => {
+  it.each(['replacement', 'restart'])(
+    'replays the captured source after %s',
+    async transition => {
+      const pool = new FixedThreadPool(
+        1,
+        './tests/worker-files/thread/taskLifecycleWorker.mjs'
+      )
+      try {
+        await bounded(once(pool.emitter, PoolEvents.ready))
+        const taskFunction = () => 42
+        await bounded(pool.addTaskFunction('captured', taskFunction))
+        await bounded(pool.setDefaultTaskFunction('captured'))
+        taskFunction.toString = () => '() => 99'
+        const original = pool.workerNodes[0]
+        if (transition === 'replacement') {
+          await original.worker.terminate()
+        } else {
+          await bounded(pool.destroy())
+          pool.start()
+        }
+        await vi.waitFor(() => {
+          expect(pool.workerNodes).toHaveLength(1)
+          expect(pool.workerNodes[0]).not.toBe(original)
+          expect(pool.workerNodes[0].info.ready).toBe(true)
+        })
+        expect(await bounded(pool.execute({}))).toBe(42)
+      } finally {
+        await bounded(pool.destroy())
+      }
+    }
+  )
+
+  it('keeps execution and registration waiting across replacement replay exits', async () => {
+    const replayGates = Array.from(
+      { length: 3 },
+      () => new SharedArrayBuffer(4)
+    )
+    const blocked = Array.from({ length: 3 }, () => Promise.withResolvers())
+    release(replayGates[0])
+    const errors = []
+    const pool = new FixedThreadPool(
+      1,
+      './tests/worker-files/thread/taskLifecycleWorker.mjs',
+      {
+        messageHandler: message => {
+          if (message.replayBlocked) {
+            blocked[message.replayGeneration].resolve()
+          }
+        },
+        workerOptions: {
+          workerData: { replayCounter: new SharedArrayBuffer(4), replayGates },
+        },
+      }
+    )
+    pool.emitter.on(PoolEvents.error, error => errors.push(error))
+    const tasks = []
+    try {
+      await bounded(once(pool.emitter, PoolEvents.ready))
+      await bounded(
+        pool.addTaskFunction('runtime', data => data.buffer.byteLength)
+      )
+      await pool.workerNodes[0].worker.terminate()
+      await bounded(blocked[1].promise)
+      const data = { buffer: new ArrayBuffer(8) }
+      const abortedData = { buffer: new ArrayBuffer(4) }
+      const controller = new AbortController()
+      const reason = new Error('Replay wait aborted')
+      let executed = false
+      let registered = false
+      const execution = pool
+        .execute(data, 'runtime', undefined, [data.buffer])
+        .then(
+          value => {
+            executed = true
+            return { value }
+          },
+          error => {
+            executed = true
+            return { error }
+          }
+        )
+      const registration = pool
+        .addTaskFunction('later', () => 9)
+        .then(
+          value => {
+            registered = true
+            return { value }
+          },
+          error => {
+            registered = true
+            return { error }
+          }
+        )
+      const aborted = pool
+        .execute(abortedData, 'runtime', controller.signal, [
+          abortedData.buffer,
+        ])
+        .catch(error => error)
+      tasks.push(execution, registration, aborted)
+      const retiring = pool.workerNodes[0].worker
+      retiring.once('exit', () => controller.abort(reason))
+      await retiring.terminate()
+      await bounded(blocked[2].promise)
+      expect(await bounded(aborted)).toBe(reason)
+      expect(executed).toBe(false)
+      expect(registered).toBe(false)
+      expect(data.buffer.byteLength).toBe(8)
+      expect(abortedData.buffer.byteLength).toBe(4)
+      release(replayGates[2])
+      expect(await bounded(execution)).toEqual({ value: 8 })
+      expect(await bounded(registration)).toEqual({ value: true })
+      expect(await bounded(pool.execute({}, 'later'))).toBe(9)
+      expect(errors).toEqual([])
+    } finally {
+      replayGates.forEach(release)
+      await bounded(Promise.allSettled(tasks))
+      await bounded(pool.destroy())
+    }
+  })
+
+  it('propagates replay failure from a worker that is still alive', async () => {
+    const pool = new FixedThreadPool(
+      1,
+      './tests/worker-files/thread/taskLifecycleWorker.mjs',
+      { startWorkers: false }
+    )
+    const errors = []
+    pool.emitter.on(PoolEvents.error, error => errors.push(error))
+    try {
+      const invalid = () => 42
+      invalid.toString = () => 'null'
+      await bounded(pool.addTaskFunction('invalid', invalid))
+      pool.start()
+      const worker = pool.workerNodes[0].worker
+      const data = { buffer: new ArrayBuffer(8) }
+      const error = await bounded(
+        pool
+          .execute(data, 'invalid', undefined, [data.buffer])
+          .catch(error => error)
+      )
+      expect(error).toBeInstanceOf(Error)
+      expect(errors).toEqual([error])
+      expect(pool.workerNodes[0].worker).toBe(worker)
+      expect(worker.threadId).toBeGreaterThan(0)
+      expect(data.buffer.byteLength).toBe(8)
+      expect(pool.info.executingTasks).toBe(0)
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
+  it('retires wrapped message listeners through protected hooks during CRUD and replay', async () => {
+    const warnings = []
+    const onWarning = warning => {
+      if (warning.name === 'MaxListenersExceededWarning') {
+        warnings.push(warning.message)
+      }
+    }
+    process.on('warning', onWarning)
+    const pool = new WrappedThreadPool(
+      2,
+      './tests/worker-files/thread/taskLifecycleWorker.mjs'
+    )
+    try {
+      await bounded(once(pool.emitter, PoolEvents.ready))
+      for (let i = 0; i < 12; ++i) {
+        await bounded(pool.addTaskFunction('runtime', () => 42))
+      }
+      await bounded(pool.setDefaultTaskFunction('runtime'))
+      await expect(
+        bounded(pool.removeTaskFunction('runtime'))
+      ).rejects.toBeInstanceOf(Error)
+      const original = pool.workerNodes[0]
+      let reentered
+      pool.onListenerRemoval = workerNodeKey => {
+        if (pool.workerNodes[workerNodeKey].worker.threadId === -1) {
+          pool.onListenerRemoval = undefined
+          reentered = pool.execute({}).then(
+            value => ({ value }),
+            error => ({ error })
+          )
+        }
+      }
+      await original.worker.terminate()
+      await vi.waitFor(() => {
+        expect(pool.workerNodes).toHaveLength(2)
+        expect(pool.workerNodes.includes(original)).toBe(false)
+        expect(pool.workerNodes.every(node => node.info.ready)).toBe(true)
+      })
+      expect(await bounded(reentered)).toEqual({ value: 42 })
+      expect(await bounded(pool.execute({}))).toBe(42)
+      expect(warnings).toEqual([])
+    } finally {
+      await bounded(pool.destroy())
+      process.off('warning', onWarning)
+    }
+  })
+
+  it('wakes already-waiting executions when their eligible worker finishes replay', async () => {
+    const replayGates = [new SharedArrayBuffer(4), new SharedArrayBuffer(4)]
+    const replayBlocked = Promise.withResolvers()
+    const pool = new FixedThreadPool(
+      2,
+      './tests/worker-files/thread/taskLifecycleWorker.mjs',
+      {
+        messageHandler: message => {
+          if (
+            message.replayBlocked &&
+            message.workerId === pool.workerNodes[1].info.id
+          ) {
+            replayBlocked.resolve(message.replayGeneration)
+          }
+        },
+        startWorkers: false,
+        workerOptions: {
+          workerData: { replayCounter: new SharedArrayBuffer(4), replayGates },
+        },
+      }
+    )
+    const tasks = []
+    try {
+      await bounded(
+        pool.addTaskFunction('runtime', {
+          taskFunction: data => data.buffer.byteLength,
+          workerNodeKeys: [1],
+        })
+      )
+      pool.start()
+      const data = { buffer: new ArrayBuffer(8) }
+      tasks.push(pool.execute(data, 'runtime', undefined, [data.buffer]))
+      const eligibleGate = await bounded(replayBlocked.promise)
+      expect(data.buffer.byteLength).toBe(8)
+      release(replayGates[eligibleGate])
+      await vi.waitFor(() => expect(pool.workerNodes[1].info.ready).toBe(true))
+      expect(await bounded(tasks[0])).toBe(8)
+      expect(data.buffer.byteLength).toBe(0)
+      tasks.push(pool.execute({ buffer: new ArrayBuffer(8) }, 'runtime'))
+      expect(await bounded(tasks[1])).toBe(8)
+    } finally {
+      for (const gate of replayGates) release(gate)
+      await bounded(Promise.allSettled(tasks))
+      await bounded(pool.destroy())
+    }
+  })
+
+  it('uses ready metadata while the first worker replays without blocking eligible work', async () => {
+    const replayGates = Array.from(
+      { length: 4 },
+      () => new SharedArrayBuffer(4)
+    )
+    for (const i of [0, 1, 3]) release(replayGates[i])
+    const replayBlocked = Promise.withResolvers()
+    const pool = new FixedThreadPool(
+      2,
+      './tests/worker-files/thread/taskLifecycleWorker.mjs',
+      {
+        enableTasksQueue: true,
+        messageHandler: message => {
+          if (message.replayBlocked) replayBlocked.resolve(message.workerId)
+        },
+        tasksQueueOptions: {
+          concurrency: 1,
+          tasksStealingOnBackPressure: false,
+          taskStealing: false,
+        },
+        workerOptions: {
+          workerData: { replayCounter: new SharedArrayBuffer(4), replayGates },
+        },
+      }
+    )
+    const holdGate = new SharedArrayBuffer(4)
+    const tasks = []
+    let blocked
+    try {
+      await bounded(once(pool.emitter, PoolEvents.ready))
+      await bounded(
+        pool.addTaskFunction('runtime', {
+          priority: -10,
+          taskFunction: () => 'priority',
+          workerNodeKeys: [1],
+        })
+      )
+      await bounded(
+        pool.addTaskFunction('blockedOnly', {
+          taskFunction: data => data.buffer.byteLength,
+          workerNodeKeys: [0],
+        })
+      )
+      await bounded(pool.setDefaultTaskFunction('runtime'))
+      const [first, second] = pool.workerNodes
+      await second.worker.terminate()
+      const blockedWorkerId = await bounded(replayBlocked.promise)
+      await first.worker.terminate()
+      await vi.waitFor(() => expect(pool.workerNodes[1].info.ready).toBe(true))
+      expect(pool.workerNodes[0].info.id).toBe(blockedWorkerId)
+      const data = { buffer: new ArrayBuffer(8) }
+      blocked = pool.execute(data, 'blockedOnly', undefined, [data.buffer])
+      expect(data.buffer.byteLength).toBe(8)
+      const entered = waitForMessage(
+        pool.workerNodes[1].worker,
+        message => message.started
+      )
+      tasks.push(pool.execute({ gate: holdGate }, 'hold'))
+      await bounded(entered)
+      const order = []
+      tasks.push(pool.execute({}, 'echo').then(() => order.push('ordinary')))
+      tasks.push(pool.execute({}).then(() => order.push('priority')))
+      release(holdGate)
+      await bounded(Promise.all(tasks))
+      expect(order).toEqual(['priority', 'ordinary'])
+      expect(data.buffer.byteLength).toBe(8)
+      release(replayGates[2])
+      expect(await bounded(blocked)).toBe(8)
+      expect(data.buffer.byteLength).toBe(0)
+    } finally {
+      for (const gate of replayGates) release(gate)
+      release(holdGate)
+      await bounded(Promise.allSettled([...tasks, blocked]))
+      await bounded(pool.destroy())
+    }
+  })
+
   it.each(['remove', 'update', 'failed removal', 'late default'])(
     'does not replay stale registrations during %s',
     async operation => {

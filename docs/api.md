@@ -56,6 +56,7 @@ An already-aborted signal rejects the task before submission.
 - If sending a task throws, its promise rejects with the original error, without failing other tasks.
 - On unexpected worker exit, unfinished dispatched tasks reject with an `Error` and are not retried. Thread responses already posted to the pool retain their result or task error; cluster responses must reach the pool before exit.
 - For tasks with transferred objects, the `taskError` event's `data` is the original input object. Error reporting does not return ownership of transferred objects to the main thread.
+- Task errors may omit worker-side input that cannot be cloned back. If asynchronous error reporting still fails, it causes a native worker failure.
 - Queued tasks are redistributed to ready workers respecting worker node affinity. Worker node affinity is preserved while other workers initialize. Affinity uses current worker node indices after removal and any replacement attempt. Tasks without an eligible destination reject. Eligible handoffs complete before `backPressureEnd` is emitted, including when worker-removal event listeners disable task queues.
 - Disabling task queues from a worker-removal event listener does not discard queued tasks awaiting redistribution: eligible tasks are dispatched directly.
 - Initial, queued and running task cancellation preserves an `Error` reason, wraps a string reason in a new `Error`, or produces a task-specific abort `Error` otherwise.
@@ -81,7 +82,9 @@ This method is available on both pool implementations and will start the minimum
 
 ### `pool.destroy()`
 
-This method is available on both pool implementations and returns a promise for pool destruction. Workers that have already exited do not block destruction. Worker cleanup failures emit the pool's `error` event when events are enabled.
+This method is available on both pool implementations and returns a promise for pool destruction. Workers that have already exited do not block destruction.
+
+Destruction waits up to 1000 milliseconds for each worker's kill acknowledgment. Cleanup failures emit the pool's `error` event when events are enabled and do not prevent native termination. Errors while sending an acknowledgment cause a native worker failure. Cleanup that exceeds the acknowledgment timeout can be interrupted.
 
 ### `pool.hasTaskFunction(name)`
 
@@ -105,7 +108,7 @@ This method is available on both pool implementations and returns a boolean.
 
 This method is available on both pool implementations and returns a boolean promise.
 
-The function definition and its options, including `workerNodeKeys`, are captured at call time. Later caller mutations do not affect registration or replay.
+The function's source and options, including `workerNodeKeys`, are captured at call time. Later caller mutations do not affect registration or replay.
 
 Pool-wide task-function mutations run in call order. Failed mutations do not block subsequent calls; changes already applied to workers are not rolled back.
 
@@ -213,7 +216,7 @@ An object with these properties:
   If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.  
   Default: `60000`
 
-- `killHandler` (optional) - A function that will be called when a worker is killed.  
+- `killHandler` (optional) - A function called when a worker is killed. Returned Promises settle before acknowledgment. See [`pool.destroy()`](#pooldestroy) for timeout and failure handling.  
   Default: `() => {}`
 
 #### `YourWorker.hasTaskFunction(name)`

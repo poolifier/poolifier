@@ -33,6 +33,179 @@ const queueOptions = {
 }
 
 describe('Task lifecycle regressions', () => {
+  it.each([false, true])(
+    'reports synchronous invocation failure from an async callable (abortable: %s)',
+    async abortable => {
+      const pool = new FixedThreadPool(1, workerFile, {
+        restartWorkerOnError: false,
+      })
+      const unexpected = []
+      const failures = []
+      pool.emitter.on(PoolEvents.error, error => unexpected.push(error))
+      pool.emitter.on(PoolEvents.taskError, error => failures.push(error))
+      try {
+        await ready(pool)
+        const worker = pool.workerNodes[0].worker
+        const signal = abortable ? new AbortController().signal : undefined
+        await expect(
+          bounded(pool.execute({}, 'proxyFailure', signal))
+        ).rejects.toThrow('Proxy task failure')
+        expect(unexpected).toEqual([])
+        expect(failures).toEqual([
+          expect.objectContaining({ message: 'Proxy task failure' }),
+        ])
+        expect(await bounded(pool.execute({}, 'proxyFailure', signal))).toBe(2)
+        expect(pool.workerNodes[0].worker).toBe(worker)
+        expect(pool.info.executingTasks).toBe(0)
+      } finally {
+        await bounded(pool.destroy())
+      }
+    }
+  )
+
+  it.each([
+    [false, false],
+    [false, true],
+    [true, false],
+    [true, true],
+  ])(
+    'forwards ACK transport errors (sync: %s, cleanup failure: %s)',
+    async (syncCleanup, failCleanup) => {
+      const pool = new FixedThreadPool(1, workerFile, {
+        workerOptions: {
+          execArgv: ['--unhandled-rejections=warn'],
+          workerData: {
+            failAckSend: failCleanup ? 'failure' : 'success',
+            failCleanup,
+            syncCleanup,
+          },
+        },
+      })
+      const errors = []
+      const failed = Promise.withResolvers()
+      pool.emitter.on(PoolEvents.error, error => {
+        errors.push(error)
+        failed.resolve(error)
+      })
+      let destruction
+      try {
+        await ready(pool)
+        const worker = pool.workerNodes[0].worker
+        const exited = new Promise(resolve => worker.once('exit', resolve))
+        destruction = pool.destroy()
+        expect(await bounded(failed.promise)).toMatchObject({
+          message: 'Kill ACK transport failed',
+        })
+        await bounded(exited)
+        await bounded(destruction)
+        expect(errors).toEqual([
+          expect.objectContaining({ message: 'Kill ACK transport failed' }),
+        ])
+      } finally {
+        if (destruction != null) await bounded(destruction)
+        if (pool.started) await bounded(pool.destroy())
+      }
+    }
+  )
+
+  it.each([
+    [
+      'sync',
+      data => {
+        structuredClone(data.buffer, { transfer: [data.buffer] })
+        throw new Error('Detached input failure')
+      },
+    ],
+    [
+      'promise',
+      data => {
+        structuredClone(data.buffer, { transfer: [data.buffer] })
+        return Promise.reject(new Error('Detached input failure'))
+      },
+    ],
+    [
+      'async',
+      async data => {
+        structuredClone(data.buffer, { transfer: [data.buffer] })
+        throw new Error('Detached input failure')
+      },
+    ],
+  ])(
+    'reports %s failure after input is detached inside the worker',
+    async (_kind, fn) => {
+      const pool = new FixedThreadPool(1, workerFile, {
+        restartWorkerOnError: false,
+      })
+      const failures = []
+      pool.emitter.on(PoolEvents.taskError, error => failures.push(error))
+      const unexpected = []
+      pool.emitter.on(PoolEvents.error, error => unexpected.push(error))
+      try {
+        await ready(pool)
+        await bounded(pool.addTaskFunction('detachedFailure', fn))
+        const data = { buffer: new ArrayBuffer(8) }
+        await expect(
+          bounded(pool.execute(data, 'detachedFailure'))
+        ).rejects.toThrow('Detached input failure')
+        expect(failures).toEqual([
+          expect.objectContaining({
+            error: expect.objectContaining({
+              message: 'Detached input failure',
+            }),
+          }),
+        ])
+        expect(failures[0].data).toBeUndefined()
+        expect(unexpected).toEqual([])
+        expect(data.buffer.byteLength).toBe(8)
+        expect(pool.info.executingTasks).toBe(0)
+        expect(
+          await bounded(pool.execute({ recovered: true }, 'echo'))
+        ).toEqual({
+          recovered: true,
+        })
+      } finally {
+        await Promise.all(pool.workerNodes.map(node => node.worker.terminate()))
+        await bounded(pool.destroy())
+      }
+    }
+  )
+
+  it('settles every dispatched task when error reporting itself cannot be cloned', async () => {
+    const pool = new FixedThreadPool(1, workerFile, {
+      restartWorkerOnError: false,
+      workerOptions: { execArgv: ['--unhandled-rejections=warn'] },
+    })
+    const gate = new SharedArrayBuffer(4)
+    const tasks = []
+    try {
+      await ready(pool)
+      await bounded(
+        pool.addTaskFunction('reportFailure', () =>
+          Promise.reject(
+            new Error('Error reporting failure', { cause: () => 0 })
+          )
+        )
+      )
+      const worker = pool.workerNodes[0].worker
+      const entered = waitForMessage(worker, message => message.started)
+      tasks.push(settle(pool.execute({ gate }, 'hold')))
+      await bounded(entered)
+      const failed = new Promise(resolve =>
+        pool.emitter.once(PoolEvents.error, resolve)
+      )
+      const exited = new Promise(resolve => worker.once('exit', resolve))
+      tasks.push(settle(pool.execute({}, 'reportFailure')))
+      await bounded(failed)
+      const results = await bounded(Promise.all(tasks))
+      for (const result of results) expect(result.error).toBeInstanceOf(Error)
+      await bounded(exited)
+      expect(pool.info.executingTasks).toBe(0)
+    } finally {
+      release(gate)
+      await bounded(pool.destroy())
+    }
+  })
+
   it.each([new Error('Original queued cancellation'), 'Queued cancellation'])(
     'preserves the queued abort reason: %s',
     async reason => {

@@ -9,15 +9,35 @@ if (workerData?.startupGate != null) {
 }
 
 let promiseExecutions = 0
-const replayState =
-  workerData?.replayGate == null
+let proxyInvocations = 0
+const replayGeneration =
+  workerData?.replayGates == null
     ? undefined
-    : new Int32Array(workerData.replayGate)
+    : Atomics.add(new Int32Array(workerData.replayCounter), 0, 1)
+const replayGate =
+  replayGeneration == null
+    ? workerData?.replayGate
+    : workerData.replayGates[replayGeneration]
+const replayState = replayGate == null ? undefined : new Int32Array(replayGate)
 
 class TaskLifecycleWorker extends ThreadWorker {
+  sendToMainWorker = (() => {
+    const send = this.sendToMainWorker
+    return message => {
+      if (message.kill != null && workerData?.failAckSend === message.kill) {
+        throw new Error('Kill ACK transport failed')
+      }
+      send(message)
+    }
+  })()
+
   handleTaskFunctionOperationMessage (message) {
     if (replayState != null && Atomics.load(replayState, 0) === 0) {
-      parentPort.postMessage({ replayBlocked: true, workerId: this.id })
+      parentPort.postMessage({
+        replayBlocked: true,
+        replayGeneration,
+        workerId: this.id,
+      })
       Atomics.wait(replayState, 0, 0)
     }
     super.handleTaskFunctionOperationMessage(message)
@@ -63,42 +83,54 @@ export default new TaskLifecycleWorker(
         Atomics.waitAsync(new Int32Array(gate), 0, 0).value
       ).then(() => 'released')
     },
+    proxyFailure: new Proxy(async () => proxyInvocations, {
+      apply (target, receiver, args) {
+        if (++proxyInvocations === 1) throw new Error('Proxy task failure')
+        return Reflect.apply(target, receiver, args)
+      },
+    }),
     syncFailure: () => {
       throw new Error('Expected task failure')
     },
   },
   {
     killHandler:
-      workerData?.foreignCleanup === true
-        ? () =>
-            runInNewContext(
-              'new Promise((resolve, reject) => setImmediate(() => failCleanup ? reject(new Error("Cleanup failure")) : resolve()))',
-              { failCleanup: workerData?.failCleanup === true, setImmediate }
-            )
-        : workerData?.decoratedCleanup === true
-          ? () => {
-              const promise = new Promise((resolve, reject) => {
-                setImmediate(() => {
-                  if (workerData?.failCleanup === true) {
-                    reject(new Error('Cleanup failure'))
-                  } else {
-                    resolve()
-                  }
-                })
-              })
-              const originalThen = promise.then
-              Object.defineProperty(promise, 'then', {
-                value (resolve, reject) {
-                  originalThen.call(this, resolve, reject)
-                },
-              })
-              return promise
-            }
-          : async () => {
-            await new Promise(resolve => setImmediate(resolve))
+      workerData?.syncCleanup === true
+        ? () => {
             if (workerData?.failCleanup === true) {
               throw new Error('Cleanup failure')
             }
-          },
+          }
+        : workerData?.foreignCleanup === true
+          ? () =>
+              runInNewContext(
+                'new Promise((resolve, reject) => setImmediate(() => failCleanup ? reject(new Error("Cleanup failure")) : resolve()))',
+                { failCleanup: workerData?.failCleanup === true, setImmediate }
+              )
+          : workerData?.decoratedCleanup === true
+            ? () => {
+                const promise = new Promise((resolve, reject) => {
+                  setImmediate(() => {
+                    if (workerData?.failCleanup === true) {
+                      reject(new Error('Cleanup failure'))
+                    } else {
+                      resolve()
+                    }
+                  })
+                })
+                const originalThen = promise.then
+                Object.defineProperty(promise, 'then', {
+                  value (resolve, reject) {
+                    originalThen.call(this, resolve, reject)
+                  },
+                })
+                return promise
+              }
+            : async () => {
+              await new Promise(resolve => setImmediate(resolve))
+              if (workerData?.failCleanup === true) {
+                throw new Error('Cleanup failure')
+              }
+            },
   }
 )

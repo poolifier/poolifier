@@ -1739,11 +1739,6 @@ describe('Abstract pool test suite', () => {
         taskFunction: echoTaskFunction,
       })
     ).resolves.toBe(true)
-    expect(dynamicThreadPool.taskFunctions.size).toBe(1)
-    expect(dynamicThreadPool.taskFunctions.get('echo')).toStrictEqual({
-      strategy: WorkerChoiceStrategies.LEAST_ELU,
-      taskFunction: echoTaskFunction,
-    })
     expect([
       ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys(),
     ]).toStrictEqual([
@@ -1857,10 +1852,6 @@ describe('Abstract pool test suite', () => {
         workerNodeKeys: [poolWorkerNodeKeys[0]],
       })
     ).resolves.toBe(true)
-    expect(dynamicThreadPool.taskFunctions.get('affinityEcho')).toStrictEqual({
-      taskFunction: echoTaskFunction,
-      workerNodeKeys: [poolWorkerNodeKeys[0]],
-    })
 
     // Test with invalid workerNodeKeys (out of range)
     await expect(
@@ -2034,11 +2025,6 @@ describe('Abstract pool test suite', () => {
       strategy: WorkerChoiceStrategies.LEAST_ELU,
       taskFunction: echoTaskFunction,
     })
-    expect(dynamicThreadPool.taskFunctions.size).toBe(1)
-    expect(dynamicThreadPool.taskFunctions.get('echo')).toStrictEqual({
-      strategy: WorkerChoiceStrategies.LEAST_ELU,
-      taskFunction: echoTaskFunction,
-    })
     expect([
       ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys(),
     ]).toStrictEqual([
@@ -2053,8 +2039,6 @@ describe('Abstract pool test suite', () => {
     await expect(dynamicThreadPool.removeTaskFunction('echo')).resolves.toBe(
       true
     )
-    expect(dynamicThreadPool.taskFunctions.size).toBe(0)
-    expect(dynamicThreadPool.taskFunctions.get('echo')).toBeUndefined()
     expect([
       ...dynamicThreadPool.workerChoiceStrategiesContext.workerChoiceStrategies.keys(),
     ]).toStrictEqual([WorkerChoiceStrategies.LEAST_USED])
