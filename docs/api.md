@@ -105,6 +105,8 @@ This method is available on both pool implementations and returns a boolean prom
 
 Replacement workers preserve successful task-function additions, updates and removals, including operations in progress when replacement starts.
 
+Task-function operations reject if a target worker exits before its acknowledgement is received.
+
 ### `pool.removeTaskFunction(name)`
 
 `name` (mandatory) The task function name.

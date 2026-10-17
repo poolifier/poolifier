@@ -1,5 +1,5 @@
 import type { UUID } from 'node:crypto'
-import type { Transferable } from 'node:worker_threads'
+import type { MessagePort, Transferable } from 'node:worker_threads'
 
 import { AsyncResource } from 'node:async_hooks'
 import { randomUUID } from 'node:crypto'
@@ -2733,57 +2733,56 @@ export abstract class AbstractPool<
     workerNodeKey: number,
     message: MessageValue<Data>
   ): Promise<boolean> {
+    const workerNode = this.workerNodes[workerNodeKey]
     const workerId = this.getWorkerInfo(workerNodeKey)?.id
+    const messageTarget = workerNode.messageChannel?.port1 ?? workerNode.worker
     const taskFunctionOperationId = randomUUID()
-    let taskFunctionOperationListener:
-      | ((message: MessageValue<Response>) => void)
-      | undefined
-    try {
-      return await new Promise<boolean>((resolve, reject) => {
-        taskFunctionOperationListener = (
-          message: MessageValue<Response>
-        ): void => {
-          if (
-            message.taskFunctionOperationStatus != null &&
-            message.workerId === workerId &&
-            message.taskFunctionOperationId === taskFunctionOperationId
-          ) {
-            this.checkMessageWorkerId(message)
-            if (message.taskFunctionOperationStatus) {
-              resolve(true)
-              return
-            }
-            reject(
-              new Error(
-                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                `Task function operation '${message.taskFunctionOperation?.toString()}' failed on worker ${message.workerId?.toString()} with error: '${
-                  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                  message.workerError?.message
-                }'`
-              )
-            )
-          }
-        }
-        this.registerWorkerMessageListener(
-          workerNodeKey,
-          taskFunctionOperationListener
-        )
-        this.sendToWorker(workerNodeKey, {
-          ...message,
-          taskFunctionOperationId,
-        })
-      })
-    } finally {
-      const currentWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+    const { promise, reject, resolve } = Promise.withResolvers<boolean>()
+    const listener = (message: MessageValue<Response>): void => {
       if (
-        taskFunctionOperationListener != null &&
-        currentWorkerNodeKey !== -1
+        message.taskFunctionOperationStatus != null &&
+        message.workerId === workerId &&
+        message.taskFunctionOperationId === taskFunctionOperationId
       ) {
-        this.deregisterWorkerMessageListener(
-          currentWorkerNodeKey,
-          taskFunctionOperationListener
+        this.checkMessageWorkerId(message)
+        if (message.taskFunctionOperationStatus) {
+          resolve(true)
+          return
+        }
+        reject(
+          new Error(
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `Task function operation '${message.taskFunctionOperation?.toString()}' failed on worker ${message.workerId?.toString()} with error: '${
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              message.workerError?.message
+            }'`
+          )
         )
       }
+    }
+    const exitListener = (): void => {
+      reject(
+        new Error(
+          `Worker ${String(workerId)} exited before acknowledging task function operation '${message.taskFunctionOperation ?? 'unknown'}'`
+        )
+      )
+    }
+    try {
+      // Settle before replacement construction or the configured exit handler can throw.
+      workerNode.worker.prependOnceListener('exit', exitListener)
+      this.registerWorkerMessageListener(workerNodeKey, listener)
+      this.sendToWorker(workerNodeKey, {
+        ...message,
+        taskFunctionOperationId,
+      })
+    } catch (error) {
+      reject(error)
+    }
+    try {
+      return await promise
+    } finally {
+      workerNode.worker.off('exit', exitListener)
+      messageTarget.off('message', listener)
     }
   }
 
@@ -2804,11 +2803,13 @@ export abstract class AbstractPool<
     }
     let remainingResponses = responsesReceived.size
     let errorResponse: MessageValue<Response> | undefined
-    const taskFunctionOperationsListener = (
-      message: MessageValue<Response>,
-      resolve: (value: boolean | PromiseLike<boolean>) => void,
-      reject: (reason?: unknown) => void
-    ): void => {
+    const { promise, reject, resolve } = Promise.withResolvers<boolean>()
+    const listeners: {
+      exitListener: () => void
+      messageTarget: MessagePort | Worker
+      worker: Worker
+    }[] = []
+    const listener = (message: MessageValue<Response>): void => {
       if (
         message.taskFunctionOperationStatus != null &&
         message.taskFunctionOperationId === taskFunctionOperationId &&
@@ -2835,29 +2836,43 @@ export abstract class AbstractPool<
         }
       }
     }
-    let listener: ((message: MessageValue<Response>) => void) | undefined
     try {
-      return await new Promise<boolean>((resolve, reject) => {
-        listener = (message: MessageValue<Response>) => {
-          taskFunctionOperationsListener(message, resolve, reject)
-        }
-        for (const workerId of responsesReceived.keys()) {
-          const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
-          this.registerWorkerMessageListener(workerNodeKey, listener)
-          this.sendToWorker(workerNodeKey, {
-            ...message,
-            taskFunctionOperationId,
-          })
-        }
-      })
-    } finally {
-      if (listener != null) {
-        for (const workerId of responsesReceived.keys()) {
-          const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
-          if (workerNodeKey !== -1) {
-            this.deregisterWorkerMessageListener(workerNodeKey, listener)
+      for (const workerId of responsesReceived.keys()) {
+        const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+        const workerNode = this.workerNodes[workerNodeKey]
+        const messageTarget =
+          workerNode.messageChannel?.port1 ?? workerNode.worker
+        const exitListener = (): void => {
+          if (responsesReceived.get(workerId) == null) {
+            reject(
+              new Error(
+                `Worker ${String(workerId)} exited before acknowledging task function operation '${message.taskFunctionOperation ?? 'unknown'}'`
+              )
+            )
           }
         }
+        listeners.push({
+          exitListener,
+          messageTarget,
+          worker: workerNode.worker,
+        })
+        // Settle before replacement construction or the configured exit handler can throw.
+        workerNode.worker.prependOnceListener('exit', exitListener)
+        this.registerWorkerMessageListener(workerNodeKey, listener)
+        this.sendToWorker(workerNodeKey, {
+          ...message,
+          taskFunctionOperationId,
+        })
+      }
+    } catch (error) {
+      reject(error)
+    }
+    try {
+      return await promise
+    } finally {
+      for (const { exitListener, messageTarget, worker } of listeners) {
+        worker.off('exit', exitListener)
+        messageTarget.off('message', listener)
       }
     }
   }
