@@ -3091,7 +3091,11 @@ export abstract class AbstractPool<
 
   private throwIfTaskAborted (name?: string, abortSignal?: AbortSignal): void {
     if (abortSignal?.aborted === true) {
-      throw this.getAbortError(name ?? DEFAULT_TASK_NAME, undefined, abortSignal)
+      throw this.getAbortError(
+        name ?? DEFAULT_TASK_NAME,
+        undefined,
+        abortSignal
+      )
     }
   }
 
