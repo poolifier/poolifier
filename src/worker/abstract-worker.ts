@@ -315,8 +315,12 @@ export abstract class AbstractWorker<
   protected handleTaskFunctionOperationMessage (
     message: MessageValue<Data>
   ): void {
-    const { taskFunction, taskFunctionOperation, taskFunctionProperties } =
-      message
+    const {
+      taskFunction,
+      taskFunctionOperation,
+      taskFunctionOperationId,
+      taskFunctionProperties,
+    } = message
     if (taskFunctionProperties == null) {
       throw new Error(
         'Cannot handle task function operation message without task function properties'
@@ -365,6 +369,7 @@ export abstract class AbstractWorker<
     const { error, status } = response
     this.sendToMainWorker({
       taskFunctionOperation,
+      taskFunctionOperationId,
       taskFunctionOperationStatus: status,
       taskFunctionProperties,
       ...(!status &&
@@ -420,19 +425,13 @@ export abstract class AbstractWorker<
    * @param task - The task to execute.
    */
   protected readonly run = (task: Task<Data>): void => {
-    const { abortable, data, name, taskId } = task
+    const { abortable, name, taskId } = task
     const taskFunctionName = name ?? DEFAULT_TASK_NAME
     if (!this.taskFunctions.has(taskFunctionName)) {
-      this.sendToMainWorker({
-        taskId,
-        workerError: {
-          data,
-          name,
-          ...this.handleError(
-            new Error(`Task function '${taskFunctionName}' not found`)
-          ),
-        },
-      })
+      this.sendTaskError(
+        task,
+        new Error(`Task function '${taskFunctionName}' not found`)
+      )
       return
     }
     let fn: TaskFunction<Data, Response>
@@ -459,36 +458,8 @@ export abstract class AbstractWorker<
     fn: TaskAsyncFunction<Data, Response>,
     task: Task<Data>
   ): void => {
-    const { abortable, data, name, taskId } = task
-    let taskPerformance = this.beginTaskPerformance(name)
-    fn(data)
-      .then(res => {
-        taskPerformance = this.endTaskPerformance(taskPerformance)
-        this.sendToMainWorker({
-          data: res,
-          taskId,
-          taskPerformance,
-        })
-        return undefined
-      })
-      .catch((error: unknown) => {
-        this.sendToMainWorker({
-          taskId,
-          workerError: {
-            data,
-            name,
-            ...this.handleError(error as Error),
-          },
-        })
-      })
-      .finally(() => {
-        this.updateLastTaskTimestamp()
-        if (abortable === true) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this.taskAbortFunctions.delete(taskId!)
-        }
-      })
-      .catch(EMPTY_FUNCTION)
+    const taskPerformance = this.beginTaskPerformance(task.name)
+    this.completeAsyncTask(fn(task.data), task, taskPerformance)
   }
 
   /**
@@ -501,9 +472,14 @@ export abstract class AbstractWorker<
     task: Task<Data>
   ): void => {
     const { abortable, data, name, taskId } = task
+    let res: Promise<Response> | Response | undefined
     try {
       let taskPerformance = this.beginTaskPerformance(name)
-      const res = fn(data)
+      res = fn(data)
+      if (res instanceof Promise) {
+        this.completeAsyncTask(res, task, taskPerformance)
+        return
+      }
       taskPerformance = this.endTaskPerformance(taskPerformance)
       this.sendToMainWorker({
         data: res,
@@ -511,19 +487,14 @@ export abstract class AbstractWorker<
         taskPerformance,
       })
     } catch (error) {
-      this.sendToMainWorker({
-        taskId,
-        workerError: {
-          data,
-          name,
-          ...this.handleError(error as Error),
-        },
-      })
+      this.sendTaskError(task, error as Error)
     } finally {
-      this.updateLastTaskTimestamp()
-      if (abortable === true) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.taskAbortFunctions.delete(taskId!)
+      if (!(res instanceof Promise)) {
+        this.updateLastTaskTimestamp()
+        if (abortable === true) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.taskAbortFunctions.delete(taskId!)
+        }
       }
     }
   }
@@ -644,6 +615,35 @@ export abstract class AbstractWorker<
     this.opts = { ...DEFAULT_WORKER_OPTIONS, ...opts }
   }
 
+  private completeAsyncTask (
+    promise: Promise<Response>,
+    task: Task<Data>,
+    taskPerformance: TaskPerformance
+  ): void {
+    const { abortable, taskId } = task
+    promise
+      .then(res => {
+        taskPerformance = this.endTaskPerformance(taskPerformance)
+        this.sendToMainWorker({
+          data: res,
+          taskId,
+          taskPerformance,
+        })
+        return undefined
+      })
+      .catch((error: unknown) => {
+        this.sendTaskError(task, error as Error)
+      })
+      .finally(() => {
+        this.updateLastTaskTimestamp()
+        if (abortable === true) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.taskAbortFunctions.delete(taskId!)
+        }
+      })
+      .catch(EMPTY_FUNCTION)
+  }
+
   private endTaskPerformance (
     taskPerformance: TaskPerformance
   ): TaskPerformance {
@@ -680,15 +680,28 @@ export abstract class AbstractWorker<
           })
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const taskFunction = this.taskFunctions.get(name)!.taskFunction
-          if (isAsyncFunction(taskFunction)) {
-            ;(taskFunction as TaskAsyncFunction<Data, Response>)(data)
-              .then(resolve)
-              .catch(reject)
+          const result = taskFunction(data)
+          if (result instanceof Promise) {
+            // eslint-disable-next-line promise/catch-or-return -- The second callback handles rejection.
+            result.then(resolve, reject)
           } else {
-            resolve((taskFunction as TaskSyncFunction<Data, Response>)(data))
+            resolve(result)
           }
         }
       )
+  }
+
+  private sendTaskError (task: Task<Data>, error: Error): void {
+    this.sendToMainWorker({
+      taskId: task.taskId,
+      workerError: {
+        ...((task.transferList == null || task.transferList.length === 0) && {
+          data: task.data,
+        }),
+        name: task.name,
+        ...this.handleError(error),
+      },
+    })
   }
 
   /**

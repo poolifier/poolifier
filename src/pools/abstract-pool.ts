@@ -749,15 +749,15 @@ export abstract class AbstractPool<
       if (typeof abortSignals[Symbol.iterator] !== 'function') {
         throw new TypeError('abortSignals argument must be an iterable')
       }
+      if (!Array.isArray(abortSignals)) {
+        abortSignals = [...abortSignals]
+      }
       for (const abortSignal of abortSignals) {
         if (!(abortSignal instanceof AbortSignal)) {
           throw new TypeError(
             'abortSignals argument must be an iterable of AbortSignal'
           )
         }
-      }
-      if (!Array.isArray(abortSignals)) {
-        abortSignals = [...abortSignals]
       }
       if ((data as Data[]).length !== (abortSignals as AbortSignal[]).length) {
         throw new Error(
@@ -1074,7 +1074,12 @@ export abstract class AbstractPool<
   protected createAndSetupDynamicWorkerNode (): number {
     const workerNodeKey = this.createAndSetupWorkerNode()
     this.registerWorkerMessageListener(workerNodeKey, message => {
-      if (this.destroying) {
+      if (
+        this.destroying ||
+        message.kill === 'success' ||
+        message.kill === 'failure' ||
+        message.taskFunctionOperationStatus != null
+      ) {
         return
       }
       this.checkMessageWorkerId(message)
@@ -1096,20 +1101,6 @@ export abstract class AbstractPool<
     this.sendToWorker(workerNodeKey, {
       checkActive: true,
     })
-    if (this.taskFunctions.size > 0) {
-      for (const [taskFunctionName, taskFunctionObject] of this.taskFunctions) {
-        this.sendTaskFunctionOperationToWorker(workerNodeKey, {
-          taskFunction: taskFunctionObject.taskFunction.toString(),
-          taskFunctionOperation: 'add',
-          taskFunctionProperties: buildTaskFunctionProperties(
-            taskFunctionName,
-            taskFunctionObject
-          ),
-        }).catch((error: unknown) => {
-          this.emitter?.emit(PoolEvents.error, error)
-        })
-      }
-    }
     const workerNode = this.workerNodes[workerNodeKey]
     workerNode.info.dynamic = true
     if (
@@ -1237,6 +1228,20 @@ export abstract class AbstractPool<
     })
     const workerNodeKey = this.addWorkerNode(workerNode)
     this.afterWorkerNodeSetup(workerNodeKey)
+    if (this.taskFunctions.size > 0) {
+      for (const [taskFunctionName, taskFunctionObject] of this.taskFunctions) {
+        this.sendTaskFunctionOperationToWorker(workerNodeKey, {
+          taskFunction: taskFunctionObject.taskFunction.toString(),
+          taskFunctionOperation: 'add',
+          taskFunctionProperties: buildTaskFunctionProperties(
+            taskFunctionName,
+            taskFunctionObject
+          ),
+        }).catch((error: unknown) => {
+          this.emitter?.emit(PoolEvents.error, error)
+        })
+      }
+    }
     return workerNodeKey
   }
 
@@ -1257,10 +1262,10 @@ export abstract class AbstractPool<
    * @param workerNodeKey - The worker node key.
    */
   protected async destroyWorkerNode (workerNodeKey: number): Promise<void> {
-    this.terminatingWorkerNodes.add(this.workerNodes[workerNodeKey])
+    const workerNode = this.workerNodes[workerNodeKey]
+    this.terminatingWorkerNodes.add(workerNode)
     this.flagWorkerNodeAsNotReady(workerNodeKey)
     const flushedTasks = this.flushTasksQueue(workerNodeKey)
-    const workerNode = this.workerNodes[workerNodeKey]
     await waitWorkerNodeEvents(
       workerNode,
       'taskFinished',
@@ -1271,8 +1276,14 @@ export abstract class AbstractPool<
         ).tasksFinishedTimeout,
       false
     )
-    await this.sendKillMessageToWorker(workerNodeKey)
-    await workerNode.terminate()
+    try {
+      const currentWorkerNodeKey = this.workerNodes.indexOf(workerNode)
+      if (currentWorkerNodeKey !== -1) {
+        await this.sendKillMessageToWorker(currentWorkerNodeKey)
+      }
+    } finally {
+      await workerNode.terminate()
+    }
   }
 
   protected flagWorkerNodeAsNotReady (workerNodeKey: number): void {
@@ -1410,8 +1421,8 @@ export abstract class AbstractPool<
     if (this.destroying && workerReadyMessage) {
       return
     }
-    // Kill messages responses are handled in dedicated listeners
-    if (kill != null) {
+    // Kill and task-function operation responses have dedicated listeners.
+    if (kill != null || message.taskFunctionOperationStatus != null) {
       return
     }
     this.checkMessageWorkerId(message)
@@ -1438,12 +1449,14 @@ export abstract class AbstractPool<
       return
     }
     const { taskId, workerId } = eventDetail
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const promiseResponse = this.promiseResponseMap.get(taskId!)
+    if (taskId == null) {
+      return
+    }
+    const promiseResponse = this.promiseResponseMap.get(taskId)
     if (promiseResponse == null) {
       return
     }
-    const { abortSignal, reject } = promiseResponse
+    const { abortSignal } = promiseResponse
     if (abortSignal?.aborted === false) {
       return
     }
@@ -1458,11 +1471,13 @@ export abstract class AbstractPool<
         if (taskId === task.taskId && abortable === true) {
           workerNode.info.queuedTaskAbortion = true
           workerNode.deleteTask(task)
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this.promiseResponseMap.delete(taskId!)
           workerNode.info.queuedTaskAbortion = false
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          reject(this.getAbortError(name!, taskId!))
+
+          this.rejectTask(
+            taskId,
+            promiseResponse,
+            this.getAbortError(name ?? DEFAULT_TASK_NAME, taskId, abortSignal)
+          )
           return
         }
       }
@@ -1806,14 +1821,17 @@ export abstract class AbstractPool<
     }
   }
 
-  private readonly getAbortError = (taskName: string, taskId: UUID): Error => {
-    const abortError = this.promiseResponseMap.get(taskId)?.abortSignal
-      ?.reason as Error | string
+  private readonly getAbortError = (
+    taskName: string,
+    taskId: undefined | UUID,
+    abortSignal?: AbortSignal
+  ): Error => {
+    const abortError = abortSignal?.reason as Error | string
     return abortError instanceof Error
       ? abortError
       : typeof abortError === 'string'
         ? new Error(abortError)
-        : new Error(`Task '${taskName}' id '${taskId}' aborted`)
+        : new Error(`Task '${taskName}' id '${taskId ?? randomUUID()}' aborted`)
   }
 
   private getQueuedTasks (): number {
@@ -1970,11 +1988,15 @@ export abstract class AbstractPool<
   }
 
   private handleTaskExecutionResponse (message: MessageValue<Response>): void {
-    const { data, taskId, workerError } = message
+    const { data, taskId } = message
+    let { workerError } = message
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const promiseResponse = this.promiseResponseMap.get(taskId!)
     if (promiseResponse != null) {
       const { asyncResource, reject, resolve, workerNodeKey } = promiseResponse
+      if (workerError != null && 'originalData' in promiseResponse) {
+        workerError = { ...workerError, data: promiseResponse.originalData }
+      }
       const workerNode = this.workerNodes[workerNodeKey]
       let error: Error | undefined
       if (workerError != null) {
@@ -2061,8 +2083,11 @@ export abstract class AbstractPool<
   ): Error => {
     const { aborted, error, message, name, stack } = workerError
     if (aborted) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return this.getAbortError(name!, taskId)
+      return this.getAbortError(
+        name ?? DEFAULT_TASK_NAME,
+        taskId,
+        this.promiseResponseMap.get(taskId)?.abortSignal
+      )
     }
     if (error != null) {
       return error
@@ -2247,6 +2272,13 @@ export abstract class AbstractPool<
     abortSignal?: AbortSignal,
     transferList?: readonly Transferable[]
   ): Promise<Response> {
+    if (abortSignal?.aborted === true) {
+      throw this.getAbortError(
+        name ?? DEFAULT_TASK_NAME,
+        undefined,
+        abortSignal
+      )
+    }
     return await new Promise<Response>((resolve, reject) => {
       const timestamp = performance.now()
       const workerNodeKey = this.chooseWorkerNode(name)
@@ -2275,6 +2307,8 @@ export abstract class AbstractPool<
           }),
         }),
         abortSignal,
+        ...(transferList != null &&
+          transferList.length > 0 && { originalData: task.data }),
       }
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.promiseResponseMap.set(task.taskId!, promiseResponse)
@@ -2393,7 +2427,11 @@ export abstract class AbstractPool<
         this.rejectTask(
           taskId,
           promiseResponse,
-          this.getAbortError(task.name ?? DEFAULT_TASK_NAME, taskId)
+          this.getAbortError(
+            task.name ?? DEFAULT_TASK_NAME,
+            taskId,
+            promiseResponse.abortSignal
+          )
         )
         continue
       }
@@ -2529,6 +2567,7 @@ export abstract class AbstractPool<
     workerNodeKey: number,
     timeout = 1000
   ): Promise<void> {
+    const workerId = this.getWorkerInfo(workerNodeKey)?.id
     let timeoutHandle: NodeJS.Timeout | undefined
     let killMessageListener:
       | ((message: MessageValue<Response>) => void)
@@ -2542,12 +2581,7 @@ export abstract class AbstractPool<
             }, timeout)
             : undefined
         killMessageListener = (message: MessageValue<Response>): void => {
-          if (
-            this.workerNodes.length === 0 ||
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            this.workerNodes[workerNodeKey] == null
-          ) {
-            resolve()
+          if (message.workerId !== workerId) {
             return
           }
           if (message.kill === 'success') {
@@ -2568,8 +2602,12 @@ export abstract class AbstractPool<
       if (timeoutHandle != null) {
         clearTimeout(timeoutHandle)
       }
-      if (killMessageListener != null) {
-        this.deregisterWorkerMessageListener(workerNodeKey, killMessageListener)
+      const currentWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+      if (killMessageListener != null && currentWorkerNodeKey !== -1) {
+        this.deregisterWorkerMessageListener(
+          currentWorkerNodeKey,
+          killMessageListener
+        )
       }
     }
   }
@@ -2593,6 +2631,8 @@ export abstract class AbstractPool<
     workerNodeKey: number,
     message: MessageValue<Data>
   ): Promise<boolean> {
+    const workerId = this.getWorkerInfo(workerNodeKey)?.id
+    const taskFunctionOperationId = randomUUID()
     let taskFunctionOperationListener:
       | ((message: MessageValue<Response>) => void)
       | undefined
@@ -2601,12 +2641,12 @@ export abstract class AbstractPool<
         taskFunctionOperationListener = (
           message: MessageValue<Response>
         ): void => {
-          this.checkMessageWorkerId(message)
-          const workerId = this.getWorkerInfo(workerNodeKey)?.id
           if (
             message.taskFunctionOperationStatus != null &&
-            message.workerId === workerId
+            message.workerId === workerId &&
+            message.taskFunctionOperationId === taskFunctionOperationId
           ) {
+            this.checkMessageWorkerId(message)
             if (message.taskFunctionOperationStatus) {
               resolve(true)
               return
@@ -2626,12 +2666,19 @@ export abstract class AbstractPool<
           workerNodeKey,
           taskFunctionOperationListener
         )
-        this.sendToWorker(workerNodeKey, message)
+        this.sendToWorker(workerNodeKey, {
+          ...message,
+          taskFunctionOperationId,
+        })
       })
     } finally {
-      if (taskFunctionOperationListener != null) {
+      const currentWorkerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+      if (
+        taskFunctionOperationListener != null &&
+        currentWorkerNodeKey !== -1
+      ) {
         this.deregisterWorkerMessageListener(
-          workerNodeKey,
+          currentWorkerNodeKey,
           taskFunctionOperationListener
         )
       }
@@ -2645,35 +2692,41 @@ export abstract class AbstractPool<
     if (targetWorkerNodeCount === 0) {
       return true
     }
-    const responsesReceived: MessageValue<Response>[] = []
+    const taskFunctionOperationId = randomUUID()
+    const responsesReceived = new Map<
+      number | undefined,
+      MessageValue<Response> | undefined
+    >()
+    for (const workerNode of this.workerNodes) {
+      responsesReceived.set(workerNode.info.id, undefined)
+    }
+    let remainingResponses = responsesReceived.size
+    let errorResponse: MessageValue<Response> | undefined
     const taskFunctionOperationsListener = (
       message: MessageValue<Response>,
       resolve: (value: boolean | PromiseLike<boolean>) => void,
       reject: (reason?: unknown) => void
     ): void => {
-      this.checkMessageWorkerId(message)
-      const workerNodeKey = this.getWorkerNodeKeyByWorkerId(message.workerId)
       if (
         message.taskFunctionOperationStatus != null &&
-        workerNodeKey >= 0 &&
-        workerNodeKey < targetWorkerNodeCount
+        message.taskFunctionOperationId === taskFunctionOperationId &&
+        responsesReceived.has(message.workerId) &&
+        responsesReceived.get(message.workerId) == null
       ) {
-        responsesReceived.push(message)
-        if (responsesReceived.length >= targetWorkerNodeCount) {
-          if (
-            responsesReceived.every(
-              msg => msg.taskFunctionOperationStatus === true
-            )
-          ) {
+        this.checkMessageWorkerId(message)
+        responsesReceived.set(message.workerId, message)
+        --remainingResponses
+        if (!message.taskFunctionOperationStatus) {
+          errorResponse ??= message
+        }
+        if (remainingResponses === 0) {
+          if (errorResponse == null) {
             resolve(true)
           } else {
-            const errorResponse = responsesReceived.find(
-              msg => msg.taskFunctionOperationStatus === false
-            )
             reject(
               new Error(
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                `Task function operation '${message.taskFunctionOperation as string}' failed on worker ${errorResponse?.workerId?.toString()} with error: '${errorResponse?.workerError?.error?.message ?? 'Unknown error'}'`
+                `Task function operation '${message.taskFunctionOperation as string}' failed on worker ${errorResponse.workerId?.toString()} with error: '${errorResponse.workerError?.message ?? 'Unknown error'}'`
               )
             )
           }
@@ -2681,21 +2734,27 @@ export abstract class AbstractPool<
       }
     }
     let listener: ((message: MessageValue<Response>) => void) | undefined
-    const workerNodeKeys = [...this.workerNodes.keys()]
     try {
       return await new Promise<boolean>((resolve, reject) => {
         listener = (message: MessageValue<Response>) => {
           taskFunctionOperationsListener(message, resolve, reject)
         }
-        for (const workerNodeKey of workerNodeKeys) {
+        for (const workerId of responsesReceived.keys()) {
+          const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
           this.registerWorkerMessageListener(workerNodeKey, listener)
-          this.sendToWorker(workerNodeKey, message)
+          this.sendToWorker(workerNodeKey, {
+            ...message,
+            taskFunctionOperationId,
+          })
         }
       })
     } finally {
       if (listener != null) {
-        for (const workerNodeKey of workerNodeKeys) {
-          this.deregisterWorkerMessageListener(workerNodeKey, listener)
+        for (const workerId of responsesReceived.keys()) {
+          const workerNodeKey = this.getWorkerNodeKeyByWorkerId(workerId)
+          if (workerNodeKey !== -1) {
+            this.deregisterWorkerMessageListener(workerNodeKey, listener)
+          }
         }
       }
     }

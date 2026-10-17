@@ -649,7 +649,7 @@ for (const [workerType, PoolClass, workerFile] of [
         await bounded(exit)
         const reason = new Error('Cancel redistributed task')
         controller.abort(reason)
-        expect(await bounded(queued)).toBeInstanceOf(Error)
+        expect(await bounded(queued)).toBe(reason)
         send(destination, { release: 'destination' })
         expect(await bounded(destinationResult)).toStrictEqual(destinationData)
         expect(destination.tasksQueue.size).toBe(0)
