@@ -469,6 +469,7 @@ export abstract class AbstractPool<
    */
   private taskDequeuingEventsDeferred = false
   private taskFunctionOperationsFinished?: Promise<undefined>
+  private taskFunctionOperationsQueue?: Promise<void>
   /**
    * The task functions added at runtime map:
    * - `key`: The task function name.
@@ -610,39 +611,51 @@ export abstract class AbstractPool<
     if (typeof name === 'string' && name.trim().length === 0) {
       throw new TypeError('name argument must not be an empty string')
     }
-    if (typeof fn === 'function') {
-      fn = { taskFunction: fn } satisfies TaskFunctionObject<Data, Response>
-    }
-    if (typeof fn.taskFunction !== 'function') {
+    const taskFunction = typeof fn === 'function' ? fn : fn.taskFunction
+    if (typeof taskFunction !== 'function') {
       throw new TypeError('taskFunction property must be a function')
     }
-    checkValidPriority(fn.priority)
-    checkValidWorkerChoiceStrategy(fn.strategy)
+    const definition: TaskFunctionObject<Data, Response> = { taskFunction }
+    if (typeof fn !== 'function') {
+      const { priority, strategy, workerNodeKeys } = fn
+      if (priority !== undefined) definition.priority = priority
+      if (strategy !== undefined) definition.strategy = strategy
+      if (workerNodeKeys !== undefined) {
+        definition.workerNodeKeys = Array.isArray(workerNodeKeys)
+          ? [...workerNodeKeys]
+          : workerNodeKeys
+      }
+    }
+    checkValidPriority(definition.priority)
+    checkValidWorkerChoiceStrategy(definition.strategy)
     checkValidWorkerNodeKeys(
-      fn.workerNodeKeys,
+      definition.workerNodeKeys,
       this.maximumNumberOfWorkers ?? this.minimumNumberOfWorkers
     )
-    if (this.workerTaskFunctionBootstraps.size > 0) {
-      await this.waitForWorkerTaskFunctionBootstraps()
-    }
-    this.beginTaskFunctionOperation()
-    try {
-      const opResult = await this.sendTaskFunctionOperationToWorkers({
-        taskFunction: fn.taskFunction.toString(),
-        taskFunctionOperation: 'add',
-        taskFunctionProperties: buildTaskFunctionProperties(name, fn),
-      })
-      this.taskFunctions.set(name, fn)
-      this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
-        this.getWorkerChoiceStrategies()
-      )
-      for (const workerNodeKey of this.workerNodes.keys()) {
-        this.sendStatisticsMessageToWorker(workerNodeKey)
+    const message = {
+      taskFunction: taskFunction.toString(),
+      taskFunctionOperation: 'add',
+      taskFunctionProperties: buildTaskFunctionProperties(name, definition),
+    } satisfies MessageValue<Data>
+    return await this.queueTaskFunctionOperation(async () => {
+      if (this.workerTaskFunctionBootstraps.size > 0) {
+        await this.waitForWorkerTaskFunctionBootstraps()
       }
-      return opResult
-    } finally {
-      this.endTaskFunctionOperation()
-    }
+      this.beginTaskFunctionOperation()
+      try {
+        const opResult = await this.sendTaskFunctionOperationToWorkers(message)
+        this.taskFunctions.set(name, definition)
+        this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
+          this.getWorkerChoiceStrategies()
+        )
+        for (const workerNodeKey of this.workerNodes.keys()) {
+          this.sendStatisticsMessageToWorker(workerNodeKey)
+        }
+        return opResult
+      } finally {
+        this.endTaskFunctionOperation()
+      }
+    })
   }
 
   /** @inheritDoc */
@@ -818,62 +831,66 @@ export abstract class AbstractPool<
 
   /** @inheritDoc */
   public async removeTaskFunction (name: string): Promise<boolean> {
-    if (!this.taskFunctions.has(name)) {
-      throw new Error(
-        'Cannot remove a task function not handled on the pool side'
-      )
-    }
-    if (this.workerTaskFunctionBootstraps.size > 0) {
-      await this.waitForWorkerTaskFunctionBootstraps()
-    }
-    this.beginTaskFunctionOperation()
-    try {
-      const opResult = await this.sendTaskFunctionOperationToWorkers({
-        taskFunctionOperation: 'remove',
-        taskFunctionProperties: buildTaskFunctionProperties(
-          name,
-          this.taskFunctions.get(name)
-        ),
-      })
-      for (const workerNode of this.workerNodes) {
-        workerNode.deleteTaskFunctionWorkerUsage(name)
+    return await this.queueTaskFunctionOperation(async () => {
+      if (!this.taskFunctions.has(name)) {
+        throw new Error(
+          'Cannot remove a task function not handled on the pool side'
+        )
       }
-      this.taskFunctions.delete(name)
-      if (this.defaultTaskFunctionName === name) {
-        this.defaultTaskFunctionName = undefined
+      if (this.workerTaskFunctionBootstraps.size > 0) {
+        await this.waitForWorkerTaskFunctionBootstraps()
       }
-      this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
-        this.getWorkerChoiceStrategies()
-      )
-      for (const workerNodeKey of this.workerNodes.keys()) {
-        this.sendStatisticsMessageToWorker(workerNodeKey)
+      this.beginTaskFunctionOperation()
+      try {
+        const opResult = await this.sendTaskFunctionOperationToWorkers({
+          taskFunctionOperation: 'remove',
+          taskFunctionProperties: buildTaskFunctionProperties(
+            name,
+            this.taskFunctions.get(name)
+          ),
+        })
+        for (const workerNode of this.workerNodes) {
+          workerNode.deleteTaskFunctionWorkerUsage(name)
+        }
+        this.taskFunctions.delete(name)
+        if (this.defaultTaskFunctionName === name) {
+          this.defaultTaskFunctionName = undefined
+        }
+        this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
+          this.getWorkerChoiceStrategies()
+        )
+        for (const workerNodeKey of this.workerNodes.keys()) {
+          this.sendStatisticsMessageToWorker(workerNodeKey)
+        }
+        return opResult
+      } finally {
+        this.endTaskFunctionOperation()
       }
-      return opResult
-    } finally {
-      this.endTaskFunctionOperation()
-    }
+    })
   }
 
   /** @inheritDoc */
   public async setDefaultTaskFunction (name: string): Promise<boolean> {
-    if (this.workerTaskFunctionBootstraps.size > 0) {
-      await this.waitForWorkerTaskFunctionBootstraps()
-    }
-    this.beginTaskFunctionOperation()
-    try {
-      const hadTargets = this.workerNodes.length > 0
-      const opResult = await this.sendTaskFunctionOperationToWorkers({
-        taskFunctionOperation: 'default',
-        taskFunctionProperties: buildTaskFunctionProperties(
-          name,
-          this.taskFunctions.get(name)
-        ),
-      })
-      if (hadTargets) this.defaultTaskFunctionName = name
-      return opResult
-    } finally {
-      this.endTaskFunctionOperation()
-    }
+    return await this.queueTaskFunctionOperation(async () => {
+      if (this.workerTaskFunctionBootstraps.size > 0) {
+        await this.waitForWorkerTaskFunctionBootstraps()
+      }
+      this.beginTaskFunctionOperation()
+      try {
+        const hadTargets = this.workerNodes.length > 0
+        const opResult = await this.sendTaskFunctionOperationToWorkers({
+          taskFunctionOperation: 'default',
+          taskFunctionProperties: buildTaskFunctionProperties(
+            name,
+            this.taskFunctions.get(name)
+          ),
+        })
+        if (hadTargets) this.defaultTaskFunctionName = name
+        return opResult
+      } finally {
+        this.endTaskFunctionOperation()
+      }
+    })
   }
 
   /** @inheritDoc */
@@ -2531,6 +2548,19 @@ export abstract class AbstractPool<
       (workerNode.info.continuousStealing ||
         workerNode.info.backPressureStealing)
     )
+  }
+
+  private queueTaskFunctionOperation (
+    operation: () => Promise<boolean>
+  ): Promise<boolean> {
+    const result = (this.taskFunctionOperationsQueue ?? Promise.resolve()).then(
+      operation
+    )
+    this.taskFunctionOperationsQueue = result.then(
+      EMPTY_FUNCTION,
+      EMPTY_FUNCTION
+    )
+    return result
   }
 
   private redistributeQueuedTasks (

@@ -75,11 +75,30 @@ export default new TaskLifecycleWorker(
               'new Promise((resolve, reject) => setImmediate(() => failCleanup ? reject(new Error("Cleanup failure")) : resolve()))',
               { failCleanup: workerData?.failCleanup === true, setImmediate }
             )
-        : async () => {
-          await new Promise(resolve => setImmediate(resolve))
-          if (workerData?.failCleanup === true) {
-            throw new Error('Cleanup failure')
-          }
-        },
+        : workerData?.decoratedCleanup === true
+          ? () => {
+              const promise = new Promise((resolve, reject) => {
+                setImmediate(() => {
+                  if (workerData?.failCleanup === true) {
+                    reject(new Error('Cleanup failure'))
+                  } else {
+                    resolve()
+                  }
+                })
+              })
+              const originalThen = promise.then
+              Object.defineProperty(promise, 'then', {
+                value (resolve, reject) {
+                  originalThen.call(this, resolve, reject)
+                },
+              })
+              return promise
+            }
+          : async () => {
+            await new Promise(resolve => setImmediate(resolve))
+            if (workerData?.failCleanup === true) {
+              throw new Error('Cleanup failure')
+            }
+          },
   }
 )

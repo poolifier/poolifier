@@ -76,9 +76,10 @@ export const getWorkerChoiceStrategiesRetries = <
   pool: IPool<Worker, Data, Response>,
   opts?: WorkerChoiceStrategyOptions
 ): number => {
+  const weights = opts?.weights
   return (
     pool.info.maxSize +
-    Object.keys(opts?.weights ?? getDefaultWeights(pool.info.maxSize)).length
+    (weights != null ? Object.keys(weights).length : pool.info.maxSize)
   )
 }
 

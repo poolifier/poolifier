@@ -697,7 +697,6 @@ export abstract class AbstractWorker<
   private getResultPromise<Result>(
     result: PromiseLike<Result> | Result
   ): Promise<Result> | undefined {
-    if (result instanceof Promise) return result
     if (
       result == null ||
       (typeof result !== 'object' && typeof result !== 'function')

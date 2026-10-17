@@ -246,6 +246,106 @@ describe('Runtime task function replay', () => {
     }
   )
 
+  it('owns inherited registration options and their affinity array', async () => {
+    const pool = new DynamicThreadPool(
+      0,
+      2,
+      './tests/worker-files/thread/taskLifecycleWorker.mjs'
+    )
+    try {
+      const workerNodeKeys = [0]
+      const definition = Object.create({
+        priority: 0,
+        taskFunction: () =>
+          process.getBuiltinModule('node:worker_threads').threadId,
+        workerNodeKeys,
+      })
+      const registration = pool.addTaskFunction('runtime', definition)
+      workerNodeKeys[0] = 1
+      await bounded(registration)
+      expect(await bounded(pool.execute({}, 'runtime'))).toBe(
+        pool.workerNodes[0].info.id
+      )
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
+  it('orders add and remove calls and continues after a failed mutation', async () => {
+    const pool = new FixedThreadPool(
+      1,
+      './tests/worker-files/thread/taskLifecycleWorker.mjs'
+    )
+    try {
+      await bounded(once(pool.emitter, PoolEvents.ready))
+      const addition = pool.addTaskFunction('runtime', () => 'temporary')
+      const removal = pool.removeTaskFunction('runtime')
+      expect(await bounded(Promise.all([addition, removal]))).toEqual([
+        true,
+        true,
+      ])
+      await expect(bounded(pool.execute({}, 'runtime'))).rejects.toBeInstanceOf(
+        Error
+      )
+      const failure = pool.removeTaskFunction('missing').catch(error => error)
+      const recovery = pool.addTaskFunction('runtime', () => 'recovered')
+      expect(await bounded(failure)).toBeInstanceOf(Error)
+      await bounded(recovery)
+      expect(await bounded(pool.execute({}, 'runtime'))).toBe('recovered')
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
+  it('captures registration definitions before the caller reuses them', async () => {
+    const pool = new FixedThreadPool(
+      1,
+      './tests/worker-files/thread/taskLifecycleWorker.mjs'
+    )
+    try {
+      await bounded(once(pool.emitter, PoolEvents.ready))
+      const definition = { taskFunction: () => 'original' }
+      const registration = pool.addTaskFunction('runtime', definition)
+      definition.taskFunction = () => 'mutated'
+      await bounded(registration)
+      expect(await bounded(pool.execute({}, 'runtime'))).toBe('original')
+      const original = pool.workerNodes[0]
+      await original.worker.terminate()
+      await vi.waitFor(() => {
+        expect(pool.workerNodes).toHaveLength(1)
+        expect(pool.workerNodes[0]).not.toBe(original)
+        expect(pool.workerNodes[0].info.ready).toBe(true)
+      })
+      expect(await bounded(pool.execute({}, 'runtime'))).toBe('original')
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
+  it('preserves call order across a reentrant ready callback', async () => {
+    const pool = new FixedThreadPool(
+      1,
+      './tests/worker-files/thread/taskLifecycleWorker.mjs',
+      { startWorkers: false }
+    )
+    let newer
+    try {
+      await bounded(pool.addTaskFunction('seed', () => 0))
+      pool.emitter.once(PoolEvents.ready, () => {
+        queueMicrotask(() => {
+          newer = pool.addTaskFunction('runtime', () => 'newer')
+        })
+      })
+      pool.start()
+      const older = pool.addTaskFunction('runtime', () => 'older')
+      await bounded(older)
+      await bounded(newer)
+      expect(await bounded(pool.execute({}, 'runtime'))).toBe('newer')
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
   it('commits concurrent updates in dispatch order when their unanswered peer exits', async () => {
     const pool = new FixedThreadPool(
       2,
@@ -268,18 +368,11 @@ describe('Runtime task function replay', () => {
       )
       blocked = pool.execute({ gate }, 'block').catch(error => error)
       await bounded(entered)
-      const acknowledgements = new Set()
       const acknowledged = waitForMessage(
         survivor.messageChannel.port1,
-        message => {
-          if (
-            message.taskFunctionOperationStatus != null &&
-            message.taskFunctionProperties?.name === 'runtime'
-          ) {
-            acknowledgements.add(message.taskFunctionOperationId)
-          }
-          return acknowledgements.size === 2
-        }
+        message =>
+          message.taskFunctionOperationStatus != null &&
+          message.taskFunctionProperties?.name === 'runtime'
       )
       const changes = [
         pool.addTaskFunction('runtime', () => 'older'),

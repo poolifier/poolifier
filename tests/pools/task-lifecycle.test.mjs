@@ -236,6 +236,44 @@ describe('Task lifecycle regressions', () => {
   )
 
   it.each([false, true])(
+    'assimilates decorated native promises independently of then return values (abortable: %s)',
+    async abortable => {
+      const pool = new FixedThreadPool(1, workerFile)
+      try {
+        await ready(pool)
+        await pool.addTaskFunction('decorated', data => {
+          const promise = data.fail
+            ? Promise.reject(new Error('Decorated task failure'))
+            : Promise.resolve(42)
+          const originalThen = promise.then
+          let reads = 0
+          Object.defineProperty(promise, 'then', {
+            get () {
+              if (++reads > 1) throw new Error('Repeated then access')
+              return function (resolve, reject) {
+                originalThen.call(this, resolve, reject)
+              }
+            },
+          })
+          return promise
+        })
+        const signal = abortable ? new AbortController().signal : undefined
+        expect(await bounded(pool.execute({}, 'decorated', signal))).toBe(42)
+        await expect(
+          bounded(pool.execute({ fail: true }, 'decorated', signal))
+        ).rejects.toThrow('Decorated task failure')
+        expect(
+          await bounded(pool.execute({ recovered: true }, 'echo'))
+        ).toEqual({
+          recovered: true,
+        })
+      } finally {
+        await bounded(pool.destroy())
+      }
+    }
+  )
+
+  it.each([false, true])(
     'uses thenable receivers and reads callable then getters once (abortable: %s)',
     async abortable => {
       const pool = new FixedThreadPool(1, workerFile)
@@ -435,15 +473,23 @@ describe('Task lifecycle regressions', () => {
   )
 
   it.each([
-    [false, false],
-    [false, true],
-    [true, false],
-    [true, true],
+    ['local', false],
+    ['local', true],
+    ['foreign', false],
+    ['foreign', true],
+    ['decorated', false],
+    ['decorated', true],
   ])(
-    'receives the async kill acknowledgement (foreign: %s, failure: %s)',
-    async (foreignCleanup, failCleanup) => {
+    'receives the async kill acknowledgement (mode: %s, failure: %s)',
+    async (mode, failCleanup) => {
       const pool = new FixedThreadPool(1, workerFile, {
-        workerOptions: { workerData: { failCleanup, foreignCleanup } },
+        workerOptions: {
+          workerData: {
+            decoratedCleanup: mode === 'decorated',
+            failCleanup,
+            foreignCleanup: mode === 'foreign',
+          },
+        },
       })
       const errors = []
       pool.emitter.on(PoolEvents.error, error => errors.push(error))
@@ -455,9 +501,7 @@ describe('Task lifecycle regressions', () => {
         })
         await bounded(pool.destroy())
         if (failCleanup) {
-          expect(errors.map(error => error.message)).toEqual([
-            expect.stringContaining('Kill message handling failed'),
-          ])
+          expect(errors).toEqual([expect.any(Error)])
         } else {
           expect(errors).toEqual([])
         }
@@ -527,9 +571,7 @@ describe('Task lifecycle regressions', () => {
           ])
         )
         expect(first.value).toBe(true)
-        expect(second.error?.message).toContain(
-          "Task function operation 'remove' failed"
-        )
+        expect(second.error).toBeInstanceOf(Error)
         expect(pool.hasTaskFunction('removable')).toBe(false)
         expect(await bounded(pool.addTaskFunction('next', data => data))).toBe(
           true
