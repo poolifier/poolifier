@@ -1,3 +1,3 @@
 // x-release-please-start-version
-export const version = '5.4.1'
+export const version = '6.0.0'
 // x-release-please-end
