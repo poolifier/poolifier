@@ -8,8 +8,22 @@ if (workerData?.startupGate != null) {
 }
 
 let promiseExecutions = 0
+const replayState =
+  workerData?.replayGate == null
+    ? undefined
+    : new Int32Array(workerData.replayGate)
 
-export default new ThreadWorker(
+class TaskLifecycleWorker extends ThreadWorker {
+  handleTaskFunctionOperationMessage (message) {
+    if (replayState != null && Atomics.load(replayState, 0) === 0) {
+      parentPort.postMessage({ replayBlocked: true, workerId: this.id })
+      Atomics.wait(replayState, 0, 0)
+    }
+    super.handleTaskFunctionOperationMessage(message)
+  }
+}
+
+export default new TaskLifecycleWorker(
   {
     block: {
       taskFunction: ({ gate }) => {
