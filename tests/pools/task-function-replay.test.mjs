@@ -241,6 +241,95 @@ describe('Runtime task function replay', () => {
     }
   })
 
+  it.each([false, true])(
+    'selects a ready weighted worker during replay (function strategy: %s)',
+    async perFunction => {
+      const size = perFunction ? 3 : 2
+      const replayGates = Array.from(
+        { length: size },
+        () => new SharedArrayBuffer(4)
+      )
+      const replayBlocked = Array.from({ length: size }, () =>
+        Promise.withResolvers()
+      )
+      const pool = new FixedThreadPool(
+        size,
+        './tests/worker-files/thread/taskLifecycleWorker.mjs',
+        {
+          messageHandler: message => {
+            if (message.replayBlocked) {
+              const key = pool.workerNodes.findIndex(
+                node => node.info.id === message.workerId
+              )
+              replayBlocked[key].resolve(message.replayGeneration)
+            }
+          },
+          startWorkers: false,
+          workerChoiceStrategy: perFunction
+            ? WorkerChoiceStrategies.ROUND_ROBIN
+            : WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN,
+          workerChoiceStrategyOptions: {
+            weights: perFunction ? { 0: 1, 1: 1, 2: 1 } : { 0: 1, 1: 1 },
+          },
+          workerOptions: {
+            workerData: {
+              replayCounter: new SharedArrayBuffer(4),
+              replayGates,
+            },
+          },
+        }
+      )
+      const tasks = []
+      try {
+        await pool.addTaskFunction('runtime', {
+          taskFunction: data => data.buffer.byteLength,
+          ...(perFunction && {
+            strategy: WorkerChoiceStrategies.WEIGHTED_ROUND_ROBIN,
+            workerNodeKeys: [0, 1],
+          }),
+        })
+        pool.start()
+        const data = { buffer: new ArrayBuffer(8) }
+        let settled = false
+        const execution = pool
+          .execute(data, 'runtime', undefined, [data.buffer])
+          .then(
+            value => {
+              settled = true
+              return { value }
+            },
+            error => {
+              settled = true
+              return { error }
+            }
+          )
+        tasks.push(execution)
+        if (perFunction) {
+          release(replayGates[await bounded(replayBlocked[2].promise)])
+          await vi.waitFor(() =>
+            expect(pool.workerNodes[2].info.ready).toBe(true)
+          )
+          expect(settled).toBe(false)
+          expect(data.buffer.byteLength).toBe(8)
+        }
+        const eligibleGate = await bounded(replayBlocked[1].promise)
+        expect(data.buffer.byteLength).toBe(8)
+        release(replayGates[eligibleGate])
+        expect(await bounded(execution)).toEqual({ value: 8 })
+        expect(data.buffer.byteLength).toBe(0)
+        const heldGate = await bounded(replayBlocked[0].promise)
+        expect(Atomics.load(new Int32Array(replayGates[heldGate]), 0)).toBe(0)
+        expect(
+          await bounded(pool.execute({ buffer: new ArrayBuffer(8) }, 'runtime'))
+        ).toBe(8)
+      } finally {
+        replayGates.forEach(release)
+        await bounded(Promise.allSettled(tasks))
+        await bounded(pool.destroy())
+      }
+    }
+  )
+
   it('wakes already-waiting executions when their eligible worker finishes replay', async () => {
     const replayGates = [new SharedArrayBuffer(4), new SharedArrayBuffer(4)]
     const replayBlocked = Promise.withResolvers()

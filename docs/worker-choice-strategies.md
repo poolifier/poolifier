@@ -22,6 +22,8 @@ By default, the strategy uses the simple moving average task execution time for 
 
 The worker weights are maximum tasks execution time. Once the worker has reached its maximum tasks execution time, the next task is assigned to the next worker. The default worker weight is the same for each and computed given the CPU cores speed and theirs numbers.
 
+Workers that are not ready are skipped.
+
 ### Interleaved weighted round robin (experimental)
 
 The worker weights are maximum tasks execution time. The rounds are the deduplicated worker weights in ascending order.  
