@@ -60,6 +60,10 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --ignore-scripts --frozen-lockfile
 
+      - name: Check JSR publication
+        if: ${{ matrix.os == 'ubuntu-latest' && matrix.node == '24.x' }}
+        run: npx jsr publish --dry-run --allow-dirty
+
       - name: Build
         run: pnpm build
 
