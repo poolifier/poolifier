@@ -98,7 +98,7 @@ export class ThreadWorker<
     const response = { ...message, workerId: this.id }
     if (response.taskFunctionOperationStatus != null) {
       response.taskFunctionOperationId ??=
-        this.taskFunctionOperationContext.getStore()
+        this.getTaskFunctionOperationId(response)
     }
     this.port?.postMessage(response)
     if (message.kill === 'success' || message.kill === 'failure') {

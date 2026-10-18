@@ -100,6 +100,11 @@ export abstract class AbstractWorker<
    */
   protected taskFunctions!: Map<string, TaskFunctionObject<Data, Response>>
 
+  private readonly taskFunctionOperationIds = new WeakMap<
+    TaskFunctionProperties,
+    UUID
+  >()
+
   /**
    * Constructs a new poolifier worker.
    * @param isMain - Whether this is the main worker or not.
@@ -279,6 +284,23 @@ export abstract class AbstractWorker<
   }
 
   /**
+   * Gets the task function operation UUID for a request or response.
+   * @param message - The task function operation message.
+   * @returns The task function operation UUID if available.
+   */
+  protected getTaskFunctionOperationId (
+    message: MessageValue
+  ): undefined | UUID {
+    return (
+      message.taskFunctionOperationId ??
+      (message.taskFunctionProperties != null
+        ? this.taskFunctionOperationIds.get(message.taskFunctionProperties)
+        : undefined) ??
+      this.taskFunctionOperationContext.getStore()
+    )
+  }
+
+  /**
    * Handles a worker error.
    * @param error - The error raised by the worker.
    * @returns The worker error object.
@@ -331,15 +353,17 @@ export abstract class AbstractWorker<
    */
   protected abstract handleReadyMessage (message: MessageValue<Data>): void
 
+  /**
+   * Handles a task function operation.
+   * Deferred overrides must retain the task function properties reference or the
+   * operation UUID when forwarding outside the incoming asynchronous context.
+   * @param message - The task function operation request.
+   */
   protected handleTaskFunctionOperationMessage (
     message: MessageValue<Data>
   ): void {
-    const {
-      taskFunction,
-      taskFunctionOperation,
-      taskFunctionOperationId,
-      taskFunctionProperties,
-    } = message
+    const { taskFunction, taskFunctionOperation, taskFunctionProperties } =
+      message
     if (taskFunctionProperties == null) {
       throw new Error(
         'Cannot handle task function operation message without task function properties'
@@ -388,7 +412,7 @@ export abstract class AbstractWorker<
     const { error, status } = response
     this.sendToMainWorker({
       taskFunctionOperation,
-      taskFunctionOperationId,
+      taskFunctionOperationId: this.getTaskFunctionOperationId(message),
       taskFunctionOperationStatus: status,
       taskFunctionProperties,
       ...(!status &&
@@ -424,6 +448,16 @@ export abstract class AbstractWorker<
       checkActive ? this.startCheckActive() : this.stopCheckActive()
     } else if (taskFunctionOperation != null) {
       // Task function operation message received
+      if (
+        message.taskFunctionProperties != null &&
+        typeof message.taskFunctionProperties === 'object' &&
+        message.taskFunctionOperationId != null
+      ) {
+        this.taskFunctionOperationIds.set(
+          message.taskFunctionProperties,
+          message.taskFunctionOperationId
+        )
+      }
       this.taskFunctionOperationContext.run(
         message.taskFunctionOperationId,
         this.runTaskFunctionOperation,
@@ -711,24 +745,32 @@ export abstract class AbstractWorker<
     name: string,
     taskId: UUID
   ): TaskAsyncFunction<Data, Response> {
-    return async (data?: Data): Promise<Response> =>
-      await new Promise<Response>(
-        (resolve, reject: (reason?: unknown) => void) => {
-          this.taskAbortFunctions.set(taskId, () => {
-            reject(new AbortError(`Task '${name}' id '${taskId}' aborted`))
-          })
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const taskFunction = this.taskFunctions.get(name)!.taskFunction
-          const result = taskFunction(data)
-          const promise = this.getResultPromise(result)
-          if (promise != null) {
-            // eslint-disable-next-line promise/catch-or-return -- The second callback handles rejection.
-            promise.then(resolve, reject)
-          } else {
-            resolve(result)
-          }
+    return async (data?: Data): Promise<Response> => {
+      let result: PromiseLike<Response> | Response | undefined
+      // Keep cancellation active while awaiting the task. Resolve only this gate,
+      // not the task result, to avoid an extra promise assimilation.
+      await new Promise<void>((resolve, reject: (reason?: unknown) => void) => {
+        this.taskAbortFunctions.set(taskId, () => {
+          reject(new AbortError(`Task '${name}' id '${taskId}' aborted`))
+        })
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const taskFunction = this.taskFunctions.get(name)!.taskFunction
+        const value = taskFunction(data)
+        const promise = this.getResultPromise(value)
+        if (promise != null) {
+          // eslint-disable-next-line promise/catch-or-return -- The second callback handles rejection.
+          promise.then(value => {
+            result = value
+            resolve()
+            return undefined
+          }, reject)
+        } else {
+          result = value
+          resolve()
         }
-      )
+      })
+      return result as Response
+    }
   }
 
   private getResultPromise<Result>(

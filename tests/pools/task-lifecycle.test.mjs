@@ -34,11 +34,12 @@ const queueOptions = {
 
 describe('Task lifecycle regressions', () => {
   it.each([
-    ['thread', FixedThreadPool],
-    ['cluster', FixedClusterPool],
+    ['thread', false, FixedThreadPool],
+    ['thread', true, FixedThreadPool],
+    ['cluster', true, FixedClusterPool],
   ])(
-    'preserves operations through an existing protected override (%s)',
-    async (workerType, Pool) => {
+    'preserves operations through an existing protected override (%s, queued: %s)',
+    async (workerType, queued, Pool) => {
       const pool = new Pool(
         1,
         workerType === 'thread'
@@ -47,7 +48,10 @@ describe('Task lifecycle regressions', () => {
         workerType === 'thread'
           ? {
               workerOptions: {
-                workerData: { legacyTaskFunctionMessages: true },
+                workerData: {
+                  legacyTaskFunctionMessages: true,
+                  queuedTaskFunctionOperations: queued,
+                },
               },
             }
           : undefined
@@ -78,53 +82,85 @@ describe('Task lifecycle regressions', () => {
     }
   )
 
-  it('does not let a delayed override acknowledgement complete a later operation', async () => {
-    const replayGate = new SharedArrayBuffer(4)
-    const duplicateAckGate = new SharedArrayBuffer(4)
-    release(replayGate)
-    const blocked = Promise.withResolvers()
-    const duplicate = Promise.withResolvers()
-    const pool = new FixedThreadPool(1, workerFile, {
-      messageHandler: message => {
-        if (message.replayBlocked) blocked.resolve()
-        if (message.duplicateSent) duplicate.resolve()
-      },
-      workerOptions: {
-        workerData: {
-          asyncReplay: true,
-          duplicateAckGate,
-          legacyTaskFunctionMessages: true,
-          replayGate,
+  it.each([false, true])(
+    'does not let a delayed override acknowledgement complete a later operation (queued: %s)',
+    async queued => {
+      const replayGate = new SharedArrayBuffer(4)
+      const duplicateAckGate = new SharedArrayBuffer(4)
+      release(replayGate)
+      const blocked = Promise.withResolvers()
+      const duplicate = Promise.withResolvers()
+      const pool = new FixedThreadPool(1, workerFile, {
+        messageHandler: message => {
+          if (message.replayBlocked) blocked.resolve()
+          if (message.duplicateSent) duplicate.resolve()
         },
-      },
-    })
-    let change
+        workerOptions: {
+          workerData: {
+            asyncReplay: true,
+            duplicateAckGate,
+            legacyTaskFunctionMessages: true,
+            queuedTaskFunctionOperations: queued,
+            replayGate,
+          },
+        },
+      })
+      let change
+      try {
+        await ready(pool)
+        await bounded(pool.addTaskFunction('first', () => 'first'))
+        Atomics.store(new Int32Array(replayGate), 0, 0)
+        let completed = false
+        change = pool
+          .addTaskFunction('second', () => 'second')
+          .then(result => {
+            completed = true
+            return result
+          })
+        await bounded(blocked.promise)
+        release(duplicateAckGate)
+        await bounded(duplicate.promise)
+        expect(await bounded(pool.execute({ barrier: true }, 'echo'))).toEqual({
+          barrier: true,
+        })
+        expect(completed).toBe(false)
+        expect(pool.hasTaskFunction('second')).toBe(false)
+        release(replayGate)
+        expect(await bounded(change)).toBe(true)
+        expect(await bounded(pool.execute({}, 'second'))).toBe('second')
+      } finally {
+        release(duplicateAckGate)
+        release(replayGate)
+        if (change != null) await bounded(settle(change))
+        await bounded(pool.destroy())
+      }
+    }
+  )
+
+  it('preserves a non-thenable result from an abortable synchronous task', async () => {
+    const pool = new FixedThreadPool(1, workerFile)
     try {
       await ready(pool)
-      await bounded(pool.addTaskFunction('first', () => 'first'))
-      Atomics.store(new Int32Array(replayGate), 0, 0)
-      let completed = false
-      change = pool
-        .addTaskFunction('second', () => 'second')
-        .then(result => {
-          completed = true
-          return result
+      await bounded(
+        pool.addTaskFunction('guardedResult', () => {
+          let reads = 0
+          return Object.defineProperty({ ok: true }, 'then', {
+            get () {
+              if (++reads > 2) throw new Error('Repeated result assimilation')
+              return undefined
+            },
+          })
         })
-      await bounded(blocked.promise)
-      release(duplicateAckGate)
-      await bounded(duplicate.promise)
-      expect(await bounded(pool.execute({ barrier: true }, 'echo'))).toEqual({
-        barrier: true,
+      )
+      expect(
+        await bounded(
+          pool.execute({}, 'guardedResult', new AbortController().signal)
+        )
+      ).toEqual({ ok: true })
+      expect(await bounded(pool.execute({ recovered: true }, 'echo'))).toEqual({
+        recovered: true,
       })
-      expect(completed).toBe(false)
-      expect(pool.hasTaskFunction('second')).toBe(false)
-      release(replayGate)
-      expect(await bounded(change)).toBe(true)
-      expect(await bounded(pool.execute({}, 'second'))).toBe('second')
     } finally {
-      release(duplicateAckGate)
-      release(replayGate)
-      if (change != null) await bounded(settle(change))
       await bounded(pool.destroy())
     }
   })

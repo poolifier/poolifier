@@ -28,6 +28,17 @@ class TaskLifecycleWorker extends ThreadWorker {
       if (message.kill != null && workerData?.failAckSend === message.kill) {
         throw new Error('Kill ACK transport failed')
       }
+      if (
+        message.taskFunctionOperationStatus != null &&
+        workerData?.legacyTaskFunctionMessages === true
+      ) {
+        message = {
+          taskFunctionOperation: message.taskFunctionOperation,
+          taskFunctionOperationStatus: message.taskFunctionOperationStatus,
+          taskFunctionProperties: message.taskFunctionProperties,
+          workerError: message.workerError,
+        }
+      }
       send(message)
       if (
         message.taskFunctionOperationStatus != null &&
@@ -53,6 +64,29 @@ class TaskLifecycleWorker extends ThreadWorker {
     }
   })()
 
+  constructor (...args) {
+    super(...args)
+    if (workerData?.queuedTaskFunctionOperations === true) {
+      this.operationMessages = []
+      this.operationAvailable = Promise.withResolvers()
+      this.consumeTaskFunctionOperations().catch(error => {
+        queueMicrotask(() => {
+          throw error
+        })
+      })
+    }
+  }
+
+  async consumeTaskFunctionOperations () {
+    for (;;) {
+      await this.operationAvailable.promise
+      this.operationAvailable = Promise.withResolvers()
+      while (this.operationMessages.length > 0) {
+        this.processTaskFunctionOperation(this.operationMessages.shift())
+      }
+    }
+  }
+
   handleTaskFunctionOperationMessage (message) {
     if (workerData?.legacyTaskFunctionMessages === true) {
       const {
@@ -68,6 +102,15 @@ class TaskLifecycleWorker extends ThreadWorker {
         workerId,
       }
     }
+    if (workerData?.queuedTaskFunctionOperations === true) {
+      this.operationMessages.push(message)
+      this.operationAvailable.resolve()
+      return
+    }
+    this.processTaskFunctionOperation(message)
+  }
+
+  processTaskFunctionOperation (message) {
     if (replayState != null && Atomics.load(replayState, 0) === 0) {
       parentPort.postMessage({
         replayBlocked: true,
