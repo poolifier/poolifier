@@ -3,9 +3,19 @@ import { ClusterWorker } from '../../../lib/index.mjs'
 class LegacyTaskFunctionWorker extends ClusterWorker {
   sendToMainWorker = (() => {
     const send = this.sendToMainWorker
+    let statusOnlySent = false
     return message => {
       const response = { ...message }
       delete response.taskFunctionOperationId
+      if (
+        !statusOnlySent &&
+        response.taskFunctionOperationStatus != null &&
+        response.taskFunctionOperation ===
+          process.env.POOLIFIER_TEST_STATUS_ONLY_OPERATION
+      ) {
+        statusOnlySent = true
+        delete response.taskFunctionProperties
+      }
       send(response)
     }
   })()

@@ -2009,6 +2009,18 @@ export abstract class AbstractPool<
   }
 
   /**
+   * Builds the error for a task function operation acknowledgement without a UUID.
+   * @param workerId - The worker id that sent the acknowledgement.
+   * @returns The task function operation acknowledgement error.
+   */
+  private readonly getTaskFunctionOperationAcknowledgementError = (
+    workerId?: number
+  ): Error =>
+    new Error(
+      `Task function operation acknowledgement from worker ${String(workerId)} is missing taskFunctionOperationId`
+    )
+
+  /**
    * Gets task function worker choice strategy, if any.
    * @param name - The task function name.
    * @returns The task function worker choice strategy if the task function worker choice strategy is defined, `undefined` otherwise.
@@ -2803,8 +2815,28 @@ export abstract class AbstractPool<
         workerNodeKey = this.getWorkerNodeKeyForBootstrap(workerNode)
         if (workerNodeKey === -1) return
       }
+      // Keep strategies needed by ready peers while this worker becomes selectable.
+      const workerChoiceStrategies = this.getWorkerChoiceStrategies(
+        workerNode.info.taskFunctionsProperties ?? []
+      )
+      for (const readyWorkerNode of this.workerNodes) {
+        if (
+          readyWorkerNode === workerNode ||
+          !readyWorkerNode.info.ready ||
+          this.terminatingWorkerNodes.has(readyWorkerNode)
+        ) {
+          continue
+        }
+        const taskFunctionsProperties =
+          readyWorkerNode.info.taskFunctionsProperties
+        if (taskFunctionsProperties != null) {
+          for (const { strategy } of taskFunctionsProperties) {
+            if (strategy != null) workerChoiceStrategies.add(strategy)
+          }
+        }
+      }
       this.workerChoiceStrategiesContext?.syncWorkerChoiceStrategies(
-        this.getWorkerChoiceStrategies(workerNode.info.taskFunctionsProperties)
+        workerChoiceStrategies
       )
       this.sendStatisticsMessageToWorker(workerNodeKey)
       workerNode.info.ready = bootstrap.ready
@@ -2916,9 +2948,16 @@ export abstract class AbstractPool<
       if (
         message.taskFunctionOperationStatus != null &&
         message.workerId === workerId &&
-        message.taskFunctionOperationId === taskFunctionOperationId
+        (message.taskFunctionOperationId == null ||
+          message.taskFunctionOperationId === taskFunctionOperationId)
       ) {
         this.checkMessageWorkerId(message)
+        if (message.taskFunctionOperationId == null) {
+          reject(
+            this.getTaskFunctionOperationAcknowledgementError(message.workerId)
+          )
+          return
+        }
         if (message.taskFunctionOperationStatus) {
           resolve(true)
           return
@@ -2980,6 +3019,7 @@ export abstract class AbstractPool<
     }
     let remainingResponses = responsesReceived.size
     let errorResponse: MessageValue<Response> | undefined
+    let protocolError: Error | undefined
     const { promise, reject, resolve } = Promise.withResolvers<boolean>()
     const listeners: {
       cleanup: () => void
@@ -2988,7 +3028,9 @@ export abstract class AbstractPool<
     }[] = []
     const complete = (): void => {
       if (remainingResponses !== 0) return
-      if (errorResponse != null) {
+      if (protocolError != null) {
+        reject(protocolError)
+      } else if (errorResponse != null) {
         reject(
           new Error(
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -3008,14 +3050,19 @@ export abstract class AbstractPool<
     const listener = (message: MessageValue<Response>): void => {
       if (
         message.taskFunctionOperationStatus != null &&
-        message.taskFunctionOperationId === taskFunctionOperationId &&
+        (message.taskFunctionOperationId == null ||
+          message.taskFunctionOperationId === taskFunctionOperationId) &&
         responsesReceived.has(message.workerId) &&
         responsesReceived.get(message.workerId) == null
       ) {
         this.checkMessageWorkerId(message)
         responsesReceived.set(message.workerId, message)
         --remainingResponses
-        if (!message.taskFunctionOperationStatus) {
+        if (message.taskFunctionOperationId == null) {
+          protocolError ??= this.getTaskFunctionOperationAcknowledgementError(
+            message.workerId
+          )
+        } else if (!message.taskFunctionOperationStatus) {
           errorResponse ??= message
         }
         complete()

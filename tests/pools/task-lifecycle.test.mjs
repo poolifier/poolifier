@@ -82,6 +82,145 @@ describe('Task lifecycle regressions', () => {
     }
   )
 
+  it.each([
+    ['thread', 'add', FixedThreadPool],
+    ['thread', 'default', FixedThreadPool],
+    ['thread', 'remove', FixedThreadPool],
+    ['cluster', 'add', FixedClusterPool],
+    ['cluster', 'default', FixedClusterPool],
+    ['cluster', 'remove', FixedClusterPool],
+  ])(
+    'rejects an uncorrelated %s/%s acknowledgement without blocking later changes',
+    async (workerType, operation, Pool) => {
+      const pool = new Pool(
+        1,
+        workerType === 'thread'
+          ? workerFile
+          : './tests/worker-files/cluster/legacyTaskFunctionWorker.mjs',
+        workerType === 'thread'
+          ? {
+              workerOptions: {
+                workerData: {
+                  legacyTaskFunctionMessages: true,
+                  queuedTaskFunctionOperations: true,
+                  statusOnlyTaskFunctionOperation: operation,
+                },
+              },
+            }
+          : { env: { POOLIFIER_TEST_STATUS_ONLY_OPERATION: operation } }
+      )
+      const pending = []
+      const errors = []
+      pool.emitter.on(PoolEvents.error, error => errors.push(error))
+      try {
+        await ready(pool)
+        const worker = pool.workerNodes[0].worker
+        if (operation !== 'add') {
+          await bounded(pool.addTaskFunction('runtime', () => 42))
+          await bounded(pool.addTaskFunction('healthy', data => data))
+        }
+        const change =
+          operation === 'add'
+            ? pool.addTaskFunction('runtime', () => 42)
+            : operation === 'default'
+              ? pool.setDefaultTaskFunction('runtime')
+              : pool.removeTaskFunction('runtime')
+        const failed = settle(change)
+        pending.push(failed)
+        const following = settle(
+          operation === 'add'
+            ? pool.addTaskFunction('next', () => 43)
+            : operation === 'default'
+              ? pool.setDefaultTaskFunction('healthy')
+              : pool.removeTaskFunction('healthy')
+        )
+        pending.push(following)
+        expect((await bounded(failed)).error).toBeInstanceOf(Error)
+        expect(await bounded(following)).toEqual({ value: true })
+        expect(pool.workerNodes[0].worker).toBe(worker)
+        if (operation === 'add') {
+          expect(await bounded(pool.execute({}, 'runtime'))).toBe(42)
+          expect(await bounded(pool.execute({}, 'next'))).toBe(43)
+        } else if (operation === 'default') {
+          expect(await bounded(pool.execute({ selected: true }))).toEqual({
+            selected: true,
+          })
+        } else {
+          expect(pool.hasTaskFunction('runtime')).toBe(false)
+          expect(pool.hasTaskFunction('healthy')).toBe(false)
+          await bounded(pool.addTaskFunction('next', () => 43))
+          expect(await bounded(pool.execute({}, 'next'))).toBe(43)
+        }
+        expect(errors).toEqual([])
+      } finally {
+        await bounded(pool.destroy())
+        await bounded(Promise.allSettled(pending))
+      }
+    }
+  )
+
+  it('waits for every cohort target after an uncorrelated acknowledgement', async () => {
+    const replayGates = [new SharedArrayBuffer(4), new SharedArrayBuffer(4)]
+    const replayCounter = new SharedArrayBuffer(4)
+    const blocked = new Map()
+    const allBlocked = Promise.withResolvers()
+    let created = 0
+    const pool = new FixedThreadPool(2, workerFile, {
+      messageHandler: message => {
+        if (message.replayBlocked) {
+          blocked.set(message.workerId, message.replayGeneration)
+          if (blocked.size === 2) allBlocked.resolve()
+        }
+      },
+      workerOptions: {
+        get workerData () {
+          return {
+            asyncReplay: true,
+            legacyTaskFunctionMessages: true,
+            queuedTaskFunctionOperations: true,
+            replayCounter,
+            replayGates,
+            ...(created++ === 0 && {
+              statusOnlyTaskFunctionOperation: 'add',
+            }),
+          }
+        },
+      },
+    })
+    let change
+    try {
+      await ready(pool)
+      const [first, second] = pool.workerNodes
+      const acknowledged = waitForMessage(
+        first.messageChannel.port1,
+        message => message.taskFunctionOperationStatus != null
+      )
+      let completed = false
+      change = settle(pool.addTaskFunction('runtime', () => 42)).then(
+        result => {
+          completed = true
+          return result
+        }
+      )
+      await bounded(allBlocked.promise)
+      release(replayGates[blocked.get(first.info.id)])
+      await bounded(acknowledged)
+      expect(await bounded(pool.execute({ barrier: true }, 'echo'))).toEqual({
+        barrier: true,
+      })
+      expect(completed).toBe(false)
+      release(replayGates[blocked.get(second.info.id)])
+      expect((await bounded(change)).error).toBeInstanceOf(Error)
+      expect(await bounded(pool.execute({}, 'runtime'))).toBe(42)
+      await bounded(pool.addTaskFunction('next', () => 43))
+      expect(await bounded(pool.execute({}, 'next'))).toBe(43)
+    } finally {
+      replayGates.forEach(release)
+      await bounded(pool.destroy())
+      await bounded(Promise.allSettled([change]))
+    }
+  })
+
   it.each([false, true])(
     'does not let a delayed override acknowledgement complete a later operation (queued: %s)',
     async queued => {

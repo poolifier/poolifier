@@ -132,9 +132,11 @@ With no workers, this method resolves to `true` without changing the default sel
 
 Pool-wide calls to `addTaskFunction()`, `removeTaskFunction()` and `setDefaultTaskFunction()` run in call order. A failed call does not block later calls or undo changes already applied to workers.
 
-If workers are present when a change starts, each must report success or exit before responding. At least one successful result is required; any reported failure rejects the change.
+If workers are present when a change starts, each must respond or exit before the call settles. At least one successful result is required; any reported failure rejects the change.
 
 New and replacement workers wait for ongoing task function changes. They accept tasks only after restoring successfully registered task functions, the selected default and scheduling options. Workers being terminated remain unavailable.
+
+Custom worker subclasses that defer task function operations must echo the request's `taskFunctionOperationId` in their acknowledgement, or retain the original `taskFunctionProperties` object when using the standard transport. An acknowledgement without a recoverable UUID rejects the operation. Pool-wide changes still wait for all original targets to respond or exit. Status-only overrides that discard this correlation must be updated.
 
 ### Pool options
 

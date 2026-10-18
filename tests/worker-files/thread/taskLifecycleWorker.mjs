@@ -24,6 +24,7 @@ class TaskLifecycleWorker extends ThreadWorker {
   sendToMainWorker = (() => {
     const send = this.sendToMainWorker
     let duplicateScheduled = false
+    let statusOnlySent = false
     return message => {
       if (message.kill != null && workerData?.failAckSend === message.kill) {
         throw new Error('Kill ACK transport failed')
@@ -36,6 +37,19 @@ class TaskLifecycleWorker extends ThreadWorker {
           taskFunctionOperation: message.taskFunctionOperation,
           taskFunctionOperationStatus: message.taskFunctionOperationStatus,
           taskFunctionProperties: message.taskFunctionProperties,
+          workerError: message.workerError,
+        }
+      }
+      if (
+        !statusOnlySent &&
+        message.taskFunctionOperationStatus != null &&
+        message.taskFunctionOperation ===
+          workerData?.statusOnlyTaskFunctionOperation
+      ) {
+        statusOnlySent = true
+        message = {
+          taskFunctionOperation: message.taskFunctionOperation,
+          taskFunctionOperationStatus: message.taskFunctionOperationStatus,
           workerError: message.workerError,
         }
       }

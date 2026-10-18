@@ -357,6 +357,7 @@ export abstract class AbstractWorker<
    * Handles a task function operation.
    * Deferred overrides must retain the task function properties reference or the
    * operation UUID when forwarding outside the incoming asynchronous context.
+   * An acknowledgement without a recoverable UUID rejects the pool operation.
    * @param message - The task function operation request.
    */
   protected handleTaskFunctionOperationMessage (

@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import {
   DynamicThreadPool,
+  FixedClusterPool,
   FixedThreadPool,
   PoolEvents,
   WorkerChoiceStrategies,
@@ -43,6 +44,164 @@ class WrappedThreadPool extends FixedThreadPool {
 }
 
 describe('Runtime task function replay', () => {
+  it.each([
+    ['thread', FixedThreadPool],
+    ['cluster', FixedClusterPool],
+  ])(
+    'rejects an uncorrelated %s bootstrap acknowledgement',
+    async (workerType, Pool) => {
+      const pool = new Pool(
+        1,
+        workerType === 'thread'
+          ? './tests/worker-files/thread/taskLifecycleWorker.mjs'
+          : './tests/worker-files/cluster/legacyTaskFunctionWorker.mjs',
+        {
+          startWorkers: false,
+          ...(workerType === 'thread'
+            ? {
+                workerOptions: {
+                  workerData: {
+                    legacyTaskFunctionMessages: true,
+                    queuedTaskFunctionOperations: true,
+                    statusOnlyTaskFunctionOperation: 'add',
+                  },
+                },
+              }
+            : { env: { POOLIFIER_TEST_STATUS_ONLY_OPERATION: 'add' } }),
+        }
+      )
+      const errors = []
+      pool.emitter.on(PoolEvents.error, error => errors.push(error))
+      let execution
+      try {
+        await bounded(pool.addTaskFunction('runtime', () => 42))
+        pool.start()
+        const node = pool.workerNodes[0]
+        execution = pool.execute({}, 'runtime').then(
+          value => ({ value }),
+          error => ({ error })
+        )
+        const result = await bounded(execution)
+        expect(result.error).toBeInstanceOf(Error)
+        expect(errors).toEqual([result.error])
+        expect(pool.workerNodes[0]).toBe(node)
+        expect(node.info.ready).toBe(false)
+      } finally {
+        await bounded(pool.destroy())
+        await bounded(Promise.allSettled([execution]))
+      }
+    }
+  )
+
+  it('preserves a ready survivor strategy when a replacement restores its functions', async () => {
+    const bootstrapStatus = new SharedArrayBuffer(8)
+    const roles = [
+      { strategy: WorkerChoiceStrategies.FAIR_SHARE, workerNodeKeys: [0] },
+      {},
+      {},
+    ]
+    let created = 0
+    const pool = new FixedThreadPool(
+      2,
+      './tests/worker-files/thread/bootstrapAffinityWorker.mjs',
+      {
+        workerOptions: {
+          get workerData () {
+            return { bootstrapRole: created++, bootstrapStatus, roles }
+          },
+        },
+      }
+    )
+    const errors = []
+    pool.emitter.on(PoolEvents.error, error => errors.push(error))
+    try {
+      await bounded(once(pool.emitter, PoolEvents.ready))
+      await bounded(pool.addTaskFunction('runtime', data => data))
+      const survivor = pool.workerNodes[0]
+      expect(await bounded(pool.execute({ id: 'before' }, 'pinned'))).toEqual({
+        id: 'before',
+        taskFunction: 'pinned',
+        workerId: survivor.info.id,
+      })
+      await pool.workerNodes[1].worker.terminate()
+      await vi.waitFor(() => {
+        expect(pool.workerNodes.every(node => node.info.ready)).toBe(true)
+      })
+      expect(pool.workerNodes[0]).toBe(survivor)
+      expect(await bounded(pool.execute({ id: 'after' }, 'pinned'))).toEqual({
+        id: 'after',
+        taskFunction: 'pinned',
+        workerId: survivor.info.id,
+      })
+      expect(errors).toEqual([])
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
+  it('registers the first replayed strategy while an earlier worker still initializes', async () => {
+    const replayGates = [new SharedArrayBuffer(4), new SharedArrayBuffer(4)]
+    const replayCounter = new SharedArrayBuffer(4)
+    const blocked = new Map()
+    const allBlocked = Promise.withResolvers()
+    const pool = new FixedThreadPool(
+      2,
+      './tests/worker-files/thread/taskLifecycleWorker.mjs',
+      {
+        messageHandler: message => {
+          if (message.replayBlocked) {
+            blocked.set(message.workerId, message.replayGeneration)
+            if (blocked.size === 2) allBlocked.resolve()
+          }
+        },
+        startWorkers: false,
+        workerOptions: {
+          workerData: { asyncReplay: true, replayCounter, replayGates },
+        },
+      }
+    )
+    const errors = []
+    pool.emitter.on(PoolEvents.error, error => errors.push(error))
+    try {
+      await bounded(
+        pool.addTaskFunction('runtime', {
+          strategy: WorkerChoiceStrategies.FAIR_SHARE,
+          taskFunction: () => 42,
+          workerNodeKeys: [1],
+        })
+      )
+      pool.start()
+      const nodes = [...pool.workerNodes]
+      await bounded(
+        Promise.all([
+          allBlocked.promise,
+          ...nodes.map(node =>
+            waitForMessage(
+              node.messageChannel.port1,
+              message => message.ready != null
+            )
+          ),
+        ])
+      )
+      expect(nodes[0].info.taskFunctionsProperties).toBeDefined()
+      expect(
+        nodes[0].info.taskFunctionsProperties.some(
+          properties => properties.name === 'runtime'
+        )
+      ).toBe(false)
+      const bootstrap = pool.workerTaskFunctionBootstraps.get(nodes[1]).promise
+      release(replayGates[blocked.get(nodes[1].info.id)])
+      await bounded(bootstrap)
+      expect(nodes[0].info.ready).toBe(false)
+      expect(nodes[1].info.ready).toBe(true)
+      expect(await bounded(pool.execute({}, 'runtime'))).toBe(42)
+      expect(errors).toEqual([])
+    } finally {
+      replayGates.forEach(release)
+      await bounded(pool.destroy())
+    }
+  })
+
   it.each(['remove', 'default'])(
     'waits for workers created while resuming a %s operation',
     async operation => {
