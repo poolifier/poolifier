@@ -91,9 +91,9 @@ export abstract class AbstractWorker<
   /**
    * Correlation of task function operations across protected handler overrides.
    */
-  protected readonly taskFunctionOperationContext = new AsyncLocalStorage<
+  protected readonly taskFunctionOperationContext: AsyncLocalStorage<
     undefined | UUID
-  >()
+  > = new AsyncLocalStorage<undefined | UUID>()
 
   /**
    * Task function object(s) processed by the worker when the pool's `execute` method is invoked.
