@@ -69,13 +69,6 @@ export class ThreadWorker<
   }
 
   /** @inheritDoc */
-  protected override handleKillMessage (message: MessageValue<Data>): void {
-    super.handleKillMessage(message)
-    this.port?.unref()
-    this.port?.close()
-  }
-
-  /** @inheritDoc */
   protected handleReadyMessage (message: MessageValue<Data>): void {
     if (
       message.workerId === this.id &&
@@ -102,9 +95,15 @@ export class ThreadWorker<
   protected readonly sendToMainWorker = (
     message: MessageValue<Response>
   ): void => {
-    this.port?.postMessage({
-      ...message,
-      workerId: this.id,
-    } satisfies MessageValue<Response>)
+    const response = { ...message, workerId: this.id }
+    if (response.taskFunctionOperationStatus != null) {
+      response.taskFunctionOperationId ??=
+        this.getTaskFunctionOperationId(response)
+    }
+    this.port?.postMessage(response)
+    if (message.kill === 'success' || message.kill === 'failure') {
+      this.port?.unref()
+      this.port?.close()
+    }
   }
 }

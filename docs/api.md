@@ -43,28 +43,34 @@
 `data` (optional) An object that you want to pass to your worker task function implementation.  
 `name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
 `abortSignal` (optional) An abort signal to abort the task function execution.  
-`transferList` (optional) An array of transferable objects that you want to transfer to your [`ThreadWorker`](#class-yourworker-extends-threadworkerclusterworker) worker implementation.
+`transferList` (optional) An array of transferable objects that you want to transfer to your [`ThreadWorker`](#class-yourworker-extends-threadworkerclusterworker) worker implementation. The array is copied at submission.
 
 This method is available on both pool implementations and returns a promise with the task function execution response.
+
+Promise and thenable task results are awaited, including promises from other JavaScript realms. Functions need not be declared `async`.
+
+An already-aborted signal rejects the task before submission.
 
 #### Task failures
 
 - If sending a task throws, its promise rejects with the original error, without failing other tasks.
-- On unexpected worker exit, unfinished dispatched tasks reject with an `Error` and are not retried. Thread responses already posted to the pool retain their result or task error; cluster responses must reach the pool before exit.
-- Queued tasks are redistributed to ready workers respecting worker node affinity. Worker node affinity is preserved while other workers initialize. Affinity uses current worker node indices after removal and any replacement attempt. Tasks without an eligible destination reject. Eligible handoffs complete before `backPressureEnd` is emitted, including when worker-removal event listeners disable task queues.
-- Disabling task queues from a worker-removal event listener does not discard queued tasks awaiting redistribution: eligible tasks are dispatched directly.
-- Queued tasks aborted after worker removal and before reassignment reject with the original abort reason if it is an `Error`, a new `Error` with that message if it is a string, or a task-specific abort `Error` otherwise.
-- Non-`Error` native worker failures are wrapped in an `Error` with the original value in `cause`. The pool's `error` event retains the original value.
-- Failure to construct a replacement worker does not prevent task settlement; the construction error still propagates.
+- On unexpected worker exit, unfinished tasks already sent to it reject with an `Error` and are not retried. Thread responses sent before exit retain their result or task error; cluster responses must reach the pool before exit.
+- Task errors reported by a worker reject the task promise and emit `taskError` when events are enabled. For tasks with transferred objects, the event's `data` is the original input object; reporting does not return ownership of those objects. Other task errors may omit input that cannot be copied back.
+- If a worker cannot report a task error, it exits unexpectedly and unfinished tasks follow the rules above.
+- Queued tasks move to ready workers allowed by worker node affinity, using current worker node indices after removal and any replacement attempt. Affinity still applies while other workers initialize. Tasks without an eligible destination reject.
+- Eligible tasks are reassigned before `backPressureEnd` is emitted. Disabling task queues during reassignment sends eligible queued tasks directly instead of discarding them.
+- Task cancellation preserves an `Error` reason, wraps a string reason in a new `Error`, or produces a task-specific abort `Error` otherwise.
+- Worker failures emit the pool's `error` event with the original value when events are enabled. Rejections wrap non-`Error` values in an `Error` with the original value as `cause`.
+- If a replacement worker cannot be created, affected task promises still settle; the creation error is not suppressed.
 
-Unexpected-exit handling does not apply to intentional pool or worker termination.
+Intentional termination alone does not guarantee rejection of unfinished task promises. Worker errors during termination still follow the failure rules above.
 
 ### `pool.mapExecute(data, name, abortSignals, transferList)`
 
 `data` An iterable of objects that you want to pass to your worker task function implementation.  
 `name` (optional) A string with the task function name that you want to execute on the worker. Default: `'default'`  
-`abortSignals` (optional) An iterable of AbortSignal to abort the matching object task function execution.  
-`transferList` (optional) An array of transferable objects that you want to transfer to your [`ThreadWorker`](#class-yourworker-extends-threadworkerclusterworker) worker implementation.
+`abortSignals` (optional) An iterable of AbortSignal matching the input order and length. One-shot iterables are supported.  
+`transferList` (optional) Same as [`pool.execute()`](#poolexecutedata-name-abortsignal-transferlist), with one array snapshot for the batch.
 
 This method is available on both pool implementations and returns a promise with the task function execution responses array.
 
@@ -78,6 +84,8 @@ This method is available on both pool implementations and will start the minimum
 
 This method is available on both pool implementations and returns a promise for pool destruction. Workers that have already exited do not block destruction.
 
+The pool waits up to 1000 milliseconds for each worker to confirm cleanup before terminating it. Cleanup failure or timeout does not prevent termination; unfinished cleanup can be interrupted. Reported cleanup failures emit the pool's `error` event when events are enabled. This timeout does not bound total pool destruction time.
+
 ### `pool.hasTaskFunction(name)`
 
 `name` (mandatory) The task function name.
@@ -87,22 +95,26 @@ This method is available on both pool implementations and returns a boolean.
 ### `pool.addTaskFunction(name, fn)`
 
 `name` (mandatory) The task function name.  
-`fn` (mandatory) The task function `(data?: Data) => Response | Promise<Response>` or task function object `{ taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }`. Priority range is the same as Unix nice levels. `workerNodeKeys` is an array of worker node keys to restrict task execution to specific workers (worker node affinity).
+`fn` (mandatory) The task function `(data?: Data) => Response | PromiseLike<Response>` or task function object `{ taskFunction: (data?: Data) => Response | PromiseLike<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }`. Priority range is the same as Unix nice levels. `workerNodeKeys` restricts initial task dispatch to specific workers (worker node affinity).
+
+This method is available on both pool implementations and returns a boolean promise. See [Runtime task function changes](#runtime-task-function-changes).
+
+The function's source and options, including `workerNodeKeys`, are captured at call time. Later caller changes do not affect registration or replacement workers.
 
 #### Worker Node Affinity Notes
 
 - Worker node keys are validated at registration time against the pool's maximum size (`maximumNumberOfWorkers ?? minimumNumberOfWorkers`).
 - The number of worker node keys cannot exceed the pool's maximum size (`maximumNumberOfWorkers ?? minimumNumberOfWorkers`).
 - In dynamic pools, you can reference worker node keys up to the maximum pool size. Workers that don't exist yet are automatically created when a task targeting them is executed.
-- At execution time, if no specified worker is ready, selection retries until one becomes available or retries are exhausted.
-
-This method is available on both pool implementations and returns a boolean promise.
+- At execution time, if no specified worker is ready, selection retries until one becomes available or retries are exhausted. Initialization failures on ineligible workers do not reject waiting tasks.
+- Task stealing on idle or under back pressure ignores worker node affinity.
+- With task queues enabled, disable both `taskStealing` and `tasksStealingOnBackPressure` for strict worker node affinity. Both are enabled by default.
 
 ### `pool.removeTaskFunction(name)`
 
 `name` (mandatory) The task function name.
 
-This method is available on both pool implementations and returns a boolean promise.
+This method is available on both pool implementations and returns a boolean promise. See [Runtime task function changes](#runtime-task-function-changes).
 
 ### `pool.listTaskFunctionsProperties()`
 
@@ -112,7 +124,19 @@ This method is available on both pool implementations and returns an array of th
 
 `name` (mandatory) The task function name.
 
-This method is available on both pool implementations and returns a boolean promise.
+This method is available on both pool implementations and returns a boolean promise. See [Runtime task function changes](#runtime-task-function-changes).
+
+With no workers, this method resolves to `true` without changing the default selection.
+
+### Runtime task function changes
+
+Pool-wide calls to `addTaskFunction()`, `removeTaskFunction()` and `setDefaultTaskFunction()` run in call order. A failed call does not block later calls or undo changes already applied to workers.
+
+If workers are present when a change starts, each must respond or exit before the call settles. At least one successful result is required; any reported failure rejects the change. Thread pools preserve operation results sent before an unexpected worker exit.
+
+New and replacement workers wait for ongoing task function changes. They accept tasks only after restoring successfully registered task functions, the selected default and scheduling options. Workers being terminated remain unavailable.
+
+Custom worker subclasses that defer task function operations must echo the request's `taskFunctionOperationId` in their acknowledgement, or retain the original `taskFunctionProperties` object when using the standard transport. An acknowledgement without a recoverable UUID rejects the operation. Pool-wide changes still wait for all original targets to respond or exit. Status-only overrides that discard this correlation must be updated.
 
 ### Pool options
 
@@ -181,7 +205,7 @@ An object with these properties:
 
 ### `class YourWorker extends ThreadWorker/ClusterWorker`
 
-`taskFunctions` (mandatory) The task function or task functions object `Record<string, (data?: Data) => Response | Promise<Response> | { taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }>` that you want to execute on the worker. Priority range is the same as Unix nice levels. `workerNodeKeys` is an array of worker node keys to restrict task execution to specific workers (worker node affinity). See [Worker Node Affinity Notes](#worker-node-affinity-notes) above for validation behavior.  
+`taskFunctions` (mandatory) The task function or task functions object `Record<string, (data?: Data) => Response | PromiseLike<Response> | { taskFunction: (data?: Data) => Response | PromiseLike<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }>` that you want to execute on the worker. Priority range is the same as Unix nice levels. `workerNodeKeys` restricts initial task dispatch to specific workers (worker node affinity). See [Worker Node Affinity Notes](#worker-node-affinity-notes) for affinity behavior.  
 `opts` (optional) An object with these properties:
 
 - `killBehavior` (optional) - Dictates if your worker will be deleted in case a task is active on it.  
@@ -196,7 +220,7 @@ An object with these properties:
   If `killBehavior` is set to `KillBehaviors.SOFT` your tasks have no timeout and your workers will not be terminated until your task is completed.  
   Default: `60000`
 
-- `killHandler` (optional) - A function that will be called when a worker is killed.  
+- `killHandler` (optional) - A cleanup function called when the pool requests worker termination. Returned promises and thenables are awaited, subject to the [`pool.destroy()` timeout and failure rules](#pooldestroy).  
   Default: `() => {}`
 
 #### `YourWorker.hasTaskFunction(name)`
@@ -208,7 +232,7 @@ This method is available on both worker implementations and returns `{ status: b
 #### `YourWorker.addTaskFunction(name, fn)`
 
 `name` (mandatory) The task function name.  
-`fn` (mandatory) The task function `(data?: Data) => Response | Promise<Response>` or task function object `{ taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }`. Priority range is the same as Unix nice levels. `workerNodeKeys` is an array of worker node keys to restrict task execution to specific workers (worker node affinity). See [Worker Node Affinity Notes](#worker-node-affinity-notes) above for validation behavior.
+`fn` (mandatory) The task function `(data?: Data) => Response | PromiseLike<Response>` or task function object `{ taskFunction: (data?: Data) => Response | PromiseLike<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }`. Priority range is the same as Unix nice levels. `workerNodeKeys` restricts initial task dispatch to specific workers (worker node affinity). See [Worker Node Affinity Notes](#worker-node-affinity-notes) for affinity behavior.
 
 This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
 

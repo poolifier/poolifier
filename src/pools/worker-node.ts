@@ -173,31 +173,35 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
   public async terminate (): Promise<void> {
     this.closeMessageChannel()
     this.removeAllListeners()
-    switch (this.info.type) {
-      case WorkerTypes.cluster: {
-        if (this.worker.isDead?.() === true) {
+    try {
+      switch (this.info.type) {
+        case WorkerTypes.cluster: {
+          if (this.worker.isDead?.() === true) {
+            break
+          }
+          const waitWorkerExit = new Promise<void>(resolve => {
+            this.registerOnceWorkerEventHandler('exit', () => {
+              resolve()
+            })
+          })
+          if (this.worker.isConnected?.() === true) {
+            this.registerOnceWorkerEventHandler('disconnect', () => {
+              this.worker.kill?.()
+            })
+            this.worker.disconnect?.()
+          } else {
+            this.worker.kill?.()
+          }
+          await waitWorkerExit
           break
         }
-        const waitWorkerExit = new Promise<void>(resolve => {
-          this.registerOnceWorkerEventHandler('exit', () => {
-            resolve()
-          })
-        })
-        if (this.worker.isConnected?.() === true) {
-          this.registerOnceWorkerEventHandler('disconnect', () => {
-            this.worker.kill?.()
-          })
-          this.worker.disconnect?.()
-        } else {
-          this.worker.kill?.()
-        }
-        await waitWorkerExit
-        break
+        case WorkerTypes.thread:
+          this.worker.unref?.()
+          await this.worker.terminate?.()
+          break
       }
-      case WorkerTypes.thread:
-        this.worker.unref?.()
-        await this.worker.terminate?.()
-        break
+    } finally {
+      delete this.messageChannel
     }
     this.worker.removeAllListeners()
   }
@@ -208,7 +212,6 @@ export class WorkerNode<Worker extends IWorker, Data = unknown>
       this.messageChannel.port2.unref()
       this.messageChannel.port1.close()
       this.messageChannel.port2.close()
-      delete this.messageChannel
     }
   }
 

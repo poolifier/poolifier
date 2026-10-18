@@ -78,9 +78,11 @@ export class ClusterWorker<
   protected readonly sendToMainWorker = (
     message: MessageValue<Response>
   ): void => {
-    this.getMainWorker().send({
-      ...message,
-      workerId: this.id,
-    } satisfies MessageValue<Response>)
+    const response = { ...message, workerId: this.id }
+    if (response.taskFunctionOperationStatus != null) {
+      response.taskFunctionOperationId ??=
+        this.getTaskFunctionOperationId(response)
+    }
+    this.getMainWorker().send(response)
   }
 }
