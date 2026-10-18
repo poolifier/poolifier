@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.0.1](https://github.com/poolifier/poolifier/compare/v6.0.0...v6.0.1) (2026-10-18)
+
+
+### 🐞 Bug Fixes
+
+* **jsr:** annotate public async context ([#3362](https://github.com/poolifier/poolifier/issues/3362)) ([7ee4d04](https://github.com/poolifier/poolifier/commit/7ee4d04fc6ffc573896cf07aeabf90c06c610c90))
+
 ## [6.0.0](https://github.com/poolifier/poolifier/compare/v5.4.1...v6.0.0) (2026-10-18)
 
 
