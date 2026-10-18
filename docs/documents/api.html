@@ -1,5 +1,5 @@
-<!DOCTYPE html><html class="default" lang="en" data-base="../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>api | poolifier - v5.4.0</title><meta name="description" content="Documentation for poolifier"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script><script async src="../assets/hierarchy.js" id="tsd-hierarchy-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar">
-<div class="tsd-toolbar-contents container"><a href="../index.html" class="title">poolifier - v5.4.0</a>
+<!DOCTYPE html><html class="default" lang="en" data-base="../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>api | poolifier - v6.0.1</title><meta name="description" content="Documentation for poolifier"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script><script async src="../assets/hierarchy.js" id="tsd-hierarchy-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container"><a href="../index.html" class="title">poolifier - v6.0.1</a>
 <div id="tsd-toolbar-links"></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/>
 <ul role="listbox" id="tsd-search-results"></ul>
 <div id="tsd-search-status" aria-live="polite" aria-atomic="true">
@@ -56,40 +56,66 @@
 <p><code>data</code> (optional) An object that you want to pass to your worker task function implementation.<br>
 <code>name</code> (optional) A string with the task function name that you want to execute on the worker. Default: <code>'default'</code><br>
 <code>abortSignal</code> (optional) An abort signal to abort the task function execution.<br>
-<code>transferList</code> (optional) An array of transferable objects that you want to transfer to your <a href="#class-yourworker-extends-threadworkerclusterworker"><code>ThreadWorker</code></a> worker implementation.</p>
+<code>transferList</code> (optional) An array of transferable objects that you want to transfer to your <a href="#class-yourworker-extends-threadworkerclusterworker"><code>ThreadWorker</code></a> worker implementation. The array is copied at submission.</p>
 <p>This method is available on both pool implementations and returns a promise with the task function execution response.</p>
+<p>Promise and thenable task results are awaited, including promises from other JavaScript realms. Functions need not be declared <code>async</code>.</p>
+<p>An already-aborted signal rejects the task before submission.</p>
+<h4 id="task-failures" class="tsd-anchor-link">Task failures<a href="#task-failures" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4>
+<ul>
+<li>If sending a task throws, its promise rejects with the original error, without failing other tasks.</li>
+<li>On unexpected worker exit, unfinished tasks already sent to it reject with an <code>Error</code> and are not retried. Thread responses sent before exit retain their result or task error; cluster responses must reach the pool before exit.</li>
+<li>Task errors reported by a worker reject the task promise and emit <code>taskError</code> when events are enabled. For tasks with transferred objects, the event's <code>data</code> is the original input object; reporting does not return ownership of those objects. Other task errors may omit input that cannot be copied back.</li>
+<li>If a worker cannot report a task error, it exits unexpectedly and unfinished tasks follow the rules above.</li>
+<li>Queued tasks move to ready workers allowed by worker node affinity, using current worker node indices after removal and any replacement attempt. Affinity still applies while other workers initialize. Tasks without an eligible destination reject.</li>
+<li>Eligible tasks are reassigned before <code>backPressureEnd</code> is emitted. Disabling task queues during reassignment sends eligible queued tasks directly instead of discarding them.</li>
+<li>Task cancellation preserves an <code>Error</code> reason, wraps a string reason in a new <code>Error</code>, or produces a task-specific abort <code>Error</code> otherwise.</li>
+<li>Worker failures emit the pool's <code>error</code> event with the original value when events are enabled. Rejections wrap non-<code>Error</code> values in an <code>Error</code> with the original value as <code>cause</code>.</li>
+<li>If a replacement worker cannot be created, affected task promises still settle; the creation error is not suppressed.</li>
+</ul>
+<p>Intentional termination alone does not guarantee rejection of unfinished task promises. Worker errors during termination still follow the failure rules above.</p>
 <h3 id="_-3" class="tsd-anchor-link"><code>pool.mapExecute(data, name, abortSignals, transferList)</code><a href="#_-3" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <p><code>data</code> An iterable of objects that you want to pass to your worker task function implementation.<br>
 <code>name</code> (optional) A string with the task function name that you want to execute on the worker. Default: <code>'default'</code><br>
-<code>abortSignals</code> (optional) An iterable of AbortSignal to abort the matching object task function execution.<br>
-<code>transferList</code> (optional) An array of transferable objects that you want to transfer to your <a href="#class-yourworker-extends-threadworkerclusterworker"><code>ThreadWorker</code></a> worker implementation.</p>
+<code>abortSignals</code> (optional) An iterable of AbortSignal matching the input order and length. One-shot iterables are supported.<br>
+<code>transferList</code> (optional) Same as <a href="#poolexecutedata-name-abortsignal-transferlist"><code>pool.execute()</code></a>, with one array snapshot for the batch.</p>
 <p>This method is available on both pool implementations and returns a promise with the task function execution responses array.</p>
+<p>Task failures follow the same rules as <a href="#task-failures"><code>pool.execute()</code></a>.</p>
 <h3 id="_-4" class="tsd-anchor-link"><code>pool.start()</code><a href="#_-4" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <p>This method is available on both pool implementations and will start the minimum number of workers.</p>
 <h3 id="_-5" class="tsd-anchor-link"><code>pool.destroy()</code><a href="#_-5" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
-<p>This method is available on both pool implementations and will call the terminate method on each worker.</p>
+<p>This method is available on both pool implementations and returns a promise for pool destruction. Workers that have already exited do not block destruction.</p>
+<p>The pool waits up to 1000 milliseconds for each worker to confirm cleanup before terminating it. Cleanup failure or timeout does not prevent termination; unfinished cleanup can be interrupted. Reported cleanup failures emit the pool's <code>error</code> event when events are enabled. This timeout does not bound total pool destruction time.</p>
 <h3 id="_-6" class="tsd-anchor-link"><code>pool.hasTaskFunction(name)</code><a href="#_-6" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <p><code>name</code> (mandatory) The task function name.</p>
 <p>This method is available on both pool implementations and returns a boolean.</p>
 <h3 id="_-7" class="tsd-anchor-link"><code>pool.addTaskFunction(name, fn)</code><a href="#_-7" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <p><code>name</code> (mandatory) The task function name.<br>
-<code>fn</code> (mandatory) The task function <code>(data?: Data) =&gt; Response | Promise&lt;Response&gt;</code> or task function object <code>{ taskFunction: (data?: Data) =&gt; Response | Promise&lt;Response&gt;, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }</code>. Priority range is the same as Unix nice levels. <code>workerNodeKeys</code> is an array of worker node keys to restrict task execution to specific workers (worker node affinity).</p>
+<code>fn</code> (mandatory) The task function <code>(data?: Data) =&gt; Response | PromiseLike&lt;Response&gt;</code> or task function object <code>{ taskFunction: (data?: Data) =&gt; Response | PromiseLike&lt;Response&gt;, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }</code>. Priority range is the same as Unix nice levels. <code>workerNodeKeys</code> restricts initial task dispatch to specific workers (worker node affinity).</p>
+<p>This method is available on both pool implementations and returns a boolean promise. See <a href="#runtime-task-function-changes">Runtime task function changes</a>.</p>
+<p>The function's source and options, including <code>workerNodeKeys</code>, are captured at call time. Later caller changes do not affect registration or replacement workers.</p>
 <h4 id="worker-node-affinity-notes" class="tsd-anchor-link">Worker Node Affinity Notes<a href="#worker-node-affinity-notes" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4>
 <ul>
 <li>Worker node keys are validated at registration time against the pool's maximum size (<code>maximumNumberOfWorkers ?? minimumNumberOfWorkers</code>).</li>
 <li>The number of worker node keys cannot exceed the pool's maximum size (<code>maximumNumberOfWorkers ?? minimumNumberOfWorkers</code>).</li>
 <li>In dynamic pools, you can reference worker node keys up to the maximum pool size. Workers that don't exist yet are automatically created when a task targeting them is executed.</li>
-<li>At execution time, if no specified worker is ready, selection retries until one becomes available or retries are exhausted.</li>
+<li>At execution time, if no specified worker is ready, selection retries until one becomes available or retries are exhausted. Initialization failures on ineligible workers do not reject waiting tasks.</li>
+<li>Task stealing on idle or under back pressure ignores worker node affinity.</li>
+<li>With task queues enabled, disable both <code>taskStealing</code> and <code>tasksStealingOnBackPressure</code> for strict worker node affinity. Both are enabled by default.</li>
 </ul>
-<p>This method is available on both pool implementations and returns a boolean promise.</p>
 <h3 id="_-8" class="tsd-anchor-link"><code>pool.removeTaskFunction(name)</code><a href="#_-8" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <p><code>name</code> (mandatory) The task function name.</p>
-<p>This method is available on both pool implementations and returns a boolean promise.</p>
+<p>This method is available on both pool implementations and returns a boolean promise. See <a href="#runtime-task-function-changes">Runtime task function changes</a>.</p>
 <h3 id="_-9" class="tsd-anchor-link"><code>pool.listTaskFunctionsProperties()</code><a href="#_-9" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <p>This method is available on both pool implementations and returns an array of the task function properties.</p>
 <h3 id="_-10" class="tsd-anchor-link"><code>pool.setDefaultTaskFunction(name)</code><a href="#_-10" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <p><code>name</code> (mandatory) The task function name.</p>
-<p>This method is available on both pool implementations and returns a boolean promise.</p>
+<p>This method is available on both pool implementations and returns a boolean promise. See <a href="#runtime-task-function-changes">Runtime task function changes</a>.</p>
+<p>With no workers, this method resolves to <code>true</code> without changing the default selection.</p>
+<h3 id="runtime-task-function-changes" class="tsd-anchor-link">Runtime task function changes<a href="#runtime-task-function-changes" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>Pool-wide calls to <code>addTaskFunction()</code>, <code>removeTaskFunction()</code> and <code>setDefaultTaskFunction()</code> run in call order. A failed call does not block later calls or undo changes already applied to workers.</p>
+<p>If workers are present when a change starts, each must respond or exit before the call settles. At least one successful result is required; any reported failure rejects the change. Thread pools preserve operation results sent before an unexpected worker exit.</p>
+<p>New and replacement workers wait for ongoing task function changes. They accept tasks only after restoring successfully registered task functions, the selected default and scheduling options. Workers being terminated remain unavailable.</p>
+<p>Custom worker subclasses that defer task function operations must echo the request's <code>taskFunctionOperationId</code> in their acknowledgement, or retain the original <code>taskFunctionProperties</code> object when using the standard transport. An acknowledgement without a recoverable UUID rejects the operation. Pool-wide changes still wait for all original targets to respond or exit. Status-only overrides that discard this correlation must be updated.</p>
 <h3 id="pool-options" class="tsd-anchor-link">Pool options<a href="#pool-options" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <p>An object with these properties:</p>
 <ul>
@@ -106,7 +132,7 @@ Default: <code>() =&gt; {}</code></p>
 Default: <code>() =&gt; {}</code></p>
 </li>
 <li>
-<p><code>exitHandler</code> (optional) - A function that will listen for exit event on each worker.<br>
+<p><code>exitHandler</code> (optional) - A function called once per worker exit after pool cleanup, including when replacement construction fails. Receives the exit code with the native worker as <code>this</code>.<br>
 Default: <code>() =&gt; {}</code></p>
 </li>
 <li>
@@ -178,7 +204,7 @@ Properties:</p>
 </ul>
 <h2 id="worker" class="tsd-anchor-link">Worker<a href="#worker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2>
 <h3 id="_-11" class="tsd-anchor-link"><code>class YourWorker extends ThreadWorker/ClusterWorker</code><a href="#_-11" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
-<p><code>taskFunctions</code> (mandatory) The task function or task functions object <code>Record&lt;string, (data?: Data) =&gt; Response | Promise&lt;Response&gt; | { taskFunction: (data?: Data) =&gt; Response | Promise&lt;Response&gt;, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }&gt;</code> that you want to execute on the worker. Priority range is the same as Unix nice levels. <code>workerNodeKeys</code> is an array of worker node keys to restrict task execution to specific workers (worker node affinity). See <a href="#worker-node-affinity-notes">Worker Node Affinity Notes</a> above for validation behavior.<br>
+<p><code>taskFunctions</code> (mandatory) The task function or task functions object <code>Record&lt;string, (data?: Data) =&gt; Response | PromiseLike&lt;Response&gt; | { taskFunction: (data?: Data) =&gt; Response | PromiseLike&lt;Response&gt;, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }&gt;</code> that you want to execute on the worker. Priority range is the same as Unix nice levels. <code>workerNodeKeys</code> restricts initial task dispatch to specific workers (worker node affinity). See <a href="#worker-node-affinity-notes">Worker Node Affinity Notes</a> for affinity behavior.<br>
 <code>opts</code> (optional) An object with these properties:</p>
 <ul>
 <li>
@@ -196,7 +222,7 @@ If <code>killBehavior</code> is set to <code>KillBehaviors.SOFT</code> your task
 Default: <code>60000</code></p>
 </li>
 <li>
-<p><code>killHandler</code> (optional) - A function that will be called when a worker is killed.<br>
+<p><code>killHandler</code> (optional) - A cleanup function called when the pool requests worker termination. Returned promises and thenables are awaited, subject to the <a href="#pooldestroy"><code>pool.destroy()</code> timeout and failure rules</a>.<br>
 Default: <code>() =&gt; {}</code></p>
 </li>
 </ul>
@@ -205,7 +231,7 @@ Default: <code>() =&gt; {}</code></p>
 <p>This method is available on both worker implementations and returns <code>{ status: boolean, error?: Error }</code>.</p>
 <h4 id="_-13" class="tsd-anchor-link"><code>YourWorker.addTaskFunction(name, fn)</code><a href="#_-13" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4>
 <p><code>name</code> (mandatory) The task function name.<br>
-<code>fn</code> (mandatory) The task function <code>(data?: Data) =&gt; Response | Promise&lt;Response&gt;</code> or task function object <code>{ taskFunction: (data?: Data) =&gt; Response | Promise&lt;Response&gt;, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }</code>. Priority range is the same as Unix nice levels. <code>workerNodeKeys</code> is an array of worker node keys to restrict task execution to specific workers (worker node affinity). See <a href="#worker-node-affinity-notes">Worker Node Affinity Notes</a> above for validation behavior.</p>
+<code>fn</code> (mandatory) The task function <code>(data?: Data) =&gt; Response | PromiseLike&lt;Response&gt;</code> or task function object <code>{ taskFunction: (data?: Data) =&gt; Response | PromiseLike&lt;Response&gt;, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }</code>. Priority range is the same as Unix nice levels. <code>workerNodeKeys</code> restricts initial task dispatch to specific workers (worker node affinity). See <a href="#worker-node-affinity-notes">Worker Node Affinity Notes</a> for affinity behavior.</p>
 <p>This method is available on both worker implementations and returns <code>{ status: boolean, error?: Error }</code>.</p>
 <h4 id="_-14" class="tsd-anchor-link"><code>YourWorker.removeTaskFunction(name)</code><a href="#_-14" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4>
 <p><code>name</code> (mandatory) The task function name.</p>
@@ -239,6 +265,9 @@ Default: <code>() =&gt; {}</code></p>
 <li><a href="#_"><span></span></a></li>
 <li><a href="#_-1"><span></span></a></li>
 <li><a href="#_-2"><span></span></a></li>
+<li>
+<ul>
+<li><a href="#task-failures"><span>Task failures</span></a></li></ul></li>
 <li><a href="#_-3"><span></span></a></li>
 <li><a href="#_-4"><span></span></a></li>
 <li><a href="#_-5"><span></span></a></li>
@@ -250,6 +279,7 @@ Default: <code>() =&gt; {}</code></p>
 <li><a href="#_-8"><span></span></a></li>
 <li><a href="#_-9"><span></span></a></li>
 <li><a href="#_-10"><span></span></a></li>
+<li><a href="#runtime-task-function-changes"><span>Runtime task function changes</span></a></li>
 <li><a href="#pool-options"><span>Pool options</span></a></li></ul></li>
 <li><a href="#worker"><span>Worker</span></a></li>
 <li>
@@ -263,7 +293,7 @@ Default: <code>() =&gt; {}</code></p>
 <li><a href="#_-15"><span></span></a></li>
 <li><a href="#_-16"><span></span></a></li></ul></li></ul></li></ul></div></details></div>
 <div class="site-menu">
-<nav class="tsd-navigation"><a href="../index.html">poolifier - v5.4.0</a>
+<nav class="tsd-navigation"><a href="../index.html">poolifier - v6.0.1</a>
 <ul class="tsd-small-nested-navigation" id="tsd-nav-container">
 <li>Loading...</li></ul></nav></div></div></div><footer>
 <p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer>
