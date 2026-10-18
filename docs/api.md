@@ -95,7 +95,7 @@ This method is available on both pool implementations and returns a boolean.
 ### `pool.addTaskFunction(name, fn)`
 
 `name` (mandatory) The task function name.  
-`fn` (mandatory) The task function `(data?: Data) => Response | Promise<Response>` or task function object `{ taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }`. Priority range is the same as Unix nice levels. `workerNodeKeys` restricts initial task dispatch to specific workers (worker node affinity).
+`fn` (mandatory) The task function `(data?: Data) => Response | PromiseLike<Response>` or task function object `{ taskFunction: (data?: Data) => Response | PromiseLike<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }`. Priority range is the same as Unix nice levels. `workerNodeKeys` restricts initial task dispatch to specific workers (worker node affinity).
 
 This method is available on both pool implementations and returns a boolean promise. See [Runtime task function changes](#runtime-task-function-changes).
 
@@ -203,7 +203,7 @@ An object with these properties:
 
 ### `class YourWorker extends ThreadWorker/ClusterWorker`
 
-`taskFunctions` (mandatory) The task function or task functions object `Record<string, (data?: Data) => Response | Promise<Response> | { taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }>` that you want to execute on the worker. Priority range is the same as Unix nice levels. `workerNodeKeys` restricts initial task dispatch to specific workers (worker node affinity). See [Worker Node Affinity Notes](#worker-node-affinity-notes) for affinity behavior.  
+`taskFunctions` (mandatory) The task function or task functions object `Record<string, (data?: Data) => Response | PromiseLike<Response> | { taskFunction: (data?: Data) => Response | PromiseLike<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }>` that you want to execute on the worker. Priority range is the same as Unix nice levels. `workerNodeKeys` restricts initial task dispatch to specific workers (worker node affinity). See [Worker Node Affinity Notes](#worker-node-affinity-notes) for affinity behavior.  
 `opts` (optional) An object with these properties:
 
 - `killBehavior` (optional) - Dictates if your worker will be deleted in case a task is active on it.  
@@ -230,7 +230,7 @@ This method is available on both worker implementations and returns `{ status: b
 #### `YourWorker.addTaskFunction(name, fn)`
 
 `name` (mandatory) The task function name.  
-`fn` (mandatory) The task function `(data?: Data) => Response | Promise<Response>` or task function object `{ taskFunction: (data?: Data) => Response | Promise<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }`. Priority range is the same as Unix nice levels. `workerNodeKeys` restricts initial task dispatch to specific workers (worker node affinity). See [Worker Node Affinity Notes](#worker-node-affinity-notes) for affinity behavior.
+`fn` (mandatory) The task function `(data?: Data) => Response | PromiseLike<Response>` or task function object `{ taskFunction: (data?: Data) => Response | PromiseLike<Response>, priority?: number, strategy?: WorkerChoiceStrategy, workerNodeKeys?: number[] }`. Priority range is the same as Unix nice levels. `workerNodeKeys` restricts initial task dispatch to specific workers (worker node affinity). See [Worker Node Affinity Notes](#worker-node-affinity-notes) for affinity behavior.
 
 This method is available on both worker implementations and returns `{ status: boolean, error?: Error }`.
 
