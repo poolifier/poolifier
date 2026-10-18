@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process'
-import { once } from 'node:events'
+import { getEventListeners, once } from 'node:events'
 import { promisify } from 'node:util'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -15,6 +15,20 @@ import { bounded, waitForMessage } from '../test-utils.cjs'
 const release = gate => {
   Atomics.store(new Int32Array(gate), 0, 1)
   Atomics.notify(new Int32Array(gate), 0)
+}
+
+const deferWorkerMessagesUntilExit = workerNode => {
+  const port = workerNode.messageChannel.port1
+  const listeners = getEventListeners(port, 'message')
+  for (const listener of listeners) port.off('message', listener)
+  let restored = false
+  const restore = () => {
+    if (restored) return
+    restored = true
+    for (const listener of listeners) port.on('message', listener)
+  }
+  workerNode.worker.prependOnceListener('exit', restore)
+  return restore
 }
 
 class WrappedThreadPool extends FixedThreadPool {
@@ -964,6 +978,134 @@ describe('Runtime task function replay', () => {
       }
     }
   )
+
+  it.each(['add', 'remove', 'default'])(
+    'preserves a buffered %s operation result after worker exit',
+    async operation => {
+      let created = 0
+      const pool = new WrappedThreadPool(
+        1,
+        './tests/worker-files/thread/taskLifecycleWorker.mjs',
+        {
+          workerOptions: {
+            get workerData () {
+              return created++ === 0
+                ? { exitAfterTaskFunctionOperation: operation }
+                : {}
+            },
+          },
+        }
+      )
+      const errors = []
+      pool.emitter.on(PoolEvents.error, error => errors.push(error))
+      let original
+      let change
+      let restore
+      try {
+        await bounded(once(pool.emitter, PoolEvents.ready))
+        if (operation !== 'add') {
+          await bounded(pool.addTaskFunction('runtime', () => 42))
+        }
+        original = pool.workerNodes[0]
+        const exit = once(original.worker, 'exit')
+        change = (
+          operation === 'add'
+            ? pool.addTaskFunction('runtime', () => 42)
+            : operation === 'remove'
+              ? pool.removeTaskFunction('runtime')
+              : pool.setDefaultTaskFunction('runtime')
+        ).then(
+          value => ({ value }),
+          error => ({ error })
+        )
+        await Promise.resolve()
+        restore = deferWorkerMessagesUntilExit(original)
+        expect(await bounded(change)).toEqual({ value: true })
+        await bounded(exit)
+        await vi.waitFor(() => {
+          expect(pool.workerNodes[0]).not.toBe(original)
+          expect(pool.workerNodes[0].info.ready).toBe(true)
+        })
+        if (operation === 'remove') {
+          const result = await bounded(
+            pool.execute({}, 'runtime').then(
+              value => ({ value }),
+              error => ({ error })
+            )
+          )
+          expect(result).toEqual({ error: expect.any(Error) })
+        } else {
+          expect(
+            await bounded(
+              pool.execute({}, operation === 'default' ? undefined : 'runtime')
+            )
+          ).toBe(42)
+        }
+        expect(errors).toEqual([])
+      } finally {
+        restore?.()
+        await bounded(pool.destroy())
+        await bounded(Promise.allSettled([change]))
+        original?.messageChannel?.port1.close()
+        original?.messageChannel?.port2.close()
+      }
+    }
+  )
+
+  it('rejects a buffered operation failure when its worker exits before a peer succeeds', async () => {
+    let created = 0
+    const pool = new FixedThreadPool(
+      2,
+      './tests/worker-files/thread/taskLifecycleWorker.mjs',
+      {
+        workerOptions: {
+          get workerData () {
+            return created++ === 0
+              ? { exitAfterTaskFunctionOperation: 'remove' }
+              : {}
+          },
+        },
+      }
+    )
+    const errors = []
+    pool.emitter.on(PoolEvents.error, error => errors.push(error))
+    let original
+    let change
+    let restore
+    try {
+      await bounded(once(pool.emitter, PoolEvents.ready))
+      await bounded(pool.addTaskFunction('runtime', () => 42))
+      await bounded(
+        pool.sendTaskFunctionOperationToWorker(0, {
+          taskFunctionOperation: 'default',
+          taskFunctionProperties: { name: 'runtime' },
+        })
+      )
+      original = pool.workerNodes[0]
+      const exit = once(original.worker, 'exit')
+      change = pool.removeTaskFunction('runtime').then(
+        value => ({ value }),
+        error => ({ error })
+      )
+      await Promise.resolve()
+      restore = deferWorkerMessagesUntilExit(original)
+      expect(await bounded(change)).toEqual({ error: expect.any(Error) })
+      await bounded(exit)
+      await vi.waitFor(() => {
+        expect(pool.workerNodes.every(node => node.info.ready)).toBe(true)
+      })
+      expect(await bounded(pool.execute({ usable: true }, 'echo'))).toEqual({
+        usable: true,
+      })
+      expect(errors).toEqual([])
+    } finally {
+      restore?.()
+      await bounded(pool.destroy())
+      await bounded(Promise.allSettled([change]))
+      original?.messageChannel?.port1.close()
+      original?.messageChannel?.port2.close()
+    }
+  })
 
   it.each(['add', 'remove', 'default'])(
     'releases replacement bootstrap after a target exits without an ACK (%s)',

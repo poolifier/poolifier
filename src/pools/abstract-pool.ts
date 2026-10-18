@@ -1243,17 +1243,17 @@ export abstract class AbstractPool<
     workerNode.registerOnceWorkerEventHandler('exit', (exitCode: number) => {
       const taskDequeuingEventsDeferred = this.taskDequeuingEventsDeferred
       try {
+        const settlingTasks =
+          workerError != null || !this.terminatingWorkerNodes.has(workerNode)
+        if (settlingTasks) {
+          taskResponses = this.captureTaskResponses(workerNode, taskResponses)
+        }
         const operationExitListeners =
           this.workerTaskFunctionOperationExitListeners.get(workerNode)
         if (operationExitListeners != null) {
           this.workerTaskFunctionOperationExitListeners.delete(workerNode)
           // Settle in dispatch order before removal or fallible replacement setup.
           for (const listener of operationExitListeners) listener()
-        }
-        const settlingTasks =
-          workerError != null || !this.terminatingWorkerNodes.has(workerNode)
-        if (settlingTasks) {
-          taskResponses = this.captureTaskResponses(workerNode, taskResponses)
         }
         workerNode.info.ready = false
         let workerNodeTasks:
@@ -1629,6 +1629,8 @@ export abstract class AbstractPool<
       if (message.taskId != null) {
         this.checkMessageWorkerId(message)
         ;(taskResponses ??= []).push(message)
+      } else if (message.taskFunctionOperationStatus != null) {
+        workerNode.messageChannel.port1.emit('message', message)
       }
     }
     return taskResponses

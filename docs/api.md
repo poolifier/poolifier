@@ -132,7 +132,7 @@ With no workers, this method resolves to `true` without changing the default sel
 
 Pool-wide calls to `addTaskFunction()`, `removeTaskFunction()` and `setDefaultTaskFunction()` run in call order. A failed call does not block later calls or undo changes already applied to workers.
 
-If workers are present when a change starts, each must respond or exit before the call settles. At least one successful result is required; any reported failure rejects the change.
+If workers are present when a change starts, each must respond or exit before the call settles. At least one successful result is required; any reported failure rejects the change. Thread pools preserve operation results sent before an unexpected worker exit.
 
 New and replacement workers wait for ongoing task function changes. They accept tasks only after restoring successfully registered task functions, the selected default and scheduling options. Workers being terminated remain unavailable.
 

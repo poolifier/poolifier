@@ -56,6 +56,14 @@ class TaskLifecycleWorker extends ThreadWorker {
       send(message)
       if (
         message.taskFunctionOperationStatus != null &&
+        message.taskFunctionOperation ===
+          workerData?.exitAfterTaskFunctionOperation
+      ) {
+        // eslint-disable-next-line n/no-process-exit
+        process.exit(0)
+      }
+      if (
+        message.taskFunctionOperationStatus != null &&
         workerData?.duplicateAckGate != null &&
         !duplicateScheduled
       ) {
