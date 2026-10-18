@@ -3314,8 +3314,38 @@ export abstract class AbstractPool<
       while (this.workerTaskFunctionBootstraps.size > 0) {
         if (waitMode === 'first') {
           const promises: Promise<void>[] = []
-          for (const bootstrap of this.workerTaskFunctionBootstraps.values()) {
-            if (bootstrap.promise != null) promises.push(bootstrap.promise)
+          for (const [workerNode, bootstrap] of this
+            .workerTaskFunctionBootstraps) {
+            if (bootstrap.promise != null) {
+              promises.push(
+                bootstrap.promise.catch((error: unknown) => {
+                  const workerNodeKey = this.workerNodes.indexOf(workerNode)
+                  if (workerNodeKey === -1) return
+                  const taskFunctionsProperties =
+                    this.listTaskFunctionsProperties()
+                  const taskFunctionName =
+                    name == null || name === DEFAULT_TASK_NAME
+                      ? (this.defaultTaskFunctionName ??
+                        taskFunctionsProperties[1]?.name)
+                      : name
+                  const registration = this.taskFunctions.get(taskFunctionName)
+                  const workerNodeKeys =
+                    registration != null
+                      ? registration.taskFunctionProperties.workerNodeKeys
+                      : this.getTaskFunctionWorkerNodeKeys(
+                        taskFunctionName,
+                        taskFunctionsProperties
+                      )
+                  // Ineligible failures still wake selection without rejecting the task.
+                  if (
+                    workerNodeKeys == null ||
+                    workerNodeKeys.includes(workerNodeKey)
+                  ) {
+                    throw error
+                  }
+                })
+              )
+            }
           }
           if (promises.length === 0) return
           if (abortPromise != null) promises.push(abortPromise)

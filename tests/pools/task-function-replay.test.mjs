@@ -293,6 +293,135 @@ describe('Runtime task function replay', () => {
     }
   })
 
+  it.each([
+    ['worker-defined', 1],
+    ['runtime', 1],
+    ['default', 1],
+    ['worker-defined', 0],
+    ['unrestricted', 1],
+  ])(
+    'scopes replay failures for %s submissions when worker %i fails',
+    async (kind, failedWorkerNodeKey) => {
+      const replayGates = Array.from(
+        { length: kind === 'default' ? 4 : 2 },
+        () => new SharedArrayBuffer(4)
+      )
+      const replayCounter = new SharedArrayBuffer(4)
+      const decisionCounter = new SharedArrayBuffer(4)
+      const taskGate = new SharedArrayBuffer(4)
+      release(taskGate)
+      const blocked = new Map()
+      const allBlocked = Promise.withResolvers()
+      const failed = Promise.withResolvers()
+      const pool = new FixedThreadPool(
+        2,
+        './tests/worker-files/thread/taskLifecycleWorker.mjs',
+        {
+          messageHandler: message => {
+            if (message.replayBlocked) {
+              blocked.set(message.workerId, message.replayGeneration)
+              if (blocked.size === 2) allBlocked.resolve()
+            }
+          },
+          startWorkers: false,
+          workerOptions: {
+            workerData: {
+              asyncReplay: true,
+              blockWorkerKeys: [kind === 'default' ? 1 : 0],
+              decisionCounter,
+              replayCounter,
+              replayGates,
+            },
+          },
+        }
+      )
+      const errors = []
+      pool.emitter.on(PoolEvents.error, error => {
+        errors.push(error)
+        failed.resolve(error)
+      })
+      let execution
+      try {
+        const runtime = () => 42
+        // Only the first released worker fails source evaluation.
+        runtime.toString = () =>
+          '(Atomics.add(new Int32Array(process.getBuiltinModule("node:worker_threads").workerData.decisionCounter), 0, 1) === 0 ? null : (() => 42))'
+        const registration = {
+          taskFunction: runtime,
+          ...((kind === 'runtime' || kind === 'default') && {
+            workerNodeKeys: [0],
+          }),
+        }
+        if (kind === 'default') {
+          replayGates.slice(0, 2).forEach(release)
+          Atomics.store(new Int32Array(decisionCounter), 0, 2)
+          const ready = once(pool.emitter, PoolEvents.ready)
+          pool.start()
+          await bounded(ready)
+          await bounded(pool.addTaskFunction('runtime', registration))
+          await bounded(pool.setDefaultTaskFunction('runtime'))
+          await bounded(pool.destroy())
+          Atomics.store(new Int32Array(decisionCounter), 0, 0)
+        } else {
+          await bounded(
+            pool.addTaskFunction(
+              kind === 'unrestricted' ? 'block' : 'runtime',
+              registration
+            )
+          )
+        }
+        pool.start()
+        const nodes = [...pool.workerNodes]
+        await bounded(
+          Promise.all([
+            allBlocked.promise,
+            ...nodes.map(node =>
+              waitForMessage(
+                node.messageChannel.port1,
+                message => message.ready != null
+              )
+            ),
+          ])
+        )
+        const failedNode = nodes[failedWorkerNodeKey]
+        const healthyNode = nodes[1 - failedWorkerNodeKey]
+        const healthyBootstrap =
+          pool.workerTaskFunctionBootstraps.get(healthyNode).promise
+        const name =
+          kind === 'default'
+            ? undefined
+            : kind === 'runtime'
+              ? 'runtime'
+              : 'block'
+        execution = pool.execute({ gate: taskGate }, name).then(
+          value => ({ value }),
+          error => ({ error })
+        )
+        release(replayGates[blocked.get(failedNode.info.id)])
+        const error = await bounded(failed.promise)
+        expect(error).toBeInstanceOf(Error)
+        expect(failedNode.worker.threadId).toBeGreaterThan(0)
+        expect(failedNode.info.ready).toBe(false)
+        release(replayGates[blocked.get(healthyNode.info.id)])
+        await bounded(healthyBootstrap)
+        const result = await bounded(execution)
+        if (failedWorkerNodeKey === 0 || kind === 'unrestricted') {
+          expect(result.error).toBe(error)
+        } else {
+          expect(result).toStrictEqual({
+            value: kind === 'worker-defined' ? 'released' : 42,
+          })
+        }
+        expect(errors).toEqual([error])
+        expect(failedNode.info.ready).toBe(false)
+      } finally {
+        replayGates.forEach(release)
+        await bounded(Promise.allSettled([execution]))
+        await bounded(pool.destroy())
+      }
+    }
+  )
+
   it('propagates replay failure from a worker that is still alive', async () => {
     const pool = new FixedThreadPool(
       1,

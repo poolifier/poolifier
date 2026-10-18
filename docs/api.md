@@ -106,7 +106,7 @@ The function's source and options, including `workerNodeKeys`, are captured at c
 - Worker node keys are validated at registration time against the pool's maximum size (`maximumNumberOfWorkers ?? minimumNumberOfWorkers`).
 - The number of worker node keys cannot exceed the pool's maximum size (`maximumNumberOfWorkers ?? minimumNumberOfWorkers`).
 - In dynamic pools, you can reference worker node keys up to the maximum pool size. Workers that don't exist yet are automatically created when a task targeting them is executed.
-- At execution time, if no specified worker is ready, selection retries until one becomes available or retries are exhausted.
+- At execution time, if no specified worker is ready, selection retries until one becomes available or retries are exhausted. Initialization failures on ineligible workers do not reject waiting tasks.
 - Task stealing on idle or under back pressure ignores worker node affinity.
 - With task queues enabled, disable both `taskStealing` and `tasksStealingOnBackPressure` for strict worker node affinity. Both are enabled by default.
 
