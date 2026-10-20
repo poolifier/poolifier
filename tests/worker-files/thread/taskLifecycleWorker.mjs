@@ -33,12 +33,8 @@ class TaskLifecycleWorker extends ThreadWorker {
         message.taskFunctionOperationStatus != null &&
         workerData?.legacyTaskFunctionMessages === true
       ) {
-        message = {
-          taskFunctionOperation: message.taskFunctionOperation,
-          taskFunctionOperationStatus: message.taskFunctionOperationStatus,
-          taskFunctionProperties: message.taskFunctionProperties,
-          workerError: message.workerError,
-        }
+        message = { ...message }
+        delete message.taskFunctionOperationId
       }
       if (
         !statusOnlySent &&

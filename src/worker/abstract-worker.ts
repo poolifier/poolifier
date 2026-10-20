@@ -100,6 +100,11 @@ export abstract class AbstractWorker<
    */
   protected taskFunctions!: Map<string, TaskFunctionObject<Data, Response>>
 
+  /**
+   * The base removal result that confirms absence for the current operation.
+   */
+  private missingTaskFunctionRemoval?: TaskFunctionOperationResult
+
   private readonly taskFunctionOperationIds = new WeakMap<
     TaskFunctionProperties,
     UUID
@@ -238,7 +243,9 @@ export abstract class AbstractWorker<
       }
       const deleteStatus = this.taskFunctions.delete(name)
       this.sendTaskFunctionsPropertiesToMainWorker()
-      return { status: deleteStatus }
+      const response = { status: deleteStatus }
+      if (!deleteStatus) this.missingTaskFunctionRemoval = response
+      return response
     } catch (error) {
       return { error: error as Error, status: false }
     }
@@ -370,6 +377,7 @@ export abstract class AbstractWorker<
         'Cannot handle task function operation message without task function properties'
       )
     }
+    let taskFunctionOperationNotFound = false
     let response: TaskFunctionOperationResult
     switch (taskFunctionOperation) {
       case 'add':
@@ -398,7 +406,16 @@ export abstract class AbstractWorker<
         response = this.setDefaultTaskFunction(taskFunctionProperties.name)
         break
       case 'remove':
-        response = this.removeTaskFunction(taskFunctionProperties.name)
+        this.missingTaskFunctionRemoval = undefined
+        try {
+          response = this.removeTaskFunction(taskFunctionProperties.name)
+          taskFunctionOperationNotFound =
+            !response.status &&
+            response.error == null &&
+            Object.is(response, this.missingTaskFunctionRemoval)
+        } finally {
+          this.missingTaskFunctionRemoval = undefined
+        }
         break
       default:
         response = {
@@ -416,6 +433,7 @@ export abstract class AbstractWorker<
       taskFunctionOperationId: this.getTaskFunctionOperationId(message),
       taskFunctionOperationStatus: status,
       taskFunctionProperties,
+      ...(taskFunctionOperationNotFound && { taskFunctionOperationNotFound }),
       ...(!status &&
         error != null && {
         workerError: {
