@@ -337,6 +337,40 @@ describe.each([
     }
   })
 
+  it('rejects absence results for a different task function', async () => {
+    const pool = new FixedPool(1, workerFile, { startWorkers: false })
+    const errors = []
+    pool.emitter.on(PoolEvents.error, error => errors.push(error))
+    try {
+      const invalid = () => 'invalid'
+      invalid.toString = () => 'null'
+      await bounded(pool.addTaskFunction('kept', () => 42))
+      await bounded(pool.addTaskFunction('broken', invalid))
+      const failed = once(pool.emitter, PoolEvents.error)
+      pool.start()
+      const node = pool.workerNodes[0]
+      await bounded(failed)
+      await control(node, {
+        control: 'refuseRemoval',
+        name: 'kept',
+        prerequisite: 'missingPrerequisite',
+      })
+      await expect(bounded(pool.removeTaskFunction('kept'))).rejects.toThrow(
+        Error
+      )
+      expect(node.info.ready).toBe(false)
+      expect(await bounded(pool.removeTaskFunction('broken'))).toBe(true)
+      expect(pool.workerNodes[0]).toBe(node)
+      expect(await bounded(pool.execute({}, 'kept'))).toBe(42)
+      await bounded(pool.destroy())
+      pool.start()
+      expect(await bounded(pool.execute({}, 'kept'))).toBe(42)
+      expect(errors).toEqual([expect.any(Error)])
+    } finally {
+      if (pool.info.started) await bounded(pool.destroy())
+    }
+  })
+
   it('preserves missing-registration failures on ready workers', async () => {
     const pool = new FixedPool(1, workerFile)
     try {

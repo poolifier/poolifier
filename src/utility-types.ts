@@ -50,7 +50,7 @@ export interface MessageValue<Data = unknown, ErrorData = unknown>
    */
   readonly taskFunctionOperationId?: UUID
   /**
-   * Whether removal confirmed that the task function was absent.
+   * Whether removal confirmed that the requested task function was absent.
    */
   readonly taskFunctionOperationNotFound?: boolean
   /**

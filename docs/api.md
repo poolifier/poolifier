@@ -116,7 +116,7 @@ The function's source and options, including `workerNodeKeys`, are captured at c
 
 This method is available on both pool implementations and returns a boolean promise. See [Runtime task function changes](#runtime-task-function-changes).
 
-For workers whose initialization failed, confirmed absence also counts as successful removal. Other removal errors still reject the call.
+For workers whose initialization failed, confirmed absence of the requested function also counts as successful removal. Other removal errors still reject the call.
 
 ### `pool.listTaskFunctionsProperties()`
 

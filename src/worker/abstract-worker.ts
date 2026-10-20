@@ -101,9 +101,10 @@ export abstract class AbstractWorker<
   protected taskFunctions!: Map<string, TaskFunctionObject<Data, Response>>
 
   /**
-   * The base removal result that confirms absence for the current operation.
+   * The base removal result and name that confirm absence for the current operation.
    */
   private missingTaskFunctionRemoval?: TaskFunctionOperationResult
+  private missingTaskFunctionRemovalName?: string
 
   private readonly taskFunctionOperationIds = new WeakMap<
     TaskFunctionProperties,
@@ -244,7 +245,10 @@ export abstract class AbstractWorker<
       const deleteStatus = this.taskFunctions.delete(name)
       this.sendTaskFunctionsPropertiesToMainWorker()
       const response = { status: deleteStatus }
-      if (!deleteStatus) this.missingTaskFunctionRemoval = response
+      if (!deleteStatus) {
+        this.missingTaskFunctionRemoval = response
+        this.missingTaskFunctionRemovalName = name
+      }
       return response
     } catch (error) {
       return { error: error as Error, status: false }
@@ -407,14 +411,18 @@ export abstract class AbstractWorker<
         break
       case 'remove':
         this.missingTaskFunctionRemoval = undefined
+        this.missingTaskFunctionRemovalName = undefined
         try {
-          response = this.removeTaskFunction(taskFunctionProperties.name)
+          const name = taskFunctionProperties.name
+          response = this.removeTaskFunction(name)
           taskFunctionOperationNotFound =
             !response.status &&
             response.error == null &&
-            Object.is(response, this.missingTaskFunctionRemoval)
+            Object.is(response, this.missingTaskFunctionRemoval) &&
+            Object.is(name, this.missingTaskFunctionRemovalName)
         } finally {
           this.missingTaskFunctionRemoval = undefined
+          this.missingTaskFunctionRemovalName = undefined
         }
         break
       default:

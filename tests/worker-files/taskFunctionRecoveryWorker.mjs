@@ -24,8 +24,9 @@ class TaskFunctionRecoveryWorker extends Worker {
         if (pending != null) super.handleTaskFunctionOperationMessage(pending)
       } else if (message.control === 'refuseRemoval') {
         this.refusedRemoval = message.name
+        this.refusedRemovalPrerequisite = message.prerequisite
         this.refusedRemovalResult =
-          message.name == null
+          message.name == null || message.prerequisite != null
             ? undefined
             : super.removeTaskFunction(message.name)
       } else {
@@ -53,7 +54,9 @@ class TaskFunctionRecoveryWorker extends Worker {
 
   removeTaskFunction (name) {
     if (this.refusedRemoval != null && name === this.refusedRemoval) {
-      return this.refusedRemovalResult
+      return this.refusedRemovalPrerequisite == null
+        ? this.refusedRemovalResult
+        : super.removeTaskFunction(this.refusedRemovalPrerequisite)
     }
     return super.removeTaskFunction(name)
   }
