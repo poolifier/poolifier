@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.0.2](https://github.com/poolifier/poolifier/compare/v6.0.1...v6.0.2) (2026-10-20)
+
+
+### 🐞 Bug Fixes
+
+* recover runtime task function operations ([#3369](https://github.com/poolifier/poolifier/issues/3369)) ([b45bb9a](https://github.com/poolifier/poolifier/commit/b45bb9adb4115b1970e17f5b0438ec292cf9e645))
+* remove failed bootstrap registrations ([#3371](https://github.com/poolifier/poolifier/issues/3371)) ([1ce0d75](https://github.com/poolifier/poolifier/commit/1ce0d759b6b6726fff1432ddd171fda414727f9a))
+
+
+### 📚 Documentation
+
+* publish documentation ([0104449](https://github.com/poolifier/poolifier/commit/0104449a0a01f252dc9bec8f36164134f3bbe89f))
+
 ## [6.0.1](https://github.com/poolifier/poolifier/compare/v6.0.0...v6.0.1) (2026-10-18)
 
 
