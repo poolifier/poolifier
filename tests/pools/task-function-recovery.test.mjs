@@ -158,6 +158,240 @@ describe.each([
     }
   })
 
+  it.each([false, true])(
+    'discards failed registrations with reconstructed requests: %s',
+    async legacy => {
+      const pool = new FixedPool(
+        1,
+        legacy
+          ? workerType === 'thread'
+            ? './tests/worker-files/thread/taskLifecycleWorker.mjs'
+            : './tests/worker-files/cluster/legacyTaskFunctionWorker.mjs'
+          : workerFile,
+        {
+          startWorkers: false,
+          ...(legacy &&
+            workerType === 'thread' && {
+            workerOptions: {
+              workerData: { legacyTaskFunctionMessages: true },
+            },
+          }),
+        }
+      )
+      const errors = []
+      pool.emitter.on(PoolEvents.error, error => errors.push(error))
+      try {
+        const invalid = () => 'invalid'
+        invalid.toString = () => 'null'
+        await bounded(pool.addTaskFunction('bad', invalid))
+        await bounded(pool.addTaskFunction('later', data => data + 2))
+        const failed = once(pool.emitter, PoolEvents.error)
+        pool.start()
+        const node = pool.workerNodes[0]
+        await bounded(failed)
+        expect(await bounded(pool.removeTaskFunction('bad'))).toBe(true)
+        expect(pool.workerNodes[0]).toBe(node)
+        expect(node.info.ready).toBe(true)
+        expect(await bounded(pool.execute(40, 'later'))).toBe(42)
+        await expect(bounded(pool.execute({}, 'bad'))).rejects.toThrow(Error)
+        await bounded(pool.destroy())
+        pool.start()
+        expect(await bounded(pool.execute(40, 'later'))).toBe(42)
+        expect(pool.hasTaskFunction('bad')).toBe(false)
+        expect(errors).toEqual([expect.any(Error)])
+      } finally {
+        if (pool.info.started) await bounded(pool.destroy())
+      }
+    }
+  )
+
+  it('removes a registration from mixed ready and failed workers', async () => {
+    const pool = new FixedPool(2, workerFile, {
+      startWorkers: false,
+      workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
+    })
+    const errors = []
+    pool.emitter.on(PoolEvents.error, error => errors.push(error))
+    try {
+      await bounded(pool.addTaskFunction('bad', data => data))
+      await bounded(pool.addTaskFunction('later', identify))
+      const send = pool.sendToWorker.bind(pool)
+      let injected = false
+      pool.sendToWorker = (key, message) => {
+        if (
+          !injected &&
+          key === 0 &&
+          message.taskFunctionOperation === 'add' &&
+          message.taskFunctionProperties.name === 'bad'
+        ) {
+          injected = true
+          message = {
+            ...message,
+            taskFunctionProperties: {
+              ...message.taskFunctionProperties,
+              priority: 1000,
+            },
+          }
+        }
+        send(key, message)
+      }
+      const failed = once(pool.emitter, PoolEvents.error)
+      pool.start()
+      const nodes = [...pool.workerNodes]
+      await bounded(failed)
+      expect(await bounded(pool.removeTaskFunction('bad'))).toBe(true)
+      const results = []
+      for (let i = 0; i < 2; ++i) {
+        results.push(await bounded(pool.execute({ restored: true }, 'later')))
+      }
+      expect(new Set(results.map(result => result.workerId))).toEqual(
+        new Set(nodes.map(node => node.info.id))
+      )
+      expect(results.every(result => result.restored)).toBe(true)
+      expect(pool.workerNodes).toEqual(nodes)
+      await expect(bounded(pool.execute({}, 'bad'))).rejects.toThrow(Error)
+      expect(errors).toEqual([expect.any(Error)])
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
+  it('discards skipped registrations without losing repeated recovery failures', async () => {
+    const pool = new FixedPool(1, workerFile, { startWorkers: false })
+    const errors = []
+    pool.emitter.on(PoolEvents.error, error => errors.push(error))
+    try {
+      const invalid = () => 'invalid'
+      invalid.toString = () => 'null'
+      await bounded(pool.addTaskFunction('bad', invalid))
+      await bounded(pool.addTaskFunction('discard', () => 'discard'))
+      await bounded(pool.addTaskFunction('later', () => 'later'))
+      let failed = once(pool.emitter, PoolEvents.error)
+      pool.start()
+      const node = pool.workerNodes[0]
+      await bounded(failed)
+      failed = once(pool.emitter, PoolEvents.error)
+      expect(await bounded(pool.removeTaskFunction('discard'))).toBe(true)
+      await bounded(failed)
+      expect(node.info.ready).toBe(false)
+      expect(await bounded(pool.removeTaskFunction('bad'))).toBe(true)
+      expect(pool.workerNodes[0]).toBe(node)
+      expect(await bounded(pool.execute({}, 'later'))).toBe('later')
+      await expect(bounded(pool.execute({}, 'discard'))).rejects.toThrow(Error)
+      expect(errors).toEqual([expect.any(Error), expect.any(Error)])
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
+  it('preserves selected-default removal errors on a failed worker', async () => {
+    const pool = new FixedPool(1, workerFile, { startWorkers: false })
+    const errors = []
+    pool.emitter.on(PoolEvents.error, error => errors.push(error))
+    try {
+      const invalid = () => 'invalid'
+      invalid.toString = () => 'null'
+      await bounded(pool.addTaskFunction('bad', invalid))
+      await bounded(pool.addTaskFunction('echo', data => data))
+      const failed = once(pool.emitter, PoolEvents.error)
+      pool.start()
+      const node = pool.workerNodes[0]
+      await bounded(failed)
+      await expect(bounded(pool.removeTaskFunction('echo'))).rejects.toThrow(
+        Error
+      )
+      expect(node.info.ready).toBe(false)
+      expect(await bounded(pool.removeTaskFunction('bad'))).toBe(true)
+      expect(pool.workerNodes[0]).toBe(node)
+      expect(await bounded(pool.execute(42))).toBe(42)
+      expect(errors).toEqual([expect.any(Error)])
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
+  it('preserves custom errorless removal refusals after failed replay', async () => {
+    const pool = new FixedPool(1, workerFile, { startWorkers: false })
+    const errors = []
+    pool.emitter.on(PoolEvents.error, error => errors.push(error))
+    try {
+      const invalid = () => 'invalid'
+      invalid.toString = () => 'null'
+      await bounded(pool.addTaskFunction('bad', invalid))
+      const failed = once(pool.emitter, PoolEvents.error)
+      pool.start()
+      const node = pool.workerNodes[0]
+      await bounded(failed)
+      await control(node, { control: 'refuseRemoval', name: 'bad' })
+      await expect(bounded(pool.removeTaskFunction('bad'))).rejects.toThrow(
+        Error
+      )
+      expect(node.info.ready).toBe(false)
+      await control(node, { control: 'refuseRemoval' })
+      expect(await bounded(pool.removeTaskFunction('bad'))).toBe(true)
+      expect(pool.workerNodes[0]).toBe(node)
+      expect(await bounded(pool.execute(42))).toBe(42)
+      expect(errors).toEqual([expect.any(Error)])
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
+  it('rejects absence results for a different task function', async () => {
+    const pool = new FixedPool(1, workerFile, { startWorkers: false })
+    const errors = []
+    pool.emitter.on(PoolEvents.error, error => errors.push(error))
+    try {
+      const invalid = () => 'invalid'
+      invalid.toString = () => 'null'
+      await bounded(pool.addTaskFunction('kept', () => 42))
+      await bounded(pool.addTaskFunction('broken', invalid))
+      const failed = once(pool.emitter, PoolEvents.error)
+      pool.start()
+      const node = pool.workerNodes[0]
+      await bounded(failed)
+      await control(node, {
+        control: 'refuseRemoval',
+        name: 'kept',
+        prerequisite: 'missingPrerequisite',
+      })
+      await expect(bounded(pool.removeTaskFunction('kept'))).rejects.toThrow(
+        Error
+      )
+      expect(node.info.ready).toBe(false)
+      expect(await bounded(pool.removeTaskFunction('broken'))).toBe(true)
+      expect(pool.workerNodes[0]).toBe(node)
+      expect(await bounded(pool.execute({}, 'kept'))).toBe(42)
+      await bounded(pool.destroy())
+      pool.start()
+      expect(await bounded(pool.execute({}, 'kept'))).toBe(42)
+      expect(errors).toEqual([expect.any(Error)])
+    } finally {
+      if (pool.info.started) await bounded(pool.destroy())
+    }
+  })
+
+  it('preserves missing-registration failures on ready workers', async () => {
+    const pool = new FixedPool(1, workerFile)
+    try {
+      await bounded(once(pool.emitter, PoolEvents.ready))
+      await bounded(pool.addTaskFunction('bad', data => data))
+      await bounded(
+        pool.addTaskFunction('removeLocal', function () {
+          return this.removeTaskFunction('bad').status
+        })
+      )
+      expect(await bounded(pool.execute({}, 'removeLocal'))).toBe(true)
+      await expect(bounded(pool.removeTaskFunction('bad'))).rejects.toThrow(
+        Error
+      )
+      expect(await bounded(pool.addTaskFunction('bad', () => 43))).toBe(true)
+      expect(await bounded(pool.execute({}, 'bad'))).toBe(43)
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
   it.each([
     ['acknowledgement', 2],
     ['failure', 2],

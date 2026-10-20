@@ -3065,6 +3065,7 @@ export abstract class AbstractPool<
     if (this.workerNodes.length === 0) {
       return true
     }
+    const { taskFunctionOperation } = message
     const taskFunctionOperationId = randomUUID()
     const responsesReceived = new Map<
       number | undefined,
@@ -3122,7 +3123,19 @@ export abstract class AbstractPool<
           protocolError ??= this.getTaskFunctionOperationAcknowledgementError(
             message.workerId
           )
-        } else if (!message.taskFunctionOperationStatus) {
+        } else if (
+          !message.taskFunctionOperationStatus &&
+          !(
+            taskFunctionOperation === 'remove' &&
+            message.taskFunctionOperationNotFound === true &&
+            message.workerError == null &&
+            this.failedWorkerTaskFunctionBootstraps.has(
+              this.workerNodes[
+                this.getWorkerNodeKeyByWorkerId(message.workerId)
+              ]
+            )
+          )
+        ) {
           errorResponse ??= message
         }
         complete()

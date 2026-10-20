@@ -22,6 +22,13 @@ class TaskFunctionRecoveryWorker extends Worker {
         const pending = this.pendingOperation
         this.pendingOperation = undefined
         if (pending != null) super.handleTaskFunctionOperationMessage(pending)
+      } else if (message.control === 'refuseRemoval') {
+        this.refusedRemoval = message.name
+        this.refusedRemovalPrerequisite = message.prerequisite
+        this.refusedRemovalResult =
+          message.name == null || message.prerequisite != null
+            ? undefined
+            : super.removeTaskFunction(message.name)
       } else {
         return
       }
@@ -43,6 +50,15 @@ class TaskFunctionRecoveryWorker extends Worker {
       return
     }
     super.handleTaskFunctionOperationMessage(message)
+  }
+
+  removeTaskFunction (name) {
+    if (this.refusedRemoval != null && name === this.refusedRemoval) {
+      return this.refusedRemovalPrerequisite == null
+        ? this.refusedRemovalResult
+        : super.removeTaskFunction(this.refusedRemovalPrerequisite)
+    }
+    return super.removeTaskFunction(name)
   }
 }
 

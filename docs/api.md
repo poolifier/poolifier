@@ -116,6 +116,8 @@ The function's source and options, including `workerNodeKeys`, are captured at c
 
 This method is available on both pool implementations and returns a boolean promise. See [Runtime task function changes](#runtime-task-function-changes).
 
+For workers whose initialization failed, confirmed absence of the requested function also counts as successful removal. Other removal errors still reject the call.
+
 ### `pool.listTaskFunctionsProperties()`
 
 This method is available on both pool implementations and returns an array of the task function properties.
@@ -132,13 +134,13 @@ With no workers, this method resolves to `true` without changing the default sel
 
 Pool-wide calls to `addTaskFunction()`, `removeTaskFunction()` and `setDefaultTaskFunction()` run in call order. A rejected call does not prevent later calls or undo changes already applied to workers.
 
-Workers contacted by a change must respond or exit before the call settles, including when a later send fails. Send failures preserve the original error; otherwise, at least one successful response is required and any failed response rejects the change. Thread pools preserve operation results sent before an unexpected worker exit.
+Workers contacted by a change must respond or exit before the call settles, including when a later send fails. Send failures preserve the original error; otherwise, at least one accepted response is required and any other failed response rejects the change. Thread pools preserve operation results sent before an unexpected worker exit.
 
 New and replacement workers wait for ongoing task function changes. They accept tasks only after restoring successfully registered task functions, the selected default and scheduling options. Workers being terminated remain unavailable.
 
 Successful calls resolve only after a restoration attempt completes for workers whose initialization failed. If restoration fails again, the change still succeeds, the worker remains unavailable, and the pool emits `error` when events are enabled.
 
-Custom worker subclasses that defer task function operations must echo the request's `taskFunctionOperationId` in their acknowledgement, or retain the original `taskFunctionProperties` object when using the standard transport. An acknowledgement without a recoverable UUID rejects the operation. Pool-wide changes still wait for all contacted workers to respond or exit. Status-only overrides that discard this correlation must be updated.
+Custom worker subclasses that defer task function operations must echo the request's `taskFunctionOperationId` in their acknowledgement, or retain the original `taskFunctionProperties` object when using the standard transport. Preserve result metadata when forwarding acknowledgements. An acknowledgement without a recoverable UUID rejects the operation. Pool-wide changes still wait for all contacted workers to respond or exit. Status-only overrides that discard this correlation must be updated.
 
 ### Pool options
 
