@@ -130,7 +130,7 @@ With no workers, this method resolves to `true` without changing the default sel
 
 ### Runtime task function changes
 
-Pool-wide calls to `addTaskFunction()`, `removeTaskFunction()` and `setDefaultTaskFunction()` run in call order. A failed call does not block later calls or undo changes already applied to workers.
+Pool-wide calls to `addTaskFunction()`, `removeTaskFunction()` and `setDefaultTaskFunction()` run in call order. A rejected call does not prevent later calls or undo changes already applied to workers.
 
 Workers contacted by a change must respond or exit before the call settles, including when a later send fails. Send failures preserve the original error; otherwise, at least one successful response is required and any failed response rejects the change. Thread pools preserve operation results sent before an unexpected worker exit.
 
