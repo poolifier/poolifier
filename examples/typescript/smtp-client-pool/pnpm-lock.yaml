@@ -168,7 +168,7 @@ importers:
     dependencies:
       nodemailer:
         specifier: ^10.1.1
-        version: 10.1.2
+        version: 10.1.7
       poolifier:
         specifier: ^5.4.0
         version: 5.4.0
@@ -191,8 +191,8 @@ packages:
   '@types/nodemailer@8.0.2':
     resolution: {integrity: sha512-c7M5ox8p0nEOfbJ2E9Qcmt8/QCu/VzsiAhzBiZbvky2PhKZDHpKB3sQHBM5MEZNkCfBOaS6S9//AGPRTNB7IaA==}
 
-  nodemailer@10.1.2:
-    resolution: {integrity: sha512-rnQn9Rzh8RAwcp42MVsIvxbsv6YZ2a2/av+uyJ/LPU1+2QSlrRgFsWWZTKenyRUqkIl8urOI0c4+CEcmFdsvQw==}
+  nodemailer@10.1.7:
+    resolution: {integrity: sha512-OQa6FDln5fLttmqSbjDiRYvFDOFNrBqfiOwHPlEbURil3b+vPB1v8xpi+Sp46drzNDlsTnNsS502vthmz56r4w==}
     engines: {node: '>=20.0.0'}
 
   poolifier@5.4.0:
@@ -217,7 +217,7 @@ snapshots:
     dependencies:
       '@types/node': 24.19.2
 
-  nodemailer@10.1.2: {}
+  nodemailer@10.1.7: {}
 
   poolifier@5.4.0: {}
 
