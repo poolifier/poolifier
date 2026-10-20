@@ -158,10 +158,17 @@ describe.each([
     }
   })
 
-  it.each(['acknowledgement', 'failure', 'exit'])(
-    'keeps earlier sent mutations pending until their %s',
-    async completion => {
-      const pool = new FixedPool(2, workerFile, {
+  it.each([
+    ['acknowledgement', 2],
+    ['failure', 2],
+    ['exit', 2],
+    ['acknowledgement', 3],
+    ['failure', 3],
+    ['exit', 3],
+  ])(
+    'keeps earlier sent mutations pending until their %s with %i workers',
+    async (completion, size) => {
+      const pool = new FixedPool(size, workerFile, {
         workerChoiceStrategy: WorkerChoiceStrategies.ROUND_ROBIN,
       })
       const errors = []
@@ -173,6 +180,16 @@ describe.each([
       try {
         await bounded(once(pool.emitter, PoolEvents.ready))
         await bounded(pool.addTaskFunction('runtime', () => 'old'))
+        if (size === 3) {
+          await bounded(
+            pool.addTaskFunction('inspect', {
+              taskFunction: function () {
+                return this.hasTaskFunction('runtime').status
+              },
+              workerNodeKeys: [2],
+            })
+          )
+        }
         heldNode = pool.workerNodes[0]
         if (completion === 'failure') {
           await bounded(
@@ -213,6 +230,9 @@ describe.each([
         await bounded(held)
         expect(await bounded(pool.execute({}, 'runtime'))).toBe('old')
         expect(settled).toBe(false)
+        if (size === 3) {
+          expect(await bounded(pool.execute({}, 'inspect'))).toBe(true)
+        }
         if (completion === 'exit') {
           await bounded(heldNode.terminate())
         } else {
@@ -220,7 +240,7 @@ describe.each([
         }
         expect((await bounded(removal)).error).toBe(originalError)
         expect(await bounded(addition)).toEqual({ value: true })
-        for (let i = 0; i < 2; ++i) {
+        for (let i = 0; i < size; ++i) {
           expect(await bounded(pool.execute({}, 'runtime'))).toBe('new')
         }
         expect(errors).toEqual([])

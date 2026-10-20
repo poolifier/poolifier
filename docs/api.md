@@ -136,7 +136,7 @@ Workers contacted by a change must respond or exit before the call settles, incl
 
 New and replacement workers wait for ongoing task function changes. They accept tasks only after restoring successfully registered task functions, the selected default and scheduling options. Workers being terminated remain unavailable.
 
-Workers whose initialization failed retry restoration after the next successful task function change. If restoration fails again, the change still succeeds, the worker remains unavailable, and the pool emits `error` when events are enabled.
+Successful calls resolve only after a restoration attempt completes for workers whose initialization failed. If restoration fails again, the change still succeeds, the worker remains unavailable, and the pool emits `error` when events are enabled.
 
 Custom worker subclasses that defer task function operations must echo the request's `taskFunctionOperationId` in their acknowledgement, or retain the original `taskFunctionProperties` object when using the standard transport. An acknowledgement without a recoverable UUID rejects the operation. Pool-wide changes still wait for all contacted workers to respond or exit. Status-only overrides that discard this correlation must be updated.
 
