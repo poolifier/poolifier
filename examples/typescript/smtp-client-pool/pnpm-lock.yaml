@@ -167,7 +167,7 @@ importers:
   .:
     dependencies:
       nodemailer:
-        specifier: ^10.1.1
+        specifier: ^10.1.7
         version: 10.1.7
       poolifier:
         specifier: ^5.4.0
