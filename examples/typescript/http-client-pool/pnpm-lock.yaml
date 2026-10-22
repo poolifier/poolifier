@@ -173,8 +173,8 @@ importers:
         specifier: ^3.3.2
         version: 3.3.2
       poolifier:
-        specifier: ^5.4.0
-        version: 5.4.0
+        specifier: ^6.0.1
+        version: 6.0.2
     devDependencies:
       '@types/node':
         specifier: ^24.19.2
@@ -319,9 +319,9 @@ packages:
     resolution: {integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  poolifier@5.4.0:
-    resolution: {integrity: sha512-J2y3kYlctgLojYe6UDOOJZxdQv00QsRrUY2HonUOZFzU01SK4RU5Eh83vZxtOqWbxOxh6MLDd8ZiMWqeGaC/tg==}
-    engines: {node: '>=22.13.0', pnpm: '>=9.0.0'}
+  poolifier@6.0.2:
+    resolution: {integrity: sha512-g9GNzYkR5zgV48NyaOE4wjDOd5MV9RZkR2WcHt6YpNGsxlNbSki2GZS3otJccOJ6uMXdSainGGC1BRw8LlSnHA==}
+    engines: {node: ^22.18.0 || >=24.3.0, pnpm: '>=9.0.0'}
 
   proxy-from-env@2.1.0:
     resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
@@ -479,7 +479,7 @@ snapshots:
       fetch-blob: 3.2.0
       formdata-polyfill: 4.0.10
 
-  poolifier@5.4.0: {}
+  poolifier@6.0.2: {}
 
   proxy-from-env@2.1.0: {}
 
