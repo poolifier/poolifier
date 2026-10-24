@@ -170,7 +170,7 @@ importers:
         specifier: ^10.1.7
         version: 10.1.7
       poolifier:
-        specifier: ^6.0.1
+        specifier: ^6.0.2
         version: 6.0.2
     devDependencies:
       '@types/node':

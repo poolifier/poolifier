@@ -170,7 +170,7 @@ importers:
         specifier: ^5.3.0
         version: 5.3.0(supports-color@7.2.0)
       poolifier:
-        specifier: ^6.0.1
+        specifier: ^6.0.2
         version: 6.0.2
     devDependencies:
       '@rollup/plugin-typescript':
