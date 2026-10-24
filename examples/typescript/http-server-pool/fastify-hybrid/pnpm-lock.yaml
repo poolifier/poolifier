@@ -173,7 +173,7 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       poolifier:
-        specifier: ^6.0.1
+        specifier: ^6.0.2
         version: 6.0.2
     devDependencies:
       '@rollup/plugin-typescript':
