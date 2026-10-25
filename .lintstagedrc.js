@@ -1,8 +1,5 @@
 export default {
-  '**/*.json': ['biome format --no-errors-on-unmatched --write'],
-  '**/*.{md,yml,yaml}': ['biome format --no-errors-on-unmatched --write'],
-  '**/*.{ts,tsx,js,jsx,cjs,mjs}': [
+  '**/*.{json,md,yml,yaml,ts,tsx,js,jsx,cjs,mjs}':
     'biome format --no-errors-on-unmatched --write',
-    'eslint --cache --fix',
-  ],
+  '**/*.{ts,tsx,js,jsx,cjs,mjs}': 'eslint --cache --fix',
 }
