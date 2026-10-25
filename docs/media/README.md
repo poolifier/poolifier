@@ -23,7 +23,6 @@ See the dedicated repository [README.md](https://github.com/poolifier/benchmark#
 ### Usage
 
 To run the internal benchmark, you just need to navigate to the root of poolifier cloned repository and run:
-
 - `pnpm benchmark:tinybench`
 
 ### [Results](https://bencher.dev/perf/poolifier)

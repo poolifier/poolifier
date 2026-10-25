@@ -28,7 +28,6 @@ Please do your PR on **master** branch.
 ### Project pillars
 
 Please consider our pillars before to start change the project
-
 - Performance :white_check_mark:
 - Security :white_check_mark:
 - No runtime dependencies :white_check_mark: (until now we don't have any exception to that)

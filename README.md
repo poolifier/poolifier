@@ -16,11 +16,11 @@
 [![CI Workflow](https://github.com/poolifier/poolifier/actions/workflows/ci.yml/badge.svg)](https://github.com/poolifier/poolifier/actions/workflows/ci.yml)
 [![Code Coverage](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=coverage)](https://sonarcloud.io/dashboard?id=poolifier_poolifier)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=poolifier_poolifier&metric=alert_status)](https://sonarcloud.io/dashboard?id=poolifier_poolifier)
-[![neostandard Javascript Code Style](<https://badgen.net/static/code style/neostandard/green>)](https://github.com/neostandard/neostandard)
+[![neostandard Javascript Code Style](https://badgen.net/static/code%20style/neostandard/green)](https://github.com/neostandard/neostandard)
 [![Discord](https://badgen.net/discord/online-members/vXxZhyb3b6?icon=discord&label=discord&color=green)](https://discord.gg/vXxZhyb3b6)
 [![Open Collective](https://opencollective.com/poolifier/tiers/badge.svg)](https://opencollective.com/poolifier)
 [![PRs Welcome](https://badgen.net/static/PRs/welcome/green)](https://makeapullrequest.com)
-[![No Dependencies](<https://badgen.net/static/dependencies/no dependencies/green>)](<https://badgen.net/static/dependencies/no dependencies/green>)
+[![No Dependencies](https://badgen.net/static/dependencies/no%20dependencies/green)](https://badgen.net/static/dependencies/no%20dependencies/green)
 
 </div>
 
@@ -119,7 +119,12 @@ export default new ThreadWorker(yourFunction, {
 Instantiate your pool based on your needs :
 
 ```js
-import { DynamicThreadPool, FixedThreadPool, PoolEvents, availableParallelism } from 'poolifier'
+import {
+  DynamicThreadPool,
+  FixedThreadPool,
+  PoolEvents,
+  availableParallelism,
+} from 'poolifier'
 
 // a fixed worker_threads pool
 const pool = new FixedThreadPool(availableParallelism(), './yourWorker.js', {
@@ -131,10 +136,15 @@ pool.emitter?.on(PoolEvents.ready, () => console.info('Pool is ready'))
 pool.emitter?.on(PoolEvents.busy, () => console.info('Pool is busy'))
 
 // or a dynamic worker_threads pool
-const pool = new DynamicThreadPool(Math.floor(availableParallelism() / 2), availableParallelism(), './yourWorker.js', {
-  onlineHandler: () => console.info('worker is online'),
-  errorHandler: e => console.error(e),
-})
+const pool = new DynamicThreadPool(
+  Math.floor(availableParallelism() / 2),
+  availableParallelism(),
+  './yourWorker.js',
+  {
+    onlineHandler: () => console.info('worker is online'),
+    errorHandler: e => console.error(e),
+  }
+)
 
 pool.emitter?.on(PoolEvents.full, () => console.info('Pool is full'))
 pool.emitter?.on(PoolEvents.ready, () => console.info('Pool is ready'))
@@ -153,7 +163,6 @@ try {
 You can do the same with the classes _ClusterWorker_, _FixedClusterPool_ and _DynamicClusterPool_.
 
 **See [examples](./examples/) for more details**:
-
 - [Javascript](./examples/javascript/)
 - [Typescript](./examples/typescript/)
   - [HTTP client pool](./examples/typescript/http-client-pool/)
@@ -191,15 +200,12 @@ See [CONTRIBUTING](./CONTRIBUTING.md) guidelines.
 ## Team
 
 **Creator/Owner:**
-
 - [**Alessandro Pio Ardizio**](https://github.com/pioardi)
 
 **Maintainers:**
-
 - [**Jérôme Benoit**](https://github.com/jerome-benoit)
 
 **Contributors:**
-
 - [**Shinigami92**](https://github.com/Shinigami92)
 
 ## License

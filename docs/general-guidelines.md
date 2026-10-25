@@ -15,11 +15,9 @@ Before to jump into each poolifier pool type, let highlight that **Node.js comes
 Please take a look at [which tasks run on the libuv thread pool](https://nodejs.org/en/docs/guides/dont-block-the-event-loop/#what-code-runs-on-the-worker-pool).
 
 **If your task runs on libuv thread pool**, you can try to:
-
 - Tune the libuv thread pool size setting the [UV_THREADPOOL_SIZE](https://nodejs.org/api/cli.html#cli_uv_threadpool_size_size).
 
 and/or
-
 - Use poolifier cluster pools that are spawning child processes, they will also increase the number of libuv threads since that any new child process comes with a separated libuv thread pool. **More threads does not mean more fast, so please tune your application**.
 
 ## Cluster vs Threads worker pools

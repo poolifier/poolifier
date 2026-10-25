@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.15/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.6.2/schema.json",
   "assist": {
     "actions": {
       "source": {
@@ -10,7 +10,7 @@
   "linter": {
     "enabled": false,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "style": {
         "noParameterAssign": "error",
         "useAsConstAssertion": "error",
@@ -44,6 +44,16 @@
       "allowComments": true
     }
   },
+  "markdown": {
+    "parser": {
+      "frontmatter": true
+    }
+  },
+  "yaml": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
+  },
   "files": {
     "maxSize": 2000000,
     "includes": [
@@ -55,7 +65,7 @@
       "!docs/**/*.js",
       "!lib",
       "!outputs",
-      "!pnpm-lock.yaml",
+      "!**/pnpm-lock.yaml",
       "!reports"
     ]
   }
