@@ -121,7 +121,6 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
     "neostandard": "^0.14.1",
-    "prettier": "^3.9.10",
     "rollup": "^4.64.12",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-command": "^1.1.3",

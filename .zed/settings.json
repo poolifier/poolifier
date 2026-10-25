@@ -1,8 +1,8 @@
 // Zed project settings for poolifier
 //
 // JS/TS: Biome format → ESLint --fix
-// JSON, JSONC: Biome
-// Markdown, YAML: Prettier
+// JSON, JSONC: Biome language server
+// Markdown, YAML: local Biome CLI (whole-document formatting)
 {
   "format_on_save": "on",
 
@@ -34,11 +34,31 @@
     },
     // ── Markdown ──────────────────────────────────────────────
     "Markdown": {
-      "formatter": "prettier"
+      "formatter": {
+        "external": {
+          "command": "node",
+          "arguments": [
+            "node_modules/@biomejs/biome/bin/biome",
+            "format",
+            "--stdin-file-path",
+            "{buffer_path}"
+          ]
+        }
+      }
     },
     // ── YAML ──────────────────────────────────────────────────
     "YAML": {
-      "formatter": "prettier"
+      "formatter": {
+        "external": {
+          "command": "node",
+          "arguments": [
+            "node_modules/@biomejs/biome/bin/biome",
+            "format",
+            "--stdin-file-path",
+            "{buffer_path}"
+          ]
+        }
+      }
     }
   },
 

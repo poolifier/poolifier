@@ -220,9 +220,6 @@ importers:
       neostandard:
         specifier: ^0.14.1
         version: 0.14.1(eslint@10.13.0(jiti@2.7.0))(typescript@6.0.3)
-      prettier:
-        specifier: ^3.9.10
-        version: 3.9.10
       rollup:
         specifier: ^4.64.12
         version: 4.64.12
@@ -2056,11 +2053,6 @@ packages:
   presentable-error@0.0.1:
     resolution: {integrity: sha512-E6rsNU1QNJgB3sjj7OANinGncFKuK+164sLXw1/CqBjj/EkXSoSdHCtWQGBNlREIGLnL7IEUEGa08YFVUbrhVg==}
     engines: {node: '>=16'}
-
-  prettier@3.9.10:
-    resolution: {integrity: sha512-skGHTH1Yb9QvaTC4hWnRTzEYtCpApF0UMBPz+t/0ZPzP8ihefo/btKd+QA7pUE0fEwA1SbS/NmhyEcstdXOIdA==}
-    engines: {node: '>=14'}
-    hasBin: true
 
   punycode.js@2.3.1:
     resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
@@ -4118,8 +4110,6 @@ snapshots:
   prelude-ls@1.2.1: {}
 
   presentable-error@0.0.1: {}
-
-  prettier@3.9.10: {}
 
   punycode.js@2.3.1: {}
 
