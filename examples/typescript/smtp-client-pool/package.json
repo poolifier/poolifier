@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nodemailer": "^10.2.0",
+    "nodemailer": "^10.2.1",
     "poolifier": "^6.0.2"
   },
   "devDependencies": {
