@@ -23,7 +23,7 @@ jobs:
       release_created: ${{ steps.release.outputs.release_created }}
 
     steps:
-      - uses: googleapis/release-please-action@v5
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5
         id: release
         with:
           config-file: .github/release-please/config.json
@@ -53,13 +53,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 24.x
           cache: 'pnpm'
@@ -85,16 +85,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 24.x
 
       - name: Read package.json version
         id: package-version
-        uses: jaywcjlove/github-action-package@main
+        uses: jaywcjlove/github-action-package@7b51ba8833a0ec973a38409403525fa29c2ab9ee # main
 
       - name: Publish Release
         if: ${{ contains(steps.package-version.outputs.version, '-') == false }}
@@ -110,13 +110,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 24.x
           cache: 'pnpm'
@@ -126,7 +126,7 @@ jobs:
 
       - name: Read package.json version
         id: package-version
-        uses: jaywcjlove/github-action-package@main
+        uses: jaywcjlove/github-action-package@7b51ba8833a0ec973a38409403525fa29c2ab9ee # main
 
       - name: Publish Release
         if: ${{ contains(steps.package-version.outputs.version, '-') == false }}
@@ -150,15 +150,15 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           token: ${{ secrets.GH_TOKEN_PROTECTED }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 24.x
           cache: 'pnpm'
@@ -183,7 +183,7 @@ jobs:
 
       - name: Push changes
         if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
-        uses: CasperWA/push-protected@v2
+        uses: CasperWA/push-protected@74d25b8aa10e0c29024138735d32f3c0b75f9279 # v2
         with:
           token: ${{ secrets.GH_TOKEN_PROTECTED }}
           branch: ${{ github.event.repository.default_branch }}

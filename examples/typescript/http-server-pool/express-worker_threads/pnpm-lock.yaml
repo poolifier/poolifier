@@ -174,16 +174,16 @@ importers:
         version: 6.0.2
     devDependencies:
       '@types/express':
-        specifier: ^5.0.6
+        specifier: 5.0.6
         version: 5.0.6
       '@types/node':
-        specifier: ^24.19.2
+        specifier: 24.19.2
         version: 24.19.2
       autocannon:
-        specifier: ^8.0.0
+        specifier: 8.0.0
         version: 8.0.0
       typescript:
-        specifier: ^6.0.3
+        specifier: 6.0.3
         version: 6.0.3
 
 packages:

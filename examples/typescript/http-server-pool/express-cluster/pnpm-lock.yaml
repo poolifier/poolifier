@@ -174,28 +174,28 @@ importers:
         version: 6.0.2
     devDependencies:
       '@rollup/plugin-typescript':
-        specifier: ^12.3.1
+        specifier: 12.3.1
         version: 12.3.1(rollup@4.65.0)(tslib@2.8.1)(typescript@6.0.3)
       '@types/express':
-        specifier: ^5.0.6
+        specifier: 5.0.6
         version: 5.0.6
       '@types/node':
-        specifier: ^24.19.2
+        specifier: 24.19.2
         version: 24.19.2
       autocannon:
-        specifier: ^8.0.0
+        specifier: 8.0.0
         version: 8.0.0
       rollup:
-        specifier: ^4.65.0
+        specifier: 4.65.0
         version: 4.65.0
       rollup-plugin-delete:
-        specifier: ^3.0.2
+        specifier: 3.0.2
         version: 3.0.2(rollup@4.65.0)
       tslib:
-        specifier: ^2.8.1
+        specifier: 2.8.1
         version: 2.8.1
       typescript:
-        specifier: ^6.0.3
+        specifier: 6.0.3
         version: 6.0.3
 
 packages:

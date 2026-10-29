@@ -13,15 +13,15 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           token: ${{ secrets.GH_TOKEN_PROTECTED }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 24.x
           cache: 'pnpm'
@@ -46,7 +46,7 @@ jobs:
 
       - name: Push changes
         if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
-        uses: CasperWA/push-protected@v2
+        uses: CasperWA/push-protected@74d25b8aa10e0c29024138735d32f3c0b75f9279 # v2
         with:
           token: ${{ secrets.GH_TOKEN_PROTECTED }}
           branch: ${{ github.event.repository.default_branch }}
