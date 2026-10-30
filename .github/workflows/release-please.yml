@@ -61,7 +61,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
-          node-version: 24.x
+          node-version: 26.x
           cache: 'pnpm'
 
       - name: Install Dependencies
@@ -90,7 +90,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
-          node-version: 24.x
+          node-version: 26.x
 
       - name: Read package.json version
         id: package-version
@@ -118,7 +118,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
-          node-version: 24.x
+          node-version: 26.x
           cache: 'pnpm'
 
       - name: Install Dependencies
@@ -160,7 +160,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
-          node-version: 24.x
+          node-version: 26.x
           cache: 'pnpm'
 
       - name: Generate documentation
