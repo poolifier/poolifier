@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "12.3.1",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.5",
     "@types/ws": "8.18.2",
     "rollup": "4.65.1",
     "rollup-plugin-delete": "3.0.2",
