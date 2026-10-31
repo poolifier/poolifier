@@ -1,5 +1,6 @@
 import { EventEmitter, once } from 'node:events'
 import { setTimeout as delay } from 'node:timers/promises'
+import { useFakeTimers } from 'sinon'
 import { describe, expect, it, vi } from 'vitest'
 
 import {
@@ -298,13 +299,14 @@ describe('Idle stealing retry accounting', () => {
         tasksQueueOptions: {
           concurrency: 1,
           tasksStealingOnBackPressure: false,
-          taskStealing: true,
+          taskStealing: false,
         },
         workerChoiceStrategy: WorkerChoiceStrategies.LEAST_USED,
         workerOptions: { workerData: { killGate: gates.kill } },
       }
     )
     const tasks = []
+    let clock
     const execute = (gate, label, name) => {
       const task = pool.execute({ gate, label }, name)
       // Attach rejection handling immediately, including when setup fails.
@@ -337,6 +339,8 @@ describe('Idle stealing retry accounting', () => {
           message.label === 'kill-handler' &&
           message.workerId === retiree.info.id
       )
+      clock = useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+      pool.setTasksQueueOptions({ taskStealing: true })
       expect(pool.workerNodes.indexOf(retrying)).toBe(2)
       const retired = once(retiree.worker, 'exit', {
         signal: AbortSignal.timeout(5000),
@@ -358,6 +362,9 @@ describe('Idle stealing retry accounting', () => {
       expect(retrying.usage.tasks.sequentiallyStolen).toBe(1)
       expect(retrying.info.continuousStealing).toBe(true)
       expect(wrongTarget.usage.tasks.stolen).toBe(0)
+      await clock.tickAsync(240)
+      clock.restore()
+      clock = undefined
 
       await vi.waitFor(
         () => {
@@ -374,6 +381,7 @@ describe('Idle stealing retry accounting', () => {
       expect(retrying.usage.tasks.sequentiallyStolen).toBe(0)
       expect(pool.info.stolenTasks).toBe(1)
     } finally {
+      clock?.restore()
       Object.values(gates).forEach(release)
       try {
         await Promise.race([

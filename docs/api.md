@@ -189,7 +189,7 @@ An object with these properties:
   Properties:
   - `size` (optional) - The maximum number of tasks that can be queued on a worker before flagging it as back pressured. It must be a positive integer.
   - `concurrency` (optional) - The maximum number of tasks that can be executed concurrently on a worker. It must be a positive integer.
-  - `taskStealing` (optional) - Task stealing enablement on idle.
+  - `taskStealing` (optional) - Task stealing enablement on idle, including workers that have never executed a task.
   - `tasksStealingOnBackPressure` (optional) - Tasks stealing enablement under back pressure.
   - `tasksStealingRatio` (optional) - The ratio of worker nodes that can steal tasks from another worker node. It must be a number between 0 and 1.
   - `tasksFinishedTimeout` (optional) - Queued tasks finished timeout in milliseconds at worker termination.
