@@ -39,7 +39,6 @@ import {
   median,
   min,
   round,
-  sleep,
 } from '../utils.js'
 import { KillBehaviors } from '../worker/worker-options.js'
 import {
@@ -493,6 +492,13 @@ export abstract class AbstractPool<
     >
   >
 
+  private taskStealingRetries?: Map<
+    IWorkerNode<Worker, Data>,
+    { taskName?: string; timeout: NodeJS.Timeout }
+  >
+
+  private taskStealingTimeout?: NodeJS.Timeout
+
   /**
    * Worker nodes whose termination was requested by the pool.
    */
@@ -683,6 +689,7 @@ export abstract class AbstractPool<
       throw new Error('Cannot destroy an already destroying pool')
     }
     this.destroying = true
+    this.unsetTaskStealing()
     try {
       await Promise.allSettled(
         this.workerNodes.map(async (_, workerNodeKey) => {
@@ -1611,6 +1618,17 @@ export abstract class AbstractPool<
     )
   }
 
+  private canStartTaskStealing (workerNodeKey: number): boolean {
+    const workerNode = this.workerNodes[workerNodeKey]
+    return (
+      this.isWorkerNodeIdle(workerNodeKey) &&
+      !workerNode.info.continuousStealing &&
+      !this.workerTaskFunctionBootstraps.has(workerNode) &&
+      !this.failedWorkerTaskFunctionBootstraps.has(workerNode) &&
+      !this.terminatingWorkerNodes.has(workerNode)
+    )
+  }
+
   private captureTaskResponses (
     workerNode: IWorkerNode<Worker, Data>,
     taskResponses: MessageValue<Response>[] | undefined
@@ -1844,6 +1862,17 @@ export abstract class AbstractPool<
     )
   }
 
+  private clearTaskStealingRetry (
+    workerNode: IWorkerNode<Worker, Data>
+  ): string | undefined {
+    const retry = this.taskStealingRetries?.get(workerNode)
+    if (retry != null) {
+      clearTimeout(retry.timeout)
+      this.taskStealingRetries?.delete(workerNode)
+    }
+    return retry?.taskName
+  }
+
   private createWorkerMessageListenerCleanup (
     workerNode: IWorkerNode<Worker, Data>,
     listener: (message: MessageValue<Response>) => void
@@ -1928,6 +1957,7 @@ export abstract class AbstractPool<
     this.updateTaskWorkerNodeKey(workerNodeKey, task)
     const tasksQueueSize = this.workerNodes[workerNodeKey].enqueueTask(task)
     this.checkAndEmitTaskQueuingEvents()
+    this.scheduleTaskStealing()
     return tasksQueueSize
   }
 
@@ -2353,7 +2383,7 @@ export abstract class AbstractPool<
 
   private readonly handleWorkerNodeIdleEvent = (
     eventDetail: WorkerNodeEventDetail,
-    previousStolenTask?: Task<Data>
+    previousTaskName?: string
   ): void => {
     const { workerNodeKey } = eventDetail
     if (workerNodeKey == null) {
@@ -2366,24 +2396,29 @@ export abstract class AbstractPool<
     if (workerNode == null) {
       return
     }
-    if (
-      !workerNode.info.continuousStealing &&
-      (this.cannotStealTask() || this.isStealingRatioReached())
-    ) {
-      return
-    }
+    previousTaskName =
+      this.clearTaskStealingRetry(workerNode) ?? previousTaskName
     const workerNodeTasksUsage = workerNode.usage.tasks
     if (
-      workerNode.info.continuousStealing &&
-      !this.isWorkerNodeIdle(workerNodeKey)
+      this.opts.enableTasksQueue !== true ||
+      this.opts.tasksQueueOptions?.taskStealing !== true ||
+      this.opts.tasksQueueOptions.tasksStealingRatio === 0 ||
+      this.cannotStealTask() ||
+      !this.isWorkerNodeIdle(workerNodeKey) ||
+      this.workerTaskFunctionBootstraps.has(workerNode) ||
+      this.failedWorkerTaskFunctionBootstraps.has(workerNode) ||
+      this.terminatingWorkerNodes.has(workerNode)
     ) {
       workerNode.info.continuousStealing = false
       if (workerNodeTasksUsage.sequentiallyStolen > 0) {
         this.resetTaskSequentiallyStolenStatisticsWorkerUsage(
           workerNodeKey,
-          previousStolenTask?.name
+          previousTaskName
         )
       }
+      return
+    }
+    if (!workerNode.info.continuousStealing && this.isStealingRatioReached()) {
       return
     }
     workerNode.info.continuousStealing = true
@@ -2391,24 +2426,32 @@ export abstract class AbstractPool<
     this.updateTaskSequentiallyStolenStatisticsWorkerUsage(
       workerNodeKey,
       stolenTask?.name,
-      previousStolenTask?.name
+      previousTaskName
     )
-    sleep(exponentialDelay(workerNodeTasksUsage.sequentiallyStolen))
-      .then(() => {
+    const stolenTaskName = stolenTask?.name
+    const timeout = setTimeout(() => {
+      if (this.taskStealingRetries?.get(workerNode)?.timeout !== timeout) {
+        return
+      }
+      this.taskStealingRetries.delete(workerNode)
+      try {
         // Worker nodes can be removed during the delay, shifting the keys.
         const currentWorkerNodeKey = this.workerNodes.indexOf(workerNode)
-        if (currentWorkerNodeKey === -1) {
-          return undefined
+        if (currentWorkerNodeKey !== -1) {
+          this.handleWorkerNodeIdleEvent(
+            { workerNodeKey: currentWorkerNodeKey },
+            stolenTaskName
+          )
         }
-        this.handleWorkerNodeIdleEvent(
-          { ...eventDetail, workerNodeKey: currentWorkerNodeKey },
-          stolenTask
-        )
-        return undefined
-      })
-      .catch((error: unknown) => {
+      } catch (error) {
         this.emitter?.emit(PoolEvents.error, error)
-      })
+      }
+    }, exponentialDelay()).unref()
+    this.taskStealingRetries ??= new Map()
+    this.taskStealingRetries.set(workerNode, {
+      taskName: stolenTaskName,
+      timeout,
+    })
   }
 
   private handleWorkerReadyResponse (message: MessageValue<Response>): void {
@@ -2439,6 +2482,7 @@ export abstract class AbstractPool<
     this.sendStatisticsMessageToWorker(workerNodeKey)
     this.setTasksQueuePriority(workerNodeKey)
     this.checkAndEmitReadyEvent()
+    this.scheduleTaskStealing()
   }
 
   private initEventEmitter (): void {
@@ -2795,6 +2839,12 @@ export abstract class AbstractPool<
     this.failedWorkerTaskFunctionBootstraps.delete(workerNode)
     const workerNodeKey = this.workerNodes.indexOf(workerNode)
     if (workerNodeKey !== -1) {
+      const taskName = this.clearTaskStealingRetry(workerNode)
+      workerNode.info.continuousStealing = false
+      this.resetTaskSequentiallyStolenStatisticsWorkerUsage(
+        workerNodeKey,
+        taskName
+      )
       this.workerNodes.splice(workerNodeKey, 1)
       for (const promiseResponse of this.promiseResponseMap.values()) {
         if (promiseResponse.workerNodeKey === workerNodeKey) {
@@ -2872,6 +2922,7 @@ export abstract class AbstractPool<
       this.sendStatisticsMessageToWorker(workerNodeKey)
       workerNode.info.ready = bootstrap.ready
       this.checkAndEmitReadyEvent()
+      this.scheduleTaskStealing()
     } catch (error) {
       // Retired bootstraps no longer block waiting submissions.
       if (this.workerNodes.includes(workerNode)) {
@@ -2926,6 +2977,36 @@ export abstract class AbstractPool<
       }
     }
     await Promise.allSettled(promises)
+  }
+
+  private scheduleTaskStealing (): void {
+    if (
+      this.taskStealingTimeout != null ||
+      this.opts.enableTasksQueue !== true ||
+      this.opts.tasksQueueOptions?.taskStealing !== true ||
+      this.opts.tasksQueueOptions.tasksStealingRatio === 0 ||
+      this.cannotStealTask()
+    ) {
+      return
+    }
+    this.taskStealingTimeout = setTimeout(() => {
+      delete this.taskStealingTimeout
+      try {
+        if (this.cannotStealTask()) return
+        for (const workerNodeKey of this.workerNodes.keys()) {
+          if (!this.canStartTaskStealing(workerNodeKey)) continue
+          this.handleWorkerNodeIdleEvent({ workerNodeKey })
+          if (this.cannotStealTask()) return
+          if (this.canStartTaskStealing(workerNodeKey)) {
+            // Retry admission when another worker relinquishes its stealing slot.
+            this.scheduleTaskStealing()
+            return
+          }
+        }
+      } catch (error) {
+        this.emitter?.emit(PoolEvents.error, error)
+      }
+    }, exponentialDelay()).unref()
   }
 
   private async sendKillMessageToWorker (
@@ -3229,6 +3310,7 @@ export abstract class AbstractPool<
     for (const workerNodeKey of this.workerNodes.keys()) {
       this.workerNodes[workerNodeKey].on('idle', this.handleWorkerNodeIdleEvent)
     }
+    this.scheduleTaskStealing()
   }
 
   private shallExecuteTask (workerNodeKey: number): boolean {
@@ -3368,12 +3450,19 @@ export abstract class AbstractPool<
   }
 
   private unsetTaskStealing (): void {
+    clearTimeout(this.taskStealingTimeout)
+    delete this.taskStealingTimeout
     for (const workerNodeKey of this.workerNodes.keys()) {
-      this.workerNodes[workerNodeKey].off(
-        'idle',
-        this.handleWorkerNodeIdleEvent
+      const workerNode = this.workerNodes[workerNodeKey]
+      const taskName = this.clearTaskStealingRetry(workerNode)
+      workerNode.info.continuousStealing = false
+      this.resetTaskSequentiallyStolenStatisticsWorkerUsage(
+        workerNodeKey,
+        taskName
       )
+      workerNode.off('idle', this.handleWorkerNodeIdleEvent)
     }
+    delete this.taskStealingRetries
   }
 
   private updateTaskSequentiallyStolenStatisticsWorkerUsage (

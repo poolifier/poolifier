@@ -36,18 +36,6 @@ export const availableParallelism = (): number => {
 }
 
 /**
- * Sleeps for the given amount of milliseconds.
- * @param ms - The amount of milliseconds to sleep.
- * @returns A promise that resolves after the given amount of milliseconds.
- * @internal
- */
-export const sleep = async (ms: number): Promise<void> => {
-  await new Promise(resolve => {
-    setTimeout(resolve, ms)
-  })
-}
-
-/**
  * Computes the retry delay in milliseconds using an exponential back off algorithm.
  * @param retryNumber - The number of retries that have already been attempted
  * @param delayFactor - The base delay factor in milliseconds
