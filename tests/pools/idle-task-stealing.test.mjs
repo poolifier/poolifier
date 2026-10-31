@@ -319,7 +319,9 @@ describe('Unused idle worker task stealing', () => {
     const tasks = []
     const overflowWarnings = []
     const onWarning = warning => {
-      if (warning.name === 'TimeoutOverflowWarning') { overflowWarnings.push(warning) }
+      if (warning.name === 'TimeoutOverflowWarning') {
+        overflowWarnings.push(warning)
+      }
     }
     process.on('warning', onWarning)
     try {
