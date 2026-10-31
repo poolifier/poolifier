@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.1.0](https://github.com/poolifier/poolifier/compare/v6.0.2...v6.1.0) (2026-10-31)
+
+### 🚀 Features
+
+- **pool:** start task stealing on unused workers ([#3387](https://github.com/poolifier/poolifier/issues/3387)) ([3b80736](https://github.com/poolifier/poolifier/commit/3b807363403ccc3d22dd5e69e34c03497f6fe4df))
+
+
+### 🐞 Bug Fixes
+
+- **deps:** update all non-major dependencies ([#3373](https://github.com/poolifier/poolifier/issues/3373)) ([94006bf](https://github.com/poolifier/poolifier/commit/94006bf16ab52c8342f83720f5fec64b193f3c57))
+- **deps:** update all non-major dependencies ([#3376](https://github.com/poolifier/poolifier/issues/3376)) ([12b492e](https://github.com/poolifier/poolifier/commit/12b492e798ecdffd277e3b125bccba939bfea9fb))
+- **deps:** update all non-major dependencies ([#3377](https://github.com/poolifier/poolifier/issues/3377)) ([c421b16](https://github.com/poolifier/poolifier/commit/c421b16f236fbadab2044d75f26200b3437ceb1b))
+- **deps:** update all non-major dependencies ([#3378](https://github.com/poolifier/poolifier/issues/3378)) ([7f2a808](https://github.com/poolifier/poolifier/commit/7f2a8089a023c164231df8c71b9624a7074413ea))
+- **deps:** update all non-major dependencies ([#3389](https://github.com/poolifier/poolifier/issues/3389)) ([d0c6bd3](https://github.com/poolifier/poolifier/commit/d0c6bd379b5c91540f59edc97a7407970c42b750))
+- **deps:** update dependency poolifier to v6 ([#3374](https://github.com/poolifier/poolifier/issues/3374)) ([0a9937e](https://github.com/poolifier/poolifier/commit/0a9937e7c5e489e60ad5cfe024c46e6948fe8372))
+- **format:** preserve metadata and lockfiles ([8cfc5c3](https://github.com/poolifier/poolifier/commit/8cfc5c364f583db2ed61f6b475722a42cd2c0ffa))
+
+
+### ✨ Polish
+
+- **hooks:** share Biome formatting task ([4bbceae](https://github.com/poolifier/poolifier/commit/4bbceaee6a8a84835a240abd2a4b6684208a1895))
+
+
+### 📚 Documentation
+
+- publish documentation ([4a473fc](https://github.com/poolifier/poolifier/commit/4a473fcd22b6e02b12aaeda1fc6723c80ff742b9))
+
+
+### 🤖 Automation
+
+- replace Prettier with Biome ([5215956](https://github.com/poolifier/poolifier/commit/5215956141029dff3543e61168352989e92038ea))
+
 ## [6.0.2](https://github.com/poolifier/poolifier/compare/v6.0.1...v6.0.2) (2026-10-20)
 
 ### 🐞 Bug Fixes
