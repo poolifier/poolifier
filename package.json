@@ -49,7 +49,7 @@
       "onFail": "ignore"
     }
   },
-  "packageManager": "pnpm@12.16.0",
+  "packageManager": "pnpm@12.16.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/poolifier/poolifier.git"
