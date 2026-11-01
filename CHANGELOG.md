@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.1.1](https://github.com/poolifier/poolifier/compare/v6.1.0...v6.1.1) (2026-11-01)
+
+
+### 🐞 Bug Fixes
+
+* **deps:** update all non-major dependencies ([#3392](https://github.com/poolifier/poolifier/issues/3392)) ([a9b1ecb](https://github.com/poolifier/poolifier/commit/a9b1ecbc2371a722f45e6486cf686ec700b3c754))
+
+
+### 📚 Documentation
+
+* publish documentation ([5f4c295](https://github.com/poolifier/poolifier/commit/5f4c295cd16ab0010ee182047e028a1e60413fdd))
+
 ## [6.1.0](https://github.com/poolifier/poolifier/compare/v6.0.2...v6.1.0) (2026-10-31)
 
 ### 🚀 Features
