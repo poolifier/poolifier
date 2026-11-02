@@ -168,10 +168,10 @@ importers:
     dependencies:
       poolifier:
         specifier: ^6.0.2
-        version: 6.0.2
+        version: 6.1.0
       ws:
         specifier: ^8.22.0
-        version: 8.22.0(bufferutil@4.1.0)(utf-8-validate@6.0.6)
+        version: 8.22.1(bufferutil@4.1.0)(utf-8-validate@6.0.6)
     devDependencies:
       '@rollup/plugin-typescript':
         specifier: 12.3.1
@@ -387,6 +387,9 @@ packages:
     resolution: {integrity: sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==}
     engines: {node: '>=18'}
 
+  '@types/estree@1.0.10':
+    resolution: {integrity: sha512-lTyOMnOcmRBzdCv6/4zUZCrEhV0xrqQiUZBZtVcbmLHBXKLnN8q89v/wKRF/Q0HbwVsqbIG3o5HDoFl9sduM+g==}
+
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
 
@@ -505,8 +508,8 @@ packages:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
 
-  poolifier@6.0.2:
-    resolution: {integrity: sha512-g9GNzYkR5zgV48NyaOE4wjDOd5MV9RZkR2WcHt6YpNGsxlNbSki2GZS3otJccOJ6uMXdSainGGC1BRw8LlSnHA==}
+  poolifier@6.1.0:
+    resolution: {integrity: sha512-nmElMG6ooo9efDoctDpD9KGGm469Fv1YT0AFkbmdeVxGbdCThUlx1J9KKiKgO1OZbqyhtFhXIebFCl7EU365fQ==}
     engines: {node: ^22.18.0 || >=24.3.0, pnpm: '>=9.0.0'}
 
   presentable-error@0.0.1:
@@ -570,8 +573,8 @@ packages:
     resolution: {integrity: sha512-q3l3P9UtEEiAHcsgsqTgf9PPjctrDWoIXW3NpOHFdRDbLvu4DLIcxHangJ4RLrWkBcKjmcs/6NkerI8T/rE4LA==}
     engines: {node: '>=6.14.2'}
 
-  ws@8.22.0:
-    resolution: {integrity: sha512-Ydggc987+RO0AnWtZ/7Wq9FtNvcrL1b/RO0ud9mWjUPgDrsAAwQSF51sm2hm1XofbU/4jkpGEsLFsZZxU+1DOg==}
+  ws@8.22.1:
+    resolution: {integrity: sha512-oyL6OPYme/CmiFvNuGzeoxCJ4nOrZE2O1FwM9MWM1AsGri6nLXB2pg+lNA8aLeXMSav0J6eIVS1j6vUPzUtK9g==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -610,7 +613,7 @@ snapshots:
 
   '@rollup/pluginutils@5.5.1(rollup@4.66.0)':
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       estree-walker: 2.0.2
       picomatch: 4.0.7
     optionalDependencies:
@@ -692,6 +695,8 @@ snapshots:
     optional: true
 
   '@sindresorhus/merge-streams@2.3.0': {}
+
+  '@types/estree@1.0.10': {}
 
   '@types/estree@1.0.9': {}
 
@@ -802,7 +807,7 @@ snapshots:
 
   picomatch@4.0.7: {}
 
-  poolifier@6.0.2: {}
+  poolifier@6.1.0: {}
 
   presentable-error@0.0.1: {}
 
@@ -879,7 +884,7 @@ snapshots:
       node-gyp-build: 4.8.4
     optional: true
 
-  ws@8.22.0(bufferutil@4.1.0)(utf-8-validate@6.0.6):
+  ws@8.22.1(bufferutil@4.1.0)(utf-8-validate@6.0.6):
     optionalDependencies:
       bufferutil: 4.1.0
       utf-8-validate: 6.0.6

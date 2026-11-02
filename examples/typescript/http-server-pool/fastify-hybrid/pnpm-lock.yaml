@@ -174,7 +174,7 @@ importers:
         version: 6.0.1
       poolifier:
         specifier: ^6.0.2
-        version: 6.0.2
+        version: 6.1.0
     devDependencies:
       '@rollup/plugin-typescript':
         specifier: 12.3.1
@@ -416,6 +416,9 @@ packages:
   '@sindresorhus/merge-streams@2.3.0':
     resolution: {integrity: sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==}
     engines: {node: '>=18'}
+
+  '@types/estree@1.0.10':
+    resolution: {integrity: sha512-lTyOMnOcmRBzdCv6/4zUZCrEhV0xrqQiUZBZtVcbmLHBXKLnN8q89v/wKRF/Q0HbwVsqbIG3o5HDoFl9sduM+g==}
 
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
@@ -770,8 +773,8 @@ packages:
     resolution: {integrity: sha512-bk1ZMTwG/Vymx+zPoa28MhNzucFvXJWp3csrSuxuHPSMeUettaCoQ5Jvg07mtC4JGNpcfTwz41oVCnNgBK9+vA==}
     hasBin: true
 
-  poolifier@6.0.2:
-    resolution: {integrity: sha512-g9GNzYkR5zgV48NyaOE4wjDOd5MV9RZkR2WcHt6YpNGsxlNbSki2GZS3otJccOJ6uMXdSainGGC1BRw8LlSnHA==}
+  poolifier@6.1.0:
+    resolution: {integrity: sha512-nmElMG6ooo9efDoctDpD9KGGm469Fv1YT0AFkbmdeVxGbdCThUlx1J9KKiKgO1OZbqyhtFhXIebFCl7EU365fQ==}
     engines: {node: ^22.18.0 || >=24.3.0, pnpm: '>=9.0.0'}
 
   presentable-error@0.0.1:
@@ -854,8 +857,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  set-cookie-parser@3.2.1:
-    resolution: {integrity: sha512-Npd1Pt+4zb3BrSZDPd2qFwRpS6b1EUEasRrO8xS0zMJi0fApXXK5YuzP0minyJnxwnFHoVoJwA55q0A0cu63gQ==}
+  set-cookie-parser@3.2.2:
+    resolution: {integrity: sha512-df017qMeYuXo4emL09nlyMpi2i2MtEIKS/6jtXH3vmjFgIRsOi852/5RmhJ4EkvN3ZF8jXadM/EkTPXgc8yPIw==}
 
   slash@5.1.0:
     resolution: {integrity: sha512-ZA6oR3T/pEyuqwMgAKT0/hAv8oAXckzbkmR0UkUosQ+Mc4RxGoJkRmwHgHufaenlyAgE1Mxgpdcrf75y6XcnDg==}
@@ -987,7 +990,7 @@ snapshots:
 
   '@rollup/pluginutils@5.5.1(rollup@4.66.0)':
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       estree-walker: 2.0.2
       picomatch: 4.0.7
     optionalDependencies:
@@ -1069,6 +1072,8 @@ snapshots:
     optional: true
 
   '@sindresorhus/merge-streams@2.3.0': {}
+
+  '@types/estree@1.0.10': {}
 
   '@types/estree@1.0.9': {}
 
@@ -1388,7 +1393,7 @@ snapshots:
       '@fastify/deepmerge': 3.2.4
       cookie: 2.0.1
       process-warning: 5.1.1
-      set-cookie-parser: 3.2.1
+      set-cookie-parser: 3.2.2
 
   lodash.chunk@4.2.0: {}
 
@@ -1451,7 +1456,7 @@ snapshots:
       sonic-boom: 4.2.1
       thread-stream: 4.2.0
 
-  poolifier@6.0.2: {}
+  poolifier@6.1.0: {}
 
   presentable-error@0.0.1: {}
 
@@ -1537,7 +1542,7 @@ snapshots:
 
   semver@7.8.5: {}
 
-  set-cookie-parser@3.2.1: {}
+  set-cookie-parser@3.2.2: {}
 
   slash@5.1.0: {}
 
