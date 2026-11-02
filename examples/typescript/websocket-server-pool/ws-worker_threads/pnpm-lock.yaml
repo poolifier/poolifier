@@ -168,10 +168,10 @@ importers:
     dependencies:
       poolifier:
         specifier: ^6.0.2
-        version: 6.0.2
+        version: 6.1.0
       ws:
         specifier: ^8.22.0
-        version: 8.22.0(bufferutil@4.1.0)(utf-8-validate@6.0.6)
+        version: 8.22.1(bufferutil@4.1.0)(utf-8-validate@6.0.6)
     devDependencies:
       '@types/node':
         specifier: 24.19.2
@@ -206,8 +206,8 @@ packages:
     resolution: {integrity: sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==}
     hasBin: true
 
-  poolifier@6.0.2:
-    resolution: {integrity: sha512-g9GNzYkR5zgV48NyaOE4wjDOd5MV9RZkR2WcHt6YpNGsxlNbSki2GZS3otJccOJ6uMXdSainGGC1BRw8LlSnHA==}
+  poolifier@6.1.0:
+    resolution: {integrity: sha512-nmElMG6ooo9efDoctDpD9KGGm469Fv1YT0AFkbmdeVxGbdCThUlx1J9KKiKgO1OZbqyhtFhXIebFCl7EU365fQ==}
     engines: {node: ^22.18.0 || >=24.3.0, pnpm: '>=9.0.0'}
 
   typescript@6.0.3:
@@ -222,8 +222,8 @@ packages:
     resolution: {integrity: sha512-q3l3P9UtEEiAHcsgsqTgf9PPjctrDWoIXW3NpOHFdRDbLvu4DLIcxHangJ4RLrWkBcKjmcs/6NkerI8T/rE4LA==}
     engines: {node: '>=6.14.2'}
 
-  ws@8.22.0:
-    resolution: {integrity: sha512-Ydggc987+RO0AnWtZ/7Wq9FtNvcrL1b/RO0ud9mWjUPgDrsAAwQSF51sm2hm1XofbU/4jkpGEsLFsZZxU+1DOg==}
+  ws@8.22.1:
+    resolution: {integrity: sha512-oyL6OPYme/CmiFvNuGzeoxCJ4nOrZE2O1FwM9MWM1AsGri6nLXB2pg+lNA8aLeXMSav0J6eIVS1j6vUPzUtK9g==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -252,7 +252,7 @@ snapshots:
   node-gyp-build@4.8.4:
     optional: true
 
-  poolifier@6.0.2: {}
+  poolifier@6.1.0: {}
 
   typescript@6.0.3: {}
 
@@ -263,7 +263,7 @@ snapshots:
       node-gyp-build: 4.8.4
     optional: true
 
-  ws@8.22.0(bufferutil@4.1.0)(utf-8-validate@6.0.6):
+  ws@8.22.1(bufferutil@4.1.0)(utf-8-validate@6.0.6):
     optionalDependencies:
       bufferutil: 4.1.0
       utf-8-validate: 6.0.6
