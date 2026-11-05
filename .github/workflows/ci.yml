@@ -91,7 +91,7 @@ jobs:
 
       - name: SonarCloud Code Analysis
         if: ${{ steps.sonar-token.outputs.available == 'true' && github.repository == 'poolifier/poolifier' && matrix.os == 'ubuntu-latest' && matrix.node == '22.x' }}
-        uses: sonarsource/sonarqube-scan-action@4d1dc0c91ee400dcf8a6dddf2f705ac36542e304 # v8.4
+        uses: sonarsource/sonarqube-scan-action@e805d875275f728fac1885b413934be6d7c63f65 # v8.4
         with:
           args: >-
             ${{ github.event_name == 'workflow_dispatch' && format('-Dsonar.pullrequest.key={0} -Dsonar.pullrequest.branch={1} -Dsonar.pullrequest.base={2}', inputs.pull_request, inputs.head_ref, inputs.base_ref) || '' }}
