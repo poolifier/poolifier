@@ -8,7 +8,7 @@
   "engines": {
     "node": "^22.18.0 || >=24.3.0"
   },
-  "packageManager": "pnpm@12.16.1",
+  "packageManager": "pnpm@12.17.0",
   "scripts": {
     "build": "rollup --config --configPlugin typescript",
     "start": "node --enable-source-maps dist/main.js",
@@ -20,7 +20,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^5.12.7",
+    "fastify": "^5.12.8",
     "fastify-plugin": "^6.0.1",
     "poolifier": "^6.1.0"
   },

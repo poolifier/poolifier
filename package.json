@@ -49,7 +49,7 @@
       "onFail": "ignore"
     }
   },
-  "packageManager": "pnpm@12.16.1",
+  "packageManager": "pnpm@12.17.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/poolifier/poolifier.git"
@@ -111,7 +111,7 @@
     "@rollup/plugin-terser": "1.0.2",
     "@rollup/plugin-typescript": "12.3.1",
     "@types/node": "24.19.2",
-    "@vitest/coverage-v8": "5.0.5",
+    "@vitest/coverage-v8": "5.1.0",
     "clean-publish": "7.1.0",
     "cross-env": "10.1.0",
     "eslint": "10.14.0",
@@ -130,6 +130,6 @@
     "tslib": "2.9.1",
     "typedoc": "0.28.20",
     "typescript": "6.0.3",
-    "vitest": "5.0.5"
+    "vitest": "5.1.0"
   }
 }
