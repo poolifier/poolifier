@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **pool:** start task stealing on unused workers ([#3387](https://github.com/poolifier/poolifier/issues/3387)) ([3b80736](https://github.com/poolifier/poolifier/commit/3b807363403ccc3d22dd5e69e34c03497f6fe4df))
 
-
 ### 🐞 Bug Fixes
 
 - **deps:** update all non-major dependencies ([#3373](https://github.com/poolifier/poolifier/issues/3373)) ([94006bf](https://github.com/poolifier/poolifier/commit/94006bf16ab52c8342f83720f5fec64b193f3c57))
@@ -22,16 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **deps:** update dependency poolifier to v6 ([#3374](https://github.com/poolifier/poolifier/issues/3374)) ([0a9937e](https://github.com/poolifier/poolifier/commit/0a9937e7c5e489e60ad5cfe024c46e6948fe8372))
 - **format:** preserve metadata and lockfiles ([8cfc5c3](https://github.com/poolifier/poolifier/commit/8cfc5c364f583db2ed61f6b475722a42cd2c0ffa))
 
-
 ### ✨ Polish
 
 - **hooks:** share Biome formatting task ([4bbceae](https://github.com/poolifier/poolifier/commit/4bbceaee6a8a84835a240abd2a4b6684208a1895))
 
-
 ### 📚 Documentation
 
 - publish documentation ([4a473fc](https://github.com/poolifier/poolifier/commit/4a473fcd22b6e02b12aaeda1fc6723c80ff742b9))
-
 
 ### 🤖 Automation
 
@@ -43,7 +39,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - recover runtime task function operations ([#3369](https://github.com/poolifier/poolifier/issues/3369)) ([b45bb9a](https://github.com/poolifier/poolifier/commit/b45bb9adb4115b1970e17f5b0438ec292cf9e645))
 - remove failed bootstrap registrations ([#3371](https://github.com/poolifier/poolifier/issues/3371)) ([1ce0d75](https://github.com/poolifier/poolifier/commit/1ce0d759b6b6726fff1432ddd171fda414727f9a))
-
 
 ### 📚 Documentation
 
@@ -77,7 +72,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - preserve own worker launch option descriptors ([#3342](https://github.com/poolifier/poolifier/issues/3342)) ([216e95b](https://github.com/poolifier/poolifier/commit/216e95bfc9bfbe89537496f648d446a12ac556ec))
 
-
 ### 📚 Documentation
 
 - publish documentation ([58f37c7](https://github.com/poolifier/poolifier/commit/58f37c77b0f9237b9616494d72da259fcb7bc1b5))
@@ -87,7 +81,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Features
 
 - add Zed project settings ([3fd722a](https://github.com/poolifier/poolifier/commit/3fd722ac01de7646412c7c89d467a292e704b3f8))
-
 
 ### 🐞 Bug Fixes
 
@@ -156,11 +149,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - remove parasitic pnpm self-installer document from lockfile ([149bc7a](https://github.com/poolifier/poolifier/commit/149bc7aa452ebbd59bf92ed24dd47e1962105c4c))
 - replace isAsyncFunction with instanceof Promise in handleKillMessage ([c71e61c](https://github.com/poolifier/poolifier/commit/c71e61c65de3e4b6d880cfb0c40bc5c52df5f025))
 
-
 ### ✨ Polish
 
 - align Zed settings with biome → eslint formatter pipeline ([0f4b1b5](https://github.com/poolifier/poolifier/commit/0f4b1b5c11a97aaae5681a2d7d23ff29b0b5fae1))
-
 
 ### 🧪 Tests
 
@@ -168,13 +159,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - use portable cluster stdio on Windows ([e6a724b](https://github.com/poolifier/poolifier/commit/e6a724b91240f8c5166193f3e35c6f06ef502288))
 - use portable cluster stdio on Windows ([eb73096](https://github.com/poolifier/poolifier/commit/eb730961e7550c12866d16c4c0bd70c582390dc5))
 
-
 ### 📚 Documentation
 
 - neutralize Copilot-specific references in agent instructions ([dc4cb71](https://github.com/poolifier/poolifier/commit/dc4cb719e43de307ac0d09248285ac788f1c0e85))
 - publish documentation ([bf154d1](https://github.com/poolifier/poolifier/commit/bf154d1c47ee0f9b967cc87376c7ac759d6d8e8b))
 - streamline coding agent instructions ([6a22b10](https://github.com/poolifier/poolifier/commit/6a22b108ff520800a66cf6ddf8f70be693d3ff35))
-
 
 ### 🤖 Automation
 
@@ -188,7 +177,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **build:** exclude vitest.config.ts from TypeScript build ([0f7e7ab](https://github.com/poolifier/poolifier/commit/0f7e7ab9d579993354dc1e663844f34fb50bde8f))
 - **deps:** update all non-major dependencies ([#3131](https://github.com/poolifier/poolifier/issues/3131)) ([6feccf8](https://github.com/poolifier/poolifier/commit/6feccf899538c5dd40663aa23154b17858b563b9))
 - **test:** use fake timers for sleep() test to avoid flakiness ([9aecfea](https://github.com/poolifier/poolifier/commit/9aecfea894df51341667235bebaabf8b6010339a))
-
 
 ### 🧪 Tests
 
@@ -208,13 +196,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - use strict spy call count assertions in worker tests ([eb45f98](https://github.com/poolifier/poolifier/commit/eb45f98076a0090a5f5306f31f17d64e662299c6))
 - **worker:** add 22 tests for abstract-worker coverage ([dc8f667](https://github.com/poolifier/poolifier/commit/dc8f66791f48b825e8926e3fc9c861e2f885083d))
 
-
 ### 📚 Documentation
 
 - add JSDoc types and descriptions to vitest setup ([f30fcf5](https://github.com/poolifier/poolifier/commit/f30fcf57d6a066e5cd9002bb513f24f2bde7f57d))
 - consolidate multiple task functions features in README ([4a55f12](https://github.com/poolifier/poolifier/commit/4a55f12c6f30239ae7dee6fef52b9737c5337df5))
 - publish documentation ([9abaa2b](https://github.com/poolifier/poolifier/commit/9abaa2b426b37f9ea111351eee510649542b3683))
-
 
 ### 🤖 Automation
 
@@ -227,7 +213,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **iwrr:** remove erroneous workerNodeId reset corrupting round-robin state ([8bd56e7](https://github.com/poolifier/poolifier/commit/8bd56e7249b2cd8e8f0a596108e40a966912bb31))
 
-
 ### 📚 Documentation
 
 - publish documentation ([6a3b616](https://github.com/poolifier/poolifier/commit/6a3b616779e7d5e7f82a53b9cbd2c14221220e3c))
@@ -238,11 +223,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **pool:** add agingFactor and loadExponent tunables to TasksQueueOptions ([d0b9cf8](https://github.com/poolifier/poolifier/commit/d0b9cf8acfc5f85faac4570b1b5d5a1a5bf4c9c4))
 
-
 ### 🐞 Bug Fixes
 
 - **deps:** update all non-major dependencies ([#3126](https://github.com/poolifier/poolifier/issues/3126)) ([7a20707](https://github.com/poolifier/poolifier/commit/7a20707fc956ca610febe85c5896b3fc8aa68158))
-
 
 ### 📚 Documentation
 
@@ -253,7 +236,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Features
 
 - task function worker node affinity ([#2269](https://github.com/poolifier/poolifier/issues/2269)) ([8d9f9d7](https://github.com/poolifier/poolifier/commit/8d9f9d710c74ad72b7028fad325b8ccbf19a993b))
-
 
 ### 🐞 Bug Fixes
 
@@ -275,11 +257,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - safe access to tasks queue size ([f59708e](https://github.com/poolifier/poolifier/commit/f59708e59f29b19e926106829dfbd46128497556))
 - validate workerNodeKeys on worker ready and remove misleading JSDoc ([456af2f](https://github.com/poolifier/poolifier/commit/456af2f2a433d924b36cf1ed432414cc153a2313))
 
-
 ### 📚 Documentation
 
 - publish documentation ([79d75fb](https://github.com/poolifier/poolifier/commit/79d75fb3bc764f116c274c8adbc65b075f20b592))
-
 
 ### 🤖 Automation
 
@@ -292,21 +272,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **examples:** properly handle ws raw data ([c410293](https://github.com/poolifier/poolifier/commit/c41029326b21256ef3a54aa9ca47a0645bd40e50))
 - potention race on circular buffer size ([3b33f0f](https://github.com/poolifier/poolifier/commit/3b33f0f5616d6f0fc4aa1514a5087710a4f40c82))
 
-
 ### ⚡ Performance
 
 - switch default worker choice strategy to LEAST_USED ([1dadb96](https://github.com/poolifier/poolifier/commit/1dadb963a6cd45ca19285f4ec0d71d2ad9b0f530))
-
 
 ### ✨ Polish
 
 - migrate benchmarks to tinybench ([b4c993e](https://github.com/poolifier/poolifier/commit/b4c993e6990ec3a4d00a8337d869bfb37a8676a7))
 
-
 ### 📚 Documentation
 
 - publish documentation ([17dd5ca](https://github.com/poolifier/poolifier/commit/17dd5ca68dc01833306796f3b239ce6a5fb29b53))
-
 
 ### 🤖 Automation
 
@@ -359,16 +335,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - use strict object equality in tasks stealing code ([eec0932](https://github.com/poolifier/poolifier/commit/eec09324ae02df9fe24c12c39cb2c7e802708c90))
 
-
 ### ✨ Polish
 
 - cleanup nested conditions ([4377e4a](https://github.com/poolifier/poolifier/commit/4377e4a60ced3b5b91e2592ca573a08ecb2ce188))
 
-
 ### 📚 Documentation
 
 - publish documentation ([161a550](https://github.com/poolifier/poolifier/commit/161a5501c5d948ff01c592c0b2b511f03e6fec86))
-
 
 ### 🤖 Automation
 
@@ -382,7 +355,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - add adaptive aging factor to priority queue ([66c08e6](https://github.com/poolifier/poolifier/commit/66c08e6f68fbe7aeaa8da91fe8ed812e1befefc9))
 - soften priority queue adaptive aging ([6730e51](https://github.com/poolifier/poolifier/commit/6730e51eee812924b6a39eeefb694df83aee9ca3))
 
-
 ### 📚 Documentation
 
 - publish documentation ([3ce04bf](https://github.com/poolifier/poolifier/commit/3ce04bf8d9f3fdbebb9c7231118ab3b3fb7e8884))
@@ -393,12 +365,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - ensure destroy event has up2date pool info ([c4138fc](https://github.com/poolifier/poolifier/commit/c4138fc3c739c33ad4e1d31cc8e583a97f4ef7aa))
 
-
 ### ✨ Polish
 
 - make pool destroy() more robust ([8b444c5](https://github.com/poolifier/poolifier/commit/8b444c5b53ea4dcd204fe6b5f58db802ca4d88b2))
 - reorder task finished event emission ([e2f9978](https://github.com/poolifier/poolifier/commit/e2f99782c54b5c76bdb426c488d76539f949a906))
-
 
 ### 📚 Documentation
 
@@ -411,21 +381,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - properly account strategy retries on a per strategy basis ([910c169](https://github.com/poolifier/poolifier/commit/910c16976ee437c1b9011b6db197386a21c8739f))
 
-
 ### ⚡ Performance
 
 - reduce pool info property internal usage ([662c6c1](https://github.com/poolifier/poolifier/commit/662c6c101161b8f263e304b461087082edb1c003))
-
 
 ### 🧪 Tests
 
 - cleanup worker selection strategies test ([b283bd6](https://github.com/poolifier/poolifier/commit/b283bd67fb3b93265bda9b4f84bcff0b368502a1))
 
-
 ### 📚 Documentation
 
 - publish documentation ([1f917ef](https://github.com/poolifier/poolifier/commit/1f917ef09dce557105622844d50b620bd2d10737))
-
 
 ### 🤖 Automation
 
@@ -438,12 +404,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - avoid starvation with task priority ([0055d2c](https://github.com/poolifier/poolifier/commit/0055d2cc17b8b884c97d8288705c6a52379931b7))
 
-
 ### ✨ Polish
 
 - add guard to priority queue delete() ([4b7df91](https://github.com/poolifier/poolifier/commit/4b7df9108c47a7bd7ddf28ce7e7e65836bc47d75))
 - flag fixed queue internal storage data structure readonly ([f867622](https://github.com/poolifier/poolifier/commit/f86762208f4f47deef49e31d61ca5c583abd5531))
-
 
 ### 📚 Documentation
 
@@ -456,18 +420,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - handle more task function declaration signatures ([aa06657](https://github.com/poolifier/poolifier/commit/aa0665719e090b6fcd4e6a58b587c7d3d484e1b3))
 - worker index identification at tasks stealing under back pressure ([ae736ce](https://github.com/poolifier/poolifier/commit/ae736ce03e1f63459c4740e09ab274fb8af5cd59))
 
-
 ### ✨ Polish
 
 - avoid delete usage ([39cb900](https://github.com/poolifier/poolifier/commit/39cb900083048ed2c1f219301460b07d226ddd13))
 - cleanup worker selection strategies code ([60da3e6](https://github.com/poolifier/poolifier/commit/60da3e651a8bb2fea1327c5ba5045ae67d81418f))
 - refine error messages ([d03a706](https://github.com/poolifier/poolifier/commit/d03a70632b89beaa18910aedf60cc95a7632399b))
 
-
 ### 📚 Documentation
 
 - publish documentation ([8baa91d](https://github.com/poolifier/poolifier/commit/8baa91d868d430c7b219da58d20db9ebb5fa6a8e))
-
 
 ### 🤖 Automation
 
@@ -496,11 +457,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - account task wait time in least ELU strategy ([673d651](https://github.com/poolifier/poolifier/commit/673d651cc621bcf2325bd31df7f6850c81371c4a))
 
-
 ### ✨ Polish
 
 - **queue:** cleanup variables namespace ([5434cce](https://github.com/poolifier/poolifier/commit/5434cce8cce124245882592ee9ab753b06cfaf41))
-
 
 ### 🧪 Tests
 
@@ -509,11 +468,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - reduce mocha timeout ([fe509db](https://github.com/poolifier/poolifier/commit/fe509dbdd8a07d94dae66064a8d7db3e928db493))
 - revert test skipping ([3d9c240](https://github.com/poolifier/poolifier/commit/3d9c240c28e65c370e882ffbb95e41d8ee2758f0))
 
-
 ### 📚 Documentation
 
 - publish documentation ([8dae565](https://github.com/poolifier/poolifier/commit/8dae56540d73d286eeed363c336515308760ea28))
-
 
 ### 🤖 Automation
 
@@ -526,11 +483,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - ensure worker ready handler is registered once on windows ([#2917](https://github.com/poolifier/poolifier/issues/2917)) ([906c321](https://github.com/poolifier/poolifier/commit/906c321c7ab883f633fbf3ae1649ad89d90490b5))
 
-
 ### 📚 Documentation
 
 - publish documentation ([d89f17b](https://github.com/poolifier/poolifier/commit/d89f17b76445d88e2bdd04d8f3b14a395172bb82))
-
 
 ### 🤖 Automation
 
@@ -542,7 +497,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - avoid recursion in task queueing iterator ([359c1fd](https://github.com/poolifier/poolifier/commit/359c1fd0234b654adb375bd8dabd9910343d59b5))
 
-
 ### 📚 Documentation
 
 - publish documentation ([4e1cfa8](https://github.com/poolifier/poolifier/commit/4e1cfa8976e79e57dff6946cf6527e76b1bb09a7))
@@ -553,23 +507,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - worker node destroy race condition at pool destroy ([655eec0](https://github.com/poolifier/poolifier/commit/655eec07671468758ff6484391c8c8e8fb09701c))
 
-
 ### ✨ Polish
 
 - refine waitWorkerNodeEvents() API ([840352e](https://github.com/poolifier/poolifier/commit/840352e3ba045c80c0e1e860e7d56355a12c3b2d))
-
 
 ### 🧪 Tests
 
 - refine expectations ([365b12f](https://github.com/poolifier/poolifier/commit/365b12f66739fa23c0d093830d4e243728b5b712))
 - refine pool destroy time expectation ([e5a1ff9](https://github.com/poolifier/poolifier/commit/e5a1ff94fd11b014790b71348228e04a36398a75))
 
-
 ### 📚 Documentation
 
 - comment spell fix ([c983795](https://github.com/poolifier/poolifier/commit/c98379537601a0e260d286db73306ac7ca5bebb3))
 - publish documentation ([c85e7e0](https://github.com/poolifier/poolifier/commit/c85e7e02381e81592de44d4eeef0818464f50e05))
-
 
 ### 🤖 Automation
 
@@ -583,14 +533,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ensure dynamic worker can't be created at pool destroy ([#2916](https://github.com/poolifier/poolifier/issues/2916)) ([1e453b0](https://github.com/poolifier/poolifier/commit/1e453b0f9c372445a9f191f1c1d11bcb5532c1d1))
 - ensure worker kill message response is not handled by the generic ([1b20484](https://github.com/poolifier/poolifier/commit/1b204843dccdb3bf6a41bf6104667867256abe16))
 
-
 ### ✨ Polish
 
 - add worker strategy name to help UTs debug ([8d3efca](https://github.com/poolifier/poolifier/commit/8d3efca6e146993ce209d73f783d3adb1dbf5363))
 - cleanup task function ops method ([62242b7](https://github.com/poolifier/poolifier/commit/62242b7d286af3251b00a48a90491ff1f4b1fac5))
 - ensure safer access to worker node status ([a92483b](https://github.com/poolifier/poolifier/commit/a92483beb1e3f715455dd11b4f8f0c0c4b56d488))
 - improve messaging worker id check error message ([d5e7715](https://github.com/poolifier/poolifier/commit/d5e7715416d850bf944bb23c6fe7e74b1c952fac))
-
 
 ### 🧪 Tests
 
@@ -600,7 +548,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - increase mocha timeout ([1670c56](https://github.com/poolifier/poolifier/commit/1670c568bc47d9daa87e9d13fb622dbc365dd39e))
 - put back initial margin at timeout expectation ([2879ec7](https://github.com/poolifier/poolifier/commit/2879ec7db5c9b7c4139362af15b87b73112ebb5f))
 - refine expectation ([5c5f380](https://github.com/poolifier/poolifier/commit/5c5f38057c0a1a7777f0dc31004ce1ca4ab7e999))
-
 
 ### 📚 Documentation
 
@@ -614,11 +561,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix potential ressource leaks ([3386e26](https://github.com/poolifier/poolifier/commit/3386e26ca681aa33757903602d6e23c56401a8e4))
 - plug more ressource leaks ([42447ec](https://github.com/poolifier/poolifier/commit/42447ec132088d117c9b6a3f99adc7da21828c4a))
 
-
 ### ✨ Polish
 
 - cleanup priority queue code ([4ad3a82](https://github.com/poolifier/poolifier/commit/4ad3a82f0c72c20b89be37ee4142441bef20a157))
-
 
 ### 📚 Documentation
 
@@ -630,7 +575,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - fix worker usage statistics computation ([f6392d5](https://github.com/poolifier/poolifier/commit/f6392d503f33ca42d5125f9b524fd9454b87fbba))
 
-
 ### 📚 Documentation
 
 - publish documentation ([ba4f2c7](https://github.com/poolifier/poolifier/commit/ba4f2c791a628adc00a7761f9052a4b5d8345cf6))
@@ -641,16 +585,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - task queueing fixes ([#2912](https://github.com/poolifier/poolifier/issues/2912)) ([8a2bf75](https://github.com/poolifier/poolifier/commit/8a2bf757c04a2056ff94dda488e87d817c7291d5))
 
-
 ### ⚡ Performance
 
 - remove unneeded null check at building abortable task function ([0961d2d](https://github.com/poolifier/poolifier/commit/0961d2de5e99f1c9ea11db7d317bdf6ca9ef2af1))
 
-
 ### 📚 Documentation
 
 - publish documentation ([bf95519](https://github.com/poolifier/poolifier/commit/bf95519bc47c070d16139e857f42ea544ce9f3fc))
-
 
 ### 🤖 Automation
 
@@ -666,11 +607,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - coding style cleanups ([963e668](https://github.com/poolifier/poolifier/commit/963e6682981bfb39b95e252c5a83a2b4fca16302))
 
-
 ### 📚 Documentation
 
 - publish documentation ([abd5fcb](https://github.com/poolifier/poolifier/commit/abd5fcbefd80cd9f9a9deca49e3472997e89d732))
-
 
 ### 🤖 Automation
 
@@ -682,7 +621,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ⚡ Performance
 
 - remove unneeded worker class event emitter inheritance ([8e77a4e](https://github.com/poolifier/poolifier/commit/8e77a4e6c2aab9717609ce5f687d4c0103de7c4a))
-
 
 ### 📚 Documentation
 
@@ -699,11 +637,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - add abortable task support ([#1625](https://github.com/poolifier/poolifier/issues/1625)) ([f4289ec](https://github.com/poolifier/poolifier/commit/f4289ecb624ab84f01cf82e9177befaab2b50e28))
 
-
 ### 🐞 Bug Fixes
 
 - ensure using task abortion API is not altering operations ([1c02490](https://github.com/poolifier/poolifier/commit/1c02490bb950dbb6dc413f9cb7c36aae8fb4a254))
-
 
 ### ✨ Polish
 
@@ -714,11 +650,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - revert flagging worker options as readonly ([5c85bc8](https://github.com/poolifier/poolifier/commit/5c85bc8c72222b81083a5e6c1f3002019da49a6a))
 - safer access to worker nodes array element ([c18e053](https://github.com/poolifier/poolifier/commit/c18e0539ca4fc6fa754d29799e01028127358667))
 
-
 ### 📚 Documentation
 
 - publish documentation ([948524d](https://github.com/poolifier/poolifier/commit/948524d72251b0ce7734f01afdc97af9521d5038))
-
 
 ### 🤖 Automation
 
@@ -848,7 +782,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **deps:** bump the regular group across 7 directories with 2 updates ([#2709](https://github.com/poolifier/poolifier/issues/2709)) ([c4bed4c](https://github.com/poolifier/poolifier/commit/c4bed4c1b4957453c48acd65ef3f28abed076147))
 - **deps:** bump the regular group across 7 directories with 2 updates ([#2724](https://github.com/poolifier/poolifier/issues/2724)) ([3763050](https://github.com/poolifier/poolifier/commit/37630505e88a2ce7fde14620e27f6f7c8aa6042d))
 
-
 ### 🧹 Chores
 
 - drop node 18.x.x support ([b5a9d39](https://github.com/poolifier/poolifier/commit/b5a9d39f1d06fa9d41344f6f1519317b4c521e88))
@@ -859,18 +792,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - blank lines cleanup ([a7fbf32](https://github.com/poolifier/poolifier/commit/a7fbf324682fcbd325de5f6c53e18112c78d28f7))
 
-
 ### 🧪 Tests
 
 - refine some test expectations ([7045f62](https://github.com/poolifier/poolifier/commit/7045f62e8115936329079d6ba3c6df96db85ca42))
-
 
 ### 📚 Documentation
 
 - generate typedoc documentation ([92daba4](https://github.com/poolifier/poolifier/commit/92daba400a9710d9a51af1c226f186e6fd2f8472))
 - integrate markdown files to typedoc ([0e2d51f](https://github.com/poolifier/poolifier/commit/0e2d51f99b6dc7656c91c6347386498cdfd881f0))
 - publish documentation ([7da8035](https://github.com/poolifier/poolifier/commit/7da803598cda0e6935733c84fb4a6afa8a8fe4bd))
-
 
 ### 🤖 Automation
 
@@ -908,7 +838,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - move tasks promise map entry deletion to a micro task ([722a827](https://github.com/poolifier/poolifier/commit/722a827f60eea10650958617bea72094ed702a08))
 - use micro tasks in tasks handling code paths ([48867d8](https://github.com/poolifier/poolifier/commit/48867d87c92c2cd6f2585db235a064dd6ef854cd))
 
-
 ### 📚 Documentation
 
 - publish documentation ([8f8bebc](https://github.com/poolifier/poolifier/commit/8f8bebcae9c533f17fef20cd1ca2daa65616d1cf))
@@ -918,7 +847,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 📚 Documentation
 
 - publish documentation ([557444c](https://github.com/poolifier/poolifier/commit/557444c71a0cd2d0662a63196928ed1388994257))
-
 
 ### 🤖 Automation
 
@@ -931,17 +859,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - ensure WorkerError similarity between cluster and worker-threads ([1b12ff4](https://github.com/poolifier/poolifier/commit/1b12ff49353f2ba5eadd8fc0241895b050cbc3d4))
 
-
 ### ✨ Polish
 
 - factor out WorkerError handling ([6f82891](https://github.com/poolifier/poolifier/commit/6f82891836b8086f8239430dc25abb364fa53e0f))
-
 
 ### 📚 Documentation
 
 - cleanup code comment typo ([c47de87](https://github.com/poolifier/poolifier/commit/c47de879e9f3fbd1e3bce8bf2d84864faaf1b69f))
 - publish documentation ([ec0e975](https://github.com/poolifier/poolifier/commit/ec0e975933e833d15e76a95798759e2b3e3e4ce0))
-
 
 ### 🤖 Automation
 
@@ -953,7 +878,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - ensure worker error is propagated unchanged if possible ([#2634](https://github.com/poolifier/poolifier/issues/2634)) ([7e582d6](https://github.com/poolifier/poolifier/commit/7e582d647a6e2fff7aba7431133638dcfd0fa6f9))
 
-
 ### 📚 Documentation
 
 - publish documentation ([cb9d18c](https://github.com/poolifier/poolifier/commit/cb9d18cc44c7be166b31dbdf2197563a3f713175))
@@ -964,22 +888,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - add worker side error stack trace to WorkerError ([#2631](https://github.com/poolifier/poolifier/issues/2631)) ([5fd1e6b](https://github.com/poolifier/poolifier/commit/5fd1e6bf528d56998a64e5238d4428af693b18c8))
 
-
 ### 🐞 Bug Fixes
 
 - **ci:** untanble build from benchmarking scripts ([693da4d](https://github.com/poolifier/poolifier/commit/693da4ddac420003f0e6a03d0090a712bb91fb16))
 - fix production build ([96e15f3](https://github.com/poolifier/poolifier/commit/96e15f3d994c6240a6ee50431065e3d593d9f581))
 
-
 ### ⚡ Performance
 
 - speed up isAsyncFunction() helper ([e155dc6](https://github.com/poolifier/poolifier/commit/e155dc6f44e131201196c5537bff363d9d0b79bb))
 
-
 ### 📚 Documentation
 
 - publish documentation ([7bd639b](https://github.com/poolifier/poolifier/commit/7bd639b904e493311f0115d0f2599552f0351ccb))
-
 
 ### 🤖 Automation
 
@@ -1004,18 +924,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **benchmarks:** add bencher threshold checks ([e56c70e](https://github.com/poolifier/poolifier/commit/e56c70ec471b0ebfccfa0ab0f31be391221d948c))
 
-
 ### 🐞 Bug Fixes
 
 - **benchmarks:** add upper/lower values to BMF throughput ([d6e6b64](https://github.com/poolifier/poolifier/commit/d6e6b6414d53a81d81eeae068eb87d6eaf707038))
 - **benchmarks:** fix BMF report upper/lower values ([0a98c64](https://github.com/poolifier/poolifier/commit/0a98c64c82e0102042da0eaebf8fed78691261a1))
 - fix benchmarks report conversion to BMF format ([8a93e4e](https://github.com/poolifier/poolifier/commit/8a93e4eeb91c673d68a858126b090e8613a950d5))
 
-
 ### ⚡ Performance
 
 - pre-create worker if needed at the end of task execution ([1d5588f](https://github.com/poolifier/poolifier/commit/1d5588f7a7157f4214c0f326c294cd966525bee3))
-
 
 ### ✨ Polish
 
@@ -1023,11 +940,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - enable `.editorconfig` in biome formatter ([cc46610](https://github.com/poolifier/poolifier/commit/cc46610423b11000bcd11e869db96f28d90ce825))
 - turn on `noImplicitOverride` in TS configuration ([ae85b35](https://github.com/poolifier/poolifier/commit/ae85b3512e8a94e5c66aec8a5e9caa6b8b575137))
 
-
 ### 📚 Documentation
 
 - publish documentation ([b83ac2a](https://github.com/poolifier/poolifier/commit/b83ac2ad12bdcb264f1d94b546b0c46196123e11))
-
 
 ### 🤖 Automation
 
@@ -1077,21 +992,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - track dynamic pool empty event lifecycle ([7923fe5](https://github.com/poolifier/poolifier/commit/7923fe59f4a88b218744b16f977faf93015407ac))
 
-
 ### ✨ Polish
 
 - add dynamic worker nodes count to pool info ([01277ce](https://github.com/poolifier/poolifier/commit/01277ce688c015fff1bee425276b20077e7a8f34))
-
 
 ### 🧪 Tests
 
 - refine dynamic pool shutdown test expectations ([fc43a51](https://github.com/poolifier/poolifier/commit/fc43a5150338466915bc57705d00bd0e5255eac7))
 
-
 ### 📚 Documentation
 
 - publish documentation ([4a809cf](https://github.com/poolifier/poolifier/commit/4a809cfc7dd384ec3c8dd8304d99d2160cf94466))
-
 
 ### 🤖 Automation
 
@@ -1106,17 +1017,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - optimize backpressure task(s) stealing conditions ([9df97af](https://github.com/poolifier/poolifier/commit/9df97afd77c24c8850e0d56eae3d3c66df181981))
 
-
 ### ✨ Polish
 
 - add `isWorkerNodeStealing()` helper ([febcf8e](https://github.com/poolifier/poolifier/commit/febcf8e370ebf9ed2e45ba25296e937277d61e93))
 - factor out stealing ratio conditions check into an helper ([207df8a](https://github.com/poolifier/poolifier/commit/207df8aa5381ac3d3ca1f10d9cb79e01593ba10f))
 
-
 ### 🧪 Tests
 
 - cleanup error handling expectations ([d960e54](https://github.com/poolifier/poolifier/commit/d960e542b476b90385e962c9be41422860310426))
-
 
 ### 📚 Documentation
 
@@ -1125,7 +1033,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - code cleanup in examples ([24bc951](https://github.com/poolifier/poolifier/commit/24bc951b90abfe7a365ef6323888d51fde479552))
 - publish documentation ([d3a3b16](https://github.com/poolifier/poolifier/commit/d3a3b16f4443cdfda453e56570a0873863df2d03))
 - switch to `mapExecute()` in examples ([8162986](https://github.com/poolifier/poolifier/commit/8162986eb9aff717ad56bed372abd6c63fe2a31d))
-
 
 ### 🤖 Automation
 
@@ -1143,7 +1050,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - handle properly small or zero `tasksStealingRatio` ([e45f621](https://github.com/poolifier/poolifier/commit/e45f62158cd1a0e899173a453b1fa43fb8ce7bba))
 
-
 ### 📚 Documentation
 
 - publish documentation ([41a50df](https://github.com/poolifier/poolifier/commit/41a50dfe7c49c05bf2cd8a9cc0a6ff47385836e4))
@@ -1154,16 +1060,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - fix dynamic thread pool full event emission rate ([52021de](https://github.com/poolifier/poolifier/commit/52021de72b77aa6c6fdd7c6dd816d7d53e6b2feb))
 
-
 ### ✨ Polish
 
 - move dynamic pool only getters to its own class ([21e6b0e](https://github.com/poolifier/poolifier/commit/21e6b0ef4c8b89dbf4f8c588ae50887ce1f5177f))
 
-
 ### 🧪 Tests
 
 - refine pool event tests expectation ([6a30766](https://github.com/poolifier/poolifier/commit/6a307669ef6f5aae3a8b79504255a8d3bdfd7c86))
-
 
 ### 📚 Documentation
 
@@ -1171,7 +1074,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **README.md:** fix worker example export ([a5844a0](https://github.com/poolifier/poolifier/commit/a5844a0fffdb82f3890ff87fd0a75860edc20eea))
 - **README.md:** use top level await syntax in example ([3b4d090](https://github.com/poolifier/poolifier/commit/3b4d090fab7dd028a45d8ed12b02837919106084))
 - refine pool ready event emission condition ([3abc7fe](https://github.com/poolifier/poolifier/commit/3abc7fe895e74ae347ab729569f94d25729fceb1))
-
 
 ### 🤖 Automation
 
@@ -1185,22 +1087,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - reduce useless branching at pool info building ([4a29667](https://github.com/poolifier/poolifier/commit/4a29667ae71425df81946f45951e90aef20986e9))
 - track dynamic pool full lifecycle via events ([5f9e905](https://github.com/poolifier/poolifier/commit/5f9e90500ddf396a1862479540a4784bca043a20))
 
-
 ### ✨ Polish
 
 - cleanup pool information ordering ([ba443f4](https://github.com/poolifier/poolifier/commit/ba443f407e3d94f83bb8d013f7552b271bd3d445))
 - merge dynamic pool events emission code ([e6cf2a9](https://github.com/poolifier/poolifier/commit/e6cf2a95dd56b9683ed81b622f5565c97a60e5a1))
 
-
 ### 🧪 Tests
 
 - improve pool empty event test ([4b91b77](https://github.com/poolifier/poolifier/commit/4b91b77184b873be455d65b91719f747bb460778))
 
-
 ### 📚 Documentation
 
 - publish documentation ([f948bb3](https://github.com/poolifier/poolifier/commit/f948bb3ef36f727934404c7a490075d431022e39))
-
 
 ### 🤖 Automation
 
@@ -1213,22 +1111,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - fix pool back pressure semantic on dynamic pool ([227e9e9](https://github.com/poolifier/poolifier/commit/227e9e9b75b8e004dd7651af5961490e58ffdda9))
 
-
 ### ⚡ Performance
 
 - track pool back pressure lifecycle via events ([303c0db](https://github.com/poolifier/poolifier/commit/303c0db0528190df1f9f726e96c49dbb10f09d27))
 - track pool busy lifecycle via events ([f8a57da](https://github.com/poolifier/poolifier/commit/f8a57da1a44233d40635aabba944ed036258f8ab))
 
-
 ### ✨ Polish
 
 - cleanup worker node back pressure checks ([697d8c6](https://github.com/poolifier/poolifier/commit/697d8c6debe324881015e70f43f708c6880be92a))
 
-
 ### 📚 Documentation
 
 - publish documentation ([22cdcdd](https://github.com/poolifier/poolifier/commit/22cdcddef65fbcad1f91bbdbec4788c9b81d29be))
-
 
 ### 🤖 Automation
 
@@ -1241,12 +1135,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - ensure no deleted dynamic worker can be used to steal task(s) ([60ff5f0](https://github.com/poolifier/poolifier/commit/60ff5f050aac60f90e63638029b88e80e91e259c))
 
-
 ### ✨ Polish
 
 - cleanup worker node back pressure detection implementation ([6546b6a](https://github.com/poolifier/poolifier/commit/6546b6a8ba008ea2be1a3ecc129054f4b84417c2))
 - cleanup worker node state conditions check ([2a8bfdf](https://github.com/poolifier/poolifier/commit/2a8bfdff6ba9391ec6dd0f733b23d39633583bcb))
-
 
 ### 📚 Documentation
 
@@ -1258,23 +1150,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - fix pool ready status with zero min size dynamic pool ([e48fa7a](https://github.com/poolifier/poolifier/commit/e48fa7a7cd32d0b42df79043b773fcb1e6f2c778))
 
-
 ### ✨ Polish
 
 - switch to eslint-plugin-perfectionist ([9723108](https://github.com/poolifier/poolifier/commit/972310863f23533360c1021be9c00f375230f81d))
-
 
 ### 🧪 Tests
 
 - add pool empty event test ([7682c56](https://github.com/poolifier/poolifier/commit/7682c56f39d439b949dd02f1c3a251e261d1eb49))
 - optimize pool empty event test ([fa97876](https://github.com/poolifier/poolifier/commit/fa97876e2e8c5d8b507bc467bf8026f9a6573628))
 
-
 ### 📚 Documentation
 
 - publish documentation ([4073f18](https://github.com/poolifier/poolifier/commit/4073f18713bcccfae354c3eb03c63e5a50496192))
 - refine a code comment ([cee9a55](https://github.com/poolifier/poolifier/commit/cee9a55aca4d0794d9d64fbd7b7206375c34f27b))
-
 
 ### 🤖 Automation
 
@@ -1291,17 +1179,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - account for all stealing worker nodes ([d967235](https://github.com/poolifier/poolifier/commit/d9672350c04638ef28b10b6f480e8e7cd89256f0))
 
-
 ### ✨ Polish
 
 - define a variable only when needed ([4f28c7a](https://github.com/poolifier/poolifier/commit/4f28c7ae4e0c53cb328c4e5bdfe246f02fe1baf2))
 - display back pressured worker nodes in pool info ([8c7a518](https://github.com/poolifier/poolifier/commit/8c7a518dde490c0d370dff2e47ee86062d715dad))
 
-
 ### 📚 Documentation
 
 - publish documentation ([e4db94f](https://github.com/poolifier/poolifier/commit/e4db94fc95fd5bb37fd446516f29b62fe38dc7fb))
-
 
 ### 🤖 Automation
 
@@ -1318,7 +1203,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix race condition at task response handling during pool destroy ([b28533a](https://github.com/poolifier/poolifier/commit/b28533a38f984b6a28edf6edc53940bd85f24200))
 - workaround race conditions at pool destroy ([684f132](https://github.com/poolifier/poolifier/commit/684f132a0f46afc01f2e95ec004ecfd2548b8d49))
 
-
 ### 📚 Documentation
 
 - publish documentation ([df66bb1](https://github.com/poolifier/poolifier/commit/df66bb1d802af27d29b1ca2e29b0b1c95636b0e1))
@@ -1330,17 +1214,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ensure task stealing can't start twice on the same worker node ([37cc14e](https://github.com/poolifier/poolifier/commit/37cc14e81ea8e83ea2b78cf27e0e74f3c4694e21))
 - trigger continuous tasks stealing under proper conditions ([2663563](https://github.com/poolifier/poolifier/commit/2663563da5f52fd57be41127e5c789c86e969ae7))
 
-
 ### ✨ Polish
 
 - remove unneeded condition at task response handling ([93df097](https://github.com/poolifier/poolifier/commit/93df097ec6c54af9f0d29df0cb61cb901f29fca4))
-
 
 ### 📚 Documentation
 
 - publish documentation ([b4f9421](https://github.com/poolifier/poolifier/commit/b4f9421addf669cffe56d2f30f0fbab42dfe9755))
 - refine code comment about task stealing conditions ([80716e5](https://github.com/poolifier/poolifier/commit/80716e5039fb14c3731fa6b7f22334fcd4e5b314))
-
 
 ### 🤖 Automation
 
@@ -1353,22 +1234,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - reenable tasks stealing under back pressure by default ([f09b195](https://github.com/poolifier/poolifier/commit/f09b195471d82466f32dfbc3c3751202d4ea2f9a))
 
-
 ### 🐞 Bug Fixes
 
 - protect worker node tasks queue from concurrent tasks stealing ([eebfd81](https://github.com/poolifier/poolifier/commit/eebfd819241181d59144f45b51f566fca0211fc5))
-
 
 ### ⚡ Performance
 
 - do mapExecute() args sanity checks once ([390300c](https://github.com/poolifier/poolifier/commit/390300c363d3535fd622f07d54c40cfad9fdbb0b))
 
-
 ### ✨ Polish
 
 - cleanup eslint configuration ([d5f06e4](https://github.com/poolifier/poolifier/commit/d5f06e40422119fca0b15562883f9060f466f673))
 - cleanup worker condition checks at task stealing ([d52d477](https://github.com/poolifier/poolifier/commit/d52d4773cc0ed2936aea894224a7edc3dab8359a))
-
 
 ### 🧪 Tests
 
@@ -1376,13 +1253,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - cleanup resources setup and teardown ([e1e0cb2](https://github.com/poolifier/poolifier/commit/e1e0cb25f128238f3f7b3a49f41fa5e5be236577))
 - remove duplicate tests ([55a9fbc](https://github.com/poolifier/poolifier/commit/55a9fbccadf29da6e3cb30471f3a5ce1e0d7c641))
 
-
 ### 📚 Documentation
 
 - add documentation on enablePrority priority queue getter/setter ([3e53cc1](https://github.com/poolifier/poolifier/commit/3e53cc14e502b532f31536efefe84212c98ee024))
 - **api:** add missing tasksStealingRatio default value ([5b65da9](https://github.com/poolifier/poolifier/commit/5b65da9662b764070a8414e2cce53294f5fd9498))
 - publish documentation ([e57792c](https://github.com/poolifier/poolifier/commit/e57792c1bbb944b28efe0a34027ac1e35ffd62d5))
-
 
 ### 🤖 Automation
 
@@ -1430,23 +1305,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - add ratio of worker nodes in a pool allowed to perform concurrent tasks stealing ([e25f86b](https://github.com/poolifier/poolifier/commit/e25f86b30763ea5c2e5fc6c0ef16818b7e4efe83)), closes [#2284](https://github.com/poolifier/poolifier/issues/2284)
 
-
 ### ✨ Polish
 
 - npx -&gt; pnpm dlx where appropriates ([21b76dc](https://github.com/poolifier/poolifier/commit/21b76dc2ca538ea8691570e599b152d4d4dd50bd))
 
-
 ### 🧪 Tests
 
 - fix error type expectation ([16196bc](https://github.com/poolifier/poolifier/commit/16196bc039fc80684b777cf4cd9e822e3293c339))
-
 
 ### 📚 Documentation
 
 - **api.md:** add missing ToC entry ([989a71a](https://github.com/poolifier/poolifier/commit/989a71a5497bfeb445748022d241de083fa9d66b))
 - **api.md:** document tasksStealingRatio tasks queue option ([453c646](https://github.com/poolifier/poolifier/commit/453c6467536356616003ea3666fd4d14ef539e26))
 - publish documentation ([082fb4d](https://github.com/poolifier/poolifier/commit/082fb4db638f093fe284690eaf4764e0a2758184))
-
 
 ### 🤖 Automation
 
@@ -1473,23 +1344,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - null exception when a task errored ([ac5ee55](https://github.com/poolifier/poolifier/commit/ac5ee55ef0ad7dc29f3d0bc6906e2e127dc2e026))
 
-
 ### ✨ Polish
 
 - **priority-queue:** cleanup intermediate variables namespace ([bb5d86b](https://github.com/poolifier/poolifier/commit/bb5d86b228984c83011f07de7b012f1fcd48fe0a))
 
-
 ### 🧪 Tests
 
 - improve WorkerNode init coverage ([bcac180](https://github.com/poolifier/poolifier/commit/bcac1803a87e7cbb6fcbebd691a322d796266329))
-
 
 ### 📚 Documentation
 
 - fix CHANGELOG.md formatting ([1823a63](https://github.com/poolifier/poolifier/commit/1823a63f7348cbe1a954b8d3a431bb8087cf8b76))
 - flag WorkerChoiceStrategiesContext class as internal ([9eacd2e](https://github.com/poolifier/poolifier/commit/9eacd2e07943c40c0b984de621fc9542f959aed6))
 - publish documentation ([62d0f6f](https://github.com/poolifier/poolifier/commit/62d0f6fe252439cf9a7d71c290a3f1a162aeb829))
-
 
 ### 🤖 Automation
 
@@ -3031,9 +2898,11 @@ _This is not a limitation by poolifier but Node.js._
 #### Internal (protected) properties and methods renaming
 
 These properties are not intended for end users
+
 - `id` => `nextMessageId`
 
 These methods are not intended for end users
+
 - `_chooseWorker` => `chooseWorker`
 - `_newWorker` => `createWorker`
 - `_execute` => `internalExecute`
