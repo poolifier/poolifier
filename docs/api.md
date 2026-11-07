@@ -145,6 +145,7 @@ Custom worker subclasses that defer task function operations must echo the reque
 ### Pool options
 
 An object with these properties:
+
 - `onlineHandler` (optional) - A function that will listen for online event on each worker.  
   Default: `() => {}`
 - `messageHandler` (optional) - A function that will listen for message event on each worker.  

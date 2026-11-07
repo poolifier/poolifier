@@ -163,6 +163,7 @@ try {
 You can do the same with the classes _ClusterWorker_, _FixedClusterPool_ and _DynamicClusterPool_.
 
 **See [examples](./examples/) for more details**:
+
 - [Javascript](./examples/javascript/)
 - [Typescript](./examples/typescript/)
   - [HTTP client pool](./examples/typescript/http-client-pool/)
@@ -200,12 +201,15 @@ See [CONTRIBUTING](./CONTRIBUTING.md) guidelines.
 ## Team
 
 **Creator/Owner:**
+
 - [**Alessandro Pio Ardizio**](https://github.com/pioardi)
 
 **Maintainers:**
+
 - [**Jérôme Benoit**](https://github.com/jerome-benoit)
 
 **Contributors:**
+
 - [**Shinigami92**](https://github.com/Shinigami92)
 
 ## License
