@@ -9,6 +9,7 @@ tools:
 ---
 
 You are in code review mode. Focus on:
+
 - Code quality
 - Best practices
 - Algorithmic
