@@ -171,7 +171,7 @@ importers:
         version: 6.1.0
       ws:
         specifier: ^8.22.1
-        version: 8.22.1(bufferutil@4.1.0)(utf-8-validate@6.0.6)
+        version: 8.22.1(bufferutil@4.2.0)(utf-8-validate@6.0.6)
     devDependencies:
       '@rollup/plugin-typescript':
         specifier: 12.3.1
@@ -197,7 +197,7 @@ importers:
     optionalDependencies:
       bufferutil:
         specifier: ^4.1.0
-        version: 4.1.0
+        version: 4.2.0
       utf-8-validate:
         specifier: ^6.0.6
         version: 6.0.6
@@ -398,8 +398,8 @@ packages:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
-  bufferutil@4.1.0:
-    resolution: {integrity: sha512-ZMANVnAixE6AWWnPzlW2KpUrxhm9woycYvPOo67jWHyFowASTEd9s+QN1EIMsSDtwhIxN4sWE1jotpuDUIgyIw==}
+  bufferutil@4.2.0:
+    resolution: {integrity: sha512-gyy58jET9kst2IGyBKb96a4Y2bPGTHXGyCd0/1eqIV3hr1Sz3VxtA8n7bXh8fLIuE2K6Z0Upax5a5Msx+HU1IQ==}
     engines: {node: '>=6.14.2'}
 
   del@8.0.1:
@@ -705,7 +705,7 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
-  bufferutil@4.1.0:
+  bufferutil@4.2.0:
     dependencies:
       node-gyp-build: 4.8.4
     optional: true
@@ -877,7 +877,7 @@ snapshots:
       node-gyp-build: 4.8.4
     optional: true
 
-  ws@8.22.1(bufferutil@4.1.0)(utf-8-validate@6.0.6):
+  ws@8.22.1(bufferutil@4.2.0)(utf-8-validate@6.0.6):
     optionalDependencies:
-      bufferutil: 4.1.0
+      bufferutil: 4.2.0
       utf-8-validate: 6.0.6

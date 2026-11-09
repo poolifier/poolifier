@@ -171,7 +171,7 @@ importers:
         version: 6.1.0
       ws:
         specifier: ^8.22.1
-        version: 8.22.1(bufferutil@4.1.0)(utf-8-validate@6.0.6)
+        version: 8.22.1(bufferutil@4.2.0)(utf-8-validate@6.0.6)
     devDependencies:
       '@types/node':
         specifier: 24.19.2
@@ -185,7 +185,7 @@ importers:
     optionalDependencies:
       bufferutil:
         specifier: ^4.1.0
-        version: 4.1.0
+        version: 4.2.0
       utf-8-validate:
         specifier: ^6.0.6
         version: 6.0.6
@@ -198,8 +198,8 @@ packages:
   '@types/ws@8.18.2':
     resolution: {integrity: sha512-67MQl+fpWKVTT1NYdnmo3U4sc/xPo/zQBncVnI74qmQa0z/b+1g6iYqNmGCPbxO+zz2aklb08a0oHfegiVd0/w==}
 
-  bufferutil@4.1.0:
-    resolution: {integrity: sha512-ZMANVnAixE6AWWnPzlW2KpUrxhm9woycYvPOo67jWHyFowASTEd9s+QN1EIMsSDtwhIxN4sWE1jotpuDUIgyIw==}
+  bufferutil@4.2.0:
+    resolution: {integrity: sha512-gyy58jET9kst2IGyBKb96a4Y2bPGTHXGyCd0/1eqIV3hr1Sz3VxtA8n7bXh8fLIuE2K6Z0Upax5a5Msx+HU1IQ==}
     engines: {node: '>=6.14.2'}
 
   node-gyp-build@4.8.4:
@@ -244,7 +244,7 @@ snapshots:
     dependencies:
       '@types/node': 24.19.2
 
-  bufferutil@4.1.0:
+  bufferutil@4.2.0:
     dependencies:
       node-gyp-build: 4.8.4
     optional: true
@@ -263,7 +263,7 @@ snapshots:
       node-gyp-build: 4.8.4
     optional: true
 
-  ws@8.22.1(bufferutil@4.1.0)(utf-8-validate@6.0.6):
+  ws@8.22.1(bufferutil@4.2.0)(utf-8-validate@6.0.6):
     optionalDependencies:
-      bufferutil: 4.1.0
+      bufferutil: 4.2.0
       utf-8-validate: 6.0.6
