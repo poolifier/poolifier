@@ -5,7 +5,7 @@
   "description": "ws request pool",
   "main": "dist/main.js",
   "type": "module",
-  "packageManager": "pnpm@12.17.0",
+  "packageManager": "pnpm@12.18.0",
   "scripts": {
     "build": "pnpm build:clean && tsc",
     "build:clean": "tsc --build --clean",
@@ -26,7 +26,7 @@
     "typescript": "6.0.3"
   },
   "optionalDependencies": {
-    "bufferutil": "^4.1.0",
+    "bufferutil": "^4.2.0",
     "utf-8-validate": "^6.0.6"
   }
 }
