@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "24.19.2",
-    "autocannon": "8.0.0",
+    "autocannon": "9.0.0",
     "typescript": "6.0.3"
   }
 }
