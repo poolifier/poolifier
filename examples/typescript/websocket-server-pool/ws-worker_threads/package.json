@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "poolifier": "^6.1.0",
-    "ws": "^8.22.1"
+    "ws": "^8.22.2"
   },
   "devDependencies": {
     "@types/node": "24.19.2",

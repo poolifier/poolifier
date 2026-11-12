@@ -170,8 +170,8 @@ importers:
         specifier: ^6.1.0
         version: 6.1.0
       ws:
-        specifier: ^8.22.1
-        version: 8.22.1(bufferutil@4.2.0)(utf-8-validate@6.0.6)
+        specifier: ^8.22.2
+        version: 8.22.2(bufferutil@4.2.0)(utf-8-validate@6.0.6)
     devDependencies:
       '@types/node':
         specifier: 24.19.2
@@ -222,8 +222,8 @@ packages:
     resolution: {integrity: sha512-q3l3P9UtEEiAHcsgsqTgf9PPjctrDWoIXW3NpOHFdRDbLvu4DLIcxHangJ4RLrWkBcKjmcs/6NkerI8T/rE4LA==}
     engines: {node: '>=6.14.2'}
 
-  ws@8.22.1:
-    resolution: {integrity: sha512-oyL6OPYme/CmiFvNuGzeoxCJ4nOrZE2O1FwM9MWM1AsGri6nLXB2pg+lNA8aLeXMSav0J6eIVS1j6vUPzUtK9g==}
+  ws@8.22.2:
+    resolution: {integrity: sha512-/rEZ2ejown2N5gxVTHUu9bVVC7ttu0/Tgzf5hbTOixR3Fs7mbbXgn2DbdbcKgJOmpQMtrIUWivtYuVMnp/W/yA==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -263,7 +263,7 @@ snapshots:
       node-gyp-build: 4.8.4
     optional: true
 
-  ws@8.22.1(bufferutil@4.2.0)(utf-8-validate@6.0.6):
+  ws@8.22.2(bufferutil@4.2.0)(utf-8-validate@6.0.6):
     optionalDependencies:
       bufferutil: 4.2.0
       utf-8-validate: 6.0.6
