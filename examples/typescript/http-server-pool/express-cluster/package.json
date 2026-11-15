@@ -8,7 +8,7 @@
   "engines": {
     "node": "^22.18.0 || >=24.3.0"
   },
-  "packageManager": "pnpm@12.18.0",
+  "packageManager": "pnpm@12.20.0",
   "scripts": {
     "build": "rollup --config --configPlugin typescript",
     "start": "node --enable-source-maps dist/main.js",

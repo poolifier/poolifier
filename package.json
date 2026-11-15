@@ -49,7 +49,7 @@
       "onFail": "ignore"
     }
   },
-  "packageManager": "pnpm@12.18.0",
+  "packageManager": "pnpm@12.20.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/poolifier/poolifier.git"
@@ -103,7 +103,7 @@
     "lib"
   ],
   "devDependencies": {
-    "@biomejs/biome": "2.6.6",
+    "@biomejs/biome": "2.6.7",
     "@commitlint/cli": "21.2.4",
     "@commitlint/config-conventional": "21.2.4",
     "@cspell/eslint-plugin": "10.4.1",
