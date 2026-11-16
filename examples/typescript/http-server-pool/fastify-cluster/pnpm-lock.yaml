@@ -222,8 +222,8 @@ packages:
   '@fastify/error@4.2.1':
     resolution: {integrity: sha512-MYBumuIwP+5MIpXSyKm6/o1Eigcoij186lWUssX3LH5U8KWqU0ktZhzC4CErIX9EJeQeRGI+zJZQWakBlFbUcg==}
 
-  '@fastify/fast-json-stringify-compiler@5.1.1':
-    resolution: {integrity: sha512-pyxRKk7UpUnnrztP9pF4+ZYxusEQ4LifTyzRdiXmyql1QezNHxO02D25MVU2o4kMeAMYWAjG6RKRlojgkbiDAw==}
+  '@fastify/fast-json-stringify-compiler@5.2.0':
+    resolution: {integrity: sha512-LPTVA0w4oPITWHAvox9NgI1rDSrjUnjxX6QN5MCb9FY+HqvDsUmgLucbj9eQakqC8lYwO7UgkDPHEQLJNl9vtg==}
 
   '@fastify/forwarded@3.1.2':
     resolution: {integrity: sha512-89WiRG+hW3VQSfCwg4Hb8b43PeyEX15K5+lEfsZ4EUth/FyOjS/lv8HsVuswUNXWiSnxMGNouE/fq/0w3VumHQ==}
@@ -503,8 +503,8 @@ packages:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
 
-  cookie@2.0.1:
-    resolution: {integrity: sha512-yuToqVvRrj6pfDXREyQAAv8SkAEk/8GS3jQRTiUMm66TVtBYmqQeoEjL2Lmq8Rpo6271vH76InTChTitEAm65w==}
+  cookie@2.0.2:
+    resolution: {integrity: sha512-SL0cVuEdETEp7pN0FuZb01toc3vnODEfVUCooxG1SJN0yIirh7JMb9X9bvfCFf0vzzbT68RdbKDHYTiWy7a7iw==}
     engines: {node: '>=22'}
 
   cross-argv@2.0.0:
@@ -558,8 +558,8 @@ packages:
     resolution: {integrity: sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==}
     engines: {node: '>=8.6.0'}
 
-  fast-json-stringify@7.3.0:
-    resolution: {integrity: sha512-+NuA3O14e66h10yOYIsCh4S3GKV+Q/pSRoDYShKarVv8G8QboaLJ8uynpyiOoH38YRW4T6U7KVefJkC/tYpePA==}
+  fast-json-stringify@7.3.6:
+    resolution: {integrity: sha512-hXCpiZTZGiER/Xree1Tb4PY1DREPUnlWTP5Df9hgtoDnUppulV7Km8lh1/NEBuqz4JnNGSXghnABudfZ/iwIzg==}
 
   fast-querystring@1.1.2:
     resolution: {integrity: sha512-g6KuKWmFXc0fID8WWH0jit4g0AGBoJhCkJMb1RmbsSEUNvQ+ZC8D6CUZ+GtF8nMzSPXnhiePyyqqipzNNEnHjg==}
@@ -693,8 +693,8 @@ packages:
   json-schema-traverse@1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
 
-  light-my-request@6.8.0:
-    resolution: {integrity: sha512-5Q8PjoSEdtGIB8fikZsTem5vgRo4F2mR6vUKTDW/H1g6MtAt8e3duQbg/QxL5yzg6BZhor2KOUm3hhWMWLTZwg==}
+  light-my-request@6.8.1:
+    resolution: {integrity: sha512-20biUK0HAIPG9BZOK3/4s8uVAkAoi1+qW55lciHZCR0puTWipBgyMPEUjqXDWLjsZeqfO6DGsuwW5eyfsTGtyg==}
 
   lodash.chunk@4.2.0:
     resolution: {integrity: sha512-ZzydJKfUHJwHa+hF5X66zLFCBrWn5GeF28OHEr4WVWtNDXlQ/IjWKPBiikqKo2ne0+v6JgCgJ0GzJp8k8bHC7w==}
@@ -933,9 +933,9 @@ snapshots:
 
   '@fastify/error@4.2.1': {}
 
-  '@fastify/fast-json-stringify-compiler@5.1.1':
+  '@fastify/fast-json-stringify-compiler@5.2.0':
     dependencies:
-      fast-json-stringify: 7.3.0
+      fast-json-stringify: 7.3.6
 
   '@fastify/forwarded@3.1.2': {}
 
@@ -1164,7 +1164,7 @@ snapshots:
     dependencies:
       delayed-stream: 1.0.0
 
-  cookie@2.0.1: {}
+  cookie@2.0.2: {}
 
   cross-argv@2.0.0: {}
 
@@ -1219,7 +1219,7 @@ snapshots:
       merge2: 1.4.1
       micromatch: 4.0.8
 
-  fast-json-stringify@7.3.0:
+  fast-json-stringify@7.3.6:
     dependencies:
       '@fastify/merge-json-schemas': 0.2.2
       ajv: 8.20.0
@@ -1240,13 +1240,13 @@ snapshots:
     dependencies:
       '@fastify/ajv-compiler': 4.0.7
       '@fastify/error': 4.2.1
-      '@fastify/fast-json-stringify-compiler': 5.1.1
+      '@fastify/fast-json-stringify-compiler': 5.2.0
       '@fastify/proxy-addr': 5.1.2
       abstract-logging: 2.0.1
       avvio: 9.3.1
-      fast-json-stringify: 7.3.0
+      fast-json-stringify: 7.3.6
       find-my-way: 9.10.0
-      light-my-request: 6.8.0
+      light-my-request: 6.8.1
       pino: 10.4.0
       process-warning: 5.1.1
       rfdc: 1.4.1
@@ -1372,10 +1372,10 @@ snapshots:
 
   json-schema-traverse@1.0.0: {}
 
-  light-my-request@6.8.0:
+  light-my-request@6.8.1:
     dependencies:
       '@fastify/deepmerge': 3.2.4
-      cookie: 2.0.1
+      cookie: 2.0.2
       process-warning: 5.1.1
       set-cookie-parser: 3.2.2
 
