@@ -896,6 +896,34 @@ const medianMeasurementHistory = (history: CircularBuffer): number => {
       : selectAtRank(measurementSnapshot, upperRank, lowerRank)
   return (lower + upper) / 2
 }
+/**
+ * Selects the worker node to steal a task from: the one with the highest
+ * number of queued tasks among the other non-empty ones. Ties are broken by
+ * the lowest worker node key order, identical to selecting the first element
+ * of a stable sort by decreasing queued tasks count.
+ * @param workerNodes - The worker nodes to select from.
+ * @param stealingWorkerNode - The worker node requesting the task to steal.
+ * @returns The worker node to steal a task from, if any.
+ * @internal
+ */
+const selectStealSourceWorkerNode = <Node extends { usage: WorkerUsage }>(
+  workerNodes: Node[],
+  stealingWorkerNode: Node
+): Node | undefined => {
+  let sourceWorkerNode: Node | undefined
+  for (const candidateWorkerNode of workerNodes) {
+    if (
+      candidateWorkerNode !== stealingWorkerNode &&
+      candidateWorkerNode.usage.tasks.queued > 0 &&
+      (sourceWorkerNode === undefined ||
+        candidateWorkerNode.usage.tasks.queued >
+          sourceWorkerNode.usage.tasks.queued)
+    ) {
+      sourceWorkerNode = candidateWorkerNode
+    }
+  }
+  return sourceWorkerNode
+}
 
 /**
  * Updates the given measurement statistics.
@@ -943,7 +971,7 @@ const updateMeasurementStatistics = (
     }
   }
 }
-export { updateMeasurementStatistics }
+export { selectStealSourceWorkerNode, updateMeasurementStatistics }
 
 export const updateWaitTimeWorkerUsage = <
   Worker extends IWorker,
