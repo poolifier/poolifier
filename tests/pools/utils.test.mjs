@@ -679,9 +679,7 @@ parentPort.postMessage({
       if (values.length === 0) return 0
       if (values.length === 1) return values[0]
       const sorted = [...values].sort((a, b) => a - b)
-      return (
-        (sorted[(values.length - 1) >> 1] + sorted[values.length >> 1]) / 2
-      )
+      return (sorted[(values.length - 1) >> 1] + sorted[values.length >> 1]) / 2
     }
     let seed = 0x2f6e2b1
     const random = () => {
@@ -708,9 +706,7 @@ parentPort.postMessage({
         for (let i = 0; i < iterations; i++) {
           // Mixed distribution: noise plus duplicated values to exercise
           // median ties.
-          const value = Math.fround(
-            i % 3 === 0 ? 1 + (i % 4) : random() * 100
-          )
+          const value = Math.fround(i % 3 === 0 ? 1 + (i % 4) : random() * 100)
           updateMeasurementStatistics(
             measurementStatistics,
             requirements,
