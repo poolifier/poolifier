@@ -769,7 +769,11 @@ const averageMeasurementHistory = (history: CircularBuffer): number => {
     return 0
   }
   if (size === 1) {
-    return history.sum()
+    // Return the raw element instead of `sum()`: accumulating `0 + value`
+    // would fold `- 0` into `+ 0`, while `average()` returned `dataSet[0]`
+    // as is.
+    snapshotMeasurementHistory(history)
+    return measurementSnapshot[0]
   }
   return history.sum() / size
 }
@@ -855,8 +859,11 @@ const selectAtRank = (data: Float32Array, size: number, k: number): number => {
 
 /**
  * Computes the median of the given measurement history.
- * Bit-for-bit equivalent to `median(history.toArray())`: the two middle
- * values are selected elements, not interpolated ones.
+ * Returns the same two middle values as `median(history.toArray())` for
+ * finite inputs: the middle values are selected elements, not interpolated
+ * ones. Inputs no measurement producer can emit (`- 0`, `NaN`) may pick a
+ * different occurrence among equal-comparing values than the comparator
+ * based sort did.
  * @param history - Measurement history.
  * @returns The median of the history values.
  */

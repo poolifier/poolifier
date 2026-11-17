@@ -740,6 +740,19 @@ parentPort.postMessage({
     }
   })
 
+  it('Verify updateMeasurementStatistics() preserves negative zero as the reference implementations do', () => {
+    const measurementStatistics = {
+      history: new CircularBuffer(MeasurementHistorySize),
+    }
+    updateMeasurementStatistics(
+      measurementStatistics,
+      { aggregate: true, average: true, median: true },
+      -0
+    )
+    expect(Object.is(measurementStatistics.average, -0)).toBe(true)
+    expect(Object.is(measurementStatistics.median, -0)).toBe(true)
+  })
+
   it('Verify createWorker() behavior', () => {
     expect(
       createWorker(
