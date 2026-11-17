@@ -707,11 +707,13 @@ parentPort.postMessage({
           // Mixed distribution: duplicated values to exercise median ties,
           // plain noise, and large-dynamics values that make the float64
           // summation order observable.
-          const value = Math.fround(i % 7 === 0
-            ? 1 + (i % 4)
-            : i % 7 === 1
-              ? 10 ** (random() * 16 - 8)
-              : random() * 100)
+          const value = Math.fround(
+            i % 7 === 0
+              ? 1 + (i % 4)
+              : i % 7 === 1
+                ? 10 ** (random() * 16 - 8)
+                : random() * 100
+          )
           updateMeasurementStatistics(
             measurementStatistics,
             requirements,
