@@ -793,6 +793,16 @@ const swap = (data: Float32Array, i: number, j: number): void => {
 }
 
 /**
+ * Width under which rank selection sorts its slice instead of partitioning.
+ */
+const SELECTION_INSERTION_CUTOFF = 12
+/**
+ * Maximum number of quickselect partitions, as a factor of the slice height,
+ * before rank selection falls back to a native sort.
+ */
+const SELECTION_DEPTH_FACTOR = 2
+
+/**
  * Selects the value at rank `k` of `data[0, size)` in place (partial sort).
  * Quickselect with median-of-three pivot, insertion cutoff and a depth limit
  * falling back to native sort, keeping the worst case at O(size log size).
@@ -804,10 +814,10 @@ const swap = (data: Float32Array, i: number, j: number): void => {
 const selectAtRank = (data: Float32Array, size: number, k: number): number => {
   let left = 0
   let right = size - 1
-  let depthLeft = 2 * Math.ceil(Math.log2(size + 1))
+  let depthLeft = SELECTION_DEPTH_FACTOR * Math.ceil(Math.log2(size + 1))
   for (;;) {
     const width = right - left + 1
-    if (width <= 12) {
+    if (width <= SELECTION_INSERTION_CUTOFF) {
       for (let i = left + 1; i <= right; i++) {
         const value = data[i]
         let j = i - 1
