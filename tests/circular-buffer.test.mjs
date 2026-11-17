@@ -190,6 +190,22 @@ describe('Circular buffer test suite', () => {
     expect(circularBuffer.copyTo(destination)).toBe(0)
   })
 
+  it('Verify that circular buffer sum() works as intended', () => {
+    const circularBuffer = new CircularBuffer(4)
+    expect(circularBuffer.sum()).toBe(0)
+    for (const value of [1, 2, 3, 4]) {
+      circularBuffer.put(value)
+    }
+    expect(circularBuffer.sum()).toBe(10)
+    circularBuffer.put(5)
+    expect(circularBuffer.sum()).toBe(14)
+    circularBuffer.get()
+    expect(circularBuffer.sum()).toBe(12)
+    expect(circularBuffer.sum()).toBe(
+      circularBuffer.toArray().reduce((accumulator, n) => accumulator + n, 0)
+    )
+  })
+
   it('Verify that circular buffer clear() works as intended', () => {
     const circularBuffer = new CircularBuffer(4)
     circularBuffer.put(1)

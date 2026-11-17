@@ -704,9 +704,14 @@ parentPort.postMessage({
         const reference = []
         const iterations = size + 50
         for (let i = 0; i < iterations; i++) {
-          // Mixed distribution: noise plus duplicated values to exercise
-          // median ties.
-          const value = Math.fround(i % 3 === 0 ? 1 + (i % 4) : random() * 100)
+          // Mixed distribution: duplicated values to exercise median ties,
+          // plain noise, and large-dynamics values that make the float64
+          // summation order observable.
+          const value = Math.fround(i % 7 === 0
+            ? 1 + (i % 4)
+            : i % 7 === 1
+              ? 10 ** (random() * 16 - 8)
+              : random() * 100)
           updateMeasurementStatistics(
             measurementStatistics,
             requirements,
