@@ -166,6 +166,46 @@ describe('Circular buffer test suite', () => {
     expect(circularBuffer.toArray()).toStrictEqual([3, 4, 5, 6])
   })
 
+  it('Verify that circular buffer copyTo() works as intended', () => {
+    const circularBuffer = new CircularBuffer(4)
+    const destination = new Float32Array(8)
+    expect(circularBuffer.copyTo(destination)).toBe(0)
+    const values = [1, 2, 3, 4, 5, 6]
+    const expected = []
+    for (const value of values) {
+      circularBuffer.put(value)
+      expected.push(value)
+      if (expected.length > 4) expected.shift()
+      const size = circularBuffer.copyTo(destination)
+      expect(size).toBe(expected.length)
+      expect(Array.from(destination.subarray(0, size))).toStrictEqual(expected)
+      expect(destination.slice(size)).toStrictEqual(new Float32Array(8 - size))
+    }
+    circularBuffer.get()
+    circularBuffer.get()
+    const size = circularBuffer.copyTo(destination)
+    expect(size).toBe(2)
+    expect(Array.from(destination.subarray(0, size))).toStrictEqual([5, 6])
+    circularBuffer.clear()
+    expect(circularBuffer.copyTo(destination)).toBe(0)
+  })
+
+  it('Verify that circular buffer sum() works as intended', () => {
+    const circularBuffer = new CircularBuffer(4)
+    expect(circularBuffer.sum()).toBe(0)
+    for (const value of [1, 2, 3, 4]) {
+      circularBuffer.put(value)
+    }
+    expect(circularBuffer.sum()).toBe(10)
+    circularBuffer.put(5)
+    expect(circularBuffer.sum()).toBe(14)
+    circularBuffer.get()
+    expect(circularBuffer.sum()).toBe(12)
+    expect(circularBuffer.sum()).toBe(
+      circularBuffer.toArray().reduce((accumulator, n) => accumulator + n, 0)
+    )
+  })
+
   it('Verify that circular buffer clear() works as intended', () => {
     const circularBuffer = new CircularBuffer(4)
     circularBuffer.put(1)

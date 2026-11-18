@@ -39,6 +39,22 @@ export class CircularBuffer {
   }
 
   /**
+   * Copies the buffer contents, in logical order, into the given destination.
+   * The destination must be able to hold the whole buffer.
+   * @param destination - Destination array.
+   * @returns The number of numbers copied.
+   */
+  public copyTo (destination: Float32Array): number {
+    const size = this.size
+    let currentIdx = this.readIdx
+    for (let i = 0; i < size; i++) {
+      destination[i] = this.items[currentIdx]
+      currentIdx = currentIdx === this.maxArrayIdx ? 0 : currentIdx + 1
+    }
+    return size
+  }
+
+  /**
    * Checks whether the buffer is empty.
    * @returns Whether the buffer is empty.
    */
@@ -80,6 +96,22 @@ export class CircularBuffer {
     }
     this.items[this.writeIdx] = number
     this.writeIdx = this.writeIdx === this.maxArrayIdx ? 0 : this.writeIdx + 1
+  }
+
+  /**
+   * Computes the sum of the buffer contents, in logical order.
+   * Bit-for-bit equivalent to summing `toArray()` in the same order.
+   * @returns Sum of the buffer numbers, zero if the buffer is empty.
+   */
+  public sum (): number {
+    let sum = 0
+    const size = this.size
+    let currentIdx = this.readIdx
+    for (let i = 0; i < size; i++) {
+      sum += this.items[currentIdx]
+      currentIdx = currentIdx === this.maxArrayIdx ? 0 : currentIdx + 1
+    }
+    return sum
   }
 
   /**
