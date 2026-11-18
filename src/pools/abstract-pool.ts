@@ -64,6 +64,7 @@ import {
   checkValidWorkerChoiceStrategy,
   checkValidWorkerNodeKeys,
   getDefaultTasksQueueOptions,
+  selectStealSourceWorkerNode,
   updateEluWorkerUsage,
   updateRunTimeWorkerUsage,
   updateTaskStatisticsWorkerUsage,
@@ -1614,7 +1615,7 @@ export abstract class AbstractPool<
       !this.started ||
       this.destroying ||
       this.workerNodes.length <= 1 ||
-      this.getQueuedTasks() === 0
+      !this.hasQueuedTasks()
     )
   }
 
@@ -2483,6 +2484,15 @@ export abstract class AbstractPool<
     this.setTasksQueuePriority(workerNodeKey)
     this.checkAndEmitReadyEvent()
     this.scheduleTaskStealing()
+  }
+
+  private hasQueuedTasks (): boolean {
+    for (const workerNode of this.workerNodes) {
+      if (workerNode.usage.tasks.queued > 0) {
+        return true
+      }
+    }
+    return false
   }
 
   private initEventEmitter (): void {
@@ -3618,16 +3628,9 @@ export abstract class AbstractPool<
     const workerNode = this.workerNodes[workerNodeKey]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (workerNode == null) return
-    const workerNodes = this.workerNodes
-      .slice()
-      .sort(
-        (workerNodeA, workerNodeB) =>
-          workerNodeB.usage.tasks.queued - workerNodeA.usage.tasks.queued
-      )
-    const sourceWorkerNode = workerNodes.find(
-      sourceWorkerNode =>
-        sourceWorkerNode !== workerNode &&
-        sourceWorkerNode.usage.tasks.queued > 0
+    const sourceWorkerNode = selectStealSourceWorkerNode(
+      this.workerNodes,
+      workerNode
     )
     if (sourceWorkerNode != null) {
       return this.stealTask(sourceWorkerNode, workerNodeKey)

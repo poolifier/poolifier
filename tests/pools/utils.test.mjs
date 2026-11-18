@@ -15,6 +15,7 @@ import {
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   getDefaultTasksQueueOptions,
   initWorkerInfo,
+  selectStealSourceWorkerNode,
   updateMeasurementStatistics,
   validateAndMaterializeClusterStdio,
 } from '../../lib/pools/utils.mjs'
@@ -897,5 +898,39 @@ parentPort.postMessage({
         'Cannot add a task function with invalid worker node keys: 999. Valid keys are: 0..3'
       )
     )
+  })
+  it('Verify selectStealSourceWorkerNode() matches a stable sort by decreasing queued tasks count', () => {
+    const referenceSelect = (workerNodes, stealingWorkerNode) =>
+      workerNodes
+        .slice()
+        .sort(
+          (workerNodeA, workerNodeB) =>
+            workerNodeB.usage.tasks.queued - workerNodeA.usage.tasks.queued
+        )
+        .find(
+          sourceWorkerNode =>
+            sourceWorkerNode !== stealingWorkerNode &&
+            sourceWorkerNode.usage.tasks.queued > 0
+        )
+    let seed = 0x51ed7
+    const random = n => {
+      seed ^= seed << 13
+      seed >>>= 0
+      seed ^= seed >>> 17
+      seed ^= seed << 5
+      seed >>>= 0
+      return seed % n
+    }
+    for (let test = 0; test < 10_000; test++) {
+      const length = 1 + random(12)
+      const workerNodes = Array.from({ length }, (_, id) => ({
+        id,
+        usage: { tasks: { queued: random(4) } },
+      }))
+      const stealingWorkerNode = workerNodes[random(length)]
+      expect(selectStealSourceWorkerNode(workerNodes, stealingWorkerNode)).toBe(
+        referenceSelect(workerNodes, stealingWorkerNode)
+      )
+    }
   })
 })
