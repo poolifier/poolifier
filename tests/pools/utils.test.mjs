@@ -913,7 +913,7 @@ parentPort.postMessage({
             sourceWorkerNode.usage.tasks.queued > 0
         )
     let seed = 0x51ed7
-    const random = (n) => {
+    const random = n => {
       seed ^= seed << 13
       seed >>>= 0
       seed ^= seed >>> 17
