@@ -179,8 +179,8 @@ importers:
         specifier: ^10.6.0
         version: 10.6.0
       poolifier:
-        specifier: ^6.1.0
-        version: 6.1.0
+        specifier: ^6.1.1
+        version: 6.1.1
     devDependencies:
       '@types/node':
         specifier: 24.19.2
@@ -204,8 +204,8 @@ packages:
     resolution: {integrity: sha512-jWanL7D9GD3jvUDYKmoC5rWTiG8MnBgnN2yV68bgMKip1zUJhiSTyz7Eg+18y8sk5OvdVDzws5nZK5arSI4f5Q==}
     engines: {node: '>=20.0.0'}
 
-  poolifier@6.1.0:
-    resolution: {integrity: sha512-nmElMG6ooo9efDoctDpD9KGGm469Fv1YT0AFkbmdeVxGbdCThUlx1J9KKiKgO1OZbqyhtFhXIebFCl7EU365fQ==}
+  poolifier@6.1.1:
+    resolution: {integrity: sha512-Sm+e+aGHQfHJWNsB8fBI6DXYbezrRxv1bBs5GlGJ5iCLttM4x4lOHTbNGvscIz6oc72yVWi/IgNoMYr2JYuzow==}
     engines: {node: ^22.18.0 || >=24.3.0, pnpm: '>=9.0.0'}
 
   typescript@6.0.3:
@@ -228,7 +228,7 @@ snapshots:
 
   nodemailer@10.6.0: {}
 
-  poolifier@6.1.0: {}
+  poolifier@6.1.1: {}
 
   typescript@6.0.3: {}
 
