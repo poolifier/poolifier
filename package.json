@@ -29,7 +29,7 @@
     "benchmark:tinybench:debug": "pnpm build && node --enable-source-maps --inspect benchmarks/internal/bench.mjs -t tinybench",
     "test": "pnpm build --environment SOURCEMAP:false && vitest run",
     "test:debug": "pnpm build && vitest --inspect-brk --no-file-parallelism",
-    "test:coverage": "pnpm build --environment SOURCEMAP:false && vitest run --coverage",
+    "test:coverage": "pnpm build && vitest run --coverage",
     "format": "biome format . --write; eslint . --cache --fix",
     "lint": "eslint . --cache",
     "lint:fix": "eslint . --cache --fix",
