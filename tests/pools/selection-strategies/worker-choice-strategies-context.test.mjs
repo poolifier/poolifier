@@ -540,6 +540,30 @@ describe('Worker choice strategies context test suite', () => {
     expect(chosenWorkerKey).toBe(1)
   })
 
+  it.each(['remove', 'update'])(
+    'Verify that %s() still visits later strategies after a failure',
+    operation => {
+      const context = new WorkerChoiceStrategiesContext(fixedPool, [
+        WorkerChoiceStrategies.LEAST_USED,
+        WorkerChoiceStrategies.ROUND_ROBIN,
+      ])
+      const first = stub(
+        context.workerChoiceStrategies.get(WorkerChoiceStrategies.LEAST_USED),
+        operation
+      ).returns(false)
+      const second = stub(
+        context.workerChoiceStrategies.get(WorkerChoiceStrategies.ROUND_ROBIN),
+        operation
+      ).returns(true)
+      const workerNodeKey = 1
+
+      expect(context[operation](workerNodeKey)).toBe(false)
+      expect(first.calledOnceWithExactly(workerNodeKey)).toBe(true)
+      expect(second.calledOnceWithExactly(workerNodeKey)).toBe(true)
+      expect(first.calledBefore(second)).toBe(true)
+    }
+  )
+
   it('Verify that execute() with workerNodeKeys affinity filters worker selection', () => {
     const workerChoiceStrategiesContext = new WorkerChoiceStrategiesContext(
       fixedPool
