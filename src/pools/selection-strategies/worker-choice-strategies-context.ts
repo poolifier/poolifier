@@ -144,10 +144,13 @@ export class WorkerChoiceStrategiesContext<
    * @returns `true` if the removal is successful, `false` otherwise.
    */
   public remove (workerNodeKey: number): boolean {
-    return Array.from(
-      this.workerChoiceStrategies,
-      ([_, workerChoiceStrategy]) => workerChoiceStrategy.remove(workerNodeKey)
-    ).every(r => r)
+    let removed = true
+    for (const workerChoiceStrategy of this.workerChoiceStrategies.values()) {
+      if (!workerChoiceStrategy.remove(workerNodeKey)) {
+        removed = false
+      }
+    }
+    return removed
   }
 
   /**
@@ -209,10 +212,13 @@ export class WorkerChoiceStrategiesContext<
    * @returns `true` if the update is successful, `false` otherwise.
    */
   public update (workerNodeKey: number): boolean {
-    return Array.from(
-      this.workerChoiceStrategies,
-      ([_, workerChoiceStrategy]) => workerChoiceStrategy.update(workerNodeKey)
-    ).every(r => r)
+    let updated = true
+    for (const workerChoiceStrategy of this.workerChoiceStrategies.values()) {
+      if (!workerChoiceStrategy.update(workerNodeKey)) {
+        updated = false
+      }
+    }
+    return updated
   }
 
   /**

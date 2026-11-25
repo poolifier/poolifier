@@ -803,6 +803,75 @@ const SELECTION_INSERTION_CUTOFF = 12
 const SELECTION_DEPTH_FACTOR = 2
 
 /**
+ * Sorts the inclusive range in place using insertion sort.
+ * @param data - Array to sort.
+ * @param left - First index in the range.
+ * @param right - Last index in the range.
+ */
+const sortSmallRange = (
+  data: Float32Array,
+  left: number,
+  right: number
+): void => {
+  for (let i = left + 1; i <= right; i++) {
+    const value = data[i]
+    let j = i - 1
+    while (j >= left && data[j] > value) {
+      data[j + 1] = data[j]
+      --j
+    }
+    data[j + 1] = value
+  }
+}
+
+/**
+ * Moves the median of the first, middle and last values to the right end.
+ * @param data - Array containing the pivot candidates.
+ * @param left - First index in the range.
+ * @param right - Last index in the range.
+ * @returns The pivot value.
+ */
+const movePivotToEnd = (
+  data: Float32Array,
+  left: number,
+  right: number
+): number => {
+  const middle = (left + right) >> 1
+  if (data[middle] < data[left]) swap(data, middle, left)
+  if (data[right] < data[middle]) {
+    swap(data, middle, right)
+    if (data[middle] < data[left]) swap(data, middle, left)
+  }
+  const pivot = data[middle]
+  swap(data, middle, right)
+  return pivot
+}
+
+/**
+ * Moves values below the pivot to the start, excluding the pivot slot.
+ * @param data - Array to partition.
+ * @param left - First index in the range.
+ * @param right - Index of the pivot, excluded from partitioning.
+ * @param pivot - Pivot value.
+ * @returns The first index after the values below the pivot.
+ */
+const partitionBelowPivot = (
+  data: Float32Array,
+  left: number,
+  right: number,
+  pivot: number
+): number => {
+  let lessEnd = left
+  for (let i = left; i < right; i++) {
+    if (data[i] < pivot) {
+      swap(data, i, lessEnd)
+      ++lessEnd
+    }
+  }
+  return lessEnd
+}
+
+/**
  * Selects the value at rank `k` of `data[0, size)` in place (partial sort).
  * Quickselect with median-of-three pivot, insertion cutoff and a depth limit
  * falling back to native sort, keeping the worst case at O(size log size).
@@ -818,37 +887,15 @@ const selectAtRank = (data: Float32Array, size: number, k: number): number => {
   for (;;) {
     const width = right - left + 1
     if (width <= SELECTION_INSERTION_CUTOFF) {
-      for (let i = left + 1; i <= right; i++) {
-        const value = data[i]
-        let j = i - 1
-        while (j >= left && data[j] > value) {
-          data[j + 1] = data[j]
-          --j
-        }
-        data[j + 1] = value
-      }
+      sortSmallRange(data, left, right)
       return data[k]
     }
     if (--depthLeft < 0) {
       data.subarray(left, right + 1).sort()
       return data[k]
     }
-    // Median-of-three pivot, stashed at the right end.
-    const middle = (left + right) >> 1
-    if (data[middle] < data[left]) swap(data, middle, left)
-    if (data[right] < data[middle]) {
-      swap(data, middle, right)
-      if (data[middle] < data[left]) swap(data, middle, left)
-    }
-    const pivot = data[middle]
-    swap(data, middle, right)
-    let lessEnd = left
-    for (let i = left; i < right; i++) {
-      if (data[i] < pivot) {
-        swap(data, i, lessEnd)
-        ++lessEnd
-      }
-    }
+    const pivot = movePivotToEnd(data, left, right)
+    const lessEnd = partitionBelowPivot(data, left, right, pivot)
     let equalEnd = lessEnd
     for (let i = lessEnd; i < right; i++) {
       if (data[i] === pivot) {
