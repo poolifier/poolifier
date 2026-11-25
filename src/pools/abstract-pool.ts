@@ -1224,15 +1224,15 @@ export abstract class AbstractPool<
     workerNode.registerOnceWorkerEventHandler(
       'error',
       (rawWorkerError: unknown) => {
-        workerError =
-          rawWorkerError instanceof Error
-            ? rawWorkerError
-            : new Error(
-              typeof rawWorkerError === 'string'
-                ? rawWorkerError
-                : 'Worker failed with a non-Error value',
-              { cause: rawWorkerError }
-            )
+        if (rawWorkerError instanceof Error) {
+          workerError = rawWorkerError
+        } else {
+          const message =
+            typeof rawWorkerError === 'string'
+              ? rawWorkerError
+              : 'Worker failed with a non-Error value'
+          workerError = new Error(message, { cause: rawWorkerError })
+        }
         taskResponses = this.captureTaskResponses(workerNode, taskResponses)
         workerNode.info.ready = false
         this.emitter?.emit(PoolEvents.error, rawWorkerError)
@@ -1274,7 +1274,8 @@ export abstract class AbstractPool<
           const workerNodeKey = this.workerNodes.indexOf(workerNode)
           for (const [taskId, promiseResponse] of this.promiseResponseMap) {
             if (promiseResponse.workerNodeKey === workerNodeKey) {
-              ;(workerNodeTasks ??= new Map()).set(taskId, promiseResponse)
+              workerNodeTasks ??= new Map()
+              workerNodeTasks.set(taskId, promiseResponse)
             }
           }
         }
@@ -1643,7 +1644,8 @@ export abstract class AbstractPool<
       const message = response.message as MessageValue<Response>
       if (message.taskId != null) {
         this.checkMessageWorkerId(message)
-        ;(taskResponses ??= []).push(message)
+        taskResponses ??= []
+        taskResponses.push(message)
       } else if (message.taskFunctionOperationStatus != null) {
         workerNode.messageChannel.port1.emit('message', message)
       }
@@ -2014,11 +2016,14 @@ export abstract class AbstractPool<
     abortSignal?: AbortSignal
   ): Error => {
     const abortError = abortSignal?.reason as Error | string
-    return abortError instanceof Error
-      ? abortError
-      : typeof abortError === 'string'
-        ? new Error(abortError)
-        : new Error(`Task '${taskName}' id '${taskId ?? randomUUID()}' aborted`)
+    if (abortError instanceof Error) {
+      return abortError
+    }
+    const message =
+      typeof abortError === 'string'
+        ? abortError
+        : `Task '${taskName}' id '${taskId ?? randomUUID()}' aborted`
+    return new Error(message)
   }
 
   private getQueuedTasks (): number {
