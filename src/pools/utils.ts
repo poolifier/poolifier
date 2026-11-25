@@ -545,52 +545,87 @@ export const checkValidWorkerNodeKeys = (
   workerNodeKeys: null | number[] | undefined,
   maxPoolSize?: number
 ): void => {
-  if (workerNodeKeys != null && !Array.isArray(workerNodeKeys)) {
+  if (workerNodeKeys == null) return
+  if (!Array.isArray(workerNodeKeys)) {
     throw new TypeError('Invalid worker node keys: must be an array')
   }
-  if (workerNodeKeys?.length === 0) {
+  if (workerNodeKeys.length === 0) {
     throw new RangeError('Invalid worker node keys: must not be an empty array')
   }
-  if (workerNodeKeys != null) {
-    for (const workerNodeKey of workerNodeKeys) {
-      if (!Number.isSafeInteger(workerNodeKey) || workerNodeKey < 0) {
-        throw new TypeError(
-          `Invalid worker node key '${workerNodeKey.toString()}': must be a non-negative safe integer`
-        )
-      }
+  for (const workerNodeKey of workerNodeKeys) {
+    if (!Number.isSafeInteger(workerNodeKey) || workerNodeKey < 0) {
+      throw new TypeError(
+        `Invalid worker node key '${workerNodeKey.toString()}': must be a non-negative safe integer`
+      )
     }
   }
-  if (
-    workerNodeKeys != null &&
-    new Set(workerNodeKeys).size !== workerNodeKeys.length
-  ) {
+  if (new Set(workerNodeKeys).size !== workerNodeKeys.length) {
     throw new TypeError('Invalid worker node keys: must not contain duplicates')
   }
-  if (maxPoolSize != null && workerNodeKeys != null) {
-    if (workerNodeKeys.length > maxPoolSize) {
-      throw new RangeError(
-        'Cannot add a task function with more worker node keys than the maximum number of workers in the pool'
-      )
-    }
-    const invalidWorkerNodeKeys = workerNodeKeys.filter(
-      workerNodeKey => workerNodeKey >= maxPoolSize
+  if (maxPoolSize == null) return
+  if (workerNodeKeys.length > maxPoolSize) {
+    throw new RangeError(
+      'Cannot add a task function with more worker node keys than the maximum number of workers in the pool'
     )
-    if (invalidWorkerNodeKeys.length > 0) {
-      throw new RangeError(
-        `Cannot add a task function with invalid worker node keys: ${invalidWorkerNodeKeys.toString()}. Valid keys are: 0..${(maxPoolSize - 1).toString()}`
-      )
-    }
+  }
+  const invalidWorkerNodeKeys = workerNodeKeys.filter(
+    workerNodeKey => workerNodeKey >= maxPoolSize
+  )
+  if (invalidWorkerNodeKeys.length > 0) {
+    throw new RangeError(
+      `Cannot add a task function with invalid worker node keys: ${invalidWorkerNodeKeys.toString()}. Valid keys are: 0..${(maxPoolSize - 1).toString()}`
+    )
+  }
+}
+
+const checkTasksQueueTuning = (options: TasksQueueOptions): void => {
+  if (options.agingFactor != null && typeof options.agingFactor !== 'number') {
+    throw new TypeError(
+      'Invalid worker node tasks queue aging factor: must be a number'
+    )
+  }
+  if (options.agingFactor != null && options.agingFactor < 0) {
+    throw new RangeError(
+      'Invalid worker node tasks queue aging factor: must be greater than or equal to 0'
+    )
+  }
+  if (options.loadExponent != null && typeof options.loadExponent !== 'number') {
+    throw new TypeError(
+      'Invalid worker node tasks queue load exponent: must be a number'
+    )
+  }
+  if (options.loadExponent != null && options.loadExponent <= 0) {
+    throw new RangeError(
+      'Invalid worker node tasks queue load exponent: must be greater than 0'
+    )
+  }
+  if (
+    options.tasksStealingRatio != null &&
+    typeof options.tasksStealingRatio !== 'number'
+  ) {
+    throw new TypeError(
+      'Invalid worker node tasks stealing ratio: must be a number'
+    )
+  }
+  if (
+    options.tasksStealingRatio != null &&
+    (options.tasksStealingRatio < 0 || options.tasksStealingRatio > 1)
+  ) {
+    throw new RangeError(
+      'Invalid worker node tasks stealing ratio: must be between 0 and 1'
+    )
   }
 }
 
 export const checkValidTasksQueueOptions = (
   tasksQueueOptions: TasksQueueOptions | undefined
 ): void => {
-  if (tasksQueueOptions != null && !isPlainObject(tasksQueueOptions)) {
+  if (tasksQueueOptions == null) return
+  if (!isPlainObject(tasksQueueOptions)) {
     throw new TypeError('Invalid tasks queue options: must be a plain object')
   }
   if (
-    tasksQueueOptions?.concurrency != null &&
+    tasksQueueOptions.concurrency != null &&
     !Number.isSafeInteger(tasksQueueOptions.concurrency)
   ) {
     throw new TypeError(
@@ -598,7 +633,7 @@ export const checkValidTasksQueueOptions = (
     )
   }
   if (
-    tasksQueueOptions?.concurrency != null &&
+    tasksQueueOptions.concurrency != null &&
     tasksQueueOptions.concurrency <= 0
   ) {
     throw new RangeError(
@@ -606,67 +641,19 @@ export const checkValidTasksQueueOptions = (
     )
   }
   if (
-    tasksQueueOptions?.size != null &&
+    tasksQueueOptions.size != null &&
     !Number.isSafeInteger(tasksQueueOptions.size)
   ) {
     throw new TypeError(
       'Invalid worker node tasks queue size: must be an integer'
     )
   }
-  if (tasksQueueOptions?.size != null && tasksQueueOptions.size <= 0) {
+  if (tasksQueueOptions.size != null && tasksQueueOptions.size <= 0) {
     throw new RangeError(
       `Invalid worker node tasks queue size: ${tasksQueueOptions.size.toString()} is a negative integer or zero`
     )
   }
-  if (
-    tasksQueueOptions?.agingFactor != null &&
-    typeof tasksQueueOptions.agingFactor !== 'number'
-  ) {
-    throw new TypeError(
-      'Invalid worker node tasks queue aging factor: must be a number'
-    )
-  }
-  if (
-    tasksQueueOptions?.agingFactor != null &&
-    tasksQueueOptions.agingFactor < 0
-  ) {
-    throw new RangeError(
-      'Invalid worker node tasks queue aging factor: must be greater than or equal to 0'
-    )
-  }
-  if (
-    tasksQueueOptions?.loadExponent != null &&
-    typeof tasksQueueOptions.loadExponent !== 'number'
-  ) {
-    throw new TypeError(
-      'Invalid worker node tasks queue load exponent: must be a number'
-    )
-  }
-  if (
-    tasksQueueOptions?.loadExponent != null &&
-    tasksQueueOptions.loadExponent <= 0
-  ) {
-    throw new RangeError(
-      'Invalid worker node tasks queue load exponent: must be greater than 0'
-    )
-  }
-  if (
-    tasksQueueOptions?.tasksStealingRatio != null &&
-    typeof tasksQueueOptions.tasksStealingRatio !== 'number'
-  ) {
-    throw new TypeError(
-      'Invalid worker node tasks stealing ratio: must be a number'
-    )
-  }
-  if (
-    tasksQueueOptions?.tasksStealingRatio != null &&
-    (tasksQueueOptions.tasksStealingRatio < 0 ||
-      tasksQueueOptions.tasksStealingRatio > 1)
-  ) {
-    throw new RangeError(
-      'Invalid worker node tasks stealing ratio: must be between 0 and 1'
-    )
-  }
+  checkTasksQueueTuning(tasksQueueOptions)
 }
 
 export const checkWorkerNodeArguments = (
