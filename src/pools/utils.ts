@@ -589,7 +589,10 @@ const checkTasksQueueTuning = (options: TasksQueueOptions): void => {
       'Invalid worker node tasks queue aging factor: must be greater than or equal to 0'
     )
   }
-  if (options.loadExponent != null && typeof options.loadExponent !== 'number') {
+  if (
+    options.loadExponent != null &&
+    typeof options.loadExponent !== 'number'
+  ) {
     throw new TypeError(
       'Invalid worker node tasks queue load exponent: must be a number'
     )
