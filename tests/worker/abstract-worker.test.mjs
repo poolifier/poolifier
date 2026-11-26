@@ -750,7 +750,7 @@ describe('Abstract worker test suite', () => {
       )
     })
 
-    it.each([{}, { taskFunction: 0 }])(
+    it.each([{}, { taskFunction: 1 }])(
       'rejects an add message without a string task function (%j)',
       taskFunctionFields => {
         const worker = new ThreadWorker(() => {})
