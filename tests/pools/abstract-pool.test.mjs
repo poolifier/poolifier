@@ -808,6 +808,15 @@ describe('Abstract pool test suite', () => {
         'Invalid worker node tasks queue size: 0 is a negative integer or zero'
       )
     )
+    expect(() =>
+      pool.setTasksQueueOptions({ agingFactor: '', size: 0 })
+    ).toThrow(
+      expect.objectContaining({
+        message:
+          'Invalid worker node tasks queue size: 0 is a negative integer or zero',
+        name: 'RangeError',
+      })
+    )
     expect(() => pool.setTasksQueueOptions({ size: -1 })).toThrow(
       new RangeError(
         'Invalid worker node tasks queue size: -1 is a negative integer or zero'
