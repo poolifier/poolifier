@@ -2,7 +2,7 @@ import { Worker as ClusterWorker } from 'node:cluster'
 import { once } from 'node:events'
 import { PassThrough } from 'node:stream'
 import { SHARE_ENV, Worker as ThreadWorker } from 'node:worker_threads'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { CircularBuffer } from '../../lib/circular-buffer.mjs'
 import { WorkerTypes } from '../../lib/index.mjs'
@@ -126,6 +126,27 @@ describe('Pool utils test suite', () => {
       false
     )
   })
+
+  it.each([
+    ['path', 'PATH'],
+    ['PATH', 'path'],
+  ])(
+    'selects the smallest Windows key within one source ordered %s, %s',
+    (firstKey, secondKey) => {
+      const processEnvironment = {
+        [firstKey]: `${firstKey}-value`,
+        [secondKey]: `${secondKey}-value`,
+      }
+      const environment = buildClusterWorkerEnvironment(
+        processEnvironment,
+        undefined,
+        true
+      )
+
+      expect(Object.keys(environment)).toStrictEqual(['PATH'])
+      expect(environment.PATH).toBe('PATH-value')
+    }
+  )
 
   it('uses Object.prototype keys to mask Windows environment variants', () => {
     // eslint-disable-next-line no-extend-native
@@ -419,23 +440,22 @@ parentPort.postMessage({
     }
   })
 
-  it('accepts numeric stdio fd before irrelevant inherited controls', () => {
-    const opaqueStdioEntry = Object.create({})
+  it('skips stdio handle controls when fd is numeric', () => {
+    const readHandle = vi.fn()
+    const opaqueStdioEntry = Object.create(
+      Object.defineProperties(
+        {},
+        {
+          _handle: { get: readHandle },
+          handle: { get: readHandle },
+        }
+      )
+    )
     Object.defineProperty(opaqueStdioEntry, 'fd', { value: 0 })
-    // eslint-disable-next-line no-extend-native
-    Object.defineProperty(Object.prototype, 'handle', {
-      configurable: true,
-      enumerable: true,
-      value: -1,
-      writable: true,
-    })
-    try {
-      expect(() =>
-        validateAndMaterializeClusterStdio([opaqueStdioEntry])
-      ).not.toThrow()
-    } finally {
-      Reflect.deleteProperty(Object.prototype, 'handle')
-    }
+
+    validateAndMaterializeClusterStdio([opaqueStdioEntry])
+
+    expect(readHandle).not.toHaveBeenCalled()
   })
 
   it('ignores nonnumeric inherited fd before a legitimate handle', () => {
