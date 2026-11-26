@@ -758,7 +758,11 @@ describe('Abstract worker test suite', () => {
           taskFunctionProperties: { name: 'fn' },
         })
       ).toThrow(
-        /Cannot handle task function operation add message without task function/
+        expect.objectContaining({
+          constructor: TypeError,
+          message:
+            'Cannot handle task function operation add message without task function',
+        })
       )
     })
   })

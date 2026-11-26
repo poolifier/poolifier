@@ -386,7 +386,7 @@ export abstract class AbstractWorker<
     switch (taskFunctionOperation) {
       case 'add':
         if (typeof taskFunction !== 'string') {
-          throw new Error(
+          throw new TypeError(
             `Cannot handle task function operation ${taskFunctionOperation} message without task function`
           )
         }
@@ -676,30 +676,31 @@ export abstract class AbstractWorker<
           : 'fn1',
         fnObj
       )
-    } else if (isPlainObject(taskFunctions)) {
-      let firstEntry = true
-      for (let [name, fnObj] of Object.entries(taskFunctions)) {
-        if (typeof fnObj === 'function') {
-          fnObj = { taskFunction: fnObj } satisfies TaskFunctionObject<
-            Data,
-            Response
-          >
-        }
-        checkValidTaskFunctionObjectEntry<Data, Response>(name, fnObj)
-        fnObj.taskFunction = fnObj.taskFunction.bind(this)
-        if (firstEntry) {
-          this.taskFunctions.set(DEFAULT_TASK_NAME, fnObj)
-          firstEntry = false
-        }
-        this.taskFunctions.set(name, fnObj)
-      }
-      if (firstEntry) {
-        throw new Error('taskFunctions parameter object is empty')
-      }
-    } else {
+      return
+    }
+    if (!isPlainObject(taskFunctions)) {
       throw new TypeError(
         'taskFunctions parameter is not a function or a plain object'
       )
+    }
+    let firstEntry = true
+    for (let [name, fnObj] of Object.entries(taskFunctions)) {
+      if (typeof fnObj === 'function') {
+        fnObj = { taskFunction: fnObj } satisfies TaskFunctionObject<
+          Data,
+          Response
+        >
+      }
+      checkValidTaskFunctionObjectEntry<Data, Response>(name, fnObj)
+      fnObj.taskFunction = fnObj.taskFunction.bind(this)
+      if (firstEntry) {
+        this.taskFunctions.set(DEFAULT_TASK_NAME, fnObj)
+        firstEntry = false
+      }
+      this.taskFunctions.set(name, fnObj)
+    }
+    if (firstEntry) {
+      throw new Error('taskFunctions parameter object is empty')
     }
   }
 
