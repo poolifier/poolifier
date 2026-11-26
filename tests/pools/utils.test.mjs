@@ -127,20 +127,26 @@ describe('Pool utils test suite', () => {
     )
   })
 
-  it('selects the lexicographically smallest Windows key within one source', () => {
-    const processEnvironment = Object.fromEntries([
-      ['path', 'lowercase-path'],
-      ['PATH', 'uppercase-path'],
-    ])
-    const environment = buildClusterWorkerEnvironment(
-      processEnvironment,
-      undefined,
-      true
-    )
+  it.each([
+    ['path', 'PATH'],
+    ['PATH', 'path'],
+  ])(
+    'selects the smallest Windows key within one source ordered %s, %s',
+    (firstKey, secondKey) => {
+      const processEnvironment = {
+        [firstKey]: `${firstKey}-value`,
+        [secondKey]: `${secondKey}-value`,
+      }
+      const environment = buildClusterWorkerEnvironment(
+        processEnvironment,
+        undefined,
+        true
+      )
 
-    expect(Object.keys(environment)).toStrictEqual(['PATH'])
-    expect(environment.PATH).toBe('uppercase-path')
-  })
+      expect(Object.keys(environment)).toStrictEqual(['PATH'])
+      expect(environment.PATH).toBe('PATH-value')
+    }
+  )
 
   it('uses Object.prototype keys to mask Windows environment variants', () => {
     // eslint-disable-next-line no-extend-native
