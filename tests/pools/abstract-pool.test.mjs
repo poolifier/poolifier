@@ -1,3 +1,4 @@
+import { throws } from 'node:assert/strict'
 // eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { createHook, executionAsyncId } from 'node:async_hooks'
 import { EventEmitterAsyncResource } from 'node:events'
@@ -808,11 +809,12 @@ describe('Abstract pool test suite', () => {
         'Invalid worker node tasks queue size: 0 is a negative integer or zero'
       )
     )
-    const setInvalidQueueOptions = () =>
-      pool.setTasksQueueOptions({ agingFactor: '', size: 0 })
-    expect(setInvalidQueueOptions).toThrow(RangeError)
-    expect(setInvalidQueueOptions).toThrow(
-      /^Invalid worker node tasks queue size: 0 is a negative integer or zero$/
+    throws(
+      () => pool.setTasksQueueOptions({ agingFactor: '', size: 0 }),
+      error =>
+        error instanceof RangeError &&
+        error.message ===
+          'Invalid worker node tasks queue size: 0 is a negative integer or zero'
     )
     expect(() => pool.setTasksQueueOptions({ size: -1 })).toThrow(
       new RangeError(
