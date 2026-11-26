@@ -223,6 +223,35 @@ const getStdioControlValue = (
   return descriptor.value
 }
 
+const validateClusterStdioEntry = (entry: unknown): void => {
+  if (typeof entry !== 'object' || entry === null) {
+    return
+  }
+  const fdOwner = getPropertyOwner(entry, 'fd')
+  const fdValue = getStdioControlValue(entry, 'fd', fdOwner)
+  if (typeof fdValue === 'number') {
+    if (fdOwner === Object.prototype) {
+      throw new TypeError(
+        "Invalid cluster.settings.stdio entry: inherited 'fd' from Object.prototype is not allowed"
+      )
+    }
+    return
+  }
+  for (const key of ['handle', '_handle']) {
+    const owner = getPropertyOwner(entry, key)
+    const value = getStdioControlValue(entry, key, owner)
+    if (
+      owner === Object.prototype &&
+      ((typeof value === 'object' && value !== null) ||
+        typeof value === 'function')
+    ) {
+      throw new TypeError(
+        `Invalid cluster.settings.stdio entry: inherited '${key}' from Object.prototype is not allowed`
+      )
+    }
+  }
+}
+
 /**
  * Materializes missing cluster stdio slots and validates object-valued entries
  * before Node reads them.
@@ -239,32 +268,7 @@ export const validateAndMaterializeClusterStdio = (stdio: unknown): void => {
     }
   }
   for (const entry of stdio as unknown[]) {
-    if (typeof entry !== 'object' || entry === null) {
-      continue
-    }
-    const fdOwner = getPropertyOwner(entry, 'fd')
-    const fdValue = getStdioControlValue(entry, 'fd', fdOwner)
-    if (typeof fdValue === 'number') {
-      if (fdOwner === Object.prototype) {
-        throw new TypeError(
-          "Invalid cluster.settings.stdio entry: inherited 'fd' from Object.prototype is not allowed"
-        )
-      }
-      continue
-    }
-    for (const key of ['handle', '_handle']) {
-      const owner = getPropertyOwner(entry, key)
-      const value = getStdioControlValue(entry, key, owner)
-      if (
-        owner === Object.prototype &&
-        ((typeof value === 'object' && value !== null) ||
-          typeof value === 'function')
-      ) {
-        throw new TypeError(
-          `Invalid cluster.settings.stdio entry: inherited '${key}' from Object.prototype is not allowed`
-        )
-      }
-    }
+    validateClusterStdioEntry(entry)
   }
 }
 
@@ -288,6 +292,43 @@ const normalizeResourceLimits = (resourceLimits: object): object => {
     }
   }
   return normalizedResourceLimits
+}
+
+const getCaseInsensitiveEnvironmentKeys = (
+  source: object
+): Map<string, string> => {
+  const entries = new Map<string, string>()
+  for (const key of Object.keys(source)) {
+    const logicalKey = key.toUpperCase()
+    const previousKey = entries.get(logicalKey)
+    if (previousKey == null || key < previousKey) {
+      entries.set(logicalKey, key)
+    }
+  }
+  return entries
+}
+
+const mergeCaseInsensitiveEnvironmentEntries = (
+  processEnv: NodeJS.ProcessEnv,
+  workerEnv: Record<string, unknown> | undefined
+): Map<string, { key: string; value: unknown }> => {
+  const effectiveEntries = new Map<string, { key: string; value: unknown }>()
+  for (const source of [processEnv, workerEnv]) {
+    if (source == null) {
+      continue
+    }
+    for (const [logicalKey, sourceKey] of getCaseInsensitiveEnvironmentKeys(
+      source
+    )) {
+      const previousEntry = effectiveEntries.get(logicalKey)
+      const key =
+        previousEntry != null && previousEntry.key < sourceKey
+          ? previousEntry.key
+          : sourceKey
+      effectiveEntries.set(logicalKey, { key, value: source[sourceKey] })
+    }
+  }
+  return effectiveEntries
 }
 
 /**
@@ -316,37 +357,11 @@ export const buildClusterWorkerEnvironment = (
     return environment
   }
 
-  const effectiveEntries = new Map<string, { key: string; value: unknown }>()
-  for (const source of [processEnv, workerEnv]) {
-    if (source == null) {
-      continue
-    }
-    const sourceEntries = new Map<string, string>()
-    for (const key of Object.keys(source)) {
-      const logicalKey = key.toUpperCase()
-      const previousKey = sourceEntries.get(logicalKey)
-      if (previousKey == null || key < previousKey) {
-        sourceEntries.set(logicalKey, key)
-      }
-    }
-    for (const [logicalKey, sourceKey] of sourceEntries) {
-      const previousEntry = effectiveEntries.get(logicalKey)
-      const key =
-        previousEntry != null && previousEntry.key < sourceKey
-          ? previousEntry.key
-          : sourceKey
-      effectiveEntries.set(logicalKey, { key, value: source[sourceKey] })
-    }
-  }
-
-  const prototypeEntries = new Map<string, string>()
-  for (const key of Object.keys(Object.prototype)) {
-    const logicalKey = key.toUpperCase()
-    const previousKey = prototypeEntries.get(logicalKey)
-    if (previousKey == null || key < previousKey) {
-      prototypeEntries.set(logicalKey, key)
-    }
-  }
+  const effectiveEntries = mergeCaseInsensitiveEnvironmentEntries(
+    processEnv,
+    workerEnv
+  )
+  const prototypeEntries = getCaseInsensitiveEnvironmentKeys(Object.prototype)
 
   const environment = Object.create(null) as Record<string, unknown>
   for (const [logicalKey, effectiveEntry] of effectiveEntries) {
