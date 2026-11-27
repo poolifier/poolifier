@@ -31,7 +31,7 @@ jobs:
           cache: true
       - name: Install dependencies
         run: pnpm install --ignore-scripts --frozen-lockfile
-      - uses: bencherdev/bencher@a39a1f4fb7d2a0bffcfc2d4d044852072ce98358 # main
+      - uses: bencherdev/bencher@18a624c09bfcad4ae6cf3095bd347e094d087eb3 # main
       - name: Run production benchmark
         run: pnpm benchmark:tinybench:prod
       - name: Publish benchmark
