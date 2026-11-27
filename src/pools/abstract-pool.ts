@@ -1842,7 +1842,7 @@ export abstract class AbstractPool<
       workerNodeKeys != null ? new Set(workerNodeKeys) : undefined
     if (
       this.workerTaskFunctionBootstraps.size > 0 &&
-      !this.hasReadyWorkerNode(eligibleWorkerNodeKeys)
+      !this.hasEligibleWorkerNode(eligibleWorkerNodeKeys)
     ) {
       return
     }
@@ -2489,16 +2489,7 @@ export abstract class AbstractPool<
     this.scheduleTaskStealing()
   }
 
-  private hasQueuedTasks (): boolean {
-    for (const workerNode of this.workerNodes) {
-      if (workerNode.usage.tasks.queued > 0) {
-        return true
-      }
-    }
-    return false
-  }
-
-  private hasReadyWorkerNode (
+  private hasEligibleWorkerNode (
     eligibleWorkerNodeKeys: ReadonlySet<number> | undefined
   ): boolean {
     for (
@@ -2511,6 +2502,15 @@ export abstract class AbstractPool<
         (eligibleWorkerNodeKeys == null ||
           eligibleWorkerNodeKeys.has(workerNodeKey))
       ) {
+        return true
+      }
+    }
+    return false
+  }
+
+  private hasQueuedTasks (): boolean {
+    for (const workerNode of this.workerNodes) {
+      if (workerNode.usage.tasks.queued > 0) {
         return true
       }
     }
