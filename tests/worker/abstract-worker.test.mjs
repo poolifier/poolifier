@@ -750,17 +750,23 @@ describe('Abstract worker test suite', () => {
       )
     })
 
-    it('Verify that handleTaskFunctionOperationMessage() throws add without function', () => {
-      const worker = new ThreadWorker(() => {})
-      expect(() =>
-        worker.handleTaskFunctionOperationMessage({
-          taskFunctionOperation: 'add',
-          taskFunctionProperties: { name: 'fn' },
-        })
-      ).toThrow(
-        /Cannot handle task function operation add message without task function/
-      )
-    })
+    it.each([{}, { taskFunction: 1 }])(
+      'rejects an add message without a string task function (%j)',
+      taskFunctionFields => {
+        const worker = new ThreadWorker(() => {})
+        const handleAdd = () =>
+          worker.handleTaskFunctionOperationMessage({
+            ...taskFunctionFields,
+            taskFunctionOperation: 'add',
+            taskFunctionProperties: { name: 'fn' },
+          })
+
+        expect(handleAdd).toThrow(TypeError)
+        expect(handleAdd).toThrow(
+          /^Cannot handle task function operation add message without task function$/
+        )
+      }
+    )
   })
 
   describe('Check active mechanism', () => {
