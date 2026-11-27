@@ -1947,6 +1947,38 @@ export abstract class AbstractPool<
     }
   }
 
+  private dispatchQueuedTaskAfterCompletion (
+    workerNode: IWorkerNode<Worker, Data>,
+    workerNodeKey: number
+  ): number | undefined {
+    while (
+      !this.isWorkerNodeBusy(workerNodeKey) &&
+      this.tasksQueueSize(workerNodeKey) > 0
+    ) {
+      if (
+        this.executeTask(
+          workerNodeKey,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.dequeueTask(workerNodeKey)!
+        )
+      ) {
+        break
+      }
+      // Rejection callbacks can synchronously change pool and worker state.
+      workerNodeKey = this.workerNodes.indexOf(workerNode)
+      if (
+        workerNodeKey === -1 ||
+        !this.started ||
+        this.destroying ||
+        !workerNode.info.ready ||
+        !this.opts.enableTasksQueue
+      ) {
+        return
+      }
+    }
+    return workerNodeKey
+  }
+
   private endTaskFunctionOperation (): void {
     if (--this.pendingTaskFunctionOperations === 0) {
       const resolve = this.resolveTaskFunctionOperations
@@ -2232,92 +2264,70 @@ export abstract class AbstractPool<
     let { workerError } = message
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const promiseResponse = this.promiseResponseMap.get(taskId!)
-    if (promiseResponse != null) {
-      const { asyncResource, reject, resolve, workerNodeKey } = promiseResponse
-      if (
-        workerError != null &&
-        Object.hasOwn(promiseResponse, 'originalData')
-      ) {
-        workerError = { ...workerError, data: promiseResponse.originalData }
-      }
-      const workerNode = this.workerNodes[workerNodeKey]
-      let error: Error | undefined
-      if (workerError != null) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        error = this.handleWorkerError(taskId!, workerError)
-      }
+    if (promiseResponse == null) {
+      return
+    }
+    const { asyncResource, reject, resolve, workerNodeKey } = promiseResponse
+    if (workerError != null && Object.hasOwn(promiseResponse, 'originalData')) {
+      workerError = { ...workerError, data: promiseResponse.originalData }
+    }
+    const workerNode = this.workerNodes[workerNodeKey]
+    let error: Error | undefined
+    if (workerError != null) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.promiseResponseMap.delete(taskId!)
-      if (workerError != null) {
-        this.emitter?.emit(PoolEvents.taskError, workerError)
-        asyncResource != null
-          ? asyncResource.runInAsyncScope(reject, this.emitter, error)
-          : reject(error)
-      } else {
-        asyncResource != null
-          ? asyncResource.runInAsyncScope(resolve, this.emitter, data)
-          : resolve(data as Response)
-      }
-      asyncResource?.emitDestroy()
-      // A replayed response can outlive its removed worker node.
+      error = this.handleWorkerError(taskId!, workerError)
+    }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.promiseResponseMap.delete(taskId!)
+    if (workerError != null) {
+      this.emitter?.emit(PoolEvents.taskError, workerError)
+      asyncResource != null
+        ? asyncResource.runInAsyncScope(reject, this.emitter, error)
+        : reject(error)
+    } else {
+      asyncResource != null
+        ? asyncResource.runInAsyncScope(resolve, this.emitter, data)
+        : resolve(data as Response)
+    }
+    asyncResource?.emitDestroy()
+    // A replayed response can outlive its removed worker node.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (workerNode != null) {
+      this.afterTaskExecutionHook(workerNodeKey, message)
+    }
+    queueMicrotask(() => {
+      const currentWorkerNodeKey =
+        this.workerNodes[workerNodeKey] === workerNode
+          ? workerNodeKey
+          : this.workerNodes.indexOf(workerNode)
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (workerNode != null) {
-        this.afterTaskExecutionHook(workerNodeKey, message)
+      workerNode?.emit('taskFinished', taskId)
+      this.checkAndEmitTaskExecutionFinishedEvents()
+      if (currentWorkerNodeKey === -1 || !workerNode.info.ready) {
+        return
       }
-      queueMicrotask(() => {
-        let currentWorkerNodeKey =
-          this.workerNodes[workerNodeKey] === workerNode
-            ? workerNodeKey
-            : this.workerNodes.indexOf(workerNode)
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        workerNode?.emit('taskFinished', taskId)
-        this.checkAndEmitTaskExecutionFinishedEvents()
-        if (currentWorkerNodeKey === -1 || !workerNode.info.ready) {
+      if (
+        this.started &&
+        this.opts.enableTasksQueue === true &&
+        !this.destroying
+      ) {
+        const dispatchWorkerNodeKey = this.dispatchQueuedTaskAfterCompletion(
+          workerNode,
+          currentWorkerNodeKey
+        )
+        if (dispatchWorkerNodeKey == null) {
           return
         }
-        if (
-          this.started &&
-          this.opts.enableTasksQueue === true &&
-          !this.destroying
-        ) {
-          while (
-            !this.isWorkerNodeBusy(currentWorkerNodeKey) &&
-            this.tasksQueueSize(currentWorkerNodeKey) > 0
-          ) {
-            if (
-              this.executeTask(
-                currentWorkerNodeKey,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                this.dequeueTask(currentWorkerNodeKey)!
-              )
-            ) {
-              break
-            }
-            currentWorkerNodeKey = this.workerNodes.indexOf(workerNode)
-            // Rejection callbacks can synchronously change pool and worker state.
-            /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-            if (
-              currentWorkerNodeKey === -1 ||
-              !this.started ||
-              this.destroying ||
-              !workerNode.info.ready ||
-              !this.opts.enableTasksQueue
-            ) {
-              return
-            }
-            /* eslint-enable @typescript-eslint/no-unnecessary-condition */
-          }
-          if (this.isWorkerNodeIdle(currentWorkerNodeKey)) {
-            workerNode.emit('idle', {
-              workerNodeKey: currentWorkerNodeKey,
-            })
-          }
+        if (this.isWorkerNodeIdle(dispatchWorkerNodeKey)) {
+          workerNode.emit('idle', {
+            workerNodeKey: dispatchWorkerNodeKey,
+          })
         }
-        if (this.shallCreateDynamicWorker()) {
-          this.createAndSetupDynamicWorkerNode()
-        }
-      })
-    }
+      }
+      if (this.shallCreateDynamicWorker()) {
+        this.createAndSetupDynamicWorkerNode()
+      }
+    })
   }
 
   private readonly handleWorkerError = (
