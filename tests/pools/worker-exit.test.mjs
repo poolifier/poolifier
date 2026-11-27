@@ -872,12 +872,18 @@ for (const [workerType, PoolClass, workerFile] of [
         const workerNode = pool.workerNodes[0]
         const channel = new MessageChannel()
         let failedTaskAsyncId
+        let queueDisableFailure
         let transferredPort
         let released = false
         let idleEvents = 0
         const hook = createHook({
           before (asyncId) {
-            if (asyncId === failedTaskAsyncId) pool.enableTasksQueue(false)
+            if (asyncId !== failedTaskAsyncId) return
+            try {
+              pool.enableTasksQueue(false)
+            } catch (error) {
+              queueDisableFailure = { error }
+            }
           },
           init (asyncId, type) {
             if (type === 'poolifier:task') failedTaskAsyncId = asyncId
@@ -906,6 +912,7 @@ for (const [workerType, PoolClass, workerFile] of [
           released = true
 
           const [result, error] = await bounded(Promise.all([running, bad]))
+          if (queueDisableFailure != null) throw queueDisableFailure.error
           expect(result).toStrictEqual({ id: 'running', wait: true })
           expect(error).toBeInstanceOf(Error)
           expect(error.name).toBe('DataCloneError')
