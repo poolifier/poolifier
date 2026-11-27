@@ -860,6 +860,69 @@ for (const [workerType, PoolClass, workerFile] of [
         }
       })
 
+      it('does not emit idle when a queued send failure disables the queue', async () => {
+        const pool = await createPool(1, {
+          enableTasksQueue: true,
+          tasksQueueOptions: {
+            concurrency: 1,
+            tasksStealingOnBackPressure: false,
+            taskStealing: false,
+          },
+        })
+        const workerNode = pool.workerNodes[0]
+        const channel = new MessageChannel()
+        let failedTaskAsyncId
+        let transferredPort
+        let released = false
+        let idleEvents = 0
+        const hook = createHook({
+          before (asyncId) {
+            if (asyncId === failedTaskAsyncId) pool.enableTasksQueue(false)
+          },
+          init (asyncId, type) {
+            if (type === 'poolifier:task') failedTaskAsyncId = asyncId
+          },
+        })
+        try {
+          const runningStarted = started(workerNode, 'running')
+          const running = pool
+            .execute({ id: 'running', wait: true })
+            .catch(error => error)
+          await bounded(runningStarted)
+          workerNode.on('idle', () => {
+            ++idleEvents
+          })
+          hook.enable()
+          const bad = pool
+            .execute({ port: channel.port1 }, undefined, undefined, [
+              channel.port1,
+            ])
+            .catch(error => error)
+          expect(workerNode.tasksQueue.size).toBe(1)
+          transferredPort = structuredClone(channel.port1, {
+            transfer: [channel.port1],
+          })
+          send(workerNode, { release: 'running' })
+          released = true
+
+          const [result, error] = await bounded(Promise.all([running, bad]))
+          expect(result).toStrictEqual({ id: 'running', wait: true })
+          expect(error).toBeInstanceOf(Error)
+          expect(error.name).toBe('DataCloneError')
+          expect(pool.opts.enableTasksQueue).toBe(false)
+          expect(idleEvents).toBe(0)
+        } finally {
+          hook.disable()
+          channel.port1.close()
+          channel.port2.close()
+          transferredPort?.close()
+          if (pool.info.started) {
+            if (!released) send(workerNode, { release: 'running' })
+            await bounded(pool.destroy())
+          }
+        }
+      })
+
       for (const destinationBusy of [false, true]) {
         it(`isolates a queued transfer failure after worker exit (destination busy: ${destinationBusy})`, async () => {
           const pool = await createPool(2, {
