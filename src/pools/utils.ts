@@ -489,6 +489,27 @@ export const getDefaultTasksQueueOptions = (
   })
 }
 
+export const normalizeMapExecuteAbortSignals = (
+  abortSignals: Iterable<AbortSignal>,
+  data: readonly unknown[]
+): readonly AbortSignal[] => {
+  if (typeof abortSignals[Symbol.iterator] !== 'function') {
+    throw new TypeError('abortSignals argument must be an iterable')
+  }
+  const signals = Array.isArray(abortSignals) ? abortSignals : [...abortSignals]
+  for (const signal of signals) {
+    if (!(signal instanceof AbortSignal)) {
+      throw new TypeError(
+        'abortSignals argument must be an iterable of AbortSignal'
+      )
+    }
+  }
+  if (data.length !== signals.length) {
+    throw new Error('data and abortSignals arguments must have the same length')
+  }
+  return signals as AbortSignal[]
+}
+
 export const checkFilePath = (filePath: string | undefined): void => {
   if (filePath == null) {
     throw new TypeError('The worker file path must be defined')
