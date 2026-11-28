@@ -496,7 +496,9 @@ export const normalizeMapExecuteAbortSignals = (
   if (typeof abortSignals[Symbol.iterator] !== 'function') {
     throw new TypeError('abortSignals argument must be an iterable')
   }
-  const signals = Array.isArray(abortSignals) ? abortSignals : [...abortSignals]
+  const signals: readonly unknown[] = Array.isArray(abortSignals)
+    ? abortSignals
+    : [...abortSignals]
   for (const signal of signals) {
     if (!(signal instanceof AbortSignal)) {
       throw new TypeError(
@@ -507,7 +509,7 @@ export const normalizeMapExecuteAbortSignals = (
   if (data.length !== signals.length) {
     throw new Error('data and abortSignals arguments must have the same length')
   }
-  return signals as AbortSignal[]
+  return signals as readonly AbortSignal[]
 }
 
 export const checkFilePath = (filePath: string | undefined): void => {
