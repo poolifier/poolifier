@@ -15,6 +15,7 @@ import {
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   getDefaultTasksQueueOptions,
   initWorkerInfo,
+  selectRedistributionDestinationWorkerNodeKey,
   selectStealSourceWorkerNode,
   updateMeasurementStatistics,
   validateAndMaterializeClusterStdio,
@@ -919,6 +920,24 @@ parentPort.postMessage({
       )
     )
   })
+
+  it.each([
+    ['fewest queued tasks', [3, 1, 2], undefined, 1],
+    ['lowest key on a tie', [1, 0, 1], [2, 0], 0],
+    ['no live ready candidate', [undefined, 1], [2, 0], -1],
+  ])(
+    'selects the redistribution destination: %s',
+    (_, queues, keys, expected) => {
+      const workerNodes = queues.map(queued => ({
+        info: { ready: queued != null },
+        usage: { tasks: { queued: queued ?? 0 } },
+      }))
+      expect(
+        selectRedistributionDestinationWorkerNodeKey(workerNodes, keys)
+      ).toBe(expected)
+    }
+  )
+
   it('Verify selectStealSourceWorkerNode() matches a stable sort by decreasing queued tasks count', () => {
     const referenceSelect = (workerNodes, stealingWorkerNode) =>
       workerNodes

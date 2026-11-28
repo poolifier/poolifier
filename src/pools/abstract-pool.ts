@@ -64,6 +64,7 @@ import {
   checkValidWorkerChoiceStrategy,
   checkValidWorkerNodeKeys,
   getDefaultTasksQueueOptions,
+  getRedistributionTaskFunctionsProperties,
   normalizeMapExecuteAbortSignals,
   selectRedistributionDestinationWorkerNodeKey,
   selectStealSourceWorkerNode,
@@ -2737,10 +2738,10 @@ export abstract class AbstractPool<
       const liveTaskFunctionsProperties = this.listTaskFunctionsProperties()
       const workerNodeKeys = this.getTaskFunctionWorkerNodeKeys(
         task.name,
-        liveTaskFunctionsProperties.length > 0
-          ? liveTaskFunctionsProperties
-          : (sourceWorkerNode.info.taskFunctionsProperties ??
-              liveTaskFunctionsProperties)
+        getRedistributionTaskFunctionsProperties(
+          liveTaskFunctionsProperties,
+          sourceWorkerNode
+        )
       )
       const destinationWorkerNodeKey =
         selectRedistributionDestinationWorkerNodeKey(

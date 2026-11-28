@@ -10,7 +10,11 @@ import {
 } from 'node:worker_threads'
 
 import type { CircularBuffer } from '../circular-buffer.js'
-import type { MessageValue, Task } from '../utility-types.js'
+import type {
+  MessageValue,
+  Task,
+  TaskFunctionProperties,
+} from '../utility-types.js'
 import type { TasksQueueOptions } from './pool.js'
 import type { WorkerChoiceStrategiesContext } from './selection-strategies/worker-choice-strategies-context.js'
 
@@ -972,10 +976,20 @@ const medianMeasurementHistory = (history: CircularBuffer): number => {
   return (lower + upper) / 2
 }
 
+export const getRedistributionTaskFunctionsProperties = (
+  liveTaskFunctionsProperties: TaskFunctionProperties[],
+  sourceWorkerNode: Pick<IWorkerNode<IWorker>, 'info'>
+): TaskFunctionProperties[] =>
+  liveTaskFunctionsProperties.length > 0
+    ? liveTaskFunctionsProperties
+    : (sourceWorkerNode.info.taskFunctionsProperties ??
+      liveTaskFunctionsProperties)
+
 /**
- * Finds the ready worker with the fewest queued tasks, breaking ties by key.
+ * Finds the ready worker with the fewest queued tasks.
+ * Ties go to the lowest live worker node key.
  * @param workerNodes - The live worker nodes.
- * @param workerNodeKeys - The task affinity keys, if any.
+ * @param workerNodeKeys - The previously validated task affinity keys, if any.
  * @returns The destination worker node key, or `-1` if none is eligible.
  * @internal
  */
