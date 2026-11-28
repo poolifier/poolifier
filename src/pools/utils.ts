@@ -490,7 +490,7 @@ export const getDefaultTasksQueueOptions = (
 }
 
 export const normalizeMapExecuteAbortSignals = (
-  abortSignals: Iterable<AbortSignal>,
+  abortSignals: Iterable<unknown>,
   data: readonly unknown[]
 ): readonly AbortSignal[] => {
   if (typeof abortSignals[Symbol.iterator] !== 'function') {
