@@ -65,6 +65,7 @@ import {
   checkValidWorkerNodeKeys,
   getDefaultTasksQueueOptions,
   normalizeMapExecuteAbortSignals,
+  selectRedistributionDestinationWorkerNodeKey,
   selectStealSourceWorkerNode,
   updateEluWorkerUsage,
   updateRunTimeWorkerUsage,
@@ -2741,29 +2742,11 @@ export abstract class AbstractPool<
           : (sourceWorkerNode.info.taskFunctionsProperties ??
               liveTaskFunctionsProperties)
       )
-      const candidateCount = workerNodeKeys?.length ?? this.workerNodes.length
-      let destinationWorkerNodeKey = -1
-      let minimumQueuedTasks = Number.POSITIVE_INFINITY
-      for (let i = 0; i < candidateCount; i++) {
-        const candidateWorkerNodeKey =
-          workerNodeKeys == null ? i : workerNodeKeys[i]
-        if (candidateWorkerNodeKey >= this.workerNodes.length) {
-          continue
-        }
-        const candidateWorkerNode = this.workerNodes[candidateWorkerNodeKey]
-        if (!candidateWorkerNode.info.ready) {
-          continue
-        }
-        const queuedTasks = candidateWorkerNode.usage.tasks.queued
-        if (
-          queuedTasks < minimumQueuedTasks ||
-          (queuedTasks === minimumQueuedTasks &&
-            candidateWorkerNodeKey < destinationWorkerNodeKey)
-        ) {
-          destinationWorkerNodeKey = candidateWorkerNodeKey
-          minimumQueuedTasks = queuedTasks
-        }
-      }
+      const destinationWorkerNodeKey =
+        selectRedistributionDestinationWorkerNodeKey(
+          this.workerNodes,
+          workerNodeKeys
+        )
       if (destinationWorkerNodeKey === -1) {
         continue
       }

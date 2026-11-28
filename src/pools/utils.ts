@@ -971,6 +971,43 @@ const medianMeasurementHistory = (history: CircularBuffer): number => {
       : selectAtRank(measurementSnapshot, upperRank, lowerRank)
   return (lower + upper) / 2
 }
+
+/**
+ * Finds the ready worker with the fewest queued tasks, breaking ties by key.
+ * @param workerNodes - The live worker nodes.
+ * @param workerNodeKeys - The task affinity keys, if any.
+ * @returns The destination worker node key, or `-1` if none is eligible.
+ * @internal
+ */
+export const selectRedistributionDestinationWorkerNodeKey = (
+  workerNodes: readonly Pick<IWorkerNode<IWorker>, 'info' | 'usage'>[],
+  workerNodeKeys: readonly number[] | undefined
+): number => {
+  const candidateCount = workerNodeKeys?.length ?? workerNodes.length
+  let destinationWorkerNodeKey = -1
+  let minimumQueuedTasks = Number.POSITIVE_INFINITY
+  for (let i = 0; i < candidateCount; i++) {
+    const candidateWorkerNodeKey = workerNodeKeys == null ? i : workerNodeKeys[i]
+    if (candidateWorkerNodeKey >= workerNodes.length) {
+      continue
+    }
+    const candidateWorkerNode = workerNodes[candidateWorkerNodeKey]
+    if (!candidateWorkerNode.info.ready) {
+      continue
+    }
+    const queuedTasks = candidateWorkerNode.usage.tasks.queued
+    if (
+      queuedTasks < minimumQueuedTasks ||
+      (queuedTasks === minimumQueuedTasks &&
+        candidateWorkerNodeKey < destinationWorkerNodeKey)
+    ) {
+      destinationWorkerNodeKey = candidateWorkerNodeKey
+      minimumQueuedTasks = queuedTasks
+    }
+  }
+  return destinationWorkerNodeKey
+}
+
 /**
  * Selects the worker node to steal a task from: the one with the highest
  * number of queued tasks among the other non-empty ones. Ties are broken by
