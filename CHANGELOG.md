@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.1.2](https://github.com/poolifier/poolifier/compare/v6.1.1...v6.1.2) (2026-11-28)
+
+
+### 🐞 Bug Fixes
+
+* **deps:** update all non-major dependencies ([#3415](https://github.com/poolifier/poolifier/issues/3415)) ([9c291c3](https://github.com/poolifier/poolifier/commit/9c291c301a22ed22e3761d558470642eb58cad63))
+* **deps:** update all non-major dependencies ([#3418](https://github.com/poolifier/poolifier/issues/3418)) ([93195e6](https://github.com/poolifier/poolifier/commit/93195e631914f72769044594b62cf5be911bf28a))
+* **deps:** update all non-major dependencies ([#3421](https://github.com/poolifier/poolifier/issues/3421)) ([42db02a](https://github.com/poolifier/poolifier/commit/42db02a799d53da7ed795d5180b86d7d1eb90557))
+
+
+### ✨ Polish
+
+* **pools:** address Sonar maintainability findings ([#3424](https://github.com/poolifier/poolifier/issues/3424)) ([c2de502](https://github.com/poolifier/poolifier/commit/c2de5024932063f77b54225934bb01f6b8056b8c))
+* **pools:** isolate batch abort signal validation ([#3434](https://github.com/poolifier/poolifier/issues/3434)) ([3d04a07](https://github.com/poolifier/poolifier/commit/3d04a076b0c5e93e233e4950a9aa8e64dabdb7ab))
+* **pools:** simplify cluster option handling ([#3426](https://github.com/poolifier/poolifier/issues/3426)) ([4282d05](https://github.com/poolifier/poolifier/commit/4282d05ad44dda96939c53bf7afb1076883e0794))
+* **pools:** simplify option validation ([#3425](https://github.com/poolifier/poolifier/issues/3425)) ([bcdb266](https://github.com/poolifier/poolifier/commit/bcdb26603445c6fd6ec4bc598a2ec644a285d05f))
+* **pools:** simplify task completion handling ([#3430](https://github.com/poolifier/poolifier/issues/3430)) ([afd2b0d](https://github.com/poolifier/poolifier/commit/afd2b0d9c837ed3474236957c4e9f9ddb965a88c))
+* **pools:** simplify worker readiness selection ([#3431](https://github.com/poolifier/poolifier/issues/3431)) ([f8e68e3](https://github.com/poolifier/poolifier/commit/f8e68e33610a1ea395f4d94a8191a4ed697d9f35))
+* **worker:** simplify task function validation ([#3427](https://github.com/poolifier/poolifier/issues/3427)) ([8d7669d](https://github.com/poolifier/poolifier/commit/8d7669d9a68c0c9a8950ac08caf3b76f659f78e6))
+
+
+### 📚 Documentation
+
+* publish documentation ([0732475](https://github.com/poolifier/poolifier/commit/073247590425dac31d53c367e632de4fd503f7e6))
+
 ## [6.1.1](https://github.com/poolifier/poolifier/compare/v6.1.0...v6.1.1) (2026-11-18)
 
 ### 🐞 Bug Fixes
