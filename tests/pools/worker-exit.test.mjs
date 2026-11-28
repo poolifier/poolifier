@@ -242,6 +242,60 @@ for (const [workerType, PoolClass, workerFile] of [
       }
     })
 
+    it('recomputes the shortest queue for each redistributed task', async () => {
+      const pool = await createPool(3, {
+        enableTasksQueue: true,
+        restartWorkerOnError: false,
+        tasksQueueOptions: {
+          concurrency: 1,
+          tasksStealingOnBackPressure: false,
+          taskStealing: false,
+        },
+      })
+      const nodes = [...pool.workerNodes]
+      const [firstSurvivor, source, secondSurvivor] = nodes
+      try {
+        // Round robin advances from key 0 before the first dispatch.
+        const heldIds = ['source', 'second-survivor', 'first-survivor']
+        const heldStarted = [
+          started(source, heldIds[0]),
+          started(secondSurvivor, heldIds[1]),
+          started(firstSurvivor, heldIds[2]),
+        ]
+        const held = heldIds.map(id =>
+          pool.execute({ id, wait: true }).catch(error => error)
+        )
+        await bounded(Promise.all(heldStarted))
+
+        // One round queues a task on each busy worker. The next task joins
+        // the source queue, giving it two tasks to redistribute.
+        const firstData = { id: 'first-migration' }
+        const secondData = { id: 'second-migration' }
+        const first = pool.execute(firstData).catch(error => error)
+        const fillers = ['first-filler', 'second-filler'].map(id =>
+          pool.execute({ id }).catch(error => error)
+        )
+        const second = pool.execute(secondData).catch(error => error)
+        expect(nodes.map(node => node.tasksQueue.size)).toStrictEqual([1, 2, 1])
+
+        const exit = new Promise(resolve => source.worker.once('exit', resolve))
+        send(source, { exitCode: 0 })
+        await bounded(exit)
+        expect(await bounded(held[0])).toBeInstanceOf(Error)
+        expect(
+          [firstSurvivor, secondSurvivor].map(node => node.tasksQueue.size)
+        ).toStrictEqual([2, 2])
+
+        send(firstSurvivor, { release: 'first-survivor' })
+        expect(await bounded(first)).toStrictEqual(firstData)
+        send(secondSurvivor, { release: 'second-survivor' })
+        expect(await bounded(second)).toStrictEqual(secondData)
+        await bounded(Promise.all([...held.slice(1), ...fillers]))
+      } finally {
+        await cleanupRegressionPool(pool, nodes)
+      }
+    })
+
     for (const [failure, message] of [
       ['crash', { crash: true }],
       ['silent exit', { exitCode: 1 }],
