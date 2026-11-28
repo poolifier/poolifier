@@ -103,19 +103,19 @@
     "lib"
   ],
   "devDependencies": {
-    "@biomejs/biome": "2.6.8",
+    "@biomejs/biome": "2.6.9",
     "@commitlint/cli": "21.2.4",
     "@commitlint/config-conventional": "21.2.4",
     "@cspell/eslint-plugin": "10.5.2",
     "@eslint/js": "10.0.1",
     "@rollup/plugin-terser": "1.0.2",
     "@rollup/plugin-typescript": "12.3.1",
-    "@types/node": "24.19.2",
-    "@vitest/coverage-v8": "5.1.1",
+    "@types/node": "24.19.4",
+    "@vitest/coverage-v8": "5.1.2",
     "clean-publish": "7.1.0",
     "cross-env": "10.1.0",
     "eslint": "10.15.0",
-    "eslint-plugin-jsdoc": "65.5.4",
+    "eslint-plugin-jsdoc": "65.5.5",
     "eslint-plugin-perfectionist": "5.14.0",
     "globals": "17.14.0",
     "husky": "9.1.7",
@@ -130,6 +130,6 @@
     "tslib": "2.9.1",
     "typedoc": "0.28.20",
     "typescript": "6.0.3",
-    "vitest": "5.1.1"
+    "vitest": "5.1.2"
   }
 }
