@@ -802,13 +802,13 @@ export abstract class AbstractPool<
     if (name != null && typeof name === 'string' && name.trim().length === 0) {
       throw new TypeError('name argument must not be an empty string')
     }
-    if (!Array.isArray(data)) {
-      data = [...data]
-    }
+    const normalizedData: readonly Data[] = Array.isArray(data)
+      ? data
+      : [...data]
     const normalizedAbortSignals =
       abortSignals == null
         ? undefined
-        : normalizeMapExecuteAbortSignals(abortSignals, data as Data[])
+        : normalizeMapExecuteAbortSignals(abortSignals, normalizedData)
     if (transferList != null && !Array.isArray(transferList)) {
       throw new TypeError('transferList argument must be an array')
     }
@@ -817,8 +817,8 @@ export abstract class AbstractPool<
         ? Array.from(transferList)
         : undefined
     const tasks: [Data, AbortSignal | undefined][] = Array.from(
-      { length: (data as Data[]).length },
-      (_, i) => [(data as Data[])[i], normalizedAbortSignals?.[i]]
+      { length: normalizedData.length },
+      (_, i) => [normalizedData[i], normalizedAbortSignals?.[i]]
     )
     return await Promise.all(
       tasks.map(([data, abortSignal]) =>

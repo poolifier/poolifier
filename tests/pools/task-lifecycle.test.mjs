@@ -708,6 +708,22 @@ describe('Task lifecycle regressions', () => {
     }
   })
 
+  it('rejects an invalid batch signal before checking the batch length', async () => {
+    const pool = new FixedThreadPool(1, workerFile)
+    try {
+      await ready(pool)
+      const { error } = await settle(
+        pool.mapExecute([{}], 'echo', [new AbortController().signal, undefined])
+      )
+      expect(error).toBeInstanceOf(TypeError)
+      expect(error.message).toBe(
+        'abortSignals argument must be an iterable of AbortSignal'
+      )
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
   it.each([false, true])(
     'settles promise-returning functions (abortable: %s)',
     async abortable => {
