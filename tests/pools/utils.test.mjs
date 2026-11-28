@@ -930,7 +930,8 @@ parentPort.postMessage({
 
   it.each([
     ['fewest queued tasks', [3, 1, 2], undefined, 1],
-    ['lowest key on a tie', [1, 0, 1], [2, 0], 0],
+    ['lowest key on an ascending tie', [1, 0, 1], [0, 2], 0],
+    ['lowest key on a descending tie', [1, 0, 1], [2, 0], 0],
     ['no live ready candidate', [undefined, 1], [2, 0], -1],
     ['skips stale and unready keys', [undefined, 0, 2], [3, 0, 2], 2],
   ])(
