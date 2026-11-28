@@ -804,26 +804,10 @@ export abstract class AbstractPool<
     if (!Array.isArray(data)) {
       data = [...data]
     }
-    if (abortSignals != null) {
-      if (typeof abortSignals[Symbol.iterator] !== 'function') {
-        throw new TypeError('abortSignals argument must be an iterable')
-      }
-      if (!Array.isArray(abortSignals)) {
-        abortSignals = [...abortSignals]
-      }
-      for (const abortSignal of abortSignals) {
-        if (!(abortSignal instanceof AbortSignal)) {
-          throw new TypeError(
-            'abortSignals argument must be an iterable of AbortSignal'
-          )
-        }
-      }
-      if ((data as Data[]).length !== (abortSignals as AbortSignal[]).length) {
-        throw new Error(
-          'data and abortSignals arguments must have the same length'
-        )
-      }
-    }
+    const normalizedAbortSignals =
+      abortSignals == null
+        ? undefined
+        : this.normalizeMapExecuteAbortSignals(abortSignals, data as Data[])
     if (transferList != null && !Array.isArray(transferList)) {
       throw new TypeError('transferList argument must be an array')
     }
@@ -833,10 +817,7 @@ export abstract class AbstractPool<
         : undefined
     const tasks: [Data, AbortSignal | undefined][] = Array.from(
       { length: (data as Data[]).length },
-      (_, i) => [
-        (data as Data[])[i],
-        abortSignals != null ? (abortSignals as AbortSignal[])[i] : undefined,
-      ]
+      (_, i) => [(data as Data[])[i], normalizedAbortSignals?.[i]]
     )
     return await Promise.all(
       tasks.map(([data, abortSignal]) =>
@@ -2703,6 +2684,31 @@ export abstract class AbstractPool<
       (workerNode.info.continuousStealing ||
         workerNode.info.backPressureStealing)
     )
+  }
+
+  private normalizeMapExecuteAbortSignals (
+    abortSignals: Iterable<AbortSignal>,
+    data: readonly Data[]
+  ): readonly AbortSignal[] {
+    if (typeof abortSignals[Symbol.iterator] !== 'function') {
+      throw new TypeError('abortSignals argument must be an iterable')
+    }
+    const signals = Array.isArray(abortSignals)
+      ? abortSignals
+      : [...abortSignals]
+    for (const signal of signals) {
+      if (!(signal instanceof AbortSignal)) {
+        throw new TypeError(
+          'abortSignals argument must be an iterable of AbortSignal'
+        )
+      }
+    }
+    if (data.length !== signals.length) {
+      throw new Error(
+        'data and abortSignals arguments must have the same length'
+      )
+    }
+    return signals as AbortSignal[]
   }
 
   private queueTaskFunctionOperation (
