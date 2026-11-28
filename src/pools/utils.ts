@@ -987,7 +987,8 @@ export const selectRedistributionDestinationWorkerNodeKey = (
   let destinationWorkerNodeKey = -1
   let minimumQueuedTasks = Number.POSITIVE_INFINITY
   for (let i = 0; i < candidateCount; i++) {
-    const candidateWorkerNodeKey = workerNodeKeys == null ? i : workerNodeKeys[i]
+    const candidateWorkerNodeKey =
+      workerNodeKeys == null ? i : workerNodeKeys[i]
     if (candidateWorkerNodeKey >= workerNodes.length) {
       continue
     }
