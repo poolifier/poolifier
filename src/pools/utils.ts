@@ -10,7 +10,11 @@ import {
 } from 'node:worker_threads'
 
 import type { CircularBuffer } from '../circular-buffer.js'
-import type { MessageValue, Task } from '../utility-types.js'
+import type {
+  MessageValue,
+  Task,
+  TaskFunctionProperties,
+} from '../utility-types.js'
 import type { TasksQueueOptions } from './pool.js'
 import type { WorkerChoiceStrategiesContext } from './selection-strategies/worker-choice-strategies-context.js'
 
@@ -971,6 +975,54 @@ const medianMeasurementHistory = (history: CircularBuffer): number => {
       : selectAtRank(measurementSnapshot, upperRank, lowerRank)
   return (lower + upper) / 2
 }
+
+export const getRedistributionTaskFunctionsProperties = (
+  liveTaskFunctionsProperties: TaskFunctionProperties[],
+  sourceWorkerNode: Pick<IWorkerNode<IWorker>, 'info'>
+): TaskFunctionProperties[] =>
+  liveTaskFunctionsProperties.length > 0
+    ? liveTaskFunctionsProperties
+    : (sourceWorkerNode.info.taskFunctionsProperties ??
+      liveTaskFunctionsProperties)
+
+/**
+ * Finds the ready worker with the fewest queued tasks.
+ * Ties go to the lowest live worker node key.
+ * @param workerNodes - The live worker nodes.
+ * @param workerNodeKeys - The previously validated task affinity keys, if any.
+ * @returns The destination worker node key, or `-1` if none is eligible.
+ * @internal
+ */
+export const selectRedistributionDestinationWorkerNodeKey = (
+  workerNodes: readonly Pick<IWorkerNode<IWorker>, 'info' | 'usage'>[],
+  workerNodeKeys: readonly number[] | undefined
+): number => {
+  const candidateCount = workerNodeKeys?.length ?? workerNodes.length
+  let destinationWorkerNodeKey = -1
+  let minimumQueuedTasks = Number.POSITIVE_INFINITY
+  for (let i = 0; i < candidateCount; i++) {
+    const candidateWorkerNodeKey =
+      workerNodeKeys == null ? i : workerNodeKeys[i]
+    if (candidateWorkerNodeKey >= workerNodes.length) {
+      continue
+    }
+    const candidateWorkerNode = workerNodes[candidateWorkerNodeKey]
+    if (!candidateWorkerNode.info.ready) {
+      continue
+    }
+    const queuedTasks = candidateWorkerNode.usage.tasks.queued
+    if (
+      queuedTasks < minimumQueuedTasks ||
+      (queuedTasks === minimumQueuedTasks &&
+        candidateWorkerNodeKey < destinationWorkerNodeKey)
+    ) {
+      destinationWorkerNodeKey = candidateWorkerNodeKey
+      minimumQueuedTasks = queuedTasks
+    }
+  }
+  return destinationWorkerNodeKey
+}
+
 /**
  * Selects the worker node to steal a task from: the one with the highest
  * number of queued tasks among the other non-empty ones. Ties are broken by
