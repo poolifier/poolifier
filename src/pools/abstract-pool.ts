@@ -74,6 +74,27 @@ import {
 import { version } from './version.js'
 import { WorkerNode } from './worker-node.js'
 
+const normalizeMapExecuteAbortSignals = (
+  abortSignals: Iterable<AbortSignal>,
+  data: readonly unknown[]
+): readonly AbortSignal[] => {
+  if (typeof abortSignals[Symbol.iterator] !== 'function') {
+    throw new TypeError('abortSignals argument must be an iterable')
+  }
+  const signals = Array.isArray(abortSignals) ? abortSignals : [...abortSignals]
+  for (const signal of signals) {
+    if (!(signal instanceof AbortSignal)) {
+      throw new TypeError(
+        'abortSignals argument must be an iterable of AbortSignal'
+      )
+    }
+  }
+  if (data.length !== signals.length) {
+    throw new Error('data and abortSignals arguments must have the same length')
+  }
+  return signals as AbortSignal[]
+}
+
 /**
  * Base class that implements some shared logic for all poolifier pools.
  * @template Worker - Type of worker which manages this pool.
@@ -807,7 +828,7 @@ export abstract class AbstractPool<
     const normalizedAbortSignals =
       abortSignals == null
         ? undefined
-        : this.normalizeMapExecuteAbortSignals(abortSignals, data as Data[])
+        : normalizeMapExecuteAbortSignals(abortSignals, data as Data[])
     if (transferList != null && !Array.isArray(transferList)) {
       throw new TypeError('transferList argument must be an array')
     }
@@ -2684,31 +2705,6 @@ export abstract class AbstractPool<
       (workerNode.info.continuousStealing ||
         workerNode.info.backPressureStealing)
     )
-  }
-
-  private normalizeMapExecuteAbortSignals (
-    abortSignals: Iterable<AbortSignal>,
-    data: readonly Data[]
-  ): readonly AbortSignal[] {
-    if (typeof abortSignals[Symbol.iterator] !== 'function') {
-      throw new TypeError('abortSignals argument must be an iterable')
-    }
-    const signals = Array.isArray(abortSignals)
-      ? abortSignals
-      : [...abortSignals]
-    for (const signal of signals) {
-      if (!(signal instanceof AbortSignal)) {
-        throw new TypeError(
-          'abortSignals argument must be an iterable of AbortSignal'
-        )
-      }
-    }
-    if (data.length !== signals.length) {
-      throw new Error(
-        'data and abortSignals arguments must have the same length'
-      )
-    }
-    return signals as AbortSignal[]
   }
 
   private queueTaskFunctionOperation (
