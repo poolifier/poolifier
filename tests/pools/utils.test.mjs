@@ -14,6 +14,7 @@ import {
   createWorker,
   DEFAULT_MEASUREMENT_STATISTICS_REQUIREMENTS,
   getDefaultTasksQueueOptions,
+  getRedistributionTaskFunctionsProperties,
   initWorkerInfo,
   selectRedistributionDestinationWorkerNodeKey,
   selectStealSourceWorkerNode,
@@ -918,6 +919,12 @@ parentPort.postMessage({
       new RangeError(
         'Cannot add a task function with invalid worker node keys: 999. Valid keys are: 0..3'
       )
+    )
+  })
+
+  it('returns an empty task function list when no redistribution metadata is available', () => {
+    expect(getRedistributionTaskFunctionsProperties([], { info: {} })).toEqual(
+      []
     )
   })
 
