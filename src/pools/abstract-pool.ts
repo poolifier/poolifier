@@ -64,6 +64,7 @@ import {
   checkValidWorkerChoiceStrategy,
   checkValidWorkerNodeKeys,
   getDefaultTasksQueueOptions,
+  normalizeMapExecuteAbortSignals,
   selectStealSourceWorkerNode,
   updateEluWorkerUsage,
   updateRunTimeWorkerUsage,
@@ -801,29 +802,13 @@ export abstract class AbstractPool<
     if (name != null && typeof name === 'string' && name.trim().length === 0) {
       throw new TypeError('name argument must not be an empty string')
     }
-    if (!Array.isArray(data)) {
-      data = [...data]
-    }
-    if (abortSignals != null) {
-      if (typeof abortSignals[Symbol.iterator] !== 'function') {
-        throw new TypeError('abortSignals argument must be an iterable')
-      }
-      if (!Array.isArray(abortSignals)) {
-        abortSignals = [...abortSignals]
-      }
-      for (const abortSignal of abortSignals) {
-        if (!(abortSignal instanceof AbortSignal)) {
-          throw new TypeError(
-            'abortSignals argument must be an iterable of AbortSignal'
-          )
-        }
-      }
-      if ((data as Data[]).length !== (abortSignals as AbortSignal[]).length) {
-        throw new Error(
-          'data and abortSignals arguments must have the same length'
-        )
-      }
-    }
+    const normalizedData: readonly Data[] = Array.isArray(data)
+      ? data
+      : [...data]
+    const normalizedAbortSignals =
+      abortSignals == null
+        ? undefined
+        : normalizeMapExecuteAbortSignals(abortSignals, normalizedData)
     if (transferList != null && !Array.isArray(transferList)) {
       throw new TypeError('transferList argument must be an array')
     }
@@ -832,11 +817,8 @@ export abstract class AbstractPool<
         ? Array.from(transferList)
         : undefined
     const tasks: [Data, AbortSignal | undefined][] = Array.from(
-      { length: (data as Data[]).length },
-      (_, i) => [
-        (data as Data[])[i],
-        abortSignals != null ? (abortSignals as AbortSignal[])[i] : undefined,
-      ]
+      { length: normalizedData.length },
+      (_, i) => [normalizedData[i], normalizedAbortSignals?.[i]]
     )
     return await Promise.all(
       tasks.map(([data, abortSignal]) =>

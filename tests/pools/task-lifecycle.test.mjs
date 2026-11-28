@@ -656,6 +656,24 @@ describe('Task lifecycle regressions', () => {
     }
   })
 
+  it('honors batch cancellation even when a subclass uses the helper name', async () => {
+    class CustomPool extends FixedThreadPool {
+      normalizeMapExecuteAbortSignals () {
+        return []
+      }
+    }
+    const pool = new CustomPool(1, workerFile)
+    const reason = new Error('Cancelled before batch submission')
+    try {
+      await ready(pool)
+      await expect(
+        pool.mapExecute([{}], 'echo', [AbortSignal.abort(reason)])
+      ).rejects.toBe(reason)
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
   it('consumes a one-shot abort signal iterable exactly once', async () => {
     const pool = new FixedThreadPool(1, workerFile)
     try {
@@ -685,6 +703,22 @@ describe('Task lifecycle regressions', () => {
         'abortSignals argument must be an iterable of AbortSignal'
       )
       expect(pool.info.executedTasks).toBe(0)
+    } finally {
+      await bounded(pool.destroy())
+    }
+  })
+
+  it('rejects an invalid batch signal before checking the batch length', async () => {
+    const pool = new FixedThreadPool(1, workerFile)
+    try {
+      await ready(pool)
+      const { error } = await settle(
+        pool.mapExecute([{}], 'echo', [new AbortController().signal, undefined])
+      )
+      expect(error).toBeInstanceOf(TypeError)
+      expect(error.message).toBe(
+        'abortSignals argument must be an iterable of AbortSignal'
+      )
     } finally {
       await bounded(pool.destroy())
     }
